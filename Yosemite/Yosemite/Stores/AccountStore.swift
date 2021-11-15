@@ -119,14 +119,14 @@ private extension AccountStore {
                             return sitePublisher
                         }
 
-                        // If a site is connected to Jetpack via Jetpack Connection Package, some information about the site is not available or accurate
-                        // in `me/sites` endpoint made by `AccountRemote.loadSites()`.
-                        // As a workaround, we need to make 2 other API requests:
+                        // If a site is connected to Jetpack via Jetpack Connection Package, some information about the site is unavailable or inaccurate
+                        // in `me/sites` endpoint made in `AccountRemote.loadSites`.
+                        // As a workaround, we need to make 2 other API requests (ref p91TBi-6lK-p2):
                         // - Check if WooCommerce plugin is active via `wc/v3/settings` endpoint
                         // - Fetch site metadata like the site name, description, and URL via `wp/v2/settings` endpoint
                         if site.isJetpackCPConnected {
                             let wcAvailabilityPublisher = self.remote.checkIfWooCommerceIsActive(for: site.siteID)
-                            let wpSiteSettingsPublisher = self.remote.fetchWPSiteSettings(for: site.siteID)
+                            let wpSiteSettingsPublisher = self.remote.fetchWordPressSiteSettings(for: site.siteID)
                             return Publishers.Zip3(sitePublisher, wcAvailabilityPublisher, wpSiteSettingsPublisher)
                                 .map {
                                     (site, isWooCommerceActiveResult, wpSiteSettingsResult) -> Site in

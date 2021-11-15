@@ -215,6 +215,26 @@ private extension BetaFeaturesViewController {
     func configureOrderCreationSwitch(cell: SwitchTableViewCell) {
         configureCommonStylesForSwitchCell(cell)
         cell.title = Localization.orderCreationTitle
+
+        // Fetch switch's state stored value.
+        let action = AppSettingsAction.loadOrderCreationSwitchState() { result in
+            guard let isEnabled = try? result.get() else {
+                return cell.isOn = false
+            }
+            cell.isOn = isEnabled
+        }
+        ServiceLocator.stores.dispatch(action)
+
+        // Change switch's state stored value
+        cell.onChange = { isSwitchOn in
+            let action = AppSettingsAction.setOrderCreationFeatureSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
+                // Roll back toggle if an error occurred
+                if result.isFailure {
+                    cell.isOn.toggle()
+                }
+            })
+            ServiceLocator.stores.dispatch(action)
+        }
         cell.accessibilityIdentifier = "beta-features-order-order-creation-cell"
     }
 

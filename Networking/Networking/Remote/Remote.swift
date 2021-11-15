@@ -132,7 +132,7 @@ public class Remote {
     }
 
     func enqueuePublisher<M: Mapper>(_ request: URLRequestConvertible, mapper: M) -> AnyPublisher<Result<M.Output, Error>, Never> {
-        let publisher = network.responseDataPublisher(for: request)
+        network.responseDataPublisher(for: request)
             .map { (result: Result<Data, Error>) -> Result<M.Output, Error> in
                 switch result {
                 case .success(let data):
@@ -151,15 +151,12 @@ public class Remote {
                     return .failure(error)
                 }
             }
-            .share() // The API request is only executed once no matter how many subscribers the publisher has.
+            .handleEvents(receiveOutput: { [weak self] result in
+                if let dotcomError = result.failure as? DotcomError {
+                    self?.dotcomErrorWasReceived(error: dotcomError, for: request)
+                }
+            })
             .eraseToAnyPublisher()
-
-        publisher.compactMap { $0.failure as? DotcomError }
-        .sink { [weak self] dotcomError in
-            self?.dotcomErrorWasReceived(error: dotcomError, for: request)
-        }.store(in: &cancellables)
-
-        return publisher
     }
 
     /// Enqueues the specified Network Request for upload with multipart form data encoding.

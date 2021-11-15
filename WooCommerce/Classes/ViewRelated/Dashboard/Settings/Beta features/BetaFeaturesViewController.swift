@@ -264,12 +264,14 @@ private enum Row: CaseIterable {
     // Orders.
     case simplePayments
     case simplePaymentsDescription
+    case orderCreation
+    case orderCreationDescription
 
     var type: UITableViewCell.Type {
         switch self {
-        case .orderAddOns, .simplePayments:
+        case .orderAddOns, .simplePayments, .orderCreation:
             return SwitchTableViewCell.self
-        case .orderAddOnsDescription, .simplePaymentsDescription:
+        case .orderAddOnsDescription, .simplePaymentsDescription, .orderCreationDescription:
             return BasicTableViewCell.self
         }
     }
@@ -289,5 +291,8 @@ private extension BetaFeaturesViewController {
                                                            comment: "Cell title on the beta features screen to enable the Simple Payments feature")
         static let simplePaymentsDescription = NSLocalizedString("Test out creating orders with minimal information as we get ready to launch",
                                                               comment: "Cell description on the beta features screen to enable the Simple Payments feature")
+        static let orderCreationTitle = NSLocalizedString("Order Creation", comment: "Cell title on the beta features screen to enable creating new orders")
+        static let orderCreationDescription = NSLocalizedString("Test out creating new manual orders as we get ready to launch",
+                                                                comment: "Cell description on the beta features screen to enable creating new orders")
     }
 }

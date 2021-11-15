@@ -11,7 +11,7 @@ public enum OrderAction: Action {
     ///
     case searchOrders(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
 
-    /// Performs a dual fetch for the first pages of a filtered list and the all orders list.
+    /// Performs the fetch for the first pages of order list.
     ///
     /// - Parameters:
     ///     - statusKey: The status to use for the filtered list. If this is not provided, only the
@@ -23,7 +23,7 @@ public enum OrderAction: Action {
     ///     - before: Only include orders created before this date. The time zone of the `Date`
     ///               doesn't matter. It will be converted to UTC later.
     ///
-    case fetchFilteredAndAllOrders(
+    case fetchFilteredOrders(
         siteID: Int64,
         statusKey: String?,
         after: Date? = nil,

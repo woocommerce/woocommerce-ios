@@ -9,41 +9,23 @@ import struct Yosemite.OrderStatus
 ///
 /// ## Discussion
 ///
-/// Pulling to refresh on filtered lists, like the Processing tab, will perform 2 network GET
-/// requests:
+/// Pulling to refresh on filtered lists, will perform 1 network GET
+/// requests with the filters applied (status or date ranges)
 ///
-/// 1. Fetch the /orders?status=processed
-/// 2. Fetch the /orders?status=any
+/// eg. Fetch the /orders?status=processed
 ///
 /// We will also delete all the orders before saving the new fetched ones.
 ///
 /// We are currently doing this to avoid showing stale orders to users (https://git.io/JvMME).
 /// An example scenario is:
 ///
-/// 1. Load the Processing tab.
+/// 1. Load the Orders tab.
 /// 2. In the web, change one of the _processing_ orders to a different status (e.g. completed).
-/// 3. Pull to refresh on the Processing tab.
+/// 3. Pull to refresh.
 ///
 /// If we were only doing one query, we would be fetching `GET /orders?status=processed` only.
 /// But that doesn't include the old order which was changed to a different status and is no
 /// longer in the response list. Hence, that updated order will stay on the tab and is stale.
-///
-///
-/// ## Why a Dual Fetch
-///
-/// We could just delete all the orders and perform a single fetch of
-/// `GET /orders?status=processed`. But this could result into the user viewing an incomplete
-/// All Orders tab until we queried again. It's a jarring experience. Consider this scenario:
-///
-/// 1. Navigate to Processing and All Orders tab to load their content.
-/// 2. Pull to refresh on the Processing tab.
-/// 3. Navigate back to the All Orders tab.
-///
-/// On Step 3, since we deleted all the orders and only downloaded new processing orders, the
-/// All Orders tab will initially contain just those orders.
-///
-/// The dual fetch is a "hack" to hide the sceanrio.
-///
 ///
 /// ## Deleting all the Orders
 ///
@@ -55,27 +37,12 @@ import struct Yosemite.OrderStatus
 /// Deleting all the orders during a pull to refresh is a "confidence button" for our users.
 /// When they use this, we are guaranteeing them that they will be viewing an up to date list.
 ///
-///
-/// ## Spec
-///
-/// This is how sync behaves on different scenarios.
-///
-/// | Action           | Current Tab | Delete All | GET ?status=processing | GET ?status=any |
-/// |------------------|-------------|------------|------------------------|-----------------|
-/// | Pull-to-refresh  | Processing  | y          | y                      | y               |
-/// | App activated    | Processing  | .          | y                      | y               |
-/// | `viewWillAppear` | Processing  | .          | y                      | y               |
-/// | Load next page   | Processing  | .          | y                      | .               |
-/// | Pull-to-refresh  | All Orders  | y          | .                      | y               |
-/// | App activated    | All Orders  | .          | .                      | y               |
-/// | `viewWillAppear` | All Orders  | .          | .                      | y               |
-/// | Load next page   | All Orders  | .          | .                      | y               |
-///
 struct OrderListSyncActionUseCase {
 
     /// The reasons passed to `SyncCoordinator` when synchronizing.
     ///
     enum SyncReason: String {
+        case newFiltersApplied = "new_filters_applied"
         case pullToRefresh = "pull_to_refresh"
         case viewWillAppear = "view_will_appear"
     }
@@ -94,9 +61,9 @@ struct OrderListSyncActionUseCase {
         let endDate = filters?.dateRange?.computedEndDate
 
         if pageNumber == Defaults.pageFirstIndex {
-            let deleteAllBeforeSaving = reason == SyncReason.pullToRefresh
+            let deleteAllBeforeSaving = reason == SyncReason.pullToRefresh || reason == SyncReason.newFiltersApplied
 
-            return OrderAction.fetchFilteredAndAllOrders(
+            return OrderAction.fetchFilteredOrders(
                 siteID: siteID,
                 statusKey: statusKey,
                 after: startDate,

@@ -35,12 +35,16 @@ final class OrderListViewModel {
     ///
     var onShouldResynchronizeIfViewIsVisible: (() -> ())?
 
+    /// The block called if new filters are applied
+    ///
+    var onShouldResynchronizeIfNewFitersAreApplied: (() -> ())?
+
     /// Filters applied to the order list.
     ///
-    var filters: FilterOrderListViewModel.Filters? {
+    private(set) var filters: FilterOrderListViewModel.Filters? {
         didSet {
             if filters != oldValue {
-                //TODO:5243 update order list data
+                onShouldResynchronizeIfNewFitersAreApplied?()
             }
         }
     }

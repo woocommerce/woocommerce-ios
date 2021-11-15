@@ -192,6 +192,10 @@ private extension OrderListViewController {
             self.syncingCoordinator.resynchronize()
         }
 
+        viewModel.onShouldResynchronizeIfNewFitersAreApplied = { [weak self] in
+            self?.syncingCoordinator.resynchronize(reason: SyncReason.newFiltersApplied.rawValue)
+        }
+
         viewModel.activate()
 
         /// Update the `dataSource` whenever there is a new snapshot.

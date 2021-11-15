@@ -262,7 +262,7 @@ private extension String {
                 documentAttributes: nil
             ).string
         } catch {
-            print(error)
+            DDLogError("Failed to remove HTML from \(self): \(error.localizedDescription)")
             return self
         }
     }

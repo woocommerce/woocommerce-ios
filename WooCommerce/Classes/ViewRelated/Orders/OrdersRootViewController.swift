@@ -279,7 +279,7 @@ private extension OrdersRootViewController {
         let navigationController = WooNavigationController(rootViewController: viewController)
         present(navigationController, animated: true)
 
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
+        analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
     }
 
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.

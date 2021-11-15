@@ -3,8 +3,6 @@ import Foundation
 /// Helpers for working with versions (e.g. comparing two version strings)
 ///
 final class VersionHelpers {
-    private init() {}
-
     /// Compares two strings as versions using the same approach as PHP `version_compare`.
     /// https://www.php.net/manual/en/function.version-compare.php
     ///

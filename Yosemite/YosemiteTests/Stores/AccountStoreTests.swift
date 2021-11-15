@@ -485,14 +485,6 @@ private extension AccountStoreTests {
     /// Sample Site
     ///
     func sampleSitePristine() -> Networking.Site {
-        return Site(siteID: 999,
-                    name: "Awesome Test Site",
-                    description: "Best description ever!",
-                    url: "automattic.com",
-                    plan: String(),
-                    isWooCommerceActive: true,
-                    isWordPressStore: false,
-                    timezone: "Asia/Taipei",
-                    gmtOffset: 0)
+        return Site.fake()
     }
 }

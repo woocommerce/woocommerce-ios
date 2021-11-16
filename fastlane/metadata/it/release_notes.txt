@@ -1,3 +1,3 @@
-I venditori che usano WooCommerce Shipping & Tax scopriranno che ora possono creare più etichette di spedizione per un ordine. Puoi spostare rapidamente gli elementi tra i pacchetti in modo che corrispondano al modo in cui hai deciso di spedire gli articoli al cliente. Abbiamo anche risolto alcuni problemi segnalati sulle schermate stesse.
+Alcuni venditori hanno riscontrato problemi durante il caricamento dei dettagli dell'ordine a causa di problemi tecnici relativi al modo in cui i nomi dei campi nell'API REST vengono riordinati. Abbiamo apportato una correzione che dovrebbe risolverli per te nel momento in cui li riscontri.
 
-Abbiamo inoltre apportato alcuni miglioramenti all'accessibilità in base al feedback. Grazie!
+Questo rilascio contiene molte altre correzioni basate sul tuo feedback. Continua a inviarci feedback: siamo lieti di ascoltarli.

@@ -286,7 +286,9 @@ extension PaymentGatewayAccount {
         defaultCurrency: CopiableProp<String> = .copy,
         supportedCurrencies: CopiableProp<[String]> = .copy,
         country: CopiableProp<String> = .copy,
-        isCardPresentEligible: CopiableProp<Bool> = .copy
+        isCardPresentEligible: CopiableProp<Bool> = .copy,
+        isLive: CopiableProp<Bool> = .copy,
+        isInTestMode: CopiableProp<Bool> = .copy
     ) -> PaymentGatewayAccount {
         let siteID = siteID ?? self.siteID
         let gatewayID = gatewayID ?? self.gatewayID
@@ -299,6 +301,8 @@ extension PaymentGatewayAccount {
         let supportedCurrencies = supportedCurrencies ?? self.supportedCurrencies
         let country = country ?? self.country
         let isCardPresentEligible = isCardPresentEligible ?? self.isCardPresentEligible
+        let isLive = isLive ?? self.isLive
+        let isInTestMode = isInTestMode ?? self.isInTestMode
 
         return PaymentGatewayAccount(
             siteID: siteID,
@@ -311,7 +315,9 @@ extension PaymentGatewayAccount {
             defaultCurrency: defaultCurrency,
             supportedCurrencies: supportedCurrencies,
             country: country,
-            isCardPresentEligible: isCardPresentEligible
+            isCardPresentEligible: isCardPresentEligible,
+            isLive: isLive,
+            isInTestMode: isInTestMode
         )
     }
 }
@@ -1145,6 +1151,8 @@ extension Site {
         description: CopiableProp<String> = .copy,
         url: CopiableProp<String> = .copy,
         plan: CopiableProp<String> = .copy,
+        isJetpackThePluginInstalled: CopiableProp<Bool> = .copy,
+        isJetpackConnected: CopiableProp<Bool> = .copy,
         isWooCommerceActive: CopiableProp<Bool> = .copy,
         isWordPressStore: CopiableProp<Bool> = .copy,
         timezone: CopiableProp<String> = .copy,
@@ -1155,6 +1163,8 @@ extension Site {
         let description = description ?? self.description
         let url = url ?? self.url
         let plan = plan ?? self.plan
+        let isJetpackThePluginInstalled = isJetpackThePluginInstalled ?? self.isJetpackThePluginInstalled
+        let isJetpackConnected = isJetpackConnected ?? self.isJetpackConnected
         let isWooCommerceActive = isWooCommerceActive ?? self.isWooCommerceActive
         let isWordPressStore = isWordPressStore ?? self.isWordPressStore
         let timezone = timezone ?? self.timezone
@@ -1166,6 +1176,8 @@ extension Site {
             description: description,
             url: url,
             plan: plan,
+            isJetpackThePluginInstalled: isJetpackThePluginInstalled,
+            isJetpackConnected: isJetpackConnected,
             isWooCommerceActive: isWooCommerceActive,
             isWordPressStore: isWordPressStore,
             timezone: timezone,

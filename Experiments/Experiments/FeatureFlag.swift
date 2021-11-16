@@ -50,11 +50,11 @@ public enum FeatureFlag: Int {
     ///
     case orderListFilters
 
-    /// Allows to filter products by a product category, persisting it so the filter can remain after restarting the app
-    ///
-    case filterProductsByCategory
-
     /// Allows sites with plugins that include Jetpack Connection Package and without Jetpack-the-plugin to connect to the app
     ///
     case jetpackConnectionPackageSupport
+
+    /// Allows new orders to be manually created
+    ///
+    case orderCreation
 }

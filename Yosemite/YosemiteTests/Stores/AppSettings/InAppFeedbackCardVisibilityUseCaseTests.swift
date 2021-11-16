@@ -160,6 +160,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         let settings = GeneralAppSettings(installationDate: nil,
                                           feedbacks: [:], isViewAddOnsSwitchEnabled: false,
                                           isSimplePaymentsSwitchEnabled: false,
+                                          isOrderCreationSwitchEnabled: false,
                                           knownCardReaders: [])
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsVariations)
 
@@ -225,6 +226,7 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
             isSimplePaymentsSwitchEnabled: false,
+            isOrderCreationSwitchEnabled: false,
             knownCardReaders: []
         )
         return settings

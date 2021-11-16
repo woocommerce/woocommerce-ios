@@ -15,6 +15,14 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.alignJustifyImage)
     }
 
+    func test_alarmBellRing_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.alarmBellRingImage)
+    }
+
+    func test_analytics_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.analyticsImage)
+    }
+
     func testNoticeImageIsNotNil() {
         XCTAssertNotNil(UIImage.noticeImage)
     }
@@ -224,6 +232,10 @@ final class IconsTests: XCTestCase {
 
     func testMoreImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.moreImage)
+    }
+
+    func test_multipleUsers_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.multipleUsersImage)
     }
 
     func test_payment_card_reader_scanning_image() {
@@ -515,5 +527,17 @@ final class IconsTests: XCTestCase {
 
     func test_lightningImage_is_not_nil() {
         XCTAssertNotNil(UIImage.lightningImage)
+    }
+
+    func test_shoppingCartIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.shoppingCartIcon)
+    }
+
+    func test_creditCardIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.creditCardIcon)
+    }
+
+    func test_cardReaderManualIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.cardReaderManualIcon)
     }
 }

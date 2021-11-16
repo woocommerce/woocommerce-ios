@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Networking
 import Storage
@@ -7,6 +8,7 @@ import Storage
 //
 public class AccountStore: Store {
     private let remote: AccountRemote
+    private var cancellables = Set<AnyCancellable>()
 
     /// Shared private StorageType for use during synchronizeSites and synchronizeSitePlan processes
     ///
@@ -107,16 +109,17 @@ private extension AccountStore {
     /// Synchronizes the WordPress.com sites associated with the Network's Auth Token.
     ///
     func synchronizeSites(selectedSiteID: Int64?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        remote.loadSites { [weak self] result in
-            switch result {
-            case .success(let sites):
-                self?.upsertStoredSitesInBackground(readOnlySites: sites, selectedSiteID: selectedSiteID) {
-                    onCompletion(.success(()))
+        remote.loadSites()
+            .sink { [weak self] result in
+                switch result {
+                case .success(let sites):
+                    self?.upsertStoredSitesInBackground(readOnlySites: sites, selectedSiteID: selectedSiteID) {
+                        onCompletion(.success(()))
+                    }
+                case .failure(let error):
+                    onCompletion(.failure(error))
                 }
-            case .failure(let error):
-                onCompletion(.failure(error))
-            }
-        }
+            }.store(in: &cancellables)
     }
 
     /// Loads the site plan for the default site.

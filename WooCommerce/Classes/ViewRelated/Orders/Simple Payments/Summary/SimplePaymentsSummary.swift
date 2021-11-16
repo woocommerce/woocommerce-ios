@@ -119,15 +119,13 @@ private struct PaymentsSection: View {
                     .headlineStyle()
                     .padding([.horizontal, .top])
 
-                // Temporary data
                 TitleAndValueRow(title: SimplePaymentsSummary.Localization.subtotal, value: .content(viewModel.providedAmount), selectable: false) {}
 
                 // Temporary data
                 TitleAndToggleRow(title: SimplePaymentsSummary.Localization.chargeTaxes, isOn: .constant(false))
                     .padding([.leading, .trailing])
 
-                // Temporary data
-                TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content("$40.0"), bold: true, selectable: false) {}
+                TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content(viewModel.total), bold: true, selectable: false) {}
             }
             .background(Color(.listForeground))
 

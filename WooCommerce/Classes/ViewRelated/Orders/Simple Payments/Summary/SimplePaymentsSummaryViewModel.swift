@@ -8,7 +8,14 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     let providedAmount: String
 
+    /// Total to charge.
+    ///
+    let total: String
+
     init(providedAmount: String) {
         self.providedAmount = providedAmount
+
+        // TODO: Add taxes calculation
+        self.total = providedAmount
     }
 }

@@ -2,7 +2,11 @@ import SwiftUI
 
 struct NewOrder: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ScrollView {
+            EmptyView()
+        }
+        .background(Color(.listBackground))
+            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
     }
 }
 

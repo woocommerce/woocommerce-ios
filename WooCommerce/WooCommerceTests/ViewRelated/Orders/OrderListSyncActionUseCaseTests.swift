@@ -170,7 +170,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
     // 1. deleting all orders
     // 2. fetching all the orders filtered
     //
-    func test_refresh_with_new_filters_applied_deletes_and_performs_dual_fetch() {
+    func test_refresh_with_new_filters_applied_deletes_and_performs_single_fetch() {
         // Arrange
         let filters = FilterOrderListViewModel.Filters(orderStatus: .processing, dateRange: nil, numberOfActiveFilters: 1)
         let useCase = OrderListSyncActionUseCase(siteID: siteID,

@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+8.1
+-----
+
+
 8.0
 -----
 - [*] Product List: Add support for product filtering by category. [https://github.com/woocommerce/woocommerce-ios/pull/5388]

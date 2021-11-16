@@ -129,18 +129,23 @@ private extension OrderSearchStarterViewController {
 
         let title = cellViewModel.name ?? Localization.defaultOrderListTitle
         let emptyStateConfig = EmptyStateViewController.Config.simple(message: emptyStateMessage, image: .emptySearchResultsImage)
+        let noOrdersMatchFilterEmptyStateConfig =
+        EmptyStateViewController.Config.simple(message: .init(string: Localization.filteredOrdersEmptyStateMessage), image: .emptyOrdersImage)
 
-        // TODO-5243: Remove status filters from search view
         return OrderListViewController(
             siteID: siteID,
             title: title,
             viewModel: .init(siteID: siteID, filters: nil),
-            emptyStateConfig: emptyStateConfig
+            emptyStateConfig: emptyStateConfig,
+            emptyStateConfigNoFilters: noOrdersMatchFilterEmptyStateConfig
         )
     }
 
     enum Localization {
         static let defaultOrderListTitle = NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter.")
+        static let filteredOrdersEmptyStateMessage =
+        NSLocalizedString("No matching orders found",
+                          comment: "The text on the placeholder overlay when no orders match the filter on the Orders Search View")
     }
 }
 

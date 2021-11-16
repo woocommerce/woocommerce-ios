@@ -63,6 +63,10 @@ final class OrderListViewController: UIViewController {
     ///
     private let emptyStateConfig: EmptyStateViewController.Config
 
+    /// The configuration to use for the view if the list with filters applied is empty.
+    ///
+    private let emptyStateConfigNoFilters: EmptyStateViewController.Config
+
     /// The view shown if the list is empty.
     ///
     private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
@@ -104,10 +108,15 @@ final class OrderListViewController: UIViewController {
 
     /// Designated initializer.
     ///
-    init(siteID: Int64, title: String, viewModel: OrderListViewModel, emptyStateConfig: EmptyStateViewController.Config) {
+    init(siteID: Int64,
+         title: String,
+         viewModel: OrderListViewModel,
+         emptyStateConfig: EmptyStateViewController.Config,
+         emptyStateConfigNoFilters: EmptyStateViewController.Config) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.emptyStateConfig = emptyStateConfig
+        self.emptyStateConfigNoFilters = emptyStateConfigNoFilters
 
         super.init(nibName: nil, bundle: nil)
 
@@ -435,7 +444,7 @@ private extension OrderListViewController {
             return
         }
 
-        childController.configure(emptyStateConfig)
+        childController.configure(createFilterConfig())
 
         // Show Error Loading Data banner if the empty state is caused by a sync error
         if viewModel.hasErrorLoadingData {
@@ -468,6 +477,16 @@ private extension OrderListViewController {
         childController.willMove(toParent: nil)
         childView.removeFromSuperview()
         childController.removeFromParent()
+    }
+
+    /// Empty state config
+    ///
+    func createFilterConfig() ->  EmptyStateViewController.Config {
+        guard let filters = viewModel.filters, filters.numberOfActiveFilters != 0 else {
+            return emptyStateConfig
+        }
+
+        return emptyStateConfigNoFilters
     }
 }
 

@@ -19,7 +19,8 @@ final class OrdersRootViewController: UIViewController {
         emptyStateConfig: .simple(
             message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
             image: .waitingForCustomersImage
-        )
+        ),
+        emptyStateConfigNoFilters: noOrdersMatchFilterConfig()
     )
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
@@ -288,6 +289,18 @@ private extension OrdersRootViewController {
 
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID, "status": order.status.rawValue])
     }
+
+    /// Creates EmptyStateViewController.Config for no orders matching the filter empty view
+    ///
+    private func noOrdersMatchFilterConfig() ->  EmptyStateViewController.Config {
+        return EmptyStateViewController.Config.withButton(
+            message: .init(string: Localization.filteredOrdersEmptyStateMessage),
+            image: .emptyOrdersImage,
+            details: "",
+            buttonTitle: Localization.clearButton) { [weak self] button in
+                self?.filters = FilterOrderListViewModel.Filters()
+            }
+    }
 }
 
 // MARK: - Constants
@@ -297,6 +310,11 @@ private extension OrdersRootViewController {
         static let allOrdersEmptyStateMessage =
         NSLocalizedString("Waiting for your first order",
                           comment: "The message shown in the Orders → All Orders tab if the list is empty.")
+        static let filteredOrdersEmptyStateMessage =
+        NSLocalizedString("No matching orders found",
+                          comment: "The text on the placeholder overlay when no orders match the filter on the Orders tab")
+        static let clearButton = NSLocalizedString("Clear Filters",
+                                 comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Orders tab")
         static let accessibilityLabelSearchOrders = NSLocalizedString("Search orders", comment: "Search Orders")
         static let accessibilityHintSearchOrders = NSLocalizedString(
             "Retrieves a list of orders that contain a given keyword.",

@@ -63,7 +63,7 @@ final class AccountRemoteTests: XCTestCase {
     func test_loadSites_emits_sites_in_response() throws {
         // Given
         let remote = AccountRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "me-sites-one-jcp-site")
+        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
 
         // When
         let result = waitFor { promise in
@@ -75,6 +75,7 @@ final class AccountRemoteTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         let sites = try XCTUnwrap(result.get())
+        // Sites in `sites.json` include one Jetpack CP site and one site with Jetpack-the-plugin.
         let jcpSites = sites.filter { $0.isJetpackCPConnected }
         let nonJCPSites = sites.filter { $0.isJetpackCPConnected == false }
         XCTAssertEqual(jcpSites.count, 1)

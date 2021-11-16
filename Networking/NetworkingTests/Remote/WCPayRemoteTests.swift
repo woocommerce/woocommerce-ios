@@ -37,11 +37,11 @@ final class WCPayRemoteTests: XCTestCase {
         let expectedToken = "a connection token"
 
         network.simulateResponse(requestUrlSuffix: "payments/connection_tokens", filename: "wcpay-connection-token")
-        remote.loadConnectionToken(for: sampleSiteID) { (token, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(token)
-            XCTAssertEqual(token?.token, expectedToken)
-            expectation.fulfill()
+        remote.loadConnectionToken(for: sampleSiteID) { result in
+            if case let .success(token) = result {
+                XCTAssertEqual(token.token, expectedToken)
+                expectation.fulfill()
+            }
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
@@ -53,10 +53,11 @@ final class WCPayRemoteTests: XCTestCase {
         let remote = WCPayRemote(network: network)
         let expectation = self.expectation(description: "Load WCPay token contains errors")
 
-        remote.loadConnectionToken(for: sampleSiteID) { (token, error) in
-            XCTAssertNil(token)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        remote.loadConnectionToken(for: sampleSiteID) { result in
+            if case let .failure(error) = result {
+                XCTAssertNotNil(error)
+                expectation.fulfill()
+            }
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)

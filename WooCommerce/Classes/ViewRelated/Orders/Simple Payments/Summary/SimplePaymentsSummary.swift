@@ -38,7 +38,7 @@ struct SimplePaymentsSummary: View {
                 }
             }
 
-            TakePaymentSection()
+            TakePaymentSection(viewModel: viewModel)
         }
         .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(Localization.title)
@@ -205,12 +205,17 @@ private struct NoteSection: View {
 /// Represents the bottom take payment button
 ///
 private struct TakePaymentSection: View {
+
+    /// ViewModel to drive the view content.
+    ///
+    @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
+
     var body: some View {
         VStack {
             Divider()
 
             // Temporary data
-            Button(SimplePaymentsSummary.Localization.takePayment(total: "$40.0"), action: {
+            Button(SimplePaymentsSummary.Localization.takePayment(total: viewModel.total), action: {
                 print("Take payment pressed")
             })
             .buttonStyle(PrimaryButtonStyle())

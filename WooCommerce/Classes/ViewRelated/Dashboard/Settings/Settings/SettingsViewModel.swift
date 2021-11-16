@@ -51,7 +51,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
 
     /// Table Sections to be rendered
     ///
-    var sections: [Section] = []
+    private(set) var sections: [Section] = []
 
     /// Main Account's displayName
     ///
@@ -61,7 +61,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
 
     /// Announcement for the current app version
     ///
-    var announcement: Yosemite.Announcement?
+    private(set) var announcement: Yosemite.Announcement?
 
     /// Main Site's Name
     ///

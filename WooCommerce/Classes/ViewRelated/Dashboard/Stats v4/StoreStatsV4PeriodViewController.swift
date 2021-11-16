@@ -2,17 +2,25 @@ import Charts
 import UIKit
 import Yosemite
 
+/// Different display modes of site visit stats
+///
+enum SiteVisitStatsMode {
+    case `default`
+    case redactedDueToJetpack
+    case hidden
+}
+
 /// Shows the store stats with v4 API for a time range.
 ///
-class StoreStatsV4PeriodViewController: UIViewController {
+final class StoreStatsV4PeriodViewController: UIViewController {
 
     // MARK: - Public Properties
 
     let granularity: StatsGranularityV4
 
-    var shouldShowSiteVisitStats: Bool = true {
+    var siteVisitStatsMode: SiteVisitStatsMode = .default {
         didSet {
-            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+            updateSiteVisitStats(mode: siteVisitStatsMode)
         }
     }
 
@@ -186,14 +194,6 @@ class StoreStatsV4PeriodViewController: UIViewController {
     }
 }
 
-extension StoreStatsV4PeriodViewController {
-    enum SiteVisitStatsMode {
-        case `default`
-        case redactedDueToJetpack
-        case hidden
-    }
-}
-
 // MARK: - Public Interface
 //
 extension StoreStatsV4PeriodViewController {
@@ -300,7 +300,7 @@ private extension StoreStatsV4PeriodViewController {
         lastUpdated.backgroundColor = .listForeground
 
         // Visibility
-        updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+        updateSiteVisitStats(mode: siteVisitStatsMode)
 
         // Accessibility elements
         xAxisAccessibilityView.isAccessibilityElement = true
@@ -411,8 +411,8 @@ private extension StoreStatsV4PeriodViewController {
 // MARK: - UI Updates
 //
 extension StoreStatsV4PeriodViewController {
-    func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
-        visitorsStackView?.isHidden = !shouldShowSiteVisitStats
+    func updateSiteVisitStats(mode: SiteVisitStatsMode) {
+        visitorsStackView?.isHidden = (mode == .hidden)
     }
 }
 
@@ -471,30 +471,36 @@ private extension StoreStatsV4PeriodViewController {
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateSiteVisitStats(selectedIndex: Int?) {
-        guard shouldShowSiteVisitStats else {
+        guard siteVisitStatsMode != .hidden else {
             return
         }
         guard let selectedIndex = selectedIndex else {
-            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+            updateSiteVisitStats(mode: siteVisitStatsMode)
             reloadSiteFields()
             return
         }
         // Hides site visit stats for "today".
         guard timeRange != .today else {
-            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: false)
+            updateSiteVisitStats(mode: .hidden)
             return
         }
-        updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: true)
-        guard visitorsData != nil else {
-            return
-        }
+        updateSiteVisitStats(mode: siteVisitStatsMode)
 
-        var visitorsText = Constants.placeholderText
-        if selectedIndex < siteStatsItems.count {
-            let siteStatsItem = siteStatsItems[selectedIndex]
-            visitorsText = Double(siteStatsItem.visitors).humanReadableString()
+        if siteVisitStatsMode == .default {
+            guard visitorsData != nil else {
+                return
+            }
+            var visitorsText = Constants.placeholderText
+            if selectedIndex < siteStatsItems.count {
+                let siteStatsItem = siteStatsItems[selectedIndex]
+                visitorsText = Double(siteStatsItem.visitors).humanReadableString()
+            }
+            visitorsData.text = visitorsText
+            visitorsData.isHidden = false
+        } else {
+            visitorsData.isHidden = true
+            // TODO: add empty view
         }
-        visitorsData.text = visitorsText
     }
 
     /// Updates date bar based on the selected bar index.
@@ -663,8 +669,19 @@ private extension StoreStatsV4PeriodViewController {
         reloadSiteFields()
         reloadChart(animateChart: animateChart)
         reloadLastUpdatedField()
-        let visitStatsElements = shouldShowSiteVisitStats ? [visitorsTitle as Any,
-                                                             visitorsData as Any]: []
+        let visitStatsElements: [Any] = {
+            switch siteVisitStatsMode {
+            case .default:
+                return [visitorsTitle as Any,
+                        visitorsData as Any]
+            case .redactedDueToJetpack:
+                // TODO: add empty view
+                return [visitorsTitle as Any]
+            case .hidden:
+                return []
+            }
+        }()
+
         view.accessibilityElements = visitStatsElements + [ordersTitle as Any,
                                                            ordersData as Any,
                                                            revenueTitle as Any,

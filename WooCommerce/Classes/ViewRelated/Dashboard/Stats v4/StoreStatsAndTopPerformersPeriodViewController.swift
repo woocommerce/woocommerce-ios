@@ -22,9 +22,9 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     let granularity: StatsGranularityV4
 
     /// Whether site visit stats can be shown
-    var shouldShowSiteVisitStats: Bool = true {
+    var siteVisitStatsMode: SiteVisitStatsMode = .default {
         didSet {
-            storeStatsPeriodViewController.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+            storeStatsPeriodViewController.updateSiteVisitStats(mode: siteVisitStatsMode)
         }
     }
 

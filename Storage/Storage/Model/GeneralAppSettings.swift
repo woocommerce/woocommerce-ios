@@ -28,6 +28,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let isSimplePaymentsSwitchEnabled: Bool
 
+    /// The state(`true` or `false`) for the Order Creation feature switch.
+    ///
+    public let isOrderCreationSwitchEnabled: Bool
+
     /// A list (possibly empty) of known card reader IDs - i.e. IDs of card readers that should be reconnected to automatically
     /// e.g. ["CHB204909005931"]
     ///
@@ -41,12 +45,14 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
                 isSimplePaymentsSwitchEnabled: Bool,
+                isOrderCreationSwitchEnabled: Bool,
                 knownCardReaders: [String],
                 lastEligibilityErrorInfo: EligibilityErrorInfo? = nil) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
         self.isSimplePaymentsSwitchEnabled = isSimplePaymentsSwitchEnabled
+        self.isOrderCreationSwitchEnabled = isOrderCreationSwitchEnabled
         self.knownCardReaders = knownCardReaders
         self.lastEligibilityErrorInfo = lastEligibilityErrorInfo
     }
@@ -73,6 +79,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             feedbacks: updatedFeedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
             isSimplePaymentsSwitchEnabled: isSimplePaymentsSwitchEnabled,
+            isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo
         )
@@ -90,6 +97,7 @@ extension GeneralAppSettings {
         self.feedbacks = try container.decodeIfPresent([FeedbackType: FeedbackSettings].self, forKey: .feedbacks) ?? [:]
         self.isViewAddOnsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isViewAddOnsSwitchEnabled) ?? false
         self.isSimplePaymentsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSimplePaymentsSwitchEnabled) ?? false
+        self.isOrderCreationSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isOrderCreationSwitchEnabled) ?? false
         self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []
         self.lastEligibilityErrorInfo = try container.decodeIfPresent(EligibilityErrorInfo.self, forKey: .lastEligibilityErrorInfo)
 

@@ -85,7 +85,7 @@ private extension EntityListener {
         }
     }
 
-    /// Returns the first NSManagedObject stored in a fiven collection, which represents the specified (ReadOnly) entity.
+    /// Returns the first NSManagedObject stored in a given collection, which represents the specified (ReadOnly) entity.
     ///
     func readOnlyConvertible(from storageEntities: Set<NSManagedObject>, representing readOnlyEntity: T) -> TypeErasedReadOnlyConvertible? {
         for case let storageEntity as TypeErasedReadOnlyConvertible in storageEntities {

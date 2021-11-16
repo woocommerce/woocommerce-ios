@@ -1151,6 +1151,8 @@ extension Site {
         description: CopiableProp<String> = .copy,
         url: CopiableProp<String> = .copy,
         plan: CopiableProp<String> = .copy,
+        isJetpackThePluginInstalled: CopiableProp<Bool> = .copy,
+        isJetpackConnected: CopiableProp<Bool> = .copy,
         isWooCommerceActive: CopiableProp<Bool> = .copy,
         isWordPressStore: CopiableProp<Bool> = .copy,
         timezone: CopiableProp<String> = .copy,
@@ -1161,6 +1163,8 @@ extension Site {
         let description = description ?? self.description
         let url = url ?? self.url
         let plan = plan ?? self.plan
+        let isJetpackThePluginInstalled = isJetpackThePluginInstalled ?? self.isJetpackThePluginInstalled
+        let isJetpackConnected = isJetpackConnected ?? self.isJetpackConnected
         let isWooCommerceActive = isWooCommerceActive ?? self.isWooCommerceActive
         let isWordPressStore = isWordPressStore ?? self.isWordPressStore
         let timezone = timezone ?? self.timezone
@@ -1172,6 +1176,8 @@ extension Site {
             description: description,
             url: url,
             plan: plan,
+            isJetpackThePluginInstalled: isJetpackThePluginInstalled,
+            isJetpackConnected: isJetpackConnected,
             isWooCommerceActive: isWooCommerceActive,
             isWordPressStore: isWordPressStore,
             timezone: timezone,

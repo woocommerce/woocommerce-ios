@@ -22,7 +22,7 @@ struct SimplePaymentsSummary: View {
             ScrollView {
                 VStack(spacing: Layout.noSpacing) {
 
-                    CustomAmountSection()
+                    CustomAmountSection(viewModel: viewModel)
 
                     Spacer(minLength: Layout.spacerHeight)
 
@@ -53,6 +53,11 @@ struct SimplePaymentsSummary: View {
 /// Represents the Custom amount section
 ///
 private struct CustomAmountSection: View {
+
+    /// ViewModel to drive the view content
+    ///
+    @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
+
     var body: some View {
         Group {
             Divider()
@@ -66,8 +71,7 @@ private struct CustomAmountSection: View {
                 Text(SimplePaymentsSummary.Localization.customAmount)
                     .headlineStyle()
 
-                // Temporary data
-                Text("$40.00")
+                Text(viewModel.providedAmount)
                     .headlineStyle()
                     .frame(maxWidth: .infinity, alignment: .trailing)
             }
@@ -100,6 +104,7 @@ private struct EmailSection: View {
 /// Represents the Payments Section
 ///
 private struct PaymentsSection: View {
+    
     var body: some View {
         Group {
             Divider()

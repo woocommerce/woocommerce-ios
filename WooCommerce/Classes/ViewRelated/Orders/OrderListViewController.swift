@@ -192,6 +192,10 @@ private extension OrderListViewController {
             self.syncingCoordinator.resynchronize()
         }
 
+        viewModel.onShouldResynchronizeIfNewFiltersAreApplied = { [weak self] in
+            self?.syncingCoordinator.resynchronize(reason: SyncReason.newFiltersApplied.rawValue)
+        }
+
         viewModel.activate()
 
         /// Update the `dataSource` whenever there is a new snapshot.
@@ -325,7 +329,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                     }
                     ServiceLocator.analytics.track(event: .ordersListLoaded(totalDuration: totalDuration,
                                                                             pageNumber: pageNumber,
-                                                                            status: self.viewModel.statusFilter))
+                                                                            filters: self.viewModel.filters))
                 }
 
                 self.transitionToResultsUpdatedState()

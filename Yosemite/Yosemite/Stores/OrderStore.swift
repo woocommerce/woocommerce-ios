@@ -40,8 +40,8 @@ public class OrderStore: Store {
             retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .fetchFilteredAndAllOrders(let siteID, let statusKey, let after, let before, let deleteAllBeforeSaving, let pageSize, let onCompletion):
-            fetchFilteredAndAllOrders(siteID: siteID,
+        case .fetchFilteredOrders(let siteID, let statusKey, let after, let before, let deleteAllBeforeSaving, let pageSize, let onCompletion):
+            fetchFilteredOrders(siteID: siteID,
                                       statusKey: statusKey,
                                       after: after,
                                       before: before,
@@ -99,7 +99,7 @@ private extension OrderStore {
         }
     }
 
-    /// Performs a dual fetch for the first pages of a filtered list and the all orders list.
+    /// Performs a fetch for the first pages of a filtered list.
     ///
     /// If `deleteAllBeforeSaving` is true, all the orders will be deleted before saving any newly
     /// fetched `Order`. The deletion only happens once, regardless of the which fetch request
@@ -110,14 +110,16 @@ private extension OrderStore {
     /// - Parameter statusKey The status to use for the filtered list. If this is not provided,
     ///                       only the all orders list will be fetched. See `OrderStatusEnum`
     ///                       for possible values.
+    /// - Parameter after Limit response to resources published after a given ISO8601 compliant date.
+    /// - Parameter before Limit response to resources published before a given ISO8601 compliant date.
     ///
-    func fetchFilteredAndAllOrders(siteID: Int64,
-                                   statusKey: String?,
-                                   after: Date?,
-                                   before: Date?,
-                                   deleteAllBeforeSaving: Bool,
-                                   pageSize: Int,
-                                   onCompletion: @escaping (TimeInterval, Error?) -> Void) {
+    func fetchFilteredOrders(siteID: Int64,
+                             statusKey: String?,
+                             after: Date?,
+                             before: Date?,
+                             deleteAllBeforeSaving: Bool,
+                             pageSize: Int,
+                             onCompletion: @escaping (TimeInterval, Error?) -> Void) {
 
         let pageNumber = OrdersRemote.Defaults.pageNumber
 
@@ -147,7 +149,7 @@ private extension OrderStore {
             hasDeletedAllOrders = true
         }
 
-        // The handler for both dual fetch requests.
+        // The handler for fetching requests.
         let loadAllOrders: (String?, @escaping (() -> Void)) -> Void = { [weak self] statusKey, completion in
             guard let self = self else {
                 return
@@ -182,19 +184,19 @@ private extension OrderStore {
             }
         }
 
-        // Perform dual fetch and wait for both of them to finish before calling `onCompletion`.
+        // Perform fetch and wait to finish before calling `onCompletion`.
         let group = DispatchGroup()
 
+        group.enter()
         if let statusKey = statusKey {
-            group.enter()
             loadAllOrders(statusKey) {
                 group.leave()
             }
         }
-
-        group.enter()
-        loadAllOrders(OrdersRemote.Defaults.statusAny) {
-            group.leave()
+        else {
+            loadAllOrders(OrdersRemote.Defaults.statusAny) {
+                group.leave()
+            }
         }
 
         group.notify(queue: .main) {

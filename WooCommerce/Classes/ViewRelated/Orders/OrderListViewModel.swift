@@ -35,9 +35,19 @@ final class OrderListViewModel {
     ///
     var onShouldResynchronizeIfViewIsVisible: (() -> ())?
 
-    /// OrderStatus that must be matched by retrieved orders.
+    /// The block called if new filters are applied
     ///
-    let statusFilter: OrderStatus?
+    var onShouldResynchronizeIfNewFiltersAreApplied: (() -> ())?
+
+    /// Filters applied to the order list.
+    ///
+    private(set) var filters: FilterOrderListViewModel.Filters? {
+        didSet {
+            if filters != oldValue {
+                onShouldResynchronizeIfNewFiltersAreApplied?()
+            }
+        }
+    }
 
     private let siteID: Int64
 
@@ -95,14 +105,14 @@ final class OrderListViewModel {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
-         statusFilter: OrderStatus?,
+         filters: FilterOrderListViewModel.Filters?,
          inPersonPaymentsReadyUseCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase()) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
-        self.statusFilter = statusFilter
+        self.filters = filters
         self.inPersonPaymentsReadyUseCase = inPersonPaymentsReadyUseCase
     }
 
@@ -160,7 +170,7 @@ final class OrderListViewModel {
                                reason: OrderListSyncActionUseCase.SyncReason?,
                                completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
-                                                 statusFilter: statusFilter)
+                                                 filters: filters)
         return useCase.actionFor(pageNumber: pageNumber,
                                  pageSize: pageSize,
                                  reason: reason,
@@ -168,16 +178,31 @@ final class OrderListViewModel {
     }
 
     private func createQuery() -> FetchResultSnapshotsProvider<StorageOrder>.Query {
-        let predicate: NSPredicate = {
+        let predicateStatus: NSPredicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
-            let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
+            let excludeNonMatchingStatus = filters?.orderStatus.map { NSPredicate(format: "statusKey = %@", $0.rawValue) }
 
             let predicates = [excludeSearchCache, excludeNonMatchingStatus].compactMap { $0 }
             return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         }()
 
+        let predicateDateRanges: NSPredicate = {
+            var startDateRangePredicate: NSPredicate?
+            if let startDate = filters?.dateRange?.computedStartDate {
+                startDateRangePredicate = NSPredicate(format: "dateCreated >= %@", startDate as NSDate)
+            }
+
+            var endDateRangePredicate: NSPredicate?
+            if let endDate = filters?.dateRange?.computedStartDate {
+                endDateRangePredicate = NSPredicate(format: "dateCreated <= %@", endDate as NSDate)
+            }
+
+            let predicates = [startDateRangePredicate, endDateRangePredicate].compactMap { $0 }
+            return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        }()
+
         let siteIDPredicate = NSPredicate(format: "siteID = %lld", siteID)
-        let queryPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [siteIDPredicate, predicate])
+        let queryPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [siteIDPredicate, predicateStatus, predicateDateRanges])
 
         return FetchResultSnapshotsProvider<StorageOrder>.Query(
             sortDescriptor: NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false),
@@ -196,6 +221,10 @@ final class OrderListViewModel {
         }
 
         stores.dispatch(action)
+    }
+
+    func updateFilters(filters: FilterOrderListViewModel.Filters?) {
+        self.filters = filters
     }
 }
 

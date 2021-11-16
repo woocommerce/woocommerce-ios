@@ -631,6 +631,7 @@
 		456396B725C82691001F1A26 /* ShippingLabelFormStepTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 456396B525C82691001F1A26 /* ShippingLabelFormStepTableViewCell.xib */; };
 		456417F4247D5434001203F6 /* UITableView+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456417F3247D5434001203F6 /* UITableView+Helpers.swift */; };
 		456417F6247D5643001203F6 /* UITableView+HelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456417F5247D5643001203F6 /* UITableView+HelpersTests.swift */; };
+		456738972743DE9A00743054 /* OrderDateRangeFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456738962743DE9A00743054 /* OrderDateRangeFilterTests.swift */; };
 		4569317F2653E82B009ED69D /* ShippingLabelCarriers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4569317E2653E82B009ED69D /* ShippingLabelCarriers.swift */; };
 		456931842653E9F2009ED69D /* ShippingLabelCarrierRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456931832653E9F1009ED69D /* ShippingLabelCarrierRow.swift */; };
 		45693189265403A1009ED69D /* ShippingLabelCarriersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45693188265403A1009ED69D /* ShippingLabelCarriersViewModel.swift */; };
@@ -2059,6 +2060,7 @@
 		456396B525C82691001F1A26 /* ShippingLabelFormStepTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShippingLabelFormStepTableViewCell.xib; sourceTree = "<group>"; };
 		456417F3247D5434001203F6 /* UITableView+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Helpers.swift"; sourceTree = "<group>"; };
 		456417F5247D5643001203F6 /* UITableView+HelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+HelpersTests.swift"; sourceTree = "<group>"; };
+		456738962743DE9A00743054 /* OrderDateRangeFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDateRangeFilterTests.swift; sourceTree = "<group>"; };
 		4569317E2653E82B009ED69D /* ShippingLabelCarriers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarriers.swift; sourceTree = "<group>"; };
 		456931832653E9F1009ED69D /* ShippingLabelCarrierRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarrierRow.swift; sourceTree = "<group>"; };
 		45693188265403A1009ED69D /* ShippingLabelCarriersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarriersViewModel.swift; sourceTree = "<group>"; };
@@ -4246,6 +4248,7 @@
 			isa = PBXGroup;
 			children = (
 				4520A1602722D495001FA573 /* FilterOrderListViewModelTests.swift */,
+				456738962743DE9A00743054 /* OrderDateRangeFilterTests.swift */,
 			);
 			path = Filters;
 			sourceTree = "<group>";
@@ -8404,6 +8407,7 @@
 				4569D3F425DC1BFF00CDC3E2 /* ShippingLabelFormViewModelTests.swift in Sources */,
 				57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */,
 				02A275C423FE5B64005C560F /* MockPHAssetImageLoader.swift in Sources */,
+				456738972743DE9A00743054 /* OrderDateRangeFilterTests.swift in Sources */,
 				A650BE872578E76600C655E0 /* MockStorageManager.swift in Sources */,
 				029700EF24FE38F000D242F8 /* ScrollWatcherTests.swift in Sources */,
 				0236BCA425087B660043EB43 /* ProductFormRemoteActionUseCaseTests.swift in Sources */,

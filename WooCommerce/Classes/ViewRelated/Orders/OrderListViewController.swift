@@ -192,7 +192,7 @@ private extension OrderListViewController {
             self.syncingCoordinator.resynchronize()
         }
 
-        viewModel.onShouldResynchronizeIfNewFitersAreApplied = { [weak self] in
+        viewModel.onShouldResynchronizeIfNewFiltersAreApplied = { [weak self] in
             self?.syncingCoordinator.resynchronize(reason: SyncReason.newFiltersApplied.rawValue)
         }
 

@@ -8,6 +8,10 @@ struct SimplePaymentsSummary: View {
     ///
     @State var showEditNote = false
 
+    /// ViewModel to drive the view content
+    ///
+    @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
+
     /// `ViewModel` to drive the `EditOrderNote` view
     /// Temporarily here, to be moved to `SimplePaymentsSummaryViewModel` when available.
     ///
@@ -253,19 +257,20 @@ private extension SimplePaymentsSummary {
 // MARK: Previews
 struct SimplePaymentsSummary_Preview: PreviewProvider {
     static var previews: some View {
-        SimplePaymentsSummary()
+        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0"))
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light")
 
-        SimplePaymentsSummary(noteViewModel: .init(originalNote: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard."))
+        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0"),
+                              noteViewModel: .init(originalNote: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard."))
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light Content")
 
-        SimplePaymentsSummary()
+        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0"))
             .environment(\.colorScheme, .dark)
             .previewDisplayName("Dark")
 
-        SimplePaymentsSummary()
+        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0"))
             .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
             .previewDisplayName("Accessibility")
     }

@@ -4,4 +4,11 @@ import Foundation
 ///
 final class SimplePaymentsSummaryViewModel: ObservableObject {
 
+    /// Initial amount to charge. Without taxes.
+    ///
+    let providedAmount: String
+
+    init(providedAmount: String) {
+        self.providedAmount = providedAmount
+    }
 }

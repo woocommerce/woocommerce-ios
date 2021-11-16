@@ -6,6 +6,7 @@
       "description": "Testing Tagline",
       "URL": "https:\/\/some-testing-url.testing.blog",
       "jetpack": true,
+      "jetpack_connection": true,
       "updates": {
         "plugins": 3,
         "themes": 1,
@@ -20,6 +21,7 @@
       "description": "Your Favorite Blog",
       "URL": "https:\/\/thoughts.testing.blog",
       "jetpack": false,
+      "jetpack_connection": true,
       "options": {
         "timezone": "",
         "gmt_offset": -4,

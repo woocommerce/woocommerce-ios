@@ -1314,6 +1314,8 @@ extension Site {
             description: .fake(),
             url: .fake(),
             plan: .fake(),
+            isJetpackThePluginInstalled: .fake(),
+            isJetpackConnected: .fake(),
             isWooCommerceActive: .fake(),
             isWordPressStore: .fake(),
             timezone: .fake(),

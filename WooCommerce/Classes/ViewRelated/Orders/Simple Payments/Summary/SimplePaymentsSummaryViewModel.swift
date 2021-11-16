@@ -16,6 +16,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     @Published var email: String = ""
 
+    /// Determines if taxes should be added to the provided amount.
+    ///
+    @Published var enableTaxes: Bool = false
+
     /// Accessor for the note content of the `noteViewModel`
     ///
     var noteContent: String {

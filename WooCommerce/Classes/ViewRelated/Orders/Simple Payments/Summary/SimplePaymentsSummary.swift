@@ -123,8 +123,7 @@ private struct PaymentsSection: View {
 
                 TitleAndValueRow(title: SimplePaymentsSummary.Localization.subtotal, value: .content(viewModel.providedAmount), selectable: false) {}
 
-                // Temporary data
-                TitleAndToggleRow(title: SimplePaymentsSummary.Localization.chargeTaxes, isOn: .constant(false))
+                TitleAndToggleRow(title: SimplePaymentsSummary.Localization.chargeTaxes, isOn: $viewModel.enableTaxes)
                     .padding([.leading, .trailing])
 
                 TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content(viewModel.total), bold: true, selectable: false) {}

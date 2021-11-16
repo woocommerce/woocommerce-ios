@@ -178,6 +178,9 @@ private extension PaymentCaptureOrchestrator {
         let action = PaymentGatewayAccountAction.captureOrderPayment(siteID: siteID,
                                                                      orderID: order.orderID,
                                                                      paymentIntentID: paymentIntent.id) { [weak self] result in
+            guard let self = self else {
+                return
+            }
 
             guard let receiptParameters = paymentIntent.receiptParameters() else {
                 let error = CardReaderServiceError.paymentCapture()
@@ -190,8 +193,8 @@ private extension PaymentCaptureOrchestrator {
 
             switch result {
             case .success:
-                self?.celebrate() // plays a sound, haptic
-                self?.saveReceipt(for: order, params: receiptParameters)
+                self.celebrate() // plays a sound, haptic
+                self.saveReceipt(for: order, params: receiptParameters)
                 onCompletion(.success(receiptParameters))
             case .failure(let error):
                 onCompletion(.failure(error))

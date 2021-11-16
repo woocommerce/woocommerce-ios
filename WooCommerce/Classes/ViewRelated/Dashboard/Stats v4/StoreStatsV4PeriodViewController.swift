@@ -186,6 +186,14 @@ class StoreStatsV4PeriodViewController: UIViewController {
     }
 }
 
+extension StoreStatsV4PeriodViewController {
+    enum SiteVisitStatsMode {
+        case `default`
+        case redactedDueToJetpack
+        case hidden
+    }
+}
+
 // MARK: - Public Interface
 //
 extension StoreStatsV4PeriodViewController {

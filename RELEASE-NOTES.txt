@@ -2,6 +2,7 @@
 
 8.1
 -----
+- [internal] Migrated Settings screen to MVVM [https://github.com/woocommerce/woocommerce-ios/pull/5393]
 
 
 8.0

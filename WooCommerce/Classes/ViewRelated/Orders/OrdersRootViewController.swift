@@ -295,7 +295,7 @@ private extension OrdersRootViewController {
     private func noOrdersMatchFilterConfig() ->  EmptyStateViewController.Config {
         return EmptyStateViewController.Config.withButton(
             message: .init(string: Localization.filteredOrdersEmptyStateMessage),
-            image: .emptyOrdersImage,
+            image: .emptySearchResultsImage,
             details: "",
             buttonTitle: Localization.clearButton) { [weak self] button in
                 self?.filters = FilterOrderListViewModel.Filters()

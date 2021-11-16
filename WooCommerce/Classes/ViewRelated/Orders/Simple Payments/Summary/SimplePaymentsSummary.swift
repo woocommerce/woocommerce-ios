@@ -12,11 +12,6 @@ struct SimplePaymentsSummary: View {
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
-    /// `ViewModel` to drive the `EditOrderNote` view
-    /// Temporarily here, to be moved to `SimplePaymentsSummaryViewModel` when available.
-    ///
-    @StateObject var noteViewModel = SimplePaymentsNoteViewModel()
-
     var body: some View {
         VStack {
             ScrollView {
@@ -34,7 +29,7 @@ struct SimplePaymentsSummary: View {
 
                     Spacer(minLength: Layout.spacerHeight)
 
-                    NoteSection(content: noteViewModel.newNote, showEditNote: $showEditNote)
+                    NoteSection(viewModel: viewModel, showEditNote: $showEditNote)
                 }
             }
 
@@ -45,7 +40,8 @@ struct SimplePaymentsSummary: View {
         .sheet(isPresented: $showEditNote) {
             EditCustomerNote(dismiss: {
                 showEditNote.toggle()
-            }, viewModel: noteViewModel)
+                viewModel.reloadContent()
+                }, viewModel: viewModel.noteViewModel)
         }
     }
 }
@@ -138,9 +134,9 @@ private struct PaymentsSection: View {
 ///
 private struct NoteSection: View {
 
-    /// Order note content.
+    /// ViewModel to drive the view content.
     ///
-    let content: String
+    @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
     /// Defines if the order note screen should be shown or not.
     ///
@@ -162,7 +158,7 @@ private struct NoteSection: View {
                     }
                     .foregroundColor(Color(.accent))
                     .bodyStyle()
-                    .renderedIf(content.isNotEmpty)
+                    .renderedIf(viewModel.noteContent.isNotEmpty)
                 }
 
                 noteContent()
@@ -178,9 +174,9 @@ private struct NoteSection: View {
     /// Builds a button to add a note if no note is present. If there is a note present only displays it
     ///
     @ViewBuilder private func noteContent() -> some View {
-        if content.isNotEmpty {
+        if viewModel.noteContent.isNotEmpty {
 
-            Text(content)
+            Text(viewModel.noteContent)
                 .bodyStyle()
 
         } else {
@@ -273,8 +269,10 @@ struct SimplePaymentsSummary_Preview: PreviewProvider {
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light")
 
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0"),
-                              noteViewModel: .init(originalNote: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard."))
+        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(
+            providedAmount: "$40.0",
+            noteContent: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard."
+        ))
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light Content")
 

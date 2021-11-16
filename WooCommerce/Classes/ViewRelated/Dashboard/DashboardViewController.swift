@@ -430,6 +430,6 @@ private extension DashboardViewController {
     enum Constants {
         static let animationDuration = 0.2
         static let bannerBottomMargin = CGFloat(8)
-        static let horizontalMargin = CGFloat(16)
+        static let horizontalMargin = CGFloat(20)
     }
 }

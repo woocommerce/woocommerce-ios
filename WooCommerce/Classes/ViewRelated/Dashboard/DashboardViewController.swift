@@ -389,7 +389,7 @@ extension DashboardViewController {
 private extension DashboardViewController {
 
     @objc func settingsTapped() {
-        let settingsViewController = SettingsFactory.settings()
+        let settingsViewController = SettingsViewController()
         ServiceLocator.analytics.track(.settingsTapped)
         show(settingsViewController, sender: self)
     }

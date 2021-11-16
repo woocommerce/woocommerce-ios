@@ -91,8 +91,8 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let stores: StoresManager
     private let storageManager: StorageManagerType
 
-    init(stores: StoresManager,
-         storageManager: StorageManagerType) {
+    init(stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.stores = stores
         self.storageManager = storageManager
 

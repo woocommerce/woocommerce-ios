@@ -12,7 +12,7 @@ protocol SettingsViewPresenter: AnyObject {
 final class SettingsViewController: UIViewController {
     typealias ViewModel = SettingsViewModelOutput & SettingsViewModelActionsHandler & SettingsViewModelInput
 
-    private let viewModel: ViewModel
+    private var viewModel: ViewModel
 
     /// Main TableView
     ///
@@ -22,9 +22,10 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    init(viewModel: ViewModel) {
+    init(viewModel: ViewModel = SettingsViewModel()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        self.viewModel.presenter = self
     }
 
     required init?(coder: NSCoder) {

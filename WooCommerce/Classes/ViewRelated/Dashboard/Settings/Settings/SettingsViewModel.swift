@@ -72,7 +72,8 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     /// Main Site's URL
     ///
     var siteUrl: String? {
-        stores.sessionManager.defaultSite?.url as String?
+        let urlString = stores.sessionManager.defaultSite?.url as String?
+        return urlString?.removingPrefix("https://").removingPrefix("http://")
     }
 
     /// Sites pulled from the results controlelr

@@ -63,10 +63,6 @@ final class OrderListViewController: UIViewController {
     ///
     private let emptyStateConfig: EmptyStateViewController.Config
 
-    /// The configuration to use for the view if the list with filters applied is empty.
-    ///
-    private let emptyStateConfigWithFilters: EmptyStateViewController.Config
-
     /// The view shown if the list is empty.
     ///
     private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
@@ -111,12 +107,10 @@ final class OrderListViewController: UIViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
-         emptyStateConfig: EmptyStateViewController.Config,
-         emptyStateConfigWithFilters: EmptyStateViewController.Config) {
+         emptyStateConfig: EmptyStateViewController.Config) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.emptyStateConfig = emptyStateConfig
-        self.emptyStateConfigWithFilters = emptyStateConfigWithFilters
 
         super.init(nibName: nil, bundle: nil)
 
@@ -486,7 +480,24 @@ private extension OrderListViewController {
             return emptyStateConfig
         }
 
-        return emptyStateConfigWithFilters
+        return noOrdersMatchFilterConfig()
+    }
+
+    /// Creates EmptyStateViewController.Config for no orders matching the filter empty view
+    ///
+    private func noOrdersMatchFilterConfig() ->  EmptyStateViewController.Config {
+        let boldSearchKeyword = NSAttributedString(string: viewModel.filters?.readableString ?? String(),
+                                                   attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
+        let message = NSMutableAttributedString(string: Localization.filteredOrdersEmptyStateMessage)
+        message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
+
+        return EmptyStateViewController.Config.withButton(
+            message: message,
+            image: .emptySearchResultsImage,
+            details: "",
+            buttonTitle: Localization.clearButton) { [weak self] button in
+                self?.viewModel.updateFilters(filters: FilterOrderListViewModel.Filters())
+            }
     }
 }
 
@@ -655,9 +666,15 @@ private extension OrderListViewController {
     }
 }
 
-// MARK: - Nested Types
+// MARK: - Constants
 //
 private extension OrderListViewController {
+    enum Localization {
+        static let filteredOrdersEmptyStateMessage = NSLocalizedString("We're sorry, we couldn't find any order that match %@",
+                   comment: "Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user.")
+        static let clearButton = NSLocalizedString("Clear Filters",
+                                 comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List")
+    }
 
     enum Settings {
         static let estimatedHeaderHeight = CGFloat(43)

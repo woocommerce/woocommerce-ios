@@ -129,15 +129,12 @@ private extension OrderSearchStarterViewController {
 
         let title = cellViewModel.name ?? Localization.defaultOrderListTitle
         let emptyStateConfig = EmptyStateViewController.Config.simple(message: emptyStateMessage, image: .emptySearchResultsImage)
-        let noOrdersMatchFilterEmptyStateConfig =
-        EmptyStateViewController.Config.simple(message: .init(string: Localization.filteredOrdersEmptyStateMessage), image: .emptySearchResultsImage)
 
         return OrderListViewController(
             siteID: siteID,
             title: title,
             viewModel: .init(siteID: siteID, filters: nil),
-            emptyStateConfig: emptyStateConfig,
-            emptyStateConfigWithFilters: noOrdersMatchFilterEmptyStateConfig
+            emptyStateConfig: emptyStateConfig
         )
     }
 

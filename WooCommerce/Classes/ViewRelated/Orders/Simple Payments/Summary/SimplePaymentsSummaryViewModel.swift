@@ -12,6 +12,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     let total: String
 
+    /// Email of the costumer. To be used as the billing address email.
+    ///
+    @Published var email: String = ""
+
     /// Accessor for the note content of the `noteViewModel`
     ///
     var noteContent: String {

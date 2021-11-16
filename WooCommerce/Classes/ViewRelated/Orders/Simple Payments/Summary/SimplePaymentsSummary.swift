@@ -21,7 +21,7 @@ struct SimplePaymentsSummary: View {
 
                     Spacer(minLength: Layout.spacerHeight)
 
-                    EmailSection()
+                    EmailSection(viewModel: viewModel)
 
                     Spacer(minLength: Layout.spacerHeight)
 
@@ -83,13 +83,19 @@ private struct CustomAmountSection: View {
 /// Represents the email section
 ///
 private struct EmailSection: View {
+
+    /// ViewModel to drive the view content
+    ///
+    @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
+
     var body: some View {
         Group {
             Divider()
 
             TitleAndTextFieldRow(title: SimplePaymentsSummary.Localization.email,
                                  placeholder: SimplePaymentsSummary.Localization.emailPlaceHolder,
-                                 text: .constant("")) // Temporary data
+                                 text: $viewModel.email,
+                                 keyboardType: .emailAddress)
                 .background(Color(.listForeground))
 
             Divider()
@@ -210,7 +216,6 @@ private struct TakePaymentSection: View {
         VStack {
             Divider()
 
-            // Temporary data
             Button(SimplePaymentsSummary.Localization.takePayment(total: viewModel.total), action: {
                 print("Take payment pressed")
             })

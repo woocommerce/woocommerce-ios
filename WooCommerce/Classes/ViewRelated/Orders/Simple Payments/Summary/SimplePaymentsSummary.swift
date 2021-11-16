@@ -30,7 +30,7 @@ struct SimplePaymentsSummary: View {
 
                     Spacer(minLength: Layout.spacerHeight)
 
-                    PaymentsSection()
+                    PaymentsSection(viewModel: viewModel)
 
                     Spacer(minLength: Layout.spacerHeight)
 
@@ -54,7 +54,7 @@ struct SimplePaymentsSummary: View {
 ///
 private struct CustomAmountSection: View {
 
-    /// ViewModel to drive the view content
+    /// ViewModel to drive the view content.
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
@@ -104,7 +104,11 @@ private struct EmailSection: View {
 /// Represents the Payments Section
 ///
 private struct PaymentsSection: View {
-    
+
+    /// ViewModel to drive the view content.
+    ///
+    @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
+
     var body: some View {
         Group {
             Divider()
@@ -116,7 +120,7 @@ private struct PaymentsSection: View {
                     .padding([.horizontal, .top])
 
                 // Temporary data
-                TitleAndValueRow(title: SimplePaymentsSummary.Localization.subtotal, value: .content("$40.0"), selectable: false) {}
+                TitleAndValueRow(title: SimplePaymentsSummary.Localization.subtotal, value: .content(viewModel.providedAmount), selectable: false) {}
 
                 // Temporary data
                 TitleAndToggleRow(title: SimplePaymentsSummary.Localization.chargeTaxes, isOn: .constant(false))

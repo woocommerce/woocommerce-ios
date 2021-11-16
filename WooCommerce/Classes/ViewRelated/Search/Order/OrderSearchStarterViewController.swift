@@ -137,7 +137,7 @@ private extension OrderSearchStarterViewController {
             title: title,
             viewModel: .init(siteID: siteID, filters: nil),
             emptyStateConfig: emptyStateConfig,
-            emptyStateConfigNoFilters: noOrdersMatchFilterEmptyStateConfig
+            emptyStateConfigWithFilters: noOrdersMatchFilterEmptyStateConfig
         )
     }
 

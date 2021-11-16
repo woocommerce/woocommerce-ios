@@ -65,7 +65,7 @@ final class OrderListViewController: UIViewController {
 
     /// The configuration to use for the view if the list with filters applied is empty.
     ///
-    private let emptyStateConfigNoFilters: EmptyStateViewController.Config
+    private let emptyStateConfigWithFilters: EmptyStateViewController.Config
 
     /// The view shown if the list is empty.
     ///
@@ -112,11 +112,11 @@ final class OrderListViewController: UIViewController {
          title: String,
          viewModel: OrderListViewModel,
          emptyStateConfig: EmptyStateViewController.Config,
-         emptyStateConfigNoFilters: EmptyStateViewController.Config) {
+         emptyStateConfigWithFilters: EmptyStateViewController.Config) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.emptyStateConfig = emptyStateConfig
-        self.emptyStateConfigNoFilters = emptyStateConfigNoFilters
+        self.emptyStateConfigWithFilters = emptyStateConfigWithFilters
 
         super.init(nibName: nil, bundle: nil)
 
@@ -486,7 +486,7 @@ private extension OrderListViewController {
             return emptyStateConfig
         }
 
-        return emptyStateConfigNoFilters
+        return emptyStateConfigWithFilters
     }
 }
 

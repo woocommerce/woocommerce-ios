@@ -20,7 +20,7 @@ final class OrdersRootViewController: UIViewController {
             message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
             image: .waitingForCustomersImage
         ),
-        emptyStateConfigNoFilters: noOrdersMatchFilterConfig()
+        emptyStateConfigWithFilters: noOrdersMatchFilterConfig()
     )
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).

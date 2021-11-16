@@ -4,9 +4,9 @@ import StripeTerminal
 /// uses the networking adapter provided by clients of Hardware
 /// to fetch a connection token
 final class DefaultConnectionTokenProvider: ConnectionTokenProvider {
-    private let provider: CardReaderConfigProvider
+    private let provider: ReaderTokenProvider
 
-    init(provider: CardReaderConfigProvider) {
+    init(provider: ReaderTokenProvider) {
         self.provider = provider
     }
 

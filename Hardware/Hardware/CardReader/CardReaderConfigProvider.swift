@@ -10,7 +10,7 @@ public protocol ReaderLocationProvider {
     func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void)
 }
 
-public protocol CardReaderConfigProvider: ReaderLocationProvider {
+public protocol CardReaderConfigProvider: ReaderLocationProvider, ReaderTokenProvider {
     func fetchToken(completion: @escaping(Result<String, Error>) -> Void)
     func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void)
 }

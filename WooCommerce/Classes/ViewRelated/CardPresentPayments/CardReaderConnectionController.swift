@@ -411,7 +411,7 @@ private extension CardReaderConnectionController {
                 ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCancelTapped, withProperties: analyticsProperties)
                 cancelable.cancel { result in
                     if case .failure(let error) = result {
-                        print("=== error canceling software update: \(error)")
+                        DDLogError("💳 Error: canceling software update \(error)")
                     } else {
                         ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCanceled, withProperties: analyticsProperties)
                     }

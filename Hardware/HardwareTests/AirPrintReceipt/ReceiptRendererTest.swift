@@ -40,7 +40,7 @@ private extension ReceiptRendererTest {
                 amount: 1,
                 formattedAmount: "1",
                 currency: "USD",
-                date: .init(),
+                date: .init(timeIntervalSince1970: 1636970486),
                 storeName: "Test Store",
                 cardDetails: .init(
                     last4: "1234",

@@ -408,12 +408,12 @@ private extension StripeCardReaderService {
                     /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)collectPaymentMethod:delegate:completion:
 
                     if underlyingError != .commandCancelled {
-                        print("==== collect payment method was not cancelled. this is an actual error ", underlyingError)
+                        DDLogError("💳 Error: collect payment method \(underlyingError)")
                         promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
                     }
 
                     if underlyingError == .commandCancelled {
-                        print("==== collect payment method cancelled. this is an error we ignore ", error)
+                        DDLogError("💳 Warning: collect payment error cancelled. We actively ignore this error \(error)")
                     }
 
                 }
@@ -488,12 +488,10 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
     }
 
     public func reader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: StripeTerminal.Cancelable?) {
-        print("==== started software update")
         softwareUpdateSubject.send(.started(cancelable: cancelable.map(StripeCancelable.init(cancelable:))))
     }
 
     public func reader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {
-        print("==== did repost software update progress ", progress)
         softwareUpdateSubject.send(.installing(progress: progress))
     }
 

@@ -408,7 +408,7 @@ final class OrderListViewModelTests: XCTestCase {
         let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, filters: nil)
 
         var resynchronizeRequested = false
-        viewModel.onShouldResynchronizeIfNewFitersAreApplied = {
+        viewModel.onShouldResynchronizeIfNewFiltersAreApplied = {
             resynchronizeRequested = true
         }
 

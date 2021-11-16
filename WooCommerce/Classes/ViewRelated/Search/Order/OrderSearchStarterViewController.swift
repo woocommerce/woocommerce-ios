@@ -140,9 +140,6 @@ private extension OrderSearchStarterViewController {
 
     enum Localization {
         static let defaultOrderListTitle = NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter.")
-        static let filteredOrdersEmptyStateMessage =
-        NSLocalizedString("No matching orders found",
-                          comment: "The text on the placeholder overlay when no orders match the filter on the Orders Search View")
     }
 }
 

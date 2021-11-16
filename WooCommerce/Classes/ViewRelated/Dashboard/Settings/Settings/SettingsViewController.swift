@@ -12,7 +12,7 @@ protocol SettingsViewPresenter: AnyObject {
 final class SettingsViewController: UIViewController {
     typealias ViewModel = SettingsViewModelOutput & SettingsViewModelActionsHandler & SettingsViewModelInput
 
-    private var viewModel: ViewModel
+    private let viewModel: ViewModel
 
     /// Main TableView
     ///

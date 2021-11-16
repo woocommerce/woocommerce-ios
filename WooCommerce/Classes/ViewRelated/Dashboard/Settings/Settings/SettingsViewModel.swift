@@ -39,7 +39,7 @@ protocol SettingsViewModelActionsHandler {
     func onStorePickerDismiss()
 }
 
-protocol SettingsViewModelInput {
+protocol SettingsViewModelInput: AnyObject {
     var presenter: SettingsViewPresenter? { get set }
 }
 

@@ -153,6 +153,35 @@ final class StoreStatsV4PeriodViewController: UIViewController {
                                                              roundSmallNumbers: false) ?? String()
     }
 
+    private lazy var visitorsEmptyView: UIView = {
+        let containerView = UIView(frame: .zero)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+
+        let emptyView = UIView(frame: .zero)
+        emptyView.backgroundColor = .secondarySystemGroupedBackground
+        emptyView.translatesAutoresizingMaskIntoConstraints = false
+
+        let jetpackImageView = UIImageView(image: .jetpackLogoImage)
+        jetpackImageView.contentMode = .scaleAspectFit
+        jetpackImageView.translatesAutoresizingMaskIntoConstraints = false
+
+        containerView.addSubview(emptyView)
+        containerView.addSubview(jetpackImageView)
+
+        NSLayoutConstraint.activate([
+            containerView.heightAnchor.constraint(equalToConstant: 26),
+            emptyView.widthAnchor.constraint(equalToConstant: 32),
+            emptyView.heightAnchor.constraint(equalToConstant: 10),
+            emptyView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            emptyView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            jetpackImageView.widthAnchor.constraint(equalToConstant: 14),
+            jetpackImageView.heightAnchor.constraint(equalToConstant: 14),
+            jetpackImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            jetpackImageView.topAnchor.constraint(equalTo: containerView.topAnchor)
+        ])
+
+        return containerView
+    }()
     // MARK: - Initialization
 
     /// Designated Initializer
@@ -277,6 +306,10 @@ private extension StoreStatsV4PeriodViewController {
         containerStackView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         timeRangeBarView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         visitorsStackView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+
+        // Visitor redacted view
+        visitorsStackView.insertSubview(visitorsEmptyView, belowSubview: visitorsData)
+        visitorsEmptyView.isHidden = true
 
         // Time range bar bottom border view
         timeRangeBarBottomBorderView.backgroundColor = .systemColor(.separator)
@@ -497,9 +530,10 @@ private extension StoreStatsV4PeriodViewController {
             }
             visitorsData.text = visitorsText
             visitorsData.isHidden = false
+            visitorsEmptyView.isHidden = true
         } else {
             visitorsData.isHidden = true
-            // TODO: add empty view
+            visitorsEmptyView.isHidden = false
         }
     }
 
@@ -675,8 +709,8 @@ private extension StoreStatsV4PeriodViewController {
                 return [visitorsTitle as Any,
                         visitorsData as Any]
             case .redactedDueToJetpack:
-                // TODO: add empty view
-                return [visitorsTitle as Any]
+                return [visitorsTitle as Any,
+                        visitorsEmptyView as Any]
             case .hidden:
                 return []
             }

@@ -78,7 +78,7 @@ final class RemoteTests: XCTestCase {
     /// Verifies that `enqueuePublisher:` properly wraps up the received request within an AuthenticatedRequest, with
     /// the remote credentials.
     ///
-    func test_enquePublisher_wraps_up_request_into_authenticated_request_with_credentials() throws {
+    func test_enqueuePublisher_wraps_up_request_into_authenticated_request_with_credentials() throws {
         // Given
         let network = MockNetwork()
         let mapper = DummyMapper()

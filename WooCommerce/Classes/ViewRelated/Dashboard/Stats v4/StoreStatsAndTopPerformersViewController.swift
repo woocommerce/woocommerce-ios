@@ -409,8 +409,15 @@ private extension StoreStatsAndTopPerformersViewController {
 
     func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
         switch error {
-        case .statsModuleDisabled, .noPermission:
+        case .noPermission:
             showSiteVisitors(false)
+        case .statsModuleDisabled:
+            let defaultSite = ServiceLocator.stores.sessionManager.defaultSite
+            if defaultSite?.isJetpackCPConnected == true {
+                // TODO: show JCP empty view
+            } else {
+                showSiteVisitors(false)
+            }
         default:
             displaySyncingError()
         }

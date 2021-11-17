@@ -409,7 +409,7 @@ private extension ProductFormViewController {
 
     /// Configure navigation bar with the title
     ///
-    func configureNavigationBar(title: String = String()) {
+    func configureNavigationBar(title: String = "") {
         updateNavigationBar()
         updateBackButtonTitle()
         updateNavigationBarTitle()

@@ -413,7 +413,8 @@ private extension StoreStatsAndTopPerformersViewController {
             updateSiteVisitors(mode: .hidden)
         case .statsModuleDisabled:
             let defaultSite = ServiceLocator.stores.sessionManager.defaultSite
-            if defaultSite?.isJetpackCPConnected == true {
+            let jcpFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
+            if defaultSite?.isJetpackCPConnected == true, jcpFeatureFlagEnabled {
                 updateSiteVisitors(mode: .redactedDueToJetpack)
             } else {
                 updateSiteVisitors(mode: .hidden)

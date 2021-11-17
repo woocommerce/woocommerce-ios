@@ -19,6 +19,10 @@ protocol OrderListViewControllerDelegate: AnyObject {
     /// Called when an order list `UIScrollView`'s `scrollViewDidScroll` event is triggered from the user.
     ///
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView)
+
+    /// Called when a user press a clear filters button. Eg. the clear filters button in the empty screen.
+    ///
+    func clearFilters()
 }
 
 /// OrderListViewController: Displays the list of Orders associated to the active Store / Account.
@@ -104,7 +108,10 @@ final class OrderListViewController: UIViewController {
 
     /// Designated initializer.
     ///
-    init(siteID: Int64, title: String, viewModel: OrderListViewModel, emptyStateConfig: EmptyStateViewController.Config) {
+    init(siteID: Int64,
+         title: String,
+         viewModel: OrderListViewModel,
+         emptyStateConfig: EmptyStateViewController.Config) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.emptyStateConfig = emptyStateConfig
@@ -435,7 +442,7 @@ private extension OrderListViewController {
             return
         }
 
-        childController.configure(emptyStateConfig)
+        childController.configure(createFilterConfig())
 
         // Show Error Loading Data banner if the empty state is caused by a sync error
         if viewModel.hasErrorLoadingData {
@@ -468,6 +475,33 @@ private extension OrderListViewController {
         childController.willMove(toParent: nil)
         childView.removeFromSuperview()
         childController.removeFromParent()
+    }
+
+    /// Empty state config
+    ///
+    func createFilterConfig() ->  EmptyStateViewController.Config {
+        guard let filters = viewModel.filters, filters.numberOfActiveFilters != 0 else {
+            return emptyStateConfig
+        }
+
+        return noOrdersMatchFilterConfig()
+    }
+
+    /// Creates EmptyStateViewController.Config for no orders matching the filter empty view
+    ///
+    func noOrdersMatchFilterConfig() -> EmptyStateViewController.Config {
+        let boldSearchKeyword = NSAttributedString(string: viewModel.filters?.readableString ?? String(),
+                                                   attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
+        let message = NSMutableAttributedString(string: Localization.filteredOrdersEmptyStateMessage)
+        message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
+
+        return EmptyStateViewController.Config.withButton(
+            message: message,
+            image: .emptySearchResultsImage,
+            details: "",
+            buttonTitle: Localization.clearButton) { [weak self] button in
+                self?.delegate?.clearFilters()
+            }
     }
 }
 
@@ -636,9 +670,15 @@ private extension OrderListViewController {
     }
 }
 
-// MARK: - Nested Types
+// MARK: - Constants
 //
 private extension OrderListViewController {
+    enum Localization {
+        static let filteredOrdersEmptyStateMessage = NSLocalizedString("We're sorry, we couldn't find any order that match %@",
+                   comment: "Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user.")
+        static let clearButton = NSLocalizedString("Clear Filters",
+                                 comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List")
+    }
 
     enum Settings {
         static let estimatedHeaderHeight = CGFloat(43)

@@ -25,6 +25,10 @@ final class FilterOrderListViewModel: FilterListViewModel {
             self.dateRange = dateRange
             self.numberOfActiveFilters = numberOfActiveFilters
         }
+
+        var readableString: String {
+            [orderStatus.description, dateRange.description].compactMap { $0 }.joined(separator: ", ")
+        }
     }
 
     let filterActionTitle = Localization.filterActionTitle

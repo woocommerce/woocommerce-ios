@@ -130,7 +130,6 @@ private extension OrderSearchStarterViewController {
         let title = cellViewModel.name ?? Localization.defaultOrderListTitle
         let emptyStateConfig = EmptyStateViewController.Config.simple(message: emptyStateMessage, image: .emptySearchResultsImage)
 
-        // TODO-5243: Remove status filters from search view
         return OrderListViewController(
             siteID: siteID,
             title: title,

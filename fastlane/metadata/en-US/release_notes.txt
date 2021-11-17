@@ -1,3 +1,3 @@
-Merchants using WooCommerce Shipping & Tax will find you can now create multiple shipping labels for an order. You can quickly move items between the packages to match how you’ve decided to ship things to your customer. We’ve also addressed some glitches that were reported on the same screens.
+Some merchants had problems loading order details because of a technical issue with how field names in the REST API are ordered. We’ve made a correction that should address that for you if you were experiencing it.
 
-We also made a few accessibility improvements based on feedback. Thank you!
+This release contains several other fixes based on your feedback. Please continue to send us feedback – we are listening!

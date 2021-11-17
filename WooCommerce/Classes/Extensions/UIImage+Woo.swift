@@ -408,6 +408,30 @@ extension UIImage {
         return UIImage(named: "card-reader-low-battery")!
     }
 
+    /// Shopping cart
+    ///
+    static var shoppingCartIcon: UIImage {
+        return UIImage(named: "icon-shopping-cart")!
+            .withRenderingMode(.alwaysTemplate)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Credit card
+    ///
+    static var creditCardIcon: UIImage {
+        return UIImage(named: "icon-card")!
+            .withRenderingMode(.alwaysTemplate)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Card Reader Manual
+    ///
+    static var cardReaderManualIcon: UIImage {
+        return UIImage(named: "icon-card-reader-manual")!
+            .withRenderingMode(.alwaysTemplate)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Files Download Icon
     ///
     static var cloudImage: UIImage {

@@ -47,6 +47,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
             guard let self = self else {
                 return
             }
+            self.readerUpdateError = nil
             self.didGetConnectedReaders = true
             self.connectedReaders = readers
             self.updateProperties()

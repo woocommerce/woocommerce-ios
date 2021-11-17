@@ -53,4 +53,8 @@ public enum FeatureFlag: Int {
     /// Allows sites with plugins that include Jetpack Connection Package and without Jetpack-the-plugin to connect to the app
     ///
     case jetpackConnectionPackageSupport
+
+    /// Allows new orders to be manually created
+    ///
+    case orderCreation
 }

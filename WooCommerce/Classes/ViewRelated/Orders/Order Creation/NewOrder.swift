@@ -13,6 +13,7 @@ struct NewOrder: View {
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
+        .wooNavigationBarStyle()
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {

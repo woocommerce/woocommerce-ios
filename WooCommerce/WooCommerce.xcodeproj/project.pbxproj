@@ -452,6 +452,7 @@
 		26B119C224D1CD3500FED5C7 /* WooConstantsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B119C124D1CD3500FED5C7 /* WooConstantsTests.swift */; };
 		26B3D8A0252235C50054C319 /* RefundShippingDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3D89F252235C50054C319 /* RefundShippingDetailsViewModel.swift */; };
 		26B3EC622744772A0075EAE6 /* SimplePaymentsSummaryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3EC612744772A0075EAE6 /* SimplePaymentsSummaryViewModelTests.swift */; };
+		26B3EC642745916F0075EAE6 /* BindableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3EC632745916F0075EAE6 /* BindableTextField.swift */; };
 		26B98758273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B98757273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift */; };
 		26B9875D273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B9875C273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift */; };
 		26B9875F273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B9875E273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift */; };
@@ -1929,6 +1930,7 @@
 		26B119C124D1CD3500FED5C7 /* WooConstantsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooConstantsTests.swift; sourceTree = "<group>"; };
 		26B3D89F252235C50054C319 /* RefundShippingDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingDetailsViewModel.swift; sourceTree = "<group>"; };
 		26B3EC612744772A0075EAE6 /* SimplePaymentsSummaryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsSummaryViewModelTests.swift; sourceTree = "<group>"; };
+		26B3EC632745916F0075EAE6 /* BindableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BindableTextField.swift; sourceTree = "<group>"; };
 		26B98757273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomerNoteViewModelProtocol.swift; sourceTree = "<group>"; };
 		26B9875C273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsNoteViewModel.swift; sourceTree = "<group>"; };
 		26B9875E273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsNoteViewModelTests.swift; sourceTree = "<group>"; };
@@ -4620,6 +4622,7 @@
 				26C6E8E926E8FD3900C7BB0F /* LazyView.swift */,
 				26C6E8EB26E8FF4800C7BB0F /* LazyNavigationLink.swift */,
 				AE6DBE3A2732CAAD00957E7A /* AdaptiveStack.swift */,
+				26B3EC632745916F0075EAE6 /* BindableTextField.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -8257,6 +8260,7 @@
 				02F843DA273646A30017FE12 /* JetpackBenefitsBanner.swift in Sources */,
 				027D4A8D2526FD1800108626 /* SettingsViewController.swift in Sources */,
 				02E262C9238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift in Sources */,
+				26B3EC642745916F0075EAE6 /* BindableTextField.swift in Sources */,
 				CE2A9FC823C3D2D4002BEC1C /* RefundedProductsDataSource.swift in Sources */,
 				5783FB3F25D7369F00B9984B /* WooAnalyticsEventPropertyType.swift in Sources */,
 				CECC759523D6057E00486676 /* OrderItem+Woo.swift in Sources */,

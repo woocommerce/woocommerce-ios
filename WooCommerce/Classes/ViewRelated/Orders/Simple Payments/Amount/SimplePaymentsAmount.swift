@@ -99,7 +99,7 @@ struct SimplePaymentsAmount: View {
                 .secondaryBodyStyle()
 
             // Amount Textfield
-            TextField(viewModel.amountPlaceholder, text: $viewModel.amount)
+            BindableTextfield(viewModel.amountPlaceholder, text: $viewModel.amount)
                 .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold, design: .default))
                 .foregroundColor(Color(.text))
                 .multilineTextAlignment(.center)

@@ -38,7 +38,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_given_a_filter_it_loads_the_orders_matching_that_filter_from_the_DB() throws {
         // Arrange
-        let filters = FilterOrderListViewModel.Filters(orderStatus: .processing, dateRange: nil, numberOfActiveFilters: 1)
+        let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing], dateRange: nil, numberOfActiveFilters: 1)
         let viewModel = OrderListViewModel(siteID: siteID,
                                            storageManager: storageManager,
                                            filters: filters)
@@ -84,7 +84,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_it_also_loads_future_orders_from_the_DB() throws {
 
         // Arrange
-        let filters = FilterOrderListViewModel.Filters(orderStatus: .pending, dateRange: nil, numberOfActiveFilters: 1)
+        let filters = FilterOrderListViewModel.Filters(orderStatus: [.pending], dateRange: nil, numberOfActiveFilters: 1)
         let viewModel = OrderListViewModel(siteID: siteID,
                                            storageManager: storageManager,
                                            filters: filters)
@@ -116,7 +116,7 @@ final class OrderListViewModelTests: XCTestCase {
     /// Orders with dateCreated in the future should be grouped in an "Upcoming" section.
     func test_it_groups_future_orders_in_upcoming_section() throws {
         // Arrange
-        let filters = FilterOrderListViewModel.Filters(orderStatus: .failed, dateRange: nil, numberOfActiveFilters: 1)
+        let filters = FilterOrderListViewModel.Filters(orderStatus: [.failed], dateRange: nil, numberOfActiveFilters: 1)
         let viewModel = OrderListViewModel(siteID: siteID,
                                            storageManager: storageManager,
                                            filters: filters)
@@ -415,7 +415,7 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Act
-        viewModel.updateFilters(filters: FilterOrderListViewModel.Filters(orderStatus: .completed, dateRange: nil, numberOfActiveFilters: 1))
+        viewModel.updateFilters(filters: FilterOrderListViewModel.Filters(orderStatus: [.completed], dateRange: nil, numberOfActiveFilters: 1))
 
         // Assert
         XCTAssertTrue(resynchronizeRequested)
@@ -423,7 +423,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_given_identical_filters_it_does_not_request_a_resynchronization() {
         // Arrange
-        let filters = FilterOrderListViewModel.Filters(orderStatus: .pending, dateRange: nil, numberOfActiveFilters: 0)
+        let filters = FilterOrderListViewModel.Filters(orderStatus: [.pending], dateRange: nil, numberOfActiveFilters: 0)
         let notificationCenter = NotificationCenter()
         let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, filters: filters)
 

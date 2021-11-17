@@ -24,7 +24,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
     //
     func test_pulling_to_refresh_on_filtered_list_it_deletes_and_performs_fetch() {
         // Arrange
-        let filters = FilterOrderListViewModel.Filters(orderStatus: .processing, dateRange: nil, numberOfActiveFilters: 1)
+        let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing], dateRange: nil, numberOfActiveFilters: 1)
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
                                                  filters: filters)
 
@@ -35,13 +35,13 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statusKey, _, _, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
 
         XCTAssertTrue(deleteAllBeforeSaving)
-        XCTAssertEqual(statusKey, OrderStatusEnum.processing.rawValue)
+        XCTAssertEqual(statuses, [OrderStatusEnum.processing.rawValue])
     }
 
     // Test that when fetching the first page of a filtered list for reasons
@@ -49,7 +49,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
     //
     func test_first_page_load_on_filtered_list_with_non_pull_to_refresh_reasons_will_only_perform_fetch() {
         // Arrange
-        let filters = FilterOrderListViewModel.Filters(orderStatus: .processing, dateRange: nil, numberOfActiveFilters: 1)
+        let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing], dateRange: nil, numberOfActiveFilters: 1)
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
                                                  filters: filters)
 
@@ -60,13 +60,13 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statusKey, _, _, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
 
         XCTAssertFalse(deleteAllBeforeSaving)
-        XCTAssertEqual(statusKey, OrderStatusEnum.processing.rawValue)
+        XCTAssertEqual(statuses, [OrderStatusEnum.processing.rawValue])
     }
 
     // Test that when pulling to refresh, the action returned will be for:
@@ -86,13 +86,13 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statusKey, _, _, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
 
         XCTAssertTrue(deleteAllBeforeSaving)
-        XCTAssertNil(statusKey, "No filtered list will be fetched.")
+        XCTAssertNil(statuses?.first)
     }
 
     // Test when fetching the first page of order list for reasons other than
@@ -110,18 +110,18 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statusKey, _, _, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
 
         XCTAssertFalse(deleteAllBeforeSaving)
-        XCTAssertNil(statusKey, "No filtered list will be fetched.")
+        XCTAssertNil(statuses?.first)
     }
 
     func test_subsequent_page_loads_on_filtered_list_will_fetch_the_given_page_on_that_list() {
         // Arrange
-        let filters = FilterOrderListViewModel.Filters(orderStatus: .pending, dateRange: nil, numberOfActiveFilters: 1)
+        let filters = FilterOrderListViewModel.Filters(orderStatus: [.pending], dateRange: nil, numberOfActiveFilters: 1)
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
                                                  filters: filters)
 
@@ -132,12 +132,12 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .synchronizeOrders(_, let statusKey, _, _, let pageNumber, let pageSize, _) = action else {
+        guard case .synchronizeOrders(_, let statuses, _, _, let pageNumber, let pageSize, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
 
-        XCTAssertEqual(statusKey, OrderStatusEnum.pending.rawValue)
+        XCTAssertEqual(statuses, [OrderStatusEnum.pending.rawValue])
         XCTAssertEqual(pageNumber, Defaults.pageFirstIndex + 3)
         XCTAssertEqual(pageSize, self.pageSize)
     }
@@ -154,12 +154,12 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .synchronizeOrders(_, let statusKey, _, _, let pageNumber, let pageSize, _) = action else {
+        guard case .synchronizeOrders(_, let statuses, _, _, let pageNumber, let pageSize, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
 
-        XCTAssertNil(statusKey)
+        XCTAssertNil(statuses?.first)
         XCTAssertEqual(pageNumber, Defaults.pageFirstIndex + 5)
         XCTAssertEqual(pageSize, self.pageSize)
     }
@@ -172,7 +172,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
     //
     func test_refresh_with_new_filters_applied_deletes_and_performs_single_fetch() {
         // Arrange
-        let filters = FilterOrderListViewModel.Filters(orderStatus: .processing, dateRange: nil, numberOfActiveFilters: 1)
+        let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing], dateRange: nil, numberOfActiveFilters: 1)
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
                                                  filters: filters)
 
@@ -183,13 +183,13 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statusKey, _, _, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
 
         XCTAssertTrue(deleteAllBeforeSaving)
-        XCTAssertEqual(statusKey, OrderStatusEnum.processing.rawValue)
+        XCTAssertEqual(statuses, [OrderStatusEnum.processing.rawValue])
     }
 }
 

@@ -42,6 +42,20 @@ struct ProductsTabProductViewModel {
 
         self.imageService = imageService
     }
+
+    /// Variation will show product variation ID within the title,
+    /// Product will only show product name
+    /// See more: https://github.com/woocommerce/woocommerce-ios/issues/4846
+    /// 
+    func createNameLabel() -> String {
+        var name = name
+        if let variationID = productVariation?.productVariationID {
+            // Add product variation ID with name
+
+            name = "\(Localization.variationID(variationID: "\(variationID)"))\n\(name)"
+        }
+        return name
+    }
 }
 
 private extension EditableProductModel {
@@ -90,5 +104,9 @@ private extension EditableProductModel {
 private extension ProductsTabProductViewModel {
     enum Localization {
         static let noTitle = NSLocalizedString("(No Title)", comment: "Product title in Products list when there is no title")
+        static func variationID(variationID: String) -> String {
+            let titleFormat = NSLocalizedString("#%1$@", comment: "Variation ID. Parameters: %1$@ - Product variation ID")
+            return String.localizedStringWithFormat(titleFormat, variationID)
+        }
     }
 }

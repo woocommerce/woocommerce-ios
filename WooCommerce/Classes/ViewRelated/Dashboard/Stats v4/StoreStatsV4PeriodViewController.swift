@@ -309,8 +309,9 @@ private extension StoreStatsV4PeriodViewController {
         timeRangeBarView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         visitorsStackView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
 
-        // Visitor empty view
-        visitorsStackView.insertArrangedSubview(visitorsEmptyView, at: 2)
+        // Visitor empty view - insert it at the second-to-last index
+        let emptyViewIndex = max(0, visitorsStackView.arrangedSubviews.count - 2)
+        visitorsStackView.insertArrangedSubview(visitorsEmptyView, at: emptyViewIndex)
         visitorsEmptyView.isHidden = true
 
         // Time range bar bottom border view
@@ -449,10 +450,10 @@ extension StoreStatsV4PeriodViewController {
     func updateSiteVisitStats(mode: SiteVisitStatsMode) {
         // Hides site visit stats for "today"
         guard timeRange != .today else {
-            visitorsStackView?.isHidden = true
+            visitorsStackView.isHidden = true
             return
         }
-        visitorsStackView?.isHidden = (mode == .hidden)
+        visitorsStackView.isHidden = (mode == .hidden)
     }
 }
 

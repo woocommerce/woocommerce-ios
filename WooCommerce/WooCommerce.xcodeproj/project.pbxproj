@@ -760,7 +760,6 @@
 		5739D2D426274D580020E737 /* NoSecureConnectionErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5739D2D326274D580020E737 /* NoSecureConnectionErrorViewModel.swift */; };
 		573A960324F433DD0091F3A5 /* ProductsTopBannerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573A960224F433DD0091F3A5 /* ProductsTopBannerFactoryTests.swift */; };
 		573A960524F4374B0091F3A5 /* TopBannerViewMirror.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573A960424F4374B0091F3A5 /* TopBannerViewMirror.swift */; };
-		573D0ACF2458665C004DE614 /* OrderSearchStarterViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573D0ACE2458665C004DE614 /* OrderSearchStarterViewModelTests.swift */; };
 		57448D28242E775000A56A74 /* EmptyStateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57448D27242E775000A56A74 /* EmptyStateViewController.swift */; };
 		57448D2A242E777700A56A74 /* EmptyStateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57448D29242E777700A56A74 /* EmptyStateViewController.xib */; };
 		5744BEB1248FE44D000A6FE2 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5744BEB0248FE44C000A6FE2 /* SwiftUI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -778,9 +777,6 @@
 		5783FB3F25D7369F00B9984B /* WooAnalyticsEventPropertyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5783FB3E25D7369F00B9984B /* WooAnalyticsEventPropertyType.swift */; };
 		57896D6625362B0C000E8C4D /* TitleAndEditableValueTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57896D6525362B0C000E8C4D /* TitleAndEditableValueTableViewCellViewModel.swift */; };
 		5791FB4224EC834300117FD6 /* MainTabViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5791FB4124EC834300117FD6 /* MainTabViewModelTests.swift */; };
-		5795F22C23E26A8D00F6707C /* OrderSearchStarterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5795F22B23E26A8D00F6707C /* OrderSearchStarterViewController.xib */; };
-		5795F22E23E26A9E00F6707C /* OrderSearchStarterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795F22D23E26A9E00F6707C /* OrderSearchStarterViewController.swift */; };
-		5795F23023E26B5300F6707C /* OrderSearchStarterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795F22F23E26B5300F6707C /* OrderSearchStarterViewModel.swift */; };
 		57A25C7625ACE9BC00A54A62 /* OrderFulfillmentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A25C7525ACE9BC00A54A62 /* OrderFulfillmentUseCase.swift */; };
 		57A25C7C25ACFAEC00A54A62 /* OrderFulfillmentNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A25C7B25ACFAEC00A54A62 /* OrderFulfillmentNoticePresenter.swift */; };
 		57A49128250A7EB2000FEF21 /* OrderListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A49127250A7EB2000FEF21 /* OrderListViewController.swift */; };
@@ -2200,7 +2196,6 @@
 		5739D2D326274D580020E737 /* NoSecureConnectionErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoSecureConnectionErrorViewModel.swift; sourceTree = "<group>"; };
 		573A960224F433DD0091F3A5 /* ProductsTopBannerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTopBannerFactoryTests.swift; sourceTree = "<group>"; };
 		573A960424F4374B0091F3A5 /* TopBannerViewMirror.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBannerViewMirror.swift; sourceTree = "<group>"; };
-		573D0ACE2458665C004DE614 /* OrderSearchStarterViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderSearchStarterViewModelTests.swift; sourceTree = "<group>"; };
 		57448D27242E775000A56A74 /* EmptyStateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateViewController.swift; sourceTree = "<group>"; };
 		57448D29242E777700A56A74 /* EmptyStateViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmptyStateViewController.xib; sourceTree = "<group>"; };
 		5744BEB0248FE44C000A6FE2 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -2218,9 +2213,6 @@
 		5783FB3E25D7369F00B9984B /* WooAnalyticsEventPropertyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalyticsEventPropertyType.swift; sourceTree = "<group>"; };
 		57896D6525362B0C000E8C4D /* TitleAndEditableValueTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndEditableValueTableViewCellViewModel.swift; sourceTree = "<group>"; };
 		5791FB4124EC834300117FD6 /* MainTabViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewModelTests.swift; sourceTree = "<group>"; };
-		5795F22B23E26A8D00F6707C /* OrderSearchStarterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderSearchStarterViewController.xib; sourceTree = "<group>"; };
-		5795F22D23E26A9E00F6707C /* OrderSearchStarterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchStarterViewController.swift; sourceTree = "<group>"; };
-		5795F22F23E26B5300F6707C /* OrderSearchStarterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchStarterViewModel.swift; sourceTree = "<group>"; };
 		57A25C7525ACE9BC00A54A62 /* OrderFulfillmentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFulfillmentUseCase.swift; sourceTree = "<group>"; };
 		57A25C7B25ACFAEC00A54A62 /* OrderFulfillmentNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFulfillmentNoticePresenter.swift; sourceTree = "<group>"; };
 		57A49127250A7EB2000FEF21 /* OrderListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListViewController.swift; sourceTree = "<group>"; };
@@ -3685,9 +3677,6 @@
 			isa = PBXGroup;
 			children = (
 				0282DD97233CA093006A5FDB /* OrderSearchUICommand.swift */,
-				5795F22B23E26A8D00F6707C /* OrderSearchStarterViewController.xib */,
-				5795F22D23E26A9E00F6707C /* OrderSearchStarterViewController.swift */,
-				5795F22F23E26B5300F6707C /* OrderSearchStarterViewModel.swift */,
 			);
 			path = Order;
 			sourceTree = "<group>";
@@ -4684,18 +4673,9 @@
 		573D0ACC2458665C004DE614 /* Search */ = {
 			isa = PBXGroup;
 			children = (
-				573D0ACD2458665C004DE614 /* Order */,
 				020C908224C84638001E2BEB /* Product */,
 			);
 			path = Search;
-			sourceTree = "<group>";
-		};
-		573D0ACD2458665C004DE614 /* Order */ = {
-			isa = PBXGroup;
-			children = (
-				573D0ACE2458665C004DE614 /* OrderSearchStarterViewModelTests.swift */,
-			);
-			path = Order;
 			sourceTree = "<group>";
 		};
 		57448D26242E772300A56A74 /* EmptyStateViewController */ = {
@@ -7170,7 +7150,6 @@
 				31C21FA626D994B700916E2E /* SeveralReadersFoundViewController.xib in Resources */,
 				D85B8334222FABD1002168F3 /* StatusListTableViewCell.xib in Resources */,
 				4546E09B271F0942003836F3 /* FilteredOrdersHeaderBar.xib in Resources */,
-				5795F22C23E26A8D00F6707C /* OrderSearchStarterViewController.xib in Resources */,
 				45B9C63F23A8E50D007FC4C5 /* ProductPriceSettingsViewController.xib in Resources */,
 				B5F571A621BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib in Resources */,
 				457151AC243B6E8000EB2DFA /* ProductSlugViewController.xib in Resources */,
@@ -7914,7 +7893,6 @@
 				02C887712450285100E4470F /* BottomButtonContainerView.swift in Sources */,
 				0235BFD9246E959500778909 /* ProductFormActionsFactory.swift in Sources */,
 				024EFA6923FCC10B00F36918 /* Product+Media.swift in Sources */,
-				5795F23023E26B5300F6707C /* OrderSearchStarterViewModel.swift in Sources */,
 				0202B68D23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift in Sources */,
 				D8B4D5F426C30E7C00F34E94 /* InPersonPaymentsStripeRejectedView.swift in Sources */,
 				57612989245888E2007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlus.swift in Sources */,
@@ -7997,7 +7975,6 @@
 				02F4F50F237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.swift in Sources */,
 				021E2A1C23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorCommand.swift in Sources */,
 				26F94E21267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift in Sources */,
-				5795F22E23E26A9E00F6707C /* OrderSearchStarterViewController.swift in Sources */,
 				45F5A3C123DF206B007D40E5 /* ShippingInputFormatter.swift in Sources */,
 				45C8B2582313FA570002FA77 /* CustomerNoteTableViewCell.swift in Sources */,
 				DE67D46726B98FD000EFE8DB /* Publisher+WithLatestFrom.swift in Sources */,
@@ -8587,7 +8564,6 @@
 				7E7C5F8B2719AEDA00315B61 /* EditProductCategoryListViewModelTests.swift in Sources */,
 				020B2F9123BDD71500BD79AD /* IntegerInputFormatterTests.swift in Sources */,
 				D816DDBC22265DA300903E59 /* OrderTrackingTableViewCellTests.swift in Sources */,
-				573D0ACF2458665C004DE614 /* OrderSearchStarterViewModelTests.swift in Sources */,
 				262A2C2B2537A3330086C1BE /* MockRefunds.swift in Sources */,
 				027F240C258371150021DB06 /* RefundShippingLabelViewModelTests.swift in Sources */,
 				D85136DD231E613900DD0539 /* ReviewsViewModelTests.swift in Sources */,

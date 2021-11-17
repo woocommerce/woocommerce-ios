@@ -642,6 +642,8 @@
 		456417F4247D5434001203F6 /* UITableView+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456417F3247D5434001203F6 /* UITableView+Helpers.swift */; };
 		456417F6247D5643001203F6 /* UITableView+HelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456417F5247D5643001203F6 /* UITableView+HelpersTests.swift */; };
 		456738972743DE9A00743054 /* OrderDateRangeFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456738962743DE9A00743054 /* OrderDateRangeFilterTests.swift */; };
+		4567389D2745497C00743054 /* OrderStatusFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4567389B2745497C00743054 /* OrderStatusFilterViewController.swift */; };
+		4567389E2745497C00743054 /* OrderStatusFilterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4567389C2745497C00743054 /* OrderStatusFilterViewController.xib */; };
 		4569317F2653E82B009ED69D /* ShippingLabelCarriers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4569317E2653E82B009ED69D /* ShippingLabelCarriers.swift */; };
 		456931842653E9F2009ED69D /* ShippingLabelCarrierRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456931832653E9F1009ED69D /* ShippingLabelCarrierRow.swift */; };
 		45693189265403A1009ED69D /* ShippingLabelCarriersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45693188265403A1009ED69D /* ShippingLabelCarriersViewModel.swift */; };
@@ -2083,6 +2085,8 @@
 		456417F3247D5434001203F6 /* UITableView+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Helpers.swift"; sourceTree = "<group>"; };
 		456417F5247D5643001203F6 /* UITableView+HelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+HelpersTests.swift"; sourceTree = "<group>"; };
 		456738962743DE9A00743054 /* OrderDateRangeFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDateRangeFilterTests.swift; sourceTree = "<group>"; };
+		4567389B2745497C00743054 /* OrderStatusFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusFilterViewController.swift; sourceTree = "<group>"; };
+		4567389C2745497C00743054 /* OrderStatusFilterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderStatusFilterViewController.xib; sourceTree = "<group>"; };
 		4569317E2653E82B009ED69D /* ShippingLabelCarriers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarriers.swift; sourceTree = "<group>"; };
 		456931832653E9F1009ED69D /* ShippingLabelCarrierRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarrierRow.swift; sourceTree = "<group>"; };
 		45693188265403A1009ED69D /* ShippingLabelCarriersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarriersViewModel.swift; sourceTree = "<group>"; };
@@ -4342,6 +4346,7 @@
 				4546E098271F0942003836F3 /* FilteredOrdersHeaderBar.swift */,
 				4546E099271F0942003836F3 /* FilteredOrdersHeaderBar.xib */,
 				4520A15B2721B2A9001FA573 /* FilterOrderListViewModel.swift */,
+				4567389A2745456C00743054 /* Order Status Filter */,
 				45F931F6272AE6690098375D /* Date Range Filter */,
 			);
 			path = "Order Filters";
@@ -4382,6 +4387,15 @@
 				45FDDD64267784AD00ADACE8 /* ShippingLabelSummaryTableViewCell.xib */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		4567389A2745456C00743054 /* Order Status Filter */ = {
+			isa = PBXGroup;
+			children = (
+				4567389B2745497C00743054 /* OrderStatusFilterViewController.swift */,
+				4567389C2745497C00743054 /* OrderStatusFilterViewController.xib */,
+			);
+			path = "Order Status Filter";
 			sourceTree = "<group>";
 		};
 		4569317A2653E7F9009ED69D /* Carriers and Rates */ = {
@@ -7197,6 +7211,7 @@
 				456396A825C81C9A001F1A26 /* ShippingLabelFormViewController.xib in Resources */,
 				CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */,
 				CE8CCD44239AC06E009DBD22 /* RefundDetailsViewController.xib in Resources */,
+				4567389E2745497C00743054 /* OrderStatusFilterViewController.xib in Resources */,
 				D8915DBF23729CFB00F63762 /* ColorPalette.xcassets in Resources */,
 				CE24BCD0212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib in Resources */,
 				B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */,
@@ -7884,6 +7899,7 @@
 				26E0ADF12631D94D00A5EB3B /* TopBannerWrapperView.swift in Sources */,
 				26C6E8EA26E8FD3900C7BB0F /* LazyView.swift in Sources */,
 				7421344A210A323C00C13890 /* WooAnalyticsStat.swift in Sources */,
+				4567389D2745497C00743054 /* OrderStatusFilterViewController.swift in Sources */,
 				02A275BA23FE50AA005C560F /* ProductUIImageLoader.swift in Sources */,
 				02305353237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift in Sources */,
 				B5D6DC54214802740003E48A /* SyncCoordinator.swift in Sources */,

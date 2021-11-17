@@ -514,16 +514,6 @@ private extension StoreStatsV4PeriodViewController {
         guard siteVisitStatsMode != .hidden else {
             return
         }
-        guard let selectedIndex = selectedIndex else {
-            updateSiteVisitStats(mode: siteVisitStatsMode)
-            reloadSiteFields()
-            return
-        }
-        // Hides site visit stats for "today".
-        guard timeRange != .today else {
-            updateSiteVisitStats(mode: .hidden)
-            return
-        }
         updateSiteVisitStats(mode: siteVisitStatsMode)
 
         // TODO-5450: Update this check when JCP site is listed and selected
@@ -531,6 +521,10 @@ private extension StoreStatsV4PeriodViewController {
             visitorsData.isHidden = true
             visitorsEmptyView.isHidden = false
         } else {
+            guard let selectedIndex = selectedIndex else {
+                reloadSiteFields()
+                return
+            }
             guard visitorsData != nil else {
                 return
             }

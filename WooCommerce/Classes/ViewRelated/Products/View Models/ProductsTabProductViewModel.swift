@@ -51,7 +51,6 @@ struct ProductsTabProductViewModel {
         var name = name
         if let variationID = productVariation?.productVariationID {
             // Add product variation ID with name
-
             name = "\(Localization.variationID(variationID: "\(variationID)"))\n\(name)"
         }
         return name

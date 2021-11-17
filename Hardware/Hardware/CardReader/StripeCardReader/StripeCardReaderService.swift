@@ -413,7 +413,7 @@ private extension StripeCardReaderService {
                     }
 
                     if underlyingError == .commandCancelled {
-                        DDLogError("💳 Warning: collect payment error cancelled. We actively ignore this error \(error)")
+                        DDLogWarn("💳 Warning: collect payment error cancelled. We actively ignore this error \(error)")
                     }
 
                 }

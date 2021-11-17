@@ -97,16 +97,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     override func viewDidLoad() {
         super.viewDidLoad()
         configurePresentationStyle()
-
-        // If the page opens from product variation,
-        // product variation ID will show on navigation bar title along with text `Variation`
-        // See more: https://github.com/woocommerce/woocommerce-ios/issues/4846
-        if let variationID = self.viewModel.productionVariationID {
-            configureNavigationBar(title: Localization.variationViewTitle(variationID: "\(variationID)"))
-        }
-        else {
-            configureNavigationBar()
-        }
+        configureNavigationBar()
 
         configureMainView()
         configureTableView()
@@ -421,7 +412,7 @@ private extension ProductFormViewController {
     func configureNavigationBar(title: String = String()) {
         updateNavigationBar()
         updateBackButtonTitle()
-        updateNavigationBarTitle(title: title)
+        updateNavigationBarTitle()
     }
 
     func configureMainView() {
@@ -617,16 +608,16 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func saveProduct(status: ProductStatus? = nil) {
-        var productStatus = status ?? product.status
+        let productStatus = status ?? product.status
+        var messageType = viewModel.saveMessageType(for: productStatus)
 
-        // Set productStatus to custom type for saving a variation
+        // Set messageType to `saveVariation`
         // This will change Progress view title and message for variation save action.
         // Fix for the issue: https://github.com/woocommerce/woocommerce-ios/issues/4847
-        if let _ = self.viewModel.productionVariationID {
-            productStatus = .custom("variation")
+        if viewModel is ProductVariationFormViewModel {
+            messageType = .saveVariation
         }
 
-        let messageType = viewModel.saveMessageType(for: productStatus)
         showSavingProgress(messageType)
         saveImagesAndProductRemotely(status: status)
     }
@@ -821,9 +812,12 @@ private extension ProductFormViewController {
         navigationItem.backButtonTitle = viewModel.productModel.name.isNotEmpty ? viewModel.productModel.name : Localization.unnamedProduct
     }
 
-    func updateNavigationBarTitle(title: String) {
-        // Update navigation bar title with variation ID
-        self.title = title
+    func updateNavigationBarTitle() {
+        // Update navigation bar title with variation ID for variation page
+        guard let variationID = viewModel.productionVariationID else {
+            return
+        }
+        title = Localization.variationViewTitle(variationID: "\(variationID)")
     }
 
     func updateNavigationBar() {

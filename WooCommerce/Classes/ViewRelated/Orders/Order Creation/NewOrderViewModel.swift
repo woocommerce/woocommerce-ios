@@ -2,7 +2,7 @@ import Yosemite
 
 /// View model for `NewOrder`.
 ///
-final class NewOrderViewModel {
+final class NewOrderViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
 
@@ -22,6 +22,10 @@ final class NewOrderViewModel {
     ///
     private(set) var isCreateButtonEnabled: Bool = false
 
+    /// True while performing the create order operation. False otherwise.
+    ///
+    @Published private(set) var isLoading: Bool = false
+
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, onCompletion: @escaping (Order) -> Void) {
         self.siteID = siteID
         self.stores = stores
@@ -30,8 +34,10 @@ final class NewOrderViewModel {
 
     // MARK: - API Requests
     func createOrder() {
+        isLoading = true
         let action = OrderAction.createOrder(siteID: siteID, order: order) { [weak self] result in
             guard let self = self else { return }
+            self.isLoading = false
 
             switch result {
             case .success(let order):

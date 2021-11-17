@@ -115,15 +115,12 @@ final class OrdersRootViewController: UIViewController {
     /// Present `FilterListViewController`
     ///
     private func filterButtonTapped() {
-        //TODO-5243: add event for tracking the filter tapped
+        ServiceLocator.analytics.track(.orderListViewFilterOptionsTapped)
         let viewModel = FilterOrderListViewModel(filters: filters)
         let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
-            //TODO-5243: add event for tracking filter list show
             self?.filters = filters
         }, onClearAction: {
-            //TODO-5243: add event for tracking clear action
         }, onDismissAction: {
-            //TODO-5243: add event for tracking dismiss action
         })
         present(filterOrderListViewController, animated: true, completion: nil)
     }

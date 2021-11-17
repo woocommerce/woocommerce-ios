@@ -238,6 +238,8 @@ private extension CardReaderConnectionController {
     ///
     func onBeginSearch() {
         self.state = .searching
+        var didAutoAdvance = false
+
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: siteID,
             onReaderDiscovered: { [weak self] cardReaders in
@@ -269,12 +271,18 @@ private extension CardReaderConnectionController {
                     return
                 }
 
-                /// If we have a known reader, advance immediately to connect
+                /// If we have a known reader, and we haven't auto-advanced to connect
+                /// already, advance immediately to connect.
+                /// We only auto-advance once to avoid loops in case the known reader
+                /// is having connectivity issues (e.g low battery)
                 ///
                 if let foundKnownReader = self.getFoundKnownReader() {
-                    self.candidateReader = foundKnownReader
-                    self.state = .connectToReader
-                    return
+                    if !didAutoAdvance {
+                        didAutoAdvance = true
+                        self.candidateReader = foundKnownReader
+                        self.state = .connectToReader
+                        return
+                    }
                 }
 
                 /// If we have found multiple readers, advance to foundMultipleReaders
@@ -284,7 +292,7 @@ private extension CardReaderConnectionController {
                     return
                 }
 
-                /// If we have a found (but unknown) reader, advance to foundReader
+                /// If we have a found reader, advance to foundReader
                 ///
                 if self.foundReaders.isNotEmpty {
                     self.candidateReader = self.foundReaders.first

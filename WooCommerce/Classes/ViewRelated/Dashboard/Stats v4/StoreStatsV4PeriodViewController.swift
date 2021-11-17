@@ -179,7 +179,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
             jetpackImageView.widthAnchor.constraint(equalToConstant: 14),
             jetpackImageView.heightAnchor.constraint(equalToConstant: 14),
             jetpackImageView.leadingAnchor.constraint(equalTo: emptyView.trailingAnchor),
-            jetpackImageView.topAnchor.constraint(equalTo: containerView.topAnchor)
+            jetpackImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 4)
         ])
 
         return containerView
@@ -310,8 +310,7 @@ private extension StoreStatsV4PeriodViewController {
         visitorsStackView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
 
         // Visitor empty view
-        visitorsStackView.insertSubview(visitorsEmptyView, belowSubview: visitorsTitle)
-        visitorsStackView.addArrangedSubview(visitorsEmptyView)
+        visitorsStackView.insertArrangedSubview(visitorsEmptyView, at: 2)
         visitorsEmptyView.isHidden = true
 
         // Time range bar bottom border view

@@ -86,7 +86,7 @@ final class RemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.enqueuePublisher(self.request, mapper: mapper).sink { result in
+            remote.enqueue(self.request, mapper: mapper).sink { result in
                 promise(result)
             }.store(in: &self.cancellables)
         }
@@ -159,7 +159,7 @@ final class RemoteTests: XCTestCase {
 
         // When
         waitForExpectation { expectation in
-            remote.enqueuePublisher(request, mapper: mapper).sink { _ in
+            remote.enqueue(request, mapper: mapper).sink { _ in
                 expectation.fulfill()
             }.store(in: &cancellables)
         }
@@ -253,7 +253,7 @@ final class RemoteTests: XCTestCase {
         // When
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJetpackTimeoutError, object: nil, handler: nil)
         let result: Result<Any, Error> = waitFor { promise in
-            remote.enqueuePublisher(self.request, mapper: mapper).sink { result in
+            remote.enqueue(self.request, mapper: mapper).sink { result in
                 promise(result)
             }.store(in: &self.cancellables)
         }

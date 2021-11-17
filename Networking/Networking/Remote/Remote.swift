@@ -140,7 +140,7 @@ public class Remote {
     ///     - mapper: Mapper entity that will be used to attempt to parse the Backend's Response.
     ///
     /// - Returns: A publisher that emits result upon completion.
-    func enqueuePublisher<M: Mapper>(_ request: URLRequestConvertible, mapper: M) -> AnyPublisher<Result<M.Output, Error>, Never> {
+    func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M) -> AnyPublisher<Result<M.Output, Error>, Never> {
         network.responseDataPublisher(for: request)
             .map { (result: Result<Data, Error>) -> Result<M.Output, Error> in
                 switch result {

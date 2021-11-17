@@ -61,7 +61,7 @@ public class AccountRemote: Remote {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         let mapper = SiteListMapper()
 
-        return enqueuePublisher(request, mapper: mapper)
+        return enqueue(request, mapper: mapper)
     }
 
     /// Loads the site plan for the default site associated with the WordPress.com user.

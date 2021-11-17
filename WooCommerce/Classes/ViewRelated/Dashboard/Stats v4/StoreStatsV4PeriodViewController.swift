@@ -158,25 +158,27 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         containerView.translatesAutoresizingMaskIntoConstraints = false
 
         let emptyView = UIView(frame: .zero)
-        emptyView.backgroundColor = .secondarySystemGroupedBackground
+        emptyView.backgroundColor = .systemColor(.systemGroupedBackground)
+        emptyView.layer.cornerRadius = 2.0
         emptyView.translatesAutoresizingMaskIntoConstraints = false
 
-        let jetpackImageView = UIImageView(image: .jetpackLogoImage)
+        let jetpackImageView = UIImageView(image: .jetpackLogoImage.withRenderingMode(.alwaysTemplate))
         jetpackImageView.contentMode = .scaleAspectFit
+        jetpackImageView.tintColor = .jetpackGreen
         jetpackImageView.translatesAutoresizingMaskIntoConstraints = false
 
         containerView.addSubview(emptyView)
         containerView.addSubview(jetpackImageView)
 
         NSLayoutConstraint.activate([
-            containerView.heightAnchor.constraint(equalToConstant: 26),
+            containerView.widthAnchor.constraint(equalToConstant: 48),
             emptyView.widthAnchor.constraint(equalToConstant: 32),
             emptyView.heightAnchor.constraint(equalToConstant: 10),
-            emptyView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            emptyView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            emptyView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            emptyView.topAnchor.constraint(equalTo: jetpackImageView.bottomAnchor),
             jetpackImageView.widthAnchor.constraint(equalToConstant: 14),
             jetpackImageView.heightAnchor.constraint(equalToConstant: 14),
-            jetpackImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            jetpackImageView.leadingAnchor.constraint(equalTo: emptyView.trailingAnchor),
             jetpackImageView.topAnchor.constraint(equalTo: containerView.topAnchor)
         ])
 
@@ -307,8 +309,9 @@ private extension StoreStatsV4PeriodViewController {
         timeRangeBarView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         visitorsStackView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
 
-        // Visitor redacted view
-        visitorsStackView.insertSubview(visitorsEmptyView, belowSubview: visitorsData)
+        // Visitor empty view
+        visitorsStackView.insertSubview(visitorsEmptyView, belowSubview: visitorsTitle)
+        visitorsStackView.addArrangedSubview(visitorsEmptyView)
         visitorsEmptyView.isHidden = true
 
         // Time range bar bottom border view
@@ -519,7 +522,11 @@ private extension StoreStatsV4PeriodViewController {
         }
         updateSiteVisitStats(mode: siteVisitStatsMode)
 
-        if siteVisitStatsMode == .default {
+        // TODO-5361: Update this check when JCP site is listed and selected
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
+            visitorsData.isHidden = true
+            visitorsEmptyView.isHidden = false
+        } else {
             guard visitorsData != nil else {
                 return
             }
@@ -531,9 +538,6 @@ private extension StoreStatsV4PeriodViewController {
             visitorsData.text = visitorsText
             visitorsData.isHidden = false
             visitorsEmptyView.isHidden = true
-        } else {
-            visitorsData.isHidden = true
-            visitorsEmptyView.isHidden = false
         }
     }
 
@@ -706,8 +710,15 @@ private extension StoreStatsV4PeriodViewController {
         let visitStatsElements: [Any] = {
             switch siteVisitStatsMode {
             case .default:
-                return [visitorsTitle as Any,
-                        visitorsData as Any]
+                // TODO-5361: Temporary solution to make the empty view show up.
+                // Remove this when JCP site is listed and can be selected.
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
+                    return [visitorsTitle as Any,
+                            visitorsEmptyView as Any]
+                } else {
+                    return [visitorsTitle as Any,
+                            visitorsData as Any]
+                }
             case .redactedDueToJetpack:
                 return [visitorsTitle as Any,
                         visitorsEmptyView as Any]
@@ -744,15 +755,24 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func reloadSiteFields() {
-        guard visitorsData != nil else {
-            return
-        }
+        // TODO-5361: Temporary solution to make the empty view show up.
+        // Remove this when JCP site is listed and can be selected.
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
+            visitorsData.isHidden = true
+            visitorsEmptyView.isHidden = false
+        } else {
+            guard visitorsData != nil else {
+                return
+            }
 
-        var visitorsText = Constants.placeholderText
-        if let siteStats = siteStats {
-            visitorsText = Double(siteStats.totalVisitors).humanReadableString()
+            var visitorsText = Constants.placeholderText
+            if let siteStats = siteStats {
+                visitorsText = Double(siteStats.totalVisitors).humanReadableString()
+            }
+            visitorsData.text = visitorsText
+            visitorsData.isHidden = false
+            visitorsEmptyView.isHidden = true
         }
-        visitorsData.text = visitorsText
     }
 
     func reloadChart(animateChart: Bool = true) {

@@ -30,12 +30,20 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     lazy private(set) var noteViewModel = SimplePaymentsNoteViewModel()
 
-    init(providedAmount: String, noteContent: String? = nil) {
-        self.providedAmount = providedAmount
+    /// Formatter to properly format the provided amount.
+    ///
+    private let currencyFormatter: CurrencyFormatter
 
-        // TODO: Add taxes calculation
-        self.total = providedAmount
+    init(providedAmount: String,
+         noteContent: String? = nil,
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+        self.currencyFormatter = currencyFormatter
 
+        let formattedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
+        self.providedAmount = formattedAmount
+        self.total = formattedAmount // TODO: Add taxes calculation
+
+        // Used mostly in previews
         if let noteContent = noteContent {
             noteViewModel = SimplePaymentsNoteViewModel(originalNote: noteContent)
         }

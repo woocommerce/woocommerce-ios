@@ -3,7 +3,7 @@ import SwiftUI
 /// View to create a new manual order
 ///
 struct NewOrder: View {
-    let viewModel: NewOrderViewModel
+    @ObservedObject var viewModel: NewOrderViewModel
 
     var body: some View {
         ScrollView {
@@ -18,7 +18,12 @@ struct NewOrder: View {
                 Button(action: {
                     viewModel.createOrder()
                 }, label: {
-                    Text(Localization.createButton)
+                    if viewModel.isLoading {
+                        ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                            .accentColor(Color(.navigationBarLoadingIndicator))
+                    } else {
+                        Text(Localization.createButton)
+                    }
                 })
                     .renderedIf(viewModel.isCreateButtonEnabled)
             }

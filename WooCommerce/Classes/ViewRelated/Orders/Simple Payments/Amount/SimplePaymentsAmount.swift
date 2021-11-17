@@ -100,10 +100,11 @@ struct SimplePaymentsAmount: View {
 
             // Amount Textfield
             BindableTextfield(viewModel.amountPlaceholder, text: $viewModel.amount)
-                .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold, design: .default))
-                .foregroundColor(Color(.text))
-                .multilineTextAlignment(.center)
+                .font(.systemFont(ofSize: Layout.amountFontSize(scale: scale), weight: .bold))
+                .foregroundColor(.text)
+                .textAlignment(.center)
                 .keyboardType(.decimalPad)
+                .fixedSize()
 
             Spacer()
 

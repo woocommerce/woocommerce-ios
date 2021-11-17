@@ -89,3 +89,37 @@ extension BindableTextfield {
         }
     }
 }
+
+
+// MARK: Modifiers
+
+extension BindableTextfield {
+    /// Updates the textfield font.
+    ///
+    func font(_ font: UIFont) -> Self {
+        var copy = self
+        copy.font = font
+        return copy
+    }
+
+    /// Updates the textfield foreground color.
+    func foregroundColor(_ color: UIColor) -> Self {
+        var copy = self
+        copy.foregroundColor = color
+        return copy
+    }
+
+    /// Updates the textfield text alignment.
+    func textAlignment(_ alignment: NSTextAlignment) -> Self {
+        var copy = self
+        copy.textAlignment = alignment
+        return copy
+    }
+
+    /// Updates the textfield keyboard type.
+    func keyboardType(_ type: UIKeyboardType) -> Self {
+        var copy = self
+        copy.keyboardType = type
+        return copy
+    }
+}

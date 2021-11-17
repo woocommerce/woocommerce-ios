@@ -132,6 +132,7 @@ struct SimplePaymentsAmount: View {
                 })
             }
         }
+        .wooNavigationBarStyle()
     }
 }
 

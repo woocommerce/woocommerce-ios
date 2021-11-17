@@ -19,6 +19,10 @@ protocol OrderListViewControllerDelegate: AnyObject {
     /// Called when an order list `UIScrollView`'s `scrollViewDidScroll` event is triggered from the user.
     ///
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView)
+
+    /// Called when a user press a clear filters button. Eg. the clear filters button in the empty screen.
+    ///
+    func clearFilters()
 }
 
 /// OrderListViewController: Displays the list of Orders associated to the active Store / Account.
@@ -485,7 +489,7 @@ private extension OrderListViewController {
 
     /// Creates EmptyStateViewController.Config for no orders matching the filter empty view
     ///
-    private func noOrdersMatchFilterConfig() ->  EmptyStateViewController.Config {
+    func noOrdersMatchFilterConfig() -> EmptyStateViewController.Config {
         let boldSearchKeyword = NSAttributedString(string: viewModel.filters?.readableString ?? String(),
                                                    attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
         let message = NSMutableAttributedString(string: Localization.filteredOrdersEmptyStateMessage)
@@ -496,7 +500,7 @@ private extension OrderListViewController {
             image: .emptySearchResultsImage,
             details: "",
             buttonTitle: Localization.clearButton) { [weak self] button in
-                self?.viewModel.updateFilters(filters: FilterOrderListViewModel.Filters())
+                self?.delegate?.clearFilters()
             }
     }
 }

@@ -224,6 +224,10 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }
+
+    func clearFilters() {
+        filters = FilterOrderListViewModel.Filters()
+    }
 }
 
 // MARK: - Creators

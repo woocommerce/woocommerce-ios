@@ -106,20 +106,22 @@ private extension SettingsViewController {
             configureSwitchStore(cell: cell)
         case let cell as BasicTableViewCell where row == .plugins:
             configurePlugins(cell: cell)
-        case let cell as BasicTableViewCell where row == .support:
-            configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .inPersonPayments:
             configureInPersonPayments(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
             configureInstallJetpack(cell: cell)
-        case let cell as BasicTableViewCell where row == .privacy:
-            configurePrivacy(cell: cell)
+        case let cell as BasicTableViewCell where row == .support:
+            configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .betaFeatures:
             configureBetaFeatures(cell: cell)
         case let cell as BasicTableViewCell where row == .sendFeedback:
             configureSendFeedback(cell: cell)
+        case let cell as BasicTableViewCell where row == .privacy:
+            configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .about:
             configureAbout(cell: cell)
+        case let cell as BasicTableViewCell where row == .whatsNew:
+            configureWhatsNew(cell: cell)
         case let cell as BasicTableViewCell where row == .licenses:
             configureLicenses(cell: cell)
         case let cell as BasicTableViewCell where row == .deviceSettings:
@@ -128,8 +130,6 @@ private extension SettingsViewController {
             configureWormholy(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
             configureLogout(cell: cell)
-        case let cell as BasicTableViewCell where row == .whatsNew:
-            configureWhatsNew(cell: cell)
         default:
             fatalError()
         }

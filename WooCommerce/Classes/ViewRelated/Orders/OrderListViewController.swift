@@ -485,7 +485,7 @@ private extension OrderListViewController {
 
     /// Creates EmptyStateViewController.Config for no orders matching the filter empty view
     ///
-    private func noOrdersMatchFilterConfig() ->  EmptyStateViewController.Config {
+    func noOrdersMatchFilterConfig() -> EmptyStateViewController.Config {
         let boldSearchKeyword = NSAttributedString(string: viewModel.filters?.readableString ?? String(),
                                                    attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
         let message = NSMutableAttributedString(string: Localization.filteredOrdersEmptyStateMessage)

@@ -146,6 +146,10 @@ public class AppSettingsStore: Store {
             setSimplePaymentsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadSimplePaymentsSwitchState(onCompletion: let onCompletion):
             loadSimplePaymentsSwitchState(onCompletion: onCompletion)
+        case .setOrderCreationFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
+            setOrderCreationFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
+        case .loadOrderCreationSwitchState(onCompletion: let onCompletion):
+            loadOrderCreationSwitchState(onCompletion: onCompletion)
         case .rememberCardReader(cardReaderID: let cardReaderID, onCompletion: let onCompletion):
             rememberCardReader(cardReaderID: cardReaderID, onCompletion: onCompletion)
         case .forgetCardReader(onCompletion: let onCompletion):
@@ -261,6 +265,26 @@ private extension AppSettingsStore {
 
     }
 
+    /// Loads the current Order Creation beta feature switch state from `GeneralAppSettings`
+    ///
+    func loadOrderCreationSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        onCompletion(.success(settings.isOrderCreationSwitchEnabled))
+    }
+
+    /// Sets the provided Order Creation beta feature switch state into `GeneralAppSettings`
+    ///
+    func setOrderCreationFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(isOrderCreationSwitchEnabled: isEnabled)
+            try saveGeneralAppSettings(settings)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+
+    }
+
     /// Loads the last persisted eligibility error information from `GeneralAppSettings`
     ///
     func loadEligibilityErrorInfo(onCompletion: (Result<EligibilityErrorInfo, Error>) -> Void) {
@@ -290,6 +314,7 @@ private extension AppSettingsStore {
                                       feedbacks: [:],
                                       isViewAddOnsSwitchEnabled: false,
                                       isSimplePaymentsSwitchEnabled: false,
+                                      isOrderCreationSwitchEnabled: false,
                                       knownCardReaders: [],
                                       lastEligibilityErrorInfo: nil)
         }

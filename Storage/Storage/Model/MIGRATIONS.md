@@ -2,6 +2,11 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 58 (Release 8.1.0.0)
+- @jaclync 2021-11-15
+- Added `isJetpackConnected` attribute to `Site` entity.
+- Added `isJetpackThePluginInstalled` attribute to `Site` entity.
+
 ## Model 57 (Release 8.0.0.0)
 - @allendav 2021-11-03
 - Added `isLive` attribute to `PaymentGatewayAccount` entity

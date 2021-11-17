@@ -1,3 +1,4 @@
-Some merchants had problems loading order details because of a technical issue with how field names in the REST API are ordered. We’ve made a correction that should address that for you if you were experiencing it.
+- [*] Product List: Add support for product filtering by category. [https://github.com/woocommerce/woocommerce-ios/pull/5388]
+- [***] Push notifications are now supported for all connected stores. [https://github.com/woocommerce/woocommerce-ios/pull/5299]
+- [*] Fix: in Settings > Switch Store, tapping "Dismiss" after selecting a different store does not switch stores anymore. [https://github.com/woocommerce/woocommerce-ios/pull/5359]
 
-This release contains several other fixes based on your feedback. Please continue to send us feedback – we are listening!

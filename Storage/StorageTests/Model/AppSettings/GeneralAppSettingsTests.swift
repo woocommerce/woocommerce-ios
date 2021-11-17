@@ -10,6 +10,7 @@ class GeneralAppSettingsTests: XCTestCase {
                                           feedbacks: [.general: feedback],
                                           isViewAddOnsSwitchEnabled: false,
                                           isSimplePaymentsSwitchEnabled: false,
+                                          isOrderCreationSwitchEnabled: false,
                                           knownCardReaders: [])
 
         // When
@@ -25,6 +26,7 @@ class GeneralAppSettingsTests: XCTestCase {
                                           feedbacks: [:],
                                           isViewAddOnsSwitchEnabled: false,
                                           isSimplePaymentsSwitchEnabled: false,
+                                          isOrderCreationSwitchEnabled: false,
                                           knownCardReaders: [])
 
         // When
@@ -42,6 +44,7 @@ class GeneralAppSettingsTests: XCTestCase {
             feedbacks: [.general: existingFeedback],
             isViewAddOnsSwitchEnabled: false,
             isSimplePaymentsSwitchEnabled: false,
+            isOrderCreationSwitchEnabled: false,
             knownCardReaders: []
         )
 
@@ -59,6 +62,7 @@ class GeneralAppSettingsTests: XCTestCase {
                                           feedbacks: [:],
                                           isViewAddOnsSwitchEnabled: false,
                                           isSimplePaymentsSwitchEnabled: false,
+                                          isOrderCreationSwitchEnabled: false,
                                           knownCardReaders: [])
 
         // When
@@ -79,6 +83,7 @@ class GeneralAppSettingsTests: XCTestCase {
                                                   feedbacks: feedbackSettings,
                                                   isViewAddOnsSwitchEnabled: true,
                                                   isSimplePaymentsSwitchEnabled: true,
+                                                  isOrderCreationSwitchEnabled: true,
                                                   knownCardReaders: readers,
                                                   lastEligibilityErrorInfo: eligibilityInfo)
 
@@ -97,5 +102,6 @@ class GeneralAppSettingsTests: XCTestCase {
         assertEqual(newSettings.lastEligibilityErrorInfo, eligibilityInfo)
         assertEqual(newSettings.isViewAddOnsSwitchEnabled, false)
         assertEqual(newSettings.isSimplePaymentsSwitchEnabled, true)
+        assertEqual(newSettings.isOrderCreationSwitchEnabled, true)
     }
 }

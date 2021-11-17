@@ -15,6 +15,22 @@ struct BindableTextfield: UIViewRepresentable {
     ///
     @Binding var text: String
 
+    /// Textfield font.
+    ///
+    var font = UIFont.body
+
+    /// Textfield keyboard.
+    ///
+    var keyboardType = UIKeyboardType.default
+
+    /// Textfield text color.
+    ///
+    var foregroundColor = UIColor.text
+
+    /// Textfield text alignment.
+    ///
+    var textAlignment = NSTextAlignment.left
+
     init(_ placeholder: String?, text: Binding<String>) {
         self.placeHolder = placeholder
         self._text = text
@@ -24,7 +40,6 @@ struct BindableTextfield: UIViewRepresentable {
     ///
     func makeUIView(context: Context) -> UITextField {
         let textfield = UITextField()
-        textfield.placeholder = placeHolder
         textfield.delegate = context.coordinator
         return textfield
     }
@@ -38,7 +53,12 @@ struct BindableTextfield: UIViewRepresentable {
     /// Updates underlying view.
     ///
     func updateUIView(_ uiView: UITextField, context: Context) {
+        uiView.placeholder = placeHolder
         uiView.text = text
+        uiView.font = font
+        uiView.textColor = foregroundColor
+        uiView.textAlignment = textAlignment
+        uiView.keyboardType = keyboardType
     }
 }
 

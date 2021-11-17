@@ -52,6 +52,8 @@
 		02BA23CA22EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json in Resources */ = {isa = PBXBuildFile; fileRef = 02BA23C822EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json */; };
 		02BDB83523EA98C800BCC63E /* String+HTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BDB83423EA98C800BCC63E /* String+HTML.swift */; };
 		02BDB83723EA9C4D00BCC63E /* String+HTMLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BDB83623EA9C4D00BCC63E /* String+HTMLTests.swift */; };
+		02C11276274285FF00F4F0B4 /* WooCommerceAvailabilityMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C11275274285FF00F4F0B4 /* WooCommerceAvailabilityMapper.swift */; };
+		02C112782742862600F4F0B4 /* WordPressSiteSettingsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C112772742862600F4F0B4 /* WordPressSiteSettingsMapper.swift */; };
 		02C1CEF424C6A02B00703EBA /* ProductVariationMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C1CEF324C6A02B00703EBA /* ProductVariationMapper.swift */; };
 		02C2548425635BD000A04423 /* ShippingLabelPaperSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C2548325635BD000A04423 /* ShippingLabelPaperSize.swift */; };
 		02C2549A25636E1500A04423 /* ShippingLabelAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C2549925636E1500A04423 /* ShippingLabelAddress.swift */; };
@@ -630,6 +632,8 @@
 		02BA23C822EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-v4-wcadmin-activated.json"; sourceTree = "<group>"; };
 		02BDB83423EA98C800BCC63E /* String+HTML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HTML.swift"; sourceTree = "<group>"; };
 		02BDB83623EA9C4D00BCC63E /* String+HTMLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HTMLTests.swift"; sourceTree = "<group>"; };
+		02C11275274285FF00F4F0B4 /* WooCommerceAvailabilityMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCommerceAvailabilityMapper.swift; sourceTree = "<group>"; };
+		02C112772742862600F4F0B4 /* WordPressSiteSettingsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteSettingsMapper.swift; sourceTree = "<group>"; };
 		02C1CEF324C6A02B00703EBA /* ProductVariationMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationMapper.swift; sourceTree = "<group>"; };
 		02C2548325635BD000A04423 /* ShippingLabelPaperSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaperSize.swift; sourceTree = "<group>"; };
 		02C2549925636E1500A04423 /* ShippingLabelAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddress.swift; sourceTree = "<group>"; };
@@ -1496,7 +1500,6 @@
 				029BA4EF255D7282006171FD /* ShippingLabelRemote.swift */,
 				D8EDFE1D25EE87F1003D2213 /* WCPayRemote.swift */,
 				FE28F6E5268429B6004465C7 /* UserRemote.swift */,
-				077F39D526A58E4500ABEADC /* SystemPluginsRemote.swift */,
 				077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */,
 				AEF94584272974F2001DCCFB /* TelemetryRemote.swift */,
 			);
@@ -1844,6 +1847,8 @@
 				CC0786C4267BAF0F00BA9AC1 /* ShippingLabelStatusMapper.swift */,
 				FE28F6E326842848004465C7 /* UserMapper.swift */,
 				077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */,
+				02C11275274285FF00F4F0B4 /* WooCommerceAvailabilityMapper.swift */,
+				02C112772742862600F4F0B4 /* WordPressSiteSettingsMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -2439,6 +2444,7 @@
 				743E84EC22171F4600FAC9D7 /* ShipmentTracking.swift in Sources */,
 				B56C1EB820EA76F500D749F9 /* Site.swift in Sources */,
 				26615473242D596B00A31661 /* ProductCategoriesRemote.swift in Sources */,
+				02C112782742862600F4F0B4 /* WordPressSiteSettingsMapper.swift in Sources */,
 				26615475242D7C9500A31661 /* ProductCategoryListMapper.swift in Sources */,
 				3178A49F2703E5CF00A8B4CA /* WCPayReaderLocationMapper.swift in Sources */,
 				45D685F823D0BC78005F87D0 /* ProductSkuMapper.swift in Sources */,
@@ -2517,6 +2523,7 @@
 				45152809257A7C6E0076B03C /* ProductAttributesRemote.swift in Sources */,
 				D8FBFF2222D5266E006E3336 /* OrderStatsV4Interval.swift in Sources */,
 				4568E2222459ADC60007E478 /* SitePostsRemote.swift in Sources */,
+				02C11276274285FF00F4F0B4 /* WooCommerceAvailabilityMapper.swift in Sources */,
 				CC0786C5267BAF0F00BA9AC1 /* ShippingLabelStatusMapper.swift in Sources */,
 				4515280D257A7EEC0076B03C /* ProductAttributeListMapper.swift in Sources */,
 				93D8BBFD226BBEE800AD2EB3 /* AccountSettingsMapper.swift in Sources */,

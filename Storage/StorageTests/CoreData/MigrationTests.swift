@@ -763,6 +763,30 @@ final class MigrationTests: XCTestCase {
         XCTAssertNotNil(migratedPaymentGatewayAccount.entity.attributesByName["isInTestMode"])
         XCTAssertEqual(migratedPaymentGatewayAccount.value(forKey: "isInTestMode") as? Bool, false)
     }
+
+    func test_migrating_from_57_to_58_adds_new_site_jetpack_attributes() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 57")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["isJetpackConnected"])
+        XCTAssertNil(site.entity.attributesByName["isJetpackThePluginInstalled"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 58")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
+
+        let isJetpackConnected = try XCTUnwrap(migratedSite.value(forKey: "isJetpackConnected") as? Bool)
+        XCTAssertFalse(isJetpackConnected)
+        let isJetpackThePluginInstalled = try XCTUnwrap(migratedSite.value(forKey: "isJetpackThePluginInstalled") as? Bool)
+        XCTAssertFalse(isJetpackThePluginInstalled)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1142,6 +1166,13 @@ private extension MigrationTests {
             "version": "1.7.2",
             "versionLatest": "1.7.2",
             "networkActivated": false
+        ])
+    }
+
+    @discardableResult
+    func insertSite(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Site", properties: [
+            "siteID": 1372
         ])
     }
 }

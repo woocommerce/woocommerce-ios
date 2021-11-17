@@ -16,7 +16,7 @@ public protocol StorageManagerType {
     ///
     var viewStorage: StorageType { get }
 
-    /// Returns the `Storage` associated to the main thread.
+    /// Returns a shared derived storage instance dedicated for write operations.
     ///
     var writerDerivedStorage: StorageType { get }
 

@@ -489,7 +489,9 @@ extension PaymentGatewayAccount {
             defaultCurrency: .fake(),
             supportedCurrencies: .fake(),
             country: .fake(),
-            isCardPresentEligible: .fake()
+            isCardPresentEligible: .fake(),
+            isLive: .fake(),
+            isInTestMode: .fake()
         )
     }
 }
@@ -1312,6 +1314,8 @@ extension Site {
             description: .fake(),
             url: .fake(),
             plan: .fake(),
+            isJetpackThePluginInstalled: .fake(),
+            isJetpackConnected: .fake(),
             isWooCommerceActive: .fake(),
             isWordPressStore: .fake(),
             timezone: .fake(),

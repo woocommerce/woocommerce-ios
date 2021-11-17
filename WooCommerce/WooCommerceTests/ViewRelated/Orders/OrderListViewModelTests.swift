@@ -204,7 +204,7 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Act
-        let notification = PushNotification(noteID: 1, kind: .storeOrder, message: "")
+        let notification = PushNotification(noteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "")
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
@@ -224,7 +224,7 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Act
-        let notification = PushNotification(noteID: 1, kind: .comment, message: "")
+        let notification = PushNotification(noteID: 1, kind: .comment, title: "", subtitle: "", message: "")
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert

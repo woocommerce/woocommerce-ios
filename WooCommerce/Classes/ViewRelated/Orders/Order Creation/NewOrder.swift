@@ -3,7 +3,7 @@ import SwiftUI
 /// View to create a new manual order
 ///
 struct NewOrder: View {
-    let viewModel = NewOrderViewModel()
+    let viewModel: NewOrderViewModel
 
     var body: some View {
         ScrollView {
@@ -16,7 +16,7 @@ struct NewOrder: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
-                    // TODO-5405 - Add create order action
+                    viewModel.createOrder()
                 }, label: {
                     Text(Localization.createButton)
                 })
@@ -37,8 +37,10 @@ private extension NewOrder {
 
 struct NewOrder_Previews: PreviewProvider {
     static var previews: some View {
+        let viewModel = NewOrderViewModel(siteID: 123) { _ in }
+
         NavigationView {
-            NewOrder()
+            NewOrder(viewModel: viewModel)
         }
     }
 }

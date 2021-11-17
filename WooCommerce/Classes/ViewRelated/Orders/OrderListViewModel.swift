@@ -180,7 +180,7 @@ final class OrderListViewModel {
     private func createQuery() -> FetchResultSnapshotsProvider<StorageOrder>.Query {
         let predicateStatus: NSPredicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
-            let excludeNonMatchingStatus = filters?.orderStatus.map { NSPredicate(format: "statusKey = %@", $0.rawValue) }
+            let excludeNonMatchingStatus = filters?.orderStatus.map { NSPredicate(format: "statusKey IN %@", $0) }
 
             let predicates = [excludeSearchCache, excludeNonMatchingStatus].compactMap { $0 }
             return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)

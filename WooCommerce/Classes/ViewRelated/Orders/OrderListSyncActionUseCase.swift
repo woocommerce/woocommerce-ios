@@ -56,7 +56,7 @@ struct OrderListSyncActionUseCase {
                    pageSize: Int,
                    reason: SyncReason?,
                    completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
-        let statusKey = filters?.orderStatus?.rawValue
+        let statuses = (filters?.orderStatus ?? []).map { $0.rawValue }
         let startDate = filters?.dateRange?.computedStartDate
         let endDate = filters?.dateRange?.computedEndDate
 
@@ -65,7 +65,7 @@ struct OrderListSyncActionUseCase {
 
             return OrderAction.fetchFilteredOrders(
                 siteID: siteID,
-                statusKey: statusKey,
+                statuses: statuses,
                 after: startDate,
                 before: endDate,
                 deleteAllBeforeSaving: deleteAllBeforeSaving,
@@ -76,7 +76,7 @@ struct OrderListSyncActionUseCase {
 
         return OrderAction.synchronizeOrders(
             siteID: siteID,
-            statusKey: statusKey,
+            statuses: statuses,
             after: startDate,
             before: endDate,
             pageNumber: pageNumber,

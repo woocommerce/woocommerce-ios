@@ -46,19 +46,6 @@ extension StripeCardReaderService: CardReaderService {
         connectedReadersSubject.eraseToAnyPublisher()
     }
 
-    public var serviceStatus: AnyPublisher<CardReaderServiceStatus, Never> {
-        serviceStatusSubject.eraseToAnyPublisher()
-    }
-
-    public var discoveryStatus: AnyPublisher<CardReaderServiceDiscoveryStatus, Never> {
-        discoveryStatusSubject.removeDuplicates().eraseToAnyPublisher()
-    }
-
-    /// The Publisher that emits the payment status
-    public var paymentStatus: AnyPublisher<PaymentStatus, Never> {
-        paymentStatusSubject.eraseToAnyPublisher()
-    }
-
     /// The Publisher that emits reader events
     public var readerEvents: AnyPublisher<CardReaderEvent, Never> {
         readerEventsSubject.eraseToAnyPublisher()

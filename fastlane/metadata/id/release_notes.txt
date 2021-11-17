@@ -1,3 +1,3 @@
-Penjual yang menggunakan WooCommerce Shipping & Tax sekarang dapat membuat beberapa label pengiriman untuk sebuah pesanan. Anda dapat memindahkan item antarpaket dengan cepat agar sesuai dengan cara Anda untuk mengirimkan produk ke pelanggan. Kami juga telah mengatasi sejumlah gangguan yang dilaporkan untuk halaman yang sama.
+Beberapa penjual kesulitan memuat detail pesanan akibat masalah teknis terkait penyusunan nama kolom pada API REST. Kami sudah melakukan perbaikan atas masalah tersebut jika Anda mengalaminya.
 
-Kami juga meningkatkan aksesibilitas berdasarkan feedback. Terima kasih!
+RIlis ini memuat sejumlah perbaikan lain berdasarkan feedback Anda. Mohon terus berikan feedback – kami siap mendengarkan feedback Anda!

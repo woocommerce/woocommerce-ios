@@ -106,6 +106,10 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     func userDidCancelFlow() {
         analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCanceled())
     }
+
+    func createSummaryViewModel() -> SimplePaymentsSummaryViewModel {
+        SimplePaymentsSummaryViewModel(providedAmount: amount)
+    }
 }
 
 // MARK: Helpers

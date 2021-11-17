@@ -229,7 +229,7 @@ public enum WooAnalyticsStat: String {
     // MARK: Order List Sorting/Filtering
     //
     case orderListViewFilterOptionsTapped = "order_list_view_filter_options_tapped"
-    
+
     // MARK: Shipping Labels Events
     //
     case shippingLabelRefundRequested = "shipping_label_refund_requested"

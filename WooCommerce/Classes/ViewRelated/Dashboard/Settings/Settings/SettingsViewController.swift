@@ -251,9 +251,9 @@ private extension SettingsViewController {
             ServiceLocator.analytics.track(.settingsLogoutConfirmation, withProperties: ["result": "negative"])
         }
 
-        alertController.addDefaultActionWithTitle(Localization.LogoutAlert.logoutButtonTitle) { _ in
+        alertController.addDefaultActionWithTitle(Localization.LogoutAlert.logoutButtonTitle) { [weak self] _ in
             ServiceLocator.analytics.track(.settingsLogoutConfirmation, withProperties: ["result": "positive"])
-            self.logOutUser()
+            self?.logOutUser()
         }
 
         present(alertController, animated: true)

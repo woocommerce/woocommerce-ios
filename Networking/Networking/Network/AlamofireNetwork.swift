@@ -79,14 +79,13 @@ public class AlamofireNetwork: Network {
     /// - Returns: A publisher that emits the result of the given request.
     public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
-        let subject = PassthroughSubject<Swift.Result<Data, Error>, Never>()
 
-        Alamofire.request(authenticated).responseData { [weak subject] response in
-            let result = response.result.toSwiftResult()
-            subject?.send(result)
-            subject?.send(completion: .finished)
-        }
-        return subject.eraseToAnyPublisher()
+        return Future() { promise in
+            Alamofire.request(authenticated).responseData { response in
+                let result = response.result.toSwiftResult()
+                promise(Swift.Result.success(result))
+            }
+        }.eraseToAnyPublisher()
     }
 
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,

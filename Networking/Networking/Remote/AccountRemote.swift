@@ -64,6 +64,29 @@ public class AccountRemote: Remote {
         return enqueue(request, mapper: mapper)
     }
 
+    /// Checks the WooCommerce site settings endpoint to confirm if the WooCommerce plugin is available or not.
+    /// We pass an empty `_fields` just to reduce the response payload size, as we don't care about the contents.
+    /// The current use case is for a workaround for Jetpack Connection Package sites.
+    /// - Parameter siteID: Site for which we will fetch the site settings.
+    /// - Returns: A publisher that emits a boolean which indicates if WooCommerce plugin is active.
+    public func checkIfWooCommerceIsActive(for siteID: Int64) -> AnyPublisher<Result<Bool, Error>, Never> {
+        let parameters = ["_fields": ""]
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Constants.wooCommerceSiteSettingsPath, parameters: parameters)
+        let mapper = WooCommerceAvailabilityMapper()
+        return enqueue(request, mapper: mapper)
+    }
+
+    /// Fetches WordPress site settings for site metadata (e.g. name, description, URL).
+    /// The current use case is for a workaround for Jetpack Connection Package sites.
+    /// - Parameter siteID: Site for which we will fetch the site settings.
+    /// - Returns: A publisher that emits the WordPress site settings.
+    public func fetchWordPressSiteSettings(for siteID: Int64) -> AnyPublisher<Result<WordPressSiteSettings, Error>, Never> {
+        let path = "sites/\(siteID)/settings"
+        let request = DotcomRequest(wordpressApiVersion: .wpMark2, method: .get, path: path, parameters: nil)
+        let mapper = WordPressSiteSettingsMapper()
+        return enqueue(request, mapper: mapper)
+    }
+
     /// Loads the site plan for the default site associated with the WordPress.com user.
     ///
     public func loadSitePlan(for siteID: Int64, completion: @escaping (Result<SitePlan, Error>) -> Void) {
@@ -76,5 +99,13 @@ public class AccountRemote: Remote {
         let mapper = SitePlanMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
+    }
+}
+
+// MARK: - Constants
+//
+private extension AccountRemote {
+    enum Constants {
+        static let wooCommerceSiteSettingsPath: String = "settings"
     }
 }

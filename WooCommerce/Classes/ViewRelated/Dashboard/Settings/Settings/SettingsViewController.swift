@@ -192,7 +192,7 @@ private extension SettingsViewController {
     func configureLicenses(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Software Licenses", comment: "Navigates to screen with third party software licenses")
+        cell.textLabel?.text = NSLocalizedString("Third Party Licenses", comment: "Navigates to screen with third party software licenses")
     }
 
     func configureAppSettings(cell: BasicTableViewCell) {

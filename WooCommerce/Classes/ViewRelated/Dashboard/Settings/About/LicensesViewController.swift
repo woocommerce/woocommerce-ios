@@ -34,7 +34,7 @@ private extension LicensesViewController {
     /// Set the title and back button.
     ///
     func configureNavigation() {
-        title = NSLocalizedString("Software Licenses", comment: "Software Licenses (information page title)")
+        title = NSLocalizedString("Third Party Licenses", comment: "Software Licenses (information page title)")
     }
 
     /// Setup the main view

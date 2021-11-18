@@ -109,13 +109,15 @@ private extension OrdersRootViewController {
     /// Simple Payments: Depends on the local feature flag, experimental feature toggle and the inPersonPayments state.
     ///
     func configureNavigationButtons(isSimplePaymentsExperimentalToggleEnabled: Bool) {
+        let isOrderCreationEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation)
         let shouldShowSimplePaymentsButton: Bool = {
             let isInPersonPaymentsConfigured = inPersonPaymentsUseCase.state == .completed
             return isSimplePaymentsExperimentalToggleEnabled && isInPersonPaymentsConfigured
         }()
         let buttons: [UIBarButtonItem?] = [
             ordersViewController.createSearchBarButtonItem(),
-            shouldShowSimplePaymentsButton ? ordersViewController.createAddSimplePaymentsOrderItem() : nil
+            ordersViewController.createAddOrderItem(isOrderCreationEnabled: isOrderCreationEnabled,
+                                                    shouldShowSimplePaymentsButton: shouldShowSimplePaymentsButton)
         ]
         navigationItem.rightBarButtonItems = buttons.compactMap { $0 }
     }

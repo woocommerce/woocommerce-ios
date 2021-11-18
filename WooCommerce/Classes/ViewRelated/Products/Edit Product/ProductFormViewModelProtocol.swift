@@ -153,17 +153,20 @@ extension ProductFormViewModelProtocol {
 
     /// Returns `.publish` when the product does not exists remotely and it's gonna be published for the first time.
     /// Returns `.publish` when the product is going to be published from a different status (eg: from draft).
-    /// Returns `.saveVariation` when saving a variation
+    /// Returns `.saveVariation` when save variation
     /// Returns `.save` for any other case.
     ///
     func saveMessageType(for productStatus: ProductStatus) -> SaveMessageType {
         switch productStatus {
         case .publish where !productModel.existsRemotely || originalProductModel.status != .publish:
             return .publish
-        case .custom("variation"):
-            return .saveVariation
         default:
-            return .save
+            if self is ProductVariationFormViewModel {
+                return .saveVariation
+            }
+            else {
+                return .save
+            }
         }
     }
 }

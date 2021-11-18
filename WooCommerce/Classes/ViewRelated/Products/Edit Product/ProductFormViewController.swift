@@ -609,15 +609,7 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func saveProduct(status: ProductStatus? = nil) {
         let productStatus = status ?? product.status
-        var messageType = viewModel.saveMessageType(for: productStatus)
-
-        // Set messageType to `saveVariation`
-        // This will change Progress view title and message for variation save action.
-        // Fix for the issue: https://github.com/woocommerce/woocommerce-ios/issues/4847
-        if viewModel is ProductVariationFormViewModel {
-            messageType = .saveVariation
-        }
-
+        let messageType = viewModel.saveMessageType(for: productStatus)
         showSavingProgress(messageType)
         saveImagesAndProductRemotely(status: status)
     }

@@ -48,10 +48,9 @@ struct ProductsTabProductViewModel {
     /// See more: https://github.com/woocommerce/woocommerce-ios/issues/4846
     /// 
     func createNameLabel() -> String {
-        var name = name
         if let variationID = productVariation?.productVariationID {
             // Add product variation ID with name
-            name = "\(Localization.variationID(variationID: "\(variationID)"))\n\(name)"
+            return "\(Localization.variationID(variationID: "\(variationID)"))\n\(name)"
         }
         return name
     }

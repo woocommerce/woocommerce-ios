@@ -40,7 +40,7 @@ private extension NewOrder {
 
 struct NewOrder_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = NewOrderViewModel(siteID: 123) { _ in }
+        let viewModel = NewOrderViewModel(siteID: 123)
 
         NavigationView {
             NewOrder(viewModel: viewModel)

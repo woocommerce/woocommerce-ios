@@ -106,6 +106,12 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     func userDidCancelFlow() {
         analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCanceled())
     }
+
+    /// Disable cancel button while performing the create order operation
+    ///
+    func disableCancelButton() -> Bool {
+        return loading
+    }
 }
 
 // MARK: Helpers

@@ -134,7 +134,7 @@ struct SimplePaymentsAmount: View {
                     dismiss()
                     viewModel.userDidCancelFlow()
                 })
-                    .disabled(viewModel.loading)
+                    .disabled(viewModel.disableCancelButton())
             }
         }
     }

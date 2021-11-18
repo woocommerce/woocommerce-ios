@@ -27,7 +27,14 @@ final class FilterOrderListViewModel: FilterListViewModel {
         }
 
         var readableString: String {
-            [orderStatus.description, dateRange.description].compactMap { $0 }.joined(separator: ", ")
+            var readable: [String] = []
+            if let orderStatus = orderStatus, orderStatus.count > 0 {
+                readable = orderStatus.map { $0.rawValue.capitalized }
+            }
+            if let dateRange = dateRange {
+                readable.append(dateRange.description)
+            }
+            return readable.joined(separator: ", ")
         }
     }
 

@@ -118,7 +118,7 @@ struct SimplePaymentsAmount: View {
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
             .disabled(viewModel.shouldDisableDoneButton)
 
-            LazyNavigationLink(destination: SimplePaymentsSummary(), isActive: $showSummaryView) {
+            LazyNavigationLink(destination: SimplePaymentsSummary(viewModel: viewModel.createSummaryViewModel()), isActive: $showSummaryView) {
                 EmptyView()
             }
         }

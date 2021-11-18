@@ -108,15 +108,14 @@ private extension OrdersRootViewController {
     /// Search: Is always present.
     /// Simple Payments: Depends on the local feature flag, experimental feature toggle and the inPersonPayments state.
     ///
-    func configureNavigationButtons(isSimplePaymentsExperimentalToggleEnabled: Bool) {
-        let isOrderCreationEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation)
+    func configureNavigationButtons(isSimplePaymentsExperimentalToggleEnabled: Bool, isOrderCreationExperimentalToggleEnabled: Bool) {
         let shouldShowSimplePaymentsButton: Bool = {
             let isInPersonPaymentsConfigured = inPersonPaymentsUseCase.state == .completed
             return isSimplePaymentsExperimentalToggleEnabled && isInPersonPaymentsConfigured
         }()
         let buttons: [UIBarButtonItem?] = [
             ordersViewController.createSearchBarButtonItem(),
-            ordersViewController.createAddOrderItem(isOrderCreationEnabled: isOrderCreationEnabled,
+            ordersViewController.createAddOrderItem(isOrderCreationEnabled: isOrderCreationExperimentalToggleEnabled,
                                                     shouldShowSimplePaymentsButton: shouldShowSimplePaymentsButton)
         ]
         navigationItem.rightBarButtonItems = buttons.compactMap { $0 }
@@ -164,11 +163,29 @@ private extension OrdersRootViewController {
     /// Fetches the latest value of the SimplePayments experimental feature toggle and re configures navigation buttons.
     ///
     func fetchSimplePaymentsExperimentalToggleAndConfigureNavigationButtons() {
-        let action = AppSettingsAction.loadSimplePaymentsSwitchState { [weak self] result in
-            let isEnabled = (try? result.get()) ?? false
-            self?.configureNavigationButtons(isSimplePaymentsExperimentalToggleEnabled: isEnabled)
+        let group = DispatchGroup()
+
+        var isSimplePaymentsEnabled = false
+        var isOrderCreationEnabled = false
+
+        group.enter()
+        let simplePaymentsAction = AppSettingsAction.loadSimplePaymentsSwitchState { result in
+            isSimplePaymentsEnabled = (try? result.get()) ?? false
+            group.leave()
         }
-        ServiceLocator.stores.dispatch(action)
+        ServiceLocator.stores.dispatch(simplePaymentsAction)
+
+        group.enter()
+        let orderCreationAction = AppSettingsAction.loadOrderCreationSwitchState { result in
+            isOrderCreationEnabled = (try? result.get()) ?? false
+            group.leave()
+        }
+        ServiceLocator.stores.dispatch(orderCreationAction)
+
+        group.notify(queue: .main) { [weak self] in
+            self?.configureNavigationButtons(isSimplePaymentsExperimentalToggleEnabled: isSimplePaymentsEnabled,
+                                             isOrderCreationExperimentalToggleEnabled: isOrderCreationEnabled)
+        }
     }
 }
 

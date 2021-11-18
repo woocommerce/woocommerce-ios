@@ -12,18 +12,6 @@ final class MockCardReaderService: CardReaderService {
         connectedReadersSubject.eraseToAnyPublisher()
     }
 
-    var serviceStatus: AnyPublisher<CardReaderServiceStatus, Never> {
-        CurrentValueSubject<CardReaderServiceStatus, Never>(.ready).eraseToAnyPublisher()
-    }
-
-    var discoveryStatus: AnyPublisher<CardReaderServiceDiscoveryStatus, Never> {
-        discoveryStatusSubject.eraseToAnyPublisher()
-    }
-
-    var paymentStatus: AnyPublisher<PaymentStatus, Never> {
-        CurrentValueSubject<PaymentStatus, Never>(.notReady).eraseToAnyPublisher()
-    }
-
     var readerEvents: AnyPublisher<CardReaderEvent, Never> {
         PassthroughSubject<CardReaderEvent, Never>().eraseToAnyPublisher()
     }

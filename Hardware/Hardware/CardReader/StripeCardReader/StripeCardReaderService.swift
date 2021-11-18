@@ -10,9 +10,7 @@ public final class StripeCardReaderService: NSObject {
 
     private var discoveredReadersSubject = CurrentValueSubject<[CardReader], Error>([])
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
-    private let serviceStatusSubject = CurrentValueSubject<CardReaderServiceStatus, Never>(.ready)
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
-    private let paymentStatusSubject = CurrentValueSubject<PaymentStatus, Never>(.notReady)
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
     private let softwareUpdateSubject = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none)
 
@@ -44,19 +42,6 @@ extension StripeCardReaderService: CardReaderService {
 
     public var connectedReaders: AnyPublisher<[CardReader], Never> {
         connectedReadersSubject.eraseToAnyPublisher()
-    }
-
-    public var serviceStatus: AnyPublisher<CardReaderServiceStatus, Never> {
-        serviceStatusSubject.eraseToAnyPublisher()
-    }
-
-    public var discoveryStatus: AnyPublisher<CardReaderServiceDiscoveryStatus, Never> {
-        discoveryStatusSubject.removeDuplicates().eraseToAnyPublisher()
-    }
-
-    /// The Publisher that emits the payment status
-    public var paymentStatus: AnyPublisher<PaymentStatus, Never> {
-        paymentStatusSubject.eraseToAnyPublisher()
     }
 
     /// The Publisher that emits reader events

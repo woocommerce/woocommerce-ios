@@ -279,7 +279,8 @@ private extension StoreStatsV4PeriodViewController {
         timeRangeBarView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         visitorsStackView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
 
-        // Visitor empty view - insert it at the second-to-last index
+        // Visitor empty view - insert it at the second-to-last index,
+        // since we need the footer view (with height = 20) as the last item in the stack view.
         let emptyViewIndex = max(0, visitorsStackView.arrangedSubviews.count - 2)
         visitorsStackView.insertArrangedSubview(visitorsEmptyView, at: emptyViewIndex)
         visitorsEmptyView.isHidden = true

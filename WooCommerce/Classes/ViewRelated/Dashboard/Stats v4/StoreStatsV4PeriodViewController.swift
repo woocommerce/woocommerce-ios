@@ -153,37 +153,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
                                                              roundSmallNumbers: false) ?? String()
     }
 
-    private lazy var visitorsEmptyView: UIView = {
-        let containerView = UIView(frame: .zero)
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-
-        let emptyView = UIView(frame: .zero)
-        emptyView.backgroundColor = .systemColor(.systemGroupedBackground)
-        emptyView.layer.cornerRadius = 2.0
-        emptyView.translatesAutoresizingMaskIntoConstraints = false
-
-        let jetpackImageView = UIImageView(image: .jetpackLogoImage.withRenderingMode(.alwaysTemplate))
-        jetpackImageView.contentMode = .scaleAspectFit
-        jetpackImageView.tintColor = .jetpackGreen
-        jetpackImageView.translatesAutoresizingMaskIntoConstraints = false
-
-        containerView.addSubview(emptyView)
-        containerView.addSubview(jetpackImageView)
-
-        NSLayoutConstraint.activate([
-            containerView.widthAnchor.constraint(equalToConstant: 48),
-            emptyView.widthAnchor.constraint(equalToConstant: 32),
-            emptyView.heightAnchor.constraint(equalToConstant: 10),
-            emptyView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            emptyView.topAnchor.constraint(equalTo: jetpackImageView.bottomAnchor),
-            jetpackImageView.widthAnchor.constraint(equalToConstant: 14),
-            jetpackImageView.heightAnchor.constraint(equalToConstant: 14),
-            jetpackImageView.leadingAnchor.constraint(equalTo: emptyView.trailingAnchor),
-            jetpackImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 4)
-        ])
-
-        return containerView
-    }()
+    private lazy var visitorsEmptyView = StoreStatsSiteVisitEmptyView()
     // MARK: - Initialization
 
     /// Designated Initializer

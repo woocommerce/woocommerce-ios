@@ -148,7 +148,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
             self.track(.cardReaderSoftwareUpdateCancelTapped)
             self.softwareUpdateCancelable?.cancel(completion: { [weak self] result in
                 if case .failure(let error) = result {
-                    print("=== error canceling software update: \(error)")
+                    DDLogError("💳 Error: canceling software update \(error)")
                 } else {
                     self?.track(.cardReaderSoftwareUpdateCanceled)
                     self?.completeCardReaderUpdate(success: false)

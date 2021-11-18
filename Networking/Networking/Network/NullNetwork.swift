@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Alamofire
 
@@ -14,6 +15,10 @@ public final class NullNetwork: Network {
     public func responseData(for request: URLRequestConvertible,
                              completion: @escaping (Swift.Result<Data, Error>) -> Void) {
 
+    }
+
+    public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
+        Empty<Swift.Result<Data, Error>, Never>().eraseToAnyPublisher()
     }
 
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,

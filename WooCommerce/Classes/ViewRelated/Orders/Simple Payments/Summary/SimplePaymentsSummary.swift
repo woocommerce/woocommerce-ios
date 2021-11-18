@@ -8,40 +8,40 @@ struct SimplePaymentsSummary: View {
     ///
     @State var showEditNote = false
 
-    /// `ViewModel` to drive the `EditOrderNote` view
-    /// Temporarily here, to be moved to `SimplePaymentsSummaryViewModel` when available.
+    /// ViewModel to drive the view content
     ///
-    @StateObject var noteViewModel = SimplePaymentsNoteViewModel()
+    @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
     var body: some View {
         VStack {
             ScrollView {
                 VStack(spacing: Layout.noSpacing) {
 
-                    CustomAmountSection()
+                    CustomAmountSection(viewModel: viewModel)
 
                     Spacer(minLength: Layout.spacerHeight)
 
-                    EmailSection()
+                    EmailSection(viewModel: viewModel)
 
                     Spacer(minLength: Layout.spacerHeight)
 
-                    PaymentsSection()
+                    PaymentsSection(viewModel: viewModel)
 
                     Spacer(minLength: Layout.spacerHeight)
 
-                    NoteSection(content: noteViewModel.newNote, showEditNote: $showEditNote)
+                    NoteSection(viewModel: viewModel, showEditNote: $showEditNote)
                 }
             }
 
-            TakePaymentSection()
+            TakePaymentSection(viewModel: viewModel)
         }
         .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(Localization.title)
         .sheet(isPresented: $showEditNote) {
             EditCustomerNote(dismiss: {
                 showEditNote.toggle()
-            }, viewModel: noteViewModel)
+                viewModel.reloadContent()
+                }, viewModel: viewModel.noteViewModel)
         }
     }
 }
@@ -49,6 +49,11 @@ struct SimplePaymentsSummary: View {
 /// Represents the Custom amount section
 ///
 private struct CustomAmountSection: View {
+
+    /// ViewModel to drive the view content.
+    ///
+    @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
+
     var body: some View {
         Group {
             Divider()
@@ -62,8 +67,7 @@ private struct CustomAmountSection: View {
                 Text(SimplePaymentsSummary.Localization.customAmount)
                     .headlineStyle()
 
-                // Temporary data
-                Text("$40.00")
+                Text(viewModel.providedAmount)
                     .headlineStyle()
                     .frame(maxWidth: .infinity, alignment: .trailing)
             }
@@ -79,13 +83,19 @@ private struct CustomAmountSection: View {
 /// Represents the email section
 ///
 private struct EmailSection: View {
+
+    /// ViewModel to drive the view content
+    ///
+    @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
+
     var body: some View {
         Group {
             Divider()
 
             TitleAndTextFieldRow(title: SimplePaymentsSummary.Localization.email,
                                  placeholder: SimplePaymentsSummary.Localization.emailPlaceHolder,
-                                 text: .constant("")) // Temporary data
+                                 text: $viewModel.email,
+                                 keyboardType: .emailAddress)
                 .background(Color(.listForeground))
 
             Divider()
@@ -96,6 +106,11 @@ private struct EmailSection: View {
 /// Represents the Payments Section
 ///
 private struct PaymentsSection: View {
+
+    /// ViewModel to drive the view content.
+    ///
+    @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
+
     var body: some View {
         Group {
             Divider()
@@ -106,15 +121,12 @@ private struct PaymentsSection: View {
                     .headlineStyle()
                     .padding([.horizontal, .top])
 
-                // Temporary data
-                TitleAndValueRow(title: SimplePaymentsSummary.Localization.subtotal, value: .content("$40.0"), selectable: false) {}
+                TitleAndValueRow(title: SimplePaymentsSummary.Localization.subtotal, value: .content(viewModel.providedAmount), selectable: false) {}
 
-                // Temporary data
-                TitleAndToggleRow(title: SimplePaymentsSummary.Localization.chargeTaxes, isOn: .constant(false))
+                TitleAndToggleRow(title: SimplePaymentsSummary.Localization.chargeTaxes, isOn: $viewModel.enableTaxes)
                     .padding([.leading, .trailing])
 
-                // Temporary data
-                TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content("$40.0"), bold: true, selectable: false) {}
+                TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content(viewModel.total), bold: true, selectable: false) {}
             }
             .background(Color(.listForeground))
 
@@ -127,9 +139,9 @@ private struct PaymentsSection: View {
 ///
 private struct NoteSection: View {
 
-    /// Order note content.
+    /// ViewModel to drive the view content.
     ///
-    let content: String
+    @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
     /// Defines if the order note screen should be shown or not.
     ///
@@ -151,7 +163,7 @@ private struct NoteSection: View {
                     }
                     .foregroundColor(Color(.accent))
                     .bodyStyle()
-                    .renderedIf(content.isNotEmpty)
+                    .renderedIf(viewModel.noteContent.isNotEmpty)
                 }
 
                 noteContent()
@@ -167,9 +179,9 @@ private struct NoteSection: View {
     /// Builds a button to add a note if no note is present. If there is a note present only displays it
     ///
     @ViewBuilder private func noteContent() -> some View {
-        if content.isNotEmpty {
+        if viewModel.noteContent.isNotEmpty {
 
-            Text(content)
+            Text(viewModel.noteContent)
                 .bodyStyle()
 
         } else {
@@ -194,12 +206,16 @@ private struct NoteSection: View {
 /// Represents the bottom take payment button
 ///
 private struct TakePaymentSection: View {
+
+    /// ViewModel to drive the view content.
+    ///
+    @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
+
     var body: some View {
         VStack {
             Divider()
 
-            // Temporary data
-            Button(SimplePaymentsSummary.Localization.takePayment(total: "$40.0"), action: {
+            Button(SimplePaymentsSummary.Localization.takePayment(total: viewModel.total), action: {
                 print("Take payment pressed")
             })
             .buttonStyle(PrimaryButtonStyle())
@@ -253,19 +269,22 @@ private extension SimplePaymentsSummary {
 // MARK: Previews
 struct SimplePaymentsSummary_Preview: PreviewProvider {
     static var previews: some View {
-        SimplePaymentsSummary()
+        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0"))
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light")
 
-        SimplePaymentsSummary(noteViewModel: .init(originalNote: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard."))
+        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(
+            providedAmount: "$40.0",
+            noteContent: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard."
+        ))
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light Content")
 
-        SimplePaymentsSummary()
+        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0"))
             .environment(\.colorScheme, .dark)
             .previewDisplayName("Dark")
 
-        SimplePaymentsSummary()
+        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0"))
             .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
             .previewDisplayName("Accessibility")
     }

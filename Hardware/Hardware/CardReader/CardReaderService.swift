@@ -10,15 +10,6 @@ public protocol CardReaderService {
     /// The Publisher that emits the connected readers
     var connectedReaders: AnyPublisher<[CardReader], Never> { get }
 
-    /// The Publisher that emits the service status
-    var serviceStatus: AnyPublisher<CardReaderServiceStatus, Never> { get }
-
-    /// The Publisher that emits the service discovery status
-    var discoveryStatus: AnyPublisher<CardReaderServiceDiscoveryStatus, Never> { get }
-
-    /// The Publisher that emits the payment status
-    var paymentStatus: AnyPublisher<PaymentStatus, Never> { get }
-
     /// The Publisher that emits reader events
     var readerEvents: AnyPublisher<CardReaderEvent, Never> { get }
 

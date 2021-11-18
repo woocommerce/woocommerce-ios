@@ -171,7 +171,7 @@ private extension OrderStatusFilterViewController {
         case let cell as BasicTableViewCell:
             configureStatus(cell: cell, row: row)
         default:
-            fatalError()
+            assertionFailure("The type of cell (\(type(of: cell)) does not match the type (\(row.type)) for row: \(row)")
         }
     }
 

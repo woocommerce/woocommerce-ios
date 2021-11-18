@@ -1,9 +1,23 @@
 import Combine
 import Foundation
 
+/// Protocol for `AccountRemote` mainly used for mocking.
+///
+/// The required methods are intentionally incomplete. Feel free to add the other ones.
+///
+public protocol AccountRemoteProtocol {
+    func loadAccount(completion: @escaping (Result<Account, Error>) -> Void)
+    func loadAccountSettings(for userID: Int64, completion: @escaping (Result<AccountSettings, Error>) -> Void)
+    func updateAccountSettings(for userID: Int64, tracksOptOut: Bool, completion: @escaping (Result<AccountSettings, Error>) -> Void)
+    func loadSites() -> AnyPublisher<Result<[Site], Error>, Never>
+    func checkIfWooCommerceIsActive(for siteID: Int64) -> AnyPublisher<Result<Bool, Error>, Never>
+    func fetchWordPressSiteSettings(for siteID: Int64) -> AnyPublisher<Result<WordPressSiteSettings, Error>, Never>
+    func loadSitePlan(for siteID: Int64, completion: @escaping (Result<SitePlan, Error>) -> Void)
+}
+
 /// Account: Remote Endpoints
 ///
-public class AccountRemote: Remote {
+public class AccountRemote: Remote, AccountRemoteProtocol {
 
     /// Loads the Account Details associated with the Credential's authToken.
     ///

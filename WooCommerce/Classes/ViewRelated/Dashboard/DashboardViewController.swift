@@ -414,6 +414,7 @@ private extension DashboardViewController {
         ServiceLocator.stores.site.sink { [weak self] site in
             guard let self = self else { return }
             self.updateUI(site: site)
+            self.reloadData(forced: true)
         }.store(in: &cancellables)
     }
 }

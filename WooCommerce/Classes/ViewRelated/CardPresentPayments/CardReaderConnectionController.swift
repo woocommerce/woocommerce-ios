@@ -455,6 +455,9 @@ private extension CardReaderConnectionController {
                     self.softwareUpdateCancelable = cancelable
                     self.state = .updating(progress: 0)
                 case .installing(progress: let progress):
+                    if progress >= 0.995 {
+                        self.softwareUpdateCancelable = nil
+                    }
                     self.state = .updating(progress: progress)
                 case .completed:
                     self.softwareUpdateCancelable = nil

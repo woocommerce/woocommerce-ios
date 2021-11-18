@@ -1,5 +1,23 @@
 import SwiftUI
 
+/// Hosting controller wrapper for `JetpackInstallIntroView`
+///
+final class JetpackInstallHostingController: UIHostingController<JetpackInstallIntroView> {
+    init(siteURL: String) {
+        super.init(rootView: JetpackInstallIntroView(siteURL: siteURL))
+    }
+
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func setDismissAction(_ dismissAction: @escaping () -> Void) {
+        rootView.dismissAction = dismissAction
+    }
+}
+
+/// Displays the intro view for the Jetpack install flow.
+///
 struct JetpackInstallIntroView: View {
     // Closure invoked when Close button is tapped
     var dismissAction: () -> Void = {}

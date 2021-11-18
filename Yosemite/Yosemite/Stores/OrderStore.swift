@@ -40,17 +40,17 @@ public class OrderStore: Store {
             retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .fetchFilteredOrders(let siteID, let statusKey, let after, let before, let deleteAllBeforeSaving, let pageSize, let onCompletion):
+        case .fetchFilteredOrders(let siteID, let statuses, let after, let before, let deleteAllBeforeSaving, let pageSize, let onCompletion):
             fetchFilteredOrders(siteID: siteID,
-                                      statusKey: statusKey,
-                                      after: after,
-                                      before: before,
-                                      deleteAllBeforeSaving: deleteAllBeforeSaving,
-                                      pageSize: pageSize,
-                                      onCompletion: onCompletion)
-        case .synchronizeOrders(let siteID, let statusKey, let after, let before, let pageNumber, let pageSize, let onCompletion):
+                                statuses: statuses,
+                                after: after,
+                                before: before,
+                                deleteAllBeforeSaving: deleteAllBeforeSaving,
+                                pageSize: pageSize,
+                                onCompletion: onCompletion)
+        case .synchronizeOrders(let siteID, let statuses, let after, let before, let pageNumber, let pageSize, let onCompletion):
             synchronizeOrders(siteID: siteID,
-                              statusKey: statusKey,
+                              statuses: statuses,
                               after: after,
                               before: before,
                               pageNumber: pageNumber,
@@ -107,14 +107,14 @@ private extension OrderStore {
     ///
     /// The orders will only be deleted if one of the executed `GET` requests succeed.
     ///
-    /// - Parameter statusKey The status to use for the filtered list. If this is not provided,
+    /// - Parameter statuses The statuses to use for the filtered list. If this is not provided,
     ///                       only the all orders list will be fetched. See `OrderStatusEnum`
     ///                       for possible values.
     /// - Parameter after Limit response to resources published after a given ISO8601 compliant date.
     /// - Parameter before Limit response to resources published before a given ISO8601 compliant date.
     ///
     func fetchFilteredOrders(siteID: Int64,
-                             statusKey: String?,
+                             statuses: [String]?,
                              after: Date?,
                              before: Date?,
                              deleteAllBeforeSaving: Bool,
@@ -150,19 +150,19 @@ private extension OrderStore {
         }
 
         // The handler for fetching requests.
-        let loadAllOrders: (String?, @escaping (() -> Void)) -> Void = { [weak self] statusKey, completion in
+        let loadAllOrders: ([String]?, @escaping (() -> Void)) -> Void = { [weak self] statuses, completion in
             guard let self = self else {
                 return
             }
             self.remote.loadAllOrders(for: siteID,
-                                 statusKey: statusKey,
-                                 after: after,
-                                 before: before,
-                                 pageNumber: pageNumber,
-                                 pageSize: pageSize) { [weak self] result in
-                                    guard let self = self else {
-                                        return
-                                    }
+                                         statuses: statuses,
+                                         after: after,
+                                         before: before,
+                                         pageNumber: pageNumber,
+                                         pageSize: pageSize) { [weak self] result in
+                guard let self = self else {
+                    return
+                }
                 serialQueue.async { [weak self] in
                     guard let self = self else {
                         completion()
@@ -188,13 +188,13 @@ private extension OrderStore {
         let group = DispatchGroup()
 
         group.enter()
-        if let statusKey = statusKey {
-            loadAllOrders(statusKey) {
+        if let statuses = statuses {
+            loadAllOrders(statuses) {
                 group.leave()
             }
         }
         else {
-            loadAllOrders(OrdersRemote.Defaults.statusAny) {
+            loadAllOrders([OrdersRemote.Defaults.statusAny]) {
                 group.leave()
             }
         }
@@ -207,7 +207,7 @@ private extension OrderStore {
     /// Retrieves the orders associated with a given Site ID (if any!).
     ///
     func synchronizeOrders(siteID: Int64,
-                           statusKey: String?,
+                           statuses: [String]?,
                            after: Date?,
                            before: Date?,
                            pageNumber: Int,
@@ -215,7 +215,7 @@ private extension OrderStore {
                            onCompletion: @escaping (TimeInterval, Error?) -> Void) {
         let startTime = Date()
         remote.loadAllOrders(for: siteID,
-                             statusKey: statusKey,
+                             statuses: statuses,
                              after: after,
                              before: before,
                              pageNumber: pageNumber,

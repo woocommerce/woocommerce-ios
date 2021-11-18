@@ -132,7 +132,7 @@ extension WooAnalyticsEvent {
 
     static func ordersListLoaded(totalDuration: TimeInterval, pageNumber: Int, filters: FilterOrderListViewModel.Filters?) -> WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .ordersListLoaded, properties: [
-            "status": filters?.orderStatus?.rawValue ?? String(),
+            "status": (filters?.orderStatus ?? []).map { $0.rawValue }.joined(separator: ","),
             "page_number": Int64(pageNumber),
             "total_duration": Double(totalDuration),
             "date_range": filters?.dateRange?.analyticsDescription ?? String()

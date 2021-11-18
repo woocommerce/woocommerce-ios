@@ -36,7 +36,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
 
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
-                             statusKey: OrderStatusEnum.processing.rawValue,
+                             statuses: [OrderStatusEnum.processing.rawValue],
                              deleteAllBeforeSaving: true)
 
         // Assert
@@ -58,7 +58,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
 
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
-                             statusKey: OrderStatusEnum.processing.rawValue,
+                             statuses: [OrderStatusEnum.processing.rawValue],
                              deleteAllBeforeSaving: false)
 
         // Assert
@@ -75,7 +75,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
 
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
-                             statusKey: OrderStatusEnum.completed.rawValue,
+                             statuses: [OrderStatusEnum.completed.rawValue],
                              deleteAllBeforeSaving: true)
 
         // Assert
@@ -90,7 +90,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
 
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
-                             statusKey: nil,
+                             statuses: nil,
                              deleteAllBeforeSaving: true)
 
         // Assert
@@ -106,7 +106,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
 
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
-                             statusKey: OrderStatusEnum.processing.rawValue,
+                             statuses: [OrderStatusEnum.processing.rawValue],
                              deleteAllBeforeSaving: true)
 
         // Assert
@@ -123,12 +123,12 @@ private extension OrderStoreTests_FetchFilteredAndAllOrders {
         OrderStore(dispatcher: Dispatcher(), storageManager: storageManager, network: network)
     }
 
-    func executeActionAndWait(using store: OrderStore, statusKey: String?, deleteAllBeforeSaving: Bool) {
+    func executeActionAndWait(using store: OrderStore, statuses: [String]?, deleteAllBeforeSaving: Bool) {
         let expectation = self.expectation(description: "fetch")
 
         let action = OrderAction.fetchFilteredOrders(
             siteID: Fixtures.siteID,
-            statusKey: statusKey,
+            statuses: statuses,
             deleteAllBeforeSaving: deleteAllBeforeSaving,
             pageSize: 50) { _, _  in
                 expectation.fulfill()

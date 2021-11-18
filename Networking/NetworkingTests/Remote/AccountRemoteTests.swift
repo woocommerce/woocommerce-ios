@@ -1,19 +1,24 @@
+import Combine
 import XCTest
 @testable import Networking
 
 
 /// AccountRemote Unit Tests
 ///
-class AccountRemoteTests: XCTestCase {
+final class AccountRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockNetwork()
+    private let network = MockNetwork()
+
+    private var cancellables = Set<AnyCancellable>()
 
     /// Repeat always!
     ///
     override func setUp() {
+        super.setUp()
         network.removeAllSimulatedResponses()
+        cancellables = []
     }
 
 
@@ -51,5 +56,29 @@ class AccountRemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
+    }
+
+    // MARK: - `loadSites`
+
+    func test_loadSites_emits_sites_in_response() throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
+
+        // When
+        let result = waitFor { promise in
+            remote.loadSites().sink { result in
+                promise(result)
+            }.store(in: &self.cancellables)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let sites = try XCTUnwrap(result.get())
+        // Sites in `sites.json` include one Jetpack CP site and one site with Jetpack-the-plugin.
+        let jcpSites = sites.filter { $0.isJetpackCPConnected }
+        let nonJCPSites = sites.filter { $0.isJetpackCPConnected == false }
+        XCTAssertEqual(jcpSites.count, 1)
+        XCTAssertEqual(nonJCPSites.count, 1)
     }
 }

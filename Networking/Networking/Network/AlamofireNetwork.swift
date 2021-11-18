@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Alamofire
 
@@ -66,6 +67,25 @@ public class AlamofireNetwork: Network {
         Alamofire.request(authenticated).responseData { response in
             completion(response.result.toSwiftResult())
         }
+    }
+
+    /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
+    /// Only one value will be emitted and the request cannot be retried.
+    ///
+    /// - Important:
+    ///     - Authentication Headers will be injected, based on the Network's Credentials.
+    ///
+    /// - Parameter request: Request that should be performed.
+    /// - Returns: A publisher that emits the result of the given request.
+    public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
+        let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
+
+        return Future() { promise in
+            Alamofire.request(authenticated).responseData { response in
+                let result = response.result.toSwiftResult()
+                promise(Swift.Result.success(result))
+            }
+        }.eraseToAnyPublisher()
     }
 
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,

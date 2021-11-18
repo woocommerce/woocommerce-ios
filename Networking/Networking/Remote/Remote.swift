@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import protocol Alamofire.URLRequestConvertible
 
@@ -127,6 +128,44 @@ public class Remote {
                 completion(.failure(error))
             }
         }
+    }
+
+    /// Returns a publisher that enqueues the specified Network Request on subscription and emits the result upon completion.
+    ///
+    /// - Important:
+    ///     - Parsing will be performed by the Mapper.
+    ///
+    /// - Parameters:
+    ///     - request: Request that should be performed.
+    ///     - mapper: Mapper entity that will be used to attempt to parse the Backend's Response.
+    ///
+    /// - Returns: A publisher that emits result upon completion.
+    func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M) -> AnyPublisher<Result<M.Output, Error>, Never> {
+        network.responseDataPublisher(for: request)
+            .map { (result: Result<Data, Error>) -> Result<M.Output, Error> in
+                switch result {
+                case .success(let data):
+                    if let dotcomError = DotcomValidator.error(from: data) {
+                        return .failure(dotcomError)
+                    }
+
+                    do {
+                        let parsed = try mapper.map(response: data)
+                        return .success(parsed)
+                    } catch {
+                        DDLogError("<> Mapping Error: \(error)")
+                        return .failure(error)
+                    }
+                case .failure(let error):
+                    return .failure(error)
+                }
+            }
+            .handleEvents(receiveOutput: { [weak self] result in
+                if let dotcomError = result.failure as? DotcomError {
+                    self?.dotcomErrorWasReceived(error: dotcomError, for: request)
+                }
+            })
+            .eraseToAnyPublisher()
     }
 
     /// Enqueues the specified Network Request for upload with multipart form data encoding.

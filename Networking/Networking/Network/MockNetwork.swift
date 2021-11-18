@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Alamofire
 
@@ -79,6 +80,20 @@ class MockNetwork: Network {
         }
 
         completion(.success(data))
+    }
+
+    func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
+        requestsForResponseData.append(request)
+
+        if let error = error(for: request) {
+            return Just<Swift.Result<Data, Error>>(.failure(error)).eraseToAnyPublisher()
+        }
+
+        guard let name = filename(for: request), let data = Loader.contentsOf(name) else {
+            return Just<Swift.Result<Data, Error>>(.failure(NetworkError.notFound)).eraseToAnyPublisher()
+        }
+
+        return Just<Swift.Result<Data, Error>>(.success(data)).eraseToAnyPublisher()
     }
 
     func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,

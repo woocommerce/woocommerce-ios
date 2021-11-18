@@ -109,13 +109,11 @@ extension OrderStatusFilterViewController: UITableViewDelegate {
         case .any:
             selected = []
             onCompletion(selected)
-            tableView.reloadData()
         default:
             selectOrDelesectRow(rows[indexPath.row])
             onCompletion(selected)
-            tableView.reloadData()
-            return
         }
+        tableView.reloadData()
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

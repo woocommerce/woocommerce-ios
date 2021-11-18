@@ -35,11 +35,11 @@ struct JetpackInstallIntroView: View {
         let attributedString = NSMutableAttributedString(
             string: String(format: Localization.installDescription, siteName),
             attributes: [.font: font,
-                         .foregroundColor: UIColor.primary,
-                         .paragraphStyle: paragraphStyle
+                         .foregroundColor: UIColor.text.withAlphaComponent(0.8),
+                         .paragraphStyle: paragraphStyle,
                         ]
         )
-        let boldSiteAddress = NSAttributedString(string: siteName, attributes: [.font: boldFont])
+        let boldSiteAddress = NSAttributedString(string: siteName, attributes: [.font: boldFont, .foregroundColor: UIColor.text])
         attributedString.replaceFirstOccurrence(of: siteName, with: boldSiteAddress)
         return attributedString
     }

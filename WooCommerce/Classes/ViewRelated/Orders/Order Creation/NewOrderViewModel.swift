@@ -14,17 +14,14 @@ final class NewOrderViewModel: ObservableObject {
     ///
     private var order: Order = .empty {
         didSet {
-            isCreateButtonEnabled = true
+            navigationTrailingItem = .create(rendered: false)
         }
     }
 
-    /// Whether to enable the Create button
+    /// Active navigation bar trailing item.
+    /// Defaults to an hidden (un-rendered) create button.
     ///
-    private(set) var isCreateButtonEnabled: Bool = false
-
-    /// True while performing the create order operation. False otherwise.
-    ///
-    @Published private(set) var isLoading: Bool = false
+    @Published private(set) var navigationTrailingItem: NavigationItem = .create(rendered: false)
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, onCompletion: @escaping (Order) -> Void) {
         self.siteID = siteID
@@ -32,12 +29,19 @@ final class NewOrderViewModel: ObservableObject {
         self.onCompletion = onCompletion
     }
 
+    /// Representation of possible navigation bar trailing buttons
+    ///
+    enum NavigationItem: Equatable {
+        case create(rendered: Bool)
+        case loading
+    }
+
     // MARK: - API Requests
     func createOrder() {
-        isLoading = true
+        navigationTrailingItem = .loading
         let action = OrderAction.createOrder(siteID: siteID, order: order) { [weak self] result in
             guard let self = self else { return }
-            self.isLoading = false
+            self.navigationTrailingItem = .create(rendered: true)
 
             switch result {
             case .success(let order):

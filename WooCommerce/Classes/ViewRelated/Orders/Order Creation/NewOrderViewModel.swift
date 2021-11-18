@@ -6,10 +6,6 @@ final class NewOrderViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
 
-    /// Closure to be executed when order is created
-    ///
-    private let onCompletion: (Order) -> Void
-
     /// Order to create remotely
     ///
     private var order: Order = .empty {
@@ -23,10 +19,9 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published private(set) var navigationTrailingItem: NavigationItem = .create(rendered: false)
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, onCompletion: @escaping (Order) -> Void) {
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
-        self.onCompletion = onCompletion
     }
 
     /// Representation of possible navigation bar trailing buttons
@@ -44,9 +39,11 @@ final class NewOrderViewModel: ObservableObject {
             self.navigationTrailingItem = .create(rendered: true)
 
             switch result {
-            case .success(let order):
-                self.onCompletion(order)
+            case .success:
+                // TODO: Handle newly created order / remove success logging
+                DDLogInfo("New order created successfully!")
             case .failure(let error):
+                // TODO: Display error in the UI (#5457)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }

@@ -11,6 +11,13 @@ final class DefaultConnectionTokenProvider: ConnectionTokenProvider {
     }
 
     public func fetchConnectionToken(_ completion: @escaping ConnectionTokenCompletionBlock) {
-        provider.fetchToken(completion: completion)
+        provider.fetchToken() { result in
+            switch result {
+            case .success(let token):
+                completion(token, nil)
+            case .failure(let error):
+                completion(nil, error)
+            }
+        }
     }
 }

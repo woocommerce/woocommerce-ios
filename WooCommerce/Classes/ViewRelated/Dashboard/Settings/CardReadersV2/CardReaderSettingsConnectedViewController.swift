@@ -64,11 +64,11 @@ private extension CardReaderSettingsConnectedViewController {
         configureUpdateView()
     }
 
+    /// Returns `false` if no reader update is available or if  `viewModel` is `nil`.
+    /// Returns `true` otherwise.
+    ///
     func isReaderUpdateAvailable() -> Bool {
-        guard let viewModel = viewModel else {
-            return false
-        }
-        return viewModel.optionalReaderUpdateAvailable == true
+        viewModel?.optionalReaderUpdateAvailable == true
     }
 
     /// Set the title and back button.

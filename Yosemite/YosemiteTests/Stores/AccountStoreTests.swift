@@ -28,6 +28,8 @@ final class AccountStoreTests: XCTestCase {
         return storageManager.viewStorage
     }
 
+    private let jcpSitePredicate = \StorageSite.isJetpackThePluginInstalled == false && \StorageSite.isJetpackConnected == true
+    private let jetpackSitePredicate = \StorageSite.isJetpackThePluginInstalled == true && \StorageSite.isJetpackConnected == true
 
     override func setUp() {
         super.setUp()
@@ -227,12 +229,16 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
-    /// Verifies that `synchronizeSites` effectively persists any retrieved sites.
+    /// Verifies that `synchronizeSites` effectively persists any retrieved sites when all sites have Jetpack-the-plugin.
     ///
     func test_synchronizeSites_effectively_persists_retrieved_sites() {
         // Given
-        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
+        let remote = MockAccountRemote()
+        remote.loadSitesResult = .success([
+            Site.fake().copy(siteID: 1, isJetpackThePluginInstalled: true, isJetpackConnected: true),
+            Site.fake().copy(siteID: 2, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        ])
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // When
@@ -244,8 +250,143 @@ final class AccountStoreTests: XCTestCase {
         }
 
         // Then
+        XCTAssertEqual(remote.invocations, [.loadSites])
+
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self, matching: jetpackSitePredicate), 2)
+    }
+
+    /// Verifies that `synchronizeSites` effectively persists a Jetpack Connection Package site and a Jetpack site.
+    ///
+    func test_synchronizeSites_effectively_persists_jetpack_cp_and_jetpack_sites() throws {
+        // Given
+        let siteIDOfJCPSite = Int64(255)
+        let siteIDOfJetpackSite = Int64(166)
+        let remote = MockAccountRemote()
+        remote.loadSitesResult = .success([
+            Site.fake().copy(siteID: siteIDOfJCPSite,
+                             name: "old name",
+                             description: "old description",
+                             url: "oldurl",
+                             isJetpackThePluginInstalled: false,
+                             isJetpackConnected: true),
+            Site.fake().copy(siteID: siteIDOfJetpackSite, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        ])
+        remote.whenFetchingWordPressSiteSettings(siteID: siteIDOfJCPSite, thenReturn: .success(.init(name: "new name",
+                                                                                                     description: "new description",
+                                                                                                     url: "newurl")))
+        remote.whenCheckingIfWooCommerceIsActive(siteID: siteIDOfJCPSite, thenReturn: .success(true))
+
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations,
+                       [.loadSites, .checkIfWooCommerceIsActive(siteID: siteIDOfJCPSite), .fetchWordPressSiteSettings(siteID: siteIDOfJCPSite)])
+
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 2)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self, matching: jcpSitePredicate), 1)
+        let jcpSite = try XCTUnwrap(viewStorage.firstObject(ofType: Storage.Site.self, matching: jcpSitePredicate))
+        XCTAssertEqual(jcpSite.siteID, siteIDOfJCPSite)
+        XCTAssertEqual(jcpSite.name, "new name")
+        XCTAssertEqual(jcpSite.tagline, "new description")
+        XCTAssertEqual(jcpSite.url, "newurl")
+        XCTAssertTrue(jcpSite.isWooCommerceActive?.boolValue == true)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self, matching: jetpackSitePredicate), 1)
+        let jetpackSite = try XCTUnwrap(viewStorage.firstObject(ofType: Storage.Site.self, matching: jetpackSitePredicate))
+        XCTAssertEqual(jetpackSite.siteID, siteIDOfJetpackSite)
+    }
+
+    /// Verifies that `synchronizeSites` effectively persists a Jetpack Connection Package site with original metadata when WP site settings request fails.
+    ///
+    func test_synchronizeSites_persists_a_jetpack_cp_site_with_existing_metadata_when_wp_settings_request_fails() throws {
+        // Given
+        let siteID = Int64(255)
+        let remote = MockAccountRemote()
+        remote.loadSitesResult = .success([
+            Site.fake().copy(siteID: siteID,
+                             name: "old name",
+                             description: "old description",
+                             url: "oldurl",
+                             isJetpackThePluginInstalled: false,
+                             isJetpackConnected: true)
+        ])
+        remote.whenFetchingWordPressSiteSettings(siteID: siteID, thenReturn: .failure(NetworkError.timeout))
+        remote.whenCheckingIfWooCommerceIsActive(siteID: siteID, thenReturn: .success(true))
+
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadSites, .checkIfWooCommerceIsActive(siteID: siteID), .fetchWordPressSiteSettings(siteID: siteID)])
+
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 1)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self, matching: jcpSitePredicate), 1)
+        let jcpSite = try XCTUnwrap(viewStorage.firstObject(ofType: Storage.Site.self, matching: jcpSitePredicate))
+        XCTAssertEqual(jcpSite.siteID, siteID)
+        XCTAssertEqual(jcpSite.name, "old name")
+        XCTAssertEqual(jcpSite.tagline, "old description")
+        XCTAssertEqual(jcpSite.url, "oldurl")
+        XCTAssertTrue(jcpSite.isWooCommerceActive?.boolValue == true)
+    }
+
+    /// Verifies that `synchronizeSites` persists a Jetpack Connection Package site with original isWooCommerceActive when WC site settings request fails.
+    ///
+    func test_synchronizeSites_persists_a_jetpack_cp_site_without_isWooCommerceActive_change_when_wc_settings_request_fails() throws {
+        // Given
+        let siteID = Int64(255)
+        let remote = MockAccountRemote()
+        remote.loadSitesResult = .success([
+            Site.fake().copy(siteID: siteID, isJetpackThePluginInstalled: false, isJetpackConnected: true, isWooCommerceActive: false)
+        ])
+        remote.whenFetchingWordPressSiteSettings(siteID: siteID, thenReturn: .success(.init(name: "new name",
+                                                                                                     description: "new description",
+                                                                                                     url: "newurl")))
+        remote.whenCheckingIfWooCommerceIsActive(siteID: siteID, thenReturn: .failure(NetworkError.timeout))
+
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadSites, .checkIfWooCommerceIsActive(siteID: siteID), .fetchWordPressSiteSettings(siteID: siteID)])
+
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self, matching: jcpSitePredicate), 1)
+        let jcpSite = try XCTUnwrap(viewStorage.firstObject(ofType: Storage.Site.self, matching: jcpSitePredicate))
+        XCTAssertEqual(jcpSite.siteID, siteID)
+        XCTAssertTrue(jcpSite.isWooCommerceActive?.boolValue == false)
+        XCTAssertFalse(jcpSite.isJetpackThePluginInstalled)
+        XCTAssertTrue(jcpSite.isJetpackConnected)
     }
 
     /// Verifies that `synchronizeSites` deletes storage sites that do not exist remotely anymore.
@@ -352,8 +493,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         let siteID = Int64(999)
-        // TODO: 5364 - remove `isJetpackThePluginInstalled` and `isJetpackConnected` once they are updated in `Site+ReadOnlyConvertible`
-        let sampleSite = sampleSitePristine().copy(siteID: siteID, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        let sampleSite = sampleSitePristine().copy(siteID: siteID)
         let group = DispatchGroup()
         group.enter()
         accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSite]) {
@@ -438,8 +578,55 @@ final class AccountStoreTests: XCTestCase {
         // Then
         let site = try XCTUnwrap(result.get())
         XCTAssertEqual(site.siteID, siteIDInSimulatedResponse)
-        XCTAssertEqual(network.requestsForResponseData.count, 1)
-        XCTAssertTrue(((network.requestsForResponseData.first?.urlRequest?.url?.absoluteString.contains("me/sites")) == true))
+    }
+
+    func test_loadAndSynchronizeSiteIfNeeded_makes_3_network_requests_when_one_site_is_jetpack_cp_connected() throws {
+        // Given
+        let network = MockNetwork()
+        let remote = MockAccountRemote()
+        let siteIDOfJCPSite = Int64(255)
+        remote.loadSitesResult = .success([
+            Site.fake().copy(siteID: 1, isJetpackThePluginInstalled: true, isJetpackConnected: true),
+            Site.fake().copy(siteID: siteIDOfJCPSite, isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        ])
+        remote.whenCheckingIfWooCommerceIsActive(siteID: siteIDOfJCPSite, thenReturn: .success(true))
+        remote.whenFetchingWordPressSiteSettings(siteID: siteIDOfJCPSite, thenReturn: .failure(NetworkError.notFound))
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let _: Void = waitFor { promise in
+            let action = AccountAction.loadAndSynchronizeSiteIfNeeded(siteID: 123) { result in
+                promise(())
+            }
+            accountStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations,
+                       [.loadSites, .checkIfWooCommerceIsActive(siteID: siteIDOfJCPSite), .fetchWordPressSiteSettings(siteID: siteIDOfJCPSite)])
+    }
+
+    func test_loadAndSynchronizeSiteIfNeeded_makes_1_network_requests_when_all_sites_have_jetpack_plugin() throws {
+        // Given
+        let network = MockNetwork()
+        let remote = MockAccountRemote()
+        let siteIDOfJCPSite = Int64(255)
+        remote.loadSitesResult = .success([
+            Site.fake().copy(siteID: 1, isJetpackThePluginInstalled: true, isJetpackConnected: true),
+            Site.fake().copy(siteID: siteIDOfJCPSite, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        ])
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let _: Void = waitFor { promise in
+            let action = AccountAction.loadAndSynchronizeSiteIfNeeded(siteID: 123) { result in
+                promise(())
+            }
+            accountStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadSites])
     }
 }
 

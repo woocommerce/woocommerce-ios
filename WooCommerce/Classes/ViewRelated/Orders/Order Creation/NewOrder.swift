@@ -15,17 +15,15 @@ struct NewOrder: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
-                    viewModel.createOrder()
-                }, label: {
-                    if viewModel.isLoading {
-                        ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                            .accentColor(Color(.navigationBarLoadingIndicator))
-                    } else {
-                        Text(Localization.createButton)
+                switch viewModel.navigationTrailingItem {
+                case .create(let rendered):
+                    Button(Localization.createButton) {
+                        viewModel.createOrder()
                     }
-                })
-                    .renderedIf(viewModel.isCreateButtonEnabled)
+                        .renderedIf(rendered)
+                case .loading:
+                    ProgressView()
+                }
             }
         }
         .wooNavigationBarStyle()

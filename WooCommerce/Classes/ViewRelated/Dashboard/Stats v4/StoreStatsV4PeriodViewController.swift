@@ -446,14 +446,24 @@ private extension StoreStatsV4PeriodViewController {
 
 // MARK: - UI Updates
 //
-extension StoreStatsV4PeriodViewController {
+private extension StoreStatsV4PeriodViewController {
     func updateSiteVisitStats(mode: SiteVisitStatsMode) {
         // Hides site visit stats for "today"
         guard timeRange != .today else {
             visitorsStackView.isHidden = true
             return
         }
-        visitorsStackView.isHidden = (mode == .hidden)
+
+        let jcpSupport = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
+        switch mode {
+        case .hidden:
+            visitorsStackView.isHidden = true
+        case .redactedDueToJetpack where !jcpSupport:
+            visitorsStackView.isHidden = true
+        default:
+            visitorsStackView.isHidden = false
+        }
+        reloadSiteFields()
     }
 }
 
@@ -512,16 +522,12 @@ private extension StoreStatsV4PeriodViewController {
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateSiteVisitStats(selectedIndex: Int?) {
-        guard siteVisitStatsMode != .hidden else {
-            return
-        }
         updateSiteVisitStats(mode: siteVisitStatsMode)
 
-        // TODO-5450: Update this check when JCP site is listed and selected
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
-            visitorsData.isHidden = true
-            visitorsEmptyView.isHidden = false
-        } else {
+        switch siteVisitStatsMode {
+        case .hidden, .redactedDueToJetpack:
+            break
+        case .default:
             guard let selectedIndex = selectedIndex else {
                 reloadSiteFields()
                 return
@@ -709,15 +715,8 @@ private extension StoreStatsV4PeriodViewController {
         let visitStatsElements: [Any] = {
             switch siteVisitStatsMode {
             case .default:
-                // TODO-5450: Temporary solution to make the empty view show up.
-                // Remove this when JCP site is listed and can be selected.
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
-                    return [visitorsTitle as Any,
-                            visitorsEmptyView as Any]
-                } else {
-                    return [visitorsTitle as Any,
-                            visitorsData as Any]
-                }
+                return [visitorsTitle as Any,
+                        visitorsData as Any]
             case .redactedDueToJetpack:
                 return [visitorsTitle as Any,
                         visitorsEmptyView as Any]
@@ -754,12 +753,15 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func reloadSiteFields() {
-        // TODO-5450: Temporary solution to make the empty view show up.
-        // Remove this when JCP site is listed and can be selected.
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
-            visitorsData.isHidden = true
-            visitorsEmptyView.isHidden = false
-        } else {
+        switch siteVisitStatsMode {
+        case .hidden:
+            break
+        case .redactedDueToJetpack:
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
+                visitorsData.isHidden = true
+                visitorsEmptyView.isHidden = false
+            }
+        case .default:
             guard visitorsData != nil else {
                 return
             }

@@ -24,7 +24,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     /// Whether site visit stats can be shown
     var siteVisitStatsMode: SiteVisitStatsMode = .default {
         didSet {
-            storeStatsPeriodViewController.updateSiteVisitStats(mode: siteVisitStatsMode)
+            storeStatsPeriodViewController.siteVisitStatsMode = siteVisitStatsMode
         }
     }
 

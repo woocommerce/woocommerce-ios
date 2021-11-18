@@ -16,11 +16,12 @@ struct NewOrder: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 switch viewModel.navigationTrailingItem {
-                case .create(let rendered):
+                case .none:
+                    EmptyView()
+                case .create:
                     Button(Localization.createButton) {
                         viewModel.createOrder()
                     }
-                        .renderedIf(rendered)
                 case .loading:
                     ProgressView()
                 }

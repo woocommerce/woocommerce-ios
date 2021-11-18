@@ -6,12 +6,12 @@ class NewOrderViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
 
-    func test_view_model_starts_with_create_button_disabled() {
+    func test_view_model_starts_with_create_button_hidden() {
         // Given
         let viewModel = NewOrderViewModel(siteID: sampleSiteID)
 
         // Then
-        XCTAssertEqual(viewModel.navigationTrailingItem, .create(rendered: false))
+        XCTAssertEqual(viewModel.navigationTrailingItem, .none)
     }
 
     func test_loading_indicator_is_enabled_during_network_request() {
@@ -36,7 +36,7 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(navigationItem, .loading)
     }
 
-    func test_loading_indicator_is_disabled_after_the_network_operation_completes() {
+    func test_create_button_is_enabled_after_the_network_operation_completes() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
@@ -53,6 +53,6 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.createOrder()
 
         // Then
-        XCTAssertEqual(viewModel.navigationTrailingItem, .create(rendered: true))
+        XCTAssertEqual(viewModel.navigationTrailingItem, .create)
     }
 }

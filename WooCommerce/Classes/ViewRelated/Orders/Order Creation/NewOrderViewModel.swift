@@ -6,18 +6,19 @@ final class NewOrderViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
 
-    /// Order to create remotely
+    /// New order to create remotely
     ///
     private var order: Order = .empty {
         didSet {
-            navigationTrailingItem = .create(rendered: false)
+            // Adding details to the order makes the Create button visible
+            navigationTrailingItem = .create
         }
     }
 
     /// Active navigation bar trailing item.
-    /// Defaults to an hidden (un-rendered) create button.
+    /// Defaults to no visible button.
     ///
-    @Published private(set) var navigationTrailingItem: NavigationItem = .create(rendered: false)
+    @Published private(set) var navigationTrailingItem: NavigationItem = .none
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
@@ -27,7 +28,8 @@ final class NewOrderViewModel: ObservableObject {
     /// Representation of possible navigation bar trailing buttons
     ///
     enum NavigationItem: Equatable {
-        case create(rendered: Bool)
+        case none
+        case create
         case loading
     }
 
@@ -36,7 +38,7 @@ final class NewOrderViewModel: ObservableObject {
         navigationTrailingItem = .loading
         let action = OrderAction.createOrder(siteID: siteID, order: order) { [weak self] result in
             guard let self = self else { return }
-            self.navigationTrailingItem = .create(rendered: true)
+            self.navigationTrailingItem = .create
 
             switch result {
             case .success:

@@ -63,7 +63,7 @@ private extension AddOrderCoordinator {
         case .quick:
             presentSimplePaymentsAmountController()
         case .full:
-            // TODO: start full order creation flow
+            presentNewOrderController()
             return
         }
     }
@@ -79,5 +79,13 @@ private extension AddOrderCoordinator {
         navigationController.present(simplePaymentsNC, animated: true)
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
+    }
+
+    /// Presents `NewOrderHostingController`.
+    ///
+    func presentNewOrderController() {
+        let viewController = NewOrderHostingController()
+        let newOrderNC = WooNavigationController(rootViewController: viewController)
+        navigationController.present(newOrderNC, animated: true)
     }
 }

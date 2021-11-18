@@ -66,6 +66,23 @@ final class AddOrderCoordinatorTests: XCTestCase {
         assertThat(presentedNC, isAnInstanceOf: WooNavigationController.self)
         assertThat(presentedNC?.topViewController, isAnInstanceOf: SimplePaymentsAmountHostingController.self)
     }
+
+    func test_it_opens_order_creation_when_its_only_available_type() throws {
+        // Given
+        let coordinator = makeAddProductCoordinator(isOrderCreationEnabled: true,
+                                                    shouldShowSimplePaymentsButton: false)
+
+        // When
+        coordinator.start()
+        waitUntil {
+            coordinator.navigationController.presentedViewController != nil
+        }
+
+        // Then
+        let presentedNC = coordinator.navigationController.presentedViewController as? UINavigationController
+        assertThat(presentedNC, isAnInstanceOf: WooNavigationController.self)
+        assertThat(presentedNC?.topViewController, isAnInstanceOf: NewOrderHostingController.self)
+    }
 }
 
 private extension AddOrderCoordinatorTests {

@@ -584,6 +584,12 @@ extension UIImage {
             .imageWithTintColor(tintColor)!
     }
 
+    /// Quick Order Icon
+    ///
+    static var quickOrderImage: UIImage {
+        return UIImage(named: "icon-quick-order")!
+    }
+
     /// Work In Progress banner icon on the Products Tab
     ///
     static var workInProgressBanner: UIImage {

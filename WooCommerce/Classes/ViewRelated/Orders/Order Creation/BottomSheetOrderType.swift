@@ -35,7 +35,7 @@ public enum BottomSheetOrderType: Hashable {
     var actionSheetImage: UIImage {
         switch self {
         case .quick:
-            return UIImage.pagesImage
+            return UIImage.quickOrderImage
         case .full:
             return UIImage.pagesImage
         }

@@ -3,6 +3,16 @@
     {
       "filename" : "Connections.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "Connections-dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

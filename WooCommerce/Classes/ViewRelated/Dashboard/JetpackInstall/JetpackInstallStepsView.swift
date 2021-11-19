@@ -26,7 +26,7 @@ struct JetpackInstallStepsView: View {
 
                 if let image = UIImage.wooLogoImage(tintColor: .white) {
                     Circle()
-                        .foregroundColor(Color(.primary))
+                        .foregroundColor(Color(.withColorStudio(.wooCommercePurple, shade: .shade60)))
                         .frame(width: Constants.logoSize * scale, height: Constants.logoSize * scale)
                         .overlay(
                             Image(uiImage: image)
@@ -59,6 +59,10 @@ struct JetpackInstallStepsView_Previews: PreviewProvider {
     static var previews: some View {
         JetpackInstallStepsView(siteURL: "automattic.com", dismissAction: {})
             .preferredColorScheme(.light)
+            .previewLayout(.fixed(width: 414, height: 780))
+
+        JetpackInstallStepsView(siteURL: "automattic.com", dismissAction: {})
+            .preferredColorScheme(.dark)
             .previewLayout(.fixed(width: 414, height: 780))
     }
 }

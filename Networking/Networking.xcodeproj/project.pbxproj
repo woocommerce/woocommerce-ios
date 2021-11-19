@@ -210,6 +210,8 @@
 		453305F52459ED2700264E50 /* site-post-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 453305F42459ED2700264E50 /* site-post-update.json */; };
 		45551F122523E7F1007EF104 /* UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45551F112523E7F1007EF104 /* UserAgent.swift */; };
 		45551F142523E7FF007EF104 /* UserAgentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45551F132523E7FF007EF104 /* UserAgentTests.swift */; };
+		456738A02746A9E300743054 /* StoredOrderSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4567389F2746A9E300743054 /* StoredOrderSettings.swift */; };
+		456738A22746B61600743054 /* OrderDateRangeFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456738A12746B61600743054 /* OrderDateRangeFilter.swift */; };
 		4568E2222459ADC60007E478 /* SitePostsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4568E2212459ADC60007E478 /* SitePostsRemote.swift */; };
 		4568E2242459D3230007E478 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4568E2232459D3230007E478 /* Post.swift */; };
 		456930A7264EA7CE009ED69D /* ShippingLabelCarrierRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456930A6264EA7CE009ED69D /* ShippingLabelCarrierRate.swift */; };
@@ -786,6 +788,8 @@
 		453305F42459ED2700264E50 /* site-post-update.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "site-post-update.json"; sourceTree = "<group>"; };
 		45551F112523E7F1007EF104 /* UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAgent.swift; sourceTree = "<group>"; };
 		45551F132523E7FF007EF104 /* UserAgentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAgentTests.swift; sourceTree = "<group>"; };
+		4567389F2746A9E300743054 /* StoredOrderSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredOrderSettings.swift; sourceTree = "<group>"; };
+		456738A12746B61600743054 /* OrderDateRangeFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDateRangeFilter.swift; sourceTree = "<group>"; };
 		4568E2212459ADC60007E478 /* SitePostsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostsRemote.swift; sourceTree = "<group>"; };
 		4568E2232459D3230007E478 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		456930A6264EA7CE009ED69D /* ShippingLabelCarrierRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarrierRate.swift; sourceTree = "<group>"; };
@@ -1549,6 +1553,7 @@
 				B554FA902180BCFC00C54DFF /* NoteHash.swift */,
 				B557DA1C20979E7D005962F4 /* Order.swift */,
 				741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */,
+				456738A12746B61600743054 /* OrderDateRangeFilter.swift */,
 				D88E228F25AC990A0023F3B1 /* OrderFeeLine.swift */,
 				D88E229325AC9B420023F3B1 /* OrderFeeTaxStatus.swift */,
 				B5C6FCCE20A3592900A4F8E4 /* OrderItem.swift */,
@@ -1577,6 +1582,7 @@
 				CE50345F21B5799F007573C6 /* SitePlan.swift */,
 				077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */,
 				3148976F27232982007A86BD /* SystemStatus.swift */,
+				4567389F2746A9E300743054 /* StoredOrderSettings.swift */,
 				450106842399A7CB00E24722 /* TaxClass.swift */,
 				3192F21F260D33BB0067FEF9 /* WCPayAccount.swift */,
 				31799AF7270508C600D78179 /* WCPayReaderLocation.swift */,
@@ -2560,6 +2566,7 @@
 				2665032A261F41510079A159 /* ProductAddOn.swift in Sources */,
 				020D07BE23D8570800FD9580 /* MediaListMapper.swift in Sources */,
 				CCB2CA9E262091CB00285CA0 /* SuccessDataResultMapper.swift in Sources */,
+				456738A22746B61600743054 /* OrderDateRangeFilter.swift in Sources */,
 				74C8F06820EEB7BD00B6EDC9 /* OrderNotesMapper.swift in Sources */,
 				24F98C582502EA8800F49B68 /* FeatureFlagMapper.swift in Sources */,
 				451A9832260B9D2D0059D135 /* ShippingLabelPackagesMapper.swift in Sources */,
@@ -2587,6 +2594,7 @@
 				AEF94585272974F2001DCCFB /* TelemetryRemote.swift in Sources */,
 				740211E321939C84002248DA /* CommentResultMapper.swift in Sources */,
 				CC9A24F42642CF37005DE56E /* ShippingLabelCreationEligibilityMapper.swift in Sources */,
+				456738A02746A9E300743054 /* StoredOrderSettings.swift in Sources */,
 				45E3EEBB237009CF00A826AC /* ShippingLine.swift in Sources */,
 				CE6BFEEA2236E191005C79FB /* ProductType.swift in Sources */,
 				CE6D666C2379E19D007835A1 /* Array+Woo.swift in Sources */,

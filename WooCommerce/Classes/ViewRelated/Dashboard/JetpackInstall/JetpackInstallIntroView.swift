@@ -52,6 +52,7 @@ struct JetpackInstallIntroView: View {
                 Button(Localization.closeButton, action: dismissAction)
                 .buttonStyle(LinkButtonStyle())
                 .fixedSize(horizontal: true, vertical: true)
+                .padding(.top, Constants.cancelButtonTopMargin)
                 Spacer()
             }
 
@@ -90,6 +91,7 @@ struct JetpackInstallIntroView: View {
 
 private extension JetpackInstallIntroView {
     enum Constants {
+        static let cancelButtonTopMargin: CGFloat = 8
         static let jetpackLogoSize: CGFloat = 120
         static let jetpackLogoBottomMargin: CGFloat = 24
         static let actionButtonMargin: CGFloat = 16

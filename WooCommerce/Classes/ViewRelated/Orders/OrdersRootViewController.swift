@@ -64,7 +64,7 @@ final class OrdersRootViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         // Needed in ViewWillAppear because this View Controller is never recreated.
-        fetchSimplePaymentsExperimentalToggleAndConfigureNavigationButtons()
+        fetchExperimentalTogglesAndConfigureNavigationButtons()
     }
 
     override func viewDidLayoutSubviews() {
@@ -154,15 +154,15 @@ private extension OrdersRootViewController {
         inPersonPaymentsUseCase.$state
             .removeDuplicates()
             .sink { [weak self] _ in
-                self?.fetchSimplePaymentsExperimentalToggleAndConfigureNavigationButtons()
+                self?.fetchExperimentalTogglesAndConfigureNavigationButtons()
             }
             .store(in: &subscriptions)
         inPersonPaymentsUseCase.refresh()
     }
 
-    /// Fetches the latest value of the SimplePayments experimental feature toggle and re configures navigation buttons.
+    /// Fetches the latest values of order-related experimental feature toggles and re configures navigation buttons.
     ///
-    func fetchSimplePaymentsExperimentalToggleAndConfigureNavigationButtons() {
+    func fetchExperimentalTogglesAndConfigureNavigationButtons() {
         let group = DispatchGroup()
 
         var isSimplePaymentsEnabled = false

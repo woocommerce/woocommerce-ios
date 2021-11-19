@@ -4,11 +4,16 @@ struct JetpackInstallStepsView: View {
     // Closure invoked when Done button is tapped
     private let dismissAction: () -> Void
 
+    /// The site for which Jetpack should be installed
     private let siteURL: String
 
+    /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
+
+    /// TODO-5365: Set real step, maybe as an @Published variable from an observable object.
     @State private var currentStep: JetpackInstallStep = .activation
 
+    /// Attributed string for the description text
     private var descriptionAttributedString: NSAttributedString {
         let font: UIFont = .body
         let boldFont: UIFont = font.bold

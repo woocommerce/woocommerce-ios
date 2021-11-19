@@ -55,13 +55,16 @@ struct JetpackInstallIntroView: View {
 
             Spacer()
 
+            // Install Jetpack description
             VStack(spacing: Constants.contentSpacing) {
                 Image(uiImage: .jetpackGreenLogoImage)
                     .resizable()
                     .frame(width: Constants.jetpackLogoSize, height: Constants.jetpackLogoSize)
+                    .padding(.bottom, Constants.jetpackLogoBottomMargin)
 
                 Text(Localization.installTitle)
                     .font(.largeTitle)
+                    .bold()
                     .foregroundColor(.primary)
 
                 AttributedText(descriptionAttributedString)
@@ -86,10 +89,10 @@ struct JetpackInstallIntroView: View {
 private extension JetpackInstallIntroView {
     enum Constants {
         static let jetpackLogoSize: CGFloat = 120
+        static let jetpackLogoBottomMargin: CGFloat = 24
         static let actionButtonMargin: CGFloat = 16
         static let contentHorizontalMargin: CGFloat = 40
         static let contentSpacing: CGFloat = 8
-        static let jetpackLogoBottomMargin: CGFloat = 24
     }
 
     enum Localization {
@@ -109,6 +112,6 @@ struct JetpackInstallIntroView_Previews: PreviewProvider {
 
         JetpackInstallIntroView(siteURL: "automattic.com")
             .preferredColorScheme(.dark)
-            .previewLayout(.fixed(width: 800, height: 300))
+            .previewLayout(.fixed(width: 800, height: 400))
     }
 }

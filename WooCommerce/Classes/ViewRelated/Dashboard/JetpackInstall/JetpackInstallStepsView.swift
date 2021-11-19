@@ -75,27 +75,29 @@ struct JetpackInstallStepsView: View {
                 }
 
                 // Install steps
-                ForEach(JetpackInstallStep.allCases) { step in
-                    HStack(spacing: Constants.stepItemSpacing) {
-                        if step == currentStep, step != .done {
-                            ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                        } else if step > currentStep {
-                            Image(uiImage: .checkEmptyCircleImage)
-                                .resizable()
-                                .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
-                        } else {
-                            Image(uiImage: .checkCircleImage)
-                                .resizable()
-                                .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
-                        }
-
-                        Text(step.title)
-                            .font(.body)
-                            .if(step <= currentStep) {
-                                $0.bold()
+                VStack(alignment: .leading, spacing: Constants.stepItemsVerticalSpacing) {
+                    ForEach(JetpackInstallStep.allCases) { step in
+                        HStack(spacing: Constants.stepItemHorizontalSpacing) {
+                            if step == currentStep, step != .done {
+                                ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                            } else if step > currentStep {
+                                Image(uiImage: .checkEmptyCircleImage)
+                                    .resizable()
+                                    .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
+                            } else {
+                                Image(uiImage: .checkCircleImage)
+                                    .resizable()
+                                    .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
                             }
-                            .foregroundColor(Color(.text))
-                            .opacity(step <= currentStep ? 1 : 0.5)
+
+                            Text(step.title)
+                                .font(.body)
+                                .if(step <= currentStep) {
+                                    $0.bold()
+                                }
+                                .foregroundColor(Color(.text))
+                                .opacity(step <= currentStep ? 1 : 0.5)
+                        }
                     }
                 }
             }
@@ -108,8 +110,7 @@ struct JetpackInstallStepsView: View {
             Button(Localization.doneButton, action: dismissAction)
                 .buttonStyle(PrimaryButtonStyle())
                 .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal, Constants.actionButtonMargin)
-                .padding(.bottom, Constants.actionButtonMargin)
+                .padding(Constants.actionButtonMargin)
         }
     }
 }
@@ -124,7 +125,8 @@ private extension JetpackInstallStepsView {
         static let connectionIconSize: CGFloat = 10
         static let textSpacing: CGFloat = 12
         static let actionButtonMargin: CGFloat = 16
-        static let stepItemSpacing: CGFloat = 24
+        static let stepItemHorizontalSpacing: CGFloat = 24
+        static let stepItemsVerticalSpacing: CGFloat = 20
         static let stepImageSize: CGFloat = 24
     }
 

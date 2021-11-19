@@ -102,6 +102,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         updateReaderID()
         updateBatteryLevel()
         updateSoftwareVersion()
+        didUpdate?()
     }
 
     private func updateReaderID() {

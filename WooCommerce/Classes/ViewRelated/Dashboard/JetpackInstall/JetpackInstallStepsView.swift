@@ -8,6 +8,22 @@ struct JetpackInstallStepsView: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    private var descriptionAttributedString: NSAttributedString {
+        let font: UIFont = .body
+        let boldFont: UIFont = font.bold
+        let siteName = siteURL.trimHTTPScheme()
+
+        let attributedString = NSMutableAttributedString(
+            string: String(format: Localization.installDescription, siteName),
+            attributes: [.font: font,
+                         .foregroundColor: UIColor.text.withAlphaComponent(0.8)
+                        ]
+        )
+        let boldSiteAddress = NSAttributedString(string: siteName, attributes: [.font: boldFont, .foregroundColor: UIColor.text])
+        attributedString.replaceFirstOccurrence(of: siteName, with: boldSiteAddress)
+        return attributedString
+    }
+
     init(siteURL: String, dismissAction: @escaping () -> Void) {
         self.siteURL = siteURL
         self.dismissAction = dismissAction
@@ -45,6 +61,8 @@ struct JetpackInstallStepsView: View {
                     .font(.largeTitle)
                     .bold()
                     .foregroundColor(Color(.text))
+
+                AttributedText(descriptionAttributedString)
             }
 
 
@@ -67,6 +85,8 @@ private extension JetpackInstallStepsView {
 
     enum Localization {
         static let installTitle = NSLocalizedString("Install Jetpack", comment: "Title of the Install Jetpack view")
+        static let installDescription = NSLocalizedString("Please wait while we connect your site %1$@ with Jetpack.",
+                                                          comment: "Message on the Jetpack Install Progress screen. The %1$@ is the site address.")
     }
 }
 

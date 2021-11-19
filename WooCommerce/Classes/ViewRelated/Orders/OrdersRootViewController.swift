@@ -48,6 +48,7 @@ final class OrdersRootViewController: UIViewController {
     private var filters: FilterOrderListViewModel.Filters = FilterOrderListViewModel.Filters() {
         didSet {
             if filters != oldValue {
+                updateLocalOrdersSettings(filters: filters)
                 filtersBar.setNumberOfFilters(filters.numberOfActiveFilters)
                 orderListViewModel.updateFilters(filters: filters)
             }
@@ -75,6 +76,11 @@ final class OrdersRootViewController: UIViewController {
         configureFiltersBar()
         configureChildViewController()
         observeInPersonPaymentsStoreState()
+
+        /// We sync the local order settings for configuring local statuses and date range filters.
+        /// If there are some info stored when this screen is loaded, the data will be updated using the stored filters.
+        ///
+        syncLocalOrdersSettings { _ in }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -227,6 +233,37 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
 
     func clearFilters() {
         filters = FilterOrderListViewModel.Filters()
+    }
+}
+
+// MARK: - Stored Order Settings (eg. filters)
+private extension OrdersRootViewController {
+    /// Fetch local Orders Settings (eg.  status or date range filters stored in Orders settings)
+    ///
+    func syncLocalOrdersSettings(onCompletion: @escaping (Result<StoredOrderSettings.Setting, Error>) -> Void) {
+        let action = AppSettingsAction.loadOrdersSettings(siteID: siteID) { [weak self] (result) in
+            switch result {
+            case .success(let settings):
+                self?.filters = FilterOrderListViewModel.Filters(orderStatus: settings.orderStatusesFilter,
+                                                                 dateRange: settings.dateRangeFilter,
+                                                                 numberOfActiveFilters: settings.numberOfActiveFilters())
+            case .failure:
+                break
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Update local Orders Settings (eg. status or date range filters stored in Orders settings)
+    ///
+    func updateLocalOrdersSettings(filters: FilterOrderListViewModel.Filters) {
+        let action = AppSettingsAction.upsertOrdersSettings(siteID: siteID,
+                                                            orderStatusesFilter: filters.orderStatus, dateRangeFilter: filters.dateRange) { error in
+            if error != nil {
+                assertionFailure("It was not possible to store order settings due to an error: \(String(describing: error))")
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

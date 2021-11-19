@@ -32,7 +32,7 @@ struct JetpackInstallView: View {
 
     var body: some View {
         if hasStarted {
-            Text("Hello, World!")
+            JetpackInstallStepsView(siteURL: siteURL, dismissAction: dismissAction)
         } else {
             JetpackInstallIntroView(siteURL: siteURL, dismissAction: dismissAction) {
                 hasStarted = true

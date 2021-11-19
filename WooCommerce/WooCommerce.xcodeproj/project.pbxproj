@@ -1371,6 +1371,7 @@
 		DEC2962926C20ECB005A056B /* CollapsibleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2962826C20ECB005A056B /* CollapsibleView.swift */; };
 		DEC6C51827466B59006832D3 /* StoreStatsSiteVisitEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC6C51727466B59006832D3 /* StoreStatsSiteVisitEmptyView.swift */; };
 		DEC6C51A2747758D006832D3 /* JetpackInstallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC6C5192747758D006832D3 /* JetpackInstallView.swift */; };
+		DEC6C51C27477890006832D3 /* JetpackInstallStepsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC6C51B27477890006832D3 /* JetpackInstallStepsView.swift */; };
 		DEDB886B26E8531E00981595 /* ShippingLabelPackageAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */; };
 		DEE6437626D87C4100888A75 /* PrintCustomsFormsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */; };
 		DEE6437826D8DAD900888A75 /* InProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437726D8DAD900888A75 /* InProgressView.swift */; };
@@ -2860,6 +2861,7 @@
 		DEC2962826C20ECB005A056B /* CollapsibleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleView.swift; sourceTree = "<group>"; };
 		DEC6C51727466B59006832D3 /* StoreStatsSiteVisitEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsSiteVisitEmptyView.swift; sourceTree = "<group>"; };
 		DEC6C5192747758D006832D3 /* JetpackInstallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallView.swift; sourceTree = "<group>"; };
+		DEC6C51B27477890006832D3 /* JetpackInstallStepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallStepsView.swift; sourceTree = "<group>"; };
 		DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageAttributes.swift; sourceTree = "<group>"; };
 		DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintCustomsFormsView.swift; sourceTree = "<group>"; };
 		DEE6437726D8DAD900888A75 /* InProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InProgressView.swift; sourceTree = "<group>"; };
@@ -6683,6 +6685,7 @@
 			children = (
 				DE23CFF927462D8F003BE54E /* JetpackInstallIntroView.swift */,
 				DEC6C5192747758D006832D3 /* JetpackInstallView.swift */,
+				DEC6C51B27477890006832D3 /* JetpackInstallStepsView.swift */,
 			);
 			path = JetpackInstall;
 			sourceTree = "<group>";
@@ -8062,6 +8065,7 @@
 				7493BB8E2149852A003071A9 /* TopPerformersHeaderView.swift in Sources */,
 				D88CA756237CE515005D2F44 /* UITabBar+Appearance.swift in Sources */,
 				45A8DA402664E40B00308FBE /* EmptyState.swift in Sources */,
+				DEC6C51C27477890006832D3 /* JetpackInstallStepsView.swift in Sources */,
 				E15FC74526BC213500CF83E6 /* InPersonPaymentsLearnMore.swift in Sources */,
 				D83C12A022250BF0004CA04C /* OrderTrackingTableViewCell.swift in Sources */,
 				CE21B3DD20FF9BC200A259D5 /* ProductListViewController.swift in Sources */,

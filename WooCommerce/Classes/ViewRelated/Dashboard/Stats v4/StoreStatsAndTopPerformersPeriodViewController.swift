@@ -45,6 +45,21 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         }
     }
 
+    /// Timestamp for last successful data sync
+    var lastFullSyncTimestamp: Date?
+
+    /// Minimal time interval for data refresh
+    var minimalIntervalBetweenSync: TimeInterval {
+        switch timeRange {
+        case .today:
+            return 60
+        case .thisWeek, .thisMonth:
+            return 60*60
+        case .thisYear:
+            return 60*60*12
+        }
+    }
+
     // MARK: Subviews
 
     var refreshControl: UIRefreshControl = {

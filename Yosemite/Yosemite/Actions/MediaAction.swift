@@ -21,5 +21,5 @@ public enum MediaAction: Action {
     case uploadMedia(siteID: Int64,
         productID: Int64,
         mediaAsset: ExportableAsset,
-        onCompletion: (_ uploadedMedia: Media?, _ error: Error?) -> Void)
+        onCompletion: (Result<Media, Error>) -> Void)
 }

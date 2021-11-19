@@ -46,11 +46,12 @@ public class MediaRemote: Remote {
     ///     - mediaItems: An array of uploadable media items.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func uploadMedia(for siteID: Int64,
+    public func uploadMedia(siteID: Int64,
+                            isSiteJetpackCPConnected: Bool,
                             productID: Int64,
                             context: String? = Default.context,
                             mediaItems: [UploadableMedia],
-                            completion: @escaping ([Media]?, Error?) -> Void) {
+                            completion: @escaping (Result<[Media], Error>) -> Void) {
         let parameters = [
             ParameterKey.contextKey: context ?? Default.context,
         ]

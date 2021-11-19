@@ -64,7 +64,7 @@ private extension MediaStore {
     func uploadMedia(siteID: Int64,
                      productID: Int64,
                      mediaAsset: ExportableAsset,
-                     onCompletion: @escaping (_ uploadedMedia: Media?, _ error: Error?) -> Void) {
+                     onCompletion: @escaping (Result<Media, Error>) -> Void) {
         mediaExportService.export(mediaAsset,
                                   onCompletion: { [weak self] (uploadableMedia, error) in
                                     guard let uploadableMedia = uploadableMedia, error == nil else {
@@ -81,7 +81,6 @@ private extension MediaStore {
     func uploadMedia(siteID: Int64,
                      productID: Int64,
                      uploadableMedia media: UploadableMedia,
-                     onCompletion: @escaping (_ uploadedMedia: Media?, _ error: Error?) -> Void) {
         remote.uploadMedia(for: siteID,
                            productID: productID,
                            mediaItems: [media]) { (uploadedMediaItems, error) in
@@ -97,6 +96,7 @@ private extension MediaStore {
                                 return
                             }
                             onCompletion(uploadedMedia, nil)
+                     onCompletion: @escaping (Result<Media, Error>) -> Void) {
         }
     }
 }

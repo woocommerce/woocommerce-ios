@@ -182,7 +182,7 @@ public class Remote {
     func enqueueMultipartFormDataUpload<M: Mapper>(_ request: URLRequestConvertible,
                                                    mapper: M,
                                                    multipartFormData: @escaping (MultipartFormData) -> Void,
-                                                   completion: @escaping (M.Output?, Error?) -> Void) {
+                                                   completion: @escaping (Result<M.Output, Error>) -> Void) {
         network.uploadMultipartFormData(multipartFormData: multipartFormData,
                                         to: request) { [weak self] (data, networkError) in
                                             guard let self = self else {
@@ -190,22 +190,22 @@ public class Remote {
                                             }
 
                                             guard let data = data else {
-                                                completion(nil, networkError)
+                                                completion(.failure(networkError ?? NetworkError.notFound))
                                                 return
                                             }
 
                                             if let dotcomError = DotcomValidator.error(from: data) {
                                                 self.dotcomErrorWasReceived(error: dotcomError, for: request)
-                                                completion(nil, dotcomError)
+                                                completion(.failure(dotcomError))
                                                 return
                                             }
 
                                             do {
                                                 let parsed = try mapper.map(response: data)
-                                                completion(parsed, nil)
+                                                completion(.success(parsed))
                                             } catch {
                                                 DDLogError("<> Mapping Error: \(error)")
-                                                completion(nil, error)
+                                                completion(.failure(error))
                                             }
         }
     }

@@ -425,15 +425,7 @@ private extension StoreStatsV4PeriodViewController {
             return
         }
 
-        let jcpSupport = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
-        switch mode {
-        case .hidden:
-            visitorsStackView.isHidden = true
-        case .redactedDueToJetpack where !jcpSupport:
-            visitorsStackView.isHidden = true
-        default:
-            visitorsStackView.isHidden = false
-        }
+        visitorsStackView.isHidden = mode == .hidden
         reloadSiteFields()
     }
 }
@@ -728,10 +720,8 @@ private extension StoreStatsV4PeriodViewController {
         case .hidden:
             break
         case .redactedDueToJetpack:
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
-                visitorsData.isHidden = true
-                visitorsEmptyView.isHidden = false
-            }
+            visitorsData.isHidden = true
+            visitorsEmptyView.isHidden = false
         case .default:
             guard visitorsData != nil else {
                 return

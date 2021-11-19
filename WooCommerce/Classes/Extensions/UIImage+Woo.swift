@@ -102,6 +102,18 @@ extension UIImage {
             .imageWithTintColor(.listBackground)!
     }
 
+    /// Green circle with checkmark
+    ///
+    static var checkCircleImage: UIImage {
+        return UIImage(named: "check-circle-done")!
+    }
+
+    /// Circle without checkmark
+    ///
+    static var checkEmptyCircleImage: UIImage {
+        return UIImage(named: "check-circle-empty")!
+    }
+
     /// WooCommerce Styled Checkmark
     ///
     static var checkmarkStyledImage: UIImage {

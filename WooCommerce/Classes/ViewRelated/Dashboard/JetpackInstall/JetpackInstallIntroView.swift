@@ -44,6 +44,8 @@ struct JetpackInstallIntroView: View {
         return attributedString
     }
 
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     var body: some View {
         VStack {
             HStack {
@@ -59,7 +61,7 @@ struct JetpackInstallIntroView: View {
             VStack(spacing: Constants.contentSpacing) {
                 Image(uiImage: .jetpackGreenLogoImage)
                     .resizable()
-                    .frame(width: Constants.jetpackLogoSize, height: Constants.jetpackLogoSize)
+                    .frame(width: Constants.jetpackLogoSize * scale, height: Constants.jetpackLogoSize * scale)
                     .padding(.bottom, Constants.jetpackLogoBottomMargin)
 
                 Text(Localization.installTitle)
@@ -97,10 +99,11 @@ private extension JetpackInstallIntroView {
 
     enum Localization {
         static let closeButton = NSLocalizedString("Close", comment: "Title of the Close action on the Jetpack Install view")
-        static let installAction = NSLocalizedString("Get Started", comment: "Title of install action in the Jetpack benefits view.")
+        static let installAction = NSLocalizedString("Get Started", comment: "Title of install action in the Jetpack Install view.")
         static let installTitle = NSLocalizedString("Install Jetpack", comment: "Title of the Install Jetpack intro view")
         static let installDescription = NSLocalizedString("Install the free Jetpack plugin to %1$@ and experience the best mobile experience.",
-                                                          comment: "Description of the Jetpack Install flow for the specified site")
+                                                          comment: "Description of the Jetpack Install flow for the specified site. " +
+                                                          "The %1$@ is the site address.")
     }
 }
 

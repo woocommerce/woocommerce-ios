@@ -4,8 +4,8 @@ import SwiftUI
 ///
 final class NewOrderHostingController: UIHostingController<NewOrder> {
 
-    init() {
-        super.init(rootView: NewOrder())
+    init(viewModel: NewOrderViewModel) {
+        super.init(rootView: NewOrder(viewModel: viewModel))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {

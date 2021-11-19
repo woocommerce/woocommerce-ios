@@ -56,10 +56,8 @@ struct JetpackInstallIntroView: View {
             Spacer()
 
             VStack(spacing: Constants.contentSpacing) {
-                Image(uiImage: .jetpackLogoImage)
+                Image(uiImage: .jetpackGreenLogoImage)
                     .resizable()
-                    .renderingMode(.template)
-                    .foregroundColor(Color(.jetpackGreen))
                     .frame(width: Constants.jetpackLogoSize, height: Constants.jetpackLogoSize)
 
                 Text(Localization.installTitle)

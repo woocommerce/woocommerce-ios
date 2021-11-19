@@ -84,7 +84,7 @@ private extension AddOrderCoordinator {
     ///
     func presentNewOrderController() {
         let viewController = NewOrderHostingController()
-        let newOrderNC = WooNavigationController(rootViewController: viewController)
-        navigationController.present(newOrderNC, animated: true)
+        viewController.hidesBottomBarWhenPushed = true
+        navigationController.pushViewController(viewController, animated: true)
     }
 }

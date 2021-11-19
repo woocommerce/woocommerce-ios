@@ -74,14 +74,9 @@ final class AddOrderCoordinatorTests: XCTestCase {
 
         // When
         coordinator.start()
-        waitUntil {
-            coordinator.navigationController.presentedViewController != nil
-        }
 
         // Then
-        let presentedNC = coordinator.navigationController.presentedViewController as? UINavigationController
-        assertThat(presentedNC, isAnInstanceOf: WooNavigationController.self)
-        assertThat(presentedNC?.topViewController, isAnInstanceOf: NewOrderHostingController.self)
+        assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: NewOrderHostingController.self)
     }
 }
 

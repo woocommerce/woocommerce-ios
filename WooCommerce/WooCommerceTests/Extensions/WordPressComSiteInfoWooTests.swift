@@ -9,16 +9,52 @@ final class WordPressComSiteInfoWooTests: XCTestCase {
         XCTAssertTrue(infoSite.hasValidJetpack)
     }
 
-    func test_is_not_valid_when_site_does_not_have_jetpack() {
+    func test_is_not_valid_when_site_does_not_have_jetpack_with_jcp_feature_off() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isJetpackConnectionPackageSupportOn: false)
+        ServiceLocator.setFeatureFlagService(featureFlagService)
+
+        // When
         let infoSite = WordPressComSiteInfo(remote: doesNotHaveJetpack())
 
+        // Then
         XCTAssertFalse(infoSite.hasValidJetpack)
     }
 
-    func test_is_not_valid_when_site_has_jetpack_installed_but_not_active() {
+    func test_is_valid_when_site_does_not_have_jetpack_with_jcp_feature_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isJetpackConnectionPackageSupportOn: true)
+        ServiceLocator.setFeatureFlagService(featureFlagService)
+
+        // When
+        let infoSite = WordPressComSiteInfo(remote: doesNotHaveJetpack())
+
+        // Then
+        XCTAssertTrue(infoSite.hasValidJetpack)
+    }
+
+    func test_is_not_valid_when_site_has_jetpack_installed_but_not_active_with_jcp_feature_off() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isJetpackConnectionPackageSupportOn: false)
+        ServiceLocator.setFeatureFlagService(featureFlagService)
+
+        // When
         let infoSite = WordPressComSiteInfo(remote: hasJetpackInactive())
 
+        // Then
         XCTAssertFalse(infoSite.hasValidJetpack)
+    }
+
+    func test_is_not_valid_when_site_has_jetpack_installed_but_not_active_with_jcp_feature_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isJetpackConnectionPackageSupportOn: true)
+        ServiceLocator.setFeatureFlagService(featureFlagService)
+
+        // When
+        let infoSite = WordPressComSiteInfo(remote: hasJetpackInactive())
+
+        // Then
+        XCTAssertTrue(infoSite.hasValidJetpack)
     }
 
     func test_is_not_valid_when_site_has_jetpack_installed_but_not_connected() {

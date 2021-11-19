@@ -1,5 +1,6 @@
 import Foundation
 import Storage
+import Networking
 
 // MARK: - AppSettingsAction: Defines all of the Actions supported by the AppSettingsStore.
 //
@@ -54,6 +55,23 @@ public enum AppSettingsAction: Action {
     /// Clears all the states related to stats version
     ///
     case resetStatsVersionStates
+
+    // MARK: - Orders Settings
+
+    /// Loads the orders settings
+    ///
+    case loadOrdersSettings(siteID: Int64, onCompletion: (Result<StoredOrderSettings.Setting, Error>) -> Void)
+
+    /// Add or Update orders settings
+    ///
+    case upsertOrdersSettings(siteID: Int64,
+                              orderStatusesFilter: [OrderStatusEnum]?,
+                              dateRangeFilter: OrderDateRangeFilter?,
+                              onCompletion: (Error?) -> Void)
+
+    /// Clears all the orders settings
+    ///
+    case resetOrdersSettings
 
     // MARK: - Products Settings
 

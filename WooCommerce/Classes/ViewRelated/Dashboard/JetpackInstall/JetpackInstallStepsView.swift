@@ -41,6 +41,7 @@ struct JetpackInstallStepsView: View {
                         .frame(width: Constants.logoSize * scale, height: Constants.logoSize * scale)
                     Image(uiImage: .connectionImage)
                         .resizable()
+                        .flipsForRightToLeftLayoutDirection(true)
                         .frame(width: Constants.connectionIconSize * scale, height: Constants.connectionIconSize * scale)
 
                     if let image = UIImage.wooLogoImage(tintColor: .white) {
@@ -71,8 +72,16 @@ struct JetpackInstallStepsView: View {
                 // Install steps
                 ForEach(JetpackInstallStep.allCases) { step in
                     HStack(spacing: Constants.stepItemSpacing) {
-                        if step == currentStep {
+                        if step == currentStep, step != .done {
                             ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                        } else if step > currentStep {
+                            Image(uiImage: .checkEmptyCircleImage)
+                                .resizable()
+                                .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
+                        } else {
+                            Image(uiImage: .checkCircleImage)
+                                .resizable()
+                                .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
                         }
 
                         Text(step.title)

@@ -161,7 +161,6 @@ extension UIImage {
     ///
     static var connectionImage: UIImage {
         return UIImage(named: "icon-connection")!
-            .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Gear Icon - used in `UIBarButtonItem`

@@ -14,7 +14,7 @@ struct JetpackInstallStepsView: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: Constants.contentSpacing) {
             // Header
             HStack(spacing: 8) {
                 Image(uiImage: .jetpackGreenLogoImage)
@@ -37,11 +37,20 @@ struct JetpackInstallStepsView: View {
 
                 Spacer()
             }
-            .padding(.horizontal, Constants.contentHorizontalMargin)
             .padding(.top, Constants.contentTopMargin)
+
+            // Title and description
+            VStack(alignment: .leading, spacing: Constants.textSpacing) {
+                Text(Localization.installTitle)
+                    .font(.largeTitle)
+                    .bold()
+                    .foregroundColor(Color(.text))
+            }
+
 
             Spacer()
         }
+        .padding(.horizontal, Constants.contentHorizontalMargin)
     }
 }
 
@@ -49,9 +58,15 @@ private extension JetpackInstallStepsView {
     enum Constants {
         static let contentTopMargin: CGFloat = 69
         static let contentHorizontalMargin: CGFloat = 40
+        static let contentSpacing: CGFloat = 32
         static let logoSize: CGFloat = 40
         static let wooIconSize: CGSize = .init(width: 30, height: 18)
         static let connectionIconSize: CGFloat = 10
+        static let textSpacing: CGFloat = 12
+    }
+
+    enum Localization {
+        static let installTitle = NSLocalizedString("Install Jetpack", comment: "Title of the Install Jetpack view")
     }
 }
 

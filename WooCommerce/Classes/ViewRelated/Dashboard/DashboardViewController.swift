@@ -223,8 +223,17 @@ private extension DashboardViewController {
         bottomJetpackBenefitsBannerController.setActions { [weak self] in
             guard let self = self else { return }
             let benefitsController = JetpackBenefitsHostingController()
-            benefitsController.setActions {
-                // TODO: 5370 - Navigate to install Jetpack
+            benefitsController.setActions { [weak self] in
+                self?.dismiss(animated: true, completion: { [weak self] in
+                    guard let siteURL = ServiceLocator.stores.sessionManager.defaultSite?.url else {
+                        return
+                    }
+                    let installController = JetpackInstallHostingController(siteURL: siteURL)
+                    installController.setDismissAction { [weak self] in
+                        self?.dismiss(animated: true, completion: nil)
+                    }
+                    self?.present(installController, animated: true, completion: nil)
+                })
             } dismissAction: { [weak self] in
                 self?.dismiss(animated: true, completion: nil)
             }
@@ -414,6 +423,7 @@ private extension DashboardViewController {
         ServiceLocator.stores.site.sink { [weak self] site in
             guard let self = self else { return }
             self.updateUI(site: site)
+            self.reloadData(forced: true)
         }.store(in: &cancellables)
     }
 }

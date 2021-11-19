@@ -336,6 +336,10 @@ extension UIImage {
         return UIImage(named: "icon-jetpack-gray")!
     }
 
+    static var jetpackGreenLogoImage: UIImage {
+        return UIImage(named: "icon-jetpack-green")!
+    }
+
     /// Info Icon
     ///
     static var infoImage: UIImage {
@@ -582,6 +586,12 @@ extension UIImage {
         let tintColor = UIColor.listSmallIcon
         return UIImage.gridicon(.product, size: CGSize(width: 20, height: 20))
             .imageWithTintColor(tintColor)!
+    }
+
+    /// Simple Payments Icon
+    ///
+    static var simplePaymentsImage: UIImage {
+        return UIImage(named: "icon-simple-payments")!
     }
 
     /// Work In Progress banner icon on the Products Tab

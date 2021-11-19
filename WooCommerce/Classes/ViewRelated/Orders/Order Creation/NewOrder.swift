@@ -1,5 +1,18 @@
 import SwiftUI
 
+/// Hosting controller that wraps an `NewOrder` view.
+///
+final class NewOrderHostingController: UIHostingController<NewOrder> {
+
+    init() {
+        super.init(rootView: NewOrder())
+    }
+
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 /// View to create a new manual order
 ///
 struct NewOrder: View {

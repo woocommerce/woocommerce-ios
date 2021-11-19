@@ -7,6 +7,7 @@ struct JetpackInstallStepsView: View {
     private let siteURL: String
 
     @ScaledMetric private var scale: CGFloat = 1.0
+    @State private var currentStep: JetpackInstallStep = .activation
 
     private var descriptionAttributedString: NSAttributedString {
         let font: UIFont = .body
@@ -66,6 +67,23 @@ struct JetpackInstallStepsView: View {
 
                     AttributedText(descriptionAttributedString)
                 }
+
+                // Install steps
+                ForEach(JetpackInstallStep.allCases) { step in
+                    HStack(spacing: Constants.stepItemSpacing) {
+                        if step == currentStep {
+                            ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                        }
+
+                        Text(step.title)
+                            .font(.body)
+                            .if(step <= currentStep) {
+                                $0.bold()
+                            }
+                            .foregroundColor(Color(.text))
+                            .opacity(step <= currentStep ? 1 : 0.5)
+                    }
+                }
             }
             .padding(.horizontal, Constants.contentHorizontalMargin)
             .scrollVerticallyIfNeeded()
@@ -92,6 +110,8 @@ private extension JetpackInstallStepsView {
         static let connectionIconSize: CGFloat = 10
         static let textSpacing: CGFloat = 12
         static let actionButtonMargin: CGFloat = 16
+        static let stepItemSpacing: CGFloat = 24
+        static let stepImageSize: CGFloat = 24
     }
 
     enum Localization {

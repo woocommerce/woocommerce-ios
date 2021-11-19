@@ -6,13 +6,52 @@ struct JetpackInstallStepsView: View {
 
     private let siteURL: String
 
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     init(siteURL: String, dismissAction: @escaping () -> Void) {
         self.siteURL = siteURL
         self.dismissAction = dismissAction
     }
-    
+
     var body: some View {
-        Text("Hello, World!")
+        VStack {
+            // Header
+            HStack(spacing: 8) {
+                Image(uiImage: .jetpackGreenLogoImage)
+                    .resizable()
+                    .frame(width: Constants.logoSize * scale, height: Constants.logoSize * scale)
+                Image(uiImage: .connectionImage)
+                    .resizable()
+                    .frame(width: Constants.connectionIconSize * scale, height: Constants.connectionIconSize * scale)
+
+                if let image = UIImage.wooLogoImage(tintColor: .white) {
+                    Circle()
+                        .foregroundColor(Color(.primary))
+                        .frame(width: Constants.logoSize * scale, height: Constants.logoSize * scale)
+                        .overlay(
+                            Image(uiImage: image)
+                                .resizable()
+                                .frame(width: Constants.wooIconSize.width * scale, height: Constants.wooIconSize.height * scale)
+                        )
+                }
+
+                Spacer()
+            }
+            .padding(.horizontal, Constants.contentHorizontalMargin)
+            .padding(.top, Constants.contentTopMargin)
+
+            Spacer()
+        }
+    }
+}
+
+private extension JetpackInstallStepsView {
+    enum Constants {
+        static let contentTopMargin: CGFloat = 69
+        static let contentHorizontalMargin: CGFloat = 40
+        static let logoSize: CGFloat = 40
+        static let wooIconSize: CGSize = .init(width: 30, height: 18)
+        static let connectionIconSize: CGFloat = 10
     }
 }
 

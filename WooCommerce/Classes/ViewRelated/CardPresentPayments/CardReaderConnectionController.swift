@@ -64,7 +64,7 @@ final class CardReaderConnectionController {
             didSetState()
         }
     }
-    private var fromController: UIViewController?
+    private weak var fromController: UIViewController?
     private var siteID: Int64
     private var knownCardReaderProvider: CardReaderSettingsKnownReaderProvider
     private var alerts: CardReaderSettingsAlertsProvider
@@ -572,7 +572,6 @@ private extension CardReaderConnectionController {
     private func returnSuccess(connected: Bool) {
         self.alerts.dismiss()
         self.onCompletion?(.success(connected))
-        self.fromController = nil
         self.state = .idle
     }
 
@@ -581,7 +580,6 @@ private extension CardReaderConnectionController {
     private func returnFailure(error: Error) {
         self.alerts.dismiss()
         self.onCompletion?(.failure(error))
-        self.fromController = nil
         self.state = .idle
     }
 }

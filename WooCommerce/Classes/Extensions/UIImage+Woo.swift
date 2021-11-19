@@ -588,6 +588,12 @@ extension UIImage {
             .imageWithTintColor(tintColor)!
     }
 
+    /// Simple Payments Icon
+    ///
+    static var simplePaymentsImage: UIImage {
+        return UIImage(named: "icon-simple-payments")!
+    }
+
     /// Work In Progress banner icon on the Products Tab
     ///
     static var workInProgressBanner: UIImage {

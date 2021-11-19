@@ -544,4 +544,8 @@ final class IconsTests: XCTestCase {
     func test_cardReaderManualIcon_is_not_nil() {
         XCTAssertNotNil(UIImage.cardReaderManualIcon)
     }
+
+    func test_simplePaymentsImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.simplePaymentsImage)
+    }
 }

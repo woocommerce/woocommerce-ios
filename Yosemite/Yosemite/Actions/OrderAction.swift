@@ -68,4 +68,8 @@ public enum OrderAction: Action {
     /// Creates a simple payments order with a specific amount value and no tax.
     ///
     case createSimplePaymentsOrder(siteID: Int64, amount: String, onCompletion: (Result<Order, Error>) -> Void)
+
+    /// Creates a manual order with the provided order details.
+    ///
+    case createOrder(siteID: Int64, order: Order, onCompletion: (Result<Order, Error>) -> Void)
 }

@@ -22,7 +22,11 @@ struct JetpackInstallIntroView: View {
     // Closure invoked when Close button is tapped
     var dismissAction: () -> Void = {}
 
-    let siteURL: String
+    private let siteURL: String
+
+    init(siteURL: String) {
+        self.siteURL = siteURL
+    }
 
     private var descriptionAttributedString: NSAttributedString {
         let font: UIFont = .body

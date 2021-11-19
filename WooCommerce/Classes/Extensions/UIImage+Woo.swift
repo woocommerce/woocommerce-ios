@@ -336,6 +336,10 @@ extension UIImage {
         return UIImage(named: "icon-jetpack-gray")!
     }
 
+    static var jetpackGreenLogoImage: UIImage {
+        return UIImage(named: "icon-jetpack-green")!
+    }
+
     /// Info Icon
     ///
     static var infoImage: UIImage {

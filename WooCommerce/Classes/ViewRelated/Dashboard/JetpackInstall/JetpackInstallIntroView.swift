@@ -79,8 +79,8 @@ struct JetpackInstallIntroView: View {
             })
                 .buttonStyle(PrimaryButtonStyle())
                 .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal, Constants.actionButtonHorizontalMargin)
-                .padding(.bottom, Constants.actionButtonBottomMargin)
+                .padding(.horizontal, Constants.actionButtonMargin)
+                .padding(.bottom, Constants.actionButtonMargin)
         }
     }
 }
@@ -88,8 +88,7 @@ struct JetpackInstallIntroView: View {
 private extension JetpackInstallIntroView {
     enum Constants {
         static let jetpackLogoSize: CGFloat = 120
-        static let actionButtonHorizontalMargin: CGFloat = 16
-        static let actionButtonBottomMargin: CGFloat = 28
+        static let actionButtonMargin: CGFloat = 16
         static let contentHorizontalMargin: CGFloat = 40
         static let contentSpacing: CGFloat = 8
         static let jetpackLogoBottomMargin: CGFloat = 24

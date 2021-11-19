@@ -1,5 +1,6 @@
 import XCTest
 @testable import WooCommerce
+@testable import Yosemite
 
 final class FilterOrderListViewModelTests: XCTestCase {
     func test_criteria_with_default_filters() {

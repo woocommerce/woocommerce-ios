@@ -124,6 +124,7 @@ public typealias TopEarnerStats = Networking.TopEarnerStats
 public typealias TopEarnerStatsItem = Networking.TopEarnerStatsItem
 public typealias User = Networking.User
 public typealias WooAPIVersion = Networking.WooAPIVersion
+public typealias StoredOrderSettings = Networking.StoredOrderSettings
 public typealias StoredProductSettings = Networking.StoredProductSettings
 public typealias CardReader = Hardware.CardReader
 public typealias CardReaderEvent = Hardware.CardReaderEvent

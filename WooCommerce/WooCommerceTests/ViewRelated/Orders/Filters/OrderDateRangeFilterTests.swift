@@ -1,5 +1,6 @@
 import XCTest
 @testable import WooCommerce
+@testable import Yosemite
 
 final class OrderDateRangeFilterTests: XCTestCase {
     func test_computedStartDate_with_any_filter_will_return_expected_data() {

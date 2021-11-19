@@ -36,7 +36,7 @@ final class AddOrderCoordinator: Coordinator {
         case (true, true):
             presentOrderTypeBottomSheet()
         case (false, true):
-            presentOrderCreationFlow(bottomSheetOrderType: .quick)
+            presentOrderCreationFlow(bottomSheetOrderType: .simple)
         case (true, false):
             presentOrderCreationFlow(bottomSheetOrderType: .full)
         case (false, false):
@@ -60,7 +60,7 @@ private extension AddOrderCoordinator {
 
     func presentOrderCreationFlow(bottomSheetOrderType: BottomSheetOrderType) {
         switch bottomSheetOrderType {
-        case .quick:
+        case .simple:
             presentSimplePaymentsAmountController()
         case .full:
             presentNewOrderController()

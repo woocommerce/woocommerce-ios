@@ -1,19 +1,19 @@
 import Yosemite
 
 public enum BottomSheetOrderType: Hashable {
-    case quick
+    case simple
     case full
 
     /// Title shown on the action sheet.
     ///
     var actionSheetTitle: String {
         switch self {
+        case .simple:
+            return NSLocalizedString("Simple Payments",
+                                     comment: "Action sheet option when the user wants to create Simple Payments order")
         case .full:
             return NSLocalizedString("Create order",
                                      comment: "Action sheet option when the user wants to create full manual order")
-        case .quick:
-            return NSLocalizedString("Quick order",
-                                     comment: "Action sheet option when the user wants to create quick order")
         }
     }
 
@@ -21,12 +21,12 @@ public enum BottomSheetOrderType: Hashable {
     ///
     var actionSheetDescription: String {
         switch self {
+        case .simple:
+            return NSLocalizedString("Create an order with minimal information",
+                                     comment: "Description of the Action sheet option when the user wants to create Simple Payments order")
         case .full:
             return NSLocalizedString("Create a new manual order",
                                      comment: "Description of the Action sheet option when the user wants to create full manual order")
-        case .quick:
-            return NSLocalizedString("Create an order with minimal information",
-                                     comment: "Description of the Action sheet option when the user wants to create quick order")
         }
     }
 
@@ -34,8 +34,8 @@ public enum BottomSheetOrderType: Hashable {
     ///
     var actionSheetImage: UIImage {
         switch self {
-        case .quick:
-            return UIImage.quickOrderImage
+        case .simple:
+            return UIImage.simplePaymentsImage
         case .full:
             return UIImage.pagesImage
         }
@@ -48,7 +48,7 @@ final class OrderTypeBottomSheetListSelectorCommand: BottomSheetListSelectorComm
 
     var data: [BottomSheetOrderType] = [
         .full,
-        .quick
+        .simple
     ]
 
     var selected: BottomSheetOrderType? = nil

@@ -145,6 +145,13 @@ extension UIImage {
         return UIImage.gridicon(.cloudOutline)
     }
 
+    /// Connection Icon
+    ///
+    static var connectionImage: UIImage {
+        return UIImage(named: "icon-connection")!
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Gear Icon - used in `UIBarButtonItem`
     ///
     static var gearBarButtonItemImage: UIImage {

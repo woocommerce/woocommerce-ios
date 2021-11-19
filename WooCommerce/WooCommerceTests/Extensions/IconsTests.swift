@@ -79,6 +79,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.closeButton)
     }
 
+    func testConnectionIconIsNotNil() {
+        XCTAssertNotNil(UIImage.connectionImage)
+    }
+
     func testGearBarButtonItemImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.gearBarButtonItemImage)
     }

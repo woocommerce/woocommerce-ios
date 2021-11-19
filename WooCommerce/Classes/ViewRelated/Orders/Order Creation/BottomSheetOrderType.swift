@@ -55,13 +55,8 @@ final class OrderTypeBottomSheetListSelectorCommand: BottomSheetListSelectorComm
 
     private let onSelection: (BottomSheetOrderType) -> Void
 
-    init(selected: BottomSheetOrderType?, onSelection: @escaping (BottomSheetOrderType) -> Void) {
+    init(onSelection: @escaping (BottomSheetOrderType) -> Void) {
         self.onSelection = onSelection
-
-        /// Remove from `data` the selected product type, so that it is not shown in the list.
-        data.removeAll { (productType) -> Bool in
-            productType == selected
-        }
     }
 
     func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: BottomSheetOrderType) {
@@ -76,9 +71,5 @@ final class OrderTypeBottomSheetListSelectorCommand: BottomSheetListSelectorComm
 
     func handleSelectedChange(selected: BottomSheetOrderType) {
         onSelection(selected)
-    }
-
-    func isSelected(model: BottomSheetOrderType) -> Bool {
-        return model == selected
     }
 }

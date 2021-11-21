@@ -79,56 +79,24 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
     ///
     @ObservedObject private(set) var viewModel: ViewModel
 
-    /// Set autofocus to text editor
-    ///
-    @available(iOS 15.0, *)
-    @FocusState private var textEditorIsFocused: Bool
-
     var body: some View {
         NavigationView {
-            // This is needed because `.focused` only works in iOS 15.0 and later
-            if #available(iOS 15.0, *) {
-                TextEditor(text: $viewModel.newNote)
-                    .focused($textEditorIsFocused)
-                    .onAppear {
-                        // Without delay '.focused' will not work
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            self.textEditorIsFocused = true
-                        }
+            AutofocusTextEditor(text: $viewModel.newNote)
+                .padding()
+                .navigationTitle(Localization.title)
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationViewStyle(StackNavigationViewStyle())
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(Localization.cancel, action: {
+                            viewModel.userDidCancelFlow()
+                            dismiss()
+                        })
                     }
-                    .padding()
-                    .navigationTitle(Localization.title)
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationViewStyle(StackNavigationViewStyle())
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button(Localization.cancel, action: {
-                                viewModel.userDidCancelFlow()
-                                dismiss()
-                            })
-                        }
-                        ToolbarItem(placement: .confirmationAction) {
-                            navigationBarTrailingItem()
-                        }
+                    ToolbarItem(placement: .confirmationAction) {
+                        navigationBarTrailingItem()
                     }
-            } else {
-                TextEditor(text: $viewModel.newNote)
-                    .padding()
-                    .navigationTitle(Localization.title)
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationViewStyle(StackNavigationViewStyle())
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button(Localization.cancel, action: {
-                                viewModel.userDidCancelFlow()
-                                dismiss()
-                            })
-                        }
-                        ToolbarItem(placement: .confirmationAction) {
-                            navigationBarTrailingItem()
-                        }
-                    }
-            }
+                }
         }
         .wooNavigationBarStyle()
     }

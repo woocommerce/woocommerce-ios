@@ -1,0 +1,74 @@
+{
+    "data": [
+        {
+            "id": "wc_admin",
+            "label": "WooCommerce Admin",
+            "description": "Settings for WooCommerce admin reporting.",
+            "parent_id": "",
+            "sub_groups": [],
+            "_links": {
+                "options": [
+                    {
+                        "href": "https://toma.to/wp-json/wc/v3/settings/wc_admin"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "general",
+            "label": "General",
+            "description": "",
+            "parent_id": "",
+            "sub_groups": [],
+            "_links": {
+                "options": [
+                    {
+                        "href": "https://toma.to/wp-json/wc/v3/settings/general"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "products",
+            "label": "Products",
+            "description": "",
+            "parent_id": "",
+            "sub_groups": [],
+            "_links": {
+                "options": [
+                    {
+                        "href": "https://toma.to/wp-json/wc/v3/settings/products"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "shipping",
+            "label": "Shipping",
+            "description": "",
+            "parent_id": "",
+            "sub_groups": [],
+            "_links": {
+                "options": [
+                    {
+                        "href": "https://toma.to/wp-json/wc/v3/settings/shipping"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "account",
+            "label": "Accounts &amp; Privacy",
+            "description": "",
+            "parent_id": "",
+            "sub_groups": [],
+            "_links": {
+                "options": [
+                    {
+                        "href": "https://toma.to/wp-json/wc/v3/settings/account"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -172,6 +172,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.jetpackLogoImage)
     }
 
+    func testJetpackGreenLogoImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.jetpackGreenLogoImage)
+    }
+
     func testInfoOutlineImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.infoOutlineImage)
     }
@@ -539,5 +543,9 @@ final class IconsTests: XCTestCase {
 
     func test_cardReaderManualIcon_is_not_nil() {
         XCTAssertNotNil(UIImage.cardReaderManualIcon)
+    }
+
+    func test_simplePaymentsImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.simplePaymentsImage)
     }
 }

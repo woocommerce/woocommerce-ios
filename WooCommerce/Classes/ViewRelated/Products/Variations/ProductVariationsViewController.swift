@@ -410,6 +410,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
         let productImageActionHandler = ProductImageActionHandler(siteID: productVariation.siteID,
                                                                   product: model)
+
         let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       allAttributes: allAttributes,
                                                       parentProductSKU: parentProductSKU,

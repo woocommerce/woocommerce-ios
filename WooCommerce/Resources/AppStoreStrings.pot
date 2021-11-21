@@ -57,11 +57,13 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v7.9-whats-new"
+msgctxt "v8.0-whats-new"
 msgid ""
-"Some merchants had problems loading order details because of a technical issue with how field names in the REST API are ordered. We’ve made a correction that should address that for you if you were experiencing it.\n"
+"Are you managing multiple stores in the app? Today is your lucky day! Our app now supports push notifications for ALL of your stores connected with the same Jetpack/WordPress.com account, not just the currently selected store.\n"
 "\n"
-"This release contains several other fixes based on your feedback. Please continue to send us feedback – we are listening!\n"
+"In-person payments card readers might have firmware software updates – some are super important and are required to be installed immediately. With this release, you can defer the upgrade of the optional updates for a better time.\n"
+"\n"
+"You’ll also find you can filter the product list by category in this release.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

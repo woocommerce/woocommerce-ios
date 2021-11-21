@@ -53,7 +53,7 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
     }
 
-    func test_sections_does_not_contain_install_jetpack_row_when_JCP_support_feature_flag_is_off() {
+    func test_sections_do_not_contain_install_jetpack_row_when_JCP_support_feature_flag_is_off() {
         // Given
         let featureFlagService = MockFeatureFlagService(isJetpackConnectionPackageSupportOn: false)
         let viewModel = SettingsViewModel(

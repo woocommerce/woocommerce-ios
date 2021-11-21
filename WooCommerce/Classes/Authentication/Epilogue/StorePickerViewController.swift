@@ -274,7 +274,10 @@ private extension StorePickerViewController {
 //
 private extension StorePickerViewController {
     func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let action = AccountAction.synchronizeSites(selectedSiteID: currentlySelectedSite?.siteID, onCompletion: onCompletion)
+        let action = AccountAction
+            .synchronizeSites(selectedSiteID: currentlySelectedSite?.siteID,
+                              isJetpackConnectionPackageSupported: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport),
+                              onCompletion: onCompletion)
         ServiceLocator.stores.dispatch(action)
     }
 }

@@ -132,10 +132,10 @@ private struct TextViewWrapper: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: View, context: Context) {
-        uiView.attributedText = attributedText
         uiView.maxLayoutWidth = maxLayoutWidth
         uiView.font = context.environment.font?.uiFont ?? UIFont.preferredFont(forTextStyle: .body)
         uiView.textColor = context.environment.foregroundColor.map(UIColor.init)
+        uiView.attributedText = attributedText
 
         var linkTextAttributes = uiView.linkTextAttributes ?? [:]
         linkTextAttributes[.underlineColor] = UIColor.clear

@@ -63,10 +63,8 @@ struct JetpackBenefitsBanner: View {
     var body: some View {
         Group {
             HStack(spacing: Layout.horizontalSpacing) {
-                Image(uiImage: .jetpackLogoImage)
+                Image(uiImage: .jetpackGreenLogoImage)
                     .resizable()
-                    .renderingMode(.template)
-                    .foregroundColor(Color(.jetpackGreen))
                     .frame(width: Layout.iconDimension * scale, height: Layout.iconDimension * scale)
                 VStack(alignment: .leading, spacing: Layout.verticalTextSpacing) {
                     Text(Localization.title)

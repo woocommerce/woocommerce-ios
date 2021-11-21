@@ -1,0 +1,18 @@
+{
+    "title": "Zucchini recipes",
+    "description": "All things zucchini and more",
+    "url": "https://zucchini.mystagingwebsite.com",
+    "email": "zuc.chini@automattic.com",
+    "timezone": "America/New_York",
+    "date_format": "F j, Y",
+    "time_format": "H:i",
+    "start_of_week": 1,
+    "language": "",
+    "use_smilies": true,
+    "default_category": 1,
+    "default_post_format": "0",
+    "posts_per_page": 10,
+    "default_ping_status": "open",
+    "default_comment_status": "open",
+    "site_logo": null
+}

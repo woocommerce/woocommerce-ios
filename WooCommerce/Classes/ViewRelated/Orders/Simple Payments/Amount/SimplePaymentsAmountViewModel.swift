@@ -5,7 +5,7 @@ import Yosemite
 ///
 final class SimplePaymentsAmountViewModel: ObservableObject {
 
-    /// Stores amount entered by the merchant.
+    /// Stores the amount(formatted) entered by the merchant.
     ///
     @Published var amount: String = "" {
         didSet {
@@ -105,6 +105,10 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     func userDidCancelFlow() {
         analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCanceled())
+    }
+
+    func createSummaryViewModel() -> SimplePaymentsSummaryViewModel {
+        SimplePaymentsSummaryViewModel(providedAmount: amount)
     }
 }
 

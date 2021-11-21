@@ -197,7 +197,7 @@ private extension SettingsViewController {
     func configureLicenses(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = Localization.openSourceLicenses
+        cell.textLabel?.text = Localization.thirdPartyLicenses
     }
 
     func configureAppSettings(cell: BasicTableViewCell) {
@@ -641,9 +641,9 @@ private extension SettingsViewController {
             comment: "Navigates to about WooCommerce app screen"
         )
 
-        static let openSourceLicenses = NSLocalizedString(
-            "Open Source Licenses",
-            comment: "Navigates to screen about open source licenses"
+        static let thirdPartyLicenses = NSLocalizedString(
+            "Third Party Licenses",
+            comment: "Navigates to screen with third party software licenses"
         )
 
         static let openDeviceSettings = NSLocalizedString(

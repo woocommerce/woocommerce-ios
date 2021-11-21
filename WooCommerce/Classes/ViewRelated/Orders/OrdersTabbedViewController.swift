@@ -51,6 +51,9 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
 
     private let siteID: Int64
 
+    private var isOrderCreationEnabled: Bool = false
+    private var shouldShowSimplePaymentsButton: Bool = false
+
     init(siteID: Int64) {
         self.siteID = siteID
         super.init(nibName: Self.nibName, bundle: nil)
@@ -130,11 +133,17 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID, "status": order.status.rawValue])
     }
 
-    /// Presents `SimplePaymentsAmountHostingController`.
-    ///
-    @objc private func presentSimplePaymentsAmountController() {
-        let viewModel = SimplePaymentsAmountViewModel(siteID: siteID)
-        viewModel.onOrderCreated = { [weak self] order in
+    @objc func presentOrderCreationFlow(sender: UIBarButtonItem) {
+        guard let navigationController = navigationController else {
+            return
+        }
+
+        let coordinatingController = AddOrderCoordinator(siteID: siteID,
+                                                         isOrderCreationEnabled: isOrderCreationEnabled,
+                                                         shouldShowSimplePaymentsButton: shouldShowSimplePaymentsButton,
+                                                         sourceBarButtonItem: sender,
+                                                         sourceNavigationController: navigationController)
+        coordinatingController.onOrderCreated = { [weak self] order in
             guard let self = self else { return }
 
             self.moveToViewController(at: 1, animated: false) // AllOrders list is at index 1
@@ -142,12 +151,7 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
                 self.navigateToOrderDetail(order)
             }
         }
-
-        let viewController = SimplePaymentsAmountHostingController(viewModel: viewModel)
-        let navigationController = WooNavigationController(rootViewController: viewController)
-        present(navigationController, animated: true)
-
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
+        coordinatingController.start()
     }
 
     // MARK: - ButtonBarPagerTabStripViewController Conformance
@@ -262,16 +266,31 @@ extension OrdersTabbedViewController {
         return button
     }
 
-    /// Create a `UIBarButtonItem` to be used as a way to create a new simple payments order.
+    /// Create a `UIBarButtonItem` to be used as a way to create a new order.
     ///
-    func createAddSimplePaymentsOrderItem() -> UIBarButtonItem {
+    func createAddOrderItem(isOrderCreationEnabled: Bool, shouldShowSimplePaymentsButton: Bool) -> UIBarButtonItem? {
+        self.isOrderCreationEnabled = isOrderCreationEnabled
+        self.shouldShowSimplePaymentsButton = shouldShowSimplePaymentsButton
+
         let button = UIBarButtonItem(image: .plusBarButtonItemImage,
                                      style: .plain,
                                      target: self,
-                                     action: #selector(presentSimplePaymentsAmountController))
+                                     action: #selector(presentOrderCreationFlow(sender:)))
         button.accessibilityTraits = .button
-        button.accessibilityLabel = NSLocalizedString("Add simple payments order", comment: "Navigates to a screen to create a simple payments order")
-        button.accessibilityIdentifier = "simple-payments-add-button"
+
+        switch (isOrderCreationEnabled, shouldShowSimplePaymentsButton) {
+        case (false, false):
+            return nil
+        case (true, true):
+            button.accessibilityLabel = NSLocalizedString("Choose new order type", comment: "Opens action sheet to choose a type of a new order")
+            button.accessibilityIdentifier = "new-order-type-sheet-button"
+        case (true, false):
+            button.accessibilityLabel = NSLocalizedString("Add a new order", comment: "Navigates to a screen to create a full manual order")
+            button.accessibilityIdentifier = "full-order-add-button"
+        case (false, true):
+            button.accessibilityLabel = NSLocalizedString("Add simple payments order", comment: "Navigates to a screen to create a simple payments order")
+            button.accessibilityIdentifier = "simple-payments-add-button"
+        }
         return button
     }
 

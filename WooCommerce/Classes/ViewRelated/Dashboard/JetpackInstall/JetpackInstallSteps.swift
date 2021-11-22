@@ -1,6 +1,7 @@
 import Foundation
 
 /// Enum respresenting steps for installing Jetpack for a site.
+/// Used for displaying steps on JetpackInstallStepsView.
 ///
 enum JetpackInstallStep: Int, CaseIterable {
     case installation

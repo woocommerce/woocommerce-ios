@@ -2,7 +2,7 @@ import Foundation
 import Codegen
 
 /// Models a pair of `siteID` and Order Settings
-/// These entities will be serialised to a plist file using `OrdersModuleSettings`
+/// These entities will be serialised to a plist file using `AppSettingsStore`
 ///
 public struct StoredOrderSettings: Codable, Equatable {
 

@@ -2,6 +2,7 @@
 
 8.1
 -----
+- [***] Not it's possible to filter Order List by multiple statuses and date ranges. Plus, we removed the top tab bar on Orders Tab.
 - [*] Login: Password AutoFill will suggest wordpress.com accounts. [https://github.com/woocommerce/woocommerce-ios/pull/5399]
 - [internal] Migrated Settings screen to MVVM [https://github.com/woocommerce/woocommerce-ios/pull/5393]
 

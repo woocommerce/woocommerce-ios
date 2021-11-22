@@ -5,15 +5,17 @@ import Yosemite
 final class NewOrderViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
+    private let noticePresenter: NoticePresenter
 
     /// Active navigation bar trailing item.
     /// Defaults to no visible button.
     ///
     @Published private(set) var navigationTrailingItem: NavigationItem = .none
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.siteID = siteID
         self.stores = stores
+        self.noticePresenter = noticePresenter
     }
 
     /// Representation of possible navigation bar trailing buttons
@@ -40,7 +42,7 @@ final class NewOrderViewModel: ObservableObject {
                 // TODO: Handle newly created order / remove success logging
                 DDLogInfo("New order created successfully!")
             case .failure(let error):
-                // TODO: Display error in the UI (#5457)
+                self.displayOrderCreationErrorNotice()
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
@@ -56,5 +58,14 @@ private extension NewOrderViewModel {
     ///
     func prepareOrderForRemote() -> Order {
         Order.empty.copy(siteID: siteID)
+    }
+
+    /// Enqueues the `Error creating new order` Notice.
+    ///
+    private func displayOrderCreationErrorNotice() {
+        let message = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
+        let notice = Notice(title: message, feedbackType: .error)
+
+        noticePresenter.enqueue(notice: notice)
     }
 }

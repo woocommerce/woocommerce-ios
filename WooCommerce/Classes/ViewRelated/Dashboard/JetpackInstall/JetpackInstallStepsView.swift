@@ -118,7 +118,7 @@ struct JetpackInstallStepsView: View {
 private extension JetpackInstallStepsView {
     enum Constants {
         static let headerContentSpacing: CGFloat = 8
-        static let contentTopMargin: CGFloat = 69
+        static let contentTopMargin: CGFloat = 80
         static let contentHorizontalMargin: CGFloat = 40
         static let contentSpacing: CGFloat = 32
         static let logoSize: CGFloat = 40

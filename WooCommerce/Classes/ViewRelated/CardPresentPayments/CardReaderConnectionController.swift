@@ -539,7 +539,11 @@ private extension CardReaderConnectionController {
             return
         }
 
-        if underlyingError == .readerSoftwareUpdateFailedBatteryLow {
+        switch underlyingError {
+        case .readerSoftwareUpdateFailedInterrupted:
+            // Update was cancelled, don't treat this as an error
+            return
+        case .readerSoftwareUpdateFailedBatteryLow:
             alerts.updatingFailedLowBattery(
                 from: from,
                 batteryLevel: batteryLevel,
@@ -547,7 +551,7 @@ private extension CardReaderConnectionController {
                     self.state = .searching
                 }
             )
-        } else {
+        default:
             alerts.updatingFailed(
                 from: from,
                 tryAgain: nil,

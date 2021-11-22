@@ -200,5 +200,4 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.presentNotice, .error)
     }
-
 }

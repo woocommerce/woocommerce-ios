@@ -24,6 +24,17 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     @Published var presentNotice: Notice?
 
+    /// Defines if the view should navigate to the summary view.
+    /// Setting it to `false` will `nil` the summary view model.
+    ///
+    @Published var navigateToSummary: Bool = false {
+        didSet {
+            if !navigateToSummary {
+                summaryViewModel = nil
+            }
+        }
+    }
+
     /// Assign this closure to be notified when a new order is created
     ///
     var onOrderCreated: (Order) -> Void = { _ in }
@@ -41,6 +52,15 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         // TODO: We are appending the currency symbol always to the left, we should use `CurrencyFormatter` when releasing to more countries.
         storeCurrencySymbol + "0" + storeCurrencySettings.decimalSeparator + "00"
     }()
+
+    /// Retains the SummaryViewModel.
+    /// Assigning it will set `navigateToSummary`.
+    ///
+    private(set) var summaryViewModel: SimplePaymentsSummaryViewModel? {
+        didSet {
+            navigateToSummary = summaryViewModel != nil
+        }
+    }
 
     /// Current store ID
     ///

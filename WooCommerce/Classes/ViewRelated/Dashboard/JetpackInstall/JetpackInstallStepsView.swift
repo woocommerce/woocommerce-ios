@@ -40,7 +40,7 @@ struct JetpackInstallStepsView: View {
             // Main content
             VStack(alignment: .leading, spacing: Constants.contentSpacing) {
                 // Header
-                HStack(spacing: 8) {
+                HStack(spacing: Constants.headerContentSpacing) {
                     Image(uiImage: .jetpackGreenLogoImage)
                         .resizable()
                         .frame(width: Constants.logoSize * scale, height: Constants.logoSize * scale)
@@ -117,6 +117,7 @@ struct JetpackInstallStepsView: View {
 
 private extension JetpackInstallStepsView {
     enum Constants {
+        static let headerContentSpacing: CGFloat = 8
         static let contentTopMargin: CGFloat = 69
         static let contentHorizontalMargin: CGFloat = 40
         static let contentSpacing: CGFloat = 32

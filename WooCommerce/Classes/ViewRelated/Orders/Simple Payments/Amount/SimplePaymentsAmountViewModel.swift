@@ -84,26 +84,22 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     func createSimplePaymentsOrder() {
         loading = true
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount) { [weak self] result in
+            guard let self = self else { return }
             self.loading = false
-        }
 
-//        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount) { [weak self] result in
-//            guard let self = self else { return }
-//            self.loading = false
-//
-//            switch result {
-//            case .success(let order):
-//                self.onOrderCreated(order)
-//                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCompleted(amount: order.total))
-//
-//            case .failure(let error):
-//                self.presentNotice = .error
-//                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed())
-//                DDLogError("⛔️ Error creating simple payments order: \(error)")
-//            }
-//        }
-//        stores.dispatch(action)
+            switch result {
+            case .success(let order):
+                self.onOrderCreated(order)
+                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCompleted(amount: order.total))
+
+            case .failure(let error):
+                self.presentNotice = .error
+                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed())
+                DDLogError("⛔️ Error creating simple payments order: \(error)")
+            }
+        }
+        stores.dispatch(action)
     }
 
     /// Track the flow cancel scenario.

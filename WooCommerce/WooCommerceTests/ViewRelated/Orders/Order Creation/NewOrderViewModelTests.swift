@@ -14,6 +14,17 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .none)
     }
 
+    func test_create_button_is_enabled_when_order_detail_changes_from_default_value() {
+        // Given
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID)
+
+        // When
+        viewModel.orderDetails.status = .processing
+
+        // Then
+        XCTAssertEqual(viewModel.navigationTrailingItem, .create)
+    }
+
     func test_loading_indicator_is_enabled_during_network_request() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -42,6 +53,7 @@ class NewOrderViewModelTests: XCTestCase {
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
+        viewModel.orderDetails.status = .processing
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .createOrder(_, order, onCompletion):

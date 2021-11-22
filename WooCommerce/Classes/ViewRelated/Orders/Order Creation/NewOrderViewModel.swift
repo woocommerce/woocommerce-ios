@@ -1,4 +1,5 @@
 import Yosemite
+import Combine
 
 /// View model for `NewOrder`.
 ///
@@ -7,15 +8,25 @@ final class NewOrderViewModel: ObservableObject {
     private let stores: StoresManager
     private let noticePresenter: NoticePresenter
 
+    /// Order details used to create the order
+    ///
+    @Published var orderDetails = OrderDetails()
+
     /// Active navigation bar trailing item.
     /// Defaults to no visible button.
     ///
     @Published private(set) var navigationTrailingItem: NavigationItem = .none
 
+    /// Tracks if a network request is being performed.
+    ///
+    @Published var performingNetworkRequest = false
+
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.siteID = siteID
         self.stores = stores
         self.noticePresenter = noticePresenter
+
+        configureNavigationTrailingItem()
     }
 
     /// Representation of possible navigation bar trailing buttons
@@ -26,16 +37,36 @@ final class NewOrderViewModel: ObservableObject {
         case loading
     }
 
+    /// Type to hold all order detail values
+    ///
+    struct OrderDetails {
+        var status: OrderStatusEnum = .pending
+        var products: [OrderItem] = []
+        var billingAddress: Address?
+        var shippingAddress: Address?
+
+        /// Used to create `Order` and check if order details have changed from empty/default values.
+        /// Required because `Order` has `Date` properties that have to be the same to be Equatable.
+        ///
+        let emptyOrder = Order.empty
+
+        func toOrder() -> Order {
+            emptyOrder.copy(status: status,
+                            items: products,
+                            billingAddress: billingAddress,
+                            shippingAddress: shippingAddress)
+        }
+    }
+
     // MARK: - API Requests
     /// Creates an order remotely using the provided order details.
     ///
     func createOrder() {
-        navigationTrailingItem = .loading
-        let order = prepareOrderForRemote()
+        performingNetworkRequest = true
 
-        let action = OrderAction.createOrder(siteID: siteID, order: order) { [weak self] result in
+        let action = OrderAction.createOrder(siteID: siteID, order: orderDetails.toOrder()) { [weak self] result in
             guard let self = self else { return }
-            self.navigationTrailingItem = .create
+            self.performingNetworkRequest = false
 
             switch result {
             case .success:
@@ -52,12 +83,22 @@ final class NewOrderViewModel: ObservableObject {
 
 // MARK: - Helpers
 private extension NewOrderViewModel {
-    /// Prepares the order to send to the remote endpoint, using the provided order details.
+    /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
-    /// Add order details here to include them in the remote order creation request.
-    ///
-    func prepareOrderForRemote() -> Order {
-        Order.empty.copy(siteID: siteID)
+    func configureNavigationTrailingItem() {
+        Publishers.CombineLatest($orderDetails, $performingNetworkRequest)
+            .map { orderDetails, performingNetworkRequest -> NavigationItem in
+                guard !performingNetworkRequest else {
+                    return .loading
+                }
+
+                guard orderDetails.emptyOrder != orderDetails.toOrder() else {
+                    return .none
+                }
+
+                return .create
+            }
+            .assign(to: &$navigationTrailingItem)
     }
 
     /// Enqueues the `Error creating new order` Notice.

@@ -24,7 +24,7 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         fileStorage = MockInMemoryStorage()
-        subject = AppSettingsStore(dispatcher: dispatcher!, storageManager: storageManager!, fileStorage: fileStorage!)
+        subject = AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: fileStorage)
     }
 
     override func tearDown() {
@@ -40,23 +40,23 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
         let siteID: Int64 = 134
 
         let orderStatuses: [OrderStatusEnum] = [.pending, .completed]
-        let startDate = Date().yearEnd
-        let endDate = Date().yearStart
+        let startDate = Date().yearStart
+        let endDate = Date().yearEnd
         let dateRange = OrderDateRangeFilter(filter: .custom, startDate: startDate, endDate: endDate)
         let orderSettings = StoredOrderSettings.Setting(siteID: siteID,
                                                         orderStatusesFilter: orderStatuses,
                                                         dateRangeFilter: dateRange)
 
         // When
-        let result: Result<StoredOrderSettings.Setting, Error> = waitFor { promise in
+        let resultBeforeWriteAction: Result<StoredOrderSettings.Setting, Error> = waitFor { promise in
 
             let initialReadAction = AppSettingsAction.loadOrdersSettings(siteID: siteID) { result in
                 promise(result)
             }
             self.subject.onAction(initialReadAction)
         }
-        /// Before any write actions, the products settings should be nil.
-        XCTAssertTrue(result.isFailure)
+        /// Before any write actions, the orders settings should be nil.
+        XCTAssertTrue(resultBeforeWriteAction.isFailure)
 
         let writeAction = AppSettingsAction.upsertOrdersSettings(siteID: siteID, orderStatusesFilter: orderStatuses, dateRangeFilter: dateRange) { error in
             XCTAssertNil(error)
@@ -82,16 +82,21 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
         let siteID2: Int64 = 268
 
         let orderStatuses: [OrderStatusEnum] = [.pending, .completed]
-        let startDate = Date().yearEnd
-        let endDate = Date().yearStart
+        let startDate = Date().yearStart
+        let endDate = Date().yearEnd
         let dateRange = OrderDateRangeFilter(filter: .custom, startDate: startDate, endDate: endDate)
+
+        let orderStatuses2: [OrderStatusEnum] = [.pending, .cancelled]
+        let startDate2 = Date().yearStart
+        let endDate2 = Date().yearEnd
+        let dateRange2 = OrderDateRangeFilter(filter: .custom, startDate: startDate2, endDate: endDate2)
 
         let orderSettings1 = StoredOrderSettings.Setting(siteID: siteID1,
                                                         orderStatusesFilter: orderStatuses,
                                                         dateRangeFilter: dateRange)
         let orderSettings2 = StoredOrderSettings.Setting(siteID: siteID2,
-                                                        orderStatusesFilter: orderStatuses,
-                                                        dateRangeFilter: dateRange)
+                                                        orderStatusesFilter: orderStatuses2,
+                                                        dateRangeFilter: dateRange2)
 
         // When
         let writeAction1 = AppSettingsAction.upsertOrdersSettings(siteID: siteID1, orderStatusesFilter: orderStatuses, dateRangeFilter: dateRange) { error in
@@ -99,7 +104,7 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
         }
         subject.onAction(writeAction1)
 
-        let writeAction2 = AppSettingsAction.upsertOrdersSettings(siteID: siteID2, orderStatusesFilter: orderStatuses, dateRangeFilter: dateRange) { error in
+        let writeAction2 = AppSettingsAction.upsertOrdersSettings(siteID: siteID2, orderStatusesFilter: orderStatuses2, dateRangeFilter: dateRange2) { error in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction2)
@@ -128,7 +133,7 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
         // When
         let action = AppSettingsAction.resetOrdersSettings
         subject.onAction(action)
-        
+
         // Then
         XCTAssertTrue(fileStorage.deleteIsHit)
     }

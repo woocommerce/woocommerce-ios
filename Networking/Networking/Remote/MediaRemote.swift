@@ -152,19 +152,13 @@ public extension MediaRemote {
     enum Default {
         public static let context: String = "display"
         public static let pageNumber = 1
-        fileprivate static let wordPressMediaFields = "id,date_gmt,slug,mime_type,source_url,alt_text,media_details,title"
     }
 
     private enum ParameterKey {
         static let pageNumber: String = "page"
         static let pageSize: String   = "number"
         static let fields: String     = "fields"
-        static let fieldsWordPressSite: String = "_fields"
         static let mimeType: String   = "mime_type"
         static let contextKey: String = "context"
-    }
-
-    private enum ParameterValue {
-        static let mediaUploadName: String = "file"
     }
 }

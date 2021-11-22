@@ -125,8 +125,11 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
     }
 
     func test_reset_OrdersSettings_action() {
+        // When
         let action = AppSettingsAction.resetOrdersSettings
         subject.onAction(action)
-        XCTAssertTrue(fileStorage!.deleteIsHit)
+        
+        // Then
+        XCTAssertTrue(fileStorage.deleteIsHit)
     }
 }

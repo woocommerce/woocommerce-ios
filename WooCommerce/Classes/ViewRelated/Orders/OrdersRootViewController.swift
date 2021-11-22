@@ -85,7 +85,7 @@ final class OrdersRootViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         // Needed in ViewWillAppear because this View Controller is never recreated.
-        fetchSimplePaymentsExperimentalToggleAndConfigureNavigationButtons()
+        fetchExperimentalTogglesAndConfigureNavigationButtons()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -156,7 +156,7 @@ private extension OrdersRootViewController {
     /// Search: Is always present.
     /// Simple Payments: Depends on the local feature flag, experimental feature toggle and the inPersonPayments state.
     ///
-    func configureNavigationButtons(isSimplePaymentsExperimentalToggleEnabled: Bool) {
+    func configureNavigationButtons(isSimplePaymentsExperimentalToggleEnabled: Bool, isOrderCreationExperimentalToggleEnabled: Bool) {
         let shouldShowSimplePaymentsButton: Bool = {
             let isInPersonPaymentsConfigured = inPersonPaymentsUseCase.state == .completed
             return isSimplePaymentsExperimentalToggleEnabled && isInPersonPaymentsConfigured
@@ -205,20 +205,38 @@ private extension OrdersRootViewController {
         inPersonPaymentsUseCase.$state
             .removeDuplicates()
             .sink { [weak self] _ in
-                self?.fetchSimplePaymentsExperimentalToggleAndConfigureNavigationButtons()
+                self?.fetchExperimentalTogglesAndConfigureNavigationButtons()
             }
             .store(in: &subscriptions)
         inPersonPaymentsUseCase.refresh()
     }
 
-    /// Fetches the latest value of the SimplePayments experimental feature toggle and re configures navigation buttons.
+    /// Fetches the latest values of order-related experimental feature toggles and re configures navigation buttons.
     ///
-    func fetchSimplePaymentsExperimentalToggleAndConfigureNavigationButtons() {
-        let action = AppSettingsAction.loadSimplePaymentsSwitchState { [weak self] result in
-            let isEnabled = (try? result.get()) ?? false
-            self?.configureNavigationButtons(isSimplePaymentsExperimentalToggleEnabled: isEnabled)
+    func fetchExperimentalTogglesAndConfigureNavigationButtons() {
+        let group = DispatchGroup()
+
+        var isSimplePaymentsEnabled = false
+        var isOrderCreationEnabled = false
+
+        group.enter()
+        let simplePaymentsAction = AppSettingsAction.loadSimplePaymentsSwitchState { result in
+            isSimplePaymentsEnabled = (try? result.get()) ?? false
+            group.leave()
         }
-        ServiceLocator.stores.dispatch(action)
+        ServiceLocator.stores.dispatch(simplePaymentsAction)
+
+        group.enter()
+        let orderCreationAction = AppSettingsAction.loadOrderCreationSwitchState { result in
+            isOrderCreationEnabled = (try? result.get()) ?? false
+            group.leave()
+        }
+        ServiceLocator.stores.dispatch(orderCreationAction)
+
+        group.notify(queue: .main) { [weak self] in
+            self?.configureNavigationButtons(isSimplePaymentsExperimentalToggleEnabled: isSimplePaymentsEnabled,
+                                             isOrderCreationExperimentalToggleEnabled: isOrderCreationEnabled)
+        }
     }
 }
 

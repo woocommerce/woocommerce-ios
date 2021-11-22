@@ -7,6 +7,9 @@ import protocol Storage.StorageManagerType
 final class ProductFormViewModel: ProductFormViewModelProtocol {
     typealias ProductModel = EditableProductModel
 
+    /// Production variation ID only for Product Variation not for product
+    var productionVariationID: Int64? = nil
+
     /// Emits product on change, except when the product name is the only change (`productName` is emitted for this case).
     var observableProduct: Observable<EditableProductModel> {
         productSubject

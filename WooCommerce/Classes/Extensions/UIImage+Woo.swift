@@ -102,6 +102,18 @@ extension UIImage {
             .imageWithTintColor(.listBackground)!
     }
 
+    /// Green circle with checkmark
+    ///
+    static var checkCircleImage: UIImage {
+        return UIImage(named: "check-circle-done")!
+    }
+
+    /// Circle without checkmark
+    ///
+    static var checkEmptyCircleImage: UIImage {
+        return UIImage(named: "check-circle-empty")!
+    }
+
     /// WooCommerce Styled Checkmark
     ///
     static var checkmarkStyledImage: UIImage {
@@ -143,6 +155,12 @@ extension UIImage {
     ///
     static var cloudOutlineImage: UIImage {
         return UIImage.gridicon(.cloudOutline)
+    }
+
+    /// Connection Icon
+    ///
+    static var connectionImage: UIImage {
+        return UIImage(named: "icon-connection")!
     }
 
     /// Gear Icon - used in `UIBarButtonItem`
@@ -334,6 +352,10 @@ extension UIImage {
     ///
     static var jetpackLogoImage: UIImage {
         return UIImage(named: "icon-jetpack-gray")!
+    }
+
+    static var jetpackGreenLogoImage: UIImage {
+        return UIImage(named: "icon-jetpack-green")!
     }
 
     /// Info Icon
@@ -582,6 +604,12 @@ extension UIImage {
         let tintColor = UIColor.listSmallIcon
         return UIImage.gridicon(.product, size: CGSize(width: 20, height: 20))
             .imageWithTintColor(tintColor)!
+    }
+
+    /// Simple Payments Icon
+    ///
+    static var simplePaymentsImage: UIImage {
+        return UIImage(named: "icon-simple-payments")!
     }
 
     /// Work In Progress banner icon on the Products Tab

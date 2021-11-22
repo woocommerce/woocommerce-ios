@@ -64,8 +64,7 @@ extension ProductsTabProductTableViewCell: SearchResultCell {
 
 extension ProductsTabProductTableViewCell {
     func update(viewModel: ProductsTabProductViewModel, imageService: ImageService) {
-        nameLabel.text = viewModel.name
-
+        nameLabel.text = viewModel.createNameLabel()
         detailsLabel.attributedText = viewModel.detailsAttributedString
 
         productImageView.contentMode = .center
@@ -155,7 +154,7 @@ private extension ProductsTabProductTableViewCell {
 
     func configureNameLabel() {
         nameLabel.applyBodyStyle()
-        nameLabel.numberOfLines = 2
+        nameLabel.numberOfLines = 0
     }
 
     func configureDetailsLabel() {

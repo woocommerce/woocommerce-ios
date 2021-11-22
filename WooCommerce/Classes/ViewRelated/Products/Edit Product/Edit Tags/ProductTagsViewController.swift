@@ -1,12 +1,13 @@
 import UIKit
 import Yosemite
-
+import WordPressUI
 
 /// ProductTagsViewController: Displays the list of ProductTag associated to the active Site and to the specific product.
 ///
 final class ProductTagsViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var ghostTableView: UITableView!
     @IBOutlet private weak var textView: UITextView!
     @IBOutlet private var separatorView: UIView!
 
@@ -19,7 +20,7 @@ final class ProductTagsViewController: UIViewController {
         return resultController.fetchedObjects
     }
 
-    private var dataSource: ProductTagsDataSource = LoadingDataSource() {
+    private var dataSource: ProductTagsDataSource? = nil {
         didSet {
             tableView.dataSource = dataSource
             tableView.reloadData()
@@ -63,7 +64,9 @@ final class ProductTagsViewController: UIViewController {
         configureMainView()
         configureTextView()
         configureSeparator()
+        registerTableViewCells()
         configureTableView()
+        configureGhostTableView()
         startListeningToNotifications()
 
         textView.text = normalizeInitialTags(tags: originalTagNames)
@@ -141,7 +144,6 @@ private extension ProductTagsViewController {
     }
 
     func configureTableView() {
-        registerTableViewCells()
         // The datasource will be dynamically assigned on variable `dataSource`
         tableView.delegate = self
 
@@ -149,10 +151,19 @@ private extension ProductTagsViewController {
         tableView.removeLastCellSeparator()
     }
 
+    func configureGhostTableView() {
+        ghostTableView.translatesAutoresizingMaskIntoConstraints = false
+        ghostTableView.backgroundColor = .listBackground
+        ghostTableView.isScrollEnabled = false
+        ghostTableView.isHidden = true
+        ghostTableView.removeLastCellSeparator()
+    }
+
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells() {
         tableView.registerNib(for: BasicTableViewCell.self)
+        ghostTableView.registerNib(for: WooBasicTableViewCell.self)
     }
 }
 
@@ -203,7 +214,7 @@ extension ProductTagsViewController: KeyboardScrollable {
 //
 private extension ProductTagsViewController {
     func loadTags() {
-        dataSource = LoadingDataSource()
+        displayLoading()
 
         let action = ProductTagAction.synchronizeAllProductTags(siteID: product.siteID) { [weak self] error in
             if let error = error {
@@ -222,6 +233,7 @@ private extension ProductTagsViewController {
     }
 
     func tagsLoaded(tags: [String]) {
+        hideLoading()
         dataSource = SuggestionsDataSource(suggestions: tags,
                                            selectedTags: completeTags,
                                            searchQuery: partialTag)
@@ -251,6 +263,23 @@ private extension ProductTagsViewController {
         ServiceLocator.stores.dispatch(action)
     }
 
+}
+
+// MARK: Loading handling
+//
+private extension ProductTagsViewController {
+    func displayLoading() {
+        let options = GhostOptions(displaysSectionHeader: false,
+            reuseIdentifier: WooBasicTableViewCell.reuseIdentifier,
+            rowsPerSection: [3])
+        ghostTableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
+        ghostTableView.isHidden = false
+    }
+
+    func hideLoading() {
+        ghostTableView.removeGhostContent()
+        ghostTableView.isHidden = true
+    }
 }
 
 // MARK: Error handling
@@ -421,8 +450,6 @@ extension ProductTagsViewController: UITableViewDelegate {
         switch tableView.dataSource {
         case is FailureDataSource:
             loadTags()
-        case is LoadingDataSource:
-            return
         case is SuggestionsDataSource:
             suggestionTapped(cell: tableView.cellForRow(at: indexPath))
         default:

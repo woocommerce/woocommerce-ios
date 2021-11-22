@@ -37,11 +37,9 @@ final class MediaStoreTests: XCTestCase {
 
     /// Verifies that `MediaAction.retrieveMediaLibrary` returns the expected response.
     ///
-    func testRetrieveMediaLibraryUponSuccessfulResponse() {
-        let expectation = self.expectation(description: "Retrieve media library")
-
+    func test_retrieveMediaLibrary_returns_media_list() throws {
+        // Given
         network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
-
         let expectedMedia = Media(mediaID: 2352,
                                   date: date(with: "2020-02-21T12:15:38+08:00"),
                                   fileExtension: "jpeg",
@@ -53,30 +51,30 @@ final class MediaStoreTests: XCTestCase {
                                   alt: "",
                                   height: nil,
                                   width: nil)
-
-        let action = MediaAction.retrieveMediaLibrary(siteID: sampleSiteID,
-                                                      pageNumber: 1,
-                                                      pageSize: 20) { mediaItems, error in
-                                                        XCTAssertNil(error)
-                                                        XCTAssertEqual(mediaItems.count, 5)
-                                                        XCTAssertEqual(mediaItems.first, expectedMedia)
-
-
-                                                        expectation.fulfill()
-        }
-
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network)
-        mediaStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // When
+        let result: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let mediaItems = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaItems.count, 5)
+        XCTAssertEqual(mediaItems.first, expectedMedia)
     }
 
     /// Verifies that `MediaAction.retrieveMediaLibrary` returns the expected response for cases where URLs contain special chars.
     ///
-    func testRetrieveMediaLibraryUponSuccessfulResponseWhereURLsContainSpecialChars() {
-        let expectation = self.expectation(description: "Retrieve media library")
-
+    func test_retrieveMediaLibrary_returns_media_list_when_URLs_contain_special_chars() throws {
+        // Given
         network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
 
         let expectedMedia = Media(mediaID: 2348,
@@ -90,69 +88,75 @@ final class MediaStoreTests: XCTestCase {
                                   alt: "",
                                   height: nil,
                                   width: nil)
-
-        let action = MediaAction.retrieveMediaLibrary(siteID: sampleSiteID,
-                                                      pageNumber: 1,
-                                                      pageSize: 20) { mediaItems, error in
-            XCTAssertNil(error)
-            XCTAssertEqual(mediaItems.count, 5)
-            XCTAssertTrue(mediaItems.contains(expectedMedia))
-
-            expectation.fulfill()
-        }
-
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network)
-        mediaStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // When
+        let result: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let mediaItems = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaItems.count, 5)
+        XCTAssertTrue(mediaItems.contains(expectedMedia))
     }
 
     /// Verifies that `MediaAction.retrieveMediaLibrary` returns an error whenever there is an error response from the backend.
     ///
-    func testRetrieveMediaLibraryReturnsErrorUponReponseError() {
-        let expectation = self.expectation(description: "Retrieve media library")
-
+    func test_retrieveMediaLibrary_returns_error_upon_response_error() throws {
+        // Given
         network.simulateResponse(requestUrlSuffix: "media", filename: "generic_error")
-        let action = MediaAction.retrieveMediaLibrary(siteID: sampleSiteID,
-                                                      pageNumber: 1,
-                                                      pageSize: 20) { mediaItems, error in
-                                                        XCTAssertNotNil(error)
-                                                        XCTAssertNotNil(mediaItems)
-                                                        XCTAssertTrue(mediaItems.isEmpty)
-                                                        expectation.fulfill()
-        }
-
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network)
-        mediaStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // When
+        let result: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? DotcomError)
+        XCTAssertEqual(error, .unauthorized)
     }
 
     /// Verifies that `MediaAction.retrieveMediaLibrary` returns an error whenever there is no backend response.
     ///
-    func testRetrieveMediaLibraryReturnsErrorUponEmptyResponse() {
-        let expectation = self.expectation(description: "Retrieve media library")
-
-        let action = MediaAction.retrieveMediaLibrary(siteID: sampleSiteID,
-                                                      pageNumber: 1,
-                                                      pageSize: 20) { mediaItems, error in
-                                                        XCTAssertNotNil(error)
-                                                        expectation.fulfill()
-        }
-
+    func test_retrieveMediaLibrary_returns_error_upon_empty_response() {
+        // Given
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network)
-        mediaStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // When
+        let result: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 
     // MARK: test cases for `MediaAction.uploadMedia`
 
-    func testUploadingMedia() {
-        let expectation = self.expectation(description: "Upload a media asset")
+    func test_uploadMedia_returns_uploaded_media_and_deletes_input_media_file() throws {
+        // Given
 
         // Creates a temporary file to simulate a uploadable media file.
         let filename = "test.txt"
@@ -177,27 +181,29 @@ final class MediaStoreTests: XCTestCase {
                                     network: network)
 
         let path = "sites/\(sampleSiteID)/media/new"
-
         network.simulateResponse(requestUrlSuffix: path, filename: "media-upload")
 
         let asset = PHAsset()
-        let action = MediaAction.uploadMedia(siteID: sampleSiteID, productID: sampleProductID, mediaAsset: asset) { (uploadedMedia, error) in
-            XCTAssertNotNil(uploadedMedia)
-            XCTAssertNil(error)
 
-            // Verifies that the temporary file is removed after the media is uploaded.
-            XCTAssertFalse(fileManager.fileExists(atPath: targetURL.path))
-
-            expectation.fulfill()
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
+                                                 productID: self.sampleProductID,
+                                                 mediaAsset: asset) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
         }
 
-        mediaStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        _ = try XCTUnwrap(result.get())
+
+        // Verifies that the temporary file is removed after the media is uploaded.
+        XCTAssertFalse(fileManager.fileExists(atPath: targetURL.path))
     }
 
-    func testUploadingMediaWithErrorUponReponseError() {
-        let expectation = self.expectation(description: "Upload a media asset")
-
+    func test_uploadMedia_returns_error_upon_response_error() {
+        // Given
         // Creates a temporary file to simulate a uploadable media file.
         let filename = "test.txt"
         let fileManager = FileManager.default
@@ -225,18 +231,22 @@ final class MediaStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: path, filename: "generic_error")
 
         let asset = PHAsset()
-        let action = MediaAction.uploadMedia(siteID: sampleSiteID, productID: sampleProductID, mediaAsset: asset) { (uploadedMedia, error) in
-            XCTAssertNil(uploadedMedia)
-            XCTAssertNotNil(error)
 
-            // Verifies that the temporary file is removed after the media is uploaded.
-            XCTAssertFalse(fileManager.fileExists(atPath: targetURL.path))
-
-            expectation.fulfill()
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
+                                                 productID: self.sampleProductID,
+                                                 mediaAsset: asset) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
         }
 
-        mediaStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
+
+        // Verifies that the temporary file is removed after the media is uploaded.
+        XCTAssertFalse(fileManager.fileExists(atPath: targetURL.path))
     }
 }
 

@@ -64,6 +64,8 @@ public class OrderStore: Store {
 
         case let .createSimplePaymentsOrder(siteID, amount, onCompletion):
             createSimplePaymentsOrder(siteID: siteID, amount: amount, onCompletion: onCompletion)
+        case let .createOrder(siteID, order, onCompletion):
+            createOrder(siteID: siteID, order: order, onCompletion: onCompletion)
         }
     }
 }
@@ -254,6 +256,21 @@ private extension OrderStore {
     func createSimplePaymentsOrder(siteID: Int64, amount: String, onCompletion: @escaping (Result<Order, Error>) -> Void) {
         let order = OrderFactory.simplePaymentsOrder(amount: amount)
         remote.createOrder(siteID: siteID, order: order, fields: [.feeLines]) { [weak self] result in
+            switch result {
+            case .success(let order):
+                self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
+                    onCompletion(result)
+                })
+            case .failure:
+                onCompletion(result)
+            }
+        }
+    }
+
+    /// Creates a manual order with the provided order details.
+    ///
+    func createOrder(siteID: Int64, order: Order, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        remote.createOrder(siteID: siteID, order: order, fields: []) { [weak self] result in
             switch result {
             case .success(let order):
                 self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {

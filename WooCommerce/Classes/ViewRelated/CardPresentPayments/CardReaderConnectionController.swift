@@ -64,7 +64,7 @@ final class CardReaderConnectionController {
             didSetState()
         }
     }
-    private var fromController: UIViewController?
+    private weak var fromController: UIViewController?
     private var siteID: Int64
     private var knownCardReaderProvider: CardReaderSettingsKnownReaderProvider
     private var alerts: CardReaderSettingsAlertsProvider
@@ -238,6 +238,8 @@ private extension CardReaderConnectionController {
     ///
     func onBeginSearch() {
         self.state = .searching
+        var didAutoAdvance = false
+
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: siteID,
             onReaderDiscovered: { [weak self] cardReaders in
@@ -269,12 +271,18 @@ private extension CardReaderConnectionController {
                     return
                 }
 
-                /// If we have a known reader, advance immediately to connect
+                /// If we have a known reader, and we haven't auto-advanced to connect
+                /// already, advance immediately to connect.
+                /// We only auto-advance once to avoid loops in case the known reader
+                /// is having connectivity issues (e.g low battery)
                 ///
                 if let foundKnownReader = self.getFoundKnownReader() {
-                    self.candidateReader = foundKnownReader
-                    self.state = .connectToReader
-                    return
+                    if !didAutoAdvance {
+                        didAutoAdvance = true
+                        self.candidateReader = foundKnownReader
+                        self.state = .connectToReader
+                        return
+                    }
                 }
 
                 /// If we have found multiple readers, advance to foundMultipleReaders
@@ -284,7 +292,7 @@ private extension CardReaderConnectionController {
                     return
                 }
 
-                /// If we have a found (but unknown) reader, advance to foundReader
+                /// If we have a found reader, advance to foundReader
                 ///
                 if self.foundReaders.isNotEmpty {
                     self.candidateReader = self.foundReaders.first
@@ -411,7 +419,7 @@ private extension CardReaderConnectionController {
                 ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCancelTapped, withProperties: analyticsProperties)
                 cancelable.cancel { result in
                     if case .failure(let error) = result {
-                        print("=== error canceling software update: \(error)")
+                        DDLogError("💳 Error: canceling software update \(error)")
                     } else {
                         ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCanceled, withProperties: analyticsProperties)
                     }
@@ -455,6 +463,9 @@ private extension CardReaderConnectionController {
                     self.softwareUpdateCancelable = cancelable
                     self.state = .updating(progress: 0)
                 case .installing(progress: let progress):
+                    if progress >= 0.995 {
+                        self.softwareUpdateCancelable = nil
+                    }
                     self.state = .updating(progress: progress)
                 case .completed:
                     self.softwareUpdateCancelable = nil
@@ -528,7 +539,11 @@ private extension CardReaderConnectionController {
             return
         }
 
-        if underlyingError == .readerSoftwareUpdateFailedBatteryLow {
+        switch underlyingError {
+        case .readerSoftwareUpdateFailedInterrupted:
+            // Update was cancelled, don't treat this as an error
+            return
+        case .readerSoftwareUpdateFailedBatteryLow:
             alerts.updatingFailedLowBattery(
                 from: from,
                 batteryLevel: batteryLevel,
@@ -536,7 +551,7 @@ private extension CardReaderConnectionController {
                     self.state = .searching
                 }
             )
-        } else {
+        default:
             alerts.updatingFailed(
                 from: from,
                 tryAgain: nil,
@@ -564,7 +579,6 @@ private extension CardReaderConnectionController {
     private func returnSuccess(connected: Bool) {
         self.alerts.dismiss()
         self.onCompletion?(.success(connected))
-        self.fromController = nil
         self.state = .idle
     }
 
@@ -573,7 +587,6 @@ private extension CardReaderConnectionController {
     private func returnFailure(error: Error) {
         self.alerts.dismiss()
         self.onCompletion?(.failure(error))
-        self.fromController = nil
         self.state = .idle
     }
 }

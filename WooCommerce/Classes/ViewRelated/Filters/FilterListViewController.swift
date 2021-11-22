@@ -241,7 +241,7 @@ private extension FilterListViewController {
             case .ordersStatuses:
                 let selectedOrderFilters = selected.selectedValue as? Array<OrderStatusEnum> ?? []
                 let statusesFilterVC = OrderStatusFilterViewController(selected: selectedOrderFilters) { statuses in
-                    selected.selectedValue = statuses
+                    selected.selectedValue = statuses.isEmpty ? nil : statuses
                     self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
                     self.listSelector.reloadData()
                 }

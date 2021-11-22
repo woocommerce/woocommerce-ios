@@ -61,6 +61,13 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.generalStoreSettingsFileName)
     }()
 
+    /// URL to the plist file that we use to determine the settings applied in Orders
+    ///
+    private lazy var ordersSettingsURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.ordersSettings)
+    }()
+
     /// URL to the plist file that we use to determine the settings applied in Products
     ///
     private lazy var productsSettingsURL: URL = {
@@ -120,6 +127,18 @@ public class AppSettingsStore: Store {
             updateFeedbackStatus(type: type, status: status, onCompletion: onCompletion)
         case .loadFeedbackVisibility(let type, let onCompletion):
             loadFeedbackVisibility(type: type, onCompletion: onCompletion)
+        case .loadOrdersSettings(let siteID, let onCompletion):
+            loadOrdersSettings(siteID: siteID, onCompletion: onCompletion)
+        case .upsertOrdersSettings(let siteID,
+                                   let orderStatusesFilter,
+                                   let dateRangeFilter,
+                                   let onCompletion):
+            upsertOrdersSettings(siteID: siteID,
+                                 orderStatusesFilter: orderStatusesFilter,
+                                 dateRangeFilter: dateRangeFilter,
+                                 onCompletion: onCompletion)
+        case .resetOrdersSettings:
+            resetOrdersSettings()
         case .loadProductsSettings(let siteID, let onCompletion):
             loadProductsSettings(siteID: siteID, onCompletion: onCompletion)
         case .upsertProductsSettings(let siteID,
@@ -619,6 +638,52 @@ private extension AppSettingsStore {
     }
 }
 
+// MARK: - Orders Settings
+//
+private extension AppSettingsStore {
+    func loadOrdersSettings(siteID: Int64, onCompletion: (Result<StoredOrderSettings.Setting, Error>) -> Void) {
+        guard let allSavedSettings: StoredOrderSettings = try? fileStorage.data(for: ordersSettingsURL),
+                let settingsUnwrapped = allSavedSettings.settings[siteID] else {
+            let error = AppSettingsStoreErrors.noOrdersSettings
+            onCompletion(.failure(error))
+            return
+        }
+
+        onCompletion(.success(settingsUnwrapped))
+    }
+
+    func upsertOrdersSettings(siteID: Int64,
+                              orderStatusesFilter: [OrderStatusEnum]?,
+                              dateRangeFilter: OrderDateRangeFilter?,
+                              onCompletion: (Error?) -> Void) {
+        var existingSettings: [Int64: StoredOrderSettings.Setting] = [:]
+        if let storedSettings: StoredOrderSettings = try? fileStorage.data(for: ordersSettingsURL) {
+            existingSettings = storedSettings.settings
+        }
+
+        let newSettings = StoredOrderSettings.Setting(siteID: siteID,
+                                                      orderStatusesFilter: orderStatusesFilter,
+                                                      dateRangeFilter: dateRangeFilter)
+        existingSettings[siteID] = newSettings
+
+        let newStoredOrderSettings = StoredOrderSettings(settings: existingSettings)
+        do {
+            try fileStorage.write(newStoredOrderSettings, to: ordersSettingsURL)
+            onCompletion(nil)
+        } catch {
+            onCompletion(AppSettingsStoreErrors.writeOrdersSettings)
+        }
+    }
+
+    func resetOrdersSettings() {
+        do {
+            try fileStorage.deleteFile(at: ordersSettingsURL)
+        } catch {
+            DDLogError("⛔️ Deleting the orders settings files failed. Error: \(error)")
+        }
+    }
+}
+
 // MARK: - Products Settings
 //
 private extension AppSettingsStore {
@@ -746,7 +811,9 @@ enum AppSettingsStoreErrors: Error {
     case readPListFromFileStorage
     case writePListToFileStorage
     case deleteStatsVersionStates
+    case noOrdersSettings
     case noProductsSettings
+    case writeOrdersSettings
     case writeProductsSettings
     case noEligibilityErrorInfo
 }
@@ -765,5 +832,6 @@ private enum Constants {
     static let statsVersionLastShownFileName = "stats-version-last-shown.plist"
     static let generalAppSettingsFileName = "general-app-settings.plist"
     static let generalStoreSettingsFileName = "general-store-settings.plist"
+    static let ordersSettings = "orders-settings.plist"
     static let productsSettings = "products-settings.plist"
 }

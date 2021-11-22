@@ -1,13 +1,8 @@
-import Foundation
-import UIKit
+import Yosemite
 
-/// Represents all of the possible Order Date Ranges in enum form + start and end date in case of custom dates
+/// Extension of OrderDateRangeFilter struct
 ///
-struct OrderDateRangeFilter: Equatable {
-    var filter: OrderDateRangeFilterEnum
-    var startDate: Date?
-    var endDate: Date?
-
+extension OrderDateRangeFilter {
     var computedStartDate: Date? {
         switch filter {
         case .today:
@@ -76,17 +71,6 @@ extension OrderDateRangeFilter: FilterType {
     var isActive: Bool {
         return true
     }
-}
-
-/// Represents all of the possible Order Date Ranges in enum form
-///
-enum OrderDateRangeFilterEnum: Hashable, CaseIterable {
-    case any
-    case today
-    case last2Days
-    case last7Days
-    case last30Days
-    case custom
 }
 
 // MARK: - TableView utils

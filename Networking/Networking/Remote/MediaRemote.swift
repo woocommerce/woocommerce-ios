@@ -16,7 +16,7 @@ public class MediaRemote: Remote {
                                  pageNumber: Int = Default.pageNumber,
                                  pageSize: Int = 25,
                                  context: String = Default.context,
-                                 completion: @escaping (_ mediaItems: [Media]?, _ error: Error?) -> Void) {
+                                 completion: @escaping (Result<[Media], Error>) -> Void) {
         let parameters: [String: Any] = [
             ParameterKey.contextKey: context,
             ParameterKey.pageSize: pageSize,
@@ -50,7 +50,7 @@ public class MediaRemote: Remote {
                             productID: Int64,
                             context: String? = Default.context,
                             mediaItems: [UploadableMedia],
-                            completion: @escaping ([Media]?, Error?) -> Void) {
+                            completion: @escaping (Result<[Media], Error>) -> Void) {
         let parameters = [
             ParameterKey.contextKey: context ?? Default.context,
         ]

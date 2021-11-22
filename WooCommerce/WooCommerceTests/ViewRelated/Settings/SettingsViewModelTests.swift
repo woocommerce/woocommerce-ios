@@ -38,6 +38,36 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.sections.count > 0)
     }
 
+    func test_sections_contain_install_jetpack_row_when_JCP_support_feature_flag_is_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isJetpackConnectionPackageSupportOn: true)
+        let viewModel = SettingsViewModel(
+            stores: stores,
+            storageManager: storageManager,
+            featureFlagService: featureFlagService)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
+    }
+
+    func test_sections_do_not_contain_install_jetpack_row_when_JCP_support_feature_flag_is_off() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isJetpackConnectionPackageSupportOn: false)
+        let viewModel = SettingsViewModel(
+            stores: stores,
+            storageManager: storageManager,
+            featureFlagService: featureFlagService)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
+    }
+
     func test_refresh_view_content_method_is_invoked_after_view_did_load() {
         // Given
         let viewModel = SettingsViewModel(stores: stores, storageManager: storageManager)

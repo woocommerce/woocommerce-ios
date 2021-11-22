@@ -4,11 +4,11 @@ import XCTest
 final class MediaRemoteTests: XCTestCase {
     /// Dummy Network Wrapper
     ///
-    let network = MockNetwork()
+    private let network = MockNetwork()
 
     /// Dummy Site ID
     ///
-    let sampleSiteID: Int64 = 1234
+    private let sampleSiteID: Int64 = 1234
 
     /// Dummy Product ID
     ///
@@ -25,74 +25,80 @@ final class MediaRemoteTests: XCTestCase {
 
     /// Verifies that `loadMediaLibrary` properly parses the `media-library` sample response.
     ///
-    func testLoadMediaLibraryProperlyReturnsParsedMedia() {
+    func test_loadMediaLibrary_properly_returns_parsed_media() throws {
+        // Given
         let remote = MediaRemote(network: network)
-        let expectation = self.expectation(description: "Load Media Library")
-
         network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
 
-        remote.loadMediaLibrary(for: sampleSiteID) { mediaItems, error in
-            XCTAssertNil(error)
-            XCTAssertNotNil(mediaItems)
-            XCTAssertEqual(mediaItems?.count, 5)
-            expectation.fulfill()
+        // When
+        let result = waitFor { promise in
+            remote.loadMediaLibrary(for: self.sampleSiteID) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        let mediaItems = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaItems.count, 5)
     }
 
     /// Verifies that `loadMediaLibrary` properly relays Networking Layer errors.
     ///
-    func testLoadMediaLibraryProperlyRelaysNetwokingErrors() {
+    func test_loadMediaLibrary_properly_relays_networking_errors() {
+        // Given
         let remote = MediaRemote(network: network)
-        let expectation = self.expectation(description: "Load Media Library")
 
-        remote.loadMediaLibrary(for: sampleSiteID) { mediaItems, error in
-            XCTAssertNil(mediaItems)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When
+        let result = waitFor { promise in
+            remote.loadMediaLibrary(for: self.sampleSiteID) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 
     // MARK: - uploadMedia
 
     /// Verifies that `uploadMedia` properly parses the `media-upload` sample response.
     ///
-    func testUploadMediaProperlyReturnsParsedMedia() {
+    func test_uploadMedia_properly_returns_parsed_media() throws {
+        // Given
         let remote = MediaRemote(network: network)
-        let expectation = self.expectation(description: "Upload one media item")
         let path = "sites/\(sampleSiteID)/media/new"
-
         network.simulateResponse(requestUrlSuffix: path, filename: "media-upload")
 
-        remote.uploadMedia(for: sampleSiteID,
-                           productID: sampleProductID,
-                           mediaItems: []) { mediaItems, error in
-            XCTAssertNil(error)
-            XCTAssertNotNil(mediaItems)
-            XCTAssertEqual(mediaItems?.count, 1)
-            expectation.fulfill()
+        // When
+        let result = waitFor { promise in
+            remote.uploadMedia(for: self.sampleSiteID,
+                                  productID: self.sampleProductID,
+                                  mediaItems: []) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        let mediaItems = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaItems.count, 1)
     }
 
     /// Verifies that `uploadMedia` properly relays Networking Layer errors.
     ///
-    func testUploadMediaProperlyRelaysNetwokingErrors() {
+    func test_uploadMedia_properly_relays_networking_errors() {
+        // Given
         let remote = MediaRemote(network: network)
-        let expectation = self.expectation(description: "Upload one media item")
 
-        remote.uploadMedia(for: sampleSiteID,
-                           productID: sampleProductID,
-                           mediaItems: []) { mediaItems, error in
-            XCTAssertNil(mediaItems)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When
+        let result = waitFor { promise in
+            remote.uploadMedia(for: self.sampleSiteID,
+                                  productID: self.sampleProductID,
+                                  mediaItems: []) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 }

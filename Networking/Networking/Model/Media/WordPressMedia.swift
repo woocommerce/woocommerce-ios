@@ -1,5 +1,3 @@
-import Codegen
-
 /// Media from WordPress Site API
 public struct WordPressMedia: Equatable {
     public let mediaID: Int64

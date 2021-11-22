@@ -46,12 +46,11 @@ public class MediaRemote: Remote {
     public func loadMediaLibraryFromWordPressSite(siteID: Int64,
                                                   pageNumber: Int = Default.pageNumber,
                                                   pageSize: Int = 25,
-                                                  context: String = Default.context,
                                                   completion: @escaping (Result<[WordPressMedia], Error>) -> Void) {
         let parameters: [String: Any] = [
             ParameterKey.pageSize: pageSize,
             ParameterKey.pageNumber: pageNumber,
-            ParameterKey.fieldsWordPressSite: Default.wordPressMediaFields,
+            ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
             ParameterKey.mimeType: "image"
         ]
 
@@ -123,8 +122,8 @@ public class MediaRemote: Remote {
                                            mediaItems: [UploadableMedia],
                                            completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
         let formParameters: [String: String] = [
-            "post": "\(productID)",
-            ParameterKey.fieldsWordPressSite: Default.wordPressMediaFields,
+            ParameterKey.wordPressMediaPostID: "\(productID)",
+            ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
         ]
         let path = "sites/\(siteID)/media"
         let request = DotcomRequest(wordpressApiVersion: .wpMark2, method: .post, path: path, parameters: nil)
@@ -152,12 +151,12 @@ public extension MediaRemote {
     enum Default {
         public static let context: String = "display"
         public static let pageNumber = 1
-        fileprivate static let wordPressMediaFields = "id,date_gmt,slug,mime_type,source_url,alt_text,media_details,title"
     }
 
     private enum ParameterKey {
         static let pageNumber: String = "page"
         static let pageSize: String   = "number"
+        static let wordPressMediaPostID: String = "post"
         static let fields: String     = "fields"
         static let fieldsWordPressSite: String = "_fields"
         static let mimeType: String   = "mime_type"
@@ -166,5 +165,6 @@ public extension MediaRemote {
 
     private enum ParameterValue {
         static let mediaUploadName: String = "file"
+        static let wordPressMediaFields = "id,date_gmt,slug,mime_type,source_url,alt_text,media_details,title"
     }
 }

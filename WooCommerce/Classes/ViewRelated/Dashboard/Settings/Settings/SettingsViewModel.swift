@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 import Storage
 import class Networking.UserAgent
+import Experiments
 
 protocol SettingsViewModelOutput {
     typealias Section = SettingsViewController.Section
@@ -91,11 +92,14 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
 
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let featureFlagService: FeatureFlagService
 
     init(stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
         self.storageManager = storageManager
+        self.featureFlagService = featureFlagService
 
         /// Initialize Sites Results Controller
         ///
@@ -187,9 +191,17 @@ private extension SettingsViewModel {
         }()
 
         // Store settings
-        let storeSettingsSection = Section(title: Localization.storeSettingsTitle,
-                                           rows: [.inPersonPayments],
-                                           footerHeight: UITableView.automaticDimension)
+        let storeSettingsSection: Section = {
+            let rows: [Row]
+            if featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
+                rows = [.inPersonPayments, .installJetpack]
+            } else {
+                rows = [.inPersonPayments]
+            }
+            return Section(title: Localization.storeSettingsTitle,
+                           rows: rows,
+                           footerHeight: UITableView.automaticDimension)
+        }()
 
         // Help & Feedback
         let helpAndFeedbackSection: Section = {

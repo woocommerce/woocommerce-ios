@@ -7,7 +7,7 @@ import Yosemite
 /// The list shows the product name and the purchased quantity.
 ///
 final class ProductListViewController: UIViewController {
-    @IBOutlet private var tableView: UITableView!
+    private var tableView: UITableView!
     private var items = [OrderItem]()
 
     var viewModel: OrderDetailsViewModel!
@@ -43,6 +43,17 @@ private extension ProductListViewController {
     /// Setup: TableView
     ///
     func configureTableView() {
+            
+        tableView = UITableView.init(frame: CGRect.zero, style: .grouped)
+        tableView.delegate = self
+        tableView.dataSource = self
+        view.addSubview(tableView)
+        
+        tableView.topAnchor.constraint(equalTo: self.view.safeTopAnchor).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: self.view.safeBottomAnchor).isActive = true
+        tableView.leftAnchor.constraint(equalTo: self.view.safeLeftAnchor).isActive = true
+        tableView.rightAnchor.constraint(equalTo: self.view.safeRightAnchor).isActive = true
+        
         tableView.backgroundColor = .listBackground
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension

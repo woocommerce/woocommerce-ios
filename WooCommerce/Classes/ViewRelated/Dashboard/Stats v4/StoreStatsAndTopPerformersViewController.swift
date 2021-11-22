@@ -124,7 +124,7 @@ private extension StoreStatsAndTopPerformersViewController {
                     onCompletion?(.failure(error))
                 } else {
                     self?.lastFullSyncTimestamp = Date()
-                    self?.showSiteVisitors(true)
+                    self?.updateSiteVisitors(mode: .default)
                     onCompletion?(.success(()))
                 }
             }
@@ -401,16 +401,24 @@ private extension StoreStatsAndTopPerformersViewController {
 }
 
 private extension StoreStatsAndTopPerformersViewController {
-    func showSiteVisitors(_ shouldShowSiteVisitors: Bool) {
+    func updateSiteVisitors(mode: SiteVisitStatsMode) {
         periodVCs.forEach { vc in
-            vc.shouldShowSiteVisitStats = shouldShowSiteVisitors
+            vc.siteVisitStatsMode = mode
         }
     }
 
     func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
         switch error {
-        case .statsModuleDisabled, .noPermission:
-            showSiteVisitors(false)
+        case .noPermission:
+            updateSiteVisitors(mode: .hidden)
+        case .statsModuleDisabled:
+            let defaultSite = ServiceLocator.stores.sessionManager.defaultSite
+            let jcpFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
+            if defaultSite?.isJetpackCPConnected == true, jcpFeatureFlagEnabled {
+                updateSiteVisitors(mode: .redactedDueToJetpack)
+            } else {
+                updateSiteVisitors(mode: .hidden)
+            }
         default:
             displaySyncingError()
         }

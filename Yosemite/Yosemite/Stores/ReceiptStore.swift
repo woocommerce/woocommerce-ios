@@ -199,7 +199,6 @@ private extension ReceiptStore {
 
         do {
             try fileStorage.write(content, to: outputURL)
-            Swift.print("new receipt saved: open \(outputURL.path)") // command to open the generated file
         } catch {
             DDLogError("⛔️ Unable to save receipt for order id: \(order.orderID)")
         }

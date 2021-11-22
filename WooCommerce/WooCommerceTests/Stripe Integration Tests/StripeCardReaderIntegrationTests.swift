@@ -112,12 +112,12 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
 
 
 private final class MockTokenProvider: CardReaderConfigProvider {
-    func fetchToken(completion: @escaping(String?, Error?) -> Void) {
-        completion("a token", nil)
+    func fetchToken(completion: @escaping(Result<String, Error>) -> Void) {
+        completion(.success("a token"))
     }
 
-    func fetchDefaultLocationID(completion: @escaping(String?, Error?) -> Void) {
-        completion("a location ID", nil)
+    func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void) {
+        completion(.success("a location ID"))
     }
 }
 

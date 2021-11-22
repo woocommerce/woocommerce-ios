@@ -5,7 +5,7 @@ import Yosemite
 ///
 final class SimplePaymentsAmountViewModel: ObservableObject {
 
-    /// Stores amount entered by the merchant.
+    /// Stores the amount(formatted) entered by the merchant.
     ///
     @Published var amount: String = "" {
         didSet {
@@ -83,22 +83,27 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     func createSimplePaymentsOrder() {
         loading = true
-        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount) { [weak self] result in
-            guard let self = self else { return }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             self.loading = false
-
-            switch result {
-            case .success(let order):
-                self.onOrderCreated(order)
-                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCompleted(amount: order.total))
-
-            case .failure(let error):
-                self.presentNotice = .error
-                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed())
-                DDLogError("⛔️ Error creating simple payments order: \(error)")
-            }
         }
-        stores.dispatch(action)
+
+//        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount) { [weak self] result in
+//            guard let self = self else { return }
+//            self.loading = false
+//
+//            switch result {
+//            case .success(let order):
+//                self.onOrderCreated(order)
+//                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCompleted(amount: order.total))
+//
+//            case .failure(let error):
+//                self.presentNotice = .error
+//                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed())
+//                DDLogError("⛔️ Error creating simple payments order: \(error)")
+//            }
+//        }
+//        stores.dispatch(action)
     }
 
     /// Track the flow cancel scenario.
@@ -111,6 +116,10 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     func disableCancelButton() -> Bool {
         return loading
+    }
+
+    func createSummaryViewModel() -> SimplePaymentsSummaryViewModel {
+        SimplePaymentsSummaryViewModel(providedAmount: amount)
     }
 }
 

@@ -43,13 +43,18 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
                 viewModel.presentNotice = nil
             }
             .store(in: &subscriptions)
+
+        // Observes the loading intent it will be true while performing the create order operation. False otherwise.
+        viewModel.$loading
+            .sink { [weak self] loading in
+                // Disables interactive dismissal while performing the create order operation, Enables otherwise.
+                self?.isModalInPresentation = loading
+            }
+            .store(in: &subscriptions)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Disables interactive dismiss action.
-        isModalInPresentation = true
 
         // Set presentation delegate to track the user dismiss flow event
         if let navigationController = navigationController {
@@ -102,11 +107,12 @@ struct SimplePaymentsAmount: View {
                 .secondaryBodyStyle()
 
             // Amount Textfield
-            TextField(viewModel.amountPlaceholder, text: $viewModel.amount)
-                .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold, design: .default))
-                .foregroundColor(Color(.text))
-                .multilineTextAlignment(.center)
+            BindableTextfield(viewModel.amountPlaceholder, text: $viewModel.amount)
+                .font(.systemFont(ofSize: Layout.amountFontSize(scale: scale), weight: .bold))
+                .foregroundColor(.text)
+                .textAlignment(.center)
                 .keyboardType(.decimalPad)
+                .fixedSize()
 
             Spacer()
 
@@ -121,7 +127,7 @@ struct SimplePaymentsAmount: View {
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
             .disabled(viewModel.shouldDisableDoneButton)
 
-            LazyNavigationLink(destination: SimplePaymentsSummary(), isActive: $showSummaryView) {
+            LazyNavigationLink(destination: SimplePaymentsSummary(viewModel: viewModel.createSummaryViewModel()), isActive: $showSummaryView) {
                 EmptyView()
             }
         }
@@ -129,7 +135,7 @@ struct SimplePaymentsAmount: View {
         .navigationTitle(Localization.title)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                // Cancel button set to disabled state until get the result from `createSimplePaymentsOrder`
+                // Cancel button set to disabled state until get the result from `createSimplePaymentsOrder` operation
                 Button(Localization.cancelTitle, action: {
                     dismiss()
                     viewModel.userDidCancelFlow()
@@ -137,6 +143,7 @@ struct SimplePaymentsAmount: View {
                     .disabled(viewModel.disableCancelButton())
             }
         }
+        .wooNavigationBarStyle()
     }
 }
 

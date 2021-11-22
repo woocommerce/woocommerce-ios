@@ -96,9 +96,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         configurePresentationStyle()
         configureNavigationBar()
+
         configureMainView()
         configureTableView()
         configureMoreDetailsContainerView()
@@ -407,9 +407,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 //
 private extension ProductFormViewController {
 
-    func configureNavigationBar() {
+    /// Configure navigation bar with the title
+    ///
+    func configureNavigationBar(title: String = "") {
         updateNavigationBar()
         updateBackButtonTitle()
+        updateNavigationBarTitle()
     }
 
     func configureMainView() {
@@ -799,6 +802,14 @@ private extension ProductFormViewController {
     ///
     func updateBackButtonTitle() {
         navigationItem.backButtonTitle = viewModel.productModel.name.isNotEmpty ? viewModel.productModel.name : Localization.unnamedProduct
+    }
+
+    func updateNavigationBarTitle() {
+        // Update navigation bar title with variation ID for variation page
+        guard let variationID = viewModel.productionVariationID else {
+            return
+        }
+        title = Localization.variationViewTitle(variationID: "\(variationID)")
     }
 
     func updateNavigationBar() {
@@ -1435,6 +1446,11 @@ private enum Localization {
                                                             comment: "Navigation bar title for editing linked products for a grouped product")
     static let unnamedProduct = NSLocalizedString("Unnamed product",
                                                   comment: "Back button title when the product doesn't have a name")
+
+    static func variationViewTitle(variationID: String) -> String {
+        let titleFormat = NSLocalizedString("Variation #%1$@", comment: "Navigation bar title for variation. Parameters: %1$@ - Product variation ID")
+        return String.localizedStringWithFormat(titleFormat, variationID)
+    }
 }
 
 private enum ActionSheetStrings {

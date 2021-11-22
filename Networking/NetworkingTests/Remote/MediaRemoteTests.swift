@@ -192,7 +192,7 @@ final class MediaRemoteTests: XCTestCase {
                              height: 150))
     }
 
-    /// Verifies that `uploadMedia` properly relays Networking Layer errors.
+    /// Verifies that `uploadMediaToWordPressSite` properly relays Networking Layer errors.
     ///
     func test_uploadMediaToWordPressSite_properly_relays_networking_errors() {
         // Given

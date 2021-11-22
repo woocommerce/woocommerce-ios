@@ -642,13 +642,8 @@ private extension AppSettingsStore {
 //
 private extension AppSettingsStore {
     func loadOrdersSettings(siteID: Int64, onCompletion: (Result<StoredOrderSettings.Setting, Error>) -> Void) {
-        guard let allSavedSettings: StoredOrderSettings = try? fileStorage.data(for: ordersSettingsURL) else {
-            let error = AppSettingsStoreErrors.noOrdersSettings
-            onCompletion(.failure(error))
-            return
-        }
-
-        guard let settingsUnwrapped = allSavedSettings.settings[siteID] else {
+        guard let allSavedSettings: StoredOrderSettings = try? fileStorage.data(for: ordersSettingsURL),
+                let settingsUnwrapped = allSavedSettings.settings[siteID] else {
             let error = AppSettingsStoreErrors.noOrdersSettings
             onCompletion(.failure(error))
             return

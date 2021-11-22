@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Experiments
 
 /// View Model for the `SimplePaymentsAmount` view.
 ///
@@ -82,8 +83,12 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     /// Creates a simple payments order.
     ///
     func createSimplePaymentsOrder() {
+
+        // Prototype in production does not support taxes. Development version does.
+        let taxable = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.simplePaymentsPrototype)
+
         loading = true
-        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount) { [weak self] result in
+        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount, taxable: taxable) { [weak self] result in
             guard let self = self else { return }
             self.loading = false
 

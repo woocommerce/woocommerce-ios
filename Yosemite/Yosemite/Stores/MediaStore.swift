@@ -49,12 +49,11 @@ private extension MediaStore {
     func retrieveMediaLibrary(siteID: Int64,
                               pageNumber: Int,
                               pageSize: Int,
-                              onCompletion: @escaping (_ mediaItems: [Media], _ error: Error?) -> Void) {
+                              onCompletion: @escaping (Result<[Media], Error>) -> Void) {
         remote.loadMediaLibrary(for: siteID,
-                                pageNumber: pageNumber,
-                                pageSize: pageSize) { (mediaItems, error) in
-                                    onCompletion(mediaItems ?? [], error)
-        }
+                                   pageNumber: pageNumber,
+                                   pageSize: pageSize,
+                                   completion: onCompletion)
     }
 
     /// Uploads an exportable media asset to the site's WP Media Library with 2 steps:
@@ -67,36 +66,47 @@ private extension MediaStore {
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
         mediaExportService.export(mediaAsset,
                                   onCompletion: { [weak self] (uploadableMedia, error) in
-                                    guard let uploadableMedia = uploadableMedia, error == nil else {
-                                        onCompletion(nil, error)
-                                        return
-                                    }
-                                    self?.uploadMedia(siteID: siteID,
-                                                      productID: productID,
-                                                      uploadableMedia: uploadableMedia,
-                                                      onCompletion: onCompletion)
+            guard let uploadableMedia = uploadableMedia, error == nil else {
+                onCompletion(.failure(error ?? MediaActionError.unknown))
+                return
+            }
+            self?.uploadMedia(siteID: siteID,
+                              productID: productID,
+                              uploadableMedia: uploadableMedia,
+                              onCompletion: onCompletion)
         })
     }
 
     func uploadMedia(siteID: Int64,
                      productID: Int64,
                      uploadableMedia media: UploadableMedia,
+                     onCompletion: @escaping (Result<Media, Error>) -> Void) {
         remote.uploadMedia(for: siteID,
                            productID: productID,
-                           mediaItems: [media]) { (uploadedMediaItems, error) in
-                            // Removes local media after the upload API request.
-                            do {
-                                try MediaFileManager().removeLocalMedia(at: media.localURL)
-                            } catch {
-                                onCompletion(nil, error)
-                                return
-                            }
-                            guard let uploadedMedia = uploadedMediaItems?.first, uploadedMediaItems?.count == 1 && error == nil else {
-                                onCompletion(nil, error)
-                                return
-                            }
-                            onCompletion(uploadedMedia, nil)
-                     onCompletion: @escaping (Result<Media, Error>) -> Void) {
+                           mediaItems: [media]) { result in
+            // Removes local media after the upload API request.
+            do {
+                try MediaFileManager().removeLocalMedia(at: media.localURL)
+            } catch {
+                onCompletion(.failure(error))
+                return
+            }
+
+            switch result {
+            case .success(let uploadedMediaItems):
+                guard let uploadedMedia = uploadedMediaItems.first, uploadedMediaItems.count == 1 else {
+                    onCompletion(.failure(MediaActionError.unexpectedMediaCount(count: uploadedMediaItems.count)))
+                    return
+                }
+                onCompletion(.success(uploadedMedia))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
         }
     }
+}
+
+public enum MediaActionError: Error {
+    case unexpectedMediaCount(count: Int)
+    case unknown
 }

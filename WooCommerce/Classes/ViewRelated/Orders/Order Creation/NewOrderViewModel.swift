@@ -6,15 +6,6 @@ final class NewOrderViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
 
-    /// New order to create remotely
-    ///
-    private var order: Order = .empty {
-        didSet {
-            // Adding details to the order makes the Create button visible
-            navigationTrailingItem = .create
-        }
-    }
-
     /// Active navigation bar trailing item.
     /// Defaults to no visible button.
     ///
@@ -34,8 +25,12 @@ final class NewOrderViewModel: ObservableObject {
     }
 
     // MARK: - API Requests
+    /// Creates an order remotely using the provided order details.
+    ///
     func createOrder() {
         navigationTrailingItem = .loading
+        let order = prepareOrderForRemote()
+
         let action = OrderAction.createOrder(siteID: siteID, order: order) { [weak self] result in
             guard let self = self else { return }
             self.navigationTrailingItem = .create
@@ -50,5 +45,16 @@ final class NewOrderViewModel: ObservableObject {
             }
         }
         stores.dispatch(action)
+    }
+}
+
+// MARK: - Helpers
+private extension NewOrderViewModel {
+    /// Prepares the order to send to the remote endpoint, using the provided order details.
+    ///
+    /// Add order details here to include them in the remote order creation request.
+    ///
+    func prepareOrderForRemote() -> Order {
+        Order.empty.copy(siteID: siteID)
     }
 }

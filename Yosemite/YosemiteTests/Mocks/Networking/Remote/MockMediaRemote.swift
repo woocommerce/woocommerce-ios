@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 import Networking
 
@@ -7,9 +6,6 @@ import XCTest
 /// Mock for `MediaRemote`.
 ///
 final class MockMediaRemote {
-    /// Returns the value as a publisher when `loadSites` is called.
-    var loadSitesResult: Result<[Site], Error> = .success([])
-
     /// Returns the requests that have been made to `MediaRemoteProtocol`.
     var invocations = [Invocation]()
 
@@ -55,7 +51,7 @@ extension MockMediaRemote {
     }
 }
 
-// MARK: - AccountRemoteProtocol
+// MARK: - MediaRemoteProtocol
 
 extension MockMediaRemote: MediaRemoteProtocol {
     func loadMediaLibrary(for siteID: Int64, pageNumber: Int, pageSize: Int, context: String?, completion: @escaping (Result<[Media], Error>) -> Void) {

@@ -159,6 +159,7 @@ public enum MediaActionError: Error {
 }
 
 extension WordPressMedia {
+    /// Converts a `WordPressMedia` to `Media`.
     func toMedia() -> Media {
         .init(mediaID: mediaID,
               date: date,

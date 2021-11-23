@@ -29,7 +29,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     @Published var navigateToSummary: Bool = false {
         didSet {
-            if !navigateToSummary {
+            if !navigateToSummary && oldValue != navigateToSummary {
                 summaryViewModel = nil
             }
         }
@@ -111,6 +111,12 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     func createSimplePaymentsOrder() {
 
         loading = true
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.loading = false
+            self.summaryViewModel = SimplePaymentsSummaryViewModel(providedAmount: self.amount)
+        }
+        return
 
         // Prototype in production does not support taxes. Development version does.
         let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount, taxable: isDevelopmentPrototype) { [weak self] result in

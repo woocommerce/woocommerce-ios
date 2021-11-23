@@ -444,6 +444,7 @@ extension StoreStatsV4PeriodViewController: ChartViewDelegate {
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
         let selectedIndex = Int(entry.x)
         updateUI(selectedBarIndex: selectedIndex)
+        StoreStatsUsageTracksEventEmitter.shared.interacted()
     }
 }
 
@@ -666,6 +667,7 @@ private extension StoreStatsV4PeriodViewController {
             isInitialLoad = false
             return
         }
+        StoreStatsUsageTracksEventEmitter.shared.interacted()
         ServiceLocator.analytics.track(.dashboardMainStatsDate, withProperties: ["range": granularity.rawValue])
         isInitialLoad = false
     }

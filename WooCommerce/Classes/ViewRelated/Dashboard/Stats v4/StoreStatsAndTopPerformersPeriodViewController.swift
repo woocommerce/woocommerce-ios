@@ -152,6 +152,14 @@ extension StoreStatsAndTopPerformersPeriodViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         scrollDelegate?.dashboardUIScrollViewDidScroll(scrollView)
     }
+
+    /// We're not using scrollViewDidScroll because that gets executed even while
+    /// the app is being loaded for the first time.
+    ///
+    /// Note: This also covers pull-to-refresh
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        StoreStatsUsageTracksEventEmitter.shared.interacted()
+    }
 }
 
 // MARK: Public Interface

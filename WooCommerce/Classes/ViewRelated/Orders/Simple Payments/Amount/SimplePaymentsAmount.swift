@@ -134,7 +134,6 @@ struct SimplePaymentsAmount: View {
         Group {
             if let summaryViewModel = viewModel.summaryViewModel {
                 SimplePaymentsSummary(viewModel: summaryViewModel)
-
             }
             EmptyView()
         }

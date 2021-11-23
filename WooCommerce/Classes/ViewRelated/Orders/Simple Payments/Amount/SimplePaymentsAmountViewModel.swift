@@ -65,6 +65,13 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     private let analytics: Analytics
 
+    /// Use this to disables interactive dismissal and
+    /// Disables cancel button while performing the create order operation
+    ///
+    var disableCancel: Bool {
+        loading
+    }
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          locale: Locale = Locale.autoupdatingCurrent,
@@ -83,6 +90,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     func createSimplePaymentsOrder() {
         loading = true
+
         let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount) { [weak self] result in
             guard let self = self else { return }
             self.loading = false

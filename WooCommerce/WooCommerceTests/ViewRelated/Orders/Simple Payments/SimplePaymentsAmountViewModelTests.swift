@@ -201,4 +201,31 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.presentNotice, .error)
     }
 
+    func test_view_model_diable_cancel_button_while_creating_payment_order() {
+        // Given
+        let testingStore = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore)
+        viewModel.amount = "$10.30"
+        XCTAssertFalse(viewModel.loading)
+
+        // Before creating simple payment order
+        XCTAssertFalse(viewModel.disableCancel)
+
+        // When
+        let _: Bool = waitFor { promise in
+            testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createSimplePaymentsOrder:
+                    promise(viewModel.loading)
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+            viewModel.createSimplePaymentsOrder()
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.disableCancel)
+    }
+
 }

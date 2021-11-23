@@ -183,6 +183,9 @@ public class OrdersRemote: Remote {
                     case .billingAddress:
                         let billingAddressEncoded = try order.billingAddress?.toDictionary()
                         params[Order.CodingKeys.billingAddress.rawValue] = billingAddressEncoded
+                    case .fees:
+                        let feesEncoded = try order.fees.toDictionary()
+                        params[Order.CodingKeys.feeLines.rawValue] = feesEncoded
                     }
                 }
             }()
@@ -264,6 +267,7 @@ public extension OrdersRemote {
         case customerNote
         case shippingAddress
         case billingAddress
+        case fees
     }
 
     /// Order fields supported for create

@@ -41,6 +41,7 @@ extension OrderFeeLine {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
+        try container.encode(feeID, forKey: .feeID)
         try container.encode(name, forKey: .name)
         try container.encode(taxClass, forKey: .taxClass)
         try container.encode(taxStatus, forKey: .taxStatus)

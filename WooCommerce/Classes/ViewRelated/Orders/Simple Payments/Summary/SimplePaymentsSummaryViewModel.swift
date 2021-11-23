@@ -13,6 +13,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     let taxRate: String
 
+    /// Tax amount to charge.
+    ///
+    let taxAmount: String
+
     /// Email of the costumer. To be used as the billing address email.
     ///
     @Published var email: String = ""
@@ -21,7 +25,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     @Published var enableTaxes: Bool = false
 
-    /// Total to charge. With or Without taxes.
+    /// Total to charge. With or without taxes.
     ///
     var total: String {
         enableTaxes ? totalWithTaxes : providedAmount
@@ -47,15 +51,17 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     init(providedAmount: String,
          totalWithTaxes: String,
+         taxAmount: String,
          noteContent: String? = nil,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.currencyFormatter = currencyFormatter
         self.providedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
-        self.totalWithTaxes = currencyFormatter.formatAmount(totalWithTaxes) ?? providedAmount
+        self.totalWithTaxes = currencyFormatter.formatAmount(totalWithTaxes) ?? totalWithTaxes
+        self.taxAmount = currencyFormatter.formatAmount(taxAmount) ?? taxAmount
         self.taxRate = {
             let amount = currencyFormatter.convertToDecimal(from: providedAmount)?.decimalValue ?? Decimal.zero
-            let total = currencyFormatter.convertToDecimal(from: totalWithTaxes)?.decimalValue ?? Decimal.zero
-            let rate = ((total / amount) - Decimal(1)) * Decimal(100)
+            let tax = currencyFormatter.convertToDecimal(from: taxAmount)?.decimalValue ?? Decimal.zero
+            let rate = (tax / amount) * Decimal(100)
             return currencyFormatter.localize(rate) ?? "\(rate)"
         }()
 
@@ -70,6 +76,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.init(providedAmount: providedAmount,
                   totalWithTaxes: order.total,
+                  taxAmount: order.totalTax,
                   currencyFormatter: currencyFormatter)
     }
 

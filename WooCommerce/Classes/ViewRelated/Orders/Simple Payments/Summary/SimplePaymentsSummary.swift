@@ -269,23 +269,24 @@ private extension SimplePaymentsSummary {
 // MARK: Previews
 struct SimplePaymentsSummary_Preview: PreviewProvider {
     static var previews: some View {
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "40.0", totalWithTaxes: "$42.3"))
+        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "40.0", totalWithTaxes: "$42.3", taxAmount: "$2.3"))
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light")
 
         SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(
             providedAmount: "$40.0",
             totalWithTaxes: "$42.3",
+            taxAmount: "$2.3",
             noteContent: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard."
         ))
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light Content")
 
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0", totalWithTaxes: "$42.3"))
+        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0", totalWithTaxes: "$42.3", taxAmount: "$2.3"))
             .environment(\.colorScheme, .dark)
             .previewDisplayName("Dark")
 
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0", totalWithTaxes: "$42.3"))
+        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0", totalWithTaxes: "$42.3", taxAmount: "$2.3"))
             .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
             .previewDisplayName("Accessibility")
     }

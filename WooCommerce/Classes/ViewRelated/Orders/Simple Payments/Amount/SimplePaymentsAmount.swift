@@ -85,10 +85,6 @@ struct SimplePaymentsAmount: View {
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsAmountViewModel
 
-    /// Tracks if the summary view should be presented.
-    ///
-    @State private var showSummaryView: Bool = false
-
     var body: some View {
         VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
 
@@ -110,11 +106,7 @@ struct SimplePaymentsAmount: View {
 
             // Done button
             Button(Localization.buttonTitle()) {
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplePaymentsPrototype) {
-                    showSummaryView.toggle()
-                } else {
-                    viewModel.createSimplePaymentsOrder()
-                }
+                viewModel.createSimplePaymentsOrder()
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
             .disabled(viewModel.shouldDisableDoneButton)

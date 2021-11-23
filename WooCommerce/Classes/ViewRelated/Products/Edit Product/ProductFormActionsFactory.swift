@@ -19,6 +19,7 @@ enum ProductFormEditAction: Equatable {
     case convertToVariable
     // Simple products only
     case addOptions
+    case arModel
     // Affiliate products only
     case sku(editable: Bool)
     case externalURL(editable: Bool)
@@ -170,7 +171,8 @@ private extension ProductFormActionsFactory {
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
             .productType(editable: canEditProductType),
-            isConvertToVariableOptionEnabled ? .convertToVariable : nil
+            isConvertToVariableOptionEnabled ? .convertToVariable : nil,
+            .arModel
         ]
         return actions.compactMap { $0 }
     }
@@ -326,6 +328,8 @@ private extension ProductFormActionsFactory {
             return true
         case .attributes:
             // Always visible when available
+            return true
+        case .arModel:
             return true
         default:
             return false

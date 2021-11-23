@@ -13,6 +13,7 @@ enum ProductFormBottomSheetAction {
     case editReviews
     case editDownloadableFiles
     case convertToVariable
+    case createArModel
 
     init?(productFormAction: ProductFormEditAction) {
         switch productFormAction {
@@ -36,6 +37,8 @@ enum ProductFormBottomSheetAction {
             self = .editDownloadableFiles
         case .convertToVariable:
             self = .convertToVariable
+        case .arModel:
+            self = .createArModel
         default:
             return nil
         }
@@ -75,6 +78,9 @@ extension ProductFormBottomSheetAction {
         case .convertToVariable:
             return NSLocalizedString("Add product variations",
                                      comment: "Title of the product form bottom sheet action for switching to variable product type.")
+        case .createArModel:
+            return NSLocalizedString("Create AR Model",
+                                     comment: "Title of the product form bottom sheet action for creating an Augmented Reality model")
         }
     }
 
@@ -110,6 +116,10 @@ extension ProductFormBottomSheetAction {
         case .convertToVariable:
             return NSLocalizedString("Add sizes, colors, or other options",
                                      comment: "Subtitle of the product form bottom sheet action for switching to variable product type.")
+
+        case .createArModel:
+            return NSLocalizedString("Help customers see your product in their space",
+                                     comment: "Subtitle of the product form bottom sheet action for creating an AR model")
         }
     }
 }

@@ -112,6 +112,8 @@ private extension DefaultProductFormTableViewModel {
                 return .noPriceWarning(viewModel: noPriceWarningRow(isActionable: true))
             case .attributes(let editable):
                 return .attributes(viewModel: productVariationsAttributesRow(product: product.product, isEditable: editable), isEditable: editable)
+            case .arModel:
+                return .arModel(viewModel: arModelRow(product: product, isEditable: true), isEditable: true)
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -501,6 +503,18 @@ private extension DefaultProductFormTableViewModel {
             Localization.upsellProducts(count: product.upsellIDs.count),
             Localization.crossSellProducts(count: product.crossSellIDs.count),
         ].joined(separator: "\n")
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details,
+                                                        isActionable: isEditable)
+    }
+
+    func arModelRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage(systemName: "move.3d") ?? .productImage
+        let title = "Augmented Reality"
+
+        let details = "Capture and upload 3D models of your products"
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,

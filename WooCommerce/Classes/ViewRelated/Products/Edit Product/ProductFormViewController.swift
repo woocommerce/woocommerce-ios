@@ -3,6 +3,7 @@ import Photos
 import UIKit
 import WordPressUI
 import Yosemite
+import SwiftUI
 
 /// The entry UI for adding/editing a Product.
 final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: UIViewController, UITableViewDelegate {
@@ -443,6 +444,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 editAttributes()
             case .status:
                 break
+            case .arModel(viewModel: _, isEditable: _):
+                openArModelCamera()
             }
         case .optionsCTA(let rows):
             let row = rows[indexPath.row]
@@ -792,6 +795,8 @@ private extension ProductFormViewController {
                                                                             self?.showDownloadableFiles()
                                                                         case .convertToVariable:
                                                                             self?.convertToVariableType()
+                                                                        case .createArModel:
+                                                                            self?.openArModelCamera()
                                                                         }
                                                                     }
         }
@@ -1470,6 +1475,14 @@ private extension ProductFormViewController {
         ServiceLocator.analytics.track(.linkedProducts, withProperties: ["action": "done"])
 
         viewModel.updateLinkedProducts(upsellIDs: upsellIDs, crossSellIDs: crossSellIDs)
+    }
+}
+
+private extension ProductFormViewController {
+    func openArModelCamera() {
+        let swiftUIView = ContentView(model: CameraViewModel())
+        let hostingController = UIHostingController(rootView: swiftUIView)
+        show(hostingController, sender: self)
     }
 }
 

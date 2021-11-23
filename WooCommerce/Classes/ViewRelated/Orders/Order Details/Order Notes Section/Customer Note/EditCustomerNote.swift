@@ -81,7 +81,8 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
 
     var body: some View {
         NavigationView {
-            AutofocusTextEditor(text: $viewModel.newNote)
+            TextEditor(text: $viewModel.newNote)
+                .focused()
                 .padding()
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
@@ -117,6 +118,16 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
         case .loading:
             ProgressView()
         }
+    }
+}
+
+// MARK: View extensions
+private extension View {
+
+    /// Set autofocus to TextEditor
+    ///
+    func focused() -> some View {
+        self.modifier(AutofocusTextField())
     }
 }
 

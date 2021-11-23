@@ -29,6 +29,31 @@ final class NewOrderViewModel: ObservableObject {
         configureNavigationTrailingItem()
     }
 
+    // MARK: - API Requests
+    /// Creates an order remotely using the provided order details.
+    ///
+    func createOrder() {
+        performingNetworkRequest = true
+
+        let action = OrderAction.createOrder(siteID: siteID, order: orderDetails.toOrder()) { [weak self] result in
+            guard let self = self else { return }
+            self.performingNetworkRequest = false
+
+            switch result {
+            case .success:
+                // TODO: Handle newly created order / remove success logging
+                DDLogInfo("New order created successfully!")
+            case .failure(let error):
+                self.displayOrderCreationErrorNotice()
+                DDLogError("⛔️ Error creating new order: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+}
+
+// MARK: - Types
+extension NewOrderViewModel {
     /// Representation of possible navigation bar trailing buttons
     ///
     enum NavigationItem: Equatable {
@@ -56,28 +81,6 @@ final class NewOrderViewModel: ObservableObject {
                             billingAddress: billingAddress,
                             shippingAddress: shippingAddress)
         }
-    }
-
-    // MARK: - API Requests
-    /// Creates an order remotely using the provided order details.
-    ///
-    func createOrder() {
-        performingNetworkRequest = true
-
-        let action = OrderAction.createOrder(siteID: siteID, order: orderDetails.toOrder()) { [weak self] result in
-            guard let self = self else { return }
-            self.performingNetworkRequest = false
-
-            switch result {
-            case .success:
-                // TODO: Handle newly created order / remove success logging
-                DDLogInfo("New order created successfully!")
-            case .failure(let error):
-                self.displayOrderCreationErrorNotice()
-                DDLogError("⛔️ Error creating new order: \(error)")
-            }
-        }
-        stores.dispatch(action)
     }
 }
 

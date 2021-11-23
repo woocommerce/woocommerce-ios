@@ -164,12 +164,13 @@ private extension WordPressMediaLibraryPickerDataSource {
     func retrieveMedia(pageNumber: Int, pageSize: Int, completion: @escaping (_ mediaItems: [Media], _ error: Error?) -> Void) {
         let action = MediaAction.retrieveMediaLibrary(siteID: siteID,
                                                       pageNumber: pageNumber,
-                                                      pageSize: pageSize) { (mediaItems, error) in
-                                                        guard mediaItems.isEmpty == false else {
-                                                            completion([], error)
-                                                            return
-                                                        }
-                                                        completion(mediaItems, nil)
+                                                      pageSize: pageSize) { result in
+            switch result {
+            case .success(let mediaItems):
+                completion(mediaItems, nil)
+            case .failure(let error):
+                completion([], error)
+            }
         }
         ServiceLocator.stores.dispatch(action)
     }

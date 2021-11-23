@@ -145,37 +145,35 @@ final class ProductImageActionHandler {
             let imageStatuses = [.uploading(asset: asset)] + self.allStatuses.productImageStatuses
             self.allStatuses = (productImageStatuses: imageStatuses, error: nil)
 
-            self.uploadMediaAssetToSiteMediaLibrary(asset: asset) { [weak self] (media, error) in
+            self.uploadMediaAssetToSiteMediaLibrary(asset: asset) { [weak self] result in
                                                 self?.queue.async { [weak self] in
                                                     guard let self = self else {
                                                         return
-                                                    }
-
-                                                    if let error = error {
-                                                        ServiceLocator.analytics.track(.productImageUploadFailed, withError: error)
                                                     }
 
                                                     guard let index = self.index(of: asset) else {
                                                         return
                                                     }
 
-                                                    guard let media = media else {
+                                                    switch result {
+                                                    case .success(let media):
+                                                        let productImage = ProductImage(imageID: media.mediaID,
+                                                                                        dateCreated: media.date,
+                                                                                        dateModified: media.date,
+                                                                                        src: media.src,
+                                                                                        name: media.name,
+                                                                                        alt: media.alt)
+                                                        self.updateProductImageStatus(at: index, productImage: productImage)
+                                                    case .failure(let error):
+                                                        ServiceLocator.analytics.track(.productImageUploadFailed, withError: error)
                                                         self.updateProductImageStatus(at: index, error: error)
-                                                        return
                                                     }
-                                                    let productImage = ProductImage(imageID: media.mediaID,
-                                                                                    dateCreated: media.date,
-                                                                                    dateModified: media.date,
-                                                                                    src: media.src,
-                                                                                    name: media.name,
-                                                                                    alt: media.alt)
-                                                    self.updateProductImageStatus(at: index, productImage: productImage)
                                                 }
             }
         }
     }
 
-    private func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset, onCompletion: @escaping (_ uploadedMedia: Media?, _ error: Error?) -> Void) {
+    private func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset, onCompletion: @escaping (Result<Media, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let siteID = self?.siteID, let productID = self?.productID else {
                 return

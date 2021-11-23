@@ -83,7 +83,8 @@ private extension AddOrderCoordinator {
     /// Presents `NewOrderHostingController`.
     ///
     func presentNewOrderController() {
-        let viewController = NewOrderHostingController()
+        let viewModel = NewOrderViewModel(siteID: siteID)
+        let viewController = NewOrderHostingController(viewModel: viewModel)
         viewController.hidesBottomBarWhenPushed = true
         navigationController.pushViewController(viewController, animated: true)
     }

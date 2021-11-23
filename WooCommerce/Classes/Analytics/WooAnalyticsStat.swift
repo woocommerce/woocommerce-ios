@@ -95,6 +95,7 @@ public enum WooAnalyticsStat: String {
     case dashboardNewStatsAvailabilityBannerTryTapped = "dashboard_new_stats_availability_banner_try_tapped"
     case dashboardNewStatsRevertedBannerDismissTapped = "dashboard_new_stats_reverted_banner_dismiss_tapped"
     case dashboardNewStatsRevertedBannerLearnMoreTapped = "dashboard_new_stats_reverted_banner_learn_more_tapped"
+    case usedAnalytics = "used_analytics"
 
     // MARK: Site picker. Can be triggered by login epilogue or settings.
     //

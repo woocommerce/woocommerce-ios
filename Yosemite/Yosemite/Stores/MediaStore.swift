@@ -8,21 +8,30 @@ public final class MediaStore: Store {
     private let remote: MediaRemoteProtocol
     private lazy var mediaExportService: MediaExportService = DefaultMediaExportService()
 
-    public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    public convenience override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = MediaRemote(network: network)
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
     }
 
-    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: MediaRemoteProtocol) {
+    init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: MediaRemoteProtocol) {
         self.remote = remote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
+
+    convenience init(mediaExportService: MediaExportService,
+         dispatcher: Dispatcher,
+         storageManager: StorageManagerType,
+         network: Network) {
+        let remote = MediaRemote(network: network)
+        self.init(mediaExportService: mediaExportService, dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
     }
 
     init(mediaExportService: MediaExportService,
          dispatcher: Dispatcher,
          storageManager: StorageManagerType,
-         network: Network) {
-        self.remote = MediaRemote(network: network)
+         network: Network,
+         remote: MediaRemoteProtocol) {
+        self.remote = remote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
         self.mediaExportService = mediaExportService
     }

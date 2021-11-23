@@ -62,8 +62,8 @@ public class OrderStore: Store {
         case let .updateOrder(siteID, order, fields, onCompletion):
             updateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
 
-        case let .createSimplePaymentsOrder(siteID, amount, onCompletion):
-            createSimplePaymentsOrder(siteID: siteID, amount: amount, onCompletion: onCompletion)
+        case let .createSimplePaymentsOrder(siteID, amount, taxable, onCompletion):
+            createSimplePaymentsOrder(siteID: siteID, amount: amount, taxable: taxable, onCompletion: onCompletion)
         case let .createOrder(siteID, order, onCompletion):
             createOrder(siteID: siteID, order: order, onCompletion: onCompletion)
         }
@@ -251,8 +251,8 @@ private extension OrderStore {
 
     /// Creates a simple payments order with a specific amount value and no tax.
     ///
-    func createSimplePaymentsOrder(siteID: Int64, amount: String, onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        let order = OrderFactory.simplePaymentsOrder(amount: amount)
+    func createSimplePaymentsOrder(siteID: Int64, amount: String, taxable: Bool, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        let order = OrderFactory.simplePaymentsOrder(amount: amount, taxable: taxable)
         remote.createOrder(siteID: siteID, order: order, fields: [.feeLines]) { [weak self] result in
             switch result {
             case .success(let order):

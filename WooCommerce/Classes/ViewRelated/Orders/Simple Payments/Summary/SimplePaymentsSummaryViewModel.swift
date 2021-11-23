@@ -58,6 +58,8 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         self.providedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
         self.totalWithTaxes = currencyFormatter.formatAmount(totalWithTaxes) ?? totalWithTaxes
         self.taxAmount = currencyFormatter.formatAmount(taxAmount) ?? taxAmount
+
+        // rate_percentage = taxAmount / providedAmount * 100
         self.taxRate = {
             let amount = currencyFormatter.convertToDecimal(from: providedAmount)?.decimalValue ?? Decimal.zero
             let tax = currencyFormatter.convertToDecimal(from: taxAmount)?.decimalValue ?? Decimal.zero

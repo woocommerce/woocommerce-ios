@@ -50,10 +50,14 @@
 		02A26F1B2744F5FC008E4EDB /* wc-site-settings-partial.json in Resources */ = {isa = PBXBuildFile; fileRef = 02A26F192744F5FC008E4EDB /* wc-site-settings-partial.json */; };
 		02A26F1C2744F5FC008E4EDB /* wp-site-settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 02A26F1A2744F5FC008E4EDB /* wp-site-settings.json */; };
 		02AAD53F250092A400BA1E26 /* product-add-or-delete.json in Resources */ = {isa = PBXBuildFile; fileRef = 02AAD53E250092A300BA1E26 /* product-add-or-delete.json */; };
+		02AF07EA27492DBC00B2D81E /* WordPressMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AF07E927492DBC00B2D81E /* WordPressMedia.swift */; };
+		02AF07EC27492FDD00B2D81E /* media-library-from-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = 02AF07EB27492FDD00B2D81E /* media-library-from-wordpress-site.json */; };
+		02AF07EE27493AE700B2D81E /* media-upload-to-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = 02AF07ED27493AE700B2D81E /* media-upload-to-wordpress-site.json */; };
 		02BA23C922EEF62C009539E7 /* order-stats-v4-wcadmin-deactivated.json in Resources */ = {isa = PBXBuildFile; fileRef = 02BA23C722EEF62C009539E7 /* order-stats-v4-wcadmin-deactivated.json */; };
 		02BA23CA22EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json in Resources */ = {isa = PBXBuildFile; fileRef = 02BA23C822EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json */; };
 		02BDB83523EA98C800BCC63E /* String+HTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BDB83423EA98C800BCC63E /* String+HTML.swift */; };
 		02BDB83723EA9C4D00BCC63E /* String+HTMLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BDB83623EA9C4D00BCC63E /* String+HTMLTests.swift */; };
+		02BE0A7B274B695F001176D2 /* WordPressMediaMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BE0A7A274B695F001176D2 /* WordPressMediaMapper.swift */; };
 		02C11276274285FF00F4F0B4 /* WooCommerceAvailabilityMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C11275274285FF00F4F0B4 /* WooCommerceAvailabilityMapper.swift */; };
 		02C112782742862600F4F0B4 /* WordPressSiteSettingsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C112772742862600F4F0B4 /* WordPressSiteSettingsMapper.swift */; };
 		02C1CEF424C6A02B00703EBA /* ProductVariationMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C1CEF324C6A02B00703EBA /* ProductVariationMapper.swift */; };
@@ -632,10 +636,14 @@
 		02A26F192744F5FC008E4EDB /* wc-site-settings-partial.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wc-site-settings-partial.json"; sourceTree = "<group>"; };
 		02A26F1A2744F5FC008E4EDB /* wp-site-settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wp-site-settings.json"; sourceTree = "<group>"; };
 		02AAD53E250092A300BA1E26 /* product-add-or-delete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-add-or-delete.json"; sourceTree = "<group>"; };
+		02AF07E927492DBC00B2D81E /* WordPressMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressMedia.swift; sourceTree = "<group>"; };
+		02AF07EB27492FDD00B2D81E /* media-library-from-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-library-from-wordpress-site.json"; sourceTree = "<group>"; };
+		02AF07ED27493AE700B2D81E /* media-upload-to-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-upload-to-wordpress-site.json"; sourceTree = "<group>"; };
 		02BA23C722EEF62C009539E7 /* order-stats-v4-wcadmin-deactivated.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-v4-wcadmin-deactivated.json"; sourceTree = "<group>"; };
 		02BA23C822EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-v4-wcadmin-activated.json"; sourceTree = "<group>"; };
 		02BDB83423EA98C800BCC63E /* String+HTML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HTML.swift"; sourceTree = "<group>"; };
 		02BDB83623EA9C4D00BCC63E /* String+HTMLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HTMLTests.swift"; sourceTree = "<group>"; };
+		02BE0A7A274B695F001176D2 /* WordPressMediaMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressMediaMapper.swift; sourceTree = "<group>"; };
 		02C11275274285FF00F4F0B4 /* WooCommerceAvailabilityMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCommerceAvailabilityMapper.swift; sourceTree = "<group>"; };
 		02C112772742862600F4F0B4 /* WordPressSiteSettingsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteSettingsMapper.swift; sourceTree = "<group>"; };
 		02C1CEF324C6A02B00703EBA /* ProductVariationMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationMapper.swift; sourceTree = "<group>"; };
@@ -1173,6 +1181,7 @@
 			children = (
 				020D07B723D852BB00FD9580 /* Media.swift */,
 				020D07B923D8542000FD9580 /* UploadableMedia.swift */,
+				02AF07E927492DBC00B2D81E /* WordPressMedia.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -1634,7 +1643,9 @@
 				B505F6D420BEE4E600BB1B69 /* me.json */,
 				93D8BBFE226BC1DA00AD2EB3 /* me-settings.json */,
 				02F096C12406691100C0C1D5 /* media-library.json */,
+				02AF07EB27492FDD00B2D81E /* media-library-from-wordpress-site.json */,
 				020D07C123D858BB00FD9580 /* media-upload.json */,
+				02AF07ED27493AE700B2D81E /* media-upload-to-wordpress-site.json */,
 				B58D10C92114D22E00107ED4 /* new-order-note.json */,
 				022902D322E2436400059692 /* no_stats_permission_error.json */,
 				B5A24178217F98F600595DEF /* notifications-load-all.json */,
@@ -1854,6 +1865,7 @@
 				FE28F6E326842848004465C7 /* UserMapper.swift */,
 				077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */,
 				02C11275274285FF00F4F0B4 /* WooCommerceAvailabilityMapper.swift */,
+				02BE0A7A274B695F001176D2 /* WordPressMediaMapper.swift */,
 				02C112772742862600F4F0B4 /* WordPressSiteSettingsMapper.swift */,
 			);
 			path = Mapper;
@@ -2136,6 +2148,7 @@
 				45D685FA23D0C3CF005F87D0 /* product-search-sku.json in Resources */,
 				CCF48B2C2628AE160034EA83 /* shipping-label-account-settings.json in Resources */,
 				31054734262E36AB00C5C02B /* wcpay-payment-intent-error.json in Resources */,
+				02AF07EE27493AE700B2D81E /* media-upload-to-wordpress-site.json in Resources */,
 				45ED4F12239E8C57004F1BE3 /* taxes-classes.json in Resources */,
 				B5A2417B217F98FC00595DEF /* broken-notifications.json in Resources */,
 				3158A4A32729F42500C3CFA8 /* wcpay-account-dev-test.json in Resources */,
@@ -2145,6 +2158,7 @@
 				4599FC5C24A6276F0056157A /* product-tags-all.json in Resources */,
 				74A7B4BE217A841400E85A8B /* broken-settings-general.json in Resources */,
 				026CF624237D839B009563D4 /* product-variations-load-all.json in Resources */,
+				02AF07EC27492FDD00B2D81E /* media-library-from-wordpress-site.json in Resources */,
 				CC9A253C26442C71005DE56E /* shipping-label-eligibility-success.json in Resources */,
 				B5A24179217F98F600595DEF /* notifications-load-all.json in Resources */,
 				0282DD91233A120A006A5FDB /* products-search-photo.json in Resources */,
@@ -2439,6 +2453,7 @@
 				26B2F74524C5573F0065CCC8 /* LeaderboardListMapper.swift in Sources */,
 				24F98C542502E8DD00F49B68 /* Bundle+Woo.swift in Sources */,
 				31D27C812602889C002EDB1D /* SitePluginsRemote.swift in Sources */,
+				02BE0A7B274B695F001176D2 /* WordPressMediaMapper.swift in Sources */,
 				45150A9A268340D2006922EA /* Country.swift in Sources */,
 				450106852399A7CB00E24722 /* TaxClass.swift in Sources */,
 				CC0786612677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift in Sources */,
@@ -2482,6 +2497,7 @@
 				74A1D26F21189EA100931DFA /* SiteVisitStatsRemote.swift in Sources */,
 				029BA4F4255D72EC006171FD /* ShippingLabelPrintData.swift in Sources */,
 				24F98C562502EA4800F49B68 /* FeatureFlag.swift in Sources */,
+				02AF07EA27492DBC00B2D81E /* WordPressMedia.swift in Sources */,
 				B557DA1D20979E7D005962F4 /* Order.swift in Sources */,
 				74159625224D4045003C21CF /* SiteSettingGroup.swift in Sources */,
 				26B2F74D24C696E70065CCC8 /* LeaderboardRowContent.swift in Sources */,

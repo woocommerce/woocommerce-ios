@@ -40,17 +40,17 @@ public class OrderStore: Store {
             retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .fetchFilteredAndAllOrders(let siteID, let statusKey, let after, let before, let deleteAllBeforeSaving, let pageSize, let onCompletion):
-            fetchFilteredAndAllOrders(siteID: siteID,
-                                      statusKey: statusKey,
-                                      after: after,
-                                      before: before,
-                                      deleteAllBeforeSaving: deleteAllBeforeSaving,
-                                      pageSize: pageSize,
-                                      onCompletion: onCompletion)
-        case .synchronizeOrders(let siteID, let statusKey, let after, let before, let pageNumber, let pageSize, let onCompletion):
+        case .fetchFilteredOrders(let siteID, let statuses, let after, let before, let deleteAllBeforeSaving, let pageSize, let onCompletion):
+            fetchFilteredOrders(siteID: siteID,
+                                statuses: statuses,
+                                after: after,
+                                before: before,
+                                deleteAllBeforeSaving: deleteAllBeforeSaving,
+                                pageSize: pageSize,
+                                onCompletion: onCompletion)
+        case .synchronizeOrders(let siteID, let statuses, let after, let before, let pageNumber, let pageSize, let onCompletion):
             synchronizeOrders(siteID: siteID,
-                              statusKey: statusKey,
+                              statuses: statuses,
                               after: after,
                               before: before,
                               pageNumber: pageNumber,
@@ -101,7 +101,7 @@ private extension OrderStore {
         }
     }
 
-    /// Performs a dual fetch for the first pages of a filtered list and the all orders list.
+    /// Performs a fetch for the first pages of a filtered list.
     ///
     /// If `deleteAllBeforeSaving` is true, all the orders will be deleted before saving any newly
     /// fetched `Order`. The deletion only happens once, regardless of the which fetch request
@@ -109,17 +109,19 @@ private extension OrderStore {
     ///
     /// The orders will only be deleted if one of the executed `GET` requests succeed.
     ///
-    /// - Parameter statusKey The status to use for the filtered list. If this is not provided,
+    /// - Parameter statuses The statuses to use for the filtered list. If this is not provided,
     ///                       only the all orders list will be fetched. See `OrderStatusEnum`
     ///                       for possible values.
+    /// - Parameter after Limit response to resources published after a given ISO8601 compliant date.
+    /// - Parameter before Limit response to resources published before a given ISO8601 compliant date.
     ///
-    func fetchFilteredAndAllOrders(siteID: Int64,
-                                   statusKey: String?,
-                                   after: Date?,
-                                   before: Date?,
-                                   deleteAllBeforeSaving: Bool,
-                                   pageSize: Int,
-                                   onCompletion: @escaping (TimeInterval, Error?) -> Void) {
+    func fetchFilteredOrders(siteID: Int64,
+                             statuses: [String]?,
+                             after: Date?,
+                             before: Date?,
+                             deleteAllBeforeSaving: Bool,
+                             pageSize: Int,
+                             onCompletion: @escaping (TimeInterval, Error?) -> Void) {
 
         let pageNumber = OrdersRemote.Defaults.pageNumber
 
@@ -149,20 +151,20 @@ private extension OrderStore {
             hasDeletedAllOrders = true
         }
 
-        // The handler for both dual fetch requests.
-        let loadAllOrders: (String?, @escaping (() -> Void)) -> Void = { [weak self] statusKey, completion in
+        // The handler for fetching requests.
+        let loadAllOrders: ([String]?, @escaping (() -> Void)) -> Void = { [weak self] statuses, completion in
             guard let self = self else {
                 return
             }
             self.remote.loadAllOrders(for: siteID,
-                                 statusKey: statusKey,
-                                 after: after,
-                                 before: before,
-                                 pageNumber: pageNumber,
-                                 pageSize: pageSize) { [weak self] result in
-                                    guard let self = self else {
-                                        return
-                                    }
+                                         statuses: statuses,
+                                         after: after,
+                                         before: before,
+                                         pageNumber: pageNumber,
+                                         pageSize: pageSize) { [weak self] result in
+                guard let self = self else {
+                    return
+                }
                 serialQueue.async { [weak self] in
                     guard let self = self else {
                         completion()
@@ -184,19 +186,19 @@ private extension OrderStore {
             }
         }
 
-        // Perform dual fetch and wait for both of them to finish before calling `onCompletion`.
+        // Perform fetch and wait to finish before calling `onCompletion`.
         let group = DispatchGroup()
 
-        if let statusKey = statusKey {
-            group.enter()
-            loadAllOrders(statusKey) {
+        group.enter()
+        if let statuses = statuses {
+            loadAllOrders(statuses) {
                 group.leave()
             }
         }
-
-        group.enter()
-        loadAllOrders(OrdersRemote.Defaults.statusAny) {
-            group.leave()
+        else {
+            loadAllOrders([OrdersRemote.Defaults.statusAny]) {
+                group.leave()
+            }
         }
 
         group.notify(queue: .main) {
@@ -207,7 +209,7 @@ private extension OrderStore {
     /// Retrieves the orders associated with a given Site ID (if any!).
     ///
     func synchronizeOrders(siteID: Int64,
-                           statusKey: String?,
+                           statuses: [String]?,
                            after: Date?,
                            before: Date?,
                            pageNumber: Int,
@@ -215,7 +217,7 @@ private extension OrderStore {
                            onCompletion: @escaping (TimeInterval, Error?) -> Void) {
         let startTime = Date()
         remote.loadAllOrders(for: siteID,
-                             statusKey: statusKey,
+                             statuses: statuses,
                              after: after,
                              before: before,
                              pageNumber: pageNumber,

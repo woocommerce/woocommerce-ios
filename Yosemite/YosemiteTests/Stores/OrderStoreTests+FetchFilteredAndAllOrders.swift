@@ -5,7 +5,7 @@ import XCTest
 @testable import Storage
 @testable import Networking
 
-/// Test cases for `OrderStore.fetchFilteredAndAllOrders`
+/// Test cases for `OrderStore.fetchFilteredOrders`
 ///
 final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
     private var storageManager: MockStorageManager!
@@ -36,7 +36,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
 
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
-                             statusKey: OrderStatusEnum.processing.rawValue,
+                             statuses: [OrderStatusEnum.processing.rawValue],
                              deleteAllBeforeSaving: true)
 
         // Assert
@@ -58,7 +58,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
 
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
-                             statusKey: OrderStatusEnum.processing.rawValue,
+                             statuses: [OrderStatusEnum.processing.rawValue],
                              deleteAllBeforeSaving: false)
 
         // Assert
@@ -68,31 +68,29 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         XCTAssertEqual(countOrders(), Fixtures.ordersLoadAllJSON.ordersCount + 1)
     }
 
-    func testWhenGivenAFilterItFetchesBothTheFilteredListAndTheAllOrdersList() {
+    func test_when_given_a_filter_it_fetches_all_orders_list() {
         // Arrange
         let network = MockNetwork(useResponseQueue: true)
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
-        network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAll2JSON.fileName)
 
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
-                             statusKey: OrderStatusEnum.completed.rawValue,
+                             statuses: [OrderStatusEnum.completed.rawValue],
                              deleteAllBeforeSaving: true)
 
         // Assert
         XCTAssertEqual(countOrders(),
-                       Fixtures.ordersLoadAllJSON.ordersCount + Fixtures.ordersLoadAll2JSON.ordersCount)
+                       Fixtures.ordersLoadAllJSON.ordersCount)
     }
 
-    func testWhenNotGivenAFilterItFetchesTheAllOrdersListOnly() {
+    func test_when_not_given_a_filter_it_fetches_the_all_orders_list() {
         // Arrange
         let network = MockNetwork(useResponseQueue: true)
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
-        network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAll2JSON.fileName)
 
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
-                             statusKey: nil,
+                             statuses: nil,
                              deleteAllBeforeSaving: true)
 
         // Assert
@@ -108,7 +106,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
 
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
-                             statusKey: OrderStatusEnum.processing.rawValue,
+                             statuses: [OrderStatusEnum.processing.rawValue],
                              deleteAllBeforeSaving: true)
 
         // Assert
@@ -125,12 +123,12 @@ private extension OrderStoreTests_FetchFilteredAndAllOrders {
         OrderStore(dispatcher: Dispatcher(), storageManager: storageManager, network: network)
     }
 
-    func executeActionAndWait(using store: OrderStore, statusKey: String?, deleteAllBeforeSaving: Bool) {
+    func executeActionAndWait(using store: OrderStore, statuses: [String]?, deleteAllBeforeSaving: Bool) {
         let expectation = self.expectation(description: "fetch")
 
-        let action = OrderAction.fetchFilteredAndAllOrders(
+        let action = OrderAction.fetchFilteredOrders(
             siteID: Fixtures.siteID,
-            statusKey: statusKey,
+            statuses: statuses,
             deleteAllBeforeSaving: deleteAllBeforeSaving,
             pageSize: 50) { _, _  in
                 expectation.fulfill()
@@ -163,13 +161,6 @@ private enum Fixtures {
     ///
     static let ordersLoadAllJSON = (
         fileName: "orders-load-all",
-        ordersCount: 4
-    )
-
-    /// Information about the orders-load-all-2.json
-    ///
-    static let ordersLoadAll2JSON = (
-        fileName: "orders-load-all-2",
         ordersCount: 4
     )
 

@@ -38,9 +38,10 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_given_a_filter_it_loads_the_orders_matching_that_filter_from_the_DB() throws {
         // Arrange
+        let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing], dateRange: nil, numberOfActiveFilters: 1)
         let viewModel = OrderListViewModel(siteID: siteID,
                                            storageManager: storageManager,
-                                           statusFilter: orderStatus(with: .processing))
+                                           filters: filters)
 
         let processingOrders = (0..<10).map { insertOrder(id: $0, status: .processing) }
         let completedOrders = (100..<105).map { insertOrder(id: $0, status: .completed) }
@@ -59,7 +60,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_given_no_filter_it_loads_all_the_today_and_past_orders_from_the_DB() throws {
         // Arrange
-        let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, statusFilter: nil)
+        let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, filters: nil)
 
         let allInsertedOrders = [
             (0..<10).map { insertOrder(id: $0, status: .processing) },
@@ -81,10 +82,12 @@ final class OrderListViewModelTests: XCTestCase {
 
     /// Test that all orders including orders dated in the future (dateCreated) will be fetched.
     func test_it_also_loads_future_orders_from_the_DB() throws {
+
         // Arrange
+        let filters = FilterOrderListViewModel.Filters(orderStatus: [.pending], dateRange: nil, numberOfActiveFilters: 1)
         let viewModel = OrderListViewModel(siteID: siteID,
                                            storageManager: storageManager,
-                                           statusFilter: orderStatus(with: .pending))
+                                           filters: filters)
 
         let expectedOrders = [
             // Future orders
@@ -113,9 +116,10 @@ final class OrderListViewModelTests: XCTestCase {
     /// Orders with dateCreated in the future should be grouped in an "Upcoming" section.
     func test_it_groups_future_orders_in_upcoming_section() throws {
         // Arrange
+        let filters = FilterOrderListViewModel.Filters(orderStatus: [.failed], dateRange: nil, numberOfActiveFilters: 1)
         let viewModel = OrderListViewModel(siteID: siteID,
                                            storageManager: storageManager,
-                                           statusFilter: orderStatus(with: .failed))
+                                           filters: filters)
 
         let expectedOrders = (
             future: [
@@ -149,7 +153,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_it_requests_a_resynchronization_when_the_app_is_activated() {
         // Arrange
         let notificationCenter = NotificationCenter()
-        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, statusFilter: nil)
+        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, filters: nil)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -169,7 +173,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_given_no_previous_deactivation_it_does_not_request_a_resynchronization_when_the_app_is_activated() {
         // Arrange
         let notificationCenter = NotificationCenter()
-        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, statusFilter: nil)
+        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, filters: nil)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -190,7 +194,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_given_a_new_order_notification_it_requests_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
-        let viewModel = OrderListViewModel(siteID: siteID, pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
+        let viewModel = OrderListViewModel(siteID: siteID, pushNotificationsManager: pushNotificationsManager, filters: nil)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -210,7 +214,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_given_a_non_order_notification_it_does_not_request_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
-        let viewModel = OrderListViewModel(siteID: siteID, pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
+        let viewModel = OrderListViewModel(siteID: siteID, pushNotificationsManager: pushNotificationsManager, filters: nil)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -230,7 +234,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_having_no_error_and_no_simple_payments_does_not_show_banner() {
         // Given
         let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled)
-        let viewModel = OrderListViewModel(siteID: siteID, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
+        let viewModel = OrderListViewModel(siteID: siteID, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
 
         // When
         viewModel.activate()
@@ -243,7 +247,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_storing_error_shows_error_banner() {
         // Given
-        let viewModel = OrderListViewModel(siteID: siteID, statusFilter: nil)
+        let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
 
         // When
         viewModel.activate()
@@ -268,7 +272,7 @@ final class OrderListViewModelTests: XCTestCase {
         }
 
         let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
 
         // When
         viewModel.activate()
@@ -294,7 +298,7 @@ final class OrderListViewModelTests: XCTestCase {
         }
 
         let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
 
         // When
         viewModel.activate()
@@ -319,7 +323,7 @@ final class OrderListViewModelTests: XCTestCase {
         }
 
         let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
 
         // When
         viewModel.activate()
@@ -344,7 +348,7 @@ final class OrderListViewModelTests: XCTestCase {
         }
 
         let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
 
         // When
         viewModel.activate()
@@ -369,7 +373,7 @@ final class OrderListViewModelTests: XCTestCase {
         }
 
         let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
 
         // When
         viewModel.activate()
@@ -384,7 +388,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_hiding_simplePayments_banners_still_shows_error_banner() {
         // Given
-        let viewModel = OrderListViewModel(siteID: siteID, statusFilter: nil)
+        let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
 
         // When
         viewModel.activate()
@@ -395,6 +399,46 @@ final class OrderListViewModelTests: XCTestCase {
         waitUntil {
             viewModel.topBanner == .error
         }
+    }
+
+    // MARK: - Filters Applied
+    func test_it_requests_a_resynchronization_when_the_new_filters_are_applied() {
+        // Arrange
+        let notificationCenter = NotificationCenter()
+        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, filters: nil)
+
+        var resynchronizeRequested = false
+        viewModel.onShouldResynchronizeIfNewFiltersAreApplied = {
+            resynchronizeRequested = true
+        }
+
+        viewModel.activate()
+
+        // Act
+        viewModel.updateFilters(filters: FilterOrderListViewModel.Filters(orderStatus: [.completed], dateRange: nil, numberOfActiveFilters: 1))
+
+        // Assert
+        XCTAssertTrue(resynchronizeRequested)
+    }
+
+    func test_given_identical_filters_it_does_not_request_a_resynchronization() {
+        // Arrange
+        let filters = FilterOrderListViewModel.Filters(orderStatus: [.pending], dateRange: nil, numberOfActiveFilters: 0)
+        let notificationCenter = NotificationCenter()
+        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, filters: filters)
+
+        var resynchronizeRequested = false
+        viewModel.onShouldResynchronizeIfNewFiltersAreApplied = {
+            resynchronizeRequested = true
+        }
+
+        viewModel.activate()
+
+        // Act
+        viewModel.updateFilters(filters: filters)
+
+        // Assert
+        XCTAssertFalse(resynchronizeRequested)
     }
 }
 

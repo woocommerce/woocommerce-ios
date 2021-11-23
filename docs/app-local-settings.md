@@ -16,6 +16,8 @@ There are a few data models + plist files separated for specific features and us
 - [`GeneralAppSettings`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Storage/Storage/Model/GeneralAppSettings.swift) handles settings universal to all stores.
 - [`GeneralStoreSettings`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Storage/Storage/Model/GeneralStoreSettings.swift) handles settings unique for each store. Cleared on logout.
 - [`StoredProductSettings`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Networking/Networking/Model/Product/StoredProductSettings.swift) handles products-specific settings, unique for each store. Cleared on logout.
+- [`StoredOrderSettings`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Networking/Yosemite/Model/Product/StoredOrderSettings.swift) handles orders-specific settings, unique for each store. Cleared on logout.
+
 
 ## How to add new property
 

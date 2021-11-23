@@ -209,7 +209,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.loading)
 
         // Before creating simple payment order
-        XCTAssertFalse(viewModel.disableCancelButton())
+        XCTAssertFalse(viewModel.disableCancel)
 
         // When
         let _: Bool = waitFor { promise in
@@ -225,7 +225,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertTrue(viewModel.disableCancelButton())
+        XCTAssertTrue(viewModel.disableCancel)
     }
 
 }

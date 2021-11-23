@@ -43,14 +43,6 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
                 viewModel.presentNotice = nil
             }
             .store(in: &subscriptions)
-
-        // Observes the loading intent it will be true while performing the create order operation. False otherwise.
-        viewModel.$loading
-            .sink { [weak self] loading in
-                // Disables interactive dismissal while performing the create order operation, Enables otherwise.
-                self?.isModalInPresentation = loading
-            }
-            .store(in: &subscriptions)
     }
 
     override func viewDidLoad() {
@@ -74,6 +66,10 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
 extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         rootView.viewModel.userDidCancelFlow()
+    }
+
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        !rootView.viewModel.disableCancel
     }
 }
 
@@ -140,7 +136,7 @@ struct SimplePaymentsAmount: View {
                     dismiss()
                     viewModel.userDidCancelFlow()
                 })
-                    .disabled(viewModel.disableCancelButton())
+                    .disabled(viewModel.disableCancel)
             }
         }
         .wooNavigationBarStyle()

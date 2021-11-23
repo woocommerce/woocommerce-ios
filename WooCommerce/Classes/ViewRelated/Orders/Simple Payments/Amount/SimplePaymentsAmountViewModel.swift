@@ -65,6 +65,13 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     private let analytics: Analytics
 
+    /// Use this to disables interactive dismissal and
+    /// Disables cancel button while performing the create order operation
+    ///
+    var disableCancel: Bool {
+        loading
+    }
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          locale: Locale = Locale.autoupdatingCurrent,
@@ -106,12 +113,6 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     func userDidCancelFlow() {
         analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCanceled())
-    }
-
-    /// Disable cancel button while performing the create order operation
-    ///
-    func disableCancelButton() -> Bool {
-        return loading
     }
 
     func createSummaryViewModel() -> SimplePaymentsSummaryViewModel {

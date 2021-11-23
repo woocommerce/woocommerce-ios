@@ -67,6 +67,10 @@ extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControlle
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         rootView.viewModel.userDidCancelFlow()
     }
+
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        !rootView.viewModel.disableCancel
+    }
 }
 
 /// View that receives an arbitrary amount for creating a simple payments order.
@@ -119,10 +123,12 @@ struct SimplePaymentsAmount: View {
         .navigationTitle(Localization.title)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
+                // Cancel button set to disabled state until get the result from `createSimplePaymentsOrder` operation
                 Button(Localization.cancelTitle, action: {
                     dismiss()
                     viewModel.userDidCancelFlow()
                 })
+                    .disabled(viewModel.disableCancel)
             }
         }
         .wooNavigationBarStyle()

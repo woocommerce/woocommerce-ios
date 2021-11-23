@@ -46,6 +46,13 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         amount.count < 2
     }
 
+    /// Use this to disables interactive dismissal and
+    /// Disables cancel button while performing the create order operation
+    ///
+    var disableCancel: Bool {
+        loading
+    }
+
     /// Dynamically builds the amount placeholder based on the store decimal separator.
     ///
     private(set) lazy var amountPlaceholder: String = {

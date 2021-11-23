@@ -112,12 +112,6 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
 
         loading = true
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.loading = false
-            self.summaryViewModel = SimplePaymentsSummaryViewModel(providedAmount: self.amount)
-        }
-        return
-
         // Prototype in production does not support taxes. Development version does.
         let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount, taxable: isDevelopmentPrototype) { [weak self] result in
             guard let self = self else { return }

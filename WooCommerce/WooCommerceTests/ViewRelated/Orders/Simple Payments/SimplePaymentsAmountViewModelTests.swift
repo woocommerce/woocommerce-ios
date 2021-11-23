@@ -162,7 +162,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore)
         testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .createSimplePaymentsOrder(_, _, onCompletion):
+            case let .createSimplePaymentsOrder(_, _, _, onCompletion):
                 onCompletion(.success(.fake()))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -187,7 +187,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore)
         testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .createSimplePaymentsOrder(_, _, onCompletion):
+            case let .createSimplePaymentsOrder(_, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Error", code: 0)))
             default:
                 XCTFail("Received unsupported action: \(action)")

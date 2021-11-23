@@ -1,8 +1,30 @@
 import Foundation
 
+/// Protocol for `MediaRemote` mainly used for mocking.
+public protocol MediaRemoteProtocol {
+    func loadMediaLibrary(for siteID: Int64,
+                          pageNumber: Int,
+                          pageSize: Int,
+                          context: String?,
+                          completion: @escaping (Result<[Media], Error>) -> Void)
+    func loadMediaLibraryFromWordPressSite(siteID: Int64,
+                                           pageNumber: Int,
+                                           pageSize: Int,
+                                           completion: @escaping (Result<[WordPressMedia], Error>) -> Void)
+    func uploadMedia(for siteID: Int64,
+                     productID: Int64,
+                     context: String?,
+                     mediaItems: [UploadableMedia],
+                     completion: @escaping (Result<[Media], Error>) -> Void)
+    func uploadMediaToWordPressSite(siteID: Int64,
+                                    productID: Int64,
+                                    mediaItems: [UploadableMedia],
+                                    completion: @escaping (Result<WordPressMedia, Error>) -> Void)
+}
+
 /// Media: Remote Endpoints
 ///
-public class MediaRemote: Remote {
+public class MediaRemote: Remote, MediaRemoteProtocol {
     /// Loads an array of media from the site's WP Media Library.
     /// API reference: https://developer.wordpress.com/docs/api/1.2/get/sites/%24site/media/
     ///
@@ -15,10 +37,10 @@ public class MediaRemote: Remote {
     public func loadMediaLibrary(for siteID: Int64,
                                  pageNumber: Int = Default.pageNumber,
                                  pageSize: Int = 25,
-                                 context: String = Default.context,
+                                 context: String? = Default.context,
                                  completion: @escaping (Result<[Media], Error>) -> Void) {
         let parameters: [String: Any] = [
-            ParameterKey.contextKey: context,
+            ParameterKey.contextKey: context ?? Default.context,
             ParameterKey.pageSize: pageSize,
             ParameterKey.pageNumber: pageNumber,
             ParameterKey.fields: "ID,date,URL,thumbnails,title,alt,extension,mime_type,file",

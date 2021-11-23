@@ -1,5 +1,7 @@
+import Codegen
+
 /// Media from WordPress Site API
-public struct WordPressMedia: Equatable {
+public struct WordPressMedia: Equatable, GeneratedCopiable, GeneratedFakeable {
     public let mediaID: Int64
     public let date: Date
     public let slug: String

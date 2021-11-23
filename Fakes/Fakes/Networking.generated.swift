@@ -1547,3 +1547,19 @@ extension WCPayPaymentIntentStatusEnum {
         .requiresPaymentMethod
     }
 }
+extension WordPressMedia {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WordPressMedia {
+        .init(
+            mediaID: .fake(),
+            date: .fake(),
+            slug: .fake(),
+            mimeType: .fake(),
+            src: .fake(),
+            alt: .fake(),
+            details: .fake(),
+            title: .fake()
+        )
+    }
+}

@@ -68,13 +68,10 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .create)
     }
 
-    func test_notice_is_enqueued_when_order_creation_fails() {
+    func test_view_model_fires_error_notice_when_order_creation_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let noticePresenter = MockNoticePresenter()
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, noticePresenter: noticePresenter)
-
-        XCTAssertEqual(noticePresenter.queuedNotices.count, 0)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -88,6 +85,6 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.createOrder()
 
         // Then
-        XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
+        XCTAssertEqual(viewModel.presentNotice, .error)
     }
 }

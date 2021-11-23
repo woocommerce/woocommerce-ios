@@ -6,7 +6,6 @@ import Combine
 final class NewOrderViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
-    private let noticePresenter: NoticePresenter
 
     /// Order details used to create the order
     ///
@@ -21,10 +20,14 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published private(set) var performingNetworkRequest = false
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+    /// Defines the current notice that should be shown.
+    /// Defaults to `nil`.
+    ///
+    @Published var presentNotice: NewOrderNotice?
+
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
-        self.noticePresenter = noticePresenter
 
         configureNavigationTrailingItem()
     }
@@ -44,7 +47,7 @@ final class NewOrderViewModel: ObservableObject {
                 // TODO: Handle newly created order / remove success logging
                 DDLogInfo("New order created successfully!")
             case .failure(let error):
-                self.displayOrderCreationErrorNotice()
+                self.presentNotice = .error
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
@@ -82,6 +85,12 @@ extension NewOrderViewModel {
                             shippingAddress: shippingAddress)
         }
     }
+
+    /// Representation of possible notices that can be displayed
+    ///
+    enum NewOrderNotice {
+        case error
+    }
 }
 
 // MARK: - Helpers
@@ -102,14 +111,5 @@ private extension NewOrderViewModel {
                 return .create
             }
             .assign(to: &$navigationTrailingItem)
-    }
-
-    /// Enqueues the `Error creating new order` Notice.
-    ///
-    private func displayOrderCreationErrorNotice() {
-        let message = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
-        let notice = Notice(title: message, feedbackType: .error)
-
-        noticePresenter.enqueue(notice: notice)
     }
 }

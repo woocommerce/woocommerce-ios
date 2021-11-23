@@ -18,6 +18,22 @@ public class SitePluginsRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Install the plugin with the specified slug for a given site.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch the plugins.
+    ///   - slug: The plugin’s URL slug in the plugin directory.
+    ///   - completion: Closure to be executed upon completion.
+    ///
+    public func installPlugin(for siteID: Int64,
+                              slug: String,
+                              completion: @escaping (Result<SitePlugin, Error>) -> Void) {
+        let path = Constants.sitePluginsPath
+        let request = JetpackRequest(wooApiVersion: .none, method: .post, siteID: siteID, path: path, parameters: [Constants.slugParameter: slug])
+        let mapper = SitePluginMapper(siteID: siteID)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 
@@ -26,5 +42,6 @@ public class SitePluginsRemote: Remote {
 private extension SitePluginsRemote {
     enum Constants {
         static let sitePluginsPath: String = "wp/v2/plugins"
+        static let slugParameter: String = "slug"
     }
 }

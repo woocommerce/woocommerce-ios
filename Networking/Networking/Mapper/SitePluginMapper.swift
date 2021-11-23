@@ -2,7 +2,7 @@ import Foundation
 
 /// Mapper: SitePlugins
 ///
-struct SitePlugiMapper: Mapper {
+struct SitePluginMapper: Mapper {
 
     /// Site Identifier associated to the plugins that will be parsed.
     /// We're injecting this field via `JSONDecoder.userInfo` because the remote endpoints don't return the SiteID in the plugin endpoint.

@@ -64,7 +64,7 @@ final class CardReaderConnectionController {
             didSetState()
         }
     }
-    private var fromController: UIViewController?
+    private weak var fromController: UIViewController?
     private var siteID: Int64
     private var knownCardReaderProvider: CardReaderSettingsKnownReaderProvider
     private var alerts: CardReaderSettingsAlertsProvider
@@ -463,6 +463,9 @@ private extension CardReaderConnectionController {
                     self.softwareUpdateCancelable = cancelable
                     self.state = .updating(progress: 0)
                 case .installing(progress: let progress):
+                    if progress >= 0.995 {
+                        self.softwareUpdateCancelable = nil
+                    }
                     self.state = .updating(progress: progress)
                 case .completed:
                     self.softwareUpdateCancelable = nil
@@ -536,7 +539,11 @@ private extension CardReaderConnectionController {
             return
         }
 
-        if underlyingError == .readerSoftwareUpdateFailedBatteryLow {
+        switch underlyingError {
+        case .readerSoftwareUpdateFailedInterrupted:
+            // Update was cancelled, don't treat this as an error
+            return
+        case .readerSoftwareUpdateFailedBatteryLow:
             alerts.updatingFailedLowBattery(
                 from: from,
                 batteryLevel: batteryLevel,
@@ -544,7 +551,7 @@ private extension CardReaderConnectionController {
                     self.state = .searching
                 }
             )
-        } else {
+        default:
             alerts.updatingFailed(
                 from: from,
                 tryAgain: nil,
@@ -572,7 +579,6 @@ private extension CardReaderConnectionController {
     private func returnSuccess(connected: Bool) {
         self.alerts.dismiss()
         self.onCompletion?(.success(connected))
-        self.fromController = nil
         self.state = .idle
     }
 
@@ -581,7 +587,6 @@ private extension CardReaderConnectionController {
     private func returnFailure(error: Error) {
         self.alerts.dismiss()
         self.onCompletion?(.failure(error))
-        self.fromController = nil
         self.state = .idle
     }
 }

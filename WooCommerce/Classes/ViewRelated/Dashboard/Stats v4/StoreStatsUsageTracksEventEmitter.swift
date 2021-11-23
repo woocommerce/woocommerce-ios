@@ -9,8 +9,24 @@ final class StoreStatsUsageTracksEventEmitter {
 
     private let analytics: Analytics
 
+    /// The minimum amount of time (seconds) that the merchant have interacted with the
+    /// Analytics UI before an event is triggered.
     private let minimumInteractionTime: TimeInterval = 10
+
+    /// The minimum number of Analytics UI interactions before an event is triggered.
+    ///
+    /// The interactions captured are:
+    ///
+    /// - Scrolling
+    /// - Pull-to-refresh
+    /// - Tapping on the bars in the chart
+    /// - Changing the tab
+    /// - Navigating to the My Store tab
     private let interactionsThreshold = 5
+
+    /// The maximum number of seconds in between interactions before we will consider the
+    /// merchant to have been idle. If they were idle, the time and interactions counting
+    /// will be reset.
     private let idleTimeThreshold: TimeInterval = 10
 
     private var interactions = 0

@@ -127,7 +127,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
             switch result {
             case .success(let order):
                 if self.isDevelopmentPrototype {
-                    self.summaryViewModel = SimplePaymentsSummaryViewModel(providedAmount: self.amount)
+                    self.summaryViewModel = SimplePaymentsSummaryViewModel(order: order, providedAmount: self.amount)
                 } else {
                     self.onOrderCreated(order)
                 }

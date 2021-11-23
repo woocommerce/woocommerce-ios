@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 /// `ViewModel` to drive the content of the `SimplePaymentsSummary` view.
 ///
@@ -8,10 +9,6 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     let providedAmount: String
 
-    /// Total to charge.
-    ///
-    let total: String
-
     /// Email of the costumer. To be used as the billing address email.
     ///
     @Published var email: String = ""
@@ -20,33 +17,50 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     @Published var enableTaxes: Bool = false
 
+    /// Total to charge. With or Without taxes.
+    ///
+    var total: String {
+        enableTaxes ? totalWithTaxes : providedAmount
+    }
+
     /// Accessor for the note content of the `noteViewModel`
     ///
     var noteContent: String {
         noteViewModel.newNote
     }
 
-    /// ViewModel for the edit order note view.
+    /// Total to charge with taxes.
     ///
-    lazy private(set) var noteViewModel = SimplePaymentsNoteViewModel()
+    private let totalWithTaxes: String
 
     /// Formatter to properly format the provided amount.
     ///
     private let currencyFormatter: CurrencyFormatter
 
+    /// ViewModel for the edit order note view.
+    ///
+    lazy private(set) var noteViewModel = SimplePaymentsNoteViewModel()
+
     init(providedAmount: String,
+         totalWithTaxes: String,
          noteContent: String? = nil,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.currencyFormatter = currencyFormatter
-
-        let formattedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
-        self.providedAmount = formattedAmount
-        self.total = formattedAmount // TODO: Add taxes calculation
+        self.providedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
+        self.totalWithTaxes = currencyFormatter.formatAmount(totalWithTaxes) ?? providedAmount
 
         // Used mostly in previews
         if let noteContent = noteContent {
             noteViewModel = SimplePaymentsNoteViewModel(originalNote: noteContent)
         }
+    }
+
+    convenience init(order: Order,
+                     providedAmount: String,
+                     currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+        self.init(providedAmount: providedAmount,
+                  totalWithTaxes: order.total,
+                  currencyFormatter: currencyFormatter)
     }
 
     /// Sends a signal to reload the view. Needed when coming back from the `EditNote` view.

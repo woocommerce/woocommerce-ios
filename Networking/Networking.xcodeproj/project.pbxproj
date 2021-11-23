@@ -545,6 +545,7 @@
 		D8FBFF2922D52AFB006E3336 /* order-stats-v4-year.json in Resources */ = {isa = PBXBuildFile; fileRef = D8FBFF2822D52AFA006E3336 /* order-stats-v4-year.json */; };
 		DE9D6BCC270D769C00BA6562 /* shipping-label-address-without-name-validation-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DE9D6BCB270D769B00BA6562 /* shipping-label-address-without-name-validation-success.json */; };
 		DEC2961C26BBE764005A056B /* ShippingLabelCustomsForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */; };
+		DEC51A95274CDA52009F3DF4 /* SitePluginMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51A94274CDA52009F3DF4 /* SitePluginMapper.swift */; };
 		E12552C526385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12552C426385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift */; };
 		FE28F6E226840DED004465C7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E126840DED004465C7 /* User.swift */; };
 		FE28F6E426842848004465C7 /* UserMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E326842848004465C7 /* UserMapper.swift */; };
@@ -1132,6 +1133,7 @@
 		D8FBFF2822D52AFA006E3336 /* order-stats-v4-year.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-stats-v4-year.json"; sourceTree = "<group>"; };
 		DE9D6BCB270D769B00BA6562 /* shipping-label-address-without-name-validation-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-address-without-name-validation-success.json"; sourceTree = "<group>"; };
 		DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsForm.swift; sourceTree = "<group>"; };
+		DEC51A94274CDA52009F3DF4 /* SitePluginMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginMapper.swift; sourceTree = "<group>"; };
 		E12552C426385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressValidationSuccess.swift; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -1829,6 +1831,7 @@
 				CE50345D21B571A7007573C6 /* SitePlanMapper.swift */,
 				453305E82459DF2100264E50 /* PostMapper.swift */,
 				31D27C8626028CE9002EDB1D /* SitePluginsMapper.swift */,
+				DEC51A94274CDA52009F3DF4 /* SitePluginMapper.swift */,
 				74046E1E217A6B70007DD7BF /* SiteSettingsMapper.swift */,
 				74A1D26C21189DFE00931DFA /* SiteVisitStatsMapper.swift */,
 				B53EF53B21814900003E146F /* SuccessResultMapper.swift */,
@@ -2376,6 +2379,7 @@
 				CE430670234B99F50073CBFF /* RefundsRemote.swift in Sources */,
 				B56C1EB620EA757B00D749F9 /* SiteListMapper.swift in Sources */,
 				B50A583921AD861700617455 /* APNSDevice.swift in Sources */,
+				DEC51A95274CDA52009F3DF4 /* SitePluginMapper.swift in Sources */,
 				26455E2425F66982008A1D32 /* ProductAttributeTermRemote.swift in Sources */,
 				7426CA0D21AF27B9004E9FFC /* SiteAPIRemote.swift in Sources */,
 				451A97D1260A03900059D135 /* ShippingLabelCustomPackage.swift in Sources */,

@@ -119,7 +119,7 @@ struct SimplePaymentsAmount: View {
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
             .disabled(viewModel.shouldDisableDoneButton)
 
-            LazyNavigationLink(destination: SimplePaymentsSummary(viewModel: viewModel.createSummaryViewModel()), isActive: $showSummaryView) {
+            LazyNavigationLink(destination: summaryView(), isActive: $viewModel.navigateToSummary) {
                 EmptyView()
             }
         }
@@ -134,6 +134,18 @@ struct SimplePaymentsAmount: View {
             }
         }
         .wooNavigationBarStyle()
+    }
+
+    /// Returns a `SimplePaymentsSummary` instance when the view model is available.
+    ///
+    private func summaryView() -> some View {
+        Group {
+            if let summaryViewModel = viewModel.summaryViewModel {
+                SimplePaymentsSummary(viewModel: summaryViewModel)
+
+            }
+            EmptyView()
+        }
     }
 }
 

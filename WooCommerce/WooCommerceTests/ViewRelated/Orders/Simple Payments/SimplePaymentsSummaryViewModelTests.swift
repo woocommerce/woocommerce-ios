@@ -59,4 +59,13 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.providedAmount, "$100.00")
         XCTAssertEqual(viewModel.total, "$104.30")
     }
+
+    func test_tax_rate_is_calculated_properly() {
+        // Given
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US.
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100", totalWithTaxes: "104.30", currencyFormatter: currencyFormatter)
+
+        // When & Then
+        XCTAssertEqual(viewModel.taxRate, "4.30")
+    }
 }

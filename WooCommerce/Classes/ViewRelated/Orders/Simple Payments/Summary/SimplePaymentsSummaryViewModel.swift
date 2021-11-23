@@ -9,6 +9,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     let providedAmount: String
 
+    /// Store tax percentage rate.
+    ///
+    let taxRate: String
+
     /// Email of the costumer. To be used as the billing address email.
     ///
     @Published var email: String = ""
@@ -48,6 +52,12 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         self.currencyFormatter = currencyFormatter
         self.providedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
         self.totalWithTaxes = currencyFormatter.formatAmount(totalWithTaxes) ?? providedAmount
+        self.taxRate = {
+            let amount = currencyFormatter.convertToDecimal(from: providedAmount)?.decimalValue ?? Decimal.zero
+            let total = currencyFormatter.convertToDecimal(from: totalWithTaxes)?.decimalValue ?? Decimal.zero
+            let rate = ((total / amount) - Decimal(1)) * Decimal(100)
+            return currencyFormatter.localize(rate) ?? "\(rate)"
+        }()
 
         // Used mostly in previews
         if let noteContent = noteContent {

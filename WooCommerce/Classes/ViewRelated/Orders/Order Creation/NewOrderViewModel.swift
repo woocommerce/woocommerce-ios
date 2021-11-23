@@ -19,7 +19,7 @@ final class NewOrderViewModel: ObservableObject {
 
     /// Tracks if a network request is being performed.
     ///
-    @Published var performingNetworkRequest = false
+    @Published private(set) var performingNetworkRequest = false
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.siteID = siteID

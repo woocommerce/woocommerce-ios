@@ -63,6 +63,12 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         self.taxRate = {
             let amount = currencyFormatter.convertToDecimal(from: providedAmount)?.decimalValue ?? Decimal.zero
             let tax = currencyFormatter.convertToDecimal(from: taxAmount)?.decimalValue ?? Decimal.zero
+
+            // Prevent dividing by zero
+            guard amount > .zero else {
+                return "0"
+            }
+
             let rate = (tax / amount) * Decimal(100)
             return currencyFormatter.localize(rate) ?? "\(rate)"
         }()

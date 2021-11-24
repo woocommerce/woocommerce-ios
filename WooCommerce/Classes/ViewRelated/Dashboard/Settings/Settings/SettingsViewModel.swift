@@ -193,7 +193,8 @@ private extension SettingsViewModel {
         // Store settings
         let storeSettingsSection: Section = {
             let rows: [Row]
-            if featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
+            if stores.sessionManager.defaultSite?.isJetpackCPConnected == true,
+                featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
                 rows = [.inPersonPayments, .installJetpack]
             } else {
                 rows = [.inPersonPayments]

@@ -67,6 +67,10 @@ extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControlle
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         rootView.viewModel.userDidCancelFlow()
     }
+
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        !rootView.viewModel.disableCancel
+    }
 }
 
 /// View that receives an arbitrary amount for creating a simple payments order.
@@ -84,10 +88,6 @@ struct SimplePaymentsAmount: View {
     /// ViewModel to drive the view content
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsAmountViewModel
-
-    /// Tracks if the summary view should be presented.
-    ///
-    @State private var showSummaryView: Bool = false
 
     var body: some View {
         VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
@@ -110,16 +110,12 @@ struct SimplePaymentsAmount: View {
 
             // Done button
             Button(Localization.buttonTitle()) {
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplePaymentsPrototype) {
-                    showSummaryView.toggle()
-                } else {
-                    viewModel.createSimplePaymentsOrder()
-                }
+                viewModel.createSimplePaymentsOrder()
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
             .disabled(viewModel.shouldDisableDoneButton)
 
-            LazyNavigationLink(destination: SimplePaymentsSummary(viewModel: viewModel.createSummaryViewModel()), isActive: $showSummaryView) {
+            LazyNavigationLink(destination: summaryView(), isActive: $viewModel.navigateToSummary) {
                 EmptyView()
             }
         }
@@ -127,13 +123,26 @@ struct SimplePaymentsAmount: View {
         .navigationTitle(Localization.title)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
+                // Cancel button set to disabled state until get the result from `createSimplePaymentsOrder` operation
                 Button(Localization.cancelTitle, action: {
                     dismiss()
                     viewModel.userDidCancelFlow()
                 })
+                    .disabled(viewModel.disableCancel)
             }
         }
         .wooNavigationBarStyle()
+    }
+
+    /// Returns a `SimplePaymentsSummary` instance when the view model is available.
+    ///
+    private func summaryView() -> some View {
+        Group {
+            if let summaryViewModel = viewModel.summaryViewModel {
+                SimplePaymentsSummary(viewModel: summaryViewModel)
+            }
+            EmptyView()
+        }
     }
 }
 

@@ -1,12 +1,50 @@
-import Foundation
-import UIKit
+import Yosemite
 
-/// Represents all of the possible Order Date Ranges in enum form + start and end date in case of custom dates
+/// Extension of OrderDateRangeFilter struct
 ///
-struct OrderDateRangeFilter: Equatable {
-    var filter: OrderDateRangeFilterEnum
-    var startDate: Date?
-    var endDate: Date?
+extension OrderDateRangeFilter {
+    var computedStartDate: Date? {
+        switch filter {
+        case .today:
+            return Date().startOfDay(timezone: TimeZone.siteTimezone)
+        case .last2Days:
+            return Calendar.current.date(byAdding: .day, value: -2, to: Date())?.startOfDay(timezone: TimeZone.siteTimezone)
+        case .last7Days:
+            return Calendar.current.date(byAdding: .day, value: -7, to: Date())?.startOfDay(timezone: TimeZone.siteTimezone)
+        case .last30Days:
+            return Calendar.current.date(byAdding: .day, value: -30, to: Date())?.startOfDay(timezone: TimeZone.siteTimezone)
+        case .custom:
+            return startDate?.startOfDay(timezone: TimeZone.siteTimezone)
+        default:
+            return nil
+        }
+    }
+
+    var computedEndDate: Date? {
+        switch filter {
+        case .custom:
+            return endDate?.endOfDay(timezone: TimeZone.siteTimezone)
+        default:
+            return nil
+        }
+    }
+
+    var analyticsDescription: String {
+        switch filter {
+        case .today:
+            return "today"
+        case .last2Days:
+            return "last_2_days"
+        case .last7Days:
+            return "last_7_days"
+        case .last30Days:
+            return "last_30_days"
+        case .custom:
+            return "custom_range"
+        default:
+            return ""
+        }
+    }
 }
 
 // MARK: - FilterType conformance
@@ -33,17 +71,6 @@ extension OrderDateRangeFilter: FilterType {
     var isActive: Bool {
         return true
     }
-}
-
-/// Represents all of the possible Order Date Ranges in enum form
-///
-enum OrderDateRangeFilterEnum: Hashable, CaseIterable {
-    case any
-    case today
-    case last2Days
-    case last7Days
-    case last30Days
-    case custom
 }
 
 // MARK: - TableView utils

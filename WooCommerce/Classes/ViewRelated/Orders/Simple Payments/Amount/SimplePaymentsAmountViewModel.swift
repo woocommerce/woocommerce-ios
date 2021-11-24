@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Experiments
 
 /// View Model for the `SimplePaymentsAmount` view.
 ///
@@ -23,6 +24,17 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     @Published var presentNotice: Notice?
 
+    /// Defines if the view should navigate to the summary view.
+    /// Setting it to `false` will `nil` the summary view model.
+    ///
+    @Published var navigateToSummary: Bool = false {
+        didSet {
+            if !navigateToSummary && oldValue != navigateToSummary {
+                summaryViewModel = nil
+            }
+        }
+    }
+
     /// Assign this closure to be notified when a new order is created
     ///
     var onOrderCreated: (Order) -> Void = { _ in }
@@ -34,12 +46,28 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         amount.count < 2
     }
 
+    /// Use this to disables interactive dismissal and
+    /// Disables cancel button while performing the create order operation
+    ///
+    var disableCancel: Bool {
+        loading
+    }
+
     /// Dynamically builds the amount placeholder based on the store decimal separator.
     ///
     private(set) lazy var amountPlaceholder: String = {
         // TODO: We are appending the currency symbol always to the left, we should use `CurrencyFormatter` when releasing to more countries.
         storeCurrencySymbol + "0" + storeCurrencySettings.decimalSeparator + "00"
     }()
+
+    /// Retains the SummaryViewModel.
+    /// Assigning it will set `navigateToSummary`.
+    ///
+    private(set) var summaryViewModel: SimplePaymentsSummaryViewModel? {
+        didSet {
+            navigateToSummary = summaryViewModel != nil
+        }
+    }
 
     /// Current store ID
     ///
@@ -65,31 +93,44 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     private let analytics: Analytics
 
+    /// Defines if the we are running a development version or not.
+    ///
+    private let isDevelopmentPrototype: Bool
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         isDevelopmentPrototype: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.simplePaymentsPrototype)) {
         self.siteID = siteID
         self.stores = stores
         self.userLocale = locale
         self.storeCurrencySettings = storeCurrencySettings
         self.storeCurrencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
         self.analytics = analytics
+        self.isDevelopmentPrototype = isDevelopmentPrototype
     }
 
     /// Called when the view taps the done button.
     /// Creates a simple payments order.
     ///
     func createSimplePaymentsOrder() {
+
         loading = true
-        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount) { [weak self] result in
+
+        // Prototype in production does not support taxes. Development version does.
+        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount, taxable: isDevelopmentPrototype) { [weak self] result in
             guard let self = self else { return }
             self.loading = false
 
             switch result {
             case .success(let order):
-                self.onOrderCreated(order)
+                if self.isDevelopmentPrototype {
+                    self.summaryViewModel = SimplePaymentsSummaryViewModel(providedAmount: self.amount)
+                } else {
+                    self.onOrderCreated(order)
+                }
                 self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCompleted(amount: order.total))
 
             case .failure(let error):
@@ -105,10 +146,6 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     func userDidCancelFlow() {
         analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCanceled())
-    }
-
-    func createSummaryViewModel() -> SimplePaymentsSummaryViewModel {
-        SimplePaymentsSummaryViewModel(providedAmount: amount)
     }
 }
 

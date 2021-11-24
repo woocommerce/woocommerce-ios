@@ -156,13 +156,59 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         XCTAssertTrue(isLoading)
     }
 
+    func test_order_is_created_with_no_taxes_on_prod_mode() {
+        // Given
+        let testingStore = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore, isDevelopmentPrototype: false)
+        viewModel.amount = "$12.30"
+
+        // When
+        let taxable: Bool = waitFor { promise in
+            testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createSimplePaymentsOrder(_, _, taxable, _):
+                    promise(taxable)
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+            viewModel.createSimplePaymentsOrder()
+        }
+
+        // Then
+        XCTAssertFalse(taxable)
+    }
+
+    func test_order_is_created_with_taxes_on_dev_mode() {
+        // Given
+        let testingStore = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore, isDevelopmentPrototype: true)
+        viewModel.amount = "$12.30"
+
+        // When
+        let taxable: Bool = waitFor { promise in
+            testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createSimplePaymentsOrder(_, _, taxable, _):
+                    promise(taxable)
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+            viewModel.createSimplePaymentsOrder()
+        }
+
+        // Then
+        XCTAssertTrue(taxable)
+    }
+
     func test_view_model_call_onOrderCreated_closure_after_an_order_is_created() {
         // Given
         let testingStore = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore)
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore, isDevelopmentPrototype: false)
         testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .createSimplePaymentsOrder(_, _, onCompletion):
+            case let .createSimplePaymentsOrder(_, _, _, onCompletion):
                 onCompletion(.success(.fake()))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -181,13 +227,63 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         XCTAssertTrue(onOrderCreatedCalled)
     }
 
+    func test_summaryViewModel_is_created_after_an_order_is_created_in_dev_mode() {
+        // Given
+        let testingStore = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore, isDevelopmentPrototype: true)
+
+        // When
+        waitForExpectation { exp in
+            testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createSimplePaymentsOrder(_, _, _, onCompletion):
+                    onCompletion(.success(.fake()))
+                    exp.fulfill()
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            viewModel.createSimplePaymentsOrder()
+        }
+
+        // Then
+        XCTAssertNotNil(viewModel.summaryViewModel)
+        XCTAssertTrue(viewModel.navigateToSummary)
+    }
+
+    func test_summaryViewModel_is_nilled_after_navigation_is_set_to_false_in_dev_mode() {
+        // Given
+        let testingStore = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore, isDevelopmentPrototype: true)
+        waitForExpectation { exp in
+            testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createSimplePaymentsOrder(_, _, _, onCompletion):
+                    onCompletion(.success(.fake()))
+                    exp.fulfill()
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            viewModel.createSimplePaymentsOrder()
+        }
+
+        // When
+        viewModel.navigateToSummary = false
+
+        // Then
+        XCTAssertNil(viewModel.summaryViewModel)
+    }
+
     func test_view_model_attempts_error_notice_presentation_when_failing_to_crete_order() {
         // Given
         let testingStore = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore)
         testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .createSimplePaymentsOrder(_, _, onCompletion):
+            case let .createSimplePaymentsOrder(_, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Error", code: 0)))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -199,6 +295,33 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.presentNotice, .error)
+    }
+
+    func test_view_model_diable_cancel_button_while_creating_payment_order() {
+        // Given
+        let testingStore = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore)
+        viewModel.amount = "$10.30"
+        XCTAssertFalse(viewModel.loading)
+
+        // Before creating simple payment order
+        XCTAssertFalse(viewModel.disableCancel)
+
+        // When
+        let _: Bool = waitFor { promise in
+            testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createSimplePaymentsOrder:
+                    promise(viewModel.loading)
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+            viewModel.createSimplePaymentsOrder()
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.disableCancel)
     }
 
 }

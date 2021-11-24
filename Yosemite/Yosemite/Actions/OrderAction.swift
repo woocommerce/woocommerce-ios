@@ -11,10 +11,10 @@ public enum OrderAction: Action {
     ///
     case searchOrders(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
 
-    /// Performs a dual fetch for the first pages of a filtered list and the all orders list.
+    /// Performs the fetch for the first pages of order list.
     ///
     /// - Parameters:
-    ///     - statusKey: The status to use for the filtered list. If this is not provided, only the
+    ///     - statuses: The statuses to use for the filtered list. If this is not provided, only the
     ///                  all orders list will be fetched. See `OrderStatusEnum` for possible values.
     ///     - deleteAllBeforeSaving: If true, all the orders in the db will be deleted before any
     ///                  order from the fetch requests will be saved.
@@ -23,9 +23,9 @@ public enum OrderAction: Action {
     ///     - before: Only include orders created before this date. The time zone of the `Date`
     ///               doesn't matter. It will be converted to UTC later.
     ///
-    case fetchFilteredAndAllOrders(
+    case fetchFilteredOrders(
         siteID: Int64,
-        statusKey: String?,
+        statuses: [String]?,
         after: Date? = nil,
         before: Date? = nil,
         deleteAllBeforeSaving: Bool,
@@ -42,7 +42,7 @@ public enum OrderAction: Action {
     ///               doesn't matter. It will be converted to UTC later.
     ///
     case synchronizeOrders(siteID: Int64,
-                           statusKey: String?,
+                           statuses: [String]?,
                            after: Date? = nil,
                            before: Date? = nil,
                            pageNumber: Int,
@@ -67,7 +67,7 @@ public enum OrderAction: Action {
 
     /// Creates a simple payments order with a specific amount value and no tax.
     ///
-    case createSimplePaymentsOrder(siteID: Int64, amount: String, onCompletion: (Result<Order, Error>) -> Void)
+    case createSimplePaymentsOrder(siteID: Int64, amount: String, taxable: Bool, onCompletion: (Result<Order, Error>) -> Void)
 
     /// Creates a manual order with the provided order details.
     ///

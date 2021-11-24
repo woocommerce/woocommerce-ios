@@ -184,7 +184,7 @@ public class OrdersRemote: Remote {
                         let billingAddressEncoded = try order.billingAddress?.toDictionary()
                         params[Order.CodingKeys.billingAddress.rawValue] = billingAddressEncoded
                     case .fees:
-                        let feesEncoded = try order.fees.toDictionary()
+                        let feesEncoded = try order.fees.map { try $0.toDictionary() }
                         params[Order.CodingKeys.feeLines.rawValue] = feesEncoded
                     }
                 }

@@ -710,6 +710,56 @@ final class OrderStoreTests: XCTestCase {
         // Then
         XCTAssertNotNil(storedOrder)
     }
+
+    func test_update_simple_payments_order_sends_correct_values() throws {
+        // Given
+        let feeID: Int64 = 1234
+        let amount = "100.00"
+        let taxable = true
+        let note = "This is a note"
+        let email = "email@email.com"
+
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let action = OrderAction.updateSimplePaymentsOrder(siteID: sampleSiteID,
+                                                           orderID: sampleOrderID,
+                                                           feeID: feeID,
+                                                           amount: amount,
+                                                           taxable: taxable,
+                                                           orderNote: note,
+                                                           email: email) { _ in }
+        store.onAction(action)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let receivedFees = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: AnyHashable]]).first
+        let expectedFees: [String: AnyHashable] = [
+            "id": 1234,
+            "name": "Simple Payments",
+            "tax_status": "taxable",
+            "tax_class": "",
+            "total": "100.00"
+        ]
+        assertEqual(expectedFees, receivedFees)
+
+        let receivedBilling = try XCTUnwrap(request.parameters["billing"] as? [String: AnyHashable])
+        let expectedBilling: [String: AnyHashable] = [
+            "first_name": "",
+            "last_name": "",
+            "address_1": "",
+            "city": "",
+            "state": "",
+            "postcode": "",
+            "country": "",
+            "email": email
+        ]
+        assertEqual(receivedBilling, expectedBilling)
+
+        let receivedNote = try XCTUnwrap(request.parameters["customer_note"] as? String)
+        assertEqual(receivedNote, note)
+    }
 }
 
 

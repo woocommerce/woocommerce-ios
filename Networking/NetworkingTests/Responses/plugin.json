@@ -7,8 +7,8 @@
         "author": "Automattic",
         "author_uri": "https://jetpack.com",
         "description": {
-            "raw": "Bring the power of the WordPress.com cloud to your self-hosted WordPress. Jetpack enables you to connect your blog to a WordPress.com account to use the powerful features normally only available to WordPress.com users.",
-            "rendered": "Bring the power of the WordPress.com cloud to your self-hosted WordPress. Jetpack enables you to connect your blog to a WordPress.com account to use the powerful features normally only available to WordPress.com users. <cite>By <a href=\"https://jetpack.com\">Automattic</a>.</cite>"
+            "raw": "Bring the power of the WordPress.com cloud to your self-hosted WordPress.",
+            "rendered": "Bring the power of the WordPress.com cloud to your self-hosted WordPress. <cite>By <a href=\"https://jetpack.com\">Automattic</a>.</cite>"
         },
         "version": "9.5",
         "network_only": false,

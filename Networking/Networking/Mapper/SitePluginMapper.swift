@@ -1,10 +1,10 @@
 import Foundation
 
-/// Mapper: SitePlugins
+/// Mapper: SitePlugin
 ///
 struct SitePluginMapper: Mapper {
 
-    /// Site Identifier associated to the plugins that will be parsed.
+    /// Site Identifier associated to the plugin that will be parsed.
     /// We're injecting this field via `JSONDecoder.userInfo` because the remote endpoints don't return the SiteID in the plugin endpoint.
     ///
     let siteID: Int64
@@ -22,9 +22,9 @@ struct SitePluginMapper: Mapper {
 }
 
 
-/// SitePluginsEnvelope Disposable Entity:
+/// SitePluginEnvelope Disposable Entity:
 /// The plugins endpoint returns the document within a `data` key. This entity
-/// allows us to do parse all the things with JSONDecoder.
+/// allows us to do parse the returned plugin model with JSONDecoder.
 ///
 private struct SitePluginEnvelope: Decodable {
     let plugin: SitePlugin

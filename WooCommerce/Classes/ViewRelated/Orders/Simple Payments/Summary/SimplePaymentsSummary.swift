@@ -124,7 +124,18 @@ private struct PaymentsSection: View {
                 TitleAndValueRow(title: SimplePaymentsSummary.Localization.subtotal, value: .content(viewModel.providedAmount), selectable: false) {}
 
                 TitleAndToggleRow(title: SimplePaymentsSummary.Localization.chargeTaxes, isOn: $viewModel.enableTaxes)
-                    .padding([.leading, .trailing])
+                    .padding(.horizontal)
+
+                Group {
+                    Text(SimplePaymentsSummary.Localization.taxesDisclaimer)
+                        .footnoteStyle()
+                        .padding(.horizontal)
+
+                    TitleAndValueRow(title: SimplePaymentsSummary.Localization.taxRate(viewModel.taxRate),
+                                     value: .content(viewModel.taxAmount),
+                                     selectable: false) {}
+                }
+                .renderedIf(viewModel.enableTaxes)
 
                 TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content(viewModel.total), bold: true, selectable: false) {}
             }
@@ -258,6 +269,12 @@ private extension SimplePaymentsSummary {
                                                comment: "Title text of the button that adds a note when creating a simple payment")
         static let editNote = NSLocalizedString("Edit",
                                                comment: "Title text of the button that edits a note when creating a simple payment")
+        static let taxesDisclaimer = NSLocalizedString("Taxes are automatically calculated based on your store address.",
+                                                       comment: "Disclaimer in the simple payments summary screen about taxes.")
+
+        static func taxRate(_ rate: String) -> String {
+            NSLocalizedString("Tax (\(rate)%)", comment: "Tax percentage to be applied to the simple payments order")
+        }
 
         static func takePayment(total: String) -> String {
             NSLocalizedString("Take Payment (\(total))",
@@ -269,22 +286,24 @@ private extension SimplePaymentsSummary {
 // MARK: Previews
 struct SimplePaymentsSummary_Preview: PreviewProvider {
     static var previews: some View {
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0"))
+        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "40.0", totalWithTaxes: "$42.3", taxAmount: "$2.3"))
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light")
 
         SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(
             providedAmount: "$40.0",
+            totalWithTaxes: "$42.3",
+            taxAmount: "$2.3",
             noteContent: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard."
         ))
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light Content")
 
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0"))
+        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0", totalWithTaxes: "$42.3", taxAmount: "$2.3"))
             .environment(\.colorScheme, .dark)
             .previewDisplayName("Dark")
 
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0"))
+        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0", totalWithTaxes: "$42.3", taxAmount: "$2.3"))
             .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
             .previewDisplayName("Accessibility")
     }

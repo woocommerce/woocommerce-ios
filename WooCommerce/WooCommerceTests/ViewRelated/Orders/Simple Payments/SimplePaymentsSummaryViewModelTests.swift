@@ -10,7 +10,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
     func test_updating_noteViewModel_updates_noteContent_property() {
         // Given
-        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "$100.00")
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "$100.00", totalWithTaxes: "$104.30", taxAmount: "$4.3")
 
         // When
         viewModel.noteViewModel.newNote = "Updated note"
@@ -21,7 +21,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
     func test_calling_reloadContent_triggers_viewModel_update() {
         // Given
-        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "$100.00")
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "$100.00", totalWithTaxes: "$104.30", taxAmount: "$4.3")
 
         // When
         let triggeredUpdate: Bool = waitFor { promise in
@@ -40,10 +40,41 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
     func test_provided_amount_gets_properly_formatted() {
         // Given
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US.
-        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100", currencyFormatter: currencyFormatter)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100", totalWithTaxes: "104.30", taxAmount: "$4.3", currencyFormatter: currencyFormatter)
 
         // When & Then
         XCTAssertEqual(viewModel.providedAmount, "$100.00")
         XCTAssertEqual(viewModel.total, "$100.00")
+    }
+
+    func test_provided_amount_with_taxes_gets_properly_formatted() {
+        // Given
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US.
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100", totalWithTaxes: "104.30", taxAmount: "$4.3", currencyFormatter: currencyFormatter)
+
+        // When
+        viewModel.enableTaxes = true
+
+        // Then
+        XCTAssertEqual(viewModel.providedAmount, "$100.00")
+        XCTAssertEqual(viewModel.total, "$104.30")
+    }
+
+    func test_tax_amount_is_properly_formatted() {
+        // Given
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US.
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100", totalWithTaxes: "104.30", taxAmount: "4.3", currencyFormatter: currencyFormatter)
+
+        // When & Then
+        XCTAssertEqual(viewModel.taxAmount, "$4.30")
+    }
+
+    func test_tax_rate_is_calculated_properly() {
+        // Given
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US.
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100", totalWithTaxes: "104.30", taxAmount: "$4.3", currencyFormatter: currencyFormatter)
+
+        // When & Then
+        XCTAssertEqual(viewModel.taxRate, "4.30")
     }
 }

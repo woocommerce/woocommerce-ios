@@ -82,6 +82,7 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
     var body: some View {
         NavigationView {
             TextEditor(text: $viewModel.newNote)
+                .focused()
                 .padding()
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)

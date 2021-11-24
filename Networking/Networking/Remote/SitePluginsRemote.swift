@@ -22,7 +22,7 @@ public class SitePluginsRemote: Remote {
     /// Install the plugin with the specified slug for a given site.
     ///
     /// - Parameters:
-    ///   - siteID: Site for which we'll fetch the plugins.
+    ///   - siteID: Site for which we'll install the plugin.
     ///   - slug: The plugin’s URL slug in the plugin directory.
     ///   - completion: Closure to be executed upon completion.
     ///
@@ -38,7 +38,7 @@ public class SitePluginsRemote: Remote {
     /// Activate the plugin with the specified name for a given site.
     ///
     /// - Parameters:
-    ///   - siteID: Site for which we'll fetch the plugins.
+    ///   - siteID: Site for which we'll activate the plugin.
     ///   - pluginName: Name of the plugin (found with "plugin" key in plugin detail).
     ///   - completion: Closure to be executed upon completion.
     ///
@@ -54,7 +54,7 @@ public class SitePluginsRemote: Remote {
     /// Get details about the plugin with the specified name for a given site.
     ///
     /// - Parameters:
-    ///   - siteID: Site for which we'll fetch the plugins.
+    ///   - siteID: Site for which we'll get detail the plugin.
     ///   - pluginName: Name of the plugin (found with "plugin" key in plugin detail).
     ///   - completion: Closure to be executed upon completion.
     ///

@@ -4,38 +4,56 @@ struct InPersonPaymentsLearnMore: View {
     @Environment(\.customOpenURL) var customOpenURL
 
     var body: some View {
-        Link(destination: Constants.learnMoreURL!) {
-            Label {
-                Text(Localization.learnMore)
-                    .font(.subheadline)
-                    .foregroundColor(Color(.accent))
-            } icon: {
-                Image(uiImage: .infoOutlineImage)
-                    .resizable()
-                    .foregroundColor(Color(.textSubtle))
-                    .frame(width: iconSize, height: iconSize)
-            }.labelStyle(VerticallyCenteredLabelStyle())
-        }.onOpenURL(perform: { url in
+        HStack(spacing: 16) {
+            Image(uiImage: .infoOutlineImage)
+                .resizable()
+                .foregroundColor(Color(.neutral(.shade60)))
+                .frame(width: iconSize, height: iconSize)
+            AttributedText(learnMoreAttributedString)
+        }
+        .padding(.vertical, Constants.verticalPadding)
+        .onTapGesture {
             ServiceLocator.analytics.track(.cardPresentOnboardingLearnMoreTapped)
-            customOpenURL?(url)
-        })
+            customOpenURL?(Constants.learnMoreURL!)
+        }
     }
 
     var iconSize: CGFloat {
         UIFontMetrics(forTextStyle: .subheadline).scaledValue(for: 20)
     }
 
-    struct VerticallyCenteredLabelStyle: LabelStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            HStack(alignment: .center, spacing: 20) {
-                configuration.icon
-                configuration.title
-            }
-        }
+    private var learnMoreAttributedString: NSAttributedString {
+        let commonAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.footnote,
+            .foregroundColor: UIColor.textLink
+        ]
+        let result = NSMutableAttributedString()
+        result.append(
+            NSAttributedString(
+                string: Localization.learnMoreLink,
+                attributes: commonAttributes
+            )
+        )
+        result.append(
+            NSMutableAttributedString(
+                string: .space,
+                attributes: commonAttributes
+            )
+        )
+        result.append(
+            NSAttributedString(
+                string: Localization.learnMoreText,
+                attributes: commonAttributes.merging([
+                    .foregroundColor: UIColor.textSubtle
+                ], uniquingKeysWith: { $1 })
+            )
+        )
+        return result
     }
 }
 
 private enum Constants {
+    static let verticalPadding: CGFloat = 8
     static let learnMoreURL = URL(string: "https://woocommerce.com/payments")
 }
 
@@ -50,8 +68,13 @@ private enum Localization {
         comment: "Generic error message when In-Person Payments is unavailable"
     )
 
-    static let learnMore = NSLocalizedString(
-        "Tap to learn more about accepting payments with your mobile device and ordering card readers",
+    static let learnMoreLink = NSLocalizedString(
+        "Learn more",
+        comment: "A label prompting users to learn more about card readers"
+    )
+
+    static let learnMoreText = NSLocalizedString(
+        "about accepting payments with your mobile device and ordering card readers",
         comment: "A label prompting users to learn more about card readers"
     )
 }

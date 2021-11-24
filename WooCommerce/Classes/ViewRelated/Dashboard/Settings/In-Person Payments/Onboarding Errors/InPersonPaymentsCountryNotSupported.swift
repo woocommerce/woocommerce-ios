@@ -4,18 +4,21 @@ struct InPersonPaymentsCountryNotSupported: View {
     let countryCode: String
 
     var body: some View {
-        ScrollableVStack {
+        VStack {
             Spacer()
 
-            VStack(alignment: .center, spacing: 42) {
+            VStack(alignment: .center) {
                 Text(title)
                     .font(.headline)
+                    .padding(.bottom, 32)
                 Image(uiImage: .paymentErrorImage)
                     .resizable()
                     .scaledToFit()
                     .frame(height: 180.0)
+                    .padding(.bottom, 32)
                 Text(Localization.message)
                     .font(.callout)
+                    .padding(.bottom, 24)
                 InPersonPaymentsSupportLink()
             }
             .multilineTextAlignment(.center)
@@ -23,7 +26,7 @@ struct InPersonPaymentsCountryNotSupported: View {
             Spacer()
 
             InPersonPaymentsLearnMore()
-        }
+        }.padding()
     }
 
     var title: String {

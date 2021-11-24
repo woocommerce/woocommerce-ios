@@ -54,16 +54,35 @@ private extension SitePluginStore {
         }
     }
 
-    func installSitePlugin(siteID: Int64, slug: String, onCompletion: (Result<Void, Error>) -> Void) {
-        // TODO:
+    func installSitePlugin(siteID: Int64, slug: String, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        remote.installPlugin(for: siteID, slug: slug) { result in
+            switch result {
+            case .success:
+                // Just getting a plugin in the result is considered a success.
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
     }
 
-    func activateSitePlugin(siteID: Int64, pluginName: String, onCompletion: (Result<Void, Error>) -> Void) {
-        // TODO:
+    func activateSitePlugin(siteID: Int64, pluginName: String, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        remote.activatePlugin(for: siteID, pluginName: pluginName) { result in
+            switch result {
+            case .success(let plugin):
+                guard plugin.status == .active else {
+                    onCompletion(.failure(SitePluginError.activationFailed))
+                    return
+                }
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
     }
 
-    func getPluginDetails(siteID: Int64, pluginName: String, onCompletion: (Result<Void, Error>) -> Void) {
-        // TODO:
+    func getPluginDetails(siteID: Int64, pluginName: String, onCompletion: @escaping (Result<SitePlugin, Error>) -> Void) {
+        remote.getPluginDetails(for: siteID, pluginName: pluginName, completion: onCompletion)
     }
 }
 
@@ -107,4 +126,8 @@ private extension SitePluginStore {
         let installedPluginNames = readonlyPlugins.map(\.name)
         storage.deleteStalePlugins(siteID: siteID, installedPluginNames: installedPluginNames)
     }
+}
+
+public enum SitePluginError: Error {
+    case activationFailed
 }

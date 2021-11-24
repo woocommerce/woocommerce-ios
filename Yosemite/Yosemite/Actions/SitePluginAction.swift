@@ -14,5 +14,5 @@ public enum SitePluginAction: Action {
     case activateSitePlugin(siteID: Int64, pluginName: String, onCompletion: (Result<Void, Error>) -> Void)
 
     /// Get details for the plugin with the specified name for a site given its ID
-    case getPluginDetails(siteID: Int64, pluginName: String, onCompletion: (Result<Void, Error>) -> Void)
+    case getPluginDetails(siteID: Int64, pluginName: String, onCompletion: (Result<SitePlugin, Error>) -> Void)
 }

@@ -240,7 +240,9 @@ private extension DashboardViewController {
             }
             self.present(benefitsController, animated: true, completion: nil)
         } dismissAction: { [weak self] in
-            // TODO: 5362 - Persist dismiss state per site
+            let dismissAction = AppSettingsAction.setJetpackBenefitsBannerLastDismissedTime(time: Date())
+            ServiceLocator.stores.dispatch(dismissAction)
+
             self?.hideJetpackBenefitsBanner()
         }
     }
@@ -437,11 +439,18 @@ private extension DashboardViewController {
                     return
                 }
 
-                // TODO: 5362 - Display banner for JCP sites only if the banner has not been dismissed before.
-                let shouldShowJetpackBenefitsBanner = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
-                && site?.isJetpackCPConnected == true
+                // Checks if Jetpack banner can be visible from app settings.
+                let action = AppSettingsAction.loadJetpackBenefitsBannerVisibility(currentTime: Date(),
+                                                                                   calendar: .current) { [weak self] isVisibleFromAppSettings in
+                    guard let self = self else { return }
 
-                self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
+                    let shouldShowJetpackBenefitsBanner = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
+                    && site?.isJetpackCPConnected == true
+                    && isVisibleFromAppSettings
+
+                    self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
+                }
+                ServiceLocator.stores.dispatch(action)
             }.store(in: &cancellables)
     }
 }

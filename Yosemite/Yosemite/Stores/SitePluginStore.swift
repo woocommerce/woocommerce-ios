@@ -87,7 +87,14 @@ private extension SitePluginStore {
             guard let self = self else { return }
             switch result {
             case .success(let plugin):
-                self.upsertSitePluginInBackground(siteID: siteID, readonlyPlugin: plugin, completionHandler: onCompletion)
+                self.upsertSitePluginsInBackground(siteID: siteID, readonlyPlugins: [plugin]) { result in
+                    switch result {
+                    case .success:
+                        onCompletion(.success(plugin))
+                    case .failure(let error):
+                        onCompletion(.failure(error))
+                    }
+                }
             case .failure(let error):
                 onCompletion(.failure(error))
             }
@@ -98,22 +105,6 @@ private extension SitePluginStore {
 // MARK: - Storage
 //
 private extension SitePluginStore {
-
-    /// Updates or inserts Readonly the `SitePlugin` entity in background.
-    /// Triggers `completionHandler` on main thread.
-    ///
-    func upsertSitePluginInBackground(siteID: Int64, readonlyPlugin: SitePlugin, completionHandler: @escaping (Result<SitePlugin, Error>) -> Void) {
-        let writerStorage = storageManager.writerDerivedStorage
-        writerStorage.perform {
-            self.upsertSitePlugins(siteID: siteID, readonlyPlugins: [readonlyPlugin], in: writerStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: writerStorage) {
-            DispatchQueue.main.async {
-                completionHandler(.success(readonlyPlugin))
-            }
-        }
-    }
 
     /// Updates or inserts Readonly `SitePlugin` entities in background.
     /// Triggers `completionHandler` on main thread.

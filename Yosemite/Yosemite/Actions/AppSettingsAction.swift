@@ -149,7 +149,8 @@ public enum AppSettingsAction: Action {
     ///
     case setJetpackBenefitsBannerLastDismissedTime(time: Date)
 
-    /// Loads the visibility of Jetpack benefits banner in the Dashboard based on the last dismissal time. The banner is not shown for five days after the last time it is dismissed.
+    /// Loads the visibility of Jetpack benefits banner in the Dashboard based on the last dismissal time.
+    /// The banner is not shown for five days after the last time it is dismissed.
     /// There are other conditions for showing the Jetpack banner, like when the site is Jetpack CP connected.
     ///
     case loadJetpackBenefitsBannerVisibility(currentTime: Date, calendar: Calendar, onCompletion: (Bool) -> Void)

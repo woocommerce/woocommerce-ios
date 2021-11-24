@@ -121,16 +121,6 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
     }
 }
 
-// MARK: View extensions
-private extension View {
-
-    /// Set autofocus to TextEditor
-    ///
-    func focused() -> some View {
-        self.modifier(AutofocusTextField())
-    }
-}
-
 // MARK: Constants
 private enum Localization {
     static let title = NSLocalizedString("Edit Note", comment: "Title for the edit customer provided note screen")

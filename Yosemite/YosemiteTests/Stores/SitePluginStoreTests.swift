@@ -124,6 +124,23 @@ final class SitePluginStoreTests: XCTestCase {
         XCTAssertEqual(plugins.first?.status, SitePluginStatusEnum.active.rawValue)
     }
 
+    func test_activateSitePlugin_completes_with_failure_when_receiving_inactive_plugin() {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "plugins/jetpack/jetpack", filename: "plugin-inactive")
+        let store = SitePluginStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = SitePluginAction.activateSitePlugin(siteID: self.sampleSiteID, pluginName: "jetpack/jetpack") { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
     func test_getPluginDetails_stores_plugin_correctly() {
         // Given
         network.simulateResponse(requestUrlSuffix: "plugins/jetpack/jetpack", filename: "plugin")

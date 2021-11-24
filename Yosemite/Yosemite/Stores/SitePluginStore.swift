@@ -29,6 +29,12 @@ public final class SitePluginStore: Store {
         switch action {
         case .synchronizeSitePlugins(let siteID, let onCompletion):
             synchronizeSitePlugins(siteID: siteID, completionHandler: onCompletion)
+        case .installSitePlugin(let siteID, let slug, let onCompletion):
+            installSitePlugin(siteID: siteID, slug: slug, onCompletion: onCompletion)
+        case .activateSitePlugin(let siteID, let pluginName, let onCompletion):
+            activateSitePlugin(siteID: siteID, pluginName: pluginName, onCompletion: onCompletion)
+        case .getPluginDetails(let siteID, let pluginName, let onCompletion):
+            getPluginDetails(siteID: siteID, pluginName: pluginName, onCompletion: onCompletion)
         }
     }
 }
@@ -46,6 +52,18 @@ private extension SitePluginStore {
                 completionHandler(.failure(error))
             }
         }
+    }
+
+    func installSitePlugin(siteID: Int64, slug: String, onCompletion: (Result<Void, Error>) -> Void) {
+        // TODO:
+    }
+
+    func activateSitePlugin(siteID: Int64, pluginName: String, onCompletion: (Result<Void, Error>) -> Void) {
+        // TODO:
+    }
+
+    func getPluginDetails(siteID: Int64, pluginName: String, onCompletion: (Result<Void, Error>) -> Void) {
+        // TODO:
     }
 }
 

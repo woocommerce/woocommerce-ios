@@ -5,7 +5,7 @@ import Fakes
 @testable import Networking
 @testable import Storage
 
-class SitePluginStoreTests: XCTestCase {
+final class SitePluginStoreTests: XCTestCase {
     /// Mock Dispatcher
     ///
     private var dispatcher: Dispatcher!
@@ -76,5 +76,72 @@ class SitePluginStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageSitePlugin.self), 5) // number of plugins in json file
         XCTAssertNil(viewStorage.loadPlugin(siteID: sampleSiteID, name: stalePluginName))
+    }
+
+    func test_installSitePlugin_stores_plugin_correctly() {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "plugins", filename: "plugin")
+        let store = SitePluginStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = SitePluginAction.installSitePlugin(siteID: self.sampleSiteID, slug: "jetpack") { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let plugins = viewStorage.loadPlugins(siteID: sampleSiteID)
+        XCTAssertEqual(plugins.count, 1) // the installed plugin
+        XCTAssertEqual(plugins.first?.plugin, "jetpack/jetpack")
+    }
+
+    func test_activateSitePlugin_updates_plugin_correctly() {
+        // Given
+        let pluginName = "jetpack/jetpack"
+        let plugin = SitePlugin.fake().copy(siteID: sampleSiteID, status: .inactive, name: pluginName)
+        let storedPlugin = viewStorage.insertNewObject(ofType: StorageSitePlugin.self)
+        storedPlugin.update(with: plugin)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageSitePlugin.self), 1)
+
+        network.simulateResponse(requestUrlSuffix: "plugins/jetpack/jetpack", filename: "plugin")
+        let store = SitePluginStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = SitePluginAction.activateSitePlugin(siteID: self.sampleSiteID, pluginName: pluginName) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let plugins = viewStorage.loadPlugins(siteID: sampleSiteID)
+        XCTAssertEqual(plugins.count, 1) // the installed plugin
+        XCTAssertEqual(plugins.first?.status, SitePluginStatusEnum.active.rawValue)
+    }
+
+    func test_getPluginDetails_stores_plugin_correctly() {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "plugins/jetpack/jetpack", filename: "plugin")
+        let store = SitePluginStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let pluginName = "jetpack/jetpack"
+
+        // When
+        let result: Result<Networking.SitePlugin, Error> = waitFor { promise in
+            let action = SitePluginAction.getPluginDetails(siteID: self.sampleSiteID, pluginName: pluginName) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let plugins = viewStorage.loadPlugins(siteID: sampleSiteID)
+        XCTAssertEqual(plugins.count, 1) // the installed plugin
+        XCTAssertEqual(plugins.first?.plugin, "jetpack/jetpack")
     }
 }

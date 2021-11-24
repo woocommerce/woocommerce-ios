@@ -311,6 +311,9 @@ updating the application or using a different reader
             return NSLocalizedString("The system experienced an unexpected software error",
                                      comment: "Error message when the card reader service experiences an unexpected software error.")
         case .paymentDeclinedByPaymentProcessorAPI:
+            if case let .paymentDeclinedByPaymentProcessorAPI(declineReason) = self {
+                return declineReason.localizedDescription
+            }
             return NSLocalizedString("The card was declined by the payment processor - please try another means of payment",
                                      comment: "Error message when the card processor declines the payment.")
         case .paymentDeclinedByCardReader:

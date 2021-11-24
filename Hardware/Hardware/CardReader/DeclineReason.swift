@@ -13,9 +13,19 @@ enum DeclineReason {
     case temporary
 
     /// The card has been reported lost or stolen. Don't reveal this
-    /// to the user. Just ask them to try another payment method.
+    /// to the user. Treat it like you would a generic decline.
     ///
     case fraud
+
+    /// The payment was declined for an unspecified reason. Ask
+    /// the user to try another payment method.
+    ///
+    case generic
+
+    /// The card, or the account it connects to, is not valid. Ask
+    /// the user to try another payment method.
+    ///
+    case invalidAccount
 
     /// The card presented is not supported. Tell the user this and
     /// ask them to try another payment method.
@@ -59,6 +69,11 @@ enum DeclineReason {
     ///
     case pinRequired
 
+    /// The card presented has had an incorrect PIN entered too many times.
+    /// Tell the user this and ask them to try another payment method.
+    ///
+    case tooManyPinTries
+
     /// The card presented is a system test card and cannot be used to
     /// process a payment. Tell the user this and ask them to try another
     /// payment method.
@@ -80,6 +95,13 @@ extension DeclineReason {
         case .fraud:
             return NSLocalizedString("Try another means of payment",
                                      comment: "Message when a lost or stolen card is presented for payment. Do NOT disclose fraud.")
+        case .generic:
+            return NSLocalizedString("Payment was declined for an unspecified reason. Try another means of payment",
+                                     comment: "Message when payment is declined for a non specific reason.")
+        case .invalidAccount:
+            return NSLocalizedString("The card or card account is invalid. Try another means of payment",
+                                     comment: "Message when payment is declined for a non specific reason.")
+
         case .cardNotSupported:
             return NSLocalizedString("The card does not support this type of purchase. Try another means of payment",
                                      comment: "Message when the card presented does not allow this type of purchase.")
@@ -93,7 +115,7 @@ extension DeclineReason {
             return NSLocalizedString("The card has expired. Try another means of payment",
                                      comment: "Message when the presented card is past its expiration date.")
         case .incorrectPostalCode:
-            return NSLocalizedString("The transaction postal code does not match that of the card presented. Correct the postal code or try another means of payment",
+            return NSLocalizedString("The transaction postal code and card postal code do not match. Try another means of payment",
                                      comment: "Message when the presented card postal code doesn't match the order postal code.")
         case .insufficientFunds:
             return NSLocalizedString("Payment declined due to insufficient funds. Try another means of payment",
@@ -104,6 +126,9 @@ extension DeclineReason {
         case .pinRequired:
             return NSLocalizedString("This card requires a PIN code and thus cannot be processed. Try another means of payment",
                                      comment: "Message when a card requires a PIN code and we have no means of entering such a code.")
+        case .tooManyPinTries:
+            return NSLocalizedString("An incorrect PIN has been entered too many times. Try another means of payment",
+                                     comment: "Message when an incorrect PIN has been entered too many times.")
         case .testCard:
             return NSLocalizedString("System test cards are not permitted for payment. Try another means of payment",
                                      comment: "Message when attempting to pay for a live transaction with a test card.")

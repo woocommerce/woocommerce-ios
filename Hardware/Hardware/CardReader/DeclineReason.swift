@@ -5,7 +5,7 @@
 
 import Foundation
 
-enum DeclineReason {
+public enum DeclineReason {
     /// A possibly temporary error caused the decline (e.g. the issuing
     /// bank's servers could not be contacted.) Tell the user this and prompt
     /// them to try again with the same (or another) payment method.

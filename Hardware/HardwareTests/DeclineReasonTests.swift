@@ -204,4 +204,9 @@ final class DeclineReasonTests: XCTestCase {
         let declineReason = DeclineReason(with: "testmode_decline")
         XCTAssertEqual(declineReason, .testCard)
     }
+
+    func test_empty_decline_code_maps_to_unknown() {
+        let declineReason = DeclineReason(with: "")
+        XCTAssertEqual(declineReason, .unknown)
+    }
 }

@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Storage
 
@@ -144,6 +145,14 @@ public enum AppSettingsAction: Action {
     /// Clears the persisted eligibility error information.
     ///
     case resetEligibilityErrorInfo
+
+    /// Sets the last time when Jetpack benefits banner is dismissed in the Dashboard.
+    ///
+    case setJetpackBenefitsBannerLastDismissedTime(time: Date)
+
+    /// Loads the visibility of Jetpack benefits banner in the Dashboard. The banner is not shown for five days after the last time it is dismissed.
+    ///
+    case loadJetpackBenefitsBannerVisibility(currentTime: Date, calendar: Calendar, onCompletion: (Bool) -> Void)
 
     // MARK: - General Store Settings
 

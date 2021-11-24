@@ -162,6 +162,10 @@ public class AppSettingsStore: Store {
             setEligibilityErrorInfo(errorInfo: errorInfo, onCompletion: onCompletion)
         case .resetEligibilityErrorInfo:
             setEligibilityErrorInfo(errorInfo: nil)
+        case .setJetpackBenefitsBannerLastDismissedTime(time: let time):
+            setJetpackBenefitsBannerLastDismissedTime(time: time)
+        case .loadJetpackBenefitsBannerVisibility(currentTime: let currentTime, calendar: let calendar, onCompletion: let onCompletion):
+            loadJetpackBenefitsBannerVisibility(currentTime: currentTime, calendar: calendar, onCompletion: onCompletion)
         case .setTelemetryAvailability(siteID: let siteID, isAvailable: let isAvailable):
             setTelemetryAvailability(siteID: siteID, isAvailable: isAvailable)
         case .setTelemetryLastReportedTime(siteID: let siteID, time: let time):
@@ -306,6 +310,34 @@ private extension AppSettingsStore {
             onCompletion?(.failure(error))
         }
     }
+
+    // Visibility of Jetpack benefits banner in the Dashboard
+
+    func setJetpackBenefitsBannerLastDismissedTime(time: Date, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(lastJetpackBenefitsBannerDismissedTime: time)
+            try saveGeneralAppSettings(settings)
+            onCompletion?(.success(()))
+        } catch {
+            onCompletion?(.failure(error))
+        }
+    }
+
+    func loadJetpackBenefitsBannerVisibility(currentTime: Date, calendar: Calendar, onCompletion: (Bool) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+
+        guard let lastDismissedTime = settings.lastJetpackBenefitsBannerDismissedTime else {
+            // If the banner has not been dismissed before, the banner is default to be visible.
+            return onCompletion(true)
+        }
+
+        guard let numberOfDaysSinceLastDismissal = calendar.dateComponents([.day], from: lastDismissedTime, to: currentTime).day else {
+            return onCompletion(true)
+        }
+        onCompletion(numberOfDaysSinceLastDismissal >= 5)
+    }
+
+    // File operations
 
     /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.
     func loadOrCreateGeneralAppSettings() -> GeneralAppSettings {
@@ -749,6 +781,7 @@ enum AppSettingsStoreErrors: Error {
     case noProductsSettings
     case writeProductsSettings
     case noEligibilityErrorInfo
+    case noLastJetpackBenefitsBannerDismissedTime
 }
 
 

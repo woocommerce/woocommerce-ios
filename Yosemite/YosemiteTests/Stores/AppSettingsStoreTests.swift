@@ -519,6 +519,127 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
+    func test_loadJetpackBenefitsBannerVisibility_returns_true_on_new_generalAppSettings() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        let currentTime = Date(timeIntervalSince1970: 1638105924)
+        let calendar = Calendar(identifier: .gregorian)
+
+        // When
+        let isVisible: Bool = waitFor { promise in
+            let action = AppSettingsAction.loadJetpackBenefitsBannerVisibility(currentTime: currentTime, calendar: calendar) { isVisible in
+                promise(isVisible)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(isVisible)
+    }
+
+    func test_loadJetpackBenefitsBannerVisibility_returns_true_after_setting_last_dismissed_date_exactly_five_days_ago_without_dst() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // GMT - Tuesday, November 23, 2021 1:25:24 PM
+        let lastDismissedTime = Date(timeIntervalSince1970: 1637673924)
+        // GMT - Sunday, November 28, 2021 1:25:24 PM - exactly five days after the last dismissed date without DST
+        let currentTime = Date(timeIntervalSince1970: 1638105924)
+        let calendar: Calendar = {
+            var calendar = Calendar(identifier: .gregorian)
+            guard let timeZoneWithoutDailySavingTime = TimeZone(identifier: "Asia/Taipei") else {
+                XCTFail("Unexpected time zone.")
+                return calendar
+            }
+            calendar.timeZone = timeZoneWithoutDailySavingTime
+            return calendar
+        }()
+
+        let updateAction = AppSettingsAction.setJetpackBenefitsBannerLastDismissedTime(time: lastDismissedTime)
+        subject?.onAction(updateAction)
+
+        // When
+        let isVisible: Bool = waitFor { promise in
+            let action = AppSettingsAction.loadJetpackBenefitsBannerVisibility(currentTime: currentTime, calendar: calendar) { isVisible in
+                promise(isVisible)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(isVisible)
+    }
+
+    /// Tests an edge case where the time interval since the last dismissed date is less than 5 24-hour days, but is exactly 5 days on calendar with daily
+    /// saving time.
+    func test_loadJetpackBenefitsBannerVisibility_returns_false_after_setting_last_dismissed_date_exactly_five_24hr_days_ago() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // America/New York (EDT) - November 03, 2021 09:43:17 AM
+        let lastDismissedTime = Date(timeIntervalSince1970: 1635946997)
+        // America/New York (EST) - November 08, 2021 08:43:17 AM - exactly five 24-hour days after the last dismissed date.
+        // But with daily saving time in America/New York, it is still less than five days.
+        let currentTime = Date(timeIntervalSince1970: 1636378997)
+        let calendar: Calendar = {
+            var calendar = Calendar(identifier: .gregorian)
+            guard let timeZoneWithDailySavingTime = TimeZone(identifier: "America/New_York") else {
+                XCTFail("Unexpected time zone.")
+                return calendar
+            }
+            calendar.timeZone = timeZoneWithDailySavingTime
+            return calendar
+        }()
+
+        let updateAction = AppSettingsAction.setJetpackBenefitsBannerLastDismissedTime(time: lastDismissedTime)
+        subject?.onAction(updateAction)
+
+        // When
+        let isVisible: Bool = waitFor { promise in
+            let action = AppSettingsAction.loadJetpackBenefitsBannerVisibility(currentTime: currentTime, calendar: calendar) { isVisible in
+                promise(isVisible)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(isVisible)
+    }
+
+    func test_loadJetpackBenefitsBannerVisibility_returns_false_after_setting_last_dismissed_date_less_than_five_days_ago() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // GMT - Tuesday, November 23, 2021 1:25:24 PM
+        let lastDismissedTime = Date(timeIntervalSince1970: 1637673924)
+        // GMT - Sunday, November 28, 2021 1:25:23 PM - exactly 1 second less than five days after the last dismissed date without DST
+        let currentTime = Date(timeIntervalSince1970: 1638105923)
+        let calendar: Calendar = {
+            var calendar = Calendar(identifier: .gregorian)
+            guard let timeZoneWithoutDailySavingTime = TimeZone(identifier: "Asia/Taipei") else {
+                XCTFail("Unexpected time zone.")
+                return calendar
+            }
+            calendar.timeZone = timeZoneWithoutDailySavingTime
+            return calendar
+        }()
+
+        let updateAction = AppSettingsAction.setJetpackBenefitsBannerLastDismissedTime(time: lastDismissedTime)
+        subject?.onAction(updateAction)
+
+        // When
+        let isVisible: Bool = waitFor { promise in
+            let action = AppSettingsAction.loadJetpackBenefitsBannerVisibility(currentTime: currentTime, calendar: calendar) { isVisible in
+                promise(isVisible)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(isVisible)
+    }
+
     // MARK: - General Store Settings
 
     func test_saving_isTelemetryAvailable_works_correctly() throws {

@@ -3,7 +3,7 @@ import XCTest
 
 /// SitePluginMapper Unit Tests
 ///
-class SitePluginMapperTests: XCTestCase {
+final class SitePluginMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///

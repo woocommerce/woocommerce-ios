@@ -80,6 +80,11 @@ public enum DeclineReason {
     ///
     case testCard
 
+    /// The card presented is a live card, but the store/account is in test
+    /// mode. Tell the user this and ask them to use a system test card instead.
+    ///
+    case testModeLiveCard
+
     /// The card was declined for an unknown reason. Tell the user this and
     /// ask them to try another payment method.
     ///
@@ -132,6 +137,9 @@ extension DeclineReason {
         case .testCard:
             return NSLocalizedString("System test cards are not permitted for payment. Try another means of payment",
                                      comment: "Message when attempting to pay for a live transaction with a test card.")
+        case .testModeLiveCard:
+            return NSLocalizedString("A live card was used on a site in test mode. Use a test card instead.",
+                                     comment: "Message when attempting to pay for a test transaction with a live card.")
         case .unknown:
             return NSLocalizedString("Payment was declined for an unknown reason. Try another means of payment",
                                      comment: "Message when we don't know exactly why the payment was declined.")

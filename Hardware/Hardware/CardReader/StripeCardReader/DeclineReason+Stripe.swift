@@ -75,6 +75,9 @@ extension DeclineReason {
                 ],
                 .testCard: [
                     "testmode_decline",
+                ],
+                .testModeLiveCard: [
+                    "test_mode_live_card"
                 ]
             ]
 

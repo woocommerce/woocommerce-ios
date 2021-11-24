@@ -205,6 +205,11 @@ final class DeclineReasonTests: XCTestCase {
         XCTAssertEqual(declineReason, .testCard)
     }
 
+    func test_test_mode_live_card_decline_maps_to_testModeLiveCard() {
+        let declineReason = DeclineReason(with: "test_mode_live_card")
+        XCTAssertEqual(declineReason, .testModeLiveCard)
+    }
+
     func test_empty_decline_code_maps_to_unknown() {
         let declineReason = DeclineReason(with: "")
         XCTAssertEqual(declineReason, .unknown)

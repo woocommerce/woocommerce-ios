@@ -297,6 +297,17 @@ private extension SettingsViewController {
         show(viewController, sender: self)
     }
 
+    func installJetpackWasPressed() {
+        guard let siteURL = ServiceLocator.stores.sessionManager.defaultSite?.url else {
+            return
+        }
+        let installJetpackController = JetpackInstallHostingController(siteURL: siteURL)
+        installJetpackController.setDismissAction { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+        }
+        present(installJetpackController, animated: true, completion: nil)
+    }
+
     func privacyWasPressed() {
         ServiceLocator.analytics.track(.settingsPrivacySettingsTapped)
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
@@ -441,6 +452,8 @@ extension SettingsViewController: UITableViewDelegate {
             supportWasPressed()
         case .inPersonPayments:
             inPersonPaymentsWasPressed()
+        case .installJetpack:
+            installJetpackWasPressed()
         case .privacy:
             privacyWasPressed()
         case .betaFeatures:

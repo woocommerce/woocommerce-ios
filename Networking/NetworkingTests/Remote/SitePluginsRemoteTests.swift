@@ -3,7 +3,7 @@ import XCTest
 
 /// SitePluginsRemote Unit Tests
 ///
-class SitePluginsRemoteTests: XCTestCase {
+final class SitePluginsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///

@@ -46,7 +46,11 @@ struct NewOrder: View {
 
     var body: some View {
         ScrollView {
-            EmptyView()
+            VStack(spacing: Layout.noSpacing) {
+                Spacer(minLength: Layout.spacerHeight)
+
+                ProductsSection()
+            }
         }
         .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
@@ -70,11 +74,66 @@ struct NewOrder: View {
     }
 }
 
+/// Represents the Products section
+///
+private struct ProductsSection: View {
+    var body: some View {
+        Group {
+            Divider()
+
+            VStack(alignment: .leading, spacing: NewOrder.Layout.verticalSpacing) {
+
+                Text(Localization.products)
+                    .headlineStyle()
+
+                // TODO: Add a list of products added to the order
+
+                AddButton(title: Localization.addProduct) {
+                    // TODO: Open Add Product modal view
+                }
+            }
+            .padding()
+            .background(Color(.listForeground))
+
+            Divider()
+        }
+    }
+}
+
+/// Represents a button with a plus icon.
+/// Used for any button that adds items to the order.
+///
+private struct AddButton: View {
+    let title: String
+    let onButtonTapped: () -> Void
+
+    var body: some View {
+        Button(action: { onButtonTapped() }) {
+            Label {
+                Text(title)
+            } icon: {
+                Image(uiImage: .plusImage)
+            }
+            Spacer()
+        }
+    }
+}
+
 // MARK: Constants
+private extension NewOrder {
+    enum Layout {
+        static let spacerHeight: CGFloat = 16.0
+        static let verticalSpacing: CGFloat = 22.0
+        static let noSpacing: CGFloat = 0.0
+    }
+}
+
 private enum Localization {
     static let title = NSLocalizedString("New Order", comment: "Title for the order creation screen")
     static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the New Order screen")
     static let errorMessage = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
+    static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating a new order")
+    static let addProduct = NSLocalizedString("Add product", comment: "Title text of the button that adds a product when creating a new order")
 }
 
 struct NewOrder_Previews: PreviewProvider {

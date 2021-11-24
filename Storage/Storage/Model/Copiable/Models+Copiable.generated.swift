@@ -12,7 +12,8 @@ extension GeneralAppSettings {
         isSimplePaymentsSwitchEnabled: CopiableProp<Bool> = .copy,
         isOrderCreationSwitchEnabled: CopiableProp<Bool> = .copy,
         knownCardReaders: CopiableProp<[String]> = .copy,
-        lastEligibilityErrorInfo: NullableCopiableProp<EligibilityErrorInfo> = .copy
+        lastEligibilityErrorInfo: NullableCopiableProp<EligibilityErrorInfo> = .copy,
+        lastJetpackBenefitsBannerDismissedTime: NullableCopiableProp<Date> = .copy
     ) -> GeneralAppSettings {
         let installationDate = installationDate ?? self.installationDate
         let feedbacks = feedbacks ?? self.feedbacks
@@ -21,6 +22,7 @@ extension GeneralAppSettings {
         let isOrderCreationSwitchEnabled = isOrderCreationSwitchEnabled ?? self.isOrderCreationSwitchEnabled
         let knownCardReaders = knownCardReaders ?? self.knownCardReaders
         let lastEligibilityErrorInfo = lastEligibilityErrorInfo ?? self.lastEligibilityErrorInfo
+        let lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime ?? self.lastJetpackBenefitsBannerDismissedTime
 
         return GeneralAppSettings(
             installationDate: installationDate,
@@ -29,7 +31,8 @@ extension GeneralAppSettings {
             isSimplePaymentsSwitchEnabled: isSimplePaymentsSwitchEnabled,
             isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
             knownCardReaders: knownCardReaders,
-            lastEligibilityErrorInfo: lastEligibilityErrorInfo
+            lastEligibilityErrorInfo: lastEligibilityErrorInfo,
+            lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime
         )
     }
 }

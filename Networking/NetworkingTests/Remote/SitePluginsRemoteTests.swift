@@ -110,4 +110,96 @@ class SitePluginsRemoteTests: XCTestCase {
             XCTAssertNotNil(error)
         }
     }
+
+    // MARK: - Activate plugin tests
+
+    /// Verifies that activatePlugin properly parses the sample response.
+    ///
+    func test_activatePlugin_properly_returns_plugins() {
+        let remote = SitePluginsRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "plugins/jetpack/jetpack", filename: "plugin")
+
+        // When
+        let result: Result<SitePlugin, Error> = waitFor { promise in
+            remote.activatePlugin(for: self.sampleSiteID, pluginName: "jetpack/jetpack") { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        switch result {
+        case .success(let plugin):
+            XCTAssertEqual(plugin.plugin, "jetpack/jetpack")
+        case .failure(let error):
+            XCTAssertNil(error)
+        }
+    }
+
+    /// Verifies that activatePlugin properly relays Networking Layer errors.
+    ///
+    func test_activatePlugin_properly_relays_netwoking_errors() {
+        let remote = SitePluginsRemote(network: network)
+
+        // When
+        let result: Result<SitePlugin, Error> = waitFor { promise in
+            remote.activatePlugin(for: self.sampleSiteID, pluginName: "jetpack/jetpack") { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        switch result {
+        case .success(let plugin):
+            XCTAssertNil(plugin)
+        case .failure(let error):
+            XCTAssertNotNil(error)
+        }
+    }
+
+    // MARK: - Get plugin details tests
+
+    /// Verifies that getPluginDetails properly parses the sample response.
+    ///
+    func test_getPluginDetails_properly_returns_plugins() {
+        let remote = SitePluginsRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "plugins/jetpack/jetpack", filename: "plugin")
+
+        // When
+        let result: Result<SitePlugin, Error> = waitFor { promise in
+            remote.getPluginDetails(for: self.sampleSiteID, pluginName: "jetpack/jetpack") { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        switch result {
+        case .success(let plugin):
+            XCTAssertEqual(plugin.plugin, "jetpack/jetpack")
+        case .failure(let error):
+            XCTAssertNil(error)
+        }
+    }
+
+    /// Verifies that getPluginDetails properly relays Networking Layer errors.
+    ///
+    func test_getPluginDetails_properly_relays_netwoking_errors() {
+        let remote = SitePluginsRemote(network: network)
+
+        // When
+        let result: Result<SitePlugin, Error> = waitFor { promise in
+            remote.getPluginDetails(for: self.sampleSiteID, pluginName: "jetpack/jetpack") { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        switch result {
+        case .success(let plugin):
+            XCTAssertNil(plugin)
+        case .failure(let error):
+            XCTAssertNotNil(error)
+        }
+    }
 }

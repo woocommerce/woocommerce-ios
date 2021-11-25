@@ -55,8 +55,11 @@ final class JetpackInstallStepsViewModel: ObservableObject {
         stores.dispatch(activationAction)
     }
 
+    /// Check site to make sure connection succeeds.
+    ///
     private func checkSiteConnection() {
-        // TODO:
+        currentStep = .connection
+        // TODO-5365 - update this in the workaround PR
     }
 }
 

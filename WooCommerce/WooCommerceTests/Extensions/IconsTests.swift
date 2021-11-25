@@ -246,6 +246,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.mailImage)
     }
 
+    func test_minus_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.minusImage)
+    }
+
     func testMoreImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.moreImage)
     }

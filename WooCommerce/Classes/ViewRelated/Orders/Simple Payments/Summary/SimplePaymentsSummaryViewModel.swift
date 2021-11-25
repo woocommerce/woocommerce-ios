@@ -116,6 +116,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     convenience init(order: Order,
                      providedAmount: String,
+                     presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      stores: StoresManager = ServiceLocator.stores) {
         self.init(providedAmount: providedAmount,
@@ -124,6 +125,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                   siteID: order.siteID,
                   orderID: order.orderID,
                   feeID: order.fees.first?.feeID ?? 0,
+                  presentNoticeSubject: presentNoticeSubject,
                   currencyFormatter: currencyFormatter,
                   stores: stores)
     }
@@ -156,7 +158,6 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
             case .failure:
                 self.presentNoticeSubject.send(.error(Localization.updateError))
                 // TODO: Analytics
-                break
             }
         }
         stores.dispatch(action)

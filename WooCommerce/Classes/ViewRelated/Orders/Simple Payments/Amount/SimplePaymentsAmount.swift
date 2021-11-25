@@ -14,7 +14,7 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
     ///
     private lazy var modalNoticePresenter: NoticePresenter = {
         let presenter = DefaultNoticePresenter()
-        presenter.presentingViewController = self
+        presenter.presentingViewController = self.navigationController ?? self
         return presenter
     }()
 
@@ -30,9 +30,6 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
         presentNoticePublisher
             .compactMap { $0 }
             .sink { [weak self] notice in
-
-                // To prevent keyboard to hide the notice
-                self?.view.endEditing(true)
 
                 switch notice {
                 case .error(let description):

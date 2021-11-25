@@ -243,7 +243,22 @@ struct NewOrder_Previews: PreviewProvider {
             NewOrder(viewModel: viewModel)
         }
 
-        NewOrder(viewModel: viewModel)
-            .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
+        NavigationView {
+            NewOrder(viewModel: viewModel)
+        }
+        .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
+        .previewDisplayName("Accessibility")
+
+        NavigationView {
+            NewOrder(viewModel: viewModel)
+        }
+        .environment(\.colorScheme, .dark)
+        .previewDisplayName("Dark")
+
+        NavigationView {
+            NewOrder(viewModel: viewModel)
+        }
+        .environment(\.layoutDirection, .rightToLeft)
+        .previewDisplayName("Right to left")
     }
 }

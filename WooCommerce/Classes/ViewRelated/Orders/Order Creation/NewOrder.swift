@@ -48,7 +48,7 @@ struct NewOrder: View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: Layout.noSpacing) {
-                    Spacer(minLength: Layout.spacing)
+                    Spacer(minLength: Layout.sectionSpacing)
 
                     ProductsSection(geometry: geometry)
                 }
@@ -222,7 +222,7 @@ private struct AddButton: View {
 // MARK: Constants
 private extension NewOrder {
     enum Layout {
-        static let spacing: CGFloat = 16.0
+        static let sectionSpacing: CGFloat = 16.0
         static let verticalSpacing: CGFloat = 22.0
         static let noSpacing: CGFloat = 0.0
         static let productImageSize: CGFloat = 44.0

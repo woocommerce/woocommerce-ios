@@ -10,7 +10,7 @@ public enum CardReaderServiceError: Error {
     case discovery(underlyingError: UnderlyingError = .internalServiceError)
 
     /// Error thrown while connecting to a reader
-    case connection(underlyingError: LocalizedError = UnderlyingError.internalServiceError)
+    case connection(underlyingError: UnderlyingError = .internalServiceError)
 
     /// Error thrown while disonnecting from a reader
     case disconnection(underlyingError: UnderlyingError = .internalServiceError)
@@ -192,6 +192,19 @@ public enum UnderlyingError: Error {
     /// Catch-all error case. Indicates there is something wrong with the
     /// internal state of the CardReaderService.
     case internalServiceError
+
+    case locationIdMissing
+}
+
+extension UnderlyingError {
+    init(with configurationError: CardReaderConfigError) {
+        switch configurationError {
+        case .incompleteStoreAddress(_):
+            self =  .locationIdMissing
+        case .unknown(let error):
+            self  = UnderlyingError(with: error)
+        }
+    }
 }
 
 extension UnderlyingError {
@@ -208,6 +221,10 @@ extension UnderlyingError {
         default:
             return false
         }
+    }
+
+    public var isLocationIDMissingError: Bool {
+        return self == .locationIdMissing
     }
 }
 
@@ -331,6 +348,10 @@ updating the application or using a different reader
         case .internalServiceError:
             return NSLocalizedString("Sorry, this payment couldn’t be processed",
                                      comment: "Error message when the card reader service experiences an unexpected internal service error.")
+
+        case .locationIdMissing:
+            return NSLocalizedString("Location Id missing",
+                                     comment: "Error message when it is not possible to get a location id.")
         }
     }
 }

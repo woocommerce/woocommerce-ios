@@ -644,8 +644,9 @@ final class OrderStoreTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
-        let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: String]]).first
-        let expected = [
+        let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: AnyHashable]]).first
+        let expected: [String: AnyHashable] = [
+            "id": 0,
             "name": "Simple Payments",
             "tax_status": "none",
             "tax_class": "",
@@ -665,8 +666,9 @@ final class OrderStoreTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
-        let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: String]]).first
-        let expected = [
+        let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: AnyHashable]]).first
+        let expected: [String: AnyHashable] = [
+            "id": 0,
             "name": "Simple Payments",
             "tax_status": "taxable",
             "tax_class": "",

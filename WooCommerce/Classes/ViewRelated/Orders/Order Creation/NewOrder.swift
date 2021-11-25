@@ -29,7 +29,7 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
             .sink { [weak self] notice in
                 switch notice {
                 case .error:
-                    self?.noticePresenter.enqueue(notice: .init(title: Localization.errorMessage, feedbackType: .error))
+                    self?.noticePresenter.enqueue(notice: .init(title: NewOrder.Localization.errorMessage, feedbackType: .error))
                 }
 
                 // Nullify the presentation intent.
@@ -83,13 +83,13 @@ private struct ProductsSection: View {
             Divider()
 
             VStack(alignment: .leading, spacing: NewOrder.Layout.verticalSpacing) {
-                Text(Localization.products)
+                Text(NewOrder.Localization.products)
                     .headlineStyle()
 
                 // TODO: Add a product row for each product added to the order
                 ProductRow()
 
-                AddButton(title: Localization.addProduct) {
+                AddButton(title: NewOrder.Localization.addProduct) {
                     // TODO: Open Add Product modal view
                 }
             }
@@ -196,7 +196,7 @@ private struct ProductsSection: View {
 
 // MARK: Custom Views
 /// Represents a button with a plus icon.
-/// Used for any button that adds items to the order.
+/// Used for any button that adds details to the order.
 ///
 private struct AddButton: View {
     let title: String
@@ -225,14 +225,14 @@ private extension NewOrder {
         static let stepperBorderWidth: CGFloat = 1.0
         static let stepperBorderRadius: CGFloat = 4.0
     }
-}
 
-private enum Localization {
-    static let title = NSLocalizedString("New Order", comment: "Title for the order creation screen")
-    static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the New Order screen")
-    static let errorMessage = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
-    static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating a new order")
-    static let addProduct = NSLocalizedString("Add product", comment: "Title text of the button that adds a product when creating a new order")
+    enum Localization {
+        static let title = NSLocalizedString("New Order", comment: "Title for the order creation screen")
+        static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the New Order screen")
+        static let errorMessage = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
+        static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating a new order")
+        static let addProduct = NSLocalizedString("Add product", comment: "Title text of the button that adds a product when creating a new order")
+    }
 }
 
 struct NewOrder_Previews: PreviewProvider {

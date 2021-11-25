@@ -55,6 +55,14 @@ final class OrdersRootViewController: UIViewController {
         }
     }
 
+    /// Stores status for order creation availability.
+    ///
+    private var isOrderCreationEnabled: Bool = false
+
+    /// Stores status for Simple Payments availability.
+    ///
+    private var shouldShowSimplePaymentsButton: Bool = false
+
     // MARK: View Lifecycle
 
     init(siteID: Int64) {
@@ -163,7 +171,7 @@ private extension OrdersRootViewController {
         }()
         let buttons: [UIBarButtonItem?] = [
             createSearchBarButtonItem(),
-            shouldShowSimplePaymentsButton ? createAddSimplePaymentsOrderItem() : nil
+            createAddOrderItem(isOrderCreationEnabled: isOrderCreationExperimentalToggleEnabled, shouldShowSimplePaymentsButton: shouldShowSimplePaymentsButton)
         ]
         navigationItem.rightBarButtonItems = buttons.compactMap { $0 }
     }
@@ -303,36 +311,54 @@ private extension OrdersRootViewController {
         return button
     }
 
-    /// Create a `UIBarButtonItem` to be used as a way to create a new simple payments order.
+    /// Create a `UIBarButtonItem` to be used as a way to create a new order.
     ///
-    func createAddSimplePaymentsOrderItem() -> UIBarButtonItem {
+    func createAddOrderItem(isOrderCreationEnabled: Bool, shouldShowSimplePaymentsButton: Bool) -> UIBarButtonItem? {
+        self.isOrderCreationEnabled = isOrderCreationEnabled
+        self.shouldShowSimplePaymentsButton = shouldShowSimplePaymentsButton
+
         let button = UIBarButtonItem(image: .plusBarButtonItemImage,
                                      style: .plain,
                                      target: self,
-                                     action: #selector(presentSimplePaymentsAmountController))
+                                     action: #selector(presentOrderCreationFlow(sender:)))
         button.accessibilityTraits = .button
-        button.accessibilityLabel = Localization.accessibilityLabelAddSimplePayment
-        button.accessibilityIdentifier = "simple-payments-add-button"
+
+        switch (isOrderCreationEnabled, shouldShowSimplePaymentsButton) {
+        case (false, false):
+            return nil
+        case (true, true):
+            button.accessibilityLabel = NSLocalizedString("Choose new order type", comment: "Opens action sheet to choose a type of a new order")
+            button.accessibilityIdentifier = "new-order-type-sheet-button"
+        case (true, false):
+            button.accessibilityLabel = NSLocalizedString("Add a new order", comment: "Navigates to a screen to create a full manual order")
+            button.accessibilityIdentifier = "full-order-add-button"
+        case (false, true):
+            button.accessibilityLabel = NSLocalizedString("Add simple payments order", comment: "Navigates to a screen to create a simple payments order")
+            button.accessibilityIdentifier = "simple-payments-add-button"
+        }
         return button
     }
 
-    /// Presents `SimplePaymentsAmountHostingController`.
+    /// Presents Order Creation or Simple Payments flows.
     ///
-    @objc private func presentSimplePaymentsAmountController() {
-        let viewModel = SimplePaymentsAmountViewModel(siteID: siteID)
-        viewModel.onOrderCreated = { [weak self] order in
+    @objc func presentOrderCreationFlow(sender: UIBarButtonItem) {
+        guard let navigationController = navigationController else {
+            return
+        }
+
+        let coordinatingController = AddOrderCoordinator(siteID: siteID,
+                                                         isOrderCreationEnabled: isOrderCreationEnabled,
+                                                         shouldShowSimplePaymentsButton: shouldShowSimplePaymentsButton,
+                                                         sourceBarButtonItem: sender,
+                                                         sourceNavigationController: navigationController)
+        coordinatingController.onOrderCreated = { [weak self] order in
             guard let self = self else { return }
 
             self.dismiss(animated: true) {
                 self.navigateToOrderDetail(order)
             }
         }
-
-        let viewController = SimplePaymentsAmountHostingController(viewModel: viewModel)
-        let navigationController = WooNavigationController(rootViewController: viewController)
-        present(navigationController, animated: true)
-
-        analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
+        coordinatingController.start()
     }
 
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.

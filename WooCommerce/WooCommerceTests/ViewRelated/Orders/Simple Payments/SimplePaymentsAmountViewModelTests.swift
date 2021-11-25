@@ -1,5 +1,6 @@
 import Foundation
 import XCTest
+import Combine
 
 @testable import WooCommerce
 @testable import Yosemite
@@ -10,6 +11,8 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
 
     private let usLocale = Locale(identifier: "en_US")
     private let usStoreSettings = CurrencySettings() // Default is US settings
+
+    private var subscriptions = Set<AnyCancellable>()
 
     func test_view_model_prepends_currency_symbol() {
         // Given
@@ -280,7 +283,8 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
     func test_view_model_attempts_error_notice_presentation_when_failing_to_crete_order() {
         // Given
         let testingStore = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore)
+        let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore, presentNoticeSubject: noticeSubject)
         testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .createSimplePaymentsOrder(_, _, _, onCompletion):
@@ -291,13 +295,22 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.createSimplePaymentsOrder()
+        let receivedError: Bool = waitFor { promise in
+            noticeSubject.sink { intent in
+                switch intent {
+                case .error:
+                    promise(true)
+                }
+            }
+            .store(in: &self.subscriptions)
+            viewModel.createSimplePaymentsOrder()
+        }
 
         // Then
-        XCTAssertEqual(viewModel.presentNotice, .error)
+        XCTAssertTrue(receivedError)
     }
 
-    func test_view_model_diable_cancel_button_while_creating_payment_order() {
+    func test_view_model_disable_cancel_button_while_creating_payment_order() {
         // Given
         let testingStore = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore)

@@ -23,6 +23,10 @@ enum WooTab {
     /// Reviews Tab
     ///
     case reviews
+
+    /// Hub Menu Tab
+    ///
+    case hubMenu
 }
 
 extension WooTab {
@@ -47,7 +51,13 @@ extension WooTab {
 
     // Note: currently only the Dashboard tab (My Store) view controller is set up in Main.storyboard.
     private static func visibleTabs() -> [WooTab] {
-            return [.myStore, .orders, .products, .reviews]
+        var tabs: [WooTab] = [.myStore, .orders, .products, .reviews]
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
+            tabs.append(.hubMenu)
+        }
+
+        return tabs
     }
 }
 
@@ -87,7 +97,9 @@ final class MainTabBarController: UITabBarController {
     private let ordersNavigationController = WooTabNavigationController()
     private let productsNavigationController = WooTabNavigationController()
     private let reviewsNavigationController = WooTabNavigationController()
+    private let hubMenuNavigationController = WooTabNavigationController()
     private var reviewsTabCoordinator: ReviewsCoordinator?
+    private var hubMenuTabCoordinator: HubMenuCoordinator?
 
     private var cancellableSiteID: AnyCancellable?
 
@@ -162,6 +174,7 @@ final class MainTabBarController: UITabBarController {
             navigationController.viewControllers = []
         }
         reviewsTabCoordinator = nil
+        hubMenuTabCoordinator = nil
     }
 }
 
@@ -207,6 +220,9 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(.productListSelected)
         case .reviews:
             ServiceLocator.analytics.track(.notificationsSelected)
+        case .hubMenu:
+            //TODO-5509: implement tracking
+            break
         }
     }
 
@@ -222,6 +238,9 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(.productListReselected)
         case .reviews:
             ServiceLocator.analytics.track(.notificationsReselected)
+        case .hubMenu:
+            //TODO-5509: implement tracking
+            break
         }
     }
 }
@@ -247,6 +266,12 @@ extension MainTabBarController {
     ///
     static func switchToReviewsTab(completion: (() -> Void)? = nil) {
         navigateTo(.reviews, completion: completion)
+    }
+
+    /// Switches to the Hub Menu tab and pops to the root view controller
+    ///
+    static func switchToHubMenuTab(completion: (() -> Void)? = nil) {
+        navigateTo(.hubMenu, completion: completion)
     }
 
     /// Switches the TabBarController to the specified Tab
@@ -351,6 +376,11 @@ private extension MainTabBarController {
             let reviewsTabIndex = WooTab.reviews.visibleIndex()
             controllers.insert(reviewsNavigationController, at: reviewsTabIndex)
 
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
+                let hubMenuTabIndex = WooTab.hubMenu.visibleIndex()
+                controllers.insert(hubMenuNavigationController, at: hubMenuTabIndex)
+            }
+
             return controllers
         }()
     }
@@ -391,6 +421,14 @@ private extension MainTabBarController {
 
         reviewsTabCoordinator?.activate(siteID: siteID)
 
+        if hubMenuTabCoordinator == nil {
+            let hubTabCoordinator = createHubMenuTabCoordinator()
+            self.hubMenuTabCoordinator = hubTabCoordinator
+            hubTabCoordinator.start()
+        }
+
+        hubMenuTabCoordinator?.activate(siteID: siteID)
+
         // Set dashboard to be the default tab.
         selectedIndex = WooTab.myStore.visibleIndex()
     }
@@ -411,6 +449,13 @@ private extension MainTabBarController {
         ReviewsCoordinator(navigationController: reviewsNavigationController,
                            willPresentReviewDetailsFromPushNotification: { [weak self] in
                             self?.navigateTo(.reviews)
+        })
+    }
+
+    func createHubMenuTabCoordinator() -> HubMenuCoordinator {
+        HubMenuCoordinator(navigationController: hubMenuNavigationController,
+                           willPresentReviewDetailsFromPushNotification: { [weak self] in
+            self?.navigateTo(.hubMenu)
         })
     }
 }

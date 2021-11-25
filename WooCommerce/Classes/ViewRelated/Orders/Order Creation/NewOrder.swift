@@ -45,15 +45,17 @@ struct NewOrder: View {
     @ObservedObject var viewModel: NewOrderViewModel
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: Layout.noSpacing) {
-                Spacer(minLength: Layout.spacing)
+        GeometryReader { geometry in
+            ScrollView {
+                VStack(spacing: Layout.noSpacing) {
+                    Spacer(minLength: Layout.spacing)
 
-                ProductsSection()
+                    ProductsSection(geometry: geometry)
+                }
             }
-        }
-        .background(Color(.listBackground))
+            .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+        }
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -78,6 +80,8 @@ struct NewOrder: View {
 /// Represents the Products section
 ///
 private struct ProductsSection: View {
+    let geometry: GeometryProxy
+
     var body: some View {
         Group {
             Divider()
@@ -93,6 +97,7 @@ private struct ProductsSection: View {
                     // TODO: Open Add Product modal view
                 }
             }
+            .padding(.horizontal, insets: geometry.safeAreaInsets)
             .padding()
             .background(Color(.listForeground))
 

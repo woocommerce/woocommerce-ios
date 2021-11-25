@@ -144,7 +144,7 @@ private struct ProductsSection: View {
         @State var textSize: CGSize = .zero
 
         var body: some View {
-            HStack(spacing: NewOrder.Layout.stepperSpacing) {
+            HStack(spacing: textSize.height) {
                 Button {
                     // TODO: Decrement the product quantity
                 } label: {
@@ -167,7 +167,7 @@ private struct ProductsSection: View {
                         .frame(height: textSize.height)
                 }
             }
-            .padding()
+            .padding(textSize.height/2)
             .overlay(
                 RoundedRectangle(cornerRadius: NewOrder.Layout.stepperBorderRadius)
                     .stroke(Color(UIColor.separator), lineWidth: NewOrder.Layout.stepperBorderWidth)
@@ -226,7 +226,6 @@ private extension NewOrder {
         static let verticalSpacing: CGFloat = 22.0
         static let noSpacing: CGFloat = 0.0
         static let productImageSize: CGFloat = 44.0
-        static let stepperSpacing: CGFloat = 20.0
         static let stepperBorderWidth: CGFloat = 1.0
         static let stepperBorderRadius: CGFloat = 4.0
     }

@@ -70,7 +70,7 @@ private enum Localization {
 
     static let learnMoreLink = NSLocalizedString(
         "Learn more",
-        comment: "A label prompting users to learn more about card readers"
+        comment: "A label prompting users to learn more about card readers. This part is the link to the website"
     )
 
     static let learnMoreText = NSLocalizedString(

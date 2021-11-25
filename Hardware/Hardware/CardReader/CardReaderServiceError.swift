@@ -10,7 +10,7 @@ public enum CardReaderServiceError: Error {
     case discovery(underlyingError: UnderlyingError = .internalServiceError)
 
     /// Error thrown while connecting to a reader
-    case connection(underlyingError: UnderlyingError = .internalServiceError)
+    case connection(underlyingError: LocalizedError = UnderlyingError.internalServiceError)
 
     /// Error thrown while disonnecting from a reader
     case disconnection(underlyingError: UnderlyingError = .internalServiceError)

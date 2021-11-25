@@ -281,23 +281,11 @@ extension StripeCardReaderService: CardReaderService {
                 case .success(let locationId):
                     return promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
                 case .failure(let error):
-                    let underlyingError = self.underlyingError(from: error)
+                    let underlyingError = UnderlyingError(with: error)
                     return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                 }
             }
         }
-    }
-
-    private func underlyingError(from rawError: LocalizedError) -> LocalizedError {
-        if let configError = rawError as? CardReaderConfigError {
-            switch configError {
-            case .incompleteStoreAddress(_):
-                return configError
-            case .unknown(let error):
-                return UnderlyingError(with: error)
-            }
-        }
-        return UnderlyingError(with: rawError)
     }
 
     public func connect(_ reader: StripeTerminal.Reader, configuration: BluetoothConnectionConfiguration) -> Future <CardReader, Error> {

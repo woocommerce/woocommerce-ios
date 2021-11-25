@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Combine
 import Experiments
 
 /// View Model for the `SimplePaymentsAmount` view.
@@ -18,11 +19,6 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     /// True while performing the create order operation. False otherwise.
     ///
     @Published private(set) var loading: Bool = false
-
-    /// Defines the current notice that should be shown.
-    /// Defaults to `nil`.
-    ///
-    @Published var presentNotice: Notice?
 
     /// Defines if the view should navigate to the summary view.
     /// Setting it to `false` will `nil` the summary view model.
@@ -81,6 +77,10 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     private let userLocale: Locale
 
+    /// Transmits notice presentation intents.
+    ///
+    private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
+
     /// Current store currency settings
     ///
     private let storeCurrencySettings: CurrencySettings
@@ -100,12 +100,14 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          locale: Locale = Locale.autoupdatingCurrent,
+         presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          isDevelopmentPrototype: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.simplePaymentsPrototype)) {
         self.siteID = siteID
         self.stores = stores
         self.userLocale = locale
+        self.presentNoticeSubject = presentNoticeSubject
         self.storeCurrencySettings = storeCurrencySettings
         self.storeCurrencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
         self.analytics = analytics
@@ -134,7 +136,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
                 self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCompleted(amount: order.total))
 
             case .failure(let error):
-                self.presentNotice = .error
+                self.presentNoticeSubject.send(.error(Localization.creationError))
                 self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed())
                 DDLogError("⛔️ Error creating simple payments order: \(error)")
             }
@@ -190,10 +192,10 @@ private extension SimplePaymentsAmountViewModel {
     }
 }
 
-// MARK: Definitions
-extension SimplePaymentsAmountViewModel {
-    /// Representation of possible notices that can be displayed
-    enum Notice: Equatable {
-        case error
+// MARK: Constants
+private extension SimplePaymentsAmountViewModel {
+    enum Localization {
+        static let creationError = NSLocalizedString("There was an error creating the order",
+                                                     comment: "Notice text after failing to create a simple payments order.")
     }
 }

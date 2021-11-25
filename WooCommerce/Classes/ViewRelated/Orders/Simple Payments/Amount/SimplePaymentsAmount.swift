@@ -18,7 +18,7 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
         return presenter
     }()
 
-    init(viewModel: SimplePaymentsAmountViewModel) {
+    init(viewModel: SimplePaymentsAmountViewModel, presentNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never>) {
         super.init(rootView: SimplePaymentsAmount(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
@@ -26,8 +26,8 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
             self?.dismiss(animated: true, completion: nil)
         }
 
-        // Observe the present notice intent and set it back to `nil` after presented.
-        viewModel.$presentNotice
+        // Observe the present notice intent.
+        presentNoticePublisher
             .compactMap { $0 }
             .sink { [weak self] notice in
 
@@ -35,12 +35,9 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
                 self?.view.endEditing(true)
 
                 switch notice {
-                case .error:
-                    self?.modalNoticePresenter.enqueue(notice: .init(title: SimplePaymentsAmount.Localization.error, feedbackType: .error))
+                case .error(let description):
+                    self?.modalNoticePresenter.enqueue(notice: .init(title: description, feedbackType: .error))
                 }
-
-                // Nullify the presentation intent.
-                viewModel.presentNotice = nil
             }
             .store(in: &subscriptions)
     }
@@ -169,4 +166,10 @@ private extension SimplePaymentsAmount {
             56 * scale
         }
     }
+}
+
+/// Representation of possible notices that can be displayed
+///
+enum SimplePaymentsNotice: Equatable {
+    case error(String)
 }

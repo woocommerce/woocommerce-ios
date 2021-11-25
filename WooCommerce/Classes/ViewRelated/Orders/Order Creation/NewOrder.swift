@@ -47,7 +47,7 @@ struct NewOrder: View {
     var body: some View {
         ScrollView {
             VStack(spacing: Layout.noSpacing) {
-                Spacer(minLength: Layout.spacerHeight)
+                Spacer(minLength: Layout.spacing)
 
                 ProductsSection()
             }
@@ -74,6 +74,7 @@ struct NewOrder: View {
     }
 }
 
+// MARK: Order Sections
 /// Represents the Products section
 ///
 private struct ProductsSection: View {
@@ -82,11 +83,11 @@ private struct ProductsSection: View {
             Divider()
 
             VStack(alignment: .leading, spacing: NewOrder.Layout.verticalSpacing) {
-
                 Text(Localization.products)
                     .headlineStyle()
 
-                // TODO: Add a list of products added to the order
+                // TODO: Add a product row for each product added to the order
+                ProductRow()
 
                 AddButton(title: Localization.addProduct) {
                     // TODO: Open Add Product modal view
@@ -98,8 +99,102 @@ private struct ProductsSection: View {
             Divider()
         }
     }
+
+    /// Represent a single product row in the Product section
+    ///
+    struct ProductRow: View {
+        var body: some View {
+            AdaptiveStack(horizontalAlignment: .leading) {
+                HStack(alignment: .top) {
+                    // Product image
+                    // TODO: Display actual product image when available
+                    Image(uiImage: .productPlaceholderImage)
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: NewOrder.Layout.productImageSize, height: NewOrder.Layout.productImageSize)
+                        .foregroundColor(Color(UIColor.listSmallIcon))
+
+                    // Product details
+                    VStack(alignment: .leading) {
+                        Text("Love Ficus") // Fake data - product name
+                        Text("7 in stock • $20.00") // Fake data - stock / price
+                            .subheadlineStyle()
+                        Text("SKU: 123456") // Fake data - SKU
+                            .subheadlineStyle()
+                    }
+                }
+
+                Spacer()
+
+                ProductStepper()
+            }
+
+            Divider()
+        }
+    }
+
+    /// Represents a custom stepper.
+    /// Used to change the product quantity in the order.
+    ///
+    struct ProductStepper: View {
+        @State var textSize: CGSize = .zero
+
+        var body: some View {
+            HStack(spacing: NewOrder.Layout.stepperSpacing) {
+                Button {
+                    // TODO: Decrement the product quantity
+                } label: {
+                    Image(uiImage: .minusImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: textSize.height)
+                }
+                Text("1") // Fake data - quantity
+                    .background(ViewGeometry())
+                    .onPreferenceChange(ViewSizeKey.self) {
+                        textSize = $0
+                    }
+                Button {
+                    // TODO: Increment the product quantity
+                } label: {
+                    Image(uiImage: .plusImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: textSize.height)
+                }
+            }
+            .padding()
+            .overlay(
+                RoundedRectangle(cornerRadius: NewOrder.Layout.stepperBorderRadius)
+                    .stroke(Color(UIColor.separator), lineWidth: NewOrder.Layout.stepperBorderWidth)
+            )
+        }
+
+        /// Custom preference key to get the size of a view
+        ///
+        struct ViewSizeKey: PreferenceKey {
+            static var defaultValue: CGSize = .zero
+
+            static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+                value = nextValue()
+            }
+        }
+
+        /// View that calculates its size and sets ViewSizeKey
+        ///
+        /// Used to ensure that stepper button height matches text height, and overlay border is set correctly at larger text sizes.
+        ///
+        struct ViewGeometry: View {
+            var body: some View {
+                GeometryReader { geometry in
+                    Color.clear
+                        .preference(key: ViewSizeKey.self, value: geometry.size)
+                }
+            }
+        }
+    }
 }
 
+// MARK: Custom Views
 /// Represents a button with a plus icon.
 /// Used for any button that adds items to the order.
 ///
@@ -122,9 +217,13 @@ private struct AddButton: View {
 // MARK: Constants
 private extension NewOrder {
     enum Layout {
-        static let spacerHeight: CGFloat = 16.0
+        static let spacing: CGFloat = 16.0
         static let verticalSpacing: CGFloat = 22.0
         static let noSpacing: CGFloat = 0.0
+        static let productImageSize: CGFloat = 44.0
+        static let stepperSpacing: CGFloat = 20.0
+        static let stepperBorderWidth: CGFloat = 1.0
+        static let stepperBorderRadius: CGFloat = 4.0
     }
 }
 
@@ -143,5 +242,8 @@ struct NewOrder_Previews: PreviewProvider {
         NavigationView {
             NewOrder(viewModel: viewModel)
         }
+
+        NewOrder(viewModel: viewModel)
+            .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
     }
 }

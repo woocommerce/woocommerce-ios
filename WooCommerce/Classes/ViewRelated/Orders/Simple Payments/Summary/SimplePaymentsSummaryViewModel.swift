@@ -140,6 +140,17 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                                                            email: email) { [weak self] result in
             guard let self = self else { return }
             self.showLoadingIndicator = false
+
+            switch result {
+            case .success:
+                // TODO: Navigate to Payment Method
+                // TODO: Analytics
+                break
+            case .failure:
+                // TODO: Present notice
+                // TODO: Analytics
+                break
+            }
         }
         stores.dispatch(action)
     }

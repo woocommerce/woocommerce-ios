@@ -508,10 +508,6 @@ private extension CardReaderConnectionController {
     /// An error occurred while connecting
     ///
     private func onConnectingFailed(error: Error) {
-        guard let from = fromController else {
-            return
-        }
-
         /// Clear our copy of found readers to avoid connecting to a reader that isn't
         /// there while we wait for `onReaderDiscovered` to receive an update.
         /// See also https://github.com/stripe/stripe-terminal-ios/issues/104#issuecomment-916285167
@@ -522,15 +518,7 @@ private extension CardReaderConnectionController {
            underlyingError.isSoftwareUpdateError {
             return onUpdateFailed(error: error)
         }
-
-        alerts.connectingFailed(
-            from: from,
-            continueSearch: {
-                self.state = .searching
-            }, cancelSearch: {
-                self.state = .cancel
-            }
-        )
+        showConnectionFailed(error: error)
     }
 
     private func onUpdateFailed(error: Error) {
@@ -558,6 +546,27 @@ private extension CardReaderConnectionController {
                 close: {
                     self.state = .searching
                 })
+        }
+    }
+
+    private func showConnectionFailed(error: Error) {
+        guard let from = fromController else {
+            return
+        }
+
+        let continueSearch = {
+            self.state = .searching
+        }
+
+        let cancelSearch = {
+            self.state = .cancel
+        }
+
+        if case CardReaderServiceError.connection(underlyingError: let underlyingError as? CardReaderConfigError) = error,
+           case .incompleteStoreAddress(adminUrl: _) = underlyingError {
+            alerts.connectingFailedMissingAddress(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
+        } else {
+            alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
         }
     }
 

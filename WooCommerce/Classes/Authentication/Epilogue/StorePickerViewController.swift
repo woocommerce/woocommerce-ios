@@ -334,15 +334,15 @@ private extension StorePickerViewController {
             return
         }
 
-        // If a site address was passed in credentials, select it
-        if let siteAddress = ServiceLocator.stores.sessionManager.defaultCredentials?.siteAddress,
-            let site = sites.filter({ $0.url == siteAddress }).first {
+        // If there is a defaultSite already set, select it
+        if let site = ServiceLocator.stores.sessionManager.defaultSite {
             currentlySelectedSite = site
             return
         }
 
-        // If there is a defaultSite already set, select it
-        if let site = ServiceLocator.stores.sessionManager.defaultSite {
+        // If a site address was passed in credentials, select it
+        if let siteAddress = ServiceLocator.stores.sessionManager.defaultCredentials?.siteAddress,
+            let site = sites.filter({ $0.url == siteAddress }).first {
             currentlySelectedSite = site
             return
         }

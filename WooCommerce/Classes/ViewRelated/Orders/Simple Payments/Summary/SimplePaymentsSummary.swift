@@ -96,6 +96,7 @@ private struct EmailSection: View {
                                  placeholder: SimplePaymentsSummary.Localization.emailPlaceHolder,
                                  text: $viewModel.email,
                                  keyboardType: .emailAddress)
+                .autocapitalization(.none)
                 .background(Color(.listForeground))
 
             Divider()

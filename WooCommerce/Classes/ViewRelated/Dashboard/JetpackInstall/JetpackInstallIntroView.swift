@@ -9,6 +9,7 @@ struct JetpackInstallIntroView: View {
     // Closure invoked when Get Started button is tapped
     private let startAction: () -> Void
 
+    // URL of the site to install Jetpack to
     private let siteURL: String
 
     init(siteURL: String, dismissAction: @escaping () -> Void, startAction: @escaping () -> Void) {

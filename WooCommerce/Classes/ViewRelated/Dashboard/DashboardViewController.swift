@@ -225,10 +225,10 @@ private extension DashboardViewController {
             let benefitsController = JetpackBenefitsHostingController()
             benefitsController.setActions { [weak self] in
                 self?.dismiss(animated: true, completion: { [weak self] in
-                    guard let siteURL = ServiceLocator.stores.sessionManager.defaultSite?.url else {
+                    guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
                         return
                     }
-                    let installController = JetpackInstallHostingController(siteURL: siteURL)
+                    let installController = JetpackInstallHostingController(siteID: site.siteID, siteURL: site.url)
                     installController.setDismissAction { [weak self] in
                         self?.dismiss(animated: true, completion: nil)
                     }

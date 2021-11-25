@@ -117,6 +117,7 @@ private struct ProductsSection: View {
                         .aspectRatio(contentMode: .fill)
                         .frame(width: NewOrder.Layout.productImageSize, height: NewOrder.Layout.productImageSize)
                         .foregroundColor(Color(UIColor.listSmallIcon))
+                        .accessibilityHidden(true)
 
                     // Product details
                     VStack(alignment: .leading) {
@@ -126,6 +127,7 @@ private struct ProductsSection: View {
                         Text("SKU: 123456") // Fake data - SKU
                             .subheadlineStyle()
                     }
+                    .accessibilityElement(children: .combine)
                 }
 
                 Spacer()
@@ -172,6 +174,19 @@ private struct ProductsSection: View {
                 RoundedRectangle(cornerRadius: NewOrder.Layout.stepperBorderRadius)
                     .stroke(Color(UIColor.separator), lineWidth: NewOrder.Layout.stepperBorderWidth)
             )
+            .accessibilityElement(children: .ignore)
+            .accessibility(label: Text("Quantity"))
+            .accessibility(value: Text("1")) // Fake static data - quantity
+            .accessibilityAdjustableAction { direction in
+                switch direction {
+                case .decrement:
+                    break // TODO: Decrement the product quantity
+                case .increment:
+                    break // TODO: Increment the product quantity
+                @unknown default:
+                    break
+                }
+            }
         }
 
         /// Custom preference key to get the size of a view

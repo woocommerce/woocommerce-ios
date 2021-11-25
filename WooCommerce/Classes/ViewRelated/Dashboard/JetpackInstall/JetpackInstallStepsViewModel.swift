@@ -38,8 +38,21 @@ final class JetpackInstallStepsViewModel: ObservableObject {
         stores.dispatch(installationAction)
     }
 
+    /// Activates the installed Jetpack plugin.
+    ///
     private func activateJetpack() {
-        // TODO:
+        currentStep = .activation
+        let activationAction = SitePluginAction.activateSitePlugin(siteID: siteID, pluginName: Constants.jetpackPluginName) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                self.checkSiteConnection()
+            case .failure:
+                // TODO-5365: handle failure with an error message
+                break
+            }
+        }
+        stores.dispatch(activationAction)
     }
 
     private func checkSiteConnection() {

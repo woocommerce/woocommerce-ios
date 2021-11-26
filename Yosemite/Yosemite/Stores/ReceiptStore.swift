@@ -97,8 +97,7 @@ private extension ReceiptStore {
             var attributesText = ""
             if !item.attributes.isEmpty {
                 attributesText.append(
-                    item.attributes.map
-                        {attr in
+                    item.attributes.map {attr in
                             "\(attr.name) \(attr.value)".trimmingCharacters(in: .whitespaces)
                         }
                         .joined(separator: ", ")

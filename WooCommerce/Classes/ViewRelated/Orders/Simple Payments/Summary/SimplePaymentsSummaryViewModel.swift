@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Combine
 
 /// `ViewModel` to drive the content of the `SimplePaymentsSummary` view.
 ///
@@ -61,6 +62,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     private let feeID: Int64
 
+    /// Transmits notice presentation intents.
+    ///
+    private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
+
     /// Stores Manager.
     ///
     private let stores: StoresManager
@@ -76,11 +81,13 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
          siteID: Int64 = 0,
          orderID: Int64 = 0,
          feeID: Int64 = 0,
+         presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.orderID = orderID
         self.feeID = feeID
+        self.presentNoticeSubject = presentNoticeSubject
         self.currencyFormatter = currencyFormatter
         self.stores = stores
         self.providedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
@@ -109,6 +116,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     convenience init(order: Order,
                      providedAmount: String,
+                     presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      stores: StoresManager = ServiceLocator.stores) {
         self.init(providedAmount: providedAmount,
@@ -117,6 +125,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                   siteID: order.siteID,
                   orderID: order.orderID,
                   feeID: order.fees.first?.feeID ?? 0,
+                  presentNoticeSubject: presentNoticeSubject,
                   currencyFormatter: currencyFormatter,
                   stores: stores)
     }
@@ -147,11 +156,18 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                 // TODO: Analytics
                 break
             case .failure:
-                // TODO: Present notice
+                self.presentNoticeSubject.send(.error(Localization.updateError))
                 // TODO: Analytics
-                break
             }
         }
         stores.dispatch(action)
+    }
+}
+
+// MARK: Constants
+private extension SimplePaymentsSummaryViewModel {
+    enum Localization {
+        static let updateError = NSLocalizedString("There was an error updating the order",
+                                                   comment: "Notice text after failing to update a simple payments order.")
     }
 }

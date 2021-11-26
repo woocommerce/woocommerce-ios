@@ -43,8 +43,11 @@ public class AccountStore: Store {
         switch action {
         case .loadAccount(let userID, let onCompletion):
             loadAccount(userID: userID, onCompletion: onCompletion)
-        case .loadAndSynchronizeSiteIfNeeded(let siteID, let isJetpackConnectionPackageSupported, let onCompletion):
-            loadAndSynchronizeSiteIfNeeded(siteID: siteID, isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported, onCompletion: onCompletion)
+        case .loadAndSynchronizeSite(let siteID, let forcedUpdate, let isJetpackConnectionPackageSupported, let onCompletion):
+            loadAndSynchronizeSite(siteID: siteID,
+                                   forcedUpdate: forcedUpdate,
+                                   isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported,
+                                   onCompletion: onCompletion)
         case .synchronizeAccount(let onCompletion):
             synchronizeAccount(onCompletion: onCompletion)
         case .synchronizeAccountSettings(let userID, let onCompletion):
@@ -92,10 +95,14 @@ private extension AccountStore {
         }
     }
 
-    /// Returns the site if it exists in storage already. Otherwise, it synchronizes the WordPress.com sites and returns the site if it exists.
+    /// Returns the site if it exists in storage already and if forced update is not required.
+    /// Otherwise, it synchronizes the WordPress.com sites and returns the site if it exists.
     ///
-    func loadAndSynchronizeSiteIfNeeded(siteID: Int64, isJetpackConnectionPackageSupported: Bool, onCompletion: @escaping (Result<Site, Error>) -> Void) {
-        if let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() {
+    func loadAndSynchronizeSite(siteID: Int64,
+                                forcedUpdate: Bool,
+                                isJetpackConnectionPackageSupported: Bool,
+                                onCompletion: @escaping (Result<Site, Error>) -> Void) {
+        if let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly(), !forcedUpdate {
             onCompletion(.success(site))
         } else {
             synchronizeSites(selectedSiteID: siteID, isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported) { [weak self] result in

@@ -454,8 +454,9 @@ private extension DefaultStoresManager {
     func restoreSessionSiteAndSynchronizeIfNeeded(with siteID: Int64) {
         let isJCPEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
         let action = AccountAction
-            .loadAndSynchronizeSiteIfNeeded(siteID: siteID,
-                                            isJetpackConnectionPackageSupported: isJCPEnabled) { [weak self] result in
+            .loadAndSynchronizeSite(siteID: siteID,
+                                    forcedUpdate: false,
+                                    isJetpackConnectionPackageSupported: isJCPEnabled) { [weak self] result in
             guard let self = self else { return }
             guard case .success(let site) = result else {
                 return

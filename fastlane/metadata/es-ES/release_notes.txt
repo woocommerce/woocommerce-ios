@@ -1,3 +1,0 @@
-Algunos vendedores tenían problemas al cargar los datos del pedido debido a un problema técnico relacionado con la forma en que se ordenan los nombres de los campos en la API de REST. Hemos implementado una corrección que debería solucionar este problema (si este es tu caso).
-
-Esta versión tiene más correcciones que se han basado en vuestros comentarios. Sigue enviando tus comentarios: ¡te escuchamos!

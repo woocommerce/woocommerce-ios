@@ -1,3 +1,0 @@
-Alcuni venditori hanno riscontrato problemi durante il caricamento dei dettagli dell'ordine a causa di problemi tecnici relativi al modo in cui i nomi dei campi nell'API REST vengono riordinati. Abbiamo apportato una correzione che dovrebbe risolverli per te nel momento in cui li riscontri.
-
-Questo rilascio contiene molte altre correzioni basate sul tuo feedback. Continua a inviarci feedback: siamo lieti di ascoltarli.

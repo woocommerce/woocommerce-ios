@@ -108,14 +108,19 @@ private struct ProductsSection: View {
     /// Represent a single product row in the Product section
     ///
     struct ProductRow: View {
+
+        // Tracks the scale of the view due to accessibility changes
+        @ScaledMetric private var scale: CGFloat = 1
+
         var body: some View {
             AdaptiveStack(horizontalAlignment: .leading) {
                 HStack(alignment: .top) {
                     // Product image
                     // TODO: Display actual product image when available
                     Image(uiImage: .productPlaceholderImage)
+                        .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(width: NewOrder.Layout.productImageSize, height: NewOrder.Layout.productImageSize)
+                        .frame(width: NewOrder.Layout.productImageSize * scale, height: NewOrder.Layout.productImageSize * scale)
                         .foregroundColor(Color(UIColor.listSmallIcon))
                         .accessibilityHidden(true)
 

@@ -148,33 +148,33 @@ private struct ProductsSection: View {
     /// Used to change the product quantity in the order.
     ///
     struct ProductStepper: View {
-        @State var textSize: CGSize = .zero
+
+        // Tracks the scale of the view due to accessibility changes
+        @ScaledMetric private var scale: CGFloat = 1
 
         var body: some View {
-            HStack(spacing: textSize.height) {
+            HStack(spacing: NewOrder.Layout.stepperSpacing * scale) {
                 Button {
                     // TODO: Decrement the product quantity
                 } label: {
                     Image(uiImage: .minusSmallImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(height: textSize.height)
+                        .frame(height: NewOrder.Layout.stepperButtonSize * scale)
                 }
+
                 Text("1") // Fake data - quantity
-                    .background(ViewGeometry())
-                    .onPreferenceChange(ViewSizeKey.self) {
-                        textSize = $0
-                    }
+
                 Button {
                     // TODO: Increment the product quantity
                 } label: {
                     Image(uiImage: .plusSmallImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(height: textSize.height)
+                        .frame(height: NewOrder.Layout.stepperButtonSize * scale)
                 }
             }
-            .padding(textSize.height/2)
+            .padding(NewOrder.Layout.stepperSpacing/2 * scale)
             .overlay(
                 RoundedRectangle(cornerRadius: NewOrder.Layout.stepperBorderRadius)
                     .stroke(Color(UIColor.separator), lineWidth: NewOrder.Layout.stepperBorderWidth)
@@ -190,29 +190,6 @@ private struct ProductsSection: View {
                     break // TODO: Increment the product quantity
                 @unknown default:
                     break
-                }
-            }
-        }
-
-        /// Custom preference key to get the size of a view
-        ///
-        struct ViewSizeKey: PreferenceKey {
-            static var defaultValue: CGSize = .zero
-
-            static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-                value = nextValue()
-            }
-        }
-
-        /// View that calculates its size and sets ViewSizeKey
-        ///
-        /// Used to ensure that stepper button height matches text height, and overlay border is set correctly at larger text sizes.
-        ///
-        struct ViewGeometry: View {
-            var body: some View {
-                GeometryReader { geometry in
-                    Color.clear
-                        .preference(key: ViewSizeKey.self, value: geometry.size)
                 }
             }
         }
@@ -248,6 +225,8 @@ private extension NewOrder {
         static let productImageSize: CGFloat = 44.0
         static let stepperBorderWidth: CGFloat = 1.0
         static let stepperBorderRadius: CGFloat = 4.0
+        static let stepperButtonSize: CGFloat = 22.0
+        static let stepperSpacing: CGFloat = 22.0
     }
 
     enum Localization {

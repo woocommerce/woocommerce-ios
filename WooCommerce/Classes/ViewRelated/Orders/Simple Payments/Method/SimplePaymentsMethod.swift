@@ -29,11 +29,12 @@ struct SimplePaymentsMethod: View {
                     print("Tapped Card")
                 }
             }
-            .padding(.leading)
+            .padding(.horizontal)
             .background(Color(.listForeground))
 
             Divider()
 
+            // Pushes content to the top
             Spacer()
         }
         .background(Color(.listBackground).ignoresSafeArea())
@@ -61,14 +62,27 @@ private struct MethodRow: View {
     @ScaledMetric private var scale = 1
 
     var body: some View {
-        HStack(spacing: SimplePaymentsMethod.Layout.noSpacing) {
-            Image(uiImage: icon)
-                .resizable()
-                .frame(width: SimplePaymentsMethod.Layout.iconWidthHeight(scale: scale),
-                       height: SimplePaymentsMethod.Layout.iconWidthHeight(scale: scale))
-                .foregroundColor(Color(.systemGray))
+        Button(action: action) {
+            HStack {
+                Image(uiImage: icon)
+                    .resizable()
+                    .flipsForRightToLeftLayoutDirection(true)
+                    .frame(width: SimplePaymentsMethod.Layout.iconWidthHeight(scale: scale),
+                           height: SimplePaymentsMethod.Layout.iconWidthHeight(scale: scale))
+                    .foregroundColor(Color(.systemGray))
 
-            TitleAndValueRow(title: title, value: .content(""), selectable: true, action: action)
+                Text(title)
+                    .bodyStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                Image(uiImage: .chevronImage)
+                    .resizable()
+                    .flipsForRightToLeftLayoutDirection(true)
+                    .frame(width: SimplePaymentsMethod.Layout.chevronWidthHeight(scale: scale),
+                           height: SimplePaymentsMethod.Layout.chevronWidthHeight(scale: scale))
+                    .foregroundColor(Color(.systemGray))
+            }
+            .padding(.vertical, SimplePaymentsMethod.Layout.verticalPadding)
         }
     }
 }
@@ -83,8 +97,14 @@ private extension SimplePaymentsMethod {
 
     enum Layout {
         static let noSpacing: CGFloat = 0
+        static let verticalPadding: CGFloat = 11
+
         static func iconWidthHeight(scale: CGFloat) -> CGFloat {
             24 * scale
+        }
+
+        static func chevronWidthHeight(scale: CGFloat) -> CGFloat {
+            22 * scale
         }
     }
 }

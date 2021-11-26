@@ -199,12 +199,30 @@ public enum UnderlyingError: Error, Equatable {
 }
 
 extension UnderlyingError {
-    init(with configurationError: CardReaderConfigError) {
-        switch configurationError {
+    /// Determine an UnderlyingError for an Error related to the Card Reader, e.g. CardReaderConfigError, errors from StripeTerminal in SCPError.
+    /// This will return `internalServiceError` as a catch-all if no more specific error can be determined.
+    init(with error: Error) {
+        switch error {
+        case let configurationError as CardReaderConfigError:
+            if let underlyingConfigurationError = UnderlyingError(withConfigError: (configurationError)) {
+                self = underlyingConfigurationError
+                return
+            }
+        default:
+            if let underlyingStripeError = UnderlyingError(withStripeError: error) {
+                self = underlyingStripeError
+                return
+            }
+        }
+        self = .internalServiceError
+    }
+
+    init?(withConfigError configError: CardReaderConfigError) {
+        switch configError {
         case .incompleteStoreAddress(let adminUrl):
             self = .incompleteStoreAddress(adminUrl: adminUrl)
-        case .unknown(let error):
-            self  = UnderlyingError(with: error)
+        default:
+            return nil
         }
     }
 }

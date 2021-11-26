@@ -34,14 +34,14 @@ extension WooTab {
     ///
     /// - Parameters:
     ///   - visibleIndex: the index of visible tabs on the tab bar
-    init(visibleIndex: Int) {
-        let tabs = WooTab.visibleTabs()
+    init(visibleIndex: Int, isHubMenuFeatureFlagOn: Bool) {
+        let tabs = WooTab.visibleTabs(isHubMenuFeatureFlagOn)
         self = tabs[visibleIndex]
     }
 
     /// Returns the visible tab index.
-    func visibleIndex() -> Int {
-        let tabs = WooTab.visibleTabs()
+    func visibleIndex(_ isHubMenuFeatureFlagOn: Bool) -> Int {
+        let tabs = WooTab.visibleTabs(isHubMenuFeatureFlagOn)
         guard let tabIndex = tabs.firstIndex(where: { $0 == self }) else {
             assertionFailure("Trying to get the visible tab index for tab \(self) while the visible tabs are: \(tabs)")
             return 0
@@ -50,10 +50,10 @@ extension WooTab {
     }
 
     // Note: currently only the Dashboard tab (My Store) view controller is set up in Main.storyboard.
-    private static func visibleTabs() -> [WooTab] {
+    private static func visibleTabs(_ isHubMenuFeatureFlagOn: Bool) -> [WooTab] {
         var tabs: [WooTab] = [.myStore, .orders, .products, .reviews]
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
+        if isHubMenuFeatureFlagOn {
             tabs.append(.hubMenu)
         }
 
@@ -105,6 +105,8 @@ final class MainTabBarController: UITabBarController {
 
     private let stores: StoresManager = ServiceLocator.stores
 
+    private let isHubMenuFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu)
+
     deinit {
         cancellableSiteID?.cancel()
     }
@@ -139,11 +141,11 @@ final class MainTabBarController: UITabBarController {
     }
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        let currentlySelectedTab = WooTab(visibleIndex: selectedIndex)
+        let currentlySelectedTab = WooTab(visibleIndex: selectedIndex, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)
         guard let userSelectedIndex = tabBar.items?.firstIndex(of: item) else {
                 return
         }
-        let userSelectedTab = WooTab(visibleIndex: userSelectedIndex)
+        let userSelectedTab = WooTab(visibleIndex: userSelectedIndex, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)
 
         // Did we reselect the already-selected tab?
         if currentlySelectedTab == userSelectedTab {
@@ -159,7 +161,7 @@ final class MainTabBarController: UITabBarController {
     /// Switches the TabBarcController to the specified Tab
     ///
     func navigateTo(_ tab: WooTab, animated: Bool = false, completion: (() -> Void)? = nil) {
-        selectedIndex = tab.visibleIndex()
+        selectedIndex = tab.visibleIndex(isHubMenuFeatureFlagOn)
         if let navController = selectedViewController as? UINavigationController {
             navController.popToRootViewController(animated: animated) {
                 completion?()
@@ -364,20 +366,20 @@ private extension MainTabBarController {
         viewControllers = {
             var controllers = [UIViewController]()
 
-            let dashboardTabIndex = WooTab.myStore.visibleIndex()
+            let dashboardTabIndex = WooTab.myStore.visibleIndex(isHubMenuFeatureFlagOn)
             controllers.insert(dashboardNavigationController, at: dashboardTabIndex)
 
-            let ordersTabIndex = WooTab.orders.visibleIndex()
+            let ordersTabIndex = WooTab.orders.visibleIndex(isHubMenuFeatureFlagOn)
             controllers.insert(ordersNavigationController, at: ordersTabIndex)
 
-            let productsTabIndex = WooTab.products.visibleIndex()
+            let productsTabIndex = WooTab.products.visibleIndex(isHubMenuFeatureFlagOn)
             controllers.insert(productsNavigationController, at: productsTabIndex)
 
-            let reviewsTabIndex = WooTab.reviews.visibleIndex()
+            let reviewsTabIndex = WooTab.reviews.visibleIndex(isHubMenuFeatureFlagOn)
             controllers.insert(reviewsNavigationController, at: reviewsTabIndex)
 
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
-                let hubMenuTabIndex = WooTab.hubMenu.visibleIndex()
+                let hubMenuTabIndex = WooTab.hubMenu.visibleIndex(isHubMenuFeatureFlagOn)
                 controllers.insert(hubMenuNavigationController, at: hubMenuTabIndex)
             }
 
@@ -421,7 +423,7 @@ private extension MainTabBarController {
 
         reviewsTabCoordinator?.activate(siteID: siteID)
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
+        if isHubMenuFeatureFlagOn {
             if hubMenuTabCoordinator == nil {
                 let hubTabCoordinator = createHubMenuTabCoordinator()
                 self.hubMenuTabCoordinator = hubTabCoordinator
@@ -431,7 +433,7 @@ private extension MainTabBarController {
         }
 
         // Set dashboard to be the default tab.
-        selectedIndex = WooTab.myStore.visibleIndex()
+        selectedIndex = WooTab.myStore.visibleIndex(isHubMenuFeatureFlagOn)
     }
 
     func createDashboardViewController(siteID: Int64) -> UIViewController {
@@ -489,7 +491,7 @@ private extension MainTabBarController {
     ///
     func updateReviewsTabBadge(count: Int) {
         let tab = WooTab.reviews
-        let tabIndex = tab.visibleIndex()
+        let tabIndex = tab.visibleIndex(isHubMenuFeatureFlagOn)
         notificationsBadge.badgeCountWasUpdated(newValue: count, tab: tab, in: tabBar, tabIndex: tabIndex)
     }
 }
@@ -504,7 +506,7 @@ private extension MainTabBarController {
             }
 
             let tab = WooTab.orders
-            let tabIndex = tab.visibleIndex()
+            let tabIndex = tab.visibleIndex(self.isHubMenuFeatureFlagOn)
 
             guard let orderTab: UITabBarItem = self.tabBar.items?[tabIndex] else {
                 return

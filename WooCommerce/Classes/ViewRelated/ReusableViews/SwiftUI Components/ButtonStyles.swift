@@ -199,7 +199,7 @@ private struct LinkButton: View {
 
 private struct PlusButton: View {
     let configuration: ButtonStyleConfiguration
-    
+
     var body: some View {
         HStack {
             Label {
@@ -213,7 +213,7 @@ private struct PlusButton: View {
         .foregroundColor(Color(foregroundColor))
         .background(Color(.clear))
     }
-    
+
     var foregroundColor: UIColor {
         configuration.isPressed ? .accentDark : .accent
     }

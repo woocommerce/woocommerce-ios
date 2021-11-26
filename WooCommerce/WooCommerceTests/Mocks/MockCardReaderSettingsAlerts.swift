@@ -83,6 +83,18 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         }
     }
 
+    func connectingFailedMissingAddress(from: UIViewController,
+                                        continueSearch: @escaping () -> Void,
+                                        cancelSearch: @escaping () -> Void) {
+        if mode == .continueSearchingAfterConnectionFailure {
+            continueSearch()
+        }
+
+        if mode == .cancelSearchingAfterConnectionFailure {
+            cancelSearch()
+        }
+    }
+
     func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) {
         close()
     }

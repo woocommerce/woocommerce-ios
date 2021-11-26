@@ -10,7 +10,7 @@ public class ReceiptStore: Store {
     private let fileStorage: FileStorage
 
     private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
+        storageManager.writerDerivedStorage
     }()
 
     private lazy var receiptNumberFormatter: NumberFormatter = {
@@ -93,9 +93,25 @@ private extension ReceiptStore {
     }
 
     func generateLineItems(order: Order) -> [ReceiptLineItem] {
-        order.items.map { item in
-            ReceiptLineItem(
-                title: item.name,
+        order.items.map {item in
+            var attributesText = ""
+            if !item.attributes.isEmpty {
+                attributesText.append(
+                    item.attributes.map
+                        {attr in
+                            "\(attr.name) \(attr.value)".trimmingCharacters(in: .whitespaces)
+                        }
+                        .joined(separator: ", ")
+                        .trimmingCharacters(in: .whitespaces)
+                )
+            }
+
+            var title = item.name
+            if !attributesText.isEmpty {
+                title.append(". \(attributesText)")
+            }
+            return ReceiptLineItem(
+                title: title,
                 quantity: item.quantity.description,
                 amount: item.subtotal
             )

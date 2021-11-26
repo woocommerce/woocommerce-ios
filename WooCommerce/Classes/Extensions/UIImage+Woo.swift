@@ -667,10 +667,16 @@ extension UIImage {
         return UIImage(systemName: "plus", withConfiguration: Configurations.barButtonItemSymbol)!
     }
 
-    /// Minus Icon
+    /// Small Plus Icon
     ///
-    static var minusImage: UIImage {
-        return UIImage.gridicon(.minus)
+    static var plusSmallImage: UIImage {
+        return UIImage.gridicon(.plusSmall)
+    }
+
+    /// Small Minus Icon
+    ///
+    static var minusSmallImage: UIImage {
+        return UIImage.gridicon(.minusSmall)
     }
 
     /// Search Icon - used in `UIBarButtonItem`

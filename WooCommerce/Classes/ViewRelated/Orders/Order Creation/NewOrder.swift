@@ -155,7 +155,7 @@ private struct ProductsSection: View {
                 Button {
                     // TODO: Decrement the product quantity
                 } label: {
-                    Image(uiImage: .minusImage)
+                    Image(uiImage: .minusSmallImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(height: textSize.height)
@@ -168,7 +168,7 @@ private struct ProductsSection: View {
                 Button {
                     // TODO: Increment the product quantity
                 } label: {
-                    Image(uiImage: .plusImage)
+                    Image(uiImage: .plusSmallImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(height: textSize.height)

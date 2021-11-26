@@ -94,23 +94,23 @@ struct SimplePaymentsMethod_Preview: PreviewProvider {
     static var previews: some View {
         NavigationView {
             SimplePaymentsMethod(title: "Take payment ($15.99)")
-                .environment(\.colorScheme, .light)
-                .previewDisplayName("Light")
                 .navigationBarTitleDisplayMode(.inline)
         }
+        .environment(\.colorScheme, .light)
+        .previewDisplayName("Light")
 
         NavigationView {
             SimplePaymentsMethod(title: "Take payment ($15.99)")
-                .environment(\.colorScheme, .dark)
-                .previewDisplayName("Dark")
                 .navigationBarTitleDisplayMode(.inline)
         }
+        .environment(\.colorScheme, .dark)
+        .previewDisplayName("Dark")
 
         NavigationView {
             SimplePaymentsMethod(title: "Take payment ($15.99)")
-                .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
-                .previewDisplayName("Accessibility")
                 .navigationBarTitleDisplayMode(.inline)
         }
+        .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
+        .previewDisplayName("Accessibility")
     }
 }

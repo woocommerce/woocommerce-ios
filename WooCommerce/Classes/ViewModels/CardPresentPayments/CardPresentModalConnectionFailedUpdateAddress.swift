@@ -16,7 +16,7 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
 
     let image: UIImage = .paymentErrorImage
 
-    let primaryButtonTitle: String? = Localization.tryAgain
+    let primaryButtonTitle: String? = Localization.retry
 
     let secondaryButtonTitle: String? = Localization.cancel
 
@@ -46,17 +46,20 @@ private extension CardPresentModalConnectingFailedUpdateAddress {
     enum Localization {
         static let title = NSLocalizedString(
             "Please update your store address to proceed.",
-            comment: "Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems"
+            comment: "Title of the alert presented when the user tries to connect to a specific card reader and it fails " +
+            "due to address problems"
         )
 
-        static let tryAgain = NSLocalizedString(
-            "Try again",
-            comment: "Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue."
+        static let retry = NSLocalizedString(
+            "Retry After Updating",
+            comment: "Button to try again after connecting to a specific reader fails due to address problems. " +
+            "Intended for use after the merchant corrects the address in the store admin pages."
         )
 
         static let cancel = NSLocalizedString(
             "Cancel",
-            comment: "Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching."
+            comment: "Button to dismiss the alert presented when connecting to a specific reader fails due to address " +
+            "problems. This also cancels searching."
         )
     }
 }

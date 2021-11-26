@@ -562,17 +562,15 @@ private extension CardReaderConnectionController {
             self.state = .cancel
         }
 
-        guard let connectionError = error as? CardReaderConfigError else {
-            alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
-            return
+        guard case CardReaderServiceError.connection(let underlyingError) = error else {
+            return alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
         }
 
-        switch connectionError {
+        switch underlyingError {
         case .incompleteStoreAddress(adminUrl: _):
             // I figure we'd like to pass the store url to the error alert?
             alerts.connectingFailedMissingAddress(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
-        case .unknown(error: _):
-            
+        default:
             alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
         }
     }

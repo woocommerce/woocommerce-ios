@@ -65,7 +65,7 @@ extension CardReaderServiceError: LocalizedError {
 
 /// Underlying error. Models the specific error that made a given
 /// interaction with the SDK fail.
-public enum UnderlyingError: Error {
+public enum UnderlyingError: Error, Equatable {
     /// The service is busy executing another command. The service can only execute a single command at a time.
     case busy
 
@@ -193,14 +193,16 @@ public enum UnderlyingError: Error {
     /// internal state of the CardReaderService.
     case internalServiceError
 
-    case locationIdMissing
+    /// The store setup is incomplete, and the action can't be performed until the user provides a full store address in the site admin.
+    /// May include the URL for the appropriate admin page
+    case incompleteStoreAddress(adminUrl: URL?)
 }
 
 extension UnderlyingError {
     init(with configurationError: CardReaderConfigError) {
         switch configurationError {
-        case .incompleteStoreAddress(_):
-            self =  .locationIdMissing
+        case .incompleteStoreAddress(let adminUrl):
+            self = .incompleteStoreAddress(adminUrl: adminUrl)
         case .unknown(let error):
             self  = UnderlyingError(with: error)
         }
@@ -221,10 +223,6 @@ extension UnderlyingError {
         default:
             return false
         }
-    }
-
-    public var isLocationIDMissingError: Bool {
-        return self == .locationIdMissing
     }
 }
 
@@ -348,10 +346,10 @@ updating the application or using a different reader
         case .internalServiceError:
             return NSLocalizedString("Sorry, this payment couldn’t be processed",
                                      comment: "Error message when the card reader service experiences an unexpected internal service error.")
-
-        case .locationIdMissing:
-            return NSLocalizedString("Location Id missing",
-                                     comment: "Error message when it is not possible to get a location id.")
+        case .incompleteStoreAddress(_):
+            return NSLocalizedString("The store address is incomplete or missing, please update it before continuing.",
+                                     comment: "Error message when there is an issue with the store address preventing " +
+                                     "an action (e.g. reader connection.)")
         }
     }
 }

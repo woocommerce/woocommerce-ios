@@ -146,7 +146,6 @@ private extension SimplePaymentsAmount {
         static let title = NSLocalizedString("Take Payment", comment: "Title for the simple payments screen")
         static let instructions = NSLocalizedString("Enter Amount", comment: "Short instructions label in the simple payments screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the simple payments screen")
-        static let error = NSLocalizedString("There was an error creating the order", comment: "Notice text after failing to create a simple payments order.")
 
         static func buttonTitle() -> String {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplePaymentsPrototype) {

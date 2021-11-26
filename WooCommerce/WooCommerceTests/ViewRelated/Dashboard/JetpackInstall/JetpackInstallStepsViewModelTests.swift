@@ -56,9 +56,12 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
         XCTAssertEqual(activatedPluginName, "jetpack/jetpack")
     }
 
-    func test_currentStep_is_installation_initially() {
+    func test_currentStep_is_installation_on_startInstallation() {
         // Given
         let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID)
+
+        // When
+        viewModel.startInstallation()
 
         // Then
         XCTAssertEqual(viewModel.currentStep, .installation)

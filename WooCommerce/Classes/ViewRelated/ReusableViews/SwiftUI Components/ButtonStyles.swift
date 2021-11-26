@@ -23,6 +23,12 @@ struct LinkButtonStyle: ButtonStyle {
     }
 }
 
+struct PlusButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        return PlusButton(configuration: configuration)
+    }
+}
+
 /// Adds a primary button style while showing a progress view on top of the button when required.
 ///
 struct PrimaryLoadingButtonStyle: PrimitiveButtonStyle {
@@ -191,6 +197,28 @@ private struct LinkButton: View {
     }
 }
 
+private struct PlusButton: View {
+    let configuration: ButtonStyleConfiguration
+    
+    var body: some View {
+        HStack {
+            Label {
+                configuration.label
+            } icon: {
+                Image(uiImage: .plusImage)
+            }
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+        .foregroundColor(Color(foregroundColor))
+        .background(Color(.clear))
+    }
+    
+    var foregroundColor: UIColor {
+        configuration.isPressed ? .accentDark : .accent
+    }
+}
+
 private enum Style {
     static let defaultCornerRadius = CGFloat(8.0)
     static let defaultBorderWidth = CGFloat(1.0)
@@ -216,6 +244,9 @@ struct PrimaryButton_Previews: PreviewProvider {
 
             Button("Link button") {}
                 .buttonStyle(LinkButtonStyle())
+
+            Button("Plus button") {}
+                .buttonStyle(PlusButtonStyle())
         }
         .padding()
     }

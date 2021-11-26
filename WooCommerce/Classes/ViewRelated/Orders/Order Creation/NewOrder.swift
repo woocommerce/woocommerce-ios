@@ -93,9 +93,10 @@ private struct ProductsSection: View {
                 // TODO: Add a product row for each product added to the order
                 ProductRow()
 
-                AddButton(title: NewOrder.Localization.addProduct) {
+                Button(NewOrder.Localization.addProduct) {
                     // TODO: Open Add Product modal view
                 }
+                .buttonStyle(PlusButtonStyle())
             }
             .padding(.horizontal, insets: geometry.safeAreaInsets)
             .padding()
@@ -192,26 +193,6 @@ private struct ProductsSection: View {
                     break
                 }
             }
-        }
-    }
-}
-
-// MARK: Custom Views
-/// Represents a button with a plus icon.
-/// Used for any button that adds details to the order.
-///
-private struct AddButton: View {
-    let title: String
-    let onButtonTapped: () -> Void
-
-    var body: some View {
-        Button(action: { onButtonTapped() }) {
-            Label {
-                Text(title)
-            } icon: {
-                Image(uiImage: .plusImage)
-            }
-            Spacer()
         }
     }
 }

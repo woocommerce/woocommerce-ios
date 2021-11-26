@@ -60,7 +60,24 @@ final class JetpackInstallStepsViewModel: ObservableObject {
     ///
     private func checkSiteConnection() {
         currentStep = .connection
-        // TODO-5365 - update this in the workaround PR
+        let siteFetch = AccountAction.loadAndSynchronizeSite(siteID: siteID,
+                                                             forcedUpdate: true,
+                                                             isJetpackConnectionPackageSupported: true) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let site):
+                print("😛 \(site.isWooCommerceActive)")
+                guard site.isWooCommerceActive, !site.isJetpackCPConnected else {
+                    // TODO-5365: handle failure with an error message
+                    return
+                }
+                self.currentStep = .done
+            case .failure(let error):
+                // TODO-5365: handle failure with an error message
+                print(error)
+            }
+        }
+        stores.dispatch(siteFetch)
     }
 }
 

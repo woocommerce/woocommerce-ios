@@ -15,7 +15,7 @@ final class JetpackInstallStepsViewModel: ObservableObject {
 
     /// Current step of the installation
     ///
-    @Published private(set) var currentStep: JetpackInstallStep = .installation
+    @Published private(set) var currentStep: JetpackInstallStep?
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
@@ -25,6 +25,7 @@ final class JetpackInstallStepsViewModel: ObservableObject {
     /// Starts the steps by installing the Jetpack plugin.
     ///
     func startInstallation() {
+        currentStep = .installation
         let installationAction = SitePluginAction.installSitePlugin(siteID: siteID, slug: Constants.jetpackSlug) { [weak self] result in
             guard let self = self else { return }
             switch result {

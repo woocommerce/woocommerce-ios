@@ -8,7 +8,7 @@ struct JetpackInstallStepsView: View {
     private let siteURL: String
 
     // View model to handle the installation
-    private let viewModel: JetpackInstallStepsViewModel
+    @ObservedObject private var viewModel: JetpackInstallStepsViewModel
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -34,6 +34,7 @@ struct JetpackInstallStepsView: View {
         self.siteURL = siteURL
         self.viewModel = viewModel
         self.dismissAction = dismissAction
+        viewModel.startInstallation()
     }
 
     var body: some View {
@@ -78,26 +79,28 @@ struct JetpackInstallStepsView: View {
                 // Install steps
                 VStack(alignment: .leading, spacing: Constants.stepItemsVerticalSpacing) {
                     ForEach(JetpackInstallStep.allCases) { step in
-                        HStack(spacing: Constants.stepItemHorizontalSpacing) {
-                            if step == viewModel.currentStep, step != .done {
-                                ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                            } else if step > viewModel.currentStep {
-                                Image(uiImage: .checkEmptyCircleImage)
-                                    .resizable()
-                                    .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
-                            } else {
-                                Image(uiImage: .checkCircleImage)
-                                    .resizable()
-                                    .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
-                            }
-
-                            Text(step.title)
-                                .font(.body)
-                                .if(step <= viewModel.currentStep) {
-                                    $0.bold()
+                        viewModel.currentStep.map { currentStep in
+                            HStack(spacing: Constants.stepItemHorizontalSpacing) {
+                                if step == currentStep, step != .done {
+                                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                                } else if step > currentStep {
+                                    Image(uiImage: .checkEmptyCircleImage)
+                                        .resizable()
+                                        .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
+                                } else {
+                                    Image(uiImage: .checkCircleImage)
+                                        .resizable()
+                                        .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
                                 }
-                                .foregroundColor(Color(.text))
-                                .opacity(step <= viewModel.currentStep ? 1 : 0.5)
+
+                                Text(step.title)
+                                    .font(.body)
+                                    .if(step <= currentStep) {
+                                        $0.bold()
+                                    }
+                                    .foregroundColor(Color(.text))
+                                    .opacity(step <= currentStep ? 1 : 0.5)
+                            }
                         }
                     }
                 }

@@ -3,6 +3,7 @@ import XCTest
 import Combine
 
 @testable import WooCommerce
+@testable import Yosemite
 
 final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
@@ -76,5 +77,35 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
         // When & Then
         XCTAssertEqual(viewModel.taxRate, "4.30")
+    }
+
+    func test_when_order_is_updated_loading_indicator_is_toggled() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+        mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, onCompletion):
+                onCompletion(.success(Order.fake()))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let loadingStates: [Bool] = waitFor { promise in
+            viewModel.$showLoadingIndicator
+                .dropFirst() // Initial value
+                .collect(2)  // Collect toggle
+                .first()
+                .sink { loadingStates in
+                    promise(loadingStates)
+                }
+                .store(in: &self.subscriptions)
+            viewModel.updateOrder()
+        }
+
+        // Then
+        XCTAssertEqual(loadingStates, [true, false]) // Loading, then not loading.
     }
 }

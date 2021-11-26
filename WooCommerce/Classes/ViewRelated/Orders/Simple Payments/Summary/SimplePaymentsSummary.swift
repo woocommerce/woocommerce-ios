@@ -228,9 +228,9 @@ private struct TakePaymentSection: View {
             Divider()
 
             Button(SimplePaymentsSummary.Localization.takePayment(total: viewModel.total), action: {
-                print("Take payment pressed")
+                viewModel.updateOrder()
             })
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.showLoadingIndicator))
             .padding()
 
         }

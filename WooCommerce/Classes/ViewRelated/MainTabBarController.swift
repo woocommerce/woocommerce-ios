@@ -421,13 +421,14 @@ private extension MainTabBarController {
 
         reviewsTabCoordinator?.activate(siteID: siteID)
 
-        if hubMenuTabCoordinator == nil {
-            let hubTabCoordinator = createHubMenuTabCoordinator()
-            self.hubMenuTabCoordinator = hubTabCoordinator
-            hubTabCoordinator.start()
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
+            if hubMenuTabCoordinator == nil {
+                let hubTabCoordinator = createHubMenuTabCoordinator()
+                self.hubMenuTabCoordinator = hubTabCoordinator
+                hubTabCoordinator.start()
+            }
+            hubMenuTabCoordinator?.activate(siteID: siteID)
         }
-
-        hubMenuTabCoordinator?.activate(siteID: siteID)
 
         // Set dashboard to be the default tab.
         selectedIndex = WooTab.myStore.visibleIndex()

@@ -497,6 +497,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.cloudImage)
     }
 
+    func testHubMenuIconIsNotNil() {
+        XCTAssertNotNil(UIImage.hubMenu)
+    }
+
     func testMenuImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.menuImage)
     }

@@ -46,6 +46,10 @@ final class CardReaderConnectionController {
         ///
         case updating(progress: Float)
 
+        /// User chose to retry the connection to the card reader. Starts the search again, by dismissing modals and initializing from scratch
+        ///
+        case retry
+
         /// User cancelled search/connecting to a card reader. The completion passed to `searchAndConnect`
         /// will be called with a `success` `Bool` `False` result. The view controller passed to `searchAndConnect` will be
         /// dereferenced and the state set to `idle`
@@ -142,6 +146,8 @@ private extension CardReaderConnectionController {
             onFoundReader()
         case .foundSeveralReaders:
             onFoundSeveralReaders()
+        case .retry:
+            onRetry()
         case .cancel:
             onCancel()
         case .connectToReader:
@@ -433,6 +439,16 @@ private extension CardReaderConnectionController {
                               cancel: cancel)
     }
 
+    /// Retry a search for a card reader
+    ///
+    func onRetry() {
+        alerts.dismiss()
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
+            self?.state = .beginSearch
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
     /// End the search for a card reader
     ///
     func onCancel() {
@@ -555,7 +571,7 @@ private extension CardReaderConnectionController {
         }
 
         let continueSearch = {
-            self.state = .searching
+            self.state = .retry
         }
 
         let cancelSearch = {
@@ -568,7 +584,6 @@ private extension CardReaderConnectionController {
 
         switch underlyingError {
         case .incompleteStoreAddress(adminUrl: _):
-            // I figure we'd like to pass the store url to the error alert?
             alerts.connectingFailedMissingAddress(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
         default:
             alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)

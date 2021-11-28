@@ -9,6 +9,10 @@ struct SimplePaymentsMethod: View {
     ///
     @ObservedObject var viewModel: SimplePaymentsMethodsViewModel
 
+    /// Determines if the "pay by cash" alert confirmation should be shown.
+    ///
+    @State var showingCashAlert = false
+
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.noSpacing) {
 
@@ -20,7 +24,7 @@ struct SimplePaymentsMethod: View {
 
             Group {
                 MethodRow(icon: .priceImage, title: Localization.cash) {
-                    print("Tapped Cash")
+                    showingCashAlert = true
                 }
 
                 Divider()
@@ -39,6 +43,14 @@ struct SimplePaymentsMethod: View {
         }
         .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(viewModel.title)
+        .alert(isPresented: $showingCashAlert) {
+            Alert(title: Text(Localization.markAsPaidTitle),
+                  message: Text(viewModel.payByCashInfo()),
+                  primaryButton: .cancel(),
+                  secondaryButton: .default(Text(Localization.markAsPaidButton), action: {
+                print("Tapped marked as pay")
+            }))
+        }
     }
 }
 
@@ -93,6 +105,8 @@ private extension SimplePaymentsMethod {
         static let header = NSLocalizedString("Choose your payment method", comment: "Heading text on the select payment method screen for simple payments")
         static let cash = NSLocalizedString("Cash", comment: "Cash method title on the select payment method screen for simple payments")
         static let card = NSLocalizedString("Card", comment: "Card method title on the select payment method screen for simple payments")
+        static let markAsPaidTitle = NSLocalizedString("Mark as Paid?", comment: "Alert title when selecting the cash payment method for simple payments")
+        static let markAsPaidButton = NSLocalizedString("Mark as Paid", comment: "Alert button when selecting the cash payment method for simple payments")
     }
 
     enum Layout {

@@ -32,12 +32,23 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         self.stores = stores
         self.title = Localization.title(total: formattedTotal)
     }
+
+    /// Creates the info text when the merchant selects the cash payment method.
+    ///
+    func payByCashInfo() -> String {
+        Localization.markAsPaidInfo(total: formattedTotal)
+    }
 }
 
 private extension SimplePaymentsMethodsViewModel {
     enum Localization {
         static func title(total: String) -> String {
             NSLocalizedString("Take Payment (\(total))", comment: "Navigation bar title for the Simple Payments Methods screens")
+        }
+
+        static func markAsPaidInfo(total: String) -> String {
+            NSLocalizedString("This will mark your order as complete if you received \(total) outside of WooCommerce",
+                              comment: "Alert info when selecting the cash payment method for simple payments")
         }
     }
 }

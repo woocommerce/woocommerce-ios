@@ -45,15 +45,23 @@ struct SimplePaymentsMethod: View {
             // Pushes content to the top
             Spacer()
         }
+        .disabled(viewModel.disableViewActions)
         .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(viewModel.title)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                ProgressView()
+                    .renderedIf(viewModel.showLoadingIndicator)
+            }
+        }
         .alert(isPresented: $showingCashAlert) {
             Alert(title: Text(Localization.markAsPaidTitle),
                   message: Text(viewModel.payByCashInfo()),
                   primaryButton: .cancel(),
                   secondaryButton: .default(Text(Localization.markAsPaidButton), action: {
-                viewModel.markOrderAsPaid()
-                dismiss()
+                viewModel.markOrderAsPaid {
+                    dismiss()
+                }
             }))
         }
     }

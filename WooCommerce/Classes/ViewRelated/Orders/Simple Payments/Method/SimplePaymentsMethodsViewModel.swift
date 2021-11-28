@@ -9,6 +9,18 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     let title: String
 
+    /// Defines if the view should show a loading indicator.
+    /// Currently set while marking the order as complete
+    ///
+    @Published private(set) var showLoadingIndicator = false
+
+    /// Defines if the view should be disabled to prevent any further action.
+    /// Useful to prevent any double tap while a network operation is being performed.
+    ///
+    var disableViewActions: Bool {
+        showLoadingIndicator
+    }
+
     /// Store's ID.
     ///
     private let siteID: Int64
@@ -39,17 +51,16 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         Localization.markAsPaidInfo(total: formattedTotal)
     }
 
-    /// Mark an order as paid and return immediately.
+    /// Mark an order as paid and notify if successful.
     ///
-    func markOrderAsPaid() {
+    func markOrderAsPaid(onSuccess: @escaping () -> ()) {
+        showLoadingIndicator = true
         let action = OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { [weak self] error in
-            print("Error: \(error?.localizedDescription ?? "No error")")
-            guard let self = self else {
-                print("Did nothing because self did not exists")
+            guard let self = self, error == nil else {
                 return
             }
-
-            print("Self does exists")
+            self.showLoadingIndicator = false
+            onSuccess()
         }
         stores.dispatch(action)
     }

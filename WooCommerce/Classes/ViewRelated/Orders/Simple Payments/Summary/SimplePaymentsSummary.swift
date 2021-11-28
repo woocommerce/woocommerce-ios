@@ -36,7 +36,7 @@ struct SimplePaymentsSummary: View {
             TakePaymentSection(viewModel: viewModel)
 
             // Navigation To Payment Methods
-            LazyNavigationLink(destination: SimplePaymentsMethod(title: Localization.takePayment(total: viewModel.total)),
+            LazyNavigationLink(destination: SimplePaymentsMethod(viewModel: viewModel.createMethodsViewModel()),
                                isActive: $viewModel.navigateToPaymentMethods) {
                 EmptyView()
             }

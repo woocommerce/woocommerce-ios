@@ -5,9 +5,9 @@ import SwiftUI
 ///
 struct SimplePaymentsMethod: View {
 
-    /// Navigation bar title.
+    /// ViewModel to render the view content.
     ///
-    let title: String
+    @ObservedObject var viewModel: SimplePaymentsMethodsViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.noSpacing) {
@@ -38,7 +38,7 @@ struct SimplePaymentsMethod: View {
             Spacer()
         }
         .background(Color(.listBackground).ignoresSafeArea())
-        .navigationTitle(title)
+        .navigationTitle(viewModel.title)
     }
 }
 
@@ -113,21 +113,21 @@ private extension SimplePaymentsMethod {
 struct SimplePaymentsMethod_Preview: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            SimplePaymentsMethod(title: "Take payment ($15.99)")
+            SimplePaymentsMethod(viewModel: .init(formattedTotal: "$15.99"))
                 .navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.colorScheme, .light)
         .previewDisplayName("Light")
 
         NavigationView {
-            SimplePaymentsMethod(title: "Take payment ($15.99)")
+            SimplePaymentsMethod(viewModel: .init(formattedTotal: "$15.99"))
                 .navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.colorScheme, .dark)
         .previewDisplayName("Dark")
 
         NavigationView {
-            SimplePaymentsMethod(title: "Take payment ($15.99)")
+            SimplePaymentsMethod(viewModel: .init(formattedTotal: "$15.99"))
                 .navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.sizeCategory, .accessibilityExtraExtraLarge)

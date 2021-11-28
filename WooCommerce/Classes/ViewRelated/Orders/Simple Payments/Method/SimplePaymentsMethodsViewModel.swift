@@ -39,7 +39,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         Localization.markAsPaidInfo(total: formattedTotal)
     }
 
-    /// Mark an order as paid and dismiss flow
+    /// Mark an order as paid and return immediately.
     ///
     func markOrderAsPaid() {
         let action = OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { [weak self] error in

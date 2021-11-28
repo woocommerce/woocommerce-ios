@@ -5,6 +5,10 @@ import SwiftUI
 ///
 struct SimplePaymentsMethod: View {
 
+    /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
+    ///
+    var dismiss: (() -> Void) = {}
+
     /// ViewModel to render the view content.
     ///
     @ObservedObject var viewModel: SimplePaymentsMethodsViewModel
@@ -49,6 +53,7 @@ struct SimplePaymentsMethod: View {
                   primaryButton: .cancel(),
                   secondaryButton: .default(Text(Localization.markAsPaidButton), action: {
                 viewModel.markOrderAsPaid()
+                dismiss()
             }))
         }
     }

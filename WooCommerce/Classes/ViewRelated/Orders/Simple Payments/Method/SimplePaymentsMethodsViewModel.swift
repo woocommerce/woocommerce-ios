@@ -38,6 +38,21 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     func payByCashInfo() -> String {
         Localization.markAsPaidInfo(total: formattedTotal)
     }
+
+    /// Mark an order as paid and dismiss flow
+    ///
+    func markOrderAsPaid() {
+        let action = OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { [weak self] error in
+            print("Error: \(error?.localizedDescription ?? "No error")")
+            guard let self = self else {
+                print("Did nothing because self did not exists")
+                return
+            }
+
+            print("Self does exists")
+        }
+        stores.dispatch(action)
+    }
 }
 
 private extension SimplePaymentsMethodsViewModel {

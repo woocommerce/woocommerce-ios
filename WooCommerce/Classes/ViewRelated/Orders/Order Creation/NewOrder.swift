@@ -81,6 +81,7 @@ struct NewOrder: View {
 ///
 private struct ProductsSection: View {
     let geometry: GeometryProxy
+    @State private var showAddProduct: Bool = false
 
     var body: some View {
         Group {
@@ -94,9 +95,12 @@ private struct ProductsSection: View {
                 ProductRow()
 
                 Button(NewOrder.Localization.addProduct) {
-                    // TODO: Open Add Product modal view
+                    showAddProduct.toggle()
                 }
                 .buttonStyle(PlusButtonStyle())
+                .sheet(isPresented: $showAddProduct) {
+                    AddProduct(isPresented: $showAddProduct)
+                }
             }
             .padding(.horizontal, insets: geometry.safeAreaInsets)
             .padding()

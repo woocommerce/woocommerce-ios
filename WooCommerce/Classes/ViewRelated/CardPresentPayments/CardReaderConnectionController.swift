@@ -584,7 +584,7 @@ private extension CardReaderConnectionController {
 
         switch underlyingError {
         case .incompleteStoreAddress(adminUrl: _):
-            alerts.connectingFailedMissingAddress(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
+            alerts.connectingFailedMissingAddress(from: from, retrySearch: continueSearch, cancelSearch: cancelSearch)
         default:
             alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
         }

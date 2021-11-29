@@ -26,9 +26,9 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     }
 
     func connectingFailedMissingAddress(from: UIViewController,
-                                        continueSearch: @escaping () -> Void,
+                                        retrySearch: @escaping () -> Void,
                                         cancelSearch: @escaping () -> Void) {
-        setViewModelAndPresent(from: from, viewModel: connectingFailedUpdateAddress(continueSearch: continueSearch, cancelSearch: cancelSearch))
+        setViewModelAndPresent(from: from, viewModel: connectingFailedUpdateAddress(retrySearch: retrySearch, cancelSearch: cancelSearch))
     }
 
     func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) {
@@ -166,8 +166,8 @@ private extension CardReaderSettingsAlerts {
         CardPresentModalConnectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch)
     }
 
-    func connectingFailedUpdateAddress(continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalConnectingFailedUpdateAddress(continueSearch: continueSearch, cancelSearch: cancelSearch)
+    func connectingFailedUpdateAddress(retrySearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalConnectingFailedUpdateAddress(retrySearch: retrySearch, cancelSearch: cancelSearch)
     }
 
     func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

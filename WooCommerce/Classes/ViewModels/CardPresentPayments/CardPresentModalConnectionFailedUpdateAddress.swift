@@ -4,7 +4,7 @@ import Yosemite
 /// Modal presented when an error occurs while connecting to a reader due to problems with the address
 ///
 final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsModalViewModel {
-    private let continueSearchAction: () -> Void
+    private let retrySearchAction: () -> Void
     private let cancelSearchAction: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedTopInfo
@@ -26,13 +26,13 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
 
     let bottomSubtitle: String? = nil
 
-    init(continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
-        self.continueSearchAction = continueSearch
+    init(retrySearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+        self.retrySearchAction = retrySearch
         self.cancelSearchAction = cancelSearch
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        continueSearchAction()
+        retrySearchAction()
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

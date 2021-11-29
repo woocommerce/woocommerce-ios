@@ -17,7 +17,12 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
 
     let image: UIImage = .paymentErrorImage
 
-    let primaryButtonTitle: String? = Localization.retry
+    var primaryButtonTitle: String? {
+        guard adminUrl != nil else {
+            return Localization.retry
+        }
+        return Localization.openAdmin
+    }
 
     let secondaryButtonTitle: String? = Localization.cancel
 
@@ -34,7 +39,11 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        retrySearchAction()
+        guard let adminUrl = adminUrl,
+              let viewController = viewController else {
+            return retrySearchAction()
+        }
+        WebviewHelper.launch(adminUrl, with: viewController)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
@@ -50,6 +59,12 @@ private extension CardPresentModalConnectingFailedUpdateAddress {
             "Please update your store address to proceed.",
             comment: "Title of the alert presented when the user tries to connect to a specific card reader and it fails " +
             "due to address problems"
+        )
+
+        static let openAdmin = NSLocalizedString(
+            "Enter Address",
+            comment: "Button to open a webview at the admin pages, so that the merchant can update their store address " +
+            "to continue setting up In Person Payments"
         )
 
         static let retry = NSLocalizedString(

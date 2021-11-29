@@ -252,7 +252,7 @@ final class OrdersRemoteTests: XCTestCase {
     func test_create_order_properly_encodes_fee_lines() throws {
         // Given
         let remote = OrdersRemote(network: network)
-        let fee = OrderFeeLine(feeID: 0, name: "Line", taxClass: "", taxStatus: .none, total: "12.34", totalTax: "", taxes: [], attributes: [])
+        let fee = OrderFeeLine(feeID: 333, name: "Line", taxClass: "", taxStatus: .none, total: "12.34", totalTax: "", taxes: [], attributes: [])
         let order = Order.fake().copy(fees: [fee])
 
         // When
@@ -260,8 +260,9 @@ final class OrdersRemoteTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
-        let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: String]]).first
-        let expected = [
+        let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: AnyHashable]]).first
+        let expected: [String: AnyHashable] = [
+            "id": fee.feeID,
             "name": fee.name,
             "tax_status": fee.taxStatus.rawValue,
             "tax_class": fee.taxClass,

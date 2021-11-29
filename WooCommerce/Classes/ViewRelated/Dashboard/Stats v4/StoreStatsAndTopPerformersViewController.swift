@@ -32,8 +32,6 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     private var periodVCs = [StoreStatsAndTopPerformersPeriodViewController]()
     private let siteID: Int64
     private var isSyncing = false
-    private var lastFullSyncTimestamp: Date?
-    private let minimalIntervalBetweenSync: TimeInterval = 30
 
     // MARK: - View Lifecycle
 
@@ -99,11 +97,6 @@ private extension StoreStatsAndTopPerformersViewController {
             return
         }
 
-        if !forced, let lastFullSyncTimestamp = lastFullSyncTimestamp, Date().timeIntervalSince(lastFullSyncTimestamp) < minimalIntervalBetweenSync {
-            // less than 30 s from last full sync
-            return
-        }
-
         isSyncing = true
 
         let group = DispatchGroup()
@@ -123,7 +116,6 @@ private extension StoreStatsAndTopPerformersViewController {
                     self?.handleSyncError(error: error)
                     onCompletion?(.failure(error))
                 } else {
-                    self?.lastFullSyncTimestamp = Date()
                     self?.updateSiteVisitors(mode: .default)
                     onCompletion?(.success(()))
                 }
@@ -141,6 +133,14 @@ private extension StoreStatsAndTopPerformersViewController {
                 return
             }
 
+            if !forced, let lastFullSyncTimestamp = vc.lastFullSyncTimestamp, Date().timeIntervalSince(lastFullSyncTimestamp) < vc.minimalIntervalBetweenSync {
+                // data refresh is not required
+                return
+            }
+
+            // local var to catch sync error for period
+            var periodSyncError: Error? = nil
+
             vc.siteTimezone = timezoneForStatsDates
 
             let currentDate = Date()
@@ -157,7 +157,7 @@ private extension StoreStatsAndTopPerformersViewController {
                     self?.trackStatsLoaded(for: vc.granularity)
                 case .failure(let error):
                     DDLogError("⛔️ Error synchronizing order stats: \(error)")
-                    syncError = error
+                    periodSyncError = error
                 }
                 group.leave()
             }
@@ -169,7 +169,7 @@ private extension StoreStatsAndTopPerformersViewController {
                                     latestDateToInclude: latestDateToInclude) { result in
                 if case let .failure(error) = result {
                     DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
-                    syncError = error
+                    periodSyncError = error
                 }
                 group.leave()
             }
@@ -181,9 +181,16 @@ private extension StoreStatsAndTopPerformersViewController {
                                      latestDateToInclude: latestDateToInclude) { result in
                 if case let .failure(error) = result {
                     DDLogError("⛔️ Error synchronizing top earners stats: \(error)")
-                    syncError = error
+                    periodSyncError = error
                 }
                 group.leave()
+            }
+
+            // Update last successful data sync timestamp
+            if periodSyncError == nil {
+                vc.lastFullSyncTimestamp = Date()
+            } else {
+                syncError = periodSyncError
             }
         }
     }

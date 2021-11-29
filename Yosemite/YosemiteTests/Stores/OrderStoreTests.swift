@@ -66,7 +66,7 @@ final class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
-        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statuses: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 4)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 4)
@@ -88,7 +88,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 0)
 
-        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statuses: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 4)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 4)
             XCTAssertNil(error)
@@ -112,7 +112,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 0)
 
-        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statuses: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
             XCTAssertNil(error)
 
             let predicate = NSPredicate(format: "orderID = %ld", remoteOrder.orderID)
@@ -140,7 +140,7 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "broken-orders-mark-2")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statuses: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 6)
 
@@ -158,7 +158,7 @@ final class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "generic_error")
-        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statuses: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
             XCTAssertNotNil(error)
 
             expectation.fulfill()
@@ -174,7 +174,7 @@ final class OrderStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve orders empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statuses: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
             XCTAssertNotNil(error)
 
             expectation.fulfill()
@@ -633,21 +633,44 @@ final class OrderStoreTests: XCTestCase {
     }
 
 
-    func test_create_simple_payments_order_properly_sends_values_as_fees() throws {
+    func test_create_simple_payments_order_properly_sends_values_as_fees_with_no_taxes() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
 
         // When
-        let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, amount: "125.50") { _ in }
+        let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, amount: "125.50", taxable: false) { _ in }
         store.onAction(action)
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
-        let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: String]]).first
-        let expected = [
+        let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: AnyHashable]]).first
+        let expected: [String: AnyHashable] = [
+            "id": 0,
             "name": "Simple Payments",
             "tax_status": "none",
+            "tax_class": "",
+            "total": "125.50"
+        ]
+        assertEqual(received, expected)
+    }
+
+    func test_create_simple_payments_order_properly_sends_values_as_fees_with_taxes() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
+
+        // When
+        let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, amount: "125.50", taxable: true) { _ in }
+        store.onAction(action)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: AnyHashable]]).first
+        let expected: [String: AnyHashable] = [
+            "id": 0,
+            "name": "Simple Payments",
+            "tax_status": "taxable",
             "tax_class": "",
             "total": "125.50"
         ]
@@ -661,7 +684,7 @@ final class OrderStoreTests: XCTestCase {
 
         // When
         let storedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, amount: "125.50") { _ in
+            let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, amount: "125.50", taxable: false) { _ in
                 let order = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)?.toReadOnly()
                 promise(order)
             }
@@ -688,6 +711,56 @@ final class OrderStoreTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(storedOrder)
+    }
+
+    func test_update_simple_payments_order_sends_correct_values() throws {
+        // Given
+        let feeID: Int64 = 1234
+        let amount = "100.00"
+        let taxable = true
+        let note = "This is a note"
+        let email = "email@email.com"
+
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let action = OrderAction.updateSimplePaymentsOrder(siteID: sampleSiteID,
+                                                           orderID: sampleOrderID,
+                                                           feeID: feeID,
+                                                           amount: amount,
+                                                           taxable: taxable,
+                                                           orderNote: note,
+                                                           email: email) { _ in }
+        store.onAction(action)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let receivedFees = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: AnyHashable]]).first
+        let expectedFees: [String: AnyHashable] = [
+            "id": 1234,
+            "name": "Simple Payments",
+            "tax_status": "taxable",
+            "tax_class": "",
+            "total": "100.00"
+        ]
+        assertEqual(expectedFees, receivedFees)
+
+        let receivedBilling = try XCTUnwrap(request.parameters["billing"] as? [String: AnyHashable])
+        let expectedBilling: [String: AnyHashable] = [
+            "first_name": "",
+            "last_name": "",
+            "address_1": "",
+            "city": "",
+            "state": "",
+            "postcode": "",
+            "country": "",
+            "email": email
+        ]
+        assertEqual(receivedBilling, expectedBilling)
+
+        let receivedNote = try XCTUnwrap(request.parameters["customer_note"] as? String)
+        assertEqual(receivedNote, note)
     }
 }
 

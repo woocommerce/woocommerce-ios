@@ -29,6 +29,12 @@ public final class SitePluginStore: Store {
         switch action {
         case .synchronizeSitePlugins(let siteID, let onCompletion):
             synchronizeSitePlugins(siteID: siteID, completionHandler: onCompletion)
+        case .installSitePlugin(let siteID, let slug, let onCompletion):
+            installSitePlugin(siteID: siteID, slug: slug, onCompletion: onCompletion)
+        case .activateSitePlugin(let siteID, let pluginName, let onCompletion):
+            activateSitePlugin(siteID: siteID, pluginName: pluginName, onCompletion: onCompletion)
+        case .getPluginDetails(let siteID, let pluginName, let onCompletion):
+            getPluginDetails(siteID: siteID, pluginName: pluginName, onCompletion: onCompletion)
         }
     }
 }
@@ -44,6 +50,53 @@ private extension SitePluginStore {
                 self.upsertSitePluginsInBackground(siteID: siteID, readonlyPlugins: plugins, completionHandler: completionHandler)
             case .failure(let error):
                 completionHandler(.failure(error))
+            }
+        }
+    }
+
+    func installSitePlugin(siteID: Int64, slug: String, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        remote.installPlugin(for: siteID, slug: slug) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let plugin):
+                self.upsertSitePluginsInBackground(siteID: siteID, readonlyPlugins: [plugin], completionHandler: onCompletion)
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func activateSitePlugin(siteID: Int64, pluginName: String, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        remote.activatePlugin(for: siteID, pluginName: pluginName) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let plugin):
+                guard plugin.status == .active else {
+                    onCompletion(.failure(SitePluginError.activationFailed))
+                    return
+                }
+                self.upsertSitePluginsInBackground(siteID: siteID, readonlyPlugins: [plugin], completionHandler: onCompletion)
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func getPluginDetails(siteID: Int64, pluginName: String, onCompletion: @escaping (Result<SitePlugin, Error>) -> Void) {
+        remote.getPluginDetails(for: siteID, pluginName: pluginName) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let plugin):
+                self.upsertSitePluginsInBackground(siteID: siteID, readonlyPlugins: [plugin]) { result in
+                    switch result {
+                    case .success:
+                        onCompletion(.success(plugin))
+                    case .failure(let error):
+                        onCompletion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
         }
     }
@@ -89,4 +142,8 @@ private extension SitePluginStore {
         let installedPluginNames = readonlyPlugins.map(\.name)
         storage.deleteStalePlugins(siteID: siteID, installedPluginNames: installedPluginNames)
     }
+}
+
+public enum SitePluginError: Error {
+    case activationFailed
 }

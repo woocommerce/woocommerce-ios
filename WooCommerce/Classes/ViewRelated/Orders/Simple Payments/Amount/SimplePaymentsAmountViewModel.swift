@@ -1,5 +1,7 @@
 import Foundation
 import Yosemite
+import Combine
+import Experiments
 
 /// View Model for the `SimplePaymentsAmount` view.
 ///
@@ -18,10 +20,16 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     @Published private(set) var loading: Bool = false
 
-    /// Defines the current notice that should be shown.
-    /// Defaults to `nil`.
+    /// Defines if the view should navigate to the summary view.
+    /// Setting it to `false` will `nil` the summary view model.
     ///
-    @Published var presentNotice: Notice?
+    @Published var navigateToSummary: Bool = false {
+        didSet {
+            if !navigateToSummary && oldValue != navigateToSummary {
+                summaryViewModel = nil
+            }
+        }
+    }
 
     /// Assign this closure to be notified when a new order is created
     ///
@@ -34,12 +42,28 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         amount.count < 2
     }
 
+    /// Use this to disables interactive dismissal and
+    /// Disables cancel button while performing the create order operation
+    ///
+    var disableCancel: Bool {
+        loading
+    }
+
     /// Dynamically builds the amount placeholder based on the store decimal separator.
     ///
     private(set) lazy var amountPlaceholder: String = {
         // TODO: We are appending the currency symbol always to the left, we should use `CurrencyFormatter` when releasing to more countries.
         storeCurrencySymbol + "0" + storeCurrencySettings.decimalSeparator + "00"
     }()
+
+    /// Retains the SummaryViewModel.
+    /// Assigning it will set `navigateToSummary`.
+    ///
+    private(set) var summaryViewModel: SimplePaymentsSummaryViewModel? {
+        didSet {
+            navigateToSummary = summaryViewModel != nil
+        }
+    }
 
     /// Current store ID
     ///
@@ -53,6 +77,10 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     private let userLocale: Locale
 
+    /// Transmits notice presentation intents.
+    ///
+    private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
+
     /// Current store currency settings
     ///
     private let storeCurrencySettings: CurrencySettings
@@ -65,35 +93,52 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     private let analytics: Analytics
 
+    /// Defines if the we are running a development version or not.
+    ///
+    private let isDevelopmentPrototype: Bool
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          locale: Locale = Locale.autoupdatingCurrent,
+         presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         isDevelopmentPrototype: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.simplePaymentsPrototype)) {
         self.siteID = siteID
         self.stores = stores
         self.userLocale = locale
+        self.presentNoticeSubject = presentNoticeSubject
         self.storeCurrencySettings = storeCurrencySettings
         self.storeCurrencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
         self.analytics = analytics
+        self.isDevelopmentPrototype = isDevelopmentPrototype
     }
 
     /// Called when the view taps the done button.
     /// Creates a simple payments order.
     ///
     func createSimplePaymentsOrder() {
+
         loading = true
-        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount) { [weak self] result in
+
+        // Prototype in production does not support taxes. Development version does.
+        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount, taxable: isDevelopmentPrototype) { [weak self] result in
             guard let self = self else { return }
             self.loading = false
 
             switch result {
             case .success(let order):
-                self.onOrderCreated(order)
+                if self.isDevelopmentPrototype {
+                    self.summaryViewModel = SimplePaymentsSummaryViewModel(order: order,
+                                                                           providedAmount: self.amount,
+                                                                           presentNoticeSubject: self.presentNoticeSubject)
+                } else {
+                    self.onOrderCreated(order)
+                }
                 self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCompleted(amount: order.total))
 
             case .failure(let error):
-                self.presentNotice = .error
+                self.presentNoticeSubject.send(.error(Localization.creationError))
                 self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed())
                 DDLogError("⛔️ Error creating simple payments order: \(error)")
             }
@@ -105,10 +150,6 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     func userDidCancelFlow() {
         analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCanceled())
-    }
-
-    func createSummaryViewModel() -> SimplePaymentsSummaryViewModel {
-        SimplePaymentsSummaryViewModel(providedAmount: amount)
     }
 }
 
@@ -153,10 +194,10 @@ private extension SimplePaymentsAmountViewModel {
     }
 }
 
-// MARK: Definitions
-extension SimplePaymentsAmountViewModel {
-    /// Representation of possible notices that can be displayed
-    enum Notice: Equatable {
-        case error
+// MARK: Constants
+private extension SimplePaymentsAmountViewModel {
+    enum Localization {
+        static let creationError = NSLocalizedString("There was an error creating the order",
+                                                     comment: "Notice text after failing to create a simple payments order.")
     }
 }

@@ -1302,3 +1302,36 @@ extension SystemPlugin {
         )
     }
 }
+
+extension WordPressMedia {
+    public func copy(
+        mediaID: CopiableProp<Int64> = .copy,
+        date: CopiableProp<Date> = .copy,
+        slug: CopiableProp<String> = .copy,
+        mimeType: CopiableProp<String> = .copy,
+        src: CopiableProp<String> = .copy,
+        alt: NullableCopiableProp<String> = .copy,
+        details: NullableCopiableProp<WordPressMedia.MediaDetails> = .copy,
+        title: NullableCopiableProp<WordPressMedia.MediaTitle> = .copy
+    ) -> WordPressMedia {
+        let mediaID = mediaID ?? self.mediaID
+        let date = date ?? self.date
+        let slug = slug ?? self.slug
+        let mimeType = mimeType ?? self.mimeType
+        let src = src ?? self.src
+        let alt = alt ?? self.alt
+        let details = details ?? self.details
+        let title = title ?? self.title
+
+        return WordPressMedia(
+            mediaID: mediaID,
+            date: date,
+            slug: slug,
+            mimeType: mimeType,
+            src: src,
+            alt: alt,
+            details: details,
+            title: title
+        )
+    }
+}

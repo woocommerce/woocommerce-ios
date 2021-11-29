@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Combine
 
 final class AddOrderCoordinator: Coordinator {
     var navigationController: UINavigationController
@@ -70,10 +71,11 @@ private extension AddOrderCoordinator {
     /// Presents `SimplePaymentsAmountHostingController`.
     ///
     func presentSimplePaymentsAmountController() {
-        let viewModel = SimplePaymentsAmountViewModel(siteID: siteID)
+        let presentNoticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let viewModel = SimplePaymentsAmountViewModel(siteID: siteID, presentNoticeSubject: presentNoticeSubject)
         viewModel.onOrderCreated = onOrderCreated
 
-        let viewController = SimplePaymentsAmountHostingController(viewModel: viewModel)
+        let viewController = SimplePaymentsAmountHostingController(viewModel: viewModel, presentNoticePublisher: presentNoticeSubject.eraseToAnyPublisher())
         let simplePaymentsNC = WooNavigationController(rootViewController: viewController)
         navigationController.present(simplePaymentsNC, animated: true)
 
@@ -83,7 +85,8 @@ private extension AddOrderCoordinator {
     /// Presents `NewOrderHostingController`.
     ///
     func presentNewOrderController() {
-        let viewController = NewOrderHostingController()
+        let viewModel = NewOrderViewModel(siteID: siteID)
+        let viewController = NewOrderHostingController(viewModel: viewModel)
         viewController.hidesBottomBarWhenPushed = true
         navigationController.pushViewController(viewController, animated: true)
     }

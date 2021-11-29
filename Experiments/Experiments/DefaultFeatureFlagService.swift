@@ -24,7 +24,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .simplePaymentsPrototype:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .orderListFilters:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .jetpackConnectionPackageSupport:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .orderCreation:

@@ -667,6 +667,18 @@ extension UIImage {
         return UIImage(systemName: "plus", withConfiguration: Configurations.barButtonItemSymbol)!
     }
 
+    /// Small Plus Icon
+    ///
+    static var plusSmallImage: UIImage {
+        return UIImage.gridicon(.plusSmall)
+    }
+
+    /// Small Minus Icon
+    ///
+    static var minusSmallImage: UIImage {
+        return UIImage.gridicon(.minusSmall)
+    }
+
     /// Search Icon - used in `UIBarButtonItem`
     ///
     static var searchBarButtonItemImage: UIImage {

@@ -7,7 +7,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
     /// Aggregates the filter values that can be updated in the Filter Order UI.
     struct Filters: Equatable {
-        let orderStatus: OrderStatusEnum?
+        let orderStatus: [OrderStatusEnum]?
         let dateRange: OrderDateRangeFilter?
 
         let numberOfActiveFilters: Int
@@ -18,12 +18,23 @@ final class FilterOrderListViewModel: FilterListViewModel {
             numberOfActiveFilters = 0
         }
 
-        init(orderStatus: OrderStatusEnum?,
+        init(orderStatus: [OrderStatusEnum]?,
              dateRange: OrderDateRangeFilter?,
              numberOfActiveFilters: Int) {
             self.orderStatus = orderStatus
             self.dateRange = dateRange
             self.numberOfActiveFilters = numberOfActiveFilters
+        }
+
+        var readableString: String {
+            var readable: [String] = []
+            if let orderStatus = orderStatus, orderStatus.count > 0 {
+                readable = orderStatus.map { $0.rawValue.capitalized }
+            }
+            if let dateRange = dateRange {
+                readable.append(dateRange.description)
+            }
+            return readable.joined(separator: ", ")
         }
     }
 
@@ -44,7 +55,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
     }
 
     var criteria: Filters {
-        let orderStatus = orderStatusFilterViewModel.selectedValue as? OrderStatusEnum ?? nil
+        let orderStatus = orderStatusFilterViewModel.selectedValue as? [OrderStatusEnum] ?? nil
         let dateRange = dateRangeFilterViewModel.selectedValue as? OrderDateRangeFilter ?? nil
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
         return Filters(orderStatus: orderStatus,
@@ -85,9 +96,8 @@ extension FilterOrderListViewModel.OrderListFilter {
     func createViewModel(filters: FilterOrderListViewModel.Filters) -> FilterTypeViewModel {
         switch self {
         case .orderStatus:
-            let options: [OrderStatusEnum?] = [nil, .pending, .processing, .onHold, .failed, .cancelled, .completed, .refunded]
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .staticOptions(options: options),
+                                       listSelectorConfig: .ordersStatuses,
                                        selectedValue: filters.orderStatus)
         case .dateRange:
             return FilterTypeViewModel(title: title,
@@ -123,6 +133,26 @@ extension OrderStatusEnum: FilterType {
             return NSLocalizedString("Refunded", comment: "Display label for refunded order status.")
         case .custom(let payload):
             return payload // unable to localize at runtime.
+        }
+    }
+}
+
+extension Array: FilterType where Element == OrderStatusEnum {
+    var isActive: Bool {
+        return true
+    }
+
+    /// Returns the localized text version of the array
+    ///
+    var description: String {
+        if self.count == 0 {
+            return NSLocalizedString("Any", comment: "Display label for all order statuses selected in Order Filters")
+        }
+        else if self.count == 1 {
+            return self.first?.description ?? ""
+        }
+        else {
+            return "\(self.count)"
         }
     }
 }

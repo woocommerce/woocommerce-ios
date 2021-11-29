@@ -4,6 +4,7 @@ import Yosemite
 /// Modal presented when an error occurs while connecting to a reader due to problems with the address
 ///
 final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsModalViewModel {
+    private let adminUrl: URL?
     private let retrySearchAction: () -> Void
     private let cancelSearchAction: () -> Void
 
@@ -26,7 +27,8 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
 
     let bottomSubtitle: String? = nil
 
-    init(retrySearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+    init(adminUrl: URL?, retrySearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+        self.adminUrl = adminUrl
         self.retrySearchAction = retrySearch
         self.cancelSearchAction = cancelSearch
     }

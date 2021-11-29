@@ -49,6 +49,7 @@ protocol CardReaderSettingsAlertsProvider {
     /// The user may try again or cancel
     ///
     func connectingFailedMissingAddress(from: UIViewController,
+                                        adminUrl: URL?,
                                         retrySearch: @escaping () -> Void,
                                         cancelSearch: @escaping () -> Void)
 

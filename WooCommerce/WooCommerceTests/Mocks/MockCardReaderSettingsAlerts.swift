@@ -84,6 +84,7 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     }
 
     func connectingFailedMissingAddress(from: UIViewController,
+                                        adminUrl: URL?,
                                         retrySearch: @escaping () -> Void,
                                         cancelSearch: @escaping () -> Void) {
         if mode == .continueSearchingAfterConnectionFailure {

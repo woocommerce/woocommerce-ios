@@ -47,6 +47,35 @@ final class MainTabBarControllerTests: XCTestCase {
                    isAnInstanceOf: ReviewsViewController.self)
     }
 
+    func test_tab_view_controllers_returns_expected_values_with_hub_menu_enabled() {
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController else {
+            return
+        }
+        let isHubMenuFeatureFlagOn = true
+        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn))
+
+        // Arrange
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // Action
+        let siteID: Int64 = 134
+        stores.updateDefaultStore(storeID: siteID)
+
+        // Assert
+        XCTAssertEqual(tabBarController.viewControllers?.count, 5)
+        assertThat(tabBarController.tabNavigationController(tab: .myStore, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
+                   isAnInstanceOf: DashboardViewController.self)
+        assertThat(tabBarController.tabNavigationController(tab: .orders, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
+                   isAnInstanceOf: OrdersRootViewController.self)
+        assertThat(tabBarController.tabNavigationController(tab: .products, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
+                   isAnInstanceOf: ProductsViewController.self)
+        assertThat(tabBarController.tabNavigationController(tab: .reviews, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
+                   isAnInstanceOf: ReviewsViewController.self)
+        assertThat(tabBarController.tabNavigationController(tab: .hubMenu, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
+                   isAnInstanceOf: HubMenuViewController.self)
+    }
+
     func test_tab_root_viewControllers_are_replaced_after_updating_to_a_different_site() throws {
         // Arrange
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController else {

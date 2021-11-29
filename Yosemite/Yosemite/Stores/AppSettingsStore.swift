@@ -848,7 +848,6 @@ enum AppSettingsStoreErrors: Error {
     case writeOrdersSettings
     case writeProductsSettings
     case noEligibilityErrorInfo
-    case noLastJetpackBenefitsBannerDismissedTime
 }
 
 

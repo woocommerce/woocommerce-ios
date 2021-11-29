@@ -521,8 +521,10 @@ final class AppSettingsStoreTests: XCTestCase {
 
     func test_loadJetpackBenefitsBannerVisibility_returns_true_on_new_generalAppSettings() throws {
         // Given
+        // Deletes any pre-existing app settings.
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
 
+        // GMT - Sunday, November 28, 2021 1:25:24 PM
         let currentTime = Date(timeIntervalSince1970: 1638105924)
         let calendar = Calendar(identifier: .gregorian)
 
@@ -535,6 +537,7 @@ final class AppSettingsStoreTests: XCTestCase {
         }
 
         // Then
+        // The banner is visible if there are no pre-existing app settings.
         XCTAssertTrue(isVisible)
     }
 
@@ -548,11 +551,11 @@ final class AppSettingsStoreTests: XCTestCase {
         let currentTime = Date(timeIntervalSince1970: 1638105924)
         let calendar: Calendar = {
             var calendar = Calendar(identifier: .gregorian)
-            guard let timeZoneWithoutDailySavingTime = TimeZone(identifier: "Asia/Taipei") else {
+            guard let timeZoneWithoutDaylightSavingTime = TimeZone(identifier: "Asia/Taipei") else {
                 XCTFail("Unexpected time zone.")
                 return calendar
             }
-            calendar.timeZone = timeZoneWithoutDailySavingTime
+            calendar.timeZone = timeZoneWithoutDaylightSavingTime
             return calendar
         }()
 
@@ -571,7 +574,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(isVisible)
     }
 
-    /// Tests an edge case where the time interval since the last dismissed date is less than 5 24-hour days, but is exactly 5 days on calendar with daily
+    /// Tests an edge case where the time interval since the last dismissed date is less than 5 24-hour days, but is exactly 5 days on calendar with daylight
     /// saving time.
     func test_loadJetpackBenefitsBannerVisibility_returns_false_after_setting_last_dismissed_date_exactly_five_24hr_days_ago() throws {
         // Given
@@ -580,15 +583,15 @@ final class AppSettingsStoreTests: XCTestCase {
         // America/New York (EDT) - November 03, 2021 09:43:17 AM
         let lastDismissedTime = Date(timeIntervalSince1970: 1635946997)
         // America/New York (EST) - November 08, 2021 08:43:17 AM - exactly five 24-hour days after the last dismissed date.
-        // But with daily saving time in America/New York, it is still less than five days.
+        // But with daylight saving time in America/New York, it is still less than five days.
         let currentTime = Date(timeIntervalSince1970: 1636378997)
         let calendar: Calendar = {
             var calendar = Calendar(identifier: .gregorian)
-            guard let timeZoneWithDailySavingTime = TimeZone(identifier: "America/New_York") else {
+            guard let timeZoneWithDaylightSavingTime = TimeZone(identifier: "America/New_York") else {
                 XCTFail("Unexpected time zone.")
                 return calendar
             }
-            calendar.timeZone = timeZoneWithDailySavingTime
+            calendar.timeZone = timeZoneWithDaylightSavingTime
             return calendar
         }()
 
@@ -617,11 +620,11 @@ final class AppSettingsStoreTests: XCTestCase {
         let currentTime = Date(timeIntervalSince1970: 1638105923)
         let calendar: Calendar = {
             var calendar = Calendar(identifier: .gregorian)
-            guard let timeZoneWithoutDailySavingTime = TimeZone(identifier: "Asia/Taipei") else {
+            guard let timeZoneWithoutDaylightSavingTime = TimeZone(identifier: "Asia/Taipei") else {
                 XCTFail("Unexpected time zone.")
                 return calendar
             }
-            calendar.timeZone = timeZoneWithoutDailySavingTime
+            calendar.timeZone = timeZoneWithoutDaylightSavingTime
             return calendar
         }()
 

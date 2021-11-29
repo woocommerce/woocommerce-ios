@@ -547,8 +547,15 @@ private extension OrderDetailsViewController {
             }
         }
         shippingLabelFormVC.onLabelSave = { [weak self] in
-            guard let self = self else { return }
-            self.navigationController?.popToViewController(self, animated: true)
+            guard let self = self, let navigationController = self.navigationController, navigationController.viewControllers.contains(self) else {
+                // Navigate back to order details when presented from push notification
+                if let orderLoaderVC = self?.parent as? OrderLoaderViewController {
+                    self?.navigationController?.popToViewController(orderLoaderVC, animated: true)
+                }
+                return
+            }
+
+            navigationController.popToViewController(self, animated: true)
         }
         shippingLabelFormVC.hidesBottomBarWhenPushed = true
         navigationController?.show(shippingLabelFormVC, sender: self)

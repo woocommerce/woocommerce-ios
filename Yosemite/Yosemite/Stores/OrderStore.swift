@@ -66,6 +66,16 @@ public class OrderStore: Store {
             createSimplePaymentsOrder(siteID: siteID, amount: amount, taxable: taxable, onCompletion: onCompletion)
         case let .createOrder(siteID, order, onCompletion):
             createOrder(siteID: siteID, order: order, onCompletion: onCompletion)
+
+        case let .updateSimplePaymentsOrder(siteID, orderID, feeID, amount, taxable, orderNote, email, onCompletion):
+            updateSimplePaymentsOrder(siteID: siteID,
+                                      orderID: orderID,
+                                      feeID: feeID,
+                                      amount: amount,
+                                      taxable: taxable,
+                                      orderNote: orderNote,
+                                      email: email,
+                                      onCompletion: onCompletion)
         }
     }
 }
@@ -265,6 +275,41 @@ private extension OrderStore {
                 onCompletion(result)
             }
         }
+    }
+
+    /// Updates a simple payment order with the specified values.
+    ///
+    func updateSimplePaymentsOrder(siteID: Int64,
+                                   orderID: Int64,
+                                   feeID: Int64,
+                                   amount: String,
+                                   taxable: Bool,
+                                   orderNote: String?,
+                                   email: String?,
+                                   onCompletion: @escaping (Result<Order, Error>) -> Void) {
+
+        // Recreate the original order
+        let originalOrder = OrderFactory.simplePaymentsOrder(amount: amount, taxable: taxable)
+
+        // Create updated fields
+        let newFee = OrderFactory.simplePaymentFee(feeID: feeID, amount: amount, taxable: taxable)
+        let newBillingAddress = Address(firstName: "",
+                                        lastName: "",
+                                        company: nil,
+                                        address1: "",
+                                        address2: nil,
+                                        city: "",
+                                        state: "",
+                                        postcode: "",
+                                        country: "",
+                                        phone: nil,
+                                        email: email)
+
+        // Set new fields
+        let updatedOrder = originalOrder.copy(orderID: orderID, customerNote: orderNote, billingAddress: newBillingAddress, fees: [newFee])
+        let updateFields: [OrderUpdateField] = [.customerNote, .billingAddress, .fees]
+
+        updateOrder(siteID: siteID, order: updatedOrder, fields: updateFields, onCompletion: onCompletion)
     }
 
     /// Creates a manual order with the provided order details.

@@ -65,7 +65,7 @@ extension CardReaderServiceError: LocalizedError {
 
 /// Underlying error. Models the specific error that made a given
 /// interaction with the SDK fail.
-public enum UnderlyingError: Error {
+public enum UnderlyingError: Error, Equatable {
     /// The service is busy executing another command. The service can only execute a single command at a time.
     case busy
 
@@ -171,7 +171,7 @@ public enum UnderlyingError: Error {
     case unexpectedSDKError
 
     /// The Stripe API declined the payment
-    case paymentDeclinedByPaymentProcessorAPI
+    case paymentDeclinedByPaymentProcessorAPI(declineReason: DeclineReason)
 
     /// The reader declined the payment. Try another card.
     case paymentDeclinedByCardReader
@@ -311,6 +311,9 @@ updating the application or using a different reader
             return NSLocalizedString("The system experienced an unexpected software error",
                                      comment: "Error message when the card reader service experiences an unexpected software error.")
         case .paymentDeclinedByPaymentProcessorAPI:
+            if case let .paymentDeclinedByPaymentProcessorAPI(declineReason) = self {
+                return declineReason.localizedDescription
+            }
             return NSLocalizedString("The card was declined by the payment processor - please try another means of payment",
                                      comment: "Error message when the card processor declines the payment.")
         case .paymentDeclinedByCardReader:

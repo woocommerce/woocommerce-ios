@@ -1,3 +1,0 @@
-Bazı satıcılar, REST API'deki alan adlarının sıralanmasıyla ilgili teknik bir sorundan dolayı sipariş ayrıntılarını yüklemede sorun yaşıyordu. Siz de böyle bir durum yaşıyorsanız bunu giderecek bir düzeltme yaptık.
-
-Bu sürümde, geri bildirimlerinizi dikkate alarak bazı düzeltmeler gerçekleştirdik. Lütfen bize geri bildirim göndermeye devam edin, sizi dinliyoruz.

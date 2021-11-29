@@ -1,3 +1,0 @@
-Sommige verkopers hadden problemen met het laden van bestellingsgegevens vanwege een technische fout met betrekking tot hoe veldnamen in de REST API zijn gesorteerd. Door onze aanpassing zou dit probleem verholpen moeten zijn.
-
-Deze release bevat enkele andere oplossingen op basis van jullie feedback. Blijf ons feedback sturen – wij luisteren!

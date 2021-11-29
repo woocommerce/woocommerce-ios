@@ -1,3 +1,0 @@
-Some merchants had problems loading order details because of a technical issue with how field names in the REST API are ordered. We’ve made a correction that should address that for you if you were experiencing it.
-
-This release contains several other fixes based on your feedback. Please continue to send us feedback – we are listening!

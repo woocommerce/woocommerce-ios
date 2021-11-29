@@ -1,3 +1,0 @@
-Beberapa penjual kesulitan memuat detail pesanan akibat masalah teknis terkait penyusunan nama kolom pada API REST. Kami sudah melakukan perbaikan atas masalah tersebut jika Anda mengalaminya.
-
-RIlis ini memuat sejumlah perbaikan lain berdasarkan feedback Anda. Mohon terus berikan feedback – kami siap mendengarkan feedback Anda!

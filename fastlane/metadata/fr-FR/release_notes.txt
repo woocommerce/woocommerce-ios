@@ -1,3 +1,0 @@
-Certains commerçants ont eu des difficultés à charger les détails des commandes en raison d’un problème technique relatif à l’ordre des noms de champs dans l’API REST. Nous avons effectué une correction qui devrait permettre de résoudre ce problème si vous le rencontriez.
-
-Cette version contient plusieurs autres corrections basées sur vos commentaires. Continuez à nous envoyer vos commentaires, votre avis nous intéresse !

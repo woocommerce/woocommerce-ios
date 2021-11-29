@@ -66,15 +66,14 @@ final class JetpackInstallStepsViewModel: ObservableObject {
             guard let self = self else { return }
             switch result {
             case .success(let site):
-                print("😛 \(site.isWooCommerceActive)")
                 guard site.isWooCommerceActive, !site.isJetpackCPConnected else {
                     // TODO-5365: handle failure with an error message
                     return
                 }
                 self.currentStep = .done
-            case .failure(let error):
+            case .failure:
                 // TODO-5365: handle failure with an error message
-                print(error)
+                break
             }
         }
         stores.dispatch(siteFetch)

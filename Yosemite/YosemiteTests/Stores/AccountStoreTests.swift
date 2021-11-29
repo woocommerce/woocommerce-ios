@@ -565,6 +565,42 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(network.requestsForResponseData.count, 0)
     }
 
+    func test_loadAndSynchronizeSite_fetches_from_remote_if_forcedUpdate_is_true() throws {
+        // Given
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
+
+        // The site ID value is in `sites.json` used in the mock network.
+        let siteIDInSimulatedResponse = Int64(1112233334444555)
+        let sampleSite = sampleSitePristine().copy(siteID: siteIDInSimulatedResponse, isWooCommerceActive: false)
+        let group = DispatchGroup()
+        group.enter()
+        accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSite]) {
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
+            group.leave()
+        }
+
+        // When
+        let result: Result<Yosemite.Site, Error> = waitFor { promise in
+            group.notify(queue: .main) {
+                let action = AccountAction.loadAndSynchronizeSite(siteID: siteIDInSimulatedResponse,
+                                                                  forcedUpdate: true,
+                                                                  isJetpackConnectionPackageSupported: false) { result in
+                    XCTAssertTrue(Thread.isMainThread)
+                    promise(result)
+                }
+                accountStore.onAction(action)
+            }
+        }
+
+        // Then
+        let site = try XCTUnwrap(result.get())
+        XCTAssertEqual(site.isWooCommerceActive, true) // the value in `sites.json` - not the one in storage.
+        XCTAssertEqual(network.requestsForResponseData.count, 1)
+    }
+
     func test_loadAndSynchronizeSite_returns_unknown_site_error_after_syncing_failure() throws {
         // Given
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

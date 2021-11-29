@@ -9,6 +9,10 @@ struct SimplePaymentsMethod: View {
     ///
     var dismiss: (() -> Void) = {}
 
+    /// Needed because IPP capture payments using a UIViewController for providing user feedback.
+    ///
+    weak var rootViewController: UIViewController?
+
     /// ViewModel to render the view content.
     ///
     @ObservedObject var viewModel: SimplePaymentsMethodsViewModel

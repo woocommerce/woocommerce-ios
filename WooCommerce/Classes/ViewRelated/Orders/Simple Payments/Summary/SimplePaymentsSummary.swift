@@ -8,6 +8,10 @@ struct SimplePaymentsSummary: View {
     ///
     var dismiss: (() -> Void) = {}
 
+    /// Needed because IPP capture payments using a UIViewController for providing user feedback.
+    ///
+    weak var rootViewController: UIViewController?
+
     /// Defines if the order note screen should be shown or not.
     ///
     @State var showEditNote = false
@@ -40,7 +44,9 @@ struct SimplePaymentsSummary: View {
             TakePaymentSection(viewModel: viewModel)
 
             // Navigation To Payment Methods
-            LazyNavigationLink(destination: SimplePaymentsMethod(dismiss: dismiss, viewModel: viewModel.createMethodsViewModel()),
+            LazyNavigationLink(destination: SimplePaymentsMethod(dismiss: dismiss,
+                                                                 rootViewController: rootViewController,
+                                                                 viewModel: viewModel.createMethodsViewModel()),
                                isActive: $viewModel.navigateToPaymentMethods) {
                 EmptyView()
             }

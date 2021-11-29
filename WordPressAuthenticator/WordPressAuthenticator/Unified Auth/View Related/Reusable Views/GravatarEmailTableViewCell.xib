@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -25,39 +25,33 @@
                             <constraint firstAttribute="width" constant="48" id="oKU-lB-dYx"/>
                         </constraints>
                     </imageView>
-                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rp0-GT-dO4" userLabel="Email Stack View">
+                    <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Email Label" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3kD-7a-MeN">
                         <rect key="frame" x="70" y="13" width="239" height="44"/>
-                        <subviews>
-                            <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Email Label" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3kD-7a-MeN">
-                                <rect key="frame" x="0.0" y="0.0" width="239" height="44"/>
-                                <accessibility key="accessibilityConfiguration">
-                                    <accessibilityTraits key="traits" staticText="YES"/>
-                                </accessibility>
-                                <constraints>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="axC-0i-jGu"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                <textInputTraits key="textInputTraits" textContentType="username"/>
-                                <connections>
-                                    <action selector="textFieldDidChangeSelection" destination="KGk-i7-Jjw" eventType="editingChanged" id="CBE-yc-dqf"/>
-                                </connections>
-                            </textField>
-                        </subviews>
-                    </stackView>
+                        <accessibility key="accessibilityConfiguration">
+                            <accessibilityTraits key="traits" staticText="YES"/>
+                        </accessibility>
+                        <constraints>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="axC-0i-jGu"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                        <textInputTraits key="textInputTraits" textContentType="username"/>
+                        <connections>
+                            <action selector="textFieldDidChangeSelection" destination="KGk-i7-Jjw" eventType="editingChanged" id="CBE-yc-dqf"/>
+                        </connections>
+                    </textField>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="Rp0-GT-dO4" firstAttribute="centerY" secondItem="odI-Gb-fXa" secondAttribute="centerY" id="OXm-Es-lay"/>
+                    <constraint firstItem="3kD-7a-MeN" firstAttribute="leading" secondItem="odI-Gb-fXa" secondAttribute="trailing" constant="11" id="M5P-4D-Dig"/>
+                    <constraint firstAttribute="trailing" secondItem="3kD-7a-MeN" secondAttribute="trailing" constant="11" id="Uu4-bo-sjK"/>
                     <constraint firstItem="odI-Gb-fXa" firstAttribute="bottom" secondItem="H2p-sc-9uM" secondAttribute="bottomMargin" constant="-2" id="YZD-yX-ic3"/>
+                    <constraint firstItem="3kD-7a-MeN" firstAttribute="centerY" secondItem="odI-Gb-fXa" secondAttribute="centerY" id="guc-Ls-SYV"/>
                     <constraint firstItem="odI-Gb-fXa" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="hPB-Uy-lLS"/>
                     <constraint firstItem="odI-Gb-fXa" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="11" id="kVa-7e-I73"/>
-                    <constraint firstItem="Rp0-GT-dO4" firstAttribute="leading" secondItem="odI-Gb-fXa" secondAttribute="trailing" constant="11" id="txL-rW-VDL"/>
-                    <constraint firstAttribute="trailing" secondItem="Rp0-GT-dO4" secondAttribute="trailing" constant="11" id="zFn-2O-cyr"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="emailLabel" destination="3kD-7a-MeN" id="8Ck-Rg-3Cw"/>
-                <outlet property="emailStackView" destination="Rp0-GT-dO4" id="E8B-ds-K8H"/>
                 <outlet property="gravatarImageView" destination="odI-Gb-fXa" id="eHP-78-0Fg"/>
             </connections>
             <point key="canvasLocation" x="131.8840579710145" y="126.5625"/>

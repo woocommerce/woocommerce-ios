@@ -77,7 +77,7 @@ private struct ProductStepper: View {
                 .stroke(Color(UIColor.separator), lineWidth: Layout.stepperBorderWidth)
         )
         .accessibilityElement(children: .ignore)
-        .accessibility(label: Text("Quantity"))
+        .accessibility(label: Text(Localization.quantityLabel))
         .accessibility(value: Text("1")) // Fake static data - quantity
         .accessibilityAdjustableAction { direction in
             switch direction {
@@ -98,6 +98,10 @@ private enum Layout {
     static let stepperBorderRadius: CGFloat = 4.0
     static let stepperButtonSize: CGFloat = 22.0
     static let stepperSpacing: CGFloat = 22.0
+}
+
+private enum Localization {
+    static let quantityLabel = NSLocalizedString("Quantity", comment: "Accessibility label for product quantity field")
 }
 
 struct ProductRow_Previews: PreviewProvider {

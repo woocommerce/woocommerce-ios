@@ -49,10 +49,10 @@ final class HubMenuCoordinator: Coordinator {
     }
 
     func start() {
-        // No-op: please call `activate(siteID:)` instead when the reviews tab is configured.
+        // No-op: please call `activate(siteID:)` instead when the menu tab is configured.
     }
 
-    /// Replaces `start()` because the reviews tab's navigation stack could be updated multiple times when site ID changes.
+    /// Replaces `start()` because the menu tab's navigation stack could be updated multiple times when site ID changes.
     func activate(siteID: Int64) {
         navigationController.viewControllers = [HubMenuViewController(siteID: siteID)]
 

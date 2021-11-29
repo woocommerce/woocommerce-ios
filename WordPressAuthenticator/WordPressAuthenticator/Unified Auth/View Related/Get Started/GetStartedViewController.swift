@@ -259,20 +259,6 @@ private extension GetStartedViewController {
             self?.configureContinueButton(animating: false)
         }
 
-        cell.onePasswordHandler = { [weak self] in
-            guard let self = self,
-            let sourceView = self.emailField else {
-                return
-            }
-
-            self.view.endEditing(true)
-
-            WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sourceView, loginFields: self.loginFields) { [weak self] (loginFields) in
-                self?.emailField?.text = loginFields.username
-                self?.validateFormAndLogin()
-            }
-        }
-
         if UIAccessibility.isVoiceOverRunning {
             // Quiet repetitive elements in VoiceOver.
             emailField?.placeholder = nil

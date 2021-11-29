@@ -37,7 +37,6 @@ final class TextFieldTableViewCell: UITableViewCell {
     }
 
     public var onChangeSelectionHandler: ((_ sender: UITextField) -> Void)?
-    public var onePasswordHandler: (() -> Void)?
     public static let reuseIdentifier = "TextFieldTableViewCell"
 
     override func awakeFromNib() {
@@ -91,7 +90,6 @@ private extension TextFieldTableViewCell {
         case .username:
             textField.keyboardType = .default
             textField.returnKeyType = .next
-            setupOnePasswordButtonIfNeeded()
             textField.accessibilityLabel = Constants.username
             textField.accessibilityIdentifier = Constants.usernameID
         case .password:
@@ -111,7 +109,6 @@ private extension TextFieldTableViewCell {
             textField.keyboardType = .emailAddress
             textField.returnKeyType = .continue
             textField.textContentType = .username // So the password autofill appears on the keyboard
-            setupOnePasswordButtonIfNeeded()
             textField.accessibilityLabel = Constants.email
             textField.accessibilityIdentifier = Constants.emailID
         }
@@ -121,25 +118,6 @@ private extension TextFieldTableViewCell {
     ///
     @objc func textFieldDidChangeSelection() {
         onChangeSelectionHandler?(textField)
-    }
-
-    /// Sets up a 1Password button if 1Password is available and user is on iOS 12.
-    ///
-    @objc func setupOnePasswordButtonIfNeeded() {
-        if #available(iOS 13, *) {
-            // no-op, we rely on the key icon in the keyboard to initiate a password manager.
-        } else {
-            let tintColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
-            // iOS 12 and lower, display the OnePassword button.
-            WPStyleGuide.configureOnePasswordButtonForTextfield(textField,
-                                                                tintColor: tintColor,
-                                                                target: self,
-                                                                selector: #selector(onePasswordTapped(_:)))
-        }
-    }
-
-    @objc func onePasswordTapped(_ sender: UIButton) {
-        onePasswordHandler?()
     }
 }
 

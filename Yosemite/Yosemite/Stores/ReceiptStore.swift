@@ -94,25 +94,11 @@ private extension ReceiptStore {
 
     func generateLineItems(order: Order) -> [ReceiptLineItem] {
         order.items.map {item in
-            var attributesText = ""
-            if !item.attributes.isEmpty {
-                attributesText.append(
-                    item.attributes.map {attr in
-                            "\(attr.name) \(attr.value)".trimmingCharacters(in: .whitespaces)
-                        }
-                        .joined(separator: ", ")
-                        .trimmingCharacters(in: .whitespaces)
-                )
-            }
-
-            var title = item.name
-            if !attributesText.isEmpty {
-                title.append(". \(attributesText)")
-            }
-            return ReceiptLineItem(
-                title: title,
+            ReceiptLineItem(
+                title: item.name,
                 quantity: item.quantity.description,
-                amount: item.subtotal
+                amount: item.subtotal,
+                attributes: item.attributes.map { ReceiptLineAttribute(name: $0.name, value: $0.value) }
             )
         }
     }

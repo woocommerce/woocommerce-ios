@@ -10,6 +10,7 @@ struct InPersonPaymentsLearnMore: View {
                 .foregroundColor(Color(.neutral(.shade60)))
                 .frame(width: iconSize, height: iconSize)
             AttributedText(learnMoreAttributedString)
+                .font(.footnote)
         }
         .padding(.vertical, Constants.verticalPadding)
         .onTapGesture {
@@ -23,31 +24,16 @@ struct InPersonPaymentsLearnMore: View {
     }
 
     private var learnMoreAttributedString: NSAttributedString {
-        let commonAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.footnote,
-            .foregroundColor: UIColor.textLink
-        ]
-        let result = NSMutableAttributedString()
-        result.append(
-            NSAttributedString(
+        let result = NSMutableAttributedString(
+            string: .localizedStringWithFormat(Localization.learnMoreText, Localization.learnMoreLink),
+            attributes: [.foregroundColor: UIColor.textSubtle]
+        )
+        result.replaceFirstOccurrence(
+            of: Localization.learnMoreLink,
+            with: NSAttributedString(
                 string: Localization.learnMoreLink,
-                attributes: commonAttributes
-            )
-        )
-        result.append(
-            NSMutableAttributedString(
-                string: .space,
-                attributes: commonAttributes
-            )
-        )
-        result.append(
-            NSAttributedString(
-                string: Localization.learnMoreText,
-                attributes: commonAttributes.merging([
-                    .foregroundColor: UIColor.textSubtle
-                ], uniquingKeysWith: { $1 })
-            )
-        )
+                attributes: [.foregroundColor: UIColor.textLink]
+            ))
         return result
     }
 }
@@ -74,8 +60,9 @@ private enum Localization {
     )
 
     static let learnMoreText = NSLocalizedString(
-        "about accepting payments with your mobile device and ordering card readers",
-        comment: "A label prompting users to learn more about card readers"
+        "%1$@ about accepting payments with your mobile device and ordering card readers",
+        comment: "A label prompting users to learn more about card readers" +
+            "%1$@ is a placeholder that always replaced with \"Learn more\" string"
     )
 }
 

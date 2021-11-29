@@ -23,10 +23,6 @@ final class TextFieldTableViewCell: UITableViewCell {
         onChangeSelectionHandler?(textField)
     }
 
-    /// Internal properties.
-    ///
-    @objc var onePasswordButton: UIButton!
-
     /// Public properties.
     ///
     @IBOutlet public weak var textField: UITextField! // public so it can be the first responder

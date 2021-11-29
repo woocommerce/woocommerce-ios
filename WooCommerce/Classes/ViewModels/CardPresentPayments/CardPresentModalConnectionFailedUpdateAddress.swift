@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 import Yosemite
 
 /// Modal presented when an error occurs while connecting to a reader due to problems with the address
@@ -7,6 +8,9 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
     private let adminUrl: URL?
     private let retrySearchAction: () -> Void
     private let cancelSearchAction: () -> Void
+    private let site: Site?
+
+    @State private var showingUpdateAddressWebView: Bool = false
 
     let textMode: PaymentsModalTextMode = .reducedTopInfo
     let actionsMode: PaymentsModalActionsMode = .twoAction
@@ -32,8 +36,9 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
 
     let bottomSubtitle: String? = nil
 
-    init(adminUrl: URL?, retrySearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+    init(adminUrl: URL?, site: Site?, retrySearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
         self.adminUrl = adminUrl
+        self.site = site
         self.retrySearchAction = retrySearch
         self.cancelSearchAction = cancelSearch
     }
@@ -43,7 +48,40 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
               let viewController = viewController else {
             return retrySearchAction()
         }
-        WebviewHelper.launch(adminUrl, with: viewController)
+        switch site?.isWordPressStore {
+        case true:
+            presentAuthenticatedWebview(url: adminUrl, from: viewController)
+        default:
+            UIApplication.shared.open(adminUrl)
+            // TODO: Replace button with refresh? Dismiss the alert? Do the retry when the user returns to the app?
+        }
+    }
+
+    private func presentAuthenticatedWebview(url adminUrl: URL, from viewController: UIViewController) {
+        let nav = NavigationView {
+            AuthenticatedWebView(isPresented: .constant(true),
+                                 url: adminUrl,
+                                 urlToTriggerExit: nil) { [weak self] in
+                self?.showingUpdateAddressWebView = false
+                self?.retrySearchAction()
+            }
+                                 .navigationTitle(Localization.adminWebviewTitle)
+                                 .navigationBarTitleDisplayMode(.inline)
+                                 .toolbar {
+                                     ToolbarItem(placement: .confirmationAction) {
+                                         Button(action: { [weak self] in
+                                             viewController.dismiss(animated: true) {
+                                                 self?.retrySearchAction()
+                                             }
+                                         }, label: {
+                                             Text(Localization.doneButtonUpdateAddress)
+                                         })
+                                     }
+                                 }
+        }
+            .wooNavigationBarStyle()
+        let hostingController = UIHostingController(rootView: nav)
+        viewController.present(hostingController, animated: true, completion: nil)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
@@ -61,6 +99,10 @@ private extension CardPresentModalConnectingFailedUpdateAddress {
             "due to address problems"
         )
 
+        static let adminWebviewTitle = NSLocalizedString(
+            "WooCommerce Settings",
+            comment: "Navigation title of the webview which used by the merchant to update their store address")
+
         static let openAdmin = NSLocalizedString(
             "Enter Address",
             comment: "Button to open a webview at the admin pages, so that the merchant can update their store address " +
@@ -77,6 +119,12 @@ private extension CardPresentModalConnectingFailedUpdateAddress {
             "Cancel",
             comment: "Button to dismiss the alert presented when connecting to a specific reader fails due to address " +
             "problems. This also cancels searching."
+        )
+
+        static let doneButtonUpdateAddress = NSLocalizedString(
+            "Done",
+            comment: "The button title to indicate that the user has finished updating their store's address and is" +
+            "ready to close the webview. This also tries to connect to the reader again."
         )
     }
 }

@@ -170,7 +170,8 @@ private extension CardReaderSettingsAlerts {
     func connectingFailedUpdateAddress(adminUrl: URL?,
                                        retrySearch: @escaping () -> Void,
                                        cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalConnectingFailedUpdateAddress(adminUrl: adminUrl, retrySearch: retrySearch, cancelSearch: cancelSearch)
+        let site = ServiceLocator.stores.sessionManager.defaultSite
+        return CardPresentModalConnectingFailedUpdateAddress(adminUrl: adminUrl, site: site, retrySearch: retrySearch, cancelSearch: cancelSearch)
     }
 
     func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

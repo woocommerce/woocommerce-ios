@@ -3,6 +3,7 @@ import SwiftUI
 /// Represent a single product row in the Product section of a New Order
 ///
 struct ProductRow: View {
+    let canChangeQuantity: Bool
 
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1
@@ -34,6 +35,7 @@ struct ProductRow: View {
                 Spacer()
 
                 ProductStepper()
+                    .renderedIf(canChangeQuantity)
             }
 
             Divider()
@@ -106,7 +108,12 @@ private enum Localization {
 
 struct ProductRow_Previews: PreviewProvider {
     static var previews: some View {
-        ProductRow()
+        ProductRow(canChangeQuantity: true)
+            .previewDisplayName("ProductRow with stepper")
+            .previewLayout(.sizeThatFits)
+
+        ProductRow(canChangeQuantity: false)
+            .previewDisplayName("ProductRow without stepper")
             .previewLayout(.sizeThatFits)
     }
 }

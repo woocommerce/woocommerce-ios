@@ -92,7 +92,7 @@ private struct ProductsSection: View {
                     .headlineStyle()
 
                 // TODO: Add a product row for each product added to the order
-                ProductRow()
+                ProductRow(canChangeQuantity: true)
 
                 Button(NewOrder.Localization.addProduct) {
                     showAddProduct.toggle()

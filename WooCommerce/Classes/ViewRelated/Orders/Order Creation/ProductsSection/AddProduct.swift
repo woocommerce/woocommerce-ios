@@ -9,7 +9,7 @@ struct AddProduct: View {
                 // TODO: Make the product list searchable
                 LazyVStack {
                     // TODO: Add a product row for each non-variable product in the store
-                    ProductRow()
+                    ProductRow(canChangeQuantity: false)
                 }
                 .padding()
             }

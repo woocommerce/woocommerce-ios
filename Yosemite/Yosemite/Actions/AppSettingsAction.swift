@@ -163,6 +163,16 @@ public enum AppSettingsAction: Action {
     ///
     case resetEligibilityErrorInfo
 
+    /// Sets the last time when Jetpack benefits banner is dismissed in the Dashboard.
+    ///
+    case setJetpackBenefitsBannerLastDismissedTime(time: Date)
+
+    /// Loads the visibility of Jetpack benefits banner in the Dashboard based on the last dismissal time.
+    /// The banner is not shown for five days after the last time it is dismissed.
+    /// There are other conditions for showing the Jetpack banner, like when the site is Jetpack CP connected.
+    ///
+    case loadJetpackBenefitsBannerVisibility(currentTime: Date, calendar: Calendar, onCompletion: (Bool) -> Void)
+
     // MARK: - General Store Settings
 
     /// Sets telemetry availability status information.

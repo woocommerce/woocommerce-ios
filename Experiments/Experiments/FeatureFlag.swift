@@ -57,7 +57,7 @@ public enum FeatureFlag: Int {
     /// Allows new orders to be manually created
     ///
     case orderCreation
-    
+
     /// Display the new tab "Menu" in the tab bar.
     ///
     case hubMenu

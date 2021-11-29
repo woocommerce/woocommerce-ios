@@ -1052,6 +1052,7 @@
 		CC4A4FF126557D0E00B75DCD /* TitleAndToggleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4A4FF026557D0E00B75DCD /* TitleAndToggleRow.swift */; };
 		CC4D1D8625E6CDDE00B6E4E7 /* RenameAttributesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4D1D8525E6CDDE00B6E4E7 /* RenameAttributesViewModel.swift */; };
 		CC4D1E7925EE415D00B6E4E7 /* RenameAttributesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4D1E7825EE415D00B6E4E7 /* RenameAttributesViewModelTests.swift */; };
+		CC53FB3527551A6E00C4CA4F /* ProductRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC53FB3427551A6E00C4CA4F /* ProductRow.swift */; };
 		CC593A6726EA116300EF0E04 /* ShippingLabelAddNewPackageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC593A6626EA116300EF0E04 /* ShippingLabelAddNewPackageViewModelTests.swift */; };
 		CC593A6B26EA640800EF0E04 /* PackageCreationError+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC593A6A26EA640800EF0E04 /* PackageCreationError+UI.swift */; };
 		CC69236226010946002FB669 /* LoginProloguePages.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC69236126010946002FB669 /* LoginProloguePages.swift */; };
@@ -2534,6 +2535,7 @@
 		CC4A4FF026557D0E00B75DCD /* TitleAndToggleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndToggleRow.swift; sourceTree = "<group>"; };
 		CC4D1D8525E6CDDE00B6E4E7 /* RenameAttributesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameAttributesViewModel.swift; sourceTree = "<group>"; };
 		CC4D1E7825EE415D00B6E4E7 /* RenameAttributesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameAttributesViewModelTests.swift; sourceTree = "<group>"; };
+		CC53FB3427551A6E00C4CA4F /* ProductRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRow.swift; sourceTree = "<group>"; };
 		CC593A6626EA116300EF0E04 /* ShippingLabelAddNewPackageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddNewPackageViewModelTests.swift; sourceTree = "<group>"; };
 		CC593A6A26EA640800EF0E04 /* PackageCreationError+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PackageCreationError+UI.swift"; sourceTree = "<group>"; };
 		CC69236126010946002FB669 /* LoginProloguePages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginProloguePages.swift; sourceTree = "<group>"; };
@@ -5727,6 +5729,14 @@
 			path = "Payment Methods";
 			sourceTree = "<group>";
 		};
+		CC53FB3627551A8700C4CA4F /* ProductsSection */ = {
+			isa = PBXGroup;
+			children = (
+				CC53FB3427551A6E00C4CA4F /* ProductRow.swift */,
+			);
+			path = ProductsSection;
+			sourceTree = "<group>";
+		};
 		CCB366AD274518CD007D437A /* Order Creation */ = {
 			isa = PBXGroup;
 			children = (
@@ -5941,6 +5951,7 @@
 			children = (
 				CCFC50542743BC0D001E505F /* NewOrder.swift */,
 				CCFC50582743E021001E505F /* NewOrderViewModel.swift */,
+				CC53FB3627551A8700C4CA4F /* ProductsSection */,
 				AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */,
 				AEA622B1274669D3002A9B57 /* AddOrderCoordinator.swift */,
 			);
@@ -8178,6 +8189,7 @@
 				DE279BA626E9C582002BA963 /* ShippingLabelPackagesFormViewModel.swift in Sources */,
 				CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */,
 				453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */,
+				CC53FB3527551A6E00C4CA4F /* ProductRow.swift in Sources */,
 				2662D90A26E16B3600E25611 /* FilterListSelector.swift in Sources */,
 				314265B12645A07800500598 /* CardReaderSettingsConnectedViewController.swift in Sources */,
 				B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */,

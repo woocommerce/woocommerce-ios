@@ -105,96 +105,6 @@ private struct ProductsSection: View {
             Divider()
         }
     }
-
-    /// Represent a single product row in the Product section
-    ///
-    struct ProductRow: View {
-
-        // Tracks the scale of the view due to accessibility changes
-        @ScaledMetric private var scale: CGFloat = 1
-
-        var body: some View {
-            AdaptiveStack(horizontalAlignment: .leading) {
-                HStack(alignment: .top) {
-                    // Product image
-                    // TODO: Display actual product image when available
-                    Image(uiImage: .productPlaceholderImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: NewOrder.Layout.productImageSize * scale, height: NewOrder.Layout.productImageSize * scale)
-                        .foregroundColor(Color(UIColor.listSmallIcon))
-                        .accessibilityHidden(true)
-
-                    // Product details
-                    VStack(alignment: .leading) {
-                        Text("Love Ficus") // Fake data - product name
-                        Text("7 in stock • $20.00") // Fake data - stock / price
-                            .subheadlineStyle()
-                        Text("SKU: 123456") // Fake data - SKU
-                            .subheadlineStyle()
-                    }
-                    .accessibilityElement(children: .combine)
-                }
-
-                Spacer()
-
-                ProductStepper()
-            }
-
-            Divider()
-        }
-    }
-
-    /// Represents a custom stepper.
-    /// Used to change the product quantity in the order.
-    ///
-    struct ProductStepper: View {
-
-        // Tracks the scale of the view due to accessibility changes
-        @ScaledMetric private var scale: CGFloat = 1
-
-        var body: some View {
-            HStack(spacing: NewOrder.Layout.stepperSpacing * scale) {
-                Button {
-                    // TODO: Decrement the product quantity
-                } label: {
-                    Image(uiImage: .minusSmallImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: NewOrder.Layout.stepperButtonSize * scale)
-                }
-
-                Text("1") // Fake data - quantity
-
-                Button {
-                    // TODO: Increment the product quantity
-                } label: {
-                    Image(uiImage: .plusSmallImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: NewOrder.Layout.stepperButtonSize * scale)
-                }
-            }
-            .padding(NewOrder.Layout.stepperSpacing/2 * scale)
-            .overlay(
-                RoundedRectangle(cornerRadius: NewOrder.Layout.stepperBorderRadius)
-                    .stroke(Color(UIColor.separator), lineWidth: NewOrder.Layout.stepperBorderWidth)
-            )
-            .accessibilityElement(children: .ignore)
-            .accessibility(label: Text("Quantity"))
-            .accessibility(value: Text("1")) // Fake static data - quantity
-            .accessibilityAdjustableAction { direction in
-                switch direction {
-                case .decrement:
-                    break // TODO: Decrement the product quantity
-                case .increment:
-                    break // TODO: Increment the product quantity
-                @unknown default:
-                    break
-                }
-            }
-        }
-    }
 }
 
 // MARK: Constants
@@ -203,11 +113,6 @@ private extension NewOrder {
         static let sectionSpacing: CGFloat = 16.0
         static let verticalSpacing: CGFloat = 22.0
         static let noSpacing: CGFloat = 0.0
-        static let productImageSize: CGFloat = 44.0
-        static let stepperBorderWidth: CGFloat = 1.0
-        static let stepperBorderRadius: CGFloat = 4.0
-        static let stepperButtonSize: CGFloat = 22.0
-        static let stepperSpacing: CGFloat = 22.0
     }
 
     enum Localization {

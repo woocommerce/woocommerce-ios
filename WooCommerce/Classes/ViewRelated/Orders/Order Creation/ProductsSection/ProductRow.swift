@@ -1,12 +1,12 @@
 import SwiftUI
+import Yosemite
 
 /// Represent a single product row in the Product section of a New Order
 ///
 struct ProductRow: View {
-    /// Whether the product quantity can be changed.
-    /// Controls whether the stepper is rendered.
+    /// View model to drive the view.
     ///
-    let canChangeQuantity: Bool
+    @ObservedObject var viewModel: ProductRowViewModel
 
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1
@@ -26,10 +26,10 @@ struct ProductRow: View {
 
                     // Product details
                     VStack(alignment: .leading) {
-                        Text("Love Ficus") // Fake data - product name
-                        Text("7 in stock • $20.00") // Fake data - stock / price
+                        Text(viewModel.nameLabel)
+                        Text(viewModel.stockAndPriceLabel)
                             .subheadlineStyle()
-                        Text("SKU: 123456") // Fake data - SKU
+                        Text(viewModel.skuLabel)
                             .subheadlineStyle()
                     }
                     .accessibilityElement(children: .combine)
@@ -37,8 +37,8 @@ struct ProductRow: View {
 
                 Spacer()
 
-                ProductStepper()
-                    .renderedIf(canChangeQuantity)
+                ProductStepper(viewModel: viewModel)
+                    .renderedIf(viewModel.canChangeQuantity)
             }
 
             Divider()
@@ -50,6 +50,10 @@ struct ProductRow: View {
 /// Used to change the quantity of the product in a `ProductRow`.
 ///
 private struct ProductStepper: View {
+
+    /// View model to drive the view.
+    ///
+    @ObservedObject var viewModel: ProductRowViewModel
 
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1
@@ -83,7 +87,7 @@ private struct ProductStepper: View {
         )
         .accessibilityElement(children: .ignore)
         .accessibility(label: Text(Localization.quantityLabel))
-        .accessibility(value: Text("1")) // Fake static data - quantity
+        .accessibility(value: Text("\(viewModel.quantity)"))
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .decrement:
@@ -111,11 +115,15 @@ private enum Localization {
 
 struct ProductRow_Previews: PreviewProvider {
     static var previews: some View {
-        ProductRow(canChangeQuantity: true)
+        let sampleProduct = Product().copy(productID: 2, name: "Love Ficus", sku: "123456", price: "20", stockQuantity: 7, stockStatusKey: "instock")
+        let viewModel = ProductRowViewModel(product: sampleProduct, canChangeQuantity: true)
+        let viewModel2 = ProductRowViewModel(product: sampleProduct, canChangeQuantity: false)
+
+        ProductRow(viewModel: viewModel)
             .previewDisplayName("ProductRow with stepper")
             .previewLayout(.sizeThatFits)
 
-        ProductRow(canChangeQuantity: false)
+        ProductRow(viewModel: viewModel2)
             .previewDisplayName("ProductRow without stepper")
             .previewLayout(.sizeThatFits)
     }

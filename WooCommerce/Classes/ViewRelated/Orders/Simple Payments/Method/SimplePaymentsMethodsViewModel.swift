@@ -1,6 +1,9 @@
 import Foundation
 import Yosemite
 import Combine
+import UIKit
+
+import protocol Storage.StorageManagerType
 
 /// ViewModel for the `SimplePaymentsMethods` view.
 ///
@@ -42,16 +45,47 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
+    /// Storage manager to fetch the order.
+    ///
+    private let storage: StorageManagerType
+
+    /// IPP payments collector.
+    ///
+    private lazy var paymentOrchestrator = PaymentCaptureOrchestrator()
+
+    /// Stored payment gateways accounts.
+    /// We will care about the first one because only one is supported right now.
+    ///
+    private lazy var gatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount> = {
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        let controller = ResultsController<StoragePaymentGatewayAccount>(storageManager: storage, matching: predicate, sortedBy: [])
+        try? controller.performFetch()
+        return controller
+    }()
+
+    /// Stored orders.
+    /// We need to fetch this from our storage layer because we are only provide IDs as dependencies
+    /// To keep previews/UIs decoupled from our business logic.
+    ///
+    private lazy var ordersResultController: ResultsController<StorageOrder> = {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld", siteID, orderID)
+        let controller = ResultsController<StorageOrder>(storageManager: storage, matching: predicate, sortedBy: [])
+        try? controller.performFetch()
+        return controller
+    }()
+
     init(siteID: Int64 = 0,
          orderID: Int64 = 0,
          formattedTotal: String,
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         storage: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.orderID = orderID
         self.formattedTotal = formattedTotal
         self.presentNoticeSubject = presentNoticeSubject
         self.stores = stores
+        self.storage = storage
         self.title = Localization.title(total: formattedTotal)
     }
 

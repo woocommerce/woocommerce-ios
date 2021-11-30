@@ -50,6 +50,7 @@ protocol CardReaderSettingsAlertsProvider {
     ///
     func connectingFailedMissingAddress(from: UIViewController,
                                         adminUrl: URL?,
+                                        openUrlInSafari: @escaping (URL) -> Void,
                                         retrySearch: @escaping () -> Void,
                                         cancelSearch: @escaping () -> Void)
 

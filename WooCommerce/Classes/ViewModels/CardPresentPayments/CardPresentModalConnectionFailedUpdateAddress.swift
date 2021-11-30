@@ -5,7 +5,8 @@ import Yosemite
 /// Modal presented when an error occurs while connecting to a reader due to problems with the address
 ///
 final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsModalViewModel {
-    private let adminUrl: URL?
+    private var adminUrl: URL?
+    private let openUrlInSafariAction: (_ url: URL) -> Void
     private let retrySearchAction: () -> Void
     private let cancelSearchAction: () -> Void
     private let site: Site?
@@ -36,9 +37,14 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
 
     let bottomSubtitle: String? = nil
 
-    init(adminUrl: URL?, site: Site?, retrySearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+    init(adminUrl: URL?,
+         site: Site?,
+         openUrlInSafari: @escaping (URL) -> Void,
+         retrySearch: @escaping () -> Void,
+         cancelSearch: @escaping () -> Void) {
         self.adminUrl = adminUrl
         self.site = site
+        self.openUrlInSafariAction = openUrlInSafari
         self.retrySearchAction = retrySearch
         self.cancelSearchAction = cancelSearch
     }
@@ -52,8 +58,7 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
         case true:
             presentAuthenticatedWebview(url: adminUrl, from: viewController)
         default:
-            UIApplication.shared.open(adminUrl)
-            // TODO: Replace button with refresh? Dismiss the alert? Do the retry when the user returns to the app?
+            self.openUrlInSafariAction(adminUrl)
         }
     }
 

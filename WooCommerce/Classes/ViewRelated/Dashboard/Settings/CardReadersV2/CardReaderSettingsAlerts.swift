@@ -27,9 +27,14 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
 
     func connectingFailedMissingAddress(from: UIViewController,
                                         adminUrl: URL?,
+                                        openUrlInSafari: @escaping (URL) -> Void,
                                         retrySearch: @escaping () -> Void,
                                         cancelSearch: @escaping () -> Void) {
-        setViewModelAndPresent(from: from, viewModel: connectingFailedUpdateAddress(adminUrl: adminUrl, retrySearch: retrySearch, cancelSearch: cancelSearch))
+        setViewModelAndPresent(from: from,
+                               viewModel: connectingFailedUpdateAddress(adminUrl: adminUrl,
+                                                                        openUrlInSafari: openUrlInSafari,
+                                                                        retrySearch: retrySearch,
+                                                                        cancelSearch: cancelSearch))
     }
 
     func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) {
@@ -168,10 +173,15 @@ private extension CardReaderSettingsAlerts {
     }
 
     func connectingFailedUpdateAddress(adminUrl: URL?,
+                                       openUrlInSafari: @escaping (URL) -> Void,
                                        retrySearch: @escaping () -> Void,
                                        cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         let site = ServiceLocator.stores.sessionManager.defaultSite
-        return CardPresentModalConnectingFailedUpdateAddress(adminUrl: adminUrl, site: site, retrySearch: retrySearch, cancelSearch: cancelSearch)
+        return CardPresentModalConnectingFailedUpdateAddress(adminUrl: adminUrl,
+                                                             site: site,
+                                                             openUrlInSafari: openUrlInSafari,
+                                                             retrySearch: retrySearch,
+                                                             cancelSearch: cancelSearch)
     }
 
     func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

@@ -48,19 +48,28 @@ struct InPersonPaymentsOnboardingError: View {
         let image: ImageInfo
         let supportLink: Bool
 
+        @Environment(\.verticalSizeClass) var verticalSizeClass
+
+        var isCompat: Bool {
+            get {
+                verticalSizeClass == .compact
+            }
+        }
+
         var body: some View {
+            let imageHeight = isCompat ? image.height / 3 : image.height
             VStack(alignment: .center) {
                 Text(title)
                     .font(.headline)
-                    .padding(.bottom, 32)
+                    .padding(.bottom, isCompat ? 16 : 32)
                 Image(uiImage: image.image)
                     .resizable()
                     .scaledToFit()
-                    .frame(height: image.height)
-                    .padding(.bottom, 32)
+                    .frame(height: imageHeight)
+                    .padding(.bottom, isCompat ? 16 : 32)
                 Text(message)
                     .font(.callout)
-                    .padding(.bottom, 24)
+                    .padding(.bottom, isCompat ? 12 : 24)
                 if supportLink {
                     InPersonPaymentsSupportLink()
                 }

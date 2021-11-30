@@ -48,6 +48,8 @@ struct NewOrder: View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: Layout.noSpacing) {
+                    OrderStatusSection(geometry: geometry, dateCreated: Date(), statusEnum: .pending)
+
                     Spacer(minLength: Layout.sectionSpacing)
 
                     ProductsSection(geometry: geometry)

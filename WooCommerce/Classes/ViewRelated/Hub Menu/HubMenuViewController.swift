@@ -17,7 +17,6 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
 private extension HubMenuViewController {
     func configureNavigationBar() {
         navigationItem.title = Localization.navigationBarTitle
-        addCloseNavigationBarButton()
     }
 
     func configureTabBarItem() {

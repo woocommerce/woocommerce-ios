@@ -57,7 +57,6 @@ struct InPersonPaymentsOnboardingError: View {
         }
 
         var body: some View {
-            let imageHeight = isCompat ? image.height / 3 : image.height
             VStack(alignment: .center) {
                 Text(title)
                     .font(.headline)
@@ -65,7 +64,7 @@ struct InPersonPaymentsOnboardingError: View {
                 Image(uiImage: image.image)
                     .resizable()
                     .scaledToFit()
-                    .frame(height: imageHeight)
+                    .frame(height: isCompat ? image.height / 3 : image.height)
                     .padding(.bottom, isCompat ? 16 : 32)
                 Text(message)
                     .font(.callout)
@@ -74,6 +73,7 @@ struct InPersonPaymentsOnboardingError: View {
                     InPersonPaymentsSupportLink()
                 }
             }.multilineTextAlignment(.center)
+            .frame(maxWidth: 500)
         }
     }
 }

@@ -26,9 +26,6 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
             self?.dismiss(animated: true, completion: nil)
         }
 
-        // Needed to present IPP collect amount alerts, which are displayed in UIKit view controllers.
-        rootView.rootViewController = navigationController
-
         // Observe the present notice intent.
         presentNoticePublisher
             .compactMap { $0 }
@@ -44,6 +41,9 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // Needed to present IPP collect amount alerts, which are displayed in UIKit view controllers.
+        rootView.rootViewController = navigationController
 
         // Set presentation delegate to track the user dismiss flow event
         if let navigationController = navigationController {

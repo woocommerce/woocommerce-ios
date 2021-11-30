@@ -78,8 +78,8 @@ struct JetpackInstallStepsView: View {
 
                 // Install steps
                 VStack(alignment: .leading, spacing: Constants.stepItemsVerticalSpacing) {
-                    ForEach(JetpackInstallStep.allCases) { step in
-                        viewModel.currentStep.map { currentStep in
+                    viewModel.currentStep.map { currentStep in
+                        ForEach(JetpackInstallStep.allCases) { step in
                             HStack(spacing: Constants.stepItemHorizontalSpacing) {
                                 if step == currentStep, step != .done {
                                     ActivityIndicator(isAnimating: .constant(true), style: .medium)

@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Yosemite
 
 /// Defines a protocol for card reader alert providers to conform to - defining what
 /// alerts such a provider is expected to provide over the course of searching for
@@ -50,6 +51,7 @@ protocol CardReaderSettingsAlertsProvider {
     ///
     func connectingFailedMissingAddress(from: UIViewController,
                                         adminUrl: URL?,
+                                        site: Site?,
                                         openUrlInSafari: @escaping (URL) -> Void,
                                         retrySearch: @escaping () -> Void,
                                         cancelSearch: @escaping () -> Void)

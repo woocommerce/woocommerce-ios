@@ -593,6 +593,7 @@ private extension CardReaderConnectionController {
             }
             alerts.connectingFailedMissingAddress(from: from,
                                                   adminUrl: adminUrl,
+                                                  site: ServiceLocator.stores.sessionManager.defaultSite,
                                                   openUrlInSafari: openUrlInSafari,
                                                   retrySearch: continueSearch,
                                                   cancelSearch: cancelSearch)

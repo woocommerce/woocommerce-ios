@@ -56,6 +56,43 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
         XCTAssertEqual(activatedPluginName, "jetpack/jetpack")
     }
 
+    func test_loadAndSynchronizeSite_is_dispatched_when_activating_plugin_succeeds() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
+
+        // When
+        var checkedSiteID: Int64?
+        var forcedUpdateSite: Bool?
+        var supportsJCPSites: Bool?
+        storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
+            switch action {
+            case .installSitePlugin(_, _, let onCompletion):
+                onCompletion(.success(()))
+            case .activateSitePlugin(_, _, let onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        storesManager.whenReceivingAction(ofType: AccountAction.self) { action in
+            switch action {
+            case .loadAndSynchronizeSite(let siteID, let forcedUpdate, let isJetpackConnectionPackageSupported, _):
+                checkedSiteID = siteID
+                forcedUpdateSite = forcedUpdate
+                supportsJCPSites = isJetpackConnectionPackageSupported
+            default:
+                break
+            }
+        }
+        viewModel.startInstallation()
+
+        // Then
+        XCTAssertEqual(checkedSiteID, testSiteID)
+        XCTAssertEqual(forcedUpdateSite, true)
+        XCTAssertEqual(supportsJCPSites, true)
+    }
+
     func test_currentStep_is_installation_on_startInstallation() {
         // Given
         let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID)
@@ -106,6 +143,77 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
         viewModel.startInstallation()
 
         // Then
+        XCTAssertEqual(viewModel.currentStep, .connection)
+    }
+
+    func test_currentStep_is_done_when_site_has_isWooCommerceActive_and_not_isJetpackCPConnected() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
+
+        // When
+        storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
+            switch action {
+            case .installSitePlugin(_, _, let onCompletion):
+                onCompletion(.success(()))
+            case .activateSitePlugin(_, _, let onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        storesManager.whenReceivingAction(ofType: AccountAction.self) { [weak self] action in
+            guard let self = self else { return }
+            switch action {
+            case .loadAndSynchronizeSite(_, _, _, let onCompletion):
+                let fetchedSite = Site.fake().copy(siteID: self.testSiteID,
+                                                   isJetpackThePluginInstalled: true,
+                                                   isJetpackConnected: true,
+                                                   isWooCommerceActive: true)
+                onCompletion(.success(fetchedSite))
+            default:
+                break
+            }
+        }
+        viewModel.startInstallation()
+
+        // Then
+        XCTAssertEqual(viewModel.currentStep, .done)
+    }
+
+    func test_currentStep_is_not_done_when_site_does_not_have_isWooCommerceActive() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
+
+        // When
+        storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
+            switch action {
+            case .installSitePlugin(_, _, let onCompletion):
+                onCompletion(.success(()))
+            case .activateSitePlugin(_, _, let onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        storesManager.whenReceivingAction(ofType: AccountAction.self) { [weak self] action in
+            guard let self = self else { return }
+            switch action {
+            case .loadAndSynchronizeSite(_, _, _, let onCompletion):
+                let fetchedSite = Site.fake().copy(siteID: self.testSiteID,
+                                                   isJetpackThePluginInstalled: true,
+                                                   isJetpackConnected: true,
+                                                   isWooCommerceActive: false)
+                onCompletion(.success(fetchedSite))
+            default:
+                break
+            }
+        }
+        viewModel.startInstallation()
+
+        // Then
+        // TODO: update this when error handling is implemented
         XCTAssertEqual(viewModel.currentStep, .connection)
     }
 }

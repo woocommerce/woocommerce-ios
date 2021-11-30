@@ -11,7 +11,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
     @IBOutlet var forgotPasswordButton: WPNUXSecondaryButton!
     @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     @IBOutlet var verticalCenterConstraint: NSLayoutConstraint?
-    @objc var onePasswordButton: UIButton!
     override var sourceTag: WordPressSupportSourceTag {
         get {
             return .loginUsernamePassword

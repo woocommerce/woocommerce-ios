@@ -9,7 +9,6 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
     @IBOutlet weak var forgotPasswordButton: UIButton?
     @IBOutlet weak var bottomContentConstraint: NSLayoutConstraint?
     @IBOutlet weak var verticalCenterConstraint: NSLayoutConstraint?
-    @objc var onePasswordButton: UIButton!
     @IBOutlet var emailIcon: UIImageView?
     @IBOutlet var emailLabel: UITextField?
     @IBOutlet var emailStackView: UIStackView?

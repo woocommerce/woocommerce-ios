@@ -216,7 +216,11 @@
         "is_wpcom_store": false,
         "woocommerce_is_active": false,
         "design_type": null,
-        "site_goals": null
+        "site_goals": null,
+        "jetpack_connection_active_plugins": [
+            "jetpack",
+            "woocommerce-payments"
+        ]
       }
     }
     ]

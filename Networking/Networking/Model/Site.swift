@@ -41,6 +41,8 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     ///
     public let isWordPressStore: Bool
 
+    public let jetpackConnectionActivePlugins: [String]
+
     /// Time zone identifier of the site (TZ database name).
     ///
     public let timezone: String
@@ -64,6 +66,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         let optionsContainer = try siteContainer.nestedContainer(keyedBy: OptionKeys.self, forKey: .options)
         let isWordPressStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressStore)
         let isWooCommerceActive = try optionsContainer.decode(Bool.self, forKey: .isWooCommerceActive)
+        let jetpackConnectionActivePlugins = try optionsContainer.decodeIfPresent([String].self, forKey: .jetpackConnectionActivePlugins) ?? []
         let timezone = try optionsContainer.decode(String.self, forKey: .timezone)
         let gmtOffset = try optionsContainer.decode(Double.self, forKey: .gmtOffset)
 
@@ -76,6 +79,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                   isJetpackConnected: isJetpackConnected,
                   isWooCommerceActive: isWooCommerceActive,
                   isWordPressStore: isWordPressStore,
+                  jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
                   timezone: timezone,
                   gmtOffset: gmtOffset)
     }
@@ -91,6 +95,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                 isJetpackConnected: Bool,
                 isWooCommerceActive: Bool,
                 isWordPressStore: Bool,
+                jetpackConnectionActivePlugins: [String],
                 timezone: String,
                 gmtOffset: Double) {
         self.siteID = siteID
@@ -102,6 +107,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         self.isJetpackConnected = isJetpackConnected
         self.isWordPressStore = isWordPressStore
         self.isWooCommerceActive = isWooCommerceActive
+        self.jetpackConnectionActivePlugins = jetpackConnectionActivePlugins
         self.timezone = timezone
         self.gmtOffset = gmtOffset
     }
@@ -135,6 +141,7 @@ private extension Site {
         case isWooCommerceActive = "woocommerce_is_active"
         case timezone = "timezone"
         case gmtOffset = "gmt_offset"
+        case jetpackConnectionActivePlugins = "jetpack_connection_active_plugins"
     }
 
     enum PlanKeys: String, CodingKey {

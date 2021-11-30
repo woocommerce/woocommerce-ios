@@ -22,7 +22,7 @@ final class CardPresentModalConnectingFailedUpdatePostalCode: CardPresentPayment
 
     let auxiliaryButtonTitle: String? = nil
 
-    var bottomTitle: String? = nil
+    var bottomTitle: String? = Localization.subtitle
 
     let bottomSubtitle: String? = nil
 
@@ -45,8 +45,14 @@ final class CardPresentModalConnectingFailedUpdatePostalCode: CardPresentPayment
 private extension CardPresentModalConnectingFailedUpdatePostalCode {
     enum Localization {
         static let title = NSLocalizedString(
-            "Please update your store's postal code to proceed - this can be done in your site's admin pages.",
+            "Please update your postal code",
             comment: "Title of the alert presented when the user tries to connect to a specific card reader and it fails " +
+            "due to postal code problems"
+        )
+
+        static let subtitle = NSLocalizedString(
+            "You can set it in your site's admin pages on the web",
+            comment: "Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails " +
             "due to postal code problems"
         )
 

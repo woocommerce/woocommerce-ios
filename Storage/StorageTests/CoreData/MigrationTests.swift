@@ -787,6 +787,34 @@ final class MigrationTests: XCTestCase {
         let isJetpackThePluginInstalled = try XCTUnwrap(migratedSite.value(forKey: "isJetpackThePluginInstalled") as? Bool)
         XCTAssertFalse(isJetpackThePluginInstalled)
     }
+
+    func test_migrating_from_58_to_59_adds_site_jetpack_connection_active_plugins_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 58")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["jetpackConnectionActivePlugins"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 59")
+        let targetContext = targetContainer.viewContext
+
+        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
+        let defaultJetpackConnectionActivePlugins = migratedSite.value(forKey: "jetpackConnectionActivePlugins")
+
+        let plugins = ["jetpack", "woocommerce-payments"]
+        migratedSite.setValue(plugins, forKey: "jetpackConnectionActivePlugins")
+
+        // Then
+        // Default value is nil.
+        XCTAssertNil(defaultJetpackConnectionActivePlugins)
+
+        let jetpackConnectionActivePlugins = try XCTUnwrap(migratedSite.value(forKey: "jetpackConnectionActivePlugins") as? [String])
+        XCTAssertEqual(jetpackConnectionActivePlugins, plugins)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

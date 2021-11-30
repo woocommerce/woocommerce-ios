@@ -25,6 +25,7 @@ struct OrderStatusSection: View {
                 Button(Localization.editButton) {}
                     .buttonStyle(LinkButtonStyle())
                     .fixedSize(horizontal: true, vertical: true)
+                    .padding(.trailing, -Layout.linkButtonTrailingPadding) // remove trailing padding to align button title to the side
             }
         }
         .padding(.horizontal, insets: geometry.safeAreaInsets)
@@ -66,6 +67,7 @@ private extension OrderStatusSection {
             static let verticalPadding: CGFloat = 4.0
             static let cornerRadius: CGFloat = 4.0
         }
+        static let linkButtonTrailingPadding: CGFloat = 22.0
     }
 
     enum Localization {

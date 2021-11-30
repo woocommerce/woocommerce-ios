@@ -2,7 +2,7 @@ import UIKit
 
 /// Barebones Implementation of the ReceiptPrinterService that integrates with AirPrint
 /// Will be iterated in https://github.com/woocommerce/woocommerce-ios/issues/3982
-public final class AirPrintReceiptPrinterService: PrinterService {
+public final class AirPrintReceiptPrinterService: PrinterService, NSObject {
     private let printInfo: UIPrintInfo = {
         let info = UIPrintInfo(dictionary: nil)
         // Will be localized in #3982
@@ -36,5 +36,12 @@ public final class AirPrintReceiptPrinterService: PrinterService {
                 completion(.cancel)
             }
         }
+    }
+}
+
+extension AirPrintReceiptPrinterService: UIPrintInteractionControllerDelegate {
+
+    public func printInteractionController(_ printInteractionController: UIPrintInteractionController, choosePaper paperList: [UIPrintPaper]) -> UIPrintPaper {
+        paperList[0]
     }
 }

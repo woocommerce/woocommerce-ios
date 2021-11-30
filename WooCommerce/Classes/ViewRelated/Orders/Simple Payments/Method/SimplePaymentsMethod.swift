@@ -38,7 +38,7 @@ struct SimplePaymentsMethod: View {
                 Divider()
 
                 MethodRow(icon: .creditCardImage, title: Localization.card) {
-                    print("Tapped Card")
+                    viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
                 }
             }
             .padding(.horizontal)

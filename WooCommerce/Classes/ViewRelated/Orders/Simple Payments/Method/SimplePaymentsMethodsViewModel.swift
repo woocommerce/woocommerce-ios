@@ -112,12 +112,68 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         }
         stores.dispatch(action)
     }
+
+    /// Starts the collect payment flow in the provided `rootViewController`
+    ///
+    func collectPayment(on rootViewController: UIViewController?, onSuccess: () -> ()) {
+        guard let rootViewController = rootViewController else {
+            DDLogError("⛔️ Root ViewController is nil, can't present payment alerts.")
+            return presentNoticeSubject.send(.error(Localization.genericCollectError))
+        }
+
+        guard let order = ordersResultController.fetchedObjects.first else {
+            DDLogError("⛔️ Order not found, can't collect payment.")
+            return presentNoticeSubject.send(.error(Localization.genericCollectError))
+        }
+
+        guard let paymentGateway = gatewayAccountResultsController.fetchedObjects.first else {
+            DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
+            return presentNoticeSubject.send(.error(Localization.genericCollectError))
+        }
+
+        let alerts = OrderDetailsPaymentAlerts(presentingController: rootViewController)
+
+        paymentOrchestrator.collectPayment(
+            for: order,
+            statementDescriptor: paymentGateway.statementDescriptor,
+            onWaitingForInput: { [weak self] in
+                alerts.tapOrInsertCard {
+                    self?.paymentOrchestrator.cancelPayment(onCompletion: { _ in
+                        // TODO: do something with cancel completion block
+                    })
+                }
+            },
+            onProcessingMessage: {
+                alerts.processingPayment()
+            },
+            onDisplayMessage: { message in
+                alerts.displayReaderMessage(message: message)
+            },
+            onCompletion: { result in
+                switch result {
+                case .success:
+                    alerts.success(printReceipt: {
+                        // TODO: Print receipt
+                    }, emailReceipt: {
+                        // TODO: Email receipt
+                    })
+                    // TODO: Call on success to dismiss view
+                case .failure(let error):
+                    alerts.error(error: error) {
+                        // TODO: Retry payment
+                    }
+                    // TODO: & Log error & Analytics
+                }
+            })
+    }
 }
 
 private extension SimplePaymentsMethodsViewModel {
     enum Localization {
         static let markAsPaidError = NSLocalizedString("There was an error while marking the order as paid.",
                                                        comment: "Text when there is an error while marking the order as paid for simple payments.")
+        static let genericCollectError = NSLocalizedString("There was an error while trying to collect the payment.",
+                                                       comment: "Text when there is an unknown error while trying to collect payments")
 
         static func title(total: String) -> String {
             NSLocalizedString("Take Payment (\(total))", comment: "Navigation bar title for the Simple Payments Methods screens")

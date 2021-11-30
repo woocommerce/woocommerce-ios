@@ -21,7 +21,7 @@ private extension HubMenuViewController {
     }
 
     func configureTabBarItem() {
-        tabBarItem.title = NSLocalizedString("Menu", comment: "Title of the Menu tab")
+        tabBarItem.title = Localization.tabTitle
         tabBarItem.image = .hubMenu
         tabBarItem.accessibilityIdentifier = "tab-bar-menu-item"
     }
@@ -30,6 +30,7 @@ private extension HubMenuViewController {
 
 private extension HubMenuViewController {
     enum Localization {
+        static let tabTitle = NSLocalizedString("Menu", comment: "Title of the Menu tab")
         static let navigationBarTitle =
             NSLocalizedString("Hub Menu",
                               comment: "Navigation bar title of hub menu view")

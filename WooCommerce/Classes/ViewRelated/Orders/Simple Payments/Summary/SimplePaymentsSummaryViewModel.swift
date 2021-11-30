@@ -26,6 +26,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     @Published var enableTaxes: Bool = false
 
+    /// Defines when to navigate to the payments method screen.
+    ///
+    @Published var navigateToPaymentMethods = false
+
     /// Defines if a loading indicator should be shown.
     ///
     @Published private(set) var showLoadingIndicator = false
@@ -152,7 +156,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
             switch result {
             case .success:
-                // TODO: Navigate to Payment Method
+                self.navigateToPaymentMethods = true
                 // TODO: Analytics
                 break
             case .failure:
@@ -161,6 +165,16 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
             }
         }
         stores.dispatch(action)
+    }
+
+    /// Creates a view model for the `SimplePaymentsMethods` screen.
+    ///
+    func createMethodsViewModel() -> SimplePaymentsMethodsViewModel {
+        SimplePaymentsMethodsViewModel(siteID: siteID,
+                                       orderID: orderID,
+                                       formattedTotal: total,
+                                       presentNoticeSubject: presentNoticeSubject,
+                                       stores: stores)
     }
 }
 

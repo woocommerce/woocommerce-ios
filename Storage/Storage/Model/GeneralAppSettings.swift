@@ -41,13 +41,17 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let lastEligibilityErrorInfo: EligibilityErrorInfo?
 
+    /// The last time the Jetpack benefits banner is dismissed.
+    public let lastJetpackBenefitsBannerDismissedTime: Date?
+
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
                 isSimplePaymentsSwitchEnabled: Bool,
                 isOrderCreationSwitchEnabled: Bool,
                 knownCardReaders: [String],
-                lastEligibilityErrorInfo: EligibilityErrorInfo? = nil) {
+                lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
+                lastJetpackBenefitsBannerDismissedTime: Date? = nil) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
@@ -55,6 +59,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.isOrderCreationSwitchEnabled = isOrderCreationSwitchEnabled
         self.knownCardReaders = knownCardReaders
         self.lastEligibilityErrorInfo = lastEligibilityErrorInfo
+        self.lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime
     }
 
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
@@ -100,6 +105,7 @@ extension GeneralAppSettings {
         self.isOrderCreationSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isOrderCreationSwitchEnabled) ?? false
         self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []
         self.lastEligibilityErrorInfo = try container.decodeIfPresent(EligibilityErrorInfo.self, forKey: .lastEligibilityErrorInfo)
+        self.lastJetpackBenefitsBannerDismissedTime = try container.decodeIfPresent(Date.self, forKey: .lastJetpackBenefitsBannerDismissedTime)
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

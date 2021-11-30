@@ -1,7 +1,7 @@
 import XCTest
 @testable import Storage
 
-class GeneralAppSettingsTests: XCTestCase {
+final class GeneralAppSettingsTests: XCTestCase {
 
     func test_it_returns_the_correct_status_of_a_stored_feedback() {
         // Given

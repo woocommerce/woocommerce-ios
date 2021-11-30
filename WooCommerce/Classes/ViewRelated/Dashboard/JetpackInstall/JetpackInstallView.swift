@@ -3,8 +3,8 @@ import SwiftUI
 /// Hosting controller wrapper for `JetpackInstallIntroView`
 ///
 final class JetpackInstallHostingController: UIHostingController<JetpackInstallView> {
-    init(siteURL: String) {
-        super.init(rootView: JetpackInstallView(siteURL: siteURL))
+    init(siteID: Int64, siteURL: String) {
+        super.init(rootView: JetpackInstallView(siteID: siteID, siteURL: siteURL))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -22,17 +22,22 @@ struct JetpackInstallView: View {
     // Closure invoked when Close button is tapped
     var dismissAction: () -> Void = {}
 
+    // URL of the site to install Jetpack to
     private let siteURL: String
+
+    // View model for `JetpackInstallStepsView`
+    private let installStepsViewModel: JetpackInstallStepsViewModel
 
     @State private var hasStarted = false
 
-    init(siteURL: String) {
+    init(siteID: Int64, siteURL: String) {
         self.siteURL = siteURL
+        self.installStepsViewModel = JetpackInstallStepsViewModel(siteID: siteID)
     }
 
     var body: some View {
         if hasStarted {
-            JetpackInstallStepsView(siteURL: siteURL, dismissAction: dismissAction)
+            JetpackInstallStepsView(siteURL: siteURL, viewModel: installStepsViewModel, dismissAction: dismissAction)
         } else {
             JetpackInstallIntroView(siteURL: siteURL, dismissAction: dismissAction) {
                 hasStarted = true
@@ -43,7 +48,7 @@ struct JetpackInstallView: View {
 
 struct JetpackInstallView_Previews: PreviewProvider {
     static var previews: some View {
-        JetpackInstallView(siteURL: "automattic.com")
+        JetpackInstallView(siteID: 123, siteURL: "automattic.com")
             .preferredColorScheme(.light)
             .previewLayout(.fixed(width: 414, height: 780))
     }

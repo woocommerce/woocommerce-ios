@@ -7,11 +7,11 @@ struct JetpackInstallStepsView: View {
     /// The site for which Jetpack should be installed
     private let siteURL: String
 
+    // View model to handle the installation
+    @ObservedObject private var viewModel: JetpackInstallStepsViewModel
+
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
-
-    /// TODO-5365: Set real step, maybe as an @Published variable from an observable object.
-    @State private var currentStep: JetpackInstallStep = .activation
 
     /// Attributed string for the description text
     private var descriptionAttributedString: NSAttributedString {
@@ -30,9 +30,11 @@ struct JetpackInstallStepsView: View {
         return attributedString
     }
 
-    init(siteURL: String, dismissAction: @escaping () -> Void) {
+    init(siteURL: String, viewModel: JetpackInstallStepsViewModel, dismissAction: @escaping () -> Void) {
         self.siteURL = siteURL
+        self.viewModel = viewModel
         self.dismissAction = dismissAction
+        viewModel.startInstallation()
     }
 
     var body: some View {
@@ -76,27 +78,29 @@ struct JetpackInstallStepsView: View {
 
                 // Install steps
                 VStack(alignment: .leading, spacing: Constants.stepItemsVerticalSpacing) {
-                    ForEach(JetpackInstallStep.allCases) { step in
-                        HStack(spacing: Constants.stepItemHorizontalSpacing) {
-                            if step == currentStep, step != .done {
-                                ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                            } else if step > currentStep {
-                                Image(uiImage: .checkEmptyCircleImage)
-                                    .resizable()
-                                    .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
-                            } else {
-                                Image(uiImage: .checkCircleImage)
-                                    .resizable()
-                                    .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
-                            }
-
-                            Text(step.title)
-                                .font(.body)
-                                .if(step <= currentStep) {
-                                    $0.bold()
+                    viewModel.currentStep.map { currentStep in
+                        ForEach(JetpackInstallStep.allCases) { step in
+                            HStack(spacing: Constants.stepItemHorizontalSpacing) {
+                                if step == currentStep, step != .done {
+                                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                                } else if step > currentStep {
+                                    Image(uiImage: .checkEmptyCircleImage)
+                                        .resizable()
+                                        .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
+                                } else {
+                                    Image(uiImage: .checkCircleImage)
+                                        .resizable()
+                                        .frame(width: Constants.stepImageSize * scale, height: Constants.stepImageSize * scale)
                                 }
-                                .foregroundColor(Color(.text))
-                                .opacity(step <= currentStep ? 1 : 0.5)
+
+                                Text(step.title)
+                                    .font(.body)
+                                    .if(step <= currentStep) {
+                                        $0.bold()
+                                    }
+                                    .foregroundColor(Color(.text))
+                                    .opacity(step <= currentStep ? 1 : 0.5)
+                            }
                         }
                     }
                 }
@@ -141,11 +145,12 @@ private extension JetpackInstallStepsView {
 
 struct JetpackInstallStepsView_Previews: PreviewProvider {
     static var previews: some View {
-        JetpackInstallStepsView(siteURL: "automattic.com", dismissAction: {})
+        let viewModel = JetpackInstallStepsViewModel(siteID: 123)
+        JetpackInstallStepsView(siteURL: "automattic.com", viewModel: viewModel, dismissAction: {})
             .preferredColorScheme(.light)
             .previewLayout(.fixed(width: 414, height: 780))
 
-        JetpackInstallStepsView(siteURL: "automattic.com", dismissAction: {})
+        JetpackInstallStepsView(siteURL: "automattic.com", viewModel: viewModel, dismissAction: {})
             .preferredColorScheme(.dark)
             .previewLayout(.fixed(width: 414, height: 780))
     }

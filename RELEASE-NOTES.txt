@@ -1,5 +1,13 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+8.2
+-----
+
+
+8.2
+-----
+- [*] Shipping Labels: Fixes a crash when saving a new shipping label after opening the order from a push notification. [https://github.com/woocommerce/woocommerce-ios/pull/5549]
+
 8.1
 -----
 - [***] Now it's possible to filter Order List by multiple statuses and date ranges. Plus, we removed the top tab bar on Orders Tab. [https://github.com/woocommerce/woocommerce-ios/pull/5491]

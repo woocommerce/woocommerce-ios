@@ -15,7 +15,7 @@ final class DashboardViewController: UIViewController {
     private let siteID: Int64
 
     private let dashboardUIFactory: DashboardUIFactory
-    private var dashboardUI: DashboardUI?
+    @Published private var dashboardUI: DashboardUI?
 
     // Used to enable subtitle with store name
     private var shouldShowStoreNameAsSubtitle: Bool = false
@@ -110,6 +110,7 @@ final class DashboardViewController: UIViewController {
         configureDashboardUIContainer()
         configureBottomJetpackBenefitsBanner()
         observeSiteForUIUpdates()
+        observeBottomJetpackBenefitsBannerVisibilityUpdates()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -225,10 +226,10 @@ private extension DashboardViewController {
             let benefitsController = JetpackBenefitsHostingController()
             benefitsController.setActions { [weak self] in
                 self?.dismiss(animated: true, completion: { [weak self] in
-                    guard let siteURL = ServiceLocator.stores.sessionManager.defaultSite?.url else {
+                    guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
                         return
                     }
-                    let installController = JetpackInstallHostingController(siteURL: siteURL)
+                    let installController = JetpackInstallHostingController(siteID: site.siteID, siteURL: site.url)
                     installController.setDismissAction { [weak self] in
                         self?.dismiss(animated: true, completion: nil)
                     }
@@ -239,7 +240,9 @@ private extension DashboardViewController {
             }
             self.present(benefitsController, animated: true, completion: nil)
         } dismissAction: { [weak self] in
-            // TODO: 5362 - Persist dismiss state per site
+            let dismissAction = AppSettingsAction.setJetpackBenefitsBannerLastDismissedTime(time: Date())
+            ServiceLocator.stores.dispatch(dismissAction)
+
             self?.hideJetpackBenefitsBanner()
         }
     }
@@ -323,13 +326,14 @@ private extension DashboardViewController {
             remove(previousDashboardUI)
         }
 
-        dashboardUI = updatedDashboardUI
-
         let contentView = updatedDashboardUI.view!
         addChild(updatedDashboardUI)
         containerView.addSubview(contentView)
         updatedDashboardUI.didMove(toParent: self)
         addViewBelowHeaderStackView(contentView: contentView)
+
+        // Sets `dashboardUI` after its view is added to the view hierarchy so that observers can update UI based on its view.
+        dashboardUI = updatedDashboardUI
 
         updatedDashboardUI.onPullToRefresh = { [weak self] in
             self?.pullToRefresh()
@@ -337,11 +341,10 @@ private extension DashboardViewController {
         updatedDashboardUI.displaySyncingError = { [weak self] in
             self?.showTopBannerView()
         }
+    }
 
-        // Bottom banner
-        // TODO: 5362 & 5368 - Display banner for JCP sites and if the banner has not been dismissed before.
-        let shouldShowJetpackBenefitsBanner = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
-        if shouldShowJetpackBenefitsBanner {
+    func updateJetpackBenefitsBannerVisibility(isBannerVisible: Bool, contentView: UIView) {
+        if isBannerVisible {
             showJetpackBenefitsBanner(contentView: contentView)
         } else {
             hideJetpackBenefitsBanner()
@@ -425,6 +428,30 @@ private extension DashboardViewController {
             self.updateUI(site: site)
             self.reloadData(forced: true)
         }.store(in: &cancellables)
+    }
+
+    func observeBottomJetpackBenefitsBannerVisibilityUpdates() {
+        Publishers.CombineLatest(ServiceLocator.stores.site, $dashboardUI.eraseToAnyPublisher())
+            .sink { [weak self] site, dashboardUI in
+                guard let self = self else { return }
+
+                guard let contentView = dashboardUI?.view else {
+                    return
+                }
+
+                // Checks if Jetpack banner can be visible from app settings.
+                let action = AppSettingsAction.loadJetpackBenefitsBannerVisibility(currentTime: Date(),
+                                                                                   calendar: .current) { [weak self] isVisibleFromAppSettings in
+                    guard let self = self else { return }
+
+                    let shouldShowJetpackBenefitsBanner = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
+                    && site?.isJetpackCPConnected == true
+                    && isVisibleFromAppSettings
+
+                    self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
+                }
+                ServiceLocator.stores.dispatch(action)
+            }.store(in: &cancellables)
     }
 }
 

@@ -142,4 +142,25 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(receivedError)
     }
+
+    func test_when_order_is_updated_navigation_to_payments_method_is_triggered() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+        mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, onCompletion):
+                onCompletion(.success(Order.fake()))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        XCTAssertFalse(viewModel.navigateToPaymentMethods)
+
+        // When
+        viewModel.updateOrder()
+
+        // Then
+        XCTAssertTrue(viewModel.navigateToPaymentMethods)
+    }
 }

@@ -41,8 +41,8 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     ///
     public let isWordPressStore: Bool
 
-    /// For Jetpack CP sites (connected to Jetpack with Jetpack Connection Package instead of Jetpack-the-plugin), this property contains a list of active plugins with Jetpack Connection Package
-    /// (e.g. WooCommerce Payments, Jetpack Backup).
+    /// For Jetpack CP sites (connected to Jetpack with Jetpack Connection Package instead of Jetpack-the-plugin), this property contains
+    /// a list of active plugins with Jetpack Connection Package (e.g. WooCommerce Payments, Jetpack Backup).
     ///
     public let jetpackConnectionActivePlugins: [String]
 

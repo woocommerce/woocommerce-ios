@@ -62,7 +62,7 @@ private enum Localization {
     static let learnMoreText = NSLocalizedString(
         "%1$@ about accepting payments with your mobile device and ordering card readers",
         comment: "A label prompting users to learn more about card readers" +
-            "%1$@ is a placeholder that always replaced with \"Learn more\" string"
+            "%1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence."
     )
 }
 

@@ -8,14 +8,15 @@ struct InPersonPaymentsWCPayNotSetup: View {
         ScrollableVStack {
             Spacer()
 
-            VStack(alignment: .center, spacing: 42) {
-                Text(Localization.title)
-                    .font(.headline)
-                Image(uiImage: .paymentsPlugin)
-                Text(Localization.message)
-                    .font(.callout)
-            }
-            .multilineTextAlignment(.center)
+            InPersonPaymentsOnboardingError.MainContent(
+                title: Localization.title,
+                message: Localization.message,
+                image: InPersonPaymentsOnboardingError.ImageInfo(
+                    image: .paymentsPlugin,
+                    height: 108.0
+                ),
+                supportLink: false
+            )
 
             Spacer()
 

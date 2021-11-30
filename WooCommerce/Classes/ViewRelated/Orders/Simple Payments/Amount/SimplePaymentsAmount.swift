@@ -98,7 +98,6 @@ struct SimplePaymentsAmount: View {
                 .foregroundColor(.text)
                 .textAlignment(.center)
                 .keyboardType(.decimalPad)
-                .focused()
                 .fixedSize()
 
             Spacer()

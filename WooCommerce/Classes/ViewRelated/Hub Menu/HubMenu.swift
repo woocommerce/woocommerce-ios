@@ -4,6 +4,8 @@ import SwiftUI
 /// and will be the entry point of the `Menu` Tab.
 ///
 struct HubMenu: View {
+    @ObservedObject private var viewModel =  HubMenuViewModel()
+
     var body: some View {
         Text("Work in progress")
     }

@@ -6,8 +6,17 @@ import SwiftUI
 struct HubMenu: View {
     @ObservedObject private var viewModel =  HubMenuViewModel()
 
+
     var body: some View {
-        Text("Work in progress")
+        let gridItemLayout = Array(repeating: GridItem(.flexible(), spacing: 0), count: viewModel.menuElements.count)
+
+        ScrollView {
+            LazyVGrid(columns: gridItemLayout) {
+                ForEach(0...viewModel.menuElements.count, id: \.self) { _ in
+                    Color.orange.frame(width: 100, height: 100)
+                }
+            }
+        }
     }
 }
 

@@ -1,3 +1,4 @@
+import CoreGraphics
 /// Models the content of the receipt.
 ///
 public struct ReceiptContent: Codable {
@@ -55,5 +56,13 @@ public extension ReceiptContent {
             "Amount Paid",
             comment: "Line description for 'Amount Paid' cart total on the receipt"
         )
+    }
+}
+
+
+extension ReceiptContent {
+    var estimatedHeight: CGFloat {
+        // This is where we would calculate the estimated height, based on the receipt content. 
+        return 125
     }
 }

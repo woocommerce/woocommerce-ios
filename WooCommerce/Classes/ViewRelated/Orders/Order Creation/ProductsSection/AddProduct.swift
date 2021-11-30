@@ -1,6 +1,10 @@
 import SwiftUI
 
+/// View showing a list of products to add to an order.
+///
 struct AddProduct: View {
+    /// Defines whether the view is presented.
+    ///
     @Binding var isPresented: Bool
 
     var body: some View {

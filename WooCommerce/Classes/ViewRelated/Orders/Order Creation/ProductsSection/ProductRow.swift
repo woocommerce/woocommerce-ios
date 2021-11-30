@@ -3,6 +3,9 @@ import SwiftUI
 /// Represent a single product row in the Product section of a New Order
 ///
 struct ProductRow: View {
+    /// Whether the product quantity can be changed.
+    /// Controls whether the stepper is rendered.
+    ///
     let canChangeQuantity: Bool
 
     // Tracks the scale of the view due to accessibility changes

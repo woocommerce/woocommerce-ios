@@ -81,6 +81,9 @@ struct NewOrder: View {
 ///
 private struct ProductsSection: View {
     let geometry: GeometryProxy
+
+    /// Defines whether `AddProduct` modal is presented.
+    ///
     @State private var showAddProduct: Bool = false
 
     var body: some View {

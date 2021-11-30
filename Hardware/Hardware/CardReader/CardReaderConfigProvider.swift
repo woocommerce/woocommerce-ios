@@ -23,5 +23,6 @@ public protocol CardReaderConfigProvider: ReaderLocationProvider, ReaderTokenPro
 ///
 public enum CardReaderConfigError: Error, LocalizedError {
     case incompleteStoreAddress(adminUrl: URL?)
+    case invalidPostalCode
     case unknown(error: Error)
 }

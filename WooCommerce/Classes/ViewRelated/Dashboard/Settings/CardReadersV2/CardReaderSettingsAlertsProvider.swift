@@ -56,6 +56,13 @@ protocol CardReaderSettingsAlertsProvider {
                                         retrySearch: @escaping () -> Void,
                                         cancelSearch: @escaping () -> Void)
 
+    /// Defines an alert indicating connecting failed because their postal code needs updating.
+    /// The user may try again or cancel
+    ///
+    func connectingFailedInvalidPostalCode(from: UIViewController,
+                                           retrySearch: @escaping () -> Void,
+                                           cancelSearch: @escaping () -> Void)
+
     /// Defines an alert indicating an update couldn't be installed because the reader is low on battery.
     ///
     func updatingFailedLowBattery(from: UIViewController,

@@ -14,11 +14,16 @@ struct HubMenu: View {
             LazyVGrid(columns: gridItemLayout) {
                 ForEach(0...viewModel.menuElements.count, id: \.self) { _ in
                     HubMenuElement(image: UIImage(named: "icon-hub-menu")!, text: "Test")
+                        .cornerRadius(Constants.cornerRadius)
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color(.listBackground))
         }
-        .background(Color(.systemBackground))
+        .background(Color(.listBackground))
+    }
+
+    enum Constants {
+        static let cornerRadius: CGFloat = 10
     }
 }
 

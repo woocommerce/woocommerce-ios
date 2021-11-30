@@ -8,9 +8,20 @@ struct HubMenuElement: View {
 
     var body: some View {
         VStack {
-            Image(uiImage: image)
-            Text("Work in progress")
+            ZStack {
+                Color.red
+                Image(uiImage: image)
+                    .frame(width: Constants.iconSize, height: Constants.iconSize)
+            }
+            .frame(width: Constants.imageSize, height: Constants.imageSize, alignment: .center)
+            .cornerRadius(Constants.imageSize/2)
+            Text(text)
         }
+    }
+
+    enum Constants {
+        static let imageSize: CGFloat = 58
+        static let iconSize: CGFloat = 34
     }
 }
 
@@ -18,8 +29,8 @@ struct HubMenuElement_Previews: PreviewProvider {
     static var previews: some View {
 
         HubMenuElement(image: UIImage(named: "icon-hub-menu")!,
-                       text: "Ciao")
-            .previewLayout(.fixed(width: 375, height: 100))
-            .previewDisplayName("Row Not Selectable")
+                       text: "Menu")
+            .previewLayout(.fixed(width: 166, height: 166))
+            .previewDisplayName("Hub Menu Element")
     }
 }

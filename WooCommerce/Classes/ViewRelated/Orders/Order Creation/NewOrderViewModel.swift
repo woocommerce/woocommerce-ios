@@ -1,11 +1,13 @@
 import Yosemite
 import Combine
+import protocol Storage.StorageManagerType
 
 /// View model for `NewOrder`.
 ///
 final class NewOrderViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
 
     /// Order details used to create the order
     ///
@@ -25,11 +27,38 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var presentNotice: NewOrderNotice?
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+    @Published var orderStatus: OrderStatus
+
+    /// Status Results Controller.
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+        let resultsController = ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching order statuses: \(error)")
+        }
+
+        return resultsController
+    }()
+
+    /// Order statuses list
+    ///
+    private var currentSiteStatuses: [OrderStatus] {
+        return statusResultsController.fetchedObjects
+    }
+
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.stores = stores
+        self.storageManager = storageManager
+        self.orderStatus = .init(name: nil, siteID: siteID, slug: "pending", total: 0)
 
         configureNavigationTrailingItem()
+        setInitialOrderStatus()
     }
 
     // MARK: - API Requests
@@ -111,5 +140,13 @@ private extension NewOrderViewModel {
                 return .create
             }
             .assign(to: &$navigationTrailingItem)
+    }
+
+    func setInitialOrderStatus() {
+        guard let pendingSiteStatus = currentSiteStatuses.first(where: { $0.status == .pending }) else {
+            return
+        }
+
+        orderStatus = pendingSiteStatus
     }
 }

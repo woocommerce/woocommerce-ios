@@ -4,7 +4,7 @@ import Yosemite
 struct OrderStatusSection: View {
     let geometry: GeometryProxy
     let dateCreated: Date
-    let statusEnum: OrderStatusEnum
+    let orderStatus: OrderStatus
 
     var body: some View {
         Divider()
@@ -42,11 +42,11 @@ struct OrderStatusSection: View {
     }
 
     private var statusBadgeTitle: String {
-        statusEnum.rawValue
+        orderStatus.name ?? orderStatus.slug
     }
 
     private var statusBadgeColor: UIColor {
-        switch statusEnum {
+        switch orderStatus.status {
         case .pending, .completed, .cancelled, .refunded, .custom:
             return .gray(.shade5)
         case .onHold:
@@ -76,10 +76,12 @@ private extension OrderStatusSection {
 }
 
 struct OrderStatusSection_Previews: PreviewProvider {
+    static let orderStatus = OrderStatus(name: "Pending payment", siteID: 123, slug: "pending", total: 0)
+
     static var previews: some View {
         GeometryReader { geometry in
             ScrollView {
-            OrderStatusSection(geometry: geometry, dateCreated: Date(), statusEnum: .pending)
+                OrderStatusSection(geometry: geometry, dateCreated: Date(), orderStatus: orderStatus)
             }
         }
     }

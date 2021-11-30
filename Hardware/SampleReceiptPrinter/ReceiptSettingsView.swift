@@ -12,7 +12,7 @@ struct ReceiptSettingsView: View {
                 }
             }
             Button("Print") {
-                ServiceLocator.printerService.printReceipt(content: .sampleReceipt(items: items))
+                ServiceLocator.printerService.printReceipt(content: .sampleReceipt(items: items), completion: {_ in })
             }
             Button("Email") {
                 // To be implemented in the future

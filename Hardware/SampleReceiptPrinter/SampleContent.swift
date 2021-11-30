@@ -19,7 +19,7 @@ extension CardPresentReceiptParameters {
     /// Generates a set of sample CardPresentReceiptParameters with the given total receipt amount
     static func sampleParameters(amount: UInt) -> CardPresentReceiptParameters {
         CardPresentReceiptParameters(
-            amount: amount,
+            amount: amount, formattedAmount: "Cesar",
             currency: "USD",
             date: .init(),
             storeName: "Test Store",
@@ -56,7 +56,7 @@ extension ReceiptContent {
             .reduce(0, +)
 
         let parameters: CardPresentReceiptParameters = .sampleParameters(amount: amount)
-        return ReceiptContent(parameters: parameters, lineItems: items)
+        return ReceiptContent(parameters: parameters, lineItems: items, cartTotals: [], orderNote: nil)
     }
 
 

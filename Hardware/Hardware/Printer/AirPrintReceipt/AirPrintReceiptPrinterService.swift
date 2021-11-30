@@ -2,7 +2,7 @@ import UIKit
 
 /// Barebones Implementation of the ReceiptPrinterService that integrates with AirPrint
 /// Will be iterated in https://github.com/woocommerce/woocommerce-ios/issues/3982
-public final class AirPrintReceiptPrinterService: PrinterService {
+public final class AirPrintReceiptPrinterService: NSObject, PrinterService {
     private let printInfo: UIPrintInfo = {
         let info = UIPrintInfo(dictionary: nil)
         // Will be localized in #3982
@@ -13,10 +13,11 @@ public final class AirPrintReceiptPrinterService: PrinterService {
         return info
     }()
 
-    public init() { }
+    //public init() { }
 
     public func printReceipt(content: ReceiptContent, completion: @escaping (PrintingResult) -> Void) {
         let printController = UIPrintInteractionController.shared
+        printController.delegate = self
 
         printController.printInfo = printInfo
 
@@ -36,5 +37,27 @@ public final class AirPrintReceiptPrinterService: PrinterService {
                 completion(.cancel)
             }
         }
+    }
+}
+
+extension AirPrintReceiptPrinterService: UIPrintInteractionControllerDelegate {
+    public func printInteractionControllerWillPresentPrinterOptions(_ printInteractionController: UIPrintInteractionController) {
+        print("=== will present options " )
+        print("=== selected size ", printInteractionController.printPaper)
+    }
+    public func printInteractionControllerDidPresentPrinterOptions(_ printInteractionController: UIPrintInteractionController) {
+        print("==== did present options")
+        print("=== selected size ", printInteractionController.printPaper)
+    }
+    
+    public func printInteractionControllerDidDismissPrinterOptions(_ printInteractionController: UIPrintInteractionController) {
+        print("=== did dismiss")
+        print("=== selected size ", printInteractionController.printPaper)
+    }
+    
+    public func printInteractionController(_ printInteractionController: UIPrintInteractionController, choosePaper paperList: [UIPrintPaper]) -> UIPrintPaper {
+        print("===== choose paper")
+        print("==== asking for a paper size")
+        return UIPrintPaper()
     }
 }

@@ -9,19 +9,22 @@ struct HubMenuElement: View {
     var body: some View {
         VStack {
             ZStack {
-                Color.red
+                Color(.listBackground)
                 Image(uiImage: image)
                     .frame(width: Constants.iconSize, height: Constants.iconSize)
             }
             .frame(width: Constants.imageSize, height: Constants.imageSize, alignment: .center)
             .cornerRadius(Constants.imageSize/2)
+            .padding(.bottom, Constants.paddingBetweenElements)
             Text(text)
         }
+        .background(Color.white)
     }
 
     enum Constants {
         static let imageSize: CGFloat = 58
         static let iconSize: CGFloat = 34
+        static let paddingBetweenElements: CGFloat = 8
     }
 }
 

@@ -1371,6 +1371,8 @@
 		DEC2962526C122DF005A056B /* ShippingLabelCustomsFormInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2962426C122DF005A056B /* ShippingLabelCustomsFormInputViewModel.swift */; };
 		DEC2962726C17AD8005A056B /* ShippingLabelCustomsForm+Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2962626C17AD8005A056B /* ShippingLabelCustomsForm+Localization.swift */; };
 		DEC2962926C20ECB005A056B /* CollapsibleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2962826C20ECB005A056B /* CollapsibleView.swift */; };
+		DEC51A9D274F8528009F3DF4 /* JetpackInstallStepsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51A9C274F8528009F3DF4 /* JetpackInstallStepsViewModel.swift */; };
+		DEC51AA0274F9922009F3DF4 /* JetpackInstallStepsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51A9F274F9922009F3DF4 /* JetpackInstallStepsViewModelTests.swift */; };
 		DEC6C51827466B59006832D3 /* StoreStatsSiteVisitEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC6C51727466B59006832D3 /* StoreStatsSiteVisitEmptyView.swift */; };
 		DEC6C51A2747758D006832D3 /* JetpackInstallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC6C5192747758D006832D3 /* JetpackInstallView.swift */; };
 		DEC6C51C27477890006832D3 /* JetpackInstallStepsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC6C51B27477890006832D3 /* JetpackInstallStepsView.swift */; };
@@ -2864,6 +2866,8 @@
 		DEC2962426C122DF005A056B /* ShippingLabelCustomsFormInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormInputViewModel.swift; sourceTree = "<group>"; };
 		DEC2962626C17AD8005A056B /* ShippingLabelCustomsForm+Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelCustomsForm+Localization.swift"; sourceTree = "<group>"; };
 		DEC2962826C20ECB005A056B /* CollapsibleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleView.swift; sourceTree = "<group>"; };
+		DEC51A9C274F8528009F3DF4 /* JetpackInstallStepsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallStepsViewModel.swift; sourceTree = "<group>"; };
+		DEC51A9F274F9922009F3DF4 /* JetpackInstallStepsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallStepsViewModelTests.swift; sourceTree = "<group>"; };
 		DEC6C51727466B59006832D3 /* StoreStatsSiteVisitEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsSiteVisitEmptyView.swift; sourceTree = "<group>"; };
 		DEC6C5192747758D006832D3 /* JetpackInstallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallView.swift; sourceTree = "<group>"; };
 		DEC6C51B27477890006832D3 /* JetpackInstallStepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallStepsView.swift; sourceTree = "<group>"; };
@@ -3862,6 +3866,7 @@
 		02E4FD7F2306AA770049610C /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				DEC51A9E274F990D009F3DF4 /* JetpackInstall */,
 				E10DFC76267331450083AFF2 /* Settings */,
 				31F21B07263C8E1F0035B50A /* CardReaderSettings */,
 				DEFD6E5F264990DD00E51E0D /* Plugins */,
@@ -6702,6 +6707,7 @@
 				DE23CFF927462D8F003BE54E /* JetpackInstallIntroView.swift */,
 				DEC6C5192747758D006832D3 /* JetpackInstallView.swift */,
 				DEC6C51B27477890006832D3 /* JetpackInstallStepsView.swift */,
+				DEC51A9C274F8528009F3DF4 /* JetpackInstallStepsViewModel.swift */,
 				DEC6C51D27479280006832D3 /* JetpackInstallSteps.swift */,
 			);
 			path = JetpackInstall;
@@ -6764,6 +6770,14 @@
 				DE19BB1626C3B5A800AB70D9 /* ItemDetails */,
 			);
 			path = Customs;
+			sourceTree = "<group>";
+		};
+		DEC51A9E274F990D009F3DF4 /* JetpackInstall */ = {
+			isa = PBXGroup;
+			children = (
+				DEC51A9F274F9922009F3DF4 /* JetpackInstallStepsViewModelTests.swift */,
+			);
+			path = JetpackInstall;
 			sourceTree = "<group>";
 		};
 		DEE6437426D87C2D00888A75 /* Print Customs Form */ = {
@@ -7722,6 +7736,7 @@
 				AECD57D226DFDF7500A3B580 /* EditOrderAddressForm.swift in Sources */,
 				26C6E8EC26E8FF4800C7BB0F /* LazyNavigationLink.swift in Sources */,
 				45E9A6E724DAE23300A600E8 /* ProductReviewsViewModel.swift in Sources */,
+				DEC51A9D274F8528009F3DF4 /* JetpackInstallStepsViewModel.swift in Sources */,
 				455DC3A327393C7E00D4644C /* OrderDatesFilterViewController.swift in Sources */,
 				028BAC4222F30B05008BB4AF /* StoreStatsV4PeriodViewController.swift in Sources */,
 				740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */,
@@ -8437,6 +8452,7 @@
 				020BE77323B4A567007FE54C /* AztecInsertMoreFormatBarCommandTests.swift in Sources */,
 				B57C5C9E21B80E8300FF82B2 /* SessionManager+Internal.swift in Sources */,
 				2667BFDB252E659A008099D4 /* MockOrderItem.swift in Sources */,
+				DEC51AA0274F9922009F3DF4 /* JetpackInstallStepsViewModelTests.swift in Sources */,
 				26C6E8E426E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift in Sources */,
 				3190D61D26D6E97B00EF364D /* CardPresentModalRetryableErrorTests.swift in Sources */,
 				456417F6247D5643001203F6 /* UITableView+HelpersTests.swift in Sources */,

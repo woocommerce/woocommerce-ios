@@ -56,16 +56,19 @@ private enum Localization {
 
     static let learnMoreLink = NSLocalizedString(
         "Learn more",
-        comment: "A label prompting users to learn more about card readers. This part is the link to the website, and forms part of a longer sentence which it should be considered a part of."
+        comment: """
+                 A label prompting users to learn more about card readers.
+                 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
+                 """
     )
 
     static let learnMoreText = NSLocalizedString(
         "%1$@ about accepting payments with your mobile device and ordering card readers",
-        comment: "A label prompting users to learn more about card readers" +
-            """
-            %1$@ is a placeholder that always replaced with \"Learn more\" string, 
-            which should be translated separately and considered part of this sentence.
-            """
+        comment: """
+                 A label prompting users to learn more about card readers"
+                 %1$@ is a placeholder that always replaced with \"Learn more\" string,
+                 which should be translated separately and considered part of this sentence.
+                 """
     )
 }
 

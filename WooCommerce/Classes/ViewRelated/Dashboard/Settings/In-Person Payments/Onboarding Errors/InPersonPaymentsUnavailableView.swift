@@ -2,26 +2,16 @@ import SwiftUI
 
 struct InPersonPaymentsUnavailable: View {
     var body: some View {
-        ScrollableVStack {
-            Spacer()
-
-            VStack(alignment: .center, spacing: 42) {
-                Text(Localization.unavailable)
-                    .font(.headline)
-                    .multilineTextAlignment(.center)
-                Image(uiImage: .paymentErrorImage)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 180.0)
-                Text(Localization.message)
-                    .font(.callout)
-                    .multilineTextAlignment(.center)
-            }
-
-            Spacer()
-
-            InPersonPaymentsLearnMore()
-        }
+        InPersonPaymentsOnboardingError(
+            title: Localization.unavailable,
+            message: Localization.message,
+            image: InPersonPaymentsOnboardingError.ImageInfo(
+                image: .paymentErrorImage,
+                height: 180.0
+            ),
+            supportLink: false,
+            learnMore: true
+        )
     }
 }
 

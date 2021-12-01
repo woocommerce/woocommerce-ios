@@ -1,5 +1,6 @@
-Are you managing multiple stores in the app? Today is your lucky day! Our app now supports push notifications for ALL of your stores connected with the same Jetpack/WordPress.com account, not just the currently selected store.
+- [***] Now it's possible to filter Order List by multiple statuses and date ranges. Plus, we removed the top tab bar on Orders Tab. [https://github.com/woocommerce/woocommerce-ios/pull/5491]
+- [*] Login: Password AutoFill will suggest wordpress.com accounts. [https://github.com/woocommerce/woocommerce-ios/pull/5399]
+- [*] Store picker: after logging in with store address, the pre-selected store is now the currently selected store instead of the store from login flow. [https://github.com/woocommerce/woocommerce-ios/pull/5508]
+- [internal] Migrated Settings screen to MVVM [https://github.com/woocommerce/woocommerce-ios/pull/5393]
 
-In-person payments card readers might have firmware software updates – some are super important and are required to be installed immediately. With this release, you can defer the upgrade of the optional updates for a better time.
 
-You’ll also find you can filter the product list by category in this release.

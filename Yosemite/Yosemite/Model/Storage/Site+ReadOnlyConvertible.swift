@@ -18,6 +18,7 @@ extension Storage.Site: ReadOnlyConvertible {
         isJetpackConnected = site.isJetpackConnected
         isWooCommerceActive = NSNumber(booleanLiteral: site.isWooCommerceActive)
         isWordPressStore = NSNumber(booleanLiteral: site.isWordPressStore)
+        jetpackConnectionActivePlugins = site.jetpackConnectionActivePlugins
         timezone = site.timezone
         gmtOffset = site.gmtOffset
     }
@@ -34,6 +35,7 @@ extension Storage.Site: ReadOnlyConvertible {
                     isJetpackConnected: isJetpackConnected,
                     isWooCommerceActive: isWooCommerceActive?.boolValue ?? false,
                     isWordPressStore: isWordPressStore?.boolValue ?? false,
+                    jetpackConnectionActivePlugins: jetpackConnectionActivePlugins ?? [],
                     timezone: timezone ?? "",
                     gmtOffset: gmtOffset)
     }

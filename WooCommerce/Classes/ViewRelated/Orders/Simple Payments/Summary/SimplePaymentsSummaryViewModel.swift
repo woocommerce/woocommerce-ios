@@ -166,6 +166,16 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         }
         stores.dispatch(action)
     }
+
+    /// Creates a view model for the `SimplePaymentsMethods` screen.
+    ///
+    func createMethodsViewModel() -> SimplePaymentsMethodsViewModel {
+        SimplePaymentsMethodsViewModel(siteID: siteID,
+                                       orderID: orderID,
+                                       formattedTotal: total,
+                                       presentNoticeSubject: presentNoticeSubject,
+                                       stores: stores)
+    }
 }
 
 // MARK: Constants

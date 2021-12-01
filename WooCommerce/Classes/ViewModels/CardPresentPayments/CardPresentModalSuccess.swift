@@ -29,6 +29,10 @@ final class CardPresentModalSuccess: CardPresentPaymentsModalViewModel {
 
     let bottomSubtitle: String? = nil
 
+    var accessibilityLabel: String? {
+        return topTitle
+    }
+
     init(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void) {
         self.printReceiptAction = printReceipt
         self.emailReceiptAction = emailReceipt

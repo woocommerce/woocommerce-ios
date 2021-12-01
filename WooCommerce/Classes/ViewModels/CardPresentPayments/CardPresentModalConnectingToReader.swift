@@ -22,6 +22,10 @@ final class CardPresentModalConnectingToReader: CardPresentPaymentsModalViewMode
 
     var bottomSubtitle: String?
 
+    var accessibilityLabel: String? {
+        return topTitle + Localization.accessibilityInstruction
+    }
+
     init() {}
 
     func didTapPrimaryButton(in viewController: UIViewController?) {}
@@ -41,6 +45,11 @@ private extension CardPresentModalConnectingToReader {
         static let instruction = NSLocalizedString(
             "Please wait...",
             comment: "Label within the modal dialog that appears when connecting to a card reader"
+        )
+
+        static let accessibilityInstruction = NSLocalizedString(
+            "Please wait",
+            comment: "VoiceOver Accessibility label for the instruction"
         )
     }
 }

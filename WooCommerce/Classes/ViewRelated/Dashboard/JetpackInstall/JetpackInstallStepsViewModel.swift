@@ -29,7 +29,7 @@ final class JetpackInstallStepsViewModel: ObservableObject {
     /// Starts the steps by checking Jetpack-the-plugin.
     ///
     func startInstallation() {
-        fetchJetpackPluginDetailsAndProceed()
+        checkJetpackPluginDetailsAndProceed()
     }
 
     /// Fetches details for Jetpack-the-plugin, and installs it if the plugin does not exist.
@@ -37,7 +37,7 @@ final class JetpackInstallStepsViewModel: ObservableObject {
     /// - Parameters:
     ///   - retryCount: number of retries done for error handling.
     ///
-    private func fetchJetpackPluginDetailsAndProceed(retryCount: Int = 0) {
+    private func checkJetpackPluginDetailsAndProceed(retryCount: Int = 0) {
         guard retryCount <= Constants.maxRetryCount else {
             installFailed = true
             return
@@ -69,7 +69,7 @@ final class JetpackInstallStepsViewModel: ObservableObject {
             case .success:
                 self.activateJetpack()
             case .failure:
-                self.fetchJetpackPluginDetailsAndProceed(retryCount: retryCount + 1)
+                self.checkJetpackPluginDetailsAndProceed(retryCount: retryCount + 1)
             }
         }
         stores.dispatch(installationAction)
@@ -85,7 +85,7 @@ final class JetpackInstallStepsViewModel: ObservableObject {
             case .success:
                 self.checkSiteConnection()
             case .failure:
-                self.fetchJetpackPluginDetailsAndProceed(retryCount: retryCount + 1)
+                self.checkJetpackPluginDetailsAndProceed(retryCount: retryCount + 1)
             }
         }
         stores.dispatch(activationAction)

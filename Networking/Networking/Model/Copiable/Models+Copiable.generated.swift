@@ -1155,6 +1155,7 @@ extension Site {
         isJetpackConnected: CopiableProp<Bool> = .copy,
         isWooCommerceActive: CopiableProp<Bool> = .copy,
         isWordPressStore: CopiableProp<Bool> = .copy,
+        jetpackConnectionActivePlugins: CopiableProp<[String]> = .copy,
         timezone: CopiableProp<String> = .copy,
         gmtOffset: CopiableProp<Double> = .copy
     ) -> Site {
@@ -1167,6 +1168,7 @@ extension Site {
         let isJetpackConnected = isJetpackConnected ?? self.isJetpackConnected
         let isWooCommerceActive = isWooCommerceActive ?? self.isWooCommerceActive
         let isWordPressStore = isWordPressStore ?? self.isWordPressStore
+        let jetpackConnectionActivePlugins = jetpackConnectionActivePlugins ?? self.jetpackConnectionActivePlugins
         let timezone = timezone ?? self.timezone
         let gmtOffset = gmtOffset ?? self.gmtOffset
 
@@ -1180,6 +1182,7 @@ extension Site {
             isJetpackConnected: isJetpackConnected,
             isWooCommerceActive: isWooCommerceActive,
             isWordPressStore: isWordPressStore,
+            jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
             timezone: timezone,
             gmtOffset: gmtOffset
         )

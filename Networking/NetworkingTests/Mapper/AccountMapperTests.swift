@@ -4,7 +4,7 @@ import XCTest
 
 /// AccountMapper Unit Tests
 ///
-class AccountMapperTests: XCTestCase {
+final class AccountMapperTests: XCTestCase {
 
     /// Verifies that all of the Account fields are properly parsed.
     ///
@@ -27,25 +27,35 @@ class AccountMapperTests: XCTestCase {
         let sites = mapLoadSitesResponse()
         XCTAssert(sites?.count == 2)
 
+        // The first site is a Jetpack site.
         let first = sites!.first!
         XCTAssertEqual(first.siteID, 1112233334444555)
         XCTAssertEqual(first.name, "Testing Blog")
         XCTAssertEqual(first.description, "Testing Tagline")
         XCTAssertEqual(first.url, "https://some-testing-url.testing.blog")
+        XCTAssertFalse(first.isJetpackCPConnected)
+        XCTAssertTrue(first.isJetpackConnected)
+        XCTAssertTrue(first.isJetpackThePluginInstalled)
         XCTAssertEqual(first.isWooCommerceActive, true)
         XCTAssertEqual(first.isWordPressStore, true)
         XCTAssertEqual(first.gmtOffset, 3.5)
         XCTAssertEqual(first.siteTimezone, TimeZone(secondsFromGMT: 12600))
+        XCTAssertEqual(first.jetpackConnectionActivePlugins, [])
 
+        // The second site is a Jetpack CP site (connected to Jetpack without Jetpack-the-plugin).
         let second = sites!.last!
         XCTAssertEqual(second.siteID, 11122333344446666)
         XCTAssertEqual(second.name, "Thoughts")
         XCTAssertEqual(second.description, "Your Favorite Blog")
         XCTAssertEqual(second.url, "https://thoughts.testing.blog")
+        XCTAssertTrue(second.isJetpackCPConnected)
+        XCTAssertTrue(second.isJetpackConnected)
+        XCTAssertFalse(second.isJetpackThePluginInstalled)
         XCTAssertEqual(second.isWooCommerceActive, false)
         XCTAssertEqual(second.isWordPressStore, false)
         XCTAssertEqual(second.gmtOffset, -4)
         XCTAssertEqual(second.siteTimezone, TimeZone(secondsFromGMT: -14400))
+        XCTAssertEqual(second.jetpackConnectionActivePlugins, ["jetpack", "woocommerce-payments"])
     }
 
     /// Verifies that the Plan field for Site is properly parsed.

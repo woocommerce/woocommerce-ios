@@ -24,7 +24,7 @@ public final class TabNavComponent: ScreenObject {
     private var reviewsTabButton: XCUIElement { reviewsTabButtonGetter(app) }
     var productsTabButton: XCUIElement { productsTabButtonGetter(app) }
 
-    init(app: XCUIApplication = XCUIApplication()) throws {
+    public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
                 myStoreTabButtonGetter,
@@ -48,7 +48,7 @@ public final class TabNavComponent: ScreenObject {
     @discardableResult
     public func gotoOrdersScreen() throws -> OrdersScreen {
         // Avoid transitioning if it is already on screen
-        if !OrdersScreen.isVisible {
+        if !OrdersScreen.isLoaded() {
             ordersTabButton.tap()
         }
 

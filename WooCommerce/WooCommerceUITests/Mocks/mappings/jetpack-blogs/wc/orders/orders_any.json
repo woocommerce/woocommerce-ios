@@ -7,7 +7,10 @@
                 "equalTo": "true"
             },
             "path": {
-                "matches": "/wc/v3/orders&(.*)fields=id,parent_id,number,status,currency,customer_id,customer_note,date_created_gmt,date_modified_gmt,date_paid_gmt,discount_total,discount_tax,shipping_total,shipping_tax,total,total_tax,payment_method_title,line_items,shipping,billing,coupon_lines,shipping_lines,refunds(.*)"
+                "matches": "/wc/v3/orders&_method=get"
+            },
+            "query": {
+                "matches": "(.*)status\":\"any(.*)"
             }
         }
     },
@@ -90,6 +93,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 2192,
@@ -167,6 +171,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 2181,
@@ -229,6 +234,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 2171,
@@ -291,6 +297,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 2136,
@@ -368,6 +375,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 2143,
@@ -430,6 +438,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 2188,
@@ -492,6 +501,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 2145,
@@ -554,6 +564,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 2168,
@@ -631,6 +642,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 2185,
@@ -693,6 +705,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 2179,
@@ -755,6 +768,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 2161,
@@ -817,6 +831,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": [{
                     "id": 2163,
                     "reason": "Order fully refunded.",
@@ -883,6 +898,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 2155,
@@ -960,6 +976,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 2148,
@@ -1022,6 +1039,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 2198,
@@ -1084,6 +1102,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 75,
@@ -1176,6 +1195,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 62,
@@ -1253,6 +1273,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 38,
@@ -1330,6 +1351,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 37,
@@ -1422,6 +1444,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }, {
                 "id": 36,
@@ -1499,6 +1522,7 @@
                 }],
                 "shipping_lines": [],
                 "coupon_lines": [],
+                "fee_lines": [],
                 "refunds": []
             }]
         },

@@ -1,13 +1,22 @@
 import ScreenObject
 import XCTest
 
+private struct ElementStringIDs {
+    static let searchButton = "order-search-button"
+    static let filterButton = "Filter"
+}
+
 public final class OrdersScreen: ScreenObject {
 
     // TODO: Remove force `try` once `ScreenObject` migration is completed
     public let tabBar = try! TabNavComponent()
 
     private let searchButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["order-search-button"]
+        $0.buttons[ElementStringIDs.searchButton]
+    }
+
+    private let filterButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons[ElementStringIDs.filterButton]
     }
 
     private var searchButton: XCUIElement { searchButtonGetter(app) }
@@ -17,15 +26,18 @@ public final class OrdersScreen: ScreenObject {
         (try? OrdersScreen().isLoaded) ?? false
     }
 
-    init(app: XCUIApplication = XCUIApplication()) throws {
+    public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
                 searchButtonGetter,
-                // swiftlint:disable:next opening_braces
-                { $0.buttons["order-filter-button"] }
+                filterButtonGetter
             ],
             app: app
         )
+    }
+
+    static func isLoaded() -> Bool {
+        return XCUIApplication().buttons[ElementStringIDs.searchButton].exists
     }
 
     @discardableResult

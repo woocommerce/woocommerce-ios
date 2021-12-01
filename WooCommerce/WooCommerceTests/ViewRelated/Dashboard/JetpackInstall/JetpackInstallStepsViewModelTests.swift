@@ -119,6 +119,7 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(installedPluginInvokedCount, 3) // 1 initial time plus 2 retries
+        XCTAssertFalse(viewModel.installFailed)
     }
 
     func test_loadAndSynchronizeSite_is_dispatched_when_activating_plugin_succeeds() {

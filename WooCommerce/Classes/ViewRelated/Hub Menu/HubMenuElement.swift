@@ -18,7 +18,6 @@ struct HubMenuElement: View {
             .padding(.bottom, Constants.paddingBetweenElements)
             Text(text)
         }
-        .background(Color.white)
     }
 
     enum Constants {

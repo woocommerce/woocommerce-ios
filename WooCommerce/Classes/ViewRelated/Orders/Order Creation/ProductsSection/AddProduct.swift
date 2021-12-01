@@ -7,14 +7,18 @@ struct AddProduct: View {
     ///
     @Binding var isPresented: Bool
 
+    /// View model to drive the view.
+    ///
+    @ObservedObject var viewModel: AddProductViewModel
+
     var body: some View {
         NavigationView {
             ScrollView {
                 // TODO: Make the product list searchable
                 LazyVStack {
-                    // TODO: Add a product row for each non-variable product in the store
-                    let viewModel = ProductRowViewModel(product: ProductRowViewModel.sampleProduct, canChangeQuantity: false) // Temporary view model
-                    ProductRow(viewModel: viewModel)
+                    ForEach(viewModel.productRowViewModels) { viewModel in
+                        ProductRow(viewModel: viewModel)
+                    }
                 }
                 .padding()
             }
@@ -41,6 +45,8 @@ private extension AddProduct {
 
 struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
-        AddProduct(isPresented: .constant(true))
+        let viewModel = AddProductViewModel(products: AddProductViewModel.sampleProducts)
+
+        AddProduct(isPresented: .constant(true), viewModel: viewModel)
     }
 }

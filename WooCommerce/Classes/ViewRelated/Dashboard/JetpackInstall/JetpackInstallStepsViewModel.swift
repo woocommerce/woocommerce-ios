@@ -61,7 +61,7 @@ final class JetpackInstallStepsViewModel: ObservableObject {
 
     /// Installs Jetpack plugin to current site.
     ///
-    private func installJetpackPlugin(retryCount: Int = 0) {
+    private func installJetpackPlugin(retryCount: Int) {
         currentStep = .installation
         let installationAction = SitePluginAction.installSitePlugin(siteID: siteID, slug: Constants.jetpackSlug) { [weak self] result in
             guard let self = self else { return }

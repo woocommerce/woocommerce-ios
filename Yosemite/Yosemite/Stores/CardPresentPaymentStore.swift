@@ -248,7 +248,11 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
             case .success(let token):
                 completion(.success(token.token))
             case .failure(let error):
-                completion(.failure(CardReaderConfigError(error: error)))
+                if let configError = CardReaderConfigError(error: error) {
+                    completion(.failure(configError))
+                } else {
+                    completion(.failure(error))
+                }
             }
         }
     }
@@ -260,17 +264,20 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
                 let readerLocation = wcpayReaderLocation.toReaderLocation(siteID: self.siteID)
                 completion(.success(readerLocation.id))
             case .failure(let error):
-                completion(.failure(CardReaderConfigError(error: error)))
+                if let configError = CardReaderConfigError(error: error) {
+                    completion(.failure(configError))
+                } else {
+                    completion(.failure(error))
+                }
             }
         }
     }
 }
 
 private extension CardReaderConfigError {
-    init(error: Error) {
+    init?(error: Error) {
         guard let dotcomError = error as? DotcomError else {
-            self = .unknown(error: error)
-            return
+            return nil
         }
         switch dotcomError {
         case .unknown("store_address_is_incomplete", let message):
@@ -280,7 +287,7 @@ private extension CardReaderConfigError {
             self = .invalidPostalCode
             return
         default:
-            self = .unknown(error: dotcomError.toAnyError)
+            return nil
         }
     }
 }

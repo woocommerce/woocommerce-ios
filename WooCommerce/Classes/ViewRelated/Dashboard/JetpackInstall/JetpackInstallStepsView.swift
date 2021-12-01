@@ -39,6 +39,13 @@ struct JetpackInstallStepsView: View {
 
     var body: some View {
         VStack {
+            HStack {
+                Button(Localization.closeButton, action: dismissAction)
+                .buttonStyle(LinkButtonStyle())
+                .fixedSize(horizontal: true, vertical: true)
+                .padding(.top, Constants.cancelButtonTopMargin)
+                Spacer()
+            }
             // Main content
             VStack(alignment: .leading, spacing: Constants.contentSpacing) {
                 // Header
@@ -123,14 +130,16 @@ struct JetpackInstallStepsView: View {
                 .buttonStyle(PrimaryButtonStyle())
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(Constants.actionButtonMargin)
+                .renderedIf(viewModel.currentStep == .done)
         }
     }
 }
 
 private extension JetpackInstallStepsView {
     enum Constants {
+        static let cancelButtonTopMargin: CGFloat = 8
         static let headerContentSpacing: CGFloat = 8
-        static let contentTopMargin: CGFloat = 80
+        static let contentTopMargin: CGFloat = 32
         static let contentHorizontalMargin: CGFloat = 40
         static let contentSpacing: CGFloat = 32
         static let logoSize: CGFloat = 40
@@ -144,6 +153,7 @@ private extension JetpackInstallStepsView {
     }
 
     enum Localization {
+        static let closeButton = NSLocalizedString("Close", comment: "Title of the Close action on the Jetpack Install view")
         static let installTitle = NSLocalizedString("Install Jetpack", comment: "Title of the Install Jetpack view")
         static let installDescription = NSLocalizedString("Please wait while we connect your site %1$@ with Jetpack.",
                                                           comment: "Message on the Jetpack Install Progress screen. The %1$@ is the site address.")

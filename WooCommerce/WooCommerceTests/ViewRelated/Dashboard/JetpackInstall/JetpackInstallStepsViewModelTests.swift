@@ -6,12 +6,14 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
 
     private let testSiteID: Int64 = 1232
 
-    func test_startInstallation_dispatches_installSitePlugin_action() {
+    func test_startInstallation_dispatches_installSitePlugin_action_if_getPluginDetails_fails() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
 
         // When
+        var pluginDetailsSiteID: Int64?
+        var checkedPluginName: String?
         var installedSiteID: Int64?
         var pluginSlug: String?
         storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
@@ -19,6 +21,10 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
             case .installSitePlugin(let siteID, let slug, _):
                 installedSiteID = siteID
                 pluginSlug = slug
+            case .getPluginDetails(let siteID, let pluginName, let onCompletion):
+                pluginDetailsSiteID = siteID
+                checkedPluginName = pluginName
+                onCompletion(.failure(NSError(domain: "Not Found", code: 404)))
             default:
                 break
             }
@@ -26,6 +32,8 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
         viewModel.startInstallation()
 
         // Then
+        XCTAssertEqual(pluginDetailsSiteID, testSiteID)
+        XCTAssertEqual(checkedPluginName, "jetpack/jetpack")
         XCTAssertEqual(installedSiteID, testSiteID)
         XCTAssertEqual(pluginSlug, "jetpack")
     }
@@ -45,6 +53,8 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
             case .activateSitePlugin(let siteID, let pluginName, _):
                 activatedSiteID = siteID
                 activatedPluginName = pluginName
+            case .getPluginDetails(_, _, let onCompletion):
+                onCompletion(.failure(NSError(domain: "Not Found", code: 404)))
             default:
                 break
             }
@@ -71,6 +81,8 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
                 onCompletion(.success(()))
             case .activateSitePlugin(_, _, let onCompletion):
                 onCompletion(.success(()))
+            case .getPluginDetails(_, _, let onCompletion):
+                onCompletion(.failure(NSError(domain: "Not Found", code: 404)))
             default:
                 break
             }
@@ -95,9 +107,18 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
 
     func test_currentStep_is_installation_on_startInstallation() {
         // Given
-        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID)
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
 
         // When
+        storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
+            switch action {
+            case .getPluginDetails(_, _, let onCompletion):
+                onCompletion(.failure(NSError(domain: "Not Found", code: 404)))
+            default:
+                break
+            }
+        }
         viewModel.startInstallation()
 
         // Then
@@ -114,6 +135,8 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
             switch action {
             case .installSitePlugin(_, _, let onCompletion):
                 onCompletion(.success(()))
+            case .getPluginDetails(_, _, let onCompletion):
+                onCompletion(.failure(NSError(domain: "Not Found", code: 404)))
             default:
                 break
             }
@@ -136,6 +159,8 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
                 onCompletion(.success(()))
             case .activateSitePlugin(_, _, let onCompletion):
                 onCompletion(.success(()))
+            case .getPluginDetails(_, _, let onCompletion):
+                onCompletion(.failure(NSError(domain: "Not Found", code: 404)))
             default:
                 break
             }
@@ -158,6 +183,8 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
                 onCompletion(.success(()))
             case .activateSitePlugin(_, _, let onCompletion):
                 onCompletion(.success(()))
+            case .getPluginDetails(_, _, let onCompletion):
+                onCompletion(.failure(NSError(domain: "Not Found", code: 404)))
             default:
                 break
             }
@@ -179,6 +206,7 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.currentStep, .done)
+        XCTAssertFalse(viewModel.installFailed)
     }
 
     func test_currentStep_is_not_done_when_site_does_not_have_isWooCommerceActive() {
@@ -193,6 +221,8 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
                 onCompletion(.success(()))
             case .activateSitePlugin(_, _, let onCompletion):
                 onCompletion(.success(()))
+            case .getPluginDetails(_, _, let onCompletion):
+                onCompletion(.failure(NSError(domain: "Not Found", code: 404)))
             default:
                 break
             }
@@ -213,7 +243,7 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
         viewModel.startInstallation()
 
         // Then
-        // TODO: update this when error handling is implemented
         XCTAssertEqual(viewModel.currentStep, .connection)
+        XCTAssertTrue(viewModel.installFailed)
     }
 }

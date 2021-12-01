@@ -76,6 +76,14 @@ struct JetpackInstallStepsView: View {
                     AttributedText(descriptionAttributedString)
                 }
 
+                // Loading indicator for when checking plugin details
+                HStack(alignment: .center) {
+                    Spacer()
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                    Spacer()
+                }
+                .renderedIf(viewModel.currentStep == nil)
+
                 // Install steps
                 VStack(alignment: .leading, spacing: Constants.stepItemsVerticalSpacing) {
                     viewModel.currentStep.map { currentStep in

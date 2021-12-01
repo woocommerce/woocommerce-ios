@@ -8,7 +8,7 @@ struct HubMenu: View {
 
 
     var body: some View {
-        let gridItemLayout = [GridItem(.adaptive(minimum: Constants.itemSize), spacing: Constants.itemSpacing)]
+        let gridItemLayout = [GridItem(.flexible(), spacing: Constants.itemSpacing)]
 
         ScrollView {
             LazyVGrid(columns: gridItemLayout) {
@@ -16,7 +16,7 @@ struct HubMenu: View {
                     HubMenuElement(image: UIImage(named: "icon-hub-menu")!, text: "Test")
                         .background(Color.white)
                         .cornerRadius(Constants.cornerRadius)
-                        .aspectRatio(1, contentMode: .fit)
+                        .frame(width: Constants.itemSize, height: Constants.itemSize)
                 }
             }
             .padding(Constants.padding)
@@ -28,7 +28,7 @@ struct HubMenu: View {
     enum Constants {
         static let cornerRadius: CGFloat = 10
         static let itemSpacing: CGFloat = 12
-        static let itemSize: CGFloat = 250
+        static let itemSize: CGFloat = 100
         static let padding: CGFloat = 16
     }
 }

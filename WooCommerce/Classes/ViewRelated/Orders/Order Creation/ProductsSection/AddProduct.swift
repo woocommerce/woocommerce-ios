@@ -45,7 +45,7 @@ private extension AddProduct {
 
 struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = AddProductViewModel(products: AddProductViewModel.sampleProducts)
+        let viewModel = AddProductViewModel(siteID: 123)
 
         AddProduct(isPresented: .constant(true), viewModel: viewModel)
     }

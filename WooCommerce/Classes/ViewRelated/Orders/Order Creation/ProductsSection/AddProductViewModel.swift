@@ -1,26 +1,45 @@
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// View model for `AddProduct`.
 ///
 final class AddProductViewModel: ObservableObject {
-    /// List of products to display
+    private let siteID: Int64
+    private let storageManager: StorageManagerType
+
+    /// All products that can be added to an order.
+    /// Includes all non-variable products with published or private status. (Variable products to be added in a future milestone.)
     ///
-    let products: [Product]
+    private var products: [Product] {
+        return productsResultsController.fetchedObjects.filter { product in
+            product.productType != .variable && ( product.productStatus == .publish || product.productStatus == .privateStatus )
+        }
+    }
 
     /// View models for each product row
     ///
-    let productRowViewModels: [ProductRowViewModel]
-
-    init(products: [Product]) {
-        self.products = products
-        self.productRowViewModels = products.map { .init(product: $0, canChangeQuantity: false) }
+    var productRowViewModels: [ProductRowViewModel] {
+        products.map { .init(product: $0, canChangeQuantity: false) }
     }
-}
 
-// MARK: - Methods for rendering a SwiftUI Preview
-//
-extension AddProductViewModel {
-    static let sampleProducts = [Product().copy(productID: 1, name: "Bird of Paradise Tree", sku: "", price: "20", stockStatusKey: "outofstock"),
-                                 Product().copy(productID: 2, name: "Love Ficus", sku: "123456", price: "7.50", stockQuantity: 7, stockStatusKey: "instock"),
-                                 Product().copy(productID: 3, name: "Zanzibar Gem", sku: "654321", price: "", stockQuantity: 0, stockStatusKey: "onbackorder")]
+    /// Products Results Controller.
+    ///
+    private lazy var productsResultsController: ResultsController<StorageProduct> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching products: \(error)")
+        }
+
+        return resultsController
+    }()
+
+    init(siteID: Int64, storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        self.siteID = siteID
+        self.storageManager = storageManager
+    }
 }

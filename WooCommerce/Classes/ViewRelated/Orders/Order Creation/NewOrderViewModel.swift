@@ -1,13 +1,11 @@
 import Yosemite
 import Combine
-import protocol Storage.StorageManagerType
 
 /// View model for `NewOrder`.
 ///
 final class NewOrderViewModel: ObservableObject {
-    private let siteID: Int64
+    let siteID: Int64
     private let stores: StoresManager
-    private let storageManager: StorageManagerType
 
     /// Order details used to create the order
     ///
@@ -29,15 +27,6 @@ final class NewOrderViewModel: ObservableObject {
 
     // MARK: - Products Section Properties
 
-    /// All products that can be added to an order.
-    /// Includes all non-variable products (variable products to be added later) with published or private status.
-    ///
-    private var products: [Product] {
-        return productsResultsController.fetchedObjects.filter { product in
-            product.productType != .variable && ( product.productStatus == .publish || product.productStatus == .privateStatus )
-        }
-    }
-
     /// Products added to the order
     ///
     private(set) var selectedProducts: [Product] = []
@@ -48,34 +37,11 @@ final class NewOrderViewModel: ObservableObject {
         selectedProducts.map { .init(product: $0, canChangeQuantity: true) }
     }
 
-    /// View model for Add Product view
-    ///
-    var addProductViewModel: AddProductViewModel {
-        AddProductViewModel(products: products)
-    }
-
-    /// Products Results Controller.
-    ///
-    private lazy var productsResultsController: ResultsController<StorageProduct> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
-        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-
-        do {
-            try resultsController.performFetch()
-        } catch {
-            DDLogError("⛔️ Error fetching products: \(error)")
-        }
-
-        return resultsController
-    }()
-
     // MARK: - Initialization
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
-        self.storageManager = storageManager
 
         configureNavigationTrailingItem()
     }

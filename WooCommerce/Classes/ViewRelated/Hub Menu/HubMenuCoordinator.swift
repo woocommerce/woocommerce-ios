@@ -1,6 +1,6 @@
+import Combine
 import Foundation
 import UIKit
-import Observables
 
 import enum Yosemite.ProductReviewAction
 import enum Yosemite.NotificationAction
@@ -17,7 +17,7 @@ final class HubMenuCoordinator: Coordinator {
     private let noticePresenter: NoticePresenter
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
 
-    private var observationToken: ObservationToken?
+    private var observationToken: AnyCancellable?
 
     private let willPresentReviewDetailsFromPushNotification: () -> Void
 
@@ -57,7 +57,7 @@ final class HubMenuCoordinator: Coordinator {
         navigationController.viewControllers = [HubMenuViewController(siteID: siteID, navigationController: navigationController)]
 
         if observationToken == nil {
-            observationToken = pushNotificationsManager.inactiveNotifications.subscribe { [weak self] in
+            observationToken = pushNotificationsManager.inactiveNotifications.sink { [weak self] in
                 self?.handleInactiveNotification($0)
             }
         }

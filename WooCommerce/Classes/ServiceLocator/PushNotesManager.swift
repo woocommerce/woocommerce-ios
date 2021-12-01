@@ -1,19 +1,19 @@
+import Combine
 import Foundation
 import UIKit
 import Yosemite
-import Observables
 
 protocol PushNotesManager {
 
     /// An observable that emits values when the Remote Notifications are received while the app is
     /// in the foreground.
     ///
-    var foregroundNotifications: Observable<PushNotification> { get }
+    var foregroundNotifications: AnyPublisher<PushNotification, Never> { get }
 
     /// An observable that emits values when a Remote Notification is received while the app is
     /// in inactive.
     ///
-    var inactiveNotifications: Observable<PushNotification> { get }
+    var inactiveNotifications: AnyPublisher<PushNotification, Never> { get }
 
     /// Resets the Badge Count.
     ///

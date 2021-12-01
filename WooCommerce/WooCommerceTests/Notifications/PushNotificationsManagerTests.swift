@@ -458,7 +458,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         }()
 
         var emittedNotifications = [PushNotification]()
-        _ = manager.foregroundNotifications.subscribe { notification in
+        _ = manager.foregroundNotifications.sink { notification in
             emittedNotifications.append(notification)
         }
 
@@ -496,7 +496,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         }()
 
         var emittedNotifications = [PushNotification]()
-        _ = manager.foregroundNotifications.subscribe { notification in
+        _ = manager.foregroundNotifications.sink { notification in
             emittedNotifications.append(notification)
         }
 
@@ -528,7 +528,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         application.applicationState = .background
 
         var emittedNotifications = [PushNotification]()
-        _ = manager.foregroundNotifications.subscribe { notification in
+        _ = manager.foregroundNotifications.sink { notification in
             emittedNotifications.append(notification)
         }
 
@@ -558,7 +558,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         }()
 
         var emittedNotifications = [PushNotification]()
-        _ = manager.inactiveNotifications.subscribe { notification in
+        _ = manager.inactiveNotifications.sink { notification in
             emittedNotifications.append(notification)
         }
 

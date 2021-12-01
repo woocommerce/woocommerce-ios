@@ -66,6 +66,37 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
         XCTAssertEqual(activatedPluginName, "jetpack/jetpack")
     }
 
+    func test_startInstallation_skips_installSitePlugin_action_if_getPluginDetails_succeeds() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
+
+        // When
+        var installedSiteID: Int64?
+        var activatedSiteID: Int64?
+        var activatedPluginName: String?
+        storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
+            switch action {
+            case .installSitePlugin(let siteID, _, _):
+                installedSiteID = siteID
+            case .activateSitePlugin(let siteID, let pluginName, _):
+                activatedSiteID = siteID
+                activatedPluginName = pluginName
+            case .getPluginDetails(let siteID, let pluginName, let onCompletion):
+                let jetpack = SitePlugin.fake().copy(siteID: siteID, plugin: pluginName, status: .inactive)
+                onCompletion(.success(jetpack))
+            default:
+                break
+            }
+        }
+        viewModel.startInstallation()
+
+        // Then
+        XCTAssertNil(installedSiteID)
+        XCTAssertEqual(activatedSiteID, testSiteID)
+        XCTAssertEqual(activatedPluginName, "jetpack/jetpack")
+    }
+
     func test_loadAndSynchronizeSite_is_dispatched_when_activating_plugin_succeeds() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)

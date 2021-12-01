@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct JetpackInstallStepsView: View {
+    // Closure invoked when Contact Support button is tapped
+    private let supportAction: () -> Void
+
     // Closure invoked when Done button is tapped
     private let dismissAction: () -> Void
 
@@ -30,9 +33,13 @@ struct JetpackInstallStepsView: View {
         return attributedString
     }
 
-    init(siteURL: String, viewModel: JetpackInstallStepsViewModel, dismissAction: @escaping () -> Void) {
+    init(siteURL: String,
+         viewModel: JetpackInstallStepsViewModel,
+         supportAction: @escaping () -> Void,
+         dismissAction: @escaping () -> Void) {
         self.siteURL = siteURL
         self.viewModel = viewModel
+        self.supportAction = supportAction
         self.dismissAction = dismissAction
         viewModel.startInstallation()
     }
@@ -145,9 +152,7 @@ struct JetpackInstallStepsView: View {
                     .buttonStyle(SecondaryButtonStyle())
                     .fixedSize(horizontal: false, vertical: true)
 
-                    Button(Localization.supportAction) {
-                        // TODO: open support
-                    }
+                    Button(Localization.supportAction, action: supportAction)
                     .buttonStyle(SecondaryButtonStyle())
                     .fixedSize(horizontal: false, vertical: true)
                 }
@@ -191,11 +196,11 @@ private extension JetpackInstallStepsView {
 struct JetpackInstallStepsView_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = JetpackInstallStepsViewModel(siteID: 123)
-        JetpackInstallStepsView(siteURL: "automattic.com", viewModel: viewModel, dismissAction: {})
+        JetpackInstallStepsView(siteURL: "automattic.com", viewModel: viewModel, supportAction: {}, dismissAction: {})
             .preferredColorScheme(.light)
             .previewLayout(.fixed(width: 414, height: 780))
 
-        JetpackInstallStepsView(siteURL: "automattic.com", viewModel: viewModel, dismissAction: {})
+//        JetpackInstallStepsView(siteURL: "automattic.com", viewModel: viewModel, supportAction: {}, dismissAction: {})
             .preferredColorScheme(.dark)
             .previewLayout(.fixed(width: 414, height: 780))
     }

@@ -5,6 +5,9 @@ import SwiftUI
 final class JetpackInstallHostingController: UIHostingController<JetpackInstallView> {
     init(siteID: Int64, siteURL: String) {
         super.init(rootView: JetpackInstallView(siteID: siteID, siteURL: siteURL))
+        rootView.supportAction = {
+            ZendeskManager.shared.showNewRequestIfPossible(from: self)
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -19,6 +22,9 @@ final class JetpackInstallHostingController: UIHostingController<JetpackInstallV
 /// Displays Jetpack Install flow.
 ///
 struct JetpackInstallView: View {
+    // Closure invoked when Contact Support button is tapped
+    var supportAction: () -> Void = {}
+
     // Closure invoked when Close button is tapped
     var dismissAction: () -> Void = {}
 
@@ -37,7 +43,7 @@ struct JetpackInstallView: View {
 
     var body: some View {
         if hasStarted {
-            JetpackInstallStepsView(siteURL: siteURL, viewModel: installStepsViewModel, dismissAction: dismissAction)
+            JetpackInstallStepsView(siteURL: siteURL, viewModel: installStepsViewModel, supportAction: supportAction, dismissAction: dismissAction)
         } else {
             JetpackInstallIntroView(siteURL: siteURL, dismissAction: dismissAction) {
                 hasStarted = true

@@ -242,7 +242,7 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
         self.remote = remote
     }
 
-    func fetchToken(completion: @escaping(Result<String, CardReaderConfigError>) -> Void) {
+    func fetchToken(completion: @escaping(Result<String, Error>) -> Void) {
         remote.loadConnectionToken(for: siteID) { result in
             switch result {
             case .success(let token):
@@ -253,7 +253,7 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
         }
     }
 
-    func fetchDefaultLocationID(completion: @escaping(Result<String, CardReaderConfigError>) -> Void) {
+    func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void) {
         remote.loadDefaultReaderLocation(for: siteID) { result in
             switch result {
             case .success(let wcpayReaderLocation):

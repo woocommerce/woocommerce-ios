@@ -3,16 +3,16 @@
 /// It is meant to abstract an implementation of the [adapter pattern](https://en.wikipedia.org/wiki/Adapter_pattern)
 
 public protocol ReaderTokenProvider {
-    func fetchToken(completion: @escaping(Result<String, CardReaderConfigError>) -> Void)
+    func fetchToken(completion: @escaping(Result<String, Error>) -> Void)
 }
 
 public protocol ReaderLocationProvider {
-    func fetchDefaultLocationID(completion: @escaping(Result<String, CardReaderConfigError>) -> Void)
+    func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void)
 }
 
 public protocol CardReaderConfigProvider: ReaderLocationProvider, ReaderTokenProvider {
-    func fetchToken(completion: @escaping(Result<String, CardReaderConfigError>) -> Void)
-    func fetchDefaultLocationID(completion: @escaping(Result<String, CardReaderConfigError>) -> Void)
+    func fetchToken(completion: @escaping(Result<String, Error>) -> Void)
+    func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void)
 }
 
 /// An error that occurs while configuring a reader

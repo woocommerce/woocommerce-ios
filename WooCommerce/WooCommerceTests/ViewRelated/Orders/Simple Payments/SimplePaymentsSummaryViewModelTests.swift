@@ -3,6 +3,7 @@ import XCTest
 import Combine
 
 @testable import WooCommerce
+@testable import Yosemite
 
 final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
@@ -76,5 +77,90 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
         // When & Then
         XCTAssertEqual(viewModel.taxRate, "4.30")
+    }
+
+    func test_when_order_is_updated_loading_indicator_is_toggled() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+        mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, onCompletion):
+                onCompletion(.success(Order.fake()))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let loadingStates: [Bool] = waitFor { promise in
+            viewModel.$showLoadingIndicator
+                .dropFirst() // Initial value
+                .collect(2)  // Collect toggle
+                .first()
+                .sink { loadingStates in
+                    promise(loadingStates)
+                }
+                .store(in: &self.subscriptions)
+            viewModel.updateOrder()
+        }
+
+        // Then
+        XCTAssertEqual(loadingStates, [true, false]) // Loading, then not loading.
+    }
+
+    func test_view_model_attempts_error_notice_presentation_when_failing_to_update_order() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
+                                                       totalWithTaxes: "1.0",
+                                                       taxAmount: "0.0",
+                                                       presentNoticeSubject: noticeSubject,
+                                                       stores: mockStores)
+        mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "Error", code: 0)))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        let receivedError: Bool = waitFor { promise in
+            noticeSubject.sink { intent in
+                switch intent {
+                case .error:
+                    promise(true)
+                }
+            }
+            .store(in: &self.subscriptions)
+            viewModel.updateOrder()
+        }
+
+        // Then
+        XCTAssertTrue(receivedError)
+    }
+
+    func test_when_order_is_updated_navigation_to_payments_method_is_triggered() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+        mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, onCompletion):
+                onCompletion(.success(Order.fake()))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        XCTAssertFalse(viewModel.navigateToPaymentMethods)
+
+        // When
+        viewModel.updateOrder()
+
+        // Then
+        XCTAssertTrue(viewModel.navigateToPaymentMethods)
     }
 }

@@ -4,29 +4,20 @@ struct InPersonPaymentsPluginNotInstalled: View {
     let onRefresh: () -> Void
 
     var body: some View {
-        ScrollableVStack {
-            Spacer()
-
-            VStack(alignment: .center, spacing: 42) {
-                Text(Localization.title)
-                    .font(.headline)
-                    .multilineTextAlignment(.center)
-                Image(uiImage: .paymentsPlugin)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 126.0)
-                Text(Localization.message)
-                    .font(.callout)
-                    .multilineTextAlignment(.center)
-            }
-
-            Spacer()
-
-            Button(Localization.primaryButton, action: onRefresh)
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(.bottom, 24.0)
-            InPersonPaymentsLearnMore()
-        }
+        InPersonPaymentsOnboardingError(
+            title: Localization.title,
+            message: Localization.message,
+            image: InPersonPaymentsOnboardingError.ImageInfo(
+                image: .paymentsPlugin,
+                height: 126.0
+            ),
+            supportLink: false,
+            learnMore: true,
+            button: InPersonPaymentsOnboardingError.ButtonInfo(
+                text: Localization.primaryButton,
+                action: onRefresh
+            )
+        )
     }
 }
 

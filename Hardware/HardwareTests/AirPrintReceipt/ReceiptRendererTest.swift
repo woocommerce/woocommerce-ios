@@ -29,10 +29,26 @@ final class ReceiptRendererTest: XCTestCase {
             expectedResultWithHtmlSymbolsMd5Description
         )
     }
+
+    func test_TextWithVariationsSymbols() {
+        let expectedResultWithHtmlSymbolsMd5Description = "MD5 digest: 38cbb17ee811d91928439e1aedd76b73"
+        let attributeOne = ReceiptLineAttribute(name: "name_attr_1", value: "value_attr_1")
+        let attributeTwo = ReceiptLineAttribute(name: "name_attr_2", value: "value_attr_2")
+        let content = generateReceiptContent(attributes: [attributeOne, attributeTwo])
+
+        let renderer = ReceiptRenderer(content: content)
+
+        print(renderer.htmlContent())
+
+        XCTAssertEqual(
+            Insecure.MD5.hash(data: renderer.htmlContent().data(using: .utf8)!).description,
+            expectedResultWithHtmlSymbolsMd5Description
+        )
+    }
 }
 
 private extension ReceiptRendererTest {
-    func generateReceiptContent(stringToAppend: String = "") -> ReceiptContent {
+    func generateReceiptContent(stringToAppend: String = "", attributes: [ReceiptLineAttribute] = []) -> ReceiptContent {
         ReceiptContent(
             parameters: CardPresentReceiptParameters(
                 amount: 1,
@@ -60,7 +76,11 @@ private extension ReceiptRendererTest {
                     emvAuthData: "AD*******"),
                 orderID: 9201
             ),
-            lineItems: [ReceiptLineItem(title: "Sample product #1\(stringToAppend)", quantity: "2", amount: "25")],
+            lineItems: [ReceiptLineItem(
+                title: "Sample product #1\(stringToAppend)",
+                quantity: "2",
+                amount: "25",
+                attributes: attributes)],
             cartTotals: [ReceiptTotalLine(description: "description", amount: "13")],
             orderNote: nil
         )

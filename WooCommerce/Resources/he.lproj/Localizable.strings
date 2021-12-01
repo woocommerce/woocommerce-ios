@@ -1,10 +1,13 @@
-/* Translation-Revision-Date: 2021-11-11 16:54:09+0000 */
+/* Translation-Revision-Date: 2021-11-25 10:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
 
 /* No comment provided by engineer. */
 "#%@ %@" = "#%1$@ %2$@";
+
+/* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"%.0f%% complete" = "%.0f%% הושלמו";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
 "%1$@" = "%1$@";
@@ -271,6 +274,9 @@
 /* Add New Package screen title in Shipping Label flow */
 "Add New Package" = "להוסיף אריזה חדשה";
 
+/* Title text of the button that adds a note when creating a simple payment */
+"Add Note" = "להוסיף הערה";
+
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "להוסיף תמונה";
 
@@ -347,8 +353,8 @@
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "ניתן להוסיף מרחוק את הפרטים של הקבצים שניתנים להורדה המוצרים";
 
-/* Navigates to a screen to create a quick order order */
-"Add quick order order" = "Add quick order order";
+/* Navigates to a screen to create a simple payments order */
+"Add simple payments order" = "להוסיף הזמנה של תשלומים פשוטים";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "להוסיף לאריזה חדשה";
@@ -409,6 +415,9 @@
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "לאפשר";
 
+/* Subtitle of user profiles as part of Jetpack benefits. */
+"Allow multiple users to access WooCommerce Mobile." = "לאפשר למספר משתמשים לגשת אל WooCommerce Mobile.";
+
 /* Display label for the product's inventory backorders setting option */
 "Allow, but notify customer" = "לאפשר אך להודיע ללקוח";
 
@@ -439,11 +448,11 @@
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "הערה אופציונלית לשלוח ללקוחות לאחר הרכישה";
 
-/* Settings > Manage Card Reader > Connected Reader > A prompt to charge a reader running older software */
-"An update is available, but your reader battery is too low to update. Please charge your reader right away to continue accepting payments" = "יש עדכון זמין, אבל הסוללה של הקורא שלך לא מלאה מספיק. עליך להטעין את הקורא שלך מייד כדי להמשיך לקבל תשלומים";
+/* Title of analytics as part of Jetpack benefits. */
+"Analytics" = "נתונים אנליטיים";
 
-/* Product variation attribute description where the attribute is set to any value.
-   Title when there is no filter set. */
+/* Label for one of the filters in order date range
+   Product variation attribute description where the attribute is set to any value. - Title when there is no filter set. */
 "Any" = "כל אפשרות";
 
 /* Format of a product variation attribute description where the attribute is set to any value.
@@ -599,7 +608,7 @@
 "Can Not Request Link" = "לא ניתן לבקש קישור";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the quick order screen */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "ביטול";
 
 /* Display label for cancelled order status. */
@@ -658,6 +667,9 @@
 /* Body of the alert when a user is changing the product type */
 "Changing the product type will modify some of the product data and delete all your attributes and variations" = "שינוי של סוג המוצר יחליף חלק מהנתונים של המוצר וימחק את כל המאפיינים והסוגים";
 
+/* Title text of the row that has a switch when creating a simple payment */
+"Charge Taxes" = "לגבות מיסים";
+
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "יש לוודא שכתובת ה-URL של האתר שהוזנה תקפה";
 
@@ -669,9 +681,6 @@
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "יש לבדוק את תיבת האימייל!";
-
-/* Settings > Manage Card Reader > Connected Reader > A prompt to indicate we are checking for reader updates */
-"Checking for reader software updates" = "בודק עדכונים לתוכנת הקורא";
 
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "יש לבחור גודל נייר";
@@ -691,6 +700,9 @@
 
 /* Error showed in Shipping Label Address Validation for the city field */
 "City missing" = "העיר חסרה";
+
+/* Action to add product on the placeholder overlay when no products match the filter on the Products tab */
+"Clear Filters" = "לנקות מסננים";
 
 /* Button title for clearing all filters for the list. */
 "Clear all" = "למחוק הכול";
@@ -896,6 +908,9 @@
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "התאמה אישית";
 
+/* Title text of the row that shows the provided amount when creating a simple payment */
+"Custom Amount" = "סכום מותאם";
+
 /* Add custom shipping carrier. Content of cell titled Shipping Carrier
    Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "ספק מותאם";
@@ -906,7 +921,8 @@
 /* Custom Package menu in Shipping Label Add New Package flow */
 "Custom Package" = "חבילה מותאמת אישית";
 
-/* Label for one of the filters in order date range */
+/* Label for one of the filters in order date range
+   Navigation title of the orders filter selector screen for custom date range */
 "Custom Range" = "טווח מותאם";
 
 /* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
@@ -942,7 +958,8 @@
 /* Details section title in the Edit Address Form */
 "DETAILS" = "פרטים";
 
-/* Row title for filtering orders by date range. */
+/* Navigation title of the orders filter selector screen for date range
+   Row title for filtering orders by date range. */
 "Date Range" = "טווח תאריכים";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
@@ -1008,7 +1025,7 @@
 "Discount" = "הנחה";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the QuickOrder top banner - Title of the button to dismiss the banner notice in the add-ons view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view */
 "Dismiss" = "בטל";
 
 /* Display label for the product's inventory backorders setting option */
@@ -1027,7 +1044,7 @@
 "Don't have an account? _Sign up_" = "אין לך חשבון עדיין? _הרשמה_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Title for the button to confirm the amount in the quick order screen */
+   Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Title for the button to confirm the amount in the simple payments screen */
 "Done" = "בוצע";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1050,6 +1067,9 @@
 
 /* WordPress.com Request Failure */
 "Dotcom Request Failed" = "הבקשה של Dotcom נכשלה";
+
+/* WordPress.com error thrown when a requested resource does not exist remotely. */
+"Dotcom Resource does not exist" = "המשאב של Dotcom לא קיים";
 
 /* WordPress.com Error thrown when the response body is empty */
 "Dotcom Response Empty" = "התגובה של Dotcom ריקה";
@@ -1094,6 +1114,9 @@
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "לזהות בקלות את המוצרים שלך בעזרת קודים ייחודיים";
 
+/* Title text of the button that edits a note when creating a simple payment */
+"Edit" = "עריכה";
+
 /* Action to edit the address in Shipping Label Suggested screen */
 "Edit Address" = "לערוך את הכתובת";
 
@@ -1114,7 +1137,7 @@
 "Eligible for free pickup" = "זכאי לאיסוף בחינם";
 
 /* Email address text field placeholder
-   Email button title - Text field email in Edit Address Form - Title of Email accessibility action, opens a compose view */
+   Email button title - Text field email in Edit Address Form - Title of Email accessibility action, opens a compose view - Title text of the row that holds the provided email when creating a simple payment */
 "Email" = "אימייל";
 
 /* Accessibility label for the email address text field.
@@ -1151,18 +1174,24 @@
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "הופעל";
 
+/* Label for one of the filters in order custom date range */
+"End Date" = "תאריך סיום";
+
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "האפליקציה של WooCommerce מהנה לדעתך?";
 
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "יש לוודא **שבמדפסת שלך מותקנת קושחה מעודכנת**. יש לעיין בתיעוד של המדפסת להוראות כיצד לעדכן.";
 
-/* Short instructions label in the quick order screen */
+/* Short instructions label in the simple payments screen */
 "Enter Amount" = "להזין סכום";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that appears to be invalid.
    Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "יש להזין חנות אחרת";
+
+/* Placeholder of the row that holds the provided email when creating a simple payment */
+"Enter Email" = "להזין אימייל";
 
 /* Placeholder for the required ITN row in Customs screen of Shipping Label flow */
 "Enter ITN" = "להזין ITN";
@@ -1374,6 +1403,15 @@
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "קבלת מענה לשאלותיך";
 
+/* Subtitle of push notifications as part of Jetpack benefits. */
+"Get push notifications for new orders, reviews, etc. delivered to your device." = "לקבל הודעות דחיפה לגבי הזמנות חדשות, ביקורות וכו' במכשיר שלך.";
+
+/* Title of the Jetpack benefits banner. */
+"Get the full experience with Jetpack" = "אפשר ליהנות מהחוויה המלאה עם Jetpack";
+
+/* Title of the Jetpack benefits view. */
+"Get the most out of your store" = "לנצל את מלוא הפוטנציאל של החנות שלך";
+
 /* Message shown in the Reviews tab if the list is empty
    Message shown on the Product Reviews screen if the list is empty */
 "Get your first reviews" = "לקבל את הביקורות הראשונות שלך";
@@ -1385,7 +1423,7 @@
 "Gift" = "מתנה";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
-   The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title of the button to give feedback about the Quick Order feature - Title on the navigation bar for the products feedback survey */
+   The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title of the button to give feedback about the Simple Payments feature - Title on the navigation bar for the products feedback survey */
 "Give feedback" = "להעניק משוב";
 
 /* Option to select the Gmail app when logging in with magic links */
@@ -1582,8 +1620,14 @@
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "להוסיף קישור";
 
+/* Title of install action in the Jetpack benefits view. */
+"Install Jetpack" = "התקנת Jetpack";
+
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "להתקין את WooCommerce Payments";
+
+/* Subtitle of the Jetpack benefits view. */
+"Install the free Jetpack plugin to experience the best mobile experience." = "להתקין את התוסף החינמי של Jetpack בשביל חוויית השימוש הטובה ביותר בנייד.";
 
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
 "Insurance (%1$@)" = "ביטוח (%1$@)";
@@ -1684,6 +1728,12 @@
 
 /* Last 24 hours section header */
 "Last 24 hours" = "24 השעות האחרונות";
+
+/* Label for one of the filters in order date range */
+"Last 30 Days" = "30 הימים האחרונים";
+
+/* Label for one of the filters in order date range */
+"Last 7 Days" = "שבעת הימים האחרונים";
 
 /* Last 7 days section header */
 "Last 7 days" = "7 הימים האחרונים";
@@ -1954,11 +2004,14 @@
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "שם המאפיין החדש";
 
+/* Subtitle of analytics as part of Jetpack benefits. */
+"New analytics views, let you see visitors, reports and more." = "להשתמש בתצוגה של נתונים אנליטיים כדי לראות את המבקרים, הדוחות ועוד.";
+
 /* The title of the top banner on the Products tab. */
 "New features available!" = "אפשרויות חדשות זמינות!";
 
 /* Action navigate to the variation creation screen
-   Next nav bar button title in Add Product Attribute Options screen - Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
+   Next nav bar button title in Add Product Attribute Options screen - Next nav bar button title in Add Product Attribute screen - Title for the button to confirm the amount in the simple payments screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "הבא";
 
 /* Default text for Top Performers section when no data exists for a given period. */
@@ -1985,6 +2038,9 @@
 
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "ללא מגבלה";
+
+/* The text on the placeholder overlay when no products match the filter on the Products tab */
+"No matching products found" = "לא נמצאו מוצרים תואמים";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "טרם צוין מחיר";
@@ -2017,6 +2073,9 @@
 /* Display label for the order fee's tax status setting option
    Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow */
 "None" = "ללא";
+
+/* Title of dismiss action in the Jetpack benefits view. */
+"Not now" = "לא עכשיו";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
 "Not seeing the email? Check your Spam or Junk Mail folder." = "לא רואה את האימייל? כדאי לבדוק בתיבת הספאם או בדואר הזבל.";
@@ -2122,6 +2181,9 @@
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "הזמנה #%1$@";
 
+/* Title text of the row that holds the order note when creating a simple payment */
+"Order Note" = "הערות הזמנה";
+
 /* Order notes section title */
 "Order Notes" = "הערות להזמנה";
 
@@ -2130,7 +2192,7 @@
 "Order Status" = "מצב ההזמנה";
 
 /* Create Shipping Label form -> Order Total label
-   Order Total label for payment view */
+   Order Total label for payment view - Title text of the row that shows the total to charge when creating a simple payment */
 "Order Total" = "סה\"כ הזמנה";
 
 /* Navigates to Card Reader ordering screen */
@@ -2220,7 +2282,8 @@
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "הדבקה בלי העיצוב";
 
-/* Payment section title */
+/* Payment section title
+   Title text of the row that shows the payment headline when creating a simple payment */
 "Payment" = "תשלום";
 
 /* Navigation bar title in the Shipping Label Payment Method screen
@@ -2272,6 +2335,9 @@
 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "מעביר את המוצר שלך לפח...";
+
+/* Title of the alert presented when an update fails because the reader is low on battery. */
+"Please charge reader" = "יש להטעין את הקורא";
 
 /* Error message for missing explanation when Content Typeis Other in Customs screen of Shipping Label flow */
 "Please describe what kind of goods this package contains" = "עליך לתאר איזה סוג של סחורות החבילה הזאת מכילה";
@@ -2329,9 +2395,6 @@
 
 /* Error notice recovery suggestion when we fail to update an address in the edit address screen. */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "עליך לוודא שמותקנת באתר שלך הגרסה האחרונה של WooCommerce ולנסות שוב מאוחר יותר.";
-
-/* Label asking users to remove card. Presented to users when a payment is in the process of being collected */
-"Please remove card" = "יש להזיז את הכרטיס";
 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "יש לבחור חבילה";
@@ -2544,6 +2607,9 @@
 /* Title of the in-progress UI while purchasing a shipping label */
 "Purchasing Label" = "רכישת תוויות";
 
+/* Title of push notifications as part of Jetpack benefits. */
+"Push Notifications" = "התראות";
+
 /* Quantity abbreviation for section title */
 "QTY" = "כמות";
 
@@ -2563,9 +2629,6 @@
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "בידוד";
 
-/* Cell title on the beta features screen to enable the Quick Order feature */
-"Quick Order" = "הזמנה מהירה";
-
 /* Subtitle for Contact WooCommerce Payments Support */
 "Reach our happiness engineers who can help answer payments related questions" = "ניתן ליצור קשר עם נציגי התמיכה שישמחו לענות על שאלות לגבי תשלומים";
 
@@ -2580,9 +2643,6 @@
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "Reader is ready" = "הקורא מוכן";
-
-/* A notice presented after a successful update of the card reader software */
-"Reader software updated" = "התוכנה של קורא הכרטיסים עודכנה";
 
 /* Refund note section title */
 "Reason for Refund" = "סיבה להחזר הכספי";
@@ -2602,7 +2662,8 @@
 /* Button to reload plugin data after installing the WooCommerce Payments plugin */
 "Refresh After Installing" = "לרענן לאחר התקנה";
 
-/* Button to reload plugin data after updating the WooCommerce Payments plugin */
+/* Button to reload plugin data after updating the WooCommerce Payments plugin
+   Button to reload plugin data after updating the WooCommerce Payments plugin settings */
 "Refresh After Updating" = "לרענן לאחר עדכון";
 
 /* The title of the button to confirm the refund. */
@@ -2849,6 +2910,9 @@
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "להציג אפשרויות של פריסה וגודל נייר";
 
+/* Subtitle of the Jetpack benefits banner. */
+"See the benefits" = "לצפייה בהטבות";
+
 /* Select all button title in the issue refund screen */
 "Select All" = "לבחור הכול";
 
@@ -3062,6 +3126,9 @@
 /* Display label for simple product type. */
 "Simple" = "פשוט";
 
+/* Cell title on the beta features screen to enable the Simple Payments feature */
+"Simple Payments" = "תשלומים פשוטים";
+
 /* Action sheet option when the user wants to change the Product type to simple physical product */
 "Simple physical product" = "מוצר פיזי פשוט";
 
@@ -3080,6 +3147,9 @@
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title - Slug label in Product Settings */
 "Slug" = "מזהה לכתובת";
+
+/* Dialog title that displays when a software update just finished installing */
+"Software updated" = "התוכנה עודכנה";
 
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
@@ -3154,6 +3224,9 @@
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "תעריף סטנדרטי";
 
+/* Label for one of the filters in order custom date range */
+"Start Date" = "תאריך התחלה";
+
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "אפשר להתחיל למכור היום על ידי הוספה של המוצר הראשון לחנות שלך.";
 
@@ -3203,7 +3276,7 @@
 "Subscription" = "מינוי";
 
 /* Create Shipping Label form -> Subtotal label
-   Subtotal label for a refund details view - Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost */
+   Subtotal label for a refund details view - Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost - Title text of the row that shows the subtotal when creating a simple payment */
 "Subtotal" = "סכום ביניים";
 
 /* Notice text after updating the order successfully */
@@ -3246,13 +3319,16 @@
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
 "Tags" = "תגיות";
 
-/* Title for the quick order screen */
+/* Title for the simple payments screen */
 "Take Payment" = "לגבות תשלום";
+
+/* Text of the button that creates a simple payment order. Contains the total amount to collect */
+"Take Payment ((total))" = "לגבות תשלום ((סכום כולל))";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "לצלם תמונה";
 
-/* Title of the banner notice in the Quick Order feature */
+/* Title of the banner notice in the Simple Payments feature */
 "Take payments from your device!" = "לגבות תשלומים דרך המכשיר שלך!";
 
 /* Accessibility hint for the More button on formatting toolbar. */
@@ -3357,7 +3433,7 @@
 /* Opens the Terms of Service web page */
 "Terms of Service" = "תנאי השירות";
 
-/* Cell description on the beta features screen to enable the Quick Order feature */
+/* Cell description on the beta features screen to enable the Simple Payments feature */
 "Test out creating orders with minimal information as we get ready to launch" = "כדאי לבדוק את האפשרות ליצור הזמנות עם מידע חיוני בלבד בזמן שאנחנו מתכוננים להשקה";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
@@ -3400,11 +3476,14 @@
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "בכתובת האינטרנט חסר מארח חוקי.";
 
+/* Error message when WooCommerce Payments is in test mode on a live site */
+"The WooCommerce Payments extension cannot be in test mode for In-Person Payments. Please disable test mode." = "לא ניתן להגדיר את ההרחבה של WooCommerce Payments למצב בדיקה בביצוע תשלומים באופן אישי. יש להשבית את מצב הבדיקה.";
+
 /* Error message when WooCommerce Payments is not activated */
 "The WooCommerce Payments extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "בחנות שלך הותקנה ההרחבה WooCommerce Payments אך היא לא הופעלה. יש להפעיל אותה כדי לקבל תשלומים באופן אישי";
 
 /* Error message when WooCommerce Payments is installed but the version is not supported */
-"The WooCommerce Payments extension is installed on your store, but the installed version does not support In-Person Payments. Please update WooCommerce Payments to the most recent version." = "בחנות שלך הותקנה ההרחבה WooCommerce Payments אך הגרסה הזאת לא תומכת בתשלומים שמבוצעים באופן אישי. עליך לעדכן את WooCommerce Payments לגרסה האחרונה.";
+"The WooCommerce Payments extension is installed on your store, but needs to be updated for In-Person Payments. Please update WooCommerce Payments to the most recent version." = "בחנות שלך הותקנה ההרחבה WooCommerce Payments אך יש לעדכן אותה כדי לבצע 'תשלומים באופן אישי'. עליך לעדכן את WooCommerce Payments לגרסה האחרונה.";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "לא ניתן היה להסיר את המאפיין.";
@@ -3490,7 +3569,7 @@
 /* The details on the placeholder overlay when there is issue syncing site plugins */
 "There was a problem while trying to load plugins. Check your internet and try again." = "אירעה בעיה בטעינת התוספים. יש לבדוק את החיבור לאינטרנט ולנסות שוב.";
 
-/* Notice text after failing to create a quick order order. */
+/* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "אירעה שגיאה ביצירת ההזמנה";
 
 /* Text of the notice that is displayed while the refund creation fails. */
@@ -3499,15 +3578,15 @@
 /* Notice text after failing to update the order successfully */
 "There was an error updating the order" = "אירעה שגיאה בעת עדכון ההזמנה";
 
-/* Label for one of the filters in order date range
-   Tab selector title that shows the statistics for this month - Top Performers section title - this month */
+/* Tab selector title that shows the statistics for this month
+   Top Performers section title - this month */
 "This Month" = "החודש";
 
 /* The message of the alert when there is an error updating the product SKU */
 "This SKU is used on another product or is invalid." = "הקוד של SKU נמצא בשימוש של מוצר אחר או שאינו חוקי.";
 
-/* Label for one of the filters in order date range
-   Tab selector title that shows the statistics for this week - Top Performers section title - this week */
+/* Tab selector title that shows the statistics for this week
+   Top Performers section title - this week */
 "This Week" = "השבוע";
 
 /* Tab selector title that shows the statistics for this year
@@ -3662,7 +3741,8 @@
 /* Connect when the SSL certificate is invalid */
 "Trust" = "אמון";
 
-/* Button to try again. Presented to users after a failure occurs */
+/* Button to retry a software update. Presented to users when updating the card reader software fails
+   Button to try again. Presented to users after a failure occurs */
 "Try Again" = "לנסות שוב";
 
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
@@ -3871,8 +3951,14 @@
    Updated on <date> */
 "Updated on %@" = "עודכן בתאריך %@";
 
-/* Headline on the full screen software update modal */
+/* Dialog title that displays when a software update is being installed */
 "Updating software" = "מעדכן את התוכנה";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
+"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "עדכון התוכנה של קורא הכרטיסים נכשל מאחר שאחוז הסוללה של הקורא נמוך. עליך קודם להטעין את סוללת הקורא למעל 50% ולנסות שוב.";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "עדכון התוכנה של קורא הכרטיסים נכשל מאחר שאחוז הסוללה של הקורא הוא %.0f%%. עליך קודם להטעין את סוללת הקורא למעל ‎50%%‎ ולנסות שוב.";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -3892,6 +3978,9 @@
 
 /* Title for the Use as Shipping Address switch in the Address form */
 "Use as Shipping Address" = "להשתמש בתור כתובת משלוח";
+
+/* Title of user profiles as part of Jetpack benefits. */
+"User Profiles" = "פרופילי משתמשים";
 
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
@@ -4007,10 +4096,10 @@
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "אנחנו עובדים על שיפור התהליך של צפייה בהרחבות המוצרים מהמכשיר שלך! לעת עתה, יש לך אפשרות לראות את ההרחבות שבהזמנות שלך. אפשר ליצור ולערוך את ההרחבות האלה דרך לוח הבקרה במחשב.";
 
-/* Content of the top banner to announce the quick pay feature. */
-"We are working on making it easier for you to take payments from your device! Enable Quick Order in Settings > Experimental Features." = "אנחנו עובדים על השיפור של תהליך קבלת התשלומים מהמכשיר שלך! לאפשר הזמנה מהירה דרך 'הגדרות' > 'אפשרויות ניסיוניות'.";
+/* Content of the top banner to announce the simple payments feature. */
+"We are working on making it easier for you to take payments from your device! Enable Simple Payments in Settings > Experimental Features." = "אנחנו עובדים על השיפור של תהליך קבלת התשלומים מהמכשיר שלך! להפעיל את 'תשלומים פשוטים' דרך 'הגדרות > אפשרויות ניסיוניות'.";
 
-/* Content of the banner notice in the Quick Order view */
+/* Content of the banner notice in the Simple Payments view */
 "We are working on making it easier for you to take payments from your device! For now, tap on the \"+\" button and you’ll be able to create an order with the amount you want to collect" = "אנחנו עובדים על השיפור של תהליך קבלת התשלומים מהמכשיר שלך! בינתיים, יש להקיש על הכפתור '+' ותהיה לך אפשרות ליצור הזמנה עם הסכום שברצונך לגבות";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
@@ -4024,6 +4113,9 @@
 
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "לא הצלחנו לטעון את האתר שלך";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"We couldn’t update your reader’s software" = "לא הצלחנו לעדכן את התוכנה של קורא הכרטיסים שלך";
 
 /* Title for the error screen when WooCommerce Payments is not supported in a specific country */
 "We don’t support In-Person Payments in %@" = "אנחנו לא תומכים בתשלומים באופן אישי במדינה %@";
@@ -4139,6 +4231,9 @@
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "הנחה על רכישת WooCommerce";
 
+/* Title for the error screen when WooCommerce Payments is in test mode on a live site */
+"WooCommerce Payments is in Test Mode" = "השירות של WooCommerce Payments נמצא במצב בדיקה";
+
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
 
@@ -4201,11 +4296,14 @@
 /* Title for the error screen when the Stripe account is restricted because there are pending requirements */
 "Your WooCommerce Payments account has pending requirements" = "בחשבון שלך ב-WooCommerce Payments יש דרישות ממתינות";
 
+/* Label that displays when a mandatory software update is happening */
+"Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "עליך לעדכן את התוכנה של קורא הכרטיסים שלך כדי לגבות תשלומים. הביטול יחסום את החיבור של קורא הכרטיסים.";
+
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "ההודעות שלך אתך בכל מקום - אפשר לראות תגובות ולייקים בזמן אמת.";
 
-/* Footnote on the full screen software update modal */
-"Your reader will automatically restart and reconnect after the update is complete" = "לאחר השלמת העדכון, קורא הכרטיסים יופעל מחדש באופן אוטומטי ויתחבר שוב";
+/* Label that displays when an optional software update is happening */
+"Your reader will automatically restart and reconnect after the update is complete." = "לאחר השלמת העדכון, קורא הכרטיסים יופעל מחדש באופן אוטומטי ויתחבר שוב";
 
 /* Subject of email sent with a card present payment receipt */
 "Your receipt" = "הקבלה שלך";

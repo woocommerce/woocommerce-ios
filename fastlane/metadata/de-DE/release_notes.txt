@@ -1,3 +1,0 @@
-Einige Händler konnten die Bestelldetails aufgrund eines technischen Problems mit der Anordnung der Feldnamen in der REST-API nicht laden. Wir haben eine Korrektur vorgenommen, die dieses Problem für dich lösen sollte, falls du auch davon betroffen bist.
-
-Dieses Release enthält außerdem weitere Problembehebungen, die auf deinem Feedback basieren. Sende uns bitte weiter Feedback – wir freuen uns darauf!

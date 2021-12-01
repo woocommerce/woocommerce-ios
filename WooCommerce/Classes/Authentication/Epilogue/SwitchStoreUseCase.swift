@@ -89,8 +89,14 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         // We need to call refreshUserData() here because the user selected
         // their default store and tracks should to know about it.
         ServiceLocator.analytics.refreshUserData()
+
+        let jetpackCPActivePlugins = (stores.sessionManager.defaultSite?.jetpackConnectionActivePlugins ?? []).joined(separator: ",")
         ServiceLocator.analytics.track(.sitePickerContinueTapped,
-                                  withProperties: ["selected_store_id": stores.sessionManager.defaultStoreID ?? String()])
+                                  withProperties: [
+                                    "selected_store_id": stores.sessionManager.defaultStoreID ?? String(),
+                                    "is_jetpack_cp_connected": stores.sessionManager.defaultSite?.isJetpackCPConnected == true,
+                                    "jetpack_cp_active_plugins": jetpackCPActivePlugins
+                                  ])
 
         AppDelegate.shared.authenticatorWasDismissed()
     }

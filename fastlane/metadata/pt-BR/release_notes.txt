@@ -1,3 +1,0 @@
-Alguns comerciantes não estavam conseguindo carregar detalhes de pedidos devido a um problema técnico na forma como os nomes de campo eram ordenados na API REST. Fizemos uma correção para que você não passe mais por isso.
-
-Esta versão contém várias outras correções feitas com base no seu feedback. Continue compartilhando seu feedback conosco. Estamos ouvindo.

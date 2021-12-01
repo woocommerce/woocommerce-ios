@@ -14,11 +14,11 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
     ///
     private lazy var modalNoticePresenter: NoticePresenter = {
         let presenter = DefaultNoticePresenter()
-        presenter.presentingViewController = self
+        presenter.presentingViewController = self.navigationController ?? self
         return presenter
     }()
 
-    init(viewModel: SimplePaymentsAmountViewModel) {
+    init(viewModel: SimplePaymentsAmountViewModel, presentNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never>) {
         super.init(rootView: SimplePaymentsAmount(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
@@ -26,21 +26,15 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
             self?.dismiss(animated: true, completion: nil)
         }
 
-        // Observe the present notice intent and set it back to `nil` after presented.
-        viewModel.$presentNotice
+        // Observe the present notice intent.
+        presentNoticePublisher
             .compactMap { $0 }
             .sink { [weak self] notice in
 
-                // To prevent keyboard to hide the notice
-                self?.view.endEditing(true)
-
                 switch notice {
-                case .error:
-                    self?.modalNoticePresenter.enqueue(notice: .init(title: SimplePaymentsAmount.Localization.error, feedbackType: .error))
+                case .error(let description):
+                    self?.modalNoticePresenter.enqueue(notice: .init(title: description, feedbackType: .error))
                 }
-
-                // Nullify the presentation intent.
-                viewModel.presentNotice = nil
             }
             .store(in: &subscriptions)
     }
@@ -104,6 +98,7 @@ struct SimplePaymentsAmount: View {
                 .foregroundColor(.text)
                 .textAlignment(.center)
                 .keyboardType(.decimalPad)
+                .focused()
                 .fixedSize()
 
             Spacer()
@@ -139,7 +134,7 @@ struct SimplePaymentsAmount: View {
     private func summaryView() -> some View {
         Group {
             if let summaryViewModel = viewModel.summaryViewModel {
-                SimplePaymentsSummary(viewModel: summaryViewModel)
+                SimplePaymentsSummary(dismiss: dismiss, viewModel: summaryViewModel)
             }
             EmptyView()
         }
@@ -152,7 +147,6 @@ private extension SimplePaymentsAmount {
         static let title = NSLocalizedString("Take Payment", comment: "Title for the simple payments screen")
         static let instructions = NSLocalizedString("Enter Amount", comment: "Short instructions label in the simple payments screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the simple payments screen")
-        static let error = NSLocalizedString("There was an error creating the order", comment: "Notice text after failing to create a simple payments order.")
 
         static func buttonTitle() -> String {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplePaymentsPrototype) {
@@ -169,4 +163,10 @@ private extension SimplePaymentsAmount {
             56 * scale
         }
     }
+}
+
+/// Representation of possible notices that can be displayed
+///
+enum SimplePaymentsNotice: Equatable {
+    case error(String)
 }

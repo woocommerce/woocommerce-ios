@@ -460,6 +460,12 @@ extension UIImage {
         return UIImage.gridicon(.cloud)
     }
 
+    /// Hub Menu tab icon
+    ///
+    static var hubMenu: UIImage {
+        return UIImage(named: "icon-hub-menu")!
+    }
+
     /// Menu Icon
     ///
     static var menuImage: UIImage {
@@ -665,6 +671,18 @@ extension UIImage {
     ///
     static var plusBarButtonItemImage: UIImage {
         return UIImage(systemName: "plus", withConfiguration: Configurations.barButtonItemSymbol)!
+    }
+
+    /// Small Plus Icon
+    ///
+    static var plusSmallImage: UIImage {
+        return UIImage.gridicon(.plusSmall)
+    }
+
+    /// Small Minus Icon
+    ///
+    static var minusSmallImage: UIImage {
+        return UIImage.gridicon(.minusSmall)
     }
 
     /// Search Icon - used in `UIBarButtonItem`

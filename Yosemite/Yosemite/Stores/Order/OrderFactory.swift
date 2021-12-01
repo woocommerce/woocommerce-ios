@@ -33,13 +33,19 @@ enum OrderFactory {
               shippingLines: [],
               coupons: [],
               refunds: [],
-              fees: [.init(feeID: 0,
-                           name: "Simple Payments",
-                           taxClass: "",
-                           taxStatus: taxable ? .taxable : .none,
-                           total: amount,
-                           totalTax: "",
-                           taxes: [],
-                           attributes: [])])
+              fees: [simplePaymentFee(feeID: 0, amount: amount, taxable: taxable)])
+    }
+
+    /// Creates a fee line suitable to be used within a simple payments order.
+    ///
+    static func simplePaymentFee(feeID: Int64, amount: String, taxable: Bool) -> OrderFeeLine {
+        .init(feeID: feeID,
+              name: "Simple Payments",
+              taxClass: "",
+              taxStatus: taxable ? .taxable : .none,
+              total: amount,
+              totalTax: "",
+              taxes: [],
+              attributes: [])
     }
 }

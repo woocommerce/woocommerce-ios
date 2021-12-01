@@ -1,3 +1,0 @@
-Vissa handlare har haft problem med att läsa in beställningsinformation. Detta berodde på ett tekniskt fel som påverkade i vilken ordning fältnamn placerades i REST API. Vi har nu gjort en korrigering som bör lösa detta problem.
-
-Den här versionen innehåller flera ytterligare korrigeringar baserade på er feedback. Fortsätt att skicka feedback till oss – vi lyssnar!

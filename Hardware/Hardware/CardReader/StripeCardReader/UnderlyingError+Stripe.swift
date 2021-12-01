@@ -73,7 +73,9 @@ extension UnderlyingError {
         case ErrorCode.Code.unexpectedSdkError.rawValue:
             self = .unexpectedSDKError
         case ErrorCode.Code.declinedByStripeAPI.rawValue:
-            self = .paymentDeclinedByPaymentProcessorAPI
+            let processPaymentError = error as? ProcessPaymentError
+            let declineReason = DeclineReason(with: processPaymentError?.declineCode ?? "")
+            self = .paymentDeclinedByPaymentProcessorAPI(declineReason: declineReason)
         case ErrorCode.Code.declinedByReader.rawValue:
             self = .paymentDeclinedByCardReader
         case ErrorCode.Code.notConnectedToInternet.rawValue:

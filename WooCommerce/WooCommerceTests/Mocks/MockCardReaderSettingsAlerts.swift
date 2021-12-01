@@ -84,7 +84,7 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         }
     }
 
-    func connectingFailedMissingAddress(from: UIViewController,
+    func connectingFailedIncompleteAddress(from: UIViewController,
                                         adminUrl: URL?,
                                         site: Site?,
                                         openUrlInSafari: @escaping (URL) -> Void,

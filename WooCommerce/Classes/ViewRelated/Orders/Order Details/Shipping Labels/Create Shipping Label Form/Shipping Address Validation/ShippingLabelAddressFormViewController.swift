@@ -440,7 +440,7 @@ private extension ShippingLabelAddressFormViewController {
         case .name:
             errorMessage = Localization.missingName
         case .address:
-            errorMessage = viewModel.addressValidationError?.addressError ?? Localization.missingAddress
+            errorMessage = viewModel.addressValidationError?.addressError ?? Localization.incompleteAddress
         case .city:
             errorMessage = Localization.missingCity
         case .postcode:
@@ -607,8 +607,8 @@ private extension ShippingLabelAddressFormViewController {
                                                           comment: "Action to use the address in Shipping Label Validation screen as entered")
         static let missingName = NSLocalizedString("Name missing",
                                                    comment: "Error showed in Shipping Label Address Validation for the name field")
-        static let missingAddress = NSLocalizedString("Address missing",
-                                                      comment: "Error showed in Shipping Label Address Validation for the address field")
+        static let incompleteAddress = NSLocalizedString("Address incomplete",
+                                                         comment: "Error showed in Shipping Label Address Validation for the address field")
         static let missingCity = NSLocalizedString("City missing",
                                                    comment: "Error showed in Shipping Label Address Validation for the city field")
         static let missingPostcode = NSLocalizedString("Postcode missing",

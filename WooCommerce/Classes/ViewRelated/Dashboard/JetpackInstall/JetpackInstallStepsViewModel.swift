@@ -19,7 +19,7 @@ final class JetpackInstallStepsViewModel: ObservableObject {
 
     /// Whether the install failed. This will be observed by `JetpackInstallStepsView` to present error modal.
     ///
-    @Published var installFailed: Bool = false
+    @Published private(set) var installFailed: Bool = false
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID

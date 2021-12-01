@@ -97,6 +97,30 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
         XCTAssertEqual(activatedPluginName, "jetpack/jetpack")
     }
 
+    func test_installSitePlugin_is_retried_2_times_if_continuously_fails() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = JetpackInstallStepsViewModel(siteID: testSiteID, stores: storesManager)
+
+        // When
+        var installedPluginInvokedCount = 0
+        storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
+            switch action {
+            case .installSitePlugin(_, _, let onCompletion):
+                installedPluginInvokedCount += 1
+                onCompletion(.failure(NSError(domain: "Server Error", code: 500)))
+            case .getPluginDetails(_, _, let onCompletion):
+                onCompletion(.failure(NSError(domain: "Not Found", code: 404)))
+            default:
+                break
+            }
+        }
+        viewModel.startInstallation()
+
+        // Then
+        XCTAssertEqual(installedPluginInvokedCount, 3) // 1 initial time plus 2 retries
+    }
+
     func test_loadAndSynchronizeSite_is_dispatched_when_activating_plugin_succeeds() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)

@@ -192,6 +192,39 @@ public enum UnderlyingError: Error, Equatable {
     /// Catch-all error case. Indicates there is something wrong with the
     /// internal state of the CardReaderService.
     case internalServiceError
+
+    /// The store setup is incomplete, and the action can't be performed until the user provides a full store address in the site admin.
+    /// May include the URL for the appropriate admin page
+    case incompleteStoreAddress(adminUrl: URL?)
+}
+
+extension UnderlyingError {
+    /// Determine an UnderlyingError for an Error related to the Card Reader, e.g. CardReaderConfigError, errors from StripeTerminal in SCPError.
+    /// This will return `internalServiceError` as a catch-all if no more specific error can be determined.
+    init(with error: Error) {
+        switch error {
+        case let configurationError as CardReaderConfigError:
+            if let underlyingConfigurationError = UnderlyingError(withConfigError: (configurationError)) {
+                self = underlyingConfigurationError
+                return
+            }
+        default:
+            if let underlyingStripeError = UnderlyingError(withStripeError: error) {
+                self = underlyingStripeError
+                return
+            }
+        }
+        self = .internalServiceError
+    }
+
+    init?(withConfigError configError: CardReaderConfigError) {
+        switch configError {
+        case .incompleteStoreAddress(let adminUrl):
+            self = .incompleteStoreAddress(adminUrl: adminUrl)
+        default:
+            return nil
+        }
+    }
 }
 
 extension UnderlyingError {
@@ -334,6 +367,10 @@ updating the application or using a different reader
         case .internalServiceError:
             return NSLocalizedString("Sorry, this payment couldn’t be processed",
                                      comment: "Error message when the card reader service experiences an unexpected internal service error.")
+        case .incompleteStoreAddress(_):
+            return NSLocalizedString("The store address is incomplete or missing, please update it before continuing.",
+                                     comment: "Error message when there is an issue with the store address preventing " +
+                                     "an action (e.g. reader connection.)")
         }
     }
 }

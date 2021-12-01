@@ -77,7 +77,7 @@ struct JetpackInstallStepsView: View {
                 }
 
                 // Loading indicator for when checking plugin details
-                HStack(alignment: .center) {
+                HStack {
                     Spacer()
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     Spacer()

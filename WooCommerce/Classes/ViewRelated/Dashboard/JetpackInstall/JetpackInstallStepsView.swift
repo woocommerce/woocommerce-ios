@@ -158,6 +158,10 @@ private extension JetpackInstallStepsView {
         static let installDescription = NSLocalizedString("Please wait while we connect your site %1$@ with Jetpack.",
                                                           comment: "Message on the Jetpack Install Progress screen. The %1$@ is the site address.")
         static let doneButton = NSLocalizedString("Done", comment: "Done button on the Jetpack Install Progress screen.")
+        static let errorTitle = NSLocalizedString("Sorry, something went wrong during install", comment: "Error title when Jetpack install fails")
+        static let errorMessage = NSLocalizedString("Please try again. Alternatively, you can install Jetpack through your WP-Admin.", comment: "Error message when Jetpack install fails")
+        static let wpAdminAction = NSLocalizedString("Install Jetpack in WP-Admin", comment: "Action button to install Jetpack win WP-Admin instead of on app")
+        static let supportAction = NSLocalizedString("Contact Support", comment: "Action button to contact support when Jetpack install fails")
     }
 }
 

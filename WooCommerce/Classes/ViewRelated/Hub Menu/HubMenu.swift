@@ -8,11 +8,11 @@ struct HubMenu: View {
 
 
     var body: some View {
-        let gridItemLayout = [GridItem(.flexible(), spacing: Constants.itemSpacing)]
+        let gridItemLayout = [GridItem(.flexible(), spacing: Constants.itemSpacing), GridItem(.flexible(), spacing: Constants.itemSpacing)]
 
         ScrollView {
             LazyVGrid(columns: gridItemLayout) {
-                ForEach(0...viewModel.menuElements.count, id: \.self) { _ in
+                ForEach(0..<viewModel.menuElements.count, id: \.self) { _ in
                     HubMenuElement(image: UIImage(named: "icon-hub-menu")!, text: "Test")
                         .background(Color.white)
                         .cornerRadius(Constants.cornerRadius)

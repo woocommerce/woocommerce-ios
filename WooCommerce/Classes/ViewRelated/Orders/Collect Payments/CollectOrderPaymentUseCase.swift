@@ -119,7 +119,7 @@ private extension CollectOrderPaymentUseCase {
                     // Reader connected
                     onCompletion()
 
-                    // Nil the subscription since we are don with the connection.
+                    // Nil the subscription since we are done with the connection.
                     self?.readerSubscription = nil
 
                 }, receiveValue: { [weak self] _ in

@@ -78,7 +78,7 @@ struct SimplePaymentsAmount: View {
     ///
     var dismiss: (() -> Void) = {}
 
-    /// Needed because IPP capture payments using a UIViewController for providing user feedback.
+    /// Needed because IPP capture payments depend on a UIViewController for providing user feedback.
     ///
     weak var rootViewController: UIViewController?
 

@@ -49,13 +49,13 @@ private extension CardPresentModalUpdateFailedLowBattery {
         )
 
         static let message = NSLocalizedString(
-            "Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again.",
+            "Updating the reader software failed because the reader’s battery is %.0f\uFF05 charged. Please charge the reader above 50\uFF05 before trying again.",
             comment: "Button to dismiss the alert presented when an update fails because the reader is low on battery. " +
-                "Please leave the %.0f%% intact, as it represents the current percentage of charge."
+                "Please leave the %.0f\uFF05 intact, as it represents the current percentage of charge."
         )
 
         static let messageNoBatteryLevel = NSLocalizedString(
-            "Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again.",
+            "Updating the reader software failed because the reader is low on battery. Please charge the reader above 50\uFF05 before trying again.",
             comment: "Button to dismiss the alert presented when an update fails because the reader is low on battery."
         )
 

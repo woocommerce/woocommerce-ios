@@ -38,22 +38,32 @@ struct HubMenu: View {
 
     private struct TopBar: View {
         let storeTitle: String
-        let storeURL: String
+        let storeURL: String?
 
         var body: some View {
             HStack() {
                 VStack(alignment: .leading,
                        spacing: Constants.topBarSpacing) {
                     Text(storeTitle).headlineStyle()
-                    Text(storeURL)
-                        .subheadlineStyle()
+                    if let storeURL = storeURL {
+                        Text(storeURL)
+                            .subheadlineStyle()
+                    }
                     Button(Localization.switchStore) {
 
                     }
                     .linkStyle()
                 }
+                Spacer()
+                ZStack {
+                    Circle()
+                        .fill(Color.white)
+                        .frame(width: 28,
+                               height: 28)
+                    Image(uiImage: .gearImage)
+                }
             }
-            .padding(Constants.padding)
+            .padding([.top, .leading, .trailing], Constants.padding)
         }
     }
 

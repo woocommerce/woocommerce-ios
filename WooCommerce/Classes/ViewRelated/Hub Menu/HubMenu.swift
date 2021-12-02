@@ -16,8 +16,8 @@ struct HubMenu: View {
                     HubMenuElement(image: UIImage(named: "icon-hub-menu")!, text: menu.title)
                 }
                 .frame(width: Constants.itemSize, height: Constants.itemSize)
-                .cornerRadius(Constants.cornerRadius)
                 .background(Color.white)
+                .cornerRadius(Constants.cornerRadius)
                 .padding([.bottom], Constants.padding)
             }
             .padding(Constants.padding)

@@ -21,6 +21,10 @@ final class JetpackInstallStepsViewModel: ObservableObject {
     ///
     @Published private(set) var installFailed: Bool = false
 
+    /// Number of retries done for current step.
+    ///
+    private var retryCount: Int = 0
+
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
@@ -37,7 +41,7 @@ final class JetpackInstallStepsViewModel: ObservableObject {
     /// - Parameters:
     ///   - retryCount: number of retries done for error handling.
     ///
-    private func checkJetpackPluginDetailsAndProceed(retryCount: Int = 0) {
+    private func checkJetpackPluginDetailsAndProceed() {
         guard retryCount <= Constants.maxRetryCount else {
             installFailed = true
             return
@@ -49,11 +53,11 @@ final class JetpackInstallStepsViewModel: ObservableObject {
                 if plugin.status == .active {
                     self.checkSiteConnection()
                 } else {
-                    self.activateJetpack(retryCount: retryCount)
+                    self.activateJetpack()
                 }
             case .failure:
                 // plugin is likely to not have been installed, so proceed to install it.
-                self.installJetpackPlugin(retryCount: retryCount)
+                self.installJetpackPlugin()
             }
         }
         stores.dispatch(pluginInfoAction)
@@ -61,15 +65,17 @@ final class JetpackInstallStepsViewModel: ObservableObject {
 
     /// Installs Jetpack plugin to current site.
     ///
-    private func installJetpackPlugin(retryCount: Int) {
+    private func installJetpackPlugin() {
         currentStep = .installation
         let installationAction = SitePluginAction.installSitePlugin(siteID: siteID, slug: Constants.jetpackSlug) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success:
+                self.retryCount = 0
                 self.activateJetpack()
             case .failure:
-                self.checkJetpackPluginDetailsAndProceed(retryCount: retryCount + 1)
+                self.retryCount += 1
+                self.checkJetpackPluginDetailsAndProceed()
             }
         }
         stores.dispatch(installationAction)
@@ -83,9 +89,11 @@ final class JetpackInstallStepsViewModel: ObservableObject {
             guard let self = self else { return }
             switch result {
             case .success:
+                self.retryCount = 0
                 self.checkSiteConnection()
             case .failure:
-                self.checkJetpackPluginDetailsAndProceed(retryCount: retryCount + 1)
+                self.retryCount += 1
+                self.checkJetpackPluginDetailsAndProceed()
             }
         }
         stores.dispatch(activationAction)

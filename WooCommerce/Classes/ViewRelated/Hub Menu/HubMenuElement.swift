@@ -12,6 +12,7 @@ struct HubMenuElement: View {
                 Color(.listBackground)
                 Image(uiImage: image)
                     .resizable()
+                    .scaledToFit()
                     .frame(width: Constants.iconSize, height: Constants.iconSize)
             }
             .frame(width: Constants.imageSize, height: Constants.imageSize, alignment: .center)

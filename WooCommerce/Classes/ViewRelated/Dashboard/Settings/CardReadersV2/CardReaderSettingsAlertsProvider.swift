@@ -45,6 +45,13 @@ protocol CardReaderSettingsAlertsProvider {
                           continueSearch: @escaping () -> Void,
                           cancelSearch: @escaping () -> Void)
 
+    /// Defines an alert indicating connecting failed because their address needs updating.
+    /// The user may try again or cancel
+    ///
+    func connectingFailedMissingAddress(from: UIViewController,
+                                        continueSearch: @escaping () -> Void,
+                                        cancelSearch: @escaping () -> Void)
+
     /// Defines an alert indicating an update couldn't be installed because the reader is low on battery.
     ///
     func updatingFailedLowBattery(from: UIViewController,

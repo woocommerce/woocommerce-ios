@@ -1,9 +1,12 @@
-/* Translation-Revision-Date: 2021-11-23 17:54:02+0000 */
+/* Translation-Revision-Date: 2021-12-01 11:32:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
 
 /* No comment provided by engineer. */
+"#%1$@" = "#%1$@";
+
+/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
 /* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
@@ -236,6 +239,9 @@
 /* Title for the error screen when WooCommerce Payments is installed but not activated */
 "Activate WooCommerce Payments" = "Activer WooCommerce Payments";
 
+/* Name of the activation Jetpack plugin step */
+"Activating" = "Activating";
+
 /* Application's Active State */
 "Active" = "Actif";
 
@@ -306,6 +312,9 @@
 /* Placeholder in Shipping Label form for the Payment Method row. */
 "Add a new credit card" = "Ajouter une nouvelle carte de crédit";
 
+/* Navigates to a screen to create a full manual order */
+"Add a new order" = "Add a new order";
+
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
 "Add a note" = "Ajouter une note";
@@ -343,6 +352,9 @@
 
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add price to your variations to make them visible on your store" = "Ajouter un prix à vos variantes pour les rendre visibles sur votre boutique";
+
+/* Title text of the button that adds a product when creating a new order */
+"Add product" = "Add product";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Ajouter un lien vers le produit";
@@ -399,15 +411,14 @@
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
 
-/* Header bar label on top of order list when no filters are applied
-   Title for the second page in the Orders tab. */
+/* Header bar label on top of order list when no filters are applied */
 "All Orders" = "Toutes les commandes";
 
 /* Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow */
 "All available packages have been activated" = "Tous les colis disponibles ont été activés.";
 
-/* The message shown in the Orders → Processing tab if the list is empty. */
-"All orders have been fulfilled" = "Toutes les commandes ont été exécutées";
+/* Name of final step in Install Jetpack flow. */
+"All done" = "All done";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Tous les avis marqués comme lus";
@@ -451,8 +462,8 @@
 /* Title of analytics as part of Jetpack benefits. */
 "Analytics" = "Statistiques";
 
-/* Label for one of the filters in order date range
-   Product variation attribute description where the attribute is set to any value. - Title when there is no filter set. */
+/* Case Any in Order Filters for Order Statuses
+   Display label for all order statuses selected in Order Filters - Label for one of the filters in order date range - Product variation attribute description where the attribute is set to any value. - Title when there is no filter set. */
 "Any" = "Tous";
 
 /* Format of a product variation attribute description where the attribute is set to any value.
@@ -635,6 +646,9 @@
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "Obtenez des avis qualitatifs concernant votre produits pour votre boutique";
 
+/* Card method title on the select payment method screen for simple payments */
+"Card" = "Card";
+
 /* Navigates to Card Reader manual */
 "Card reader manual" = "Manuel du lecteur de carte";
 
@@ -643,6 +657,9 @@
 
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "Nom du transporteur";
+
+/* Cash method title on the select payment method screen for simple payments */
+"Cash" = "Cash";
 
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
@@ -694,6 +711,12 @@
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Choisir depuis l’appareil";
 
+/* Opens action sheet to choose a type of a new order */
+"Choose new order type" = "Choose new order type";
+
+/* Heading text on the select payment method screen for simple payments */
+"Choose your payment method" = "Choose your payment method";
+
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
 "City" = "Ville";
@@ -701,13 +724,15 @@
 /* Error showed in Shipping Label Address Validation for the city field */
 "City missing" = "Ville manquante";
 
-/* Action to add product on the placeholder overlay when no products match the filter on the Products tab */
+/* Action to add product on the placeholder overlay when no products match the filter on the Products tab
+   Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
 "Clear Filters" = "Effacer les filtres";
 
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Tout effacer";
 
-/* Text for the close button in the Edit Address Form */
+/* Text for the close button in the Edit Address Form
+   Title of the Close action on the Jetpack Install view */
 "Close" = "Fermer";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
@@ -767,6 +792,9 @@
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Connexion à votre compte";
+
+/* Name of the step to connect the store to Jetpack */
+"Connecting your store" = "Connecting your store";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Contacter le client";
@@ -870,6 +898,9 @@
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "Bloquer immédiatement";
 
+/* Button to create an order on the New Order screen */
+"Create" = "Créer";
+
 /* The button title text for creating a new account. */
 "Create Account" = "Créer un compte";
 
@@ -877,8 +908,17 @@
    Option to create new shipping label from the action sheet on Products section of Order Details screen - Text on the button that starts shipping label creation */
 "Create Shipping Label" = "Créer une étiquette d’expédition";
 
+/* Description of the Action sheet option when the user wants to create full manual order */
+"Create a new manual order" = "Create a new manual order";
+
+/* Description of the Action sheet option when the user wants to create Simple Payments order */
+"Create an order with minimal information" = "Create an order with minimal information";
+
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Créer un nouveau colis";
+
+/* Action sheet option when the user wants to create full manual order */
+"Create order" = "Create order";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "Créez des étiquettes d’expédition à partir de votre appareil !";
@@ -1044,7 +1084,7 @@
 "Don't have an account? _Sign up_" = "Vous n'avez pas encore de compte ? _S'inscrire_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Title for the button to confirm the amount in the simple payments screen */
+   Done button on the Jetpack Install Progress screen. - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Title for the button to confirm the amount in the simple payments screen */
 "Done" = "Terminé";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1278,9 +1318,6 @@
    Navigates to experimental features screen */
 "Experimental Features" = "Fonctionnalités expérimentales";
 
-/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"Explore how you can increase your store sales" = "Découvrez comment augmenter vos ventes";
-
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "Produit externe";
 
@@ -1394,7 +1431,8 @@
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Génération de la variante";
 
-/* View title for initial auth views. */
+/* Title of install action in the Jetpack Install view.
+   View title for initial auth views. */
 "Get Started" = "Commencer";
 
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
@@ -1620,14 +1658,21 @@
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "Insérer un lien";
 
-/* Title of install action in the Jetpack benefits view. */
+/* Navigates to Install Jetpack screen.
+   Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
 "Install Jetpack" = "Installer Jetpack";
 
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "Installer WooCommerce Payments";
 
+/* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
+"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "Install the free Jetpack plugin to %1$@ and experience the best mobile experience.";
+
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "Installez la nouvelle extension Jetpack gratuite pour profiter de la meilleure expérience mobile qui soit.";
+
+/* Name of installing Jetpack plugin step */
+"Installing Jetpack" = "Installation de Jetpack";
 
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
 "Insurance (%1$@)" = "Assurance (%1$@)";
@@ -1745,7 +1790,7 @@
 "Launch Wormholy Debug" = "Lancer le débogueur Wormholy";
 
 /* Button title in the shipping label creation info screen
-   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
+   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
 "Learn more" = "En apprendre plus";
 
 /* A label prompting users to learn more about HS Tariff Number in Customs screen of Shipping Label flow */
@@ -1772,9 +1817,6 @@
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter (8,5 x 11 po)";
-
-/* Licenses (information page title) */
-"Licenses" = "Licences";
 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
 "Limit one per order" = "Limite : un par commande";
@@ -1810,9 +1852,6 @@
 
 /* Text of the loading banner in Order Detail when loaded for the first time */
 "Loading content" = "Chargement du contenu";
-
-/* Loading tags in Product Tags screen */
-"Loading..." = "Chargement...";
 
 /* Button title.  Tapping takes the user to the login form.
    Log In button label. - View title during the log in process. */
@@ -2004,6 +2043,9 @@
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "Nom du nouvel attribut";
 
+/* Title for the order creation screen */
+"New Order" = "New Order";
+
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "Vous pouvez profiter de nouvelles vues de statistiques pour voir vos visiteurs, vos rapports, et plus encore.";
 
@@ -2143,9 +2185,6 @@
 /* Open Map action in Shipping Label Address Validation. */
 "Open Map" = "Ouvrir une carte";
 
-/* Navigates to screen about open source licenses */
-"Open Source Licenses" = "Licences open sources";
-
 /* Label for the description of openening a link using a new window */
 "Open in a new Window\/Tab" = "Ouvrir dans une nouvelle fenêtre\/un nouvel onglet";
 
@@ -2181,6 +2220,9 @@
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "Commande n° %1$@";
 
+/* Cell title on the beta features screen to enable creating new orders */
+"Order Creation" = "Order Creation";
+
 /* Title text of the row that holds the order note when creating a simple payment */
 "Order Note" = "Note de commande";
 
@@ -2188,7 +2230,7 @@
 "Order Notes" = "Notes de commande";
 
 /* Change order status screen - Screen title
-   Row title for filtering orders by order status. - The section title for the list of Order statuses in the Order Search. */
+   Navigation title of the orders filter selector screen for order statuses - Row title for filtering orders by order status. */
 "Order Status" = "État de la commande";
 
 /* Create Shipping Label form -> Order Total label
@@ -2204,8 +2246,8 @@
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Liste ordonnée";
 
-/* Default title for Orders List shown when tapping on the Search filter.
-   Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
+/* Orders stat label on dashboard - should be plural.
+   The title of the Orders tab. */
 "Orders" = "Commandes";
 
 /* Subtitle of the product form bottom sheet action for editing categories. */
@@ -2415,6 +2457,9 @@
    Message of in-progress modal when requesting shipping label document for printing - Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait */
 "Please wait" = "Veuillez patienter";
 
+/* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
+"Please wait while we connect your site %1$@ with Jetpack." = "Please wait while we connect your site %1$@ with Jetpack.";
+
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "Veuillez patienter, la nouvelle variante est en cours de création";
 
@@ -2423,6 +2468,9 @@
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
 "Please wait while we save this product to your store" = "Veuillez patienter pendant que nous enregistrons ce produit dans votre boutique.";
+
+/* Message of the in-progress UI while saving a Variation remotely */
+"Please wait while we save your latest changes" = "Please wait while we save your latest changes";
 
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
@@ -2510,8 +2558,7 @@
 /* Display label for the product's private status */
 "Privately published" = "Publié en privé";
 
-/* Display label for processing order status.
-   Title for the first page in the Orders tab. */
+/* Display label for processing order status. */
 "Processing" = "En cours";
 
 /* Indicates that a payment is being processed */
@@ -2560,7 +2607,7 @@
 "Product type" = "Type de produit";
 
 /* Product section title if there is more than one product.
-   Product section title in Review Order screen if there is more than one product. - Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
+   Product section title in Review Order screen if there is more than one product. - Title of the Products tab — plural form of Product - Title text of the section that shows the Products when creating a new order - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Produits";
 
 /* Label for computed value `product refunds + taxes = subtotal`.
@@ -2859,6 +2906,9 @@
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Enregistrement de votre produit…";
 
+/* Title of the in-progress UI while saving a Variation remotely */
+"Saving your variation..." = "Saving your variation...";
+
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "Scanner le code-barres pour mettre à jour l’UGS";
 
@@ -3126,7 +3176,8 @@
 /* Display label for simple product type. */
 "Simple" = "Simple";
 
-/* Cell title on the beta features screen to enable the Simple Payments feature */
+/* Action sheet option when the user wants to create Simple Payments order
+   Cell title on the beta features screen to enable the Simple Payments feature */
 "Simple Payments" = "Paiements Simplifiés";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
@@ -3405,6 +3456,9 @@
    Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "Taxe";
 
+/* Tax percentage to be applied to the simple payments order */
+"Tax ((rate)%)" = "Tax ((rate)%)";
+
 /* Section header title for product tax settings */
 "Tax Settings" = "Paramètres d'imposition";
 
@@ -3427,11 +3481,17 @@
 /* Taxes label for payment view */
 "Taxes" = "Taxes";
 
+/* Disclaimer in the simple payments summary screen about taxes. */
+"Taxes are automatically calculated based on your store address." = "Taxes are automatically calculated based on your store address.";
+
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Ajouter des informations sur %1$@...";
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Conditions d’utilisation";
+
+/* Cell description on the beta features screen to enable creating new orders */
+"Test out creating new manual orders as we get ready to launch" = "Test out creating new manual orders as we get ready to launch";
 
 /* Cell description on the beta features screen to enable the Simple Payments feature */
 "Test out creating orders with minimal information as we get ready to launch" = "Vous pourrez bientôt créer des commandes avec un minimum d’informations grâce à la nouvelle fonctionnalité";
@@ -3575,8 +3635,13 @@
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Une erreur est survenue lors de l’émission du remboursement";
 
-/* Notice text after failing to update the order successfully */
+/* Notice text after failing to update a simple payments order.
+   Notice text after failing to update the order successfully */
 "There was an error updating the order" = "Une erreur s’est produite lors de la mise à jour de la commande";
+
+/* Navigates to screen with third party software licenses
+   Software Licenses (information page title) */
+"Third Party Licenses" = "Third Party Licenses";
 
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
@@ -3674,7 +3739,7 @@
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Pour effectuer cela avec ce compte Google, veuillez d’abord vous connecter avec votre mot de passe WordPress.com. Cela sera demandé une seule fois.";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"To turn on your card reader, briefly press its power button. When powered on, the power LED will blink blue." = "Pour allumer votre lecteur de carte, appuyez brièvement sur le bouton d’alimentation. Une fois allumé, le voyant clignote en bleu.";
+"To turn on your card reader, briefly press its power button." = "To turn on your card reader, briefly press its power button.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Pour utiliser cette application pour %@, l’extension Jetpack doit être installée et connectée sur votre boutique.";
@@ -3788,6 +3853,9 @@
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
 "Unable to change status of order #%1$d" = "Impossible de modifier l’état de la commande n° %1$d";
+
+/* Notice displayed when order creation fails */
+"Unable to create new order" = "Unable to create new order";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "Impossible de supprimer le suivi de la commande n° %1$d";
@@ -3998,6 +4066,9 @@
 /* Action sheet option when the user wants to change the Product type to varible product */
 "Variable product" = "Produit variable";
 
+/* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
+"Variation #%1$@" = "Variation #%1$@";
+
 /* Text for the notice after creating the first variation. */
 "Variation created" = "Variante créée";
 
@@ -4159,11 +4230,8 @@
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "Impossible de se connecter au site Jetpack à cette URL. Contactez-nous pour une assistance.";
 
-/* Default message to show if a filtered Orders list is empty. */
-"We're sorry, we couldn't find any orders." = "Désolé, commandes introuvables.";
-
-/* Message shown if a filtered Orders list is empty. The %@ is a placeholder for the order status. */
-"We're sorry, we couldn't find any “%@” orders" = "Désolé, impossible de trouver les commandes « %@ »";
+/* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
+"We're sorry, we couldn't find any order that match %@" = "We're sorry, we couldn't find any order that match %@";
 
 /* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */

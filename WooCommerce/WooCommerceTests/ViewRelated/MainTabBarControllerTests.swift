@@ -48,13 +48,15 @@ final class MainTabBarControllerTests: XCTestCase {
     }
 
     func test_tab_view_controllers_returns_expected_values_with_hub_menu_enabled() {
-        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController else {
-            return
-        }
+        // Arrange
+        // Sets mock `FeatureFlagService` before `MainTabBarController` is initialized so that the feature flags are set correctly.
         let isHubMenuFeatureFlagOn = true
         ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn))
 
-        // Arrange
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController else {
+            return
+        }
+
         // Trigger `viewDidLoad`
         XCTAssertNotNil(tabBarController.view)
 
@@ -150,11 +152,13 @@ final class MainTabBarControllerTests: XCTestCase {
 
     func test_when_receiving_a_review_notification_from_a_different_site_navigates_to_reviews_tab_and_presents_review_details() throws {
         // Arrange
+        // Sets mock `FeatureFlagService` before `MainTabBarController` is initialized so that the feature flags are set correctly.
+        let isHubMenuFeatureFlagOn = false
+        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn))
+
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController else {
             return
         }
-        let isHubMenuFeatureFlagOn = false
-        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn))
 
         let pushNotificationsManager = MockPushNotificationsManager()
         ServiceLocator.setPushNotesManager(pushNotificationsManager)

@@ -301,6 +301,9 @@ private extension SettingsViewController {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return
         }
+
+        ServiceLocator.analytics.track(event: .jetpackInstallButtonTapped(source: .settings))
+
         let installJetpackController = JetpackInstallHostingController(siteID: site.siteID, siteURL: site.url)
         installJetpackController.setDismissAction { [weak self] in
             self?.dismiss(animated: true, completion: nil)

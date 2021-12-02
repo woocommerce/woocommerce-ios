@@ -7,6 +7,7 @@ import WordPressUI
 
 final class AddOrderCoordinatorTests: XCTestCase {
     private var navigationController: UINavigationController!
+    private var window: UIWindow?
 
     override func setUp() {
         super.setUp()
@@ -16,10 +17,16 @@ final class AddOrderCoordinatorTests: XCTestCase {
         window.rootViewController = UIViewController()
         window.makeKeyAndVisible()
         window.rootViewController = navigationController
+        self.window = window
     }
 
     override func tearDown() {
         navigationController = nil
+
+        // Resets `UIWindow` and its view hierarchy so that it can be deallocated cleanly.
+        window?.resignKey()
+        window?.rootViewController = nil
+
         super.tearDown()
     }
 
@@ -38,7 +45,7 @@ final class AddOrderCoordinatorTests: XCTestCase {
         assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: BottomSheetViewController.self)
     }
 
-    func test_it_does_nothing_when_all_types_are_unaviable() throws {
+    func test_it_does_nothing_when_all_types_are_unavailable() throws {
         // Given
         let coordinator = makeAddProductCoordinator(isOrderCreationEnabled: false,
                                                     shouldShowSimplePaymentsButton: false)
@@ -57,9 +64,6 @@ final class AddOrderCoordinatorTests: XCTestCase {
 
         // When
         coordinator.start()
-        waitUntil {
-            coordinator.navigationController.presentedViewController != nil
-        }
 
         // Then
         let presentedNC = coordinator.navigationController.presentedViewController as? UINavigationController

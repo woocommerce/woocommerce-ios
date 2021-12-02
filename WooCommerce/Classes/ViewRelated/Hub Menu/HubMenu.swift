@@ -4,8 +4,12 @@ import SwiftUI
 /// and will be the entry point of the `Menu` Tab.
 ///
 struct HubMenu: View {
-    @ObservedObject private var viewModel =  HubMenuViewModel()
+    @ObservedObject private var viewModel: HubMenuViewModel
+    @State private var showReviews = false
 
+    init(siteID: Int64) {
+        viewModel = HubMenuViewModel(siteID: siteID)
+    }
 
     var body: some View {
         VStack {
@@ -20,7 +24,13 @@ struct HubMenu: View {
                         HubMenuElement(image: menu.icon, text: menu.title)
                             .frame(width: Constants.itemSize, height: Constants.itemSize)
                             .onTapGesture {
-                                // TODO-5509: implement tap
+                                switch menu {
+                                case .reviews:
+                                    showReviews = true
+                                default:
+                                    // TODO-5509: handle the remaining cases
+                                    break
+                                }
                             }
                     }
                     .background(Color.white)
@@ -30,6 +40,11 @@ struct HubMenu: View {
                 .padding(Constants.padding)
                 .background(Color(.listBackground))
             }
+            NavigationLink(destination:
+                            ReviewsView(siteID: viewModel.siteID),
+                           isActive: $showReviews) {
+                EmptyView()
+            }.hidden()
         }
         .navigationBarHidden(true)
         .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
@@ -93,17 +108,17 @@ struct HubMenu: View {
 
 struct HubMenu_Previews: PreviewProvider {
     static var previews: some View {
-        HubMenu()
+        HubMenu(siteID: 123)
             .environment(\.colorScheme, .light)
 
-        HubMenu()
+        HubMenu(siteID: 123)
             .environment(\.colorScheme, .dark)
 
-        HubMenu()
+        HubMenu(siteID: 123)
             .previewLayout(.fixed(width: 312, height: 528))
             .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
 
-        HubMenu()
+        HubMenu(siteID: 123)
             .previewLayout(.fixed(width: 1024, height: 768))
     }
 }

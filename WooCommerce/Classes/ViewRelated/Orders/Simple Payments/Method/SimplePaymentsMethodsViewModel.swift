@@ -70,6 +70,10 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         return controller
     }()
 
+    /// Retains the use-case so it can perform all of its async tasks.
+    ///
+    private var collectPaymentsUseCase: CollectOrderPaymentUseCase?
+
     init(siteID: Int64 = 0,
          orderID: Int64 = 0,
          formattedTotal: String,
@@ -127,12 +131,18 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
         }
 
-        let useCase = CollectOrderPaymentUseCase(siteID: siteID, order: order, paymentGatewayAccount: paymentGateway, rootViewController: rootViewController)
-        useCase.collectPayment(onCollect: { _ in
+        collectPaymentsUseCase = CollectOrderPaymentUseCase(siteID: siteID,
+                                                            order: order,
+                                                            paymentGatewayAccount: paymentGateway,
+                                                            rootViewController: rootViewController)
+        collectPaymentsUseCase?.collectPayment(onCollect: { _ in
             print("On collect!")
-        }, onCompleted: {
+        }, onCompleted: { [weak self] in
             print("On Completed")
             onSuccess()
+
+            // Make sure we free all the resources
+            self?.collectPaymentsUseCase = nil
         })
     }
 }

@@ -91,7 +91,6 @@ final class CollectOrderPaymentUseCase: NSObject {
                 guard let receiptParameters = try? result.get() else {
                     return
                 }
-
                 self?.presentReceiptAlert(receiptParameters: receiptParameters, onCompleted: onCompleted)
             })
         }
@@ -206,7 +205,6 @@ private extension CollectOrderPaymentUseCase {
         paymentOrchestrator.cancelPayment { [analytics] _ in
             analytics.track(.collectPaymentCanceled)
         }
-        // TODO: Should I be sending a completion block?
     }
 
     /// Allow merchants to print or email the payment receipt.

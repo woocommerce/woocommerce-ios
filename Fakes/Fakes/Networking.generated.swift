@@ -1318,6 +1318,7 @@ extension Site {
             isJetpackConnected: .fake(),
             isWooCommerceActive: .fake(),
             isWordPressStore: .fake(),
+            jetpackConnectionActivePlugins: .fake(),
             timezone: .fake(),
             gmtOffset: .fake()
         )

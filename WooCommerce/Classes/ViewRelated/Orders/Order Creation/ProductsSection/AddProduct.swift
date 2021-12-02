@@ -13,23 +13,31 @@ struct AddProduct: View {
 
     var body: some View {
         NavigationView {
-            ScrollView {
-                // TODO: Make the product list searchable
-                LazyVStack {
-                    ForEach(viewModel.productRowViewModels) { viewModel in
-                        ProductRow(viewModel: viewModel)
+            GeometryReader { geometry in
+                ScrollView {
+                    // TODO: Make the product list searchable
+                    LazyVStack {
+                        ForEach(viewModel.productRowViewModels) { viewModel in
+                            ProductRow(viewModel: viewModel)
+                        }
                     }
+                    .padding()
+                    .renderedIf(viewModel.productRowViewModels.isNotEmpty)
+
+                    EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
+                        .frame(height: geometry.size.height)
+                        .background(Color(.listBackground))
+                        .renderedIf(viewModel.productRowViewModels.isEmpty)
                 }
-                .padding()
+                .navigationTitle(Localization.title)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(Localization.close) {
+                            isPresented.toggle()
+                        }
+                    }
             }
-            .navigationTitle(Localization.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.close) {
-                        isPresented.toggle()
-                    }
-                }
             }
         }
         .wooNavigationBarStyle()
@@ -40,6 +48,8 @@ private extension AddProduct {
     enum Localization {
         static let title = NSLocalizedString("Add Product", comment: "Title for the screen to add a product to an order")
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Add Product screen")
+        static let emptyStateMessage = NSLocalizedString("No products found",
+                                                         comment: "Message displayed if there are no products to display in the Add Product screen")
     }
 }
 

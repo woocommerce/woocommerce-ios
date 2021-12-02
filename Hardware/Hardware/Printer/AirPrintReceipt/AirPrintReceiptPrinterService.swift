@@ -58,5 +58,5 @@ extension AirPrintReceiptPrinterService {
 
     /// Default size of a page for a receipt in points.
     ///
-    static let defaultReceiptPageSize: CGSize = CGSize(width: 8 * pointsPerInch, height: 11 * pointsPerInch)
+    static let defaultReceiptPageSize: CGSize = CGSize(width: 4 * pointsPerInch, height: 11 * pointsPerInch)
 }

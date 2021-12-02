@@ -67,6 +67,6 @@ public extension ReceiptContent {
     /// just return a size that should accomodate the vast majority of receipts.
     ///
     var preferredPageSizeForPrinting: CGSize {
-        return CGSize(width: 4 * ReceiptContent.pointsPerInch, height: 10 * ReceiptContent.pointsPerInch)
+        return CGSize(width: 4 * ReceiptContent.pointsPerInch, height: 6 * ReceiptContent.pointsPerInch)
     }
 }

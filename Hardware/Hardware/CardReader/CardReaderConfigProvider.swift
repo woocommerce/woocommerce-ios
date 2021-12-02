@@ -14,3 +14,14 @@ public protocol CardReaderConfigProvider: ReaderLocationProvider, ReaderTokenPro
     func fetchToken(completion: @escaping(Result<String, Error>) -> Void)
     func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void)
 }
+
+/// An error that occurs while configuring a reader
+///
+/// - incompleteStoreAddress: The location could not be created because the Store address configured for the site failed validation.
+///     May include URL for wp-admin page to update address.
+/// - invalidPostalCode: The location could not be created because the Store postal code configured for the site failed validation.
+///
+public enum CardReaderConfigError: Error, LocalizedError {
+    case incompleteStoreAddress(adminUrl: URL?)
+    case invalidPostalCode
+}

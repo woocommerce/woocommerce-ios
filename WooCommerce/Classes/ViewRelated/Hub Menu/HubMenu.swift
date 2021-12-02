@@ -11,7 +11,7 @@ struct HubMenu: View {
         let gridItemLayout = [GridItem(.adaptive(minimum: Constants.itemSize), spacing: Constants.itemSpacing)]
 
         ScrollView {
-            LazyHGrid(rows: gridItemLayout) {
+            LazyVGrid(columns: gridItemLayout) {
                 ForEach(0..<viewModel.menuElements.count, id: \.self) { _ in
                     HubMenuElement(image: UIImage(named: "icon-hub-menu")!, text: "Test")
                 }
@@ -37,5 +37,16 @@ struct HubMenu: View {
 struct HubMenu_Previews: PreviewProvider {
     static var previews: some View {
         HubMenu()
+            .environment(\.colorScheme, .light)
+
+        HubMenu()
+            .environment(\.colorScheme, .dark)
+
+        HubMenu()
+            .previewLayout(.fixed(width: 312, height: 528))
+            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+
+        HubMenu()
+            .previewLayout(.fixed(width: 1024, height: 768))
     }
 }

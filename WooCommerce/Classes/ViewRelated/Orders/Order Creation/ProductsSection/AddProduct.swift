@@ -1,5 +1,4 @@
 import SwiftUI
-import Yosemite
 
 /// View showing a list of products to add to an order.
 ///

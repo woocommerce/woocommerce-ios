@@ -136,9 +136,11 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
                                                             paymentGatewayAccount: paymentGateway,
                                                             rootViewController: rootViewController)
         collectPaymentsUseCase?.collectPayment(onCollect: { _ in
-            print("On collect!")
+            print("On collect does nothing for now...")
         }, onCompleted: { [weak self] in
-            print("On Completed")
+            // TODO: Show success notice
+
+            // Inform success to consumer
             onSuccess()
 
             // Make sure we free all the resources

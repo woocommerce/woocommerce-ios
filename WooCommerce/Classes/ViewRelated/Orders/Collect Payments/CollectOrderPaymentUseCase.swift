@@ -79,7 +79,7 @@ final class CollectOrderPaymentUseCase: NSObject {
     ///
     ///
     /// - Parameter onCollect: Closure Invoked after the collect process has finished.
-    /// - Parameter onCompleted: Closure Invoked after the flow has been dismissed. EG: Merchant has emailed receipt.
+    /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed, Currently after merchant has handled the receipt.
     // TODO: Remember to check why the amount is provided in order details view model
     func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
         connectReader { [weak self] in
@@ -192,7 +192,7 @@ private extension CollectOrderPaymentUseCase {
 
                 case .failure(let cancelError):
                     // Inform that payment can't be retried.
-                    self.alerts.nonRetryableError(from: self.rootViewController, error: cancelError) // TODO: Update to notify when the flow is ended
+                    self.alerts.nonRetryableError(from: self.rootViewController, error: cancelError)
                     onCompletion(.failure(error))
                 }
             }

@@ -405,3 +405,34 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - Jetpack Benefits Banner
+//
+extension WooAnalyticsEvent {
+    /// The action performed on the Jetpack benefits banner.
+    enum JetpackBenefitsBannerAction: String {
+        case shown
+        case dismissed
+        case tapped
+    }
+
+    /// Tracked on various states of the Jetpack benefits banner in dashboard.
+    static func jetpackBenefitsBanner(action: JetpackBenefitsBannerAction) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .jetpackBenefitsBanner, properties: ["action": action.rawValue])
+    }
+}
+
+// MARK: - Jetpack Install
+//
+extension WooAnalyticsEvent {
+    /// The source that presents the Jetpack install screen.
+    enum JetpackInstallSource: String {
+        case settings
+        case benefitsModal = "benefits_modal"
+    }
+
+    /// Tracked when the user taps to install Jetpack.
+    static func jetpackInstallButtonTapped(source: JetpackInstallSource) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .jetpackInstallButtonTapped, properties: ["source": source.rawValue])
+    }
+}

@@ -6,7 +6,7 @@ import UIKit
 final class HubMenuViewModel: ObservableObject {
 
     let storeTitle = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.myStore
-    let storeURL = ServiceLocator.stores.sessionManager.defaultSite?.url ?? ""
+    let storeURL = ServiceLocator.stores.sessionManager.defaultSite?.url
 
     /// Child items
     ///

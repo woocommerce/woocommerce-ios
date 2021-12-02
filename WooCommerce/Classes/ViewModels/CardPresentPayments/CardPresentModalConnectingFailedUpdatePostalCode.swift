@@ -26,6 +26,10 @@ final class CardPresentModalConnectingFailedUpdatePostalCode: CardPresentPayment
 
     let bottomSubtitle: String? = nil
 
+    var accessibilityLabel: String? {
+        return topTitle
+    }
+
     init(retrySearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
         self.retrySearchAction = retrySearch
         self.cancelSearchAction = cancelSearch

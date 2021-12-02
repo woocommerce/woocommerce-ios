@@ -1,5 +1,4 @@
 import SwiftUI
-import Yosemite
 
 /// Represent a single product row in the Product section of a New Order
 ///
@@ -115,9 +114,8 @@ private enum Localization {
 
 struct ProductRow_Previews: PreviewProvider {
     static var previews: some View {
-        let sampleProduct = Product().copy(productID: 2, name: "Love Ficus", sku: "123456", price: "20", stockQuantity: 7, stockStatusKey: "instock")
-        let viewModel = ProductRowViewModel(product: sampleProduct, canChangeQuantity: true)
-        let viewModel2 = ProductRowViewModel(product: sampleProduct, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(product: ProductRowViewModel.sampleProduct, canChangeQuantity: true)
+        let viewModel2 = ProductRowViewModel(product: ProductRowViewModel.sampleProduct, canChangeQuantity: false)
 
         ProductRow(viewModel: viewModel)
             .previewDisplayName("ProductRow with stepper")

@@ -89,3 +89,8 @@ private extension ProductRowViewModel {
         static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
     }
 }
+
+// MARK: SwiftUI Preview Helpers
+extension ProductRowViewModel {
+    static let sampleProduct = Product().copy(productID: 2, name: "Love Ficus", sku: "123456", price: "20", stockQuantity: 7, stockStatusKey: "instock")
+}

@@ -1,0 +1,310 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+    "queryParameters": {
+      "json": {
+        "equalTo": "true"
+      },
+      "path": {
+        "matches": "/wc-analytics/reports/revenue/stats/(.*)"
+      },
+      "query": {
+        "matches": "(.*)interval\":\"month(.*)"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "data": {
+        "totals": {
+          "orders_count": 123,
+          "num_items_sold": 300,
+          "gross_sales": 10757.929999999997,
+          "total_sales": 10391.919999999998,
+          "coupons": 0,
+          "coupons_count": 0,
+          "refunds": 1106.05,
+          "taxes": 63.19999999999999,
+          "shipping": 676.8400000000001,
+          "net_revenue": 9651.880000000001,
+          "avg_items_per_order": 2.439,
+          "avg_order_value": 78.47056910569107,
+          "total_customers": 6,
+          "products": 18,
+          "segments": []
+        },
+        "intervals": [{
+          "interval": "{{#assign 'currentYear'}}{{now format='yyyy'}}{{/assign}}{{currentYear}}-01",
+          "date_start": "{{currentYear}}-01-01 00:00:00",
+          "date_start_gmt": "{{currentYear}}-01-01 00:00:00",
+          "date_end": "{{currentYear}}-01-31 23:59:59",
+          "date_end_gmt": "{{currentYear}}-01-31 23:59:59",
+          "subtotals": {
+            "orders_count": 28,
+            "num_items_sold": 67,
+            "gross_sales": 1781,
+            "total_sales": 1991,
+            "coupons": 0,
+            "coupons_count": 0,
+            "refunds": 0,
+            "taxes": 0,
+            "shipping": 210,
+            "net_revenue": 1781,
+            "avg_items_per_order": 2.3929,
+            "avg_order_value": 63.607142857142854,
+            "total_customers": 1,
+            "segments": []
+          }
+        }, {
+          "interval": "{{currentYear}}-02",
+          "date_start": "{{currentYear}}-02-01 00:00:00",
+          "date_start_gmt": "{{currentYear}}-02-01 00:00:00",
+          "date_end": "{{currentYear}}-02-29 23:59:59",
+          "date_end_gmt": "{{currentYear}}-02-29 23:59:59",
+          "subtotals": {
+            "orders_count": 19,
+            "num_items_sold": 16,
+            "gross_sales": 821,
+            "total_sales": 438.5,
+            "coupons": 0,
+            "coupons_count": 0,
+            "refunds": 542.5,
+            "taxes": 0,
+            "shipping": 160,
+            "net_revenue": 278.5,
+            "avg_items_per_order": 0.8421,
+            "avg_order_value": 14.657894736842104,
+            "total_customers": 1,
+            "segments": []
+          }
+        }, {
+          "interval": "{{currentYear}}-03",
+          "date_start": "{{currentYear}}-03-01 00:00:00",
+          "date_start_gmt": "{{currentYear}}-03-01 00:00:00",
+          "date_end": "{{currentYear}}-03-31 23:59:59",
+          "date_end_gmt": "{{currentYear}}-03-31 22:59:59",
+          "subtotals": {
+            "orders_count": 7,
+            "num_items_sold": 13,
+            "gross_sales": 353.49,
+            "total_sales": 296.96000000000004,
+            "coupons": 0,
+            "coupons_count": 0,
+            "refunds": 91.5,
+            "taxes": 0,
+            "shipping": 34.97,
+            "net_revenue": 261.99,
+            "avg_items_per_order": 1.8571,
+            "avg_order_value": 37.42714285714286,
+            "total_customers": 1,
+            "segments": []
+          }
+        }, {
+          "interval": "{{currentYear}}-04",
+          "date_start": "{{currentYear}}-04-01 00:00:00",
+          "date_start_gmt": "{{currentYear}}-03-31 23:00:00",
+          "date_end": "{{currentYear}}-04-30 23:59:59",
+          "date_end_gmt": "{{currentYear}}-04-30 22:59:59",
+          "subtotals": {
+            "orders_count": 14,
+            "num_items_sold": 28,
+            "gross_sales": 721.4399999999999,
+            "total_sales": 793.61,
+            "coupons": 0,
+            "coupons_count": 0,
+            "refunds": 30,
+            "taxes": 45.2,
+            "shipping": 56.970000000000006,
+            "net_revenue": 691.4399999999999,
+            "avg_items_per_order": 2,
+            "avg_order_value": 49.388571428571424,
+            "total_customers": 2,
+            "segments": []
+          }
+        }, {
+          "interval": "{{currentYear}}-05",
+          "date_start": "{{currentYear}}-05-01 00:00:00",
+          "date_start_gmt": "{{currentYear}}-04-30 23:00:00",
+          "date_end": "{{currentYear}}-05-31 23:59:59",
+          "date_end_gmt": "{{currentYear}}-05-31 22:59:59",
+          "subtotals": {
+            "orders_count": 11,
+            "num_items_sold": 33,
+            "gross_sales": 1141.6999999999998,
+            "total_sales": 1183.58,
+            "coupons": 0,
+            "coupons_count": 0,
+            "refunds": 11.05,
+            "taxes": 18,
+            "shipping": 34.93000000000001,
+            "net_revenue": 1130.65,
+            "avg_items_per_order": 3,
+            "avg_order_value": 102.78636363636365,
+            "total_customers": 4,
+            "segments": []
+          }
+        }, {
+          "interval": "{{currentYear}}-06",
+          "date_start": "{{currentYear}}-06-01 00:00:00",
+          "date_start_gmt": "{{currentYear}}-05-31 23:00:00",
+          "date_end": "{{currentYear}}-06-30 23:59:59",
+          "date_end_gmt": "{{currentYear}}-06-30 22:59:59",
+          "subtotals": {
+            "orders_count": 3,
+            "num_items_sold": 14,
+            "gross_sales": 346.29999999999995,
+            "total_sales": 361.27,
+            "coupons": 0,
+            "coupons_count": 0,
+            "refunds": 0,
+            "taxes": 0,
+            "shipping": 14.97,
+            "net_revenue": 346.3,
+            "avg_items_per_order": 4.6667,
+            "avg_order_value": 115.43333333333334,
+            "total_customers": 1,
+            "segments": []
+          }
+        }, {
+          "interval": "{{currentYear}}-07",
+          "date_start": "{{currentYear}}-07-01 00:00:00",
+          "date_start_gmt": "{{currentYear}}-06-30 23:00:00",
+          "date_end": "{{currentYear}}-07-31 23:59:59",
+          "date_end_gmt": "{{currentYear}}-07-31 22:59:59",
+          "subtotals": {
+            "orders_count": 27,
+            "num_items_sold": 104,
+            "gross_sales": 4231,
+            "total_sales": 4077,
+            "coupons": 0,
+            "coupons_count": 0,
+            "refunds": 284,
+            "taxes": 0,
+            "shipping": 130,
+            "net_revenue": 3947,
+            "avg_items_per_order": 3.8519,
+            "avg_order_value": 146.1851851851852,
+            "total_customers": 1,
+            "segments": []
+          }
+        }, {
+          "interval": "{{currentYear}}-08",
+          "date_start": "{{currentYear}}-08-01 00:00:00",
+          "date_start_gmt": "{{currentYear}}-07-31 23:00:00",
+          "date_end": "{{currentYear}}-08-31 23:59:59",
+          "date_end_gmt": "{{currentYear}}-08-31 22:59:59",
+          "subtotals": {
+            "orders_count": 14,
+            "num_items_sold": 26,
+            "gross_sales": 1362,
+            "total_sales": 1305,
+            "coupons": 0,
+            "coupons_count": 0,
+            "refunds": 102,
+            "taxes": 5,
+            "shipping": 40,
+            "net_revenue": 1260,
+            "avg_items_per_order": 1.8571,
+            "avg_order_value": 90,
+            "total_customers": 2,
+            "segments": []
+          }
+        }, {
+          "interval": "{{currentYear}}-09",
+          "date_start": "{{currentYear}}-09-01 00:00:00",
+          "date_start_gmt": "{{currentYear}}-08-31 23:00:00",
+          "date_end": "{{currentYear}}-09-30 23:59:59",
+          "date_end_gmt": "{{currentYear}}-09-30 22:59:59",
+          "subtotals": {
+            "orders_count": 0,
+            "num_items_sold": -1,
+            "gross_sales": 0,
+            "total_sales": -55,
+            "coupons": 0,
+            "coupons_count": 0,
+            "refunds": 45,
+            "taxes": -5,
+            "shipping": -5,
+            "net_revenue": -45,
+            "avg_items_per_order": 0,
+            "avg_order_value": 0,
+            "total_customers": 1,
+            "segments": []
+          }
+        }, {
+          "interval": "{{currentYear}}-10",
+          "date_start": "{{currentYear}}-10-01 00:00:00",
+          "date_start_gmt": "{{currentYear}}-09-30 23:00:00",
+          "date_end": "{{currentYear}}-10-31 23:59:59",
+          "date_end_gmt": "{{currentYear}}-10-31 23:59:59",
+          "subtotals": {
+            "orders_count": 0,
+            "num_items_sold": 0,
+            "gross_sales": 0,
+            "total_sales": 0,
+            "coupons": 0,
+            "coupons_count": 0,
+            "refunds": 0,
+            "taxes": 0,
+            "shipping": 0,
+            "net_revenue": 0,
+            "avg_items_per_order": 0,
+            "avg_order_value": 0,
+            "total_customers": 0,
+            "segments": []
+          }
+        }, {
+          "interval": "{{currentYear}}-11",
+          "date_start": "{{currentYear}}-11-01 00:00:00",
+          "date_start_gmt": "{{currentYear}}-11-01 00:00:00",
+          "date_end": "{{currentYear}}-11-30 23:59:59",
+          "date_end_gmt": "{{currentYear}}-11-30 23:59:59",
+          "subtotals": {
+            "orders_count": 0,
+            "num_items_sold": 0,
+            "gross_sales": 0,
+            "total_sales": 0,
+            "coupons": 0,
+            "coupons_count": 0,
+            "refunds": 0,
+            "taxes": 0,
+            "shipping": 0,
+            "net_revenue": 0,
+            "avg_items_per_order": 0,
+            "avg_order_value": 0,
+            "total_customers": 0,
+            "segments": []
+          }
+        }, {
+          "interval": "{{currentYear}}-12",
+          "date_start": "{{currentYear}}-12-01 00:00:00",
+          "date_start_gmt": "{{currentYear}}-12-01 00:00:00",
+          "date_end": "{{currentYear}}-12-31 23:59:59",
+          "date_end_gmt": "{{currentYear}}-12-31 23:59:59",
+          "subtotals": {
+            "orders_count": 0,
+            "num_items_sold": 0,
+            "gross_sales": 0,
+            "total_sales": 0,
+            "coupons": 0,
+            "coupons_count": 0,
+            "refunds": 0,
+            "taxes": 0,
+            "shipping": 0,
+            "net_revenue": 0,
+            "avg_items_per_order": 0,
+            "avg_order_value": 0,
+            "total_customers": 0,
+            "segments": []
+          }
+        }]
+      }
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Connection": "keep-alive"
+    }
+  }
+}

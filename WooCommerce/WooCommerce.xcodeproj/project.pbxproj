@@ -879,10 +879,6 @@
 		800A5B58275483D6009DE2CD /* OrdersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800A5B57275483D6009DE2CD /* OrdersTests.swift */; };
 		800A5B5F27548F31009DE2CD /* site_info_wordpress_com.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5B5E27548F31009DE2CD /* site_info_wordpress_com.json */; };
 		800A5B6127548F53009DE2CD /* sites_posts_password.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5B6027548F53009DE2CD /* sites_posts_password.json */; };
-		800A5B662754B2AA009DE2CD /* reports_revenue_stats_day.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5B622754B2AA009DE2CD /* reports_revenue_stats_day.json */; };
-		800A5B672754B2AA009DE2CD /* reports_revenue_stats_year.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5B632754B2AA009DE2CD /* reports_revenue_stats_year.json */; };
-		800A5B682754B2AA009DE2CD /* reports_revenue_stats_hour.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5B642754B2AA009DE2CD /* reports_revenue_stats_hour.json */; };
-		800A5B692754B2AA009DE2CD /* reports_revenue_stats_month.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5B652754B2AA009DE2CD /* reports_revenue_stats_month.json */; };
 		800A5B972755BA02009DE2CD /* status.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5B962755BA02009DE2CD /* status.json */; };
 		800A5B992755BADA009DE2CD /* accounts.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5B982755BADA009DE2CD /* accounts.json */; };
 		800A5B9B2755E0B9009DE2CD /* orders_any.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5B9A2755E0B9009DE2CD /* orders_any.json */; };
@@ -903,6 +899,10 @@
 		800A5BBC27586AE1009DE2CD /* products_reviews_6162.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BBB27586AE1009DE2CD /* products_reviews_6162.json */; };
 		800A5BBE27586AEF009DE2CD /* products_reviews_6163.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BBD27586AEF009DE2CD /* products_reviews_6163.json */; };
 		800A5BC027586AFC009DE2CD /* products_reviews_6164.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BBF27586AFC009DE2CD /* products_reviews_6164.json */; };
+		800A5BC5275889ED009DE2CD /* reports_revenue_stats_day.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BC1275889EC009DE2CD /* reports_revenue_stats_day.json */; };
+		800A5BC6275889ED009DE2CD /* reports_revenue_stats_hour.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BC2275889EC009DE2CD /* reports_revenue_stats_hour.json */; };
+		800A5BC7275889ED009DE2CD /* reports_revenue_stats_month.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BC3275889EC009DE2CD /* reports_revenue_stats_month.json */; };
+		800A5BC8275889ED009DE2CD /* reports_revenue_stats_year.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BC4275889EC009DE2CD /* reports_revenue_stats_year.json */; };
 		86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */; };
 		8CD41D4A21F8A7E300CF3C2B /* RELEASE-NOTES.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */; };
 		933A27372222354600C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A27362222354600C2143A /* Logging.swift */; };
@@ -2356,10 +2356,6 @@
 		800A5B57275483D6009DE2CD /* OrdersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersTests.swift; sourceTree = "<group>"; };
 		800A5B5E27548F31009DE2CD /* site_info_wordpress_com.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = site_info_wordpress_com.json; sourceTree = "<group>"; };
 		800A5B6027548F53009DE2CD /* sites_posts_password.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = sites_posts_password.json; sourceTree = "<group>"; };
-		800A5B622754B2AA009DE2CD /* reports_revenue_stats_day.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = reports_revenue_stats_day.json; path = ../../../../../../../../testing/reports_revenue_stats_day.json; sourceTree = "<group>"; };
-		800A5B632754B2AA009DE2CD /* reports_revenue_stats_year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = reports_revenue_stats_year.json; path = ../../../../../../../../testing/reports_revenue_stats_year.json; sourceTree = "<group>"; };
-		800A5B642754B2AA009DE2CD /* reports_revenue_stats_hour.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = reports_revenue_stats_hour.json; path = ../../../../../../../../testing/reports_revenue_stats_hour.json; sourceTree = "<group>"; };
-		800A5B652754B2AA009DE2CD /* reports_revenue_stats_month.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = reports_revenue_stats_month.json; path = ../../../../../../../../testing/reports_revenue_stats_month.json; sourceTree = "<group>"; };
 		800A5B962755BA02009DE2CD /* status.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = status.json; sourceTree = "<group>"; };
 		800A5B982755BADA009DE2CD /* accounts.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = accounts.json; sourceTree = "<group>"; };
 		800A5B9A2755E0B9009DE2CD /* orders_any.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = orders_any.json; sourceTree = "<group>"; };
@@ -2380,6 +2376,10 @@
 		800A5BBB27586AE1009DE2CD /* products_reviews_6162.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_reviews_6162.json; sourceTree = "<group>"; };
 		800A5BBD27586AEF009DE2CD /* products_reviews_6163.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_reviews_6163.json; sourceTree = "<group>"; };
 		800A5BBF27586AFC009DE2CD /* products_reviews_6164.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_reviews_6164.json; sourceTree = "<group>"; };
+		800A5BC1275889EC009DE2CD /* reports_revenue_stats_day.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = reports_revenue_stats_day.json; sourceTree = "<group>"; };
+		800A5BC2275889EC009DE2CD /* reports_revenue_stats_hour.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = reports_revenue_stats_hour.json; sourceTree = "<group>"; };
+		800A5BC3275889EC009DE2CD /* reports_revenue_stats_month.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = reports_revenue_stats_month.json; sourceTree = "<group>"; };
+		800A5BC4275889EC009DE2CD /* reports_revenue_stats_year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = reports_revenue_stats_year.json; sourceTree = "<group>"; };
 		8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release.xcconfig"; sourceTree = "<group>"; };
 		8CA4F6DD220B257000A47B5D /* WooCommerce.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = WooCommerce.debug.xcconfig; path = ../config/WooCommerce.debug.xcconfig; sourceTree = "<group>"; };
 		8CA4F6DE220B257000A47B5D /* WooCommerce.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = WooCommerce.release.xcconfig; path = ../config/WooCommerce.release.xcconfig; sourceTree = "<group>"; };
@@ -5915,10 +5915,10 @@
 		CCFC00C123E9BD5500157A78 /* wc-analytics */ = {
 			isa = PBXGroup;
 			children = (
-				800A5B622754B2AA009DE2CD /* reports_revenue_stats_day.json */,
-				800A5B642754B2AA009DE2CD /* reports_revenue_stats_hour.json */,
-				800A5B652754B2AA009DE2CD /* reports_revenue_stats_month.json */,
-				800A5B632754B2AA009DE2CD /* reports_revenue_stats_year.json */,
+				800A5BC1275889EC009DE2CD /* reports_revenue_stats_day.json */,
+				800A5BC2275889EC009DE2CD /* reports_revenue_stats_hour.json */,
+				800A5BC3275889EC009DE2CD /* reports_revenue_stats_month.json */,
+				800A5BC4275889EC009DE2CD /* reports_revenue_stats_year.json */,
 				CCFC00C223E9BD5500157A78 /* reports_revenue_stats.json */,
 			);
 			path = "wc-analytics";
@@ -7448,7 +7448,7 @@
 				D8CD0605258B384E00B52D63 /* oauth2_token-error.json in Resources */,
 				800A5BAE27586876009DE2CD /* products_2131.json in Resources */,
 				800A5BAC27586642009DE2CD /* products_2130.json in Resources */,
-				800A5B662754B2AA009DE2CD /* reports_revenue_stats_day.json in Resources */,
+				800A5BC7275889ED009DE2CD /* reports_revenue_stats_month.json in Resources */,
 				800A5B992755BADA009DE2CD /* accounts.json in Resources */,
 				800A5BA4275719E5009DE2CD /* orders_2201_notes.json in Resources */,
 				800A5BA5275719E5009DE2CD /* orders_2201_shipment_trackings.json in Resources */,
@@ -7458,17 +7458,17 @@
 				800A5BBE27586AEF009DE2CD /* products_reviews_6163.json in Resources */,
 				FE6BCDFC26A9D0E700D96FE2 /* rest_v2_sites_users_me.json in Resources */,
 				800A5BA027562EE5009DE2CD /* orders_processing.json in Resources */,
-				800A5B672754B2AA009DE2CD /* reports_revenue_stats_year.json in Resources */,
-				800A5B682754B2AA009DE2CD /* reports_revenue_stats_hour.json in Resources */,
+				800A5BC6275889ED009DE2CD /* reports_revenue_stats_hour.json in Resources */,
 				800A5BB027586898009DE2CD /* products_2132.json in Resources */,
 				800A5BA6275719E5009DE2CD /* orders_2201_refunds.json in Resources */,
 				800A5BA827586126009DE2CD /* products_2129.json in Resources */,
 				800A5BC027586AFC009DE2CD /* products_reviews_6164.json in Resources */,
+				800A5BC5275889ED009DE2CD /* reports_revenue_stats_day.json in Resources */,
 				800A5B972755BA02009DE2CD /* status.json in Resources */,
+				800A5BC8275889ED009DE2CD /* reports_revenue_stats_year.json in Resources */,
 				800A5BBC27586AE1009DE2CD /* products_reviews_6162.json in Resources */,
 				800A5B6127548F53009DE2CD /* sites_posts_password.json in Resources */,
 				800A5BB427586A0E009DE2CD /* products_review_6155.json in Resources */,
-				800A5B692754B2AA009DE2CD /* reports_revenue_stats_month.json in Resources */,
 				800A5B5F27548F31009DE2CD /* site_info_wordpress_com.json in Resources */,
 				800A5BBA27586AC8009DE2CD /* products_reviews_6161.json in Resources */,
 			);

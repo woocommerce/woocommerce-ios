@@ -99,7 +99,7 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
 private extension CardPresentModalConnectingFailedUpdateAddress {
     enum Localization {
         static let title = NSLocalizedString(
-            "Please update your store address to proceed.",
+            "Please correct your store address to proceed",
             comment: "Title of the alert presented when the user tries to connect to a specific card reader and it fails " +
             "due to address problems"
         )

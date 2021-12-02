@@ -25,7 +25,7 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         setViewModelAndPresent(from: from, viewModel: connectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch))
     }
 
-    func connectingFailedMissingAddress(from: UIViewController,
+    func connectingFailedIncompleteAddress(from: UIViewController,
                                         adminUrl: URL?,
                                         site: Site?,
                                         openUrlInSafari: @escaping (URL) -> Void,

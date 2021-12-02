@@ -161,8 +161,6 @@ extension UnderlyingError {
             self = .incompleteStoreAddress(adminUrl: adminUrl)
         case .invalidPostalCode:
             self = .invalidPostalCode
-        default:
-            return nil
         }
     }
 }

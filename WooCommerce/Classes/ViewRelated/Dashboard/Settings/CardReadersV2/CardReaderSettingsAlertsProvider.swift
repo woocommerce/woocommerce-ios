@@ -49,7 +49,7 @@ protocol CardReaderSettingsAlertsProvider {
     /// Defines an alert indicating connecting failed because their address needs updating.
     /// The user may try again or cancel
     ///
-    func connectingFailedMissingAddress(from: UIViewController,
+    func connectingFailedIncompleteAddress(from: UIViewController,
                                         adminUrl: URL?,
                                         site: Site?,
                                         openUrlInSafari: @escaping (URL) -> Void,

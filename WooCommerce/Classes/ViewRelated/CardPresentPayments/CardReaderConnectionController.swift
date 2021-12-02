@@ -595,7 +595,7 @@ private extension CardReaderConnectionController {
                 UIApplication.shared.open(adminUrl)
                 self?.showIncompleteAddressErrorWithRefreshButton()
             }
-            alerts.connectingFailedMissingAddress(from: from,
+            alerts.connectingFailedIncompleteAddress(from: from,
                                                   adminUrl: adminUrl,
                                                   site: ServiceLocator.stores.sessionManager.defaultSite,
                                                   openUrlInSafari: openUrlInSafari,

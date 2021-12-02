@@ -68,7 +68,7 @@ private struct ProductStepper: View {
                     .frame(height: Layout.stepperButtonSize * scale)
             }
 
-            Text("1") // Fake data - quantity
+            Text("\(viewModel.quantity)")
 
             Button {
                 // TODO: Increment the product quantity

@@ -29,14 +29,23 @@ extension HubMenuViewModel {
                 return Localization.reviews
             }
         }
+
+//        var icon: UIImage {
+//            switch self {
+//            case .woocommerceAdmin:
+//
+//            case .viewStore:
+//            case .reviews:
+//            }
+//        }
     }
 
     private enum Localization {
-        static let woocommerceAdmin = NSLocalizedString("Hub Menu",
-                                     comment: "Navigation bar title of hub menu view")
-        static let viewStore = NSLocalizedString("Hub Menu",
-                                     comment: "Navigation bar title of hub menu view")
-        static let reviews = NSLocalizedString("Hub Menu",
-                                     comment: "Navigation bar title of hub menu view")
+        static let woocommerceAdmin = NSLocalizedString("WooCommerce Admin",
+                                                        comment: "Title of one of the hub menu options")
+        static let viewStore = NSLocalizedString("View Store",
+                                                 comment: "Title of one of the hub menu options")
+        static let reviews = NSLocalizedString("Reviews",
+                                               comment: "Title of one of the hub menu options")
     }
 }

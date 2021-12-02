@@ -13,7 +13,7 @@ struct HubMenu: View {
         ScrollView {
             LazyVGrid(columns: gridItemLayout) {
                 ForEach(viewModel.menuElements, id: \.self) { menu in
-                    HubMenuElement(image: UIImage(named: "icon-hub-menu")!, text: menu.title)
+                    HubMenuElement(image: menu.icon, text: menu.title)
                 }
                 .frame(width: Constants.itemSize, height: Constants.itemSize)
                 .background(Color.white)

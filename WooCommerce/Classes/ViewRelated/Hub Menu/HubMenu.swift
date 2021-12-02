@@ -8,16 +8,17 @@ struct HubMenu: View {
 
 
     var body: some View {
-        let gridItemLayout = [GridItem(.flexible(), spacing: Constants.itemSpacing), GridItem(.flexible(), spacing: Constants.itemSpacing)]
+        let gridItemLayout = [GridItem(.adaptive(minimum: Constants.itemSize), spacing: Constants.itemSpacing)]
 
         ScrollView {
-            LazyVGrid(columns: gridItemLayout) {
+            LazyHGrid(rows: gridItemLayout) {
                 ForEach(0..<viewModel.menuElements.count, id: \.self) { _ in
                     HubMenuElement(image: UIImage(named: "icon-hub-menu")!, text: "Test")
-                        .background(Color.white)
-                        .cornerRadius(Constants.cornerRadius)
-                        .frame(width: Constants.itemSize, height: Constants.itemSize)
                 }
+                .frame(width: Constants.itemSize, height: Constants.itemSize)
+                .cornerRadius(Constants.cornerRadius)
+                .background(Color.white)
+                .aspectRatio(1, contentMode: .fit)
             }
             .padding(Constants.padding)
             .background(Color(.listBackground))
@@ -28,7 +29,7 @@ struct HubMenu: View {
     enum Constants {
         static let cornerRadius: CGFloat = 10
         static let itemSpacing: CGFloat = 12
-        static let itemSize: CGFloat = 100
+        static let itemSize: CGFloat = 160
         static let padding: CGFloat = 16
     }
 }

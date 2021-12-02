@@ -36,7 +36,7 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
                     },
                     knownReaderProvider: knownReaderProvider
                 ),
-                viewIdentifier: "CardReaderSettingsSearchingViewController"
+                viewIdentifier: "CardReaderSettingsSearchingViewControllerNew"
             )
         )
 

@@ -45,13 +45,13 @@ final class CardPresentModalConnectingFailedUpdatePostalCode: CardPresentPayment
 private extension CardPresentModalConnectingFailedUpdatePostalCode {
     enum Localization {
         static let title = NSLocalizedString(
-            "Please update your postal code",
+            "Please correct your store's postcode/ZIP",
             comment: "Title of the alert presented when the user tries to connect to a specific card reader and it fails " +
             "due to postal code problems"
         )
 
         static let subtitle = NSLocalizedString(
-            "You can set it in your site's admin pages on the web",
+            "You can set your store's postcode/ZIP in wp-admin > WooCommerce > Settings (General)",
             comment: "Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails " +
             "due to postal code problems"
         )

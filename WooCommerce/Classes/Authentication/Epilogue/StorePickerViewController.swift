@@ -274,10 +274,22 @@ private extension StorePickerViewController {
 //
 private extension StorePickerViewController {
     func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let syncStartTime = Date()
+        let isJetpackConnectionPackageSupported = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
         let action = AccountAction
             .synchronizeSites(selectedSiteID: currentlySelectedSite?.siteID,
-                              isJetpackConnectionPackageSupported: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport),
-                              onCompletion: onCompletion)
+                              isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported) { result in
+                switch result {
+                case .success(let containsJCPSites):
+                    if containsJCPSites {
+                        let syncDuration = round(Date().timeIntervalSince(syncStartTime) * 1000)
+                        ServiceLocator.analytics.track(.jetpackCPSitesFetched, withProperties: ["duration": syncDuration])
+                    }
+                    onCompletion(.success(()))
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                }
+            }
         ServiceLocator.stores.dispatch(action)
     }
 }

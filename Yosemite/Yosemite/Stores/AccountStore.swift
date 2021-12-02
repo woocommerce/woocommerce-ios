@@ -117,7 +117,7 @@ private extension AccountStore {
 
     /// Synchronizes the WordPress.com sites associated with the Network's Auth Token.
     ///
-    func synchronizeSites(selectedSiteID: Int64?, isJetpackConnectionPackageSupported: Bool, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeSites(selectedSiteID: Int64?, isJetpackConnectionPackageSupported: Bool, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         remote.loadSites()
             .flatMap { result -> AnyPublisher<Result<[Site], Error>, Never> in
                 switch result {
@@ -159,8 +159,9 @@ private extension AccountStore {
             .sink { [weak self] result in
                 switch result {
                 case .success(let sites):
+                    let containsJCPSites = sites.contains(where: { $0.isJetpackCPConnected })
                     self?.upsertStoredSitesInBackground(readOnlySites: sites, selectedSiteID: selectedSiteID) {
-                        onCompletion(.success(()))
+                        onCompletion(.success(containsJCPSites))
                     }
                 case .failure(let error):
                     onCompletion(.failure(error))

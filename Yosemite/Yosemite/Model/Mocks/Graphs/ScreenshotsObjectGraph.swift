@@ -40,6 +40,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         isJetpackConnected: true,
         isWooCommerceActive: true,
         isWordPressStore: true,
+        jetpackConnectionActivePlugins: [],
         timezone: "UTC",
         gmtOffset: 0
     )

@@ -242,26 +242,42 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
         self.remote = remote
     }
 
-    func fetchToken(completion: @escaping(Result<String, Error>) -> Void) {
+    func fetchToken(completion: @escaping(Result<String, CardReaderConfigError>) -> Void) {
         remote.loadConnectionToken(for: siteID) { result in
             switch result {
             case .success(let token):
                 completion(.success(token.token))
             case .failure(let error):
-                completion(.failure(error))
+                completion(.failure(CardReaderConfigError(error: error)))
             }
         }
     }
 
-    func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void) {
+    func fetchDefaultLocationID(completion: @escaping(Result<String, CardReaderConfigError>) -> Void) {
         remote.loadDefaultReaderLocation(for: siteID) { result in
             switch result {
             case .success(let wcpayReaderLocation):
                 let readerLocation = wcpayReaderLocation.toReaderLocation(siteID: self.siteID)
                 completion(.success(readerLocation.id))
             case .failure(let error):
-                completion(.failure(error))
+                completion(.failure(CardReaderConfigError(error: error)))
             }
         }
+    }
+}
+
+private extension CardReaderConfigError {
+    init(error: Error) {
+        guard let dotcomError = error as? DotcomError else {
+            self = .unknown(error: error)
+            return
+        }
+
+        if case .unknown("store_address_is_incomplete", let message) = dotcomError {
+            self = .incompleteStoreAddress(adminUrl: URL(string: message ?? ""))
+            return
+        }
+
+        self = .unknown(error: dotcomError.toAnyError)
     }
 }

@@ -4,26 +4,16 @@ struct InPersonPaymentsStripeAccountPending: View {
     let deadline: Date?
 
     var body: some View {
-        ScrollableVStack {
-              Spacer()
-
-              VStack(alignment: .center, spacing: 42) {
-                  Text(Localization.title)
-                      .font(.headline)
-                  Image(uiImage: .paymentErrorImage)
-                      .resizable()
-                      .scaledToFit()
-                      .frame(height: 180.0)
-                  Text(message)
-                      .font(.callout)
-                  InPersonPaymentsSupportLink()
-              }
-              .multilineTextAlignment(.center)
-
-              Spacer()
-
-              InPersonPaymentsLearnMore()
-          }
+        InPersonPaymentsOnboardingError(
+            title: Localization.title,
+            message: Localization.message,
+            image: InPersonPaymentsOnboardingError.ImageInfo(
+                image: .paymentErrorImage,
+                height: 180.0
+            ),
+            supportLink: true,
+            learnMore: true
+        )
       }
 
     private var message: String {

@@ -4,6 +4,10 @@ import SwiftUI
 ///
 struct SimplePaymentsSummary: View {
 
+    /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
+    ///
+    var dismiss: (() -> Void) = {}
+
     /// Defines if the order note screen should be shown or not.
     ///
     @State var showEditNote = false
@@ -36,7 +40,7 @@ struct SimplePaymentsSummary: View {
             TakePaymentSection(viewModel: viewModel)
 
             // Navigation To Payment Methods
-            LazyNavigationLink(destination: SimplePaymentsMethod(title: Localization.takePayment(total: viewModel.total)),
+            LazyNavigationLink(destination: SimplePaymentsMethod(dismiss: dismiss, viewModel: viewModel.createMethodsViewModel()),
                                isActive: $viewModel.navigateToPaymentMethods) {
                 EmptyView()
             }

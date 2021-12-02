@@ -2,6 +2,10 @@
 
 8.2
 -----
+
+
+8.2
+-----
 - [*] Shipping Labels: Fixes a crash when saving a new shipping label after opening the order from a push notification. [https://github.com/woocommerce/woocommerce-ios/pull/5549]
 
 8.1

@@ -10,6 +10,7 @@ struct JetpackInstallStepsView: View {
     /// The site for which Jetpack should be installed
     private let siteURL: String
 
+    /// WPAdmin URL to navigate user when install fails.
     private var wpAdminURL: URL? {
         URL(string: "\(siteURL)\(Constants.wpAdminPluginsPath)")
     }

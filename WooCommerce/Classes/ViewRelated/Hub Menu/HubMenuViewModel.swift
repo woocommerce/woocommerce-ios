@@ -5,6 +5,9 @@ import UIKit
 ///
 final class HubMenuViewModel: ObservableObject {
 
+    let storeTitle = ServiceLocator.stores.sessionManager.defaultSite?.name ?? ""
+    let storeURL = ServiceLocator.stores.sessionManager.defaultSite?.url ?? ""
+
     /// Child items
     ///
     @Published private(set) var menuElements: [Menu] = []

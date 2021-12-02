@@ -704,6 +704,7 @@
 		45AF9DAA265CEAA3001EB794 /* ShippingLabelCarrierRowViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AF9DA9265CEAA3001EB794 /* ShippingLabelCarrierRowViewModelTests.swift */; };
 		45AF9DAF265CFAB4001EB794 /* MockShippingLabelCarrierRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AF9DAE265CFAB4001EB794 /* MockShippingLabelCarrierRate.swift */; };
 		45B0DF3B273C20120026DC61 /* OrdersRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45B0DF39273C20120026DC61 /* OrdersRootViewController.xib */; };
+		45B6F4EF27592A4000C18782 /* ReviewsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B6F4EE27592A4000C18782 /* ReviewsView.swift */; };
 		45B98E1F25DECC1C00A1232B /* ShippingLabelAddressFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B98E1E25DECC1C00A1232B /* ShippingLabelAddressFormViewModelTests.swift */; };
 		45B9C63E23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9C63C23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift */; };
 		45B9C63F23A8E50D007FC4C5 /* ProductPriceSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45B9C63D23A8E50D007FC4C5 /* ProductPriceSettingsViewController.xib */; };
@@ -2170,6 +2171,7 @@
 		45AF9DA9265CEAA3001EB794 /* ShippingLabelCarrierRowViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarrierRowViewModelTests.swift; sourceTree = "<group>"; };
 		45AF9DAE265CFAB4001EB794 /* MockShippingLabelCarrierRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShippingLabelCarrierRate.swift; sourceTree = "<group>"; };
 		45B0DF39273C20120026DC61 /* OrdersRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrdersRootViewController.xib; sourceTree = "<group>"; };
+		45B6F4EE27592A4000C18782 /* ReviewsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsView.swift; sourceTree = "<group>"; };
 		45B98E1E25DECC1C00A1232B /* ShippingLabelAddressFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressFormViewModelTests.swift; sourceTree = "<group>"; };
 		45B9C63C23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPriceSettingsViewController.swift; sourceTree = "<group>"; };
 		45B9C63D23A8E50D007FC4C5 /* ProductPriceSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductPriceSettingsViewController.xib; sourceTree = "<group>"; };
@@ -5613,6 +5615,7 @@
 				023A059824135F2600E3FC99 /* ReviewsViewController.swift */,
 				023A059924135F2600E3FC99 /* ReviewsViewController.xib */,
 				5718852B2465D9EC00E2486F /* ReviewsCoordinator.swift */,
+				45B6F4EE27592A4000C18782 /* ReviewsView.swift */,
 			);
 			path = Reviews;
 			sourceTree = "<group>";
@@ -7781,6 +7784,7 @@
 				45E9A6E724DAE23300A600E8 /* ProductReviewsViewModel.swift in Sources */,
 				DEC51A9D274F8528009F3DF4 /* JetpackInstallStepsViewModel.swift in Sources */,
 				455DC3A327393C7E00D4644C /* OrderDatesFilterViewController.swift in Sources */,
+				45B6F4EF27592A4000C18782 /* ReviewsView.swift in Sources */,
 				028BAC4222F30B05008BB4AF /* StoreStatsV4PeriodViewController.swift in Sources */,
 				740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */,
 				45F627B6253603AE00894B86 /* Product+DownloadSettingsViewModels.swift in Sources */,

@@ -302,6 +302,12 @@ extension UIImage {
         UIImage(imageLiteralResourceName: "icon-house-outlined")
     }
 
+    /// Store Image
+    ///
+    static var storeImage: UIImage {
+        UIImage(named: "icon-store")!
+    }
+
     /// Login prologue curved rectangle
     ///
     static var curvedRectangle: UIImage {

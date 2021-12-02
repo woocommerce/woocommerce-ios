@@ -94,9 +94,11 @@ struct JetpackInstallStepsView: View {
                         .font(.largeTitle)
                         .bold()
                         .foregroundColor(Color(.text))
+                        .fixedSize(horizontal: false, vertical: true)
 
                     if viewModel.installFailed {
                         Text(Localization.errorMessage)
+                            .fixedSize(horizontal: false, vertical: true)
                     } else {
                         AttributedText(descriptionAttributedString)
                     }
@@ -141,6 +143,7 @@ struct JetpackInstallStepsView: View {
             }
             .padding(.horizontal, Constants.contentHorizontalMargin)
             .scrollVerticallyIfNeeded()
+            .renderedIf(!viewModel.installFailed)
 
             Spacer()
 
@@ -169,6 +172,7 @@ struct JetpackInstallStepsView: View {
         }
         .safariSheet(isPresented: $showingWPAdminWebview, url: wpAdminURL, onDismiss: {
             showingWPAdminWebview = false
+            viewModel.checkJetpackPluginDetails()
         })
     }
 }
@@ -188,6 +192,7 @@ private extension JetpackInstallStepsView {
         static let stepItemHorizontalSpacing: CGFloat = 24
         static let stepItemsVerticalSpacing: CGFloat = 20
         static let stepImageSize: CGFloat = 24
+        // TODO-5365: Remove the hard-code wp-admin by fetching option admin_url for sites
         static let wpAdminPluginsPath: String = "/wp-admin/plugin-install.php?tab=plugin-information&plugin=jetpack"
     }
 
@@ -212,7 +217,7 @@ struct JetpackInstallStepsView_Previews: PreviewProvider {
             .preferredColorScheme(.light)
             .previewLayout(.fixed(width: 414, height: 780))
 
-//        JetpackInstallStepsView(siteURL: "automattic.com", viewModel: viewModel, supportAction: {}, dismissAction: {})
+        JetpackInstallStepsView(siteURL: "automattic.com", viewModel: viewModel, supportAction: {}, dismissAction: {})
             .preferredColorScheme(.dark)
             .previewLayout(.fixed(width: 414, height: 780))
     }

@@ -36,6 +36,24 @@ final class JetpackInstallStepsViewModel: ObservableObject {
         checkJetpackPluginDetailsAndProceed()
     }
 
+    /// Checks Jetpack plugin details without installing the plugin.
+    /// If the plugin is active, proceed to check site connection, otherwise do nothing.
+    ///
+    func checkJetpackPluginDetails() {
+        let pluginInfoAction = SitePluginAction.getPluginDetails(siteID: siteID, pluginName: Constants.jetpackPluginName) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let plugin):
+                if plugin.status == .active {
+                    self.checkSiteConnection()
+                }
+            case .failure:
+                break
+            }
+        }
+        stores.dispatch(pluginInfoAction)
+    }
+
     /// Fetches details for Jetpack-the-plugin, and installs it if the plugin does not exist.
     /// Otherwise proceeds to activate the plugin if needed.
     /// - Parameters:

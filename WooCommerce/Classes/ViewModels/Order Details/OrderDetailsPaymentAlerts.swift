@@ -63,8 +63,8 @@ final class OrderDetailsPaymentAlerts {
         presentViewModel(viewModel: viewModel)
     }
 
-    func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void, backToOrders: @escaping () -> Void) {
-        let viewModel = successViewModel(printReceipt: printReceipt, emailReceipt: emailReceipt, backToOrders: backToOrders)
+    func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void, noReceiptAction: @escaping () -> Void) {
+        let viewModel = successViewModel(printReceipt: printReceipt, emailReceipt: emailReceipt, noReceiptAction: noReceiptAction)
         presentViewModel(viewModel: viewModel)
     }
 
@@ -103,11 +103,11 @@ private extension OrderDetailsPaymentAlerts {
 
     func successViewModel(printReceipt: @escaping () -> Void,
                           emailReceipt: @escaping () -> Void,
-                          backToOrders: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+                          noReceiptAction: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         if MFMailComposeViewController.canSendMail() {
-            return CardPresentModalSuccess(printReceipt: printReceipt, emailReceipt: emailReceipt, backToOrders: backToOrders)
+            return CardPresentModalSuccess(printReceipt: printReceipt, emailReceipt: emailReceipt, noReceiptAction: noReceiptAction)
         } else {
-            return CardPresentModalSuccessWithoutEmail(printReceipt: printReceipt, backToOrders: backToOrders)
+            return CardPresentModalSuccessWithoutEmail(printReceipt: printReceipt, noReceiptAction: noReceiptAction)
         }
     }
 

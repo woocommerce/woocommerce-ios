@@ -10,7 +10,7 @@ final class CardPresentModalSuccessTests: XCTestCase {
         closures = Closures()
         viewModel = CardPresentModalSuccess(printReceipt: closures.printReceipt(),
                                             emailReceipt: closures.emailReceipt(),
-                                            backToOrders: closures.backToOrders())
+                                            noReceiptAction: closures.noReceiptAction())
     }
 
     override func tearDown() {
@@ -66,7 +66,7 @@ final class CardPresentModalSuccessTests: XCTestCase {
     func test_auxiliary_button_action_calls_closure() {
         viewModel.didTapAuxiliaryButton(in: UIViewController())
 
-        XCTAssertTrue(closures.didTapBackToOrders)
+        XCTAssertTrue(closures.didTapNoReceipt)
     }
 }
 
@@ -81,7 +81,7 @@ private extension CardPresentModalSuccessTests {
 private final class Closures {
     var didTapPrint = false
     var didTapEmail = false
-    var didTapBackToOrders = false
+    var didTapNoReceipt = false
 
     func printReceipt() -> () -> Void {
         return { [weak self] in
@@ -95,9 +95,9 @@ private final class Closures {
         }
     }
 
-    func backToOrders() -> () -> Void {
+    func noReceiptAction() -> () -> Void {
         return { [weak self] in
-            self?.didTapBackToOrders = true
+            self?.didTapNoReceipt = true
         }
     }
 }

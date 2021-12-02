@@ -237,7 +237,7 @@ private extension CollectOrderPaymentUseCase {
                 self?.presentEmailForm(content: emailContent)
             }
 
-        }, backToOrders: {
+        }, noReceiptAction: {
             // Inform about flow completion.
             onCompleted()
         })

@@ -1,9 +1,12 @@
 import Foundation
 import UIKit
+import SwiftUI
 
 /// View model for `HubMenu`.
 ///
 final class HubMenuViewModel: ObservableObject {
+
+    let siteID: Int64
 
     let storeTitle = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.myStore
     let storeURL = ServiceLocator.stores.sessionManager.defaultSite?.url
@@ -12,7 +15,8 @@ final class HubMenuViewModel: ObservableObject {
     ///
     @Published private(set) var menuElements: [Menu] = []
 
-    init() {
+    init(siteID: Int64) {
+        self.siteID = siteID
         menuElements = [.woocommerceAdmin, .viewStore, .reviews]
     }
 }

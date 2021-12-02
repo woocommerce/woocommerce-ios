@@ -60,7 +60,13 @@ struct HubMenu: View {
                         .fill(Color.white)
                         .frame(width: 28,
                                height: 28)
-                    Image(uiImage: .gearImage)
+                    Button {
+                        //TODO-5509: implement tap
+                    } label: {
+                        if let gearImage = UIImage.gearImage.imageWithTintColor(.primary) {
+                            Image(uiImage: gearImage)
+                        }
+                    }
                 }
             }
             .padding([.top, .leading, .trailing], Constants.padding)

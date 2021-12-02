@@ -10,6 +10,13 @@ struct JetpackInstallStepsView: View {
     /// The site for which Jetpack should be installed
     private let siteURL: String
 
+    private var wpAdminURL: URL? {
+        URL(string: "\(siteURL)\(Constants.wpAdminPluginsPath)")
+    }
+
+    /// Whether the WPAdmin webview is being shown.
+    @State private var showingWPAdminWebview: Bool = false
+
     // View model to handle the installation
     @ObservedObject private var viewModel: JetpackInstallStepsViewModel
 
@@ -147,7 +154,7 @@ struct JetpackInstallStepsView: View {
             if viewModel.installFailed {
                 VStack(spacing: Constants.actionButtonMargin) {
                     Button(Localization.wpAdminAction) {
-                        // TODO: open WPAdmin
+                        showingWPAdminWebview = true
                     }
                     .buttonStyle(SecondaryButtonStyle())
                     .fixedSize(horizontal: false, vertical: true)
@@ -159,6 +166,9 @@ struct JetpackInstallStepsView: View {
                 .padding(Constants.actionButtonMargin)
             }
         }
+        .safariSheet(isPresented: $showingWPAdminWebview, url: wpAdminURL, onDismiss: {
+            showingWPAdminWebview = false
+        })
     }
 }
 
@@ -177,6 +187,7 @@ private extension JetpackInstallStepsView {
         static let stepItemHorizontalSpacing: CGFloat = 24
         static let stepItemsVerticalSpacing: CGFloat = 20
         static let stepImageSize: CGFloat = 24
+        static let wpAdminPluginsPath: String = "/wp-admin/plugin-install.php?tab=plugin-information&plugin=jetpack"
     }
 
     enum Localization {

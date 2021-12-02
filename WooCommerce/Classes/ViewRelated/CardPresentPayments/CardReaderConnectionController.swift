@@ -583,11 +583,27 @@ private extension CardReaderConnectionController {
         }
 
         switch underlyingError {
-        case .incompleteStoreAddress(adminUrl: _):
-            alerts.connectingFailedMissingAddress(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
+        case .incompleteStoreAddress(let adminUrl):
+            let openUrlInSafari = { [weak self] (url: URL?) -> Void in
+                guard let adminUrl = url else {
+                    return
+                }
+                UIApplication.shared.open(adminUrl)
+                self?.showIncompleteAddressErrorWithRefreshButton()
+            }
+            alerts.connectingFailedMissingAddress(from: from,
+                                                  adminUrl: adminUrl,
+                                                  site: ServiceLocator.stores.sessionManager.defaultSite,
+                                                  openUrlInSafari: openUrlInSafari,
+                                                  retrySearch: continueSearch,
+                                                  cancelSearch: cancelSearch)
         default:
             alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
         }
+    }
+
+    private func showIncompleteAddressErrorWithRefreshButton() {
+        showConnectionFailed(error: CardReaderServiceError.connection(underlyingError: .incompleteStoreAddress(adminUrl: nil)))
     }
 
     /// An error occurred during discovery

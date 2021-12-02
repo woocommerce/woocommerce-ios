@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Yosemite
 
 /// Defines a protocol for card reader alert providers to conform to - defining what
 /// alerts such a provider is expected to provide over the course of searching for
@@ -49,7 +50,10 @@ protocol CardReaderSettingsAlertsProvider {
     /// The user may try again or cancel
     ///
     func connectingFailedMissingAddress(from: UIViewController,
-                                        continueSearch: @escaping () -> Void,
+                                        adminUrl: URL?,
+                                        site: Site?,
+                                        openUrlInSafari: @escaping (URL) -> Void,
+                                        retrySearch: @escaping () -> Void,
                                         cancelSearch: @escaping () -> Void)
 
     /// Defines an alert indicating an update couldn't be installed because the reader is low on battery.

@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 /// View model for `HubMenu`.
 ///
@@ -30,14 +31,16 @@ extension HubMenuViewModel {
             }
         }
 
-//        var icon: UIImage {
-//            switch self {
-//            case .woocommerceAdmin:
-//
-//            case .viewStore:
-//            case .reviews:
-//            }
-//        }
+        var icon: UIImage {
+            switch self {
+            case .woocommerceAdmin:
+                return .wordPressLogoImage.applyTintColorToiOS13(.blue) ?? .wordPressLogoImage
+            case .viewStore:
+                return .noStoreImage
+            case .reviews:
+                return .starOutlineImage().applyTintColorToiOS13(.primary) ?? .starOutlineImage()
+            }
+        }
     }
 
     private enum Localization {

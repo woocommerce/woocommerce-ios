@@ -106,7 +106,8 @@ private extension CardPresentModalConnectingFailedUpdateAddress {
 
         static let adminWebviewTitle = NSLocalizedString(
             "WooCommerce Settings",
-            comment: "Navigation title of the webview which used by the merchant to update their store address")
+            comment: "Navigation title of the webview which used by the merchant to update their store address"
+        )
 
         static let openAdmin = NSLocalizedString(
             "Enter Address",

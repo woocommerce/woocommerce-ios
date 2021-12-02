@@ -99,6 +99,18 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         }
     }
 
+    func connectingFailedInvalidPostalCode(from: UIViewController,
+                                           retrySearch: @escaping () -> Void,
+                                           cancelSearch: @escaping () -> Void) {
+        if mode == .continueSearchingAfterConnectionFailure {
+            retrySearch()
+        }
+
+        if mode == .cancelSearchingAfterConnectionFailure {
+            cancelSearch()
+        }
+    }
+
     func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) {
         close()
     }

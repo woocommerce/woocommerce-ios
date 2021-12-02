@@ -272,12 +272,15 @@ private extension CardReaderConfigError {
             self = .unknown(error: error)
             return
         }
-
-        if case .unknown("store_address_is_incomplete", let message) = dotcomError {
+        switch dotcomError {
+        case .unknown("store_address_is_incomplete", let message):
             self = .incompleteStoreAddress(adminUrl: URL(string: message ?? ""))
             return
+        case .unknown("postal_code_invalid", _):
+            self = .invalidPostalCode
+            return
+        default:
+            self = .unknown(error: dotcomError.toAnyError)
         }
-
-        self = .unknown(error: dotcomError.toAnyError)
     }
 }

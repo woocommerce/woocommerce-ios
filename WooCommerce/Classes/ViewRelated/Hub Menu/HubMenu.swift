@@ -55,19 +55,22 @@ struct HubMenu: View {
                     .linkStyle()
                 }
                 Spacer()
-                ZStack {
-                    Circle()
-                        .fill(Color.white)
-                        .frame(width: 28,
-                               height: 28)
-                    Button {
-                        //TODO-5509: implement tap
-                    } label: {
+                VStack {
+                    ZStack {
+                        Circle()
+                            .fill(Color.white)
+                            .frame(width: Constants.settingsSize,
+                                   height: Constants.settingsSize)
                         if let gearImage = UIImage.gearImage.imageWithTintColor(.primary) {
                             Image(uiImage: gearImage)
                         }
                     }
+                    .onTapGesture {
+                        // TODO-5509: implement tap
+                    }
+                    Spacer()
                 }
+                .fixedSize()
             }
             .padding([.top, .leading, .trailing], Constants.padding)
         }
@@ -79,6 +82,7 @@ struct HubMenu: View {
         static let itemSize: CGFloat = 160
         static let padding: CGFloat = 16
         static let topBarSpacing: CGFloat = 2
+        static let settingsSize: CGFloat = 24
     }
 
     private enum Localization {

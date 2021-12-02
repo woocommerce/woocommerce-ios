@@ -12,13 +12,13 @@ struct HubMenu: View {
 
         ScrollView {
             LazyVGrid(columns: gridItemLayout) {
-                ForEach(0..<viewModel.menuElements.count, id: \.self) { _ in
-                    HubMenuElement(image: UIImage(named: "icon-hub-menu")!, text: "Test")
+                ForEach(viewModel.menuElements, id: \.self) { menu in
+                    HubMenuElement(image: UIImage(named: "icon-hub-menu")!, text: menu.title)
                 }
                 .frame(width: Constants.itemSize, height: Constants.itemSize)
                 .cornerRadius(Constants.cornerRadius)
                 .background(Color.white)
-                .aspectRatio(1, contentMode: .fit)
+                .padding([.bottom], Constants.padding)
             }
             .padding(Constants.padding)
             .background(Color(.listBackground))

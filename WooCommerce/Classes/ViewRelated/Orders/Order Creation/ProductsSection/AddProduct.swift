@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 /// View showing a list of products to add to an order.
 ///
@@ -13,7 +14,8 @@ struct AddProduct: View {
                 // TODO: Make the product list searchable
                 LazyVStack {
                     // TODO: Add a product row for each non-variable product in the store
-                    ProductRow(canChangeQuantity: false)
+                    let viewModel = ProductRowViewModel(product: ProductRowViewModel.sampleProduct, canChangeQuantity: false) // Temporary view model
+                    ProductRow(viewModel: viewModel)
                 }
                 .padding()
             }

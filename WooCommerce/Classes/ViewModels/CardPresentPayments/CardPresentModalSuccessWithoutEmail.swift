@@ -28,6 +28,10 @@ final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewMod
 
     let bottomSubtitle: String? = nil
 
+    var accessibilityLabel: String? {
+        return Localization.paymentSuccessful
+    }
+
     init(printReceipt: @escaping () -> Void, noReceiptAction: @escaping () -> Void) {
         self.printReceiptAction = printReceipt
         self.noReceiptAction = noReceiptAction

@@ -37,6 +37,10 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
 
     let bottomSubtitle: String? = nil
 
+    var accessibilityLabel: String? {
+        return topTitle
+    }
+
     init(adminUrl: URL?,
          site: Site?,
          openUrlInSafari: @escaping (URL) -> Void,

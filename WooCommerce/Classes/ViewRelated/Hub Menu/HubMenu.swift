@@ -19,6 +19,9 @@ struct HubMenu: View {
                 .background(Color.white)
                 .cornerRadius(Constants.cornerRadius)
                 .padding([.bottom], Constants.padding)
+                .onTapGesture {
+                    // TODO-5509: implement tap
+                }
             }
             .padding(Constants.padding)
             .background(Color(.listBackground))

@@ -4023,7 +4023,7 @@
 "Updating software" = "Atualizando software";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
-"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "Falha na atualização do software do leitor porque ele está com pouca bateria. Deixe o leitor chegar a mais de 50% de carga antes de tentar novamente.";
+"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "Falha na atualização do software do leitor porque ele está com pouca bateria. Deixe o leitor chegar a mais de 50\uFF05 de carga antes de tentar novamente.";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
 "Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "Falha na atualização do software do leitor porque a bateria dele está em %.0f%%. Deixe o leitor chegar a mais de 50%% de carga antes de tentar novamente.";

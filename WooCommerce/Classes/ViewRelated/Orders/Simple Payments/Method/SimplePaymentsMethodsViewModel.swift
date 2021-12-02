@@ -126,6 +126,14 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
             DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
         }
+
+        let useCase = CollectOrderPaymentUseCase(siteID: siteID, order: order, paymentGatewayAccount: paymentGateway, rootViewController: rootViewController)
+        useCase.collectPayment(onCollect: { _ in
+            print("On collect!")
+        }, onCompleted: {
+            print("On Completed")
+            onSuccess()
+        })
     }
 }
 

@@ -18,14 +18,14 @@ struct HubMenu: View {
                 LazyVGrid(columns: gridItemLayout) {
                     ForEach(viewModel.menuElements, id: \.self) { menu in
                         HubMenuElement(image: menu.icon, text: menu.title)
+                            .frame(width: Constants.itemSize, height: Constants.itemSize)
+                            .onTapGesture {
+                                // TODO-5509: implement tap
+                            }
                     }
-                    .frame(width: Constants.itemSize, height: Constants.itemSize)
                     .background(Color.white)
                     .cornerRadius(Constants.cornerRadius)
                     .padding([.bottom], Constants.padding)
-                    .onTapGesture {
-                        // TODO-5509: implement tap
-                    }
                 }
                 .padding(Constants.padding)
                 .background(Color(.listBackground))

@@ -95,7 +95,7 @@ private struct ProductsSection: View {
                     .headlineStyle()
 
                 // TODO: Add a product row for each product added to the order
-                let viewModel = ProductRowViewModel(product: ProductRowViewModel.sampleProduct, canChangeQuantity: false) // Temporary view model
+                let viewModel = ProductRowViewModel(product: ProductRowViewModel.sampleProduct, canChangeQuantity: true) // Temporary view model
                 ProductRow(viewModel: viewModel)
 
                 Button(NewOrder.Localization.addProduct) {

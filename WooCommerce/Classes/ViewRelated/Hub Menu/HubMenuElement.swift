@@ -11,6 +11,7 @@ struct HubMenuElement: View {
             ZStack {
                 Color(.listBackground)
                 Image(uiImage: image)
+                    .resizable()
                     .frame(width: Constants.iconSize, height: Constants.iconSize)
             }
             .frame(width: Constants.imageSize, height: Constants.imageSize, alignment: .center)
@@ -30,9 +31,9 @@ struct HubMenuElement: View {
 struct HubMenuElement_Previews: PreviewProvider {
     static var previews: some View {
 
-        HubMenuElement(image: UIImage(named: "icon-hub-menu")!,
+        HubMenuElement(image: .starOutlineImage(),
                        text: "Menu")
-            .previewLayout(.fixed(width: 166, height: 166))
+            .previewLayout(.fixed(width: 160, height: 160))
             .previewDisplayName("Hub Menu Element")
     }
 }

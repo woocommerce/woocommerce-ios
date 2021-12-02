@@ -133,6 +133,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
 
         collectPaymentsUseCase = CollectOrderPaymentUseCase(siteID: siteID,
                                                             order: order,
+                                                            formattedAmount: formattedTotal,
                                                             paymentGatewayAccount: paymentGateway,
                                                             rootViewController: rootViewController)
         collectPaymentsUseCase?.collectPayment(onCollect: { _ in

@@ -17,6 +17,10 @@ final class CollectOrderPaymentUseCase: NSObject {
     ///
     private let order: Order
 
+    /// Formatted amount to collect.
+    ///
+    private let formattedAmount: String
+
     /// Payment Gateway Account to use.
     ///
     private let paymentGatewayAccount: PaymentGatewayAccount
@@ -59,12 +63,14 @@ final class CollectOrderPaymentUseCase: NSObject {
 
     init(siteID: Int64,
          order: Order,
+         formattedAmount: String,
          paymentGatewayAccount: PaymentGatewayAccount,
          rootViewController: UIViewController,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.order = order
+        self.formattedAmount = formattedAmount
         self.paymentGatewayAccount = paymentGatewayAccount
         self.rootViewController = rootViewController
         self.stores = stores
@@ -129,10 +135,13 @@ private extension CollectOrderPaymentUseCase {
     /// Attempts to collect payment for an order.
     ///
     func attemptPayment(onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> ()) {
+        // Track tapped event
+        analytics.track(.collectPaymentTapped)
 
-        // TODO: paymentAlerts.readerIsReady(title: viewModel.collectPaymentFrom, amount: value)
-        // TODO: ServiceLocator.analytics.track(.collectPaymentTapped)
+        // Show reader ready alert
+        alerts.readerIsReady(title: Localization.collectPaymentTitle(username: order.billingAddress?.firstName), amount: formattedAmount)
 
+        // Start collect payment process
         paymentOrchestrator.collectPayment(
             for: order,
             statementDescriptor: paymentGatewayAccount.statementDescriptor,
@@ -284,15 +293,26 @@ private extension CollectOrderPaymentUseCase {
     struct UnknownEmailError: Error {}
 
     enum Localization {
-        static let emailSubjectWithStoreName = NSLocalizedString("Your receipt from %1$@",
+        private static let emailSubjectWithStoreName = NSLocalizedString("Your receipt from %1$@",
                                                                  comment: "Subject of email sent with a card present payment receipt")
-        static let emailSubjectWithoutStoreName = NSLocalizedString("Your receipt",
+        private static let emailSubjectWithoutStoreName = NSLocalizedString("Your receipt",
                                                                     comment: "Subject of email sent with a card present payment receipt")
         static func emailSubject(storeName: String?) -> String {
-            guard let storeName = storeName else {
+            guard let storeName = storeName, storeName.isNotEmpty else {
                 return emailSubjectWithoutStoreName
             }
             return .localizedStringWithFormat(emailSubjectWithStoreName, storeName)
+        }
+
+        private static let collectPaymentWithoutName = NSLocalizedString("Collect payment",
+                                                                 comment: "Alert title when starting the collect payment flow without a user name.")
+        private static let collectPaymentWithName = NSLocalizedString("Collect payment from %1$@",
+                                                                 comment: "Alert title when starting the collect payment flow with a user name.")
+        static func collectPaymentTitle(username: String?) -> String {
+            guard let username = username, username.isNotEmpty else {
+                return collectPaymentWithoutName
+            }
+            return .localizedStringWithFormat(collectPaymentWithName, username)
         }
     }
 }

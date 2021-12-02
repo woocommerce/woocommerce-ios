@@ -49,10 +49,6 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     private let storage: StorageManagerType
 
-    /// IPP payments collector.
-    ///
-    private lazy var paymentOrchestrator = PaymentCaptureOrchestrator()
-
     /// Stored payment gateways accounts.
     /// We will care about the first one because only one is supported right now.
     ///
@@ -115,7 +111,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
 
     /// Starts the collect payment flow in the provided `rootViewController`
     ///
-    func collectPayment(on rootViewController: UIViewController?, onSuccess: () -> ()) {
+    func collectPayment(on rootViewController: UIViewController?, onSuccess: @escaping () -> ()) {
         guard let rootViewController = rootViewController else {
             DDLogError("⛔️ Root ViewController is nil, can't present payment alerts.")
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
@@ -130,41 +126,6 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
             DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
         }
-
-        let alerts = OrderDetailsPaymentAlerts(presentingController: rootViewController)
-
-        paymentOrchestrator.collectPayment(
-            for: order,
-            statementDescriptor: paymentGateway.statementDescriptor,
-            onWaitingForInput: { [weak self] in
-                alerts.tapOrInsertCard {
-                    self?.paymentOrchestrator.cancelPayment(onCompletion: { _ in
-                        // TODO: do something with cancel completion block
-                    })
-                }
-            },
-            onProcessingMessage: {
-                alerts.processingPayment()
-            },
-            onDisplayMessage: { message in
-                alerts.displayReaderMessage(message: message)
-            },
-            onCompletion: { result in
-                switch result {
-                case .success:
-                    alerts.success(printReceipt: {
-                        // TODO: Print receipt
-                    }, emailReceipt: {
-                        // TODO: Email receipt
-                    })
-                    // TODO: Call on success to dismiss view
-                case .failure(let error):
-                    alerts.error(error: error) {
-                        // TODO: Retry payment
-                    }
-                    // TODO: & Log error & Analytics
-                }
-            })
     }
 }
 

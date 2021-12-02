@@ -797,6 +797,7 @@ private extension OrderDetailsViewController {
         }
     }
 
+    // TODO: Check if this is necessary
     private func cancelObservingCardReader() {
         cardReaderAvailableSubscription?.cancel()
         cardReaderAvailableSubscription = nil

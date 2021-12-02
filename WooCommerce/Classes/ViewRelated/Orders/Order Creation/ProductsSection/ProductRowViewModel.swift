@@ -3,7 +3,12 @@ import Yosemite
 
 /// View model for `ProductRow`.
 ///
-final class ProductRowViewModel: ObservableObject {
+final class ProductRowViewModel: ObservableObject, Identifiable {
+    /// Product ID
+    /// Required by SwiftUI as a unique identifier
+    ///
+    let id: Int64
+
     private let currencyFormatter: CurrencyFormatter
 
     /// Whether the product quantity can be changed.
@@ -48,6 +53,7 @@ final class ProductRowViewModel: ObservableObject {
     init(product: Product,
          canChangeQuantity: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+        self.id = product.productID
         self.product = product
         self.canChangeQuantity = canChangeQuantity
         self.currencyFormatter = currencyFormatter

@@ -3,23 +3,22 @@ import Yosemite
 
 struct OrderStatusSection: View {
     let geometry: GeometryProxy
-    let dateCreated: Date
-    let orderStatus: OrderStatus
+    let viewModel: NewOrderViewModel
 
     var body: some View {
         Divider()
 
         VStack(alignment: .leading) {
-            Text(dateString)
+            Text(viewModel.dateString)
                 .footnoteStyle()
 
             HStack {
-                Text(statusBadgeTitle)
+                Text(viewModel.statusBadgeViewModel.title)
                     .foregroundColor(.black)
                     .footnoteStyle()
                     .padding(.horizontal, Layout.StatusBadge.horizontalPadding)
                     .padding(.vertical, Layout.StatusBadge.verticalPadding)
-                    .background(Color(statusBadgeColor))
+                    .background(Color(viewModel.statusBadgeViewModel.color))
                     .cornerRadius(Layout.StatusBadge.cornerRadius)
                 Spacer()
                 Button(Localization.editButton) {}
@@ -33,29 +32,6 @@ struct OrderStatusSection: View {
         .background(Color(.listForeground))
 
         Divider()
-    }
-
-    private var dateString: String {
-        let formatter = DateFormatter.mediumLengthLocalizedDateFormatter
-
-        return formatter.string(from: dateCreated)
-    }
-
-    private var statusBadgeTitle: String {
-        orderStatus.name ?? orderStatus.slug
-    }
-
-    private var statusBadgeColor: UIColor {
-        switch orderStatus.status {
-        case .pending, .completed, .cancelled, .refunded, .custom:
-            return .gray(.shade5)
-        case .onHold:
-            return .withColorStudio(.orange, shade: .shade5)
-        case .processing:
-            return .withColorStudio(.green, shade: .shade5)
-        case .failed:
-            return .withColorStudio(.red, shade: .shade5)
-        }
     }
 }
 
@@ -76,12 +52,12 @@ private extension OrderStatusSection {
 }
 
 struct OrderStatusSection_Previews: PreviewProvider {
-    static let orderStatus = OrderStatus(name: "Pending payment", siteID: 123, slug: "pending", total: 0)
-
     static var previews: some View {
+        let viewModel = NewOrderViewModel(siteID: 123)
+
         GeometryReader { geometry in
             ScrollView {
-                OrderStatusSection(geometry: geometry, dateCreated: Date(), orderStatus: orderStatus)
+                OrderStatusSection(geometry: geometry, viewModel: viewModel)
             }
         }
     }

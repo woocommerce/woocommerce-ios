@@ -27,7 +27,23 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var presentNotice: NewOrderNotice?
 
-    @Published var orderStatus: OrderStatus
+    /// Order creation date. For new order flow it's always current date.
+    ///
+    let dateString: String = {
+        DateFormatter.mediumLengthLocalizedDateFormatter.string(from: Date())
+    }()
+
+    /// Order status data model.
+    ///
+    private var orderStatus: OrderStatus {
+        didSet {
+            statusBadgeViewModel = .init(orderStatus: orderStatus)
+        }
+    }
+
+    /// Representation of order status display properties.
+    ///
+    @Published private(set) var statusBadgeViewModel: StatusBadgeViewModel
 
     /// Status Results Controller.
     ///
@@ -56,6 +72,7 @@ final class NewOrderViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.orderStatus = .init(name: nil, siteID: siteID, slug: "pending", total: 0)
+        self.statusBadgeViewModel = .init(orderStatus: orderStatus)
 
         configureNavigationTrailingItem()
         setInitialOrderStatus()
@@ -119,6 +136,29 @@ extension NewOrderViewModel {
     ///
     enum NewOrderNotice {
         case error
+    }
+
+    /// Representation of order status display properties
+    ///
+    struct StatusBadgeViewModel {
+        let title: String
+        let color: UIColor
+
+        init(orderStatus: OrderStatus) {
+            title = orderStatus.name ?? orderStatus.slug
+            color = {
+                switch orderStatus.status {
+                case .pending, .completed, .cancelled, .refunded, .custom:
+                    return .gray(.shade5)
+                case .onHold:
+                    return .withColorStudio(.orange, shade: .shade5)
+                case .processing:
+                    return .withColorStudio(.green, shade: .shade5)
+                case .failed:
+                    return .withColorStudio(.red, shade: .shade5)
+                }
+            }()
+        }
     }
 }
 

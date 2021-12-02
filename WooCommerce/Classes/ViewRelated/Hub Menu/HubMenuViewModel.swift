@@ -34,11 +34,11 @@ extension HubMenuViewModel {
         var icon: UIImage {
             switch self {
             case .woocommerceAdmin:
-                return .wordPressLogoImage.applyTintColorToiOS13(.blue) ?? .wordPressLogoImage
+                return .wordPressLogoImage.imageWithTintColor(.blue) ?? .wordPressLogoImage
             case .viewStore:
-                return .noStoreImage
+                return .storeImage.imageWithTintColor(.accent) ?? .storeImage
             case .reviews:
-                return .starOutlineImage().applyTintColorToiOS13(.primary) ?? .starOutlineImage()
+                return .starOutlineImage().imageWithTintColor(.primary) ?? .starOutlineImage()
             }
         }
     }

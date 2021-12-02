@@ -6,6 +6,9 @@ final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewMod
     /// Closure to execute when primary button is tapped
     private let printReceiptAction: () -> Void
 
+    /// Closure to execute when secondary button is tapped
+    private let backToOrdersAction: () -> Void
+
     let textMode: PaymentsModalTextMode = .noBottomInfo
     let actionsMode: PaymentsModalActionsMode = .twoAction
 
@@ -25,8 +28,9 @@ final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewMod
 
     let bottomSubtitle: String? = nil
 
-    init(printReceipt: @escaping () -> Void) {
+    init(printReceipt: @escaping () -> Void, backToOrders: @escaping () -> Void) {
         self.printReceiptAction = printReceipt
+        self.backToOrdersAction = backToOrders
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
@@ -36,7 +40,9 @@ final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewMod
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        viewController?.dismiss(animated: true)
+        viewController?.dismiss(animated: true) { [weak self] in
+            self?.backToOrdersAction()
+        }
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {}

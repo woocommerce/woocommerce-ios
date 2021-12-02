@@ -772,8 +772,7 @@ private extension OrderDetailsViewController {
                         self.viewModel.emailReceipt(params: receiptParameters, onContent: { emailContent in
                             self.emailReceipt(emailContent)
                         })
-                    }
-                    )
+                    }, backToOrders: {})
                 }
             }
         )

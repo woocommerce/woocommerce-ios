@@ -5,7 +5,7 @@ import UIKit
 ///
 final class HubMenuViewModel: ObservableObject {
 
-    let storeTitle = ServiceLocator.stores.sessionManager.defaultSite?.name ?? ""
+    let storeTitle = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.myStore
     let storeURL = ServiceLocator.stores.sessionManager.defaultSite?.url ?? ""
 
     /// Child items
@@ -47,6 +47,8 @@ extension HubMenuViewModel {
     }
 
     private enum Localization {
+        static let myStore = NSLocalizedString("My Store",
+                                               comment: "Title of the hub menu view in case there is no title for the store")
         static let woocommerceAdmin = NSLocalizedString("WooCommerce Admin",
                                                         comment: "Title of one of the hub menu options")
         static let viewStore = NSLocalizedString("View Store",

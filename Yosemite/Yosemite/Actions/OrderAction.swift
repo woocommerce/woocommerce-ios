@@ -83,4 +83,9 @@ public enum OrderAction: Action {
                                    orderNote: String?,
                                    email: String?,
                                    onCompletion: (Result<Order, Error>) -> Void)
+
+    /// Updates order customer note of an order.
+    ///
+    case updateOrderCustomerNote(siteID: Int64, order: Order, onCompletion: (Result<Order, Error>) -> Void)
+
 }

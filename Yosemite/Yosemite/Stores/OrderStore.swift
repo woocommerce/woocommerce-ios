@@ -76,6 +76,9 @@ public class OrderStore: Store {
                                       orderNote: orderNote,
                                       email: email,
                                       onCompletion: onCompletion)
+
+        case let .updateOrderCustomerNote(siteID, order, onCompletion):
+            updateOrder(siteID: siteID, order: order, customerNote: order.customerNote ?? String(), onCompletion: onCompletion)
         }
     }
 }
@@ -360,6 +363,26 @@ private extension OrderStore {
             }
         }
     }
+
+    /// Updates the order customer note field from an order.
+    ///
+    func updateOrder(siteID: Int64, order: Order, customerNote: String, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        /// Optimistically update the customer note
+        let oldCustomerNote = updateOrderCustomerNote(siteID: siteID, orderID: order.orderID, customerNote: customerNote)
+
+        remote.updateOrder(from: siteID, order: order, fields: [.customerNote]) { [weak self] result in
+            switch result {
+            case .success(let order):
+                self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
+                    onCompletion(result)
+                })
+            case .failure:
+                /// Revert Optimistic Update
+                self?.updateOrderCustomerNote(siteID: siteID, orderID: order.orderID, customerNote: oldCustomerNote)
+                onCompletion(result)
+            }
+        }
+    }
 }
 
 
@@ -395,6 +418,24 @@ extension OrderStore {
         storage.saveIfNeeded()
 
         return OrderStatusEnum(rawValue: oldStatus)
+    }
+
+    /// Updates the order customer note of the specified Order, as requested.
+    ///
+    /// - Returns: Order customer note, prior to performing the Update OP.
+    ///
+    @discardableResult
+    func updateOrderCustomerNote(siteID: Int64, orderID: Int64, customerNote: String?) -> String? {
+        let storage = storageManager.viewStorage
+        guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+            return customerNote
+        }
+
+        let oldCustomerNote = order.customerNote
+        order.customerNote = customerNote
+        storage.saveIfNeeded()
+
+        return oldCustomerNote
     }
 }
 

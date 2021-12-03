@@ -12,7 +12,14 @@ struct JetpackInstallStepsView: View {
 
     /// WPAdmin URL to navigate user when install fails.
     private var wpAdminURL: URL? {
-        URL(string: "\(siteURL)\(Constants.wpAdminPluginsPath)")
+        switch viewModel.currentStep {
+        case .installation:
+            return URL(string: "\(siteURL)\(Constants.wpAdminInstallPath)")
+        case .activation:
+            return URL(string: "\(siteURL)\(Constants.wpAdminPluginsPath)")
+        case .connection, .done:
+            return nil
+        }       
     }
 
     /// Whether the WPAdmin webview is being shown.
@@ -201,7 +208,8 @@ private extension JetpackInstallStepsView {
         static let stepItemsVerticalSpacing: CGFloat = 20
         static let stepImageSize: CGFloat = 24
         // TODO-5365: Remove the hard-code wp-admin by fetching option admin_url for sites
-        static let wpAdminPluginsPath: String = "/wp-admin/plugin-install.php?tab=plugin-information&plugin=jetpack"
+        static let wpAdminInstallPath: String = "/wp-admin/plugin-install.php?tab=plugin-information&plugin=jetpack"
+        static let wpAdminPluginsPath: String = "/wp-admin/plugins.php"
     }
 
     enum Localization {

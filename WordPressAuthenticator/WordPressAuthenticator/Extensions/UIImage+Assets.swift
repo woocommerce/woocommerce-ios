@@ -22,13 +22,6 @@ extension UIImage {
         return UIImage(named: "site-address", in: bundle, compatibleWith: nil) ?? UIImage()
     }
 
-    /// Returns the Default Gravatar Placeholder Image.
-    ///
-    @objc
-    public static var onePasswordImage: UIImage {
-        return UIImage(named: "onepassword-button", in: bundle, compatibleWith: nil) ?? UIImage()
-    }
-
     /// Returns the Link Image.
     ///
     @objc

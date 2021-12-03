@@ -7,7 +7,7 @@ struct OrderStatusList: UIViewControllerRepresentable {
 
     let siteID: Int64
 
-    /// The index of preselected order status.
+    /// Preselected order status.
     ///
     let status: OrderStatusEnum
 

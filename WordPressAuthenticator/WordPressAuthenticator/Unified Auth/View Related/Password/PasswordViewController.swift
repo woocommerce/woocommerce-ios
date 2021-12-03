@@ -206,7 +206,7 @@ extension PasswordViewController: UITextFieldDelegate {
     }
 
     /// Handle changes to `emailField` and `passwordField`
-    /// 
+    ///
     func textFieldDidChangeSelection(_ textField: UITextField) {
         switch textField {
         case let textField where textField === emailField:
@@ -364,7 +364,7 @@ private extension PasswordViewController {
                        placeholder: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
 
         // Save a reference to the first textField so it can becomeFirstResponder.
-        // And tod identify it when delegate methods are called.
+        // And to identify it when delegate methods are called.
         passwordField = cell.textField
         cell.textField.delegate = self
 

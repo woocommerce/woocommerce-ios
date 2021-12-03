@@ -18,43 +18,42 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Product to display
     ///
-    let product: Product
+    private let product: Product
 
     /// Label showing product name
     ///
-    var nameLabel: String {
-        product.name
-    }
+    let nameLabel: String
 
     /// Label showing product stock status and price.
     ///
-    var stockAndPriceLabel: String {
+    lazy var stockAndPriceLabel: String = {
         let stockLabel = createStockText()
         let priceLabel = createPriceText()
 
         return [stockLabel, priceLabel]
             .compactMap({ $0 })
             .joined(separator: " • ")
-    }
+    }()
 
     /// Label showing product SKU
     ///
-    var skuLabel: String {
+    lazy var skuLabel: String = {
         guard let sku = product.sku, sku.isNotEmpty else {
             return ""
         }
         return String.localizedStringWithFormat(Localization.skuFormat, sku)
-    }
+    }()
 
     /// Quantity of product in the order
     ///
-    var quantity: Int64 = 1
+    @Published var quantity: Int64 = 1
 
     init(product: Product,
          canChangeQuantity: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.id = product.productID
         self.product = product
+        self.nameLabel = product.name
         self.canChangeQuantity = canChangeQuantity
         self.currencyFormatter = currencyFormatter
     }

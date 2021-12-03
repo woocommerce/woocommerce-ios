@@ -116,8 +116,15 @@ private extension CollectOrderPaymentUseCase {
         let readerConnected = CardPresentPaymentAction.checkCardReaderConnected { connectPublisher in
             self.readerSubscription = connectPublisher
                 .sink(receiveCompletion: { [weak self] _ in
-                    // Reader connected
-                    onCompletion()
+                    // Dismiss the current connection alert before notifying the completion.
+                    // If no presented controller is found(because the reader was already connected), just notify the completion.
+                    if let connectionController = self?.rootViewController.presentedViewController {
+                        connectionController.dismiss(animated: true) {
+                            onCompletion()
+                        }
+                    } else {
+                        onCompletion()
+                    }
 
                     // Nil the subscription since we are done with the connection.
                     self?.readerSubscription = nil

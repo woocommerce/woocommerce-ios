@@ -1,6 +1,9 @@
 import Foundation
 import Yosemite
 import Combine
+import UIKit
+
+import protocol Storage.StorageManagerType
 
 /// ViewModel for the `SimplePaymentsMethods` view.
 ///
@@ -42,16 +45,47 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
+    /// Storage manager to fetch the order.
+    ///
+    private let storage: StorageManagerType
+
+    /// Stored payment gateways accounts.
+    /// We will care about the first one because only one is supported right now.
+    ///
+    private lazy var gatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount> = {
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        let controller = ResultsController<StoragePaymentGatewayAccount>(storageManager: storage, matching: predicate, sortedBy: [])
+        try? controller.performFetch()
+        return controller
+    }()
+
+    /// Stored orders.
+    /// We need to fetch this from our storage layer because we are only provide IDs as dependencies
+    /// To keep previews/UIs decoupled from our business logic.
+    ///
+    private lazy var ordersResultController: ResultsController<StorageOrder> = {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld", siteID, orderID)
+        let controller = ResultsController<StorageOrder>(storageManager: storage, matching: predicate, sortedBy: [])
+        try? controller.performFetch()
+        return controller
+    }()
+
+    /// Retains the use-case so it can perform all of its async tasks.
+    ///
+    private var collectPaymentsUseCase: CollectOrderPaymentUseCase?
+
     init(siteID: Int64 = 0,
          orderID: Int64 = 0,
          formattedTotal: String,
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         storage: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.orderID = orderID
         self.formattedTotal = formattedTotal
         self.presentNoticeSubject = presentNoticeSubject
         self.stores = stores
+        self.storage = storage
         self.title = Localization.title(total: formattedTotal)
     }
 
@@ -71,6 +105,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
 
             if error == nil {
                 onSuccess()
+                self.presentNoticeSubject.send(.completed)
             } else {
                 self.presentNoticeSubject.send(.error(Localization.markAsPaidError))
             }
@@ -78,12 +113,51 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         }
         stores.dispatch(action)
     }
+
+    /// Starts the collect payment flow in the provided `rootViewController`
+    ///
+    func collectPayment(on rootViewController: UIViewController?, onSuccess: @escaping () -> ()) {
+        guard let rootViewController = rootViewController else {
+            DDLogError("⛔️ Root ViewController is nil, can't present payment alerts.")
+            return presentNoticeSubject.send(.error(Localization.genericCollectError))
+        }
+
+        guard let order = ordersResultController.fetchedObjects.first else {
+            DDLogError("⛔️ Order not found, can't collect payment.")
+            return presentNoticeSubject.send(.error(Localization.genericCollectError))
+        }
+
+        guard let paymentGateway = gatewayAccountResultsController.fetchedObjects.first else {
+            DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
+            return presentNoticeSubject.send(.error(Localization.genericCollectError))
+        }
+
+        collectPaymentsUseCase = CollectOrderPaymentUseCase(siteID: siteID,
+                                                            order: order,
+                                                            formattedAmount: formattedTotal,
+                                                            paymentGatewayAccount: paymentGateway,
+                                                            rootViewController: rootViewController)
+        collectPaymentsUseCase?.collectPayment(onCollect: { _ in
+            /* No op. */
+        }, onCompleted: { [weak self] in
+            // Inform success to consumer
+            onSuccess()
+
+            // Sent notice request
+            self?.presentNoticeSubject.send(.completed)
+
+            // Make sure we free all the resources
+            self?.collectPaymentsUseCase = nil
+        })
+    }
 }
 
 private extension SimplePaymentsMethodsViewModel {
     enum Localization {
         static let markAsPaidError = NSLocalizedString("There was an error while marking the order as paid.",
                                                        comment: "Text when there is an error while marking the order as paid for simple payments.")
+        static let genericCollectError = NSLocalizedString("There was an error while trying to collect the payment.",
+                                                       comment: "Text when there is an unknown error while trying to collect payments")
 
         static func title(total: String) -> String {
             NSLocalizedString("Take Payment (\(total))", comment: "Navigation bar title for the Simple Payments Methods screens")

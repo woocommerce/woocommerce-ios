@@ -171,6 +171,7 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func populateContent() {
+        configureAccessibility()
         configureTopTitle()
 
         if shouldShowTopSubtitle() {
@@ -342,6 +343,13 @@ private extension CardPresentPaymentsModalViewController {
     }
 }
 
+// MARK: - Accessibility
+private extension CardPresentPaymentsModalViewController {
+    func configureAccessibility() {
+        accessibilityTraits = .staticText
+        UIAccessibility.post(notification: .announcement, argument: viewModel.accessibilityLabel)
+    }
+}
 
 // MARK: - Actions
 private extension CardPresentPaymentsModalViewController {

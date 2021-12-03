@@ -31,6 +31,10 @@ final class CardPresentModalScanningFailed: CardPresentPaymentsModalViewModel {
 
     let bottomSubtitle: String? = nil
 
+    var accessibilityLabel: String? {
+        return topTitle + error.localizedDescription
+    }
+
     init(error: Error, primaryAction: @escaping () -> Void) {
         self.error = error
         self.primaryAction = primaryAction

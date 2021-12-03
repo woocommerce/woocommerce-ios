@@ -26,6 +26,10 @@ final class CardPresentModalConnectingFailed: CardPresentPaymentsModalViewModel 
 
     let bottomSubtitle: String? = nil
 
+    var accessibilityLabel: String? {
+        return topTitle
+    }
+
     init(continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
         self.continueSearchAction = continueSearch
         self.cancelSearchAction = cancelSearch

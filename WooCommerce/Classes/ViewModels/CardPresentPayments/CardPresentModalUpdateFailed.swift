@@ -23,6 +23,10 @@ final class CardPresentModalUpdateFailed: CardPresentPaymentsModalViewModel {
 
     let bottomSubtitle: String? = nil
 
+    var accessibilityLabel: String? {
+        return topTitle
+    }
+
     init(tryAgain: @escaping () -> Void, close: @escaping () -> Void) {
         self.tryAgain = tryAgain
         self.close = close

@@ -772,8 +772,7 @@ private extension OrderDetailsViewController {
                         self.viewModel.emailReceipt(params: receiptParameters, onContent: { emailContent in
                             self.emailReceipt(emailContent)
                         })
-                    }
-                    )
+                    }, noReceiptAction: {})
                 }
             }
         )
@@ -966,12 +965,12 @@ private extension OrderDetailsViewController {
         let statusList = OrderStatusListViewController(siteID: viewModel.order.siteID,
                                                        status: viewModel.order.status)
 
-        statusList.didSelectCancel = {
-            statusList.dismiss(animated: true, completion: nil)
+        statusList.didSelectCancel = { [weak statusList] in
+            statusList?.dismiss(animated: true, completion: nil)
         }
 
-        statusList.didSelectApply = { (selectedStatus) in
-            statusList.dismiss(animated: true) {
+        statusList.didSelectApply = { [weak statusList] (selectedStatus) in
+            statusList?.dismiss(animated: true) {
                 self.setOrderStatus(to: selectedStatus)
             }
         }

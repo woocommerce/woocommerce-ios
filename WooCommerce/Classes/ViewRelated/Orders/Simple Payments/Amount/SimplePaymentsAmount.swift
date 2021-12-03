@@ -18,7 +18,14 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
         return presenter
     }()
 
-    init(viewModel: SimplePaymentsAmountViewModel, presentNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never>) {
+    /// Presents notices at the system level, currently uses the main tab-bar as source view controller.
+    ///
+    private let systemNoticePresenter: NoticePresenter
+
+    init(viewModel: SimplePaymentsAmountViewModel,
+         presentNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never>,
+         systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+        self.systemNoticePresenter = systemNoticePresenter
         super.init(rootView: SimplePaymentsAmount(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
@@ -32,6 +39,8 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
             .sink { [weak self] notice in
 
                 switch notice {
+                case .completed:
+                    self?.systemNoticePresenter.enqueue(notice: .init(title: SimplePaymentsAmount.Localization.completed, feedbackType: .success))
                 case .error(let description):
                     self?.modalNoticePresenter.enqueue(notice: .init(title: description, feedbackType: .error))
                 }
@@ -41,6 +50,9 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // Needed to present IPP collect amount alerts, which are displayed in UIKit view controllers.
+        rootView.rootViewController = navigationController
 
         // Set presentation delegate to track the user dismiss flow event
         if let navigationController = navigationController {
@@ -74,6 +86,10 @@ struct SimplePaymentsAmount: View {
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
     var dismiss: (() -> Void) = {}
+
+    /// Needed because IPP capture payments depend on a UIViewController for providing user feedback.
+    ///
+    weak var rootViewController: UIViewController?
 
     /// Keeps track of the current content scale due to accessibility changes
     ///
@@ -134,7 +150,7 @@ struct SimplePaymentsAmount: View {
     private func summaryView() -> some View {
         Group {
             if let summaryViewModel = viewModel.summaryViewModel {
-                SimplePaymentsSummary(dismiss: dismiss, viewModel: summaryViewModel)
+                SimplePaymentsSummary(dismiss: dismiss, rootViewController: rootViewController, viewModel: summaryViewModel)
             }
             EmptyView()
         }
@@ -147,6 +163,7 @@ private extension SimplePaymentsAmount {
         static let title = NSLocalizedString("Take Payment", comment: "Title for the simple payments screen")
         static let instructions = NSLocalizedString("Enter Amount", comment: "Short instructions label in the simple payments screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the simple payments screen")
+        static let completed = NSLocalizedString("🎉 Order completed", comment: "Title for the button to cancel the simple payments screen")
 
         static func buttonTitle() -> String {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplePaymentsPrototype) {
@@ -168,5 +185,6 @@ private extension SimplePaymentsAmount {
 /// Representation of possible notices that can be displayed
 ///
 enum SimplePaymentsNotice: Equatable {
+    case completed
     case error(String)
 }

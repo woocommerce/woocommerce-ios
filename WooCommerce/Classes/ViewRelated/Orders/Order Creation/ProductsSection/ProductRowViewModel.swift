@@ -4,11 +4,6 @@ import Yosemite
 /// View model for `ProductRow`.
 ///
 final class ProductRowViewModel: ObservableObject, Identifiable {
-    /// Product ID
-    /// Required by SwiftUI as a unique identifier
-    ///
-    let id: Int64
-
     private let currencyFormatter: CurrencyFormatter
 
     /// Whether the product quantity can be changed.
@@ -16,69 +11,115 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     let canChangeQuantity: Bool
 
-    /// Product to display
-    ///
-    let product: Product
+    // MARK: Product properties
 
-    /// Label showing product name
+    /// Product ID
+    /// Required by SwiftUI as a unique identifier
     ///
-    var nameLabel: String {
-        product.name
-    }
+    let id: Int64
+
+    /// Product name
+    ///
+    let name: String
+
+    /// Product SKU
+    ///
+    private let sku: String?
+
+    /// Product price
+    ///
+    private let price: String
+
+    /// Product stock status
+    ///
+    private let stockStatus: ProductStockStatus
+
+    /// Product stock quantity
+    ///
+    private let stockQuantity: Decimal?
+
+    /// Whether the product's stock quantity is managed
+    ///
+    private let manageStock: Bool
 
     /// Label showing product stock status and price.
     ///
-    var stockAndPriceLabel: String {
+    lazy var stockAndPriceLabel: String = {
         let stockLabel = createStockText()
         let priceLabel = createPriceText()
 
         return [stockLabel, priceLabel]
             .compactMap({ $0 })
             .joined(separator: " • ")
-    }
+    }()
 
     /// Label showing product SKU
     ///
-    var skuLabel: String {
-        guard let sku = product.sku, sku.isNotEmpty else {
+    lazy var skuLabel: String = {
+        guard let sku = sku, sku.isNotEmpty else {
             return ""
         }
         return String.localizedStringWithFormat(Localization.skuFormat, sku)
-    }
+    }()
 
     /// Quantity of product in the order
     ///
-    var quantity: Int64 = 1
+    @Published var quantity: Int64 = 1
 
-    init(product: Product,
+    init(id: Int64,
+         name: String,
+         sku: String?,
+         price: String,
+         stockStatusKey: String,
+         stockQuantity: Decimal?,
+         manageStock: Bool,
          canChangeQuantity: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
-        self.id = product.productID
-        self.product = product
+        self.id = id
+        self.name = name
+        self.sku = sku
+        self.price = price
+        self.stockStatus = .init(rawValue: stockStatusKey)
+        self.stockQuantity = stockQuantity
+        self.manageStock = manageStock
         self.canChangeQuantity = canChangeQuantity
         self.currencyFormatter = currencyFormatter
+    }
+
+    convenience init(product: Product,
+                     canChangeQuantity: Bool,
+                     currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+        self.init(id: product.productID,
+                  name: product.name,
+                  sku: product.sku,
+                  price: product.price,
+                  stockStatusKey: product.stockStatusKey,
+                  stockQuantity: product.stockQuantity,
+                  manageStock: product.manageStock,
+                  canChangeQuantity: canChangeQuantity,
+                  currencyFormatter: currencyFormatter)
     }
 
     /// Create the stock text based on a product's stock status/quantity.
     ///
     private func createStockText() -> String {
-        switch product.productStockStatus {
+        switch stockStatus {
         case .inStock:
-            if let stockQuantity = product.stockQuantity, product.manageStock {
+            if let stockQuantity = stockQuantity, manageStock {
                 let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
                 return String.localizedStringWithFormat(Localization.stockFormat, localizedStockQuantity)
             } else {
-                return product.productStockStatus.description
+                return stockStatus.description
             }
         default:
-            return product.productStockStatus.description
+            return stockStatus.description
         }
     }
 
     /// Create the price text based on a product's price.
     ///
     private func createPriceText() -> String? {
-        let unformattedPrice = product.price.isNotEmpty ? product.price : "0"
+        let unformattedPrice = price.isNotEmpty ? price : "0"
         return currencyFormatter.formatAmount(unformattedPrice)
     }
 }
@@ -88,9 +129,4 @@ private extension ProductRowViewModel {
         static let stockFormat = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown during order creation")
         static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
     }
-}
-
-// MARK: SwiftUI Preview Helpers
-extension ProductRowViewModel {
-    static let sampleProduct = Product().copy(productID: 2, name: "Love Ficus", sku: "123456", price: "20", stockQuantity: 7, stockStatusKey: "instock")
 }

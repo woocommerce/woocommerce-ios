@@ -48,6 +48,8 @@ struct NewOrder: View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: Layout.noSpacing) {
+                    OrderStatusSection(geometry: geometry, viewModel: viewModel)
+
                     Spacer(minLength: Layout.sectionSpacing)
 
                     ProductsSection(geometry: geometry, viewModel: viewModel)
@@ -98,7 +100,14 @@ private struct ProductsSection: View {
                     .headlineStyle()
 
                 // TODO: Add a product row for each product added to the order
-                let productRowViewModel = ProductRowViewModel(product: ProductRowViewModel.sampleProduct, canChangeQuantity: true) // Temporary view model
+                let productRowViewModel = ProductRowViewModel(id: 1,
+                                                    name: "Love Ficus",
+                                                    sku: "123456",
+                                                    price: "20",
+                                                    stockStatusKey: "instock",
+                                                    stockQuantity: 7,
+                                                    manageStock: true,
+                                                    canChangeQuantity: true) // Temporary view model with fake data
                 ProductRow(viewModel: productRowViewModel)
 
                 Button(NewOrder.Localization.addProduct) {

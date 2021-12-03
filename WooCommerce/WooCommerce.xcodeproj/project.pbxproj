@@ -5189,6 +5189,24 @@
 			path = ../config;
 			sourceTree = "<group>";
 		};
+		AE264C04275A493800B52996 /* StatusSection */ = {
+			isa = PBXGroup;
+			children = (
+				AE457812275644590092F687 /* OrderStatusSection.swift */,
+				AEC12B792758D55900845F97 /* OrderStatusList.swift */,
+			);
+			path = StatusSection;
+			sourceTree = "<group>";
+		};
+		AE264C05275A495E00B52996 /* FlowCoordinator */ = {
+			isa = PBXGroup;
+			children = (
+				AEA622B1274669D3002A9B57 /* AddOrderCoordinator.swift */,
+				AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */,
+			);
+			path = FlowCoordinator;
+			sourceTree = "<group>";
+		};
 		AEB73C1525CD8E3100A8454A /* Edit Product Variation */ = {
 			isa = PBXGroup;
 			children = (
@@ -6011,11 +6029,9 @@
 			children = (
 				CCFC50542743BC0D001E505F /* NewOrder.swift */,
 				CCFC50582743E021001E505F /* NewOrderViewModel.swift */,
+				AE264C05275A495E00B52996 /* FlowCoordinator */,
 				CC53FB3627551A8700C4CA4F /* ProductsSection */,
-				AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */,
-				AEA622B1274669D3002A9B57 /* AddOrderCoordinator.swift */,
-				AE457812275644590092F687 /* OrderStatusSection.swift */,
-				AEC12B792758D55900845F97 /* OrderStatusList.swift */,
+				AE264C04275A493800B52996 /* StatusSection */,
 			);
 			path = "Order Creation";
 			sourceTree = "<group>";

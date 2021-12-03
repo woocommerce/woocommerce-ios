@@ -17,9 +17,9 @@ struct JetpackInstallStepsView: View {
             return URL(string: "\(siteURL)\(Constants.wpAdminInstallPath)")
         case .activation:
             return URL(string: "\(siteURL)\(Constants.wpAdminPluginsPath)")
-        case .connection, .done:
+        default:
             return nil
-        }       
+        }
     }
 
     /// Whether the WPAdmin webview is being shown.

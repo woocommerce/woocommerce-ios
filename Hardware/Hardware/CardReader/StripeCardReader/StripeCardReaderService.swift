@@ -491,6 +491,7 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
             }
         } else {
             softwareUpdateSubject.send(.completed)
+            connectedReadersSubject.send([CardReader(reader: reader)])
             softwareUpdateSubject.send(.none)
         }
     }

@@ -30,6 +30,7 @@ extension Storage.Site: ReadOnlyConvertible {
                     name: name ?? "",
                     description: tagline ?? "",
                     url: url ?? "",
+                    adminURL: "", // TODO-5365: update this
                     plan: plan ?? "",
                     isJetpackThePluginInstalled: isJetpackThePluginInstalled,
                     isJetpackConnected: isJetpackConnected,

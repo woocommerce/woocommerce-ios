@@ -3,7 +3,7 @@ import Yosemite
 
 struct OrderStatusSection: View {
     let geometry: GeometryProxy
-    let viewModel: NewOrderViewModel
+    @ObservedObject var viewModel: NewOrderViewModel
 
     var body: some View {
         Divider()
@@ -21,10 +21,17 @@ struct OrderStatusSection: View {
                     .background(Color(viewModel.statusBadgeViewModel.color))
                     .cornerRadius(Layout.StatusBadge.cornerRadius)
                 Spacer()
-                Button(Localization.editButton) {}
-                    .buttonStyle(LinkButtonStyle())
-                    .fixedSize(horizontal: true, vertical: true)
-                    .padding(.trailing, -Layout.linkButtonTrailingPadding) // remove trailing padding to align button title to the side
+                Button(Localization.editButton) {
+                    viewModel.shouldShowOrderStatusList = true
+                }
+                .buttonStyle(LinkButtonStyle())
+                .fixedSize(horizontal: true, vertical: true)
+                .padding(.trailing, -Layout.linkButtonTrailingPadding) // remove trailing padding to align button title to the side
+                .sheet(isPresented: $viewModel.shouldShowOrderStatusList) {
+                    OrderStatusList(siteID: viewModel.siteID, status: viewModel.orderDetails.status) { newStatus in
+                        viewModel.orderDetails.status = newStatus
+                    }
+                }
             }
         }
         .padding(.horizontal, insets: geometry.safeAreaInsets)

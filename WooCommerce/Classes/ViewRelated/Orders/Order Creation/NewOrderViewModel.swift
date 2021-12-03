@@ -5,7 +5,7 @@ import protocol Storage.StorageManagerType
 /// View model for `NewOrder`.
 ///
 final class NewOrderViewModel: ObservableObject {
-    private let siteID: Int64
+    let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
 
@@ -36,6 +36,10 @@ final class NewOrderViewModel: ObservableObject {
     /// Representation of order status display properties.
     ///
     @Published private(set) var statusBadgeViewModel: StatusBadgeViewModel = .init(orderStatusEnum: .pending)
+
+    /// Indicates if the order status list (selector) should be shown or not.
+    ///
+    @Published var shouldShowOrderStatusList: Bool = false
 
     /// Status Results Controller.
     ///

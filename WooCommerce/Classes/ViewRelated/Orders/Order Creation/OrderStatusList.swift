@@ -10,7 +10,7 @@ struct OrderStatusList: UIViewControllerRepresentable {
 
     /// Closure to be invoked when the status is updated.
     ///
-    var didSelectApply: ((OrderStatusEnum?) -> Void)
+    var didSelectApply: ((OrderStatusEnum) -> Void)
 
     func makeUIViewController(context: Context) -> WooNavigationController {
         let statusList = OrderStatusListViewController(siteID: siteID, status: status)

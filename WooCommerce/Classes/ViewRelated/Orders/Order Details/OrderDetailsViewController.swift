@@ -981,10 +981,7 @@ private extension OrderDetailsViewController {
         present(navigationController, animated: true)
     }
 
-    func setOrderStatus(to newStatus: OrderStatusEnum?) {
-        guard let newStatus = newStatus else {
-            return
-        }
+    func setOrderStatus(to newStatus: OrderStatusEnum) {
         let orderID = viewModel.order.orderID
         let undoStatus = viewModel.order.status
         let done = updateOrderStatusAction(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, status: newStatus)

@@ -13,16 +13,6 @@ final class TextFieldTableViewCell: UITableViewCell {
     private var secureTextEntryImageHidden: UIImage?
     private var textfieldStyle: TextFieldStyle = .url
 
-    /// Register an action for the SiteAddress URL textfield.
-    /// - Note: we have to manually add an action to the textfield
-    ///	        because the delegate method `textFieldDidChangeSelection(_ textField: UITextField)`
-    ///         is only available to iOS 13+. When we no longer support iOS 12,
-    ///			`registerTextFieldAction`, `textFieldDidChangeSelection`, and `onChangeSelectionHandler` can
-    ///			be deleted in favor of adding the delegate method to SiteAddressViewController.
-    @IBAction func registerTextFieldAction() {
-        onChangeSelectionHandler?(textField)
-    }
-
     /// Public properties.
     ///
     @IBOutlet public weak var textField: UITextField! // public so it can be the first responder
@@ -32,7 +22,6 @@ final class TextFieldTableViewCell: UITableViewCell {
         }
     }
 
-    public var onChangeSelectionHandler: ((_ sender: UITextField) -> Void)?
     public static let reuseIdentifier = "TextFieldTableViewCell"
 
     override func awakeFromNib() {
@@ -80,7 +69,6 @@ private extension TextFieldTableViewCell {
         case .url:
             textField.keyboardType = .URL
             textField.returnKeyType = .continue
-            registerTextFieldAction()
             textField.accessibilityLabel = Constants.siteAddress
             textField.accessibilityIdentifier = Constants.siteAddressID
         case .username:
@@ -108,12 +96,6 @@ private extension TextFieldTableViewCell {
             textField.accessibilityLabel = Constants.email
             textField.accessibilityIdentifier = Constants.emailID
         }
-    }
-
-    /// Call the handler when the textfield changes.
-    ///
-    @objc func textFieldDidChangeSelection() {
-        onChangeSelectionHandler?(textField)
     }
 }
 

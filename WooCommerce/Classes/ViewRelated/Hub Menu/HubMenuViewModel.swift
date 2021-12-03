@@ -9,7 +9,13 @@ final class HubMenuViewModel: ObservableObject {
     let siteID: Int64
 
     let storeTitle = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.myStore
-    let storeURL = ServiceLocator.stores.sessionManager.defaultSite?.url
+    var storeURL: URL {
+        guard let urlString = ServiceLocator.stores.sessionManager.defaultSite?.url, let url = URL(string: urlString) else {
+            return WooConstants.URLs.blog.asURL()
+        }
+
+        return url
+    }
 
     /// Child items
     ///

@@ -5,6 +5,7 @@ import SwiftUI
 ///
 struct HubMenu: View {
     @ObservedObject private var viewModel: HubMenuViewModel
+    @State private var showViewStore = false
     @State private var showReviews = false
 
     init(siteID: Int64) {
@@ -14,7 +15,7 @@ struct HubMenu: View {
     var body: some View {
         VStack {
             TopBar(storeTitle: viewModel.storeTitle,
-                   storeURL: viewModel.storeURL)
+                   storeURL: viewModel.storeURL.absoluteString)
 
             ScrollView {
                 let gridItemLayout = [GridItem(.adaptive(minimum: Constants.itemSize), spacing: Constants.itemSpacing)]
@@ -25,6 +26,8 @@ struct HubMenu: View {
                             .frame(width: Constants.itemSize, height: Constants.itemSize)
                             .onTapGesture {
                                 switch menu {
+                                case .viewStore:
+                                    showViewStore = true
                                 case .reviews:
                                     showReviews = true
                                 default:
@@ -40,6 +43,7 @@ struct HubMenu: View {
                 .padding(Constants.padding)
                 .background(Color(.listBackground))
             }
+            .safariSheet(isPresented: $showViewStore, url: viewModel.storeURL)
             NavigationLink(destination:
                             ReviewsView(siteID: viewModel.siteID),
                            isActive: $showReviews) {

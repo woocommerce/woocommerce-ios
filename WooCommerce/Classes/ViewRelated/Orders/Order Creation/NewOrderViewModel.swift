@@ -25,20 +25,6 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var presentNotice: NewOrderNotice?
 
-    // MARK: - Products Section Properties
-
-    /// Products added to the order
-    ///
-    private(set) var selectedProducts: [Product] = []
-
-    /// View models for each product row in the order
-    ///
-    var productRows: [ProductRowViewModel] {
-        selectedProducts.map { .init(product: $0, canChangeQuantity: true) }
-    }
-
-    // MARK: - Initialization
-
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores

@@ -6,13 +6,12 @@ class NewOrderViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
 
-    func test_view_model_is_created_with_correct_initial_values() {
+    func test_view_model_starts_with_create_button_hidden() {
         // Given
         let viewModel = NewOrderViewModel(siteID: sampleSiteID)
 
         // Then
         XCTAssertEqual(viewModel.navigationTrailingItem, .none)
-        XCTAssertTrue(viewModel.selectedProducts.isEmpty)
     }
 
     func test_create_button_is_enabled_when_order_detail_changes_from_default_value() {

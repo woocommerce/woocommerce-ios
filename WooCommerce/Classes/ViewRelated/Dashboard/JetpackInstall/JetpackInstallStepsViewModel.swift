@@ -119,7 +119,8 @@ final class JetpackInstallStepsViewModel: ObservableObject {
 
     /// Check site to make sure connection succeeds.
     ///
-    private func checkSiteConnection() {
+    func checkSiteConnection() {
+        installFailed = false
         currentStep = .connection
         let siteFetch = AccountAction.loadAndSynchronizeSite(siteID: siteID,
                                                              forcedUpdate: true,

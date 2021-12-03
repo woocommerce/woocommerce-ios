@@ -9,7 +9,7 @@ import SwiftUI
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
-final class `OrderDetailsViewController`: UIViewController {
+final class OrderDetailsViewController: UIViewController {
 
     /// Main Stack View, that contains all the other views of the screen
     ///

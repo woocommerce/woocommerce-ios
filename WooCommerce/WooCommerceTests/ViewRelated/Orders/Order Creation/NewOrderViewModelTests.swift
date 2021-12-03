@@ -111,6 +111,26 @@ class NewOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "pending")
     }
+
+    func test_view_model_is_updated_when_order_status_updated() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+        storageManager.insertOrderStatus(.init(name: "Pending payment", siteID: sampleSiteID, slug: "pending", total: 0))
+        storageManager.insertOrderStatus(.init(name: "Processing", siteID: sampleSiteID, slug: "processing", total: 0))
+
+        // When
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.statusBadgeViewModel.title, "Pending payment")
+
+        // When
+        viewModel.orderDetails.status = .processing
+
+        // Then
+        XCTAssertEqual(viewModel.statusBadgeViewModel.title, "Processing")
+    }
 }
 
 private extension MockStorageManager {

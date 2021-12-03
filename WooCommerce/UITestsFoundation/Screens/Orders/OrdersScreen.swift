@@ -36,10 +36,6 @@ public final class OrdersScreen: ScreenObject {
         )
     }
 
-    static func isLoaded() -> Bool {
-        return XCUIApplication().buttons[ElementStringIDs.searchButton].exists
-    }
-
     @discardableResult
     public func selectOrder(atIndex index: Int) throws -> SingleOrderScreen {
         app.tables.cells.element(boundBy: index).tap()

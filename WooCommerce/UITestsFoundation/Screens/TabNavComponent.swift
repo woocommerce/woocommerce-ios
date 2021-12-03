@@ -48,7 +48,7 @@ public final class TabNavComponent: ScreenObject {
     @discardableResult
     public func gotoOrdersScreen() throws -> OrdersScreen {
         // Avoid transitioning if it is already on screen
-        if !OrdersScreen.isLoaded() {
+        if !OrdersScreen.isVisible {
             ordersTabButton.tap()
         }
 

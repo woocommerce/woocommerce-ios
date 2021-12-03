@@ -5,7 +5,7 @@ class LoginFlow {
 
     // Login with WordPress.com account flow
     @discardableResult
-    static func login() throws -> MyStoreScreen {
+    static func logInWithWPcom() throws -> MyStoreScreen {
        return try PrologueScreen().selectContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)

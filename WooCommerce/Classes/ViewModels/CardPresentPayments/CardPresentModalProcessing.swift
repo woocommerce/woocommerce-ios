@@ -33,6 +33,10 @@ final class CardPresentModalProcessing: CardPresentPaymentsModalViewModel {
 
     let bottomSubtitle: String? = nil
 
+    var accessibilityLabel: String? {
+        return Localization.processingPaymentAccessibilityLabel
+    }
+
     init(name: String, amount: String) {
         self.name = name
         self.amount = amount
@@ -56,6 +60,11 @@ private extension CardPresentModalProcessing {
         static let processingPayment = NSLocalizedString(
             "Processing payment...",
             comment: "Indicates that a payment is being processed"
+        )
+
+        static let processingPaymentAccessibilityLabel = NSLocalizedString(
+            "Processing payment",
+            comment: "VoiceOver accessibility label. Indicates that a payment is being processed"
         )
     }
 }

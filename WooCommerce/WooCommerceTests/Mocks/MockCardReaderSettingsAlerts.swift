@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Yosemite
 @testable import WooCommerce
 
 enum MockCardReaderSettingsAlertsMode {
@@ -76,6 +77,33 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     func connectingFailed(from: UIViewController, continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
         if mode == .continueSearchingAfterConnectionFailure {
             continueSearch()
+        }
+
+        if mode == .cancelSearchingAfterConnectionFailure {
+            cancelSearch()
+        }
+    }
+
+    func connectingFailedIncompleteAddress(from: UIViewController,
+                                        adminUrl: URL?,
+                                        site: Site?,
+                                        openUrlInSafari: @escaping (URL) -> Void,
+                                        retrySearch: @escaping () -> Void,
+                                        cancelSearch: @escaping () -> Void) {
+        if mode == .continueSearchingAfterConnectionFailure {
+            retrySearch()
+        }
+
+        if mode == .cancelSearchingAfterConnectionFailure {
+            cancelSearch()
+        }
+    }
+
+    func connectingFailedInvalidPostalCode(from: UIViewController,
+                                           retrySearch: @escaping () -> Void,
+                                           cancelSearch: @escaping () -> Void) {
+        if mode == .continueSearchingAfterConnectionFailure {
+            retrySearch()
         }
 
         if mode == .cancelSearchingAfterConnectionFailure {

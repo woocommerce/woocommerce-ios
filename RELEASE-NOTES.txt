@@ -7,6 +7,8 @@
 8.2
 -----
 - [*] Shipping Labels: Fixes a crash when saving a new shipping label after opening the order from a push notification. [https://github.com/woocommerce/woocommerce-ios/pull/5549]
+- [**] In-Person Payments: Improved support for VoiceOver. [https://github.com/woocommerce/woocommerce-ios/pull/5572]
+- [*] In-Person Payments: Fixes a crash when printing more than one receipt. [https://github.com/woocommerce/woocommerce-ios/pull/5575]
 
 8.1
 -----

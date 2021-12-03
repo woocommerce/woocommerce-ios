@@ -46,6 +46,10 @@ final class CardReaderConnectionController {
         ///
         case updating(progress: Float)
 
+        /// User chose to retry the connection to the card reader. Starts the search again, by dismissing modals and initializing from scratch
+        ///
+        case retry
+
         /// User cancelled search/connecting to a card reader. The completion passed to `searchAndConnect`
         /// will be called with a `success` `Bool` `False` result. The view controller passed to `searchAndConnect` will be
         /// dereferenced and the state set to `idle`
@@ -142,6 +146,8 @@ private extension CardReaderConnectionController {
             onFoundReader()
         case .foundSeveralReaders:
             onFoundSeveralReaders()
+        case .retry:
+            onRetry()
         case .cancel:
             onCancel()
         case .connectToReader:
@@ -433,6 +439,16 @@ private extension CardReaderConnectionController {
                               cancel: cancel)
     }
 
+    /// Retry a search for a card reader
+    ///
+    func onRetry() {
+        alerts.dismiss()
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
+            self?.state = .beginSearch
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
     /// End the search for a card reader
     ///
     func onCancel() {
@@ -508,10 +524,6 @@ private extension CardReaderConnectionController {
     /// An error occurred while connecting
     ///
     private func onConnectingFailed(error: Error) {
-        guard let from = fromController else {
-            return
-        }
-
         /// Clear our copy of found readers to avoid connecting to a reader that isn't
         /// there while we wait for `onReaderDiscovered` to receive an update.
         /// See also https://github.com/stripe/stripe-terminal-ios/issues/104#issuecomment-916285167
@@ -522,15 +534,7 @@ private extension CardReaderConnectionController {
            underlyingError.isSoftwareUpdateError {
             return onUpdateFailed(error: error)
         }
-
-        alerts.connectingFailed(
-            from: from,
-            continueSearch: {
-                self.state = .searching
-            }, cancelSearch: {
-                self.state = .cancel
-            }
-        )
+        showConnectionFailed(error: error)
     }
 
     private func onUpdateFailed(error: Error) {
@@ -559,6 +563,53 @@ private extension CardReaderConnectionController {
                     self.state = .searching
                 })
         }
+    }
+
+    private func showConnectionFailed(error: Error) {
+        guard let from = fromController else {
+            return
+        }
+
+        let retrySearch = {
+            self.state = .retry
+        }
+
+        let continueSearch = {
+            self.state = .searching
+        }
+
+        let cancelSearch = {
+            self.state = .cancel
+        }
+
+        guard case CardReaderServiceError.connection(let underlyingError) = error else {
+            return alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
+        }
+
+        switch underlyingError {
+        case .incompleteStoreAddress(let adminUrl):
+            let openUrlInSafari = { [weak self] (url: URL?) -> Void in
+                guard let adminUrl = url else {
+                    return
+                }
+                UIApplication.shared.open(adminUrl)
+                self?.showIncompleteAddressErrorWithRefreshButton()
+            }
+            alerts.connectingFailedIncompleteAddress(from: from,
+                                                  adminUrl: adminUrl,
+                                                  site: ServiceLocator.stores.sessionManager.defaultSite,
+                                                  openUrlInSafari: openUrlInSafari,
+                                                  retrySearch: retrySearch,
+                                                  cancelSearch: cancelSearch)
+        case .invalidPostalCode:
+            alerts.connectingFailedInvalidPostalCode(from: from, retrySearch: retrySearch, cancelSearch: cancelSearch)
+        default:
+            alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
+        }
+    }
+
+    private func showIncompleteAddressErrorWithRefreshButton() {
+        showConnectionFailed(error: CardReaderServiceError.connection(underlyingError: .incompleteStoreAddress(adminUrl: nil)))
     }
 
     /// An error occurred during discovery

@@ -17,17 +17,17 @@ struct AddProduct: View {
                 ScrollView {
                     // TODO: Make the product list searchable
                     LazyVStack {
-                        ForEach(viewModel.productRowViewModels) { viewModel in
+                        ForEach(viewModel.productRows) { viewModel in
                             ProductRow(viewModel: viewModel)
                         }
                     }
                     .padding()
-                    .renderedIf(viewModel.productRowViewModels.isNotEmpty)
+                    .renderedIf(viewModel.productRows.isNotEmpty)
 
                     EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
                         .frame(height: geometry.size.height)
                         .background(Color(.listBackground))
-                        .renderedIf(viewModel.productRowViewModels.isEmpty)
+                        .renderedIf(viewModel.productRows.isEmpty)
                 }
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)

@@ -30,9 +30,9 @@ class AddProductViewModelTests: XCTestCase {
         let viewModel = AddProductViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // Then
-        XCTAssertEqual(viewModel.productRowViewModels.count, 1)
+        XCTAssertEqual(viewModel.productRows.count, 1)
 
-        let productRow = viewModel.productRowViewModels[0]
+        let productRow = viewModel.productRows[0]
         XCTAssertEqual(productRow.product, product)
         XCTAssertFalse(productRow.canChangeQuantity, "Product row canChangeQuantity property should be false but is true instead")
     }
@@ -50,15 +50,15 @@ class AddProductViewModelTests: XCTestCase {
         let viewModel = AddProductViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // Then
-        XCTAssertTrue(viewModel.productRowViewModels.contains(where: { $0.product.productType == .simple }),
+        XCTAssertTrue(viewModel.productRows.contains(where: { $0.product.productType == .simple }),
                       "Product rows do not include simple product")
-        XCTAssertTrue(viewModel.productRowViewModels.contains(where: { $0.product.productType == .grouped }),
+        XCTAssertTrue(viewModel.productRows.contains(where: { $0.product.productType == .grouped }),
                       "Product rows do not include grouped product")
-        XCTAssertTrue(viewModel.productRowViewModels.contains(where: { $0.product.productType == .affiliate }),
+        XCTAssertTrue(viewModel.productRows.contains(where: { $0.product.productType == .affiliate }),
                       "Product rows do not include affiliate product")
-        XCTAssertFalse(viewModel.productRowViewModels.contains(where: { $0.product.productType == .variable }),
+        XCTAssertFalse(viewModel.productRows.contains(where: { $0.product.productType == .variable }),
                        "Product rows include variable product")
-        XCTAssertTrue(viewModel.productRowViewModels.contains(where: { $0.product.productType == .subscription }),
+        XCTAssertTrue(viewModel.productRows.contains(where: { $0.product.productType == .subscription }),
                       "Product rows do not include subscription product")
     }
 
@@ -74,13 +74,13 @@ class AddProductViewModelTests: XCTestCase {
         let viewModel = AddProductViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // Then
-        XCTAssertTrue(viewModel.productRowViewModels.contains(where: { $0.product.productStatus == .publish }),
+        XCTAssertTrue(viewModel.productRows.contains(where: { $0.product.productStatus == .publish }),
                       "Product rows do not include published product")
-        XCTAssertFalse(viewModel.productRowViewModels.contains(where: { $0.product.productStatus == .draft }),
+        XCTAssertFalse(viewModel.productRows.contains(where: { $0.product.productStatus == .draft }),
                        "Product rows include draft product")
-        XCTAssertFalse(viewModel.productRowViewModels.contains(where: { $0.product.productStatus == .pending }),
+        XCTAssertFalse(viewModel.productRows.contains(where: { $0.product.productStatus == .pending }),
                        "Product rows include pending product")
-        XCTAssertTrue(viewModel.productRowViewModels.contains(where: { $0.product.productStatus == .privateStatus }),
+        XCTAssertTrue(viewModel.productRows.contains(where: { $0.product.productStatus == .privateStatus }),
                       "Product rows do not include private product")
     }
 }

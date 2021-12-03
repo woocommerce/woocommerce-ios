@@ -97,7 +97,7 @@ private struct ProductsSection: View {
                 Text(NewOrder.Localization.products)
                     .headlineStyle()
 
-                ForEach(viewModel.productRowViewModels) { viewModel in
+                ForEach(viewModel.productRows) { viewModel in
                     ProductRow(viewModel: viewModel)
                 }
 

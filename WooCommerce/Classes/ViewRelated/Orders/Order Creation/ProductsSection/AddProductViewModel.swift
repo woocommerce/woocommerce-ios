@@ -25,7 +25,7 @@ final class AddProductViewModel: ObservableObject {
 
     /// View models for each product row
     ///
-    var productRowViewModels: [ProductRowViewModel] {
+    var productRows: [ProductRowViewModel] {
         products.map { .init(product: $0, canChangeQuantity: false) }
     }
 

@@ -33,7 +33,7 @@ final class NewOrderViewModel: ObservableObject {
 
     /// View models for each product row in the order
     ///
-    var productRowViewModels: [ProductRowViewModel] {
+    var productRows: [ProductRowViewModel] {
         selectedProducts.map { .init(product: $0, canChangeQuantity: true) }
     }
 

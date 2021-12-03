@@ -7,14 +7,13 @@ class GravatarEmailTableViewCell: UITableViewCell {
     /// Private properties
     ///
     @IBOutlet private weak var gravatarImageView: UIImageView?
-    @IBOutlet private weak var emailLabel: UITextField?
 
     private let gridiconSize = CGSize(width: 48, height: 48)
 
     /// Public properties
     ///
+    @IBOutlet public weak var emailLabel: UITextField?
     public static let reuseIdentifier = "GravatarEmailTableViewCell"
-    public var onChangeSelectionHandler: ((_ sender: UITextField) -> Void)?
 
     /// Public Methods
     ///
@@ -33,34 +32,6 @@ class GravatarEmailTableViewCell: UITableViewCell {
         }
 
         gravatarImageView?.downloadGravatarWithEmail(email, placeholderImage: placeholderImage ?? gridicon)
-    }
-
-    func updateEmailAddress(_ email: String?) {
-        emailLabel?.text = email
-    }
-
-}
-
-// MARK: - Password Manager Handling
-
-private extension GravatarEmailTableViewCell {
-
-    // MARK: - All Password Managers
-
-    /// Call the handler when the text field changes.
-    ///
-    /// - Note: we have to manually add an action to the textfield
-    /// because the delegate method `textFieldDidChangeSelection(_ textField: UITextField)`
-    /// is only available to iOS 13+. When we no longer support iOS 12,
-    /// `textFieldDidChangeSelection`, and `onChangeSelectionHandler` can
-    /// be deleted in favor of adding the delegate method to view controllers.
-    ///
-    @IBAction func textFieldDidChangeSelection() {
-        guard let emailTextField = emailLabel else {
-            return
-        }
-
-        onChangeSelectionHandler?(emailTextField)
     }
 
 }

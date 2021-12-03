@@ -25,6 +25,10 @@ final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel {
 
     var bottomSubtitle: String? = nil
 
+    var accessibilityLabel: String? {
+        Localization.title
+    }
+
     init(requiredUpdate: Bool, progress: Float, cancel: (() -> Void)?) {
         self.cancelAction = cancel
 

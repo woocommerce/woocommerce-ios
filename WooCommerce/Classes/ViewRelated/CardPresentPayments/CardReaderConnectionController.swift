@@ -570,8 +570,12 @@ private extension CardReaderConnectionController {
             return
         }
 
-        let continueSearch = {
+        let retrySearch = {
             self.state = .retry
+        }
+
+        let continueSearch = {
+            self.state = .searching
         }
 
         let cancelSearch = {
@@ -591,12 +595,14 @@ private extension CardReaderConnectionController {
                 UIApplication.shared.open(adminUrl)
                 self?.showIncompleteAddressErrorWithRefreshButton()
             }
-            alerts.connectingFailedMissingAddress(from: from,
+            alerts.connectingFailedIncompleteAddress(from: from,
                                                   adminUrl: adminUrl,
                                                   site: ServiceLocator.stores.sessionManager.defaultSite,
                                                   openUrlInSafari: openUrlInSafari,
-                                                  retrySearch: continueSearch,
+                                                  retrySearch: retrySearch,
                                                   cancelSearch: cancelSearch)
+        case .invalidPostalCode:
+            alerts.connectingFailedInvalidPostalCode(from: from, retrySearch: retrySearch, cancelSearch: cancelSearch)
         default:
             alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
         }

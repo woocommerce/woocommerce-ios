@@ -33,6 +33,9 @@ protocol CardPresentPaymentsModalViewModel {
     /// The subtitle in the bottom section of the modal. Right below the image
     var bottomSubtitle: String? { get }
 
+    /// The accessibilityLabel to be provided to VoiceOver
+    var accessibilityLabel: String? { get }
+
     /// Executes action associated to a tap in the view controller primary button
     /// - Parameter viewController: usually the view controller sending the tap
     func didTapPrimaryButton(in viewController: UIViewController?)

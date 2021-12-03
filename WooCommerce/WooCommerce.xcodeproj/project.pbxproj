@@ -377,6 +377,7 @@
 		02FE89C7231FAA4100E85EF8 /* MainTabBarControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */; };
 		031B10E3274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031B10E2274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift */; };
 		035C6DEB273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */; };
+		035F2308275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */; };
 		03AA165E2719B7EF005CCB7B /* ReceiptActionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AA165D2719B7EF005CCB7B /* ReceiptActionCoordinator.swift */; };
 		03AA16602719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AA165F2719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift */; };
 		247CE89C2583402A00F9D9D1 /* Embassy in Frameworks */ = {isa = PBXBuildFile; productRef = 247CE89B2583402A00F9D9D1 /* Embassy */; };
@@ -443,6 +444,7 @@
 		268EC45F26CEA50C00716F5C /* EditCustomerNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268EC45E26CEA50C00716F5C /* EditCustomerNote.swift */; };
 		268EC46126D3F67800716F5C /* EditCustomerNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268EC46026D3F67800716F5C /* EditCustomerNoteViewModel.swift */; };
 		268EC46426D3F9C100716F5C /* EditCustomerNoteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268EC46326D3F9C100716F5C /* EditCustomerNoteViewModelTests.swift */; };
+		268FD44727580A81008FDF9B /* CollectOrderPaymentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268FD44627580A81008FDF9B /* CollectOrderPaymentUseCase.swift */; };
 		26A630ED253F3B5C00CBC3B1 /* RefundCreationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A630EC253F3B5C00CBC3B1 /* RefundCreationUseCase.swift */; };
 		26A630F3253F3CFE00CBC3B1 /* RefundCreationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A630F2253F3CFE00CBC3B1 /* RefundCreationUseCaseTests.swift */; };
 		26A630FE253F63C300CBC3B1 /* RefundableOrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A630FD253F63C300CBC3B1 /* RefundableOrderItem.swift */; };
@@ -1882,6 +1884,7 @@
 		02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarControllerTests.swift; sourceTree = "<group>"; };
 		031B10E2274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectionFailedUpdateAddress.swift; sourceTree = "<group>"; };
 		035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareUpdateTypeProperty.swift; sourceTree = "<group>"; };
+		035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectingFailedUpdatePostalCode.swift; sourceTree = "<group>"; };
 		03AA165D2719B7EF005CCB7B /* ReceiptActionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptActionCoordinator.swift; sourceTree = "<group>"; };
 		03AA165F2719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptActionCoordinatorTests.swift; sourceTree = "<group>"; };
 		247CE8A5258340E600F9D9D1 /* ScreenshotImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ScreenshotImages.xcassets; sourceTree = "<group>"; };
@@ -1944,6 +1947,7 @@
 		268EC45E26CEA50C00716F5C /* EditCustomerNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomerNote.swift; sourceTree = "<group>"; };
 		268EC46026D3F67800716F5C /* EditCustomerNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomerNoteViewModel.swift; sourceTree = "<group>"; };
 		268EC46326D3F9C100716F5C /* EditCustomerNoteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomerNoteViewModelTests.swift; sourceTree = "<group>"; };
+		268FD44627580A81008FDF9B /* CollectOrderPaymentUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectOrderPaymentUseCase.swift; sourceTree = "<group>"; };
 		26A630EC253F3B5C00CBC3B1 /* RefundCreationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundCreationUseCase.swift; sourceTree = "<group>"; };
 		26A630F2253F3CFE00CBC3B1 /* RefundCreationUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundCreationUseCaseTests.swift; sourceTree = "<group>"; };
 		26A630FD253F63C300CBC3B1 /* RefundableOrderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundableOrderItem.swift; sourceTree = "<group>"; };
@@ -4110,6 +4114,14 @@
 			path = "Customer Note";
 			sourceTree = "<group>";
 		};
+		268FD44827580A92008FDF9B /* Collect Payments */ = {
+			isa = PBXGroup;
+			children = (
+				268FD44627580A81008FDF9B /* CollectOrderPaymentUseCase.swift */,
+			);
+			path = "Collect Payments";
+			sourceTree = "<group>";
+		};
 		26A630F8253F62AD00CBC3B1 /* UseCases */ = {
 			isa = PBXGroup;
 			children = (
@@ -6051,6 +6063,7 @@
 			isa = PBXGroup;
 			children = (
 				CEE006022077D0F80079161F /* Cells */,
+				268FD44827580A92008FDF9B /* Collect Payments */,
 				CE35F1092343E482007B2A6B /* Order Details */,
 				2678897A270E6E3C00BD249E /* Simple Payments */,
 				CCFC50532743BBBF001E505F /* Order Creation */,
@@ -6684,6 +6697,7 @@
 				E1F52DC52668E03B00349D75 /* CardPresentModalBluetoothRequired.swift */,
 				31B05522264B3C8900134D87 /* CardPresentModalConnectingToReader.swift */,
 				31AD0B1026E9575F000B6391 /* CardPresentModalConnectingFailed.swift */,
+				035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */,
 				031B10E2274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift */,
 				D8EE9697264D3CCB0033B2F9 /* ReceiptViewModel.swift */,
 				D8752EF6265E60F4008ACC80 /* PaymentCaptureCelebration.swift */,
@@ -7806,6 +7820,7 @@
 				455DC3A327393C7E00D4644C /* OrderDatesFilterViewController.swift in Sources */,
 				45B6F4EF27592A4000C18782 /* ReviewsView.swift in Sources */,
 				028BAC4222F30B05008BB4AF /* StoreStatsV4PeriodViewController.swift in Sources */,
+				268FD44727580A81008FDF9B /* CollectOrderPaymentUseCase.swift in Sources */,
 				740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */,
 				45F627B6253603AE00894B86 /* Product+DownloadSettingsViewModels.swift in Sources */,
 				B511ED27218A660E005787DC /* StringDescriptor.swift in Sources */,
@@ -7844,6 +7859,7 @@
 				02307924258731B2008EADEE /* PrintShippingLabelViewModel.swift in Sources */,
 				D843D5D92248EE91001BFA55 /* ManualTrackingViewModel.swift in Sources */,
 				B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */,
+				035F2308275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift in Sources */,
 				457509E4267B9E91005FA2EA /* AggregatedProductListViewController.swift in Sources */,
 				D8815B0D263861A400EDAD62 /* CardPresentModalSuccess.swift in Sources */,
 				0235595524496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift in Sources */,

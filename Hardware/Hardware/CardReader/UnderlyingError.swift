@@ -131,6 +131,9 @@ public enum UnderlyingError: Error, Equatable {
     /// The store setup is incomplete, and the action can't be performed until the user provides a full store address in the site admin.
     /// May include the URL for the appropriate admin page
     case incompleteStoreAddress(adminUrl: URL?)
+
+    /// The store setup is incomplete, and the action can't be performed until the user provides a valid postal code in the site admin.
+    case invalidPostalCode
 }
 
 extension UnderlyingError {
@@ -156,8 +159,8 @@ extension UnderlyingError {
         switch configError {
         case .incompleteStoreAddress(let adminUrl):
             self = .incompleteStoreAddress(adminUrl: adminUrl)
-        default:
-            return nil
+        case .invalidPostalCode:
+            self = .invalidPostalCode
         }
     }
 }
@@ -305,6 +308,10 @@ updating the application or using a different reader
         case .incompleteStoreAddress(_):
             return NSLocalizedString("The store address is incomplete or missing, please update it before continuing.",
                                      comment: "Error message when there is an issue with the store address preventing " +
+                                     "an action (e.g. reader connection.)")
+        case .invalidPostalCode:
+            return NSLocalizedString("The store postal code is invalid or missing, please update it before continuing.",
+                                     comment: "Error message when there is an issue with the store postal code preventing " +
                                      "an action (e.g. reader connection.)")
         }
     }

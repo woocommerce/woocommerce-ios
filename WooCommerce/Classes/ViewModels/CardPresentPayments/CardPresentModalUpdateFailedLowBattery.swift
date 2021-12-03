@@ -22,6 +22,10 @@ final class CardPresentModalUpdateFailedLowBattery: CardPresentPaymentsModalView
 
     let bottomSubtitle: String? = nil
 
+    var accessibilityLabel: String? {
+        return topTitle
+    }
+
     init(batteryLevel: Double?, close: @escaping () -> Void) {
         self.close = close
         if let batteryLevel = batteryLevel {

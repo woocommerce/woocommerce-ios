@@ -37,6 +37,10 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
 
     let bottomSubtitle: String? = nil
 
+    var accessibilityLabel: String? {
+        return topTitle
+    }
+
     init(adminUrl: URL?,
          site: Site?,
          openUrlInSafari: @escaping (URL) -> Void,
@@ -99,14 +103,15 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
 private extension CardPresentModalConnectingFailedUpdateAddress {
     enum Localization {
         static let title = NSLocalizedString(
-            "Please update your store address to proceed.",
+            "Please correct your store address to proceed",
             comment: "Title of the alert presented when the user tries to connect to a specific card reader and it fails " +
             "due to address problems"
         )
 
         static let adminWebviewTitle = NSLocalizedString(
             "WooCommerce Settings",
-            comment: "Navigation title of the webview which used by the merchant to update their store address")
+            comment: "Navigation title of the webview which used by the merchant to update their store address"
+        )
 
         static let openAdmin = NSLocalizedString(
             "Enter Address",

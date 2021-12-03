@@ -241,6 +241,9 @@ private final class ModalViewModel: CardPresentPaymentsModalViewModel {
     /// Flag indicating that the auxiliary button has been tapped
     var auxiliaryButtonTapped: Bool = false
 
+    /// The accessibilityLabel to be provided to VoiceOver
+    let accessibilityLabel: String? = "accessibility_label"
+
     init(textMode: PaymentsModalTextMode, actionsMode: PaymentsModalActionsMode) {
         self.textMode = textMode
         self.actionsMode = actionsMode

@@ -42,6 +42,9 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Needed to present IPP collect amount alerts, which are displayed in UIKit view controllers.
+        rootView.rootViewController = navigationController
+
         // Set presentation delegate to track the user dismiss flow event
         if let navigationController = navigationController {
             navigationController.presentationController?.delegate = self
@@ -74,6 +77,10 @@ struct SimplePaymentsAmount: View {
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
     var dismiss: (() -> Void) = {}
+
+    /// Needed because IPP capture payments depend on a UIViewController for providing user feedback.
+    ///
+    weak var rootViewController: UIViewController?
 
     /// Keeps track of the current content scale due to accessibility changes
     ///
@@ -134,7 +141,7 @@ struct SimplePaymentsAmount: View {
     private func summaryView() -> some View {
         Group {
             if let summaryViewModel = viewModel.summaryViewModel {
-                SimplePaymentsSummary(dismiss: dismiss, viewModel: summaryViewModel)
+                SimplePaymentsSummary(dismiss: dismiss, rootViewController: rootViewController, viewModel: summaryViewModel)
             }
             EmptyView()
         }

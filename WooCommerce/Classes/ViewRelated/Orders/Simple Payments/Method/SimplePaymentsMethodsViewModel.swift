@@ -105,6 +105,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
 
             if error == nil {
                 onSuccess()
+                self.presentNoticeSubject.send(.completed)
             } else {
                 self.presentNoticeSubject.send(.error(Localization.markAsPaidError))
             }
@@ -137,12 +138,13 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
                                                             paymentGatewayAccount: paymentGateway,
                                                             rootViewController: rootViewController)
         collectPaymentsUseCase?.collectPayment(onCollect: { _ in
-            print("On collect does nothing for now...")
+            /* No op. */
         }, onCompleted: { [weak self] in
-            // TODO: Show success notice
-
             // Inform success to consumer
             onSuccess()
+
+            // Sent notice request
+            self?.presentNoticeSubject.send(.completed)
 
             // Make sure we free all the resources
             self?.collectPaymentsUseCase = nil

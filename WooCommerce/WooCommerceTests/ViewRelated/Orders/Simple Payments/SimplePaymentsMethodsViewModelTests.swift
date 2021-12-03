@@ -88,6 +88,38 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(onSuccessInvoked)
     }
 
+    func test_view_model_attempts_completed_notice_presentation_when_marking_an_order_as_paid() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", presentNoticeSubject: noticeSubject, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrderStatus(_, _, _, onCompletion):
+                onCompletion(nil)
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let receivedCompleted: Bool = waitFor { promise in
+            noticeSubject.sink { intent in
+                switch intent {
+                case .error:
+                    promise(false)
+                case .completed:
+                    promise(true)
+                }
+            }
+            .store(in: &self.subscriptions)
+            viewModel.markOrderAsPaid(onSuccess: {})
+        }
+
+        // Then
+        XCTAssertTrue(receivedCompleted)
+    }
+
     func test_view_model_attempts_error_notice_presentation_when_failing_to_mark_order_as_paid() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -108,6 +140,8 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
                 switch intent {
                 case .error:
                     promise(true)
+                case .completed:
+                    promise(false)
                 }
             }
             .store(in: &self.subscriptions)

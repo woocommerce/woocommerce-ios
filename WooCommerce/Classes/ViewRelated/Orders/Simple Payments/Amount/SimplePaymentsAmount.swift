@@ -18,7 +18,14 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
         return presenter
     }()
 
-    init(viewModel: SimplePaymentsAmountViewModel, presentNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never>) {
+    /// Presents notices at the system level, currently uses the main tab-bar as source view controller.
+    ///
+    private let systemNoticePresenter: NoticePresenter
+
+    init(viewModel: SimplePaymentsAmountViewModel,
+         presentNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never>,
+         systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+        self.systemNoticePresenter = systemNoticePresenter
         super.init(rootView: SimplePaymentsAmount(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
@@ -32,6 +39,8 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
             .sink { [weak self] notice in
 
                 switch notice {
+                case .completed:
+                    self?.systemNoticePresenter.enqueue(notice: .init(title: SimplePaymentsAmount.Localization.completed, feedbackType: .success))
                 case .error(let description):
                     self?.modalNoticePresenter.enqueue(notice: .init(title: description, feedbackType: .error))
                 }
@@ -154,6 +163,7 @@ private extension SimplePaymentsAmount {
         static let title = NSLocalizedString("Take Payment", comment: "Title for the simple payments screen")
         static let instructions = NSLocalizedString("Enter Amount", comment: "Short instructions label in the simple payments screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the simple payments screen")
+        static let completed = NSLocalizedString("🎉 Order completed", comment: "Title for the button to cancel the simple payments screen")
 
         static func buttonTitle() -> String {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplePaymentsPrototype) {
@@ -175,5 +185,6 @@ private extension SimplePaymentsAmount {
 /// Representation of possible notices that can be displayed
 ///
 enum SimplePaymentsNotice: Equatable {
+    case completed
     case error(String)
 }

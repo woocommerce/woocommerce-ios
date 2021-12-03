@@ -97,7 +97,15 @@ private struct ProductsSection: View {
                     .headlineStyle()
 
                 // TODO: Add a product row for each product added to the order
-                ProductRow(canChangeQuantity: true)
+                let viewModel = ProductRowViewModel(id: 1,
+                                                    name: "Love Ficus",
+                                                    sku: "123456",
+                                                    price: "20",
+                                                    stockStatusKey: "instock",
+                                                    stockQuantity: 7,
+                                                    manageStock: true,
+                                                    canChangeQuantity: true) // Temporary view model with fake data
+                ProductRow(viewModel: viewModel)
 
                 Button(NewOrder.Localization.addProduct) {
                     showAddProduct.toggle()

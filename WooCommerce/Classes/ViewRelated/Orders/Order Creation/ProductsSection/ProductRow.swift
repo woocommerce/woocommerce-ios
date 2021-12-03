@@ -25,7 +25,7 @@ struct ProductRow: View {
 
                     // Product details
                     VStack(alignment: .leading) {
-                        Text(viewModel.nameLabel)
+                        Text(viewModel.name)
                         Text(viewModel.stockAndPriceLabel)
                             .subheadlineStyle()
                         Text(viewModel.skuLabel)
@@ -114,14 +114,28 @@ private enum Localization {
 
 struct ProductRow_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ProductRowViewModel(product: ProductRowViewModel.sampleProduct, canChangeQuantity: true)
-        let viewModel2 = ProductRowViewModel(product: ProductRowViewModel.sampleProduct, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(id: 1,
+                                            name: "Love Ficus",
+                                            sku: "123456",
+                                            price: "20",
+                                            stockStatusKey: "instock",
+                                            stockQuantity: 7,
+                                            manageStock: true,
+                                            canChangeQuantity: true)
+        let viewModelWithoutStepper = ProductRowViewModel(id: 1,
+                                                          name: "Love Ficus",
+                                                          sku: "123456",
+                                                          price: "20",
+                                                          stockStatusKey: "instock",
+                                                          stockQuantity: 7,
+                                                          manageStock: true,
+                                                          canChangeQuantity: false)
 
         ProductRow(viewModel: viewModel)
             .previewDisplayName("ProductRow with stepper")
             .previewLayout(.sizeThatFits)
 
-        ProductRow(viewModel: viewModel2)
+        ProductRow(viewModel: viewModelWithoutStepper)
             .previewDisplayName("ProductRow without stepper")
             .previewLayout(.sizeThatFits)
     }

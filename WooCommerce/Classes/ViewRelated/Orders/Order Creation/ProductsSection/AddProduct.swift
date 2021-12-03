@@ -13,7 +13,14 @@ struct AddProduct: View {
                 // TODO: Make the product list searchable
                 LazyVStack {
                     // TODO: Add a product row for each non-variable product in the store
-                    let viewModel = ProductRowViewModel(product: ProductRowViewModel.sampleProduct, canChangeQuantity: false) // Temporary view model
+                    let viewModel = ProductRowViewModel(id: 1,
+                                                        name: "Love Ficus",
+                                                        sku: "123456",
+                                                        price: "20",
+                                                        stockStatusKey: "instock",
+                                                        stockQuantity: 7,
+                                                        manageStock: true,
+                                                        canChangeQuantity: false) // Temporary view model with fake data
                     ProductRow(viewModel: viewModel)
                 }
                 .padding()

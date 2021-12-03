@@ -12,10 +12,10 @@ class ProductRowViewModelTests: XCTestCase {
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
 
         // Then
-        XCTAssertEqual(viewModel.product, product)
+        XCTAssertEqual(viewModel.id, product.productID)
+        XCTAssertEqual(viewModel.name, product.name)
         XCTAssertFalse(viewModel.canChangeQuantity)
         XCTAssertEqual(viewModel.quantity, 1)
-        XCTAssertEqual(viewModel.nameLabel, product.name)
     }
 
     func test_view_model_creates_expected_label_for_product_with_managed_stock() {

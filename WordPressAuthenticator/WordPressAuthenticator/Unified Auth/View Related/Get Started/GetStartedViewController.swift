@@ -565,9 +565,7 @@ private extension GetStartedViewController {
         buttonViewController.hideShadowView()
 
         if WordPressAuthenticator.shared.configuration.enableSignInWithApple {
-            if #available(iOS 13.0, *) {
-                buttonViewController.setupTopButtonFor(socialService: .apple, onTap: appleTapped)
-            }
+            buttonViewController.setupTopButtonFor(socialService: .apple, onTap: appleTapped)
         }
 
         buttonViewController.setupButtomButtonFor(socialService: .google, onTap: googleTapped)

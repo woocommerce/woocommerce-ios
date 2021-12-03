@@ -1756,7 +1756,7 @@
 				746A9D14214071F90013F6FF /* Model 2.xcdatamodel */,
 				B59E11D920A9D00C004121A4 /* Model.xcdatamodel */,
 			);
-			currentVersion = 029275442755074C0075DCED /* Model 59.xcdatamodel */;
+			currentVersion = DEC51AA3275A01C5009F3DF4 /* Model 60.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

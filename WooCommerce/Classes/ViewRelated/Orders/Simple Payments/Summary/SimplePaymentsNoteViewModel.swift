@@ -13,13 +13,7 @@ final class SimplePaymentsNoteViewModel: EditCustomerNoteViewModelProtocol {
 
     /// Not used.
     ///
-    @Published var presentNotice: EditCustomerNoteNotice? = nil
-
-    /// Not used.
-    ///
-    var presentNoticePublisher: Published<EditCustomerNoteNotice?>.Publisher {
-        $presentNotice
-    }
+    var didSelectDone: ((String) -> Void)?
 
     /// Commit the original note.
     ///

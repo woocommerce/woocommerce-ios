@@ -24,13 +24,18 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
         $presentNotice
     }
 
+    /// A closure to be called when this view wants its creator to update the order customer note and dismiss it.
+    ///
+    var didSelectDone: ((String) -> Void)?
+
+    /// Stores the original note content.
+    /// Temporarily empty.
+    ///
+    private var originalNote: String
+
     /// Order to be edited.
     ///
     private let order: Order
-
-    /// Tracks if a network request is being performed.
-    ///
-    private let performingNetworkRequest: CurrentValueSubject<Bool, Never> = .init(false)
 
     /// Action dispatcher
     ///
@@ -45,33 +50,14 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
         self.newNote = order.customerNote ?? ""
         self.stores = stores
         self.analytics = analytics
-        bindNavigationTrailingItemPublisher()
+        self.originalNote = order.customerNote ?? ""
+        bindCustomerNoteChanges()
     }
 
-    /// Update the note remotely and invoke a completion block when finished
+    /// NO-OP:
+    /// Since we have optistic update now customer note update action not done here.
     ///
-    func updateNote(onFinish: @escaping (Bool) -> Void) {
-        let modifiedOrder = order.copy(customerNote: newNote)
-        let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: [.customerNote]) { [weak self] result in
-            guard let self = self else { return }
-
-            self.performingNetworkRequest.send(false)
-            switch result {
-            case .success:
-                self.presentNotice = .success
-                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: .customerNote))
-            case .failure(let error):
-                self.presentNotice = .error
-                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: .customerNote))
-                DDLogError("⛔️ Unable to update the order: \(error)")
-            }
-
-            onFinish(result.isSuccess)
-        }
-
-        performingNetworkRequest.send(true)
-        stores.dispatch(action)
-    }
+    func updateNote(onFinish: @escaping (Bool) -> Void) { }
 
     /// Track the flow cancel scenario.
     ///
@@ -82,16 +68,22 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
 
 // MARK: Helper Methods
 private extension EditCustomerNoteViewModel {
-    /// Calculates what navigation trailing item should be shown depending on our internal state.
+    /// Assigns the correct navigation trailing item as the new customer note content changes.
     ///
-    private func bindNavigationTrailingItemPublisher() {
-        Publishers.CombineLatest($newNote, performingNetworkRequest)
-            .map { [order] newNote, performingNetworkRequest -> EditCustomerNoteNavigationItem in
-                guard !performingNetworkRequest else {
-                    return .loading
-                }
-                return .done(enabled: order.customerNote != newNote)
+    private func bindCustomerNoteChanges() {
+        $newNote
+            .map { editedContent -> EditCustomerNoteNavigationItem in
+            .done(enabled: editedContent != self.originalNote)
             }
             .assign(to: &$navigationTrailingItem)
+    }
+}
+
+private extension EditCustomerNoteViewModel {
+    enum Localization {
+        enum CustomerNoteUpdateNotice {
+            static let success = NSLocalizedString("Successfully updated", comment: "Notice text after updating the order successfully")
+            static let error = NSLocalizedString("There was an error updating the order", comment: "Notice text after failing to update the order successfully")
+        }
     }
 }

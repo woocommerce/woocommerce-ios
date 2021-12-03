@@ -9,7 +9,7 @@ import SwiftUI
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
-final class OrderDetailsViewController: UIViewController {
+final class `OrderDetailsViewController`: UIViewController {
 
     /// Main Stack View, that contains all the other views of the screen
     ///
@@ -256,18 +256,18 @@ private extension OrderDetailsViewController {
         let isExpanded = topBannerView?.isExpanded ?? false
         factory.createTopBannerIfNeeded(isExpanded: isExpanded,
                                         expandedStateChangeHandler: { [weak self] in
-                                            self?.tableView.updateHeaderHeight()
-                                        }, onGiveFeedbackButtonPressed: { [weak self] in
-                                            self?.presentShippingLabelsFeedbackSurvey()
-                                        }, onDismissButtonPressed: { [weak self] in
-                                            self?.dismissTopBanner()
-                                        }, onCompletion: { [weak self] topBannerView in
-                                            if let topBannerView = topBannerView {
-                                                self?.showTopBannerView(topBannerView)
-                                            } else {
-                                                self?.hideTopBannerView()
-                                            }
-                                        })
+            self?.tableView.updateHeaderHeight()
+        }, onGiveFeedbackButtonPressed: { [weak self] in
+            self?.presentShippingLabelsFeedbackSurvey()
+        }, onDismissButtonPressed: { [weak self] in
+            self?.dismissTopBanner()
+        }, onCompletion: { [weak self] topBannerView in
+            if let topBannerView = topBannerView {
+                self?.showTopBannerView(topBannerView)
+            } else {
+                self?.hideTopBannerView()
+            }
+        })
     }
 
     func showTopBannerView(_ topBannerView: TopBannerView) {
@@ -533,7 +533,7 @@ private extension OrderDetailsViewController {
         case let .viewAddOns(addOns):
             itemAddOnsButtonTapped(addOns: addOns)
         case .editCustomerNote:
-			editCustomerNoteTapped()
+            editCustomerNoteTapped()
         case .editShippingAddress:
             editShippingAddressTapped()
         }
@@ -604,9 +604,9 @@ private extension OrderDetailsViewController {
 
     func openTrackingDetails(_ tracking: ShipmentTracking) {
         guard let trackingURL = tracking.trackingURL?.addHTTPSSchemeIfNecessary(),
-            let url = URL(string: trackingURL) else {
-            return
-        }
+              let url = URL(string: trackingURL) else {
+                  return
+              }
 
         ServiceLocator.analytics.track(.orderDetailTrackPackageButtonTapped)
         displayWebView(url: url)
@@ -695,14 +695,6 @@ private extension OrderDetailsViewController {
         present(actionSheet, animated: true)
     }
 
-    func editCustomerNoteTapped() {
-        let viewModel = EditCustomerNoteViewModel(order: viewModel.order)
-        let editNoteViewController = EditCustomerNoteHostingController(viewModel: viewModel)
-        present(editNoteViewController, animated: true, completion: nil)
-
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: .customerNote))
-    }
-
     func editShippingAddressTapped() {
         let viewModel = EditOrderAddressFormViewModel(order: viewModel.order, type: .shipping)
         let editAddressViewController = EditOrderAddressHostingController(viewModel: viewModel)
@@ -737,10 +729,10 @@ private extension OrderDetailsViewController {
         viewModel.collectPayment(
             onWaitingForInput: { [weak self] in
                 self?.paymentAlerts.tapOrInsertCard(onCancel: {
-                	self?.viewModel.cancelPayment(onCompletion: { _ in
-                	    ServiceLocator.analytics.track(.collectPaymentCanceled)
-                	})
-		})
+                    self?.viewModel.cancelPayment(onCompletion: { _ in
+                        ServiceLocator.analytics.track(.collectPaymentCanceled)
+                    })
+                })
             },
             onProcessingMessage: { [weak self] in
                 self?.paymentAlerts.processingPayment()
@@ -1053,6 +1045,52 @@ private extension OrderDetailsViewController {
     }
 }
 
+// MARK: - Order Edit Customer Note View
+//
+private extension OrderDetailsViewController {
+    private func editCustomerNoteTapped() {
+        let viewModel = EditCustomerNoteViewModel(order: viewModel.order)
+        let editNoteViewController = EditCustomerNoteHostingController(viewModel: viewModel)
+
+        viewModel.didSelectDone = { [weak self] newCustomerNote in
+            editNoteViewController.dismiss(animated: true) {
+                guard let self = self else { return }
+                self.updateOrderCustomerNote(newCustomerNote: newCustomerNote)
+            }
+        }
+
+        present(editNoteViewController, animated: true, completion: nil)
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: .customerNote))
+    }
+
+    private func updateOrderCustomerNote(newCustomerNote: String) {
+        viewModel.updateCustomerNote(customerNote: newCustomerNote, order: viewModel.order) { [weak self] status in
+            if !status {
+                self?.displayOrderCustomerNoteErrorNotice(customerNote: newCustomerNote)
+            }
+        }
+
+        self.displayOrderCustomerNoteUpdatedNotice()
+    }
+
+    /// Enqueues the `Successfully updated` Notice.
+    ///
+    private func displayOrderCustomerNoteUpdatedNotice() {
+        let notice = Notice(title: Localization.CustomerNoteUpdateNotice.success, feedbackType: .success)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Enqueues the `There was an error updating the order` Notice with Retry Action
+    ///
+    private func displayOrderCustomerNoteErrorNotice(customerNote: String) {
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: Localization.CustomerNoteUpdateNotice.error, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.updateOrderCustomerNote(newCustomerNote: customerNote)
+        }
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+}
 
 // MARK: - Constants
 //
@@ -1084,17 +1122,22 @@ private extension OrderDetailsViewController {
                                                                comment: "Request a refund on a shipping label from the shipping label more menu action sheet")
             static let printCustomsFormAction = NSLocalizedString("Print Customs Form",
                                                                   comment: "Print the customs form for the shipping label" +
-                                                                    " from the shipping label more menu action sheet")
+                                                                  " from the shipping label more menu action sheet")
         }
 
         enum ShippingLabelTrackingMoreMenu {
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the shipping label tracking more menu action sheet")
             static let copyTrackingNumberAction =
-                NSLocalizedString("Copy tracking number",
-                                  comment: "Copy tracking number of a shipping label from the shipping label tracking more menu action sheet")
+            NSLocalizedString("Copy tracking number",
+                              comment: "Copy tracking number of a shipping label from the shipping label tracking more menu action sheet")
             static let trackShipmentAction =
-                NSLocalizedString("Track shipment",
-                                  comment: "Track shipment of a shipping label from the shipping label tracking more menu action sheet")
+            NSLocalizedString("Track shipment",
+                              comment: "Track shipment of a shipping label from the shipping label tracking more menu action sheet")
+        }
+
+        enum CustomerNoteUpdateNotice {
+            static let success = NSLocalizedString("Successfully updated", comment: "Notice text after updating the order successfully")
+            static let error = NSLocalizedString("There was an error updating the order", comment: "Notice text after failing to update the order successfully")
         }
     }
 

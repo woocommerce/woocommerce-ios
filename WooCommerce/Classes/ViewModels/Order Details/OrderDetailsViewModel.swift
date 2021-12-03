@@ -165,7 +165,6 @@ final class OrderDetailsViewModel {
     }
 }
 
-
 // MARK: - Configuring results controllers
 //
 extension OrderDetailsViewModel {
@@ -173,7 +172,6 @@ extension OrderDetailsViewModel {
         dataSource.configureResultsControllers(onReload: onReload)
     }
 }
-
 
 // MARK: - Register table view cells
 //
@@ -571,6 +569,26 @@ extension OrderDetailsViewModel {
     func emailReceipt(params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
         ServiceLocator.analytics.track(.receiptEmailTapped)
         paymentOrchestrator.emailReceipt(for: order, params: params, onContent: onContent)
+    }
+
+    /// Update when you need to update the note (remotely or locally) and invoke a completion block when finished
+    ///
+    /// - Returns: Order Update Action that will result in the specified customer note updated accordingly.
+    ///
+    func updateCustomerNote(customerNote: String, order: Order, onFinish: @escaping (Bool) -> Void) {
+        let modifiedOrder = order.copy(customerNote: customerNote)
+        let action = OrderAction.updateOrderCustomerNote(siteID: order.siteID, order: modifiedOrder) { result in
+            switch result {
+            case .success:
+                ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: .customerNote))
+                onFinish(true)
+            case .failure(let error):
+                ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: .customerNote))
+                DDLogError("⛔️ Unable to update the order: \(error)")
+                onFinish(false)
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

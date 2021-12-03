@@ -13,13 +13,9 @@ protocol EditCustomerNoteViewModelProtocol: ObservableObject {
     ///
     var navigationTrailingItem: EditCustomerNoteNavigationItem { get }
 
-    /// Defines the current notice that should be shown.
+    /// A closure to be called when this view wants its creator to update the string and dismiss it.
     ///
-    var presentNotice: EditCustomerNoteNotice? { get set }
-
-    /// Emit changes when `presentNotice` changes.
-    ///
-    var presentNoticePublisher: Published<EditCustomerNoteNotice?>.Publisher { get }
+    var didSelectDone: ((String) -> Void)? { get }
 
     /// Update when you need to update the note (remotely or locally) and invoke a completion block when finished
     ///

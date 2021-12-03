@@ -3,19 +3,106 @@ import SwiftUI
 /// This view controller is used when no reader is connected. It assists
 /// the merchant in connecting to a reader.
 ///
-final class CardReaderSettingsSearchingViewControllerNew: UIHostingController<CardReaderSettingsSearchingView> {
+final class CardReaderSettingsSearchingViewControllerNew: UIHostingController<CardReaderSettingsSearchingView>, CardReaderSettingsViewModelPresenter {
+    /// If we know reader(s), begin search automatically once each time this VC becomes visible
+    ///
+    private var didBeginSearchAutomatically = false
+
+    private var viewModel: CardReaderSettingsSearchingViewModel?
+
+
+    /// Connection Controller (helps connect readers)
+    ///
+    private lazy var connectionController: CardReaderConnectionController? = {
+        guard let siteID = viewModel?.siteID else {
+            return nil
+        }
+
+        guard let knownReaderProvider = viewModel?.knownReaderProvider else {
+            return nil
+        }
+
+        return CardReaderConnectionController(
+            forSiteID: siteID,
+            knownReaderProvider: knownReaderProvider,
+            alertsProvider: CardReaderSettingsAlerts()
+        )
+    }()
+
     required init?(coder: NSCoder) {
-        super.init(coder: coder, rootView: CardReaderSettingsSearchingView());
+        super.init(coder: coder, rootView: CardReaderSettingsSearchingView())
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
     }
+
+    /// Accept our viewmodel and listen for changes on it
+    ///
+    func configure(viewModel: CardReaderSettingsPresentedViewModel) {
+        self.viewModel = viewModel as? CardReaderSettingsSearchingViewModel
+
+        guard self.viewModel != nil else {
+            DDLogError("Unexpectedly unable to downcast to CardReaderSettingsSearchingViewModel")
+            return
+        }
+
+        self.viewModel?.didUpdate = onViewModelDidUpdate
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        viewModel?.didUpdate = nil
+        didBeginSearchAutomatically = false
+        super.viewWillDisappear(animated)
+    }
+}
+
+// MARK: - View Updates
+//
+private extension CardReaderSettingsSearchingViewControllerNew {
+    func onViewModelDidUpdate() {
+        maybeBeginSearchAutomatically()
+    }
+
+    func maybeBeginSearchAutomatically() {
+        /// If we've already begun search automattically since this view appeared, don't do it again
+        ///
+        guard !didBeginSearchAutomatically else {
+            return
+        }
+
+        /// Make sure there is no reader connected
+        ///
+        let noReaderConnected = viewModel?.noConnectedReader == .isTrue
+        guard noReaderConnected else {
+            return
+        }
+
+        /// Make sure we have a known reader
+        ///
+        guard let hasKnownReader = viewModel?.hasKnownReader(), hasKnownReader else {
+            return
+        }
+
+        searchAndConnect()
+        didBeginSearchAutomatically = true
+    }
+}
+
+// MARK: - Convenience Methods
+//
+private extension CardReaderSettingsSearchingViewControllerNew {
+    func searchAndConnect() {
+        connectionController?.searchAndConnect(from: self) {_ in
+            /// No need for logic here. Once connected, the connected reader will publish
+            /// through the `cardReaderAvailableSubscription`
+        }
+    }
 }
 
 struct CardReaderSettingsSearchingView: View {
     var body: some View {
-        ScrollableVStack {
+        VStack {
             Spacer()
 
             Text(Localization.connectYourCardReaderTitle)

@@ -1,11 +1,14 @@
 import SwiftUI
 import Networking
 
-/// `SwiftUI` wrapper for `SurveyCoordinatingController`
+/// `SwiftUI` wrapper for `OrderStatusListViewController`
 ///
 struct OrderStatusList: UIViewControllerRepresentable {
 
     let siteID: Int64
+
+    /// The index of preselected order status.
+    ///
     let status: OrderStatusEnum
 
     /// Closure to be invoked when the status is updated.

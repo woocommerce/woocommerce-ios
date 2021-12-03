@@ -1,6 +1,8 @@
 import SwiftUI
 import Yosemite
 
+/// Represents the Status section with date label, status badge and edit button.
+///
 struct OrderStatusSection: View {
     let geometry: GeometryProxy
     @ObservedObject var viewModel: NewOrderViewModel
@@ -20,7 +22,9 @@ struct OrderStatusSection: View {
                     .padding(.vertical, Layout.StatusBadge.verticalPadding)
                     .background(Color(viewModel.statusBadgeViewModel.color))
                     .cornerRadius(Layout.StatusBadge.cornerRadius)
+
                 Spacer()
+
                 Button(Localization.editButton) {
                     viewModel.shouldShowOrderStatusList = true
                 }

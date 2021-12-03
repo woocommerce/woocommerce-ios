@@ -16,16 +16,25 @@ struct AddProductToOrder: View {
             Group {
                 switch viewModel.syncStatus {
                 case .success:
-                    List(viewModel.productRows) { viewModel in
-                        ProductRow(viewModel: viewModel)
+                    List(viewModel.productRows) { rowViewModel in
+                        ProductRow(viewModel: rowViewModel)
+                            .onAppear {
+                                if rowViewModel == viewModel.productRows.last {
+                                    viewModel.loadMoreProducts()
+                                }
+                            }
                     }
                     .listStyle(PlainListStyle())
+
+                    // Infinite scroll indicator
+                    ProgressView()
+                        .renderedIf(viewModel.hasMoreProducts)
                 case .error:
                     EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
                         .frame(maxHeight: .infinity)
                 case .firstPageLoad:
-                    List(viewModel.ghostRows) { viewModel in
-                        ProductRow(viewModel: viewModel)
+                    List(viewModel.ghostRows) { rowViewModel in
+                        ProductRow(viewModel: rowViewModel)
                             .redacted(reason: .placeholder)
                             .shimmering()
                     }

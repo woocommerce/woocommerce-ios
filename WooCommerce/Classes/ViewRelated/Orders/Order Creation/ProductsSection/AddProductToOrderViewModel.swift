@@ -41,7 +41,7 @@ final class AddProductToOrderViewModel: ObservableObject {
 
     /// Tracks if there are more products to sync from remote.
     ///
-    private(set) var hasMoreProducts: Bool = false
+    @Published private(set) var hasMoreProducts: Bool = false
 
     /// View models of the ghost rows used during the loading process.
     ///
@@ -65,6 +65,7 @@ final class AddProductToOrderViewModel: ObservableObject {
         self.siteID = siteID
         self.storageManager = storageManager
 
+        configurePaginationTracker()
         configureProductsResultsController()
     }
 
@@ -90,6 +91,7 @@ extension AddProductToOrderViewModel: PaginationTrackerDelegate {
                                                        sortOrder: .nameAscending,
                                                        shouldDeleteStoredProductsOnFirstPage: false) { [weak self] result in
             guard let self = self else { return }
+            self.hasMoreProducts = true
             switch result {
             case .failure(let error):
                 self.syncStatus = .error
@@ -119,7 +121,6 @@ private extension AddProductToOrderViewModel {
         // Trigger a sync request if there are no products.
         guard products.isNotEmpty else {
             syncStatus = .firstPageLoad
-            configurePaginationTracker()
             paginationTracker.syncFirstPage()
             return
         }

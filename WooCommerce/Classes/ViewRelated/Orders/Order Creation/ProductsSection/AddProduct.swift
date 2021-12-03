@@ -19,16 +19,18 @@ struct AddProduct: View {
                     case .success:
                         // TODO: Make the product list searchable
                         LazyVStack {
-                            ForEach(viewModel.productRows) { viewModel in
-                                ProductRow(viewModel: viewModel)
+                            ForEach(viewModel.productRows) { rowViewModel in
+                                ProductRow(viewModel: rowViewModel)
+                                    .onAppear {
+                                        if rowViewModel == viewModel.productRows.last {
+                                            viewModel.loadMoreProducts()
+                                        }
+                                    }
                             }
 
                             // Infinite scroll indicator
                             ActivityIndicator(isAnimating: .constant(true), style: .medium)
                                 .renderedIf(viewModel.hasMoreProducts)
-                                .onAppear {
-                                    viewModel.loadMoreProducts()
-                                }
                         }
                         .padding()
                     case .error:

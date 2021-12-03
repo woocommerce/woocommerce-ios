@@ -909,6 +909,7 @@
 		AEA622B727468790002A9B57 /* AddOrderCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */; };
 		AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */; };
 		AEB73C1725CD8E5800A8454A /* AttributePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */; };
+		AEC12B7A2758D55900845F97 /* OrderStatusList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC12B792758D55900845F97 /* OrderStatusList.swift */; };
 		AECD57D226DFDF7500A3B580 /* EditOrderAddressForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECD57D126DFDF7500A3B580 /* EditOrderAddressForm.swift */; };
 		AEDDDA0A25CA9C980077F9B2 /* AttributePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */; };
 		AEDDDA1A25CAB2170077F9B2 /* AttributePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */; };
@@ -2389,6 +2390,7 @@
 		AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderCoordinatorTests.swift; sourceTree = "<group>"; };
 		AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModel.swift; sourceTree = "<group>"; };
 		AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModelTests.swift; sourceTree = "<group>"; };
+		AEC12B792758D55900845F97 /* OrderStatusList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusList.swift; sourceTree = "<group>"; };
 		AECD57D126DFDF7500A3B580 /* EditOrderAddressForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditOrderAddressForm.swift; sourceTree = "<group>"; };
 		AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewController.swift; sourceTree = "<group>"; };
 		AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AttributePickerViewController.xib; sourceTree = "<group>"; };
@@ -5207,6 +5209,24 @@
 			path = ../config;
 			sourceTree = "<group>";
 		};
+		AE264C04275A493800B52996 /* StatusSection */ = {
+			isa = PBXGroup;
+			children = (
+				AE457812275644590092F687 /* OrderStatusSection.swift */,
+				AEC12B792758D55900845F97 /* OrderStatusList.swift */,
+			);
+			path = StatusSection;
+			sourceTree = "<group>";
+		};
+		AE264C05275A495E00B52996 /* FlowCoordinator */ = {
+			isa = PBXGroup;
+			children = (
+				AEA622B1274669D3002A9B57 /* AddOrderCoordinator.swift */,
+				AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */,
+			);
+			path = FlowCoordinator;
+			sourceTree = "<group>";
+		};
 		AEB73C1525CD8E3100A8454A /* Edit Product Variation */ = {
 			isa = PBXGroup;
 			children = (
@@ -6033,10 +6053,9 @@
 			children = (
 				CCFC50542743BC0D001E505F /* NewOrder.swift */,
 				CCFC50582743E021001E505F /* NewOrderViewModel.swift */,
+				AE264C05275A495E00B52996 /* FlowCoordinator */,
 				CC53FB3627551A8700C4CA4F /* ProductsSection */,
-				AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */,
-				AEA622B1274669D3002A9B57 /* AddOrderCoordinator.swift */,
-				AE457812275644590092F687 /* OrderStatusSection.swift */,
+				AE264C04275A493800B52996 /* StatusSection */,
 			);
 			path = "Order Creation";
 			sourceTree = "<group>";
@@ -7967,6 +7986,7 @@
 				02E8B17723E2C49000A43403 /* InProgressProductImageCollectionViewCell.swift in Sources */,
 				CE5F462C23AACBC4006B1A5C /* RefundDetailsResultController.swift in Sources */,
 				261AA309275178FA009530FE /* SimplePaymentsMethod.swift in Sources */,
+				AEC12B7A2758D55900845F97 /* OrderStatusList.swift in Sources */,
 				0230535B2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift in Sources */,
 				D41C9F2E26D9A0E900993558 /* WhatsNewViewModel.swift in Sources */,
 				02ECD1E424FF5E0B00735BE5 /* AddProductCoordinator.swift in Sources */,

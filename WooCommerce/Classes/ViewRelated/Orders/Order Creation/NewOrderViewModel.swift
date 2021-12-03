@@ -33,17 +33,13 @@ final class NewOrderViewModel: ObservableObject {
         DateFormatter.mediumLengthLocalizedDateFormatter.string(from: Date())
     }()
 
-    /// Order status data model.
-    ///
-    private var orderStatus: OrderStatus {
-        didSet {
-            statusBadgeViewModel = .init(orderStatus: orderStatus)
-        }
-    }
-
     /// Representation of order status display properties.
     ///
-    @Published private(set) var statusBadgeViewModel: StatusBadgeViewModel
+    @Published private(set) var statusBadgeViewModel: StatusBadgeViewModel = .init(orderStatusEnum: .pending)
+
+    /// Indicates if the order status list (selector) should be shown or not.
+    ///
+    @Published var shouldShowOrderStatusList: Bool = false
 
     /// Status Results Controller.
     ///
@@ -71,11 +67,9 @@ final class NewOrderViewModel: ObservableObject {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
-        self.orderStatus = .init(name: nil, siteID: siteID, slug: "pending", total: 0)
-        self.statusBadgeViewModel = .init(orderStatus: orderStatus)
 
         configureNavigationTrailingItem()
-        setInitialOrderStatus()
+        configureStatusBadgeViewModel()
     }
 
     // MARK: - API Requests
@@ -159,6 +153,11 @@ extension NewOrderViewModel {
                 }
             }()
         }
+
+        init(orderStatusEnum: OrderStatusEnum) {
+            let siteOrderStatus = OrderStatus(name: nil, siteID: 0, slug: orderStatusEnum.rawValue, total: 0)
+            self.init(orderStatus: siteOrderStatus)
+        }
     }
 }
 
@@ -182,11 +181,16 @@ private extension NewOrderViewModel {
             .assign(to: &$navigationTrailingItem)
     }
 
-    func setInitialOrderStatus() {
-        guard let pendingSiteStatus = currentSiteStatuses.first(where: { $0.status == .pending }) else {
-            return
-        }
-
-        orderStatus = pendingSiteStatus
+    /// Updates status badge viewmodel based on status order property.
+    ///
+    func configureStatusBadgeViewModel() {
+        $orderDetails
+            .map { [weak self] orderDetails in
+                guard let siteOrderStatus = self?.currentSiteStatuses.first(where: { $0.status == orderDetails.status }) else {
+                    return StatusBadgeViewModel(orderStatusEnum: orderDetails.status)
+                }
+                return StatusBadgeViewModel(orderStatus: siteOrderStatus)
+            }
+            .assign(to: &$statusBadgeViewModel)
     }
 }

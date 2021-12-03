@@ -31,7 +31,6 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
         super.viewDidLoad()
 
         localizeControls()
-        setupOnePasswordButtonIfNeeded()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -74,14 +73,6 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
     }
 
     // MARK: Setup and Configuration
-
-    /// Sets up a 1Password button if 1Password is available.
-    @objc func setupOnePasswordButtonIfNeeded() {
-        guard let emailStackView = emailStackView else { return }
-        WPStyleGuide.configureOnePasswordButtonForStackView(emailStackView,
-                                                            target: self,
-                                                            selector: #selector(LoginWPComViewController.handleOnePasswordButtonTapped(_:)))
-    }
 
     /// Configures the appearance and state of the submit button.
     ///
@@ -207,22 +198,6 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
     @IBAction func handleForgotPasswordButtonTapped(_ sender: UIButton) {
         WordPressAuthenticator.openForgotPasswordURL(loginFields)
         WordPressAuthenticator.track(.loginForgotPasswordClicked)
-    }
-
-    @objc func handleOnePasswordButtonTapped(_ sender: UIButton) {
-        view.endEditing(true)
-
-        // Don't update username for social accounts.
-        // This prevents inadvertent account linking.
-        // Ref: https://git.io/JJSUM
-        let allowUsernameChange = (loginFields.meta.socialService == nil)
-
-        WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sender, loginFields: loginFields, allowUsernameChange: allowUsernameChange) { [weak self] (loginFields) in
-
-            self?.emailLabel?.text = loginFields.username
-            self?.passwordField?.text = loginFields.password
-            self?.validateForm()
-        }
     }
 
     override func displayRemoteError(_ error: Error) {

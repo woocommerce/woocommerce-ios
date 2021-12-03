@@ -40,7 +40,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         super.viewDidLoad()
 
         localizeControls()
-        setupOnePasswordButtonIfNeeded()
 
         alternativeLoginLabel?.isHidden = showLoginOptions
         if !showLoginOptions {
@@ -131,14 +130,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         submitButton?.setTitle(submitButtonTitle, for: .normal)
         submitButton?.setTitle(submitButtonTitle, for: .highlighted)
         submitButton?.accessibilityIdentifier = "Login Email Next Button"
-    }
-
-    /// Sets up a 1Password button if 1Password is available.
-    ///
-    func setupOnePasswordButtonIfNeeded() {
-        WPStyleGuide.configureOnePasswordButtonForTextfield(emailTextField,
-                                                            target: self,
-                                                            selector: #selector(handleOnePasswordButtonTapped(_:)))
     }
 
     /// Add the log in with Google button to the view
@@ -462,15 +453,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
         validateForm()
-    }
-
-    @objc func handleOnePasswordButtonTapped(_ sender: UIButton) {
-        view.endEditing(true)
-
-        WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sender, loginFields: loginFields) { [weak self] (loginFields) in
-            self?.emailTextField.text = loginFields.username
-            self?.loginWithUsernamePassword(immediately: true)
-        }
     }
 
     @IBAction func handleSelfHostedButtonTapped(_ sender: UIButton) {

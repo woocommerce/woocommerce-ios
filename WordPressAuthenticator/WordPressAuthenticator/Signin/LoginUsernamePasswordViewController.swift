@@ -32,7 +32,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
 
         configureHeader()
         localizeControls()
-        setupOnePasswordButtonIfNeeded()
         displayLoginMessage("")
     }
 
@@ -81,14 +80,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
         forgotPasswordButton.setTitle(forgotPasswordTitle, for: .normal)
         forgotPasswordButton.setTitle(forgotPasswordTitle, for: .highlighted)
         forgotPasswordButton.titleLabel?.numberOfLines = 0
-    }
-
-    /// Sets up a 1Password button if 1Password is available.
-    ///
-    @objc func setupOnePasswordButtonIfNeeded() {
-        WPStyleGuide.configureOnePasswordButtonForTextfield(usernameField,
-                                                            target: self,
-                                                            selector: #selector(handleOnePasswordButtonTapped(_:)))
     }
 
     /// Configures the content of the text fields based on what is saved in `loginFields`.
@@ -206,16 +197,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
 
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
         validateForm()
-    }
-
-    @objc func handleOnePasswordButtonTapped(_ sender: UIButton) {
-        view.endEditing(true)
-
-        WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sender, loginFields: loginFields) { [unowned self] (loginFields) in
-            self.usernameField.text = loginFields.username
-            self.passwordField.text = loginFields.password
-            self.validateForm()
-        }
     }
 
     @IBAction func handleForgotPasswordButtonTapped(_ sender: UIButton) {

@@ -14,15 +14,24 @@ struct AddProductToOrder: View {
     var body: some View {
         NavigationView {
             Group {
-                List(viewModel.productRows) { viewModel in
-                    ProductRow(viewModel: viewModel)
+                switch viewModel.syncStatus {
+                case .success:
+                    List(viewModel.productRows) { viewModel in
+                        ProductRow(viewModel: viewModel)
+                    }
+                    .listStyle(PlainListStyle())
+                case .error:
+                    EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
+                        .frame(maxHeight: .infinity)
+                case .firstPageLoad:
+                    List(viewModel.ghostRows) { viewModel in
+                        ProductRow(viewModel: viewModel)
+                            .redacted(reason: .placeholder)
+                            .shimmering()
+                    }
+                default:
+                    EmptyView()
                 }
-                .listStyle(PlainListStyle())
-                .renderedIf(viewModel.productRows.isNotEmpty)
-
-                EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
-                .frame(maxHeight: .infinity)
-                .renderedIf(viewModel.productRows.isEmpty)
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])

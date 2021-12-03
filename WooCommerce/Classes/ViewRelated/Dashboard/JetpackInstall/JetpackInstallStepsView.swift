@@ -157,15 +157,15 @@ struct JetpackInstallStepsView: View {
             // Error state action buttons
             if viewModel.installFailed {
                 VStack(spacing: Constants.actionButtonMargin) {
-                    if viewModel.currentStep == .connection {
-                        Button(Localization.checkConnectionAction) {
-                            viewModel.checkSiteConnection()
+                    if viewModel.currentStep == .installation {
+                        Button(Localization.wpAdminAction) {
+                            showingWPAdminWebview = true
                         }
                         .buttonStyle(SecondaryButtonStyle())
                         .fixedSize(horizontal: false, vertical: true)
                     } else {
-                        Button(Localization.wpAdminAction) {
-                            showingWPAdminWebview = true
+                        Button(Localization.tryAgain) {
+                            viewModel.startInstallation()
                         }
                         .buttonStyle(SecondaryButtonStyle())
                         .fixedSize(horizontal: false, vertical: true)
@@ -217,7 +217,7 @@ private extension JetpackInstallStepsView {
                                                               comment: "Error message when Jetpack connection fails")
         static let wpAdminAction = NSLocalizedString("Install Jetpack in WP-Admin", comment: "Action button to install Jetpack win WP-Admin instead of on app")
         static let supportAction = NSLocalizedString("Contact Support", comment: "Action button to contact support when Jetpack install fails")
-        static let checkConnectionAction = NSLocalizedString("Retry Connection", comment: "Action button to check site's connection again.")
+        static let tryAgain = NSLocalizedString("Try Again", comment: "Action button to retry activating or checking Jetpack connection.")
     }
 }
 

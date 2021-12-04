@@ -6,6 +6,7 @@ group :screenshots, optional: true do
   gem 'rmagick', '~> 3.2.0'
 end
 
+ # TODO: Update to the next major version after: https://github.com/wordpress-mobile/release-toolkit/pull/319
 gem 'fastlane-plugin-wpmreleasetoolkit', '~> 2.0'
 gem 'fastlane-plugin-sentry', '~> 1.0'
 gem 'fastlane-plugin-appcenter', '~> 1.6'

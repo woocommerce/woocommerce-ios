@@ -20,7 +20,7 @@ You can run the tests locally with these steps:
 3. With the `WooCommerce` scheme selected in Xcode, navigate to Product > Test Plan and select `UITests`, or open the Test Navigator and select the `UITests` test plan.
 4. Navigate to Product > Test to run all the tests, or use the Test Navigator to run specific tests or test suites.
 
-We also run the UI tests on CircleCI on every commit to the `develop` or `release/*` branches. (See the [CircleCI config](../.circleci/config.yml) for device and workflow details.)
+We also run the UI tests on CircleCI on every commit to the `trunk` or `release/*` branches. (See the [CircleCI config](../.circleci/config.yml) for device and workflow details.)
 
 ## Adding tests
 

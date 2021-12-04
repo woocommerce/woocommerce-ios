@@ -8,15 +8,15 @@ Initial goals were:
 - make data typed
 - inject storage layer as dependency.
 
-Retrieving and storing the data is done via [`AppSettingsAction`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Yosemite/Yosemite/Actions/AppSettingsAction.swift) and most of the logic happens in [`AppSettingsStore`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Yosemite/Yosemite/Stores/AppSettingsStore.swift).
+Retrieving and storing the data is done via [`AppSettingsAction`](https://github.com/woocommerce/woocommerce-ios/blob/trunk/Yosemite/Yosemite/Actions/AppSettingsAction.swift) and most of the logic happens in [`AppSettingsStore`](https://github.com/woocommerce/woocommerce-ios/blob/trunk/Yosemite/Yosemite/Stores/AppSettingsStore.swift).
 There are a few data models + plist files separated for specific features and use cases.
 
 ## General use cases
 
-- [`GeneralAppSettings`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Storage/Storage/Model/GeneralAppSettings.swift) handles settings universal to all stores.
-- [`GeneralStoreSettings`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Storage/Storage/Model/GeneralStoreSettings.swift) handles settings unique for each store. Cleared on logout.
-- [`StoredProductSettings`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Networking/Networking/Model/Product/StoredProductSettings.swift) handles products-specific settings, unique for each store. Cleared on logout.
-- [`StoredOrderSettings`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Networking/Yosemite/Model/Product/StoredOrderSettings.swift) handles orders-specific settings, unique for each store. Cleared on logout.
+- [`GeneralAppSettings`](https://github.com/woocommerce/woocommerce-ios/blob/trunk/Storage/Storage/Model/GeneralAppSettings.swift) handles settings universal to all stores.
+- [`GeneralStoreSettings`](https://github.com/woocommerce/woocommerce-ios/blob/trunk/Storage/Storage/Model/GeneralStoreSettings.swift) handles settings unique for each store. Cleared on logout.
+- [`StoredProductSettings`](https://github.com/woocommerce/woocommerce-ios/blob/trunk/Networking/Networking/Model/Product/StoredProductSettings.swift) handles products-specific settings, unique for each store. Cleared on logout.
+- [`StoredOrderSettings`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Yosemite/Yosemite/Model/Orders/StoredOrderSettings.swift) handles orders-specific settings, unique for each store. Cleared on logout.
 
 
 ## How to add new property

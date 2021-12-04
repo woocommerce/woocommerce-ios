@@ -816,9 +816,9 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(jetpackConnectionActivePlugins, plugins)
     }
 
-    func test_migrating_from_59_to_60_adds_adminURL_attribute() throws {
+    func test_migrating_from_58_to_59_adds_adminURL_attribute() throws {
         // Given
-        let sourceContainer = try startPersistentContainer("Model 59")
+        let sourceContainer = try startPersistentContainer("Model 58")
         let sourceContext = sourceContainer.viewContext
 
         let site = insertSite(to: sourceContainer.viewContext)
@@ -827,7 +827,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertNil(site.entity.attributesByName["adminURL"])
 
         // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 60")
+        let targetContainer = try migrate(sourceContainer, to: "Model 59")
         let targetContext = targetContainer.viewContext
 
         let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))

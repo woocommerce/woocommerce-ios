@@ -47,7 +47,7 @@ enum StorePickerConfiguration {
 
 /// Allows the user to pick which WordPress.com (OR) Jetpack-Connected-Store we should set up as the Main Store.
 ///
-class StorePickerViewController: UIViewController {
+final class StorePickerViewController: UIViewController {
 
     /// StorePickerViewController Delegate
     ///
@@ -214,7 +214,7 @@ private extension StorePickerViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: dismissLiteral,
                                                            style: .plain,
                                                            target: self,
-                                                           action: #selector(cleanupAndDismiss))
+                                                           action: #selector(dismissStorePicker))
     }
 
     func setupNavigationForListOfConnectedStores() {
@@ -243,8 +243,16 @@ private extension StorePickerViewController {
     }
 
     func refreshResults() {
-        try? resultsController.performFetch()
+        refetchSitesAndUpdateState()
         ServiceLocator.analytics.track(.sitePickerStoresShown, withProperties: ["num_of_stores": resultsController.numberOfObjects])
+
+        synchronizeSites { [weak self] _ in
+            self?.refetchSitesAndUpdateState()
+        }
+    }
+
+    func refetchSitesAndUpdateState() {
+        try? resultsController.performFetch()
         state = StorePickerState(sites: resultsController.fetchedObjects)
     }
 
@@ -259,6 +267,30 @@ private extension StorePickerViewController {
 
     func presentHelp() {
         ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
+    }
+}
+
+// MARK: - Syncing
+//
+private extension StorePickerViewController {
+    func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let syncStartTime = Date()
+        let isJetpackConnectionPackageSupported = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
+        let action = AccountAction
+            .synchronizeSites(selectedSiteID: currentlySelectedSite?.siteID,
+                              isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported) { result in
+                switch result {
+                case .success(let containsJCPSites):
+                    if containsJCPSites {
+                        let syncDuration = round(Date().timeIntervalSince(syncStartTime) * 1000)
+                        ServiceLocator.analytics.track(.jetpackCPSitesFetched, withProperties: ["duration": syncDuration])
+                    }
+                    onCompletion(.success(()))
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                }
+            }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -314,15 +346,15 @@ private extension StorePickerViewController {
             return
         }
 
-        // If a site address was passed in credentials, select it
-        if let siteAddress = ServiceLocator.stores.sessionManager.defaultCredentials?.siteAddress,
-            let site = sites.filter({ $0.url == siteAddress }).first {
+        // If there is a defaultSite already set, select it
+        if let site = ServiceLocator.stores.sessionManager.defaultSite {
             currentlySelectedSite = site
             return
         }
 
-        // If there is a defaultSite already set, select it
-        if let site = ServiceLocator.stores.sessionManager.defaultSite {
+        // If a site address was passed in credentials, select it
+        if let siteAddress = ServiceLocator.stores.sessionManager.defaultCredentials?.siteAddress,
+            let site = sites.filter({ $0.url == siteAddress }).first {
             currentlySelectedSite = site
             return
         }
@@ -348,12 +380,7 @@ private extension StorePickerViewController {
 
     /// Dismiss this VC
     ///
-    @objc func cleanupAndDismiss() {
-        if let siteID = currentlySelectedSite?.siteID {
-            delegate?.didSelectStore(with: siteID, onCompletion: {
-            })
-        }
-
+    @objc func dismissStorePicker() {
         dismiss()
     }
 
@@ -587,7 +614,7 @@ extension StorePickerViewController: UITableViewDataSource {
         cell.name = site.name
         cell.url = site.url
         cell.allowsCheckmark = state.multipleStoresAvailable
-        cell.displaysCheckmark = currentlySelectedSite == site
+        cell.displaysCheckmark = currentlySelectedSite?.siteID == site.siteID
 
         return cell
     }

@@ -13,6 +13,12 @@ extension UIImage {
         return UIImage.gridicon(.addOutline)
     }
 
+    /// Alarm Bell Ring Image
+    ///
+    static var alarmBellRingImage: UIImage {
+        return UIImage(named: "icon-alarm-bell-ring")!
+    }
+
     /// Arrow Up Icon
     ///
     static var arrowUp: UIImage {
@@ -23,6 +29,12 @@ extension UIImage {
     ///
     static var alignJustifyImage: UIImage {
         return UIImage.gridicon(.alignJustify)
+    }
+
+    /// Analytics Image
+    ///
+    static var analyticsImage: UIImage {
+        return UIImage(named: "icon-analytics")!
     }
 
     /// Notice Icon
@@ -90,6 +102,18 @@ extension UIImage {
             .imageWithTintColor(.listBackground)!
     }
 
+    /// Green circle with checkmark
+    ///
+    static var checkCircleImage: UIImage {
+        return UIImage(named: "check-circle-done")!
+    }
+
+    /// Circle without checkmark
+    ///
+    static var checkEmptyCircleImage: UIImage {
+        return UIImage(named: "check-circle-empty")!
+    }
+
     /// WooCommerce Styled Checkmark
     ///
     static var checkmarkStyledImage: UIImage {
@@ -131,6 +155,12 @@ extension UIImage {
     ///
     static var cloudOutlineImage: UIImage {
         return UIImage.gridicon(.cloudOutline)
+    }
+
+    /// Connection Icon
+    ///
+    static var connectionImage: UIImage {
+        return UIImage(named: "icon-connection")!
     }
 
     /// Gear Icon - used in `UIBarButtonItem`
@@ -324,6 +354,10 @@ extension UIImage {
         return UIImage(named: "icon-jetpack-gray")!
     }
 
+    static var jetpackGreenLogoImage: UIImage {
+        return UIImage(named: "icon-jetpack-green")!
+    }
+
     /// Info Icon
     ///
     static var infoImage: UIImage {
@@ -396,10 +430,40 @@ extension UIImage {
         return UIImage(named: "card-reader-low-battery")!
     }
 
+    /// Shopping cart
+    ///
+    static var shoppingCartIcon: UIImage {
+        return UIImage(named: "icon-shopping-cart")!
+            .withRenderingMode(.alwaysTemplate)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Credit card
+    ///
+    static var creditCardIcon: UIImage {
+        return UIImage(named: "icon-card")!
+            .withRenderingMode(.alwaysTemplate)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Card Reader Manual
+    ///
+    static var cardReaderManualIcon: UIImage {
+        return UIImage(named: "icon-card-reader-manual")!
+            .withRenderingMode(.alwaysTemplate)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Files Download Icon
     ///
     static var cloudImage: UIImage {
         return UIImage.gridicon(.cloud)
+    }
+
+    /// Hub Menu tab icon
+    ///
+    static var hubMenu: UIImage {
+        return UIImage(named: "icon-hub-menu")!
     }
 
     /// Menu Icon
@@ -548,6 +612,12 @@ extension UIImage {
             .imageWithTintColor(tintColor)!
     }
 
+    /// Simple Payments Icon
+    ///
+    static var simplePaymentsImage: UIImage {
+        return UIImage(named: "icon-simple-payments")!
+    }
+
     /// Work In Progress banner icon on the Products Tab
     ///
     static var workInProgressBanner: UIImage {
@@ -601,6 +671,18 @@ extension UIImage {
     ///
     static var plusBarButtonItemImage: UIImage {
         return UIImage(systemName: "plus", withConfiguration: Configurations.barButtonItemSymbol)!
+    }
+
+    /// Small Plus Icon
+    ///
+    static var plusSmallImage: UIImage {
+        return UIImage.gridicon(.plusSmall)
+    }
+
+    /// Small Minus Icon
+    ///
+    static var minusSmallImage: UIImage {
+        return UIImage.gridicon(.minusSmall)
     }
 
     /// Search Icon - used in `UIBarButtonItem`
@@ -730,6 +812,12 @@ extension UIImage {
     ///
     static var megaphoneIcon: UIImage {
         return UIImage(imageLiteralResourceName: "megaphone").imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Multiple Users Image
+    ///
+    static var multipleUsersImage: UIImage {
+        return UIImage(named: "icon-multiple-users")!
     }
 
     /// Error image

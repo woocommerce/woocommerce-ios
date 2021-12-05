@@ -718,6 +718,103 @@ final class MigrationTests: XCTestCase {
         XCTAssertNotNil(migratedShippingLabel.entity.attributesByName["commercialInvoiceURL"])
         XCTAssertNil(migratedShippingLabel.value(forKey: "commercialInvoiceURL"))
     }
+
+    func test_migrating_from_55_to_56_adds_new_systemplugin_attribute_active_with_true_value() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 55")
+        let sourceContext = sourceContainer.viewContext
+
+        let systemPlugin = insertSystemPlugin(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(systemPlugin.entity.attributesByName["active"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 56")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedSystemPlugin = try XCTUnwrap(targetContext.first(entityName: "SystemPlugin"))
+
+        XCTAssertNotNil(migratedSystemPlugin.entity.attributesByName["active"])
+        XCTAssertEqual(migratedSystemPlugin.value(forKey: "active") as? Bool, true)
+    }
+
+    func test_migrating_from_56_to_57_adds_new_PaymentGatewayAccount_attributes() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 56")
+        let sourceContext = sourceContainer.viewContext
+
+        let paymentGatewayAccount = insertPaymentGatewayAccount(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(paymentGatewayAccount.entity.attributesByName["isLive"])
+        XCTAssertNil(paymentGatewayAccount.entity.attributesByName["isInTestMode"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 57")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedPaymentGatewayAccount = try XCTUnwrap(targetContext.first(entityName: "PaymentGatewayAccount"))
+
+        XCTAssertNotNil(migratedPaymentGatewayAccount.entity.attributesByName["isLive"])
+        XCTAssertEqual(migratedPaymentGatewayAccount.value(forKey: "isLive") as? Bool, true)
+        XCTAssertNotNil(migratedPaymentGatewayAccount.entity.attributesByName["isInTestMode"])
+        XCTAssertEqual(migratedPaymentGatewayAccount.value(forKey: "isInTestMode") as? Bool, false)
+    }
+
+    func test_migrating_from_57_to_58_adds_new_site_jetpack_attributes() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 57")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["isJetpackConnected"])
+        XCTAssertNil(site.entity.attributesByName["isJetpackThePluginInstalled"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 58")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
+
+        let isJetpackConnected = try XCTUnwrap(migratedSite.value(forKey: "isJetpackConnected") as? Bool)
+        XCTAssertFalse(isJetpackConnected)
+        let isJetpackThePluginInstalled = try XCTUnwrap(migratedSite.value(forKey: "isJetpackThePluginInstalled") as? Bool)
+        XCTAssertFalse(isJetpackThePluginInstalled)
+    }
+
+    func test_migrating_from_58_to_59_adds_site_jetpack_connection_active_plugins_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 58")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["jetpackConnectionActivePlugins"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 59")
+        let targetContext = targetContainer.viewContext
+
+        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
+        let defaultJetpackConnectionActivePlugins = migratedSite.value(forKey: "jetpackConnectionActivePlugins")
+
+        let plugins = ["jetpack", "woocommerce-payments"]
+        migratedSite.setValue(plugins, forKey: "jetpackConnectionActivePlugins")
+
+        // Then
+        // Default value is nil.
+        XCTAssertNil(defaultJetpackConnectionActivePlugins)
+
+        let jetpackConnectionActivePlugins = try XCTUnwrap(migratedSite.value(forKey: "jetpackConnectionActivePlugins") as? [String])
+        XCTAssertEqual(jetpackConnectionActivePlugins, plugins)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1097,6 +1194,13 @@ private extension MigrationTests {
             "version": "1.7.2",
             "versionLatest": "1.7.2",
             "networkActivated": false
+        ])
+    }
+
+    @discardableResult
+    func insertSite(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Site", properties: [
+            "siteID": 1372
         ])
     }
 }

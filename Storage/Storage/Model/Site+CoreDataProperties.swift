@@ -16,4 +16,12 @@ extension Site {
     @NSManaged public var isWordPressStore: NSNumber?
     @NSManaged public var timezone: String?
     @NSManaged public var gmtOffset: Double
+    @NSManaged public var isJetpackConnected: Bool
+    @NSManaged public var isJetpackThePluginInstalled: Bool
+    @NSManaged public var jetpackConnectionActivePlugins: [String]?
+
+}
+
+extension Site: Identifiable {
+
 }

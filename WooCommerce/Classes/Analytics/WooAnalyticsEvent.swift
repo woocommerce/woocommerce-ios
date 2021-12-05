@@ -64,6 +64,8 @@ extension WooAnalyticsEvent {
         case shippingLabelsRelease3 = "shipping_labels_m3"
         /// Shown in beta feature banner for order add-ons.
         case addOnsI1 = "add-ons_i1"
+        /// Shown in beta feature banner for simple payments prototype.
+        case simplePaymentsPrototype = "simple_payments_prototype"
     }
 
     /// The action performed on the survey screen.
@@ -128,11 +130,12 @@ extension WooAnalyticsEvent {
         }
     }
 
-    static func ordersListLoaded(totalDuration: TimeInterval, pageNumber: Int, status: OrderStatus?) -> WooAnalyticsEvent {
+    static func ordersListLoaded(totalDuration: TimeInterval, pageNumber: Int, filters: FilterOrderListViewModel.Filters?) -> WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .ordersListLoaded, properties: [
-            "status": status?.slug ?? String(),
+            "status": (filters?.orderStatus ?? []).map { $0.rawValue }.joined(separator: ","),
             "page_number": Int64(pageNumber),
-            "total_duration": Double(totalDuration)
+            "total_duration": Double(totalDuration),
+            "date_range": filters?.dateRange?.analyticsDescription ?? String()
         ])
     }
 }
@@ -349,5 +352,87 @@ extension WooAnalyticsEvent {
         static func orderDetailEditFlowCanceled(subject: Subject) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderDetailEditFlowCanceled, properties: [Subject.key: subject.rawValue])
         }
+    }
+}
+
+// MARK: - What's New Component
+//
+extension WooAnalyticsEvent {
+    /// Possible sources for the What's New component
+    ///
+    enum Source: String {
+        fileprivate static let key = "source"
+
+        case appUpgrade = "app_upgrade"
+        case appSettings = "app_settings"
+    }
+
+    static func featureAnnouncementShown(source: Source) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .featureAnnouncementShown, properties: [Source.key: source.rawValue])
+    }
+}
+
+// MARK: - Simple Payments
+//
+extension WooAnalyticsEvent {
+    // Namespace
+    enum SimplePayments {
+        /// Common event keys
+        ///
+        private enum Keys {
+            static let state = "state"
+            static let amount = "amount"
+        }
+
+        static func simplePaymentsFlowStarted() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsFlowStarted, properties: [:])
+        }
+
+        static func simplePaymentsFlowCompleted(amount: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsFlowCompleted, properties: [Keys.amount: amount])
+        }
+
+        static func simplePaymentsFlowCanceled() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsFlowCanceled, properties: [:])
+        }
+
+        static func simplePaymentsFlowFailed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsFlowFailed, properties: [:])
+        }
+
+        static func settingsBetaFeaturesSimplePaymentsToggled(isOn: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .settingsBetaFeaturesSimplePaymentsToggled, properties: [Keys.state: isOn ? "on" : "off"])
+        }
+    }
+}
+
+// MARK: - Jetpack Benefits Banner
+//
+extension WooAnalyticsEvent {
+    /// The action performed on the Jetpack benefits banner.
+    enum JetpackBenefitsBannerAction: String {
+        case shown
+        case dismissed
+        case tapped
+    }
+
+    /// Tracked on various states of the Jetpack benefits banner in dashboard.
+    static func jetpackBenefitsBanner(action: JetpackBenefitsBannerAction) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .jetpackBenefitsBanner, properties: ["action": action.rawValue])
+    }
+}
+
+// MARK: - Jetpack Install
+//
+extension WooAnalyticsEvent {
+    /// The source that presents the Jetpack install screen.
+    enum JetpackInstallSource: String {
+        case settings
+        case benefitsModal = "benefits_modal"
+    }
+
+    /// Tracked when the user taps to install Jetpack.
+    static func jetpackInstallButtonTapped(source: JetpackInstallSource) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .jetpackInstallButtonTapped, properties: ["source": source.rawValue])
     }
 }

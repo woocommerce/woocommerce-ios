@@ -3,13 +3,39 @@ import Foundation
 import Storage
 import Yosemite
 
-private typealias SitePlugin = Yosemite.SitePlugin
+private typealias SystemPlugin = Yosemite.SystemPlugin
 private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
 
-final class CardPresentPaymentsOnboardingUseCase: ObservableObject {
+/// Protocol for `CardPresentPaymentsOnboardingUseCase`.
+/// Right now, only used for testing.
+///
+protocol CardPresentPaymentsOnboardingUseCaseProtocol {
+    /// Current store onboarding state.
+    ///
+    var state: CardPresentPaymentOnboardingState { get set }
+
+    /// Store onboarding state publisher.
+    ///
+    var statePublisher: Published<CardPresentPaymentOnboardingState>.Publisher { get }
+
+    /// Resynchronize the onboarding state if needed.
+    ///
+    func refresh()
+
+    /// Update the onboarding state with the latest synced values.
+    ///
+    func updateState()
+}
+
+final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol, ObservableObject {
     let storageManager: StorageManagerType
     let stores: StoresManager
+
     @Published var state: CardPresentPaymentOnboardingState = .loading
+
+    var statePublisher: Published<CardPresentPaymentOnboardingState>.Publisher {
+        $state
+    }
 
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -59,15 +85,15 @@ private extension CardPresentPaymentsOnboardingUseCase {
         stores.dispatch(settingsAction)
 
         // We need to sync plugins to check if WCPay is installed, up to date, and active
-        let sitePluginsAction = SitePluginAction.synchronizeSitePlugins(siteID: siteID) { result in
+        let systemPluginsAction = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
             if case let .failure(error) = result {
-                DDLogError("[CardPresentPaymentsOnboarding] Error syncing site plugins: \(error)")
+                DDLogError("[CardPresentPaymentsOnboarding] Error syncing system plugins: \(error)")
                 errors.append(error)
             }
             group.leave()
         }
         group.enter()
-        stores.dispatch(sitePluginsAction)
+        stores.dispatch(systemPluginsAction)
 
         // We need to sync payment gateway accounts to see if WCPay is set up correctly
         let paymentGatewayAccountsAction = PaymentGatewayAccountAction.loadAccounts(siteID: siteID) { result in
@@ -161,21 +187,21 @@ private extension CardPresentPaymentsOnboardingUseCase {
         return Constants.supportedCountryCodes.contains(countryCode)
     }
 
-    func getWCPayPlugin() -> SitePlugin? {
+    func getWCPayPlugin() -> SystemPlugin? {
         guard let siteID = siteID else {
             return nil
         }
         return storageManager.viewStorage
-            .loadPlugin(siteID: siteID, name: Constants.pluginName)?
+            .loadSystemPlugin(siteID: siteID, name: Constants.pluginName)?
             .toReadOnly()
     }
 
-    func isWCPayVersionSupported(plugin: SitePlugin) -> Bool {
-        plugin.version.compare(Constants.supportedWCPayVersion, options: .numeric) != .orderedAscending
+    func isWCPayVersionSupported(plugin: SystemPlugin) -> Bool {
+        VersionHelpers.compare(plugin.version, Constants.minimumSupportedWCPayVersion) != .orderedAscending
     }
 
-    func isWCPayActivated(plugin: SitePlugin) -> Bool {
-        plugin.status.isActive
+    func isWCPayActivated(plugin: SystemPlugin) -> Bool {
+        return plugin.active
     }
 
     func getWCPayAccount() -> PaymentGatewayAccount? {
@@ -193,8 +219,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isWCPayInTestModeWithLiveStripeAccount(account: PaymentGatewayAccount) -> Bool {
-        // TODO: not implemented yet
-        return false
+        account.isLive && account.isInTestMode
     }
 
     func isStripeAccountUnderReview(account: PaymentGatewayAccount) -> Bool {
@@ -239,6 +264,6 @@ private extension PaymentGatewayAccount {
 
 private enum Constants {
     static let pluginName = "WooCommerce Payments"
-    static let supportedWCPayVersion = "3.1"
+    static let minimumSupportedWCPayVersion = "3.2.1"
     static let supportedCountryCodes = ["US"]
 }

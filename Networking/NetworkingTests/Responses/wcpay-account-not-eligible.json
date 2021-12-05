@@ -1,5 +1,6 @@
 {
     "data": {
+        "is_live": true,
         "has_pending_requirements": false,
         "has_overdue_requirements": false,
         "current_deadline": null,
@@ -12,6 +13,7 @@
             ]
         },
         "country": "US",
-        "card_present_eligible": false
+        "card_present_eligible": false,
+        "test_mode": false
     }
 }

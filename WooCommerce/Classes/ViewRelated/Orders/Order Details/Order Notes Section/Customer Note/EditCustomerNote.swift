@@ -4,7 +4,8 @@ import SwiftUI
 
 /// Hosting controller that wraps an `EditCustomerNote` view.
 ///
-final class EditCustomerNoteHostingController: UIHostingController<EditCustomerNote> {
+final class EditCustomerNoteHostingController<ViewModel: EditCustomerNoteViewModelProtocol>: UIHostingController<EditCustomerNote<ViewModel>>,
+                                                                                             UIAdaptivePresentationControllerDelegate {
 
     /// References to keep the Combine subscriptions alive within the lifecycle of the object.
     ///
@@ -22,7 +23,7 @@ final class EditCustomerNoteHostingController: UIHostingController<EditCustomerN
     ///
     private let systemNoticePresenter: NoticePresenter
 
-    init(viewModel: EditCustomerNoteViewModel, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+    init(viewModel: ViewModel, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.systemNoticePresenter = systemNoticePresenter
         super.init(rootView: EditCustomerNote(viewModel: viewModel))
 
@@ -32,7 +33,7 @@ final class EditCustomerNoteHostingController: UIHostingController<EditCustomerN
         }
 
         // Observe the present notice intent and set it back after presented.
-        viewModel.$presentNotice
+        viewModel.presentNoticePublisher
             .compactMap { $0 }
             .sink { [weak self] notice in
 
@@ -41,9 +42,9 @@ final class EditCustomerNoteHostingController: UIHostingController<EditCustomerN
 
                 switch notice {
                 case .success:
-                    self?.systemNoticePresenter.enqueue(notice: .init(title: EditCustomerNote.Localization.success, feedbackType: .success))
+                    self?.systemNoticePresenter.enqueue(notice: .init(title: Localization.success, feedbackType: .success))
                 case .error:
-                    self?.modalNoticePresenter.enqueue(notice: .init(title: EditCustomerNote.Localization.error, feedbackType: .error))
+                    self?.modalNoticePresenter.enqueue(notice: .init(title: Localization.error, feedbackType: .error))
                 }
 
                 // Nullify the presentation intent.
@@ -58,11 +59,9 @@ final class EditCustomerNoteHostingController: UIHostingController<EditCustomerN
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
 
-/// Intercepts to the dismiss drag gesture.
-///
-extension EditCustomerNoteHostingController: UIAdaptivePresentationControllerDelegate {
+    /// Intercepts to the dismiss drag gesture.
+    ///
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         rootView.viewModel.userDidCancelFlow()
     }
@@ -70,7 +69,7 @@ extension EditCustomerNoteHostingController: UIAdaptivePresentationControllerDel
 
 /// Allows merchant to edit the customer provided note of an order.
 ///
-struct EditCustomerNote: View {
+struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
 
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
@@ -78,14 +77,16 @@ struct EditCustomerNote: View {
 
     /// View Model for the view
     ///
-    @ObservedObject private(set) var viewModel: EditCustomerNoteViewModel
+    @ObservedObject private(set) var viewModel: ViewModel
 
     var body: some View {
         NavigationView {
             TextEditor(text: $viewModel.newNote)
+                .focused()
                 .padding()
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
+                .navigationViewStyle(StackNavigationViewStyle())
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(Localization.cancel, action: {
@@ -98,7 +99,6 @@ struct EditCustomerNote: View {
                     }
                 }
         }
-        .navigationViewStyle(StackNavigationViewStyle())
         .wooNavigationBarStyle()
     }
 
@@ -122,12 +122,10 @@ struct EditCustomerNote: View {
 }
 
 // MARK: Constants
-private extension EditCustomerNote {
-    enum Localization {
-        static let title = NSLocalizedString("Edit Note", comment: "Title for the edit customer provided note screen")
-        static let done = NSLocalizedString("Done", comment: "Text for the done button in the edit customer provided note screen")
-        static let cancel = NSLocalizedString("Cancel", comment: "Text for the cancel button in the edit customer provided note screen")
-        static let success = NSLocalizedString("Successfully updated", comment: "Notice text after updating the order successfully")
-        static let error = NSLocalizedString("There was an error updating the order", comment: "Notice text after failing to update the order successfully")
-    }
+private enum Localization {
+    static let title = NSLocalizedString("Edit Note", comment: "Title for the edit customer provided note screen")
+    static let done = NSLocalizedString("Done", comment: "Text for the done button in the edit customer provided note screen")
+    static let cancel = NSLocalizedString("Cancel", comment: "Text for the cancel button in the edit customer provided note screen")
+    static let success = NSLocalizedString("Successfully updated", comment: "Notice text after updating the order successfully")
+    static let error = NSLocalizedString("There was an error updating the order", comment: "Notice text after failing to update the order successfully")
 }

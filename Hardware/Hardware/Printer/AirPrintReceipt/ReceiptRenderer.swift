@@ -3,9 +3,7 @@ import UIKit
 /// Renders a receipt in an AirPrint enabled printer.
 ///
 public final class ReceiptRenderer: UIPrintPageRenderer {
-    private let lines: [ReceiptLineItem]
-    private let parameters: CardPresentReceiptParameters
-    private let cartTotals: [ReceiptTotalLine]
+    private let content: ReceiptContent
 
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -17,9 +15,7 @@ public final class ReceiptRenderer: UIPrintPageRenderer {
     }()
 
     public init(content: ReceiptContent) {
-        self.lines = content.lineItems
-        self.parameters = content.parameters
-        self.cartTotals = content.cartTotals
+        self.content = content
 
         super.init()
 
@@ -49,7 +45,7 @@ public extension ReceiptRenderer {
                         background-color:#F5F5F5;
                         width:100%;
                         color: #707070;
-                        margin: \(Constants.margin / 2)pt 0 0 0;
+                        margin: \(Constants.margin / 2)pt 0;
                         padding: \(Constants.margin / 2)pt;
                     }
                     table td:last-child { width: 30%; text-align: right; }
@@ -77,19 +73,20 @@ public extension ReceiptRenderer {
                         <h1>\(receiptTitle)</h1>
                         <h3>\(Localization.amountPaidSectionTitle.uppercased())</h3>
                         <p>
-                            \(parameters.formattedAmount) \(parameters.currency.uppercased())
+                            \(content.parameters.formattedAmount) \(content.parameters.currency.uppercased())
                         </p>
                         <h3>\(Localization.datePaidSectionTitle.uppercased())</h3>
                         <p>
-                            \(dateFormatter.string(from: parameters.date))
+                            \(dateFormatter.string(from: content.parameters.date))
                         </p>
                         <h3>\(Localization.paymentMethodSectionTitle.uppercased())</h3>
                         <p>
-                            <span class="card-icon \(parameters.cardDetails.brand.iconName)-icon"></span> - \(parameters.cardDetails.last4)
+                            <span class="card-icon \(content.parameters.cardDetails.brand.iconName)-icon"></span> - \(content.parameters.cardDetails.last4)
                         </p>
                     </header>
                     <h3>\(summarySectionTitle.uppercased())</h3>
                     \(summaryTable())
+                    \(orderNoteSection())
                     <footer>
                         <p>
                             \(requiredItems())
@@ -106,14 +103,30 @@ private extension ReceiptRenderer {
     private func configureFormatter() {
         let formatter = UIMarkupTextPrintFormatter(markupText: htmlContent())
         formatter.perPageContentInsets = .init(top: 0, left: Constants.margin, bottom: 0, right: Constants.margin)
+        formatter.maximumContentWidth = content.preferredPageSizeForPrinting.width - 2 * Constants.margin
 
         addPrintFormatter(formatter, startingAtPageAt: 0)
     }
 
     private func summaryTable() -> String {
         var summaryContent = "<table>"
-        for line in lines {
-            summaryContent += "<tr><td>\(line.title) × \(line.quantity)</td><td>\(line.amount) \(parameters.currency.uppercased())</td></tr>"
+        for line in content.lineItems {
+            var variations = ""
+            if !line.attributes.isEmpty {
+                variations.append(
+                    line.attributes.map {
+                            "\($0.name) \($0.value)".trimmingCharacters(in: .whitespaces)
+                        }
+                        .joined(separator: ", ")
+                )
+            }
+
+            var title = line.title
+            if !variations.isEmpty {
+                title.append(". \(variations.trimmingCharacters(in: .whitespaces))")
+            }
+            let stripedTitle = title.htmlStripped()
+            summaryContent += "<tr><td>\(stripedTitle) × \(line.quantity)</td><td>\(line.amount) \(content.parameters.currency.uppercased())</td></tr>"
         }
         summaryContent += totalRows()
         summaryContent += "</table>"
@@ -123,7 +136,7 @@ private extension ReceiptRenderer {
 
     private func totalRows() -> String {
         var rows = ""
-        for total in cartTotals {
+        for total in content.cartTotals {
             rows += summaryRow(title: total.description, amount: total.amount)
         }
         return rows
@@ -136,14 +149,24 @@ private extension ReceiptRenderer {
                     \(title)
                 </td>
                 <td>
-                    \(amount) \(parameters.currency.uppercased())
+                    \(amount) \(content.parameters.currency.uppercased())
                 </td>
             </tr>
         """
     }
 
+    private func orderNoteSection() -> String {
+        guard let orderNote = content.orderNote else {
+            return ""
+        }
+        return """
+        <h3>\(Localization.orderNoteSectionTitle.uppercased())</h3>
+        <p>\(orderNote)</p>
+        """
+    }
+
     private func requiredItems() -> String {
-        guard let emv = parameters.cardDetails.receipt else {
+        guard let emv = content.parameters.cardDetails.receipt else {
             return "<br/>"
         }
 
@@ -151,9 +174,9 @@ private extension ReceiptRenderer {
         /// are required in the US.
         /// https://stripe.com/docs/terminal/checkout/receipts#custom
         return """
-            \(Localization.applicationName): \(emv.applicationPreferredName)<br/>
-            \(Localization.aid): \(emv.dedicatedFileName)
-        """
+               \(Localization.applicationName): \(emv.applicationPreferredName.htmlStripped())<br/>
+               \(Localization.aid): \(emv.dedicatedFileName.htmlStripped())
+               """
     }
 
     private func cardIconCSS() -> String {
@@ -163,7 +186,7 @@ private extension ReceiptRenderer {
     }
 
     private var receiptTitle: String {
-        guard let storeName = parameters.storeName else {
+        guard let storeName = content.parameters.storeName else {
             return Localization.receiptTitle
         }
 
@@ -171,7 +194,7 @@ private extension ReceiptRenderer {
     }
 
     private var summarySectionTitle: String {
-        guard let orderID = parameters.orderID else {
+        guard let orderID = content.parameters.orderID else {
             return Localization.summarySectionTitle
         }
         return String(format: Localization.summarySectionTitleWithOrderFormat, String(orderID))
@@ -218,6 +241,10 @@ private extension ReceiptRenderer {
             comment: "Title of 'Summary' section in the receipt when the order number is unknown"
         )
 
+        static let orderNoteSectionTitle = NSLocalizedString(
+            "Notes",
+            comment: "Title of order note section in the receipt, commonly used for Quick Orders.")
+
         static let summarySectionTitleWithOrderFormat = NSLocalizedString(
             "Summary: Order #%1$@",
             comment: "Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920"
@@ -237,5 +264,21 @@ private extension ReceiptRenderer {
             "Account Type",
             comment: "Reads as 'Account Type'. Part of the mandatory data in receipts"
         )
+    }
+}
+
+private extension String {
+    func htmlStripped() -> String {
+        let data = Data(utf8)
+        do {
+            return try NSAttributedString(
+                data: data,
+                options: [.documentType: NSAttributedString.DocumentType.html],
+                documentAttributes: nil
+            ).string
+        } catch {
+            DDLogError("Failed to remove HTML from \(self): \(error.localizedDescription)")
+            return self
+        }
     }
 }

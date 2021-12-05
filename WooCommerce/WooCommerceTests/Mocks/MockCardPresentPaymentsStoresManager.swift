@@ -86,3 +86,37 @@ extension MockCardPresentPaymentsStoresManager {
         case connectionFailure
     }
 }
+
+extension MockCardPresentPaymentsStoresManager {
+    func simulateSuccessfulUpdate() {
+        softwareUpdateSubject.send(.completed)
+    }
+
+    func simulateFailedUpdate(error: Error) {
+        softwareUpdateSubject.send(.failed(error: error))
+    }
+
+    func simulateCancelableUpdate(onCancel: @escaping () -> Void) {
+        softwareUpdateSubject.send(.started(cancelable: MockFallibleCancelable(onCancel: {
+            onCancel()
+            self.softwareUpdateSubject.send(
+                .failed(error: CardReaderServiceError.softwareUpdate(
+                    underlyingError: .readerSoftwareUpdateFailedInterrupted,
+                    batteryLevel: 0.86
+                ))
+            )
+        })))
+    }
+
+    func simulateUpdateStarted() {
+        softwareUpdateSubject.send(.started(cancelable: nil))
+    }
+
+    func simulateUpdateProgress(_ progress: Float) {
+        softwareUpdateSubject.send(.installing(progress: progress))
+    }
+
+    func simulateOptionalUpdateAvailable() {
+        softwareUpdateSubject.send(.available)
+    }
+}

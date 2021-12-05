@@ -489,7 +489,9 @@ extension PaymentGatewayAccount {
             defaultCurrency: .fake(),
             supportedCurrencies: .fake(),
             country: .fake(),
-            isCardPresentEligible: .fake()
+            isCardPresentEligible: .fake(),
+            isLive: .fake(),
+            isInTestMode: .fake()
         )
     }
 }
@@ -1312,8 +1314,11 @@ extension Site {
             description: .fake(),
             url: .fake(),
             plan: .fake(),
+            isJetpackThePluginInstalled: .fake(),
+            isJetpackConnected: .fake(),
             isWooCommerceActive: .fake(),
             isWordPressStore: .fake(),
+            jetpackConnectionActivePlugins: .fake(),
             timezone: .fake(),
             gmtOffset: .fake()
         )
@@ -1457,7 +1462,8 @@ extension SystemPlugin {
             url: .fake(),
             authorName: .fake(),
             authorUrl: .fake(),
-            networkActivated: .fake()
+            networkActivated: .fake(),
+            active: .fake()
         )
     }
 }
@@ -1540,5 +1546,21 @@ extension WCPayPaymentIntentStatusEnum {
     ///
     public static func fake() -> WCPayPaymentIntentStatusEnum {
         .requiresPaymentMethod
+    }
+}
+extension WordPressMedia {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WordPressMedia {
+        .init(
+            mediaID: .fake(),
+            date: .fake(),
+            slug: .fake(),
+            mimeType: .fake(),
+            src: .fake(),
+            alt: .fake(),
+            details: .fake(),
+            title: .fake()
+        )
     }
 }

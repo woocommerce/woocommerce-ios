@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import Gridicons
 import WordPressUI
@@ -14,19 +15,10 @@ final class DashboardViewController: UIViewController {
     private let siteID: Int64
 
     private let dashboardUIFactory: DashboardUIFactory
-    private var dashboardUI: DashboardUI?
+    @Published private var dashboardUI: DashboardUI?
 
     // Used to enable subtitle with store name
-    private var shouldShowStoreNameAsSubtitle: Bool {
-        return ServiceLocator.stores.sessionManager.defaultSite?.name != nil && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles)
-    }
-
-    private var titleName: String {
-        guard !shouldShowStoreNameAsSubtitle else {
-            return Localization.title
-        }
-        return ServiceLocator.stores.sessionManager.defaultSite?.name ?? ""
-    }
+    private var shouldShowStoreNameAsSubtitle: Bool = false
 
     // MARK: Subviews
 
@@ -79,6 +71,14 @@ final class DashboardViewController: UIViewController {
                                               })
     }()
 
+    /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
+    private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
+    private var contentBottomToJetpackBenefitsBannerConstraint: NSLayoutConstraint?
+    private var contentBottomToContainerConstraint: NSLayoutConstraint?
+    private var isJetpackBenefitsBannerShown: Bool {
+        bottomJetpackBenefitsBannerController.view?.superview != nil
+    }
+
     /// A spacer view to add a margin below the top banner (between the banner and dashboard UI)
     ///
     private lazy var spacerView: UIView = {
@@ -87,6 +87,8 @@ final class DashboardViewController: UIViewController {
         view.backgroundColor = .listBackground
         return view
     }()
+
+    private var cancellables = Set<AnyCancellable>()
 
     // MARK: View Lifecycle
 
@@ -106,6 +108,9 @@ final class DashboardViewController: UIViewController {
         configureNavigation()
         configureView()
         configureDashboardUIContainer()
+        configureBottomJetpackBenefitsBanner()
+        observeSiteForUIUpdates()
+        observeBottomJetpackBenefitsBannerVisibilityUpdates()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -146,7 +151,7 @@ private extension DashboardViewController {
     }
 
     func configureTitle() {
-        navigationItem.title = titleName
+        navigationItem.title = Localization.title
     }
 
     func configureHeaderStackView() {
@@ -161,9 +166,6 @@ private extension DashboardViewController {
     }
 
     func configureSubtitle() {
-        guard shouldShowStoreNameAsSubtitle else {
-            return
-        }
         storeNameLabel.text = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
         innerStackView.addArrangedSubview(storeNameLabel)
         headerStackView.addArrangedSubview(innerStackView)
@@ -182,8 +184,8 @@ private extension DashboardViewController {
             contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
         ])
+        contentBottomToContainerConstraint = contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
     }
 
     private func configureNavigationItem() {
@@ -218,6 +220,40 @@ private extension DashboardViewController {
         view.pinSubviewToSafeArea(containerView)
     }
 
+    func configureBottomJetpackBenefitsBanner() {
+        bottomJetpackBenefitsBannerController.setActions { [weak self] in
+            guard let self = self else { return }
+
+            ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .tapped))
+
+            let benefitsController = JetpackBenefitsHostingController()
+            benefitsController.setActions { [weak self] in
+                self?.dismiss(animated: true, completion: { [weak self] in
+                    ServiceLocator.analytics.track(event: .jetpackInstallButtonTapped(source: .benefitsModal))
+
+                    guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+                        return
+                    }
+                    let installController = JetpackInstallHostingController(siteID: site.siteID, siteURL: site.url)
+                    installController.setDismissAction { [weak self] in
+                        self?.dismiss(animated: true, completion: nil)
+                    }
+                    self?.present(installController, animated: true, completion: nil)
+                })
+            } dismissAction: { [weak self] in
+                self?.dismiss(animated: true, completion: nil)
+            }
+            self.present(benefitsController, animated: true, completion: nil)
+        } dismissAction: { [weak self] in
+            ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .dismissed))
+
+            let dismissAction = AppSettingsAction.setJetpackBenefitsBannerLastDismissedTime(time: Date())
+            ServiceLocator.stores.dispatch(dismissAction)
+
+            self?.hideJetpackBenefitsBanner()
+        }
+    }
+
     func reloadDashboardUIStatsVersion(forced: Bool) {
         dashboardUIFactory.reloadDashboardUI(onUIUpdate: { [weak self] dashboardUI in
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
@@ -239,6 +275,17 @@ private extension DashboardViewController {
     func hideTopBannerView() {
         topBannerView.isHidden = true
         spacerView.isHidden = true
+    }
+
+    func updateUI(site: Site?) {
+        guard let siteName = site?.name, siteName.isEmpty == false,
+              ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) else {
+            shouldShowStoreNameAsSubtitle = false
+            storeNameLabel.text = nil
+            return
+        }
+        shouldShowStoreNameAsSubtitle = true
+        storeNameLabel.text = siteName
     }
 }
 
@@ -286,19 +333,65 @@ private extension DashboardViewController {
             remove(previousDashboardUI)
         }
 
-        dashboardUI = updatedDashboardUI
-
         let contentView = updatedDashboardUI.view!
         addChild(updatedDashboardUI)
         containerView.addSubview(contentView)
         updatedDashboardUI.didMove(toParent: self)
         addViewBelowHeaderStackView(contentView: contentView)
 
+        // Sets `dashboardUI` after its view is added to the view hierarchy so that observers can update UI based on its view.
+        dashboardUI = updatedDashboardUI
+
         updatedDashboardUI.onPullToRefresh = { [weak self] in
             self?.pullToRefresh()
         }
         updatedDashboardUI.displaySyncingError = { [weak self] in
             self?.showTopBannerView()
+        }
+    }
+
+    func updateJetpackBenefitsBannerVisibility(isBannerVisible: Bool, contentView: UIView) {
+        if isBannerVisible {
+            showJetpackBenefitsBanner(contentView: contentView)
+        } else {
+            hideJetpackBenefitsBanner()
+        }
+    }
+
+    func showJetpackBenefitsBanner(contentView: UIView) {
+        ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .shown))
+
+        hideJetpackBenefitsBanner()
+        guard let banner = bottomJetpackBenefitsBannerController.view else {
+            return
+        }
+        contentBottomToContainerConstraint?.isActive = false
+
+        addChild(bottomJetpackBenefitsBannerController)
+        containerView.addSubview(banner)
+        bottomJetpackBenefitsBannerController.didMove(toParent: self)
+
+        banner.translatesAutoresizingMaskIntoConstraints = false
+
+        // The banner height is calculated in `viewDidLayoutSubviews` to support rotation.
+        let contentBottomToJetpackBenefitsBannerConstraint = banner.topAnchor.constraint(equalTo: contentView.bottomAnchor)
+        self.contentBottomToJetpackBenefitsBannerConstraint = contentBottomToJetpackBenefitsBannerConstraint
+
+        NSLayoutConstraint.activate([
+            contentBottomToJetpackBenefitsBannerConstraint,
+            banner.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            banner.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            // Pins from the safe area layout bottom to accommodate offline banner.
+            banner.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+        ])
+    }
+
+    func hideJetpackBenefitsBanner() {
+        contentBottomToJetpackBenefitsBannerConstraint?.isActive = false
+        contentBottomToContainerConstraint?.isActive = true
+        if isJetpackBenefitsBannerShown {
+            bottomJetpackBenefitsBannerController.view?.removeFromSuperview()
+            remove(bottomJetpackBenefitsBannerController)
         }
     }
 }
@@ -317,7 +410,7 @@ extension DashboardViewController {
 private extension DashboardViewController {
 
     @objc func settingsTapped() {
-        let settingsViewController = SettingsViewController(nibName: nil, bundle: nil)
+        let settingsViewController = SettingsViewController()
         ServiceLocator.analytics.track(.settingsTapped)
         show(settingsViewController, sender: self)
     }
@@ -337,6 +430,38 @@ private extension DashboardViewController {
             self?.configureTitle()
         })
     }
+
+    func observeSiteForUIUpdates() {
+        ServiceLocator.stores.site.sink { [weak self] site in
+            guard let self = self else { return }
+            self.updateUI(site: site)
+            self.reloadData(forced: true)
+        }.store(in: &cancellables)
+    }
+
+    func observeBottomJetpackBenefitsBannerVisibilityUpdates() {
+        Publishers.CombineLatest(ServiceLocator.stores.site, $dashboardUI.eraseToAnyPublisher())
+            .sink { [weak self] site, dashboardUI in
+                guard let self = self else { return }
+
+                guard let contentView = dashboardUI?.view else {
+                    return
+                }
+
+                // Checks if Jetpack banner can be visible from app settings.
+                let action = AppSettingsAction.loadJetpackBenefitsBannerVisibility(currentTime: Date(),
+                                                                                   calendar: .current) { [weak self] isVisibleFromAppSettings in
+                    guard let self = self else { return }
+
+                    let shouldShowJetpackBenefitsBanner = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
+                    && site?.isJetpackCPConnected == true
+                    && isVisibleFromAppSettings
+
+                    self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
+                }
+                ServiceLocator.stores.dispatch(action)
+            }.store(in: &cancellables)
+    }
 }
 
 // MARK: Constants
@@ -351,6 +476,6 @@ private extension DashboardViewController {
     enum Constants {
         static let animationDuration = 0.2
         static let bannerBottomMargin = CGFloat(8)
-        static let horizontalMargin = CGFloat(16)
+        static let horizontalMargin = CGFloat(20)
     }
 }

@@ -8,29 +8,36 @@ public class OrdersRemote: Remote {
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote orders.
-    ///     - status: Filters the Orders by the specified Status, if any.
-    ///     - before: If given, exclude orders created before this date/time. Passing a local date is fine. This
+    ///     - statuses: Filters the Orders by the specified Status, if any.
+    ///     - after: If given, limit response to orders published after a given compliant date.  Passing a local date is fine. This
+    ///               method will convert it to UTC ISO 8601 before calling the REST API.
+    ///     - before: If given, limit response to resources published before a given compliant date.. Passing a local date is fine. This
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of Orders to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllOrders(for siteID: Int64,
-                              statusKey: String? = nil,
+                              statuses: [String]? = nil,
+                              after: Date? = nil,
                               before: Date? = nil,
                               pageNumber: Int = Defaults.pageNumber,
                               pageSize: Int = Defaults.pageSize,
                               completion: @escaping (Result<[Order], Error>) -> Void) {
         let utcDateFormatter = DateFormatter.Defaults.iso8601
 
+        let statusesString: String? = statuses?.isEmpty == true ? Defaults.statusAny : statuses?.joined(separator: ",")
         let parameters: [String: Any] = {
             var parameters = [
                 ParameterKeys.page: String(pageNumber),
                 ParameterKeys.perPage: String(pageSize),
-                ParameterKeys.statusKey: statusKey ?? Defaults.statusAny,
+                ParameterKeys.statusKey: statusesString ?? Defaults.statusAny,
                 ParameterKeys.fields: ParameterValues.listFieldValues,
             ]
 
+            if let after = after {
+                parameters[ParameterKeys.after] = utcDateFormatter.string(from: after)
+            }
             if let before = before {
                 parameters[ParameterKeys.before] = utcDateFormatter.string(from: before)
             }
@@ -176,6 +183,9 @@ public class OrdersRemote: Remote {
                     case .billingAddress:
                         let billingAddressEncoded = try order.billingAddress?.toDictionary()
                         params[Order.CodingKeys.billingAddress.rawValue] = billingAddressEncoded
+                    case .fees:
+                        let feesEncoded = try order.fees.map { try $0.toDictionary() }
+                        params[Order.CodingKeys.feeLines.rawValue] = feesEncoded
                     }
                 }
             }()
@@ -233,21 +243,22 @@ public extension OrdersRemote {
         static let perPage: String          = "per_page"
         static let statusKey: String        = "status"
         static let fields: String           = "_fields"
+        static let after: String            = "after"
         static let before: String           = "before"
     }
 
     enum ParameterValues {
         // Same as singleOrderFieldValues except we exclude the line_items and shipping fields
-        static let listFieldValues: String = """
-            id,parent_id,number,status,currency,customer_id,customer_note,date_created_gmt,date_modified_gmt,date_paid_gmt,\
-            discount_total,discount_tax,shipping_total,shipping_tax,total,total_tax,payment_method,payment_method_title,\
-            billing,coupon_lines,shipping_lines,refunds,fee_lines
-            """
-        static let singleOrderFieldValues: String = """
-            id,parent_id,number,status,currency,customer_id,customer_note,date_created_gmt,date_modified_gmt,date_paid_gmt,\
-            discount_total,discount_tax,shipping_total,shipping_tax,total,total_tax,payment_method,payment_method_title,shipping,\
-            billing,coupon_lines,shipping_lines,refunds,fee_lines,line_items
-        """
+        static let listFieldValues: String = commonOrderFieldValues.joined(separator: ",")
+        static let singleOrderFieldValues: String = (commonOrderFieldValues + singleOrderExtraFieldValues).joined(separator: ",")
+        private static let commonOrderFieldValues = [
+            "id", "parent_id", "number", "status", "currency", "customer_id", "customer_note", "date_created_gmt", "date_modified_gmt", "date_paid_gmt",
+            "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
+            "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines"
+        ]
+        private static let singleOrderExtraFieldValues = [
+            "line_items", "shipping"
+        ]
     }
 
     /// Order fields supported for update
@@ -256,6 +267,7 @@ public extension OrdersRemote {
         case customerNote
         case shippingAddress
         case billingAddress
+        case fees
     }
 
     /// Order fields supported for create

@@ -8,7 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		030338102705F7D400764131 /* ReceiptTotalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0303380F2705F7D400764131 /* ReceiptTotalLine.swift */; };
+		03B440AA2754DFC400759429 /* UnderlyingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B440A92754DFC400759429 /* UnderlyingError.swift */; };
 		311889EB2653286B0080AEA2 /* PaymentIntentMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311889EA2653286B0080AEA2 /* PaymentIntentMetadataTests.swift */; };
+		317975C0274EB1F9004357B1 /* DeclineReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975BF274EB1F9004357B1 /* DeclineReason.swift */; };
+		317975C2274EBC1F004357B1 /* DeclineReason+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975C1274EBC1F004357B1 /* DeclineReason+Stripe.swift */; };
+		317975C4274ED591004357B1 /* DeclineReasonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975C3274ED591004357B1 /* DeclineReasonTests.swift */; };
+		55CD4BB4273E617C007686D3 /* ReceiptRendererTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55CD4BB3273E617C007686D3 /* ReceiptRendererTest.swift */; };
 		5A747BE9FA06EC8752A35752 /* Pods_HardwareTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */; };
 		8FFAA245E257B9EB98E2FCBD /* Pods_SampleReceiptPrinter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */; };
 		C5D2CB7D21CEE28FEBF18BF6 /* Pods_Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */; };
@@ -128,12 +133,17 @@
 /* Begin PBXFileReference section */
 		02351FF56149ADCD11338B19 /* Pods-SampleReceiptPrinter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleReceiptPrinter.release.xcconfig"; path = "Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter.release.xcconfig"; sourceTree = "<group>"; };
 		0303380F2705F7D400764131 /* ReceiptTotalLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptTotalLine.swift; sourceTree = "<group>"; };
+		03B440A92754DFC400759429 /* UnderlyingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlyingError.swift; sourceTree = "<group>"; };
 		0C16E0AAFF5A7B364BD4E171 /* Pods-Hardware.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release-alpha.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		1CC96A71F2937BCB7432766F /* Pods-HardwareTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.debug.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.debug.xcconfig"; sourceTree = "<group>"; };
 		2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SampleReceiptPrinter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		311889EA2653286B0080AEA2 /* PaymentIntentMetadataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentIntentMetadataTests.swift; sourceTree = "<group>"; };
+		317975BF274EB1F9004357B1 /* DeclineReason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeclineReason.swift; sourceTree = "<group>"; };
+		317975C1274EBC1F004357B1 /* DeclineReason+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeclineReason+Stripe.swift"; sourceTree = "<group>"; };
+		317975C3274ED591004357B1 /* DeclineReasonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeclineReasonTests.swift; sourceTree = "<group>"; };
 		3CF9348BADD5E0518080A61A /* Pods-Hardware.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.debug.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.debug.xcconfig"; sourceTree = "<group>"; };
 		47BDD50287B7B0CF8D769BFC /* Pods-PrinterPlayground.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PrinterPlayground.release-alpha.xcconfig"; path = "Target Support Files/Pods-PrinterPlayground/Pods-PrinterPlayground.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		55CD4BB3273E617C007686D3 /* ReceiptRendererTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptRendererTest.swift; sourceTree = "<group>"; };
 		9726331F55A9621F2F887E13 /* Pods-Hardware.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release.xcconfig"; sourceTree = "<group>"; };
 		AE60F16D43C20AD4523A61A5 /* Pods-SampleReceiptPrinter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleReceiptPrinter.debug.xcconfig"; path = "Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter.debug.xcconfig"; sourceTree = "<group>"; };
 		B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HardwareTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -258,6 +268,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		55CD4BB2273E6159007686D3 /* AirPrintReceipt */ = {
+			isa = PBXGroup;
+			children = (
+				55CD4BB3273E617C007686D3 /* ReceiptRendererTest.swift */,
+			);
+			path = AirPrintReceipt;
+			sourceTree = "<group>";
+		};
 		ADED522B787D093F499BD540 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -351,6 +369,7 @@
 		D88FDB0C25DD216B00CB0DBD /* HardwareTests */ = {
 			isa = PBXGroup;
 			children = (
+				55CD4BB2273E6159007686D3 /* AirPrintReceipt */,
 				D845BDF3262DD65D00A3E40F /* Mocks */,
 				D88FDB0F25DD216B00CB0DBD /* Info.plist */,
 				D892F21325E3F67A001D7134 /* CardReaderTests.swift */,
@@ -363,6 +382,7 @@
 				D80B4651260E19590092EDC0 /* PaymentIntentParametersTests.swift */,
 				D845BDFE262DDA6A00A3E40F /* ReceiptDetailsTests.swift */,
 				D845BE02262DDBF500A3E40F /* CardBrandTests.swift */,
+				317975C3274ED591004357B1 /* DeclineReasonTests.swift */,
 			);
 			path = HardwareTests;
 			sourceTree = "<group>";
@@ -387,6 +407,7 @@
 				D88FDB2025DD21AF00CB0DBD /* PaymentStatus.swift */,
 				D845BDBB262D980C00A3E40F /* CardPresentTransactionDetails.swift */,
 				D81AE86325E6B77F00D9CFD3 /* CardReaderServiceError.swift */,
+				03B440A92754DFC400759429 /* UnderlyingError.swift */,
 				D8EDFE2925EED21D003D2213 /* CardReaderConfigProvider.swift */,
 				D80B464D260E18930092EDC0 /* Email.swift */,
 				D80B4655260E1B290092EDC0 /* CurrencyCode.swift */,
@@ -396,6 +417,7 @@
 				E1E125AB26EB582B0068A9B0 /* CardReaderSoftwareUpdateState.swift */,
 				D845BDC1262D98C400A3E40F /* CardBrand.swift */,
 				D845BDD9262DAADB00A3E40F /* PaymentMethod.swift */,
+				317975BF274EB1F9004357B1 /* DeclineReason.swift */,
 			);
 			path = CardReader;
 			sourceTree = "<group>";
@@ -421,6 +443,7 @@
 				D845BDCF262D9C6C00A3E40F /* ReceiptDetails+Stripe.swift */,
 				D845BDDD262DAB8300A3E40F /* PaymentMethod+Stripe.swift */,
 				E1E125AF26EB66EA0068A9B0 /* Cancelable+Stripe.swift */,
+				317975C1274EBC1F004357B1 /* DeclineReason+Stripe.swift */,
 			);
 			path = StripeCardReader;
 			sourceTree = "<group>";
@@ -566,6 +589,7 @@
 					};
 					D88FDB0725DD216B00CB0DBD = {
 						CreatedOnToolsVersion = 12.4;
+						LastSwiftMigration = 1310;
 					};
 					E1CFC14A2643E9EE0089F86F = {
 						CreatedOnToolsVersion = 12.4;
@@ -732,6 +756,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D845BE59262ED84000A3E40F /* AirPrintReceiptPrinterService.swift in Sources */,
+				317975C2274EBC1F004357B1 /* DeclineReason+Stripe.swift in Sources */,
 				D845BDB8262D97B300A3E40F /* ReceiptDetails.swift in Sources */,
 				D88FDB2D25DD21B000CB0DBD /* PaymentIntentParameters.swift in Sources */,
 				D89B8F0825DDC8F60001C726 /* Charge.swift in Sources */,
@@ -743,6 +768,7 @@
 				D845BDDE262DAB8300A3E40F /* PaymentMethod+Stripe.swift in Sources */,
 				D89B8F0C25DDC9D30001C726 /* ChargeStatus.swift in Sources */,
 				E140F61C2668CDC900FDB5FF /* Logging.swift in Sources */,
+				03B440AA2754DFC400759429 /* UnderlyingError.swift in Sources */,
 				E1E125AC26EB582B0068A9B0 /* CardReaderSoftwareUpdateState.swift in Sources */,
 				D88FDB3125DD21B000CB0DBD /* CardReader.swift in Sources */,
 				D845BDDA262DAADB00A3E40F /* PaymentMethod.swift in Sources */,
@@ -751,6 +777,7 @@
 				E1E125B026EB66EA0068A9B0 /* Cancelable+Stripe.swift in Sources */,
 				D80B4656260E1B290092EDC0 /* CurrencyCode.swift in Sources */,
 				D81AE86425E6B77F00D9CFD3 /* CardReaderServiceError.swift in Sources */,
+				317975C0274EB1F9004357B1 /* DeclineReason.swift in Sources */,
 				D8DF5F4E25DD9F91008AFE25 /* CardReaderType+Stripe.swift in Sources */,
 				D89B8F1225DDCBCD0001C726 /* Charge+Stripe.swift in Sources */,
 				E1E4FA2F2653CFD5007B9D4F /* PrintingResult.swift in Sources */,
@@ -797,10 +824,12 @@
 				D81AE85E25E6A89F00D9CFD3 /* StripeCardReaderCacheTests.swift in Sources */,
 				D892F21425E3F67A001D7134 /* CardReaderTests.swift in Sources */,
 				D854FC26260A6B5800A219CD /* ErrorCodesTests.swift in Sources */,
+				55CD4BB4273E617C007686D3 /* ReceiptRendererTest.swift in Sources */,
 				D892F21025E3F4C0001D7134 /* MockStripeCardReader.swift in Sources */,
 				D88303DB25E450E700C877F9 /* PaymentIntentTests.swift in Sources */,
 				D845BE03262DDBF500A3E40F /* CardBrandTests.swift in Sources */,
 				311889EB2653286B0080AEA2 /* PaymentIntentMetadataTests.swift in Sources */,
+				317975C4274ED591004357B1 /* DeclineReasonTests.swift in Sources */,
 				D845BDFB262DD97E00A3E40F /* MockStripeReceiptDetails.swift in Sources */,
 				D845BDF5262DD67E00A3E40F /* MockStripeCardPresentDetails.swift in Sources */,
 				D88303D125E44B2500C877F9 /* ChargeTests.swift in Sources */,
@@ -1019,6 +1048,7 @@
 			baseConfigurationReference = 1CC96A71F2937BCB7432766F /* Pods-HardwareTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "${inherited}";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
@@ -1030,6 +1060,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.Hardware.HardwareTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1040,6 +1071,7 @@
 			baseConfigurationReference = C61D1642BE09D1A1AD6AA9FA /* Pods-HardwareTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "${inherited}";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
@@ -1147,6 +1179,7 @@
 			baseConfigurationReference = DB2B86965868C0EC25910D7D /* Pods-HardwareTests.release-alpha.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "${inherited}";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;

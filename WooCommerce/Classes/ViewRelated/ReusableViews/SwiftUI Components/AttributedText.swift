@@ -132,10 +132,10 @@ private struct TextViewWrapper: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: View, context: Context) {
-        uiView.attributedText = attributedText
         uiView.maxLayoutWidth = maxLayoutWidth
         uiView.font = context.environment.font?.uiFont ?? UIFont.preferredFont(forTextStyle: .body)
         uiView.textColor = context.environment.foregroundColor.map(UIColor.init)
+        uiView.attributedText = attributedText
 
         var linkTextAttributes = uiView.linkTextAttributes ?? [:]
         linkTextAttributes[.underlineColor] = UIColor.clear
@@ -197,13 +197,13 @@ extension EnvironmentValues {
 
 private extension EnvironmentValues {
     var foregroundColor: Color? {
-        get { self[ForegroundColorKey] }
-        set { self[ForegroundColorKey] = newValue }
+        get { self[ForegroundColorKey.self] }
+        set { self[ForegroundColorKey.self] = newValue }
     }
 
     var linkColor: Color? {
-        get { self[LinkColorKey] }
-        set { self[LinkColorKey] = newValue }
+        get { self[LinkColorKey.self] }
+        set { self[LinkColorKey.self] = newValue }
     }
 }
 

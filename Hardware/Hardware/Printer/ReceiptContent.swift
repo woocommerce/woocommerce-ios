@@ -1,14 +1,20 @@
+import CoreGraphics
 /// Models the content of the receipt.
 ///
 public struct ReceiptContent: Codable {
     public let lineItems: [ReceiptLineItem]
     public let parameters: CardPresentReceiptParameters
     public let cartTotals: [ReceiptTotalLine]
+    public let orderNote: String?
 
-    public init(parameters: CardPresentReceiptParameters, lineItems: [ReceiptLineItem], cartTotals: [ReceiptTotalLine]) {
+    public init(parameters: CardPresentReceiptParameters,
+                lineItems: [ReceiptLineItem],
+                cartTotals: [ReceiptTotalLine],
+                orderNote: String?) {
         self.lineItems = lineItems
         self.parameters = parameters
         self.cartTotals = cartTotals
+        self.orderNote = orderNote
     }
 }
 
@@ -17,6 +23,7 @@ extension ReceiptContent {
         case lineItems = "line_items"
         case parameters = "parameters"
         case cartTotals = "cart_totals"
+        case orderNote = "order_note"
     }
 }
 
@@ -49,5 +56,17 @@ public extension ReceiptContent {
             "Amount Paid",
             comment: "Line description for 'Amount Paid' cart total on the receipt"
         )
+    }
+}
+
+public extension ReceiptContent {
+    static let pointsPerInch: Int = 72
+
+    /// Returns the preferred page size for a receipt in points. There are 72 points per inch.
+    /// In the future, we could calculate this based on the receipt content. For now, let's
+    /// just return a size that should accomodate the vast majority of receipts.
+    ///
+    var preferredPageSizeForPrinting: CGSize {
+        return CGSize(width: 4 * ReceiptContent.pointsPerInch, height: 6 * ReceiptContent.pointsPerInch)
     }
 }

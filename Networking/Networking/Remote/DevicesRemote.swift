@@ -12,7 +12,7 @@ public class DevicesRemote: Remote {
     ///     - applicationId: App ID.
     ///     - applicationVersion: App Version.
     ///     - defaultStoreID: Active Store ID.
-    ///     - completion: Closure to be executed on commpletion.
+    ///     - completion: Closure to be executed on completion.
     ///
     public func registerDevice(device: APNSDevice,
                                applicationId: String,
@@ -48,7 +48,7 @@ public class DevicesRemote: Remote {
     ///
     /// - Parameters:
     ///     - deviceId: Identifier of the device to be removed.
-    ///     - completion: Closure to be executed on commpletion.
+    ///     - completion: Closure to be executed on completion.
     ///
     public func unregisterDevice(deviceId: String, completion: @escaping (Error?) -> Void) {
         let path = String(format: Paths.delete, deviceId)

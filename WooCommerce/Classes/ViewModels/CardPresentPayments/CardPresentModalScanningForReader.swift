@@ -25,6 +25,13 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
 
     var bottomSubtitle: String?
 
+    var accessibilityLabel: String? {
+        guard let bottomTitle = bottomTitle else {
+            return topTitle
+        }
+        return topTitle + bottomTitle
+    }
+
     init(cancel: @escaping () -> Void) {
         self.cancelAction = cancel
     }
@@ -47,7 +54,7 @@ private extension CardPresentModalScanningForReader {
         )
 
         static let instruction = NSLocalizedString(
-            "To turn on your card reader, briefly press its power button. When powered on, the power LED will blink blue.",
+            "To turn on your card reader, briefly press its power button.",
             comment: "Label within the modal dialog that appears when searching for a card reader"
         )
 

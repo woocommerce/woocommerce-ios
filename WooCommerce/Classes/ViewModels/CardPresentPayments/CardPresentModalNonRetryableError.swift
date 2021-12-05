@@ -32,6 +32,14 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
 
     let bottomSubtitle: String? = nil
 
+    var accessibilityLabel: String? {
+        guard let bottomTitle = bottomTitle else {
+            return topTitle
+        }
+
+        return topTitle + bottomTitle
+    }
+
     init(amount: String, error: Error) {
         self.amount = amount
         self.error = error

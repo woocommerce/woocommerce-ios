@@ -7,8 +7,8 @@ struct ErrorTopBannerFactory {
                                 expandedStateChangeHandler: @escaping () -> Void,
                                 onTroubleshootButtonPressed: @escaping () -> Void,
                                 onContactSupportButtonPressed: @escaping () -> Void) -> TopBannerView {
-        let troubleshootAction = TopBannerViewModel.ActionButton(title: Localization.troubleshoot, action: onTroubleshootButtonPressed)
-        let contactSupportAction = TopBannerViewModel.ActionButton(title: Localization.contactSupport, action: onContactSupportButtonPressed)
+        let troubleshootAction = TopBannerViewModel.ActionButton(title: Localization.troubleshoot, action: { _ in onTroubleshootButtonPressed() })
+        let contactSupportAction = TopBannerViewModel.ActionButton(title: Localization.contactSupport, action: { _ in onContactSupportButtonPressed() })
         let actions = [troubleshootAction, contactSupportAction]
         let viewModel = TopBannerViewModel(title: Localization.title,
                                            infoText: Localization.info,

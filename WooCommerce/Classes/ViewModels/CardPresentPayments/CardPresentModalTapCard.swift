@@ -10,6 +10,9 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
     /// Charge amount
     private let amount: String
 
+    /// Cancellation callback
+    private let onCancel: () -> Void
+
     let textMode: PaymentsModalTextMode = .fullInfo
     let actionsMode: PaymentsModalActionsMode = .secondaryOnlyAction
 
@@ -33,9 +36,14 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
 
     let bottomSubtitle: String? = Localization.tapInsertOrSwipe
 
-    init(name: String, amount: String) {
+    var accessibilityLabel: String? {
+        return Localization.readerIsReady + Localization.tapInsertOrSwipe
+    }
+
+    init(name: String, amount: String, onCancel: @escaping () -> Void) {
         self.name = name
         self.amount = amount
+        self.onCancel = onCancel
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
@@ -43,12 +51,9 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        ServiceLocator.analytics.track(.collectPaymentCanceled)
-        let action = CardPresentPaymentAction.cancelPayment(onCompletion: nil)
-
-        ServiceLocator.stores.dispatch(action)
-
-        viewController?.dismiss(animated: true, completion: nil)
+        viewController?.dismiss(animated: true, completion: { [weak self] in
+            self?.onCancel()
+        })
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {

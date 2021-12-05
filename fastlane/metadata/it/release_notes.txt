@@ -1,7 +1,0 @@
-Sarai entusiasta di sapere che ora puoi modificare diversi campi essenziali sugli ordini dei tuoi clienti. Apporta queste correzioni minori prima di evadere un ordine direttamente nell'app.
-
-I venditori che usano WooCommerce Payments negli Stati Uniti possono accettare pagamenti con carta di credito di persona per il pagamento alla consegna dei clienti o per gli ordini di ritiro.
-
-I venditori che usano l'estensione WooCommerce Shipping & Tax troveranno miglioramenti con le dimensioni del foglio, il supporto DHL e i metodi di pagamento. La creazione e la stampa delle etichette di spedizione dal dispositivo mobile ora è molto più divertente.
-
-In questo rilascio sono inclusi anche alcuni miglioramenti minori basati sul tuo feedback. Grazie per averci aiutato a creare un'app migliore per tutti.

@@ -50,33 +50,36 @@ private extension InPersonPaymentsMenuViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as BasicTableViewCell where row == .orderCardReader:
+        case let cell as LeftImageTableViewCell where row == .orderCardReader:
             configureOrderCardReader(cell: cell)
-        case let cell as BasicTableViewCell where row == .manageCardReader:
+        case let cell as LeftImageTableViewCell where row == .manageCardReader:
             configureManageCardReader(cell: cell)
-        case let cell as BasicTableViewCell where row == .bbposChipper2XBTManual:
+        case let cell as LeftImageTableViewCell where row == .bbposChipper2XBTManual:
             configureBBPOSChipper2XBTManual(cell: cell)
         default:
             fatalError()
         }
     }
 
-    func configureOrderCardReader(cell: UITableViewCell) {
+    func configureOrderCardReader(cell: LeftImageTableViewCell) {
+        cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Order card reader", comment: "Navigates to Card Reader ordering screen")
+        cell.configure(image: .shoppingCartIcon, text: Localization.orderCardReader)
     }
 
-    func configureManageCardReader(cell: UITableViewCell) {
+    func configureManageCardReader(cell: LeftImageTableViewCell) {
+        cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Manage card reader", comment: "Navigates to Card Reader management screen")
+        cell.configure(image: .creditCardIcon, text: Localization.manageCardReader)
     }
 
-    func configureBBPOSChipper2XBTManual(cell: UITableViewCell) {
+    func configureBBPOSChipper2XBTManual(cell: LeftImageTableViewCell) {
+        cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Card reader manual", comment: "Navigates to Card Reader manual")
+        cell.configure(image: .cardReaderManualIcon, text: Localization.cardReaderManual)
     }
 }
 
@@ -148,6 +151,27 @@ extension InPersonPaymentsMenuViewController {
     }
 }
 
+// MARK: - Localizations
+//
+private extension InPersonPaymentsMenuViewController {
+    enum Localization {
+        static let orderCardReader = NSLocalizedString(
+            "Order card reader",
+            comment: "Navigates to Card Reader ordering screen"
+        )
+
+        static let manageCardReader = NSLocalizedString(
+            "Manage card reader",
+            comment: "Navigates to Card Reader management screen"
+        )
+
+        static let cardReaderManual = NSLocalizedString(
+            "Card reader manual",
+            comment: "Navigates to Card Reader manual"
+        )
+    }
+}
+
 private enum Row: CaseIterable {
     case orderCardReader
     case manageCardReader
@@ -156,11 +180,11 @@ private enum Row: CaseIterable {
     var type: UITableViewCell.Type {
         switch self {
         case .orderCardReader:
-            return BasicTableViewCell.self
+            return LeftImageTableViewCell.self
         case .manageCardReader:
-            return BasicTableViewCell.self
+            return LeftImageTableViewCell.self
         case .bbposChipper2XBTManual:
-            return BasicTableViewCell.self
+            return LeftImageTableViewCell.self
         }
     }
 
@@ -170,7 +194,7 @@ private enum Row: CaseIterable {
 }
 
 private enum Constants {
-    static let woocommercePurchaseCardReaderURL = URL(string: "https://woocommerce.com/products/bbpos-chipper2xbt-card-reader")!
+    static let woocommercePurchaseCardReaderURL = URL(string: "https://woocommerce.com/in-person-payments/")!
     static let bbposChipper2XBTManualURL = URL(string: "https://developer.bbpos.com/quick_start_guide/Chipper%202X%20BT%20Quick%20Start%20Guide.pdf")!
 }
 

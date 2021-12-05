@@ -242,21 +242,52 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
         self.remote = remote
     }
 
-    func fetchToken(completion: @escaping(String?, Error?) -> Void) {
-        remote.loadConnectionToken(for: siteID) { token, error in
-            completion(token?.token, error)
+    func fetchToken(completion: @escaping(Result<String, Error>) -> Void) {
+        remote.loadConnectionToken(for: siteID) { result in
+            switch result {
+            case .success(let token):
+                completion(.success(token.token))
+            case .failure(let error):
+                if let configError = CardReaderConfigError(error: error) {
+                    completion(.failure(configError))
+                } else {
+                    completion(.failure(error))
+                }
+            }
         }
     }
 
-    func fetchDefaultLocationID(completion: @escaping(String?, Error?) -> Void) {
+    func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void) {
         remote.loadDefaultReaderLocation(for: siteID) { result in
             switch result {
             case .success(let wcpayReaderLocation):
                 let readerLocation = wcpayReaderLocation.toReaderLocation(siteID: self.siteID)
-                completion(readerLocation.id, nil)
+                completion(.success(readerLocation.id))
             case .failure(let error):
-                completion(nil, error)
+                if let configError = CardReaderConfigError(error: error) {
+                    completion(.failure(configError))
+                } else {
+                    completion(.failure(error))
+                }
             }
+        }
+    }
+}
+
+private extension CardReaderConfigError {
+    init?(error: Error) {
+        guard let dotcomError = error as? DotcomError else {
+            return nil
+        }
+        switch dotcomError {
+        case .unknown("store_address_is_incomplete", let message):
+            self = .incompleteStoreAddress(adminUrl: URL(string: message ?? ""))
+            return
+        case .unknown("postal_code_invalid", _):
+            self = .invalidPostalCode
+            return
+        default:
+            return nil
         }
     }
 }

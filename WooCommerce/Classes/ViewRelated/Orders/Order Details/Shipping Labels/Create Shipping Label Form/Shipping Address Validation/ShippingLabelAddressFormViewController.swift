@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import MessageUI
 
 final class ShippingLabelAddressFormViewController: UIViewController {
 
@@ -18,9 +19,11 @@ final class ShippingLabelAddressFormViewController: UIViewController {
     /// Top banner that shows a warning in case there is an error in the address validation.
     ///
     private var topBannerView: TopBannerView {
+        let phone = viewModel.address?.phone
+        let email = viewModel.email
         let topBanner = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView(
             shipType: viewModel.type,
-            phoneNumber: viewModel.address?.phone
+            hasContactInfo: !phone.isNilOrEmpty || !email.isNilOrEmpty
         ) { [weak self] in
             MapsHelper.openAppleMaps(address: self?.viewModel.address?.formattedPostalAddress) { [weak self] (result) in
                 ServiceLocator.analytics.track(.shippingLabelEditAddressOpenMapButtonTapped)
@@ -31,11 +34,34 @@ final class ShippingLabelAddressFormViewController: UIViewController {
                     self?.displayAppleMapsErrorNotice()
                 }
             }
-        } contactCustomerPressed: { [weak self] in
+        } contactCustomerPressed: { [weak self] sourceView in
+            guard let self = self else { return }
             ServiceLocator.analytics.track(.shippingLabelEditAddressContactCustomerButtonTapped)
-            if PhoneHelper.callPhoneNumber(phone: self?.viewModel.address?.phone) == false {
-                self?.displayPhoneNumberErrorNotice()
+
+            let actionSheet = UIAlertController(title: nil, message: Localization.contactActionLabel, preferredStyle: .actionSheet)
+            actionSheet.view.tintColor = .text
+
+            actionSheet.addCancelActionWithTitle(Localization.contactActionCancel)
+            if let email = email, email.isNotEmpty {
+                actionSheet.addDefaultActionWithTitle(Localization.contactActionEmail) { _ in
+                    self.sendEmail(to: email)
+                }
             }
+            if let phoneNumber = phone, phoneNumber.isNotEmpty {
+                actionSheet.addDefaultActionWithTitle(Localization.contactActionCall) { _ in
+                    if PhoneHelper.callPhoneNumber(phone: phoneNumber) == false {
+                        self.displayPhoneNumberErrorNotice()
+                    }
+                }
+                actionSheet.addDefaultActionWithTitle(Localization.contactActionMessage) { _ in
+                    ServiceLocator.messageComposerPresenter.presentIfPossible(from: self, recipient: phoneNumber)
+                }
+            }
+
+            let popoverController = actionSheet.popoverPresentationController
+            popoverController?.sourceView = sourceView
+
+            self.present(actionSheet, animated: true)
         }
 
         topBanner.translatesAutoresizingMaskIntoConstraints = false
@@ -60,6 +86,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
     init(siteID: Int64,
          type: ShipType,
          address: ShippingLabelAddress?,
+         email: String?,
          phoneNumberRequired: Bool = false,
          validationError: ShippingLabelAddressValidationError?,
          countries: [Country],
@@ -67,6 +94,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
         viewModel = ShippingLabelAddressFormViewModel(siteID: siteID,
                                                       type: type,
                                                       address: address,
+                                                      email: email,
                                                       phoneNumberRequired: phoneNumberRequired,
                                                       validationError: validationError,
                                                       countries: countries)
@@ -520,6 +548,25 @@ extension ShippingLabelAddressFormViewController {
     }
 }
 
+// MARK: - MFMailComposeViewControllerDelegate Conformance
+//
+extension ShippingLabelAddressFormViewController: MFMailComposeViewControllerDelegate {
+
+    func sendEmail(to email: String) {
+        if MFMailComposeViewController.canSendMail() {
+            let mail = MFMailComposeViewController()
+            mail.mailComposeDelegate = self
+            mail.setToRecipients([email])
+
+            present(mail, animated: true)
+        }
+    }
+
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true)
+    }
+}
+
 private extension ShippingLabelAddressFormViewController {
     enum Localization {
         static let titleViewShipFrom = NSLocalizedString("Ship from", comment: "Shipping Label Address Validation navigation title")
@@ -582,5 +629,10 @@ private extension ShippingLabelAddressFormViewController {
             comment: "Error in calling the phone number of the customer in the Shipping Label Address Validation")
         static let countryNotEditable = NSLocalizedString("Currently we support just the United States from mobile.",
                                                           comment: "Error when the user tap on Country field in Shipping Label Address Validation")
+        static let contactActionLabel = NSLocalizedString("Contact Customer", comment: "Contact Customer action in Shipping Label Address Validation.")
+        static let contactActionCancel = NSLocalizedString("Cancel", comment: "Close the action sheet")
+        static let contactActionEmail = NSLocalizedString("Email", comment: "Email button title")
+        static let contactActionCall = NSLocalizedString("Call", comment: "Call phone number button title")
+        static let contactActionMessage = NSLocalizedString("Message", comment: "Message phone number button title")
     }
 }

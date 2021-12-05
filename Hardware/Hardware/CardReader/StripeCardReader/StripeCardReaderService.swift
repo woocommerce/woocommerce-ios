@@ -10,9 +10,7 @@ public final class StripeCardReaderService: NSObject {
 
     private var discoveredReadersSubject = CurrentValueSubject<[CardReader], Error>([])
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
-    private let serviceStatusSubject = CurrentValueSubject<CardReaderServiceStatus, Never>(.ready)
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
-    private let paymentStatusSubject = CurrentValueSubject<PaymentStatus, Never>(.notReady)
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
     private let softwareUpdateSubject = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none)
 
@@ -44,19 +42,6 @@ extension StripeCardReaderService: CardReaderService {
 
     public var connectedReaders: AnyPublisher<[CardReader], Never> {
         connectedReadersSubject.eraseToAnyPublisher()
-    }
-
-    public var serviceStatus: AnyPublisher<CardReaderServiceStatus, Never> {
-        serviceStatusSubject.eraseToAnyPublisher()
-    }
-
-    public var discoveryStatus: AnyPublisher<CardReaderServiceDiscoveryStatus, Never> {
-        discoveryStatusSubject.removeDuplicates().eraseToAnyPublisher()
-    }
-
-    /// The Publisher that emits the payment status
-    public var paymentStatus: AnyPublisher<PaymentStatus, Never> {
-        paymentStatusSubject.eraseToAnyPublisher()
     }
 
     /// The Publisher that emits reader events
@@ -327,17 +312,14 @@ extension StripeCardReaderService: CardReaderService {
 
             // TODO - If we've recently connected to this reader, use the cached locationId from the
             // Terminal SDK instead of making this fetch. See #5116 and #5087
-            self.readerLocationProvider?.fetchDefaultLocationID { (locationId, error) in
-                if let error = error {
+            self.readerLocationProvider?.fetchDefaultLocationID { result in
+                switch result {
+                case .success(let locationId):
+                    return promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
+                case .failure(let error):
                     let underlyingError = UnderlyingError(with: error)
                     return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                 }
-
-                if let locationId = locationId {
-                    return promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
-                }
-
-                promise(.failure(CardReaderServiceError.connection()))
             }
         }
     }
@@ -524,12 +506,12 @@ private extension StripeCardReaderService {
                     /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)collectPaymentMethod:delegate:completion:
 
                     if underlyingError != .commandCancelled {
-                        print("==== collect payment method was not cancelled. this is an actual error ", underlyingError)
+                        DDLogError("💳 Error: collect payment method \(underlyingError)")
                         promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
                     }
 
                     if underlyingError == .commandCancelled {
-                        print("==== collect payment method cancelled. this is an error we ignore ", error)
+                        DDLogWarn("💳 Warning: collect payment error cancelled. We actively ignore this error \(error)")
                     }
 
                 }
@@ -607,24 +589,28 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
     }
 
     public func reader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: StripeTerminal.Cancelable?) {
-        print("==== started software update")
         softwareUpdateSubject.send(.started(cancelable: cancelable.map(StripeCancelable.init(cancelable:))))
     }
 
     public func reader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {
-        print("==== did repost software update progress ", progress)
         softwareUpdateSubject.send(.installing(progress: progress))
     }
 
     public func reader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
         if let error = error {
-            let underlyingError = UnderlyingError(with: error)
-            if underlyingError != .commandCancelled {
-                softwareUpdateSubject.send(.failed(error: error))
+            softwareUpdateSubject.send(.failed(
+                error: CardReaderServiceError.softwareUpdate(underlyingError: UnderlyingError(with: error),
+                                                             batteryLevel: reader.batteryLevel?.doubleValue))
+            )
+            if let requiredDate = update?.requiredAt,
+               requiredDate > Date() {
+                softwareUpdateSubject.send(.available)
+            } else {
+                softwareUpdateSubject.send(.none)
             }
-            softwareUpdateSubject.send(.available)
         } else {
             softwareUpdateSubject.send(.completed)
+            connectedReadersSubject.send([CardReader(reader: reader)])
             softwareUpdateSubject.send(.none)
         }
     }
@@ -654,6 +640,31 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
         default:
             break
         }
+    }
+
+    /// Receive changes in the reader battery level. Note that the SDK will call this delegate
+    /// not more frequently than every 10 minutes and will not report battery level during payment collection.
+    /// See `https://github.com/stripe/stripe-terminal-ios/issues/121#issuecomment-966589886`
+    ///
+    public func reader(_ reader: Reader, didReportBatteryLevel batteryLevel: Float, status: BatteryStatus, isCharging: Bool) {
+        let connectedReaders = connectedReadersSubject.value
+
+        guard let connectedReader = connectedReaders.first else {
+            return
+        }
+
+        let connectedReaderWithUpdatedBatteryLevel = CardReader(
+            serial: connectedReader.serial,
+            vendorIdentifier: connectedReader.vendorIdentifier,
+            name: connectedReader.name,
+            status: connectedReader.status,
+            softwareVersion: connectedReader.softwareVersion,
+            batteryLevel: batteryLevel,
+            readerType: connectedReader.readerType,
+            locationId: connectedReader.locationId
+        )
+
+        connectedReadersSubject.send([connectedReaderWithUpdatedBatteryLevel])
     }
 }
 

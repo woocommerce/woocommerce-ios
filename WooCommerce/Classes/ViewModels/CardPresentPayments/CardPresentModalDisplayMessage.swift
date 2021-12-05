@@ -38,6 +38,10 @@ final class CardPresentModalDisplayMessage: CardPresentPaymentsModalViewModel {
 
     let bottomSubtitle: String? = nil
 
+    var accessibilityLabel: String? {
+        return bottomTitle
+    }
+
     init(name: String, amount: String, message: String) {
         self.name = name
         self.amount = amount

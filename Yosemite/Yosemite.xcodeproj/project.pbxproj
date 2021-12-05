@@ -54,10 +54,12 @@
 		026D52C0238235930092AE05 /* ProductVariationStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026D52BF238235930092AE05 /* ProductVariationStoreTests.swift */; };
 		0271E1662509CF0100633F7A /* AnyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0271E1652509CF0100633F7A /* AnyError.swift */; };
 		028BCE2422DE22BB00056966 /* SiteVisitStatsStoreErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BCE2322DE22BB00056966 /* SiteVisitStatsStoreErrorTests.swift */; };
+		029249E8274B8AEE002E9C34 /* MockMediaRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029249E7274B8AEE002E9C34 /* MockMediaRemote.swift */; };
 		029B00A7230D64E800B0AE66 /* StatsTimeRangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029B00A6230D64E800B0AE66 /* StatsTimeRangeTests.swift */; };
 		029BA557255E0CD4006171FD /* ShippingLabelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029BA556255E0CD4006171FD /* ShippingLabelStore.swift */; };
 		029BA55B255E0D39006171FD /* ShippingLabelAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029BA55A255E0D39006171FD /* ShippingLabelAction.swift */; };
 		02A098242480D0D8002F8C7A /* MockCrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A098232480D0D8002F8C7A /* MockCrashLogger.swift */; };
+		02A26F1E2744FE97008E4EDB /* MockAccountRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A26F1D2744FE97008E4EDB /* MockAccountRemote.swift */; };
 		02BA23C222EEEABC009539E7 /* AvailabilityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BA23C122EEEABC009539E7 /* AvailabilityStore.swift */; };
 		02BA23C422EEEB3B009539E7 /* AvailabilityAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BA23C322EEEB3B009539E7 /* AvailabilityAction.swift */; };
 		02BA23C622EEF092009539E7 /* StatsV4AvailabilityStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BA23C522EEF092009539E7 /* StatsV4AvailabilityStoreTests.swift */; };
@@ -169,8 +171,11 @@
 		453305F9245AE6B200264E50 /* SitePostAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305F8245AE6B200264E50 /* SitePostAction.swift */; };
 		453305FB245AEDCB00264E50 /* SitePostStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305FA245AEDCB00264E50 /* SitePostStoreTests.swift */; };
 		4552073D25811B4E001CF873 /* ProductAttributeStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4552073C25811B4E001CF873 /* ProductAttributeStoreTests.swift */; };
+		455A931D2747C19300259C7F /* AppSettingsStoreTests+OrdersSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455A931C2747C19300259C7F /* AppSettingsStoreTests+OrdersSettings.swift */; };
 		45739F372437680F00480C95 /* ProductSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45739F362437680F00480C95 /* ProductSettings.swift */; };
 		458C6DE825ACC554009B300D /* AppSettingsStoreTests+ProductsSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458C6DE725ACC554009B300D /* AppSettingsStoreTests+ProductsSettings.swift */; };
+		4591A6B0274BB23000F51DCD /* OrderDateRangeFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591A6AF274BB23000F51DCD /* OrderDateRangeFilter.swift */; };
+		4591A6B4274BB29000F51DCD /* StoredOrderSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591A6B3274BB29000F51DCD /* StoredOrderSettings.swift */; };
 		45AB8B1524AA4A1E00B5B36E /* ProductTagAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AB8B1424AA4A1E00B5B36E /* ProductTagAction.swift */; };
 		45AB8B1724AA4B3D00B5B36E /* ProductTagStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AB8B1624AA4B3D00B5B36E /* ProductTagStore.swift */; };
 		45AB8B1E24AB363D00B5B36E /* ProductTagStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AB8B1D24AB363D00B5B36E /* ProductTagStoreTests.swift */; };
@@ -249,6 +254,9 @@
 		74D7FFFA221F01E90008CC0E /* ShipmentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D7FFF9221F01E90008CC0E /* ShipmentStore.swift */; };
 		933A27352222352500C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A27342222352500C2143A /* Logging.swift */; };
 		93E7507A226E2D6C00BAF88A /* AccountSettings+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E75079226E2D6C00BAF88A /* AccountSettings+ReadOnlyConvertible.swift */; };
+		AEF945872729760F001DCCFB /* TelemetryAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF945862729760F001DCCFB /* TelemetryAction.swift */; };
+		AEF945892729766D001DCCFB /* TelemetryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF945882729766D001DCCFB /* TelemetryStore.swift */; };
+		AEFB3DC4272AA2FF00550F93 /* TelemetryStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFB3DC3272AA2FF00550F93 /* TelemetryStoreTests.swift */; };
 		B505254C20EE6491008090F5 /* Site+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */; };
 		B52E002B2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002A2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift */; };
 		B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002D211A3F5500700FDE /* ReadOnlyType.swift */; };
@@ -430,10 +438,12 @@
 		026D52BF238235930092AE05 /* ProductVariationStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationStoreTests.swift; sourceTree = "<group>"; };
 		0271E1652509CF0100633F7A /* AnyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyError.swift; sourceTree = "<group>"; };
 		028BCE2322DE22BB00056966 /* SiteVisitStatsStoreErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsStoreErrorTests.swift; sourceTree = "<group>"; };
+		029249E7274B8AEE002E9C34 /* MockMediaRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMediaRemote.swift; sourceTree = "<group>"; };
 		029B00A6230D64E800B0AE66 /* StatsTimeRangeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeTests.swift; sourceTree = "<group>"; };
 		029BA556255E0CD4006171FD /* ShippingLabelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelStore.swift; sourceTree = "<group>"; };
 		029BA55A255E0D39006171FD /* ShippingLabelAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAction.swift; sourceTree = "<group>"; };
 		02A098232480D0D8002F8C7A /* MockCrashLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCrashLogger.swift; sourceTree = "<group>"; };
+		02A26F1D2744FE97008E4EDB /* MockAccountRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAccountRemote.swift; sourceTree = "<group>"; };
 		02BA23C122EEEABC009539E7 /* AvailabilityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilityStore.swift; sourceTree = "<group>"; };
 		02BA23C322EEEB3B009539E7 /* AvailabilityAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilityAction.swift; sourceTree = "<group>"; };
 		02BA23C522EEF092009539E7 /* StatsV4AvailabilityStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsV4AvailabilityStoreTests.swift; sourceTree = "<group>"; };
@@ -540,8 +550,11 @@
 		453305F8245AE6B200264E50 /* SitePostAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostAction.swift; sourceTree = "<group>"; };
 		453305FA245AEDCB00264E50 /* SitePostStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostStoreTests.swift; sourceTree = "<group>"; };
 		4552073C25811B4E001CF873 /* ProductAttributeStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeStoreTests.swift; sourceTree = "<group>"; };
+		455A931C2747C19300259C7F /* AppSettingsStoreTests+OrdersSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+OrdersSettings.swift"; sourceTree = "<group>"; };
 		45739F362437680F00480C95 /* ProductSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductSettings.swift; sourceTree = "<group>"; };
 		458C6DE725ACC554009B300D /* AppSettingsStoreTests+ProductsSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+ProductsSettings.swift"; sourceTree = "<group>"; };
+		4591A6AF274BB23000F51DCD /* OrderDateRangeFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderDateRangeFilter.swift; sourceTree = "<group>"; };
+		4591A6B3274BB29000F51DCD /* StoredOrderSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredOrderSettings.swift; sourceTree = "<group>"; };
 		45AB8B1424AA4A1E00B5B36E /* ProductTagAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagAction.swift; sourceTree = "<group>"; };
 		45AB8B1624AA4B3D00B5B36E /* ProductTagStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagStore.swift; sourceTree = "<group>"; };
 		45AB8B1D24AB363D00B5B36E /* ProductTagStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagStoreTests.swift; sourceTree = "<group>"; };
@@ -625,6 +638,9 @@
 		93E75079226E2D6C00BAF88A /* AccountSettings+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AccountSettings+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YosemiteTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABE0D84C5393D9EE2CCF2B7E /* Pods-YosemiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release.xcconfig"; sourceTree = "<group>"; };
+		AEF945862729760F001DCCFB /* TelemetryAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryAction.swift; sourceTree = "<group>"; };
+		AEF945882729766D001DCCFB /* TelemetryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryStore.swift; sourceTree = "<group>"; };
+		AEFB3DC3272AA2FF00550F93 /* TelemetryStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryStoreTests.swift; sourceTree = "<group>"; };
 		B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Site+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		B52E002A2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedObjectsDidChangeNotification.swift; sourceTree = "<group>"; };
 		B52E002D211A3F5500700FDE /* ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadOnlyType.swift; sourceTree = "<group>"; };
@@ -995,6 +1011,15 @@
 			path = Products;
 			sourceTree = "<group>";
 		};
+		4591A6AE274BB20C00F51DCD /* Orders */ = {
+			isa = PBXGroup;
+			children = (
+				4591A6AF274BB23000F51DCD /* OrderDateRangeFilter.swift */,
+				4591A6B3274BB29000F51DCD /* StoredOrderSettings.swift */,
+			);
+			path = Orders;
+			sourceTree = "<group>";
+		};
 		570B05CD246B6A2F00C186AE /* ProductReview */ = {
 			isa = PBXGroup;
 			children = (
@@ -1071,6 +1096,8 @@
 				020C908024C7D71D001E2BEB /* MockProductVariationsRemote.swift */,
 				02E7FFD82562234F00C53030 /* MockShippingLabelRemote.swift */,
 				D4CBAE5F26D440FA00BBE6D1 /* MockAnnouncementsRemote.swift */,
+				02A26F1D2744FE97008E4EDB /* MockAccountRemote.swift */,
+				029249E7274B8AEE002E9C34 /* MockMediaRemote.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -1192,6 +1219,7 @@
 				02F6AAA827055655002425D0 /* Copiable */,
 				247CE7AF2582DBD000F9D9D1 /* Mocks */,
 				D8652E1A26303D0600350F37 /* Payments */,
+				4591A6AE274BB20C00F51DCD /* Orders */,
 				45739F35243767FE00480C95 /* Products */,
 				021C7BF0238632F900A3BCBD /* Updaters */,
 				0225511F22FC2ED000D98613 /* Extensions */,
@@ -1257,6 +1285,7 @@
 				025CA2C9238F515600B05C81 /* ProductShippingClassStore.swift */,
 				026CF625237D8EFB009563D4 /* ProductVariationStore.swift */,
 				45010692239A6C9F00E24722 /* TaxClassStore.swift */,
+				AEF945882729766D001DCCFB /* TelemetryStore.swift */,
 				02FF056423DE9C8B0058E6E7 /* MediaStore.swift */,
 				029BA556255E0CD4006171FD /* ShippingLabelStore.swift */,
 				DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */,
@@ -1276,6 +1305,7 @@
 				0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift */,
 				312DB64C268BD22B00AA0EE9 /* AppSettingsStoreTests+CardReaderSettings.swift */,
 				02DA641A2313D6D200284168 /* AppSettingsStoreTests+StatsVersion.swift */,
+				455A931C2747C19300259C7F /* AppSettingsStoreTests+OrdersSettings.swift */,
 				458C6DE725ACC554009B300D /* AppSettingsStoreTests+ProductsSettings.swift */,
 				B5BC736720D1AA8F00B5B6FA /* AccountStoreTests.swift */,
 				D88303E825E459DC00C877F9 /* CardPresentPaymentStoreTests.swift */,
@@ -1306,6 +1336,7 @@
 				026D52BF238235930092AE05 /* ProductVariationStoreTests.swift */,
 				025CA2CF238F54E800B05C81 /* ProductShippingClassStoreTests.swift */,
 				45ED4F15239E939A004F1BE3 /* TaxClassStoreTests.swift */,
+				AEFB3DC3272AA2FF00550F93 /* TelemetryStoreTests.swift */,
 				020B2F9523BDE4DD00BD79AD /* ProductStoreTests+Validation.swift */,
 				02FF056623DEB2180058E6E7 /* MediaStoreTests.swift */,
 				0212AC63242C6FC300C51F6C /* ProductStore+ProductsSortOrderTests.swift */,
@@ -1490,6 +1521,7 @@
 				025CA2CB238F518600B05C81 /* ProductShippingClassAction.swift */,
 				029BA55A255E0D39006171FD /* ShippingLabelAction.swift */,
 				45010694239A6CDE00E24722 /* TaxClassAction.swift */,
+				AEF945862729760F001DCCFB /* TelemetryAction.swift */,
 				022F00BF24725BC6008CD97F /* NotificationCountAction.swift */,
 				DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */,
 				077F39DD26A5A1CB00ABEADC /* SystemStatusAction.swift */,
@@ -1748,6 +1780,7 @@
 				247CE7C82582DF5500F9D9D1 /* MockStoresManager.swift in Sources */,
 				D83B093525DECFCC00B21F45 /* CardPresentPaymentAction.swift in Sources */,
 				B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */,
+				4591A6B0274BB23000F51DCD /* OrderDateRangeFilter.swift in Sources */,
 				744A3218216D55F80051439B /* SiteVisitStats+ReadOnlyConvertible.swift in Sources */,
 				D8652E1126303A9900350F37 /* ReceiptStore.swift in Sources */,
 				02C254FE2563C6E500A04423 /* ShippingLabelSettings+ReadOnlyConvertible.swift in Sources */,
@@ -1779,6 +1812,8 @@
 				5758EB3024DC7791009ED8A6 /* InAppFeedbackCardVisibilityUseCase.swift in Sources */,
 				7471401321877A8B009A11CC /* NotificationStore.swift in Sources */,
 				74D42DBA221C978D00B4977D /* ShipmentTracking+ReadOnlyType.swift in Sources */,
+				AEF945892729766D001DCCFB /* TelemetryStore.swift in Sources */,
+				AEF945872729760F001DCCFB /* TelemetryAction.swift in Sources */,
 				B5DC3CB120D1B8720063AC41 /* AccountAction.swift in Sources */,
 				D831E2E2230E3513000037D0 /* ProductReviewStore.swift in Sources */,
 				247CE7D42582E1FD00F9D9D1 /* ScreenshotStoresManager.swift in Sources */,
@@ -1929,6 +1964,7 @@
 				247CE7BC2582DC1E00F9D9D1 /* MockCustomer.swift in Sources */,
 				D87F614C22657B150031A13B /* AppSettingsStore.swift in Sources */,
 				247CE850258325AC00F9D9D1 /* MockOrderNoteActionHandler.swift in Sources */,
+				4591A6B4274BB29000F51DCD /* StoredOrderSettings.swift in Sources */,
 				D8C11A5422DFAE9500D4A88D /* OrderStatsV4+ReadOnlyConvertible.swift in Sources */,
 				02E4F5E423CD5628003B0010 /* NSOrderedSet+Array.swift in Sources */,
 				749737672141CC8C0008C490 /* TopEarnerStats+ReadOnlyType.swift in Sources */,
@@ -1975,13 +2011,16 @@
 				02FF055623D984310058E6E7 /* MockFileManager.swift in Sources */,
 				029B00A7230D64E800B0AE66 /* StatsTimeRangeTests.swift in Sources */,
 				0248B36924590FC300A271A4 /* ProductStore+FilterProductsTests.swift in Sources */,
+				AEFB3DC4272AA2FF00550F93 /* TelemetryStoreTests.swift in Sources */,
 				02A098242480D0D8002F8C7A /* MockCrashLogger.swift in Sources */,
 				02FF055F23D985710058E6E7 /* URL+MediaTests.swift in Sources */,
 				D87F27DB25E7E8EA006EC8C9 /* MockCardReader.swift in Sources */,
+				02A26F1E2744FE97008E4EDB /* MockAccountRemote.swift in Sources */,
 				02124DAC24318D6B00980D74 /* Media+MediaTypeTests.swift in Sources */,
 				025CA2D0238F54E800B05C81 /* ProductShippingClassStoreTests.swift in Sources */,
 				74A7688E20D45ED400F9D437 /* OrderStoreTests.swift in Sources */,
 				D8652E322630741000350F37 /* PaymentIntent+ReceiptParametersTests.swift in Sources */,
+				029249E8274B8AEE002E9C34 /* MockMediaRemote.swift in Sources */,
 				022F00C72472963E008CD97F /* NotificationCountStoreTests.swift in Sources */,
 				578CE7882475D70F00492EBF /* RetrieveProductReviewFromNoteUseCaseTests.swift in Sources */,
 				02FF056723DEB2180058E6E7 /* MediaStoreTests.swift in Sources */,
@@ -2012,6 +2051,7 @@
 				578CE7922475EC9200492EBF /* MockProductsRemote.swift in Sources */,
 				7455263022305F88003F8932 /* OrderStatusStoreTests.swift in Sources */,
 				B5C9DE242087FF20006B910A /* StoreTests.swift in Sources */,
+				455A931D2747C19300259C7F /* AppSettingsStoreTests+OrdersSettings.swift in Sources */,
 				D88303E925E459DC00C877F9 /* CardPresentPaymentStoreTests.swift in Sources */,
 				02FF055C23D9846A0058E6E7 /* MediaFileManagerTests.swift in Sources */,
 				0248B36B2459127200A271A4 /* MockNetwork+Path.swift in Sources */,

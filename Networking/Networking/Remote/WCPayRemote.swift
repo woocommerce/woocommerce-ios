@@ -9,7 +9,7 @@ public class WCPayRemote: Remote {
     ///   - siteID: Site for which we'll fetch the WCPay Connection token.
     ///   - completion: Closure to be executed upon completion.
     public func loadConnectionToken(for siteID: Int64,
-                                    completion: @escaping(WCPayConnectionToken?, Error?) -> Void) {
+                                    completion: @escaping(Result<WCPayConnectionToken, Error>) -> Void) {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: Path.connectionTokens)
 
         let mapper = WCPayConnectionTokenMapper()
@@ -109,7 +109,7 @@ private extension WCPayRemote {
 
     enum AccountParameterValues {
         static let fieldValues: String = """
-            status,has_pending_requirements,has_overdue_requirements,current_deadline,\
+            status,is_live,test_mode,has_pending_requirements,has_overdue_requirements,current_deadline,\
             statement_descriptor,store_currencies,country,card_present_eligible
             """
     }

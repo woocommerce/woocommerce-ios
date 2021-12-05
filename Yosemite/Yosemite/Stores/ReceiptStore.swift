@@ -10,7 +10,7 @@ public class ReceiptStore: Store {
     private let fileStorage: FileStorage
 
     private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
+        storageManager.writerDerivedStorage
     }()
 
     private lazy var receiptNumberFormatter: NumberFormatter = {
@@ -59,7 +59,7 @@ public class ReceiptStore: Store {
 
 private extension ReceiptStore {
     func print(order: Order, parameters: CardPresentReceiptParameters, completion: @escaping (PrintingResult) -> Void) {
-        let content = generateReceiptContent(order: order, parameters: parameters)
+        let content = generateReceiptContent(order: order, parameters: parameters, removingHtml: true)
         receiptPrinterService.printReceipt(content: content, completion: completion)
     }
 
@@ -69,19 +69,36 @@ private extension ReceiptStore {
         onContent(renderer.htmlContent())
     }
 
-    func generateReceiptContent(order: Order, parameters: CardPresentReceiptParameters) -> ReceiptContent {
+    func generateReceiptContent(order: Order, parameters: CardPresentReceiptParameters, removingHtml: Bool = false) -> ReceiptContent {
         let lineItems = generateLineItems(order: order)
         let cartTotals = generateCartTotals(order: order, parameters: parameters)
+        let note = receiptOrderNote(order: order, removingHtml: removingHtml)
 
-        return ReceiptContent(parameters: parameters, lineItems: lineItems, cartTotals: cartTotals)
+        return ReceiptContent(parameters: parameters,
+                              lineItems: lineItems,
+                              cartTotals: cartTotals,
+                              orderNote: note)
+    }
+
+    private func receiptOrderNote(order: Order, removingHtml: Bool) -> String? {
+        guard let orderNote = order.customerNote else {
+            return nil
+        }
+        if removingHtml {
+            // TODO: move this logic to the WooCommerce target, and then use String.removedHTMLTags extension function
+            return orderNote.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
+        } else {
+            return orderNote
+        }
     }
 
     func generateLineItems(order: Order) -> [ReceiptLineItem] {
-        order.items.map { item in
+        order.items.map {item in
             ReceiptLineItem(
                 title: item.name,
                 quantity: item.quantity.description,
-                amount: item.subtotal
+                amount: item.subtotal,
+                attributes: item.attributes.map { ReceiptLineAttribute(name: $0.name, value: $0.value) }
             )
         }
     }
@@ -183,7 +200,6 @@ private extension ReceiptStore {
 
         do {
             try fileStorage.write(content, to: outputURL)
-            Swift.print("new receipt saved: open \(outputURL.path)") // command to open the generated file
         } catch {
             DDLogError("⛔️ Unable to save receipt for order id: \(order.orderID)")
         }
@@ -192,12 +208,12 @@ private extension ReceiptStore {
 
 private extension ReceiptStore {
     func fileURL(order: Order) throws -> URL {
-        return try FileManager.default.url(for: .documentDirectory,
-                                                           in: .userDomainMask,
-                                                           appropriateFor: nil,
-                                                           create: false)
+        try FileManager.default.url(for: .documentDirectory,
+                in: .userDomainMask,
+                appropriateFor: nil,
+                create: false)
             .appendingPathComponent(fileName(order: order))
-                .appendingPathExtension("plist")
+            .appendingPathExtension("plist")
     }
 
     func fileName(order: Order) -> String {

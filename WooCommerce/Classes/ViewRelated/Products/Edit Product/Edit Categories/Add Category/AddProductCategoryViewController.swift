@@ -68,10 +68,10 @@ private extension AddProductCategoryViewController {
         title = Strings.titleView
 
         addCloseNavigationBarButton(title: Strings.cancelButton)
-        configureRightBarButtomitemAsSave()
+        configureRightBarButtonItemAsSave()
     }
 
-    func configureRightBarButtomitemAsSave() {
+    func configureRightBarButtonItemAsSave() {
         navigationItem.setRightBarButton(UIBarButtonItem(title: Strings.saveButton,
                                                          style: .done,
                                                          target: self,
@@ -129,7 +129,7 @@ extension AddProductCategoryViewController {
         let action = ProductCategoryAction.addProductCategory(siteID: siteID,
                                                               name: categoryName,
                                                               parentID: selectedParentCategory?.categoryID) { [weak self] (result) in
-            self?.configureRightBarButtomitemAsSave()
+            self?.configureRightBarButtonItemAsSave()
             switch result {
             case .success(let category):
                 self?.onCompletion(category)

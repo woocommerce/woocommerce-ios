@@ -26,6 +26,11 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         isUpdateEnabledSubject
     }
 
+    /// The product variation ID
+    var productionVariationID: Int64? {
+        productVariation.productVariation.productVariationID
+    }
+
     /// Emits a void value informing when there is a new variation price state available
     var newVariationsPrice: Observable<Void> = PublishSubject<Void>()
 

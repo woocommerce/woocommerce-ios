@@ -22,6 +22,10 @@ final class CardPresentModalUpdateFailedNonRetryable: CardPresentPaymentsModalVi
 
     let bottomSubtitle: String? = nil
 
+    var accessibilityLabel: String? {
+        return topTitle
+    }
+
     init(close: @escaping () -> Void) {
         self.close = close
     }

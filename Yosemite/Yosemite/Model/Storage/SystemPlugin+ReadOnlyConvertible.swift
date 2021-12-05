@@ -17,6 +17,7 @@ extension Storage.SystemPlugin: ReadOnlyConvertible {
         version = entity.version
         versionLatest = entity.versionLatest
         networkActivated = entity.networkActivated
+        active = entity.active
     }
 
     /// Returns a readonly version of the Storage.SystemPlugin
@@ -30,6 +31,7 @@ extension Storage.SystemPlugin: ReadOnlyConvertible {
               url: url,
               authorName: authorName,
               authorUrl: authorUrl,
-              networkActivated: networkActivated)
+              networkActivated: networkActivated,
+              active: active)
     }
 }

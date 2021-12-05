@@ -7,7 +7,7 @@ extension ProductsTabProductViewModel {
         imageUrl = productVariationModel.productVariation.image?.src
         name = productVariationModel.name
         detailsAttributedString = productVariationModel.createDetailsAttributedString(currencySettings: currencySettings)
-
+        productVariation = productVariationModel.productVariation
         imageService = ServiceLocator.imageService
         isSelected = false
         isDraggable = false

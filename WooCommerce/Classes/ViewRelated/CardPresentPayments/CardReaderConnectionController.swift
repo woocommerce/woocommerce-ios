@@ -46,6 +46,10 @@ final class CardReaderConnectionController {
         ///
         case updating(progress: Float)
 
+        /// User chose to retry the connection to the card reader. Starts the search again, by dismissing modals and initializing from scratch
+        ///
+        case retry
+
         /// User cancelled search/connecting to a card reader. The completion passed to `searchAndConnect`
         /// will be called with a `success` `Bool` `False` result. The view controller passed to `searchAndConnect` will be
         /// dereferenced and the state set to `idle`
@@ -64,7 +68,7 @@ final class CardReaderConnectionController {
             didSetState()
         }
     }
-    private var fromController: UIViewController?
+    private weak var fromController: UIViewController?
     private var siteID: Int64
     private var knownCardReaderProvider: CardReaderSettingsKnownReaderProvider
     private var alerts: CardReaderSettingsAlertsProvider
@@ -142,6 +146,8 @@ private extension CardReaderConnectionController {
             onFoundReader()
         case .foundSeveralReaders:
             onFoundSeveralReaders()
+        case .retry:
+            onRetry()
         case .cancel:
             onCancel()
         case .connectToReader:
@@ -238,6 +244,8 @@ private extension CardReaderConnectionController {
     ///
     func onBeginSearch() {
         self.state = .searching
+        var didAutoAdvance = false
+
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: siteID,
             onReaderDiscovered: { [weak self] cardReaders in
@@ -269,12 +277,18 @@ private extension CardReaderConnectionController {
                     return
                 }
 
-                /// If we have a known reader, advance immediately to connect
+                /// If we have a known reader, and we haven't auto-advanced to connect
+                /// already, advance immediately to connect.
+                /// We only auto-advance once to avoid loops in case the known reader
+                /// is having connectivity issues (e.g low battery)
                 ///
                 if let foundKnownReader = self.getFoundKnownReader() {
-                    self.candidateReader = foundKnownReader
-                    self.state = .connectToReader
-                    return
+                    if !didAutoAdvance {
+                        didAutoAdvance = true
+                        self.candidateReader = foundKnownReader
+                        self.state = .connectToReader
+                        return
+                    }
                 }
 
                 /// If we have found multiple readers, advance to foundMultipleReaders
@@ -284,7 +298,7 @@ private extension CardReaderConnectionController {
                     return
                 }
 
-                /// If we have a found (but unknown) reader, advance to foundReader
+                /// If we have a found reader, advance to foundReader
                 ///
                 if self.foundReaders.isNotEmpty {
                     self.candidateReader = self.foundReaders.first
@@ -407,9 +421,13 @@ private extension CardReaderConnectionController {
         let cancel = softwareUpdateCancelable.map { cancelable in
             return { [weak self] in
                 self?.state = .cancel
+                let analyticsProperties = [SoftwareUpdateTypeProperty.name: SoftwareUpdateTypeProperty.required.rawValue]
+                ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCancelTapped, withProperties: analyticsProperties)
                 cancelable.cancel { result in
                     if case .failure(let error) = result {
-                        print("=== error canceling software update: \(error)")
+                        DDLogError("💳 Error: canceling software update \(error)")
+                    } else {
+                        ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCanceled, withProperties: analyticsProperties)
                     }
                 }
             }
@@ -419,6 +437,16 @@ private extension CardReaderConnectionController {
                               requiredUpdate: true,
                               progress: progress,
                               cancel: cancel)
+    }
+
+    /// Retry a search for a card reader
+    ///
+    func onRetry() {
+        alerts.dismiss()
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
+            self?.state = .beginSearch
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// End the search for a card reader
@@ -451,6 +479,9 @@ private extension CardReaderConnectionController {
                     self.softwareUpdateCancelable = cancelable
                     self.state = .updating(progress: 0)
                 case .installing(progress: let progress):
+                    if progress >= 0.995 {
+                        self.softwareUpdateCancelable = nil
+                    }
                     self.state = .updating(progress: progress)
                 case .completed:
                     self.softwareUpdateCancelable = nil
@@ -493,10 +524,6 @@ private extension CardReaderConnectionController {
     /// An error occurred while connecting
     ///
     private func onConnectingFailed(error: Error) {
-        guard let from = fromController else {
-            return
-        }
-
         /// Clear our copy of found readers to avoid connecting to a reader that isn't
         /// there while we wait for `onReaderDiscovered` to receive an update.
         /// See also https://github.com/stripe/stripe-terminal-ios/issues/104#issuecomment-916285167
@@ -507,15 +534,7 @@ private extension CardReaderConnectionController {
            underlyingError.isSoftwareUpdateError {
             return onUpdateFailed(error: error)
         }
-
-        alerts.connectingFailed(
-            from: from,
-            continueSearch: {
-                self.state = .searching
-            }, cancelSearch: {
-                self.state = .cancel
-            }
-        )
+        showConnectionFailed(error: error)
     }
 
     private func onUpdateFailed(error: Error) {
@@ -524,7 +543,11 @@ private extension CardReaderConnectionController {
             return
         }
 
-        if underlyingError == .readerSoftwareUpdateFailedBatteryLow {
+        switch underlyingError {
+        case .readerSoftwareUpdateFailedInterrupted:
+            // Update was cancelled, don't treat this as an error
+            return
+        case .readerSoftwareUpdateFailedBatteryLow:
             alerts.updatingFailedLowBattery(
                 from: from,
                 batteryLevel: batteryLevel,
@@ -532,7 +555,7 @@ private extension CardReaderConnectionController {
                     self.state = .searching
                 }
             )
-        } else {
+        default:
             alerts.updatingFailed(
                 from: from,
                 tryAgain: nil,
@@ -540,6 +563,53 @@ private extension CardReaderConnectionController {
                     self.state = .searching
                 })
         }
+    }
+
+    private func showConnectionFailed(error: Error) {
+        guard let from = fromController else {
+            return
+        }
+
+        let retrySearch = {
+            self.state = .retry
+        }
+
+        let continueSearch = {
+            self.state = .searching
+        }
+
+        let cancelSearch = {
+            self.state = .cancel
+        }
+
+        guard case CardReaderServiceError.connection(let underlyingError) = error else {
+            return alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
+        }
+
+        switch underlyingError {
+        case .incompleteStoreAddress(let adminUrl):
+            let openUrlInSafari = { [weak self] (url: URL?) -> Void in
+                guard let adminUrl = url else {
+                    return
+                }
+                UIApplication.shared.open(adminUrl)
+                self?.showIncompleteAddressErrorWithRefreshButton()
+            }
+            alerts.connectingFailedIncompleteAddress(from: from,
+                                                  adminUrl: adminUrl,
+                                                  site: ServiceLocator.stores.sessionManager.defaultSite,
+                                                  openUrlInSafari: openUrlInSafari,
+                                                  retrySearch: retrySearch,
+                                                  cancelSearch: cancelSearch)
+        case .invalidPostalCode:
+            alerts.connectingFailedInvalidPostalCode(from: from, retrySearch: retrySearch, cancelSearch: cancelSearch)
+        default:
+            alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
+        }
+    }
+
+    private func showIncompleteAddressErrorWithRefreshButton() {
+        showConnectionFailed(error: CardReaderServiceError.connection(underlyingError: .incompleteStoreAddress(adminUrl: nil)))
     }
 
     /// An error occurred during discovery
@@ -560,7 +630,6 @@ private extension CardReaderConnectionController {
     private func returnSuccess(connected: Bool) {
         self.alerts.dismiss()
         self.onCompletion?(.success(connected))
-        self.fromController = nil
         self.state = .idle
     }
 
@@ -569,7 +638,6 @@ private extension CardReaderConnectionController {
     private func returnFailure(error: Error) {
         self.alerts.dismiss()
         self.onCompletion?(.failure(error))
-        self.fromController = nil
         self.state = .idle
     }
 }

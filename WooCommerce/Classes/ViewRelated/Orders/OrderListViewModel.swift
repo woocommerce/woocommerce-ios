@@ -3,6 +3,7 @@ import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 import Observables
+import Combine
 
 /// ViewModel for `OrderListViewController`.
 ///
@@ -20,6 +21,7 @@ import Observables
 /// in here next.
 ///
 final class OrderListViewModel {
+    private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let pushNotificationsManager: PushNotesManager
     private let notificationCenter: NotificationCenter
@@ -33,9 +35,19 @@ final class OrderListViewModel {
     ///
     var onShouldResynchronizeIfViewIsVisible: (() -> ())?
 
-    /// OrderStatus that must be matched by retrieved orders.
+    /// The block called if new filters are applied
     ///
-    let statusFilter: OrderStatus?
+    var onShouldResynchronizeIfNewFiltersAreApplied: (() -> ())?
+
+    /// Filters applied to the order list.
+    ///
+    private(set) var filters: FilterOrderListViewModel.Filters? {
+        didSet {
+            if filters != oldValue {
+                onShouldResynchronizeIfNewFiltersAreApplied?()
+            }
+        }
+    }
 
     private let siteID: Int64
 
@@ -69,18 +81,39 @@ final class OrderListViewModel {
 
     /// Set when sync fails, and used to display an error loading data banner
     ///
-    var hasErrorLoadingData: Bool = false
+    @Published var hasErrorLoadingData: Bool = false
+
+    /// Determines what top banner should be shown
+    ///
+    @Published private(set) var topBanner: TopBanner = .none
+
+    /// Tracks if the store is ready to receive payments.
+    ///
+    private let inPersonPaymentsReadyUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
+
+    /// Tracks if the merchant has enabled the Simple Payments experimental feature toggle
+    ///
+    @Published private var isSimplePaymentsEnabled = false
+
+    /// If true, no simple payments banner will be shown as the user has told us that they are not interested in this information.
+    /// Resets with every session.
+    ///
+    @Published var hideSimplePaymentsBanners: Bool = false
 
     init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
-         statusFilter: OrderStatus?) {
+         filters: FilterOrderListViewModel.Filters?,
+         inPersonPaymentsReadyUseCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase()) {
         self.siteID = siteID
+        self.stores = stores
         self.storageManager = storageManager
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
-        self.statusFilter = statusFilter
+        self.filters = filters
+        self.inPersonPaymentsReadyUseCase = inPersonPaymentsReadyUseCase
     }
 
     deinit {
@@ -102,6 +135,8 @@ final class OrderListViewModel {
                                        name: UIApplication.didBecomeActiveNotification, object: nil)
 
         observeForegroundRemoteNotifications()
+        inPersonPaymentsReadyUseCase.refresh()
+        bindTopBannerState()
     }
 
     /// Starts the snapshotsProvider, logging any errors.
@@ -135,7 +170,7 @@ final class OrderListViewModel {
                                reason: OrderListSyncActionUseCase.SyncReason?,
                                completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
-                                                 statusFilter: statusFilter)
+                                                 filters: filters)
         return useCase.actionFor(pageNumber: pageNumber,
                                  pageSize: pageSize,
                                  reason: reason,
@@ -143,22 +178,53 @@ final class OrderListViewModel {
     }
 
     private func createQuery() -> FetchResultSnapshotsProvider<StorageOrder>.Query {
-        let predicate: NSPredicate = {
+        let predicateStatus: NSPredicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
-            let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
+            let excludeNonMatchingStatus = filters?.orderStatus.map { NSPredicate(format: "statusKey IN %@", $0.map { $0.rawValue }) }
 
             let predicates = [excludeSearchCache, excludeNonMatchingStatus].compactMap { $0 }
             return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         }()
 
+        let predicateDateRanges: NSPredicate = {
+            var startDateRangePredicate: NSPredicate?
+            if let startDate = filters?.dateRange?.computedStartDate {
+                startDateRangePredicate = NSPredicate(format: "dateCreated >= %@", startDate as NSDate)
+            }
+
+            var endDateRangePredicate: NSPredicate?
+            if let endDate = filters?.dateRange?.computedStartDate {
+                endDateRangePredicate = NSPredicate(format: "dateCreated <= %@", endDate as NSDate)
+            }
+
+            let predicates = [startDateRangePredicate, endDateRangePredicate].compactMap { $0 }
+            return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        }()
+
         let siteIDPredicate = NSPredicate(format: "siteID = %lld", siteID)
-        let queryPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [siteIDPredicate, predicate])
+        let queryPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [siteIDPredicate, predicateStatus, predicateDateRanges])
 
         return FetchResultSnapshotsProvider<StorageOrder>.Query(
             sortDescriptor: NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false),
             predicate: queryPredicate,
             sectionNameKeyPath: "\(#selector(StorageOrder.normalizedAgeAsString))"
         )
+    }
+
+    /// Fetch all `OrderStatus` from the API
+    ///
+    func syncOrderStatuses() {
+        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { result in
+            if case let .failure(error) = result {
+                DDLogError("⛔️ Order List — Error synchronizing order statuses: \(error)")
+            }
+        }
+
+        stores.dispatch(action)
+    }
+
+    func updateFilters(filters: FilterOrderListViewModel.Filters?) {
+        self.filters = filters
     }
 }
 
@@ -203,6 +269,48 @@ private extension OrderListViewModel {
     }
 }
 
+// MARK: Simple Payments
+
+extension OrderListViewModel {
+    /// Reloads the state of the Simple Payments experimental feature switch state.
+    ///
+    func reloadSimplePaymentsExperimentalFeatureState() {
+        let action = AppSettingsAction.loadSimplePaymentsSwitchState { [weak self] result in
+            self?.isSimplePaymentsEnabled = (try? result.get()) ?? false
+        }
+        stores.dispatch(action)
+    }
+
+    /// Figures out what top banner should be shown based on the view model internal state.
+    ///
+    private func bindTopBannerState() {
+        let enrolledState = inPersonPaymentsReadyUseCase.statePublisher.removeDuplicates()
+        let errorState = $hasErrorLoadingData.removeDuplicates()
+        let experimentalState = $isSimplePaymentsEnabled.removeDuplicates()
+        Publishers.CombineLatest4(enrolledState, errorState, experimentalState, $hideSimplePaymentsBanners)
+            .map { enrolledState, hasError, isSimplePaymentsEnabled, hasDismissedBanners -> TopBanner in
+
+                guard !hasError else {
+                    return .error
+                }
+
+                guard !hasDismissedBanners else {
+                    return .none
+                }
+
+                switch (enrolledState, isSimplePaymentsEnabled) {
+                case (.completed, false):
+                    return .simplePaymentsDisabled
+                case (.completed, true):
+                    return .simplePaymentsEnabled
+                default:
+                    return .none
+                }
+            }
+            .assign(to: &$topBanner)
+    }
+}
+
 // MARK: - TableView Support
 
 extension OrderListViewModel {
@@ -230,5 +338,17 @@ extension OrderListViewModel {
     /// Returns the corresponding section title for the given identifier.
     func sectionTitleFor(sectionIdentifier: String) -> String? {
         Age(rawValue: sectionIdentifier)?.description
+    }
+}
+
+// MARK: Definitions
+extension OrderListViewModel {
+    /// Possible top banners this view model can show.
+    ///
+    enum TopBanner {
+        case error
+        case simplePaymentsEnabled
+        case simplePaymentsDisabled
+        case none
     }
 }

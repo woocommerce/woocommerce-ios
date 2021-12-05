@@ -36,6 +36,18 @@ final class OrdersRemoteTests: XCTestCase {
         network.removeAllSimulatedResponses()
     }
 
+    /// Verifies that the parameter `_fields` in single order and order list requests do not contain whitespace.
+    ///
+    func test_order_fields_parameter_values_do_not_contain_whitespace() throws {
+        // When
+        let orderListFieldsValue = OrdersRemote.ParameterValues.listFieldValues
+        let orderFieldsValue = OrdersRemote.ParameterValues.singleOrderFieldValues
+
+        // Then
+        XCTAssertFalse(orderListFieldsValue.contains(" "))
+        XCTAssertFalse(orderFieldsValue.contains(" "))
+    }
+
     // MARK: - Load All Orders Tests
 
     /// Verifies that loadAllOrders properly parses the `orders-load-all` sample response.
@@ -240,7 +252,7 @@ final class OrdersRemoteTests: XCTestCase {
     func test_create_order_properly_encodes_fee_lines() throws {
         // Given
         let remote = OrdersRemote(network: network)
-        let fee = OrderFeeLine(feeID: 0, name: "Line", taxClass: "", taxStatus: .none, total: "12.34", totalTax: "", taxes: [], attributes: [])
+        let fee = OrderFeeLine(feeID: 333, name: "Line", taxClass: "", taxStatus: .none, total: "12.34", totalTax: "", taxes: [], attributes: [])
         let order = Order.fake().copy(fees: [fee])
 
         // When
@@ -248,8 +260,9 @@ final class OrdersRemoteTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
-        let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: String]]).first
-        let expected = [
+        let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: AnyHashable]]).first
+        let expected: [String: AnyHashable] = [
+            "id": fee.feeID,
             "name": fee.name,
             "tax_status": fee.taxStatus.rawValue,
             "tax_class": fee.taxClass,

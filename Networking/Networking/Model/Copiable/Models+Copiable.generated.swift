@@ -286,7 +286,9 @@ extension PaymentGatewayAccount {
         defaultCurrency: CopiableProp<String> = .copy,
         supportedCurrencies: CopiableProp<[String]> = .copy,
         country: CopiableProp<String> = .copy,
-        isCardPresentEligible: CopiableProp<Bool> = .copy
+        isCardPresentEligible: CopiableProp<Bool> = .copy,
+        isLive: CopiableProp<Bool> = .copy,
+        isInTestMode: CopiableProp<Bool> = .copy
     ) -> PaymentGatewayAccount {
         let siteID = siteID ?? self.siteID
         let gatewayID = gatewayID ?? self.gatewayID
@@ -299,6 +301,8 @@ extension PaymentGatewayAccount {
         let supportedCurrencies = supportedCurrencies ?? self.supportedCurrencies
         let country = country ?? self.country
         let isCardPresentEligible = isCardPresentEligible ?? self.isCardPresentEligible
+        let isLive = isLive ?? self.isLive
+        let isInTestMode = isInTestMode ?? self.isInTestMode
 
         return PaymentGatewayAccount(
             siteID: siteID,
@@ -311,7 +315,9 @@ extension PaymentGatewayAccount {
             defaultCurrency: defaultCurrency,
             supportedCurrencies: supportedCurrencies,
             country: country,
-            isCardPresentEligible: isCardPresentEligible
+            isCardPresentEligible: isCardPresentEligible,
+            isLive: isLive,
+            isInTestMode: isInTestMode
         )
     }
 }
@@ -1138,6 +1144,51 @@ extension ShippingLabelPurchase {
     }
 }
 
+extension Site {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        description: CopiableProp<String> = .copy,
+        url: CopiableProp<String> = .copy,
+        plan: CopiableProp<String> = .copy,
+        isJetpackThePluginInstalled: CopiableProp<Bool> = .copy,
+        isJetpackConnected: CopiableProp<Bool> = .copy,
+        isWooCommerceActive: CopiableProp<Bool> = .copy,
+        isWordPressStore: CopiableProp<Bool> = .copy,
+        jetpackConnectionActivePlugins: CopiableProp<[String]> = .copy,
+        timezone: CopiableProp<String> = .copy,
+        gmtOffset: CopiableProp<Double> = .copy
+    ) -> Site {
+        let siteID = siteID ?? self.siteID
+        let name = name ?? self.name
+        let description = description ?? self.description
+        let url = url ?? self.url
+        let plan = plan ?? self.plan
+        let isJetpackThePluginInstalled = isJetpackThePluginInstalled ?? self.isJetpackThePluginInstalled
+        let isJetpackConnected = isJetpackConnected ?? self.isJetpackConnected
+        let isWooCommerceActive = isWooCommerceActive ?? self.isWooCommerceActive
+        let isWordPressStore = isWordPressStore ?? self.isWordPressStore
+        let jetpackConnectionActivePlugins = jetpackConnectionActivePlugins ?? self.jetpackConnectionActivePlugins
+        let timezone = timezone ?? self.timezone
+        let gmtOffset = gmtOffset ?? self.gmtOffset
+
+        return Site(
+            siteID: siteID,
+            name: name,
+            description: description,
+            url: url,
+            plan: plan,
+            isJetpackThePluginInstalled: isJetpackThePluginInstalled,
+            isJetpackConnected: isJetpackConnected,
+            isWooCommerceActive: isWooCommerceActive,
+            isWordPressStore: isWordPressStore,
+            jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
+            timezone: timezone,
+            gmtOffset: gmtOffset
+        )
+    }
+}
+
 extension SitePlugin {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -1226,7 +1277,8 @@ extension SystemPlugin {
         url: CopiableProp<String> = .copy,
         authorName: CopiableProp<String> = .copy,
         authorUrl: CopiableProp<String> = .copy,
-        networkActivated: CopiableProp<Bool> = .copy
+        networkActivated: CopiableProp<Bool> = .copy,
+        active: CopiableProp<Bool> = .copy
     ) -> SystemPlugin {
         let siteID = siteID ?? self.siteID
         let plugin = plugin ?? self.plugin
@@ -1237,6 +1289,7 @@ extension SystemPlugin {
         let authorName = authorName ?? self.authorName
         let authorUrl = authorUrl ?? self.authorUrl
         let networkActivated = networkActivated ?? self.networkActivated
+        let active = active ?? self.active
 
         return SystemPlugin(
             siteID: siteID,
@@ -1247,7 +1300,41 @@ extension SystemPlugin {
             url: url,
             authorName: authorName,
             authorUrl: authorUrl,
-            networkActivated: networkActivated
+            networkActivated: networkActivated,
+            active: active
+        )
+    }
+}
+
+extension WordPressMedia {
+    public func copy(
+        mediaID: CopiableProp<Int64> = .copy,
+        date: CopiableProp<Date> = .copy,
+        slug: CopiableProp<String> = .copy,
+        mimeType: CopiableProp<String> = .copy,
+        src: CopiableProp<String> = .copy,
+        alt: NullableCopiableProp<String> = .copy,
+        details: NullableCopiableProp<WordPressMedia.MediaDetails> = .copy,
+        title: NullableCopiableProp<WordPressMedia.MediaTitle> = .copy
+    ) -> WordPressMedia {
+        let mediaID = mediaID ?? self.mediaID
+        let date = date ?? self.date
+        let slug = slug ?? self.slug
+        let mimeType = mimeType ?? self.mimeType
+        let src = src ?? self.src
+        let alt = alt ?? self.alt
+        let details = details ?? self.details
+        let title = title ?? self.title
+
+        return WordPressMedia(
+            mediaID: mediaID,
+            date: date,
+            slug: slug,
+            mimeType: mimeType,
+            src: src,
+            alt: alt,
+            details: details,
+            title: title
         )
     }
 }

@@ -22,9 +22,9 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     let granularity: StatsGranularityV4
 
     /// Whether site visit stats can be shown
-    var shouldShowSiteVisitStats: Bool = true {
+    var siteVisitStatsMode: SiteVisitStatsMode = .default {
         didSet {
-            storeStatsPeriodViewController.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+            storeStatsPeriodViewController.siteVisitStatsMode = siteVisitStatsMode
         }
     }
 
@@ -42,6 +42,21 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     var siteTimezone: TimeZone = .current {
         didSet {
             storeStatsPeriodViewController.siteTimezone = siteTimezone
+        }
+    }
+
+    /// Timestamp for last successful data sync
+    var lastFullSyncTimestamp: Date?
+
+    /// Minimal time interval for data refresh
+    var minimalIntervalBetweenSync: TimeInterval {
+        switch timeRange {
+        case .today:
+            return 60
+        case .thisWeek, .thisMonth:
+            return 60*60
+        case .thisYear:
+            return 60*60*12
         }
     }
 

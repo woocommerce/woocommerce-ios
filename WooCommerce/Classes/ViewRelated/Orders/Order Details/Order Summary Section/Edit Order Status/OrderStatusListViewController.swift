@@ -6,11 +6,18 @@ final class OrderStatusListViewController: UIViewController {
     ///
     @IBOutlet private var tableView: UITableView!
 
+    /// The index of the status stored in the database when list view is presented
+    ///
+    private var initialStatus: IndexPath?
     /// The index of (new) order status selected by the user tapping on a table row.
     ///
     private var indexOfSelectedStatus: IndexPath? {
         didSet {
-            activateApplyButton()
+            if initialStatus != indexOfSelectedStatus {
+                activateApplyButton()
+            } else {
+                deActivateApplyButton()
+            }
         }
     }
 
@@ -24,7 +31,7 @@ final class OrderStatusListViewController: UIViewController {
 
     /// A closure to be  called when this VC wants its creator to change the order status to the selected status and dismiss it.
     ///
-    var didSelectApply: ((OrderStatusEnum?) -> Void)?
+    var didSelectApply: ((OrderStatusEnum) -> Void)?
 
     init(siteID: Int64, status: OrderStatusEnum) {
         self.viewModel = OrderStatusListViewModel(status: status,
@@ -53,6 +60,7 @@ final class OrderStatusListViewController: UIViewController {
             return
         }
         tableView.selectRow(at: selectedStatusIndex, animated: false, scrollPosition: .none)
+        initialStatus = selectedStatusIndex
     }
 
     /// Registers all of the available TableViewCells

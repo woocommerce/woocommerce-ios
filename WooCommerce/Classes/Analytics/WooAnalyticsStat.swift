@@ -130,6 +130,7 @@ public enum WooAnalyticsStat: String {
     case settingsBetaFeaturesButtonTapped = "settings_beta_features_button_tapped"
     case settingsBetaFeaturesProductsToggled = "settings_beta_features_products_toggled"
     case settingsBetaFeaturesOrderAddOnsToggled = "settings_beta_features_order_addons_toggled"
+    case settingsBetaFeaturesSimplePaymentsToggled = "settings_beta_features_simple_payments_toggled"
 
     case settingsPrivacySettingsTapped = "settings_privacy_settings_button_tapped"
     case settingsCollectInfoToggled = "privacy_settings_collect_info_toggled"
@@ -153,6 +154,15 @@ public enum WooAnalyticsStat: String {
     case cardReaderConnectionFailed = "card_reader_connection_failed"
     case cardReaderConnectionSuccess = "card_reader_connection_success"
     case cardReaderDisconnectTapped = "card_reader_disconnect_tapped"
+
+    // MARK: Card Reader Software Update Events
+    //
+    case cardReaderSoftwareUpdateTapped = "card_reader_software_update_tapped"
+    case cardReaderSoftwareUpdateStarted = "card_reader_software_update_started"
+    case cardReaderSoftwareUpdateSuccess = "card_reader_software_update_success"
+    case cardReaderSoftwareUpdateFailed = "card_reader_software_update_failed"
+    case cardReaderSoftwareUpdateCancelTapped = "card_reader_software_update_cancel_tapped"
+    case cardReaderSoftwareUpdateCanceled = "card_reader_software_update_canceled"
 
     // MARK: Card-Present Payments Onboarding
     case cardPresentOnboardingLearnMoreTapped = "card_present_onboarding_learn_more_tapped"
@@ -215,6 +225,10 @@ public enum WooAnalyticsStat: String {
     case orderTrackingDeleteFailed = "order_tracking_delete_failed"
     case orderTrackingDeleteSuccess = "order_tracking_delete_success"
     case orderTrackingProvidersLoaded = "order_tracking_providers_loaded"
+
+    // MARK: Order List Sorting/Filtering
+    //
+    case orderListViewFilterOptionsTapped = "order_list_view_filter_options_tapped"
 
     // MARK: Shipping Labels Events
     //
@@ -329,6 +343,7 @@ public enum WooAnalyticsStat: String {
     case productListSearched = "product_list_searched"
     case productListMenuSearchTapped = "product_list_menu_search_tapped"
     case productListAddProductTapped = "product_list_add_product_button_tapped"
+    case productListClearFiltersTapped = "product_list_clear_filters_button_tapped"
 
     // MARK: Add Product Events
     //
@@ -506,6 +521,23 @@ public enum WooAnalyticsStat: String {
     case removeProductAttributeButtonTapped = "remove_product_attribute_button_tapped"
     case editProductVariationAttributeOptionsRowTapped = "edit_product_variation_attribute_options_row_tapped"
     case editProductVariationAttributeOptionsDoneButtonTapped = "edit_product_variation_attribute_options_done_button_tapped"
+
+    // MARK: What's New Component events
+    //
+    case featureAnnouncementShown = "feature_announcement_shown"
+
+    // MARK: Simple Payments events
+    //
+    case simplePaymentsFlowStarted = "simple_payments_flow_started"
+    case simplePaymentsFlowCompleted = "simple_payments_flow_completed"
+    case simplePaymentsFlowCanceled = "simple_payments_flow_canceled"
+    case simplePaymentsFlowFailed = "simple_payments_flow_failed"
+
+    // MARK: Jetpack-the-plugin events
+    //
+    case jetpackBenefitsBanner = "feature_jetpack_benefits_banner"
+    case jetpackInstallButtonTapped = "jetpack_install_button_tapped"
+    case jetpackCPSitesFetched = "jetpack_cp_sites_fetched"
 }
 
 public extension WooAnalyticsStat {

@@ -1,5 +1,6 @@
 import Foundation
 import Storage
+import Networking
 
 // MARK: - AppSettingsAction: Defines all of the Actions supported by the AppSettingsStore.
 //
@@ -55,6 +56,23 @@ public enum AppSettingsAction: Action {
     ///
     case resetStatsVersionStates
 
+    // MARK: - Orders Settings
+
+    /// Loads the orders settings
+    ///
+    case loadOrdersSettings(siteID: Int64, onCompletion: (Result<StoredOrderSettings.Setting, Error>) -> Void)
+
+    /// Add or Update orders settings
+    ///
+    case upsertOrdersSettings(siteID: Int64,
+                              orderStatusesFilter: [OrderStatusEnum]?,
+                              dateRangeFilter: OrderDateRangeFilter?,
+                              onCompletion: (Error?) -> Void)
+
+    /// Clears all the orders settings
+    ///
+    case resetOrdersSettings
+
     // MARK: - Products Settings
 
     /// Loads the products settings
@@ -68,6 +86,7 @@ public enum AppSettingsAction: Action {
                                 stockStatusFilter: ProductStockStatus? = nil,
                                 productStatusFilter: ProductStatus? = nil,
                                 productTypeFilter: ProductType? = nil,
+                                productCategoryFilter: ProductCategory? = nil,
                                 onCompletion: (Error?) -> Void)
 
     /// Clears all the products settings
@@ -101,6 +120,22 @@ public enum AppSettingsAction: Action {
     ///
     case loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
+    /// Loads the most recent state for the Simple Payments beta feature switch
+    ///
+    case loadSimplePaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Sets the state for the Simple Payments beta feature switch.
+    ///
+    case setSimplePaymentsFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Loads the most recent state for the Order Creation beta feature switch
+    ///
+    case loadOrderCreationSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Sets the state for the Order Creation beta feature switch.
+    ///
+    case setOrderCreationFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
     /// Remember the given card reader (to support automatic reconnection)
     /// where `cardReaderID` is a String e.g. "CHB204909005931"
     ///
@@ -127,4 +162,32 @@ public enum AppSettingsAction: Action {
     /// Clears the persisted eligibility error information.
     ///
     case resetEligibilityErrorInfo
+
+    /// Sets the last time when Jetpack benefits banner is dismissed in the Dashboard.
+    ///
+    case setJetpackBenefitsBannerLastDismissedTime(time: Date)
+
+    /// Loads the visibility of Jetpack benefits banner in the Dashboard based on the last dismissal time.
+    /// The banner is not shown for five days after the last time it is dismissed.
+    /// There are other conditions for showing the Jetpack banner, like when the site is Jetpack CP connected.
+    ///
+    case loadJetpackBenefitsBannerVisibility(currentTime: Date, calendar: Calendar, onCompletion: (Bool) -> Void)
+
+    // MARK: - General Store Settings
+
+    /// Sets telemetry availability status information.
+    ///
+    case setTelemetryAvailability(siteID: Int64, isAvailable: Bool)
+
+    /// Sets telemetry last reported time information.
+    ///
+    case setTelemetryLastReportedTime(siteID: Int64, time: Date)
+
+    /// Loads telemetry information - availability status and last reported time.
+    ///
+    case getTelemetryInfo(siteID: Int64, onCompletion: (Bool, Date?) -> Void)
+
+    /// Clears all the products settings
+    ///
+    case resetGeneralStoreSettings
 }

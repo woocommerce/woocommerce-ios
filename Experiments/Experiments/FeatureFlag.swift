@@ -38,15 +38,27 @@ public enum FeatureFlag: Int {
     ///
     case shippingLabelsMultiPackage
 
-    /// Display "What's new on WooCommerce" on App Launch and App Settings
-    ///
-    case whatsNewOnWooCommerce
-
     /// Push notifications for all stores
     ///
     case pushNotificationsForAllStores
 
-    /// Allows to create quick pay orders
+    /// Allows to create simple payments orders
     ///
-    case quickPayPrototype
+    case simplePaymentsPrototype
+
+    /// Display the bar for displaying the filters in the Order List
+    ///
+    case orderListFilters
+
+    /// Allows sites with plugins that include Jetpack Connection Package and without Jetpack-the-plugin to connect to the app
+    ///
+    case jetpackConnectionPackageSupport
+
+    /// Allows new orders to be manually created
+    ///
+    case orderCreation
+
+    /// Display the new tab "Menu" in the tab bar.
+    ///
+    case hubMenu
 }

@@ -3,8 +3,11 @@ import StripeTerminal
 /// the mapping is done according to the error codes documented here:
 /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html
 extension UnderlyingError {
-    init(with stripeError: Error) {
+    init?(withStripeError stripeError: Error) {
         let error = stripeError as NSError
+        guard error.domain == ErrorDomain else {
+            return nil
+        }
 
         switch error.code {
         case ErrorCode.Code.busy.rawValue:
@@ -70,7 +73,9 @@ extension UnderlyingError {
         case ErrorCode.Code.unexpectedSdkError.rawValue:
             self = .unexpectedSDKError
         case ErrorCode.Code.declinedByStripeAPI.rawValue:
-            self = .paymentDeclinedByPaymentProcessorAPI
+            let processPaymentError = error as? ProcessPaymentError
+            let declineReason = DeclineReason(with: processPaymentError?.declineCode ?? "")
+            self = .paymentDeclinedByPaymentProcessorAPI(declineReason: declineReason)
         case ErrorCode.Code.declinedByReader.rawValue:
             self = .paymentDeclinedByCardReader
         case ErrorCode.Code.notConnectedToInternet.rawValue:
@@ -79,8 +84,10 @@ extension UnderlyingError {
             self = .requestTimedOut
         case ErrorCode.Code.sessionExpired.rawValue:
             self = .readerSessionExpired
+        case ErrorCode.Code.stripeAPIError.rawValue:
+            self = .processorAPIError
         default:
-            self = .internalServiceError
+            return nil
         }
     }
 }

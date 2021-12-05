@@ -104,6 +104,51 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }
 
+    func test_turning_on_use_as_toggle_enables_done_button() {
+        // Given
+        let address = sampleAddress()
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: address), type: .shipping, storageManager: testingStorage)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
+
+        // When
+        viewModel.onLoadTrigger.send()
+        viewModel.fields.useAsToggle = true
+
+        // Then
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: true))
+    }
+
+    func test_turning_off_use_as_toggle_disables_done_button() {
+        // Given
+        let address = sampleAddress()
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: address), type: .shipping, storageManager: testingStorage)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
+
+        // When
+        viewModel.onLoadTrigger.send()
+        viewModel.fields.useAsToggle = true
+        viewModel.fields.useAsToggle = false
+
+        // Then
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
+    }
+
+    func test_turning_off_use_as_toggle_when_address_is_edited_does_not_disable_done_button() {
+        // Given
+        let address = sampleAddress()
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: address), type: .shipping, storageManager: testingStorage)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
+
+        // When
+        viewModel.onLoadTrigger.send()
+        viewModel.fields.useAsToggle = true
+        viewModel.fields.firstName = "John"
+        viewModel.fields.useAsToggle = false
+
+        // Then
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: true))
+    }
+
     func test_loading_indicator_gets_enabled_during_network_request() {
         // Given
         let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, storageManager: testingStorage)
@@ -407,6 +452,60 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(billingAddress?.email)
+    }
+
+    func test_copying_billing_address_for_shipping_does_not_sends_an_email_field() {
+        // Given
+        let viewModel = EditOrderAddressFormViewModel(order: order(withBillingAddress: sampleAddress()),
+                                                      type: .billing,
+                                                      storageManager: testingStorage,
+                                                      stores: testingStores)
+        viewModel.onLoadTrigger.send()
+        viewModel.fields.useAsToggle = true
+
+        // When
+        let shippingAddress: Address? = waitFor { promise in
+            self.testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(_, order, _, _):
+                    promise(order.shippingAddress)
+                default:
+                    XCTFail("Unsupported Action")
+                }
+            }
+
+            viewModel.updateRemoteAddress(onFinish: { _ in })
+        }
+
+        // Then
+        XCTAssertNil(shippingAddress?.email)
+    }
+
+    func test_sending_empty_email_billing_address_does_sends_an_empty_email_field() {
+        // Given
+        let viewModel = EditOrderAddressFormViewModel(order: order(withBillingAddress: sampleAddressWithEmptyNullableFields()),
+                                                      type: .billing,
+                                                      storageManager: testingStorage,
+                                                      stores: testingStores)
+        viewModel.onLoadTrigger.send()
+        viewModel.fields.useAsToggle = true
+
+        // When
+        let billingAddress: Address? = waitFor { promise in
+            self.testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(_, order, _, _):
+                    promise(order.billingAddress)
+                default:
+                    XCTFail("Unsupported Action")
+                }
+            }
+
+            viewModel.updateRemoteAddress(onFinish: { _ in })
+        }
+
+        // Then
+        XCTAssertEqual(billingAddress?.email, "")
     }
 
     func test_shipping_view_model_does_not_shows_email_field() {

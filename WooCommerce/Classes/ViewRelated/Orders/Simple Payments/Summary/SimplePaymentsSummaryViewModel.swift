@@ -144,13 +144,14 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     func updateOrder() {
         showLoadingIndicator = true
+        // Don't send empty emails as older WC stores can't handle them.
         let action = OrderAction.updateSimplePaymentsOrder(siteID: siteID,
                                                            orderID: orderID,
                                                            feeID: feeID,
                                                            amount: providedAmount,
                                                            taxable: enableTaxes,
                                                            orderNote: noteContent,
-                                                           email: email) { [weak self] result in
+                                                           email: email.isEmpty ? nil : email) { [weak self] result in
             guard let self = self else { return }
             self.showLoadingIndicator = false
 

@@ -196,6 +196,29 @@ target 'SampleReceiptPrinter' do
   hardware_pods
 end
 
+# Experiments Layer:
+# ==================
+#
+def experiments_pods
+  pod 'Automattic-Tracks-iOS', '~> 0.9.1'
+end
+
+# Experiments Target:
+# ===================
+#
+target 'Experiments' do
+  project 'Experiments/Experiments.xcodeproj'
+  experiments_pods
+end
+
+# Unit Tests
+# ==========
+#
+target 'ExperimentsTests' do
+  project 'Experiments/Experiments.xcodeproj'
+  experiments_pods
+end
+
 # Workarounds:
 # ============
 #

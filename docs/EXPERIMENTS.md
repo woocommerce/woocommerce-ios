@@ -1,10 +1,10 @@
 # Experiments
 
-This framework allows us to develop and test experimental features with different build configurations in release and debug builds. In the future, we can expand the framework to include more advanced experimentation like AB testing (using ExPlat in the Tracks library) and remote feature flag configuration.
+This framework allows us to develop and test experimental features with different build configurations in release and debug builds. The framework also supports more advanced experimentation with AB testing, using ExPlat in the Tracks library.
 
 ## Dependencies
 
-None at the moment.
+- `Automattic-Tracks-iOS` library: integrates the ExPlat service for AB testing.
 
 ## Public interfaces
 

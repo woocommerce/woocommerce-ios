@@ -297,6 +297,12 @@ extension IssueRefundViewModel {
         return Section(rows: [switchRow, detailsRow])
     }
 
+    /// If the order has fees, this returns a row with a message that refunding fees is currently
+    /// not supported.
+    ///
+    /// We will implement refunding fees within a few weeks. This is just temporary and is primarily
+    /// for setting expectations for Simple Payments users.
+    ///
     private func createUnsupportedFeesRefundTooltipRow() -> ImageAndTitleAndTextTableViewCell.ViewModel? {
         state.order.fees.isEmpty ? nil : ImageAndTitleAndTextTableViewCell.ViewModel(
             title: Localization.unsupportedFeesRefund,

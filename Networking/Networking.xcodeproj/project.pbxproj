@@ -164,6 +164,9 @@
 		3158FE7C26129E2100E566B9 /* wcpay-account-restricted-pending.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE7B26129E2100E566B9 /* wcpay-account-restricted-pending.json */; };
 		3158FE8026129EC300E566B9 /* wcpay-account-restricted-overdue.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE7F26129EC300E566B9 /* wcpay-account-restricted-overdue.json */; };
 		3158FE8426129F3A00E566B9 /* wcpay-account-unknown-status.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE8326129F3A00E566B9 /* wcpay-account-unknown-status.json */; };
+		316DB95D275EC2C600660830 /* WCScaleRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DB95C275EC2C600660830 /* WCScaleRemote.swift */; };
+		316DB95F275EC3DF00660830 /* WCScaleMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DB95E275EC3DF00660830 /* WCScaleMapper.swift */; };
+		316DB961275EC45700660830 /* WCScaleStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316DB960275EC45700660830 /* WCScaleStatus.swift */; };
 		3178A49F2703E5CF00A8B4CA /* WCPayReaderLocationMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3178A49E2703E5CF00A8B4CA /* WCPayReaderLocationMapper.swift */; };
 		31799AF8270508C600D78179 /* WCPayReaderLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31799AF7270508C600D78179 /* WCPayReaderLocation.swift */; };
 		31799AFC2705189200D78179 /* wcpay-location.json in Resources */ = {isa = PBXBuildFile; fileRef = 31799AFB2705189200D78179 /* wcpay-location.json */; };
@@ -752,6 +755,9 @@
 		3158FE7B26129E2100E566B9 /* wcpay-account-restricted-pending.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-restricted-pending.json"; sourceTree = "<group>"; };
 		3158FE7F26129EC300E566B9 /* wcpay-account-restricted-overdue.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-restricted-overdue.json"; sourceTree = "<group>"; };
 		3158FE8326129F3A00E566B9 /* wcpay-account-unknown-status.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-unknown-status.json"; sourceTree = "<group>"; };
+		316DB95C275EC2C600660830 /* WCScaleRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCScaleRemote.swift; sourceTree = "<group>"; };
+		316DB95E275EC3DF00660830 /* WCScaleMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCScaleMapper.swift; sourceTree = "<group>"; };
+		316DB960275EC45700660830 /* WCScaleStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCScaleStatus.swift; sourceTree = "<group>"; };
 		3178A49E2703E5CF00A8B4CA /* WCPayReaderLocationMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayReaderLocationMapper.swift; sourceTree = "<group>"; };
 		31799AF7270508C600D78179 /* WCPayReaderLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayReaderLocation.swift; sourceTree = "<group>"; };
 		31799AFB2705189200D78179 /* wcpay-location.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-location.json"; sourceTree = "<group>"; };
@@ -1519,6 +1525,7 @@
 				020D07BB23D856BF00FD9580 /* MediaRemote.swift */,
 				029BA4EF255D7282006171FD /* ShippingLabelRemote.swift */,
 				D8EDFE1D25EE87F1003D2213 /* WCPayRemote.swift */,
+				316DB95C275EC2C600660830 /* WCScaleRemote.swift */,
 				FE28F6E5268429B6004465C7 /* UserRemote.swift */,
 				077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */,
 				AEF94584272974F2001DCCFB /* TelemetryRemote.swift */,
@@ -1611,6 +1618,7 @@
 				31054705262E278100C5C02B /* WCPayPaymentIntent.swift */,
 				3105470B262E27F000C5C02B /* WCPayPaymentIntentStatusEnum.swift */,
 				FE28F6E126840DED004465C7 /* User.swift */,
+				316DB960275EC45700660830 /* WCScaleStatus.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1876,6 +1884,7 @@
 				02C11275274285FF00F4F0B4 /* WooCommerceAvailabilityMapper.swift */,
 				02BE0A7A274B695F001176D2 /* WordPressMediaMapper.swift */,
 				02C112772742862600F4F0B4 /* WordPressSiteSettingsMapper.swift */,
+				316DB95E275EC3DF00660830 /* WCScaleMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -2446,6 +2455,7 @@
 				2685C0FA263B5D5300D9EE97 /* AddOnGroupMapper.swift in Sources */,
 				CE430672234B9EB20073CBFF /* OrderItemTax.swift in Sources */,
 				457453E725A72C9700276508 /* CreateProductVariation.swift in Sources */,
+				316DB961275EC45700660830 /* WCScaleStatus.swift in Sources */,
 				45E461BC26837CC500011BF2 /* DataRemote.swift in Sources */,
 				B505F6EA20BEFC3700BB1B69 /* MockNetwork.swift in Sources */,
 				CC9A24A32641BCF2005DE56E /* ShippingLabelCreationEligibilityResponse.swift in Sources */,
@@ -2520,6 +2530,7 @@
 				D823D905223746CE00C90817 /* NewShipmentTrackingMapper.swift in Sources */,
 				D8EDFE1E25EE87F1003D2213 /* WCPayRemote.swift in Sources */,
 				743057B5218B6ACD00441A76 /* Queue.swift in Sources */,
+				316DB95F275EC3DF00660830 /* WCScaleMapper.swift in Sources */,
 				74A1D26821189A7100931DFA /* SiteVisitStats.swift in Sources */,
 				02C254B0256378D000A04423 /* ShippingLabelRefundStatus.swift in Sources */,
 				4568E2242459D3230007E478 /* Post.swift in Sources */,
@@ -2568,6 +2579,7 @@
 				74D522B62113607F00042831 /* StatGranularity.swift in Sources */,
 				02C2549A25636E1500A04423 /* ShippingLabelAddress.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,
+				316DB95D275EC2C600660830 /* WCScaleRemote.swift in Sources */,
 				B572F69A21AC475C003EEFF0 /* DevicesRemote.swift in Sources */,
 				3192F220260D33BB0067FEF9 /* WCPayAccount.swift in Sources */,
 				B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */,

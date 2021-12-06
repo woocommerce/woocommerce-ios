@@ -135,7 +135,7 @@ extension IssueRefundViewModel {
         return refundable.quantity
     }
 
-    /// Returns the current quantlty set for refund for the provided item index.
+    /// Returns the current quantity set for refund for the provided item index.
     /// Returns `nil` if the index is out of bounds.
     ///
     func currentQuantityForItemAtIndex(_ itemIndex: Int) -> Int? {

@@ -2,6 +2,7 @@ import UIKit
 import CoreData
 import Storage
 import class Networking.UserAgent
+import Experiments
 
 import CocoaLumberjack
 import KeychainAccess
@@ -73,6 +74,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        startABTesting()
 
         // Setup the Interface!
         setupMainWindow()
@@ -317,6 +320,15 @@ private extension AppDelegate {
             /// Trick found at: https://twitter.com/twannl/status/1232966604142653446
             UIApplication.shared.currentKeyWindow?.layer.speed = 100
         }
+    }
+
+    /// Starts the AB testing platform
+    ///
+    func startABTesting() {
+        guard ServiceLocator.stores.isAuthenticated else {
+            return
+        }
+        ABTest.start()
     }
 }
 

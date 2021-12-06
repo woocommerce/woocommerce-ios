@@ -399,6 +399,8 @@ extension RefundProductsTotalViewModel: IssueRefundRow {}
 
 extension RefundShippingDetailsViewModel: IssueRefundRow {}
 
+extension ImageAndTitleAndTextTableViewCell.ViewModel: IssueRefundRow {}
+
 // MARK: Refund Quantity Store
 private extension IssueRefundViewModel {
     /// Structure that holds and provides the quantity of items to refund

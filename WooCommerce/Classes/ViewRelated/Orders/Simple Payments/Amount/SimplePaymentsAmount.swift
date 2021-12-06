@@ -75,7 +75,7 @@ extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControlle
     }
 
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        !rootView.viewModel.disableCancel
+        !rootView.viewModel.disableViewActions
     }
 }
 
@@ -139,9 +139,10 @@ struct SimplePaymentsAmount: View {
                     dismiss()
                     viewModel.userDidCancelFlow()
                 })
-                    .disabled(viewModel.disableCancel)
+                    .disabled(viewModel.disableViewActions)
             }
         }
+        .disabled(viewModel.disableViewActions)
         .wooNavigationBarStyle()
     }
 

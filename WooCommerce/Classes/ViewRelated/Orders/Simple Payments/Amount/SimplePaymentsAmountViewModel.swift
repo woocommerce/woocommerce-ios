@@ -42,10 +42,10 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         amount.count < 2
     }
 
-    /// Use this to disables interactive dismissal and
-    /// Disables cancel button while performing the create order operation
+    /// Defines if the view actions should be disabled.
+    /// Currently true while a network operation is happening.
     ///
-    var disableCancel: Bool {
+    var disableViewActions: Bool {
         loading
     }
 

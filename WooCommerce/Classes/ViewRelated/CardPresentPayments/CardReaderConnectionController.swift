@@ -628,7 +628,7 @@ private extension CardReaderConnectionController {
                                  url: adminUrl,
                                  urlToTriggerExit: nil,
                                  exitTrigger: nil)
-                                 .navigationTitle(CardPresentModalConnectingFailedUpdateAddress.Localization.adminWebviewTitle)
+                                 .navigationTitle(Localization.adminWebviewTitle)
                                  .navigationBarTitleDisplayMode(.inline)
                                  .toolbar {
                                      ToolbarItem(placement: .confirmationAction) {
@@ -637,7 +637,7 @@ private extension CardReaderConnectionController {
                                                  retrySearch()
                                              }
                                          }, label: {
-                                             Text(CardPresentModalConnectingFailedUpdateAddress.Localization.doneButtonUpdateAddress)
+                                             Text(Localization.doneButtonUpdateAddress)
                                          })
                                      }
                                  }
@@ -678,5 +678,20 @@ private extension CardReaderConnectionController {
         self.alerts.dismiss()
         self.onCompletion?(.failure(error))
         self.state = .idle
+    }
+}
+
+private extension CardReaderConnectionController {
+    enum Localization {
+        static let adminWebviewTitle = NSLocalizedString(
+            "WooCommerce Settings",
+            comment: "Navigation title of the webview which used by the merchant to update their store address"
+        )
+
+        static let doneButtonUpdateAddress = NSLocalizedString(
+            "Done",
+            comment: "The button title to indicate that the user has finished updating their store's address and is" +
+            "ready to close the webview. This also tries to connect to the reader again."
+        )
     }
 }

@@ -59,17 +59,12 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
-extension CardPresentModalConnectingFailedUpdateAddress {
+private extension CardPresentModalConnectingFailedUpdateAddress {
     enum Localization {
         static let title = NSLocalizedString(
             "Please correct your store address to proceed",
             comment: "Title of the alert presented when the user tries to connect to a specific card reader and it fails " +
             "due to address problems"
-        )
-
-        static let adminWebviewTitle = NSLocalizedString(
-            "WooCommerce Settings",
-            comment: "Navigation title of the webview which used by the merchant to update their store address"
         )
 
         static let openAdmin = NSLocalizedString(
@@ -88,12 +83,6 @@ extension CardPresentModalConnectingFailedUpdateAddress {
             "Cancel",
             comment: "Button to dismiss the alert presented when connecting to a specific reader fails due to address " +
             "problems. This also cancels searching."
-        )
-
-        static let doneButtonUpdateAddress = NSLocalizedString(
-            "Done",
-            comment: "The button title to indicate that the user has finished updating their store's address and is" +
-            "ready to close the webview. This also tries to connect to the reader again."
         )
     }
 }

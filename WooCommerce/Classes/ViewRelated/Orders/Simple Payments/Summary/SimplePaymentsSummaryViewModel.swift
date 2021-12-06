@@ -46,6 +46,12 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         noteViewModel.newNote
     }
 
+    /// Disable view actions while a network request is being performed
+    ///
+    var disableViewActions: Bool {
+        return showLoadingIndicator
+    }
+
     /// Total to charge with taxes.
     ///
     private let totalWithTaxes: String

@@ -1,8 +1,8 @@
 import AutomatticTracks
 
-/// ABTest defines AB testing experiments and runs the tests based on their variations from the ExPlat service.
+/// ABTest adds A/B testing experiments and runs the tests based on their variations from the ExPlat service.
 ///
-enum ABTest: String, CaseIterable {
+public enum ABTest: String, CaseIterable {
     /// Throwaway case, to prevent a compiler error:
     /// `An enum with no cases cannot declare a raw type`
     case null
@@ -13,7 +13,7 @@ enum ABTest: String, CaseIterable {
     }
 }
 
-extension ABTest {
+public extension ABTest {
     /// Start the AB Testing platform if any experiment exists
     ///
     static func start() {

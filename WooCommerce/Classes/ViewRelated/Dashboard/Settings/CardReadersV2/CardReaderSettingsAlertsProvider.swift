@@ -50,11 +50,9 @@ protocol CardReaderSettingsAlertsProvider {
     /// The user may try again or cancel
     ///
     func connectingFailedIncompleteAddress(from: UIViewController,
-                                        adminUrl: URL?,
-                                        site: Site?,
-                                        openUrlInSafari: @escaping (URL) -> Void,
-                                        retrySearch: @escaping () -> Void,
-                                        cancelSearch: @escaping () -> Void)
+                                           openWCSettings: ((UIViewController) -> Void)?,
+                                           retrySearch: @escaping () -> Void,
+                                           cancelSearch: @escaping () -> Void)
 
     /// Defines an alert indicating connecting failed because their postal code needs updating.
     /// The user may try again or cancel

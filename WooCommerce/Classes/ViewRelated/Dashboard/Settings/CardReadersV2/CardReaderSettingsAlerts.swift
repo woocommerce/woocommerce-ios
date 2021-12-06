@@ -26,15 +26,11 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     }
 
     func connectingFailedIncompleteAddress(from: UIViewController,
-                                        adminUrl: URL?,
-                                        site: Site?,
-                                        openUrlInSafari: @escaping (URL) -> Void,
+                                        openWCSettings: ((UIViewController) -> Void)?,
                                         retrySearch: @escaping () -> Void,
                                         cancelSearch: @escaping () -> Void) {
         setViewModelAndPresent(from: from,
-                               viewModel: connectingFailedUpdateAddress(adminUrl: adminUrl,
-                                                                        site: site,
-                                                                        openUrlInSafari: openUrlInSafari,
+                               viewModel: connectingFailedUpdateAddress(openWCSettings: openWCSettings,
                                                                         retrySearch: retrySearch,
                                                                         cancelSearch: cancelSearch))
     }
@@ -178,14 +174,10 @@ private extension CardReaderSettingsAlerts {
         CardPresentModalConnectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch)
     }
 
-    func connectingFailedUpdateAddress(adminUrl: URL?,
-                                       site: Site?,
-                                       openUrlInSafari: @escaping (URL) -> Void,
+    func connectingFailedUpdateAddress(openWCSettings: ((UIViewController) -> Void)?,
                                        retrySearch: @escaping () -> Void,
                                        cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        return CardPresentModalConnectingFailedUpdateAddress(adminUrl: adminUrl,
-                                                             site: site,
-                                                             openUrlInSafari: openUrlInSafari,
+        return CardPresentModalConnectingFailedUpdateAddress(openWCSettings: openWCSettings,
                                                              retrySearch: retrySearch,
                                                              cancelSearch: cancelSearch)
     }

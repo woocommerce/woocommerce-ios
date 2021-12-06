@@ -1,17 +1,12 @@
 import UIKit
-import SwiftUI
 import Yosemite
 
 /// Modal presented when an error occurs while connecting to a reader due to problems with the address
 ///
 final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsModalViewModel {
-    private var adminUrl: URL?
-    private let openUrlInSafariAction: (_ url: URL) -> Void
+    private let openWCSettingsAction: ((UIViewController) -> Void)?
     private let retrySearchAction: () -> Void
     private let cancelSearchAction: () -> Void
-    private let site: Site?
-
-    @State private var showingUpdateAddressWebView: Bool = false
 
     let textMode: PaymentsModalTextMode = .reducedTopInfo
     let actionsMode: PaymentsModalActionsMode = .twoAction
@@ -23,7 +18,7 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
     let image: UIImage = .paymentErrorImage
 
     var primaryButtonTitle: String? {
-        guard adminUrl != nil else {
+        guard openWCSettingsAction != nil else {
             return Localization.retry
         }
         return Localization.openAdmin
@@ -41,56 +36,20 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
         return topTitle
     }
 
-    init(adminUrl: URL?,
-         site: Site?,
-         openUrlInSafari: @escaping (URL) -> Void,
+    init(openWCSettings: ((UIViewController) -> Void)?,
          retrySearch: @escaping () -> Void,
          cancelSearch: @escaping () -> Void) {
-        self.adminUrl = adminUrl
-        self.site = site
-        self.openUrlInSafariAction = openUrlInSafari
+        self.openWCSettingsAction = openWCSettings
         self.retrySearchAction = retrySearch
         self.cancelSearchAction = cancelSearch
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        guard let adminUrl = adminUrl,
+        guard let openWCSettingsAction = openWCSettingsAction,
               let viewController = viewController else {
             return retrySearchAction()
         }
-        switch site?.isWordPressStore {
-        case true:
-            presentAuthenticatedWebview(url: adminUrl, from: viewController)
-        default:
-            self.openUrlInSafariAction(adminUrl)
-        }
-    }
-
-    private func presentAuthenticatedWebview(url adminUrl: URL, from viewController: UIViewController) {
-        let nav = NavigationView {
-            AuthenticatedWebView(isPresented: .constant(true),
-                                 url: adminUrl,
-                                 urlToTriggerExit: nil) { [weak self] in
-                self?.showingUpdateAddressWebView = false
-                self?.retrySearchAction()
-            }
-                                 .navigationTitle(Localization.adminWebviewTitle)
-                                 .navigationBarTitleDisplayMode(.inline)
-                                 .toolbar {
-                                     ToolbarItem(placement: .confirmationAction) {
-                                         Button(action: { [weak self] in
-                                             viewController.dismiss(animated: true) {
-                                                 self?.retrySearchAction()
-                                             }
-                                         }, label: {
-                                             Text(Localization.doneButtonUpdateAddress)
-                                         })
-                                     }
-                                 }
-        }
-            .wooNavigationBarStyle()
-        let hostingController = UIHostingController(rootView: nav)
-        viewController.present(hostingController, animated: true, completion: nil)
+        openWCSettingsAction(viewController)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
@@ -106,11 +65,6 @@ private extension CardPresentModalConnectingFailedUpdateAddress {
             "Please correct your store address to proceed",
             comment: "Title of the alert presented when the user tries to connect to a specific card reader and it fails " +
             "due to address problems"
-        )
-
-        static let adminWebviewTitle = NSLocalizedString(
-            "WooCommerce Settings",
-            comment: "Navigation title of the webview which used by the merchant to update their store address"
         )
 
         static let openAdmin = NSLocalizedString(
@@ -129,12 +83,6 @@ private extension CardPresentModalConnectingFailedUpdateAddress {
             "Cancel",
             comment: "Button to dismiss the alert presented when connecting to a specific reader fails due to address " +
             "problems. This also cancels searching."
-        )
-
-        static let doneButtonUpdateAddress = NSLocalizedString(
-            "Done",
-            comment: "The button title to indicate that the user has finished updating their store's address and is" +
-            "ready to close the webview. This also tries to connect to the reader again."
         )
     }
 }

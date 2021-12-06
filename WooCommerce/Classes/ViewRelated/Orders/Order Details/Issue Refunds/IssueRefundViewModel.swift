@@ -266,8 +266,9 @@ extension IssueRefundViewModel {
 
         let refundItems = state.refundQuantityStore.refundableItems()
         let summaryRow = RefundProductsTotalViewModel(refundItems: refundItems, currency: state.order.currency, currencySettings: state.currencySettings)
+        let unsupportedFeesTooltipRows = [createUnsupportedFeesRefundTooltipRow()].compactMap { $0 }
 
-        return Section(rows: itemsRows + [summaryRow] + [createUnsupportedFeesRefundTooltipRow()])
+        return Section(rows: itemsRows + [summaryRow] + unsupportedFeesTooltipRows)
     }
 
     /// Returns a `Section` with the shipping switch row and the shipping details row.
@@ -296,15 +297,16 @@ extension IssueRefundViewModel {
         return Section(rows: [switchRow, detailsRow])
     }
 
-    private func createUnsupportedFeesRefundTooltipRow() -> ImageAndTitleAndTextTableViewCell.ViewModel {
-        ImageAndTitleAndTextTableViewCell.ViewModel(title: Localization.unsupportedFeesRefund,
-                                                    titleFontStyle: .footnote,
-                                                    text: nil,
-                                                    image: .infoOutlineFootnoteImage,
-                                                    imageTintColor: .systemColor(.secondaryLabel),
-                                                    numberOfLinesForTitle: 0,
-                                                    isActionable: false,
-                                                    showsSeparator: false)
+    private func createUnsupportedFeesRefundTooltipRow() -> ImageAndTitleAndTextTableViewCell.ViewModel? {
+        state.order.fees.isEmpty ? nil : ImageAndTitleAndTextTableViewCell.ViewModel(
+            title: Localization.unsupportedFeesRefund,
+            titleFontStyle: .footnote,
+            text: nil,
+            image: .infoOutlineFootnoteImage,
+            imageTintColor: .systemColor(.secondaryLabel),
+            numberOfLinesForTitle: 0,
+            isActionable: false,
+            showsSeparator: false)
     }
 
     /// Returns a string of the refund total formatted with the proper currency settings and store currency.

@@ -309,7 +309,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedItemsTitle, selectedItemsTitle)
     }
 
-    func test_viewModel_correctly_calculates_multitple_selected_item_title() {
+    func test_viewModel_correctly_calculates_multiple_selected_item_title() {
         // Given
         let currencySettings = CurrencySettings()
         let items = [

@@ -214,7 +214,7 @@ private extension IssueRefundViewModel {
 }
 
 // MARK: Constants
-private extension IssueRefundViewModel {
+extension IssueRefundViewModel {
     enum Localization {
         static let refundShippingTitle = NSLocalizedString("Refund Shipping", comment: "Title of the switch in the IssueRefund screen to refund shipping")
         static let itemSingular = NSLocalizedString("1 item selected", comment: "Title of the label indicating that there is 1 item to refund.")

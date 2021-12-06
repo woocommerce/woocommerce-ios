@@ -41,6 +41,10 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var shouldShowOrderStatusList: Bool = false
 
+    /// Assign this closure to be notified when a new order is created
+    ///
+    var onOrderCreated: (Order) -> Void = { _ in }
+
     /// Status Results Controller.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
@@ -83,9 +87,10 @@ final class NewOrderViewModel: ObservableObject {
             self.performingNetworkRequest = false
 
             switch result {
-            case .success:
+            case .success(let newOrder):
                 // TODO: Handle newly created order / remove success logging
                 DDLogInfo("New order created successfully!")
+                self.onOrderCreated(newOrder)
             case .failure(let error):
                 self.presentNotice = .error
                 DDLogError("⛔️ Error creating new order: \(error)")

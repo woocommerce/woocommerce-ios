@@ -475,7 +475,7 @@ final class IssueRefundViewModelTests: XCTestCase {
 
     // MARK: Analytics
     //
-    func test_viewModel_tracks_shipping_switch_action_correcly() {
+    func test_viewModel_tracks_shipping_switch_action_correctly() {
         // Given
         let currencySettings = CurrencySettings()
         let order = MockOrders().makeOrder()

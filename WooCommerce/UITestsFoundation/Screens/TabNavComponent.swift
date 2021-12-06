@@ -24,7 +24,7 @@ public final class TabNavComponent: ScreenObject {
     private var reviewsTabButton: XCUIElement { reviewsTabButtonGetter(app) }
     var productsTabButton: XCUIElement { productsTabButtonGetter(app) }
 
-    init(app: XCUIApplication = XCUIApplication()) throws {
+    public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
                 myStoreTabButtonGetter,

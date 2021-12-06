@@ -141,6 +141,40 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.quantityAvailableForRefundForItemAtIndex(3), nil)
     }
 
+    func test_viewModel_does_not_have_unsupported_fees_tooltip_row_if_the_order_has_no_fees() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let order = Order.fake()
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+
+        // Then
+        let rows = viewModel.sections.flatMap { $0.rows }
+        XCTAssertFalse(rows.isEmpty)
+
+        let unsupportedFeesTooltipRow = rows.compactMap { $0 as? ImageAndTitleAndTextTableViewCell.ViewModel }
+            .first { $0.title == IssueRefundViewModel.Localization.unsupportedFeesRefund }
+        XCTAssertNil(unsupportedFeesTooltipRow)
+    }
+
+    func test_viewModel_has_unsupported_fees_tooltip_row_if_the_order_has_fees() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let order = Order.fake().copy(fees: [OrderFeeLine.fake()])
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+
+        // Then
+        let rows = viewModel.sections.flatMap { $0.rows }
+        XCTAssertFalse(rows.isEmpty)
+
+        let unsupportedFeesTooltipRow = rows.compactMap { $0 as? ImageAndTitleAndTextTableViewCell.ViewModel }
+            .first { $0.title == IssueRefundViewModel.Localization.unsupportedFeesRefund }
+        XCTAssertNotNil(unsupportedFeesTooltipRow)
+    }
+
     func test_viewModel_returns_0_current_refund_quantity_for_a_clean_order() {
         // Given
         let currencySettings = CurrencySettings()

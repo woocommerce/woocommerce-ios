@@ -134,6 +134,7 @@ private extension IssueRefundViewController {
         tableView.registerNib(for: RefundProductsTotalTableViewCell.self)
         tableView.registerNib(for: RefundShippingDetailsTableViewCell.self)
         tableView.registerNib(for: SwitchTableViewCell.self)
+        tableView.registerNib(for: ImageAndTitleAndTextTableViewCell.self)
     }
 
     func configureHeaderView() {
@@ -212,6 +213,10 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
         case let viewModel as RefundShippingDetailsViewModel:
             let cell = tableView.dequeueReusableCell(RefundShippingDetailsTableViewCell.self, for: indexPath)
             cell.configure(with: viewModel)
+            return cell
+        case let viewModel as ImageAndTitleAndTextTableViewCell.ViewModel:
+            let cell = tableView.dequeueReusableCell(ImageAndTitleAndTextTableViewCell.self, for: indexPath)
+            cell.updateUI(viewModel: viewModel)
             return cell
         default:
             return UITableViewCell()

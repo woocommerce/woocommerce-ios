@@ -219,6 +219,9 @@ private extension IssueRefundViewModel {
         static let refundShippingTitle = NSLocalizedString("Refund Shipping", comment: "Title of the switch in the IssueRefund screen to refund shipping")
         static let itemSingular = NSLocalizedString("1 item selected", comment: "Title of the label indicating that there is 1 item to refund.")
         static let itemsPlural = NSLocalizedString("%d items selected", comment: "Title of the label indicating that there are multiple items to refund.")
+        static let unsupportedFeesRefund = NSLocalizedString(
+            "You can refund fees in your store admin",
+            comment: "Shown in Refunds screen. Refunding fees are currently not supported.")
     }
 }
 
@@ -264,7 +267,7 @@ extension IssueRefundViewModel {
         let refundItems = state.refundQuantityStore.refundableItems()
         let summaryRow = RefundProductsTotalViewModel(refundItems: refundItems, currency: state.order.currency, currencySettings: state.currencySettings)
 
-        return Section(rows: itemsRows + [summaryRow])
+        return Section(rows: itemsRows + [summaryRow] + [createUnsupportedFeesRefundTooltipRow()])
     }
 
     /// Returns a `Section` with the shipping switch row and the shipping details row.
@@ -291,6 +294,17 @@ extension IssueRefundViewModel {
 
         let detailsRow = RefundShippingDetailsViewModel(shippingLine: shippingLine, currency: state.order.currency, currencySettings: state.currencySettings)
         return Section(rows: [switchRow, detailsRow])
+    }
+
+    private func createUnsupportedFeesRefundTooltipRow() -> ImageAndTitleAndTextTableViewCell.ViewModel {
+        ImageAndTitleAndTextTableViewCell.ViewModel(title: Localization.unsupportedFeesRefund,
+                                                    titleFontStyle: .footnote,
+                                                    text: nil,
+                                                    image: .infoOutlineFootnoteImage,
+                                                    imageTintColor: .systemColor(.secondaryLabel),
+                                                    numberOfLinesForTitle: 0,
+                                                    isActionable: false,
+                                                    showsSeparator: false)
     }
 
     /// Returns a string of the refund total formatted with the proper currency settings and store currency.

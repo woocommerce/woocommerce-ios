@@ -366,7 +366,14 @@ private extension OrdersRootViewController {
     private func navigateToOrderDetail(_ order: Order) {
         guard let orderViewController = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else { return }
         orderViewController.viewModel = OrderDetailsViewModel(order: order)
-        show(orderViewController, sender: self)
+
+        // Cleanup navigation (remove new order flow views) before navigating to order details
+        if let navigationController = navigationController, let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) {
+            let viewControllersIncludingSelf = navigationController.viewControllers[0...indexOfSelf]
+            navigationController.setViewControllers(viewControllersIncludingSelf + [orderViewController], animated: true)
+        } else {
+            show(orderViewController, sender: self)
+        }
 
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID, "status": order.status.rawValue])
     }

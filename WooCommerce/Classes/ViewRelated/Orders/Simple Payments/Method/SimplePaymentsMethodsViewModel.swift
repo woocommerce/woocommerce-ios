@@ -49,6 +49,10 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     private let storage: StorageManagerType
 
+    /// Tracks analytics events.
+    ///
+    private let analytics: Analytics
+
     /// Stored payment gateways accounts.
     /// We will care about the first one because only one is supported right now.
     ///
@@ -79,13 +83,15 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
          formattedTotal: String,
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          stores: StoresManager = ServiceLocator.stores,
-         storage: StorageManagerType = ServiceLocator.storageManager) {
+         storage: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.orderID = orderID
         self.formattedTotal = formattedTotal
         self.presentNoticeSubject = presentNoticeSubject
         self.stores = stores
         self.storage = storage
+        self.analytics = analytics
         self.title = Localization.title(total: formattedTotal)
     }
 
@@ -106,10 +112,10 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
             if error == nil {
                 onSuccess()
                 self.presentNoticeSubject.send(.completed)
+                self.trackFlowCompleted(method: .cash)
             } else {
                 self.presentNoticeSubject.send(.error(Localization.markAsPaidError))
             }
-            // TODO: Analytics
         }
         stores.dispatch(action)
     }
@@ -148,7 +154,19 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
 
             // Make sure we free all the resources
             self?.collectPaymentsUseCase = nil
+
+            // Tracks completion
+            self?.trackFlowCompleted(method: .card)
         })
+    }
+}
+
+// MARK: Helpers
+private extension SimplePaymentsMethodsViewModel {
+    /// Tracks the `simplePaymentsFlowCompleted` event.
+    ///
+    func trackFlowCompleted(method: WooAnalyticsEvent.SimplePayments.PaymentMethod) {
+        analytics.track(event: .SimplePayments.simplePaymentsFlowCompleted(amount: formattedTotal, method: method))
     }
 }
 

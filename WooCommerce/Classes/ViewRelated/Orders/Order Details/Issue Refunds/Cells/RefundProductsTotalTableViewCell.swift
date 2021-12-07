@@ -62,6 +62,7 @@ private extension RefundProductsTotalTableViewCell {
         taxTitleLabel.text = Localization.taxTitle
         subtotalTitleLabel.text = Localization.subtotalTitle
         productsRefundTitleLabel.text = Localization.totalTitle
+        feesTitleLabel.text = Localization.feesTitle
     }
 }
 
@@ -74,6 +75,7 @@ extension RefundProductsTotalTableViewCell {
         taxPriceLabel.text = viewModel.productsTax
         subtotalPriceLabel.text = viewModel.productsSubtotal
         productsRefundPriceLabel.text = viewModel.productsTotal
+        feesTotalLabel.text = viewModel.feesTotal
     }
 }
 
@@ -83,6 +85,7 @@ private extension RefundProductsTotalTableViewCell {
         static let taxTitle = NSLocalizedString("Tax", comment: "Title on the refunds screen that lists the products refund tax cost")
         static let subtotalTitle = NSLocalizedString("Subtotal", comment: "Title on the refund screen that lists the products refund subtotal cost")
         static let totalTitle = NSLocalizedString("Products Refund", comment: "Title on the refund screen that lists the products refund total cost")
+        static let feesTitle = NSLocalizedString("Fees", comment: "Title on the refund screen that shows the total fees to be refunded")
     }
 }
 
@@ -98,7 +101,7 @@ private struct RefundProductsTotalTableViewCellRepresentable: UIViewRepresentabl
             fatalError("Could not create RefundProductsTotalTableViewCell")
         }
 
-        let viewModel = RefundProductsTotalViewModel(productsTax: "$2.50", productsSubtotal: "$12.30", productsTotal: "$14.80")
+        let viewModel = RefundProductsTotalViewModel(productsTax: "$2.50", productsSubtotal: "$12.30", productsTotal: "$14.80", feesTotal: "$0.0")
         cell.configure(with: viewModel)
         return cell
     }

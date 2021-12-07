@@ -16,7 +16,7 @@ struct RefundItemsValuesCalculationUseCase {
     /// Calculates the values(subtotal, total and tax) to be refunded.
     ///
     func calculateRefundValues() -> RefundValues {
-        let zero = RefundValues(subtotal: 0, tax: 0)
+        let zero = RefundValues(subtotal: 0, tax: 0, fees: 0)
         return refundItems.reduce(zero) { previousValues, refundItem -> RefundValues in
 
             let itemPrice = refundItem.item.price as Decimal
@@ -32,7 +32,8 @@ struct RefundItemsValuesCalculationUseCase {
             let subtotal = previousValues.subtotal + (itemPrice * quantityToRefund)
             let tax = previousValues.tax + (itemTax * quantityToRefund)
 
-            return RefundValues(subtotal: subtotal, tax: tax)
+            #warning("fees to be fixed later")
+            return RefundValues(subtotal: subtotal, tax: tax, fees: 0)
         }
     }
 }
@@ -44,6 +45,7 @@ extension RefundItemsValuesCalculationUseCase {
     struct RefundValues {
         let subtotal: Decimal
         let tax: Decimal
+        let fees: Decimal
         var total: Decimal {
             return subtotal + tax
         }

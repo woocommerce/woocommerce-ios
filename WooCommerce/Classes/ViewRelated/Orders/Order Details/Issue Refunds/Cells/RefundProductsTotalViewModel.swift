@@ -7,6 +7,7 @@ struct RefundProductsTotalViewModel {
     let productsTax: String
     let productsSubtotal: String
     let productsTotal: String
+    let feesTotal: String
 }
 
 // MARK: Convenience Initializers
@@ -21,5 +22,6 @@ extension RefundProductsTotalViewModel {
         self.productsTax = currencyFormatter.formatAmount(values.tax, with: currency) ?? ""
         self.productsSubtotal = currencyFormatter.formatAmount(values.subtotal, with: currency) ?? ""
         self.productsTotal = currencyFormatter.formatAmount(values.total, with: currency) ?? ""
+        self.feesTotal = currencyFormatter.formatAmount(values.fees, with: currency) ?? ""
     }
 }

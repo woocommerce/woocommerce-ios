@@ -162,13 +162,10 @@ private extension OrdersRootViewController {
 
     /// Sets navigation buttons.
     /// Search: Is always present.
-    /// Simple Payments: Depends on the local feature flag, experimental feature toggle and the inPersonPayments state.
+    /// Simple Payments: Depends  on the store inPersonPayments state.
     ///
-    func configureNavigationButtons(isSimplePaymentsExperimentalToggleEnabled: Bool, isOrderCreationExperimentalToggleEnabled: Bool) {
-        let shouldShowSimplePaymentsButton: Bool = {
-            let isInPersonPaymentsConfigured = inPersonPaymentsUseCase.state == .completed
-            return isSimplePaymentsExperimentalToggleEnabled && isInPersonPaymentsConfigured
-        }()
+    func configureNavigationButtons(isOrderCreationExperimentalToggleEnabled: Bool) {
+        let shouldShowSimplePaymentsButton = inPersonPaymentsUseCase.state == .completed
         let buttons: [UIBarButtonItem?] = [
             createSearchBarButtonItem(),
             createAddOrderItem(isOrderCreationEnabled: isOrderCreationExperimentalToggleEnabled, shouldShowSimplePaymentsButton: shouldShowSimplePaymentsButton)
@@ -223,16 +220,7 @@ private extension OrdersRootViewController {
     ///
     func fetchExperimentalTogglesAndConfigureNavigationButtons() {
         let group = DispatchGroup()
-
-        var isSimplePaymentsEnabled = false
         var isOrderCreationEnabled = false
-
-        group.enter()
-        let simplePaymentsAction = AppSettingsAction.loadSimplePaymentsSwitchState { result in
-            isSimplePaymentsEnabled = (try? result.get()) ?? false
-            group.leave()
-        }
-        ServiceLocator.stores.dispatch(simplePaymentsAction)
 
         group.enter()
         let orderCreationAction = AppSettingsAction.loadOrderCreationSwitchState { result in
@@ -242,8 +230,7 @@ private extension OrdersRootViewController {
         ServiceLocator.stores.dispatch(orderCreationAction)
 
         group.notify(queue: .main) { [weak self] in
-            self?.configureNavigationButtons(isSimplePaymentsExperimentalToggleEnabled: isSimplePaymentsEnabled,
-                                             isOrderCreationExperimentalToggleEnabled: isOrderCreationEnabled)
+            self?.configureNavigationButtons(isOrderCreationExperimentalToggleEnabled: isOrderCreationEnabled)
         }
     }
 }

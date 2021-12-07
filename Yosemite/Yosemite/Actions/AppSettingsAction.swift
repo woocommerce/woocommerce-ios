@@ -120,14 +120,6 @@ public enum AppSettingsAction: Action {
     ///
     case loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
-    /// Loads the most recent state for the Simple Payments beta feature switch
-    ///
-    case loadSimplePaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
-
-    /// Sets the state for the Simple Payments beta feature switch.
-    ///
-    case setSimplePaymentsFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
-
     /// Loads the most recent state for the Order Creation beta feature switch
     ///
     case loadOrderCreationSwitchState(onCompletion: (Result<Bool, Error>) -> Void)

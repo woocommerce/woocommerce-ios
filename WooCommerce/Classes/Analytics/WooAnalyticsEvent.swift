@@ -428,10 +428,6 @@ extension WooAnalyticsEvent {
         static func simplePaymentsFlowCollect(method: PaymentMethod) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowCollect, properties: [Keys.paymentMethod: method.rawValue])
         }
-
-        static func settingsBetaFeaturesSimplePaymentsToggled(isOn: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .settingsBetaFeaturesSimplePaymentsToggled, properties: [Keys.state: isOn ? "on" : "off"])
-        }
     }
 }
 

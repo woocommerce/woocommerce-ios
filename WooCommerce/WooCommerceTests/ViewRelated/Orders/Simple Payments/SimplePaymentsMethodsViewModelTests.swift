@@ -171,7 +171,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         viewModel.markOrderAsPaid(onSuccess: {})
 
         // Then
-        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowCompleted.rawValue])
+        assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.simplePaymentsFlowCompleted.rawValue)
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "cash")
         assertEqual(analytics.receivedProperties.first?["amount"] as? String, "$12.00")
     }
@@ -195,7 +195,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         viewModel.markOrderAsPaid(onSuccess: {})
 
         // Then
-        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowFailed.rawValue])
+        assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.simplePaymentsFlowFailed.rawValue)
         assertEqual(analytics.receivedProperties.first?["source"] as? String, "payment_method")
     }
 

@@ -35,7 +35,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     var onOrderCreated: (Order) -> Void = { _ in }
 
-    /// Returns true when amount is a valid number bigger than .zero.
+    /// Returns true when the amount is not a positive number.
     ///
     var shouldDisableDoneButton: Bool {
         let decimalAmount = (currencyFormatter.convertToDecimal(from: amount) ?? .zero) as Decimal

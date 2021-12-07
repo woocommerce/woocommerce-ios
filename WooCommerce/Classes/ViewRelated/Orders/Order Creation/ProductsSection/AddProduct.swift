@@ -13,7 +13,7 @@ struct AddProduct: View {
 
     var body: some View {
         NavigationView {
-            GeometryReader { geometry in
+            Group {
                 List(viewModel.productRows) { viewModel in
                     ProductRow(viewModel: viewModel)
                 }
@@ -21,10 +21,11 @@ struct AddProduct: View {
                 .renderedIf(viewModel.productRows.isNotEmpty)
 
                 EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
-                    .frame(height: geometry.size.height)
-                    .background(Color(.listBackground))
-                    .renderedIf(viewModel.productRows.isEmpty)
+                .frame(maxHeight: .infinity)
+                .renderedIf(viewModel.productRows.isEmpty)
             }
+            .background(Color(.listBackground))
+            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

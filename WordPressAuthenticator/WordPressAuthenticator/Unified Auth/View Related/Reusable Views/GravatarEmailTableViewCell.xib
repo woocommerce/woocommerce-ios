@@ -35,6 +35,9 @@
                         </constraints>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                         <textInputTraits key="textInputTraits" textContentType="username"/>
+                        <connections>
+                            <action selector="textFieldDidChangeSelection" destination="KGk-i7-Jjw" eventType="editingChanged" id="CBE-yc-dqf"/>
+                        </connections>
                     </textField>
                 </subviews>
                 <constraints>

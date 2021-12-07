@@ -11,7 +11,6 @@ class PasswordViewController: LoginViewController {
     @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
 
     private weak var passwordField: UITextField?
-    private weak var emailField: UITextField?
     private var rows = [Row]()
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
@@ -205,40 +204,6 @@ extension PasswordViewController: UITextFieldDelegate {
         return true
     }
 
-    /// Handle changes to `emailField` and `passwordField`
-    ///
-    func textFieldDidChangeSelection(_ textField: UITextField) {
-        switch textField {
-        case let textField where textField === emailField:
-            handleEmailFieldDidChange(textField)
-            break
-        case let textField where textField === passwordField:
-            handlePasswordFieldDidChange(textField)
-            break
-        default:
-            DDLogError("Error: Unidentifed textfield found")
-        }
-    }
-
-    private func handleEmailFieldDidChange(_ textfield: UITextField) {
-        // The email can only be changed via a password manager.
-        // In this case, don't update username for social accounts.
-        // This prevents inadvertent account linking.
-        if loginFields.meta.socialService != nil {
-            textfield.text = loginFields.username
-        } else {
-            loginFields.username = textfield.nonNilTrimmedText()
-            loginFields.emailAddress = textfield.nonNilTrimmedText()
-        }
-
-        configureSubmitButton(animating: false)
-    }
-
-    private func handlePasswordFieldDidChange(_ textfield: UITextField) {
-        loginFields.password = textfield.nonNilTrimmedText()
-        configureSubmitButton(animating: false)
-    }
-
 }
 
 // MARK: - UITableViewDataSource
@@ -337,9 +302,19 @@ private extension PasswordViewController {
     func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
         cell.configure(withEmail: loginFields.username)
 
-        // Save a reference of email textfield to identify it when delegate methods are called.
-        emailField = cell.emailLabel
-        cell.emailLabel?.delegate = self
+        cell.onChangeSelectionHandler = { [weak self] textfield in
+            // The email can only be changed via a password manager.
+            // In this case, don't update username for social accounts.
+            // This prevents inadvertent account linking.
+            if self?.loginFields.meta.socialService != nil {
+                cell.updateEmailAddress(self?.loginFields.username)
+            } else {
+                self?.loginFields.username = textfield.nonNilTrimmedText()
+                self?.loginFields.emailAddress = textfield.nonNilTrimmedText()
+            }
+
+            self?.configureSubmitButton(animating: false)
+        }
     }
 
     /// Configure the instruction cell.
@@ -364,9 +339,13 @@ private extension PasswordViewController {
                        placeholder: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
 
         // Save a reference to the first textField so it can becomeFirstResponder.
-        // And to identify it when delegate methods are called.
         passwordField = cell.textField
         cell.textField.delegate = self
+
+        cell.onChangeSelectionHandler = { [weak self] textfield in
+            self?.loginFields.password = textfield.nonNilTrimmedText()
+            self?.configureSubmitButton(animating: false)
+        }
 
         SigninEditingState.signinEditingStateActive = true
 

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -75,6 +75,7 @@
 		D89B8F1625DDCC810001C726 /* ChargeStatus+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89B8F1525DDCC810001C726 /* ChargeStatus+Stripe.swift */; };
 		D89B8F1E25DDCD3D0001C726 /* PaymentIntent+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89B8F1D25DDCD3D0001C726 /* PaymentIntent+Stripe.swift */; };
 		D89B8F2425DDCD800001C726 /* PaymentIntentStatus+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89B8F2325DDCD800001C726 /* PaymentIntentStatus+Stripe.swift */; };
+		D8BAE82227600D5A00747234 /* StripeTerminal in Frameworks */ = {isa = PBXBuildFile; productRef = D8BAE82127600D5A00747234 /* StripeTerminal */; };
 		D8DF5F4425DD9F36008AFE25 /* CardReaderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DF5F4325DD9F36008AFE25 /* CardReaderType.swift */; };
 		D8DF5F4A25DD9F7A008AFE25 /* CardReader+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DF5F4925DD9F7A008AFE25 /* CardReader+Stripe.swift */; };
 		D8DF5F4E25DD9F91008AFE25 /* CardReaderType+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DF5F4D25DD9F91008AFE25 /* CardReaderType+Stripe.swift */; };
@@ -244,6 +245,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5D2CB7D21CEE28FEBF18BF6 /* Pods_Hardware.framework in Frameworks */,
+				D8BAE82227600D5A00747234 /* StripeTerminal in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -529,6 +531,9 @@
 			dependencies = (
 			);
 			name = Hardware;
+			packageProductDependencies = (
+				D8BAE82127600D5A00747234 /* StripeTerminal */,
+			);
 			productName = Hardware;
 			productReference = D88FDAFF25DD216B00CB0DBD /* Hardware.framework */;
 			productType = "com.apple.product-type.framework";
@@ -605,6 +610,9 @@
 				Base,
 			);
 			mainGroup = D88FDAF525DD216B00CB0DBD;
+			packageReferences = (
+				D8BAE82027600D5A00747234 /* XCRemoteSwiftPackageReference "stripe-terminal-ios" */,
+			);
 			productRefGroup = D88FDB0025DD216B00CB0DBD /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1303,6 +1311,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D8BAE82027600D5A00747234 /* XCRemoteSwiftPackageReference "stripe-terminal-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stripe/stripe-terminal-ios";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D8BAE82127600D5A00747234 /* StripeTerminal */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D8BAE82027600D5A00747234 /* XCRemoteSwiftPackageReference "stripe-terminal-ios" */;
+			productName = StripeTerminal;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D88FDAF625DD216B00CB0DBD /* Project object */;
 }

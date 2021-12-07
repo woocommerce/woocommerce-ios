@@ -29,6 +29,15 @@
         }
       },
       {
+        "package": "StripeTerminal",
+        "repositoryURL": "https://github.com/stripe/stripe-terminal-ios",
+        "state": {
+          "branch": "master",
+          "revision": "c1ff95a18e22a96cca5d21a7d20ced9d546ff3f5",
+          "version": null
+        }
+      },
+      {
         "package": "SwiftUI-Shimmer",
         "repositoryURL": "https://github.com/markiv/SwiftUI-Shimmer",
         "state": {

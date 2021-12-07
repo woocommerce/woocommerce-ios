@@ -262,21 +262,11 @@ final class OrderListViewModelTests: XCTestCase {
     func test_storing_error_shows_error_banner_with_precedence_over_other_state() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .loadSimplePaymentsSwitchState(let onCompletion):
-                onCompletion(.success(true))
-            default:
-                XCTFail("Unsupported action: \(action)")
-            }
-        }
-
         let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
 
         // When
         viewModel.activate()
-        viewModel.reloadSimplePaymentsExperimentalFeatureState()
         viewModel.hasErrorLoadingData = true
 
         // Then
@@ -285,49 +275,14 @@ final class OrderListViewModelTests: XCTestCase {
         }
     }
 
-    func test_having_store_onboarded_and_simple_payments_disabled_shows_disabled_top_banner() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .loadSimplePaymentsSwitchState(let onCompletion):
-                onCompletion(.success(false))
-            default:
-                XCTFail("Unsupported action: \(action)")
-            }
-        }
-
-        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
-
-        // When
-        viewModel.activate()
-        viewModel.reloadSimplePaymentsExperimentalFeatureState()
-
-        // Then
-        waitUntil {
-            viewModel.topBanner == .simplePaymentsDisabled
-        }
-    }
-
     func test_having_store_onboarded_and_simple_payments_enabled_shows_enabled_top_banner() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .loadSimplePaymentsSwitchState(let onCompletion):
-                onCompletion(.success(true))
-            default:
-                XCTFail("Unsupported action: \(action)")
-            }
-        }
-
         let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
 
         // When
         viewModel.activate()
-        viewModel.reloadSimplePaymentsExperimentalFeatureState()
 
         // Then
         waitUntil {
@@ -338,21 +293,11 @@ final class OrderListViewModelTests: XCTestCase {
     func test_having_store_not_onboarded_and_simple_payments_enabled_shows_no_banner() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .loadSimplePaymentsSwitchState(let onCompletion):
-                onCompletion(.success(true))
-            default:
-                XCTFail("Unsupported action: \(action)")
-            }
-        }
-
         let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled)
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
 
         // When
         viewModel.activate()
-        viewModel.reloadSimplePaymentsExperimentalFeatureState()
 
         // Then
         waitUntil {
@@ -363,21 +308,11 @@ final class OrderListViewModelTests: XCTestCase {
     func test_dismissing_simple_payments_banners_does_not_show_banners() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .loadSimplePaymentsSwitchState(let onCompletion):
-                onCompletion(.success(true))
-            default:
-                XCTFail("Unsupported action: \(action)")
-            }
-        }
-
         let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
 
         // When
         viewModel.activate()
-        viewModel.reloadSimplePaymentsExperimentalFeatureState()
         viewModel.hideSimplePaymentsBanners = true
 
         // Then

@@ -12,6 +12,14 @@ final class RefundProductsTotalTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var subtotalPriceLabel: UILabel!
 
+    /// Display `Fees` title
+    ///
+    @IBOutlet private var feesTitleLabel: UILabel!
+
+    /// Displays the fees total value
+    ///
+    @IBOutlet private var feesTotalLabel: UILabel!
+
     /// Displays `Tax` title
     ///
     @IBOutlet private var taxTitleLabel: UILabel!
@@ -44,6 +52,8 @@ private extension RefundProductsTotalTableViewCell {
     func applyLabelsStyles() {
         subtotalTitleLabel.applyBodyStyle()
         subtotalPriceLabel.applyBodyStyle()
+        feesTitleLabel.applyBodyStyle()
+        feesTotalLabel.applyBodyStyle()
         taxTitleLabel.applyBodyStyle()
         taxPriceLabel.applyBodyStyle()
         productsRefundTitleLabel.applyHeadlineStyle()

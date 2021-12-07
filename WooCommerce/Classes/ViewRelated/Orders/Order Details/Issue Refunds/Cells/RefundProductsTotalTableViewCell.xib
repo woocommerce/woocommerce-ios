@@ -50,7 +50,7 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="phy-kw-kzM" userLabel="Fees Price label">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="phy-kw-kzM" userLabel="Fees Total label">
                                                 <rect key="frame" x="332.5" y="0.0" width="41.5" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
@@ -115,6 +115,8 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="feesTitleLabel" destination="H5h-JT-bsA" id="6nQ-dU-WV9"/>
+                <outlet property="feesTotalLabel" destination="phy-kw-kzM" id="JU6-Ju-FYP"/>
                 <outlet property="productsRefundPriceLabel" destination="hXJ-xj-1dI" id="wpd-Tn-LZn"/>
                 <outlet property="productsRefundTitleLabel" destination="7dg-vV-2rs" id="2e6-8v-TO2"/>
                 <outlet property="subtotalPriceLabel" destination="WsN-zY-tB7" id="Fh1-qs-ojt"/>

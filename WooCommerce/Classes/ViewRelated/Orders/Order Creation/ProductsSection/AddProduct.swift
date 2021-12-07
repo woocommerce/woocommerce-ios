@@ -14,30 +14,25 @@ struct AddProduct: View {
     var body: some View {
         NavigationView {
             GeometryReader { geometry in
-                ScrollView {
-                    // TODO: Make the product list searchable
-                    LazyVStack {
-                        ForEach(viewModel.productRows) { viewModel in
-                            ProductRow(viewModel: viewModel)
-                        }
-                    }
-                    .padding()
-                    .renderedIf(viewModel.productRows.isNotEmpty)
-
-                    EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
-                        .frame(height: geometry.size.height)
-                        .background(Color(.listBackground))
-                        .renderedIf(viewModel.productRows.isEmpty)
+                List(viewModel.productRows) { viewModel in
+                    ProductRow(viewModel: viewModel)
                 }
-                .navigationTitle(Localization.title)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(Localization.close) {
-                            isPresented.toggle()
-                        }
-                    }
+                .listStyle(PlainListStyle())
+                .renderedIf(viewModel.productRows.isNotEmpty)
+
+                EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
+                    .frame(height: geometry.size.height)
+                    .background(Color(.listBackground))
+                    .renderedIf(viewModel.productRows.isEmpty)
             }
+            .navigationTitle(Localization.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.close) {
+                        isPresented.toggle()
+                    }
+                }
             }
         }
         .wooNavigationBarStyle()

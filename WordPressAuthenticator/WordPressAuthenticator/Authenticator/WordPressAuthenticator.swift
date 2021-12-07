@@ -503,7 +503,6 @@ import WordPressKit
     }
 }
 
-@available(iOS 13.0, *)
 public extension WordPressAuthenticator {
 
     func getAppleIDCredentialState(for userID: String, completion:  @escaping (ASAuthorizationAppleIDProvider.CredentialState, Error?) -> Void) {

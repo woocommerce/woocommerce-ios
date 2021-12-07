@@ -14,11 +14,7 @@ class LoginPrologueViewController: LoginViewController {
     /// Blur effect on button container view
     ///
     private var blurEffect: UIBlurEffect.Style {
-        if #available(iOS 13.0, *) {
-            return .systemChromeMaterial
-        }
-
-        return .regular
+        return .systemChromeMaterial
     }
 
     /// Constraints on the button view container.
@@ -33,7 +29,6 @@ class LoginPrologueViewController: LoginViewController {
     private let configuration = WordPressAuthenticator.shared.configuration
     private let style = WordPressAuthenticator.shared.style
 
-    @available(iOS 13, *)
     private lazy var storedCredentialsAuthenticator = StoredCredentialsAuthenticator(onCancel: {
         // Since the authenticator has its own flow
         self.tracker.resetState()
@@ -133,10 +128,9 @@ class LoginPrologueViewController: LoginViewController {
     /// Starts the iCloud Keychain login flow if the conditions are given.
     ///
     private func showiCloudKeychainLoginFlow() {
-        guard #available(iOS 13, *),
-            WordPressAuthenticator.shared.configuration.enableUnifiedAuth,
-            let navigationController = navigationController else {
-                return
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth,
+              let navigationController = navigationController else {
+                  return
         }
 
         storedCredentialsAuthenticator.showPicker(from: navigationController)

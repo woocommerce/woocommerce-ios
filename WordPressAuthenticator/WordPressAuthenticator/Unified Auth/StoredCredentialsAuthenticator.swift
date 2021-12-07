@@ -7,7 +7,6 @@ import SVProgressHUD
 /// want to login with.  This class handles both showing that controller and executing the remaining flow to
 /// complete the login process.
 ///
-@available(iOS 13, *)
 class StoredCredentialsAuthenticator: NSObject {
 
     // MARK: - Delegates
@@ -131,7 +130,7 @@ class StoredCredentialsAuthenticator: NSObject {
             // it's being dismissed is also not trivial.  This was decided during the Unified Login & Signup
             // project in a conversation between myself (Diego Rey Mendez) and Renan Ferrari.
             break
-        case .failed, .invalidResponse, .notHandled, .unknown:
+        case .failed, .invalidResponse, .notHandled, .unknown, .notInteractive:
             fallthrough
         @unknown default:
             tracker.track(failure: authError.localizedDescription)
@@ -140,7 +139,6 @@ class StoredCredentialsAuthenticator: NSObject {
     }
 }
 
-@available(iOS 13, *)
 extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
     func displayRemoteError(_ error: Error) {
         tracker.track(failure: error.localizedDescription)
@@ -176,7 +174,6 @@ extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
 
 // MARK: - UI Flow
 
-@available(iOS 13, *)
 extension StoredCredentialsAuthenticator {
     private func presentLoginEpilogue(credentials: AuthenticatorCredentials) {
         guard let navigationController = self.navigationController else {

@@ -173,11 +173,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
             switch result {
             case .success:
                 self.navigateToPaymentMethods = true
-                // TODO: Analytics
-                break
-            case .failure:
+            case .failure(let error):
                 self.presentNoticeSubject.send(.error(Localization.updateError))
-                // TODO: Analytics
+                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed(source: .summary))
+                DDLogError("⛔️ Error updating simple payments order: \(error)")
             }
         }
         stores.dispatch(action)

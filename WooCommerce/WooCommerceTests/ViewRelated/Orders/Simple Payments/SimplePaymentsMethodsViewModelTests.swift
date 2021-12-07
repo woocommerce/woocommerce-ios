@@ -175,4 +175,27 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "cash")
         assertEqual(analytics.receivedProperties.first?["amount"] as? String, "$12.00")
     }
+
+    func test_failed_event_is_tracked_after_failing_to_mark_order_as_paid() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrderStatus(_, _, _, onCompletion):
+                onCompletion(NSError(domain: "", code: 0, userInfo: nil))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let analytics = MockAnalyticsProvider()
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.markOrderAsPaid(onSuccess: {})
+
+        // Then
+        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowFailed.rawValue])
+        assertEqual(analytics.receivedProperties.first?["source"] as? String, "payment_method")
+    }
 }

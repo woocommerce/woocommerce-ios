@@ -226,4 +226,31 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         assertEqual(mockAnalytics.receivedProperties[0]["state"] as? String, "on")  // Taxes enabled
         assertEqual(mockAnalytics.receivedProperties[1]["state"] as? String, "off") // Taxes disabled
     }
+
+    func test_failing_event_is_tracked_when_order_fails_to_update() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "", code: 0, userInfo: nil)))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let mockAnalytics = MockAnalyticsProvider()
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
+                                                       totalWithTaxes: "1.0",
+                                                       taxAmount: "0.0",
+                                                       stores: mockStores,
+                                                       analytics: WooAnalytics(analyticsProvider: mockAnalytics))
+
+        // When
+        viewModel.updateOrder()
+
+        // Then
+        assertEqual(mockAnalytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowFailed.rawValue])
+        assertEqual(mockAnalytics.receivedProperties.first?["source"] as? String, "summary")
+    }
 }

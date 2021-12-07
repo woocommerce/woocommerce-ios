@@ -109,13 +109,15 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
             guard let self = self else { return }
             self.showLoadingIndicator = false
 
-            if error == nil {
-                onSuccess()
-                self.presentNoticeSubject.send(.completed)
-                self.trackFlowCompleted(method: .cash)
-            } else {
+            if let error = error {
                 self.presentNoticeSubject.send(.error(Localization.markAsPaidError))
+                self.trackFlowFailed()
+                return DDLogError("⛔️ Error updating simple payments order: \(error)")
             }
+
+            onSuccess()
+            self.presentNoticeSubject.send(.completed)
+            self.trackFlowCompleted(method: .cash)
         }
         stores.dispatch(action)
     }
@@ -143,8 +145,10 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
                                                             formattedAmount: formattedTotal,
                                                             paymentGatewayAccount: paymentGateway,
                                                             rootViewController: rootViewController)
-        collectPaymentsUseCase?.collectPayment(onCollect: { _ in
-            /* No op. */
+        collectPaymentsUseCase?.collectPayment(onCollect: { [weak self] result in
+            if result.isFailure {
+                self?.trackFlowFailed()
+            }
         }, onCompleted: { [weak self] in
             // Inform success to consumer
             onSuccess()
@@ -167,6 +171,12 @@ private extension SimplePaymentsMethodsViewModel {
     ///
     func trackFlowCompleted(method: WooAnalyticsEvent.SimplePayments.PaymentMethod) {
         analytics.track(event: .SimplePayments.simplePaymentsFlowCompleted(amount: formattedTotal, method: method))
+    }
+
+    /// Tracks the `simplePaymentsFlowFailed` event.
+    ///
+    func trackFlowFailed() {
+        analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed(source: .paymentMethod))
     }
 }
 

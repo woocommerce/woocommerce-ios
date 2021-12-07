@@ -548,7 +548,8 @@ private extension ProductVariationsViewController {
     func displayPlaceholderProducts() {
         let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
-
+        // Disable the selection of the cells when display placeholders
+        tableView.allowsSelection = false
         resultsController.stopForwardingEvents()
     }
 
@@ -556,6 +557,8 @@ private extension ProductVariationsViewController {
     ///
     func removePlaceholderProducts() {
         tableView.removeGhostContent()
+        // Allow selection of cells after the tableview's ghosting has ended
+        tableView.allowsSelection = true
         resultsController.startForwardingEvents(to: tableView)
         configureResultsControllerEventHandling(resultsController)
         tableView.reloadData()

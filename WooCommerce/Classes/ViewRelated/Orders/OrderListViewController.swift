@@ -419,12 +419,16 @@ private extension OrderListViewController {
                                                style: .wooDefaultGhostStyle)
         ghostableTableView.startGhostAnimation()
         ghostableTableView.isHidden = false
+        // Disable the selection of the cells when display placeholders
+        ghostableTableView.allowsSelection = false
     }
 
     /// Removes the Placeholder Orders (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderOrders() {
         ghostableTableView.isHidden = true
+        // Allow selection of cells after the tableview's ghosting has ended
+        ghostableTableView.allowsSelection = true
         ghostableTableView.stopGhostAnimation()
         ghostableTableView.removeGhostContent()
     }

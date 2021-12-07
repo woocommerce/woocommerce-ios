@@ -76,6 +76,7 @@ private extension AddAttributeViewController {
     func configureGhostTableView() {
         view.addSubview(ghostTableView)
         ghostTableView.isHidden = true
+        tableView.allowsSelection = false
         ghostTableView.translatesAutoresizingMaskIntoConstraints = false
         ghostTableView.pinSubviewToAllEdges(view)
         ghostTableView.backgroundColor = .listBackground

@@ -44,7 +44,8 @@ final class ReviewsViewModel {
         let options = GhostOptions(reuseIdentifier: ProductReviewTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options,
                                       style: .wooDefaultGhostStyle)
-
+        // Disable the selection of the cells when display placeholders
+        tableView.allowsSelection = false
         data.stopForwardingEvents()
     }
 
@@ -52,6 +53,8 @@ final class ReviewsViewModel {
     ///
     func removePlaceholderReviews(tableView: UITableView) {
         tableView.removeGhostContent()
+        // Allow selection of cells after the tableview's ghosting has ended
+        tableView.allowsSelection = true
         data.startForwardingEvents(to: tableView)
         tableView.reloadData()
     }

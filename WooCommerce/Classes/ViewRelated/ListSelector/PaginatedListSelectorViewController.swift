@@ -384,7 +384,8 @@ private extension PaginatedListSelectorViewController {
         let options = GhostOptions(reuseIdentifier: Cell.reuseIdentifier, rowsPerSection: placeholderRowsPerSection)
         tableView.displayGhostContent(options: options,
                                       style: .wooDefaultGhostStyle)
-
+        // Disable the selection of the cells when display placeholders
+        tableView.allowsSelection = false
         resultsController.stopForwardingEvents()
     }
 
@@ -392,6 +393,8 @@ private extension PaginatedListSelectorViewController {
     ///
     func removePlaceholderProducts() {
         tableView.removeGhostContent()
+        // Allow selection of cells after the tableview's ghosting has ended
+        tableView.allowsSelection = true
         resultsController.startForwardingEvents(to: tableView)
         tableView.reloadData()
     }

@@ -205,15 +205,10 @@ extension PasswordViewController: UITextFieldDelegate {
         return true
     }
 
-    /// Handle changes to `emailField` and `passwordField`
-    ///
     func textFieldDidChangeSelection(_ textField: UITextField) {
         switch textField {
         case let textField where textField === emailField:
             handleEmailFieldDidChange(textField)
-            break
-        case let textField where textField === passwordField:
-            handlePasswordFieldDidChange(textField)
             break
         default:
             DDLogError("Error: Unidentifed textfield found")
@@ -231,11 +226,6 @@ extension PasswordViewController: UITextFieldDelegate {
             loginFields.emailAddress = textfield.nonNilTrimmedText()
         }
 
-        configureSubmitButton(animating: false)
-    }
-
-    private func handlePasswordFieldDidChange(_ textfield: UITextField) {
-        loginFields.password = textfield.nonNilTrimmedText()
         configureSubmitButton(animating: false)
     }
 
@@ -336,8 +326,8 @@ private extension PasswordViewController {
     ///
     func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
         cell.configure(withEmail: loginFields.username)
-
-        // Save a reference of email textfield to identify it when delegate methods are called.
+        
+        // Save a reference of email textfield to identify it when delegate methods are called
         emailField = cell.emailLabel
         cell.emailLabel?.delegate = self
     }
@@ -364,9 +354,13 @@ private extension PasswordViewController {
                        placeholder: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
 
         // Save a reference to the first textField so it can becomeFirstResponder.
-        // And to identify it when delegate methods are called.
         passwordField = cell.textField
         cell.textField.delegate = self
+
+        cell.onChangeSelectionHandler = { [weak self] textfield in
+            self?.loginFields.password = textfield.nonNilTrimmedText()
+            self?.configureSubmitButton(animating: false)
+        }
 
         SigninEditingState.signinEditingStateActive = true
 

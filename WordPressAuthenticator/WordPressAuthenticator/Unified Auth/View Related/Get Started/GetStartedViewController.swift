@@ -254,6 +254,11 @@ private extension GetStartedViewController {
         cell.textField.delegate = self
         emailField = cell.textField
 
+        cell.onChangeSelectionHandler = { [weak self] textfield in
+            self?.loginFields.username = textfield.nonNilTrimmedText()
+            self?.configureContinueButton(animating: false)
+        }
+
         if UIAccessibility.isVoiceOverRunning {
             // Quiet repetitive elements in VoiceOver.
             emailField?.placeholder = nil
@@ -664,13 +669,6 @@ extension GetStartedViewController: UITextFieldDelegate {
             validateForm()
         }
         return true
-    }
-
-    /// Handle changes to `emailField`
-    /// 
-    func textFieldDidChangeSelection(_ textField: UITextField) {
-        loginFields.username = textField.nonNilTrimmedText()
-        configureContinueButton(animating: false)
     }
 
 }

@@ -226,13 +226,6 @@ extension SiteAddressViewController: UITextFieldDelegate {
 
         return false
     }
-
-    /// Handle changes to `siteURLField`
-    ///
-    func textFieldDidChangeSelection(_ textField: UITextField) {
-        loginFields.siteAddress = textField.nonNilTrimmedText()
-        configureSubmitButton()
-    }
 }
 
 // MARK: - Private methods
@@ -316,6 +309,10 @@ private extension SiteAddressViewController {
         siteURLField = cell.textField
         cell.textField.delegate = self
         cell.textField.text = loginFields.siteAddress
+        cell.onChangeSelectionHandler = { [weak self] textfield in
+            self?.loginFields.siteAddress = textfield.nonNilTrimmedText()
+            self?.configureSubmitButton()
+        }
 
         SigninEditingState.signinEditingStateActive = true
     }

@@ -215,31 +215,6 @@ extension SiteCredentialsViewController: UITextFieldDelegate {
         }
         return true
     }
-
-    /// Handle changes to `usernameField` and `passwordField`
-    ///
-    func textFieldDidChangeSelection(_ textField: UITextField) {
-        switch textField {
-        case let textField where textField === usernameField:
-            handleUsernameFieldDidChange(textField)
-            break
-        case let textField where textField === passwordField:
-            handlePasswordFieldDidChange(textField)
-            break
-        default:
-            DDLogError("Error: Unidentified textField found.")
-        }
-    }
-
-    private func handleUsernameFieldDidChange(_ textfield: UITextField) {
-        loginFields.username = textfield.nonNilTrimmedText()
-        configureSubmitButton(animating: false)
-    }
-
-    private func handlePasswordFieldDidChange(_ textfield: UITextField) {
-        loginFields.password = textfield.nonNilTrimmedText()
-        configureSubmitButton(animating: false)
-    }
 }
 
 // MARK: - Private Methods
@@ -310,6 +285,11 @@ private extension SiteCredentialsViewController {
         usernameField = cell.textField
         cell.textField.delegate = self
 
+        cell.onChangeSelectionHandler = { [weak self] textfield in
+            self?.loginFields.username = textfield.nonNilTrimmedText()
+            self?.configureSubmitButton(animating: false)
+        }
+
         SigninEditingState.signinEditingStateActive = true
         if UIAccessibility.isVoiceOverRunning {
             // Quiet repetitive elements in VoiceOver.
@@ -324,6 +304,10 @@ private extension SiteCredentialsViewController {
                        placeholder: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
         passwordField = cell.textField
         cell.textField.delegate = self
+        cell.onChangeSelectionHandler = { [weak self] textfield in
+            self?.loginFields.password = textfield.nonNilTrimmedText()
+            self?.configureSubmitButton(animating: false)
+        }
 
         if UIAccessibility.isVoiceOverRunning {
             // Quiet repetitive elements in VoiceOver.

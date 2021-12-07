@@ -120,11 +120,14 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
             self.trackFlowCompleted(method: .cash)
         }
         stores.dispatch(action)
+        trackCollectIntention(method: .cash)
     }
 
     /// Starts the collect payment flow in the provided `rootViewController`
     ///
     func collectPayment(on rootViewController: UIViewController?, onSuccess: @escaping () -> ()) {
+        trackCollectIntention(method: .card)
+
         guard let rootViewController = rootViewController else {
             DDLogError("⛔️ Root ViewController is nil, can't present payment alerts.")
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
@@ -170,13 +173,19 @@ private extension SimplePaymentsMethodsViewModel {
     /// Tracks the `simplePaymentsFlowCompleted` event.
     ///
     func trackFlowCompleted(method: WooAnalyticsEvent.SimplePayments.PaymentMethod) {
-        analytics.track(event: .SimplePayments.simplePaymentsFlowCompleted(amount: formattedTotal, method: method))
+        analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCompleted(amount: formattedTotal, method: method))
     }
 
     /// Tracks the `simplePaymentsFlowFailed` event.
     ///
     func trackFlowFailed() {
         analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed(source: .paymentMethod))
+    }
+
+    /// Tracks `simplePaymentsFlowCollect` event.
+    ///
+    func trackCollectIntention(method: WooAnalyticsEvent.SimplePayments.PaymentMethod) {
+        analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCollect(method: method))
     }
 }
 

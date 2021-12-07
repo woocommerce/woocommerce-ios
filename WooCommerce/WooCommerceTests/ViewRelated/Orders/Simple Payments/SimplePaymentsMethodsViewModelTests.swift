@@ -198,4 +198,32 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowFailed.rawValue])
         assertEqual(analytics.receivedProperties.first?["source"] as? String, "payment_method")
     }
+
+    func test_collect_event_is_tracked_when_marking_order_as_paid() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.markOrderAsPaid(onSuccess: {})
+
+        // Then
+        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowCollect.rawValue])
+        assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "cash")
+    }
+
+    func test_collect_event_is_tracked_when_collecting_payment() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.collectPayment(on: UIViewController(), onSuccess: {})
+
+        // Then
+        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowCollect.rawValue])
+        assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "card")
+    }
 }

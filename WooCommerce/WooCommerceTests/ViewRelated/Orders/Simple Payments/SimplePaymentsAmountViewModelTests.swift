@@ -91,6 +91,17 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
     }
 
+    func test_view_model_disables_next_button_when_amount_is_not_greater_than_zero() {
+        // Given
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, storeCurrencySettings: usStoreSettings)
+
+        // When
+        viewModel.amount = "$0"
+
+        // Then
+        XCTAssertTrue(viewModel.shouldDisableDoneButton)
+    }
+
     func test_view_model_enables_next_button_when_amount_has_more_than_one_character() {
         // Given
         let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, storeCurrencySettings: usStoreSettings)
@@ -320,7 +331,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.loading)
 
         // Before creating simple payment order
-        XCTAssertFalse(viewModel.disableCancel)
+        XCTAssertFalse(viewModel.disableViewActions)
 
         // When
         let _: Bool = waitFor { promise in
@@ -336,7 +347,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertTrue(viewModel.disableCancel)
+        XCTAssertTrue(viewModel.disableViewActions)
     }
 
 }

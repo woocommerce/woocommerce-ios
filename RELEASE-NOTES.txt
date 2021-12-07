@@ -2,7 +2,7 @@
 
 8.2
 -----
-
+- [***] In-Person Payments: Now you can collect Simple Payments on the go. [https://github.com/woocommerce/woocommerce-ios/pull/5635]
 
 8.2
 -----

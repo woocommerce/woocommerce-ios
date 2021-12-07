@@ -405,11 +405,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowStarted, properties: [:])
         }
 
-        // TODO: Delete when prototype is replaced with the complete version
-        static func simplePaymentsFlowCompleted(amount: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .simplePaymentsFlowCompleted, properties: [:])
-        }
-
         static func simplePaymentsFlowCompleted(amount: String, method: PaymentMethod) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowCompleted, properties: [Keys.amount: amount, Keys.paymentMethod: method.rawValue])
         }

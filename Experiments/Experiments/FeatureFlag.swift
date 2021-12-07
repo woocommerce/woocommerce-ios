@@ -42,10 +42,6 @@ public enum FeatureFlag: Int {
     ///
     case pushNotificationsForAllStores
 
-    /// Allows to create simple payments orders
-    ///
-    case simplePaymentsPrototype
-
     /// Display the bar for displaying the filters in the Order List
     ///
     case orderListFilters

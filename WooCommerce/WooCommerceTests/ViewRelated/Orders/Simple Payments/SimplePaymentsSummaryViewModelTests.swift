@@ -204,4 +204,26 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         // Then
         assertEqual(mockAnalytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowNoteAdded.rawValue])
     }
+
+    func test_taxesToggled_event_is_tracked_after_switching_taxes_toggle() {
+        // Given
+        let mockAnalytics = MockAnalyticsProvider()
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
+                                                       totalWithTaxes: "1.0",
+                                                       taxAmount: "0.0",
+                                                       analytics: WooAnalytics(analyticsProvider: mockAnalytics))
+
+        // When
+        viewModel.enableTaxes = true
+        viewModel.enableTaxes = false
+
+        // Then
+        assertEqual(mockAnalytics.receivedEvents, [
+            WooAnalyticsStat.simplePaymentsFlowTaxesToggled.rawValue,  // Taxes enabled
+            WooAnalyticsStat.simplePaymentsFlowTaxesToggled.rawValue   // Taxes disabled
+        ])
+
+        assertEqual(mockAnalytics.receivedProperties[0]["state"] as? String, "on")  // Taxes enabled
+        assertEqual(mockAnalytics.receivedProperties[1]["state"] as? String, "off") // Taxes disabled
+    }
 }

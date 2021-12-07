@@ -24,7 +24,11 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     /// Determines if taxes should be added to the provided amount.
     ///
-    @Published var enableTaxes: Bool = false
+    @Published var enableTaxes: Bool = false {
+        didSet {
+            analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowTaxesToggled(isOn: enableTaxes))
+        }
+    }
 
     /// Defines when to navigate to the payments method screen.
     ///

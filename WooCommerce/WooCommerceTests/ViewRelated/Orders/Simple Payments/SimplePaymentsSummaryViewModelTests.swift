@@ -188,4 +188,20 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         // Then
         XCTAssertNil(emailSent)
     }
+
+    func test_noteAdded_event_is_tracked_after_editing_note() {
+        // Given
+        let mockAnalytics = MockAnalyticsProvider()
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
+                                                       totalWithTaxes: "1.0",
+                                                       taxAmount: "0.0",
+                                                       analytics: WooAnalytics(analyticsProvider: mockAnalytics))
+
+        // When
+        viewModel.noteViewModel.newNote = "content"
+        viewModel.reloadContent()
+
+        // Then
+        assertEqual(mockAnalytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowNoteAdded.rawValue])
+    }
 }

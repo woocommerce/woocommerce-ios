@@ -74,6 +74,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
+    /// Tracks analytics events.
+    ///
+    private let analytics: Analytics
+
     /// ViewModel for the edit order note view.
     ///
     lazy private(set) var noteViewModel = SimplePaymentsNoteViewModel()
@@ -87,13 +91,15 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
          feeID: Int64 = 0,
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.orderID = orderID
         self.feeID = feeID
         self.presentNoticeSubject = presentNoticeSubject
         self.currencyFormatter = currencyFormatter
         self.stores = stores
+        self.analytics = analytics
         self.providedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
         self.totalWithTaxes = currencyFormatter.formatAmount(totalWithTaxes) ?? totalWithTaxes
         self.taxAmount = currencyFormatter.formatAmount(taxAmount) ?? taxAmount
@@ -138,6 +144,11 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     func reloadContent() {
         objectWillChange.send()
+
+        // Tracks if the merchant has added a note.
+        if noteContent.isNotEmpty {
+            analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowNoteAdded())
+        }
     }
 
     /// Updates the order remotely with the information entered by the merchant.

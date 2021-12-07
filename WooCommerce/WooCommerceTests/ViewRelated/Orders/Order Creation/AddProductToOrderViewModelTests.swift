@@ -3,7 +3,7 @@ import Yosemite
 @testable import WooCommerce
 @testable import Storage
 
-class AddProductViewModelTests: XCTestCase {
+class AddProductToOrderViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 123
     private var storageManager: StorageManagerType!
@@ -27,7 +27,7 @@ class AddProductViewModelTests: XCTestCase {
         insert(product)
 
         // When
-        let viewModel = AddProductViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // Then
         XCTAssertEqual(viewModel.productRows.count, 1)
@@ -46,7 +46,7 @@ class AddProductViewModelTests: XCTestCase {
         insert([simpleProduct, groupedProduct, affiliateProduct, variableProduct, subscriptionProduct])
 
         // When
-        let viewModel = AddProductViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // Then
         XCTAssertTrue(viewModel.productRows.contains(where: { $0.id == 1 }), "Products do not include simple product")
@@ -65,7 +65,7 @@ class AddProductViewModelTests: XCTestCase {
         insert([publishedProduct, draftProduct, pendingProduct, privateProduct])
 
         // When
-        let viewModel = AddProductViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // Then
         XCTAssertTrue(viewModel.productRows.contains(where: { $0.id == 1 }), "Product rows do not include published product")
@@ -76,7 +76,7 @@ class AddProductViewModelTests: XCTestCase {
 }
 
 // MARK: - Utils
-private extension AddProductViewModelTests {
+private extension AddProductToOrderViewModelTests {
     func insert(_ readOnlyProduct: Yosemite.Product) {
         let product = storage.insertNewObject(ofType: StorageProduct.self)
         product.update(with: readOnlyProduct)

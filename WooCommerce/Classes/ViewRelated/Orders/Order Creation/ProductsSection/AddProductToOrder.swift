@@ -2,14 +2,14 @@ import SwiftUI
 
 /// View showing a list of products to add to an order.
 ///
-struct AddProduct: View {
+struct AddProductToOrder: View {
     /// Defines whether the view is presented.
     ///
     @Binding var isPresented: Bool
 
     /// View model to drive the view.
     ///
-    @ObservedObject var viewModel: AddProductViewModel
+    @ObservedObject var viewModel: AddProductToOrderViewModel
 
     var body: some View {
         NavigationView {
@@ -40,7 +40,7 @@ struct AddProduct: View {
     }
 }
 
-private extension AddProduct {
+private extension AddProductToOrder {
     enum Localization {
         static let title = NSLocalizedString("Add Product", comment: "Title for the screen to add a product to an order")
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Add Product screen")
@@ -51,8 +51,8 @@ private extension AddProduct {
 
 struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = AddProductViewModel(siteID: 123)
+        let viewModel = AddProductToOrderViewModel(siteID: 123)
 
-        AddProduct(isPresented: .constant(true), viewModel: viewModel)
+        AddProductToOrder(isPresented: .constant(true), viewModel: viewModel)
     }
 }

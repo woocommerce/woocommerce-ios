@@ -115,8 +115,7 @@ private struct ProductsSection: View {
                 }
                 .buttonStyle(PlusButtonStyle())
                 .sheet(isPresented: $showAddProduct) {
-                    let addProductViewModel = AddProductViewModel(siteID: viewModel.siteID)
-                    AddProduct(isPresented: $showAddProduct, viewModel: addProductViewModel)
+                    AddProductToOrder(isPresented: $showAddProduct, viewModel: viewModel.addProductViewModel)
                 }
             }
             .padding(.horizontal, insets: geometry.safeAreaInsets)

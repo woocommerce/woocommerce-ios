@@ -1,9 +1,9 @@
 import Yosemite
 import protocol Storage.StorageManagerType
 
-/// View model for `AddProduct`.
+/// View model for `AddProductToOrder`.
 ///
-final class AddProductViewModel: ObservableObject {
+final class AddProductToOrderViewModel: ObservableObject {
     private let siteID: Int64
     private let storageManager: StorageManagerType
 
@@ -48,7 +48,7 @@ final class AddProductViewModel: ObservableObject {
 }
 
 // MARK: - Configuration
-private extension AddProductViewModel {
+private extension AddProductToOrderViewModel {
     func configureProductsResultsController() {
         do {
             try productsResultsController.performFetch()

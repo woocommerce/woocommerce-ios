@@ -77,4 +77,9 @@ public enum ShippingLabelAction: Action {
                                packages: [ShippingLabelPackagePurchase],
                                emailCustomerReceipt: Bool,
                                completion: (Result<[ShippingLabel], Error>) -> Void)
+
+    /// Fetches shipping scale data, including package weight
+    ///
+    case fetchScaleData(siteID: Int64,
+                        completion: (Result<ShippingScaleData, Error>) -> Void)
 }

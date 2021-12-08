@@ -48,6 +48,7 @@ public protocol ShippingLabelRemoteProtocol {
                              orderID: Int64,
                              labelIDs: [Int64],
                              completion: @escaping (Result<[ShippingLabelStatusPollingResponse], Error>) -> Void)
+    func fetchScaleData(siteID: Int64, completion: @escaping (Result<ShippingScaleData, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints.
@@ -310,8 +311,8 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
 
     /// Fetches the scale data including weight most recently reported.
     ///
-    public func fetchScaleData(for siteID: Int64,
-                                    completion: @escaping(Result<ShippingScaleData, Error>) -> Void) {
+    public func fetchScaleData(siteID: Int64,
+                               completion: @escaping(Result<ShippingScaleData, Error>) -> Void) {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: Path.scaleData)
 
         let mapper = ShippingScaleDataMapper()

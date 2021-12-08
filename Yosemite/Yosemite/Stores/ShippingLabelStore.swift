@@ -77,6 +77,8 @@ public final class ShippingLabelStore: Store {
                                   packages: packages,
                                   emailCustomerReceipt: emailCustomerReceipt,
                                   completion: completion)
+        case .fetchScaleData(let siteID, let completion):
+            fetchScaleData(siteID: siteID, completion: completion)
         }
     }
 }
@@ -271,6 +273,17 @@ private extension ShippingLabelStore {
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error purchasing shipping label for order \(orderID): \(error)")
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func fetchScaleData(siteID: Int64, completion: @escaping (Result<ShippingScaleData, Error>) -> Void) {
+        remote.fetchScaleData(siteID: siteID) { result in
+            switch result {
+            case .success(let data):
+                completion(.success(data))
+            case .failure(let error):
                 completion(.failure(error))
             }
         }

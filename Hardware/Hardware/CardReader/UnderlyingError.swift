@@ -147,10 +147,14 @@ extension UnderlyingError {
                 return
             }
         default:
+            #if !targetEnvironment(macCatalyst)
             if let underlyingStripeError = UnderlyingError(withStripeError: error) {
                 self = underlyingStripeError
                 return
             }
+            #else
+            break
+            #endif
         }
         self = .internalServiceError
     }

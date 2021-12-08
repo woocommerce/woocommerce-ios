@@ -40,52 +40,6 @@ extension WPStyleGuide {
         view.backgroundColor = wordPressBlue()
     }
 
-    /// Adds a 1password button to a WPWalkthroughTextField, if available
-    /// - Note: this is for the old UI.
-	///
-    class func configureOnePasswordButtonForTextfield(_ textField: WPWalkthroughTextField, target: NSObject, selector: Selector) {
-        guard OnePasswordFacade.isOnePasswordEnabled else {
-            return
-        }
-
-        let onePasswordButton = UIButton(type: .custom)
-        onePasswordButton.setImage(.onePasswordImage, for: .normal)
-		textField.tintColor = WordPressAuthenticator.shared.style.secondaryNormalBorderColor
-        onePasswordButton.sizeToFit()
-
-        onePasswordButton.accessibilityLabel =
-            NSLocalizedString("Fill with password manager", comment: "The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). ")
-
-        textField.rightView = onePasswordButton
-        textField.rightViewMode = .always
-
-        onePasswordButton.addTarget(target, action: selector, for: .touchUpInside)
-    }
-
-    /// Adds a 1password button to a stack view, if available
-    /// - Note: this is for the old UI.
-	///
-    class func configureOnePasswordButtonForStackView(_ stack: UIStackView, target: NSObject, selector: Selector) {
-        guard OnePasswordFacade.isOnePasswordEnabled else {
-            return
-        }
-
-        let onePasswordButton = UIButton(type: .custom)
-        onePasswordButton.setImage(.onePasswordImage, for: .normal)
-		onePasswordButton.tintColor = WordPressAuthenticator.shared.style.secondaryNormalBorderColor
-        onePasswordButton.sizeToFit()
-        onePasswordButton.setContentHuggingPriority(.required, for: .horizontal)
-        onePasswordButton.setContentCompressionResistancePriority(.required, for: .horizontal)
-
-        onePasswordButton.accessibilityTraits = .button
-        onePasswordButton.accessibilityLabel = NSLocalizedString("One Password button", comment: "Accessibility label for 1 password button")
-        onePasswordButton.accessibilityHint = NSLocalizedString("Opens One Password manager", comment: "Accessibility hint for 1 password button")
-
-        stack.addArrangedSubview(onePasswordButton)
-
-        onePasswordButton.addTarget(target, action: selector, for: .touchUpInside)
-    }
-
     /// Configures a plain text button with default styles.
     ///
     class func configureTextButton(_ button: UIButton) {

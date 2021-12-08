@@ -377,7 +377,6 @@ private extension OrderDetailsDataSource {
     private func configureCustomerNote(cell: CustomerNoteTableViewCell) {
         cell.headline = Title.customerNote
         cell.selectionStyle = .none
-        
         if customerNote.isNotEmpty {
             cell.body = customerNote.quoted
             cell.onEditTapped = { [weak self] in

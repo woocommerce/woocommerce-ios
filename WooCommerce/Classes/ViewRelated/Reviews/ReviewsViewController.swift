@@ -105,7 +105,7 @@ final class ReviewsViewController: UIViewController {
                                               },
                                               onContactSupportButtonPressed: { [weak self] in
                                                 guard let self = self else { return }
-                                                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+                                                ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
                                               })
     }()
 

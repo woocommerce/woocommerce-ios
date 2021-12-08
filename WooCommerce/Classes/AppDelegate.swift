@@ -214,7 +214,7 @@ private extension AppDelegate {
     /// Sets up the Zendesk SDK.
     ///
     func setupZendesk() {
-        ZendeskManager.shared.initialize()
+        ZendeskProvider.shared.initialize()
     }
 
     /// Sets up the WordPress Authenticator.

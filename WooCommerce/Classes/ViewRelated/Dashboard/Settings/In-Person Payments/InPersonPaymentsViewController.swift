@@ -4,7 +4,7 @@ final class InPersonPaymentsViewController: UIHostingController<InPersonPayments
     init(viewModel: InPersonPaymentsViewModel) {
         super.init(rootView: InPersonPaymentsView(viewModel: viewModel))
         rootView.showSupport = {
-            ZendeskManager.shared.showNewWCPayRequestIfPossible(from: self)
+            ZendeskProvider.shared.showNewWCPayRequestIfPossible(from: self)
         }
         rootView.showURL = { url in
             WebviewHelper.launch(url, with: self)

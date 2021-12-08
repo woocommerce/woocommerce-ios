@@ -1,7 +1,9 @@
 import Foundation
+#if !targetEnvironment(macCatalyst)
 import SupportSDK
 import ZendeskCoreSDK
 import CommonUISDK // Zendesk UI SDK
+#endif
 import WordPressShared
 import CoreTelephony
 import SafariServices
@@ -18,26 +20,135 @@ extension NSNotification.Name {
 /// This is primarily used for testability. Not all methods in `ZendeskManager` are defined but
 /// feel free to add them when needed.
 ///
-protocol ZendeskManagerProtocol {
+protocol ZendeskManagerProtocol: SupportManagerAdapter {
+    typealias onUserInformationCompletion = (_ success: Bool, _ email: String?) -> Void
+
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.
     ///
     func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String?)
+    func showNewRequestIfPossible(from controller: UIViewController)
 
     /// Displays a Zendesk New Request view from the given controller, tagged to show in the WCPay queues, for users to submit new tickets.
     ///
     func showNewWCPayRequestIfPossible(from controller: UIViewController, with sourceTag: String?)
+    func showNewWCPayRequestIfPossible(from controller: UIViewController)
+
+    var zendeskEnabled: Bool { get }
+    func userSupportEmail() -> String?
+    func showHelpCenter(from controller: UIViewController)
+    func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String?)
+    func showTicketListIfPossible(from controller: UIViewController)
+    func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion)
+    func getTags(supportSourceTag: String?) -> [String]
+    func initialize()
+    func reset()
 }
+
+struct NoZendeskManager: ZendeskManagerProtocol {
+    func showNewRequestIfPossible(from controller: UIViewController) {
+        // no-op
+    }
+
+    func showNewWCPayRequestIfPossible(from controller: UIViewController) {
+        // no-op
+    }
+
+    func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String?) {
+        // no-op
+    }
+
+    func showNewWCPayRequestIfPossible(from controller: UIViewController, with sourceTag: String?) {
+        // no-op
+    }
+
+    var zendeskEnabled = false
+
+    func userSupportEmail() -> String? {
+        return nil
+    }
+
+    func showHelpCenter(from controller: UIViewController) {
+        // no-op
+    }
+
+    func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String?) {
+        // no-op
+    }
+
+    func showTicketListIfPossible(from controller: UIViewController) {
+        // no-op
+    }
+
+    func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion) {
+        // no-op
+    }
+
+    func getTags(supportSourceTag: String?) -> [String] {
+        []
+    }
+
+    func initialize() {
+        // no-op
+    }
+
+    func reset() {
+        // no-op
+    }
+}
+
+extension NoZendeskManager: SupportManagerAdapter {
+    /// Executed whenever the app receives a Push Notifications Token.
+    ///
+    func deviceTokenWasReceived(deviceToken: String) {
+        // no-op
+    }
+
+    /// Executed whenever the app should unregister for Remote Notifications.
+    ///
+    func unregisterForRemoteNotifications() {
+        // no-op
+    }
+
+    /// Executed whenever the app receives a Remote Notification.
+    ///
+    func pushNotificationReceived() {
+        // no-op
+    }
+
+    /// Executed whenever the a user has tapped on a Remote Notification.
+    ///
+    func displaySupportRequest(using userInfo: [AnyHashable: Any]) {
+        // no-op
+    }
+}
+
+struct ZendeskProvider {
+    /// Shared Instance
+    ///
+    #if !targetEnvironment(macCatalyst)
+    static let shared: ZendeskManagerProtocol = ZendeskManager()
+    #else
+    static let shared: ZendeskManagerProtocol = NoZendeskManager()
+    #endif
+}
+
 
 /// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
 /// as well as displaying views for the Help Center, new tickets, and ticket list.
 ///
+#if !targetEnvironment(macCatalyst)
 final class ZendeskManager: NSObject, ZendeskManagerProtocol {
+    func showNewRequestIfPossible(from controller: UIViewController) {
+        showNewRequestIfPossible(from: controller)
+    }
 
-    /// Shared Instance
-    ///
-    static let shared = ZendeskManager()
+    func showNewWCPayRequestIfPossible(from controller: UIViewController) {
+        showNewWCPayRequestIfPossible(from: controller)
+    }
 
-    typealias onUserInformationCompletion = (_ success: Bool, _ email: String?) -> Void
+    func showTicketListIfPossible(from controller: UIViewController) {
+        showTicketListIfPossible(from: controller)
+    }
 
     /// Indicates if Zendesk is Enabled (or not)
     ///
@@ -77,7 +188,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
     /// Designated Initialier
     ///
-    private override init() {
+    fileprivate override init() {
         super.init()
         observeZendeskNotifications()
     }
@@ -727,12 +838,13 @@ private extension ZendeskManager {
 
         // Name Text Field
         if withName {
-            alertController.addTextField { textField in
+            alertController.addTextField { [weak self] textField in
+                guard let self = self else { return }
                 textField.clearButtonMode = .always
                 textField.placeholder = LocalizedText.namePlaceholder
                 textField.text = self.userName
-                textField.delegate = ZendeskManager.shared
-                ZendeskManager.shared.alertNameField = textField
+                textField.delegate = self
+                self.alertNameField = textField
             }
         }
 
@@ -972,3 +1084,4 @@ extension ZendeskManager: UITextFieldDelegate {
         return newLength <= Constants.nameFieldCharacterLimit
     }
 }
+#endif

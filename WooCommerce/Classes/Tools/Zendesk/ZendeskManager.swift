@@ -139,15 +139,15 @@ struct ZendeskProvider {
 #if !targetEnvironment(macCatalyst)
 final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     func showNewRequestIfPossible(from controller: UIViewController) {
-        showNewRequestIfPossible(from: controller)
+        showNewRequestIfPossible(from: controller, with: nil)
     }
 
     func showNewWCPayRequestIfPossible(from controller: UIViewController) {
-        showNewWCPayRequestIfPossible(from: controller)
+        showNewWCPayRequestIfPossible(from: controller, with: nil)
     }
 
     func showTicketListIfPossible(from controller: UIViewController) {
-        showTicketListIfPossible(from: controller)
+        showTicketListIfPossible(from: controller, with: nil)
     }
 
     /// Indicates if Zendesk is Enabled (or not)
@@ -238,8 +238,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.
     ///
-    func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
-
+    func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String?) {
         createIdentity(presentIn: controller) { success in
             guard success else {
                 return
@@ -255,7 +254,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
     /// Displays a Zendesk New Request view from the given controller, tagged to show in the WCPay queues, for users to submit new tickets.
     ///
-    func showNewWCPayRequestIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
+    func showNewWCPayRequestIfPossible(from controller: UIViewController, with sourceTag: String?) {
         createIdentity(presentIn: controller) { success in
             guard success else {
                 return
@@ -271,7 +270,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
     /// Displays the Zendesk Request List view from the given controller, allowing user to access their tickets.
     ///
-    func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
+    func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String?) {
 
         createIdentity(presentIn: controller) { success in
             guard success else {

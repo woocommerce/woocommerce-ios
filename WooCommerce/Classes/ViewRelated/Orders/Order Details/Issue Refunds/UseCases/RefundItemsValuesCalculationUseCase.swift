@@ -17,7 +17,7 @@ struct RefundItemsValuesCalculationUseCase {
     ///
     func calculateRefundValues(withFees fees: [OrderFeeLine]? = nil) -> RefundValues {
         let zero = RefundValues(subtotal: 0, tax: 0, fees: 0)
-        return refundItems.reduce(zero) { previousValues, refundItem -> RefundValues in
+        let refundValuesWithoutFees = refundItems.reduce(zero) { previousValues, refundItem -> RefundValues in
 
             let itemPrice = refundItem.item.price as Decimal
             let quantityToRefund = Decimal(refundItem.quantity)
@@ -33,6 +33,17 @@ struct RefundItemsValuesCalculationUseCase {
             let tax = previousValues.tax + (itemTax * quantityToRefund)
 
             return RefundValues(subtotal: subtotal, tax: tax, fees: 0)
+        }
+        let feesCalculation = fees?.compactMap {
+            currencyFormatter.convertToDecimal(from: $0.total) as Decimal?
+        }.reduce(0, +)
+
+        if let feesTotal = feesCalculation {
+            return RefundValues(subtotal: refundValuesWithoutFees.subtotal,
+                                tax: refundValuesWithoutFees.tax,
+                                fees: feesTotal)
+        } else {
+            return refundValuesWithoutFees
         }
     }
 }

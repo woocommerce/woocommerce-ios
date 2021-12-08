@@ -307,6 +307,17 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
         let mapper = ShippingLabelStatusMapper(siteID: siteID, orderID: orderID)
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Fetches the scale data including weight most recently reported.
+    ///
+    public func fetchScaleData(for siteID: Int64,
+                                    completion: @escaping(Result<ShippingScaleData, Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: Path.scaleData)
+
+        let mapper = ShippingScaleDataMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: Constant
@@ -316,6 +327,7 @@ private extension ShippingLabelRemote {
         static let normalizeAddress = "normalize-address"
         static let packages = "packages"
         static let accountSettings = "account/settings"
+        static let scaleData = "connect/scale"
     }
 
     enum ParameterKey {

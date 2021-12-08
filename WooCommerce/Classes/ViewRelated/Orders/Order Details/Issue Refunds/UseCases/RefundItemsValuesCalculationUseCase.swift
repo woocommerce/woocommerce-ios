@@ -15,7 +15,7 @@ struct RefundItemsValuesCalculationUseCase {
 
     /// Calculates the values(subtotal, total and tax) to be refunded.
     ///
-    func calculateRefundValues() -> RefundValues {
+    func calculateRefundValues(withFees fees: [OrderFeeLine]? = nil) -> RefundValues {
         let zero = RefundValues(subtotal: 0, tax: 0, fees: 0)
         return refundItems.reduce(zero) { previousValues, refundItem -> RefundValues in
 
@@ -32,7 +32,6 @@ struct RefundItemsValuesCalculationUseCase {
             let subtotal = previousValues.subtotal + (itemPrice * quantityToRefund)
             let tax = previousValues.tax + (itemTax * quantityToRefund)
 
-            #warning("fees to be fixed later")
             return RefundValues(subtotal: subtotal, tax: tax, fees: 0)
         }
     }

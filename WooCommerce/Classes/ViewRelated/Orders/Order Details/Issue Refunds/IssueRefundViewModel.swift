@@ -265,7 +265,10 @@ extension IssueRefundViewModel {
         }
 
         let refundItems = state.refundQuantityStore.refundableItems()
-        let summaryRow = RefundProductsTotalViewModel(refundItems: refundItems, currency: state.order.currency, currencySettings: state.currencySettings)
+        let summaryRow = RefundProductsTotalViewModel(refundItems: refundItems,
+                                                      currency: state.order.currency,
+                                                      currencySettings: state.currencySettings,
+                                                      fees: state.order.fees)
         let unsupportedFeesTooltipRows = [createUnsupportedFeesRefundTooltipRow()].compactMap { $0 }
 
         return Section(rows: itemsRows + [summaryRow] + unsupportedFeesTooltipRows)

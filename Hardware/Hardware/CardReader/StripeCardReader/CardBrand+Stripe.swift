@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 extension CardBrand {
@@ -25,3 +26,4 @@ extension CardBrand {
         }
     }
 }
+#endif

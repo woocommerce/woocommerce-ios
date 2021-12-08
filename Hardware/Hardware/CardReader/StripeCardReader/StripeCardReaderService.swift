@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import Combine
 import StripeTerminal
 import CoreBluetooth
@@ -647,3 +648,4 @@ private extension StripeCardReaderService {
         #endif
     }
 }
+#endif

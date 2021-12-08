@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 extension Hardware.PaymentIntentParameters {
@@ -25,3 +26,4 @@ extension Hardware.PaymentIntentParameters {
         return returnValue
     }
 }
+#endif

@@ -184,7 +184,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Indicates if Support is Enabled.
     ///
     var supportEnabled: Bool {
-        return ZendeskManager.shared.zendeskEnabled
+        return ZendeskProvider.shared.zendeskEnabled
     }
 
     /// Indicates if the Support notification indicator should be displayed.
@@ -316,7 +316,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Support new request, from a given ViewController, with a specified SourceTag.
     ///
     func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
-        ZendeskManager.shared.showNewRequestIfPossible(from: sourceViewController, with: sourceTag.name)
+        ZendeskProvider.shared.showNewRequestIfPossible(from: sourceViewController, with: sourceTag.name)
     }
 
     /// Indicates if the Login Epilogue should be presented.

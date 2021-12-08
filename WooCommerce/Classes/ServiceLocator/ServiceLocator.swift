@@ -65,7 +65,11 @@ final class ServiceLocator {
 
     /// Support for external Card Readers
     ///
+    #if !targetEnvironment(macCatalyst)
     private static var _cardReader: CardReaderService = StripeCardReaderService()
+    #else
+    private static var _cardReader: CardReaderService = NoOpCardReaderService()
+    #endif
 
     /// Support for printing receipts
     ///
@@ -292,8 +296,9 @@ extension ServiceLocator {
         guard isRunningTests() else {
             return
         }
-
+        #if !targetEnvironment(macCatalyst)
         _cardReader = mock
+        #endif
     }
 
     static func setReceiptPrinter(_ mock: PrinterService) {

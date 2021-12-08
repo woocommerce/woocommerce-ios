@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 import SwiftUI
-import WordPressUI
 
 final class CardReaderSettingsPresentingViewController: UIViewController {
 
@@ -56,9 +55,6 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
         self.addChild(childViewController)
         self.view.addSubview(childViewController.view)
         childViewController.didMove(toParent: self)
-
-        childViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        self.view.pinSubviewToAllEdges(childViewController.view)
     }
 }
 

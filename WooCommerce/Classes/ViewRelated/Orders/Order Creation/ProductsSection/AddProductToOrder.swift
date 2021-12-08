@@ -38,6 +38,7 @@ struct AddProductToOrder: View {
                             .redacted(reason: .placeholder)
                             .shimmering()
                     }
+                    .listStyle(PlainListStyle())
                 default:
                     EmptyView()
                 }

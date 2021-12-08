@@ -27,6 +27,8 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var presentNotice: NewOrderNotice?
 
+    // MARK: Status properties
+
     /// Order creation date. For new order flow it's always current date.
     ///
     let dateString: String = {
@@ -66,6 +68,14 @@ final class NewOrderViewModel: ObservableObject {
     private var currentSiteStatuses: [OrderStatus] {
         return statusResultsController.fetchedObjects
     }
+
+    // MARK: Products properties
+
+    /// View model for the product list
+    ///
+    lazy var addProductViewModel = {
+        AddProductToOrderViewModel(siteID: siteID, storageManager: storageManager)
+    }()
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID

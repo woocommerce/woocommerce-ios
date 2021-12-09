@@ -163,11 +163,17 @@ final class ShippingLabelFormViewModel {
         }
     }
 
+    private var scaleTimer: Timer?
+    private var isFetchingScaleData: Bool = false
+    private(set) var scaleData: ShippingScaleData?
+
     init(order: Order,
          originAddress: Address?,
          destinationAddress: Address?,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
+
+        print("==== in ShippingLabelFormViewModel init")
 
         self.siteID = order.siteID
         self.order = order
@@ -191,6 +197,13 @@ final class ShippingLabelFormViewModel {
         syncPackageDetails()
         fetchCountries()
         monitorAccountSettingsResultsController()
+
+        startMonitoringScale()
+    }
+
+    deinit {
+        print("==== in ShippingLabelFormViewModel deinit")
+        stopMonitoringScale()
     }
 
     func handleOriginAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
@@ -298,6 +311,7 @@ final class ShippingLabelFormViewModel {
     /// Returns the body of the Package Details cell
     ///
     func getPackageDetailsBody() -> String {
+        print("==== in getPackageDetailsBody")
         guard selectedPackagesDetails.isNotEmpty else {
             return Localization.packageDetailsPlaceholder
         }
@@ -320,9 +334,12 @@ final class ShippingLabelFormViewModel {
         }
 
         let formatter = WeightFormatter(weightUnit: packagesResponse?.storeOptions.weightUnit ?? "")
-        let totalWeight = selectedPackagesDetails
-            .map { NumberFormatter.double(from: ($0.totalWeight)) ?? 0 }
-            .reduce(0, { $0 + $1 })
+        //let totalWeight = selectedPackagesDetails
+        //    .map { NumberFormatter.double(from: ($0.totalWeight)) ?? 0 }
+        //    .reduce(0, { $0 + $1 })
+
+        let totalWeight = 9.5
+
         let packageWeight = formatter.formatWeight(weight: totalWeight)
 
         return packageDescription + "\n" + String.localizedStringWithFormat(Localization.totalPackageWeight, packageWeight)
@@ -706,6 +723,50 @@ private extension ShippingLabelFormViewModel {
         }
 
         try? accountSettingsResultsController.performFetch()
+    }
+
+    private func startMonitoringScale() {
+        scaleTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] _ in
+            self?.fetchScaleData()
+        }
+    }
+
+    private func stopMonitoringScale() {
+        scaleTimer?.invalidate()
+    }
+
+    private func fetchScaleData() {
+        guard !isFetchingScaleData else {
+            return
+        }
+
+        isFetchingScaleData = true
+
+        print("==== in ShippingLabelFormViewModel monitorScale, triggering fetch")
+
+        let action = ShippingLabelAction.fetchScaleData(siteID: siteID) { [weak self] result in
+            print("==== in ShippingLabelFormViewModel monitorScale fetchScaleData completion")
+
+            guard let self = self else {
+                print("==== nil self")
+                return
+            }
+
+            self.isFetchingScaleData = false
+
+            switch result {
+            case .success(let scaleData):
+                self.scaleData = scaleData
+                print("==== success \(scaleData)")
+                self.onChange?()
+            case .failure(let error):
+                print("==== failure \(error)")
+                self.onChange?() // Don't do this
+                break
+            }
+        }
+
+        stores.dispatch(action)
     }
 }
 

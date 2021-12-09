@@ -248,7 +248,8 @@ extension IssueRefundViewModel {
     private func createSections() -> [Section] {
         [
             createItemsToRefundSection(),
-            createShippingSection()
+            createShippingSection(),
+            createFeesSection()
         ].compactMap { $0 }
     }
 
@@ -295,6 +296,15 @@ extension IssueRefundViewModel {
 
         let detailsRow = RefundShippingDetailsViewModel(shippingLine: shippingLine, currency: state.order.currency, currencySettings: state.currencySettings)
         return Section(rows: [switchRow, detailsRow])
+    }
+
+    private func createFeesSection() -> Section? {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refundFees)
+        else {
+            return nil
+        }
+
+        return Section(rows: [])
     }
 
     /// If the order has fees, this returns a row with a message that refunding fees is currently

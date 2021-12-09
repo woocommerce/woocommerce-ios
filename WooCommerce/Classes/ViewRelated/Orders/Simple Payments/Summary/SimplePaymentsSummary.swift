@@ -147,6 +147,7 @@ private struct PaymentsSection: View {
                     Text(SimplePaymentsSummary.Localization.taxesDisclaimer)
                         .footnoteStyle()
                         .padding(.horizontal)
+                        .fixedSize(horizontal: false, vertical: true)
 
                     TitleAndValueRow(title: SimplePaymentsSummary.Localization.taxRate(viewModel.taxRate),
                                      value: .content(viewModel.taxAmount),

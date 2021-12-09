@@ -78,11 +78,15 @@ private extension PluginListViewController {
         let options = GhostOptions(reuseIdentifier: HeadlineLabelTableViewCell.reuseIdentifier, rowsPerSection: [10])
         ghostTableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
         ghostTableView.startGhostAnimation()
+        // Disable the selection of the cells when display placeholders
+        ghostTableView.allowsSelection = false
         ghostTableView.isHidden = false
     }
 
     func stopGhostAnimation() {
         ghostTableView.isHidden = true
+        // Allow selection of cells after the tableview's ghosting has ended
+        ghostTableView.allowsSelection = true
         ghostTableView.stopGhostAnimation()
         ghostTableView.removeGhostContent()
     }

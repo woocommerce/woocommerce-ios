@@ -199,7 +199,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
         // When
         viewModel.noteViewModel.newNote = "content"
-        viewModel.reloadContent()
+        viewModel.noteViewModel.updateNote(onFinish: { _ in })
 
         // Then
         assertEqual(mockAnalytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowNoteAdded.rawValue])

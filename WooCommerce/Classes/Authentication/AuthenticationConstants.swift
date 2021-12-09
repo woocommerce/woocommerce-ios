@@ -27,7 +27,7 @@ struct AuthenticationConstants {
     /// Login with site URL instructions.
     ///
     static let siteInstructions = NSLocalizedString(
-        "Enter the address of your WooCommerce store you'd like to connect.",
+        "Enter the address of the WooCommerce store you'd like to connect.",
         comment: "Sign in instructions for logging in with a URL."
     )
 

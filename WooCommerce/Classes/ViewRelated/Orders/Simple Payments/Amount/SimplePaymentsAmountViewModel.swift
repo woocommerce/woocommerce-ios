@@ -31,17 +31,17 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         }
     }
 
-    /// Returns true when amount has less than two characters.
-    /// Less than two, because `$` should be the first character.
+    /// Returns true when the amount is not a positive number.
     ///
     var shouldDisableDoneButton: Bool {
-        amount.count < 2
+        let decimalAmount = (currencyFormatter.convertToDecimal(from: amount) ?? .zero) as Decimal
+        return decimalAmount <= .zero
     }
 
-    /// Use this to disables interactive dismissal and
-    /// Disables cancel button while performing the create order operation
+    /// Defines if the view actions should be disabled.
+    /// Currently true while a network operation is happening.
     ///
-    var disableCancel: Bool {
+    var disableViewActions: Bool {
         loading
     }
 
@@ -81,6 +81,10 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     private let storeCurrencySettings: CurrencySettings
 
+    /// Currency formatter for the provided amount
+    ///
+    private let currencyFormatter: CurrencyFormatter
+
     /// Current store currency symbol
     ///
     private let storeCurrencySymbol: String
@@ -101,6 +105,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         self.presentNoticeSubject = presentNoticeSubject
         self.storeCurrencySettings = storeCurrencySettings
         self.storeCurrencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
+        self.currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
         self.analytics = analytics
     }
 

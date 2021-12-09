@@ -11,6 +11,10 @@ final class AddOrderCoordinator: Coordinator {
     private let sourceBarButtonItem: UIBarButtonItem?
     private let sourceView: UIView?
 
+    /// Assign this closure to be notified when a new order is created
+    ///
+    var onOrderCreated: (Order) -> Void = { _ in }
+
     init(siteID: Int64,
          isOrderCreationEnabled: Bool,
          shouldShowSimplePaymentsButton: Bool,
@@ -81,6 +85,8 @@ private extension AddOrderCoordinator {
     ///
     func presentNewOrderController() {
         let viewModel = NewOrderViewModel(siteID: siteID)
+        viewModel.onOrderCreated = onOrderCreated
+
         let viewController = NewOrderHostingController(viewModel: viewModel)
         viewController.hidesBottomBarWhenPushed = true
         navigationController.pushViewController(viewController, animated: true)

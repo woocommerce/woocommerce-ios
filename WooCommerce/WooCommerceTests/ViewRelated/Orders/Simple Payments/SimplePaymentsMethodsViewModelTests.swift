@@ -199,14 +199,14 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["source"] as? String, "payment_method")
     }
 
-    func test_collect_event_is_tracked_when_marking_order_as_paid() {
+    func test_collect_event_is_tracked_when_required() {
         // Given
         let analytics = MockAnalyticsProvider()
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
-        viewModel.markOrderAsPaid(onSuccess: {})
+        viewModel.trackCollectByCash()
 
         // Then
         assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowCollect.rawValue])

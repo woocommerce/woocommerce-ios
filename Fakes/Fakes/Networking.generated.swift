@@ -1313,6 +1313,7 @@ extension Site {
             name: .fake(),
             description: .fake(),
             url: .fake(),
+            adminURL: .fake(),
             plan: .fake(),
             isJetpackThePluginInstalled: .fake(),
             isJetpackConnected: .fake(),

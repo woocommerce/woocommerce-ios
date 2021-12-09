@@ -21,11 +21,6 @@ public final class OrdersScreen: ScreenObject {
 
     private var searchButton: XCUIElement { searchButtonGetter(app) }
 
-    // TODO: There's only one usage of this and it can be replaced with a screen instantiation
-    static var isVisible: Bool {
-        (try? OrdersScreen().isLoaded) ?? false
-    }
-
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [

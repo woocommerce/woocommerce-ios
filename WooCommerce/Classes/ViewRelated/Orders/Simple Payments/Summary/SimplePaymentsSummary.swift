@@ -59,6 +59,7 @@ struct SimplePaymentsSummary: View {
                 viewModel.reloadContent()
                 }, viewModel: viewModel.noteViewModel)
         }
+        .disabled(viewModel.disableViewActions)
     }
 }
 

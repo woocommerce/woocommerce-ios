@@ -50,6 +50,12 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         noteViewModel.newNote
     }
 
+    /// Disable view actions while a network request is being performed
+    ///
+    var disableViewActions: Bool {
+        return showLoadingIndicator
+    }
+
     /// Total to charge with taxes.
     ///
     private let totalWithTaxes: String
@@ -84,7 +90,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     /// ViewModel for the edit order note view.
     ///
-    lazy private(set) var noteViewModel = SimplePaymentsNoteViewModel()
+    lazy private(set) var noteViewModel = { SimplePaymentsNoteViewModel(analytics: analytics) }()
 
     init(providedAmount: String,
          totalWithTaxes: String,
@@ -148,11 +154,6 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     func reloadContent() {
         objectWillChange.send()
-
-        // Tracks if the merchant has added a note.
-        if noteContent.isNotEmpty {
-            analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowNoteAdded())
-        }
     }
 
     /// Updates the order remotely with the information entered by the merchant.

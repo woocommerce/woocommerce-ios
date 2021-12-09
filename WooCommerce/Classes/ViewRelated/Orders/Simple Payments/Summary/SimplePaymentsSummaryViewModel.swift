@@ -24,7 +24,11 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     /// Determines if taxes should be added to the provided amount.
     ///
-    @Published var enableTaxes: Bool = false
+    @Published var enableTaxes: Bool = false {
+        didSet {
+            analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowTaxesToggled(isOn: enableTaxes))
+        }
+    }
 
     /// Defines when to navigate to the payments method screen.
     ///
@@ -80,9 +84,13 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
+    /// Tracks analytics events.
+    ///
+    private let analytics: Analytics
+
     /// ViewModel for the edit order note view.
     ///
-    lazy private(set) var noteViewModel = SimplePaymentsNoteViewModel()
+    lazy private(set) var noteViewModel = { SimplePaymentsNoteViewModel(analytics: analytics) }()
 
     init(providedAmount: String,
          totalWithTaxes: String,
@@ -93,13 +101,15 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
          feeID: Int64 = 0,
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.orderID = orderID
         self.feeID = feeID
         self.presentNoticeSubject = presentNoticeSubject
         self.currencyFormatter = currencyFormatter
         self.stores = stores
+        self.analytics = analytics
         self.providedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
         self.totalWithTaxes = currencyFormatter.formatAmount(totalWithTaxes) ?? totalWithTaxes
         self.taxAmount = currencyFormatter.formatAmount(taxAmount) ?? taxAmount
@@ -164,11 +174,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
             switch result {
             case .success:
                 self.navigateToPaymentMethods = true
-                // TODO: Analytics
-                break
-            case .failure:
+            case .failure(let error):
                 self.presentNoticeSubject.send(.error(Localization.updateError))
-                // TODO: Analytics
+                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed(source: .summary))
+                DDLogError("⛔️ Error updating simple payments order: \(error)")
             }
         }
         stores.dispatch(action)

@@ -26,6 +26,8 @@ final class SimplePaymentsNoteViewModel: EditCustomerNoteViewModelProtocol {
     func updateNote(onFinish: @escaping (Bool) -> Void) {
         originalNote = newNote
         onFinish(true)
+
+        analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowNoteAdded())
     }
 
     /// Revert to original content.
@@ -39,9 +41,14 @@ final class SimplePaymentsNoteViewModel: EditCustomerNoteViewModelProtocol {
     ///
     private var originalNote: String
 
-    init(originalNote: String = "") {
+    /// Analytics engine.
+    ///
+    private let analytics: Analytics
+
+    init(originalNote: String = "", analytics: Analytics = ServiceLocator.analytics) {
         self.originalNote = originalNote
         self.newNote = originalNote
+        self.analytics = analytics
         bindNoteChanges()
     }
 

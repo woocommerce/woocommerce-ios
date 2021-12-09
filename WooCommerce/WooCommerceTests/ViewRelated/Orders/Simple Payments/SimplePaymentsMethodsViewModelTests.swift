@@ -151,4 +151,79 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(receivedError)
     }
+
+    func test_completed_event_is_tracked_after_marking_order_as_paid() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrderStatus(_, _, _, onCompletion):
+                onCompletion(nil)
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let analytics = MockAnalyticsProvider()
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.markOrderAsPaid(onSuccess: {})
+
+        // Then
+        assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.simplePaymentsFlowCompleted.rawValue)
+        assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "cash")
+        assertEqual(analytics.receivedProperties.first?["amount"] as? String, "$12.00")
+    }
+
+    func test_failed_event_is_tracked_after_failing_to_mark_order_as_paid() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrderStatus(_, _, _, onCompletion):
+                onCompletion(NSError(domain: "", code: 0, userInfo: nil))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let analytics = MockAnalyticsProvider()
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.markOrderAsPaid(onSuccess: {})
+
+        // Then
+        assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.simplePaymentsFlowFailed.rawValue)
+        assertEqual(analytics.receivedProperties.first?["source"] as? String, "payment_method")
+    }
+
+    func test_collect_event_is_tracked_when_required() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackCollectByCash()
+
+        // Then
+        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowCollect.rawValue])
+        assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "cash")
+    }
+
+    func test_collect_event_is_tracked_when_collecting_payment() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.collectPayment(on: UIViewController(), onSuccess: {})
+
+        // Then
+        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowCollect.rawValue])
+        assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "card")
+    }
 }

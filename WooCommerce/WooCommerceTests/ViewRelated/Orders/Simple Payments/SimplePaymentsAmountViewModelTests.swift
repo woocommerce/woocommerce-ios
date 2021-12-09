@@ -291,7 +291,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.summaryViewModel)
     }
 
-    func test_view_model_attempts_error_notice_presentation_when_failing_to_crete_order() {
+    func test_view_model_attempts_error_notice_presentation_when_failing_to_create_order() {
         // Given
         let testingStore = MockStoresManager(sessionManager: .testingInstance)
         let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
@@ -321,6 +321,29 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(receivedError)
+    }
+
+    func test_failure_is_tracked_when_failing_to_create_order() {
+        // Given
+        let testingStore = MockStoresManager(sessionManager: .testingInstance)
+        testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .createSimplePaymentsOrder(_, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "Error", code: 0)))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        let analytics = MockAnalyticsProvider()
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.createSimplePaymentsOrder()
+
+        // Then
+        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowFailed.rawValue])
+        assertEqual(analytics.receivedProperties.first?["source"] as? String, "amount")
     }
 
     func test_view_model_disable_cancel_button_while_creating_payment_order() {

@@ -139,12 +139,12 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
                                                                            presentNoticeSubject: self.presentNoticeSubject)
                 } else {
                     self.onOrderCreated(order)
+                    self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCompleted(amount: order.total))
                 }
-                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCompleted(amount: order.total))
 
             case .failure(let error):
                 self.presentNoticeSubject.send(.error(Localization.creationError))
-                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed())
+                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed(source: .amount))
                 DDLogError("⛔️ Error creating simple payments order: \(error)")
             }
         }

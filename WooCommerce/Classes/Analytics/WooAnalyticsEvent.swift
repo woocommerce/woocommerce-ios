@@ -405,11 +405,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowStarted, properties: [:])
         }
 
-        // TODO: Delete when prototype is replaced with the complete version
-        static func simplePaymentsFlowCompleted(amount: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .simplePaymentsFlowCompleted, properties: [:])
-        }
-
         static func simplePaymentsFlowCompleted(amount: String, method: PaymentMethod) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowCompleted, properties: [Keys.amount: amount, Keys.paymentMethod: method.rawValue])
         }
@@ -432,10 +427,6 @@ extension WooAnalyticsEvent {
 
         static func simplePaymentsFlowCollect(method: PaymentMethod) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowCollect, properties: [Keys.paymentMethod: method.rawValue])
-        }
-
-        static func settingsBetaFeaturesSimplePaymentsToggled(isOn: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .settingsBetaFeaturesSimplePaymentsToggled, properties: [Keys.state: isOn ? "on" : "off"])
         }
     }
 }

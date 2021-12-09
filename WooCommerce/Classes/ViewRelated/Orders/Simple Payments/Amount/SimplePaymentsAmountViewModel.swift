@@ -31,10 +31,6 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         }
     }
 
-    /// Assign this closure to be notified when a new order is created
-    ///
-    var onOrderCreated: (Order) -> Void = { _ in }
-
     /// Returns true when the amount is not a positive number.
     ///
     var shouldDisableDoneButton: Bool {
@@ -97,17 +93,12 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     private let analytics: Analytics
 
-    /// Defines if the we are running a development version or not.
-    ///
-    private let isDevelopmentPrototype: Bool
-
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          locale: Locale = Locale.autoupdatingCurrent,
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics,
-         isDevelopmentPrototype: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.simplePaymentsPrototype)) {
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.userLocale = locale
@@ -116,7 +107,6 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         self.storeCurrencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
         self.currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
         self.analytics = analytics
-        self.isDevelopmentPrototype = isDevelopmentPrototype
     }
 
     /// Called when the view taps the done button.
@@ -126,21 +116,16 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
 
         loading = true
 
-        // Prototype in production does not support taxes. Development version does.
-        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount, taxable: isDevelopmentPrototype) { [weak self] result in
+        // Order created as taxable to delegate taxes calculation to the API.
+        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount, taxable: true) { [weak self] result in
             guard let self = self else { return }
             self.loading = false
 
             switch result {
             case .success(let order):
-                if self.isDevelopmentPrototype {
-                    self.summaryViewModel = SimplePaymentsSummaryViewModel(order: order,
-                                                                           providedAmount: self.amount,
-                                                                           presentNoticeSubject: self.presentNoticeSubject)
-                } else {
-                    self.onOrderCreated(order)
-                    self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCompleted(amount: order.total))
-                }
+                self.summaryViewModel = SimplePaymentsSummaryViewModel(order: order,
+                                                                       providedAmount: self.amount,
+                                                                       presentNoticeSubject: self.presentNoticeSubject)
 
             case .failure(let error):
                 self.presentNoticeSubject.send(.error(Localization.creationError))

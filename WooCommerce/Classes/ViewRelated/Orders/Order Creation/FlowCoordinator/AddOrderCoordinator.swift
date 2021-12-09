@@ -73,7 +73,6 @@ private extension AddOrderCoordinator {
     func presentSimplePaymentsAmountController() {
         let presentNoticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
         let viewModel = SimplePaymentsAmountViewModel(siteID: siteID, presentNoticeSubject: presentNoticeSubject)
-        viewModel.onOrderCreated = onOrderCreated
 
         let viewController = SimplePaymentsAmountHostingController(viewModel: viewModel, presentNoticePublisher: presentNoticeSubject.eraseToAnyPublisher())
         let simplePaymentsNC = WooNavigationController(rootViewController: viewController)

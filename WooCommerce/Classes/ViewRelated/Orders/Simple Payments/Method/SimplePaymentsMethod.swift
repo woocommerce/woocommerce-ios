@@ -33,6 +33,7 @@ struct SimplePaymentsMethod: View {
             Group {
                 MethodRow(icon: .priceImage, title: Localization.cash) {
                     showingCashAlert = true
+                    viewModel.trackCollectByCash()
                 }
 
                 Divider()

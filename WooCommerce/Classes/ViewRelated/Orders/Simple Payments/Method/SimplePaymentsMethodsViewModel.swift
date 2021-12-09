@@ -120,7 +120,6 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
             self.trackFlowCompleted(method: .cash)
         }
         stores.dispatch(action)
-        trackCollectIntention(method: .cash)
     }
 
     /// Starts the collect payment flow in the provided `rootViewController`
@@ -165,6 +164,12 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
             // Tracks completion
             self?.trackFlowCompleted(method: .card)
         })
+    }
+
+    /// Tracks the collect by cash intention.
+    ///
+    func trackCollectByCash() {
+        trackCollectIntention(method: .cash)
     }
 }
 

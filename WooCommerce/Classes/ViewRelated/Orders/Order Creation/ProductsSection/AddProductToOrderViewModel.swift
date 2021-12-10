@@ -10,17 +10,21 @@ final class AddProductToOrderViewModel: ObservableObject {
     /// Product types excluded from the product list.
     /// For now, only non-variable product types are supported.
     ///
-    private let excludedProductTypeKeys: [String] = [ProductType.variable.rawValue]
+    private let excludedProductTypes: [ProductType] = [ProductType.variable]
 
     /// Product statuses included in the product list.
     /// Only published or private products can be added to an order.
     ///
-    private let includedProductStatusKeys: [String] = [ProductStatus.publish.rawValue, ProductStatus.privateStatus.rawValue]
+    private let includedProductStatuses: [ProductStatus] = [ProductStatus.publish, ProductStatus.privateStatus]
 
     /// All products that can be added to an order.
     ///
     private var products: [Product] {
-        return productsResultsController.fetchedObjects
+        return productsResultsController.fetchedObjects.filter {
+            let hasValidProductType = !excludedProductTypes.contains( $0.productType )
+            let hasValidProductStatus = includedProductStatuses.contains( $0.productStatus )
+            return hasValidProductType && hasValidProductStatus
+        }
     }
 
     /// View models for each product row
@@ -54,8 +58,7 @@ final class AddProductToOrderViewModel: ObservableObject {
     /// Products Results Controller.
     ///
     private lazy var productsResultsController: ResultsController<StorageProduct> = {
-        let predicate = NSPredicate(format: "siteID == %lld AND statusKey IN %@ AND NOT(productTypeKey IN %@)",
-                                    siteID, includedProductStatusKeys, excludedProductTypeKeys)
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
         return resultsController

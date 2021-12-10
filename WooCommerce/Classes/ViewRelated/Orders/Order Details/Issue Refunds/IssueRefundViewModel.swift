@@ -304,7 +304,11 @@ extension IssueRefundViewModel {
             return nil
         }
 
-        return Section(rows: [])
+        let detailsRow = RefundFeesDetailsViewModel(fees: state.order.fees,
+                                                    currency: state.order.currency,
+                                                    currencySettings: state.currencySettings)
+
+        return Section(rows: [detailsRow])
     }
 
     /// If the order has fees, this returns a row with a message that refunding fees is currently
@@ -430,6 +434,8 @@ extension RefundItemViewModel: IssueRefundRow {}
 extension RefundProductsTotalViewModel: IssueRefundRow {}
 
 extension RefundShippingDetailsViewModel: IssueRefundRow {}
+
+extension RefundFeesDetailsViewModel: IssueRefundRow {}
 
 extension ImageAndTitleAndTextTableViewCell.ViewModel: IssueRefundRow {}
 

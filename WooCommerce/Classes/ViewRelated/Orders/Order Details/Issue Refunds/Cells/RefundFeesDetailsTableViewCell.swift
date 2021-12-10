@@ -21,7 +21,20 @@ final class RefundFeesDetailsTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var totalTitleLabel: UILabel!
 
-    /// DIsplays the total value
+    /// Displays the total value
     ///
     @IBOutlet private var totalPriceLabel: UILabel!
+}
+
+// MARK: ViewModel Rendering
+
+extension RefundFeesDetailsTableViewCell {
+
+    /// Configure cell with the provided view model
+    ///
+    func configure(with viewModel: RefundFeesDetailsViewModel) {
+        taxPriceLabel.text = viewModel.feesTaxes
+        subtotalPriceLabel.text = viewModel.feesSubtotal
+        totalPriceLabel.text = viewModel.feesTotal
+    }
 }

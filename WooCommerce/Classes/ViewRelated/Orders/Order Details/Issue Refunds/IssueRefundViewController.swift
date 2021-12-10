@@ -133,6 +133,7 @@ private extension IssueRefundViewController {
         tableView.registerNib(for: RefundItemTableViewCell.self)
         tableView.registerNib(for: RefundProductsTotalTableViewCell.self)
         tableView.registerNib(for: RefundShippingDetailsTableViewCell.self)
+        tableView.registerNib(for: RefundFeesDetailsTableViewCell.self)
         tableView.registerNib(for: SwitchTableViewCell.self)
         tableView.registerNib(for: ImageAndTitleAndTextTableViewCell.self)
     }
@@ -212,6 +213,10 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
             return cell
         case let viewModel as RefundShippingDetailsViewModel:
             let cell = tableView.dequeueReusableCell(RefundShippingDetailsTableViewCell.self, for: indexPath)
+            cell.configure(with: viewModel)
+            return cell
+        case let viewModel as RefundFeesDetailsViewModel:
+            let cell = tableView.dequeueReusableCell(RefundFeesDetailsTableViewCell.self, for: indexPath)
             cell.configure(with: viewModel)
             return cell
         case let viewModel as ImageAndTitleAndTextTableViewCell.ViewModel:

@@ -10,7 +10,7 @@ extension UIView {
                            relatedBy: relation,
                            toItem: superview,
                            attribute: attribute,
-                           multiplier: 0,
+                           multiplier: 1,
                            constant: constant)
     }
 }

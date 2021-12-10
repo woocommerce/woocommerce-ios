@@ -1,0 +1,5 @@
+È stato effettuato un aggiornamento della scheda degli ordini a questa versione. Le schede ora sono sparite e ti abbiamo fornito un filtro per stato oppure l'opzione per intervallo di date. Alla base di ciò c'è il feedback diretto che ci hai inviato nel corso degli anni e sappiamo che ti piacerà la modifica.
+
+Abbiamo risolto un possibile arresto anomalo durante la creazione di un'etichetta di spedizione su un ordine da una notifica push. Abbiamo anche migliorato l'esperienza di accesso con il tuo gestore di password. Il nome utente e la password memorizzati per WordPress.com nel tuo strumento per la gestione saranno in cima all'elenco.
+
+Come sempre, continua a inviarci il tuo feedback. Grazie per aver usato WooCommerce.

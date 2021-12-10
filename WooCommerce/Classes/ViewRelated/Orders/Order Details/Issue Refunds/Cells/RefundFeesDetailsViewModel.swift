@@ -20,11 +20,11 @@ extension RefundFeesDetailsViewModel {
             currencyFormatter.convertToDecimal(from: $0.totalTax) as Decimal?
         }.reduce(0, +)
 
-        let total = fees.compactMap {
+        let subtotal = fees.compactMap {
             currencyFormatter.convertToDecimal(from: $0.total) as Decimal?
         }.reduce(0, +)
 
-        let subtotal = total - totalTaxes
+        let total = subtotal + totalTaxes
 
         self.feesTaxes = currencyFormatter.formatAmount(totalTaxes, with: currency) ?? ""
         self.feesSubtotal = currencyFormatter.formatAmount(subtotal, with: currency) ?? ""

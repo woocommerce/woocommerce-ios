@@ -11,7 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="122" id="LHT-3r-b8Y" customClass="RefundShippingDetailsTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="122" id="LHT-3r-b8Y" customClass="RefundFeesDetailsTableViewCell" customModule="WooCommerce" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="414" height="130"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="LHT-3r-b8Y" id="zS1-ic-Kd0">
@@ -104,6 +104,14 @@
                     <constraint firstAttribute="trailingMargin" secondItem="6gF-5y-yIx" secondAttribute="trailing" id="vgi-ns-68i"/>
                 </constraints>
             </tableViewCellContentView>
+            <connections>
+                <outlet property="subtotalPriceLabel" destination="Uc1-EG-ofD" id="uLY-fv-ygM"/>
+                <outlet property="subtotalTitleLabel" destination="gjx-ci-I1n" id="mcC-K4-Ch2"/>
+                <outlet property="taxPriceLabel" destination="KoN-A8-ti9" id="8lx-Oc-g2V"/>
+                <outlet property="taxTitleLabel" destination="gLT-nX-a2U" id="cHO-O8-2Vy"/>
+                <outlet property="totalPriceLabel" destination="mbG-Yl-3Fo" id="Sc1-gj-JhT"/>
+                <outlet property="totalTitleLabel" destination="bza-Y0-H95" id="zAt-1Z-Hud"/>
+            </connections>
             <point key="canvasLocation" x="108.69565217391305" y="53.571428571428569"/>
         </tableViewCell>
     </objects>

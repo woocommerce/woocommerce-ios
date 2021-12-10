@@ -47,6 +47,9 @@ private extension RefundFeesDetailsTableViewCell {
         totalTitleLabel.applyHeadlineStyle()
         totalPriceLabel.applyHeadlineStyle()
 
+        taxTitleLabel.text = Localization.taxTitle
+        subtotalTitleLabel.text = Localization.subtotalTitle
+        totalTitleLabel.text = Localization.totalTitle
     }
 }
 
@@ -60,5 +63,18 @@ extension RefundFeesDetailsTableViewCell {
         taxPriceLabel.text = viewModel.feesTaxes
         subtotalPriceLabel.text = viewModel.feesSubtotal
         totalPriceLabel.text = viewModel.feesTotal
+    }
+}
+
+// MARK: Constants
+
+private extension RefundFeesDetailsTableViewCell {
+    enum Localization {
+        static let taxTitle = NSLocalizedString(
+            "Tax", comment: "Title on the refunds screen that lists the fees tax cost")
+        static let subtotalTitle = NSLocalizedString(
+            "Subtotal", comment: "Title on the refund screen that lists the fees subtotal cost")
+        static let totalTitle = NSLocalizedString(
+            "Fees Refund", comment: "Title on the refund screen that lists the fees total cost")
     }
 }

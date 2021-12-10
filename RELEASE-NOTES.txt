@@ -3,6 +3,7 @@
 8.2
 -----
 - [***] In-Person Payments: Now you can collect Simple Payments on the go. [https://github.com/woocommerce/woocommerce-ios/pull/5635]
+- [*] Products: After generating a new variation for a variable product, you are now taken directly to edit the new variation. [https://github.com/woocommerce/woocommerce-ios/pull/5649]
 
 8.2
 -----

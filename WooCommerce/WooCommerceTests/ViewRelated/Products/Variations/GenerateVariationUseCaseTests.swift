@@ -36,7 +36,7 @@ final class GenerateVariationUseCaseTests: XCTestCase {
         XCTAssertEqual(expectedVariation, variationSubmitted)
     }
 
-    func test_create_variations_updates_the_product_variations_array() throws {
+    func test_create_variations_returns_variation_and_updated_product_variations_array() throws {
         // Given
         let attribute = sampleAttribute(attributeID: 0, name: "attr", options: ["Option 1", "Option 2"])
         let attribute2 = sampleAttribute(attributeID: 1, name: "attr-2", options: ["Option 3", "Option 4"])
@@ -54,16 +54,17 @@ final class GenerateVariationUseCaseTests: XCTestCase {
         let useCase = GenerateVariationUseCase(product: product, stores: mockStores)
 
         // When
-        let result: Result<Product, Error> = waitFor { promise in
+        let result: Result<(Product, ProductVariation), Error> = waitFor { promise in
             useCase.generateVariation { result in
                 promise(result)
             }
         }
 
         // Then
-        let updatedProduct = try XCTUnwrap(result.get())
-        let expectedVariations = [MockProductVariation().productVariation().productVariationID]
-        XCTAssertEqual(updatedProduct.variations, expectedVariations)
+        let (updatedProduct, newVariation) = try XCTUnwrap(result.get())
+        let expectedVariationID = MockProductVariation().productVariation().productVariationID
+        XCTAssertEqual(updatedProduct.variations, [expectedVariationID])
+        XCTAssertEqual(newVariation.productVariationID, expectedVariationID)
     }
 }
 

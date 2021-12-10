@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-12-01 18:11:59+0000 */
+/* Translation-Revision-Date: 2021-12-08 16:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -912,7 +912,7 @@
 "Create a new manual order" = "Skapa en ny manuell beställning";
 
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
-"Create an order with minimal information" = "Create an order with minimal information";
+"Create an order with minimal information" = "Skapa en beställning med minimalt med information";
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Skapa nytt paket";
@@ -1666,7 +1666,7 @@
 "Install WooCommerce Payments" = "Installera WooCommerce Payments";
 
 /* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
-"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "Install the free Jetpack plugin to %1$@ and experience the best mobile experience.";
+"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "Installera det kostnadsfria Jetpack-tillägget för %1$@ och få den bästa möjliga mobilupplevelsen.";
 
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "Installera det kostnadsfria Jetpack-tillägget för den bästa mobilupplevelsen.";
@@ -2221,7 +2221,7 @@
 "Order #%1$@" = "Beställning nummer%1$@";
 
 /* Cell title on the beta features screen to enable creating new orders */
-"Order Creation" = "Order Creation";
+"Order Creation" = "Skapande av beställning";
 
 /* Title text of the row that holds the order note when creating a simple payment */
 "Order Note" = "Beställningsanteckning";
@@ -2458,7 +2458,7 @@
 "Please wait" = "Vänta";
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
-"Please wait while we connect your site %1$@ with Jetpack." = "Please wait while we connect your site %1$@ with Jetpack.";
+"Please wait while we connect your site %1$@ with Jetpack." = "Vänta medan vi ansluter din webbplats %1$@ till Jetpack.";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "Vänta medan vi skapar den nya variationen";
@@ -2470,7 +2470,7 @@
 "Please wait while we save this product to your store" = "Vänta tills vi sparar den här produkten i din butik";
 
 /* Message of the in-progress UI while saving a Variation remotely */
-"Please wait while we save your latest changes" = "Please wait while we save your latest changes";
+"Please wait while we save your latest changes" = "Vänta medan vi sparar dina senaste ändringar";
 
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
@@ -2907,7 +2907,7 @@
 "Saving your product..." = "Sparar din produkt …";
 
 /* Title of the in-progress UI while saving a Variation remotely */
-"Saving your variation..." = "Saving your variation...";
+"Saving your variation..." = "Sparar din variation...";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "Skanna streckkoden för att uppdatera SKU";
@@ -3457,7 +3457,7 @@
 "Tax" = "Moms";
 
 /* Tax percentage to be applied to the simple payments order */
-"Tax ((rate)%)" = "Tax ((rate)%)";
+"Tax ((rate)%)" = "Moms ((rate)%)";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "Momsinställningar";
@@ -3482,7 +3482,7 @@
 "Taxes" = "Momser";
 
 /* Disclaimer in the simple payments summary screen about taxes. */
-"Taxes are automatically calculated based on your store address." = "Taxes are automatically calculated based on your store address.";
+"Taxes are automatically calculated based on your store address." = "Moms beräknas automatiskt baserat på din butiksadress.";
 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Berätta mer om %1$@...";
@@ -3491,7 +3491,7 @@
 "Terms of Service" = "Användarvillkor";
 
 /* Cell description on the beta features screen to enable creating new orders */
-"Test out creating new manual orders as we get ready to launch" = "Test out creating new manual orders as we get ready to launch";
+"Test out creating new manual orders as we get ready to launch" = "Testa att skapa nya manuella beställningar medan vi gör oss redo för lansering";
 
 /* Cell description on the beta features screen to enable the Simple Payments feature */
 "Test out creating orders with minimal information as we get ready to launch" = "Testa att skapa beställningar med minimalt med information medan vi gör oss redo för lansering";
@@ -3641,7 +3641,7 @@
 
 /* Navigates to screen with third party software licenses
    Software Licenses (information page title) */
-"Third Party Licenses" = "Third Party Licenses";
+"Third Party Licenses" = "Tredjepartslicenser";
 
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
@@ -3739,7 +3739,7 @@
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "För att fortsätta med detta Google-konto måste du först logga in med ditt lösenord för WordPress.com. Detta behövs bara en gång.";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"To turn on your card reader, briefly press its power button." = "To turn on your card reader, briefly press its power button.";
+"To turn on your card reader, briefly press its power button." = "För att starta din kortläsare, tryck kort på dess strömknapp.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "För att använda den här appen för %@ måste du ha installerat och anslutit Jetpack-tillägget på din butik.";
@@ -4023,7 +4023,7 @@
 "Updating software" = "Uppdatera programvara";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
-"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "Uppdateringen av läsarprogramvaran misslyckades, eftersom batterinivån i läsaren är låg. Ladda läsaren till över 50\uFF05 innan du försöker igen.";
+"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "Uppdateringen av läsarprogramvaran misslyckades, eftersom batterinivån i läsaren är låg. Ladda läsaren till över 50 % innan du försöker igen.";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
 "Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "Uppdateringen av läsarprogramvaran misslyckades, eftersom läsarens batteri endast är laddat till %.0f%%. Ladda läsaren till över 50 %% innan du försöker igen.";
@@ -4231,7 +4231,7 @@
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "Vi kan inte ansluta till Jetpack-webbplatsen på denna URL. Kontakta oss och be om hjälp.";
 
 /* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
-"We're sorry, we couldn't find any order that match %@" = "We're sorry, we couldn't find any order that match %@";
+"We're sorry, we couldn't find any order that match %@" = "Vi kunde inte hitta någon beställning som matchar %@";
 
 /* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */

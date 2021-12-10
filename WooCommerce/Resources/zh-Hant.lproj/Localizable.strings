@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-12-01 11:32:05+0000 */
+/* Translation-Revision-Date: 2021-12-08 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -10,7 +10,7 @@
 "#%@ %@" = "#%1$@ %2$@";
 
 /* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"%.0f%% complete" = "%.0f%% 已完成，共";
+"%.0f%% complete" = "% 已完成，共 %%";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
 "%1$@" = "%1$@";
@@ -240,7 +240,7 @@
 "Activate WooCommerce Payments" = "啟用 WooCommerce Payments";
 
 /* Name of the activation Jetpack plugin step */
-"Activating" = "Activating";
+"Activating" = "啟用";
 
 /* Application's Active State */
 "Active" = "啟用";
@@ -313,7 +313,7 @@
 "Add a new credit card" = "新增信用卡";
 
 /* Navigates to a screen to create a full manual order */
-"Add a new order" = "Add a new order";
+"Add a new order" = "新增訂單";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -354,7 +354,7 @@
 "Add price to your variations to make them visible on your store" = "為款式新增價格以顯示於商店中";
 
 /* Title text of the button that adds a product when creating a new order */
-"Add product" = "Add product";
+"Add product" = "新增商品";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "新增產品連結";
@@ -418,7 +418,7 @@
 "All available packages have been activated" = "所有可用包裹均已啟用";
 
 /* Name of final step in Install Jetpack flow. */
-"All done" = "All done";
+"All done" = "全部完成";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "已將所有評論標記為已讀";
@@ -647,7 +647,7 @@
 "Capture high-quality product reviews for your store." = "為你的商店擷取高品質的產品評論。";
 
 /* Card method title on the select payment method screen for simple payments */
-"Card" = "Card";
+"Card" = "卡片";
 
 /* Navigates to Card Reader manual */
 "Card reader manual" = "讀卡機手冊";
@@ -659,7 +659,7 @@
 "Carrier name" = "貨運業者名稱";
 
 /* Cash method title on the select payment method screen for simple payments */
-"Cash" = "Cash";
+"Cash" = "現金";
 
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
@@ -712,10 +712,10 @@
 "Choose from device" = "從裝置中選擇";
 
 /* Opens action sheet to choose a type of a new order */
-"Choose new order type" = "Choose new order type";
+"Choose new order type" = "選擇全新訂單類型";
 
 /* Heading text on the select payment method screen for simple payments */
-"Choose your payment method" = "Choose your payment method";
+"Choose your payment method" = "選擇付款方式";
 
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
@@ -794,7 +794,7 @@
 "Connecting to your account" = "連結你的帳號";
 
 /* Name of the step to connect the store to Jetpack */
-"Connecting your store" = "Connecting your store";
+"Connecting your store" = "連結至你的商店";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "聯絡客戶";
@@ -909,16 +909,16 @@
 "Create Shipping Label" = "建立運送標籤";
 
 /* Description of the Action sheet option when the user wants to create full manual order */
-"Create a new manual order" = "Create a new manual order";
+"Create a new manual order" = "建立全新手動訂單";
 
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
-"Create an order with minimal information" = "Create an order with minimal information";
+"Create an order with minimal information" = "建立包含最少資訊的訂單";
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "建立新包裹";
 
 /* Action sheet option when the user wants to create full manual order */
-"Create order" = "Create order";
+"Create order" = "建立訂單";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "從你的裝置建立郵寄標籤！";
@@ -1666,7 +1666,7 @@
 "Install WooCommerce Payments" = "安裝 WooCommerce Payments";
 
 /* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
-"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "Install the free Jetpack plugin to %1$@ and experience the best mobile experience.";
+"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "將 Jetpack 免費外掛程式安裝至 %1$@，獲得最佳行動體驗。";
 
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "安裝 Jetpack 免費外掛程式，獲得最佳行動體驗。";
@@ -2044,7 +2044,7 @@
 "New Attribute Name" = "新屬性名稱";
 
 /* Title for the order creation screen */
-"New Order" = "New Order";
+"New Order" = "新訂單";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "新的分析檢視，讓你查看訪客、報告等內容。";
@@ -2221,7 +2221,7 @@
 "Order #%1$@" = "訂單 #%1$@";
 
 /* Cell title on the beta features screen to enable creating new orders */
-"Order Creation" = "Order Creation";
+"Order Creation" = "建立訂單";
 
 /* Title text of the row that holds the order note when creating a simple payment */
 "Order Note" = "訂單備註";
@@ -2458,7 +2458,7 @@
 "Please wait" = "請稍候";
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
-"Please wait while we connect your site %1$@ with Jetpack." = "Please wait while we connect your site %1$@ with Jetpack.";
+"Please wait while we connect your site %1$@ with Jetpack." = "我們正在連結你的網站 %1$@ 與 Jetpack，請稍候。";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "我們正在建立新款式，請稍候";
@@ -2470,7 +2470,7 @@
 "Please wait while we save this product to your store" = "請稍候，我們正在將此商品儲存到你的商店";
 
 /* Message of the in-progress UI while saving a Variation remotely */
-"Please wait while we save your latest changes" = "Please wait while we save your latest changes";
+"Please wait while we save your latest changes" = "我們正在儲存你的最新變更，請稍候";
 
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
@@ -2907,7 +2907,7 @@
 "Saving your product..." = "正在儲存你的商品…";
 
 /* Title of the in-progress UI while saving a Variation remotely */
-"Saving your variation..." = "Saving your variation...";
+"Saving your variation..." = "正在儲存你的款式…";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "掃瞄條碼以更新貨號";
@@ -3457,7 +3457,7 @@
 "Tax" = "稅金";
 
 /* Tax percentage to be applied to the simple payments order */
-"Tax ((rate)%)" = "Tax ((rate)%)";
+"Tax ((rate)%)" = "稅金 ((rate)%)";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "稅金設定";
@@ -3482,7 +3482,7 @@
 "Taxes" = "稅金";
 
 /* Disclaimer in the simple payments summary screen about taxes. */
-"Taxes are automatically calculated based on your store address." = "Taxes are automatically calculated based on your store address.";
+"Taxes are automatically calculated based on your store address." = "稅金會根據你的商店地址自動計算。";
 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "告訴我們更多關於 %1$@ 的資訊…";
@@ -3491,7 +3491,7 @@
 "Terms of Service" = "服務條款";
 
 /* Cell description on the beta features screen to enable creating new orders */
-"Test out creating new manual orders as we get ready to launch" = "Test out creating new manual orders as we get ready to launch";
+"Test out creating new manual orders as we get ready to launch" = "測試即將推出的「建立全新手動訂單」功能";
 
 /* Cell description on the beta features screen to enable the Simple Payments feature */
 "Test out creating orders with minimal information as we get ready to launch" = "即將推出新功能，歡迎試用並了解如何以最低限度的資訊量建立訂單";
@@ -3641,7 +3641,7 @@
 
 /* Navigates to screen with third party software licenses
    Software Licenses (information page title) */
-"Third Party Licenses" = "Third Party Licenses";
+"Third Party Licenses" = "第三方授權";
 
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
@@ -3739,7 +3739,7 @@
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "若要繼續使用這個 Google 帳號，請先使用你的 WordPress.com 密碼登入。系統只會向你要求一次。";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"To turn on your card reader, briefly press its power button." = "To turn on your card reader, briefly press its power button.";
+"To turn on your card reader, briefly press its power button." = "若要開啟讀卡機，請按一下電源鍵。";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "若要將此應用程式用於 %@，你需要在自己的商店安裝並連結 Jetpack 外掛程式。";
@@ -3855,7 +3855,7 @@
 "Unable to change status of order #%1$d" = "無法變更訂單 #%1$d 的狀態";
 
 /* Notice displayed when order creation fails */
-"Unable to create new order" = "Unable to create new order";
+"Unable to create new order" = "無法建立新訂單";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "無法刪除訂單 #%1$d 的追蹤";
@@ -4067,7 +4067,7 @@
 "Variable product" = "變化商品";
 
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
-"Variation #%1$@" = "Variation #%1$@";
+"Variation #%1$@" = "款式 #%1$@";
 
 /* Text for the notice after creating the first variation. */
 "Variation created" = "已建立款式";
@@ -4231,7 +4231,7 @@
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "我們無法用此 URL 連上 Jetpack 網站。如需協助，請與我們聯絡。";
 
 /* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
-"We're sorry, we couldn't find any order that match %@" = "We're sorry, we couldn't find any order that match %@";
+"We're sorry, we couldn't find any order that match %@" = "不好意思，我們找不到任何符合「%@」的訂單";
 
 /* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */

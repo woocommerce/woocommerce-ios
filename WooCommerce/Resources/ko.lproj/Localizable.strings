@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-12-01 11:32:05+0000 */
+/* Translation-Revision-Date: 2021-12-07 11:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -240,7 +240,7 @@
 "Activate WooCommerce Payments" = "WooCommerce 결제 활성화";
 
 /* Name of the activation Jetpack plugin step */
-"Activating" = "Activating";
+"Activating" = "활성화 중";
 
 /* Application's Active State */
 "Active" = "활성";
@@ -313,7 +313,7 @@
 "Add a new credit card" = "새 신용카드 추가";
 
 /* Navigates to a screen to create a full manual order */
-"Add a new order" = "Add a new order";
+"Add a new order" = "새 주문 추가";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -354,7 +354,7 @@
 "Add price to your variations to make them visible on your store" = "변형이 스토어에 표시되도록 가격 추가";
 
 /* Title text of the button that adds a product when creating a new order */
-"Add product" = "Add product";
+"Add product" = "상품 추가";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "제품 링크 추가";
@@ -418,7 +418,7 @@
 "All available packages have been activated" = "사용 가능한 모든 패키지가 활성화되었음";
 
 /* Name of final step in Install Jetpack flow. */
-"All done" = "All done";
+"All done" = "모두 완료";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "모든 리뷰가 읽음으로 표시됨";
@@ -647,7 +647,7 @@
 "Capture high-quality product reviews for your store." = "스토어에 대한 수준 높은 제품 리뷰 캡처";
 
 /* Card method title on the select payment method screen for simple payments */
-"Card" = "Card";
+"Card" = "카드";
 
 /* Navigates to Card Reader manual */
 "Card reader manual" = "카드 리더 사용설명서";
@@ -659,7 +659,7 @@
 "Carrier name" = "운송업체 이름";
 
 /* Cash method title on the select payment method screen for simple payments */
-"Cash" = "Cash";
+"Cash" = "현금";
 
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
@@ -712,10 +712,10 @@
 "Choose from device" = "기기에서 선택";
 
 /* Opens action sheet to choose a type of a new order */
-"Choose new order type" = "Choose new order type";
+"Choose new order type" = "새 주문 유형 선택";
 
 /* Heading text on the select payment method screen for simple payments */
-"Choose your payment method" = "Choose your payment method";
+"Choose your payment method" = "결제 수단 선택";
 
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
@@ -794,7 +794,7 @@
 "Connecting to your account" = "계정에 연결 중";
 
 /* Name of the step to connect the store to Jetpack */
-"Connecting your store" = "Connecting your store";
+"Connecting your store" = "스토어 연결 중";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "고객에게 문의";
@@ -909,16 +909,16 @@
 "Create Shipping Label" = "배송 레이블 만들기";
 
 /* Description of the Action sheet option when the user wants to create full manual order */
-"Create a new manual order" = "Create a new manual order";
+"Create a new manual order" = "새 수동 주문 생성";
 
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
-"Create an order with minimal information" = "Create an order with minimal information";
+"Create an order with minimal information" = "최소 정보로 주문 생성";
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "새 패키지 생성";
 
 /* Action sheet option when the user wants to create full manual order */
-"Create order" = "Create order";
+"Create order" = "주문 생성";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "기기에서 배송 레이블을 만드세요!";
@@ -1666,7 +1666,7 @@
 "Install WooCommerce Payments" = "WooCommerce 결제 설치";
 
 /* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
-"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "Install the free Jetpack plugin to %1$@ and experience the best mobile experience.";
+"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "무료 젯팩 플러그인을 %1$@에 설치하고 최상의 모바일 환경을 경험해 보세요.";
 
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "무료 젯팩 플러그인을 설치하여 최상의 모바일 환경을 경험하세요.";
@@ -2044,7 +2044,7 @@
 "New Attribute Name" = "새 속성 이름";
 
 /* Title for the order creation screen */
-"New Order" = "New Order";
+"New Order" = "새 주문";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "새로운 분석 보기에서 방문자, 보고서 등을 확인할 수 있습니다.";
@@ -2221,7 +2221,7 @@
 "Order #%1$@" = "주문 #%1$@";
 
 /* Cell title on the beta features screen to enable creating new orders */
-"Order Creation" = "Order Creation";
+"Order Creation" = "주문 생성";
 
 /* Title text of the row that holds the order note when creating a simple payment */
 "Order Note" = "주문 메모";
@@ -2458,7 +2458,7 @@
 "Please wait" = "기다려 주세요.";
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
-"Please wait while we connect your site %1$@ with Jetpack." = "Please wait while we connect your site %1$@ with Jetpack.";
+"Please wait while we connect your site %1$@ with Jetpack." = "%1$@ 사이트 젯팩과 연결하는 동안 기다려 주세요.";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "새 변형을 만드는 동안 기다려 주세요.";
@@ -2470,7 +2470,7 @@
 "Please wait while we save this product to your store" = "이 제품을 스토어에 저장하는 동안 기다려주세요...";
 
 /* Message of the in-progress UI while saving a Variation remotely */
-"Please wait while we save your latest changes" = "Please wait while we save your latest changes";
+"Please wait while we save your latest changes" = "마지막 변경 사항을 저장하는 동안 기다려 주세요.";
 
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
@@ -2907,7 +2907,7 @@
 "Saving your product..." = "제품 저장...";
 
 /* Title of the in-progress UI while saving a Variation remotely */
-"Saving your variation..." = "Saving your variation...";
+"Saving your variation..." = "변형 저장 중...";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "SKU를 업데이트할 바코드 스캔";
@@ -3457,7 +3457,7 @@
 "Tax" = "세금";
 
 /* Tax percentage to be applied to the simple payments order */
-"Tax ((rate)%)" = "Tax ((rate)%)";
+"Tax ((rate)%)" = "세금(세율)";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "세금 설정";
@@ -3482,7 +3482,7 @@
 "Taxes" = "세금";
 
 /* Disclaimer in the simple payments summary screen about taxes. */
-"Taxes are automatically calculated based on your store address." = "Taxes are automatically calculated based on your store address.";
+"Taxes are automatically calculated based on your store address." = "스토어 주소를 기준으로 세금이 자동으로 계산됩니다.";
 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "%1$@에 대한 정보를 알려주세요...";
@@ -3491,7 +3491,7 @@
 "Terms of Service" = "서비스 약관";
 
 /* Cell description on the beta features screen to enable creating new orders */
-"Test out creating new manual orders as we get ready to launch" = "Test out creating new manual orders as we get ready to launch";
+"Test out creating new manual orders as we get ready to launch" = "출시 준비가 되면 전체 수동 주문 생성해 보기";
 
 /* Cell description on the beta features screen to enable the Simple Payments feature */
 "Test out creating orders with minimal information as we get ready to launch" = "출시 준비가 되면 최소한의 정보로 주문 생성해 보기";
@@ -3641,7 +3641,7 @@
 
 /* Navigates to screen with third party software licenses
    Software Licenses (information page title) */
-"Third Party Licenses" = "Third Party Licenses";
+"Third Party Licenses" = "타사 라이선스";
 
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
@@ -3739,7 +3739,7 @@
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "이 Google 계정을 진행하려면 먼저 워드프레스닷컴 비밀번호로 로그인하세요. 이 메시지는 한 번만 표시됩니다.";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"To turn on your card reader, briefly press its power button." = "To turn on your card reader, briefly press its power button.";
+"To turn on your card reader, briefly press its power button." = "카드 리더를 켜려면 전원 버튼만 누르면 됩니다.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "%@에 이 앱을 사용하려면 스토어에 설치되고 연결된 Jetpack 플러그인이 있어야 합니다.";
@@ -3855,7 +3855,7 @@
 "Unable to change status of order #%1$d" = "%1$d번 주문의 상태를 변경할 수 없음";
 
 /* Notice displayed when order creation fails */
-"Unable to create new order" = "Unable to create new order";
+"Unable to create new order" = "새 주문을 생성할 수 없음";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "%1$d번 주문에 대한 추적을 삭제할 수 없음";
@@ -4067,7 +4067,7 @@
 "Variable product" = "옵션 상품";
 
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
-"Variation #%1$@" = "Variation #%1$@";
+"Variation #%1$@" = "변형 #%1$@";
 
 /* Text for the notice after creating the first variation. */
 "Variation created" = "변형 생성됨";
@@ -4231,7 +4231,7 @@
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "현재 URL에서 젯팩 사이트에 연결할 수 없습니다. 도움이 필요하면 연락하세요.";
 
 /* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
-"We're sorry, we couldn't find any order that match %@" = "We're sorry, we couldn't find any order that match %@";
+"We're sorry, we couldn't find any order that match %@" = "죄송합니다. %@과(와) 일치하는 주문을 찾을 수 없습니다.";
 
 /* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-12-01 11:32:05+0000 */
+/* Translation-Revision-Date: 2021-12-07 19:54:03+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -10,7 +10,7 @@
 "#%@ %@" = "#%1$@ %2$@";
 
 /* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"%.0f%% complete" = "مكتمل بنسبة %.0f\uFF05 ";
+"%.0f%% complete" = "مكتمل بنسبة %%% ";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
 "%1$@" = "%1$@";
@@ -240,7 +240,7 @@
 "Activate WooCommerce Payments" = "تفعيل مدفوعات WooCommerce";
 
 /* Name of the activation Jetpack plugin step */
-"Activating" = "Activating";
+"Activating" = "جاري التفعيل";
 
 /* Application's Active State */
 "Active" = "نشط";
@@ -313,7 +313,7 @@
 "Add a new credit card" = "إضافة بطاقة ائتمان جديدة";
 
 /* Navigates to a screen to create a full manual order */
-"Add a new order" = "Add a new order";
+"Add a new order" = "إضافة طلب جديد";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -354,7 +354,7 @@
 "Add price to your variations to make them visible on your store" = "إضافة سعر إلى مجموعاتك لجعلها مرئية على مخزنك";
 
 /* Title text of the button that adds a product when creating a new order */
-"Add product" = "Add product";
+"Add product" = "إضافة منتج";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "إضافة رابط المنتج";
@@ -418,7 +418,7 @@
 "All available packages have been activated" = "تم تفعيل جميع الحزم المتاحة";
 
 /* Name of final step in Install Jetpack flow. */
-"All done" = "All done";
+"All done" = "كل شيء جاهز";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "تم وسم جميع المراجعات كمقروءة";
@@ -647,7 +647,7 @@
 "Capture high-quality product reviews for your store." = "احصل على مراجعات منتج ذات جودة عالية لمخزنك.";
 
 /* Card method title on the select payment method screen for simple payments */
-"Card" = "Card";
+"Card" = "بطاقة";
 
 /* Navigates to Card Reader manual */
 "Card reader manual" = "دليل قارئ البطاقة";
@@ -659,7 +659,7 @@
 "Carrier name" = "اسم شركة النقل";
 
 /* Cash method title on the select payment method screen for simple payments */
-"Cash" = "Cash";
+"Cash" = "الأموال النقدية";
 
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
@@ -712,10 +712,10 @@
 "Choose from device" = "الاختيار من جهاز";
 
 /* Opens action sheet to choose a type of a new order */
-"Choose new order type" = "Choose new order type";
+"Choose new order type" = "اختيار نوع طلب جديد";
 
 /* Heading text on the select payment method screen for simple payments */
-"Choose your payment method" = "Choose your payment method";
+"Choose your payment method" = "اختيار طريقة الدفع الخاصة بك";
 
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
@@ -794,7 +794,7 @@
 "Connecting to your account" = "الربط بحسابك";
 
 /* Name of the step to connect the store to Jetpack */
-"Connecting your store" = "Connecting your store";
+"Connecting your store" = "الاتصال بمتجرك";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "الاتصال بالعميل";
@@ -909,16 +909,16 @@
 "Create Shipping Label" = "إنشاء ملصق الشحن";
 
 /* Description of the Action sheet option when the user wants to create full manual order */
-"Create a new manual order" = "Create a new manual order";
+"Create a new manual order" = "إنشاء طلب يدوي جديد";
 
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
-"Create an order with minimal information" = "Create an order with minimal information";
+"Create an order with minimal information" = "إنشاء طلب باستخدام أقل قدر من المعلومات";
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "إنشاء حزمة جديدة";
 
 /* Action sheet option when the user wants to create full manual order */
-"Create order" = "Create order";
+"Create order" = "إنشاء طلب";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "قم بإنشاء ملصقات الشحن من جهازك!";
@@ -1666,7 +1666,7 @@
 "Install WooCommerce Payments" = "تثبيت مدفوعات WooCommerce";
 
 /* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
-"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "Install the free Jetpack plugin to %1$@ and experience the best mobile experience.";
+"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "قم بتثبيت إضافة Jetpack المجانية على %1$@ واستمتع بأفضل تجربة على الجهاز المحمول.";
 
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "قم بتثبيت إضافة Jetpack المجانية للاستمتاع بأفضل تجربة على الهاتف المحمول.";
@@ -2044,7 +2044,7 @@
 "New Attribute Name" = "اسم السمة الجديدة";
 
 /* Title for the order creation screen */
-"New Order" = "New Order";
+"New Order" = "طلب جديد";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "تسمح لك مشاهدات التحليلات الجديدة بالاطلاع على الزائرين والتقريرات والمزيد.";
@@ -2221,7 +2221,7 @@
 "Order #%1$@" = "الطلب رقم %1$@";
 
 /* Cell title on the beta features screen to enable creating new orders */
-"Order Creation" = "Order Creation";
+"Order Creation" = "إنشاء الطلب";
 
 /* Title text of the row that holds the order note when creating a simple payment */
 "Order Note" = "ملحوظة الطلب";
@@ -2458,7 +2458,7 @@
 "Please wait" = "يُرجى الانتظار";
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
-"Please wait while we connect your site %1$@ with Jetpack." = "Please wait while we connect your site %1$@ with Jetpack.";
+"Please wait while we connect your site %1$@ with Jetpack." = "يرجى الانتظار بينما نقوم بربط موقعك %1$@ بـ Jetpack.";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "يرجى الانتظار في أثناء قيامنا بإنشاء مجموعة جديدة";
@@ -2470,7 +2470,7 @@
 "Please wait while we save this product to your store" = "يرجى الانتظار بينما نحفظ هذا المنتج في مخزنك";
 
 /* Message of the in-progress UI while saving a Variation remotely */
-"Please wait while we save your latest changes" = "Please wait while we save your latest changes";
+"Please wait while we save your latest changes" = "يرجى الانتظار بينما نقوم بحفظ أحدث التغييرات التي أجريتها";
 
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
@@ -2907,7 +2907,7 @@
 "Saving your product..." = "جارٍ حفظ منتجك...";
 
 /* Title of the in-progress UI while saving a Variation remotely */
-"Saving your variation..." = "Saving your variation...";
+"Saving your variation..." = "جارٍ حفظ مجموعتك...";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "مسح الرمز الشريطي ضوئيًا لتحديث وحدة SKU";
@@ -3457,7 +3457,7 @@
 "Tax" = "الضريبة";
 
 /* Tax percentage to be applied to the simple payments order */
-"Tax ((rate)%)" = "Tax ((rate)%)";
+"Tax ((rate)%)" = "الضريبة ((النسبة)%)";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "إعدادات الضريبة";
@@ -3482,7 +3482,7 @@
 "Taxes" = "الضرائب";
 
 /* Disclaimer in the simple payments summary screen about taxes. */
-"Taxes are automatically calculated based on your store address." = "Taxes are automatically calculated based on your store address.";
+"Taxes are automatically calculated based on your store address." = "يتم حساب الضرائب تلقائيًا بناءً على عنوان مخزنك.";
 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "إخبارنا بالمزيد حول %1$@...";
@@ -3491,7 +3491,7 @@
 "Terms of Service" = "شروط الخدمة";
 
 /* Cell description on the beta features screen to enable creating new orders */
-"Test out creating new manual orders as we get ready to launch" = "Test out creating new manual orders as we get ready to launch";
+"Test out creating new manual orders as we get ready to launch" = "اختبر إنشاء طلبات يدوية جديدة بينما نستعد لإطلاقها";
 
 /* Cell description on the beta features screen to enable the Simple Payments feature */
 "Test out creating orders with minimal information as we get ready to launch" = "اختبر إنشاء الطلبات من خلال أقل قدر من المعلومات بينما نستعد لإطلاقها";
@@ -3641,7 +3641,7 @@
 
 /* Navigates to screen with third party software licenses
    Software Licenses (information page title) */
-"Third Party Licenses" = "Third Party Licenses";
+"Third Party Licenses" = "تراخيص خارجية";
 
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
@@ -3739,7 +3739,7 @@
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "للاستمرار باستخدام حساب Google هذا، يُرجى تسجيل الدخول أولاً باستخدام كلمة مرور وردبرس.كوم. سيُطلب منك هذا مرة واحدة فقط.";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"To turn on your card reader, briefly press its power button." = "To turn on your card reader, briefly press its power button.";
+"To turn on your card reader, briefly press its power button." = "لتشغيل قارئ البطاقات لديك، اضغط لفترة وجيزة على زر التشغيل لديك";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "لاستخدام هذا التطبيق مقابل %@، ستحتاج إلى تثبيت إضافة Jetpack واتصالها بمتجرك.";
@@ -3855,7 +3855,7 @@
 "Unable to change status of order #%1$d" = "يتعذر تغيير حالة الطلب رقم ⁦%1$d⁩";
 
 /* Notice displayed when order creation fails */
-"Unable to create new order" = "Unable to create new order";
+"Unable to create new order" = "يتعذر إنشاء طلب جديد";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "يتعذر حذف تعقب الطلب رقم ⁦%1$d⁩";
@@ -4026,7 +4026,7 @@
 "Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "فشل تحديث برنامج القارئ لأن بطارية القارئ منخفضة. يرجى شحن القارئ بنسبة تزيد على 50% قبل المحاولة مرة أخرى.";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
-"Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "فشل تحديث برنامج القارئ لأن بطارية القارئ مشحونة بنسبة %.0f\uFF05. يرجى شحن القارئ بنسبة تزيد على 50\uFF05 قبل المحاولة مرة أخرى.";
+"Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "فشل تحديث برنامج القارئ لأن بطارية القارئ مشحونة بنسبة %%%. يرجى شحن القارئ بنسبة تزيد على 50%% قبل المحاولة مرة أخرى.";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -4067,7 +4067,7 @@
 "Variable product" = "منتج متعدد الأنواع";
 
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
-"Variation #%1$@" = "Variation #%1$@";
+"Variation #%1$@" = "المجموعة #%1$@";
 
 /* Text for the notice after creating the first variation. */
 "Variation created" = "تم إنشاء مجموعة";
@@ -4231,7 +4231,7 @@
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "لا يمكننا الاتصال بموقع Jetpack على عنوان URL هذا. اتصل بنا لطلب المساعدة.";
 
 /* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
-"We're sorry, we couldn't find any order that match %@" = "We're sorry, we couldn't find any order that match %@";
+"We're sorry, we couldn't find any order that match %@" = "عذرًا، لم نتمكن من العثور على أي طلب يطابق %@";
 
 /* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */

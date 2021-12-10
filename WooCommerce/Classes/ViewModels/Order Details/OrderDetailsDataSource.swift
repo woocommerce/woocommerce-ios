@@ -376,14 +376,9 @@ private extension OrderDetailsDataSource {
 
     private func configureCustomerNote(cell: CustomerNoteTableViewCell) {
         cell.headline = Title.customerNote
-        let localizedBody = String.localizedStringWithFormat(
-            NSLocalizedString("“%@”",
-                              comment: "Customer note, wrapped in quotes"),
-            customerNote)
         cell.selectionStyle = .none
-
         if customerNote.isNotEmpty {
-            cell.body = localizedBody
+            cell.body = customerNote.quoted
             cell.onEditTapped = { [weak self] in
                 self?.onCellAction?(.editCustomerNote, nil)
             }

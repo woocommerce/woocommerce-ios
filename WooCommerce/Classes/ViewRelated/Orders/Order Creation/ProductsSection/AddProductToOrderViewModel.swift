@@ -39,13 +39,19 @@ final class AddProductToOrderViewModel: ObservableObject {
     ///
     @Published private(set) var syncStatus: SyncStatus = .none
 
-    /// Handles infinite scroll of product list.
+    /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
-    private let paginationTracker = PaginationTracker()
+    private let syncingCoordinator = SyncingCoordinator()
 
     /// Tracks if there are more products to sync from remote.
     ///
-    @Published private(set) var hasMoreProducts: Bool = false
+    var hasMoreProducts: Bool {
+        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
+            return false
+        }
+
+        return highestPageBeingSynced * syncingCoordinator.pageSize > productsResultsController.numberOfObjects
+    }
 
     /// View models of the ghost rows used during the loading process.
     ///
@@ -68,16 +74,16 @@ final class AddProductToOrderViewModel: ObservableObject {
         self.siteID = siteID
         self.storageManager = storageManager
 
-        configurePaginationTracker()
+        configureSyncingCoordinator()
         configureProductsResultsController()
     }
 }
 
-// MARK: - PaginationTrackerDelegate
-extension AddProductToOrderViewModel: PaginationTrackerDelegate {
+// MARK: - SyncingCoordinatorDelegate & Sync Methods
+extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
     /// Sync products from remote.
     ///
-    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: SyncCompletion?) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
         if products.isEmpty {
             transitionToInitialSyncingState()
         }
@@ -91,18 +97,16 @@ extension AddProductToOrderViewModel: PaginationTrackerDelegate {
                                                        sortOrder: .nameAscending,
                                                        shouldDeleteStoredProductsOnFirstPage: false) { [weak self] result in
             guard let self = self else { return }
-            self.hasMoreProducts = true
 
             switch result {
             case .failure(let error):
                 DDLogError("⛔️ Error synchronizing products during order creation: \(error)")
-            case .success(let hasNextPage):
+            case .success:
                 self.updateProductsResultsController()
-                self.hasMoreProducts = hasNextPage
             }
 
             self.transitionToResultsUpdatedState()
-            onCompletion?(result)
+            onCompletion?(result.isSuccess)
         }
         ServiceLocator.stores.dispatch(action)
     }
@@ -110,13 +114,14 @@ extension AddProductToOrderViewModel: PaginationTrackerDelegate {
     /// Sync first page of products from remote if needed.
     ///
     func syncFirstPage() {
-        paginationTracker.syncFirstPage()
+        syncingCoordinator.synchronizeFirstPage()
     }
 
     /// Sync next page of products from remote.
     ///
     func syncNextPage() {
-        paginationTracker.ensureNextPageIsSynced()
+        let lastIndex = productsResultsController.numberOfObjects - 1
+        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: lastIndex)
     }
 }
 
@@ -154,10 +159,10 @@ private extension AddProductToOrderViewModel {
         }
     }
 
-    /// Setup: Pagination Tracker
+    /// Setup: Syncing Coordinator
     ///
-    func configurePaginationTracker() {
-        paginationTracker.delegate = self
+    func configureSyncingCoordinator() {
+        syncingCoordinator.delegate = self
     }
 }
 

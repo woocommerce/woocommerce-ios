@@ -24,8 +24,8 @@ extension RefundFeesDetailsViewModel {
             currencyFormatter.convertToDecimal(from: $0.total) as Decimal?
         }.reduce(0, +)
 
-        self.feesTaxes = "\(totalTaxes)"
         self.feesSubtotal = "\(total - totalTaxes)"
         self.feesTotal = "\(total)"
+        self.feesTaxes = currencyFormatter.formatAmount(totalTaxes, with: currency) ?? ""
     }
 }

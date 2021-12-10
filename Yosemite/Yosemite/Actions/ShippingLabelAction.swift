@@ -80,6 +80,6 @@ public enum ShippingLabelAction: Action {
 
     /// Fetches shipping scale data, including package weight
     ///
-    case fetchScaleData(siteID: Int64,
-                        completion: (Result<ShippingScaleData, Error>) -> Void)
+    case fetchScaleStatus(siteID: Int64,
+                        completion: (Result<ShippingScaleStatus, Error>) -> Void)
 }

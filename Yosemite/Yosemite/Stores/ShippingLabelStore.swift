@@ -77,8 +77,8 @@ public final class ShippingLabelStore: Store {
                                   packages: packages,
                                   emailCustomerReceipt: emailCustomerReceipt,
                                   completion: completion)
-        case .fetchScaleData(let siteID, let completion):
-            fetchScaleData(siteID: siteID, completion: completion)
+        case .fetchScaleStatus(let siteID, let completion):
+            fetchScaleStatus(siteID: siteID, completion: completion)
         }
     }
 }
@@ -278,8 +278,8 @@ private extension ShippingLabelStore {
         }
     }
 
-    func fetchScaleData(siteID: Int64, completion: @escaping (Result<ShippingScaleData, Error>) -> Void) {
-        remote.fetchScaleData(siteID: siteID) { result in
+    func fetchScaleStatus(siteID: Int64, completion: @escaping (Result<ShippingScaleStatus, Error>) -> Void) {
+        remote.fetchScaleStatus(siteID: siteID) { result in
             switch result {
             case .success(let data):
                 completion(.success(data))

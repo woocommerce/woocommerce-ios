@@ -48,7 +48,7 @@ public protocol ShippingLabelRemoteProtocol {
                              orderID: Int64,
                              labelIDs: [Int64],
                              completion: @escaping (Result<[ShippingLabelStatusPollingResponse], Error>) -> Void)
-    func fetchScaleData(siteID: Int64, completion: @escaping (Result<ShippingScaleData, Error>) -> Void)
+    func fetchScaleStatus(siteID: Int64, completion: @escaping (Result<ShippingScaleStatus, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints.
@@ -311,11 +311,11 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
 
     /// Fetches the scale data including weight most recently reported.
     ///
-    public func fetchScaleData(siteID: Int64,
-                               completion: @escaping(Result<ShippingScaleData, Error>) -> Void) {
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: Path.scaleData)
+    public func fetchScaleStatus(siteID: Int64,
+                               completion: @escaping(Result<ShippingScaleStatus, Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: Path.scaleStatus)
 
-        let mapper = ShippingScaleDataMapper()
+        let mapper = ShippingScaleStatusMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -328,7 +328,7 @@ private extension ShippingLabelRemote {
         static let normalizeAddress = "normalize-address"
         static let packages = "packages"
         static let accountSettings = "account/settings"
-        static let scaleData = "connect/scale"
+        static let scaleStatus = "scale"
     }
 
     enum ParameterKey {

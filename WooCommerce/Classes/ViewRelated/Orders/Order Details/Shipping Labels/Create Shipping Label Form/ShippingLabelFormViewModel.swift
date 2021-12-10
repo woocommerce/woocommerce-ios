@@ -165,7 +165,7 @@ final class ShippingLabelFormViewModel {
 
     private var scaleTimer: Timer?
     private var isFetchingScaleData: Bool = false
-    private(set) var scaleData: ShippingScaleData?
+    private(set) var scaleStatus: ShippingScaleStatus?
 
     init(order: Order,
          originAddress: Address?,
@@ -744,8 +744,8 @@ private extension ShippingLabelFormViewModel {
 
         print("==== in ShippingLabelFormViewModel monitorScale, triggering fetch")
 
-        let action = ShippingLabelAction.fetchScaleData(siteID: siteID) { [weak self] result in
-            print("==== in ShippingLabelFormViewModel monitorScale fetchScaleData completion")
+        let action = ShippingLabelAction.fetchScaleStatus(siteID: siteID) { [weak self] result in
+            print("==== in ShippingLabelFormViewModel monitorScale fetchScaleStatus completion")
 
             guard let self = self else {
                 print("==== nil self")
@@ -755,9 +755,10 @@ private extension ShippingLabelFormViewModel {
             self.isFetchingScaleData = false
 
             switch result {
-            case .success(let scaleData):
-                self.scaleData = scaleData
-                print("==== success \(scaleData)")
+            case .success(let scaleStatus):
+                self.scaleStatus = scaleStatus
+                print("==== success \(scaleStatus)")
+                // TODO: If the weight is more than say 6 seconds old, don't use it
                 self.onChange?()
             case .failure(let error):
                 print("==== failure \(error)")

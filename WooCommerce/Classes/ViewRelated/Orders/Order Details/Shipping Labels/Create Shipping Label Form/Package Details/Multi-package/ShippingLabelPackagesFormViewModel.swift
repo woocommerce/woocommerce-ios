@@ -75,6 +75,9 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
+
+        print("==== in ShippingLabelPackagesFormViewModel init")
+
         self.order = order
         self.packagesResponse = packagesResponse
         self.stores = stores
@@ -88,6 +91,10 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
         syncProductVariations()
         configureDefaultPackage()
         configureItemViewModels(order: order)
+    }
+
+    deinit {
+        print("==== in ShippingLabelPackagesFormViewModel deinit")
     }
 
     func confirmPackageSelection() {

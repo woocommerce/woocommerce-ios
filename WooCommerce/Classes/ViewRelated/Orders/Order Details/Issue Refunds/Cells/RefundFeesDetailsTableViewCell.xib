@@ -21,10 +21,6 @@
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="6gF-5y-yIx">
                         <rect key="frame" x="20" y="0.0" width="374" height="130"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yfz-xU-B6R">
-                                <rect key="frame" x="0.0" y="0.0" width="374" height="0.0"/>
-                                <color key="backgroundColor" systemColor="separatorColor"/>
-                            </view>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="hJl-c1-HQp">
                                 <rect key="frame" x="0.0" y="0.0" width="374" height="77"/>
                                 <subviews>

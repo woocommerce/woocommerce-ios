@@ -24,6 +24,30 @@ final class RefundFeesDetailsTableViewCell: UITableViewCell {
     /// Displays the total value
     ///
     @IBOutlet private var totalPriceLabel: UILabel!
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        applyCellStyles()
+    }
+}
+
+// MARK: View Styles Configuration
+
+private extension RefundFeesDetailsTableViewCell {
+    func applyCellStyles() {
+        applyDefaultBackgroundStyle()
+        applyLabelsStyles()
+    }
+
+    func applyLabelsStyles() {
+        subtotalTitleLabel.applyBodyStyle()
+        subtotalPriceLabel.applyBodyStyle()
+        taxTitleLabel.applyBodyStyle()
+        taxPriceLabel.applyBodyStyle()
+        totalTitleLabel.applyHeadlineStyle()
+        totalPriceLabel.applyHeadlineStyle()
+
+    }
 }
 
 // MARK: ViewModel Rendering

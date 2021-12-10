@@ -215,6 +215,11 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
             let cell = tableView.dequeueReusableCell(RefundShippingDetailsTableViewCell.self, for: indexPath)
             cell.configure(with: viewModel)
             return cell
+        case let viewModel as IssueRefundViewModel.FeesSwitchViewModel:
+            let cell = tableView.dequeueReusableCell(SwitchTableViewCell.self, for: indexPath)
+            cell.title = viewModel.title
+            cell.isOn = viewModel.isOn
+            return cell
         case let viewModel as RefundFeesDetailsViewModel:
             let cell = tableView.dequeueReusableCell(RefundFeesDetailsTableViewCell.self, for: indexPath)
             cell.configure(with: viewModel)

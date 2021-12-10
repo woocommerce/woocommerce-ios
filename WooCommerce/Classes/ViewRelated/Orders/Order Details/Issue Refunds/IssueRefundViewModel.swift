@@ -217,6 +217,8 @@ private extension IssueRefundViewModel {
 extension IssueRefundViewModel {
     enum Localization {
         static let refundShippingTitle = NSLocalizedString("Refund Shipping", comment: "Title of the switch in the IssueRefund screen to refund shipping")
+        static let refundFeesTitle = NSLocalizedString(
+            "Refund Fees", comment: "Title of the switch in the IssueRefund screen to refund fees")
         static let itemSingular = NSLocalizedString("1 item selected", comment: "Title of the label indicating that there is 1 item to refund.")
         static let itemsPlural = NSLocalizedString("%d items selected", comment: "Title of the label indicating that there are multiple items to refund.")
         static let unsupportedFeesRefund = NSLocalizedString(
@@ -239,6 +241,12 @@ extension IssueRefundViewModel {
 
     /// ViewModel that represents the shipping switch row.
     struct ShippingSwitchViewModel: IssueRefundRow {
+        let title: String
+        let isOn: Bool
+    }
+
+    /// ViewModel that represents the fees switch row.
+    struct FeesSwitchViewModel: IssueRefundRow {
         let title: String
         let isOn: Bool
     }
@@ -304,11 +312,13 @@ extension IssueRefundViewModel {
             return nil
         }
 
+        // TODO Switching on/off behavior will be added in an upcoming PR
+        let switchRow = FeesSwitchViewModel(title: Localization.refundFeesTitle, isOn: false)
         let detailsRow = RefundFeesDetailsViewModel(fees: state.order.fees,
                                                     currency: state.order.currency,
                                                     currencySettings: state.currencySettings)
 
-        return Section(rows: [detailsRow])
+        return Section(rows: [switchRow, detailsRow])
     }
 
     /// If the order has fees, this returns a row with a message that refunding fees is currently

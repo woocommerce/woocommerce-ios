@@ -68,12 +68,6 @@ final class AddProductToOrderViewModel: ObservableObject {
         configurePaginationTracker()
         configureProductsResultsController()
     }
-
-    /// Sync next page of products from remote.
-    ///
-    func loadMoreProducts() {
-        paginationTracker.ensureNextPageIsSynced()
-    }
 }
 
 // MARK: - PaginationTrackerDelegate
@@ -81,6 +75,9 @@ extension AddProductToOrderViewModel: PaginationTrackerDelegate {
     /// Sync products from remote.
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: SyncCompletion?) {
+        if products.isEmpty {
+            transitionToInitialSyncingState()
+        }
         let action = ProductAction.synchronizeProducts(siteID: siteID,
                                                        pageNumber: pageNumber,
                                                        pageSize: pageSize,
@@ -92,22 +89,46 @@ extension AddProductToOrderViewModel: PaginationTrackerDelegate {
                                                        shouldDeleteStoredProductsOnFirstPage: false) { [weak self] result in
             guard let self = self else { return }
             self.hasMoreProducts = true
+
             switch result {
             case .failure(let error):
-                self.syncStatus = .error
                 DDLogError("⛔️ Error synchronizing products during order creation: \(error)")
             case .success(let hasNextPage):
                 self.updateProductsResultsController()
-                if self.products.isNotEmpty {
-                    self.syncStatus = .success
-                } else {
-                    self.syncStatus = .error
-                }
                 self.hasMoreProducts = hasNextPage
-                onCompletion?(result)
             }
+
+            self.transitionToResultsUpdatedState()
+            onCompletion?(result)
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Sync first page of products from remote if needed.
+    ///
+    func syncFirstPage() {
+        paginationTracker.syncFirstPage()
+    }
+
+    /// Sync next page of products from remote.
+    ///
+    func syncNextPage() {
+        paginationTracker.ensureNextPageIsSynced()
+    }
+}
+
+// MARK: - Finite State Machine Management
+private extension AddProductToOrderViewModel {
+    /// Update state for initial sync from remote.
+    ///
+    func transitionToInitialSyncingState() {
+        syncStatus = .firstPageSync
+    }
+
+    /// Update state after sync is complete.
+    ///
+    func transitionToResultsUpdatedState() {
+        syncStatus = products.isNotEmpty ? .results: .empty
     }
 }
 
@@ -117,15 +138,7 @@ private extension AddProductToOrderViewModel {
     ///
     func configureProductsResultsController() {
         updateProductsResultsController()
-
-        // Trigger a sync request if there are no products.
-        guard products.isNotEmpty else {
-            syncStatus = .firstPageLoad
-            paginationTracker.syncFirstPage()
-            return
-        }
-
-        syncStatus = .success
+        transitionToResultsUpdatedState()
     }
 
     /// Fetches products from storage.
@@ -138,6 +151,8 @@ private extension AddProductToOrderViewModel {
         }
     }
 
+    /// Setup: Pagination Tracker
+    ///
     func configurePaginationTracker() {
         paginationTracker.delegate = self
     }
@@ -148,9 +163,9 @@ extension AddProductToOrderViewModel {
     /// Represents possible statuses for syncing products
     ///
     enum SyncStatus {
-        case firstPageLoad
-        case success
-        case error
+        case firstPageSync
+        case results
+        case empty
         case none
     }
 

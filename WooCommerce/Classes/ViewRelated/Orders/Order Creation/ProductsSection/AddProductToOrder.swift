@@ -15,13 +15,13 @@ struct AddProductToOrder: View {
         NavigationView {
             Group {
                 switch viewModel.syncStatus {
-                case .success:
+                case .results:
                     List {
                         ForEach(viewModel.productRows) { rowViewModel in
                             ProductRow(viewModel: rowViewModel)
                                 .onAppear {
                                     if rowViewModel == viewModel.productRows.last {
-                                        viewModel.loadMoreProducts()
+                                        viewModel.syncNextPage()
                                     }
                                 }
                         }
@@ -34,10 +34,10 @@ struct AddProductToOrder: View {
                             .renderedIf(viewModel.hasMoreProducts)
                     }
                     .listStyle(PlainListStyle())
-                case .error:
+                case .empty:
                     EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
                         .frame(maxHeight: .infinity)
-                case .firstPageLoad:
+                case .firstPageSync:
                     List(viewModel.ghostRows) { rowViewModel in
                         ProductRow(viewModel: rowViewModel)
                             .redacted(reason: .placeholder)
@@ -58,6 +58,9 @@ struct AddProductToOrder: View {
                         isPresented.toggle()
                     }
                 }
+            }
+            .onAppear {
+                viewModel.syncFirstPage()
             }
         }
         .wooNavigationBarStyle()

@@ -61,4 +61,8 @@ public enum FeatureFlag: Int {
     /// Display the new tab "Menu" in the tab bar.
     ///
     case hubMenu
+
+    /// Display the button "Analytics" in the hub
+    ///
+    case analytics
 }

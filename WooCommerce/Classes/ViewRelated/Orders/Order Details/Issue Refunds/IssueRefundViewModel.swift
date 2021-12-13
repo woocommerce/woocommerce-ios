@@ -320,6 +320,10 @@ extension IssueRefundViewModel {
             return nil
         }
 
+        guard isAnyFeeAvailableForRefund() == false else {
+            return nil
+        }
+
         let switchRow = FeesSwitchViewModel(title: Localization.refundFeesTitle, isOn: state.shouldRefundFees)
         guard state.shouldRefundFees else {
             return Section(rows: [switchRow])
@@ -417,6 +421,11 @@ extension IssueRefundViewModel {
 
         // Return true if there is any non-empty shipping refund
         return state.refunds.first { $0.shippingLines?.isNotEmpty ?? false } != nil
+    }
+
+    private func isAnyFeeAvailableForRefund() -> Bool {
+        // Return false if there are no fees left to be refunded.
+        return state.order.fees.isEmpty
     }
 
     /// Return an array of `RefundableOrderItems` by taking out all previously refunded items

@@ -42,7 +42,7 @@ final class AddProductToOrderViewModel: ObservableObject {
 
     /// Closure to be invoked when a product is selected
     ///
-    let onProductSelected: (Product) -> Void
+    let onProductSelected: ((Product) -> Void)?
 
     // MARK: Sync & Storage properties
 
@@ -78,7 +78,7 @@ final class AddProductToOrderViewModel: ObservableObject {
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         onProductSelected: @escaping (Product) -> Void) {
+         onProductSelected: ((Product) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -94,7 +94,7 @@ final class AddProductToOrderViewModel: ObservableObject {
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }
-        onProductSelected(selectedProduct)
+        onProductSelected?(selectedProduct)
     }
 }
 

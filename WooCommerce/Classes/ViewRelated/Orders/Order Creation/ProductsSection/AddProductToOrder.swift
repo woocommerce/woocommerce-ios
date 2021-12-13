@@ -82,7 +82,7 @@ private extension AddProductToOrder {
 
 struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = AddProductToOrderViewModel(siteID: 123, onProductSelected: { _ in })
+        let viewModel = AddProductToOrderViewModel(siteID: 123)
 
         AddProductToOrder(isPresented: .constant(true), viewModel: viewModel)
     }

@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents a Product Entity.
 ///
-public struct Product: Codable, GeneratedCopiable, Equatable {
+public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable {
     public let siteID: Int64
     public let productID: Int64
     public let name: String
@@ -45,7 +45,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
     public let taxClass: String?
 
     public let manageStock: Bool
-    public let stockQuantity: Int64?    // API reports Int or null
+    public let stockQuantity: Decimal?    // Core API reports Int or null; some extensions allow decimal values as well
     public let stockStatusKey: String   // instock, outofstock, backorder
 
     public let backordersKey: String    // no, notify, yes
@@ -83,6 +83,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
 
     public let menuOrder: Int
 
+    public let addOns: [ProductAddOn]
+
     /// Computed Properties
     ///
     public var productStatus: ProductStatus {
@@ -107,6 +109,30 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
 
     public var productTaxStatus: ProductTaxStatus {
         return ProductTaxStatus(rawValue: taxStatusKey)
+    }
+
+    /// Filtered product attributes available for variations
+    /// (attributes with `variation == true`)
+    ///
+    public var attributesForVariations: [ProductAttribute] {
+        attributes.filter { $0.variation }
+    }
+
+    /// Whether the product has an integer (or nil) stock quantity.
+    /// Decimal (non-integer) stock quantities currently aren't accepted by the Core API.
+    /// Related issue: https://github.com/woocommerce/woocommerce-ios/issues/3494
+    public var hasIntegerStockQuantity: Bool {
+        guard let stockQuantity = stockQuantity else {
+            return true
+        }
+
+        return stockQuantity.isInteger
+    }
+
+    /// Returns `true` if the product has a remote representation; `false` otherwise.
+    ///
+    public var existsRemotely: Bool {
+        productID != 0
     }
 
     /// Product struct initializer.
@@ -144,7 +170,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
                 taxStatusKey: String,
                 taxClass: String?,
                 manageStock: Bool,
-                stockQuantity: Int64?,
+                stockQuantity: Decimal?,
                 stockStatusKey: String,
                 backordersKey: String,
                 backordersAllowed: Bool,
@@ -172,7 +198,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
                 defaultAttributes: [ProductDefaultAttribute],
                 variations: [Int64],
                 groupedProducts: [Int64],
-                menuOrder: Int) {
+                menuOrder: Int,
+                addOns: [ProductAddOn]) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -235,6 +262,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         self.variations = variations
         self.groupedProducts = groupedProducts
         self.menuOrder = menuOrder
+        self.addOns = addOns
     }
 
     /// The public initializer for Product.
@@ -274,8 +302,10 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
                                                       forKey: .price,
                                                       alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
             ?? ""
-
-        let regularPrice = try container.decodeIfPresent(String.self, forKey: .regularPrice)
+        let regularPrice = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                             forKey: .regularPrice,
+                                                             alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
+            ?? ""
 
         let onSale = try container.decode(Bool.self, forKey: .onSale)
 
@@ -318,14 +348,14 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
                                                                 })
         ]) ?? false
 
-        let stockQuantity = try container.decodeIfPresent(Int64.self, forKey: .stockQuantity)
+        let stockQuantity = try container.decodeIfPresent(Decimal.self, forKey: .stockQuantity)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
         let backordersKey = try container.decode(String.self, forKey: .backordersKey)
         let backordersAllowed = try container.decode(Bool.self, forKey: .backordersAllowed)
         let backordered = try container.decode(Bool.self, forKey: .backordered)
 
-        let soldIndividually = try container.decode(Bool.self, forKey: .soldIndividually)
+        let soldIndividually = try container.decodeIfPresent(Bool.self, forKey: .soldIndividually) ?? false
         let weight = try container.decodeIfPresent(String.self, forKey: .weight)
         let dimensions = try container.decode(ProductDimensions.self, forKey: .dimensions)
 
@@ -354,6 +384,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         let groupedProducts = try container.decode([Int64].self, forKey: .groupedProducts)
 
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
+
+        // In some isolated cases, it appears to be some malformed meta-data that causes this line to throw hence the whole product decoding to throw.
+        // Since add-ons are optional, `try?` will be used to prevent the whole decoding to stop.
+        // https://github.com/woocommerce/woocommerce-ios/issues/4205
+        let addOns = (try? container.decodeIfPresent(ProductAddOnEnvelope.self, forKey: .metadata)?.revolve()) ?? []
 
         self.init(siteID: siteID,
                   productID: productID,
@@ -416,7 +451,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
                   defaultAttributes: defaultAttributes,
                   variations: variations,
                   groupedProducts: groupedProducts,
-                  menuOrder: menuOrder)
+                  menuOrder: menuOrder,
+                  addOns: addOns)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -461,7 +497,12 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         try container.encode(sku, forKey: .sku)
         try container.encode(manageStock, forKey: .manageStock)
         try container.encode(soldIndividually, forKey: .soldIndividually)
-        try container.encode(stockQuantity, forKey: .stockQuantity)
+
+        // API currently only accepts integer values for stock quantity
+        if hasIntegerStockQuantity {
+            try container.encode(stockQuantity, forKey: .stockQuantity)
+        }
+
         try container.encode(backordersKey, forKey: .backordersKey)
         try container.encode(stockStatusKey, forKey: .stockStatusKey)
         try container.encode(virtual, forKey: .virtual)
@@ -504,6 +545,13 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         try container.encode(downloads, forKey: .downloads)
         try container.encode(downloadLimit, forKey: .downloadLimit)
         try container.encode(downloadExpiry, forKey: .downloadExpiry)
+
+        // Linked Products (Upsells and Cross-sell Products)
+        try container.encode(upsellIDs, forKey: .upsellIDs)
+        try container.encode(crossSellIDs, forKey: .crossSellIDs)
+
+        // Attributes
+        try container.encode(attributes, forKey: .attributes)
     }
 }
 
@@ -587,56 +635,7 @@ private extension Product {
         case variations         = "variations"
         case groupedProducts    = "grouped_products"
         case menuOrder          = "menu_order"
-    }
-}
-
-
-// MARK: - Comparable Conformance
-//
-extension Product: Comparable {
-    public static func < (lhs: Product, rhs: Product) -> Bool {
-        /// Note: stockQuantity can be `null` in the API,
-        /// which is why we are unable to sort by it here.
-        ///
-        return lhs.siteID < rhs.siteID ||
-            (lhs.siteID == rhs.siteID && lhs.productID < rhs.productID) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name < rhs.name) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug < rhs.slug) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated < rhs.dateCreated) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey < rhs.productTypeKey) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey == rhs.productTypeKey &&
-                lhs.statusKey < rhs.statusKey) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey == rhs.productTypeKey &&
-                lhs.statusKey == rhs.statusKey &&
-                lhs.stockStatusKey < rhs.stockStatusKey) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey == rhs.productTypeKey &&
-                lhs.statusKey == rhs.statusKey &&
-                lhs.stockStatusKey == rhs.stockStatusKey &&
-                lhs.averageRating < rhs.averageRating) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey == rhs.productTypeKey &&
-                lhs.statusKey == rhs.statusKey &&
-                lhs.stockStatusKey == rhs.stockStatusKey &&
-                lhs.averageRating == rhs.averageRating &&
-                lhs.ratingCount < rhs.ratingCount)
+        case metadata           = "meta_data"
     }
 }
 

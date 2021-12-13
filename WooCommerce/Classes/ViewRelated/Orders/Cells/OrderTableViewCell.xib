@@ -66,7 +66,7 @@
                     <constraint firstItem="w2s-RF-ahH" firstAttribute="top" secondItem="C8B-hF-50d" secondAttribute="topMargin" constant="8" id="PYm-SD-sSv"/>
                     <constraint firstItem="w2s-RF-ahH" firstAttribute="leading" secondItem="C8B-hF-50d" secondAttribute="leadingMargin" id="Vj7-Ev-DBC"/>
                     <constraint firstAttribute="trailing" secondItem="w2s-RF-ahH" secondAttribute="trailing" constant="8" id="Wgd-sx-xWk"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="w2s-RF-ahH" secondAttribute="bottom" constant="8" id="YAb-lm-rXp"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="w2s-RF-ahH" secondAttribute="bottom" priority="999" constant="8" id="YAb-lm-rXp"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

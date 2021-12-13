@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents a ProductDefaultAttribute entity.
 ///
-public struct ProductDefaultAttribute: Decodable {
+public struct ProductDefaultAttribute: Decodable, Equatable, GeneratedFakeable {
     public let attributeID: Int64
     public let name: String?
     public let option: String?
@@ -48,12 +48,6 @@ private extension ProductDefaultAttribute {
 // MARK: - Comparable Conformance
 //
 extension ProductDefaultAttribute: Comparable {
-    public static func == (lhs: ProductDefaultAttribute, rhs: ProductDefaultAttribute) -> Bool {
-        return lhs.attributeID == rhs.attributeID &&
-            lhs.name == rhs.name &&
-            lhs.option == rhs.option
-    }
-
     public static func < (lhs: ProductDefaultAttribute, rhs: ProductDefaultAttribute) -> Bool {
         let lhsName = lhs.name ?? ""
         let rhsName = rhs.name ?? ""

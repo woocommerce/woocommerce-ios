@@ -1,4 +1,5 @@
 import UIKit
+import Observables
 
 /// Watches for scroll content offset changes and notifies its subscribers if the scroll position is over a threshold.
 ///

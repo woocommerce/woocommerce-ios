@@ -7,7 +7,7 @@ final class ProductTagsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Dummy Site ID
     ///
@@ -15,7 +15,7 @@ final class ProductTagsRemoteTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        network = MockupNetwork()
+        network = MockNetwork()
     }
 
     override func tearDown() {

@@ -68,11 +68,10 @@ private extension AddProductCategoryViewController {
         title = Strings.titleView
 
         addCloseNavigationBarButton(title: Strings.cancelButton)
-        configureRightBarButtomitemAsSave()
-        removeNavigationBackBarButtonText()
+        configureRightBarButtonItemAsSave()
     }
 
-    func configureRightBarButtomitemAsSave() {
+    func configureRightBarButtonItemAsSave() {
         navigationItem.setRightBarButton(UIBarButtonItem(title: Strings.saveButton,
                                                          style: .done,
                                                          target: self,
@@ -82,7 +81,7 @@ private extension AddProductCategoryViewController {
     }
 
     func configureRightButtonItemAsSpinner() {
-        let activityIndicator = UIActivityIndicatorView(style: .white)
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
         activityIndicator.hidesWhenStopped = true
         activityIndicator.startAnimating()
 
@@ -130,7 +129,7 @@ extension AddProductCategoryViewController {
         let action = ProductCategoryAction.addProductCategory(siteID: siteID,
                                                               name: categoryName,
                                                               parentID: selectedParentCategory?.categoryID) { [weak self] (result) in
-            self?.configureRightBarButtomitemAsSave()
+            self?.configureRightBarButtonItemAsSave()
             switch result {
             case .success(let category):
                 self?.onCompletion(category)
@@ -216,7 +215,7 @@ private extension AddProductCategoryViewController {
         switch cell {
         case let cell as TextFieldTableViewCell where row == .title:
             configureTitle(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .parentCategory:
+        case let cell as TitleAndValueTableViewCell where row == .parentCategory:
             configureParentCategory(cell: cell)
         default:
             fatalError()
@@ -231,12 +230,12 @@ private extension AddProductCategoryViewController {
                                                             self?.newCategoryTitle = newCategoryName
 
             }, onTextDidBeginEditing: {
-        }, inputFormatter: nil, keyboardType: .default)
+        }, onTextDidReturn: nil, inputFormatter: nil, keyboardType: .default)
         cell.configure(viewModel: viewModel)
         cell.applyStyle(style: .body)
     }
 
-    func configureParentCategory(cell: SettingTitleAndValueTableViewCell) {
+    func configureParentCategory(cell: TitleAndValueTableViewCell) {
         cell.updateUI(title: Strings.parentCellTitle, value: selectedParentCategory?.name ?? Strings.parentCellPlaceholder)
         cell.selectionStyle = .none
         cell.accessoryType = .disclosureIndicator
@@ -260,7 +259,7 @@ private extension AddProductCategoryViewController {
             case .title:
                 return TextFieldTableViewCell.self
             case .parentCategory:
-                return SettingTitleAndValueTableViewCell.self
+                return TitleAndValueTableViewCell.self
             }
         }
 

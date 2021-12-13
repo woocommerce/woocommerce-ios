@@ -10,7 +10,7 @@ class EntityListenerTests: XCTestCase {
 
     /// InMemory Storage!
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
     /// Returns the NSMOC associated to the Main Thread
     ///
@@ -23,7 +23,7 @@ class EntityListenerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
     }
 
 

@@ -1,9 +1,16 @@
 import XCTest
+import Difference
 
-/// Asserts that an array is empty.
+/// Asserts that a collection is empty.
 ///
-public func assertEmpty<Element>(_ array: [Element], file: StaticString = #file, line: UInt = #line) {
-    XCTAssertTrue(array.isEmpty, "Expected array \(array) to be empty.", file: file, line: line)
+public func assertEmpty<T: Collection>(_ collection: T, file: StaticString = #file, line: UInt = #line) {
+    XCTAssertTrue(collection.isEmpty, "Expected collection \(collection) to be empty.", file: file, line: line)
+}
+
+/// Asserts that a collection is not empty.
+///
+public func assertNotEmpty<T: Collection>(_ collection: T, file: StaticString = #file, line: UInt = #line) {
+    XCTAssertFalse(collection.isEmpty, "Expected collection \(collection) to not be empty.", file: file, line: line)
 }
 
 /// Asserts that `lhs` has the same pointer address as `rhs`.
@@ -40,4 +47,29 @@ public func assertThat<T>(_ subject: Any?, isAnInstanceOf expectedType: T.Type, 
                   "Expected \(subject) to be an instance of \(expectedType)",
                   file: file,
                   line: line)
+}
+
+extension XCTestCase {
+    /// Alternative to the regular `XCTAssertEqual` that outputs a `diff` between the `expect` and `received` objects.
+    ///
+    public func assertEqual<T: Equatable>(_ expected: @autoclosure () throws -> T,
+                                          _ received: @autoclosure () throws -> T) {
+        do {
+            let expected = try expected()
+            let received = try received()
+            guard expected != received else {
+                return
+            }
+
+            record(
+                XCTIssue(type: .assertionFailure,
+                         compactDescription: "assertEqual failed: Found difference for \n" + diff(expected, received).joined(separator: ", "))
+            )
+        }
+        catch {
+            record(
+                XCTIssue(type: .uncaughtException, compactDescription: "Caught error while testing: \(error)")
+            )
+        }
+    }
 }

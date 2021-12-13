@@ -7,7 +7,7 @@
 			"type": "text",
 			"default": "",
 			"tip": "The street address for your business location.",
-			"value": "",
+			"value": "60 29th Street #343",
 			"_links": {
 				"self": [
 					{

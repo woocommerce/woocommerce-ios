@@ -58,7 +58,8 @@ struct DefaultImageService: ImageService {
                                            placeholder: UIImage? = nil,
                                            progressBlock: ImageDownloadProgressBlock? = nil,
                                            completion: ImageDownloadCompletion? = nil) {
-        let url = URL(string: url ?? "")
+        let encodedString = url?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        let url = URL(string: encodedString ?? "")
         imageView.kf.setImage(with: url,
                               placeholder: placeholder,
                               options: defaultOptions,

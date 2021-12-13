@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents a Shipping Line Entity.
 ///
-public struct ShippingLine: Decodable, Equatable {
+public struct ShippingLine: Decodable, Equatable, GeneratedFakeable {
     public let shippingID: Int64
     public let methodTitle: String
     public let methodID: String

@@ -2,6 +2,7 @@ import UIKit
 import CoreData
 import Storage
 import class Networking.UserAgent
+import Experiments
 
 import CocoaLumberjack
 import KeychainAccess
@@ -9,6 +10,8 @@ import WordPressUI
 import WordPressKit
 import WordPressAuthenticator
 import AutomatticTracks
+
+import class Yosemite.ScreenshotStoresManager
 
 #if DEBUG
 import Wormholy
@@ -36,35 +39,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     /// Tab Bar Controller
     ///
     var tabBarController: MainTabBarController? {
-        return window?.rootViewController as? MainTabBarController
+        appCoordinator?.tabBarController
     }
 
     /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
     ///
-    @available(iOS 13.0, *)
     private lazy var appleIDCredentialChecker = AppleIDCredentialChecker()
 
     // MARK: - AppDelegate Methods
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-
-        // As first thing, setup the crash logging
-        setupCrashLogging()
-
         // Setup Components
         setupAnalytics()
         setupAuthenticationManager()
         setupCocoaLumberjack()
         setupLogLevel(.verbose)
-        setupNoticePresenter()
         setupPushNotificationsManagerIfPossible()
         setupAppRatingManager()
         setupWormholy()
         setupKeyboardStateProvider()
         handleLaunchArguments()
-        if #available(iOS 13.0, *) {
-            appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
-        }
+        appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
 
         // Components that require prior Auth
         setupZendesk()
@@ -80,9 +75,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
+        startABTesting()
+
         // Setup the Interface!
         setupMainWindow()
         setupComponentsAppearance()
+        setupNoticePresenter()
 
         // Start app navigation.
         appCoordinator?.start()
@@ -155,17 +153,11 @@ private extension AppDelegate {
     /// Sets up the main UIWindow instance.
     ///
     func setupMainWindow() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
+        let window = UIWindow()
+        window.makeKeyAndVisible()
+        self.window = window
 
-        window = UIWindow()
-        window?.rootViewController = storyboard.instantiateInitialViewController()
-        window?.makeKeyAndVisible()
-
-        guard let tabBarController = tabBarController else {
-            assertionFailure("Unexpected root view controller: \(String(describing: window?.rootViewController))")
-            return
-        }
-        appCoordinator = AppCoordinator(tabBarController: tabBarController)
+        appCoordinator = AppCoordinator(window: window)
     }
 
     /// Sets up all of the component(s) Appearance.
@@ -198,7 +190,7 @@ private extension AppDelegate {
         appearance.topDividerColor = appearance.bodyBackgroundColor
 
         appearance.titleTextColor = .text
-        appearance.titleFont = UIFont.title2
+        appearance.titleFont = UIFont.title2SemiBold
 
         appearance.bodyTextColor = .text
         appearance.bodyFont = UIFont.body
@@ -217,13 +209,6 @@ private extension AppDelegate {
         appearance.primaryNormalBorderColor = .primaryButtonBorder
         appearance.primaryHighlightBackgroundColor = .primaryButtonDownBackground
         appearance.primaryHighlightBorderColor = .primaryButtonDownBorder
-    }
-
-    /// Sets up Crash Logging
-    ///
-    func setupCrashLogging() {
-        let eventLogging = EventLogging(dataSource: WCEventLoggingDataSource(), delegate: WCEventLoggingDelegate())
-        CrashLogging.start(withDataProvider: WCCrashLoggingDataProvider(), eventLogging: eventLogging)
     }
 
     /// Sets up the Zendesk SDK.
@@ -270,7 +255,7 @@ private extension AppDelegate {
     ///
     func setupNoticePresenter() {
         var noticePresenter = ServiceLocator.noticePresenter
-        noticePresenter.presentingViewController = window?.rootViewController
+        noticePresenter.presentingViewController = appCoordinator?.tabBarController
     }
 
     /// Push Notifications: Authorization + Registration!
@@ -321,16 +306,29 @@ private extension AppDelegate {
     }
 
     func handleLaunchArguments() {
-        if ProcessInfo.processInfo.arguments.contains("logout-at-launch") {
-          ServiceLocator.stores.deauthenticate()
+        if ProcessConfiguration.shouldLogoutAtLaunch {
+            ServiceLocator.stores.deauthenticate()
         }
 
-        if ProcessInfo.processInfo.arguments.contains("disable-animations") {
+        if ProcessConfiguration.shouldUseScreenshotsNetworkLayer {
+            ServiceLocator.setStores(ScreenshotStoresManager(storageManager: ServiceLocator.storageManager))
+        }
+
+        if ProcessConfiguration.shouldDisableAnimations {
             UIView.setAnimationsEnabled(false)
 
             /// Trick found at: https://twitter.com/twannl/status/1232966604142653446
-            UIApplication.shared.keyWindow?.layer.speed = 100
+            UIApplication.shared.currentKeyWindow?.layer.speed = 100
         }
+    }
+
+    /// Starts the AB testing platform
+    ///
+    func startABTesting() {
+        guard ServiceLocator.stores.isAuthenticated else {
+            return
+        }
+        ABTest.start()
     }
 }
 

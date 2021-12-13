@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents an Order Item that was refunded or will be refunded.
 ///
-public struct OrderItemRefund: Codable {
+public struct OrderItemRefund: Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
     public let itemID: Int64
     public let name: String
     public let productID: Int64
@@ -137,23 +137,6 @@ private extension OrderItemRefund {
         case quantity = "qty"
         case total = "refund_total"
         case taxes = "refund_tax"
-    }
-}
-
-
-// MARK: - Comparable Conformance
-//
-extension OrderItemRefund: Comparable {
-    public static func == (lhs: OrderItemRefund, rhs: OrderItemRefund) -> Bool {
-        return lhs.itemID == rhs.itemID &&
-            lhs.productID == rhs.productID &&
-            lhs.variationID == rhs.variationID
-    }
-
-    public static func < (lhs: OrderItemRefund, rhs: OrderItemRefund) -> Bool {
-        return lhs.itemID < rhs.itemID ||
-            (lhs.itemID == rhs.itemID && lhs.productID < rhs.productID) ||
-            (lhs.itemID == rhs.itemID && lhs.productID == rhs.productID && lhs.name < rhs.name)
     }
 }
 

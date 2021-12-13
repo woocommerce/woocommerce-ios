@@ -6,14 +6,12 @@ import Yosemite
 final class DefaultProductFormTableViewModelTests: XCTestCase {
     func test_simple_product_inventory_row_details_shows_stock_status_when_stock_management_is_disabled_without_sku() {
         // Arrange
-        let product = MockProduct().product().copy(productTypeKey: ProductType.simple.rawValue,
-                                                   sku: "",
-                                                   manageStock: false,
-                                                   stockStatusKey: ProductStockStatus.onBackOrder.rawValue)
+        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue,
+                                          sku: "",
+                                          manageStock: false,
+                                          stockStatusKey: ProductStockStatus.onBackOrder.rawValue)
         let model = EditableProductModel(product: product)
-        let actionsFactory = ProductFormActionsFactory(product: model,
-                                                       formType: .edit,
-                                                       isEditProductsRelease5Enabled: false)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Action
         let tableViewModel = DefaultProductFormTableViewModel(product: model, actionsFactory: actionsFactory, currency: "")
@@ -35,14 +33,12 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
 
     func test_variable_product_inventory_row_has_no_details_when_stock_management_is_disabled_without_sku() {
         // Arrange
-        let product = MockProduct().product().copy(productTypeKey: ProductType.variable.rawValue,
-                                                   sku: "",
-                                                   manageStock: false,
-                                                   stockStatusKey: ProductStockStatus.onBackOrder.rawValue)
+        let product = Product.fake().copy(productTypeKey: ProductType.variable.rawValue,
+                                          sku: "",
+                                          manageStock: false,
+                                          stockStatusKey: ProductStockStatus.onBackOrder.rawValue)
         let model = EditableProductModel(product: product)
-        let actionsFactory = ProductFormActionsFactory(product: model,
-                                                       formType: .edit,
-                                                       isEditProductsRelease5Enabled: false)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Action
         let tableViewModel = DefaultProductFormTableViewModel(product: model, actionsFactory: actionsFactory, currency: "")

@@ -43,7 +43,7 @@ final class ManualTrackingViewControllerTests: XCTestCase {
     func testBackButtonItemIsConfiguredAsEmpty() {
         let backBarButton = subject?.navigationItem.backBarButtonItem
 
-        XCTAssertEqual(backBarButton?.title, String())
+        XCTAssertNil(backBarButton?.title)
     }
 
     func testVCIsTableViewDataSource() {
@@ -61,6 +61,6 @@ final class ManualTrackingViewControllerTests: XCTestCase {
     }
 
     func testVCBackgroundColorIsSet() {
-        XCTAssertEqual(subject?.view.backgroundColor, UIColor.listBackground)
+        XCTAssertEqual(subject?.view.backgroundColor?.cgColor, UIColor.listBackground.cgColor)
     }
 }

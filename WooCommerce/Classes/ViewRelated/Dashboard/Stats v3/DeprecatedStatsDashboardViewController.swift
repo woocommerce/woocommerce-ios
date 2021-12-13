@@ -4,6 +4,9 @@ import UIKit
 /// Empty state screen shown when the store stats version is not supported
 ///
 final class DeprecatedDashboardStatsViewController: UIViewController {
+    /// For navigation bar large title workaround.
+    ///
+    weak var scrollDelegate: DashboardUIScrollDelegate?
 
     /// Empty state screen
     ///
@@ -42,7 +45,7 @@ final class DeprecatedDashboardStatsViewController: UIViewController {
 // Everything is empty as this deprecated stats screen is static
 extension DeprecatedDashboardStatsViewController: DashboardUI {
 
-    var displaySyncingErrorNotice: () -> Void {
+    var displaySyncingError: () -> Void {
         get {
             return {}
         }
@@ -57,7 +60,7 @@ extension DeprecatedDashboardStatsViewController: DashboardUI {
     }
 
     func remindStatsUpgradeLater() {}
-    func reloadData(completion: @escaping () -> Void) {}
+    func reloadData(forced: Bool, completion: @escaping () -> Void) {}
 }
 
 // MARK: Constants

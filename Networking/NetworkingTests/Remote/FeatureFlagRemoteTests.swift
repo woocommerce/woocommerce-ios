@@ -5,7 +5,7 @@ class FeatureFlagRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockupNetwork()
+    let network = MockNetwork()
 
     /// Repeat always!
     ///

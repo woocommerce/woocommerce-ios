@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Observables
 
 final class ProductInventorySettingsViewController: UIViewController {
 
@@ -258,9 +259,9 @@ private extension ProductInventorySettingsViewController {
             configureLimitOnePerOrder(cell: cell)
         case let cell as UnitInputTableViewCell where row == .stockQuantity:
             configureStockQuantity(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .backorders:
+        case let cell as TitleAndValueTableViewCell where row == .backorders:
             configureBackordersSetting(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .stockStatus:
+        case let cell as TitleAndValueTableViewCell where row == .stockStatus:
             configureStockStatus(cell: cell)
         default:
             fatalError()
@@ -317,7 +318,7 @@ private extension ProductInventorySettingsViewController {
         cell.configure(viewModel: cellViewModel)
     }
 
-    func configureBackordersSetting(cell: SettingTitleAndValueTableViewCell) {
+    func configureBackordersSetting(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("Backorders", comment: "Title of the cell in Product Inventory Settings > Backorders")
         cell.updateUI(title: title, value: viewModel.backordersSetting?.description)
         cell.accessoryType = .disclosureIndicator
@@ -325,7 +326,7 @@ private extension ProductInventorySettingsViewController {
 
     // Manage stock disabled.
 
-    func configureStockStatus(cell: SettingTitleAndValueTableViewCell) {
+    func configureStockStatus(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("Stock status", comment: "Title of the cell in Product Inventory Settings > Stock status")
         cell.updateUI(title: title, value: viewModel.stockStatus?.description)
         cell.accessoryType = .disclosureIndicator
@@ -340,7 +341,7 @@ private extension ProductInventorySettingsViewController {
             self?.onSKUBarcodeScanned(barcode: barcode)
             self?.navigationController?.popViewController(animated: true)
         })
-        navigationController?.pushViewController(scannerViewController, animated: true)
+        show(scannerViewController, sender: self)
     }
 
     func onSKUBarcodeScanned(barcode: String) {
@@ -412,7 +413,7 @@ extension ProductInventorySettingsViewController {
             case .stockQuantity:
                 return UnitInputTableViewCell.self
             case .stockStatus, .backorders:
-                return SettingTitleAndValueTableViewCell.self
+                return TitleAndValueTableViewCell.self
             }
         }
 

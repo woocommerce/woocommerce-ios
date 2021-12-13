@@ -8,7 +8,7 @@ public final class ProductShippingClassStore: Store {
     private let remote: ProductShippingClassRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.newDerivedStorage()
+        return storageManager.writerDerivedStorage
     }()
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {

@@ -6,10 +6,9 @@ import Combine
 @testable import Yosemite
 import Storage
 
-@available(iOS 13.0, *)
 final class FetchResultSnapshotsProviderTests: XCTestCase {
 
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -19,7 +18,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
     }
 
     override func tearDown() {
@@ -69,7 +68,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
 
         // When
-        let snapshot: FetchResultSnapshot = try waitFor { promise in
+        let snapshot: FetchResultSnapshot = waitFor { promise in
             provider.snapshot.first().sink { snapshot in
                 promise(snapshot)
             }.store(in: &self.cancellables)
@@ -248,7 +247,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
 
         try viewStorage.obtainPermanentIDs(for: [zanza, zagato, yamada])
 
-        let derivedStorage = storageManager.newDerivedStorage()
+        let derivedStorage = storageManager.writerDerivedStorage
 
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false)
@@ -296,7 +295,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
 
         try viewStorage.obtainPermanentIDs(for: [account, orderStatus])
 
-        let derivedStorage = storageManager.newDerivedStorage()
+        let derivedStorage = storageManager.writerDerivedStorage
 
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false)
@@ -335,7 +334,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
 
         try viewStorage.obtainPermanentIDs(for: [account, excludedAccount])
 
-        let derivedStorage = storageManager.newDerivedStorage()
+        let derivedStorage = storageManager.writerDerivedStorage
 
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false),
@@ -413,7 +412,6 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
     }
 }
 
-@available(iOS 13.0, *)
 private extension FetchResultSnapshotsProviderTests {
     @discardableResult
     func insertAccount(displayName: String, username: String) -> StorageAccount {

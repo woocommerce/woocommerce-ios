@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents a Post Entity.
 ///
-public struct Post: Codable {
+public struct Post: Codable, Equatable, GeneratedFakeable {
 
     /// WordPress.com Site Identifier.
     ///
@@ -45,19 +45,4 @@ private extension Post {
         case siteID         = "site_ID"
         case password       = "password"
     }
-}
-
-
-// MARK: - Comparable Conformance
-//
-extension Post: Comparable {
-    public static func == (lhs: Post, rhs: Post) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.password == rhs.password
-    }
-
-    public static func < (lhs: Post, rhs: Post) -> Bool {
-        return lhs.siteID < rhs.siteID
-    }
-
 }

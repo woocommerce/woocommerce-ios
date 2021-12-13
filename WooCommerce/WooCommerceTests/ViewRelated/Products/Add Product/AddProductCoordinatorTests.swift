@@ -40,7 +40,7 @@ final class AddProductCoordinatorTests: XCTestCase {
 
 private extension AddProductCoordinatorTests {
     func makeAddProductCoordinator() -> AddProductCoordinator {
-        let sourceView = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
-        return AddProductCoordinator(siteID: 100, sourceView: sourceView, sourceNavigationController: navigationController)
+        let sourceBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
+        return AddProductCoordinator(siteID: 100, sourceBarButtonItem: sourceBarButtonItem, sourceNavigationController: navigationController)
     }
 }

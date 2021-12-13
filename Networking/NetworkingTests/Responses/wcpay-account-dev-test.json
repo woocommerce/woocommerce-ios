@@ -1,0 +1,19 @@
+{
+    "data": {
+        "is_live": false,
+        "has_pending_requirements": false,
+        "has_overdue_requirements": false,
+        "current_deadline": null,
+        "status": "complete",
+        "statement_descriptor": "MY.FANCY.US.STORE",
+        "store_currencies": {
+            "default": "usd",
+            "supported": [
+                "usd"
+            ]
+        },
+        "country": "US",
+        "card_present_eligible": true,
+        "test_mode": true
+    }
+}

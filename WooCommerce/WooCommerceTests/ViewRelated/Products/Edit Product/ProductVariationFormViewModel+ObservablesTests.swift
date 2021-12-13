@@ -1,5 +1,6 @@
 import Photos
 import XCTest
+import Observables
 
 @testable import WooCommerce
 import Yosemite

@@ -1,0 +1,6 @@
+{
+    "data": {
+        "is_eligible": false,
+        "reason": "no_selected_payment_method_and_user_cannot_manage_payment_methods"
+    }
+}

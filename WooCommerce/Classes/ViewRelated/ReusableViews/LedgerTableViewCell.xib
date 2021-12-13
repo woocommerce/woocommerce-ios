@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -11,29 +10,35 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="400" id="KGk-i7-Jjw" customClass="LedgerTableViewCell" customModule="WooCommerce" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="400"/>
+            <rect key="frame" x="0.0" y="0.0" width="320" height="470"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="400"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="470"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="QyU-yD-WDZ">
-                        <rect key="frame" x="15" y="19" width="290" height="366"/>
+                        <rect key="frame" x="16" y="19" width="288" height="436"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tfd-et-ehF" userLabel="subtotalView">
-                                <rect key="frame" x="0.0" y="0.0" width="290" height="70"/>
+                                <rect key="frame" x="0.0" y="0.0" width="288" height="60.5"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="IHU-N8-p4k">
-                                        <rect key="frame" x="0.0" y="0.0" width="290" height="70"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="288" height="60.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SUBTOTAL" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Xb-4v-uVN">
-                                                <rect key="frame" x="0.0" y="0.0" width="85" height="70"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="84.5" height="60.5"/>
+                                                <accessibility key="accessibilityConfiguration">
+                                                    <bool key="isElement" value="NO"/>
+                                                </accessibility>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$999.99" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k43-i3-sNC">
-                                                <rect key="frame" x="223.5" y="0.0" width="66.5" height="70"/>
+                                                <rect key="frame" x="222" y="0.0" width="66" height="60.5"/>
+                                                <accessibility key="accessibilityConfiguration">
+                                                    <bool key="isElement" value="NO"/>
+                                                </accessibility>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -41,6 +46,9 @@
                                         </subviews>
                                     </stackView>
                                 </subviews>
+                                <accessibility key="accessibilityConfiguration">
+                                    <bool key="isElement" value="YES"/>
+                                </accessibility>
                                 <constraints>
                                     <constraint firstItem="IHU-N8-p4k" firstAttribute="leading" secondItem="tfd-et-ehF" secondAttribute="leading" id="2Js-iv-hWR"/>
                                     <constraint firstAttribute="trailing" secondItem="IHU-N8-p4k" secondAttribute="trailing" id="Feg-PF-iBd"/>
@@ -49,19 +57,25 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Q5b-zU-7fY" userLabel="discountView">
-                                <rect key="frame" x="0.0" y="74" width="290" height="70"/>
+                                <rect key="frame" x="0.0" y="64.5" width="288" height="79.5"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="dqG-xo-5BL">
-                                        <rect key="frame" x="0.0" y="0.0" width="290" height="70"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="288" height="79.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="DISCOUNT" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LgV-BP-GFN">
-                                                <rect key="frame" x="0.0" y="0.0" width="141" height="20.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="140" height="20.5"/>
+                                                <accessibility key="accessibilityConfiguration">
+                                                    <bool key="isElement" value="NO"/>
+                                                </accessibility>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-$601.00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f7h-H4-cVj">
-                                                <rect key="frame" x="219" y="0.0" width="71" height="20.5"/>
+                                                <rect key="frame" x="217.5" y="0.0" width="70.5" height="20.5"/>
+                                                <accessibility key="accessibilityConfiguration">
+                                                    <bool key="isElement" value="NO"/>
+                                                </accessibility>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -69,6 +83,9 @@
                                         </subviews>
                                     </stackView>
                                 </subviews>
+                                <accessibility key="accessibilityConfiguration">
+                                    <bool key="isElement" value="YES"/>
+                                </accessibility>
                                 <constraints>
                                     <constraint firstItem="dqG-xo-5BL" firstAttribute="top" secondItem="Q5b-zU-7fY" secondAttribute="top" priority="800" id="3JV-to-qqx"/>
                                     <constraint firstAttribute="bottom" secondItem="dqG-xo-5BL" secondAttribute="bottom" priority="800" id="7HZ-2O-N35"/>
@@ -76,20 +93,27 @@
                                     <constraint firstItem="dqG-xo-5BL" firstAttribute="leading" secondItem="Q5b-zU-7fY" secondAttribute="leading" priority="800" id="LXA-BI-hrf"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MYg-Hq-mwx" userLabel="shippingView">
-                                <rect key="frame" x="0.0" y="148" width="290" height="70"/>
+                            <view contentMode="scaleToFill" id="De3-wg-68K" userLabel="feesView">
+                                <rect key="frame" x="0.0" y="148" width="288" height="70"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="5kf-hJ-JoD">
-                                        <rect key="frame" x="0.0" y="0.0" width="290" height="70"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="zF1-6f-QTS">
+                                        <rect key="frame" x="0.0" y="0.0" width="288" height="70"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SHIPPING" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gTx-ab-CBl">
-                                                <rect key="frame" x="0.0" y="0.0" width="76.5" height="70"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="FEES" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kuu-gt-Uht">
+                                                <rect key="frame" x="0.0" y="0.0" width="39.5" height="70"/>
+                                                <accessibility key="accessibilityConfiguration">
+                                                    <bool key="isElement" value="NO"/>
+                                                </accessibility>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$0.01" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h6Q-Cf-oXh">
-                                                <rect key="frame" x="247.5" y="0.0" width="42.5" height="70"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$0.01" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="om6-u8-QDq">
+                                                <rect key="frame" x="246" y="0.0" width="42" height="70"/>
+                                                <accessibility key="accessibilityConfiguration">
+                                                    <bool key="isElement" value="NO"/>
+                                                </accessibility>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -97,6 +121,47 @@
                                         </subviews>
                                     </stackView>
                                 </subviews>
+                                <viewLayoutGuide key="safeArea" id="Sjt-NG-ZQr"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <bool key="isElement" value="YES"/>
+                                </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="zF1-6f-QTS" secondAttribute="trailing" id="6EL-EM-5oa"/>
+                                    <constraint firstItem="zF1-6f-QTS" firstAttribute="leading" secondItem="De3-wg-68K" secondAttribute="leading" id="8Qq-Da-gko"/>
+                                    <constraint firstItem="zF1-6f-QTS" firstAttribute="top" secondItem="De3-wg-68K" secondAttribute="top" id="bPV-Y7-FXr"/>
+                                    <constraint firstAttribute="bottom" secondItem="zF1-6f-QTS" secondAttribute="bottom" id="sgR-d7-d43"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MYg-Hq-mwx" userLabel="shippingView">
+                                <rect key="frame" x="0.0" y="222" width="288" height="60.5"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="5kf-hJ-JoD">
+                                        <rect key="frame" x="0.0" y="0.0" width="288" height="60.5"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SHIPPING" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gTx-ab-CBl">
+                                                <rect key="frame" x="0.0" y="0.0" width="76.5" height="60.5"/>
+                                                <accessibility key="accessibilityConfiguration">
+                                                    <bool key="isElement" value="NO"/>
+                                                </accessibility>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$0.01" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h6Q-Cf-oXh">
+                                                <rect key="frame" x="246" y="0.0" width="42" height="60.5"/>
+                                                <accessibility key="accessibilityConfiguration">
+                                                    <bool key="isElement" value="NO"/>
+                                                </accessibility>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <accessibility key="accessibilityConfiguration">
+                                    <bool key="isElement" value="YES"/>
+                                </accessibility>
                                 <constraints>
                                     <constraint firstItem="5kf-hJ-JoD" firstAttribute="leading" secondItem="MYg-Hq-mwx" secondAttribute="leading" id="81v-0y-CUV"/>
                                     <constraint firstAttribute="bottom" secondItem="5kf-hJ-JoD" secondAttribute="bottom" id="8Ua-pH-6wn"/>
@@ -105,19 +170,25 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BAA-Mv-unS" userLabel="taxesView">
-                                <rect key="frame" x="0.0" y="222" width="290" height="69.5"/>
+                                <rect key="frame" x="0.0" y="286.5" width="288" height="60"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Dmz-oH-Z9g">
-                                        <rect key="frame" x="0.0" y="0.0" width="290" height="69.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="288" height="60"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TAXES" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z9r-YA-aG9">
-                                                <rect key="frame" x="0.0" y="0.0" width="51.5" height="69.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="51.5" height="60"/>
+                                                <accessibility key="accessibilityConfiguration">
+                                                    <bool key="isElement" value="NO"/>
+                                                </accessibility>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$333.33" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pCA-4f-cjt">
-                                                <rect key="frame" x="224" y="0.0" width="66" height="69.5"/>
+                                                <rect key="frame" x="223" y="0.0" width="65" height="60"/>
+                                                <accessibility key="accessibilityConfiguration">
+                                                    <bool key="isElement" value="NO"/>
+                                                </accessibility>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -125,6 +196,9 @@
                                         </subviews>
                                     </stackView>
                                 </subviews>
+                                <accessibility key="accessibilityConfiguration">
+                                    <bool key="isElement" value="YES"/>
+                                </accessibility>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="Dmz-oH-Z9g" secondAttribute="trailing" priority="800" id="7gB-gm-450"/>
                                     <constraint firstAttribute="bottom" secondItem="Dmz-oH-Z9g" secondAttribute="bottom" priority="800" id="A67-cb-9Wa"/>
@@ -133,19 +207,25 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K4G-Fo-ooM" userLabel="totalView">
-                                <rect key="frame" x="0.0" y="295.5" width="290" height="70.5"/>
+                                <rect key="frame" x="0.0" y="350.5" width="288" height="85.5"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="firstBaseline" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="ehO-OF-bQV">
-                                        <rect key="frame" x="0.0" y="8" width="290" height="58.5"/>
+                                        <rect key="frame" x="0.0" y="8" width="288" height="73.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="$40.00" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Pa-jd-Tcj">
-                                                <rect key="frame" x="0.0" y="38" width="55.5" height="20.5"/>
+                                                <rect key="frame" x="0.0" y="53" width="55" height="20.5"/>
+                                                <accessibility key="accessibilityConfiguration">
+                                                    <bool key="isElement" value="NO"/>
+                                                </accessibility>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="$40.00" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="awb-Pi-AeE">
-                                                <rect key="frame" x="234.5" y="38" width="55.5" height="20.5"/>
+                                                <rect key="frame" x="233" y="53" width="55" height="20.5"/>
+                                                <accessibility key="accessibilityConfiguration">
+                                                    <bool key="isElement" value="NO"/>
+                                                </accessibility>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -153,6 +233,9 @@
                                         </subviews>
                                     </stackView>
                                 </subviews>
+                                <accessibility key="accessibilityConfiguration">
+                                    <bool key="isElement" value="YES"/>
+                                </accessibility>
                                 <constraints>
                                     <constraint firstItem="ehO-OF-bQV" firstAttribute="leading" secondItem="K4G-Fo-ooM" secondAttribute="leading" id="Fzt-RY-YsS"/>
                                     <constraint firstAttribute="trailing" secondItem="ehO-OF-bQV" secondAttribute="trailing" id="VPh-Qn-wOB"/>
@@ -191,6 +274,9 @@
                 <outlet property="discountLabel" destination="LgV-BP-GFN" id="bcG-pd-fZY"/>
                 <outlet property="discountValue" destination="f7h-H4-cVj" id="nXU-Ma-GQu"/>
                 <outlet property="discountView" destination="Q5b-zU-7fY" id="ROH-sd-az8"/>
+                <outlet property="feesLabel" destination="kuu-gt-Uht" id="5eS-5n-vSe"/>
+                <outlet property="feesValue" destination="om6-u8-QDq" id="G41-wd-Bqo"/>
+                <outlet property="feesView" destination="De3-wg-68K" id="49r-zW-igB"/>
                 <outlet property="shippingLabel" destination="gTx-ab-CBl" id="vFS-6X-myF"/>
                 <outlet property="shippingValue" destination="h6Q-Cf-oXh" id="Rnr-Fu-UuX"/>
                 <outlet property="shippingView" destination="MYg-Hq-mwx" id="cUJ-ZU-dkG"/>

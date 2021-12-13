@@ -56,7 +56,6 @@ private extension ProductMenuOrderViewController {
 
     func configureNavigationBar() {
         title = NSLocalizedString("Menu Order", comment: "Product Menu Order navigation title")
-        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {
@@ -146,7 +145,7 @@ private extension ProductMenuOrderViewController {
             }
             }, onTextDidBeginEditing: {
                 //TODO: Add analytics track
-        }, inputFormatter: IntegerInputFormatter(defaultValue: ""), keyboardType: .numbersAndPunctuation)
+        }, onTextDidReturn: nil, inputFormatter: IntegerInputFormatter(defaultValue: ""), keyboardType: .numbersAndPunctuation)
         cell.configure(viewModel: viewModel)
         cell.applyStyle(style: .body)
     }

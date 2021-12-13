@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents a ProductCatalogVisibility Entity.
 ///
-public enum ProductCatalogVisibility: Decodable, Hashable {
+public enum ProductCatalogVisibility: Decodable, Hashable, GeneratedFakeable {
     case visible
     case catalog
     case search

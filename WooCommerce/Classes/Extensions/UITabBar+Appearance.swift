@@ -14,14 +14,18 @@ extension UITabBar {
         /// iOS 13.0 and 13.1 doesn't render the tabbar shadow color correcly while in dark mode.
         /// To fix it, we have to specifically set it in the `standardAppearance` object.
         ///
-        if #available(iOS 13.0, *) {
-            appearance.standardAppearance = createWooTabBarAppearance()
+        appearance.standardAppearance = createWooTabBarAppearance()
+
+        /// This is needed because the tab bar background has the wrong color under iOS 15 (using Xcode 13).
+        /// More: issue-5018
+        ///
+        if #available(iOS 15.0, *) {
+            appearance.scrollEdgeAppearance = appearance.standardAppearance
         }
     }
 
-    /// Creates an iOS 13+ appearance object for a tabbar with the default WC style.
+    /// Creates an appearance object for a tabbar with the default WC style.
     ///
-    @available(iOS 13.0, *)
     private static func createWooTabBarAppearance() -> UITabBarAppearance {
         let standardAppearance = UITabBarAppearance()
         standardAppearance.backgroundColor = .appTabBar
@@ -34,7 +38,6 @@ extension UITabBar {
 
     /// Configures the appearance object for a tabbar's items with the default WC style.
     ///
-    @available(iOS 13.0, *)
     private static func applyWooAppearance(to tabBarItemAppearance: UITabBarItemAppearance) {
         tabBarItemAppearance.normal.badgeTextAttributes = [.foregroundColor: UIColor.textInverted]
         tabBarItemAppearance.selected.badgeTextAttributes = [.foregroundColor: UIColor.textInverted]

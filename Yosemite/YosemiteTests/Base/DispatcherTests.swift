@@ -7,20 +7,20 @@ import Yosemite
 class DispatcherTests: XCTestCase {
 
     var dispatcher: Dispatcher!
-    var processor: MockupProcessor!
+    var processor: MockActionsProcessor!
 
     override func setUp() {
         super.setUp()
 
         dispatcher = Dispatcher()
-        processor = MockupProcessor()
+        processor = MockActionsProcessor()
     }
 
 
     /// Verifies that multiple instances of the same processor get properly registered.
     ///
     func testProcessorEffectivelyGetsRegistered() {
-        let processor = MockupProcessor()
+        let processor = MockActionsProcessor()
         dispatcher.register(processor: processor, for: SiteAction.self)
         XCTAssertTrue(dispatcher.isProcessorRegistered(processor, for: SiteAction.self))
     }
@@ -34,7 +34,7 @@ class DispatcherTests: XCTestCase {
         dispatcher.dispatch(SiteAction.refreshSites)
         XCTAssertEqual(processor.receivedActions.count, 1)
 
-        dispatcher.dispatch(MockupAccountAction.authenticate)
+        dispatcher.dispatch(MockAccountAction.authenticate)
         XCTAssertEqual(processor.receivedActions.count, 1)
     }
 
@@ -62,7 +62,7 @@ class DispatcherTests: XCTestCase {
 
         dispatcher.unregister(processor: processor)
         dispatcher.dispatch(SiteAction.refreshSites)
-        dispatcher.dispatch(MockupAccountAction.authenticate)
+        dispatcher.dispatch(MockAccountAction.authenticate)
         XCTAssertEqual(processor.receivedActions.count, 1)
     }
 

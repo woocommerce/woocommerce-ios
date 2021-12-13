@@ -63,7 +63,19 @@ final class OrderMapperTests: XCTestCase {
             XCTAssertEqual(address.state, "NY")
             XCTAssertEqual(address.postcode, "14304")
             XCTAssertEqual(address.country, "US")
+            XCTAssertEqual(address.phone, "333-333-3333")
         }
+    }
+
+    /// Verifies that Order shipping phone is parsed correctly from metadata.
+    ///
+    func test_Order_shipping_phone_is_correctly_parsed_from_metadata() {
+        guard let order = mapLoadFullyRefundedOrderResponse(), let shippingAddress = order.shippingAddress else {
+            XCTFail("Expected a mapped order response with a non-nil shipping address.")
+            return
+        }
+
+        XCTAssertEqual(shippingAddress.phone, "555-666-7777")
     }
 
     /// Verifies that all of the Order Items are parsed correctly.
@@ -197,6 +209,21 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(partialRefund2.total, "-8.10")
     }
 
+    /// Verifies that an Order ignores deleted refunds.
+    ///
+    func test_Order_deleted_refund_fields_are_ignored() throws {
+        // When
+        let order = try XCTUnwrap(mapLoadOrderWithDeletedRefundsResponse())
+
+        // Then
+        XCTAssertEqual(order.refunds.count, 1)
+
+        let refund = try XCTUnwrap(order.refunds.first)
+        XCTAssertEqual(refund.refundID, 73)
+        XCTAssertEqual(refund.reason, "Cap!")
+        XCTAssertEqual(refund.total, "-16.00")
+    }
+
     func test_taxes_are_parsed_correctly() throws {
         // When
         let order = try XCTUnwrap(mapLoadOrderResponse())
@@ -214,7 +241,7 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(lineItems.count, 2)
 
         let variationLineItem = lineItems[0]
-        // Attribute with `_reduced_stock` name is skipped.
+        // Attributes with `_` prefix in the name are skipped.
         let expectedAttributes: [OrderItemAttribute] = [
             .init(metaID: 6377, name: "Color", value: "Orange"),
             .init(metaID: 6378, name: "Brand", value: "Woo")
@@ -230,7 +257,7 @@ final class OrderMapperTests: XCTestCase {
 
     /// The attributes API support are added in WC version 4.7, and WC version 4.6.1 returns a different structure of order line item attributes.
     func test_OrderLineItem_attributes_are_empty_before_API_support() throws {
-        let order = try XCTUnwrap(mapLoadOrderWithLineItemAttributesBeforeAPISuppportResponse())
+        let order = try XCTUnwrap(mapLoadOrderWithLineItemAttributesBeforeAPISupportResponse())
 
         let lineItems = order.items
         XCTAssertEqual(lineItems.count, 1)
@@ -238,6 +265,42 @@ final class OrderMapperTests: XCTestCase {
         let variationLineItem = lineItems[0]
         XCTAssertEqual(variationLineItem.attributes, [])
         XCTAssertEqual(variationLineItem.name, "Hoodie - Green, No")
+    }
+
+    func test_Order_fees_are_correctly_parsed() {
+        guard let order = mapLoadOrderResponse() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertNotNil(order.fees)
+        XCTAssertEqual(order.fees.count, 1)
+
+        guard let fee = order.fees.first else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(fee.feeID, 60)
+        XCTAssertEqual(fee.name, "$125.50 fee")
+        XCTAssertEqual(fee.taxClass, "")
+        XCTAssertEqual(fee.taxStatus, .taxable)
+        XCTAssertEqual(fee.total, "125.50")
+        XCTAssertEqual(fee.totalTax, "0.00")
+        XCTAssertEqual(fee.taxes, [])
+        XCTAssertEqual(fee.attributes, [])
+    }
+
+    func test_order_line_item_attributes_handle_unexpected_formatted_attributes() throws {
+        // Given
+        let order = try XCTUnwrap(mapLoadOrderWithFaultyAttributesResponse())
+
+        // When
+        let attributes = try XCTUnwrap(order.items.first?.attributes)
+
+        // Then
+        let expectedAttributes = [OrderItemAttribute(metaID: 3665, name: "Required Weight (kg)", value: "2.3")]
+        assertEqual(attributes, expectedAttributes)
     }
 }
 
@@ -286,9 +349,23 @@ private extension OrderMapperTests {
         return mapOrder(from: "order-with-line-item-attributes")
     }
 
+    /// Returns the OrderMapper output upon receiving `order-with-faulty-attributes`
+    /// Where the `value` to `_measurement_data` is not a `string` but a `JSON object`
+    ///
+    func mapLoadOrderWithFaultyAttributesResponse() -> Order? {
+        return mapOrder(from: "order-with-faulty-attributes")
+    }
+
     /// Returns the OrderMapper output upon receiving `order-with-line-item-attributes-before-API-support`
     ///
-    func mapLoadOrderWithLineItemAttributesBeforeAPISuppportResponse() -> Order? {
+    func mapLoadOrderWithLineItemAttributesBeforeAPISupportResponse() -> Order? {
         return mapOrder(from: "order-with-line-item-attributes-before-API-support")
     }
+
+    /// Returns the OrderMapper output upon receiving `order-with-deleted-refunds`
+    ///
+    func mapLoadOrderWithDeletedRefundsResponse() -> Order? {
+        return mapOrder(from: "order-with-deleted-refunds")
+    }
+
 }

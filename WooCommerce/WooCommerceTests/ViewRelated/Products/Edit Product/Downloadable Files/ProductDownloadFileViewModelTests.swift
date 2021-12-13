@@ -1,4 +1,5 @@
 import XCTest
+import Fakes
 @testable import WooCommerce
 @testable import Yosemite
 
@@ -8,7 +9,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
     func test_readonly_values_are_as_expected_after_initializing_a_downloadableFile_in_edit_mode() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Fakes.ProductFactory.productWithDownloadableFiles()
         let model = EditableProductModel(product: product)
         let productDownload = model.downloadableFiles.first
 
@@ -36,7 +37,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
     func test_section_and_row_values_are_as_expected_after_initializing_a_downloadableFile_in_edit_mode() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let productDownload = model.downloadableFiles.first
         let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
@@ -56,7 +57,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
     func test_handling_a_same_downloadable_fileName_updates_with_error_on_edit_mode() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let productDownload = model.downloadableFiles.first
         let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
@@ -78,7 +79,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
     func test_handling_an_empty_downloadable_fileName_updates_with_error_on_edit_mode() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let productDownload = model.downloadableFiles.first
         let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
@@ -100,7 +101,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
     func test_handling_a_valid_downloadable_fileName_updates_with_success_on_edit_mode() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Fakes.ProductFactory.productWithDownloadableFiles()
         let model = EditableProductModel(product: product)
         let productDownload = model.downloadableFiles.first
         let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
@@ -124,7 +125,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
     func test_handling_a_same_downloadable_fileURL_updates_with_error_on_edit_mode() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let productDownload = model.downloadableFiles.first
         let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
@@ -146,7 +147,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
     func test_handling_a_valid_downloadable_fileURL_updates_with_success_on_add_mode() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let productDownload = model.downloadableFiles.first
         let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .add)
@@ -168,7 +169,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
     func test_handling_an_empty_downloadable_fileURL_updates_with_error_on_edit_mode() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let productDownload = model.downloadableFiles.first
         let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
@@ -190,7 +191,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
     func test_handling_a_valid_downloadable_fileURL_updates_with_success_on_edit_mode() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Fakes.ProductFactory.productWithDownloadableFiles()
         let model = EditableProductModel(product: product)
         let productDownload = model.downloadableFiles.first
         let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
@@ -214,7 +215,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
     func test_viewModel_has_unsaved_changes_after_updating_valid_downloadFileName() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Fakes.ProductFactory.productWithDownloadableFiles()
         let model = EditableProductModel(product: product)
         let productDownload = model.downloadableFiles.first
 
@@ -230,7 +231,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
     func test_viewModel_has_no_unsaved_changes_after_updating_invalid_downloadFileName() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let productDownload = model.downloadableFiles.first
 
@@ -245,7 +246,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
     func test_viewModel_has_unsaved_changes_after_updating_valid_downloadFileUrl() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Fakes.ProductFactory.productWithDownloadableFiles()
         let model = EditableProductModel(product: product)
         let productDownload = model.downloadableFiles.first
 
@@ -261,7 +262,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
     func test_viewModel_has_no_unsaved_changes_after_updating_invalid_downloadFileUrl() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let productDownload = model.downloadableFiles.first
 
@@ -276,7 +277,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
     func test_viewModel_has_no_unsaved_changes_after_updating_with_the_original_values() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let productDownload = model.downloadableFiles.first
 

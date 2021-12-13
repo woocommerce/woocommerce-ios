@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Represents order stats over a specific period.
 /// v4 API
-public struct OrderStatsV4: Decodable {
+public struct OrderStatsV4: Decodable, Equatable, GeneratedFakeable {
     public let siteID: Int64
     public let granularity: StatsGranularityV4
     public let totals: OrderStatsV4Totals
@@ -46,18 +47,6 @@ private extension OrderStatsV4 {
     enum CodingKeys: String, CodingKey {
         case totals = "totals"
         case intervals = "intervals"
-    }
-}
-
-
-// MARK: - Equatable Conformance
-//
-extension OrderStatsV4: Equatable {
-    public static func == (lhs: OrderStatsV4, rhs: OrderStatsV4) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.granularity == rhs.granularity &&
-            lhs.totals == rhs.totals &&
-            lhs.intervals == rhs.intervals
     }
 }
 

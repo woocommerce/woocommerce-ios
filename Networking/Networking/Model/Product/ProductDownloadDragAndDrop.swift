@@ -1,5 +1,6 @@
 import Foundation
 import CoreServices
+import Codegen
 
 /// A wrapper around `ProductDownload`, to make it compatible in using as Drag and Drop data source in a table view. Represents a `ProductDownload` entity.
 /// To make a data draggable and droppable, on an Table/Collection view,
@@ -8,7 +9,7 @@ import CoreServices
 /// So the top layer object needs to be a subclass of `NSObject`
 /// And since the original `ProductDownload` is a struct, we need a new class for this purpose.
 ///
-public final class ProductDownloadDragAndDrop: NSObject, Codable {
+public final class ProductDownloadDragAndDrop: NSObject, Codable, GeneratedFakeable {
     public let downloadableFile: ProductDownload
 
     /// initializer.

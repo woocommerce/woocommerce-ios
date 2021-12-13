@@ -13,7 +13,7 @@ public class ProductStore: Store {
     private let remote: ProductsRemoteProtocol
 
     private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.newDerivedStorage()
+        return storageManager.writerDerivedStorage
     }()
 
     public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
@@ -21,7 +21,7 @@ public class ProductStore: Store {
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
     }
 
-    init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: ProductsRemoteProtocol) {
+    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: ProductsRemoteProtocol) {
         self.remote = remote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -66,6 +66,7 @@ public class ProductStore: Store {
                                   let stockStatus,
                                   let productStatus,
                                   let productType,
+                                  let productCategory,
                                   let sortOrder,
                                   let excludedProductIDs,
                                   let shouldDeleteStoredProductsOnFirstPage,
@@ -76,6 +77,7 @@ public class ProductStore: Store {
                                 stockStatus: stockStatus,
                                 productStatus: productStatus,
                                 productType: productType,
+                                productCategory: productCategory,
                                 sortOrder: sortOrder,
                                 excludedProductIDs: excludedProductIDs,
                                 shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage,
@@ -86,6 +88,8 @@ public class ProductStore: Store {
             updateProduct(product: product, onCompletion: onCompletion)
         case .validateProductSKU(let sku, let siteID, let onCompletion):
             validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
+        case let .replaceProductLocally(product, onCompletion):
+            replaceProductLocally(product: product, onCompletion: onCompletion)
         }
     }
 }
@@ -108,22 +112,27 @@ private extension ProductStore {
 
     /// Searches all of the products that contain a given Keyword.
     ///
-    func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, excludedProductIDs: [Int64], onCompletion: @escaping (Error?) -> Void) {
+    func searchProducts(siteID: Int64,
+                        keyword: String,
+                        pageNumber: Int,
+                        pageSize: Int,
+                        excludedProductIDs: [Int64],
+                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
         remote.searchProducts(for: siteID,
                               keyword: keyword,
                               pageNumber: pageNumber,
                               pageSize: pageSize,
-                              excludedProductIDs: excludedProductIDs) { [weak self] (products, error) in
-                                guard let products = products else {
-                                    onCompletion(error)
-                                    return
-                                }
-
-                                self?.upsertSearchResultsInBackground(siteID: siteID,
-                                                                      keyword: keyword,
-                                                                      readOnlyProducts: products) {
-                                    onCompletion(nil)
-                                }
+                              excludedProductIDs: excludedProductIDs) { [weak self] result in
+            switch result {
+            case .success(let products):
+                self?.upsertSearchResultsInBackground(siteID: siteID,
+                                                      keyword: keyword,
+                                                      readOnlyProducts: products) {
+                    onCompletion(.success(()))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
         }
     }
 
@@ -151,6 +160,7 @@ private extension ProductStore {
                              stockStatus: ProductStockStatus?,
                              productStatus: ProductStatus?,
                              productType: ProductType?,
+                             productCategory: ProductCategory?,
                              sortOrder: ProductsSortOrder,
                              excludedProductIDs: [Int64],
                              shouldDeleteStoredProductsOnFirstPage: Bool,
@@ -162,6 +172,7 @@ private extension ProductStore {
                                stockStatus: stockStatus,
                                productStatus: productStatus,
                                productType: productType,
+                               productCategory: productCategory,
                                orderBy: sortOrder.remoteOrderKey,
                                order: sortOrder.remoteOrder,
                                excludedProductIDs: excludedProductIDs) { [weak self] result in
@@ -247,10 +258,13 @@ private extension ProductStore {
             }
 
             switch result {
-            case .failure(let error):
-                if case NetworkError.notFound = error {
+            case .failure(let originalError):
+                let error = ProductLoadError(underlyingError: originalError)
+
+                if case ProductLoadError.notFound = error {
                     self.deleteStoredProduct(siteID: siteID, productID: productID)
                 }
+
                 onCompletion(.failure(error))
             case .success(let product):
                 self.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
@@ -325,21 +339,28 @@ private extension ProductStore {
             return
         }
 
-        remote.searchSku(for: siteID, sku: sku) { (result, error) in
-            guard error == nil else {
+        remote.searchSku(for: siteID, sku: sku) { result in
+            switch result {
+            case .success(let checkResult):
+                let isValid = checkResult != sku
+                onCompletion(isValid)
+            case .failure:
                 onCompletion(true)
-                return
             }
-            let isValid = (result != nil && result == sku) ? false : true
-            onCompletion(isValid)
         }
+    }
+
+    /// Upserts a product in our local storage
+    ///
+    func replaceProductLocally(product: Product, onCompletion: @escaping () -> Void) {
+        upsertStoredProductsInBackground(readOnlyProducts: [product], onCompletion: onCompletion)
     }
 }
 
 
 // MARK: - Storage: Product
 //
-private extension ProductStore {
+extension ProductStore {
 
     /// Deletes any Storage.Product with the specified `siteID` and `productID`
     ///
@@ -395,6 +416,7 @@ private extension ProductStore {
             handleProductCategories(readOnlyProduct, storageProduct, storage)
             handleProductTags(readOnlyProduct, storageProduct, storage)
             handleProductDownloadableFiles(readOnlyProduct, storageProduct, storage)
+            handleProductAddOns(readOnlyProduct, storageProduct, storage)
         }
     }
 
@@ -547,6 +569,41 @@ private extension ProductStore {
         }
         storageProduct.addToTags(NSOrderedSet(array: storageTags))
     }
+
+    /// Replaces the `storageProduct.addOns` with the new `readOnlyProduct.addOns`
+    ///
+    func handleProductAddOns(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        // Remove all previous addOns, they will be deleted as they have the `cascade` delete rule
+        if let addOns = storageProduct.addOns {
+            storageProduct.removeFromAddOns(addOns)
+        }
+
+        // Create and add `storageAddOns` from `readOnlyProduct.addOns`
+        let storageAddOns = readOnlyProduct.addOns.map { readOnlyAddOn -> StorageProductAddOn in
+            let storageAddOn = storage.insertNewObject(ofType: StorageProductAddOn.self)
+            storageAddOn.update(with: readOnlyAddOn)
+            handleProductAddOnsOptions(readOnlyAddOn, storageAddOn, storage)
+            return storageAddOn
+        }
+        storageProduct.addToAddOns(NSOrderedSet(array: storageAddOns))
+    }
+
+    /// Replaces the `storageProductAddOn.options` with the new `readOnlyProductAddOn.options`
+    ///
+    func handleProductAddOnsOptions(_ readOnlyProductAddOn: Networking.ProductAddOn, _ storageProductAddOn: Storage.ProductAddOn, _ storage: StorageType) {
+        // Remove all previous options, they will be deleted as they have the `cascade` delete rule
+        if let options = storageProductAddOn.options {
+            storageProductAddOn.removeFromOptions(options)
+        }
+
+        // Create and add `storageAddOnsOptions` from `readOnlyProductAddOn.options`
+        let storageAddOnsOptions = readOnlyProductAddOn.options.map { readOnlyAddOnOption -> StorageProductAddOnOption in
+            let storageAddOnOption = storage.insertNewObject(ofType: StorageProductAddOnOption.self)
+            storageAddOnOption.update(with: readOnlyAddOnOption)
+            return storageAddOnOption
+        }
+        storageProductAddOn.addToOptions(NSOrderedSet(array: storageAddOnsOptions))
+    }
 }
 
 // MARK: - Storage: Product Downloadable Files
@@ -637,6 +694,7 @@ extension ProductStore {
 /// - duplicatedSKU: the SKU is used by another Product.
 /// - invalidSKU: the SKU is invalid or duplicated.
 /// - passwordCannotBeUpdated: the password of a product cannot be updated.
+/// - variationInvalidImageId: the body struct used for updating a product variation's image has an invalid id.
 /// - unexpected: an error that is not expected to occur.
 /// - unknown: other error cases.
 ///
@@ -645,6 +703,7 @@ public enum ProductUpdateError: Error, Equatable {
     case invalidSKU
     case passwordCannotBeUpdated
     case notFoundInStorage
+    case variationInvalidImageId
     case unexpected
     case unknown(error: AnyError)
 
@@ -667,16 +726,41 @@ public enum ProductUpdateError: Error, Equatable {
 
     private enum ErrorCode: String {
         case invalidSKU = "product_invalid_sku"
+        case variationInvalidImageId = "woocommerce_variation_invalid_image_id"
 
         var error: ProductUpdateError {
             switch self {
             case .invalidSKU:
                 return .invalidSKU
+            case .variationInvalidImageId:
+                return .variationInvalidImageId
             }
         }
     }
 }
 
 public enum ProductLoadError: Error, Equatable {
+    case notFound
     case notFoundInStorage
+    case unknown(error: AnyError)
+
+    init(underlyingError error: Error) {
+        guard case let DotcomError.unknown(code, _) = error else {
+            self = .unknown(error: error.toAnyError)
+            return
+        }
+
+        self = ErrorCode(rawValue: code)?.error ?? .unknown(error: error.toAnyError)
+    }
+
+    enum ErrorCode: String {
+        case invalidID = "woocommerce_rest_product_invalid_id"
+
+        var error: ProductLoadError {
+            switch self {
+            case .invalidID:
+                return .notFound
+            }
+        }
+    }
 }

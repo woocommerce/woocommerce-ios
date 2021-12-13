@@ -11,13 +11,17 @@ final class RefundConfirmationViewModel {
         currencyFormatter.formatAmount(details.amount, with: details.order.currency) ?? ""
     }()
 
-    /// Struct with al refund details needed to create a `Refund` object.
+    /// Struct with all refund details needed to create a `Refund` object.
     ///
     private let details: Details
 
     /// Amount currency formatter
     ///
     private let currencyFormatter: CurrencyFormatter
+
+    /// StoresManager to dispatch the "Create Refund" action.
+    ///
+    private let actionProcessor: StoresManager
 
     /// Contains the current value of the Reason for Refund text field.
     ///
@@ -39,24 +43,66 @@ final class RefundConfirmationViewModel {
         Section(
             title: Localization.refundVia,
             rows: [
-                TitleAndBodyRow(title: Localization.manualRefund(via: "Stripe"),
-                                body: Localization.refundWillNotBeIssued(paymentMethod: "Stripe"))
+                makeRefundViaRow()
             ]
         )
     ]
 
-    init(details: Details, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+    private let analytics: Analytics
+
+    init(details: Details,
+         actionProcessor: StoresManager = ServiceLocator.stores,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.details = details
+        self.actionProcessor = actionProcessor
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.analytics = analytics
     }
 
     /// Submit the refund.
     ///
-    /// This does not do anything at the moment. XD
+    func submit(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        // Create refund object
+        let shippingLine = details.refundsShipping ? details.order.shippingLines.first : nil
+        let useCase = RefundCreationUseCase(amount: details.amount,
+                                            reason: reasonForRefundCellViewModel.currentValue,
+                                            automaticallyRefundsPayment: gatewaySupportsAutomaticRefunds(),
+                                            items: details.items,
+                                            shippingLine: shippingLine,
+                                            currencyFormatter: currencyFormatter)
+        let refund = useCase.createRefund()
+
+        // Submit it
+        let action = RefundAction.createRefund(siteID: details.order.siteID, orderID: details.order.orderID, refund: refund) { [weak self] _, error  in
+            guard let self = self else { return }
+            if let error = error {
+                DDLogError("Error creating refund: \(refund)\nWith Error: \(error)")
+                self.trackCreateRefundRequestFailed(error: error)
+                return onCompletion(.failure(error))
+            }
+
+            // We don't care if the "update order" fails. We return .success() as the refund creation already succeeded.
+            self.updateOrder { _ in
+                onCompletion(.success(()))
+            }
+            self.trackCreateRefundRequestSuccess()
+        }
+
+        actionProcessor.dispatch(action)
+        trackCreateRefundRequest()
+    }
+
+    /// Updates the order associated with the refund to reflect the latest refund status.
     ///
-    func submit() {
-        print("Submitting refund with reason “\(reasonForRefundCellViewModel.currentValue ?? "")”")
-        print("JUST KIDDING! ʕ•ᴥ•ʔ")
+    func updateOrder(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let action = OrderAction.retrieveOrder(siteID: details.order.siteID, orderID: details.order.orderID) { _, error  in
+            if let error = error {
+                return onCompletion(.failure(error))
+            }
+            onCompletion(.success(()))
+        }
+        actionProcessor.dispatch(action)
     }
 }
 
@@ -78,6 +124,10 @@ extension RefundConfirmationViewModel {
         /// Order items and quantities to refund
         ///
         let items: [RefundableOrderItem]
+
+        /// Payment gateway used with the order
+        ///
+        let paymentGateway: PaymentGateway?
     }
 }
 
@@ -89,6 +139,61 @@ private extension RefundConfirmationViewModel {
         let totalRefunded = useCase.totalRefunded().abs()
         let totalRefundedFormatted = currencyFormatter.formatAmount(totalRefunded) ?? ""
         return TwoColumnRow(title: Localization.previouslyRefunded, value: totalRefundedFormatted, isHeadline: false)
+    }
+
+    /// Returns a row with special formatting if the payment gateway does not support automatic money refunds.
+    ///
+    func makeRefundViaRow() -> RefundConfirmationViewModelRow {
+        if gatewaySupportsAutomaticRefunds() {
+            return SimpleTextRow(text: details.order.paymentMethodTitle)
+        } else {
+            return TitleAndBodyRow(title: Localization.manualRefund(via: details.order.paymentMethodTitle),
+                                   body: Localization.refundWillNotBeIssued(paymentMethod: details.order.paymentMethodTitle))
+        }
+    }
+}
+
+// MARK: Helpers
+private extension RefundConfirmationViewModel {
+    /// Returns `true` if the payment gateway associated with this order supports automatic money refunds. `False` otherwise.
+    /// If no payment gateway is found, `false` will be returned.
+    ///
+    func gatewaySupportsAutomaticRefunds() -> Bool {
+        guard let paymentGateway = details.paymentGateway else {
+            return false
+        }
+        return paymentGateway.features.contains(.refunds)
+    }
+}
+
+// MARK: Analytics
+extension RefundConfirmationViewModel {
+    /// Tracks when the user taps the "summary" button
+    ///
+    func trackSummaryButtonTapped() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.summaryButtonTapped(orderID: details.order.orderID))
+    }
+
+    /// Tracks when the create refund request is made.
+    ///
+    private func trackCreateRefundRequest() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefund(orderID: details.order.orderID,
+                                                                          fullyRefunded: details.amount == details.order.total,
+                                                                          method: .items,
+                                                                          gateway: details.order.paymentMethodID,
+                                                                          amount: details.amount))
+    }
+
+    /// Tracks when the create refund request succeeds.
+    ///
+    private func trackCreateRefundRequestSuccess() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundSuccess(orderID: details.order.orderID))
+    }
+
+    /// Tracks when the create refund request fails.
+    ///
+    private func trackCreateRefundRequestFailed(error: Error) {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundFailed(orderID: details.order.orderID, error: error))
     }
 }
 
@@ -122,6 +227,11 @@ extension RefundConfirmationViewModel {
     struct TitleAndBodyRow: RefundConfirmationViewModelRow {
         let title: String
         let body: String?
+    }
+
+    /// A row that shows a simple text on it.
+    struct SimpleTextRow: RefundConfirmationViewModelRow {
+        let text: String
     }
 }
 

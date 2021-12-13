@@ -15,8 +15,8 @@ enum ProductFormSection: Equatable {
     }
 
     enum PrimaryFieldRow: Equatable {
-        case images(isEditable: Bool)
-        case name(name: String?, isEditable: Bool)
+        case images(isEditable: Bool, allowsMultiple: Bool)
+        case name(name: String?, isEditable: Bool, productStatus: ProductStatus)
         case variationName(name: String)
         case description(description: String?, isEditable: Bool)
     }
@@ -27,6 +27,7 @@ enum ProductFormSection: Equatable {
         case productType(viewModel: ViewModel, isEditable: Bool)
         case shipping(viewModel: ViewModel, isEditable: Bool)
         case inventory(viewModel: ViewModel, isEditable: Bool)
+        case addOns(viewModel: ViewModel, isEditable: Bool)
         case categories(viewModel: ViewModel, isEditable: Bool)
         case tags(viewModel: ViewModel, isEditable: Bool)
         case shortDescription(viewModel: ViewModel, isEditable: Bool)
@@ -34,9 +35,11 @@ enum ProductFormSection: Equatable {
         case sku(viewModel: ViewModel, isEditable: Bool)
         case groupedProducts(viewModel: ViewModel, isEditable: Bool)
         case variations(viewModel: ViewModel)
-        case downloadableFiles(viewModel: ViewModel)
+        case downloadableFiles(viewModel: ViewModel, isEditable: Bool)
         case noPriceWarning(viewModel: WarningViewModel)
         case status(viewModel: SwitchableViewModel, isEditable: Bool)
+        case linkedProducts(viewModel: ViewModel, isEditable: Bool)
+        case attributes(viewModel: ViewModel, isEditable: Bool)
 
         struct ViewModel {
             let icon: UIImage
@@ -46,14 +49,22 @@ enum ProductFormSection: Equatable {
             let tintColor: UIColor?
             let numberOfLinesForDetails: Int
             let isActionable: Bool
+            let hideSeparator: Bool
 
-            init(icon: UIImage, title: String?, details: String?, tintColor: UIColor? = nil, numberOfLinesForDetails: Int = 0, isActionable: Bool = true) {
+            init(icon: UIImage,
+                 title: String?,
+                 details: String?,
+                 tintColor: UIColor? = nil,
+                 numberOfLinesForDetails: Int = 0,
+                 isActionable: Bool = true,
+                 hideSeparator: Bool = false) {
                 self.icon = icon
                 self.title = title
                 self.details = details
                 self.tintColor = tintColor
                 self.numberOfLinesForDetails = numberOfLinesForDetails
                 self.isActionable = isActionable
+                self.hideSeparator = hideSeparator
             }
         }
 
@@ -76,6 +87,7 @@ enum ProductFormSection: Equatable {
         struct WarningViewModel: Equatable {
             let icon: UIImage
             let title: String?
+            let isActionable: Bool
         }
     }
 }

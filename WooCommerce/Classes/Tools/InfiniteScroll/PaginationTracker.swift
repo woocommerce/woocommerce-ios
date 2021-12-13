@@ -1,7 +1,7 @@
 import Yosemite
 
 /// Delegate of `PaginationTracker` that implements syncing per page number and size.
-protocol PaginationTrackerDelegate: class {
+protocol PaginationTrackerDelegate: AnyObject {
     typealias SyncCompletion = (Result<Bool, Error>) -> Void
 
     /// Syncs a page by the number and size, and returns an error or whether there might be the next page on completion.

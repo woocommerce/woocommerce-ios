@@ -1,6 +1,8 @@
+import Codegen
+
 /// Media that has the data fields to be uploaded to the WordPress Site Media
 ///
-public struct UploadableMedia {
+public struct UploadableMedia: GeneratedFakeable {
     public let localURL: URL
     public let filename: String
     public let mimeType: String

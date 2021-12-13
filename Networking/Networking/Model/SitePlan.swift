@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents a WordPress.com default Site's plan.
 ///
-public struct SitePlan: Decodable {
+public struct SitePlan: Decodable, Equatable, GeneratedFakeable {
 
     /// WordPress.com Site Identifier.
     ///
@@ -32,20 +32,6 @@ public struct SitePlan: Decodable {
     public init(siteID: Int64, shortName: String) {
         self.siteID = siteID
         self.shortName = shortName
-    }
-}
-
-
-// MARK: - Comparable Conformance
-//
-extension SitePlan: Comparable {
-    public static func < (lhs: SitePlan, rhs: SitePlan) -> Bool {
-        return lhs.siteID < rhs.siteID
-    }
-
-    public static func == (lhs: SitePlan, rhs: SitePlan) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.shortName == rhs.shortName
     }
 }
 

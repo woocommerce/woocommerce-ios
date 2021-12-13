@@ -34,6 +34,6 @@ extension KeyboardScrollable where Self: UIViewController {
         let bottomInset = keyboardHeight + bottomInsetFromSafeArea
 
         scrollable.contentInset.bottom = bottomInset
-        scrollable.scrollIndicatorInsets.bottom = bottomInset
+        scrollable.verticalScrollIndicatorInsets.bottom = bottomInset
     }
 }

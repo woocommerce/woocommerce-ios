@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 import UserNotifications
-
+import Yosemite
 
 /// PushNotificationsConfiguration
 ///

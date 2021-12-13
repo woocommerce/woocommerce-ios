@@ -8,7 +8,12 @@ public enum ProductAction: Action {
 
     /// Searches products that contain a given keyword.
     ///
-    case searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, excludedProductIDs: [Int64] = [], onCompletion: (Error?) -> Void)
+    case searchProducts(siteID: Int64,
+                        keyword: String,
+                        pageNumber: Int,
+                        pageSize: Int,
+                        excludedProductIDs: [Int64] = [],
+                        onCompletion: (Result<Void, Error>) -> Void)
 
     /// Searches product that contain a given SKU.
     ///
@@ -24,6 +29,7 @@ public enum ProductAction: Action {
         stockStatus: ProductStockStatus?,
         productStatus: ProductStatus?,
         productType: ProductType?,
+        productCategory: ProductCategory?,
         sortOrder: ProductsSortOrder,
         excludedProductIDs: [Int64] = [],
         shouldDeleteStoredProductsOnFirstPage: Bool = true,
@@ -67,4 +73,8 @@ public enum ProductAction: Action {
     /// Checks whether a Product SKU is valid against other Products in the store.
     ///
     case validateProductSKU(_ sku: String?, siteID: Int64, onCompletion: (Bool) -> Void)
+
+    /// Upserts a product in our local storage
+    ///
+    case replaceProductLocally(product: Product, onCompletion: () -> Void)
 }

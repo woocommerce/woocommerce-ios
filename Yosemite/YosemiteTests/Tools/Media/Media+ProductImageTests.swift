@@ -10,7 +10,7 @@ final class Media_ProductImageTests: XCTestCase {
         let name = "woo!"
         let alt = "woo too"
         let media = Media(mediaID: mediaID, date: date,
-                          fileExtension: "jpg", mimeType: "image/jpeg",
+                          fileExtension: "jpg", filename: "pic1.jpg", mimeType: "image/jpeg",
                           src: source, thumbnailURL: "https://test.com/pic1",
                           name: name, alt: alt,
                           height: 136, width: nil)

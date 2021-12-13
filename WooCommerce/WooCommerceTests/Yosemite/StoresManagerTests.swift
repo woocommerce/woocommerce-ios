@@ -1,3 +1,4 @@
+import Combine
 import XCTest
 import Networking
 @testable import WooCommerce
@@ -5,8 +6,8 @@ import Networking
 
 /// StoresManager Unit Tests
 ///
-class StoresManagerTests: XCTestCase {
-    private var cancellable: ObservationToken?
+final class StoresManagerTests: XCTestCase {
+    private var cancellable: AnyCancellable?
 
     // MARK: - Overridden Methods
 
@@ -27,7 +28,7 @@ class StoresManagerTests: XCTestCase {
         // Action
         let manager = DefaultStoresManager.testingInstance
         var isLoggedInValues = [Bool]()
-        cancellable = manager.isLoggedIn.subscribe { isLoggedIn in
+        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
             isLoggedInValues.append(isLoggedIn)
         }
 
@@ -47,7 +48,7 @@ class StoresManagerTests: XCTestCase {
         // Action
         let manager = DefaultStoresManager.testingInstance
         var isLoggedInValues = [Bool]()
-        cancellable = manager.isLoggedIn.subscribe { isLoggedIn in
+        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
             isLoggedInValues.append(isLoggedIn)
         }
 
@@ -63,7 +64,7 @@ class StoresManagerTests: XCTestCase {
         // Arrange
         let manager = DefaultStoresManager.testingInstance
         var isLoggedInValues = [Bool]()
-        cancellable = manager.isLoggedIn.subscribe { isLoggedIn in
+        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
             isLoggedInValues.append(isLoggedIn)
         }
 
@@ -82,10 +83,10 @@ class StoresManagerTests: XCTestCase {
         let mockAuthenticationManager = MockAuthenticationManager()
         let manager = DefaultStoresManager.testingInstance
         var isLoggedInValues = [Bool]()
-        cancellable = manager.isLoggedIn.subscribe { isLoggedIn in
+        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
             isLoggedInValues.append(isLoggedIn)
         }
-        let appCoordinator = AppCoordinator(tabBarController: MainTabBarController(), stores: manager, authenticationManager: mockAuthenticationManager)
+        let appCoordinator = AppCoordinator(window: UIWindow(frame: .zero), stores: manager, authenticationManager: mockAuthenticationManager)
         appCoordinator.start()
 
         // Action
@@ -94,7 +95,7 @@ class StoresManagerTests: XCTestCase {
 
         // Assert
         XCTAssertFalse(manager.isAuthenticated)
-        XCTAssertTrue(mockAuthenticationManager.displayAuthenticationInvoked)
+        XCTAssertTrue(mockAuthenticationManager.authenticationUIInvoked)
         XCTAssertEqual(isLoggedInValues, [false, true, false])
     }
 
@@ -115,7 +116,7 @@ class StoresManagerTests: XCTestCase {
         // Arrange
         let manager = DefaultStoresManager.testingInstance
         var isLoggedInValues = [Bool]()
-        cancellable = manager.isLoggedIn.subscribe { isLoggedIn in
+        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
             isLoggedInValues.append(isLoggedIn)
         }
 
@@ -151,7 +152,7 @@ class StoresManagerTests: XCTestCase {
         ServiceLocator.setAuthenticationManager(mockAuthenticationManager)
         let manager = DefaultStoresManager.testingInstance
         var siteIDValues = [Int64?]()
-        cancellable = manager.siteID.subscribe { siteID in
+        cancellable = manager.siteID.sink { siteID in
             siteIDValues.append(siteID)
         }
 
@@ -173,15 +174,15 @@ extension DefaultStoresManager {
     /// Returns a StoresManager instance with testing Keychain/UserDefaults
     ///
     static var testingInstance: DefaultStoresManager {
-        return DefaultStoresManager(sessionManager: .testingInstance)
+        return DefaultStoresManager(sessionManager: SessionManager.testingInstance)
     }
 }
 
 final class MockAuthenticationManager: AuthenticationManager {
-    private(set) var displayAuthenticationInvoked: Bool = false
+    private(set) var authenticationUIInvoked: Bool = false
 
-    override func displayAuthentication(from presenter: UIViewController, animated: Bool, onCompletion: @escaping () -> Void) {
-        displayAuthenticationInvoked = true
-        onCompletion()
+    override func authenticationUI() -> UIViewController {
+        authenticationUIInvoked = true
+        return UIViewController()
     }
 }

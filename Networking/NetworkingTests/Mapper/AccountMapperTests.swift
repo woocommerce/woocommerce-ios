@@ -4,7 +4,7 @@ import XCTest
 
 /// AccountMapper Unit Tests
 ///
-class AccountMapperTests: XCTestCase {
+final class AccountMapperTests: XCTestCase {
 
     /// Verifies that all of the Account fields are properly parsed.
     ///
@@ -27,25 +27,37 @@ class AccountMapperTests: XCTestCase {
         let sites = mapLoadSitesResponse()
         XCTAssert(sites?.count == 2)
 
+        // The first site is a Jetpack site.
         let first = sites!.first!
         XCTAssertEqual(first.siteID, 1112233334444555)
         XCTAssertEqual(first.name, "Testing Blog")
         XCTAssertEqual(first.description, "Testing Tagline")
         XCTAssertEqual(first.url, "https://some-testing-url.testing.blog")
+        XCTAssertEqual(first.adminURL, "https://some-testing-url.here/wp-admin/")
+        XCTAssertFalse(first.isJetpackCPConnected)
+        XCTAssertTrue(first.isJetpackConnected)
+        XCTAssertTrue(first.isJetpackThePluginInstalled)
         XCTAssertEqual(first.isWooCommerceActive, true)
         XCTAssertEqual(first.isWordPressStore, true)
         XCTAssertEqual(first.gmtOffset, 3.5)
         XCTAssertEqual(first.siteTimezone, TimeZone(secondsFromGMT: 12600))
+        XCTAssertEqual(first.jetpackConnectionActivePlugins, [])
 
+        // The second site is a Jetpack CP site (connected to Jetpack without Jetpack-the-plugin).
         let second = sites!.last!
         XCTAssertEqual(second.siteID, 11122333344446666)
         XCTAssertEqual(second.name, "Thoughts")
         XCTAssertEqual(second.description, "Your Favorite Blog")
         XCTAssertEqual(second.url, "https://thoughts.testing.blog")
+        XCTAssertEqual(second.adminURL, "https://thoughts.testing.blog/wp-admin/")
+        XCTAssertTrue(second.isJetpackCPConnected)
+        XCTAssertTrue(second.isJetpackConnected)
+        XCTAssertFalse(second.isJetpackThePluginInstalled)
         XCTAssertEqual(second.isWooCommerceActive, false)
         XCTAssertEqual(second.isWordPressStore, false)
         XCTAssertEqual(second.gmtOffset, -4)
         XCTAssertEqual(second.siteTimezone, TimeZone(secondsFromGMT: -14400))
+        XCTAssertEqual(second.jetpackConnectionActivePlugins, ["jetpack", "woocommerce-payments"])
     }
 
     /// Verifies that the Plan field for Site is properly parsed.
@@ -64,7 +76,7 @@ class AccountMapperTests: XCTestCase {
 //
 private extension AccountMapperTests {
 
-    /// Returns the AccountMapper output upon receiving `me` mockup response (Data Encoded).
+    /// Returns the AccountMapper output upon receiving `me` mock response (Data Encoded).
     ///
     func mapLoadAccountResponse() -> Account? {
         guard let response = Loader.contentsOf("me") else {
@@ -74,7 +86,7 @@ private extension AccountMapperTests {
         return try? AccountMapper().map(response: response)
     }
 
-    /// Returns the SiteListMapper output upon receiving `me/sites` mockup response (Data Encoded).
+    /// Returns the SiteListMapper output upon receiving `me/sites` mock response (Data Encoded).
     ///
     func mapLoadSitesResponse() -> [Site]? {
         guard let response = Loader.contentsOf("sites") else {
@@ -84,7 +96,7 @@ private extension AccountMapperTests {
         return try? SiteListMapper().map(response: response)
     }
 
-    /// Returns the SitePlanMapper output upon receiving `sites/$site` mockup response (Data Encoded).
+    /// Returns the SitePlanMapper output upon receiving `sites/$site` mock response (Data Encoded).
     ///
     func mapLoadSitePlanResponse() -> SitePlan? {
         guard let response = Loader.contentsOf("site-plan") else {

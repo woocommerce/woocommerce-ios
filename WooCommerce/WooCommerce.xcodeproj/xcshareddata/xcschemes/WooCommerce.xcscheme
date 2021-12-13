@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1110"
+   LastUpgradeVersion = "1210"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -120,7 +120,15 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "mocked-wpcom-api"
+            argument = "mocked-network-layer"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-stripe-verbose-logging"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-simulate-stripe-card-reader"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument

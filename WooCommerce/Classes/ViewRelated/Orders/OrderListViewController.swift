@@ -11,20 +11,22 @@ import XLPagerTabStrip
 
 private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 
-protocol OrderListViewControllerDelegate: class {
+protocol OrderListViewControllerDelegate: AnyObject {
     /// Called when `OrderListViewController` (or `OrdersViewController`) is about to fetch Orders from the API.
     ///
     func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController)
+
+    /// Called when an order list `UIScrollView`'s `scrollViewDidScroll` event is triggered from the user.
+    ///
+    func orderListScrollViewDidScroll(_ scrollView: UIScrollView)
+
+    /// Called when a user press a clear filters button. Eg. the clear filters button in the empty screen.
+    ///
+    func clearFilters()
 }
 
 /// OrderListViewController: Displays the list of Orders associated to the active Store / Account.
 ///
-/// ## Work In Progress
-///
-/// This does not do much at the moment. This will replace `OrdersViewController` later when
-/// iOS 13 is the minimum.
-///
-@available(iOS 13.0, *)
 final class OrderListViewController: UIViewController {
 
     weak var delegate: OrderListViewControllerDelegate?
@@ -59,9 +61,7 @@ final class OrderListViewController: UIViewController {
 
     /// Footer "Loading More" Spinner.
     ///
-    private lazy var footerSpinnerView = {
-        return FooterSpinnerView(tableViewStyle: tableView.style)
-    }()
+    private lazy var footerSpinnerView = FooterSpinnerView()
 
     /// The configuration to use for the view if the list is empty.
     ///
@@ -71,26 +71,17 @@ final class OrderListViewController: UIViewController {
     ///
     private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
 
-    /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
-    ///
-    /// The `OrderStatus` data is fetched from the API by `OrdersMasterViewModel`.
-    ///
-    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = ServiceLocator.storageManager
-        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
-
-        return ResultsController<StorageOrderStatus>(storageManager: storageManager, sortedBy: [descriptor])
-    }()
-
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
     private let syncingCoordinator = SyncingCoordinator()
 
-    /// The current list of order statuses for the default site
+    /// Timestamp for last successful sync.
     ///
-    private var currentSiteStatuses: [OrderStatus] {
-        return statusResultsController.fetchedObjects
-    }
+    private var lastFullSyncTimestamp: Date?
+
+    /// Minimum time interval allowed between full sync.
+    ///
+    private let minimalIntervalBetweenSync: TimeInterval = 30
 
     /// UI Active State
     ///
@@ -109,11 +100,18 @@ final class OrderListViewController: UIViewController {
 
     private let siteID: Int64
 
+    /// Current top banner that is displayed.
+    ///
+    private var topBannerView: TopBannerView?
+
     // MARK: - View Lifecycle
 
     /// Designated initializer.
     ///
-    init(siteID: Int64, title: String, viewModel: OrderListViewModel, emptyStateConfig: EmptyStateViewController.Config) {
+    init(siteID: Int64,
+         title: String,
+         viewModel: OrderListViewModel,
+         emptyStateConfig: EmptyStateViewController.Config) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.emptyStateConfig = emptyStateConfig
@@ -140,8 +138,6 @@ final class OrderListViewController: UIViewController {
         configureTableView()
         configureGhostableTableView()
 
-        configureStatusResultsController()
-
         configureViewModel()
         configureSyncingCoordinator()
     }
@@ -149,7 +145,13 @@ final class OrderListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        syncingCoordinator.resynchronize()
+        viewModel.syncOrderStatuses()
+
+        syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
+
+        // Fix any incomplete animation of the refresh control
+        // when switching tabs mid-animation
+        refreshControl.resetAnimation(in: tableView)
 
         // Fix any _incomplete_ animation if the orders were deleted and refetched from
         // a different location (or Orders tab).
@@ -166,9 +168,9 @@ final class OrderListViewController: UIViewController {
                 return cell
             }
 
-            let detailsViewModel = self.viewModel.detailsViewModel(withID: objectID)
-            let orderStatus = self.lookUpOrderStatus(for: detailsViewModel?.order)
-            cell.configureCell(viewModel: detailsViewModel, orderStatus: orderStatus)
+            let cellViewModel = self.viewModel.cellViewModel(withID: objectID)
+
+            cell.configureCell(viewModel: cellViewModel)
             cell.layoutIfNeeded()
             return cell
         }
@@ -178,7 +180,6 @@ final class OrderListViewController: UIViewController {
 
 // MARK: - User Interface Initialization
 //
-@available(iOS 13.0, *)
 private extension OrderListViewController {
     /// Initialize ViewModel operations
     ///
@@ -194,19 +195,31 @@ private extension OrderListViewController {
             self.syncingCoordinator.resynchronize()
         }
 
+        viewModel.onShouldResynchronizeIfNewFiltersAreApplied = { [weak self] in
+            self?.syncingCoordinator.resynchronize(reason: SyncReason.newFiltersApplied.rawValue)
+        }
+
         viewModel.activate()
 
         /// Update the `dataSource` whenever there is a new snapshot.
         viewModel.snapshot.sink { [weak self] snapshot in
             self?.dataSource.apply(snapshot)
         }.store(in: &cancellables)
-    }
 
-    /// Setup: Status Results Controller
-    ///
-    func configureStatusResultsController() {
-        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", siteID)
-        try? statusResultsController.performFetch()
+        /// Update the top banner when needed
+        viewModel.$topBanner
+            .sink { [weak self] topBannerType in
+                guard let self = self else { return }
+                switch topBannerType {
+                case .none:
+                    self.hideTopBannerView()
+                case .error:
+                    self.setErrorTopBanner()
+                case .simplePaymentsEnabled:
+                    self.setSimplePaymentsEnabledTopBanner()
+                }
+            }
+            .store(in: &cancellables)
     }
 
     /// Setup: Sync'ing Coordinator
@@ -233,7 +246,7 @@ private extension OrderListViewController {
 
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToSafeArea(tableView)
+        view.pinSubviewToAllEdges(tableView)
     }
 
     /// Setup: Ghostable TableView
@@ -268,11 +281,11 @@ private extension OrderListViewController {
 
 // MARK: - Actions
 //
-@available(iOS 13.0, *)
 extension OrderListViewController {
     @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.orderListViewControllerWillSynchronizeOrders(self)
+        viewModel.syncOrderStatuses()
         syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) {
             sender.endRefreshing()
         }
@@ -281,29 +294,43 @@ extension OrderListViewController {
 
 // MARK: - Sync'ing Helpers
 //
-@available(iOS 13.0, *)
 extension OrderListViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the Orders for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
+        if pageNumber == syncingCoordinator.pageFirstIndex,
+           reason == SyncReason.viewWillAppear.rawValue,
+           let lastFullSyncTimestamp = lastFullSyncTimestamp,
+           Date().timeIntervalSince(lastFullSyncTimestamp) < minimalIntervalBetweenSync {
+            // less than 30 s from last full sync
+            onCompletion?(true)
+            return
+        }
+
         transitionToSyncingState()
+        viewModel.hasErrorLoadingData = false
 
         let action = viewModel.synchronizationAction(
             siteID: siteID,
             pageNumber: pageNumber,
             pageSize: pageSize,
-            reason: SyncReason(rawValue: reason ?? "")) { [weak self] error in
+            reason: SyncReason(rawValue: reason ?? "")) { [weak self] totalDuration, error in
                 guard let self = self else {
                     return
                 }
 
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
-                    self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize, reason: reason)
+                    self.viewModel.hasErrorLoadingData = true
                 } else {
-                    let status = self.viewModel.statusFilter?.slug ?? String()
-                    ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": status])
+                    if pageNumber == self.syncingCoordinator.pageFirstIndex {
+                        // save timestamp of last successful update
+                        self.lastFullSyncTimestamp = Date()
+                    }
+                    ServiceLocator.analytics.track(event: .ordersListLoaded(totalDuration: totalDuration,
+                                                                            pageNumber: pageNumber,
+                                                                            filters: self.viewModel.filters))
                 }
 
                 self.transitionToResultsUpdatedState()
@@ -312,12 +339,32 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
         ServiceLocator.stores.dispatch(action)
     }
+
+    /// Sets the current top banner in the table view header
+    ///
+    private func showTopBannerView() {
+        guard let topBannerView = topBannerView else { return }
+
+        // Configure header container view
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
+        headerContainer.addSubview(topBannerView)
+        headerContainer.pinSubviewToSafeArea(topBannerView)
+
+        tableView.tableHeaderView = headerContainer
+        tableView.updateHeaderHeight()
+    }
+
+    /// Hide the top banner from the table view header
+    ///
+    private func hideTopBannerView() {
+        topBannerView?.removeFromSuperview()
+        tableView.tableHeaderView = nil
+    }
 }
 
 
 // MARK: - Spinner Helpers
 //
-@available(iOS 13.0, *)
 extension OrderListViewController {
 
     /// Starts the Footer Spinner animation, whenever `mustStartFooterSpinner` returns *true*.
@@ -350,7 +397,6 @@ extension OrderListViewController {
 
 // MARK: - Placeholders & Ghostable Table
 //
-@available(iOS 13.0, *)
 private extension OrderListViewController {
 
     /// Renders the Placeholder Orders
@@ -377,23 +423,6 @@ private extension OrderListViewController {
         ghostableTableView.removeGhostContent()
     }
 
-    /// Displays the Error Notice.
-    ///
-    func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int, reason: String?) {
-        let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            self.delegate?.orderListViewControllerWillSynchronizeOrders(self)
-            self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason)
-        }
-
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-    }
-
     /// Shows the EmptyStateViewController
     ///
     func displayEmptyViewController() {
@@ -407,7 +436,14 @@ private extension OrderListViewController {
             return
         }
 
-        childController.configure(emptyStateConfig)
+        childController.configure(createFilterConfig())
+
+        // Show Error Loading Data banner if the empty state is caused by a sync error
+        if viewModel.hasErrorLoadingData {
+            childController.showTopBannerView()
+        } else {
+            childController.hideTopBannerView()
+        }
 
         childView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -434,30 +470,38 @@ private extension OrderListViewController {
         childView.removeFromSuperview()
         childController.removeFromParent()
     }
-}
 
-
-// MARK: - Convenience Methods
-//
-@available(iOS 13.0, *)
-private extension OrderListViewController {
-
-    func lookUpOrderStatus(for order: Order?) -> OrderStatus? {
-        guard let order = order else {
-            return nil
+    /// Empty state config
+    ///
+    func createFilterConfig() ->  EmptyStateViewController.Config {
+        guard let filters = viewModel.filters, filters.numberOfActiveFilters != 0 else {
+            return emptyStateConfig
         }
 
-        for orderStatus in currentSiteStatuses where orderStatus.status == order.status {
-            return orderStatus
-        }
+        return noOrdersMatchFilterConfig()
+    }
 
-        return nil
+    /// Creates EmptyStateViewController.Config for no orders matching the filter empty view
+    ///
+    func noOrdersMatchFilterConfig() -> EmptyStateViewController.Config {
+        let boldSearchKeyword = NSAttributedString(string: viewModel.filters?.readableString ?? String(),
+                                                   attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
+        let message = NSMutableAttributedString(string: Localization.filteredOrdersEmptyStateMessage)
+        message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
+
+        return EmptyStateViewController.Config.withButton(
+            message: message,
+            image: .emptySearchResultsImage,
+            details: "",
+            buttonTitle: Localization.clearButton) { [weak self] button in
+                self?.delegate?.clearFilters()
+            }
     }
 }
 
+
 // MARK: - UITableViewDelegate Conformance
 //
-@available(iOS 13.0, *)
 extension OrderListViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -511,11 +555,14 @@ extension OrderListViewController: UITableViewDelegate {
 
         return header
     }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        delegate?.orderListScrollViewDidScroll(scrollView)
+    }
 }
 
 // MARK: - Finite State Machine Management
 //
-@available(iOS 13.0, *)
 private extension OrderListViewController {
 
     func didEnter(state: State) {
@@ -562,9 +609,8 @@ private extension OrderListViewController {
 // MARK: - IndicatorInfoProvider Conformance
 
 // This conformance is not used directly by `OrderListViewController`. We only need this because
-// `Self` is used as a child of `OrdersMasterViewController` which is a
+// `Self` is used as a child of `OrdersTabbedViewController` which is a
 // `ButtonBarPagerTabStripViewController`.
-@available(iOS 13.0, *)
 extension OrderListViewController: IndicatorInfoProvider {
     /// Return `self.title` under `IndicatorInfo`.
     ///
@@ -573,11 +619,49 @@ extension OrderListViewController: IndicatorInfoProvider {
     }
 }
 
-
-// MARK: - Nested Types
-//
-@available(iOS 13.0, *)
+// MARK: Top Banner Factories
 private extension OrderListViewController {
+    /// Sets the `topBannerView` property to an error banner.
+    ///
+    func setErrorTopBanner() {
+        topBannerView = ErrorTopBannerFactory.createTopBanner(isExpanded: false, expandedStateChangeHandler: { [weak self] in
+            self?.tableView.updateHeaderHeight()
+        },
+        onTroubleshootButtonPressed: { [weak self] in
+            let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+            self?.present(safariViewController, animated: true, completion: nil)
+        },
+        onContactSupportButtonPressed: { [weak self] in
+            guard let self = self else { return }
+            ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+        })
+        showTopBannerView()
+    }
+
+    /// Sets the `topBannerView` property to a simple payments enabled banner.
+    ///
+    func setSimplePaymentsEnabledTopBanner() {
+        topBannerView = SimplePaymentsTopBannerFactory.createFeatureEnabledBanner(onTopButtonPressed: { [weak self] in
+            self?.tableView.updateHeaderHeight()
+        }, onDismissButtonPressed: { [weak self] in
+            self?.viewModel.hideSimplePaymentsBanners = true
+        }, onGiveFeedbackButtonPressed: { [weak self] in
+            let surveyNavigation = SurveyCoordinatingController(survey: .simplePaymentsPrototype)
+            self?.present(surveyNavigation, animated: true, completion: nil)
+        })
+        showTopBannerView()
+    }
+}
+
+// MARK: - Constants
+//
+private extension OrderListViewController {
+    enum Localization {
+        static let filteredOrdersEmptyStateMessage = NSLocalizedString("We're sorry, we couldn't find any order that match %@",
+                   comment: "Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user.")
+        static let clearButton = NSLocalizedString("Clear Filters",
+                                 comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List")
+    }
 
     enum Settings {
         static let estimatedHeaderHeight = CGFloat(43)

@@ -68,6 +68,7 @@ extension ProductDownloadSettingsViewController {
 
     @objc private func completeUpdating() {
         viewModel.completeUpdating() { [weak self] (downloadLimit, downloadExpiry, hasUnsavedChanges) in
+            ServiceLocator.analytics.track(.productDownloadableFilesSettingsChanged)
             self?.onCompletion(downloadLimit, downloadExpiry, hasUnsavedChanges)
         }
     }
@@ -181,7 +182,6 @@ private extension ProductDownloadSettingsViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
                                                             target: self,
                                                             action: #selector(completeUpdating))
-        removeNavigationBackBarButtonText()
         enableDoneButton(false)
     }
 

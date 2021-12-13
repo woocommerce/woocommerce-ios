@@ -11,7 +11,7 @@ final class ResultsControllerTests: XCTestCase {
 
     /// InMemory Storage!
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
     /// Returns the `StorageType` associated with the Main Thread
     ///
@@ -30,7 +30,7 @@ final class ResultsControllerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
     }
 
     override func tearDown() {

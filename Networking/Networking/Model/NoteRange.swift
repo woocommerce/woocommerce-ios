@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 // MARK: - NoteRange
 //
-public struct NoteRange: Equatable {
+public struct NoteRange: Equatable, GeneratedFakeable {
 
     /// NoteRange.Type expressed as a Swift Native Enum.
     ///
@@ -45,7 +45,7 @@ public struct NoteRange: Equatable {
 
     /// Designated Initializer.
     ///
-    init(type: String?, range: NSRange, url: URL?, identifier: Int64?, postID: Int64?, siteID: Int64?, value: String?) {
+    public init(type: String?, range: NSRange, url: URL?, identifier: Int64?, postID: Int64?, siteID: Int64?, value: String?) {
         self.kind = NoteRange.kind(forType: type, siteID: siteID, url: url)
         self.type = type
         self.range = range
@@ -151,18 +151,4 @@ extension NoteRange {
         case link
         case unknown
     }
-}
-
-
-// MARK: - Equatable Conformance
-//
-public func ==(lhs: NoteRange, rhs: NoteRange) -> Bool {
-    return lhs.type == rhs.type &&
-            lhs.range == rhs.range &&
-            lhs.url == rhs.url &&
-            lhs.commentID == rhs.commentID &&
-            lhs.postID == rhs.postID &&
-            lhs.siteID == rhs.siteID &&
-            lhs.userID == rhs.userID &&
-            lhs.value == rhs.value
 }

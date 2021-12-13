@@ -15,7 +15,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
     }
 
     override func tearDown() {
@@ -75,7 +75,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(persistedCoupon.toReadOnly(), coupon)
         let persistedRefund = try XCTUnwrap(viewStorage.loadOrderRefundCondensed(siteID: defaultSiteID, refundID: refund.refundID))
         XCTAssertEqual(persistedRefund.toReadOnly(), refund)
-        let persistedShippingLine = try XCTUnwrap(viewStorage.loadShippingLine(siteID: defaultSiteID, shippingID: shippingLine.shippingID))
+        let persistedShippingLine = try XCTUnwrap(viewStorage.loadOrderShippingLine(siteID: defaultSiteID, shippingID: shippingLine.shippingID))
         XCTAssertEqual(persistedShippingLine.toReadOnly(), shippingLine)
     }
 
@@ -198,13 +198,15 @@ private extension OrdersUpsertUseCaseTests {
               shippingTax: "",
               total: "",
               totalTax: "",
+              paymentMethodID: "",
               paymentMethodTitle: "",
               items: [],
               billingAddress: nil,
               shippingAddress: nil,
               shippingLines: [],
               coupons: [],
-              refunds: [])
+              refunds: [],
+              fees: [])
     }
 
     func makeOrderItem(itemID: Int64 = 76, attributes: [Networking.OrderItemAttribute] = []) -> Networking.OrderItem {

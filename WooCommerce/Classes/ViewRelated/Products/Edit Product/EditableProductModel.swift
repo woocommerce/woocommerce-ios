@@ -115,8 +115,12 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.productStockStatus
     }
 
-    var stockQuantity: Int64? {
+    var stockQuantity: Decimal? {
         product.stockQuantity
+    }
+
+    var hasIntegerStockQuantity: Bool {
+        product.hasIntegerStockQuantity
     }
 
     var backordersKey: String {
@@ -143,6 +147,18 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.downloadExpiry
     }
 
+    var upsellIDs: [Int64] {
+        product.upsellIDs
+    }
+
+    var crossSellIDs: [Int64] {
+        product.crossSellIDs
+    }
+
+    var hasAddOns: Bool {
+        product.addOns.isNotEmpty
+    }
+
     func isStockStatusEnabled() -> Bool {
         // Only a variable product's stock status is not editable.
         productType != .variable
@@ -160,6 +176,10 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
 
     func isShippingEnabled() -> Bool {
         product.downloadable == false && product.virtual == false
+    }
+
+    var existsRemotely: Bool {
+        product.existsRemotely
     }
 }
 

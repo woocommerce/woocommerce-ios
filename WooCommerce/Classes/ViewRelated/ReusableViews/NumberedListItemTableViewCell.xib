@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="71" id="ndz-0J-qyJ" customClass="NumberedListItemTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="71"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ndz-0J-qyJ" id="N2W-yf-dgL">
+                <rect key="frame" x="0.0" y="0.0" width="414" height="71"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b8B-E4-1cG">
+                        <rect key="frame" x="30" y="19.5" width="32" height="32"/>
+                        <color key="backgroundColor" systemColor="systemGray5Color"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="b8B-E4-1cG" secondAttribute="height" multiplier="32:32" id="71A-ms-0Es"/>
+                            <constraint firstAttribute="width" constant="32" id="KU0-Pg-Zp2"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="16"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uTV-ZV-8LG">
+                        <rect key="frame" x="81" y="10" width="303" height="51"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="uTV-ZV-8LG" firstAttribute="top" secondItem="N2W-yf-dgL" secondAttribute="top" constant="10" id="2ec-4H-7e3"/>
+                    <constraint firstAttribute="trailing" secondItem="uTV-ZV-8LG" secondAttribute="trailing" constant="30" id="D3n-oR-tyS"/>
+                    <constraint firstItem="b8B-E4-1cG" firstAttribute="centerY" secondItem="N2W-yf-dgL" secondAttribute="centerY" id="E5a-7R-RJ0"/>
+                    <constraint firstItem="uTV-ZV-8LG" firstAttribute="leading" secondItem="b8B-E4-1cG" secondAttribute="trailing" constant="19" id="FVE-Xj-vsD"/>
+                    <constraint firstItem="b8B-E4-1cG" firstAttribute="leading" secondItem="N2W-yf-dgL" secondAttribute="leading" constant="30" id="RNX-PQ-BLs"/>
+                    <constraint firstAttribute="bottom" secondItem="uTV-ZV-8LG" secondAttribute="bottom" constant="10" id="jMj-VA-tCn"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="itemTextLabel" destination="uTV-ZV-8LG" id="qIm-MS-lzj"/>
+                <outlet property="numberLabel" destination="b8B-E4-1cG" id="cmi-dF-5IF"/>
+            </connections>
+            <point key="canvasLocation" x="21.739130434782609" y="102.79017857142857"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <systemColor name="systemGray5Color">
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

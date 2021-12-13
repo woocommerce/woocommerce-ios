@@ -63,7 +63,10 @@ final class SurveyViewController: UIViewController, SurveyViewControllerOutputs 
 extension SurveyViewController {
     enum Source {
         case inAppFeedback
-        case productsM4Feedback
+        case productsVariationsFeedback
+        case shippingLabelsRelease3Feedback
+        case addOnsI1
+        case simplePaymentsPrototype
 
         fileprivate var url: URL {
             switch self {
@@ -71,12 +74,29 @@ extension SurveyViewController {
                 return WooConstants.URLs.inAppFeedback
                     .asURL()
                     .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
 
-            case .productsM4Feedback:
-                return WooConstants.URLs.productsM4Feedback
+            case .productsVariationsFeedback:
+                return WooConstants.URLs.productsFeedback
                     .asURL()
                     .tagPlatform("ios")
-                    .tagProductMilestone("4")
+                    .tagAppVersion(Bundle.main.bundleVersion())
+            case .shippingLabelsRelease3Feedback:
+                return WooConstants.URLs.shippingLabelsRelease3Feedback
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagShippingLabelsMilestone("3")
+                    .tagAppVersion(Bundle.main.bundleVersion())
+            case .addOnsI1:
+                return WooConstants.URLs.orderAddOnI1Feedback
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
+            case .simplePaymentsPrototype:
+                return WooConstants.URLs.simplePaymentsPrototypeFeedback
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
             }
         }
 
@@ -84,7 +104,7 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return Localization.title
-            case .productsM4Feedback:
+            case .productsVariationsFeedback, .shippingLabelsRelease3Feedback, .addOnsI1, .simplePaymentsPrototype:
                 return Localization.giveFeedback
             }
         }
@@ -94,8 +114,14 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return .general
-            case .productsM4Feedback:
-                return .productsM4
+            case .productsVariationsFeedback:
+                return .productsVariations
+            case .shippingLabelsRelease3Feedback:
+                return .shippingLabelsRelease3
+            case .addOnsI1:
+                return .addOnsI1
+            case .simplePaymentsPrototype:
+                return .simplePaymentsPrototype
             }
         }
     }
@@ -137,8 +163,12 @@ extension URL {
         appendingQueryItem(URLQueryItem(name: Tags.surveyRequestPlatformTag, value: platformName))
     }
 
-    func tagProductMilestone(_ milestone: String) -> URL {
-        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestProductMilestoneTag, value: milestone))
+    func tagAppVersion(_ version: String) -> URL {
+        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestAppVersionTag, value: version))
+    }
+
+    func tagShippingLabelsMilestone(_ milestone: String) -> URL {
+        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestShippingLabelsMilestoneTag, value: milestone))
     }
 
     private func appendingQueryItem(_ queryItem: URLQueryItem) -> URL {
@@ -157,7 +187,9 @@ extension URL {
 
     private enum Tags {
         static let surveyRequestPlatformTag = "woo-mobile-platform"
+        static let surveyRequestAppVersionTag = "app-version"
         static let surveyRequestProductMilestoneTag = "product-milestone"
+        static let surveyRequestShippingLabelsMilestoneTag = "shipping_label_milestone"
     }
 }
 

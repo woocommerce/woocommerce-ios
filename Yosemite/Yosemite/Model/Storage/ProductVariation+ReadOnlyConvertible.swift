@@ -46,7 +46,7 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
         taxClass = productVariation.taxClass
 
         manageStock = productVariation.manageStock
-        stockQuantity = productVariation.stockQuantity ?? 0
+        stockQuantity = NSDecimalNumber(decimal: productVariation.stockQuantity ?? 0)
         stockStatusKey = productVariation.stockStatus.rawValue
 
         backordersKey = productVariation.backordersKey
@@ -95,7 +95,7 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
                                 taxStatusKey: taxStatusKey,
                                 taxClass: taxClass,
                                 manageStock: manageStock,
-                                stockQuantity: stockQuantity,
+                                stockQuantity: stockQuantity as Decimal,
                                 stockStatus: ProductStockStatus(rawValue: stockStatusKey),
                                 backordersKey: backordersKey,
                                 backordersAllowed: backordersAllowed,

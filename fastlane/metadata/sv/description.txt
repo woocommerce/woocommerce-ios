@@ -1,13 +1,21 @@
-VISA OCH HANTERA ORDRAR
-Scrolla igenom, filtrera eller kontrollera specifika ordrar. Nudda för att se orderinformation – inklusive produkter, värde, kunddata, fraktuppgifter och noteringar.
+Hantera ditt företag i farten med WooCommerce-mobilappen. Skapa produkter, behandla beställningar och få viktig statistik i realtid.
 
-Håll koll på din butik
-Se vilka produkter som presterar bäst. Kontrollera dina totala intäkter och se data om ordrar och besökare sorterat enligt vecka, månad och år.
+LÄGG TILL PRODUKTER
+Skapa, gruppera och publicera produkter direkt från din iPhone eller iPad. Fånga kreativiteten i ögonblicket – förvandla dina idéer till produkter på några sekunder, eller spara dem som utkast för senare användning.
 
-Beställningsaviseringar i realtid
-Få meddelanden om butiksaktivitet – inklusive nya beställningar och produktrecensioner.
+FÅ NOTISER
+Missa aldrig en beställning eller en recension. Håll rädslan för att missa något stången genom att aktivera notiser i realtid – du kommer att höra det där beroendeframkallande "ka-ching"-ljudet vid varje ny försäljning!
 
-WooCommerce är den mest anpassningsbara e-handelsplattformen för att skapa ditt företag online. Den är byggd på WordPress och därmed integrerad med världens bästa verktyg för innehållshantering.
+VISA OCH ÄNDRA BESTÄLLNINGAR
+Bläddra bland sammanfattningarna, eller sök baserat på kund- eller beställningsdetaljer. Tryck på detaljerna för att se specificerad fakturering, börja behandla beställningen eller ändra beställningens status. Lägg till anteckningar i beställningen eller skicka ett uppföljningsmeddelande direkt till kunden.
+
+SPÅRA DIN STATISTIK
+Se en överblick av vilka produkter som presterar bäst. Håll koll på dina totala intäkter, antalet beställningar och besökardata per vecka, månad och år. Kunskap = makt!
+
+VÄXLA MELLAN BUTIKER
+Om du har mer än en butik kan du växla sömlöst mellan dem på några sekunder.
+
+WooCommerce är världens mest anpassningsbara e-handelsplattform med öppen källkod. Oavsett om du startar en verksamhet, tar din befintliga butik online eller om du utvecklar webbplatser åt kunder, använd WooCommerce så får du en butik som har en överlägsen kombination av innehåll och handel.
 
 Förhandskrav: WooCommerce v3.5+, Jetpack-tillägget.
 

@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Alamofire
 
@@ -42,6 +43,14 @@ public protocol Network {
     ///
     func responseData(for request: URLRequestConvertible,
                       completion: @escaping (Swift.Result<Data, Error>) -> Void)
+
+    /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
+    ///
+    /// - Parameters:
+    ///     - request: Request that should be performed.
+    ///
+    /// - Returns: A publisher that emits the result of the given request.
+    func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never>
 
     /// Executes the specified Network Request for file uploads. Upon completion, the payload will be sent back to the caller as a Data instance.
     ///

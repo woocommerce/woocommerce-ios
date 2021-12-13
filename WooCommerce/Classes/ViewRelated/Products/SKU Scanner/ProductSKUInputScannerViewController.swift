@@ -3,8 +3,7 @@ import UIKit
 /// Container view controller of barcode scanner for product SKU input.
 final class ProductSKUInputScannerViewController: UIViewController {
     private lazy var barcodeScannerChildViewController: BarcodeScannerViewController = {
-        let viewProperties = BarcodeScannerViewController.ViewProperties(instructionText: Localization.instructionText)
-        return BarcodeScannerViewController(viewProperties: viewProperties) { [weak self] result in
+        return BarcodeScannerViewController(instructionText: Localization.instructionText) { [weak self] result in
             guard let self = self else { return }
             guard self.hasDetectedBarcode == false else {
                 return
@@ -19,7 +18,7 @@ final class ProductSKUInputScannerViewController: UIViewController {
 
     private let onBarcodeScanned: (String) -> Void
 
-    /// Makes sure the barcode detection callback is only handled once.
+    /// Tracks whether a barcode has been detected because the barcode detection callback is only handled once.
     private var hasDetectedBarcode: Bool = false
 
     init(onBarcodeScanned: @escaping (String) -> Void) {

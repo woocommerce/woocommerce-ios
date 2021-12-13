@@ -8,10 +8,10 @@ struct ProductFactory {
     /// - Parameters:
     ///   - type: The type of the product.
     ///   - siteID: The site ID where the product is added to.
-    func createNewProduct(type: ProductType, siteID: Int64) -> Product? {
+    func createNewProduct(type: ProductType, isVirtual: Bool, siteID: Int64) -> Product? {
         switch type {
         case .simple, .grouped, .variable, .affiliate:
-            return createEmptyProduct(type: type, siteID: siteID)
+            return createEmptyProduct(type: type, isVirtual: isVirtual, siteID: siteID)
         default:
             return nil
         }
@@ -19,7 +19,7 @@ struct ProductFactory {
 }
 
 private extension ProductFactory {
-    func createEmptyProduct(type: ProductType, siteID: Int64) -> Product {
+    func createEmptyProduct(type: ProductType, isVirtual: Bool, siteID: Int64) -> Product {
         Product(siteID: siteID,
                 productID: 0,
                 name: "",
@@ -43,7 +43,7 @@ private extension ProductFactory {
                 onSale: false,
                 purchasable: false,
                 totalSales: 0,
-                virtual: false,
+                virtual: isVirtual,
                 downloadable: false,
                 downloads: [],
                 downloadLimit: -1,
@@ -81,6 +81,7 @@ private extension ProductFactory {
                 defaultAttributes: [],
                 variations: [],
                 groupedProducts: [],
-                menuOrder: 0)
+                menuOrder: 0,
+                addOns: [])
     }
 }

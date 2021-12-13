@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="StorePickerViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
-                <outlet property="actionBackgroundView" destination="H5J-Qa-DXp" id="aj6-RY-z7g"/>
                 <outlet property="actionButton" destination="0KD-hY-YaS" id="mJR-Pi-S0z"/>
                 <outlet property="secondaryActionButton" destination="Slo-h4-7qY" id="YFU-eL-sGS"/>
                 <outlet property="tableView" destination="oVs-XS-592" id="tgt-K5-nCu"/>
@@ -30,7 +29,7 @@
                         <outlet property="delegate" destination="-1" id="srI-Ru-BMi"/>
                     </connections>
                 </tableView>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H5J-Qa-DXp" userLabel="Action Background View">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H5J-Qa-DXp">
                     <rect key="frame" x="0.0" y="702" width="414" height="194"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="0a6-Ee-KF8">
@@ -78,6 +77,7 @@
                     </constraints>
                 </view>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="t7O-Ph-IKW"/>
             <constraints>
                 <constraint firstItem="oVs-XS-592" firstAttribute="top" secondItem="t7O-Ph-IKW" secondAttribute="top" id="2Y8-wP-jSa"/>
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="trailing" secondItem="oVs-XS-592" secondAttribute="trailing" id="Mr3-k9-GG9"/>
@@ -87,7 +87,6 @@
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="trailing" secondItem="H5J-Qa-DXp" secondAttribute="trailing" id="iDf-P9-Du1"/>
                 <constraint firstAttribute="bottom" secondItem="H5J-Qa-DXp" secondAttribute="bottom" id="vIo-fJ-O96"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="t7O-Ph-IKW"/>
             <point key="canvasLocation" x="-476" y="19.211822660098523"/>
         </view>
     </objects>

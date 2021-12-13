@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -17,10 +17,10 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="QbZ-zr-lT5">
-                        <rect key="frame" x="20" y="15" width="285" height="212"/>
+                        <rect key="frame" x="16" y="15" width="288" height="212"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="x22-fd-jyE">
-                                <rect key="frame" x="0.0" y="0.0" width="285" height="40"/>
+                                <rect key="frame" x="0.0" y="0.0" width="288" height="40"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="qcp-iw-3SL" customClass="CircularImageView" customModule="WooCommerce" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
@@ -46,16 +46,16 @@
                                         </variation>
                                     </imageView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="CXQ-2a-6Fp">
-                                        <rect key="frame" x="56" y="0.0" width="229" height="40"/>
+                                        <rect key="frame" x="56" y="0.0" width="232" height="40"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="249" horizontalCompressionResistancePriority="250" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MB2-nk-Fuo">
-                                                <rect key="frame" x="0.0" y="0.0" width="229" height="24"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="232" height="24"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" horizontalCompressionResistancePriority="250" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6d4-9R-dcK">
-                                                <rect key="frame" x="0.0" y="24" width="229" height="16"/>
+                                                <rect key="frame" x="0.0" y="24" width="232" height="16"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -65,19 +65,19 @@
                                 </subviews>
                             </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P0O-u0-r7G">
-                                <rect key="frame" x="0.0" y="42" width="285" height="10"/>
+                                <rect key="frame" x="0.0" y="42" width="288" height="10"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="10" id="qsU-jb-cDi"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Iy-55-tos" customClass="RatingView" customModule="WooCommerce" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="54" width="285" height="18"/>
+                                <rect key="frame" x="0.0" y="54" width="288" height="18"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="18" id="qAn-B5-boc"/>
                                 </constraints>
                             </view>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" editable="NO" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FpQ-yp-a6e">
-                                <rect key="frame" x="0.0" y="74" width="285" height="67"/>
+                                <rect key="frame" x="0.0" y="74" width="288" height="67"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="28" id="mhf-tZ-eCY"/>
                                 </constraints>
@@ -88,17 +88,17 @@
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vhZ-1A-FVO">
-                                <rect key="frame" x="0.0" y="143" width="285" height="15"/>
+                                <rect key="frame" x="0.0" y="143" width="288" height="15"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="15" id="k78-0j-dtf"/>
                                 </constraints>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="OJ1-WL-7rq">
-                                <rect key="frame" x="0.0" y="160" width="285" height="52"/>
+                                <rect key="frame" x="0.0" y="160" width="288" height="52"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qUJ-uA-W4N" customClass="VerticalButton" customModule="WooCommerce" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="88.5" height="52"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="89.5" height="52"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                         <state key="normal" title="Spam"/>
                                         <connections>
@@ -106,7 +106,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6As-Iw-caM" customClass="VerticalButton" customModule="WooCommerce" customModuleProvider="target">
-                                        <rect key="frame" x="98.5" y="0.0" width="88" height="52"/>
+                                        <rect key="frame" x="99.5" y="0.0" width="89" height="52"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                         <state key="normal" title="Trash">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -116,7 +116,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uc0-Kk-Npt" customClass="VerticalButton" customModule="WooCommerce" customModuleProvider="target">
-                                        <rect key="frame" x="196.5" y="0.0" width="88.5" height="52"/>
+                                        <rect key="frame" x="198.5" y="0.0" width="89.5" height="52"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                         <state key="normal" title="Approve"/>
                                         <connections>
@@ -135,7 +135,7 @@
                     <constraint firstItem="QbZ-zr-lT5" firstAttribute="top" secondItem="p0w-Eh-NgH" secondAttribute="topMargin" constant="4" id="Rl1-g8-YkH"/>
                     <constraint firstAttribute="bottomMargin" secondItem="QbZ-zr-lT5" secondAttribute="bottom" constant="6" id="Vfz-Zj-1v5"/>
                     <constraint firstAttribute="trailingMargin" secondItem="QbZ-zr-lT5" secondAttribute="trailing" id="lYP-FG-ARa"/>
-                    <constraint firstItem="QbZ-zr-lT5" firstAttribute="leading" secondItem="p0w-Eh-NgH" secondAttribute="leading" constant="20" symbolic="YES" id="nVZ-Fb-Nbv"/>
+                    <constraint firstItem="QbZ-zr-lT5" firstAttribute="leading" secondItem="p0w-Eh-NgH" secondAttribute="leadingMargin" id="nVZ-Fb-Nbv"/>
                 </constraints>
             </tableViewCellContentView>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

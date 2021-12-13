@@ -1,10 +1,11 @@
 import Combine
 import KeychainAccess
 import WordPressAuthenticator
+import Observables
+import Yosemite
 
 /// Checks and listens for observations when the Apple ID credential is revoked when the user previously signed in with Apple.
 ///
-@available(iOS 13.0, *)
 final class AppleIDCredentialChecker {
     /// Keychain access for SIWA auth token
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
@@ -12,7 +13,7 @@ final class AppleIDCredentialChecker {
     private let authenticator: WordPressAuthenticator
     private let stores: StoresManager
 
-    private var cancellable: ObservationToken?
+    private var cancellable: AnyCancellable?
     private var cancellables = Set<AnyCancellable>()
 
     init(authenticator: WordPressAuthenticator = WordPressAuthenticator.shared, stores: StoresManager = ServiceLocator.stores) {
@@ -29,7 +30,7 @@ final class AppleIDCredentialChecker {
     }
 
     func observeLoggedInStateForAppleIDObservations() {
-        cancellable = stores.isLoggedIn.subscribe { [weak self] isLoggedIn in
+        cancellable = stores.isLoggedInPublisher.sink { [weak self] isLoggedIn in
             if isLoggedIn {
                 self?.startObservingAppleIDCredentialRevoked()
             } else {
@@ -40,7 +41,6 @@ final class AppleIDCredentialChecker {
     }
 }
 
-@available(iOS 13.0, *)
 private extension AppleIDCredentialChecker {
     /// Checks Apple ID credential state on app launch and app switching.
     func observeAppDidBecomeActiveForCheckingAppleIDCredentialState() {
@@ -84,7 +84,6 @@ private extension AppleIDCredentialChecker {
     }
 }
 
-@available(iOS 13.0, *)
 private extension AppleIDCredentialChecker {
     func startObservingAppleIDCredentialRevoked() {
         authenticator.startObservingAppleIDCredentialRevoked { [weak self] in
@@ -118,7 +117,6 @@ private extension AppleIDCredentialChecker {
 
 // MARK: - Authentication helpers
 //
-@available(iOS 13.0, *)
 private extension AppleIDCredentialChecker {
     func isLoggedIn() -> Bool {
         stores.isAuthenticated

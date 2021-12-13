@@ -7,6 +7,14 @@ final class ProductPriceSettingsViewController: UIViewController {
 
     @IBOutlet weak private var tableView: UITableView!
 
+    /// Product Price Settings dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter due to modal page sheet situations)
+    ///
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     private let siteID: Int64
 
     private let viewModel: ProductPriceSettingsViewModelOutput & ProductPriceSettingsActionHandler
@@ -86,7 +94,6 @@ private extension ProductPriceSettingsViewController {
         title = NSLocalizedString("Price", comment: "Product Price Settings navigation title")
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeUpdating))
-        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {
@@ -148,6 +155,9 @@ extension ProductPriceSettingsViewController {
                     self?.displaySalePriceWithoutRegularPriceErrorNotice()
                 case .salePriceHigherThanRegularPrice:
                     self?.displaySalePriceErrorNotice()
+                case .newSaleWithEmptySalePrice:
+                    self?.displayMissingSalePriceErrorNotice()
+                    break
                 }
         })
     }
@@ -166,23 +176,33 @@ private extension ProductPriceSettingsViewController {
     /// Displays a Notice onscreen, indicating that you can't add a sale price without adding before the regular price
     ///
     func displaySalePriceWithoutRegularPriceErrorNotice() {
-        UIApplication.shared.keyWindow?.endEditing(true)
         let message = NSLocalizedString("The sale price can't be added without the regular price.",
                                         comment: "Product price error notice message, when the sale price is added but the regular price is not")
-
-        let notice = Notice(title: message, feedbackType: .error)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
+        displayNotice(for: message)
     }
 
     /// Displays a Notice onscreen, indicating that the sale price need to be higher than the regular price
     ///
     func displaySalePriceErrorNotice() {
-        UIApplication.shared.keyWindow?.endEditing(true)
         let message = NSLocalizedString("The sale price should be lower than the regular price.",
                                         comment: "Product price error notice message, when the sale price is higher than the regular price")
+        displayNotice(for: message)
+    }
 
+    /// Displays a Notice onscreen, indicating that the sale price must be set in order to create a new sale
+    ///
+    func displayMissingSalePriceErrorNotice() {
+        let message = NSLocalizedString("Please enter a sale price for the scheduled sale",
+                                        comment: "Product price error notice message, when the sale price was not set during a sale setup")
+        displayNotice(for: message)
+    }
+
+    /// Displays a Notice onscreen for a given message
+    ///
+    func displayNotice(for message: String) {
+        UIApplication.shared.currentKeyWindow?.endEditing(true)
         let notice = Notice(title: message, feedbackType: .error)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
+        noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -307,19 +327,19 @@ private extension ProductPriceSettingsViewController {
             configureSalePrice(cell: cell)
         case let cell as SwitchTableViewCell where row == .scheduleSale:
             configureScheduleSale(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .scheduleSaleFrom:
+        case let cell as TitleAndValueTableViewCell where row == .scheduleSaleFrom:
             configureScheduleSaleFrom(cell: cell)
         case let cell as DatePickerTableViewCell where row == .datePickerSaleFrom:
             configureSaleFromPicker(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .scheduleSaleTo:
+        case let cell as TitleAndValueTableViewCell where row == .scheduleSaleTo:
             configureScheduleSaleTo(cell: cell)
         case let cell as DatePickerTableViewCell where row == .datePickerSaleTo:
             configureSaleToPicker(cell: cell)
         case let cell as BasicTableViewCell where row == .removeSaleTo:
             configureRemoveSaleTo(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .taxStatus:
+        case let cell as TitleAndValueTableViewCell where row == .taxStatus:
             configureTaxStatus(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .taxClass:
+        case let cell as TitleAndValueTableViewCell where row == .taxClass:
             configureTaxClass(cell: cell)
         default:
             fatalError()
@@ -359,7 +379,7 @@ private extension ProductPriceSettingsViewController {
         }
     }
 
-    func configureScheduleSaleFrom(cell: SettingTitleAndValueTableViewCell) {
+    func configureScheduleSaleFrom(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("From", comment: "Title of the cell in Product Price Settings > Schedule sale from a certain date")
         let placeholder = NSLocalizedString("Select start date",
                                             comment: "Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date")
@@ -382,7 +402,7 @@ private extension ProductPriceSettingsViewController {
         }
     }
 
-    func configureScheduleSaleTo(cell: SettingTitleAndValueTableViewCell) {
+    func configureScheduleSaleTo(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("To", comment: "Title of the cell in Product Price Settings > Schedule sale to a certain date")
         let placeholder = NSLocalizedString("Select end date",
                                             comment: "Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date")
@@ -409,13 +429,13 @@ private extension ProductPriceSettingsViewController {
         cell.textLabel?.applyLinkBodyStyle()
     }
 
-    func configureTaxStatus(cell: SettingTitleAndValueTableViewCell) {
+    func configureTaxStatus(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("Tax status", comment: "Title of the cell in Product Price Settings > Tax status")
         cell.updateUI(title: title, value: viewModel.taxStatus.description)
         cell.accessoryType = .disclosureIndicator
     }
 
-    func configureTaxClass(cell: SettingTitleAndValueTableViewCell) {
+    func configureTaxClass(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("Tax class", comment: "Title of the cell in Product Price Settings > Tax class")
         cell.updateUI(title: title, value: viewModel.taxClass?.name)
         cell.accessoryType = .disclosureIndicator
@@ -470,11 +490,11 @@ extension ProductPriceSettingsViewController {
             case .scheduleSale:
                 return SwitchTableViewCell.self
             case .scheduleSaleFrom, .scheduleSaleTo:
-                return SettingTitleAndValueTableViewCell.self
+                return TitleAndValueTableViewCell.self
             case .datePickerSaleFrom, .datePickerSaleTo:
                 return DatePickerTableViewCell.self
             case .taxStatus, .taxClass:
-                return SettingTitleAndValueTableViewCell.self
+                return TitleAndValueTableViewCell.self
             case .removeSaleTo:
                 return BasicTableViewCell.self
             }

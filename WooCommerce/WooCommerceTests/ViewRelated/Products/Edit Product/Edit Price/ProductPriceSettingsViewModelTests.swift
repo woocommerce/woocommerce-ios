@@ -12,9 +12,9 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     func testInitSaleStartDateWithoutSaleEndDate() {
         // Arrange
         let timezone = TimeZone(secondsFromGMT: 0)!
-        let saleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-15T21:30:00")
+        let saleStartDate = date(from: "2019-10-15T21:30:00")
         let saleEndDate: Date? = nil
-        let product = MockProduct().product(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+        let product = Product.fake().copy(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
         let model = EditableProductModel(product: product)
 
         // Act
@@ -31,8 +31,8 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         // Arrange
         let timezone = TimeZone(secondsFromGMT: 0)!
         let saleStartDate: Date? = nil
-        let saleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-15T21:30:00")
-        let product = MockProduct().product(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+        let saleEndDate = date(from: "2019-10-15T21:30:00")
+        let product = Product.fake().copy(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
         let model = EditableProductModel(product: product)
 
         // Act
@@ -50,7 +50,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         let timezone = TimeZone(secondsFromGMT: 0)!
         let saleStartDate: Date? = nil
         let saleEndDate = Date().addingTimeInterval(numberOfSecondsPerDay)
-        let product = MockProduct().product(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+        let product = Product.fake().copy(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
         let model = EditableProductModel(product: product)
 
         // Act
@@ -71,7 +71,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         let originalTaxClass = "zero"
-        let product = MockProduct().product(taxClass: originalTaxClass)
+        let product = Product.fake().copy(taxClass: originalTaxClass)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         XCTAssertEqual(viewModel.taxClass?.slug, originalTaxClass)
@@ -94,7 +94,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         let originalTaxClass = ""
-        let product = MockProduct().product(taxClass: originalTaxClass)
+        let product = Product.fake().copy(taxClass: originalTaxClass)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         // An empty tax class slug defaults to the standard tax class.
@@ -118,7 +118,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     func testHandlingNilRegularPrice() {
         // Arrange
         let regularPrice = "3.6"
-        let product = MockProduct().product(regularPrice: regularPrice)
+        let product = Product.fake().copy(regularPrice: regularPrice)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         XCTAssertEqual(viewModel.regularPrice, regularPrice)
@@ -132,7 +132,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
     func testHandlingNonNilRegularPrice() {
         // Arrange
-        let product = MockProduct().product(regularPrice: nil)
+        let product = Product.fake().copy(regularPrice: nil)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         XCTAssertEqual(viewModel.regularPrice, nil)
@@ -150,7 +150,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     func testHandlingNilSalePrice() {
         // Arrange
         let salePrice = "3.6"
-        let product = MockProduct().product(salePrice: salePrice)
+        let product = Product.fake().copy(salePrice: salePrice)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         XCTAssertEqual(viewModel.salePrice, salePrice)
@@ -164,7 +164,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
     func testHandlingNonNilSalePrice() {
         // Arrange
-        let product = MockProduct().product(salePrice: nil)
+        let product = Product.fake().copy(salePrice: nil)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         XCTAssertEqual(viewModel.salePrice, nil)
@@ -182,7 +182,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     func testHandlingNilTaxClass() {
         // Arrange
         let originalTaxClass = "zero"
-        let product = MockProduct().product(taxClass: originalTaxClass)
+        let product = Product.fake().copy(taxClass: originalTaxClass)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         XCTAssertEqual(viewModel.taxClass?.slug, originalTaxClass)
@@ -197,7 +197,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     func testHandlingNonNilTaxClass() {
         // Arrange
         let originalTaxClass = "zero"
-        let product = MockProduct().product(taxClass: originalTaxClass)
+        let product = Product.fake().copy(taxClass: originalTaxClass)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         XCTAssertEqual(viewModel.taxClass?.slug, originalTaxClass)
@@ -215,7 +215,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     func testHandlingTaxStatus() {
         // Arrange
         let originalTaxStatus = ProductTaxStatus.shipping
-        let product = MockProduct().product(taxStatus: originalTaxStatus)
+        let product = Product.fake().copy(taxStatusKey: originalTaxStatus.rawValue)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         XCTAssertEqual(viewModel.taxStatus, originalTaxStatus)
@@ -232,9 +232,9 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
     func testHandlingDisabledScheduleSale() {
         // Arrange
-        let originalSaleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-15T21:30:00")
-        let originalSaleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-28T21:30:00")
-        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let originalSaleStartDate = date(from: "2019-10-15T21:30:00")
+        let originalSaleEndDate = date(from: "2019-10-28T21:30:00")
+        let product = Product.fake().copy(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         XCTAssertEqual(viewModel.dateOnSaleStart, originalSaleStartDate)
@@ -251,7 +251,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     func testHandlingEnabledScheduleSaleFromNilSaleDates() {
         // Arrange
         let timezone = TimeZone(secondsFromGMT: 0)!
-        let product = MockProduct().product(dateOnSaleStart: nil, dateOnSaleEnd: nil)
+        let product = Product.fake().copy(dateOnSaleStart: nil, dateOnSaleEnd: nil)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model, timezoneForScheduleSaleDates: timezone)
         XCTAssertEqual(viewModel.dateOnSaleStart, nil)
@@ -270,9 +270,9 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     func testHandlingEnabledScheduleSaleFromExistingSaleDates() {
         // Arrange
         let timezone = TimeZone(secondsFromGMT: 0)!
-        let originalSaleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-15T21:30:00")
-        let originalSaleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-28T21:30:00")
-        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let originalSaleStartDate = date(from: "2019-10-15T21:30:00")
+        let originalSaleEndDate = date(from: "2019-10-28T21:30:00")
+        let product = Product.fake().copy(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model, timezoneForScheduleSaleDates: timezone)
         XCTAssertEqual(viewModel.dateOnSaleStart, originalSaleStartDate)
@@ -291,16 +291,16 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     func testHandlingSaleStartDateWithoutSaleEndDate() {
         // Arrange
         let timezone = TimeZone(secondsFromGMT: 0)!
-        let originalSaleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-15T21:30:00")
+        let originalSaleStartDate = date(from: "2019-10-15T21:30:00")
         let originalSaleEndDate: Date? = nil
-        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let product = Product.fake().copy(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model, timezoneForScheduleSaleDates: timezone)
         XCTAssertEqual(viewModel.dateOnSaleStart, originalSaleStartDate)
         XCTAssertEqual(viewModel.dateOnSaleEnd, originalSaleEndDate)
 
         // Act
-        let saleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-20T21:30:00")!
+        let saleStartDate = date(from: "2019-10-20T21:30:00")!
         viewModel.handleSaleStartDateChange(saleStartDate)
 
         // Assert
@@ -313,16 +313,16 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     func testHandlingSaleStartDateWithAnEarlierSaleEndDate() {
         // Arrange
         let timezone = TimeZone(secondsFromGMT: 0)!
-        let originalSaleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-15T21:30:00")
-        let originalSaleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-18T21:30:00")
-        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let originalSaleStartDate = date(from: "2019-10-15T21:30:00")
+        let originalSaleEndDate = date(from: "2019-10-18T21:30:00")
+        let product = Product.fake().copy(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model, timezoneForScheduleSaleDates: timezone)
         XCTAssertEqual(viewModel.dateOnSaleStart, originalSaleStartDate)
         XCTAssertEqual(viewModel.dateOnSaleEnd, originalSaleEndDate)
 
         // Act
-        let saleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-20T21:30:00")!
+        let saleStartDate = date(from: "2019-10-20T21:30:00")!
         viewModel.handleSaleStartDateChange(saleStartDate)
 
         // Assert
@@ -335,16 +335,16 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     func testHandlingSaleStartDateWithALaterSaleEndDate() {
         // Arrange
         let timezone = TimeZone(secondsFromGMT: 0)!
-        let originalSaleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-15T21:30:00")
-        let originalSaleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-18T21:30:00")
-        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let originalSaleStartDate = date(from: "2019-10-15T21:30:00")
+        let originalSaleEndDate = date(from: "2019-10-18T21:30:00")
+        let product = Product.fake().copy(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model, timezoneForScheduleSaleDates: timezone)
         XCTAssertEqual(viewModel.dateOnSaleStart, originalSaleStartDate)
         XCTAssertEqual(viewModel.dateOnSaleEnd, originalSaleEndDate)
 
         // Act
-        let saleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-16T21:30:00")!
+        let saleStartDate = date(from: "2019-10-16T21:30:00")!
         viewModel.handleSaleStartDateChange(saleStartDate)
 
         // Assert
@@ -360,13 +360,13 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         // Arrange
         let timezone = TimeZone(secondsFromGMT: 0)!
         let originalSaleStartDate: Date? = nil
-        let originalSaleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-15T21:30:00")
-        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let originalSaleEndDate = date(from: "2019-10-15T21:30:00")
+        let product = Product.fake().copy(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model, timezoneForScheduleSaleDates: timezone)
 
         // Act
-        let saleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-20T21:30:00")!
+        let saleEndDate = date(from: "2019-10-20T21:30:00")!
         viewModel.handleSaleEndDateChange(saleEndDate)
 
         // Assert
@@ -381,7 +381,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         let timezone = TimeZone(secondsFromGMT: 0)!
         let originalSaleStartDate: Date? = nil
         let originalSaleEndDate = Date().addingTimeInterval(numberOfSecondsPerDay)
-        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let product = Product.fake().copy(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model, timezoneForScheduleSaleDates: timezone)
 
@@ -399,16 +399,16 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     func testHandlingSaleEndDateWithAnEarlierSaleStartDate() {
         // Arrange
         let timezone = TimeZone(secondsFromGMT: 0)!
-        let originalSaleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-02T21:30:00")
-        let originalSaleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-27T21:30:00")
-        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let originalSaleStartDate = date(from: "2019-09-02T21:30:00")
+        let originalSaleEndDate = date(from: "2019-09-27T21:30:00")
+        let product = Product.fake().copy(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model, timezoneForScheduleSaleDates: timezone)
         XCTAssertEqual(viewModel.dateOnSaleStart, originalSaleStartDate)
         XCTAssertEqual(viewModel.dateOnSaleEnd, originalSaleEndDate)
 
         // Act
-        let saleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-20T21:30:00")!
+        let saleEndDate = date(from: "2019-09-20T21:30:00")!
         viewModel.handleSaleEndDateChange(saleEndDate)
 
         // Assert
@@ -421,16 +421,16 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     func testHandlingSaleEndDateWithALaterSaleStartDate() {
         // Arrange
         let timezone = TimeZone(secondsFromGMT: 0)!
-        let originalSaleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-02T21:30:00")
-        let originalSaleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-27T21:30:00")
-        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let originalSaleStartDate = date(from: "2019-09-02T21:30:00")
+        let originalSaleEndDate = date(from: "2019-09-27T21:30:00")
+        let product = Product.fake().copy(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model, timezoneForScheduleSaleDates: timezone)
         XCTAssertEqual(viewModel.dateOnSaleStart, originalSaleStartDate)
         XCTAssertEqual(viewModel.dateOnSaleEnd, originalSaleEndDate)
 
         // Act
-        let saleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-01T21:30:00")!
+        let saleEndDate = date(from: "2019-09-01T21:30:00")!
         viewModel.handleSaleEndDateChange(saleEndDate)
 
         // Assert
@@ -443,9 +443,9 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     func testHandlingNilSaleEndDate() {
         // Arrange
         let timezone = TimeZone(secondsFromGMT: 0)!
-        let originalSaleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-02T21:30:00")
-        let originalSaleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-27T21:30:00")
-        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let originalSaleStartDate = date(from: "2019-09-02T21:30:00")
+        let originalSaleEndDate = date(from: "2019-09-27T21:30:00")
+        let product = Product.fake().copy(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model, timezoneForScheduleSaleDates: timezone)
         XCTAssertEqual(viewModel.dateOnSaleStart, originalSaleStartDate)
@@ -467,7 +467,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
     func testCompletingUpdatingWithSalePriceOnly() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
 
@@ -491,7 +491,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
     func testCompletingUpdatingWithSalePriceHigherThanRegularPrice() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
 
@@ -512,9 +512,30 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
+    func test_completeUpdating_new_sale_with_nil_sale_price() {
+        // Arrange
+        let dateOnSaleStart = date(from: "2019-09-02T21:30:00")
+        let dateOnSaleEnd = date(from: "2019-09-27T21:30:00")
+        let product = Product.fake().copy(dateOnSaleStart: dateOnSaleStart, dateOnSaleEnd: dateOnSaleEnd, salePrice: nil)
+        let model = EditableProductModel(product: product)
+        let viewModel = ProductPriceSettingsViewModel(product: model)
+
+        // Act
+        let result = waitFor { promise in
+            viewModel.completeUpdating { _, _, _, _, _, _, _ in
+                XCTFail("Completion block should not be called")
+            } onError: { error in
+                promise(error)
+            }
+        }
+
+        // Assert
+        XCTAssertEqual(result, .newSaleWithEmptySalePrice)
+    }
+
     func testCompletingUpdatingWithZeroSalePrice() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
 
@@ -545,7 +566,10 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
         let originalRegularPrice = "12.0"
         let originalSalePrice = "0.5"
-        let product = MockProduct().product(regularPrice: originalRegularPrice, salePrice: originalSalePrice)
+        let product = Product.fake().copy(regularPrice: originalRegularPrice,
+                                          salePrice: originalSalePrice,
+                                          taxStatusKey: ProductTaxStatus.taxable.rawValue,
+                                          taxClass: "")
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model, currencySettings: currencySettings)
         XCTAssertEqual(viewModel.regularPrice, originalRegularPrice)
@@ -566,7 +590,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
     func testUnsavedChangesWithDefaultTaxClass() {
         // Arrange
-        let product = MockProduct().product(taxClass: "")
+        let product = Product.fake().copy(taxStatusKey: ProductTaxStatus.taxable.rawValue, taxClass: "")
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         // Defaults to the standard tax class.
@@ -585,8 +609,11 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         // Arrange
         let timezone = TimeZone(secondsFromGMT: 0)!
         let saleStartDate: Date? = nil
-        let saleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-15T21:30:00")
-        let product = MockProduct().product(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+        let saleEndDate = date(from: "2019-10-15T21:30:00")
+        let product = Product.fake().copy(dateOnSaleStart: saleStartDate,
+                                          dateOnSaleEnd: saleEndDate,
+                                          taxStatusKey: ProductTaxStatus.taxable.rawValue,
+                                          taxClass: "")
         let model = EditableProductModel(product: product)
 
         // Act
@@ -601,7 +628,10 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         let timezone = TimeZone(secondsFromGMT: 0)!
         let saleStartDate: Date? = nil
         let saleEndDate = Date().addingTimeInterval(numberOfSecondsPerDay)
-        let product = MockProduct().product(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+        let product = Product.fake().copy(dateOnSaleStart: saleStartDate,
+                                          dateOnSaleEnd: saleEndDate,
+                                          taxStatusKey: ProductTaxStatus.taxable.rawValue,
+                                          taxClass: "")
         let model = EditableProductModel(product: product)
 
         // Act
@@ -619,7 +649,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         // Arrange
         let saleStartDate: Date? = nil
         let saleEndDate: Date? = nil
-        let product = MockProduct().product(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+        let product = Product.fake().copy(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
 
@@ -639,7 +669,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         // Arrange
         let saleStartDate: Date? = nil
         let saleEndDate = Date().addingTimeInterval(numberOfSecondsPerDay)
-        let product = MockProduct().product(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+        let product = Product.fake().copy(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         let initialSections: [Section] = [
@@ -668,7 +698,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         // Arrange
         let saleStartDate: Date? = nil
         let saleEndDate = Date().addingTimeInterval(numberOfSecondsPerDay)
-        let product = MockProduct().product(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+        let product = Product.fake().copy(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         let initialSections: [Section] = [
@@ -697,7 +727,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         // Arrange
         let saleStartDate: Date? = nil
         let saleEndDate = Date().addingTimeInterval(numberOfSecondsPerDay)
-        let product = MockProduct().product(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+        let product = Product.fake().copy(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         let initialSections: [Section] = [
@@ -721,15 +751,15 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     func test_handling_nonnil_sale_end_date_does_not_hide_date_editing_rows() {
         // Arrange
         let timezone = TimeZone(secondsFromGMT: 0)!
-        let originalSaleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-02T21:30:00")
-        let originalSaleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-27T21:30:00")
-        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let originalSaleStartDate = date(from: "2019-09-02T21:30:00")
+        let originalSaleEndDate = date(from: "2019-09-27T21:30:00")
+        let product = Product.fake().copy(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model, timezoneForScheduleSaleDates: timezone)
 
         // Act
         viewModel.didTapScheduleSaleToRow()
-        let saleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2020-09-20T21:30:00")!
+        let saleEndDate = date(from: "2020-09-20T21:30:00")!
         viewModel.handleSaleEndDateChange(saleEndDate)
 
         // Assert
@@ -743,9 +773,9 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     func test_handling_nil_sale_end_date_hides_date_editing_rows() {
         // Arrange
         let timezone = TimeZone(secondsFromGMT: 0)!
-        let originalSaleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-02T21:30:00")
-        let originalSaleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-27T21:30:00")
-        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let originalSaleStartDate = date(from: "2019-09-02T21:30:00")
+        let originalSaleEndDate = date(from: "2019-09-27T21:30:00")
+        let product = Product.fake().copy(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model, timezoneForScheduleSaleDates: timezone)
 
@@ -766,5 +796,9 @@ private extension ProductPriceSettingsViewModelTests {
     enum Strings {
         static let priceSectionTitle = NSLocalizedString("Price", comment: "Section header title for product price")
         static let taxSectionTitle = NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings")
+    }
+
+    func date(from dateString: String) -> Date? {
+        DateFormatter.Defaults.dateTimeFormatter.date(from: dateString)
     }
 }

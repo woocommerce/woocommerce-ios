@@ -1,4 +1,5 @@
 import XCTest
+import Fakes
 @testable import Yosemite
 @testable import Networking
 @testable import Storage
@@ -8,17 +9,17 @@ import XCTest
 ///
 final class TaxClassStoreTests: XCTestCase {
 
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
-    /// Mockup Network: Allows us to inject predefined responses!
+    /// Mock Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Store
     ///
@@ -39,8 +40,8 @@ final class TaxClassStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        storageManager = MockStorageManager()
+        network = MockNetwork()
         store = TaxClassStore(dispatcher: dispatcher,
                                 storageManager: storageManager,
                                 network: network)
@@ -160,7 +161,7 @@ final class TaxClassStoreTests: XCTestCase {
     func testRequestMissingTaxClassesEffectivelyReturnMissingTaxClass() {
         let expectation = self.expectation(description: "Return missing tax class")
 
-        let product = MockProduct().product()
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 2020, taxClass: "standard")
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
         let action = TaxClassAction.requestMissingTaxClasses(for: product) { (taxClass, error) in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TaxClass.self), 3)

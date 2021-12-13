@@ -1,0 +1,115 @@
+{
+  "data": [
+    {
+      "id": 422,
+      "name": "Gifts",
+      "priority": 10,
+      "restrict_to_categories": [],
+      "fields": [
+        {
+          "name": "Gift Wrapping",
+          "title_format": "label",
+          "description_enable": 0,
+          "description": "",
+          "type": "multiple_choice",
+          "display": "select",
+          "position": 0,
+          "required": 0,
+          "restrictions": 0,
+          "restrictions_type": "any_text",
+          "adjust_price": 0,
+          "price_type": "flat_fee",
+          "price": "",
+          "min": 0,
+          "max": 0,
+          "options": [
+            {
+              "label": "Basic",
+              "price": "5",
+              "image": "",
+              "price_type": "flat_fee"
+            },
+            {
+              "label": "Complex",
+              "price": "7",
+              "image": "",
+              "price_type": "flat_fee"
+            }
+          ]
+        },
+        {
+          "name": "Dedicatory Card",
+          "title_format": "label",
+          "description_enable": 0,
+          "description": "",
+          "type": "custom_textarea",
+          "display": "select",
+          "position": 1,
+          "required": 0,
+          "restrictions": 0,
+          "restrictions_type": "any_text",
+          "adjust_price": 1,
+          "price_type": "flat_fee",
+          "price": "1",
+          "min": 0,
+          "max": 0,
+          "options": [
+            {
+              "label": "",
+              "price": "",
+              "image": "",
+              "price_type": "flat_fee"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 427,
+      "name": "Music",
+      "priority": 10,
+      "restrict_to_categories": {
+        "21": "Music"
+      },
+      "fields": [
+        {
+          "name": "Format",
+          "title_format": "label",
+          "description_enable": 0,
+          "description": "",
+          "type": "multiple_choice",
+          "display": "select",
+          "position": 0,
+          "required": 1,
+          "restrictions": 0,
+          "restrictions_type": "any_text",
+          "adjust_price": 0,
+          "price_type": "flat_fee",
+          "price": "",
+          "min": 0,
+          "max": 0,
+          "options": [
+            {
+              "label": "MP3",
+              "price": "",
+              "image": "",
+              "price_type": "flat_fee"
+            },
+            {
+              "label": "ACC",
+              "price": "",
+              "image": "",
+              "price_type": "flat_fee"
+            },
+            {
+              "label": "WAV",
+              "price": "",
+              "image": "",
+              "price_type": "flat_fee"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

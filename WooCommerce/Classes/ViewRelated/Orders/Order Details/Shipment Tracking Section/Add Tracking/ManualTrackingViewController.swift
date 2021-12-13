@@ -66,7 +66,6 @@ private extension ManualTrackingViewController {
     func configureNavigation() {
         configureTitle()
         configureDismissButton()
-        configureBackButton()
         configureAddButton()
     }
 
@@ -82,16 +81,6 @@ private extension ManualTrackingViewController {
                                             target: self,
                                             action: #selector(dismissButtonTapped))
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
-    }
-
-    func configureBackButton() {
-        // Don't show the title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
-
-        navigationItem.backBarButtonItem = backButton
     }
 
     func removeProgressIndicator() {
@@ -124,7 +113,7 @@ private extension ManualTrackingViewController {
     }
 
     func configureRightButtonItemAsSpinner() {
-        let activityIndicator = UIActivityIndicatorView(style: .white)
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
         activityIndicator.hidesWhenStopped = true
         activityIndicator.startAnimating()
 
@@ -258,7 +247,8 @@ extension ManualTrackingViewController: UITableViewDataSource {
         let cellViewModel = TitleAndEditableValueTableViewCellViewModel(
             title: NSLocalizedString("Tracking number", comment: "Add / Edit shipping carrier. Title of cell presenting tracking number"),
             placeholder: NSLocalizedString("Enter tracking number", comment: "Add custom shipping carrier. Placeholder of cell presenting tracking number"),
-            initialValue: viewModel.trackingNumber
+            initialValue: viewModel.trackingNumber,
+            hidesKeyboardOnReturn: true
         )
         cell.update(viewModel: cellViewModel)
         cell.accessoryType = .none
@@ -352,6 +342,10 @@ extension ManualTrackingViewController: UITableViewDelegate {
 private extension ManualTrackingViewController {
     func executeAction(for indexPath: IndexPath) {
         let row = rowAtIndexPath(indexPath)
+
+        if row == .shippingProvider || row == .dateShipped {
+            view.endEditing(true)
+        }
 
         if row == .dateShipped && viewModel.isAdding {
             displayDatePicker(at: indexPath)
@@ -579,10 +573,13 @@ private extension ManualTrackingViewController {
     /// Displays the `Unable to Add tracking` Notice.
     ///
     func displayAddErrorNotice(orderID: Int64) {
-        let title = NSLocalizedString(
-            "Unable to add tracking to order #\(orderID)",
-            comment: "Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number}"
+        let titleFormat = NSLocalizedString(
+            "Unable to add tracking to order #%1$d",
+            comment: "Content of error presented when Add Shipment Tracking Action Failed. "
+                + "It reads: Unable to add tracking to order #{order number}. "
+                + "Parameters: %1$d - order number"
         )
+        let title = String.localizedStringWithFormat(titleFormat, orderID)
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title,
                             message: nil,

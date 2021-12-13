@@ -7,17 +7,17 @@ import XCTest
 ///
 final class SitePostStoreTests: XCTestCase {
 
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
-    /// Mockup Network: Allows us to inject predefined responses!
+    /// Mock Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
 
     /// Dummy Site ID
@@ -29,8 +29,8 @@ final class SitePostStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        storageManager = MockStorageManager()
+        network = MockNetwork()
     }
 
     /// Verifies that SitePostAction.getSitePostPassword returns the expected result.

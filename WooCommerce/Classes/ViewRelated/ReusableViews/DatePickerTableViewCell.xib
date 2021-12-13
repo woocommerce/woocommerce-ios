@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -18,7 +18,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" translatesAutoresizingMaskIntoConstraints="NO" id="Jym-fu-gTL">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="215"/>
+                        <rect key="frame" x="16" y="8" width="343" height="200"/>
                         <connections>
                             <action selector="dateChanged:" destination="KGk-i7-Jjw" eventType="valueChanged" id="5QC-MP-oPB"/>
                         </connections>
@@ -32,10 +32,10 @@
                     </view>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="Jym-fu-gTL" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="7np-pM-YHW"/>
-                    <constraint firstItem="r88-F3-jXj" firstAttribute="top" secondItem="Jym-fu-gTL" secondAttribute="bottom" id="7tJ-In-pWx"/>
-                    <constraint firstAttribute="trailing" secondItem="Jym-fu-gTL" secondAttribute="trailing" id="xHk-Uj-bxH"/>
-                    <constraint firstItem="Jym-fu-gTL" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="yt9-iR-bSB"/>
+                    <constraint firstItem="Jym-fu-gTL" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="3C6-7Q-nzj"/>
+                    <constraint firstItem="Jym-fu-gTL" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="7R1-84-LBK"/>
+                    <constraint firstAttribute="bottom" secondItem="Jym-fu-gTL" secondAttribute="bottom" constant="8" id="9Ah-rN-4ym"/>
+                    <constraint firstAttribute="trailing" secondItem="Jym-fu-gTL" secondAttribute="trailing" constant="16" id="9F7-Ox-5hs"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

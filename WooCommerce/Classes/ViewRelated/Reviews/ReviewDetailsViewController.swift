@@ -1,4 +1,3 @@
-import Foundation
 import UIKit
 import Yosemite
 import Gridicons
@@ -64,7 +63,6 @@ final class ReviewDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureNavigationItem()
         configureMainView()
         configureTableView()
         configureEntityListener()
@@ -78,19 +76,16 @@ final class ReviewDetailsViewController: UIViewController {
         super.viewWillAppear(animated)
         markAsReadIfNeeded(notification)
     }
+
+    override var shouldShowOfflineBanner: Bool {
+        return true
+    }
 }
 
 
 // MARK: - User Interface Initialization
 //
 private extension ReviewDetailsViewController {
-
-    /// Setup: Navigation
-    ///
-    func configureNavigationItem() {
-        // Don't show the Notifications title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
-    }
 
     /// Setup: Main View
     ///
@@ -113,11 +108,6 @@ private extension ReviewDetailsViewController {
     func configureEntityListener() {
         entityListener.onUpsert = { [weak self] productReview in
             self?.productReview = productReview
-        }
-
-        entityListener.onDelete = { [weak self] in
-            self?.navigationController?.popToRootViewController(animated: true)
-            self?.displayNoteDeletedNotice()
         }
     }
 
@@ -175,15 +165,6 @@ private extension ReviewDetailsViewController {
 // MARK: - Display Notices
 //
 private extension ReviewDetailsViewController {
-
-    /// Displays a Notice onScreen, indicating that the current Review has been deleted from the Store.
-    ///
-    func displayNoteDeletedNotice() {
-        let title = NSLocalizedString("The review has been removed", comment: "Displayed whenever a review that was onscreen got deleted.")
-        let notice = Notice(title: title, feedbackType: .error)
-
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-    }
 
     /// Displays the Error Notice.
     ///

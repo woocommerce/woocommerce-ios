@@ -32,9 +32,7 @@ final class ShipmentProvidersViewController: UIViewController {
 
     /// Footer spinner shown when loading data for the first time
     ///
-    private lazy var footerSpinnerView = {
-        return FooterSpinnerView(tableViewStyle: table.style)
-    }()
+    private lazy var footerSpinnerView = FooterSpinnerView()
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
@@ -129,6 +127,7 @@ private extension ShipmentProvidersViewController {
 
         if viewModel.isListEmpty {
             table.tableFooterView = footerSpinnerView
+            table.sectionFooterHeight = .leastNonzeroMagnitude
         }
 
         table.dataSource = self
@@ -286,8 +285,13 @@ private extension ShipmentProvidersViewController {
         }
 
         let emptyState: EmptyListMessageWithActionView = EmptyListMessageWithActionView.instantiateFromNib()
-        emptyState.messageText = NSLocalizedString("No results found for \(term)\nAdd a custom carrier",
-            comment: "Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'")
+        let messageFormat = NSLocalizedString(
+            "No results found for %1$@\nAdd a custom carrier",
+            comment: "Empty state for the list of shipment carriers. "
+                + "It reads: 'No results for DHL. Add a custom carrier'. "
+                + "Parameters: %1$@ - carrier name"
+        )
+        emptyState.messageText = String.localizedStringWithFormat(messageFormat, term)
         emptyState.actionText = NSLocalizedString("Custom Carrier",
                                                   comment: "Title of button to add a custom tracking carrier if filtering the list yields no results."
         )

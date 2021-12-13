@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19G2021" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19H2" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -118,7 +118,7 @@
         <relationship name="order" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="items" inverseEntity="Order"/>
         <relationship name="taxes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OrderItemTax" inverseName="item" inverseEntity="OrderItemTax"/>
     </entity>
-    <entity name="OrderItemAttribute" representedClassName="OrderItemAttribute" syncable="YES" codeGenerationType="class">
+    <entity name="OrderItemAttribute" representedClassName="OrderItemAttribute" syncable="YES">
         <attribute name="metaID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="value" attributeType="String"/>
@@ -496,6 +496,7 @@
         <element name="OrderCountItem" positionX="-684" positionY="45" width="128" height="105"/>
         <element name="OrderCoupon" positionX="-206.01953125" positionY="379.74609375" width="128" height="120"/>
         <element name="OrderItem" positionX="-343.4609375" positionY="444.4296875" width="128" height="268"/>
+        <element name="OrderItemAttribute" positionX="-702" positionY="27" width="128" height="103"/>
         <element name="OrderItemRefund" positionX="-504.859375" positionY="299.1171875" width="128" height="253"/>
         <element name="OrderItemTax" positionX="-693" positionY="36" width="128" height="103"/>
         <element name="OrderItemTaxRefund" positionX="-675" positionY="54" width="128" height="28"/>
@@ -531,6 +532,5 @@
         <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="88"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="OrderItemAttribute" positionX="-702" positionY="27" width="128" height="103"/>
     </elements>
 </model>

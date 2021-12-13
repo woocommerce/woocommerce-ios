@@ -129,7 +129,6 @@ private struct InAppFeedbackCardViewControllerRepresentable: UIViewRepresentable
     }
 }
 
-@available(iOS 13.0, *)
 struct InAppFeedbackCardViewController_Previews: PreviewProvider {
 
     private static func makeStack() -> some View {

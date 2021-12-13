@@ -18,13 +18,9 @@ extension Product {
         }
 
         let categoriesNames = categories.map { $0.name }
-        if #available(iOS 13.0, *) {
-            let formatter = ListFormatter()
-            formatter.locale = locale
-            return formatter.string(from: categoriesNames)
-        } else {
-            return categoriesNames.joined(separator: ", ")
-        }
+        let formatter = ListFormatter()
+        formatter.locale = locale
+        return formatter.string(from: categoriesNames)
     }
 
     /// Returns a comma separated string with each tags names.
@@ -36,12 +32,8 @@ extension Product {
         }
 
         let tagsNames = tags.map { $0.name }
-        if #available(iOS 13.0, *) {
-            let formatter = ListFormatter()
-            formatter.locale = locale
-            return formatter.string(from: tagsNames)
-        } else {
-            return tagsNames.joined(separator: ", ")
-        }
+        let formatter = ListFormatter()
+        formatter.locale = locale
+        return formatter.string(from: tagsNames)
     }
 }

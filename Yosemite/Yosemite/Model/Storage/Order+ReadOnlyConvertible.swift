@@ -29,6 +29,7 @@ extension Storage.Order: ReadOnlyConvertible {
 
         total = order.total
         totalTax = order.totalTax
+        paymentMethodID = order.paymentMethodID
         paymentMethodTitle = order.paymentMethodTitle
 
         if let billingAddress = order.billingAddress {
@@ -67,6 +68,7 @@ extension Storage.Order: ReadOnlyConvertible {
         let orderCoupons = coupons?.map { $0.toReadOnly() } ?? [Yosemite.OrderCouponLine]()
         let orderRefunds = refunds?.map { $0.toReadOnly() } ?? [Yosemite.OrderRefundCondensed]()
         let orderShippingLines = shippingLines?.map { $0.toReadOnly() } ?? [Yosemite.ShippingLine]()
+        let orderFeeLines = fees?.map { $0.toReadOnly() } ?? [Yosemite.OrderFeeLine]()
 
         return Order(siteID: siteID,
                      orderID: orderID,
@@ -85,13 +87,15 @@ extension Storage.Order: ReadOnlyConvertible {
                      shippingTax: shippingTax ?? "",
                      total: total ?? "",
                      totalTax: totalTax ?? "",
+                     paymentMethodID: paymentMethodID ?? "",
                      paymentMethodTitle: paymentMethodTitle ?? "",
                      items: orderItems,
                      billingAddress: createReadOnlyBillingAddress(),
                      shippingAddress: createReadOnlyShippingAddress(),
                      shippingLines: orderShippingLines,
                      coupons: orderCoupons,
-                     refunds: orderRefunds)
+                     refunds: orderRefunds,
+                     fees: orderFeeLines)
     }
 
 

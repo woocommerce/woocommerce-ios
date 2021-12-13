@@ -3,8 +3,6 @@ import Yosemite
 import Networking
 import Storage
 
-
-
 // MARK: - AuthenticatedState
 //
 class AuthenticatedState: StoresManagerState {
@@ -31,14 +29,20 @@ class AuthenticatedState: StoresManagerState {
         services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
+            AddOnGroupStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             AvailabilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            DataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationCountStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            PaymentGatewayStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            PaymentGatewayAccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductAttributeStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductAttributeTermStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductCategoryStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -48,9 +52,27 @@ class AuthenticatedState: StoresManagerState {
             RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            SitePluginStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            TelemetryStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            UserStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            CardPresentPaymentStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    cardReaderService: ServiceLocator.cardReaderService),
+            ReceiptStore(dispatcher: dispatcher,
+                         storageManager: storageManager,
+                         network: network,
+                         receiptPrinterService: ServiceLocator.receiptPrinterService,
+                         fileStorage: PListFileStorage()),
+            AnnouncementsStore(dispatcher: dispatcher,
+                               storageManager: storageManager,
+                               network: network,
+                               fileStorage: PListFileStorage())
         ]
 
         startListeningToNotifications()
@@ -58,7 +80,7 @@ class AuthenticatedState: StoresManagerState {
 
     /// Convenience Initializer
     ///
-    convenience init?(sessionManager: SessionManager) {
+    convenience init?(sessionManager: SessionManagerProtocol) {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }
@@ -103,7 +125,7 @@ private extension AuthenticatedState {
         }
     }
 
-    /// Executed whenever a DotcomError is received (ApplicationLayer). This allows us to have a *Master* error handling flow!
+    /// Executed whenever a DotcomError is received (ApplicationLayer). This allows us to have a *main* error handling flow!
     ///
     func tunnelTimeoutWasReceived(note: Notification) {
         ServiceLocator.analytics.track(.jetpackTunnelTimeout)
@@ -115,7 +137,13 @@ private extension AuthenticatedState {
     func resetServices() {
         let resetStoredProviders = AppSettingsAction.resetStoredProviders(onCompletion: nil)
         let resetStoredStatsVersionStates = AppSettingsAction.resetStatsVersionStates
-        let resetFeatureSwitchStates = AppSettingsAction.resetFeatureSwitches
-        ServiceLocator.stores.dispatch([resetStoredProviders, resetStoredStatsVersionStates, resetFeatureSwitchStates])
+        let resetOrdersSettings = AppSettingsAction.resetOrdersSettings
+        let resetProductsSettings = AppSettingsAction.resetProductsSettings
+        let resetGeneralStoreSettings = AppSettingsAction.resetGeneralStoreSettings
+        ServiceLocator.stores.dispatch([resetStoredProviders,
+                                        resetStoredStatsVersionStates,
+                                        resetOrdersSettings,
+                                        resetProductsSettings,
+                                        resetGeneralStoreSettings])
     }
 }

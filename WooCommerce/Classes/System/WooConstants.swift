@@ -79,9 +79,55 @@ extension WooConstants {
         case inAppFeedback = "https://automattic.survey.fm/woo-app-general-feedback-user-survey"
 #endif
 
-        /// URL for the products M4 feedback survey
+        /// URL for the products feedback survey
         ///
-        case productsM4Feedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"
+        case productsFeedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"
+
+        /// URL for the shipping labels M3 feedback survey
+        ///
+#if DEBUG
+        case shippingLabelsRelease3Feedback = "https://automattic.survey.fm/woo-app-testing-feature-feedback-shipping-labels"
+#else
+        case shippingLabelsRelease3Feedback = "https://automattic.survey.fm/woo-app-feature-feedback-shipping-labels"
+#endif
+
+        /// URL for the order add-on i1 feedback survey
+        ///
+#if DEBUG
+        case orderAddOnI1Feedback = "https://automattic.survey.fm/woo-app-addons-testing"
+#else
+        case orderAddOnI1Feedback = "https://automattic.survey.fm/woo-app-addons-production"
+#endif
+
+        /// URL for shipping label creation information
+        ///
+        case shippingLabelCreationInfo = "https://woocommerce.com/products/shipping"
+
+        /// URL for product review information
+        ///
+        case productReviewInfo = "https://woocommerce.com/posts/reviews-woocommerce-best-practices/"
+
+        /// URL for troubleshooting documentation used in Error Loading Data banner
+        ///
+        case troubleshootErrorLoadingData = "https://docs.woocommerce.com/document/android-ios-apps-troubleshooting-error-fetching-orders/"
+
+        /// URL for roles and permissions information
+        ///
+        case rolesAndPermissionsInfo = "https://woocommerce.com/posts/a-guide-to-woocommerce-user-roles-permissions-and-security/"
+
+        /// URL for making the login on WordPress.com
+        ///
+        case loginWPCom = "https://wordpress.com/wp-login.php"
+
+        /// URL for adding a payment method in WCShip extension
+        ///
+        case addPaymentMethodWCShip = "https://wordpress.com/me/purchases/add-payment-method"
+
+#if DEBUG
+        case simplePaymentsPrototypeFeedback = "https://automattic.survey.fm/woo-app-quick-order-testing"
+#else
+        case simplePaymentsPrototypeFeedback = "https://automattic.survey.fm/woo-app-quick-order-production"
+#endif
 
         /// Returns the URL version of the receiver
         ///

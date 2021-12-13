@@ -7,6 +7,7 @@ final class ProductUIImageLoaderTests: XCTestCase {
     private let testImage = UIImage.productPlaceholderImage
 
     private let imageURL = URL(string: "https://woo.com/fun")!
+    private let imageURLStringWithSpecialChars = "https://woo.com/тест-图像"
 
     private var imageService: ImageService!
 
@@ -16,7 +17,9 @@ final class ProductUIImageLoaderTests: XCTestCase {
         super.setUp()
 
         let mockCache = MockImageCache(name: "Testing")
-        let mockDownloader = MockImageDownloader(imagesByKey: [imageURL.absoluteString: testImage])
+        let imagesMapping = [imageURL.absoluteString: testImage,
+                             imageURLStringWithSpecialChars.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!: testImage]
+        let mockDownloader = MockImageDownloader(imagesByKey: imagesMapping)
         imageService = DefaultImageService(imageCache: mockCache, imageDownloader: mockDownloader)
     }
 
@@ -32,6 +35,24 @@ final class ProductUIImageLoaderTests: XCTestCase {
                                         dateCreated: Date(),
                                         dateModified: Date(),
                                         src: imageURL.absoluteString,
+                                        name: "woo",
+                                        alt: nil)
+
+        let expectation = self.expectation(description: "Wait for image request")
+        _ = imageLoader.requestImage(productImage: productImage) { image in
+            XCTAssertEqual(image, self.testImage)
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
+
+    func testRequestingImageWithRemoteProductImageFromURLWithSpecialChars() {
+        let mockPHAssetImageLoader = MockPHAssetImageLoader(imagesByAsset: [:])
+        let imageLoader = DefaultProductUIImageLoader(imageService: imageService, phAssetImageLoaderProvider: { mockPHAssetImageLoader })
+        let productImage = ProductImage(imageID: mockProductImageID,
+                                        dateCreated: Date(),
+                                        dateModified: Date(),
+                                        src: imageURLStringWithSpecialChars,
                                         name: "woo",
                                         alt: nil)
 

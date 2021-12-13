@@ -63,8 +63,6 @@ private extension ProductPurchaseNoteViewController {
 
     func configureNavigationBar() {
         title = NSLocalizedString("Purchase Note", comment: "Product Note navigation title")
-
-        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {

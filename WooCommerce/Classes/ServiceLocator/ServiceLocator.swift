@@ -1,7 +1,9 @@
 import Foundation
 import CocoaLumberjack
+import Experiments
 import Storage
 import Yosemite
+import Hardware
 
 /// Provides global dependencies.
 ///
@@ -15,7 +17,7 @@ final class ServiceLocator {
 
     /// StoresManager
     ///
-    private static var _stores: StoresManager = DefaultStoresManager(sessionManager: .standard)
+    private static var _stores: StoresManager = DefaultStoresManager(sessionManager: SessionManager.standard)
 
     /// WordPressAuthenticator Wrapper
     ///
@@ -51,11 +53,27 @@ final class ServiceLocator {
 
     /// CoreData Stack
     ///
-    private static var _storageManager = CoreDataManager(name: WooConstants.databaseStackName, crashLogger: SentryCrashLogger())
+    private static var _storageManager = CoreDataManager(name: WooConstants.databaseStackName, crashLogger: crashLogging)
 
     /// Cocoalumberjack DDLog
     ///
     private static var _fileLogger: Logs = DDFileLogger()
+
+    /// Crash Logging Stack
+    ///
+    private static var _crashLogging: CrashLoggingStack = WooCrashLoggingStack()
+
+    /// Support for external Card Readers
+    ///
+    private static var _cardReader: CardReaderService = StripeCardReaderService()
+
+    /// Support for printing receipts
+    ///
+    private static var _receiptPrinter: PrinterService = AirPrintReceiptPrinterService()
+
+    /// Observer for network connectivity
+    ///
+    private static var _connectivityObserver: ConnectivityObserver = DefaultConnectivityObserver()
 
     // MARK: - Getters
 
@@ -140,6 +158,12 @@ final class ServiceLocator {
         return _fileLogger
     }
 
+    /// Provides the access point to the CrashLogger
+    /// - Returns: An implementation
+    static var crashLogging: CrashLoggingStack {
+        return _crashLogging
+    }
+
     /// Provides the last known `KeyboardState`.
     ///
     /// Because `static let` is lazy, this should be accessed when the app is started
@@ -150,6 +174,25 @@ final class ServiceLocator {
     /// The main object to use for presenting SMS (`MessageUI`) ViewControllers.
     ///
     static let messageComposerPresenter = MessageComposerPresenter()
+
+
+    /// Provides the access point to the CardReaderService.
+    /// - Returns: An implementation of the CardReaderService protocol.
+    static var cardReaderService: CardReaderService {
+        _cardReader
+    }
+
+    /// Provides the access point to the ReceiptPrinterService.
+    /// - Returns: An implementation of the ReceiptPrinterService protocol.
+    static var receiptPrinterService: PrinterService {
+        _receiptPrinter
+    }
+
+    /// Provides access point to the ConnectivityObserver.
+    /// - Returns: An implementation of the ConnectivityObserver protocol.
+    static var connectivityObserver: ConnectivityObserver {
+        _connectivityObserver
+    }
 }
 
 
@@ -174,7 +217,7 @@ extension ServiceLocator {
     }
 
     static func setStores(_ mock: StoresManager) {
-        guard isRunningTests() else {
+        guard isRunningTests() || ProcessConfiguration.shouldUseScreenshotsNetworkLayer else {
             return
         }
 
@@ -235,6 +278,38 @@ extension ServiceLocator {
         }
 
         _fileLogger = mock
+    }
+
+    static func setCrashLogging(_ mock: CrashLoggingStack) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _crashLogging = mock
+    }
+
+    static func setCardReader(_ mock: CardReaderService) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _cardReader = mock
+    }
+
+    static func setReceiptPrinter(_ mock: PrinterService) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _receiptPrinter = mock
+    }
+
+    static func setConnectivityObserver(_ mock: ConnectivityObserver) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _connectivityObserver = mock
     }
 }
 

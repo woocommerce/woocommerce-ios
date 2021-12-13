@@ -18,7 +18,7 @@ public class TaxClassStore: Store {
     private let remote: TaxClassRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.newDerivedStorage()
+        return storageManager.writerDerivedStorage
     }()
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {

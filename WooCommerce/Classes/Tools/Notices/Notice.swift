@@ -7,11 +7,15 @@ import UIKit
 ///
 struct Notice {
 
-    /// The title of the notice
+    /// The title that contains the reason for the notice
     ///
     let title: String
 
-    /// An optional subtitle for the notice
+    /// An optional subtitle that contains a secondary description of the reason for the notice
+    ///
+    let subtitle: String?
+
+    /// An optional message that contains any details for the notice
     ///
     let message: String?
 
@@ -35,16 +39,29 @@ struct Notice {
     /// Designated Initializer
     ///
     init(title: String,
+         subtitle: String? = nil,
          message: String? = nil,
          feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil,
          notificationInfo: NoticeNotificationInfo? = nil,
          actionTitle: String? = nil,
          actionHandler: ((() -> Void))? = nil) {
         self.title = title
+        self.subtitle = subtitle
         self.message = message
         self.feedbackType = feedbackType
         self.notificationInfo = notificationInfo
         self.actionTitle = actionTitle
         self.actionHandler = actionHandler
+    }
+}
+
+extension Notice: Equatable {
+    static func == (lhs: Notice, rhs: Notice) -> Bool {
+        return lhs.title == rhs.title &&
+            lhs.subtitle == rhs.subtitle &&
+            lhs.message == rhs.message &&
+            lhs.feedbackType == rhs.feedbackType &&
+            lhs.notificationInfo?.identifier == rhs.notificationInfo?.identifier &&
+            lhs.actionTitle == rhs.actionTitle
     }
 }

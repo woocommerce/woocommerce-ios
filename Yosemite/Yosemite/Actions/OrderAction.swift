@@ -11,37 +11,43 @@ public enum OrderAction: Action {
     ///
     case searchOrders(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
 
-    /// Performs a dual fetch for the first pages of a filtered list and the all orders list.
+    /// Performs the fetch for the first pages of order list.
     ///
     /// - Parameters:
-    ///     - statusKey: The status to use for the filtered list. If this is not provided, only the
+    ///     - statuses: The statuses to use for the filtered list. If this is not provided, only the
     ///                  all orders list will be fetched. See `OrderStatusEnum` for possible values.
     ///     - deleteAllBeforeSaving: If true, all the orders in the db will be deleted before any
     ///                  order from the fetch requests will be saved.
+    ///     - after: Only include orders created after this date. The time zone of the `Date`
+    ///               doesn't matter. It will be converted to UTC later.
     ///     - before: Only include orders created before this date. The time zone of the `Date`
     ///               doesn't matter. It will be converted to UTC later.
     ///
-    case fetchFilteredAndAllOrders(
+    case fetchFilteredOrders(
         siteID: Int64,
-        statusKey: String?,
+        statuses: [String]?,
+        after: Date? = nil,
         before: Date? = nil,
         deleteAllBeforeSaving: Bool,
         pageSize: Int,
-        onCompletion: (Error?) -> Void
+        onCompletion: (TimeInterval, Error?) -> Void
     )
 
     /// Synchronizes the Orders matching the specified criteria.
     ///
     /// - Parameters:
+    ///     - after: Only include orders created after this date. The time zone of the `Date`
+    ///               doesn't matter. It will be converted to UTC later.
     ///     - before: Only include orders created before this date. The time zone of the `Date`
     ///               doesn't matter. It will be converted to UTC later.
     ///
     case synchronizeOrders(siteID: Int64,
-                           statusKey: String?,
+                           statuses: [String]?,
+                           after: Date? = nil,
                            before: Date? = nil,
                            pageNumber: Int,
                            pageSize: Int,
-                           onCompletion: (Error?) -> Void)
+                           onCompletion: (TimeInterval, Error?) -> Void)
 
     /// Nukes all of the cached orders.
     ///
@@ -53,9 +59,28 @@ public enum OrderAction: Action {
 
     /// Updates a given Order's Status.
     ///
-    case updateOrder(siteID: Int64, orderID: Int64, status: OrderStatusEnum, onCompletion: (Error?) -> Void)
+    case updateOrderStatus(siteID: Int64, orderID: Int64, status: OrderStatusEnum, onCompletion: (Error?) -> Void)
 
-    /// Gets the number of orders in processing status.
+    /// Updates the specified fields from an order.
     ///
-    case countProcessingOrders(siteID: Int64, onCompletion: (OrderCount?, Error?) -> Void)
+    case updateOrder(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: (Result<Order, Error>) -> Void)
+
+    /// Creates a simple payments order with a specific amount value and  tax status.
+    ///
+    case createSimplePaymentsOrder(siteID: Int64, amount: String, taxable: Bool, onCompletion: (Result<Order, Error>) -> Void)
+
+    /// Creates a manual order with the provided order details.
+    ///
+    case createOrder(siteID: Int64, order: Order, onCompletion: (Result<Order, Error>) -> Void)
+
+    /// Updates a simple payments order with the specified values.
+    ///
+    case updateSimplePaymentsOrder(siteID: Int64,
+                                   orderID: Int64,
+                                   feeID: Int64,
+                                   amount: String,
+                                   taxable: Bool,
+                                   orderNote: String?,
+                                   email: String?,
+                                   onCompletion: (Result<Order, Error>) -> Void)
 }

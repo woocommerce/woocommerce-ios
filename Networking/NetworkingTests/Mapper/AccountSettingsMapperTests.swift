@@ -16,6 +16,8 @@ class AccountSettingsMapperTests: XCTestCase {
 
         XCTAssertEqual(account.userID, 10)
         XCTAssertTrue(account.tracksOptOut)
+        XCTAssertEqual(account.firstName, "Dem 123")
+        XCTAssertEqual(account.lastName, "Nines")
     }
 }
 
@@ -25,7 +27,7 @@ class AccountSettingsMapperTests: XCTestCase {
 //
 private extension AccountSettingsMapperTests {
 
-    /// Returns the AccountSettingsMapper output upon receiving `me-settings` mockup response (Data Encoded).
+    /// Returns the AccountSettingsMapper output upon receiving `me-settings` mock response (Data Encoded).
     ///
     func mapLoadAccountSettingsResponse() -> AccountSettings? {
         guard let response = Loader.contentsOf("me-settings") else {

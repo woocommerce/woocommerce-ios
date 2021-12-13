@@ -1,9 +1,10 @@
 import Foundation
 import Yosemite
 import AutomatticTracks
+import WordPressShared
 
 
-public class TracksProvider: AnalyticsProvider {
+public class TracksProvider: NSObject, AnalyticsProvider {
 
     lazy private var contextManager: TracksContextManager = {
         return TracksContextManager()
@@ -13,12 +14,6 @@ public class TracksProvider: AnalyticsProvider {
         tracksService.eventNamePrefix = Constants.eventNamePrefix
         return tracksService
     }()
-
-
-    /// Designated Initializer
-    ///
-    init() {
-    }
 }
 
 
@@ -27,7 +22,7 @@ public class TracksProvider: AnalyticsProvider {
 public extension TracksProvider {
     func refreshUserData() {
         switchTracksUsersIfNeeded()
-        refreshMetadata()
+        refreshTracksMetadata()
     }
 
     func track(_ eventName: String) {
@@ -69,18 +64,29 @@ public extension TracksProvider {
 private extension TracksProvider {
     func switchTracksUsersIfNeeded() {
         let currentAnalyticsUsername = UserDefaults.standard[.analyticsUsername] as? String ?? ""
-        if ServiceLocator.stores.isAuthenticated, let account = ServiceLocator.stores.sessionManager.defaultAccount {
+        if ServiceLocator.stores.isAuthenticated,
+            let account = ServiceLocator.stores.sessionManager.defaultAccount,
+            let credentials = ServiceLocator.stores.sessionManager.defaultCredentials {
             if currentAnalyticsUsername.isEmpty {
                 // No previous username logged
                 UserDefaults.standard[.analyticsUsername] = account.username
-                tracksService.switchToAuthenticatedUser(withUsername: account.username, userID: String(account.userID), skipAliasEventCreation: false)
+                tracksService.switchToAuthenticatedUser(withUsername: account.username,
+                                                        userID: String(account.userID),
+                                                        wpComToken: credentials.authToken,
+                                                        skipAliasEventCreation: false)
             } else if currentAnalyticsUsername == account.username {
                 // Username did not change - just make sure Tracks client has it
-                tracksService.switchToAuthenticatedUser(withUsername: account.username, userID: String(account.userID), skipAliasEventCreation: true)
+                tracksService.switchToAuthenticatedUser(withUsername: account.username,
+                                                        userID: String(account.userID),
+                                                        wpComToken: credentials.authToken,
+                                                        skipAliasEventCreation: true)
             } else {
                 // Username changed for some reason - switch back to anonymous first
                 tracksService.switchToAnonymousUser(withAnonymousID: ServiceLocator.stores.sessionManager.anonymousUserID)
-                tracksService.switchToAuthenticatedUser(withUsername: account.username, userID: String(account.userID), skipAliasEventCreation: false)
+                tracksService.switchToAuthenticatedUser(withUsername: account.username,
+                                                        userID: String(account.userID),
+                                                        wpComToken: credentials.authToken,
+                                                        skipAliasEventCreation: false)
             }
         } else {
             UserDefaults.standard[.analyticsUsername] = nil
@@ -88,7 +94,7 @@ private extension TracksProvider {
         }
     }
 
-    func refreshMetadata() {
+    func refreshTracksMetadata() {
         DDLogInfo("♻️ Refreshing tracks metadata...")
         var userProperties = [String: Any]()
         userProperties[UserProperties.platformKey] = "iOS"
@@ -112,5 +118,29 @@ private extension TracksProvider {
         static let platformKey          = "platform"
         static let voiceOverKey         = "accessibility_voice_over_enabled"
         static let rtlKey               = "is_rtl_language"
+    }
+}
+
+extension TracksProvider: WPAnalyticsTracker {
+    public func trackString(_ event: String?) {
+        trackString(event, withProperties: nil)
+    }
+
+    public func trackString(_ event: String?, withProperties properties: [AnyHashable: Any]?) {
+        guard let eventName = event else {
+            DDLogInfo("🔴 Attempted to track an event without name.")
+            return
+        }
+
+        track(eventName, withProperties: properties)
+    }
+
+    public func track(_ stat: WPAnalyticsStat) {
+        // no op. 
+        track(stat, withProperties: nil)
+    }
+
+    public func track(_ stat: WPAnalyticsStat, withProperties properties: [AnyHashable: Any]?) {
+        // no op
     }
 }

@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Represents a Shipment Tracking Provider Entity (from the WC Shipment Tracking extension).
 ///
-public struct ShipmentTrackingProvider {
+public struct ShipmentTrackingProvider: Equatable, GeneratedFakeable {
     /// Tracking provider name
     ///
     public let name: String
@@ -24,18 +25,11 @@ public struct ShipmentTrackingProvider {
     }
 }
 
-
 extension ShipmentTrackingProvider: Comparable {
-    public static func ==(lhs: ShipmentTrackingProvider, rhs: ShipmentTrackingProvider) -> Bool {
-        return lhs.name == rhs.name &&
-            lhs.url == rhs.url &&
-            lhs.siteID == rhs.siteID
-    }
     public static func < (lhs: ShipmentTrackingProvider, rhs: ShipmentTrackingProvider) -> Bool {
         return lhs.name < rhs.name
     }
 }
-
 
 extension ShipmentTrackingProvider: CustomStringConvertible {
     public var description: String {

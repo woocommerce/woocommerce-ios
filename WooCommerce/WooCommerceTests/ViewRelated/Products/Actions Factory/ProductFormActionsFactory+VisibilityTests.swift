@@ -11,12 +11,10 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                isEditProductsRelease5Enabled: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
-        XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings(editable: true)))
+        XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings(editable: true, hideSeparator: false)))
     }
 
     func testPriceRowIsVisibleForProductWithoutPriceData() {
@@ -25,12 +23,10 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                isEditProductsRelease5Enabled: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
-        XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings(editable: true)))
+        XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings(editable: true, hideSeparator: false)))
     }
 
     // MARK: - Inventory
@@ -41,9 +37,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                isEditProductsRelease5Enabled: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.inventorySettings(editable: true)))
@@ -56,9 +50,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                isEditProductsRelease5Enabled: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.inventorySettings(editable: true)))
@@ -73,9 +65,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                isEditProductsRelease5Enabled: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.shippingSettings(editable: true)))
@@ -88,9 +78,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                isEditProductsRelease5Enabled: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.shippingSettings(editable: true)))
@@ -105,9 +93,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                isEditProductsRelease5Enabled: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.categories(editable: true)))
@@ -120,9 +106,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                isEditProductsRelease5Enabled: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.categories(editable: true)))
@@ -137,9 +121,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                isEditProductsRelease5Enabled: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.shortDescription(editable: true)))
@@ -152,9 +134,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                isEditProductsRelease5Enabled: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.shortDescription(editable: true)))
@@ -169,12 +149,10 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                isEditProductsRelease5Enabled: true)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
-        XCTAssertTrue(factory.settingsSectionActions().contains(.downloadableFiles))
+        XCTAssertTrue(factory.settingsSectionActions().contains(.downloadableFiles(editable: true)))
     }
 
     func test_downloadableFiles_row_is_invisible_for_non_downloadable_product_without_downloadableFiles() {
@@ -183,41 +161,38 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                isEditProductsRelease5Enabled: true)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
-        XCTAssertFalse(factory.settingsSectionActions().contains(.downloadableFiles))
+        XCTAssertFalse(factory.settingsSectionActions().contains(.downloadableFiles(editable: true)))
     }
 }
 
 private extension ProductFormActionsFactory_VisibilityTests {
     enum Fixtures {
         // Price
-        static let productWithPriceData = MockProduct().product(productType: .simple, regularPrice: "17")
-        static let productWithoutPriceData = MockProduct().product(productType: .simple, regularPrice: nil, salePrice: nil)
+        static let productWithPriceData = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, regularPrice: "17")
+        static let productWithoutPriceData = productWithPriceData.copy(regularPrice: .some(nil))
         // Inventory
-        static let productWithInventoryData = MockProduct().product(productType: .simple, manageStock: true, sku: "123")
-        static let productWithMissingInventoryData = MockProduct().product(productType: .simple, manageStock: true, sku: nil, stockQuantity: nil)
+        static let productWithInventoryData = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, sku: "123", manageStock: true)
+        static let productWithMissingInventoryData = productWithInventoryData.copy(sku: .some(nil))
         // Shipping
-        static let productWithShippingData = MockProduct().product(productType: .simple,
-                                                                   dimensions: ProductDimensions(length: "10", width: "0", height: "0"),
-                                                                   weight: "100")
-        static let productWithMissingShippingData = MockProduct().product(productType: .simple,
-                                                                          dimensions: ProductDimensions(length: "", width: "", height: ""),
-                                                                          weight: nil)
+        static let productWithShippingData = Product.fake().copy(productTypeKey: ProductType.simple.rawValue,
+                                                                 weight: "100",
+                                                                 dimensions: ProductDimensions(length: "10", width: "0", height: "0"))
+        static let productWithMissingShippingData = productWithShippingData.copy(weight: .some(nil),
+                                                                                 dimensions: ProductDimensions(length: "", width: "", height: ""))
         // Categories
-        static let productWithOneCategory = MockProduct().product(productType: .simple,
-                                                                    categories: [ProductCategory(categoryID: 0, siteID: 0, parentID: 0, name: "", slug: "")])
-        static let productWithoutCategories = MockProduct().product(productType: .simple, categories: [])
+        static let productWithOneCategory = Product.fake().copy(productTypeKey: ProductType.simple.rawValue,
+                                                                categories: [ProductCategory(categoryID: 0, siteID: 0, parentID: 0, name: "", slug: "")])
+        static let productWithoutCategories = productWithOneCategory.copy(categories: [])
         // Short description
-        static let productWithNonEmptyShortDescription = MockProduct().product(shortDescription: "desc", productType: .simple)
-        static let productWithEmptyShortDescription = MockProduct().product(shortDescription: "", productType: .simple)
+        static let productWithNonEmptyShortDescription = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, shortDescription: "desc")
+        static let productWithEmptyShortDescription = productWithNonEmptyShortDescription.copy(shortDescription: "")
 
         // Downloadable Files
-        static let downloadableProduct = MockProduct().product(downloadable: true)
-        static let nonDownloadableProduct = MockProduct().product(downloadable: false)
+        static let downloadableProduct = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, downloadable: true)
+        static let nonDownloadableProduct = downloadableProduct.copy(downloadable: false)
 
     }
 }

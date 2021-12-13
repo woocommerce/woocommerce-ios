@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 // MARK: - Note: Represents a WordPress.com Notification
 //
-public struct Note {
+public struct Note: GeneratedFakeable {
 
 
     /// Notification's Primary Key.

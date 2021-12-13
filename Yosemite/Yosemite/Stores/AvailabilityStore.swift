@@ -39,17 +39,17 @@ private extension AvailabilityStore {
     ///
     func checkStatsV4Availability(siteID: Int64,
                                   onCompletion: @escaping (_ isStatsV4Available: Bool) -> Void) {
-        let date = String(describing: Date().timeIntervalSinceReferenceDate)
         orderStatsRemote.loadOrderStats(for: siteID,
                               unit: .yearly,
-                              earliestDateToInclude: date,
-                              latestDateToInclude: date,
-                              quantity: 1) { (_, error) in
-                                if let error = error as? DotcomError, error == .noRestRoute {
-                                    onCompletion(false)
-                                } else {
-                                    onCompletion(true)
-                                }
+                              earliestDateToInclude: Date(),
+                              latestDateToInclude: Date(),
+                              quantity: 1) { result in
+            switch result {
+            case .failure(let error) where error as? DotcomError == .noRestRoute:
+                onCompletion(false)
+            default:
+                onCompletion(true)
+            }
         }
     }
 }

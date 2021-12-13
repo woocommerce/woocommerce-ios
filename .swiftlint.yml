@@ -163,3 +163,9 @@ custom_rules:
     regex: '\.textAlignment(\s*)=(\s*).right'
     message: "When forcing text alignment to the right, be sure to handle the Right-to-Left layout case properly, and then silence this warning with this line `// swiftlint:disable:next inverse_text_alignment`"
     severity: warning
+
+  swiftui_localization:
+    name: "SwiftUI Localization"
+    regex: 'LocalizedStringKey'
+    message: "Using `LocalizedStringKey` is incompatible with our tooling and doesn't allow you to provide a hint/context comment for translators either. Please use `NSLocalizedString` instead, even with SwiftUI code."
+    severity: error

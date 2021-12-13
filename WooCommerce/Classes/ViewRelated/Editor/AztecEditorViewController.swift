@@ -79,7 +79,7 @@ final class AztecEditorViewController: UIViewController, Editor {
     ///
     private lazy var placeholderLabel: UILabel = {
         let label = UILabel()
-        label.text = NSLocalizedString("Start writing...", comment: "Aztec's Text Placeholder")
+        label.text = viewProperties.placeholderText
         label.textColor = .textPlaceholder
         label.font = StyleManager.subheadlineFont
         label.isUserInteractionEnabled = false

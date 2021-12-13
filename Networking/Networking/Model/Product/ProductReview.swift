@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Represents a ProductReview Entity.
 ///
-public struct ProductReview: Decodable {
+public struct ProductReview: Decodable, Equatable, GeneratedFakeable {
     public let siteID: Int64
     public let reviewID: Int64
     public let productID: Int64
@@ -114,18 +115,6 @@ private extension ProductReview {
         }
     }
 }
-
-
-// MARK: - Equatable Conformance
-//
-extension ProductReview: Equatable {
-    public static func == (lhs: ProductReview, rhs: ProductReview) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.reviewID == rhs.reviewID &&
-            lhs.productID == rhs.productID
-    }
-}
-
 
 // MARK: - Decoding Errors
 //

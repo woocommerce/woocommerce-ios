@@ -11,8 +11,4 @@ public struct PreselectedProvider: Codable, Equatable {
         self.providerName = providerName
         self.providerURL = providerURL
     }
-
-    public static func == (lhs: PreselectedProvider, rhs: PreselectedProvider) -> Bool {
-        return lhs.siteID == rhs.siteID
-    }
 }

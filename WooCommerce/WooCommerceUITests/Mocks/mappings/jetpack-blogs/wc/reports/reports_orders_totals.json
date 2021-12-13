@@ -17,11 +17,11 @@
             "data": [{
                 "slug": "pending",
                 "name": "Pending payment",
-                "total": 4
+                "total": 2
             }, {
                 "slug": "processing",
                 "name": "Processing",
-                "total": 4
+                "total": 2
             }, {
                 "slug": "on-hold",
                 "name": "On hold",
@@ -29,7 +29,7 @@
             }, {
                 "slug": "completed",
                 "name": "Completed",
-                "total": 13
+                "total": 1
             }, {
                 "slug": "cancelled",
                 "name": "Cancelled",

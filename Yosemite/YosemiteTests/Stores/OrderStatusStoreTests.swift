@@ -8,17 +8,17 @@ import XCTest
 ///
 class OrderStatusStoreTests: XCTestCase {
 
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
-    /// Mockup Network: Allows us to inject predefined responses!
+    /// Mock Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Convenience Property: Returns the StorageType associated with the main thread.
     ///
@@ -35,8 +35,8 @@ class OrderStatusStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        storageManager = MockStorageManager()
+        network = MockNetwork()
     }
 
     // MARK: - OrderStatusAction.resetStoredOrderStatuses
@@ -71,84 +71,90 @@ class OrderStatusStoreTests: XCTestCase {
 
     // MARK: - OrderStatusAction.retrieveOrderStatuses
 
-    /// Verifies that OrderStatusAction.retrieveOrderStatuses returns the expected statuses.
+    /// Verifies that OrderStatusAction.retrieveOrderStatuses returns success on valid response.
     ///
-    func testRetrieveOrderStatusesReturnsExpectedStatuses() {
-        let expectation = self.expectation(description: "Retrieve order statuses")
+    func test_retrieveOrderStatuses_returns_expected_statuses() throws {
+        // Given
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
         network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "report-orders")
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: sampleSiteID) { (statuses, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(statuses)
-            XCTAssertEqual(statuses?.count, 9)
-            XCTAssertEqual(statuses, self.sampleOrderStatuses())
-            expectation.fulfill()
+
+        // When
+        let result: Result<[Yosemite.OrderStatus], Error> = waitFor { promise in
+            let action = OrderStatusAction.retrieveOrderStatuses(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            orderStatusStore.onAction(action)
         }
 
-        orderStatusStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let receivedStatuses = try XCTUnwrap(result.get())
+        XCTAssertEqual(receivedStatuses.count, 9)
+        XCTAssertEqual(receivedStatuses, sampleOrderStatuses())
     }
 
     /// Verifies that OrderStatusAction.retrieveOrderStatuses returns an error, whenever there is an error response.
     ///
-    func testRetrieveOrderStatusesReturnsErrorUponReponseError() {
-        let expectation = self.expectation(description: "Retrieve order statuses error response")
+    func test_retrieveOrderStatuses_returns_error_upon_response_error() {
+        // Given
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
         network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "generic_error")
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: sampleSiteID) { (statuses, error) in
-            XCTAssertNotNil(error)
-            XCTAssertNil(statuses)
-            expectation.fulfill()
+
+        // When
+        let result: Result<[Yosemite.OrderStatus], Error> = waitFor { promise in
+            let action = OrderStatusAction.retrieveOrderStatuses(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            orderStatusStore.onAction(action)
         }
 
-        orderStatusStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 
     /// Verifies that OrderStatusAction.retrieveOrderStatuses returns an error, whenever there is not backend response.
     ///
-    func testRetrieveOrderStatusesReturnsErrorUponEmptyResponse() {
-        let expectation = self.expectation(description: "Retrieve order statuses empty response error")
+    func test_retrieveOrderStatuses_returns_error_upon_empty_response() {
+        // Given
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: sampleSiteID) { (statuses, error) in
-            XCTAssertNotNil(error)
-            XCTAssertNil(statuses)
-            expectation.fulfill()
+        // When
+        let result: Result<[Yosemite.OrderStatus], Error> = waitFor { promise in
+            let action = OrderStatusAction.retrieveOrderStatuses(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            orderStatusStore.onAction(action)
         }
 
-        orderStatusStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 
     /// Verifies that OrderStatusAction.retrieveOrderStatuses effectively persists any retrieved statuses.
     ///
-    func testRetrieveOrderStatusesEffectivelyPersistsRetrievedOrderStatuses() {
-        let expectation = self.expectation(description: "Retrieving order statii shall persist order statii")
+    func test_retrieveOrderStatuses_effectively_persists_retrieved_OrderStatuses() {
+        // Given
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
         network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "report-orders")
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: sampleSiteID) { (statuses, error) in
-            XCTAssertNil(error)
 
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatus.self), 9)
-            let storageOrderStatuses = self.viewStorage.loadOrderStatuses(siteID: self.sampleSiteID)
-            XCTAssertNotNil(storageOrderStatuses)
-            let readOnlyList = storageOrderStatuses?.map({ $0.toReadOnly() })
-            XCTAssertEqual(readOnlyList?.sorted(), self.sampleOrderStatuses().sorted())
-
-            expectation.fulfill()
+        // When
+        let result: Result<[Yosemite.OrderStatus], Error> = waitFor { promise in
+            let action = OrderStatusAction.retrieveOrderStatuses(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            orderStatusStore.onAction(action)
         }
 
-        orderStatusStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 9)
+        let storedStatuses = viewStorage.loadOrderStatuses(siteID: sampleSiteID)?.map({ $0.toReadOnly() })
+        XCTAssertEqual(storedStatuses?.sorted(), sampleOrderStatuses().sorted())
     }
 
     /// Verifies that `upsertStoredStatusesInBackground` does not produce duplicate entries.
     ///
-    func testUpdateRetrieveOrderStatusesEffectivelyUpdatesPreexistantOrderStatuses() {
+    func test_upsertStatuses_effectively_updates_preexistant_OrderStatuses() {
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatus.self), 0)
 
@@ -185,7 +191,7 @@ class OrderStatusStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredStatusesInBackground` removes deleted entities.
     ///
-    func testUpdateRetrieveShipmentTrackingListEffectivelyRemovesDeletedShipmentTrackingData() {
+    func test_upsertStatuses_effectively_removes_deleted_OrderStatuses() {
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatus.self), 0)
 

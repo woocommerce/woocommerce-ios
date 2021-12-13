@@ -6,11 +6,11 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.4.0)
   - AppAuth/Core (1.4.0)
   - AppAuth/ExternalUserAgent (1.4.0)
-  - Automattic-Tracks-iOS (0.6.0):
+  - Automattic-Tracks-iOS (0.9.1):
     - CocoaLumberjack (~> 3)
     - Reachability (~> 3)
-    - Sentry (~> 4)
-    - Sodium-Fork (= 0.8.2)
+    - Sentry (~> 6)
+    - Sodium (>= 0.9.1)
     - UIDeviceIdentifier (~> 1)
   - Charts (3.6.0):
     - Charts/Core (= 3.6.0)
@@ -20,102 +20,100 @@ PODS:
   - CocoaLumberjack/Core (3.5.3)
   - CocoaLumberjack/Swift (3.5.3):
     - CocoaLumberjack/Core
-  - FormatterKit/Resources (1.8.2)
-  - FormatterKit/TimeIntervalFormatter (1.8.2):
+  - FormatterKit/Resources (1.9.0)
+  - FormatterKit/TimeIntervalFormatter (1.9.0):
     - FormatterKit/Resources
-  - GoogleSignIn (5.0.2):
-    - AppAuth (~> 1.2)
+  - GoogleSignIn (6.0.2):
+    - AppAuth (~> 1.4)
     - GTMAppAuth (~> 1.0)
     - GTMSessionFetcher/Core (~> 1.1)
   - Gridicons (1.0)
-  - GTMAppAuth (1.1.0):
+  - GTMAppAuth (1.2.2):
     - AppAuth/Core (~> 1.4)
-    - GTMSessionFetcher (~> 1.4)
-  - GTMSessionFetcher (1.5.0):
-    - GTMSessionFetcher/Full (= 1.5.0)
-  - GTMSessionFetcher/Core (1.5.0)
-  - GTMSessionFetcher/Full (1.5.0):
-    - GTMSessionFetcher/Core (= 1.5.0)
+    - GTMSessionFetcher/Core (~> 1.5)
+  - GTMSessionFetcher/Core (1.6.1)
   - KeychainAccess (3.2.1)
-  - Kingfisher (5.11.0):
-    - Kingfisher/Core (= 5.11.0)
-  - Kingfisher/Core (5.11.0)
-  - lottie-ios (3.1.6)
+  - Kingfisher (6.0.1)
+  - lottie-ios (3.1.9)
   - NSObject-SafeExpectations (0.0.4)
   - "NSURL+IDN (0.4)"
   - Reachability (3.2)
-  - Sentry (4.5.0):
-    - Sentry/Core (= 4.5.0)
-  - Sentry/Core (4.5.0)
-  - Sodium-Fork (0.8.2)
-  - Sourcery (0.18.0)
+  - Sentry (6.2.1):
+    - Sentry/Core (= 6.2.1)
+  - Sentry/Core (6.2.1)
+  - Sodium (0.9.1)
+  - Sourcery (1.0.3)
+  - StripeTerminal (2.4.0)
   - SVProgressHUD (2.2.5)
-  - UIDeviceIdentifier (1.5.0)
+  - UIDeviceIdentifier (1.7.1)
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
-  - WordPressAuthenticator (1.28.0):
-    - 1PasswordExtension (= 1.8.6)
-    - Alamofire (= 4.8)
+  - WordPressAuthenticator (1.42.0):
+    - 1PasswordExtension (~> 1.8.6)
+    - Alamofire (~> 4.8)
     - CocoaLumberjack (~> 3.5)
-    - GoogleSignIn (~> 5.0.2)
+    - GoogleSignIn (~> 6.0.1)
     - Gridicons (~> 1.0)
-    - lottie-ios (= 3.1.6)
+    - lottie-ios (~> 3.1.6)
     - "NSURL+IDN (= 0.4)"
-    - SVProgressHUD (= 2.2.5)
+    - SVProgressHUD (~> 2.2.5)
     - WordPressKit (~> 4.18-beta)
     - WordPressShared (~> 1.12-beta)
-    - WordPressUI (~> 1.7.0)
-  - WordPressKit (4.20.0):
+    - WordPressUI (~> 1.7-beta)
+  - WordPressKit (4.40.0):
     - Alamofire (~> 4.8.0)
     - CocoaLumberjack (~> 3.4)
     - NSObject-SafeExpectations (= 0.0.4)
-    - UIDeviceIdentifier (~> 1)
-    - WordPressShared (~> 1.12)
-    - wpxmlrpc (~> 0.9.0)
-  - WordPressShared (1.12.0):
+    - UIDeviceIdentifier (~> 1.4)
+    - WordPressShared (~> 1.15-beta)
+    - wpxmlrpc (~> 0.9)
+  - WordPressShared (1.16.1):
     - CocoaLumberjack (~> 3.4)
-    - FormatterKit/TimeIntervalFormatter (= 1.8.2)
-  - WordPressUI (1.7.2)
-  - Wormholy (1.6.2)
-  - WPMediaPicker (1.7.1)
+    - FormatterKit/TimeIntervalFormatter (~> 1.8)
+  - WordPressUI (1.12.1)
+  - Wormholy (1.6.5)
+  - WPMediaPicker (1.7.3)
   - wpxmlrpc (0.9.0)
   - XLPagerTabStrip (9.0.0)
-  - ZendeskCommonUISDK (4.2.0):
-    - ZendeskSDKConfigurationsSDK (~> 1.1.2)
-  - ZendeskCoreSDK (2.2.2)
-  - ZendeskMessagingAPISDK (3.2.0):
-    - ZendeskSDKConfigurationsSDK (~> 1.1.2)
-  - ZendeskMessagingSDK (3.2.0):
-    - ZendeskCommonUISDK (~> 4.2.0)
-    - ZendeskMessagingAPISDK (~> 3.2.0)
-  - ZendeskSDKConfigurationsSDK (1.1.3)
-  - ZendeskSupportProvidersSDK (5.0.1):
-    - ZendeskCoreSDK (~> 2.2.1)
-  - ZendeskSupportSDK (5.0.1):
-    - ZendeskMessagingSDK (~> 3.2.0)
-    - ZendeskSupportProvidersSDK (~> 5.0.1)
+  - ZendeskCommonUISDK (6.1.1)
+  - ZendeskCoreSDK (2.5.1)
+  - ZendeskMessagingAPISDK (3.8.2):
+    - ZendeskSDKConfigurationsSDK (~> 1.1.8)
+  - ZendeskMessagingSDK (3.8.2):
+    - ZendeskCommonUISDK (~> 6.1.1)
+    - ZendeskMessagingAPISDK (~> 3.8.2)
+  - ZendeskSDKConfigurationsSDK (1.1.8)
+  - ZendeskSupportProvidersSDK (5.3.0):
+    - ZendeskCoreSDK (~> 2.5.1)
+  - ZendeskSupportSDK (5.3.0):
+    - ZendeskMessagingSDK (~> 3.8.2)
+    - ZendeskSupportProvidersSDK (~> 5.3.0)
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 0.6.0)
+  - Automattic-Tracks-iOS (~> 0.9.1)
   - Charts (~> 3.6.0)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
   - Gridicons (~> 1.0)
   - KeychainAccess (~> 3.2)
-  - Kingfisher (~> 5.11.0)
-  - Sourcery (~> 0.18)
+  - Kingfisher (~> 6.0.0)
+  - Sourcery (~> 1.0.3)
+  - StripeTerminal (~> 2.4)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (~> 1.28.0)
-  - WordPressShared (~> 1.12)
-  - WordPressUI (~> 1.7.2)
-  - Wormholy (~> 1.6.2)
-  - WPMediaPicker (~> 1.7.1)
+  - WordPressAuthenticator (~> 1.42.0)
+  - WordPressKit (~> 4.40.0)
+  - WordPressShared (~> 1.15)
+  - WordPressUI (~> 1.12.1)
+  - Wormholy (~> 1.6.5)
+  - WPMediaPicker (~> 1.7.3)
   - XLPagerTabStrip (~> 9.0)
   - ZendeskSupportSDK (~> 5.0)
 
 SPEC REPOS:
+  https://github.com/wordpress-mobile/cocoapods-specs.git:
+    - WordPressAuthenticator
   trunk:
     - 1PasswordExtension
     - Alamofire
@@ -135,13 +133,13 @@ SPEC REPOS:
     - "NSURL+IDN"
     - Reachability
     - Sentry
-    - Sodium-Fork
+    - Sodium
     - Sourcery
+    - StripeTerminal
     - SVProgressHUD
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
-    - WordPressAuthenticator
     - WordPressKit
     - WordPressShared
     - WordPressUI
@@ -161,43 +159,44 @@ SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
-  Automattic-Tracks-iOS: c525679cbf91ac8bcbcbed01bdaa564867173182
+  Automattic-Tracks-iOS: f5a6188ad8d00680748111466beabb0aea11f856
   Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
-  FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
-  GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
+  FormatterKit: 184db51bf120b633693a73624a4cede89ec51a41
+  GoogleSignIn: fd381840dbe7c1137aa6dc30849a5c3e070c034a
   Gridicons: f032dbc3350f8648e0fabe3e531b72cf97d428a9
-  GTMAppAuth: 197a8dabfea5d665224aa00d17f164fc2248dab9
-  GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
+  GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
+  GTMSessionFetcher: 36689134877faeb055b27dfa4ccc9ceaa42e029e
   KeychainAccess: d5470352939ced6d6f7fb51cb2e67aae51fc294f
-  Kingfisher: 4569606189149e19c7d9439f47e885d0679b7a90
-  lottie-ios: 85ce835dd8c53e02509f20729fc7d6a4e6645a0a
+  Kingfisher: adde87a4f74f6a3845395769354efff593581740
+  lottie-ios: 3a3758ef5a008e762faec9c9d50a39842f26d124
   NSObject-SafeExpectations: ab8fe623d36b25aa1f150affa324e40a2f3c0374
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  Sentry: ab6c209f23700d1460691dbc90e19ed0a05d496b
-  Sodium-Fork: 45fe3a7c675898ca0635af4eadcb34985477e868
-  Sourcery: e0e8658a1ce6d9f475156ad3ffce4c68f1261b3e
+  Sentry: 9b922b396b0e0bca8516a10e36b0ea3ebea5faf7
+  Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
+  Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
+  StripeTerminal: da566fa62a4e7bbf0510dd27614f3087293cd79e
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
-  UIDeviceIdentifier: a79ccdfc940373835a7d8e9fc7541e6bf61b6319
+  UIDeviceIdentifier: d0fee204f467dacf8808b7ac14ce43affeb271a5
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: 68f1b5b3792671888c7c1a77da02e98e3f694cd1
-  WordPressKit: 873720d78dc1db8d0a009601f5f4fe8e8aab7d38
-  WordPressShared: 38cb62e9cb998d4dc3c1611f17934c6875a6b3e8
-  WordPressUI: cb5d0c58f92778b6dffcdcb8234ed8d7a930ce90
-  Wormholy: 5a186f877829e7d488963b09f204e0186b40c9a8
-  WPMediaPicker: 46ae5807c8f64d30a39c28812ad150837a424ed2
+  WordPressAuthenticator: 06278534519c741ecea346f504ad8d08082bfb0d
+  WordPressKit: 062e4f57ce871e2217b632a1f3cb0bbd54b5df6d
+  WordPressShared: 5477f179c7fe03b5d574f91adda66f67d131827e
+  WordPressUI: 414bf3a7d007618f94a1c7969d6e849779877d5d
+  Wormholy: 3252bc3e55a1847ef9a0976c1377bd77bf3635fa
+  WPMediaPicker: 4af3fdfba06541ada2613178f8c01175671c38a8
   wpxmlrpc: bf55a43a7e710bd2a4fb8c02dfe83b1246f14f13
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
-  ZendeskCommonUISDK: afbee7c58c04cf88012a48c079599ec0d1590d16
-  ZendeskCoreSDK: 86513e62c1ab68913416c9044463d9b687ca944f
-  ZendeskMessagingAPISDK: c12dacdb94a89a957d911d5cff82a7cc9ee9666b
-  ZendeskMessagingSDK: 9cd3a5af8bc0766b5e4774d8cbd8a0468263af97
-  ZendeskSDKConfigurationsSDK: 918241bc7ec30e0af9e1b16333d54a584ee8ab9e
-  ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
-  ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
+  ZendeskCommonUISDK: 5808802951ad2bb424f0bed4259dc3c0ce9b52ec
+  ZendeskCoreSDK: 19a18e5ef2edcb18f4dbc0ea0d12bd31f515712a
+  ZendeskMessagingAPISDK: 144e0fb0e633a3c4e73149b781ab65338938d5a8
+  ZendeskMessagingSDK: 500e83d9413481e95180c37ddca0d4ef9d515600
+  ZendeskSDKConfigurationsSDK: 8371b468db0d09e9198f6c5a97818826943ee1ee
+  ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
+  ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: c3ba7bb50d92da5c01566a9bba39e0a328ea67f4
+PODFILE CHECKSUM: ace980f03f7b80fe9f6ed45f764c0c894be396f7
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.11.2

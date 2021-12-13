@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -18,12 +18,12 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="8gO-gt-5sc">
-                        <rect key="frame" x="15" y="13" width="290" height="146"/>
+                        <rect key="frame" x="16" y="13" width="288" height="146"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pmR-Dp-2I7">
                                 <rect key="frame" x="0.0" y="0.0" width="24" height="146"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WYv-eb-Aor">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WYv-eb-Aor">
                                         <rect key="frame" x="0.0" y="7" width="24" height="24"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="24" id="Cf8-HO-VjA"/>
@@ -39,7 +39,7 @@
                                 </constraints>
                             </view>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Ath-1M-eR6" customClass="EnhancedTextView" customModule="WooCommerce" customModuleProvider="target">
-                                <rect key="frame" x="40" y="0.0" width="250" height="146"/>
+                                <rect key="frame" x="40" y="0.0" width="248" height="146"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -52,8 +52,8 @@
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="8gO-gt-5sc" secondAttribute="bottom" constant="15" id="1ga-S8-Ec3"/>
-                    <constraint firstAttribute="trailing" secondItem="8gO-gt-5sc" secondAttribute="trailing" constant="15" id="Gwo-v6-d3E"/>
-                    <constraint firstItem="8gO-gt-5sc" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="Vx3-3a-3Fo"/>
+                    <constraint firstItem="8gO-gt-5sc" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="Gwo-v6-d3E"/>
+                    <constraint firstItem="8gO-gt-5sc" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="Vx3-3a-3Fo"/>
                     <constraint firstItem="8gO-gt-5sc" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="13" id="yDM-uQ-kCz"/>
                 </constraints>
             </tableViewCellContentView>

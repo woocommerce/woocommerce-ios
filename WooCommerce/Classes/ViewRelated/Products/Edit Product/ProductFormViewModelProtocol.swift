@@ -1,4 +1,5 @@
 import Yosemite
+import Observables
 
 /// The type of product form: adding a new one or editing an existing one.
 enum ProductFormType {
@@ -6,6 +7,21 @@ enum ProductFormType {
     case edit
     case readonly
 }
+
+/// The type of action that can be performed in the product.
+enum ActionButtonType {
+    case publish
+    case save
+    case more
+}
+
+/// The type of save message when saving a product.
+enum SaveMessageType {
+    case publish
+    case save
+    case saveVariation
+}
+
 
 /// A view model for `ProductFormViewController` to add/edit a generic product model (e.g. `Product` or `ProductVariation`).
 ///
@@ -24,14 +40,26 @@ protocol ProductFormViewModelProtocol {
     /// Emits a boolean of whether the product has unsaved changes for remote update.
     var isUpdateEnabled: Observable<Bool> { get }
 
+    /// Emits a void value informing when there is a new variation price state available
+    var newVariationsPrice: Observable<Void> { get }
+
     /// Creates actions available on the bottom sheet.
     var actionsFactory: ProductFormActionsFactoryProtocol { get }
 
     /// The latest product value.
     var productModel: ProductModel { get }
 
+    /// The original product value.
+    var originalProductModel: ProductModel { get }
+
     /// The latest product password, if the product is password protected.
     var password: String? { get }
+
+    /// The action buttons that should be rendered in the navigation bar.
+    var actionButtons: [ActionButtonType] { get }
+
+    /// The product variation ID
+    var productionVariationID: Int64? { get }
 
     // Unsaved changes
 
@@ -40,6 +68,8 @@ protocol ProductFormViewModelProtocol {
     // More menu
 
     func canSaveAsDraft() -> Bool
+
+    func canShowPublishOption() -> Bool
 
     func canEditProductSettings() -> Bool
 
@@ -67,11 +97,11 @@ protocol ProductFormViewModelProtocol {
     func updateInventorySettings(sku: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,
-                                 stockQuantity: Int64?,
+                                 stockQuantity: Decimal?,
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?)
 
-    func updateProductType(productType: ProductType)
+    func updateProductType(productType: BottomSheetProductType)
 
     func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: String?, shippingClassID: Int64?)
 
@@ -93,6 +123,10 @@ protocol ProductFormViewModelProtocol {
 
     func updateDownloadableFiles(downloadableFiles: [ProductDownload], downloadLimit: Int64, downloadExpiry: Int64)
 
+    func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64])
+
+    func updateVariationAttributes(_ attributes: [ProductVariationAttribute])
+
     // Remote action
 
     /// Creates/updates a product remotely given an optional product status to override.
@@ -101,15 +135,38 @@ protocol ProductFormViewModelProtocol {
     ///   - onCompletion: Called when the product is saved remotely.
     func saveProductRemotely(status: ProductStatus?, onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void)
 
-    func deleteProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void)
+    func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void)
 
     // Reset action
 
     func resetPassword(_ password: String?)
+
+    /// Updates the original product variations(and attributes).
+    /// This is needed because variations and attributes, remote updates, happen outside this view model and we need a way to sync the original product.
+    func updateProductVariations(from product: Product)
 }
 
 extension ProductFormViewModelProtocol {
     func shouldShowMoreOptionsMenu() -> Bool {
         canSaveAsDraft() || canEditProductSettings() || canViewProductInStore() || canShareProduct() || canDeleteProduct()
+    }
+
+    /// Returns `.publish` when the product does not exists remotely and it's gonna be published for the first time.
+    /// Returns `.publish` when the product is going to be published from a different status (eg: from draft).
+    /// Returns `.saveVariation` when save variation
+    /// Returns `.save` for any other case.
+    ///
+    func saveMessageType(for productStatus: ProductStatus) -> SaveMessageType {
+        switch productStatus {
+        case .publish where !productModel.existsRemotely || originalProductModel.status != .publish:
+            return .publish
+        default:
+            if self is ProductVariationFormViewModel {
+                return .saveVariation
+            }
+            else {
+                return .save
+            }
+        }
     }
 }

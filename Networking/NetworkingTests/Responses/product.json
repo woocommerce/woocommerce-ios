@@ -224,7 +224,112 @@
                         "id": 282,
                         "submit_button_text": "Submit"
                     }
-                }
+                },
+                {
+                    "id": 6471,
+                    "key": "_product_addons",
+                    "value": [
+                        {
+                            "description": "Pizza topping",
+                            "title_format": "label",
+                            "required": 0,
+                            "restrictions": 0,
+                            "position": 0,
+                            "display": "radiobutton",
+                            "restrictions_type": "any_text",
+                            "min": 0,
+                            "max": 0,
+                            "options": [
+                                {
+                                    "label": "Peperoni",
+                                    "price_type": "flat_fee",
+                                    "price": "3",
+                                    "image": ""
+                                },
+                                {
+                                    "label": "Extra cheese",
+                                    "price_type": "flat_fee",
+                                    "price": "4",
+                                    "image": ""
+                                },
+                                {
+                                    "label": "Salami",
+                                    "price_type": "flat_fee",
+                                    "price": "3",
+                                    "image": ""
+                                },
+                                {
+                                    "label": "Ham",
+                                    "price_type": "flat_fee",
+                                    "price": "3",
+                                    "image": ""
+                                }
+                            ],
+                            "type": "checkbox",
+                            "price": "",
+                            "price_type": "flat_fee",
+                            "adjust_price": 0,
+                            "name": "Topping",
+                            "description_enable": 1
+                        },
+                        {
+                            "description": "",
+                            "title_format": "label",
+                            "required": 0,
+                            "restrictions": 1,
+                            "position": 1,
+                            "display": "select",
+                            "restrictions_type": "any_text",
+                            "min": 0,
+                            "max": 3,
+                            "options": [
+                                {
+                                    "label": "",
+                                    "price_type": "flat_fee",
+                                    "price": "",
+                                    "image": ""
+                                }
+                            ],
+                            "type": "input_multiplier",
+                            "price": "2",
+                            "price_type": "quantity_based",
+                            "adjust_price": 1,
+                            "name": "Soda",
+                            "description_enable": 0
+                        },
+                        {
+                            "description": "",
+                            "title_format": "label",
+                            "required": 1,
+                            "restrictions": 0,
+                            "position": 2,
+                            "display": "radiobutton",
+                            "restrictions_type": "any_text",
+                            "min": 0,
+                            "max": 0,
+                            "options": [
+                                {
+                                    "label": "Yes",
+                                    "price_type": "flat_fee",
+                                    "price": "5",
+                                    "image": ""
+                                },
+                                {
+                                    "label": "No",
+                                    "price_type": "flat_fee",
+                                    "price": "",
+                                    "image": ""
+                                }
+                            ],
+                            "type": "multiple_choice",
+                            "price": "",
+                            "price_type": "flat_fee",
+                            "adjust_price": 0,
+                            "name": "Delivery",
+                            "description_enable": 0
+                        }
+                    ]
+                },
             ],
             "jetpack_publicize_connections": [],
             "_links": {

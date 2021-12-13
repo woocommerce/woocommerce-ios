@@ -1,13 +1,21 @@
-BEKIJK EN BEHEER BESTELLINGEN
-Blader door, filter op of zoek naar specifieke bestellingen. Tik om bestellingsinformatie te bekijken, waaronder producten, waarde, klantgegevens, verzendgegevens en opmerkingen.
+Beheer je bedrijf onderweg met de mobiele WooCommerce-app. Producten aanmaken, bestellingen verwerken en je belangrijkste cijfers in de gaten houden; allemaal in realtime.
 
-HOUD JE WINKEL BIJ
-Bekijk welke producten het beste presteren. Controleer je totale inkomsten en bekijk bestellings- en bezoekersgegevens per week, maand en jaar.
+VOEG PRODUCTEN TOE
+Maak producten aan, en groepeer en publiceer ze rechtstreeks vanaf je iPhone of iPad. Maak meteen werk van nieuwe ingevingen en zet ze direct om in producten, of sla de producten op als concept voor later.
 
-REALTIME BESTELLINGSMELDINGEN
-Ontvang meldingen over de winkelactiviteit, waaronder nieuwe bestellingen en productbeoordelingen.
+BLIJF OP DE HOOGTE
+Mis nooit meer een bestelling of een beoordeling. Bang dat je iets mist? Schakel dan realtime meldingen in en wacht op dat verslavende 'katsjing!' iedere keer als je iets hebt verkocht!
 
-WooCommerce is het meest personaliseerbare eCommerce-platform voor het oprichten van je online bedrijf. Doordat het gebaseerd is op WordPress, is het geïntegreerd in de beste contentmanagementhulpmiddelen ter wereld.
+BEKIJK EN PAS BESTELLINGEN AAN
+Scrol door de overzichten, of zoek op klant of bestellingsgegevens. Tik op de gegevens om de factuur te bekijken, de levering in gang te zetten en de bestelstatus te wijzigen. Voeg opmerkingen toe aan de bestelling of stuur direct een e-mail met een update naar de klant.
+
+HOUD JE STATISTIEKEN BIJ
+Bekijk in één oogopslag welke producten het beste verkopen. Check je totale winst, aantal bestellingen en bezoekersgegevens per week, maand en jaar. Kennis is macht!
+
+WISSEL TUSSEN WINKELS
+Heb je meer dan één winkel? Schakel dan eenvoudig over van de ene naar de andere.
+
+WooCommerce is 's werelds meest aanpasbare opensource eCommerce-platform. Of je nu een bedrijf start, een fysieke winkel online wil starten of sites voor klanten wil ontwikkelen: gebruik WooCommerce voor een winkel waarin content en handel gecombineerd worden.
 
 Vereisten: WooCommerce v3.5+, de Jetpack-plugin.
 

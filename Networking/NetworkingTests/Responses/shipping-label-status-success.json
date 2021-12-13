@@ -1,0 +1,25 @@
+{
+    "data": {
+        "success":true,
+        "labels":[{
+            "label_id": 1825,
+            "tracking": "9405500205309072644962",
+            "refundable_amount": 7.9,
+            "created": 1623764362682,
+            "carrier_id": "usps",
+            "service_name": "USPS - Priority Mail",
+            "status": "PURCHASED",
+            "commercial_invoice_url": null,
+            "package_name": "Small Flat Rate Box",
+            "is_letter": false,
+            "product_names": ["WordPress Pennant"],
+            "product_ids": [89],
+            "receipt_item_id": 24601924,
+            "created_date": 1623764367000,
+            "expiry_date": 1639316366000,
+            "main_receipt_id": 19991879,
+            "rate": 7.9,
+            "currency": "USD"
+        }]
+    }
+}

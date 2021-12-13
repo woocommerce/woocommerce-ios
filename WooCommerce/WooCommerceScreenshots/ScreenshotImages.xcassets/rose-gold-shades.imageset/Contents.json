@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "rose-gold-shades.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

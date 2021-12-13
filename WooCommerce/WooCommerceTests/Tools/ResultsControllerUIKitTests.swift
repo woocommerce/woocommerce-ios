@@ -11,13 +11,13 @@ import protocol Storage.StorageType
 ///
 final class ResultsControllerUIKitTests: XCTestCase {
 
-    /// Mockup StorageManager
+    /// Mock StorageManager
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
-    /// Mockup TableView
+    /// Mock TableView
     ///
-    private var tableView: MockupTableView!
+    private var tableView: MockTableView!
 
     /// Sample ResultsController
     ///
@@ -31,7 +31,7 @@ final class ResultsControllerUIKitTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
 
         resultsController = {
             let viewStorage = storageManager.viewStorage
@@ -45,7 +45,7 @@ final class ResultsControllerUIKitTests: XCTestCase {
             )
         }()
 
-        tableView = MockupTableView()
+        tableView = MockTableView()
         tableView.dataSource = self
 
         resultsController.startForwardingEvents(to: tableView)

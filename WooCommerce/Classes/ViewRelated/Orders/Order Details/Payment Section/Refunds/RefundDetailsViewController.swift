@@ -123,16 +123,8 @@ extension RefundDetailsViewModel {
     /// Registers all of the available UITableViewCells.
     ///
     func registerTableViewCells(_ tableView: UITableView) {
-        let cells = [
-            ProductDetailsTableViewCell.self,
-            LedgerTableViewCell.self,
-            TwoColumnHeadlineFootnoteTableViewCell.self,
-            WooBasicTableViewCell.self,
-            TopLeftImageTableViewCell.self
-        ]
-
-        for cellClass in cells {
-            tableView.registerNib(for: cellClass)
+        for row in RefundDetailsDataSource.Row.allCases {
+            tableView.registerNib(for: row.type)
         }
     }
 

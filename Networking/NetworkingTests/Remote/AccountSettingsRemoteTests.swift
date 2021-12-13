@@ -8,7 +8,7 @@ class AccountSettingsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockupNetwork()
+    let network = MockNetwork()
 
     /// Repeat always!
     ///
@@ -19,21 +19,24 @@ class AccountSettingsRemoteTests: XCTestCase {
 
     /// Verifies that loadAccountDetails properly parses the `me` sample response.
     ///
-    func testLoadAccountDetailsProperlyReturnsParsedAccount() {
+    func test_loadAccountSettings_properly_returns_parsed_account() throws {
+        // Given
         let remote = AccountRemote(network: network)
-        let expectation = self.expectation(description: "Load Account Settings Details")
-
         network.simulateResponse(requestUrlSuffix: "me/settings", filename: "me-settings")
 
-        remote.loadAccountSettings(for: 1) { (accountSettings, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(accountSettings)
-            XCTAssertEqual(1, accountSettings!.userID)
-            XCTAssertTrue(accountSettings!.tracksOptOut)
-
-            expectation.fulfill()
+        // When
+        let result: Result<AccountSettings, Error> = waitFor { promise in
+            remote.loadAccountSettings(for: 1) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let accountSettings = try result.get()
+        XCTAssertTrue(accountSettings.tracksOptOut)
+        XCTAssertEqual(accountSettings.userID, 1)
+        XCTAssertEqual(accountSettings.firstName, "Dem 123")
+        XCTAssertEqual(accountSettings.lastName, "Nines")
     }
 }

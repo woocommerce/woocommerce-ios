@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents a ProductStatus Entity.
 ///
-public enum ProductStatus: Decodable, Hashable {
+public enum ProductStatus: Codable, Hashable, GeneratedFakeable {
     case publish
     case draft
     case pending

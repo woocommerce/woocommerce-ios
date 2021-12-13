@@ -9,7 +9,7 @@ final class LedgerTableViewCellTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        order = MockOrders().sampleOrder()
+        order = MockOrders().orderWithFees()
         viewModel = OrderPaymentDetailsViewModel(order: order)
 
         let nib = Bundle.main.loadNibNamed("LedgerTableViewCell", owner: self, options: nil)
@@ -25,52 +25,57 @@ final class LedgerTableViewCellTests: XCTestCase {
         super.tearDown()
     }
 
-    func testSubtotalLabelContainsExpectedText() {
+    func test_subtotal_label_contains_expected_text() {
         let label = cell.getSubtotalLabel()
         XCTAssertEqual(label.text, Titles.subtotalLabel)
     }
 
-    func testSubtotalValueContainsExpectedText() {
+    func test_subtotal_value_contains_expected_text() {
         let label = cell.getSubtotalValue()
         XCTAssertEqual(label.text, viewModel.subtotalValue)
     }
 
-    func testDiscountLabelContainsExpectedText() {
+    func test_discount_label_contains_expected_text() {
         let label = cell.getDiscountLabel()
         XCTAssertEqual(label.text, viewModel.discountText)
     }
 
-    func testDiscountValueContainsExpectedText() {
+    func test_discount_value_contains_expected_text() {
         let label = cell.getDiscountValue()
         XCTAssertEqual(label.text, viewModel.discountValue)
     }
 
-    func testShippingLabelContainsExpectedText() {
+    func test_fees_label_contains_expected_text() {
+        let label = cell.getFeesLabel()
+        XCTAssertEqual(label.text, Titles.feesLabel)
+    }
+
+    func test_shipping_label_contains_expected_text() {
         let label = cell.getShippingLabel()
         XCTAssertEqual(label.text, Titles.shippingLabel)
     }
 
-    func testShippingValueContainsExpectedText() {
+    func test_shipping_value_contains_expected_text() {
         let label = cell.getShippingValue()
         XCTAssertEqual(label.text, viewModel.shippingValue)
     }
 
-    func testTaxesLabelContainsExpectedText() {
+    func test_taxes_label_contains_expected_text() {
         let label = cell.getTaxesLabel()
         XCTAssertEqual(label.text, Titles.taxesLabel)
     }
 
-    func testTaxesValueContainsExpectedText() {
+    func test_taxes_value_contains_expected_text() {
         let label = cell.getTaxesValue()
         XCTAssertEqual(label.text, viewModel.taxesValue)
     }
 
-    func testTotalLabelContainsExpectedText() {
+    func test_total_label_contains_expected_text() {
         let label = cell.getTotalLabel()
         XCTAssertEqual(label.text, Titles.totalLabel)
     }
 
-    func testTotalValueContainsExpectedText() {
+    func test_total_value_contains_expected_text() {
         let label = cell.getTotalValue()
         XCTAssertEqual(label.text, viewModel.totalValue)
     }
@@ -81,6 +86,8 @@ private extension LedgerTableViewCellTests {
     enum Titles {
         static let subtotalLabel = NSLocalizedString("Product Total",
                                                      comment: "Product Total label for payment view")
+        static let feesLabel = NSLocalizedString("Fees",
+                                                     comment: "Fees label for payment view")
         static let shippingLabel = NSLocalizedString("Shipping",
                                                      comment: "Shipping label for payment view")
         static let taxesLabel = NSLocalizedString("Taxes",

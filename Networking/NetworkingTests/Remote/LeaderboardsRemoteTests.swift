@@ -5,7 +5,7 @@ import XCTest
 ///
 final class LeaderboardsRemoteV4Tests: XCTestCase {
 
-    let network = MockupNetwork()
+    let network = MockNetwork()
     let sampleSiteID: Int64 = 1234
 
     override func setUp() {

@@ -3,6 +3,7 @@ enum ColorStudioName: String, CustomStringConvertible {
     // MARK: - Base colors
     case blue
     case celadon
+    case jetpackGreen
     case gray
     case green
     case orange
@@ -68,9 +69,11 @@ struct ColorStudio {
     static let red = ColorStudio(name: .red)
     static let gray = ColorStudio(name: .gray)
     static let blue = ColorStudio(name: .blue)
+    static let jetpackGreen = ColorStudio(name: .jetpackGreen)
     static let green = ColorStudio(name: .green)
     static let yellow = ColorStudio(name: .yellow)
     static let orange = ColorStudio(name: .orange)
+    static let celadon = ColorStudio(name: .celadon)
 
     /// The full name of the color, with required shade value
     func assetName() -> String {

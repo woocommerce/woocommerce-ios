@@ -7,7 +7,7 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockupNetwork()
+    let network = MockNetwork()
 
     /// Dummy Site ID
     ///
@@ -22,65 +22,71 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
     /// Verifies that loadOrderStats properly parses the `OrderStatsV4` sample response
     /// when requesting the hourly stats
     ///
-    func testLoadOrderStatsProperlyReturnsParsedStatsForHourlyStats() {
+    func test_loadOrderStats_properly_returns_parsed_stats_for_hourly_stats() throws {
+        // Given
         let remote = OrderStatsRemoteV4(network: network)
-        let expectation = self.expectation(description: "Load order stats")
-
         network.simulateResponse(requestUrlSuffix: "reports/revenue/stats", filename: "order-stats-v4-hour")
 
-        remote.loadOrderStats(for: sampleSiteID,
-                              unit: .hourly,
-                              earliestDateToInclude: "1955-11-05",
-                              latestDateToInclude: "1955-11-05",
-                              quantity: 24) { (orderStatsV4, error) in
-                                XCTAssertNil(error)
-                                XCTAssertNotNil(orderStatsV4)
-                                XCTAssertEqual(orderStatsV4?.intervals.count, 24)
-                                expectation.fulfill()
+        // When
+        let result: Result<OrderStatsV4, Error> = waitFor { promise in
+            remote.loadOrderStats(for: self.sampleSiteID,
+                                  unit: .hourly,
+                                  earliestDateToInclude: Date(),
+                                  latestDateToInclude: Date(),
+                                  quantity: 24) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let orderStatsV4 = try result.get()
+        XCTAssertEqual(orderStatsV4.intervals.count, 24)
     }
 
     /// Verifies that loadOrderStats properly parses the `OrderStatsV4` sample response
     /// when requesting the weekly stats
     ///
-    func testLoadOrderStatsProperlyReturnsParsedStatsForWeeklyStats() {
+    func test_loadOrderStats_properly_returns_parsed_stats_for_weekly_stats() throws {
+        // Given
         let remote = OrderStatsRemoteV4(network: network)
-        let expectation = self.expectation(description: "Load order stats")
-
         network.simulateResponse(requestUrlSuffix: "reports/revenue/stats", filename: "order-stats-v4-defaults")
 
-        remote.loadOrderStats(for: sampleSiteID,
-                              unit: .weekly,
-                              earliestDateToInclude: "1955-11-05",
-                              latestDateToInclude: "1955-11-05",
-                              quantity: 2) { (orderStatsV4, error) in
-                                XCTAssertNil(error)
-                                XCTAssertNotNil(orderStatsV4)
-                                XCTAssertEqual(orderStatsV4?.intervals.count, 2)
-                                expectation.fulfill()
+        // When
+        let result: Result<OrderStatsV4, Error> = waitFor { promise in
+            remote.loadOrderStats(for: self.sampleSiteID,
+                                  unit: .weekly,
+                                  earliestDateToInclude: Date(),
+                                  latestDateToInclude: Date(),
+                                  quantity: 2) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let orderStatsV4 = try result.get()
+        XCTAssertEqual(orderStatsV4.intervals.count, 2)
     }
 
     /// Verifies that loadOrderStats properly relays Networking Layer errors.
     ///
-    func testLoadOrderStatsProperlyRelaysNetwokingErrors() {
+    func test_loadOrderStats_properly_relays_netwoking_errors() {
+        // Given
         let remote = OrderStatsRemoteV4(network: network)
-        let expectation = self.expectation(description: "Load order stats contains errors")
 
-        remote.loadOrderStats(for: sampleSiteID,
-                              unit: .daily,
-                              earliestDateToInclude: "1955-11-05",
-                              latestDateToInclude: "1955-11-05",
-                              quantity: 31) { (orderStats, error) in
-            XCTAssertNil(orderStats)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When
+        let result: Result<OrderStatsV4, Error> = waitFor { promise in
+            remote.loadOrderStats(for: self.sampleSiteID,
+                                  unit: .daily,
+                                  earliestDateToInclude: Date(),
+                                  latestDateToInclude: Date(),
+                                  quantity: 31) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 }

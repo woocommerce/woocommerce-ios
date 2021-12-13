@@ -4,15 +4,15 @@ import TestKit
 @testable import Yosemite
 
 final class NotificationCountStoreTests: XCTestCase {
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
-    /// Mockup File Storage: Load data in memory
+    /// Mock File Storage: Load data in memory
     ///
     private var fileStorage: MockInMemoryStorage!
 
@@ -34,7 +34,7 @@ final class NotificationCountStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
         fileStorage = MockInMemoryStorage()
         subject = NotificationCountStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: fileStorage)
     }

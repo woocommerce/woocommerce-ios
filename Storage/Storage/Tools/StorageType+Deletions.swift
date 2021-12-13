@@ -30,6 +30,16 @@ public extension StorageType {
         }
     }
 
+    /// Deletes single stored Product Variation for the provided siteID and productVariationID.
+    ///
+    func deleteProductVariation(siteID: Int64, productVariationID: Int64) {
+        guard let productVariation = loadProductVariation(siteID: siteID, productVariationID: productVariationID) else {
+            return
+        }
+
+        deleteObject(productVariation)
+    }
+
     /// Deletes all of the stored Product Shipping Class models for the provided siteID.
     ///
     func deleteProductShippingClasses(siteID: Int64) {
@@ -73,6 +83,20 @@ public extension StorageType {
         }
     }
 
+    /// Deletes all of the stored Product Attributes that don't have an active product relationship
+    ///
+    func deleteUnusedProductAttributes(siteID: Int64) {
+        let attributesWithNoAssociatedProduct = loadProductAttributes(siteID: siteID).filter { attribute in
+            guard attribute.product != nil else {
+                return true
+            }
+            return false
+        }
+        attributesWithNoAssociatedProduct.forEach { attribute in
+            deleteObject(attribute)
+        }
+    }
+
     // MARK: - Product Reviews
 
     /// Deletes all of the stored Reviews for the provided siteID.
@@ -83,6 +107,37 @@ public extension StorageType {
         }
         for review in productReviews {
             deleteObject(review)
+        }
+    }
+
+    /// Deletes all of the stored `AddOnGroups` for a `siteID` that are not included in the provided `activeGroupIDs` array.
+    ///
+    func deleteStaleAddOnGroups(siteID: Int64, activeGroupIDs: [Int64]) {
+        let staleGroups = loadAddOnGroups(siteID: siteID).filter { !activeGroupIDs.contains($0.groupID) }
+        staleGroups.forEach {
+            deleteObject($0)
+        }
+    }
+
+    /// Deletes all of the stored `SitePlugin` entities with a specified `siteID` whose name is not included in `installedPluginNames` array.
+    ///
+    func deleteStalePlugins(siteID: Int64, installedPluginNames: [String]) {
+        let plugins = loadPlugins(siteID: siteID).filter {
+            !installedPluginNames.contains($0.name)
+        }
+        plugins.forEach {
+            deleteObject($0)
+        }
+    }
+
+    /// Deletes all of the stored SystemPlugins for the provided siteID whose name is not included in `currentSystemPlugins` array
+    ///
+    func deleteStaleSystemPlugins(siteID: Int64, currentSystemPlugins: [String]) {
+        let systemPlugins = loadSystemPlugins(siteID: siteID).filter {
+            !currentSystemPlugins.contains($0.name)
+        }
+        systemPlugins.forEach {
+            deleteObject($0)
         }
     }
 }

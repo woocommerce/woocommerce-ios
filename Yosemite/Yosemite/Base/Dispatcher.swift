@@ -8,7 +8,7 @@ public protocol Action { }
 
 // MARK: - Action: Represents a Flux Action Processor. Processors should get registered into the Dispatcher instance, for action processing.
 //
-public protocol ActionsProcessor: class {
+public protocol ActionsProcessor: AnyObject {
 
     /// Called whenever a given Action is dispatched.
     ///
@@ -69,7 +69,11 @@ public class Dispatcher {
     public func dispatch(_ action: Action) {
         assertMainThread()
 
-        processors[action.identifier]?.onAction(action)
+        // Avoid silent failure when a store is not retained
+        guard let processor = processors[action.identifier] else {
+            return DDLogWarn("⚠️ No processor found for \(action.identifier)!")
+        }
+        processor.onAction(action)
     }
 }
 

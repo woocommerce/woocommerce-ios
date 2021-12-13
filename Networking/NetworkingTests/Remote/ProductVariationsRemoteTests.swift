@@ -6,7 +6,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockupNetwork()
+    let network = MockNetwork()
 
     /// Dummy Site ID
     ///
@@ -76,7 +76,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
             XCTAssertTrue(expectedVariation.downloadable)
 
             XCTAssertTrue(expectedVariation.manageStock)
-            XCTAssertEqual(expectedVariation.stockQuantity, 16)
+            XCTAssertEqual(expectedVariation.stockQuantity, 16.5)
             XCTAssertEqual(expectedVariation.backordersKey, "notify")
             XCTAssertTrue(expectedVariation.backordersAllowed)
             XCTAssertFalse(expectedVariation.backordered)
@@ -128,7 +128,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/\(sampleProductVariationID)", filename: "product-variation")
 
         // When
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.loadProductVariation(for: self.sampleSiteID, productID: self.sampleProductID, variationID: sampleProductVariationID) { result in
                 promise(result)
             }
@@ -150,7 +150,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         let sampleProductVariationID: Int64 = 2783
 
         // When
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.loadProductVariation(for: self.sampleSiteID, productID: self.sampleProductID, variationID: sampleProductVariationID) { result in
                 promise(result)
             }
@@ -159,6 +159,53 @@ final class ProductVariationsRemoteTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .notFound)
+    }
+
+    // MARK: - Create ProductVariations in batch tests
+
+    /// Verifies that createProductVariations properly parses the `product-variations-create-update-delete-in-batch` sample response.
+    ///
+    func test_createProductVariation_properly_returns_parsed_ProductVariation() throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let sampleProductVariationID: Int64 = 1275
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variation")
+
+        let result = waitFor { promise in
+            remote.createProductVariation(for: self.sampleSiteID,
+                                          productID: self.sampleProductID,
+                                          newVariation:
+                                            self.sampleCreateProductVariation(siteID: self.sampleSiteID, productID: self.sampleProductID)) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+
+        let productVariationCreated = try result.get()
+        XCTAssertEqual(productVariationCreated.productID, sampleProductID)
+        XCTAssertEqual(productVariationCreated.productVariationID, sampleProductVariationID)
+    }
+
+    /// Verifies that createProductVariations properly relays Networking Layer errors.
+    ///
+    func test_createProductVariations_properly_relays_networking_errors() throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+
+        // When
+        let result = waitFor { promise in
+            remote.createProductVariation(for: self.sampleSiteID,
+                                          productID: self.sampleProductID,
+                                          newVariation:
+                                            self.sampleCreateProductVariation(siteID: self.sampleSiteID, productID: self.sampleProductID)) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isFailure)
     }
 
     // MARK: - Update ProductVariation
@@ -204,6 +251,53 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(try XCTUnwrap(result).isFailure)
+    }
+
+    // MARK: - Delete ProductVariation
+
+    /// Verifies that deleteProductVariation properly parses the `product-variation` sample response.
+    ///
+    func test_deleteProductVariation_properly_returns_parsed_ProductVariation() throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let sampleProductVariationID: Int64 = 1275
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/\(sampleProductVariationID)", filename: "product-variation")
+
+        // When
+        let result = waitFor { promise in
+            remote.deleteProductVariation(siteID: self.sampleSiteID,
+                                          productID: self.sampleProductID,
+                                          variationID: sampleProductVariationID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+
+        let productVariation = try result.get()
+        XCTAssertEqual(productVariation.productID, sampleProductID)
+        XCTAssertEqual(productVariation.productVariationID, sampleProductVariationID)
+    }
+
+    /// Verifies that deleteProductVariation properly relays Networking Layer errors.
+    ///
+    func test_deleteProductVariation_properly_relays_networking_errors() {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let sampleProductVariationID: Int64 = 1275
+
+        // When
+        let result = waitFor { promise in
+            remote.deleteProductVariation(siteID: self.sampleSiteID,
+                                          productID: self.sampleProductID,
+                                          variationID: sampleProductVariationID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 }
 
@@ -263,6 +357,12 @@ private extension ProductVariationsRemoteTests {
             ProductVariationAttribute(id: 0, name: "Flavor", option: "strawberry"),
             ProductVariationAttribute(id: 0, name: "Shape", option: "marble")
         ]
+    }
+
+    func sampleCreateProductVariation(siteID: Int64,
+                                      productID: Int64) -> CreateProductVariation {
+        let createVariation = CreateProductVariation(regularPrice: "5.0", attributes: sampleProductVariationAttributes())
+        return createVariation
     }
 
     func dateFromGMT(_ dateStringInGMT: String) -> Date {

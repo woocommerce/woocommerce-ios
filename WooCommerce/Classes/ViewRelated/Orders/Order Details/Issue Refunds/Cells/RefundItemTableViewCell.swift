@@ -1,4 +1,5 @@
 import UIKit
+import WordPressUI
 
 /// Displays an item to be refunded
 ///
@@ -75,6 +76,9 @@ private extension RefundItemTableViewCell {
         itemQuantityButton.applySecondaryButtonStyle()
         itemQuantityButton.titleLabel?.applyBodyStyle()
         itemQuantityButton.contentEdgeInsets = Constants.quantityButtonInsets
+
+        itemQuantityButton.accessibilityLabel = Localization.quantity
+        itemQuantityButton.accessibilityHint = Localization.quantityHint
     }
 }
 
@@ -110,7 +114,7 @@ extension RefundItemTableViewCell {
 
         guard let productImage = viewModel.productImage else {
             itemImageView.image = nil
-            placeholderImageView.image = .productPlaceholderImage
+            placeholderImageView.image = UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon)
             return
         }
 
@@ -136,6 +140,12 @@ private extension RefundItemTableViewCell {
         static let itemImageViewHeight: CGFloat = 39.0
         static let itemImageViewBorderWidth: CGFloat = 0.5
         static let quantityButtonInsets = UIEdgeInsets(top: 8, left: 22, bottom: 8, right: 22)
+    }
+
+    enum Localization {
+        static let quantity = NSLocalizedString("Quantity", comment: "The accessibility label for the quantity button when selecting an item to refund")
+        static let quantityHint = NSLocalizedString("Tap to modify the item refund quantity",
+                                                    comment: "The accessibility hint for the quantity button when selecting an item to refund")
     }
 }
 
@@ -164,7 +174,6 @@ private struct RefundItemTableViewCellRepresentable: UIViewRepresentable {
     }
 }
 
-@available(iOS 13.0, *)
 struct RefundItemTableViewCell_Previews: PreviewProvider {
 
     private static func makeStack() -> some View {

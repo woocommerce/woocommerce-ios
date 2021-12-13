@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 /// SiteVisitStats: Remote Endpoints
 ///
@@ -19,7 +18,7 @@ public class SiteVisitStatsRemote: Remote {
                                      unit: StatGranularity,
                                      latestDateToInclude: Date,
                                      quantity: Int,
-                                     completion: @escaping (SiteVisitStats?, Error?) -> Void) {
+                                     completion: @escaping (Result<SiteVisitStats, Error>) -> Void) {
         let path = "\(Constants.sitesPath)/\(siteID)/\(Constants.siteVisitStatsPath)/"
         let dateFormatter = DateFormatter.Stats.statsDayFormatter
         if let siteTimezone = siteTimezone {
@@ -30,7 +29,7 @@ public class SiteVisitStatsRemote: Remote {
                           ParameterKeys.quantity: String(quantity),
                           ParameterKeys.statFields: Constants.visitorStatFieldValue]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
-        let mapper = SiteVisitStatsMapper()
+        let mapper = SiteVisitStatsMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

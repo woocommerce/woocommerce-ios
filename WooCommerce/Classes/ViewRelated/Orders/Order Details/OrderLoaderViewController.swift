@@ -10,7 +10,7 @@ class OrderLoaderViewController: UIViewController {
 
     /// UI Spinner
     ///
-    private let activityIndicator = UIActivityIndicatorView(style: .gray)
+    private let activityIndicator = UIActivityIndicatorView(style: .medium)
 
     /// Source push notification `Note`
     ///
@@ -120,7 +120,6 @@ private extension OrderLoaderViewController {
     ///
     func configureNavigationItem() {
         title = NSLocalizedString("Loading Order", comment: "Displayed when an Order is being retrieved")
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
     /// Setup: Main View

@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents all of the possible Order Statuses in enum form
 ///
-public enum OrderStatusEnum: Decodable, Hashable {
+public enum OrderStatusEnum: Codable, Hashable, GeneratedFakeable {
     case pending
     case processing
     case onHold

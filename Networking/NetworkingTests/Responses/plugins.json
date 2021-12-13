@@ -1,0 +1,124 @@
+{
+    "data": [
+        {
+            "plugin": "hello",
+            "status": "inactive",
+            "name": "Hello Dolly",
+            "plugin_uri": "http://wordpress.org/plugins/hello-dolly/",
+            "author": "Matt Mullenweg",
+            "author_uri": "http://ma.tt/",
+            "description": {
+                "raw": "This is not just a plugin, it...",
+                "rendered": "This is not just a plugin, it symbolizes..."
+            },
+            "version": "1.7.2",
+            "network_only": false,
+            "requires_wp": "",
+            "requires_php": "",
+            "textdomain": "",
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://example.com/wp-json/wp/v2/plugins/hello"
+                    }
+                ]
+            }
+        },
+        {
+            "plugin": "jetpack/jetpack",
+            "status": "active",
+            "name": "Jetpack by WordPress.com",
+            "plugin_uri": "https://jetpack.com",
+            "author": "Automattic",
+            "author_uri": "https://jetpack.com",
+            "description": {
+                "raw": "Bring the power of the WordPress.com cloud to your self-hosted WordPress. Jetpack enables you to connect your blog to a WordPress.com account to use the powerful features normally only available to WordPress.com users.",
+                "rendered": "Bring the power of the WordPress.com cloud to your self-hosted WordPress. Jetpack enables you to connect your blog to a WordPress.com account to use the powerful features normally only available to WordPress.com users. <cite>By <a href=\"https://jetpack.com\">Automattic</a>.</cite>"
+            },
+            "version": "9.5",
+            "network_only": false,
+            "requires_wp": "5.6",
+            "requires_php": "5.6",
+            "textdomain": "jetpack",
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://example.com/wp-json/wp/v2/plugins/jetpack/jetpack"
+                    }
+                ]
+            }
+        },
+        {
+            "plugin": "woocommerce/woocommerce",
+            "status": "active",
+            "name": "WooCommerce",
+            "plugin_uri": "https://woocommerce.com/",
+            "author": "Automattic",
+            "author_uri": "https://woocommerce.com",
+            "description": {
+                "raw": "An eCommerce toolkit that helps you sell anything. Beautifully.",
+                "rendered": "An eCommerce toolkit that helps you sell anything. Beautifully. <cite>By <a href=\"https://woocommerce.com\">Automattic</a>.</cite>"
+            },
+            "version": "5.1.0",
+            "network_only": false,
+            "requires_wp": "5.4",
+            "requires_php": "7.0",
+            "textdomain": "woocommerce",
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://example.com//wp-json/wp/v2/plugins/woocommerce/woocommerce"
+                    }
+                ]
+            }
+        },
+        {
+            "plugin": "woocommerce-payments/woocommerce-payments",
+            "status": "active",
+            "name": "WooCommerce Payments",
+            "plugin_uri": "https://woocommerce.com/payments/",
+            "author": "Automattic",
+            "author_uri": "https://woocommerce.com/",
+            "description": {
+                "raw": "Accept payments via credit card. Manage transactions within WordPress.",
+                "rendered": "Accept payments via credit card. Manage transactions within WordPress. <cite>By <a href=\"https://woocommerce.com/\">Automattic</a>.</cite>"
+            },
+            "version": "2.1.0",
+            "network_only": false,
+            "requires_wp": "",
+            "requires_php": "",
+            "textdomain": "woocommerce-payments",
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://example.com//wp-json/wp/v2/plugins/woocommerce-payments/woocommerce-payments"
+                    }
+                ]
+            }
+        },
+        {
+            "plugin": "woocommerce-subscriptions/woocommerce-subscriptions",
+            "status": "active",
+            "name": "WooCommerce Subscriptions",
+            "plugin_uri": "https://www.woocommerce.com/products/woocommerce-subscriptions/",
+            "author": "WooCommerce",
+            "author_uri": "https://woocommerce.com/",
+            "description": {
+                "raw": "Sell products and services...",
+                "rendered": "Sell products and services with recurring payments..."
+            },
+            "version": "3.0.13",
+            "network_only": false,
+            "requires_wp": "",
+            "requires_php": "",
+            "textdomain": "woocommerce-subscriptions",
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://example.com//wp-json/wp/v2/plugins/woocommerce-subscriptions/woocommerce-subscriptions"
+                    }
+                ]
+            }
+        },
+    ]
+}

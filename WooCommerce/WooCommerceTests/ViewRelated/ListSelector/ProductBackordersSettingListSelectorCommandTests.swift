@@ -7,7 +7,7 @@ final class ProductBackordersSettingListSelectorCommandTests: XCTestCase {
 
     func test_selected_setting() {
         let expectedSetting = ProductBackordersSetting.notAllowed
-        let product = MockProduct().product(backordersSetting: expectedSetting)
+        let product = Product.fake().copy(backordersKey: expectedSetting.rawValue)
         let command = ProductBackordersSettingListSelectorCommand(selected: product.backordersSetting)
         let viewController = ListSelectorViewController(command: command, onDismiss: { _ in })
         XCTAssertEqual(command.selected, expectedSetting)
@@ -23,7 +23,7 @@ final class ProductBackordersSettingListSelectorCommandTests: XCTestCase {
     }
 
     func test_cell_configuration() {
-        let product = MockProduct().product()
+        let product = Product.fake()
         let command = ProductBackordersSettingListSelectorCommand(selected: product.backordersSetting)
         let nib = Bundle.main.loadNibNamed(BasicTableViewCell.classNameWithoutNamespaces, owner: self, options: nil)
         guard let cell = nib?.first as? BasicTableViewCell else {

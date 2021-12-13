@@ -4,11 +4,11 @@ import XCTest
 final class MediaRemoteTests: XCTestCase {
     /// Dummy Network Wrapper
     ///
-    let network = MockupNetwork()
+    private let network = MockNetwork()
 
     /// Dummy Site ID
     ///
-    let sampleSiteID: Int64 = 1234
+    private let sampleSiteID: Int64 = 1234
 
     /// Dummy Product ID
     ///
@@ -25,74 +25,189 @@ final class MediaRemoteTests: XCTestCase {
 
     /// Verifies that `loadMediaLibrary` properly parses the `media-library` sample response.
     ///
-    func testLoadMediaLibraryProperlyReturnsParsedMedia() {
+    func test_loadMediaLibrary_properly_returns_parsed_media() throws {
+        // Given
         let remote = MediaRemote(network: network)
-        let expectation = self.expectation(description: "Load Media Library")
-
         network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
 
-        remote.loadMediaLibrary(for: sampleSiteID) { mediaItems, error in
-            XCTAssertNil(error)
-            XCTAssertNotNil(mediaItems)
-            XCTAssertEqual(mediaItems!.count, 5)
-            expectation.fulfill()
+        // When
+        let result = waitFor { promise in
+            remote.loadMediaLibrary(for: self.sampleSiteID) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        let mediaItems = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaItems.count, 5)
     }
 
     /// Verifies that `loadMediaLibrary` properly relays Networking Layer errors.
     ///
-    func testLoadMediaLibraryProperlyRelaysNetwokingErrors() {
+    func test_loadMediaLibrary_properly_relays_networking_errors() {
+        // Given
         let remote = MediaRemote(network: network)
-        let expectation = self.expectation(description: "Load Media Library")
 
-        remote.loadMediaLibrary(for: sampleSiteID) { mediaItems, error in
-            XCTAssertNil(mediaItems)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When
+        let result = waitFor { promise in
+            remote.loadMediaLibrary(for: self.sampleSiteID) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    // MARK: - Load Media From Media Library `loadMediaLibrary` via WordPress Site API
+
+    /// Verifies that `loadMediaLibraryFromWordPressSite` properly parses the `media-library-from-wordpress-site` sample response.
+    ///
+    func test_loadMediaLibraryFromWordPressSite_properly_returns_parsed_media_list() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "media", filename: "media-library-from-wordpress-site")
+
+        // When
+        let result = waitFor { promise in
+            remote.loadMediaLibraryFromWordPressSite(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let mediaItems = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaItems.count, 2)
+        let uploadedMedia = try XCTUnwrap(mediaItems.first)
+        XCTAssertEqual(uploadedMedia.mediaID, 22)
+        XCTAssertEqual(uploadedMedia.date, Date(timeIntervalSince1970: 1637546157))
+        XCTAssertEqual(uploadedMedia.slug, "img_0111-2")
+        XCTAssertEqual(uploadedMedia.mimeType, "image/jpeg")
+        XCTAssertEqual(uploadedMedia.src, "https://ninja.media/wp-content/uploads/2021/11/img_0111-2-scaled.jpeg")
+        XCTAssertEqual(uploadedMedia.alt, "Floral")
+        XCTAssertEqual(uploadedMedia.details?.width, 2560)
+        XCTAssertEqual(uploadedMedia.details?.height, 1920)
+        XCTAssertEqual(uploadedMedia.details?.fileName, "2021/11/img_0111-2-scaled.jpeg")
+        XCTAssertEqual(uploadedMedia.title, .init(rendered: "img_0111-2"))
+        XCTAssertEqual(uploadedMedia.details?.sizes["thumbnail"],
+                       .init(fileName: "img_0111-2-150x150.jpeg",
+                             src: "https://ninja.media/wp-content/uploads/2021/11/img_0111-2-150x150.jpeg",
+                             width: 150,
+                             height: 150))
+    }
+
+    /// Verifies that `loadMediaLibraryFromWordPressSite` properly relays Networking Layer errors.
+    ///
+    func test_loadMediaLibraryFromWordPressSite_properly_relays_networking_errors() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+
+        // When
+        let result = waitFor { promise in
+            remote.loadMediaLibraryFromWordPressSite(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 
     // MARK: - uploadMedia
 
     /// Verifies that `uploadMedia` properly parses the `media-upload` sample response.
     ///
-    func testUploadMediaProperlyReturnsParsedMedia() {
+    func test_uploadMedia_properly_returns_parsed_media() throws {
+        // Given
         let remote = MediaRemote(network: network)
-        let expectation = self.expectation(description: "Upload one media item")
         let path = "sites/\(sampleSiteID)/media/new"
-
         network.simulateResponse(requestUrlSuffix: path, filename: "media-upload")
 
-        remote.uploadMedia(for: sampleSiteID,
-                           productID: sampleProductID,
-                           mediaItems: []) { mediaItems, error in
-            XCTAssertNil(error)
-            XCTAssertNotNil(mediaItems)
-            XCTAssertEqual(mediaItems?.count, 1)
-            expectation.fulfill()
+        // When
+        let result = waitFor { promise in
+            remote.uploadMedia(for: self.sampleSiteID,
+                                  productID: self.sampleProductID,
+                                  mediaItems: []) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        let mediaItems = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaItems.count, 1)
     }
 
     /// Verifies that `uploadMedia` properly relays Networking Layer errors.
     ///
-    func testUploadMediaProperlyRelaysNetwokingErrors() {
+    func test_uploadMedia_properly_relays_networking_errors() {
+        // Given
         let remote = MediaRemote(network: network)
-        let expectation = self.expectation(description: "Upload one media item")
 
-        remote.uploadMedia(for: sampleSiteID,
-                           productID: sampleProductID,
-                           mediaItems: []) { mediaItems, error in
-            XCTAssertNil(mediaItems)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When
+        let result = waitFor { promise in
+            remote.uploadMedia(for: self.sampleSiteID,
+                                  productID: self.sampleProductID,
+                                  mediaItems: []) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    /// Verifies that `uploadMediaToWordPressSite` properly parses the `media-upload-to-wordpress-site` sample response.
+    ///
+    func test_uploadMediaToWordPressSite_properly_returns_parsed_media() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+        let path = "sites/\(sampleSiteID)/media"
+        network.simulateResponse(requestUrlSuffix: path, filename: "media-upload-to-wordpress-site")
+
+        // When
+        let result = waitFor { promise in
+            remote.uploadMediaToWordPressSite(siteID: self.sampleSiteID,
+                                              productID: self.sampleProductID,
+                                              mediaItems: []) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let uploadedMedia = try XCTUnwrap(result.get())
+        XCTAssertEqual(uploadedMedia.mediaID, 23)
+        XCTAssertEqual(uploadedMedia.date, Date(timeIntervalSince1970: 1637477423))
+        XCTAssertEqual(uploadedMedia.slug, "img_0005-1")
+        XCTAssertEqual(uploadedMedia.mimeType, "image/jpeg")
+        XCTAssertEqual(uploadedMedia.src, "https://ninja.media/wp-content/uploads/2021/11/img_0005-1-scaled.jpeg")
+        XCTAssertEqual(uploadedMedia.alt, "Floral")
+        XCTAssertEqual(uploadedMedia.details?.width, 2560)
+        XCTAssertEqual(uploadedMedia.details?.height, 1708)
+        XCTAssertEqual(uploadedMedia.details?.fileName, "2021/11/img_0005-1-scaled.jpeg")
+        XCTAssertEqual(uploadedMedia.title, .init(rendered: "img_0005-1"))
+        XCTAssertEqual(uploadedMedia.details?.sizes["thumbnail"],
+                       .init(fileName: "img_0005-1-150x150.jpeg",
+                             src: "https://ninja.media/wp-content/uploads/2021/11/img_0005-1-150x150.jpeg",
+                             width: 150,
+                             height: 150))
+    }
+
+    /// Verifies that `uploadMediaToWordPressSite` properly relays Networking Layer errors.
+    ///
+    func test_uploadMediaToWordPressSite_properly_relays_networking_errors() {
+        // Given
+        let remote = MediaRemote(network: network)
+
+        // When
+        let result = waitFor { promise in
+            remote.uploadMediaToWordPressSite(siteID: self.sampleSiteID,
+                                              productID: self.sampleProductID,
+                                              mediaItems: []) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 }

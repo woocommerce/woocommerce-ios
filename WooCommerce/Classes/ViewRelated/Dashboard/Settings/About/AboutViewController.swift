@@ -22,7 +22,7 @@ class AboutViewController: UIViewController {
             Bundle.main.detailedVersionNumber()
         )
         let localizedTitleTextLine2 = String.localizedStringWithFormat(
-            NSLocalizedString("© %@ Automattic, Inc.", comment: "About View's Footer Text. The variable is the current year"),
+            NSLocalizedString("© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd.", comment: "About View's Footer Text. The variable is the current year"),
             year
         )
         return String(format: localizedTitleTextLine1, year) + "\n" + localizedTitleTextLine2
@@ -64,13 +64,6 @@ private extension AboutViewController {
     ///
     func configureNavigation() {
         title = NSLocalizedString("About", comment: "About this app (information page title)")
-        // Don't show the About title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
-
-        navigationItem.backBarButtonItem = backButton
     }
 
     /// Apply Woo styles.
@@ -300,7 +293,7 @@ extension AboutViewController {
         )
 
         return UIAlertAction(title: crashTitle, style: .destructive) { _ in
-            CrashLogging.crash()
+            ServiceLocator.crashLogging.crash()
         }
     }
 

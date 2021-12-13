@@ -24,17 +24,23 @@ final class MockOrders {
             shippingTax: "",
             total: "",
             totalTax: "",
+            paymentMethodID: "",
             paymentMethodTitle: "",
             items: [],
             billingAddress: nil,
             shippingAddress: nil,
             shippingLines: [],
             coupons: [],
-            refunds: []
+            refunds: [],
+            fees: []
         )
     }
 
-    func makeOrder(status: OrderStatusEnum = .processing, items: [OrderItem] = [], shippingLines: [ShippingLine] = sampleShippingLines()) -> Order {
+    func makeOrder(status: OrderStatusEnum = .processing,
+                   items: [OrderItem] = [],
+                   shippingLines: [ShippingLine] = sampleShippingLines(),
+                   refunds: [OrderRefundCondensed] = [],
+                   fees: [OrderFeeLine] = []) -> Order {
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: 0,
@@ -52,17 +58,31 @@ final class MockOrders {
                      shippingTax: "0.00",
                      total: "31.20",
                      totalTax: "1.20",
+                     paymentMethodID: "stripe",
                      paymentMethodTitle: "Credit Card (Stripe)",
                      items: items,
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
                      shippingLines: shippingLines,
                      coupons: [],
-                     refunds: [])
+                     refunds: refunds,
+                     fees: fees)
     }
 
     func sampleOrder() -> Order {
         makeOrder()
+    }
+
+    func orderWithFees() -> Order {
+        makeOrder(fees: sampleFeeLines())
+    }
+
+    func orderWithAPIRefunds() -> Order {
+        makeOrder(refunds: refundsWithNegativeValue())
+    }
+
+    func orderWithTransientRefunds() -> Order {
+        makeOrder(refunds: refundsWithPositiveValue())
     }
 
     func sampleOrderCreatedInCurrentYear() -> Order {
@@ -83,13 +103,15 @@ final class MockOrders {
                      shippingTax: "0.00",
                      total: "31.20",
                      totalTax: "1.20",
+                     paymentMethodID: "stripe",
                      paymentMethodTitle: "Credit Card (Stripe)",
                      items: [],
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
                      shippingLines: Self.sampleShippingLines(),
                      coupons: [],
-                     refunds: [])
+                     refunds: [],
+                     fees: [])
     }
 
     static func sampleShippingLines(cost: String = "133.00", tax: String = "0.00") -> [ShippingLine] {
@@ -99,6 +121,23 @@ final class MockOrders {
         total: cost,
         totalTax: tax,
         taxes: [])]
+    }
+
+    func sampleFeeLines() -> [OrderFeeLine] {
+        return [
+            sampleFeeLine()
+        ]
+    }
+
+    func sampleFeeLine(amount: String = "100.00") -> OrderFeeLine {
+        return OrderFeeLine(feeID: 1,
+                            name: "Fee",
+                            taxClass: "",
+                            taxStatus: .none,
+                            total: amount,
+                            totalTax: "",
+                            taxes: [],
+                            attributes: [])
     }
 
     func sampleAddress() -> Address {
@@ -135,13 +174,15 @@ final class MockOrders {
                      shippingTax: "0.00",
                      total: "0.00",
                      totalTax: "0.00",
+                     paymentMethodID: "",
                      paymentMethodTitle: "", // broken in the sense that there should be a payment title
                      items: [],
                      billingAddress: brokenAddress(), // empty address
                      shippingAddress: brokenAddress(),
                      shippingLines: brokenShippingLines(), // empty shipping
                      coupons: [],
-                     refunds: [])
+                     refunds: [],
+                     fees: [])
     }
 
     /// An order with broken elements that hasn't been paid, inspired by `broken-order.json`
@@ -164,13 +205,15 @@ final class MockOrders {
                      shippingTax: "0.00",
                      total: "0.00",
                      totalTax: "0.00",
+                     paymentMethodID: "cod",
                      paymentMethodTitle: "Cash on Delivery",
                      items: [],
                      billingAddress: brokenAddress(), // empty address
                      shippingAddress: brokenAddress(),
                      shippingLines: brokenShippingLines(), // empty shipping
                      coupons: [],
-                     refunds: [])
+                     refunds: [],
+                     fees: [])
     }
 
     /// An address that may or may not be broken, that came from `broken-order.json`
@@ -207,5 +250,17 @@ final class MockOrders {
             return Date()
         }
         return date
+    }
+
+    func refundsWithNegativeValue() -> [OrderRefundCondensed] {
+        return [
+            OrderRefundCondensed(refundID: 0, reason: nil, total: "-1.2"),
+        ]
+    }
+
+    func refundsWithPositiveValue() -> [OrderRefundCondensed] {
+        return [
+            OrderRefundCondensed(refundID: 0, reason: nil, total: "1.2"),
+        ]
     }
 }

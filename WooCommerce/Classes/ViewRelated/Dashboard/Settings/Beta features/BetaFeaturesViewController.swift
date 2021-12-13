@@ -2,13 +2,6 @@ import Storage
 import UIKit
 import Yosemite
 
-// MARK: - BetaFeaturesViewController's Notifications
-//
-extension Notification.Name {
-    static let ProductsFeatureSwitchDidChange = Notification.Name(rawValue: "ProductsFeatureSwitchDidChange")
-}
-
-
 /// Contains UI for Beta features that can be turned on and off.
 ///
 class BetaFeaturesViewController: UIViewController {
@@ -23,6 +16,10 @@ class BetaFeaturesViewController: UIViewController {
     /// Table Sections to be rendered
     ///
     private var sections = [Section]()
+
+    /// Use case to tell us if the store is enrolled in the in-person payments program.
+    ///
+    private let paymentsStoreUseCase = CardPresentPaymentsOnboardingUseCase()
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -80,13 +77,23 @@ private extension BetaFeaturesViewController {
     ///
     func configureSections() {
         self.sections = [
-            productsSection()
-        ]
+            productsSection(),
+            orderCreationSection()
+        ].compactMap { $0 }
     }
 
     func productsSection() -> Section {
-        return Section(rows: [.productsSwitch,
-                              .productsDescription])
+        return Section(rows: [.orderAddOns,
+                              .orderAddOnsDescription])
+    }
+
+    func orderCreationSection() -> Section? {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) else {
+            return nil
+        }
+
+        return Section(rows: [.orderCreation,
+                              .orderCreationDescription])
     }
 
     /// Register table cells.
@@ -107,10 +114,17 @@ private extension BetaFeaturesViewController {
 
         switch cell {
         // Product list
-        case let cell as SwitchTableViewCell where row == .productsSwitch:
-            configureProductsSwitch(cell: cell)
-        case let cell as BasicTableViewCell where row == .productsDescription:
-            configureProductsDescription(cell: cell)
+        case let cell as SwitchTableViewCell where row == .orderAddOns:
+            configureOrderAddOnsSwitch(cell: cell)
+        case let cell as BasicTableViewCell where row == .orderAddOnsDescription:
+            configureOrderAddOnsDescription(cell: cell)
+        // Orders
+        case let cell as BasicTableViewCell where row == .simplePaymentsDescription:
+            configureSimplePaymentsDescription(cell: cell)
+        case let cell as SwitchTableViewCell where row == .orderCreation:
+            configureOrderCreationSwitch(cell: cell)
+        case let cell as BasicTableViewCell where row == .orderCreationDescription:
+            configureOrderCreationDescription(cell: cell)
         default:
             fatalError()
         }
@@ -118,36 +132,73 @@ private extension BetaFeaturesViewController {
 
     // MARK: - Product List feature
 
-    func configureProductsSwitch(cell: SwitchTableViewCell) {
+    func configureOrderAddOnsSwitch(cell: SwitchTableViewCell) {
         configureCommonStylesForSwitchCell(cell)
+        cell.title = Localization.orderAddOnsTitle
 
-        let title = NSLocalizedString("Creating products",
-                                      comment: "My Store > Settings > Experimental features > Products")
-
-        cell.title = title
-
-        let action = AppSettingsAction.loadProductsFeatureSwitch() { isVisible in
-            cell.isOn = isVisible
+        // Fetch switch's state stored value.
+        let action = AppSettingsAction.loadOrderAddOnsSwitchState() { result in
+            guard let isEnabled = try? result.get() else {
+                return cell.isOn = false
+            }
+            cell.isOn = isEnabled
         }
         ServiceLocator.stores.dispatch(action)
 
+        // Change switch's state stored value
         cell.onChange = { isSwitchOn in
-            ServiceLocator.analytics.track(.settingsBetaFeaturesProductsToggled)
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailAddOns.betaFeaturesSwitchToggled(isOn: isSwitchOn))
 
-            let action = AppSettingsAction.setProductsFeatureSwitch(isEnabled: isSwitchOn) {
-                NotificationCenter.default.post(name: .ProductsFeatureSwitchDidChange, object: self)
-            }
+            let action = AppSettingsAction.setOrderAddOnsFeatureSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
+                // Roll back toggle if an error occurred
+                if result.isFailure {
+                    cell.isOn.toggle()
+                }
+            })
             ServiceLocator.stores.dispatch(action)
         }
-        cell.accessibilityIdentifier = "beta-features-products-cell"
+        cell.accessibilityIdentifier = "beta-features-order-add-ons-cell"
     }
 
-    func configureProductsDescription(cell: BasicTableViewCell) {
+    func configureOrderAddOnsDescription(cell: BasicTableViewCell) {
         configureCommonStylesForDescriptionCell(cell)
+        cell.textLabel?.text = Localization.orderAddOnsDescription
+    }
 
-        let description = NSLocalizedString("Test out the new product creation as we get ready to launch",
-                                            comment: "My Store > Settings > Experimental features > Products")
-        cell.textLabel?.text = description
+    func configureSimplePaymentsDescription(cell: BasicTableViewCell) {
+        configureCommonStylesForDescriptionCell(cell)
+        cell.textLabel?.text = Localization.simplePaymentsDescription
+    }
+
+    func configureOrderCreationSwitch(cell: SwitchTableViewCell) {
+        configureCommonStylesForSwitchCell(cell)
+        cell.title = Localization.orderCreationTitle
+
+        // Fetch switch's state stored value.
+        let action = AppSettingsAction.loadOrderCreationSwitchState() { result in
+            guard let isEnabled = try? result.get() else {
+                return cell.isOn = false
+            }
+            cell.isOn = isEnabled
+        }
+        ServiceLocator.stores.dispatch(action)
+
+        // Change switch's state stored value
+        cell.onChange = { isSwitchOn in
+            let action = AppSettingsAction.setOrderCreationFeatureSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
+                // Roll back toggle if an error occurred
+                if result.isFailure {
+                    cell.isOn.toggle()
+                }
+            })
+            ServiceLocator.stores.dispatch(action)
+        }
+        cell.accessibilityIdentifier = "beta-features-order-order-creation-cell"
+    }
+
+    func configureOrderCreationDescription(cell: BasicTableViewCell) {
+        configureCommonStylesForDescriptionCell(cell)
+        cell.textLabel?.text = Localization.orderCreationDescription
     }
 }
 
@@ -210,19 +261,41 @@ private struct Section {
 
 private enum Row: CaseIterable {
     // Products.
-    case productsSwitch
-    case productsDescription
+    case orderAddOns
+    case orderAddOnsDescription
+
+    // Orders.
+    case simplePayments
+    case simplePaymentsDescription
+    case orderCreation
+    case orderCreationDescription
 
     var type: UITableViewCell.Type {
         switch self {
-        case .productsSwitch:
+        case .orderAddOns, .simplePayments, .orderCreation:
             return SwitchTableViewCell.self
-        case .productsDescription:
+        case .orderAddOnsDescription, .simplePaymentsDescription, .orderCreationDescription:
             return BasicTableViewCell.self
         }
     }
 
     var reuseIdentifier: String {
         return type.reuseIdentifier
+    }
+}
+
+private extension BetaFeaturesViewController {
+    enum Localization {
+        static let orderAddOnsTitle = NSLocalizedString("View Add-Ons", comment: "Cell title on the beta features screen to enable the order add-ons feature")
+        static let orderAddOnsDescription = NSLocalizedString("Test out viewing Order Add-Ons as we get ready to launch",
+                                                              comment: "Cell description on the beta features screen to enable the order add-ons feature")
+
+        static let simplePaymentsTitle = NSLocalizedString("Simple Payments",
+                                                           comment: "Cell title on the beta features screen to enable the Simple Payments feature")
+        static let simplePaymentsDescription = NSLocalizedString("Test out creating orders with minimal information as we get ready to launch",
+                                                              comment: "Cell description on the beta features screen to enable the Simple Payments feature")
+        static let orderCreationTitle = NSLocalizedString("Order Creation", comment: "Cell title on the beta features screen to enable creating new orders")
+        static let orderCreationDescription = NSLocalizedString("Test out creating new manual orders as we get ready to launch",
+                                                                comment: "Cell description on the beta features screen to enable creating new orders")
     }
 }

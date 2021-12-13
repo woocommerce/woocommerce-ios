@@ -130,7 +130,8 @@ private extension ProductLoaderViewControllerModelTests {
                            price: 1.2,
                            quantity: 3,
                            sku: nil,
-                           total: 3.6)
+                           total: 3.6,
+                           attributes: [])
     }
 
     func makeTopEarnerStatsItem(productID: Int64) -> TopEarnerStatsItem {

@@ -34,14 +34,7 @@ private extension LicensesViewController {
     /// Set the title and back button.
     ///
     func configureNavigation() {
-        title = NSLocalizedString("Licenses", comment: "Licenses (information page title)")
-        // Don't show the About title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
-
-        navigationItem.backBarButtonItem = backButton
+        title = NSLocalizedString("Third Party Licenses", comment: "Software Licenses (information page title)")
     }
 
     /// Setup the main view

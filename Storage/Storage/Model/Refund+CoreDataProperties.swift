@@ -17,7 +17,9 @@ extension Refund {
     @NSManaged public var byUserID: Int64
     @NSManaged public var isAutomated: Bool
     @NSManaged public var createAutomated: Bool
+    @NSManaged public var supportShippingRefunds: Bool
     @NSManaged public var items: Set<OrderItemRefund>?
+    @NSManaged public var shippingLines: Set<ShippingLine>?
 
 }
 
@@ -35,5 +37,22 @@ extension Refund {
 
     @objc(removeItems:)
     @NSManaged public func removeFromItems(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for shippingLines
+extension Refund {
+
+    @objc(addShippingLinesObject:)
+    @NSManaged public func addToShippingLines(_ value: ShippingLine)
+
+    @objc(removeShippingLinesObject:)
+    @NSManaged public func removeFromShippingLines(_ value: ShippingLine)
+
+    @objc(addShippingLines:)
+    @NSManaged public func addToShippingLines(_ values: NSSet)
+
+    @objc(removeShippingLines:)
+    @NSManaged public func removeFromShippingLines(_ values: NSSet)
 
 }

@@ -115,7 +115,8 @@ private extension RefundedProductsDataSource {
         let product = lookUpProduct(by: refundedProduct.productOrVariationID)
         let refundedProductViewModel = ProductDetailsCellViewModel(aggregateItem: refundedProduct,
                                                                     currency: order.currency,
-                                                                    product: product)
+                                                                    product: product,
+                                                                    hasAddOns: false)
         let imageService = ServiceLocator.imageService
 
         cell.selectionStyle = .default

@@ -8,17 +8,17 @@ import XCTest
 ///
 final class ShipmentStoreTests: XCTestCase {
 
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
-    /// Mockup Network: Allows us to inject predefined responses!
+    /// Mock Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Convenience Property: Returns the StorageType associated with the main thread.
     ///
@@ -47,8 +47,8 @@ final class ShipmentStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        storageManager = MockStorageManager()
+        network = MockNetwork()
     }
 
     override func tearDown() {

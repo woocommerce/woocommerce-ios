@@ -1,6 +1,8 @@
+import Combine
 import Foundation
 import Yosemite
 import KeychainAccess
+import Observables
 
 
 
@@ -29,7 +31,7 @@ private extension UserDefaults {
 
 /// SessionManager provides persistent storage for Session-Y Properties.
 ///
-final class SessionManager {
+final class SessionManager: SessionManagerProtocol {
 
     /// Standard Session Manager
     ///
@@ -89,7 +91,32 @@ final class SessionManager {
         }
         set {
             defaults[.defaultStoreID] = newValue
+            defaultStoreIDSubject.send(newValue)
         }
+    }
+
+    /// Roles for the default Store Site.
+    ///
+    var defaultRoles: [User.Role] {
+        get {
+            guard let rawRoles = defaults[.defaultRoles] as? [String] else {
+                return []
+            }
+            return rawRoles.compactMap { User.Role(rawValue: $0) }
+        }
+        set {
+            defaults[.defaultRoles] = newValue.map(\.rawValue)
+        }
+    }
+
+    var defaultStoreIDPublisher: AnyPublisher<Int64?, Never> {
+        defaultStoreIDSubject.eraseToAnyPublisher()
+    }
+
+    private let defaultStoreIDSubject: CurrentValueSubject<Int64?, Never>
+
+    var defaultSitePublisher: AnyPublisher<Site?, Never> {
+        $defaultSite.eraseToAnyPublisher()
     }
 
     /// Anonymous UserID.
@@ -108,16 +135,7 @@ final class SessionManager {
 
     /// Default Store Site
     ///
-    var defaultSite: Yosemite.Site?
-
-    /// Observable site ID
-    ///
-    var siteID: Observable<Int64?> {
-        storeIDSubject
-    }
-    private let storeIDSubject = BehaviorSubject<Int64?>(nil)
-
-    private var defaultStoreIDObserver: NSKeyValueObservation?
+    @Published var defaultSite: Site?
 
     /// Designated Initializer.
     ///
@@ -125,14 +143,7 @@ final class SessionManager {
         self.defaults = defaults
         self.keychain = Keychain(service: keychainServiceName).accessibility(.afterFirstUnlock)
 
-        defaultStoreIDObserver = defaults.observe(\.defaultStoreID, options: [.initial, .new], changeHandler: { [weak self] _, change in
-            let storeID = change.newValue.flatMap { Int64($0) }
-            self?.storeIDSubject.send(storeID)
-        })
-    }
-
-    deinit {
-        defaultStoreIDObserver?.invalidate()
+        defaultStoreIDSubject = .init(defaults[.defaultStoreID])
     }
 
     /// Nukes all of the known Session's properties.

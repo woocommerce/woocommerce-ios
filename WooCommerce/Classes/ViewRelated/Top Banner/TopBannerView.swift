@@ -73,7 +73,7 @@ private extension TopBannerView {
     func configureSubviews(with viewModel: TopBannerViewModel) {
         let mainStackView = createMainStackView(with: viewModel)
         addSubview(mainStackView)
-        pinSubviewToAllEdges(mainStackView)
+        pinSubviewToSafeArea(mainStackView)
 
         titleLabel.applyHeadlineStyle()
         titleLabel.numberOfLines = 0
@@ -105,7 +105,7 @@ private extension TopBannerView {
 
         zip(viewModel.actionButtons, actionButtons).forEach { buttonInfo, button in
             button.setTitle(buttonInfo.title, for: .normal)
-            button.on(.touchUpInside, call: { _ in buttonInfo.action() })
+            button.on(.touchUpInside, call: { _ in buttonInfo.action(button) })
         }
     }
 
@@ -163,6 +163,9 @@ private extension TopBannerView {
         titleStackView.axis = .horizontal
         titleStackView.spacing = 16
 
+        // titleStackView will hidden if there is no title
+        titleStackView.isHidden = viewModel.title == nil || viewModel.title?.isEmpty == true
+
         let informationStackView = UIStackView(arrangedSubviews: [titleStackView, infoLabel])
         informationStackView.axis = .vertical
         informationStackView.spacing = 9
@@ -187,9 +190,9 @@ private extension TopBannerView {
         buttonsStackView.pinSubviewToAllEdges(separatorBackground)
 
         // Style buttons
-        buttonsStackView.addArrangedSubviews(actionButtons)
         actionButtons.forEach { button in
             button.applyLinkButtonStyle()
+            button.titleLabel?.adjustsFontSizeToFitWidth = true
             button.backgroundColor = backgroundColor(for: viewModel.type)
             buttonsStackView.addArrangedSubview(button)
         }
@@ -226,6 +229,8 @@ private extension TopBannerView {
             iconImageView.tintColor = .textSubtle
         case .warning:
             iconImageView.tintColor = .warning
+        case .info:
+            iconImageView.tintColor = .info
         }
         backgroundColor = backgroundColor(for: type)
     }
@@ -236,6 +241,8 @@ private extension TopBannerView {
             return .systemColor(.secondarySystemGroupedBackground)
         case .warning:
             return .warningBackground
+        case .info:
+            return .infoBackground
         }
     }
 

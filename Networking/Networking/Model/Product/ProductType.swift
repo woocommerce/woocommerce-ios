@@ -1,13 +1,14 @@
 import Foundation
-
+import Codegen
 
 /// Represents a ProductType Entity.
 ///
-public enum ProductType: Decodable, Hashable {
+public enum ProductType: Codable, Hashable, GeneratedFakeable {
     case simple
     case grouped
     case affiliate
     case variable
+    case subscription
     case custom(String) // in case there are extensions modifying product types
 }
 
@@ -28,6 +29,8 @@ extension ProductType: RawRepresentable {
             self = .affiliate
         case Keys.variable:
             self = .variable
+        case Keys.subscription:
+            self = .subscription
         default:
             self = .custom(rawValue)
         }
@@ -41,6 +44,7 @@ extension ProductType: RawRepresentable {
         case .grouped:              return Keys.grouped
         case .affiliate:            return Keys.affiliate
         case .variable:             return Keys.variable
+        case .subscription:         return Keys.subscription
         case .custom(let payload):  return payload
         }
     }
@@ -57,6 +61,8 @@ extension ProductType: RawRepresentable {
             return NSLocalizedString("External/Affiliate", comment: "Display label for affiliate product type.")
         case .variable:
             return NSLocalizedString("Variable", comment: "Display label for variable product type.")
+        case .subscription:
+            return NSLocalizedString("Subscription", comment: "Display label for subscription product type.")
         case .custom(let payload):
             return payload // unable to localize at runtime.
         }
@@ -67,8 +73,9 @@ extension ProductType: RawRepresentable {
 /// Enum containing the 'Known' ProductType Keys
 ///
 private enum Keys {
-    static let simple    = "simple"
-    static let grouped   = "grouped"
-    static let affiliate = "external"
-    static let variable  = "variable"
+    static let simple       = "simple"
+    static let grouped      = "grouped"
+    static let affiliate    = "external"
+    static let variable     = "variable"
+    static let subscription = "subscription"
 }

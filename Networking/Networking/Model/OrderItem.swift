@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents an Order's Item Entity.
 ///
-public struct OrderItem: Decodable, Hashable {
+public struct OrderItem: Decodable, Equatable, Hashable, GeneratedFakeable, GeneratedCopiable {
     public let itemID: Int64
     public let name: String
     public let productID: Int64
@@ -72,18 +72,8 @@ public struct OrderItem: Decodable, Hashable {
         if isVariation {
             name = try ((container.decodeIfPresent(String.self, forKey: .variationParentName))
                         ?? container.decode(String.self, forKey: .name)).strippedHTML
-            let allAttributes = (try? container.decodeIfPresent([OrderItemAttribute].self, forKey: .attributes)) ?? []
-            // Skips any attribute if the name is `_reduced_stock` because this is a known attribute added by core.
-            attributes = allAttributes.filter { $0.name != "_reduced_stock" }
-
-            // Logs error for unexpected attributes.
-            let unexpectedAttributes = attributes.filter { $0.name.hasPrefix("_") }
-            if unexpectedAttributes.isEmpty == false {
-                DDLogError("⚠️ Unexpected order item attributes: \(unexpectedAttributes)")
-            }
         } else {
             name = try container.decode(String.self, forKey: .name).strippedHTML
-            attributes = []
         }
 
         let quantity = try container.decode(Decimal.self, forKey: .quantity)
@@ -97,6 +87,10 @@ public struct OrderItem: Decodable, Hashable {
         let taxes = try container.decode([OrderItemTax].self, forKey: .taxes)
         let total = try container.decode(String.self, forKey: .total)
         let totalTax = try container.decode(String.self, forKey: .totalTax)
+
+        // Do not throw errors in case new metadata is introduced with a different format
+        let allAttributes = (try? container.decodeIfPresent([OrderItemAttribute].self, forKey: .attributes)) ?? []
+        attributes = allAttributes.filter { !$0.name.hasPrefix("_") } // Exclude private items (marked with an underscore)
 
         // initialize the struct
         self.init(itemID: itemID,
@@ -143,7 +137,7 @@ private extension OrderItem {
 
 // MARK: - Comparable Conformance
 //
-extension OrderItem: Equatable, Comparable {
+extension OrderItem: Comparable {
     public static func < (lhs: OrderItem, rhs: OrderItem) -> Bool {
         return lhs.itemID < rhs.itemID ||
             (lhs.itemID == rhs.itemID && lhs.productID < rhs.productID) ||

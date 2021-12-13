@@ -117,15 +117,6 @@ private extension RefundedProductsViewController {
             self.viewModel.updateOrderStatus(order: order)
             self.reloadTableViewSectionsAndData()
         }
-
-        entityListener.onDelete = { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            self.navigationController?.popViewController(animated: true)
-            self.displayOrderDeletedNotice(order: self.viewModel.order)
-        }
     }
 
     /// Setup: Configure viewModel
@@ -157,17 +148,6 @@ extension RefundedProductsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return viewModel.dataSource.viewForHeaderInSection(section, tableView: tableView)
-    }
-}
-
-
-// MARK: - Notices
-//
-private extension RefundedProductsViewController {
-    /// Displays a Notice onscreen, indicating that the current Order has been deleted from the Store.
-    ///
-    func displayOrderDeletedNotice(order: Order) {
-        notices.displayOrderDeletedNotice(order: order)
     }
 }
 

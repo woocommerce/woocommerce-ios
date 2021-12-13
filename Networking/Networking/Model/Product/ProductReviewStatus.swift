@@ -1,6 +1,8 @@
+import Codegen
+
 /// Represents a ProductReviewStatus Entity.
 ///
-public enum ProductReviewStatus: Decodable, Hashable {
+public enum ProductReviewStatus: Decodable, Hashable, GeneratedFakeable {
     case approved
     case hold
     case spam

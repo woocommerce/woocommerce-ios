@@ -1,6 +1,8 @@
+import Codegen
+
 /// Represents the data associated with order stats over a specific period.
 /// v4
-public struct OrderStatsV4Totals: Decodable {
+public struct OrderStatsV4Totals: Decodable, Equatable, GeneratedFakeable {
     public let totalOrders: Int
     public let totalItemsSold: Int
     public let grossRevenue: Decimal
@@ -57,29 +59,6 @@ public struct OrderStatsV4Totals: Decodable {
                   shipping: shipping,
                   netRevenue: netRevenue,
                   totalProducts: totalProducts)
-    }
-}
-
-
-// MARK: - Conformance to Equatable
-//
-extension OrderStatsV4Totals: Equatable {
-    public static func == (lhs: OrderStatsV4Totals, rhs: OrderStatsV4Totals) -> Bool {
-        return lhs.totalOrders == rhs.totalOrders &&
-            lhs.totalItemsSold == rhs.totalItemsSold &&
-            lhs.grossRevenue == rhs.grossRevenue &&
-            lhs.couponDiscount == rhs.couponDiscount &&
-            lhs.totalCoupons == rhs.totalCoupons &&
-            lhs.refunds == rhs.refunds &&
-            lhs.taxes == rhs.taxes &&
-            lhs.shipping == rhs.shipping &&
-            lhs.netRevenue == rhs.netRevenue &&
-            lhs.totalProducts == rhs.totalProducts
-    }
-
-    public static func < (lhs: OrderStatsV4Totals, rhs: OrderStatsV4Totals) -> Bool {
-        return lhs.grossRevenue < rhs.grossRevenue ||
-            (lhs.grossRevenue == rhs.grossRevenue && lhs.totalOrders < rhs.totalOrders)
     }
 }
 

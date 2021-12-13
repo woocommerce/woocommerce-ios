@@ -35,7 +35,7 @@ enum ProductSettingsRows {
         }
 
         func configure(cell: UITableViewCell) {
-            guard let cell = cell as? SettingTitleAndValueTableViewCell else {
+            guard let cell = cell as? TitleAndValueTableViewCell else {
                 return
             }
 
@@ -73,9 +73,9 @@ enum ProductSettingsRows {
 
         }
 
-        let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
+        let reuseIdentifier: String = TitleAndValueTableViewCell.reuseIdentifier
 
-        let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
+        let cellTypes: [UITableViewCell.Type] = [TitleAndValueTableViewCell.self]
 
         /// Utils
         func isStatusPrivate() -> Bool {
@@ -92,7 +92,7 @@ enum ProductSettingsRows {
         }
 
         func configure(cell: UITableViewCell) {
-            guard let cell = cell as? SettingTitleAndValueTableViewCell else {
+            guard let cell = cell as? TitleAndValueTableViewCell else {
                 return
             }
 
@@ -116,9 +116,9 @@ enum ProductSettingsRows {
             sourceViewController.navigationController?.pushViewController(viewController, animated: true)
         }
 
-        let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
+        let reuseIdentifier: String = TitleAndValueTableViewCell.reuseIdentifier
 
-        let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
+        let cellTypes: [UITableViewCell.Type] = [TitleAndValueTableViewCell.self]
     }
 
     struct CatalogVisibility: ProductSettingsRowMediator {
@@ -130,7 +130,7 @@ enum ProductSettingsRows {
         }
 
         func configure(cell: UITableViewCell) {
-            guard let cell = cell as? SettingTitleAndValueTableViewCell else {
+            guard let cell = cell as? TitleAndValueTableViewCell else {
                 return
             }
 
@@ -149,9 +149,9 @@ enum ProductSettingsRows {
             sourceViewController.navigationController?.pushViewController(viewController, animated: true)
         }
 
-        let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
+        let reuseIdentifier: String = TitleAndValueTableViewCell.reuseIdentifier
 
-        let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
+        let cellTypes: [UITableViewCell.Type] = [TitleAndValueTableViewCell.self]
     }
 
     struct VirtualProduct: ProductSettingsRowMediator {
@@ -252,7 +252,7 @@ enum ProductSettingsRows {
         }
 
         func configure(cell: UITableViewCell) {
-            guard let cell = cell as? SettingTitleAndValueTableViewCell else {
+            guard let cell = cell as? TitleAndValueTableViewCell else {
                 return
             }
 
@@ -270,9 +270,9 @@ enum ProductSettingsRows {
             sourceViewController.navigationController?.pushViewController(viewController, animated: true)
         }
 
-        let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
+        let reuseIdentifier: String = TitleAndValueTableViewCell.reuseIdentifier
 
-        let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
+        let cellTypes: [UITableViewCell.Type] = [TitleAndValueTableViewCell.self]
     }
 
     struct PurchaseNote: ProductSettingsRowMediator {
@@ -283,7 +283,7 @@ enum ProductSettingsRows {
         }
 
         func configure(cell: UITableViewCell) {
-            guard let cell = cell as? SettingTitleAndValueTableViewCell else {
+            guard let cell = cell as? TitleAndValueTableViewCell else {
                 return
             }
 
@@ -301,9 +301,9 @@ enum ProductSettingsRows {
             sourceViewController.navigationController?.pushViewController(viewController, animated: true)
         }
 
-        let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
+        let reuseIdentifier: String = TitleAndValueTableViewCell.reuseIdentifier
 
-        let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
+        let cellTypes: [UITableViewCell.Type] = [TitleAndValueTableViewCell.self]
     }
 
     struct MenuOrder: ProductSettingsRowMediator {
@@ -314,7 +314,7 @@ enum ProductSettingsRows {
         }
 
         func configure(cell: UITableViewCell) {
-            guard let cell = cell as? SettingTitleAndValueTableViewCell else {
+            guard let cell = cell as? TitleAndValueTableViewCell else {
                 return
             }
 
@@ -332,9 +332,9 @@ enum ProductSettingsRows {
             sourceViewController.navigationController?.pushViewController(viewController, animated: true)
         }
 
-        let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
+        let reuseIdentifier: String = TitleAndValueTableViewCell.reuseIdentifier
 
-        let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
+        let cellTypes: [UITableViewCell.Type] = [TitleAndValueTableViewCell.self]
     }
 }
 

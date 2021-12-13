@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents an Order Refund Entity.
 ///
-public struct OrderRefundCondensed: Decodable {
+public struct OrderRefundCondensed: Decodable, Equatable, GeneratedFakeable {
     public let refundID: Int64
     public let reason: String?
     public let total: String
@@ -45,12 +45,6 @@ private extension OrderRefundCondensed {
 // MARK: - Comparable Conformance
 //
 extension OrderRefundCondensed: Comparable {
-    public static func == (lhs: OrderRefundCondensed, rhs: OrderRefundCondensed) -> Bool {
-        return lhs.refundID == rhs.refundID &&
-            lhs.reason == rhs.reason &&
-            lhs.total == rhs.total
-    }
-
     public static func < (lhs: OrderRefundCondensed, rhs: OrderRefundCondensed) -> Bool {
         return lhs.refundID < rhs.refundID ||
             (lhs.refundID == rhs.refundID && lhs.total < rhs.total)

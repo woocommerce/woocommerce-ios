@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents an Order Entity.
 ///
-public struct Order: Decodable, GeneratedCopiable {
+public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     public let siteID: Int64
     public let orderID: Int64
     public let parentID: Int64
@@ -28,6 +28,7 @@ public struct Order: Decodable, GeneratedCopiable {
     public let shippingTax: String
     public let total: String
     public let totalTax: String
+    public let paymentMethodID: String
     public let paymentMethodTitle: String
 
     public let items: [OrderItem]
@@ -36,6 +37,7 @@ public struct Order: Decodable, GeneratedCopiable {
     public let shippingLines: [ShippingLine]
     public let coupons: [OrderCouponLine]
     public let refunds: [OrderRefundCondensed]
+    public let fees: [OrderFeeLine]
 
     /// Order struct initializer.
     ///
@@ -56,13 +58,15 @@ public struct Order: Decodable, GeneratedCopiable {
                 shippingTax: String,
                 total: String,
                 totalTax: String,
+                paymentMethodID: String,
                 paymentMethodTitle: String,
-                items: [OrderItem],
+                items: [OrderItem]?,
                 billingAddress: Address?,
                 shippingAddress: Address?,
                 shippingLines: [ShippingLine],
                 coupons: [OrderCouponLine],
-                refunds: [OrderRefundCondensed]) {
+                refunds: [OrderRefundCondensed],
+                fees: [OrderFeeLine]) {
 
         self.siteID = siteID
         self.orderID = orderID
@@ -84,14 +88,16 @@ public struct Order: Decodable, GeneratedCopiable {
         self.shippingTax = shippingTax
         self.total = total
         self.totalTax = totalTax
+        self.paymentMethodID = paymentMethodID
         self.paymentMethodTitle = paymentMethodTitle
 
-        self.items = items
+        self.items = items ?? []
         self.billingAddress = billingAddress
         self.shippingAddress = shippingAddress
         self.shippingLines = shippingLines
         self.coupons = coupons
         self.refunds = refunds
+        self.fees = fees
     }
 
 
@@ -124,18 +130,31 @@ public struct Order: Decodable, GeneratedCopiable {
         let shippingTotal = try container.decode(String.self, forKey: .shippingTotal)
         let total = try container.decode(String.self, forKey: .total)
         let totalTax = try container.decode(String.self, forKey: .totalTax)
+        let paymentMethodID = try container.decode(String.self, forKey: .paymentMethodID)
         let paymentMethodTitle = try container.decode(String.self, forKey: .paymentMethodTitle)
 
-        let items = try container.decode([OrderItem].self, forKey: .items)
+        let items = try? container.decodeIfPresent([OrderItem].self, forKey: .items) ?? []
 
-        let shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
+        var shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
+        // In WooCommerce <5.6.0, the shipping phone number can be stored in the order metadata
+        if let address = shippingAddress, address.phone == nil {
+            let allOrderMetaData = try? container.decode([OrderMetaData].self, forKey: .metadata)
+            let shippingPhone = allOrderMetaData?.first(where: { $0.key == "_shipping_phone" })?.value
+            shippingAddress = address.copy(phone: shippingPhone)
+        }
+
         let billingAddress = try? container.decode(Address.self, forKey: .billingAddress)
         let shippingLines = try container.decodeIfPresent([ShippingLine].self, forKey: .shippingLines) ?? []
 
         let coupons = try container.decode([OrderCouponLine].self, forKey: .couponLines)
 
         // The refunds field will not always exist in the response, so let's default to an empty array.
-        let refunds = try container.decodeIfPresent([OrderRefundCondensed].self, forKey: .refunds) ?? []
+        var refunds = try container.decodeIfPresent([OrderRefundCondensed].self, forKey: .refunds) ?? []
+
+        // Filter out refunds with ID equal to 0 (deleted).
+        refunds = refunds.filter({ $0.refundID != 0 })
+
+        let fees = try container.decode([OrderFeeLine].self, forKey: .feeLines)
 
         self.init(siteID: siteID,
                   orderID: orderID,
@@ -154,20 +173,51 @@ public struct Order: Decodable, GeneratedCopiable {
                   shippingTax: shippingTax,
                   total: total,
                   totalTax: totalTax,
+                  paymentMethodID: paymentMethodID,
                   paymentMethodTitle: paymentMethodTitle,
                   items: items,
                   billingAddress: billingAddress,
                   shippingAddress: shippingAddress,
                   shippingLines: shippingLines,
                   coupons: coupons,
-                  refunds: refunds)
+                  refunds: refunds,
+                  fees: fees)
+    }
+
+    public static var empty: Order {
+        self.init(siteID: 0,
+              orderID: 0,
+              parentID: 0,
+              customerID: 0,
+              number: "",
+              status: .pending,
+              currency: "",
+              customerNote: "",
+              dateCreated: Date(),
+              dateModified: Date(),
+              datePaid: Date(),
+              discountTotal: "",
+              discountTax: "",
+              shippingTotal: "",
+              shippingTax: "",
+              total: "",
+              totalTax: "",
+              paymentMethodID: "",
+              paymentMethodTitle: "",
+              items: [],
+              billingAddress: nil,
+              shippingAddress: nil,
+              shippingLines: [],
+              coupons: [],
+              refunds: [],
+              fees: [])
     }
 }
 
 
 /// Defines all of the Order CodingKeys
 ///
-private extension Order {
+internal extension Order {
 
     enum CodingKeys: String, CodingKey {
         case orderID            = "id"
@@ -189,6 +239,7 @@ private extension Order {
         case shippingTax        = "shipping_tax"
         case total              = "total"
         case totalTax           = "total_tax"
+        case paymentMethodID    = "payment_method"
         case paymentMethodTitle = "payment_method_title"
 
         case items              = "line_items"
@@ -197,13 +248,16 @@ private extension Order {
         case shippingLines      = "shipping_lines"
         case couponLines        = "coupon_lines"
         case refunds            = "refunds"
+        case feeLines           = "fee_lines"
+        case metadata           = "meta_data"
     }
 }
 
 
-// MARK: - Comparable Conformance
+// MARK: - Equatable Conformance
 //
-extension Order: Comparable {
+extension Order: Equatable {
+    // custom implementation to ignore order for shippingLines, coupons, refunds, items
     public static func == (lhs: Order, rhs: Order) -> Bool {
         return lhs.siteID == rhs.siteID &&
             lhs.orderID == rhs.orderID &&
@@ -220,6 +274,7 @@ extension Order: Comparable {
             lhs.shippingTax == rhs.shippingTax &&
             lhs.total == rhs.total &&
             lhs.totalTax == rhs.totalTax &&
+            lhs.paymentMethodID == rhs.paymentMethodID &&
             lhs.paymentMethodTitle == rhs.paymentMethodTitle &&
             lhs.billingAddress == rhs.billingAddress &&
             lhs.shippingAddress == rhs.shippingAddress &&
@@ -231,12 +286,6 @@ extension Order: Comparable {
             lhs.refunds.sorted() == rhs.refunds.sorted() &&
             lhs.items.count == rhs.items.count &&
             lhs.items.sorted() == rhs.items.sorted()
-    }
-
-    public static func < (lhs: Order, rhs: Order) -> Bool {
-        return lhs.orderID < rhs.orderID ||
-            (lhs.orderID == rhs.orderID && lhs.dateCreated < rhs.dateCreated) ||
-            (lhs.orderID == rhs.orderID && lhs.dateCreated == rhs.dateCreated && lhs.dateModified < rhs.dateModified)
     }
 }
 

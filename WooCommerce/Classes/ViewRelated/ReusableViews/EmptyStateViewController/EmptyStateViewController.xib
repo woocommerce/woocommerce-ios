@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -17,6 +17,7 @@
                 <outlet property="imageView" destination="YZ8-4Q-SGO" id="0Oa-4c-NbW"/>
                 <outlet property="messageLabel" destination="h54-zO-thf" id="DJy-GP-8Ft"/>
                 <outlet property="scrollView" destination="4Fw-pj-dQ8" id="XTp-KA-UBh"/>
+                <outlet property="stackView" destination="Usx-wg-Fgl" id="4bq-b1-DnU"/>
                 <outlet property="view" destination="iN0-l3-epB" id="qxV-b2-nJ9"/>
             </connections>
         </placeholder>
@@ -32,7 +33,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="414" height="818"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="Usx-wg-Fgl">
-                                    <rect key="frame" x="58" y="219" width="298" height="380.5"/>
+                                    <rect key="frame" x="58" y="185.5" width="298" height="447"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We're sorry, we couldn't find results for &quot;adidas&quot;" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h54-zO-thf">
                                             <rect key="frame" x="0.0" y="0.0" width="298" height="41"/>
@@ -41,17 +42,17 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="woo-empty-search-results" translatesAutoresizingMaskIntoConstraints="NO" id="YZ8-4Q-SGO">
-                                            <rect key="frame" x="76" y="73" width="146" height="105"/>
+                                            <rect key="frame" x="31" y="73" width="236" height="206"/>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iFj-AP-WfL">
-                                            <rect key="frame" x="0.5" y="210" width="297" height="108.5"/>
+                                            <rect key="frame" x="0.0" y="311" width="298" height="74"/>
                                             <string key="text">Qui eum est quo et recusandae ut. Hic cupiditate nobis et pariatur quidem dolorum. Doloribus est tempora ipsam eius. Quos ab et aspernatur velit corporis aut rem.</string>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                            <color key="textColor" systemColor="secondaryLabelColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="textColor" systemColor="secondaryLabelColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MHH-Z6-FbG" userLabel="Action Button">
-                                            <rect key="frame" x="35" y="350.5" width="228" height="30"/>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MHH-Z6-FbG" userLabel="Action Button">
+                                            <rect key="frame" x="35" y="417" width="228" height="30"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="228" id="ytx-Jd-N6j"/>
                                             </constraints>
@@ -63,12 +64,12 @@
                                     </subviews>
                                 </stackView>
                             </subviews>
-                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
                                 <constraint firstAttribute="trailing" secondItem="Usx-wg-Fgl" secondAttribute="trailing" constant="58" id="Ard-YP-Eb1"/>
                                 <constraint firstItem="Usx-wg-Fgl" firstAttribute="leading" secondItem="nZ1-Qr-0N4" secondAttribute="leading" constant="58" id="F8T-gj-c3S"/>
                                 <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Usx-wg-Fgl" secondAttribute="bottom" constant="8" id="ItW-Oe-98H"/>
-                                <constraint firstItem="Usx-wg-Fgl" firstAttribute="centerY" secondItem="nZ1-Qr-0N4" secondAttribute="centerY" id="Qwk-Qs-WXi"/>
+                                <constraint firstItem="Usx-wg-Fgl" firstAttribute="centerY" secondItem="nZ1-Qr-0N4" secondAttribute="centerY" placeholder="YES" id="Qwk-Qs-WXi"/>
                                 <constraint firstItem="Usx-wg-Fgl" firstAttribute="top" relation="greaterThanOrEqual" secondItem="nZ1-Qr-0N4" secondAttribute="top" constant="8" id="Z5f-Ai-Dxe"/>
                             </constraints>
                         </view>
@@ -83,6 +84,7 @@
                     </constraints>
                 </scrollView>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="top" secondItem="4Fw-pj-dQ8" secondAttribute="top" id="HZu-xM-UwL"/>
@@ -90,11 +92,16 @@
                 <constraint firstItem="4Fw-pj-dQ8" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="hgX-Xt-oDN"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="4Fw-pj-dQ8" secondAttribute="trailing" id="sGg-HB-6sG"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <point key="canvasLocation" x="137.68115942028987" y="152.67857142857142"/>
         </view>
     </objects>
     <resources>
-        <image name="woo-empty-search-results" width="146" height="105"/>
+        <image name="woo-empty-search-results" width="236" height="206"/>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

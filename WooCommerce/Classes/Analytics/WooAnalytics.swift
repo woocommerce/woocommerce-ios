@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import WordPressShared
 
 public class WooAnalytics: Analytics {
 
@@ -17,8 +18,9 @@ public class WooAnalytics: Analytics {
     ///
     var userHasOptedIn: Bool {
         get {
+            let isUITesting: Bool = CommandLine.arguments.contains("-ui_testing")
             let optedIn: Bool? = UserDefaults.standard.object(forKey: .userOptedInAnalytics)
-            return optedIn ?? true // analytics tracking on by default
+            return ( optedIn ?? true ) && !isUITesting // analytics tracking on by default, but disabled for UI tests
         }
         set {
             UserDefaults.standard.set(newValue, forKey: .userOptedInAnalytics)
@@ -30,10 +32,10 @@ public class WooAnalytics: Analytics {
 
     /// Designated Initializer
     ///
-    init(analyticsProvider: AnalyticsProvider) {
+    init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker) {
         self.analyticsProvider = analyticsProvider
+        WPAnalytics.register(analyticsProvider)
     }
-
 }
 
 
@@ -78,15 +80,7 @@ public extension WooAnalytics {
     ///   - properties: a collection of properties related to the event
     ///
     func track(_ stat: WooAnalyticsStat, withProperties properties: [AnyHashable: Any]?) {
-        guard userHasOptedIn == true else {
-            return
-        }
-
-        if let updatedProperties = updatePropertiesIfNeeded(for: stat, properties: properties) {
-            analyticsProvider.track(stat.rawValue, withProperties: updatedProperties)
-        } else {
-            analyticsProvider.track(stat.rawValue)
-        }
+        track(stat, properties: properties, error: nil)
     }
 
     /// Track a specific event with an associated error (that is translated to properties)
@@ -96,16 +90,52 @@ public extension WooAnalytics {
     ///   - error: the error to track
     ///
     func track(_ stat: WooAnalyticsStat, withError error: Error) {
+        track(stat, properties: nil, error: error)
+    }
+
+    /// Track a specific event with associated properties and an associated error (that is translated to properties)
+    ///
+    /// - Parameters:
+    ///   - stat: the event name
+    ///   - properties: a collection of properties related to the event
+    ///   - error: the error to track
+    ///
+    func track(_ stat: WooAnalyticsStat, properties passedProperties: [AnyHashable: Any]?, error: Error?) {
         guard userHasOptedIn == true else {
             return
         }
 
+        let properties = combinedProperties(from: error, with: passedProperties)
+
+        if let updatedProperties = updatePropertiesIfNeeded(for: stat, properties: properties) {
+            analyticsProvider.track(stat.rawValue, withProperties: updatedProperties)
+        } else {
+            analyticsProvider.track(stat.rawValue)
+        }
+    }
+
+    private func combinedProperties(from error: Error?, with passedProperties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
+        let properties: [AnyHashable: Any]?
+        let errorProperties = errorProperties(from: error)
+
+        if let passedProperties = passedProperties {
+            properties = passedProperties.merging(errorProperties ?? [:], uniquingKeysWith: { current, _ in
+                current
+            })
+        } else {
+            properties = errorProperties
+        }
+        return properties
+    }
+
+    private func errorProperties(from error: Error?) -> [AnyHashable: Any]? {
+        guard let error = error else {
+            return nil
+        }
         let err = error as NSError
-        let errorDictionary = [Constants.errorKeyCode: "\(err.code)",
-                               Constants.errorKeyDomain: err.domain,
-                               Constants.errorKeyDescription: err.description]
-        let updatedProperties = updatePropertiesIfNeeded(for: stat, properties: errorDictionary)
-        analyticsProvider.track(stat.rawValue, withProperties: updatedProperties)
+        return [Constants.errorKeyCode: "\(err.code)",
+                Constants.errorKeyDomain: err.domain,
+                Constants.errorKeyDescription: err.description]
     }
 }
 

@@ -96,23 +96,19 @@ public extension StatsStoreV4 {
                        earliestDateToInclude: Date,
                        latestDateToInclude: Date,
                        quantity: Int,
-                       onCompletion: @escaping (Error?) -> Void) {
-        let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
-        let earliestDate = dateFormatter.string(from: earliestDateToInclude)
-        let latestDate = dateFormatter.string(from: latestDateToInclude)
-
+                       onCompletion: @escaping (Result<Void, Error>) -> Void) {
         orderStatsRemote.loadOrderStats(for: siteID,
                               unit: timeRange.intervalGranularity,
-                              earliestDateToInclude: earliestDate,
-                              latestDateToInclude: latestDate,
-                              quantity: quantity) { [weak self] (orderStatsV4, error) in
-            guard let orderStatsV4 = orderStatsV4 else {
-                onCompletion(error)
-                return
+                              earliestDateToInclude: earliestDateToInclude,
+                              latestDateToInclude: latestDateToInclude,
+                              quantity: quantity) { [weak self] result in
+            switch result {
+            case .success(let orderStatsV4):
+                self?.upsertStoredOrderStats(readOnlyStats: orderStatsV4, timeRange: timeRange)
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
-
-            self?.upsertStoredOrderStats(readOnlyStats: orderStatsV4, timeRange: timeRange)
-            onCompletion(nil)
         }
     }
 
@@ -122,7 +118,7 @@ public extension StatsStoreV4 {
                                 siteTimezone: TimeZone,
                                 timeRange: StatsTimeRangeV4,
                                 latestDateToInclude: Date,
-                                onCompletion: @escaping (Error?) -> Void) {
+                                onCompletion: @escaping (Result<Void, Error>) -> Void) {
 
         let quantity = timeRange.siteVisitStatsQuantity(date: latestDateToInclude, siteTimezone: siteTimezone)
 
@@ -130,14 +126,14 @@ public extension StatsStoreV4 {
                                     siteTimezone: siteTimezone,
                                     unit: timeRange.siteVisitStatsGranularity,
                                     latestDateToInclude: latestDateToInclude,
-                                    quantity: quantity) { [weak self] (siteVisitStats, error) in
-                                        guard let siteVisitStats = siteVisitStats else {
-                                            onCompletion(error.map({ SiteVisitStatsStoreError(error: $0) }))
-                                            return
-                                        }
-
-                                        self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats)
-                                        onCompletion(nil)
+                                    quantity: quantity) { [weak self] result in
+            switch result {
+            case .success(let siteVisitStats):
+                self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats, timeRange: timeRange)
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(SiteVisitStatsStoreError(error: error)))
+            }
         }
     }
 
@@ -147,7 +143,7 @@ public extension StatsStoreV4 {
                                 timeRange: StatsTimeRangeV4,
                                 earliestDateToInclude: Date,
                                 latestDateToInclude: Date,
-                                onCompletion: @escaping (Error?) -> Void) {
+                                onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         let earliestDate = dateFormatter.string(from: earliestDateToInclude)
         let latestDate = dateFormatter.string(from: latestDateToInclude)
@@ -156,19 +152,19 @@ public extension StatsStoreV4 {
                                 earliestDateToInclude: earliestDate,
                                 latestDateToInclude: latestDate,
                                 quantity: Constants.defaultTopEarnerStatsLimit) { [weak self] result in
-                                    guard let self = self else { return }
+            guard let self = self else { return }
 
-                                    switch result {
-                                    case .success(let leaderboards):
-                                        self.convertAndStoreLeaderboardsIntoTopEarners(siteID: siteID,
-                                                                                       granularity: timeRange.topEarnerStatsGranularity,
-                                                                                       date: latestDateToInclude,
-                                                                                       leaderboards: leaderboards,
-                                                                                       onCompletion: onCompletion)
+            switch result {
+            case .success(let leaderboards):
+                self.convertAndStoreLeaderboardsIntoTopEarners(siteID: siteID,
+                                                               granularity: timeRange.topEarnerStatsGranularity,
+                                                               date: latestDateToInclude,
+                                                               leaderboards: leaderboards,
+                                                               onCompletion: onCompletion)
 
-                                    case .failure(let error):
-                                        onCompletion(error)
-                                    }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
         }
     }
 }
@@ -237,13 +233,14 @@ extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly SiteVisitStats Entity into the Storage Layer.
     ///
-    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats) {
+    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats, timeRange: StatsTimeRangeV4) {
         assert(Thread.isMainThread)
 
         let storage = storageManager.viewStorage
         let storageSiteVisitStats = storage.loadSiteVisitStats(
-            granularity: readOnlyStats.granularity.rawValue, date: readOnlyStats.date) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
+            granularity: readOnlyStats.granularity.rawValue, timeRange: timeRange.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
         storageSiteVisitStats.update(with: readOnlyStats)
+        storageSiteVisitStats.timeRange = timeRange.rawValue
         handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
         storage.saveIfNeeded()
     }
@@ -314,14 +311,14 @@ private extension StatsStoreV4 {
     /// Since  a `leaderboard` does not containt  the necesary product information, this method fetches the related product before starting the convertion.
     ///
     func convertAndStoreLeaderboardsIntoTopEarners(siteID: Int64,
-                                                           granularity: StatGranularity,
-                                                           date: Date,
-                                                           leaderboards: [Leaderboard],
-                                                           onCompletion: @escaping (Error?) -> Void) {
+                                                   granularity: StatGranularity,
+                                                   date: Date,
+                                                   leaderboards: [Leaderboard],
+                                                   onCompletion: @escaping (Result<Void, Error>) -> Void) {
 
         // Find the top products leaderboard by its ID
         guard let topProducts = leaderboards.first(where: { $0.id == Constants.topProductsID }) else {
-            onCompletion(StatsStoreV4Error.missingTopProducts)
+            onCompletion(.failure(StatsStoreV4Error.missingTopProducts))
             return
         }
 
@@ -331,14 +328,14 @@ private extension StatsStoreV4 {
 
             switch topProductsResult {
             case .success(let products):
-                self.mergeAndStoreTopProductsAndStoredProductsIntoTopEarners(granularity: granularity,
+                self.mergeAndStoreTopProductsAndStoredProductsIntoTopEarners(siteID: siteID,
+                                                                             granularity: granularity,
                                                                              date: date,
                                                                              topProducts: topProducts,
                                                                              storedProducts: products)
-                onCompletion(nil)
-
+                onCompletion(.success(()))
             case .failure(let error):
-                onCompletion(error)
+                onCompletion(.failure(error))
             }
         }
     }
@@ -382,13 +379,15 @@ private extension StatsStoreV4 {
 
     /// Merges and stores a top-product leaderboard with an array of stored products into  a `TopEarnerStats` object
     ///
-    func mergeAndStoreTopProductsAndStoredProductsIntoTopEarners(granularity: StatGranularity,
-                                                                         date: Date,
-                                                                         topProducts: Leaderboard,
-                                                                         storedProducts: [Product]) {
+    func mergeAndStoreTopProductsAndStoredProductsIntoTopEarners(siteID: Int64,
+                                                                 granularity: StatGranularity,
+                                                                 date: Date,
+                                                                 topProducts: Leaderboard,
+                                                                 storedProducts: [Product]) {
         let statsDate = Self.buildDateString(from: date, with: granularity)
         let statsItems = LeaderboardStatsConverter.topEarnerStatsItems(from: topProducts, using: storedProducts)
-        let stats = TopEarnerStats(date: statsDate,
+        let stats = TopEarnerStats(siteID: siteID,
+                                   date: statsDate,
                                    granularity: granularity,
                                    limit: String(Constants.defaultTopEarnerStatsLimit),
                                    items: statsItems

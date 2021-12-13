@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 // MARK: - NoteMedia
 //
-public struct NoteMedia: Equatable {
+public struct NoteMedia: Equatable, GeneratedFakeable {
 
     /// NoteMedia.Type expressed as a Swift Native Enum.
     ///
@@ -87,14 +87,4 @@ extension NoteMedia {
         case badge
         case unknown
     }
-}
-
-
-// MARK: - Equatable Conformance
-//
-public func ==(lhs: NoteMedia, rhs: NoteMedia) -> Bool {
-    return lhs.type == rhs.type &&
-            lhs.range == rhs.range &&
-            lhs.size == rhs.size &&
-            lhs.url == rhs.url
 }

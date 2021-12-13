@@ -1,0 +1,64 @@
+{
+    "data": [
+      {
+        "id": 29,
+        "name": "X-large",
+        "slug": "x-large",
+        "description": "",
+        "menu_order": 0,
+        "count": 1,
+        "_links": {
+          "self": [
+            {
+              "href": "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products/attributes/2/terms/26"
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products/attributes/2/terms"
+            }
+          ]
+        }
+      },
+      {
+        "id": 30,
+        "name": "XX-Large",
+        "slug": "xx-large",
+        "description": "",
+        "menu_order": 0,
+        "count": 2,
+        "_links": {
+          "self": [
+            {
+              "href": "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products/attributes/2/terms/27"
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products/attributes/2/terms"
+            }
+          ]
+        }
+      },
+      {
+        "id": 31,
+        "name": "XXX-large",
+        "slug": "xxx-large",
+        "description": "",
+        "menu_order": 0,
+        "count": 3,
+        "_links": {
+          "self": [
+            {
+              "href": "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products/attributes/2/terms/28"
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products/attributes/2/terms"
+            }
+          ]
+        }
+      }
+    ]
+}

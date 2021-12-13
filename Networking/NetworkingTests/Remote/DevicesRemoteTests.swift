@@ -4,22 +4,23 @@ import XCTest
 
 /// DevicesRemote Unit Tests
 ///
-class DevicesRemoteTests: XCTestCase {
+final class DevicesRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockupNetwork()
+    private let network = MockNetwork()
 
     /// Repeat always!
     ///
     override func setUp() {
+        super.setUp()
         network.removeAllSimulatedResponses()
     }
 
 
     /// Verifies that registerDevice parses a "Success" Backend Response.
     ///
-    func testRegisterDeviceSuccessfullyParsesDeviceIdentifier() {
+    func test_registerDevice_successfully_parses_deviceID() {
         let remote = DevicesRemote(network: network)
         let expectation = self.expectation(description: "Register Device")
 
@@ -28,7 +29,8 @@ class DevicesRemoteTests: XCTestCase {
         remote.registerDevice(device: Parameters.appleDevice,
                               applicationId: Parameters.applicationId,
                               applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID) { (settings, error) in
+                              defaultStoreID: Parameters.defaultStoreID,
+                              pushNotificationsForAllStoresEnabled: false) { (settings, error) in
 
             XCTAssertNil(error)
             XCTAssertNotNil(settings)
@@ -39,9 +41,48 @@ class DevicesRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that registerDevice when pushNotificationsForAllStores feature is enabled sets the `selected_blog_id` parameter to empty string.
+    ///
+    func test_registerDevice_with_pushNotificationsForAllStores_enabled_sets_selected_blog_id_to_empty_string() throws {
+        // Given
+        let remote = DevicesRemote(network: network)
+
+        // When
+        remote.registerDevice(device: Parameters.appleDevice,
+                              applicationId: Parameters.applicationId,
+                              applicationVersion: Parameters.applicationVersion,
+                              defaultStoreID: Parameters.defaultStoreID,
+                              pushNotificationsForAllStoresEnabled: true) { (_, _) in }
+
+        // Then
+        let queryParameters = try XCTUnwrap(network.queryParameters)
+        let expectedParam = "selected_blog_id="
+        XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
+    }
+
+    /// Verifies that registerDevice when pushNotificationsForAllStores feature is disabled sets the `selected_blog_id` to the default store ID.
+    ///
+    func test_registerDevice_with_pushNotificationsForAllStores_disabled_sets_selected_blog_id() throws {
+        // Given
+        let remote = DevicesRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "devices/new", filename: "device-settings")
+
+        // When
+        remote.registerDevice(device: Parameters.appleDevice,
+                              applicationId: Parameters.applicationId,
+                              applicationVersion: Parameters.applicationVersion,
+                              defaultStoreID: Parameters.defaultStoreID,
+                              pushNotificationsForAllStoresEnabled: false) { (_, _) in }
+
+        // Then
+        let queryParameters = try XCTUnwrap(network.queryParameters)
+        let expectedParam = "selected_blog_id=\(Parameters.defaultStoreID)"
+        XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
+    }
+
     /// Verifies that registerDevice parses a "Failure" Backend Response.
     ///
-    func testRegisterDeviceParsesGeneralFailureResponse() {
+    func test_registerDevice_parses_general_failure_response() {
         let remote = DevicesRemote(network: network)
         let expectation = self.expectation(description: "Register Device")
 
@@ -50,7 +91,8 @@ class DevicesRemoteTests: XCTestCase {
         remote.registerDevice(device: Parameters.appleDevice,
                               applicationId: Parameters.applicationId,
                               applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID) { (settings, error) in
+                              defaultStoreID: Parameters.defaultStoreID,
+                              pushNotificationsForAllStoresEnabled: false) { (settings, error) in
 
             XCTAssertNotNil(error)
             XCTAssertNil(settings)
@@ -62,7 +104,7 @@ class DevicesRemoteTests: XCTestCase {
 
     /// Verifies that unregisterDevice parses a "Success" Backend Response.
     ///
-    func testUnregisterDeviceParsesSuccessResponse() {
+    func test_unregisterDevice_parses_success_response() {
         let remote = DevicesRemote(network: network)
         let expectation = self.expectation(description: "Unregister Device")
 
@@ -78,7 +120,7 @@ class DevicesRemoteTests: XCTestCase {
 
     /// Verifies that unregisterDevice parses a "Failure" Backend Response.
     ///
-    func testUnregisterDeviceParsesFailureResponse() {
+    func test_unregisterDevice_parses_failure_response() {
         let remote = DevicesRemote(network: network)
         let expectation = self.expectation(description: "Unregister Device")
 

@@ -44,6 +44,7 @@ protocol ProductPriceSettingsActionHandler {
 enum ProductPriceSetingsError: Error {
     case salePriceWithoutRegularPrice
     case salePriceHigherThanRegularPrice
+    case newSaleWithEmptySalePrice
 }
 
 /// Provides view data for price settings, and handles init/UI/navigation actions needed in product price settings.
@@ -237,6 +238,10 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
 
     func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSetingsError) -> Void) {
 
+        guard doesScheduleDateHasPrice() else {
+            return onError(.newSaleWithEmptySalePrice)
+        }
+
         // Check if the sale price is populated, and the regular price is not.
         if getDecimalPrice(salePrice) != nil, getDecimalPrice(regularPrice) == nil {
             onError(.salePriceWithoutRegularPrice)
@@ -245,7 +250,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
 
         // Check if the sale price is less of the regular price, else show an error.
         if let decimalSalePrice = getDecimalPrice(salePrice), let decimalRegularPrice = getDecimalPrice(regularPrice),
-            decimalSalePrice.compare(decimalRegularPrice) != .orderedAscending {
+           decimalSalePrice.compare(decimalRegularPrice) != .orderedAscending {
             onError(.salePriceHigherThanRegularPrice)
             return
         }
@@ -270,6 +275,13 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
         }
 
         return false
+    }
+
+    func doesScheduleDateHasPrice() -> Bool {
+        if dateOnSaleStart != nil && dateOnSaleEnd != nil {
+            return getDecimalPrice(salePrice) != nil
+        }
+        return true
     }
 }
 

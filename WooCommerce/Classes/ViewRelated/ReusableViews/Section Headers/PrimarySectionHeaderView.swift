@@ -7,15 +7,27 @@ import UIKit
 /// This is originally used for the Order Details' Product section header.
 ///
 final class PrimarySectionHeaderView: UITableViewHeaderFooterView {
+    /// Custom configurations for the CTA.
+    struct ActionConfiguration {
+        let image: UIImage
+        let actionHandler: (_ sourceView: UIView) -> Void
+    }
 
     @IBOutlet private var titleLabel: UILabel!
+    @IBOutlet private weak var actionButton: UIButton!
     @IBOutlet private var containerView: UIView!
+
+    private var actionHandler: ((_ sourceView: UIView) -> Void)?
 
     override func awakeFromNib() {
         super.awakeFromNib()
 
         titleLabel.text = ""
         titleLabel.applyHeadlineStyle()
+
+        actionButton.isHidden = true
+        actionButton.setTitle(nil, for: .normal)
+        actionButton.setContentHuggingPriority(.required, for: .horizontal)
 
         containerView.backgroundColor = Colors.containerViewBackgroundColor
 
@@ -24,8 +36,15 @@ final class PrimarySectionHeaderView: UITableViewHeaderFooterView {
 
     /// Change the configurable properties of this header.
     ///
-    func configure(title: String?) {
+    func configure(title: String?, action: ActionConfiguration? = nil) {
         titleLabel.text = title
+        actionButton.isHidden = action == nil
+
+        if let action = action {
+            actionButton.applyIconButtonStyle(icon: action.image)
+            actionHandler = action.actionHandler
+            actionButton.addTarget(self, action: #selector(onAction(_:)), for: .touchUpInside)
+        }
     }
 
     /// Creates a dummy border which will cover the grouped section separator that is normally
@@ -45,11 +64,17 @@ final class PrimarySectionHeaderView: UITableViewHeaderFooterView {
     }
 }
 
+private extension PrimarySectionHeaderView {
+    @objc func onAction(_ sourceView: UIView) {
+        actionHandler?(sourceView)
+    }
+}
+
 // MARK: - Constants
 
 private extension PrimarySectionHeaderView {
     enum Colors {
-        static let containerViewBackgroundColor = UIColor.basicBackground
+        static let containerViewBackgroundColor = UIColor.listForeground
     }
 }
 
@@ -71,7 +96,6 @@ private struct PrimarySectionHeaderViewRepresentable: UIViewRepresentable {
     }
 }
 
-@available(iOS 13.0, *)
 struct PrimarySectionHeaderView_Previews: PreviewProvider {
 
     private static func makeStack() -> some View {

@@ -1,7 +1,9 @@
 import Yosemite
+import Observables
 
 /// Provides data for product form UI on a `ProductVariation`, and handles product editing actions.
 final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
+
     typealias ProductModel = EditableProductVariationModel
 
     /// Emits product variation on change.
@@ -14,10 +16,23 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         productVariation
     }
 
+    /// The original product variation.
+    var originalProductModel: EditableProductVariationModel {
+        originalProductVariation
+    }
+
     /// Emits a boolean of whether the product variation has unsaved changes for remote update.
     var isUpdateEnabled: Observable<Bool> {
         isUpdateEnabledSubject
     }
+
+    /// The product variation ID
+    var productionVariationID: Int64? {
+        productVariation.productVariation.productVariationID
+    }
+
+    /// Emits a void value informing when there is a new variation price state available
+    var newVariationsPrice: Observable<Void> = PublishSubject<Void>()
 
     /// Creates actions available on the bottom sheet.
     private(set) var actionsFactory: ProductFormActionsFactoryProtocol
@@ -55,6 +70,28 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
             isUpdateEnabledSubject.send(hasUnsavedChanges())
         }
     }
+
+    /// The action buttons that should be rendered in the navigation bar.
+    var actionButtons: [ActionButtonType] {
+        var buttons: [ActionButtonType] = {
+            switch (formType, hasUnsavedChanges()) {
+            case (.edit, true):
+                return [.save]
+            default:
+                return []
+            }
+        }()
+
+        if shouldShowMoreOptionsMenu() {
+            buttons.append(.more)
+        }
+
+        return buttons
+    }
+
+    /// Assign this closure to get notified when the variation is deleted.
+    ///
+    var onVariationDeletion: ((ProductVariation) -> Void)?
 
     private let allAttributes: [ProductAttribute]
     private let parentProductSKU: String?
@@ -97,6 +134,12 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
 // MARK: - More menu
 //
 extension ProductVariationFormViewModel {
+    /// Variations can't be published independently
+    ///
+    func canShowPublishOption() -> Bool {
+        false
+    }
+
     func canSaveAsDraft() -> Bool {
         false
     }
@@ -114,7 +157,7 @@ extension ProductVariationFormViewModel {
     }
 
     func canDeleteProduct() -> Bool {
-        false
+        formType == .edit
     }
 }
 
@@ -160,7 +203,7 @@ extension ProductVariationFormViewModel {
     func updateInventorySettings(sku: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,
-                                 stockQuantity: Int64?,
+                                 stockQuantity: Decimal?,
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?) {
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(sku: sku,
@@ -181,7 +224,7 @@ extension ProductVariationFormViewModel {
                                                          parentProductSKU: parentProductSKU)
     }
 
-    func updateProductType(productType: ProductType) {
+    func updateProductType(productType: BottomSheetProductType) {
         // no-op
     }
 
@@ -224,6 +267,20 @@ extension ProductVariationFormViewModel {
     func updateDownloadableFiles(downloadableFiles: [ProductDownload], downloadLimit: Int64, downloadExpiry: Int64) {
         // no-op
     }
+
+    func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64]) {
+        // no-op
+    }
+
+    func updateVariationAttributes(_ attributes: [ProductVariationAttribute]) {
+        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(attributes: attributes),
+                                                         allAttributes: allAttributes,
+                                                         parentProductSKU: parentProductSKU)
+    }
+
+    func updateProductVariations(from product: Product) {
+        //no-op
+    }
 }
 
 // MARK: Remote actions
@@ -250,9 +307,21 @@ extension ProductVariationFormViewModel {
         storesManager.dispatch(updateAction)
     }
 
-    func deleteProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
-        // no-op
+    func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
+        let deleteAction = ProductVariationAction.deleteProductVariation(productVariation: productVariation.productVariation) { [weak self] result in
+            switch result {
+            case .success:
+                if let self = self {
+                    self.onVariationDeletion?(self.productVariation.productVariation)
+                }
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+        storesManager.dispatch(deleteAction)
     }
+
     private func resetProductVariation(_ productVariation: EditableProductVariationModel) {
         originalProductVariation = productVariation
         isUpdateEnabledSubject.send(hasUnsavedChanges())

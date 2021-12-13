@@ -15,6 +15,10 @@ final class RefundItemQuantityListSelectorCommand: ListSelectorCommand {
     ///
     let data: [Int]
 
+    /// Index of the item to update
+    ///
+    let itemIndex: Int
+
     /// Holds the current selected state
     ///
     private(set) var selected: Int?
@@ -31,9 +35,10 @@ final class RefundItemQuantityListSelectorCommand: ListSelectorCommand {
         cell.textLabel?.text = "\(model)"
     }
 
-    init(maxRefundQuantity: Int, currentQuantity: Int) {
+    init(maxRefundQuantity: Int, currentQuantity: Int, itemIndex: Int) {
         self.selected = currentQuantity
         self.data = Array((0...maxRefundQuantity))
+        self.itemIndex = itemIndex
     }
 }
 

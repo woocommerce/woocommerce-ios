@@ -1,6 +1,8 @@
+import Codegen
+
 /// Represents a single order stat for a specific period.
 /// v4 API
-public struct OrderStatsV4Interval: Decodable {
+public struct OrderStatsV4Interval: Decodable, Equatable, GeneratedFakeable {
     public let interval: String
     /// Interval start date string in the site time zone.
     public let dateStart: String
@@ -29,23 +31,6 @@ public struct OrderStatsV4Interval: Decodable {
                   dateStart: dateStart,
                   dateEnd: dateEnd,
                   subtotals: subtotals)
-    }
-}
-
-
-// MARK: - Conformance to Comparable
-//
-extension OrderStatsV4Interval: Comparable {
-    public static func == (lhs: OrderStatsV4Interval, rhs: OrderStatsV4Interval) -> Bool {
-        return lhs.interval == rhs.interval &&
-            lhs.dateStart == rhs.dateStart &&
-            lhs.dateEnd == rhs.dateEnd &&
-            lhs.subtotals == rhs.subtotals
-    }
-
-    public static func < (lhs: OrderStatsV4Interval, rhs: OrderStatsV4Interval) -> Bool {
-        return lhs.interval < rhs.interval ||
-            (lhs.interval == rhs.interval && lhs.subtotals < rhs.subtotals)
     }
 }
 

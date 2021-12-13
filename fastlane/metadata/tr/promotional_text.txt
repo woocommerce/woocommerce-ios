@@ -1,1 +1,1 @@
-Mağazanızı olduğunuz yerden işletin. WooCommerce uygulaması sipariş ve stok yönetimini, satışların takibini, yeni sipariş ve yorumların izlenmesini kolaylaştırır.
+Mağazanızı her yerden çalıştırın

@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// WordPress.com Account Settings
 ///
-public struct AccountSettings: Decodable {
+public struct AccountSettings: Decodable, Equatable, GeneratedFakeable {
 
     /// Dotcom UserID
     ///
@@ -12,12 +13,22 @@ public struct AccountSettings: Decodable {
     ///
     public let tracksOptOut: Bool
 
+    /// First name of the Account
+    ///
+    public let firstName: String?
+
+    /// Last name of the Account
+    ///
+    public let lastName: String?
+
 
     /// Default initializer for AccountSettings.
     ///
-    public init(userID: Int64, tracksOptOut: Bool) {
+    public init(userID: Int64, tracksOptOut: Bool, firstName: String?, lastName: String?) {
         self.userID = userID
         self.tracksOptOut = tracksOptOut
+        self.firstName = firstName
+        self.lastName = lastName
     }
 
 
@@ -30,8 +41,10 @@ public struct AccountSettings: Decodable {
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let tracksOptOut = try container.decode(Bool.self, forKey: .tracksOptOut)
+        let firstName = try container.decodeIfPresent(String.self, forKey: .firstName)
+        let lastName = try container.decodeIfPresent(String.self, forKey: .lastName)
 
-        self.init(userID: userID, tracksOptOut: tracksOptOut)
+        self.init(userID: userID, tracksOptOut: tracksOptOut, firstName: firstName, lastName: lastName)
     }
 }
 
@@ -43,17 +56,8 @@ private extension AccountSettings {
     enum CodingKeys: String, CodingKey {
         case userID         = "UserID"
         case tracksOptOut   = "tracks_opt_out"
-    }
-}
-
-
-// MARK: - Equatable Conformance
-//
-extension AccountSettings: Equatable {
-
-    public static func == (lhs: AccountSettings, rhs: AccountSettings) -> Bool {
-        return lhs.userID == rhs.userID &&
-            lhs.tracksOptOut == rhs.tracksOptOut
+        case firstName      = "first_name"
+        case lastName       = "last_name"
     }
 }
 

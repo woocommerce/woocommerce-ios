@@ -47,20 +47,6 @@ class ApplicationLogViewController: UIViewController {
         registerTableViewCells()
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let vc = segue.destination as? ApplicationLogDetailViewController, segue.identifier == Segues.detailSegue {
-            let logFileInfo = sender as! DDLogFileInfo
-            do {
-                let contents = try String(contentsOfFile: logFileInfo.filePath)
-                let date = dateFormatter.string(from: logFileInfo.creationDate)
-                vc.logText = contents
-                vc.logDate = date
-            } catch {
-                DDLogError("Error: attempted to get contents of logFileInfo. Contents not found.")
-            }
-        }
-    }
-
     /// Style the back button, add the title to nav bar.
     ///
     func configureNavigation() {
@@ -68,9 +54,6 @@ class ApplicationLogViewController: UIViewController {
             "Application Logs",
             comment: "Application Logs navigation bar title - this screen is where users view the list of application logs available to them."
         )
-
-        // Don't show the Help & Support title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
     /// Apply Woo styles.
@@ -207,7 +190,7 @@ private extension ApplicationLogViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = indexPath.row == 0 ?
-            NSLocalizedString("Current", comment: "Cell title: the current date.") : dateFormatter.string(from: logFileInfo.creationDate)
+            NSLocalizedString("Current", comment: "Cell title: the current date.") : dateFormatter.string(from: logFileInfo.creationDate )
     }
 
     /// Clear application logs cell.
@@ -228,7 +211,16 @@ private extension ApplicationLogViewController {
     ///
     func logFileWasPressed(in row: Int) {
         let logFileInfo = logFiles[row]
-        performSegue(withIdentifier: Segues.detailSegue, sender: logFileInfo)
+
+        do {
+            let contents = try String(contentsOfFile: logFileInfo.filePath)
+            let date = dateFormatter.string(from: logFileInfo.creationDate )
+            let viewModel = ApplicationLogViewModel(logText: contents, logDate: date)
+            let appLogDetailVC = ApplicationLogDetailViewController(viewModel: viewModel)
+            show(appLogDetailVC, sender: self)
+        } catch {
+            DDLogError("Error: attempted to get contents of logFileInfo. Contents not found.")
+        }
     }
 
     /// Clear old logs action
@@ -275,8 +267,4 @@ private enum Row: CaseIterable {
     var reuseIdentifier: String {
         return type.reuseIdentifier
     }
-}
-
-private struct Segues {
-    static let detailSegue = "ShowApplicationLogDetailViewController"
 }

@@ -54,6 +54,7 @@ struct OrdersUpsertUseCase {
 
         handleOrderItems(readOnlyOrder, storageOrder, storage)
         handleOrderCoupons(readOnlyOrder, storageOrder, storage)
+        handleOrderFees(readOnlyOrder, storageOrder, storage)
         handleOrderShippingLines(readOnlyOrder, storageOrder, storage)
         handleOrderRefundsCondensed(readOnlyOrder, storageOrder, storage)
 
@@ -66,6 +67,10 @@ struct OrdersUpsertUseCase {
         var storageItem: Storage.OrderItem
         let siteID = readOnlyOrder.siteID
         let orderID = readOnlyOrder.orderID
+
+        guard readOnlyOrder.items.count > 0 else {
+            return
+        }
 
         // Upsert the items from the read-only order
         for readOnlyItem in readOnlyOrder.items {
@@ -158,6 +163,29 @@ struct OrdersUpsertUseCase {
         }
     }
 
+    /// Updates, inserts, or prunes the provided StorageOrder's fees using the provided read-only Order's fees
+    ///
+    private func handleOrderFees(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        // Upsert the coupons from the read-only order
+        for readOnlyFee in readOnlyOrder.fees {
+            if let existingStorageFee = storage.loadOrderFeeLine(siteID: readOnlyOrder.siteID, feeID: readOnlyFee.feeID) {
+                existingStorageFee.update(with: readOnlyFee)
+            } else {
+                let newStorageFee = storage.insertNewObject(ofType: Storage.OrderFeeLine.self)
+                newStorageFee.update(with: readOnlyFee)
+                storageOrder.addToFees(newStorageFee)
+            }
+        }
+
+        // Now, remove any objects that exist in storageOrder.fees but not in readOnlyOrder.fees
+        storageOrder.fees?.forEach { storageFee in
+            if readOnlyOrder.fees.first(where: { $0.feeID == storageFee.feeID } ) == nil {
+                storageOrder.removeFromFees(storageFee)
+                storage.deleteObject(storageFee)
+            }
+        }
+    }
+
     /// Updates, inserts, or prunes the provided StorageOrder's condensed refunds using the provided read-only Order's OrderRefundCondensed
     ///
     private func handleOrderRefundsCondensed(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
@@ -186,7 +214,7 @@ struct OrdersUpsertUseCase {
     private func handleOrderShippingLines(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         // Upsert the shipping lines from the read-only order
         for readOnlyShippingLine in readOnlyOrder.shippingLines {
-            if let existingStorageShippingLine = storage.loadShippingLine(siteID: readOnlyOrder.siteID, shippingID: readOnlyShippingLine.shippingID) {
+            if let existingStorageShippingLine = storage.loadOrderShippingLine(siteID: readOnlyOrder.siteID, shippingID: readOnlyShippingLine.shippingID) {
                 existingStorageShippingLine.update(with: readOnlyShippingLine)
                 handleShippingLineTaxes(readOnlyShippingLine, existingStorageShippingLine, storage)
             } else {

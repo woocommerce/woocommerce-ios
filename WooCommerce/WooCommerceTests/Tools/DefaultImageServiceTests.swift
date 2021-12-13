@@ -86,7 +86,7 @@ final class DefaultImageServiceTests: XCTestCase {
         let mockPlaceholder = UIImage.shippingImage
 
         let mockCache = MockImageCache(name: "Testing")
-        // `MockKingfisherImageDownloader` is used only in this test because only `downloadAndCacheImageForImageView` depends on a Kingfisher `ImageDownloader`.
+        // `MockKingfisherImageDownloader` is used in this test because it depends on a Kingfisher `ImageDownloader`.
         let mockDownloader = MockKingfisherImageDownloader(imagesByKey: [url.absoluteString: testImage])
         imageService = DefaultImageService(imageCache: mockCache, imageDownloader: mockDownloader)
 
@@ -106,6 +106,42 @@ final class DefaultImageServiceTests: XCTestCase {
                                                     waitForRetrievingImageAfterDownload.fulfill()
                                                 }
         }
+        XCTAssertNotNil(mockImageView.image)
+
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
+
+    func testDownloadingAndCachingAndRetrievingAnImageForImageViewFromURLWithSpecialChars() {
+        let mockImageView = UIImageView()
+        let mockPlaceholder = UIImage.shippingImage
+
+        let mockCache = MockImageCache(name: "Testing")
+
+        let urlStringWithSpecialChars = "https://woo.com/тест-图像"
+        let encodedURLStringWithSpecialChars = urlStringWithSpecialChars.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        let encodedURL = URL(string: encodedURLStringWithSpecialChars)!
+
+        // `MockKingfisherImageDownloader` is used in this test because it depends on a Kingfisher `ImageDownloader`.
+        let imagesMapping = [encodedURLStringWithSpecialChars: testImage]
+        let mockDownloader = MockKingfisherImageDownloader(imagesByKey: imagesMapping)
+        imageService = DefaultImageService(imageCache: mockCache, imageDownloader: mockDownloader)
+
+        // Downloads the image and retrieves it again.
+        let waitForDownloadingAndCachingAnImage = expectation(description: "Wait for downloading and caching an image")
+        let waitForRetrievingImageAfterDownload = expectation(description: "Wait for retrieving image after the previous download")
+        imageService
+            .downloadAndCacheImageForImageView(mockImageView,
+                                               with: urlStringWithSpecialChars,
+                                               placeholder: mockPlaceholder,
+                                               progressBlock: nil) { (image, error) in
+                XCTAssertNotNil(image)
+                waitForDownloadingAndCachingAnImage.fulfill()
+
+                self.imageService.retrieveImageFromCache(with: encodedURL) { image in
+                    XCTAssertNotNil(image)
+                    waitForRetrievingImageAfterDownload.fulfill()
+                }
+            }
         XCTAssertNotNil(mockImageView.image)
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)

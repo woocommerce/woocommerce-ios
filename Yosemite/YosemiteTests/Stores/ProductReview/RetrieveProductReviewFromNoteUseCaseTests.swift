@@ -1,5 +1,5 @@
 import XCTest
-
+import Fakes
 import Storage
 import enum Networking.NetworkError
 
@@ -14,7 +14,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
     private var notificationsRemote: MockNotificationsRemote!
     private var productReviewsRemote: MockProductReviewsRemote!
     private var productsRemote: MockProductsRemote!
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
     private var viewStorage: StorageType {
         storageManager.viewStorage
@@ -26,7 +26,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         notificationsRemote = MockNotificationsRemote()
         productReviewsRemote = MockProductReviewsRemote()
         productsRemote = MockProductsRemote()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
     }
 
     override func tearDown() {
@@ -313,7 +313,7 @@ private extension RetrieveProductReviewFromNoteUseCaseTests {
 private extension RetrieveProductReviewFromNoteUseCaseTests {
     enum TestData {
         static let siteID: Int64 = 398
-        static let product = MockProduct().product(siteID: siteID, productID: 756_611)
+        static let product = Product.fake().copy(siteID: siteID, productID: 756_611)
         static let productReview = MockProductReview().make(siteID: siteID, reviewID: 1_981_157, productID: product.productID)
         static let note = MockNote().make(noteID: 9_981, metaSiteID: siteID, metaReviewID: productReview.reviewID)
     }

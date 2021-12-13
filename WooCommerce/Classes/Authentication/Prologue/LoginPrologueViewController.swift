@@ -1,6 +1,5 @@
 import Foundation
 import UIKit
-import SafariServices
 import WordPressAuthenticator
 
 
@@ -16,18 +15,9 @@ final class LoginPrologueViewController: UIViewController {
     ///
     @IBOutlet var containerView: UIView!
 
-    /// Label to be displayed at the top of the Prologue.
+    /// Curved Rectangle: Background shape with curved top edge
     ///
-    @IBOutlet var upperLabel: UILabel!
-
-    /// Disclaimer Label
-    ///
-    @IBOutlet var disclaimerTextView: UITextView!
-
-    @IBOutlet private var slantedRectangle: UIImageView!
-    /// Jetpack Logo ImageVIew
-    ///
-    @IBOutlet var jetpackImageView: UIImageView!
+    @IBOutlet weak var curvedRectangle: UIImageView!
 
 
     // MARK: - Overridden Properties
@@ -45,15 +35,8 @@ final class LoginPrologueViewController: UIViewController {
         setupMainView()
         setupBackgroundView()
         setupContainerView()
-        setupSlantedRectangle()
-        setupJetpackImage()
-
-        setupLabels()
-    }
-
-    private func setupLabels() {
-        setupDisclaimerLabel()
-        setupUpperLabel()
+        setupCurvedRectangle()
+        setupCarousel()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -72,108 +55,27 @@ private extension LoginPrologueViewController {
     }
 
     func setupBackgroundView() {
-        backgroundView.backgroundColor = .init(light: .brand, dark: .withColorStudio(.brand, shade: .shade80))
+        backgroundView.backgroundColor = .authPrologueBottomBackgroundColor
     }
 
     func setupContainerView() {
         containerView.backgroundColor = .authPrologueBottomBackgroundColor
     }
 
-    func setupUpperLabel() {
-        upperLabel.text = NSLocalizedString("Manage orders, track sales and monitor store activity with real-time alerts.", comment: "Login Prologue Legend")
-        upperLabel.adjustsFontForContentSizeCategory = true
-        upperLabel.font = StyleManager.subheadlineBoldFont
-        upperLabel.textColor = .text
+    func setupCurvedRectangle() {
+        curvedRectangle.image = UIImage.curvedRectangle.withRenderingMode(.alwaysTemplate)
+        curvedRectangle.tintColor = .authPrologueBottomBackgroundColor
     }
 
-    func setupSlantedRectangle() {
-        slantedRectangle.image = UIImage.slantedRectangle.withRenderingMode(.alwaysTemplate)
-        slantedRectangle.tintColor = .authPrologueBottomBackgroundColor
-    }
-
-    func setupJetpackImage() {
-        jetpackImageView.image = UIImage.jetpackLogoImage.imageWithTintColor(.white)
-    }
-
-    func setupDisclaimerLabel() {
-        disclaimerTextView.attributedText = disclaimerAttributedText
-        disclaimerTextView.adjustsFontForContentSizeCategory = true
-        disclaimerTextView.textContainerInset = .zero
-        disclaimerTextView.linkTextAttributes = [
-            .foregroundColor: UIColor.white,
-            .underlineColor: UIColor.white,
-            .underlineStyle: NSUnderlineStyle.single.rawValue
-        ]
-    }
-}
-
-
-// MARK: - UITextViewDeletgate Conformance
-//
-extension LoginPrologueViewController: UITextViewDelegate {
-
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        displaySafariViewController(at: URL)
-        return false
-    }
-}
-
-
-// MARK: - Action Handlers
-//
-extension LoginPrologueViewController {
-
-    /// Opens SafariViewController at the specified URL.
+    /// Adds a carousel (slider) of screens to promote the main features of the app.
+    /// This is contained in a child view so that this view's background doesn't scroll.
     ///
-    func displaySafariViewController(at url: URL) {
-        ServiceLocator.analytics.track(.loginPrologueJetpackInstructions)
-        let safariViewController = SFSafariViewController(url: url)
+    func setupCarousel() {
+        let carousel = LoginProloguePageViewController()
+        carousel.view.translatesAutoresizingMaskIntoConstraints = false
 
-        safariViewController.modalPresentationStyle = .pageSheet
-        present(safariViewController, animated: true, completion: nil)
-    }
-}
-
-
-// MARK: - Handling updated trait collections
-//
-extension LoginPrologueViewController {
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
-            setupLabels()
-        }
-    }
-}
-
-
-// MARK: - Private Methods
-//
-private extension LoginPrologueViewController {
-
-    /// Returns the Disclaimer Attributed Text (which contains a link to the Jetpack Setup URL).
-    ///
-    var disclaimerAttributedText: NSAttributedString {
-        let disclaimerText = NSLocalizedString(
-            "This app requires Jetpack to connect to your Store. <br /> Read the <a " +
-                "href=\"https://jetpack.com/support/getting-started-with-jetpack/\">configuration instructions</a>.",
-            comment: "Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. " +
-            "Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. " +
-            "Place the second sentence after the `<br />` tag. " +
-            "Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. " +
-            "If a literal translation of 'Read the configuration instructions' does not make sense in your language, " +
-            "please use a contextually appropriate substitution. " +
-            "For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language."
-        )
-        let disclaimerAttributes: [NSAttributedString.Key: Any] = [
-            .font: StyleManager.thinCaptionFont,
-            .foregroundColor: UIColor.white
-        ]
-
-        let disclaimerAttrText = NSMutableAttributedString()
-        disclaimerAttrText.append(disclaimerText.htmlToAttributedString)
-        disclaimerAttrText.addAttributes(disclaimerAttributes, range: NSRange(location: 0, length: disclaimerAttrText.length))
-
-        return disclaimerAttrText
+        addChild(carousel)
+        view.addSubview(carousel.view)
+        view.pinSubviewToAllEdges(carousel.view)
     }
 }

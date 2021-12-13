@@ -14,7 +14,7 @@ final class ProductLoaderViewController: UIViewController {
 
     /// UI Spinner
     ///
-    private let activityIndicator = UIActivityIndicatorView(style: .gray)
+    private let activityIndicator = UIActivityIndicatorView(style: .medium)
 
     /// Target model (Product/ProductVariation ID)
     ///
@@ -27,6 +27,10 @@ final class ProductLoaderViewController: UIViewController {
     /// Force the product detail to be presented in read only mode
     ///
     private let forceReadOnly: Bool
+
+    /// Set when an empty state view controller is displayed.
+    ///
+    private var emptyStateViewController: UIViewController?
 
     /// UI Active State
     ///
@@ -118,7 +122,12 @@ private extension ProductLoaderViewController {
                 self.state = .productLoaded(product: product)
             case .failure(let error):
                 DDLogError("⛔️ Error loading Product for siteID: \(self.siteID) productID:\(productID) error:\(error)")
-                self.state = .failure
+                switch error {
+                case ProductLoadError.notFound:
+                    self.state = .notFound
+                default:
+                    self.state = .failure
+                }
             }
         }
 
@@ -163,29 +172,59 @@ private extension ProductLoaderViewController {
         activityIndicator.stopAnimating()
     }
 
-    /// Displays the Loading Overlay.
+    /// Displays the Failure Overlay.
     ///
     func displayFailureOverlay() {
-        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = .waitingForCustomersImage
-        overlayView.messageText = NSLocalizedString("This product couldn't be loaded", comment: "Message displayed when loading a specific product fails")
-        overlayView.actionText = NSLocalizedString("Retry", comment: "Retry the last action")
-        overlayView.onAction = { [weak self] in
+        let emptyStateViewController = EmptyStateViewController(style: .list)
+        let config = EmptyStateViewController.Config.withButton(
+            message: .init(string: NSLocalizedString("This product couldn't be loaded", comment: "Message displayed when loading a specific product fails")),
+            image: .productErrorImage,
+            details: "",
+            buttonTitle: NSLocalizedString("Retry", comment: "Retry the last action")) { [weak self] _ in
             self?.loadModel()
         }
-
-        overlayView.attach(to: view)
+        displayEmptyStateViewController(emptyStateViewController)
+        emptyStateViewController.configure(config)
     }
 
-    /// Removes all of the the OverlayMessageView instances in the view hierarchy.
+    /// Displays the Not Found Overlay.
+    ///
+    func displayNotFoundOverlay() {
+        let emptyStateViewController = EmptyStateViewController(style: .list)
+        let message = NSLocalizedString("This product has been deleted and is no longer visible",
+                                        comment: "Message displayed when loading a specific product fails because product was deleted")
+        let config = EmptyStateViewController.Config.simple(message: .init(string: message), image: .productDeletedImage)
+        displayEmptyStateViewController(emptyStateViewController)
+        emptyStateViewController.configure(config)
+    }
+
+    /// Shows the EmptyStateViewController as a child view controller
+    ///
+    func displayEmptyStateViewController(_ emptyStateViewController: UIViewController) {
+        self.emptyStateViewController = emptyStateViewController
+        addChild(emptyStateViewController)
+
+        emptyStateViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(emptyStateViewController.view)
+
+        emptyStateViewController.view.pinSubviewToAllEdges(view)
+        emptyStateViewController.didMove(toParent: self)
+    }
+
+    /// Removes EmptyStateViewController child view controller if applicable.
     ///
     func removeAllOverlays() {
-        for subview in view.subviews where subview is OverlayMessageView {
-            subview.removeFromSuperview()
+        guard let emptyStateViewController = emptyStateViewController, emptyStateViewController.parent == self else {
+            return
         }
+
+        emptyStateViewController.willMove(toParent: nil)
+        emptyStateViewController.view.removeFromSuperview()
+        emptyStateViewController.removeFromParent()
+        self.emptyStateViewController = nil
     }
 
-    /// Presents the ProductDetailsViewController or the ProductFormViewController, as a childViewController, for a given Product.
+    /// Presents the ProductFormViewController, as a childViewController, for a given Product.
     ///
     func presentProductDetails(for product: Product) {
         ProductDetailsFactory.productDetails(product: product,
@@ -259,6 +298,8 @@ private extension ProductLoaderViewController {
             presentProductVariationDetails(for: productVariation, parentProduct: parentProduct)
         case .failure:
             displayFailureOverlay()
+        case .notFound:
+            displayNotFoundOverlay()
         }
     }
 
@@ -270,7 +311,7 @@ private extension ProductLoaderViewController {
             stopSpinner()
         case .productLoaded, .productVariationLoaded:
             detachChildrenViewControllers()
-        case .failure:
+        case .failure, .notFound:
             removeAllOverlays()
         }
     }
@@ -284,4 +325,5 @@ private enum State {
     case productLoaded(product: Product)
     case productVariationLoaded(productVariation: ProductVariation, parentProduct: Product)
     case failure
+    case notFound
 }

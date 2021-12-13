@@ -1,0 +1,12 @@
+{
+    "id": 1,
+    "username": "test-username",
+    "first_name": "Test",
+    "last_name": "User",
+    "email": "example@example.blog",
+    "nickname": "User's Nickname",
+    "roles": [
+        "administrator"
+    ],
+    "id_wpcom": 1
+}

@@ -32,6 +32,23 @@
                 "price": 27
             }
         ],
+        "shipping_lines": [
+            {
+                "id": 189,
+                "method_title": "Flat rate",
+                "method_id": "flat_rate",
+                "instance_id": "1",
+                "total": "-7.00",
+                "total_tax": "-0.62",
+                "taxes": [
+                    {
+                        "id": 1,
+                        "total": "-0.62",
+                        "subtotal": ""
+                    }
+                ]
+            }
+        ],
         "_links": {
             "self": [
                 {

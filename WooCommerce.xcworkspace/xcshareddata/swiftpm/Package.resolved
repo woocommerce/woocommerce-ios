@@ -1,0 +1,52 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Difference",
+        "repositoryURL": "https://github.com/krzysztofzablocki/Difference.git",
+        "state": {
+          "branch": "master",
+          "revision": "6b121174e4a4bfed28ef8bb725156fac6e7c12bc",
+          "version": null
+        }
+      },
+      {
+        "package": "Embassy",
+        "repositoryURL": "https://github.com/envoy/Embassy",
+        "state": {
+          "branch": null,
+          "revision": "1f1fe7eeebeb06037c23a2a89d6f8f1271d625be",
+          "version": "4.1.2"
+        }
+      },
+      {
+        "package": "ScreenObject",
+        "repositoryURL": "https://github.com/Automattic/ScreenObject",
+        "state": {
+          "branch": null,
+          "revision": "2d65beae47cdcaaf21703ce1b321f382fe0d0730",
+          "version": "0.2.0"
+        }
+      },
+      {
+        "package": "SwiftUI-Shimmer",
+        "repositoryURL": "https://github.com/markiv/SwiftUI-Shimmer",
+        "state": {
+          "branch": null,
+          "revision": "5b2e81191e77f66e6c6ca497f11a77fe48f7f0fc",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "XCUITestHelpers",
+        "repositoryURL": "https://github.com/Automattic/XCUITestHelpers",
+        "state": {
+          "branch": null,
+          "revision": "3212ac32f0a58ea10604b5cf31fe5450f908ff65",
+          "version": "0.3.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

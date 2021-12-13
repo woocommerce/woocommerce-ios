@@ -5,7 +5,6 @@ import Foundation
 /// The required methods are intentionally incomplete. Feel free to add the other ones.
 ///
 public protocol ProductVariationsRemoteProtocol {
-    func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func loadAllProductVariations(for siteID: Int64,
                                   productID: Int64,
                                   context: String?,
@@ -13,6 +12,12 @@ public protocol ProductVariationsRemoteProtocol {
                                   pageSize: Int,
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void)
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
+    func createProductVariation(for siteID: Int64,
+                                productID: Int64,
+                                newVariation: CreateProductVariation,
+                                completion: @escaping (Result<ProductVariation, Error>) -> Void)
+    func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void)
+    func deleteProductVariation(siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
 }
 
 /// ProductVariation: Remote Endpoints
@@ -64,6 +69,30 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Creates a new `ProductVariation`.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which will hosts the ProductVariations.
+    ///     - productID: Identifier of the Product.
+    ///     - variation: the CreateProductVariation sent for creating a ProductVariation remotely.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func createProductVariation(for siteID: Int64,
+                                        productID: Int64,
+                                        newVariation: CreateProductVariation,
+                                        completion: @escaping (Result<ProductVariation, Error>) -> Void) {
+        do {
+            let parameters = try newVariation.toDictionary()
+
+            let path = "\(Path.products)/\(productID)/variations"
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let mapper = ProductVariationMapper(siteID: siteID, productID: productID)
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
     /// Updates a specific `ProductVariation`.
     ///
     /// - Parameters:
@@ -83,6 +112,22 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         } catch {
             completion(.failure(error))
         }
+    }
+
+    /// Deletes a specific `ProductVariation`.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the ProductVariation.
+    ///     - productID: Identifier of the Product.
+    ///     - variationID: Identifier of the Variation.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func deleteProductVariation(siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
+        let path = "\(Path.products)/\(productID)/variations/\(variationID)"
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .delete, siteID: siteID, path: path, parameters: ["force": true])
+        let mapper = ProductVariationMapper(siteID: siteID, productID: productID)
+
+        enqueue(request, mapper: mapper, completion: completion)
     }
 }
 

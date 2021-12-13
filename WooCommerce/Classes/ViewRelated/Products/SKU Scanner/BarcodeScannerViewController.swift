@@ -5,11 +5,6 @@ import Vision
 /// Starts live stream video for scanning barcodes.
 /// This view controller is meant to be embedded as a child view controller for navigation customization.
 final class BarcodeScannerViewController: UIViewController {
-    /// UI properties that could differ in each use case.
-    struct ViewProperties {
-        let instructionText: String
-    }
-
     @IBOutlet private weak var videoOutputImageView: UIImageView!
 
     // Subviews of `videoOutputImageView`.
@@ -24,11 +19,11 @@ final class BarcodeScannerViewController: UIViewController {
 
     private lazy var throttler: Throttler = Throttler(seconds: 0.1)
 
-    private let viewProperties: ViewProperties
+    private let instructionText: String
     private let onBarcodeScanned: (Result<[String], Error>) -> Void
 
-    init(viewProperties: ViewProperties, onBarcodeScanned: @escaping (Result<[String], Error>) -> Void) {
-        self.viewProperties = viewProperties
+    init(instructionText: String, onBarcodeScanned: @escaping (Result<[String], Error>) -> Void) {
+        self.instructionText = instructionText
         self.onBarcodeScanned = onBarcodeScanned
         super.init(nibName: nil, bundle: nil)
     }
@@ -46,10 +41,6 @@ final class BarcodeScannerViewController: UIViewController {
         configureInstructionLabel()
 
         configureBarcodeDetection()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
 
         startLiveVideo()
     }
@@ -71,29 +62,21 @@ extension BarcodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDele
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
 
-                // Converts video output image buffer to a `CIImage`.
-                guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+                let orientation = self.imageOrientationFromDeviceOrientation()
+                guard let ciImage = self.imageForBarcodeDetection(from: sampleBuffer, orientation: orientation) else {
                     return
                 }
-                let orientation = self.imageOrientationFromDeviceOrientation()
-                let ciImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(orientation)
 
-                // Calculates the scan area frame after scaling to the video image size.
-                let imageExtent = ciImage.extent
-                let scanAreaRect = self.scanAreaView.frame
-                let scaledScanAreaRect = scanAreaRect.scaling(in: self.videoOutputImageView.frame, to: imageExtent)
-
-                // Crops scan area from the original video output image.
-                let croppedCIImage = ciImage.cropped(to: scaledScanAreaRect)
-
-                // Configures options for `VNImageRequestHandler`.
-                var requestOptions: [VNImageOption: Any] = [:]
-                if let cameraData = CMGetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix, attachmentModeOut: nil) {
-                    requestOptions = [.cameraIntrinsics: cameraData]
-                }
                 DispatchQueue.global().async { [weak self] in
                     guard let self = self else { return }
-                    let imageRequestHandler = VNImageRequestHandler(ciImage: croppedCIImage, orientation: orientation, options: requestOptions)
+
+                    // Configures options for `VNImageRequestHandler`.
+                    var requestOptions: [VNImageOption: Any] = [:]
+                    if let cameraData = CMGetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix, attachmentModeOut: nil) {
+                        requestOptions = [.cameraIntrinsics: cameraData]
+                    }
+
+                    let imageRequestHandler = VNImageRequestHandler(ciImage: ciImage, orientation: orientation, options: requestOptions)
                     do {
                         try imageRequestHandler.perform(self.requests)
                     } catch {
@@ -102,6 +85,31 @@ extension BarcodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDele
                 }
             }
         }
+    }
+}
+
+// MARK: Video Processing
+//
+private extension BarcodeScannerViewController {
+    /// Returns a `CIImage` for barcode detection Vision request, if available. This has to be run on the main thread due to frame access.
+    /// - Parameters:
+    ///   - videoSampleBuffer: sample buffer from video.
+    ///   - orientation: expected orientation for the image.
+    func imageForBarcodeDetection(from videoSampleBuffer: CMSampleBuffer, orientation: CGImagePropertyOrientation) -> CIImage? {
+        // Converts video output sample buffer to a `CIImage`.
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(videoSampleBuffer) else {
+            return nil
+        }
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(orientation)
+
+        // Calculates the scan area frame after scaling to the video image size.
+        let imageExtent = ciImage.extent
+        let scanAreaRect = scanAreaView.frame
+        let scaledScanAreaRect = BarcodeScannerFrameScaler.scaling(scanAreaRect, in: videoOutputImageView.frame, to: imageExtent)
+
+        // Crops scan area from the original video output image.
+        let croppedCIImage = ciImage.cropped(to: scaledScanAreaRect)
+        return croppedCIImage
     }
 }
 
@@ -188,8 +196,8 @@ private extension BarcodeScannerViewController {
         instructionLabel.textAlignment = .center
         instructionLabel.applyHeadlineStyle()
         instructionLabel.textColor = .white
-        instructionLabel.textInsets = .init(top: 11, left: 0, bottom: 11, right: 0)
-        instructionLabel.text = viewProperties.instructionText
+        instructionLabel.textInsets = Constants.instructionTextInsets
+        instructionLabel.text = instructionText
     }
 }
 
@@ -198,7 +206,7 @@ private extension BarcodeScannerViewController {
 private extension BarcodeScannerViewController {
     func updatePreviewLayerOrientation() {
         if let connection = previewLayer?.connection, connection.isVideoOrientationSupported {
-            let orientation = UIApplication.shared.statusBarOrientation
+            let orientation = UIApplication.shared.currentKeyWindow?.windowScene?.interfaceOrientation
             let videoOrientation: AVCaptureVideoOrientation
             switch orientation {
             case .portrait:
@@ -247,5 +255,6 @@ private extension BarcodeScannerViewController {
 private extension BarcodeScannerViewController {
     enum Constants {
         static let dimmingColor = UIColor(white: 0.0, alpha: 0.5)
+        static let instructionTextInsets = UIEdgeInsets(top: 11, left: 0, bottom: 11, right: 0)
     }
 }

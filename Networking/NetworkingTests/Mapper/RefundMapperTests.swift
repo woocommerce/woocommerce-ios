@@ -62,6 +62,24 @@ final class RefundMapperTests: XCTestCase {
         XCTAssertEqual(item.price, NSDecimalNumber(integerLiteral: 27))
     }
 
+    func test_refund_shipping_lines_are_correctly_parsed() {
+        guard let refund = mapLoadRefundResponse(),
+              let shippingLine = refund.shippingLines?.first,
+              let taxLine = shippingLine.taxes.first else {
+            XCTFail("Failed to load `refund-single.json` file.")
+            return
+        }
+
+        XCTAssertEqual(shippingLine.shippingID, 189)
+        XCTAssertEqual(shippingLine.methodTitle, "Flat rate")
+        XCTAssertEqual(shippingLine.methodID, "flat_rate")
+        XCTAssertEqual(shippingLine.total, "-7.00")
+        XCTAssertEqual(shippingLine.totalTax, "-0.62")
+        XCTAssertEqual(taxLine.taxID, 1)
+        XCTAssertEqual(taxLine.total, "-0.62")
+        XCTAssertEqual(taxLine.subtotal, "")
+    }
+
     func test_refund_is_encoded_correctly_with_items_and_taxes() throws {
         // Given
         let refund = sampleRefund(includeTaxes: true)
@@ -154,7 +172,8 @@ private extension RefundMapperTests {
                refundedByUserID: 1,
                isAutomated: nil,
                createAutomated: false,
-               items: [sampleItem(includeTaxes: includeTaxes)])
+               items: [sampleItem(includeTaxes: includeTaxes)],
+               shippingLines: [])
     }
 
     /// Creates a dummy refund items with taxes

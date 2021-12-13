@@ -31,6 +31,28 @@ class HelpAndSupportViewController: UIViewController {
         return NSLocalizedString("Set email", comment: "Tells user to set an email that support can use for replies")
     }
 
+    /// Payment Gateway Accounts Results Controller: Loads Payment Gateway Accounts from the Storage Layer
+    /// e.g. WooCommerce Payments, but eventually other in-person payment accounts too
+    ///
+    private var paymentGatewayAccountsResultsController: ResultsController<StoragePaymentGatewayAccount>? = {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return nil
+        }
+
+        let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
+    private var isPaymentsAvailable: Bool {
+        guard let accounts = paymentGatewayAccountsResultsController?.fetchedObjects else {
+            return false
+        }
+
+        return accounts.contains(where: \.isCardPresentEligible)
+    }
+
     /// Indicates if the NavBar should display a dismiss button
     ///
     var displaysDismissAction = false
@@ -46,7 +68,11 @@ class HelpAndSupportViewController: UIViewController {
         configureSections()
         configureTableView()
         registerTableViewCells()
+        configureResultsControllers { [weak self] in
+            self?.refreshViewContent()
+        }
         warnDeveloperIfNeeded()
+        refreshViewContent()
     }
 }
 
@@ -58,9 +84,6 @@ private extension HelpAndSupportViewController {
     ///
     func configureNavigation() {
         title = NSLocalizedString("Help", comment: "Help and Support navigation title")
-
-        // Don't show the Settings title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
 
         // Dismiss
         navigationItem.leftBarButtonItem = {
@@ -87,6 +110,22 @@ private extension HelpAndSupportViewController {
         tableView.backgroundColor = .listBackground
     }
 
+    func configureResultsControllers(onReload: @escaping () -> Void) {
+        guard paymentGatewayAccountsResultsController != nil else {
+            return
+        }
+
+        paymentGatewayAccountsResultsController?.onDidChangeContent = {
+            onReload()
+        }
+
+        paymentGatewayAccountsResultsController?.onDidResetContent = {
+            onReload()
+        }
+
+        try? paymentGatewayAccountsResultsController?.performFetch()
+    }
+
     /// Disable Zendesk if configuration on ZD init fails.
     ///
     func configureSections() {
@@ -98,12 +137,25 @@ private extension HelpAndSupportViewController {
         }
 
         sections = [
-            Section(title: helpAndSupportTitle, rows: [.helpCenter,
-                                                       .contactSupport,
-                                                       .myTickets,
-                                                       .contactEmail,
-                                                       .applicationLog])
+            Section(title: helpAndSupportTitle, rows: calculateRows())
         ]
+    }
+
+    private func calculateRows() -> [Row] {
+        guard isPaymentsAvailable else {
+            return [.helpCenter,
+                    .contactSupport,
+                    .myTickets,
+                    .contactEmail,
+                    .applicationLog]
+        }
+
+        return [.helpCenter,
+                .contactSupport,
+                .contactWCPaySupport,
+                .myTickets,
+                .contactEmail,
+                .applicationLog]
     }
 
     /// Register table cells.
@@ -139,6 +191,8 @@ private extension HelpAndSupportViewController {
             configureHelpCenter(cell: cell)
         case let cell as ValueOneTableViewCell where row == .contactSupport:
             configureContactSupport(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .contactWCPaySupport:
+            configureContactWCPaySupport(cell: cell)
         case let cell as ValueOneTableViewCell where row == .myTickets:
             configureMyTickets(cell: cell)
         case let cell as ValueOneTableViewCell where row == .contactEmail:
@@ -171,6 +225,18 @@ private extension HelpAndSupportViewController {
         )
     }
 
+    /// Contact WCPay Support cell.
+    ///
+    func configureContactWCPaySupport(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Contact WooCommerce Payments Support", comment: "Contact WooComerce Payments Support title")
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "Reach our happiness engineers who can help answer payments related questions",
+            comment: "Subtitle for Contact WooCommerce Payments Support"
+        )
+    }
+
     /// My Tickets cell.
     ///
     func configureMyTickets(cell: ValueOneTableViewCell) {
@@ -199,6 +265,11 @@ private extension HelpAndSupportViewController {
             "Advanced tool to review the app status",
             comment: "Cell subtitle explaining why you might want to navigate to view the application log."
         )
+    }
+
+    func refreshViewContent() {
+        configureSections()
+        tableView.reloadData()
     }
 }
 
@@ -230,6 +301,16 @@ private extension HelpAndSupportViewController {
         }
 
         ZendeskManager.shared.showNewRequestIfPossible(from: navController)
+    }
+
+    /// Contact WCPay Support action
+    ///
+    func contactWCPaySupportWasPressed() {
+        guard let navController = navigationController else {
+            return
+        }
+
+        ZendeskManager.shared.showNewWCPayRequestIfPossible(from: navController)
     }
 
     /// My Tickets action
@@ -269,7 +350,12 @@ private extension HelpAndSupportViewController {
     /// View application log action
     ///
     func applicationLogWasPressed() {
-        performSegue(withIdentifier: Constants.appLogSegue, sender: nil)
+        let identifier = ApplicationLogViewController.classNameWithoutNamespaces
+        guard let applicationLogVC = UIStoryboard.dashboard.instantiateViewController(identifier: identifier) as? ApplicationLogViewController else {
+            DDLogError("Error: attempted to instantiate ApplicationLogViewController. Instantiation failed.")
+            return
+        }
+        navigationController?.pushViewController(applicationLogVC, animated: true)
     }
 
     @objc func dismissWasPressed() {
@@ -318,6 +404,8 @@ extension HelpAndSupportViewController: UITableViewDelegate {
             helpCenterWasPressed()
         case .contactSupport:
             contactSupportWasPressed()
+        case .contactWCPaySupport:
+            contactWCPaySupportWasPressed()
         case .myTickets:
             myTicketsWasPressed()
         case .contactEmail:
@@ -334,7 +422,6 @@ extension HelpAndSupportViewController: UITableViewDelegate {
 private struct Constants {
     static let rowHeight = CGFloat(44)
     static let footerHeight = 44
-    static let appLogSegue = "ShowApplicationLogViewController"
 }
 
 private struct Section {
@@ -345,6 +432,7 @@ private struct Section {
 private enum Row: CaseIterable {
     case helpCenter
     case contactSupport
+    case contactWCPaySupport
     case myTickets
     case contactEmail
     case applicationLog
@@ -354,6 +442,8 @@ private enum Row: CaseIterable {
         case .helpCenter:
             return ValueOneTableViewCell.self
         case .contactSupport:
+            return ValueOneTableViewCell.self
+        case .contactWCPaySupport:
             return ValueOneTableViewCell.self
         case .myTickets:
             return ValueOneTableViewCell.self

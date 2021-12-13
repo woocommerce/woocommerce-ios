@@ -57,6 +57,12 @@ extension UILabel {
         textColor = .text
     }
 
+    func applySecondaryTitleStyle() {
+        adjustsFontForContentSizeCategory = true
+        font = .title2
+        textColor = .text
+    }
+
     func applyPaddedLabelDefaultStyles() {
         adjustsFontForContentSizeCategory = true
         layer.borderWidth = 1.0

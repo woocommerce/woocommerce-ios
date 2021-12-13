@@ -14,7 +14,6 @@ public typealias FetchResultSnapshotObjectID = NSManagedObjectID
 ///
 /// The `String` is the type of the `FetchResultSnapshot.sectionIdenfifiers` items. The
 /// `FetchResultSnapshotObjectID` is the type of the `FetchResultSnapshot.itemIdentifiers` items.
-@available(iOS 13.0, *)
 public typealias FetchResultSnapshot = NSDiffableDataSourceSnapshot<String, FetchResultSnapshotObjectID>
 
 /// Emits `FetchResultSnapshot` objects for Core Data fetch results. The snapshot can be used
@@ -67,7 +66,6 @@ public typealias FetchResultSnapshot = NSDiffableDataSourceSnapshot<String, Fetc
 ///    how this undesirable animation looks like https://tinyurl.com/y62lwzg9. There is also
 ///    a related discussion about this [here](https://git.io/JUW5r).
 ///
-@available(iOS 13.0, *)
 public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshotsProviderMutableType> {
 
     /// Defines the conditions for fetching the results.
@@ -181,7 +179,6 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
 
 // MARK: - FetchedResultsController Activation
 
-@available(iOS 13.0, *)
 private extension FetchResultSnapshotsProvider {
     /// Start `fetchedResultsController` fetching and dispatching of snapshots.
     func activateFetchedResultsController() throws {
@@ -237,7 +234,6 @@ private extension FetchResultSnapshotsProvider {
 
 // MARK: - NSFetchedResultsControllerDelegate
 
-@available(iOS 13.0, *)
 private extension FetchResultSnapshotsProvider {
     /// Part of `FetchResultSnapshotsProvider` which submits new `FetchResultSnapshot` objects to
     /// `snapshotSubject` whenever `NSFetchedResultsController` receives changes.
@@ -265,7 +261,6 @@ private extension FetchResultSnapshotsProvider {
 
 // MARK: - ObjectsDidChange Notification Handling
 
-@available(iOS 13.0, *)
 private extension FetchResultSnapshotsProvider {
 
     /// Start observing `NSManagedObjectContextObjectsDidChange` notifications so that snapshots
@@ -368,7 +363,6 @@ private struct ObjectsDidChangeNotification {
 
 // MARK: - StorageManager Reset Handling
 
-@available(iOS 13.0, *)
 private extension FetchResultSnapshotsProvider {
 
     /// Observe `StorageManagerDidResetStorage` notifications so that we can restart the

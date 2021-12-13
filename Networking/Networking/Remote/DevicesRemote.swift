@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 
 /// Devices: Remote Endpoints (Push Notifications Registration / Unregistration!)
@@ -13,12 +12,13 @@ public class DevicesRemote: Remote {
     ///     - applicationId: App ID.
     ///     - applicationVersion: App Version.
     ///     - defaultStoreID: Active Store ID.
-    ///     - completion: Closure to be executed on commpletion.
+    ///     - completion: Closure to be executed on completion.
     ///
     public func registerDevice(device: APNSDevice,
                                applicationId: String,
                                applicationVersion: String,
                                defaultStoreID: Int64,
+                               pushNotificationsForAllStoresEnabled: Bool,
                                completion: @escaping (DotcomDevice?, Error?) -> Void) {
         var parameters = [
             ParameterKeys.applicationId: applicationId,
@@ -28,7 +28,7 @@ public class DevicesRemote: Remote {
             ParameterKeys.deviceModel: device.model,
             ParameterKeys.deviceName: device.name,
             ParameterKeys.deviceOSVersion: device.iOSVersion,
-            ParameterKeys.defaultStoreID: String(defaultStoreID)
+            ParameterKeys.defaultStoreID: pushNotificationsForAllStoresEnabled ? "": String(defaultStoreID)
         ]
 
         if let deviceUUID = device.identifierForVendor {
@@ -48,7 +48,7 @@ public class DevicesRemote: Remote {
     ///
     /// - Parameters:
     ///     - deviceId: Identifier of the device to be removed.
-    ///     - completion: Closure to be executed on commpletion.
+    ///     - completion: Closure to be executed on completion.
     ///
     public func unregisterDevice(deviceId: String, completion: @escaping (Error?) -> Void) {
         let path = String(format: Paths.delete, deviceId)

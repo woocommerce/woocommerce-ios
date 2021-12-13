@@ -1,8 +1,14 @@
 import Yosemite
+import Observables
+
+import protocol Storage.StorageManagerType
 
 /// Provides data for product form UI, and handles product editing actions.
 final class ProductFormViewModel: ProductFormViewModelProtocol {
     typealias ProductModel = EditableProductModel
+
+    /// Production variation ID only for Product Variation not for product
+    var productionVariationID: Int64? = nil
 
     /// Emits product on change, except when the product name is the only change (`productName` is emitted for this case).
     var observableProduct: Observable<EditableProductModel> {
@@ -19,9 +25,19 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         isUpdateEnabledSubject
     }
 
+    /// Emits a void value informing when there is a new variation price state available
+    var newVariationsPrice: Observable<Void> {
+        newVariationsPriceSubject
+    }
+
     /// The latest product value.
     var productModel: EditableProductModel {
         product
+    }
+
+    /// The original product value.
+    var originalProductModel: EditableProductModel {
+        originalProduct
     }
 
     /// The form type could change from .add to .edit after creation.
@@ -33,6 +49,18 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     private let productSubject: PublishSubject<EditableProductModel> = PublishSubject<EditableProductModel>()
     private let productNameSubject: PublishSubject<String> = PublishSubject<String>()
     private let isUpdateEnabledSubject: PublishSubject<Bool>
+    private let newVariationsPriceSubject = PublishSubject<Void>()
+
+    private lazy var variationsResultsController = createVariationsResultsController()
+
+    /// Returns `true` if the `Add-ons` beta feature switch is enabled. `False` otherwise.
+    /// Assigning this value will recreate the `actionsFactory` property.
+    ///
+    private var isAddOnsFeatureEnabled: Bool = false {
+        didSet {
+            updateActionsFactory()
+        }
+    }
 
     /// The product model before any potential edits; reset after a remote update.
     private var originalProduct: EditableProductModel {
@@ -57,9 +85,13 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
                 return
             }
 
-            actionsFactory = ProductFormActionsFactory(product: product,
-                                                       formType: formType,
-                                                       isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+            // Product changes ID when it is just created.
+            if oldValue.productID != product.productID {
+                updateVariationsResultsController()
+            }
+
+            updateFormTypeIfNeeded(oldProduct: oldValue.product)
+            updateActionsFactory()
             productSubject.send(product)
         }
     }
@@ -79,30 +111,75 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         }
     }
 
+    /// The action buttons that should be rendered in the navigation bar.
+    var actionButtons: [ActionButtonType] {
+        // Figure out main action button first
+        var buttons: [ActionButtonType] = {
+            switch (formType, originalProductModel.status, productModel.status, originalProduct.product.existsRemotely, hasUnsavedChanges()) {
+            case (.add, .publish, .publish, false, _): // New product with publish status
+                return [.publish]
+
+            case (.add, .publish, _, false, _): // New product with a different status
+                return [.save] // And publish in more
+
+            case (.edit, .publish, _, true, true): // Existing published product with changes
+                return [.save]
+
+            case (.edit, .publish, _, true, false): // Existing published product with no changes
+                return []
+
+            case (.edit, _, _, true, true): // Any other existing product with changes
+                return [.save] // And publish in more
+
+            case (.edit, _, _, true, false): // Any other existing product with no changes
+                return [.publish]
+
+            case (.readonly, _, _, _, _): // Any product on readonly mode
+                 return []
+
+            default: // Impossible cases
+                return []
+            }
+        }()
+
+        // Add more button if needed
+        if shouldShowMoreOptionsMenu() {
+            buttons.append(.more)
+        }
+
+        return buttons
+    }
+
     private let productImageActionHandler: ProductImageActionHandler
-    private let isEditProductsRelease5Enabled: Bool
 
     private var cancellable: ObservationToken?
+
+    private let stores: StoresManager
+
+    private let storageManager: StorageManagerType
 
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
-         isEditProductsRelease5Enabled: Bool) {
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
-        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
         self.originalProduct = product
         self.product = product
-        self.actionsFactory = ProductFormActionsFactory(product: product,
-                                                        formType: formType,
-                                                        isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+        self.actionsFactory = ProductFormActionsFactory(product: product, formType: formType)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()
+        self.stores = stores
+        self.storageManager = storageManager
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             if allStatuses.productImageStatuses.hasPendingUpload {
                 self?.isUpdateEnabledSubject.send(true)
             }
         }
+
+        queryAddOnsFeatureState()
+        updateVariationsPriceState()
     }
 
     deinit {
@@ -117,8 +194,21 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 // MARK: - More menu
 //
 extension ProductFormViewModel {
+
+    /// Show publish button if the product can be published and the publish button is not already part of the action buttons.
+    ///
+    func canShowPublishOption() -> Bool {
+        let newProduct = formType == .add && !originalProduct.product.existsRemotely
+        let existingUnpublishedProduct = formType == .edit && originalProduct.product.existsRemotely && originalProduct.status != .publish
+
+        let productCanBePublished = newProduct || existingUnpublishedProduct
+        let publishIsNotAlreadyVisible = !actionButtons.contains(.publish)
+
+        return productCanBePublished && publishIsNotAlreadyVisible
+    }
+
     func canSaveAsDraft() -> Bool {
-        formType == .add
+        formType == .add && productModel.status != .draft
     }
 
     func canEditProductSettings() -> Bool {
@@ -134,7 +224,6 @@ extension ProductFormViewModel {
     }
 
     func canDeleteProduct() -> Bool {
-        isEditProductsRelease5Enabled &&
         formType == .edit
     }
 }
@@ -168,7 +257,7 @@ extension ProductFormViewModel {
                                                                      taxClass: taxClass?.slug))
     }
 
-    func updateProductType(productType: ProductType) {
+    func updateProductType(productType: BottomSheetProductType) {
         /// The property `manageStock` is set to `false` if the new `productType` is `affiliate`
         /// because it seems there is a small bug in APIs that doesn't allow us to change type from a product with
         /// manage stock enabled to external product type. More info: PR-2665
@@ -177,13 +266,15 @@ extension ProductFormViewModel {
         if productType == .affiliate {
             manageStock = false
         }
-        product = EditableProductModel(product: product.product.copy(productTypeKey: productType.rawValue, manageStock: manageStock))
+        product = EditableProductModel(product: product.product.copy(productTypeKey: productType.productType.rawValue,
+                                                                     virtual: productType.isVirtual,
+                                                                     manageStock: manageStock))
     }
 
     func updateInventorySettings(sku: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,
-                                 stockQuantity: Int64?,
+                                 stockQuantity: Decimal?,
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?) {
         product = EditableProductModel(product: product.product.copy(sku: sku,
@@ -247,6 +338,50 @@ extension ProductFormViewModel {
                                                                      downloadLimit: downloadLimit,
                                                                      downloadExpiry: downloadExpiry))
     }
+
+    func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64]) {
+        product = EditableProductModel(product: product.product.copy(upsellIDs: upsellIDs,
+                                                                     crossSellIDs: crossSellIDs))
+    }
+
+    func updateVariationAttributes(_ attributes: [ProductVariationAttribute]) {
+        // no-op
+    }
+
+    /// Updates the original product variations(and attributes).
+    /// This is needed because variations and attributes, remote updates, happen outside this view model and wee need a way to sync our original product.
+    ///
+    func updateProductVariations(from newProduct: Product) {
+        // ProductID and statusKey could have changed, in case we had to create the product as a draft to create attributes or variations
+        let newOriginalProduct = EditableProductModel(product: originalProduct.product.copy(productID: newProduct.productID,
+                                                                                            statusKey: newProduct.statusKey,
+                                                                                            attributes: newProduct.attributes,
+                                                                                            variations: newProduct.variations))
+
+        // Make sure the product is updated locally. Useful for screens that are observing the product or a list of products.
+        updateStoredProduct(with: newOriginalProduct.product)
+
+        // If the product doesn't have any pending changes, we can safely override the original product
+        guard hasUnsavedChanges() else {
+            return resetProduct(newOriginalProduct)
+        }
+
+        // If the product has pending changes, we need to override the `originalProduct` first and the `living product` later with a saved copy.
+        // This is because, overriding `originalProduct` also overrides the `living product`.
+        let productWithChanges = EditableProductModel(product: product.product.copy(productID: newProduct.productID,
+                                                                                    statusKey: newProduct.statusKey,
+                                                                                    attributes: newProduct.attributes,
+                                                                                    variations: newProduct.variations))
+        resetProduct(newOriginalProduct)
+        product = productWithChanges
+    }
+
+    /// Fires a `Yosemite` action to update the product in our storage layer
+    ///
+    func updateStoredProduct(with newProduct: Product) {
+        let action = ProductAction.replaceProductLocally(product: newProduct, onCompletion: {})
+        stores.dispatch(action)
+    }
 }
 
 // MARK: Remote actions
@@ -271,7 +406,6 @@ extension ProductFormViewModel {
                     guard let self = self else {
                         return
                     }
-                    self.formType = .edit
                     self.resetProduct(data.product)
                     self.resetPassword(data.password)
                     onCompletion(.success(data.product))
@@ -299,12 +433,12 @@ extension ProductFormViewModel {
         }
     }
 
-    func deleteProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
+    func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
         let remoteActionUseCase = ProductFormRemoteActionUseCase()
         remoteActionUseCase.deleteProduct(product: product) { result in
             switch result {
-            case .success(let data):
-                onCompletion(.success(data.product))
+            case .success:
+                onCompletion(.success(()))
             case .failure(let error):
                 onCompletion(.failure(error))
             }
@@ -325,9 +459,88 @@ extension ProductFormViewModel {
     }
 }
 
+// MARK: Miscellaneous
+
 private extension ProductFormViewModel {
     func isNameTheOnlyChange(oldProduct: EditableProductModel, newProduct: EditableProductModel) -> Bool {
         let oldProductWithNewName = EditableProductModel(product: oldProduct.product.copy(name: newProduct.name))
         return oldProductWithNewName == newProduct && newProduct.name != oldProduct.name
+    }
+
+    /// Updates the `newVariationsPriceSubject`and `actionsFactory` to the latest variations price information.
+    /// Returns weather the variation
+    ///
+    func updateVariationsPriceState() {
+        updateActionsFactory()
+        newVariationsPriceSubject.send(())
+    }
+
+    /// Calculates the variations price state for the current fetched variations.
+    ///
+    func calculateVariationPriceState() -> ProductFormActionsFactory.VariationsPrice {
+        // If there are no fetched variations we can't be sure of it's price state
+        guard !variationsResultsController.isEmpty else {
+            return .unknown
+        }
+
+        let someMissingPrice = variationsResultsController.fetchedObjects.contains { $0.regularPrice.isNilOrEmpty }
+        return someMissingPrice ? .notSet : .set
+    }
+
+    /// Updates the internal `formType` when a product changes from new to a saved status.
+    /// Currently needed when a new product was just created as a draft to allow creating attributes and variations.
+    ///
+    func updateFormTypeIfNeeded(oldProduct: Product) {
+        guard !oldProduct.existsRemotely, product.product.existsRemotely else {
+            return
+        }
+
+        formType = .edit
+    }
+
+    /// Reassigns the `variationsResultsController` with a newly created object.
+    ///
+    private func updateVariationsResultsController() {
+        variationsResultsController = createVariationsResultsController()
+    }
+
+    /// Creates a variations results controller.
+    ///
+    private func createVariationsResultsController() -> ResultsController<StorageProductVariation> {
+        let predicate = NSPredicate(format: "product.siteID = %ld AND product.productID = %ld", product.siteID, product.productID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageProductVariation.productVariationID, ascending: true)
+        let controller = ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+
+        try? controller.performFetch()
+        controller.onDidChangeContent = { [weak self] in
+            self?.updateVariationsPriceState()
+        }
+
+        return controller
+    }
+}
+
+// MARK: Beta feature handling
+//
+private extension ProductFormViewModel {
+    /// Query the latest `Add-ons` beta feature state.
+    ///
+    func queryAddOnsFeatureState() {
+        let action = AppSettingsAction.loadOrderAddOnsSwitchState { [weak self] result in
+            guard let self = self, case .success(let addOnsEnabled) = result else {
+                return
+            }
+            self.isAddOnsFeatureEnabled = addOnsEnabled
+        }
+        stores.dispatch(action)
+    }
+
+    /// Recreates `actionsFactory` with the latest `product`, `formType`, and `isAddOnsFeatureEnabled` information.
+    ///
+    func updateActionsFactory() {
+        actionsFactory = ProductFormActionsFactory(product: product,
+                                                   formType: formType,
+                                                   addOnsFeatureEnabled: isAddOnsFeatureEnabled,
+                                                   variationsPrice: calculateVariationPriceState())
     }
 }

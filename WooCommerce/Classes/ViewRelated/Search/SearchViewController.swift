@@ -29,9 +29,7 @@ where Cell.SearchModel == Command.CellViewModel {
 
     /// Footer "Loading More" Spinner.
     ///
-    private lazy var footerSpinnerView = {
-        return FooterSpinnerView(tableViewStyle: tableView.style)
-    }()
+    private lazy var footerSpinnerView = FooterSpinnerView()
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) models in sync.
     ///
@@ -92,17 +90,20 @@ where Cell.SearchModel == Command.CellViewModel {
     }()
 
     private let searchUICommand: Command
+    private let tableViewSeparatorStyle: UITableViewCell.SeparatorStyle
 
 
     /// Designated Initializer
     ///
     init(storeID: Int64,
          command: Command,
-         cellType: Cell.Type) {
+         cellType: Cell.Type,
+         cellSeparator: UITableViewCell.SeparatorStyle) {
         self.resultsController = command.createResultsController()
         self.resultsPredicate = resultsController.predicate
         self.searchUICommand = command
         self.storeID = storeID
+        tableViewSeparatorStyle = cellSeparator
         super.init(nibName: "SearchViewController", bundle: nil)
     }
 
@@ -181,7 +182,9 @@ where Cell.SearchModel == Command.CellViewModel {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let model = resultsController.object(at: indexPath)
+        guard let model = resultsController.safeObject(at: indexPath) else {
+            return
+        }
         searchUICommand.didSelectSearchResult(model: model, from: self, reloadData: { [weak self] in
             self?.tableView.reloadData()
         }, updateActionButton: { [weak self] in
@@ -259,6 +262,7 @@ private extension SearchViewController {
         tableView.estimatedRowHeight = Settings.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.tableFooterView = footerSpinnerView
+        tableView.separatorStyle = tableViewSeparatorStyle
     }
 
     /// Setup: Search Bar
@@ -266,10 +270,7 @@ private extension SearchViewController {
     func configureSearchBar() {
         searchBar.placeholder = searchUICommand.searchBarPlaceholder
         searchBar.accessibilityIdentifier = searchUICommand.searchBarAccessibilityIdentifier
-
-        if #available(iOS 13.0, *) {
-            searchBar.searchTextField.textColor = .text
-        }
+        searchBar.searchTextField.textColor = .text
     }
 
     /// Setup: Search Bar Borders
@@ -300,7 +301,7 @@ private extension SearchViewController {
         do {
             try resultsController.performFetch()
         } catch {
-            CrashLogging.logError(error)
+            ServiceLocator.crashLogging.logError(error)
         }
 
         tableView.reloadData()

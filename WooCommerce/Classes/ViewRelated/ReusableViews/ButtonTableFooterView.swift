@@ -37,16 +37,28 @@ final class ButtonTableFooterView: UIView {
 private extension ButtonTableFooterView {
 
     func configureButton(title: String) {
+        preservesSuperviewLayoutMargins = true
+
         button.applyPrimaryButtonStyle()
         button.setTitle(title, for: .normal)
         button.addTarget(self, action: #selector(sendButtonPressedEvent), for: .touchUpInside)
 
         button.translatesAutoresizingMaskIntoConstraints = false
         addSubview(button)
-        pinSubviewToSafeArea(button, insets: .init(top: Dimensions.buttonDefaultInset,
-                                                   left: Dimensions.buttonDefaultInset,
-                                                   bottom: Dimensions.buttonBottomInset,
-                                                   right: Dimensions.buttonDefaultInset))
+
+        configureButtonConstraints()
+    }
+
+    private func configureButtonConstraints() {
+        let trailingConstraint = layoutMarginsGuide.trailingAnchor.constraint(equalTo: button.trailingAnchor)
+        trailingConstraint.priority = .defaultHigh
+
+        NSLayoutConstraint.activate([
+            layoutMarginsGuide.leadingAnchor.constraint(equalTo: button.leadingAnchor),
+            trailingConstraint,
+            layoutMarginsGuide.topAnchor.constraint(equalTo: button.topAnchor, constant: -Dimensions.buttonTopInset),
+            layoutMarginsGuide.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: Dimensions.buttonBottomInset),
+        ])
     }
 
     @objc func sendButtonPressedEvent() {
@@ -54,7 +66,7 @@ private extension ButtonTableFooterView {
     }
 
     enum Dimensions {
-        static let buttonDefaultInset: CGFloat = 16
+        static let buttonTopInset: CGFloat = 16
         static let buttonBottomInset: CGFloat = 64
     }
 }

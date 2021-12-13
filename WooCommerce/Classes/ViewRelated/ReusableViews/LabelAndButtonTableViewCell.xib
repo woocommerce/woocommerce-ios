@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LabelAndButtonTableViewCell" id="HOR-JD-wYA" customClass="LabelAndButtonTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="HOR-JD-wYA" id="nm8-P2-HxZ">
+                <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OhL-hX-qBu">
+                        <rect key="frame" x="16" y="15" width="31" height="14"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NUH-Od-3Cg">
+                        <rect key="frame" x="360" y="8.5" width="38" height="27"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                        <color key="tintColor" name="Pink50"/>
+                        <state key="normal" title="Button"/>
+                    </button>
+                </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                <constraints>
+                    <constraint firstItem="OhL-hX-qBu" firstAttribute="leading" secondItem="nm8-P2-HxZ" secondAttribute="leading" constant="16" id="32z-8n-hEN"/>
+                    <constraint firstItem="OhL-hX-qBu" firstAttribute="top" secondItem="nm8-P2-HxZ" secondAttribute="top" constant="15" id="DLB-5E-lIY"/>
+                    <constraint firstAttribute="trailing" secondItem="NUH-Od-3Cg" secondAttribute="trailing" constant="16" id="Iby-g6-rYk"/>
+                    <constraint firstAttribute="bottom" secondItem="OhL-hX-qBu" secondAttribute="bottom" constant="15" id="NGj-xH-YOe"/>
+                    <constraint firstItem="NUH-Od-3Cg" firstAttribute="centerY" secondItem="nm8-P2-HxZ" secondAttribute="centerY" id="pX6-Nb-5k7"/>
+                    <constraint firstItem="OhL-hX-qBu" firstAttribute="centerY" secondItem="nm8-P2-HxZ" secondAttribute="centerY" id="xxB-it-osD"/>
+                </constraints>
+            </tableViewCellContentView>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <connections>
+                <outlet property="button" destination="NUH-Od-3Cg" id="5Vp-CU-Vc4"/>
+                <outlet property="label" destination="OhL-hX-qBu" id="bZh-zw-CYY"/>
+            </connections>
+            <point key="canvasLocation" x="900" y="-54"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <namedColor name="Pink50">
+            <color red="0.78823529411764703" green="0.20784313725490197" blue="0.43137254901960786" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

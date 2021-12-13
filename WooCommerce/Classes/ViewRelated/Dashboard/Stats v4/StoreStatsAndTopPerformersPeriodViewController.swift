@@ -1,6 +1,7 @@
 import UIKit
 import XLPagerTabStrip
 import Yosemite
+import Observables
 
 /// Container view controller for a stats v4 time range that consists of a scrollable stack view of:
 /// - Store stats data view (managed by child view controller `StoreStatsV4PeriodViewController`)
@@ -11,6 +12,9 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     // MARK: Public Interface
 
+    /// For navigation bar large title workaround.
+    weak var scrollDelegate: DashboardUIScrollDelegate?
+
     /// Time range for this period
     let timeRange: StatsTimeRangeV4
 
@@ -18,9 +22,9 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     let granularity: StatsGranularityV4
 
     /// Whether site visit stats can be shown
-    var shouldShowSiteVisitStats: Bool = true {
+    var siteVisitStatsMode: SiteVisitStatsMode = .default {
         didSet {
-            storeStatsPeriodViewController.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+            storeStatsPeriodViewController.siteVisitStatsMode = siteVisitStatsMode
         }
     }
 
@@ -38,6 +42,21 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     var siteTimezone: TimeZone = .current {
         didSet {
             storeStatsPeriodViewController.siteTimezone = siteTimezone
+        }
+    }
+
+    /// Timestamp for last successful data sync
+    var lastFullSyncTimestamp: Date?
+
+    /// Minimal time interval for data refresh
+    var minimalIntervalBetweenSync: TimeInterval {
+        switch timeRange {
+        case .today:
+            return 60
+        case .thisWeek, .thisMonth:
+            return 60*60
+        case .thisYear:
+            return 60*60*12
         }
     }
 
@@ -72,7 +91,10 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     private lazy var inAppFeedbackCardViewsForStackView: [UIView] = createInAppFeedbackCardViewsForStackView()
 
     private lazy var topPerformersPeriodViewController: TopPerformerDataViewController = {
-        return TopPerformerDataViewController(siteID: siteID, granularity: timeRange.topEarnerStatsGranularity)
+        return TopPerformerDataViewController(siteID: siteID,
+                                              siteTimeZone: siteTimezone,
+                                              currentDate: currentDate,
+                                              timeRange: timeRange)
     }()
 
     // MARK: Internal Properties
@@ -127,9 +149,23 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         configureSubviews()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // Fix any incomplete animation of the refresh control
+        // when switching tabs mid-animation
+        refreshControl.resetAnimation(in: scrollView)
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         viewModel.onViewDidAppear()
+    }
+}
+
+extension StoreStatsAndTopPerformersPeriodViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        scrollDelegate?.dashboardUIScrollViewDidScroll(scrollView)
     }
 }
 
@@ -211,6 +247,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         view.pinSubviewToSafeArea(scrollView)
 
         scrollView.refreshControl = refreshControl
+        scrollView.delegate = self
 
         scrollView.addSubview(stackView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false

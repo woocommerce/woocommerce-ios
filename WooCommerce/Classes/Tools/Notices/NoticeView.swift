@@ -13,6 +13,7 @@ class NoticeView: UIView {
     private let shadowMaskLayer = CAShapeLayer()
 
     private let titleLabel = UILabel()
+    private let subtitleLabel = UILabel()
     private let messageLabel = UILabel()
     private let actionButton = UIButton(type: .system)
 
@@ -32,11 +33,7 @@ class NoticeView: UIView {
     init(notice: Notice) {
         self.notice = notice
 
-        if #available(iOS 13.0, *) {
-            self.backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .systemThickMaterial))
-        } else {
-            self.backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
-        }
+        self.backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .systemThickMaterial))
 
         super.init(frame: .zero)
 
@@ -121,6 +118,7 @@ private extension NoticeView {
         labelStackView.layoutMargins = Metrics.layoutMargins
 
         labelStackView.addArrangedSubview(titleLabel)
+        labelStackView.addArrangedSubview(subtitleLabel)
         labelStackView.addArrangedSubview(messageLabel)
 
         contentStackView.addArrangedSubview(labelStackView)
@@ -131,9 +129,11 @@ private extension NoticeView {
             ])
 
         titleLabel.font = Fonts.titleLabelFont
+        subtitleLabel.font = Fonts.subtitleLabelFont
         messageLabel.font = Fonts.messageLabelFont
 
         titleLabel.textColor = Appearance.titleColor
+        subtitleLabel.textColor = Appearance.titleColor
         messageLabel.textColor = Appearance.titleColor
     }
 
@@ -168,8 +168,16 @@ private extension NoticeView {
     func configureForNotice() {
         titleLabel.text = notice.title
 
+        if let subtitle = notice.subtitle {
+            subtitleLabel.isHidden = false
+            subtitleLabel.text = subtitle
+        } else {
+            subtitleLabel.isHidden = true
+        }
+
         if let message = notice.message {
             messageLabel.text = message
+            messageLabel.numberOfLines = 0
         } else {
             titleLabel.numberOfLines = 2
         }
@@ -211,6 +219,7 @@ private extension NoticeView {
     enum Fonts {
         static let actionButtonFont = UIFont.systemFont(ofSize: 14.0)
         static let titleLabelFont = UIFont.boldSystemFont(ofSize: 14.0)
+        static let subtitleLabelFont = UIFont.boldSystemFont(ofSize: 14.0)
         static let messageLabelFont = UIFont.systemFont(ofSize: 14.0)
     }
 

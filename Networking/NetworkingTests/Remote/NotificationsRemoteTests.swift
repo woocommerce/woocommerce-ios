@@ -8,7 +8,7 @@ final class NotificationsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockupNetwork()
+    let network = MockNetwork()
 
     /// Repeat always!
     ///

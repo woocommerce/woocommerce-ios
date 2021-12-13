@@ -29,4 +29,16 @@ extension String {
 
         return "https://\(self)"
     }
+
+
+    /// Removes the scheme of a url
+    /// - Returns: a url without scheme, or the initial string
+    func trimHTTPScheme() -> String {
+        guard let urlComponents = URLComponents(string: self),
+              let host = urlComponents.host else {
+            return self
+        }
+
+        return host + urlComponents.path
+    }
 }

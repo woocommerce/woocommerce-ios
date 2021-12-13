@@ -8,7 +8,7 @@ import Yosemite
 final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
     private let defaultSiteID: Int64 = 134
 
-    func testProductVariationHasNoChangesFromEditActionsOfTheSameData() {
+    func test_product_variation_has_no_changes_from_edit_actions_of_the_same_data() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
         let model = EditableProductVariationModel(productVariation: productVariation)
@@ -36,7 +36,7 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         XCTAssertFalse(viewModel.hasUnsavedChanges())
     }
 
-    func testProductVariationHasUnsavedChangesFromUploadingAnImage() {
+    func test_product_variation_has_unsaved_changes_from_uploading_an_image() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
         let model = EditableProductVariationModel(productVariation: productVariation)
@@ -57,7 +57,7 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
-    func testProductVariationHasUnsavedChangesFromEditingImages() {
+    func test_product_variation_has_unsaved_changes_from_editing_images() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
         let model = EditableProductVariationModel(productVariation: productVariation)
@@ -77,7 +77,7 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
-    func testProductVariationHasUnsavedChangesFromEditingDescription() {
+    func test_product_variation_has_unsaved_changes_from_editing_description() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
         let model = EditableProductVariationModel(productVariation: productVariation)
@@ -91,7 +91,7 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
-    func testProductVariationHasUnsavedChangesFromEditingPriceSettings() {
+    func test_product_variation_has_unsaved_changes_from_editing_price_settings() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
         let model = EditableProductVariationModel(productVariation: productVariation)
@@ -105,7 +105,7 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
-    func testProductVariationHasUnsavedChangesFromEditingInventorySettings() {
+    func test_product_variation_has_unsaved_changes_from_editing_inventory_settings() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
         let model = EditableProductVariationModel(productVariation: productVariation)
@@ -119,7 +119,7 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
-    func testProductVariationHasUnsavedChangesFromEditingShippingSettings() {
+    func test_product_variation_has_unsaved_changes_from_editing_shipping_settings() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
         let model = EditableProductVariationModel(productVariation: productVariation)
@@ -131,6 +131,52 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func test_product_variation_has_unsaved_changes_from_editing_attributes() {
+        // Arrange
+        let productVariation = MockProductVariation().productVariation()
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
+
+        // Action
+        let attributes = [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")]
+        viewModel.updateVariationAttributes(attributes)
+
+        // Assert
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func test_action_buttons_for_existing_product_and_pending_changes() {
+        // Given
+        let productVariation = MockProductVariation().productVariation()
+        let variationModel = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: variationModel)
+        let viewModel = ProductVariationFormViewModel(productVariation: variationModel, formType: .edit, productImageActionHandler: productImageActionHandler)
+
+        let attributes = [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")]
+        viewModel.updateVariationAttributes(attributes)
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.save, .more])
+    }
+
+    func test_action_buttons_for_existing_product_and_no_pending_changes() {
+        // Given
+        let productVariation = MockProductVariation().productVariation()
+        let variationModel = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: variationModel)
+        let viewModel = ProductVariationFormViewModel(productVariation: variationModel, formType: .edit, productImageActionHandler: productImageActionHandler)
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.more])
     }
 }
 

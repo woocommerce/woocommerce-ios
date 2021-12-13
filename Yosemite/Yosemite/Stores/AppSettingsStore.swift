@@ -51,30 +51,28 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.statsVersionLastShownFileName)
     }()
 
-    /// URL to the plist file that we use to determine the visibility for Product features.
-    ///
-    private lazy var productsFeatureSwitchURL: URL = {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent(Constants.productsFeatureSwitchFileName)
-    }()
-
-    /// URL to the plist file that we use to determine the visibility for Product features M3.
-    ///
-    private lazy var productsRelease3FeatureSwitchURL: URL = {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent(Constants.productsRelease3FeatureSwitchFileName)
-    }()
-
-    /// URL to the plist file that we use to determine the visibility for Product features M4.
-    ///
-    private lazy var productsRelease4FeatureSwitchURL: URL = {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent(Constants.productsRelease4FeatureSwitchFileName)
-    }()
-
     private lazy var generalAppSettingsFileURL: URL! = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         return documents!.appendingPathComponent(Constants.generalAppSettingsFileName)
+    }()
+
+    private lazy var generalStoreSettingsFileURL: URL! = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.generalStoreSettingsFileName)
+    }()
+
+    /// URL to the plist file that we use to determine the settings applied in Orders
+    ///
+    private lazy var ordersSettingsURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.ordersSettings)
+    }()
+
+    /// URL to the plist file that we use to determine the settings applied in Products
+    ///
+    private lazy var productsSettingsURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.productsSettings)
     }()
 
     /// Registers for supported Actions.
@@ -110,7 +108,7 @@ public class AppSettingsStore: Store {
         case .loadCustomTrackingProvider(let siteID,
                                          let onCompletion):
             loadCustomTrackingProvider(siteID: siteID,
-                                        onCompletion: onCompletion)
+                                       onCompletion: onCompletion)
         case .resetStoredProviders(let onCompletion):
             resetStoredProviders(onCompletion: onCompletion)
         case .setStatsVersionLastShown(let siteID, let statsVersion):
@@ -123,18 +121,74 @@ public class AppSettingsStore: Store {
             setStatsVersionBannerVisibility(banner: banner, shouldShowBanner: shouldShowBanner)
         case .resetStatsVersionStates:
             resetStatsVersionStates()
-        case .loadProductsFeatureSwitch(let onCompletion):
-            loadProductsFeatureSwitch(onCompletion: onCompletion)
-        case .setProductsFeatureSwitch(let isEnabled, let onCompletion):
-            setProductsFeatureSwitch(isEnabled: isEnabled, onCompletion: onCompletion)
-        case .resetFeatureSwitches:
-            resetFeatureSwitches()
         case .setInstallationDateIfNecessary(let date, let onCompletion):
             setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
         case .updateFeedbackStatus(let type, let status, let onCompletion):
             updateFeedbackStatus(type: type, status: status, onCompletion: onCompletion)
         case .loadFeedbackVisibility(let type, let onCompletion):
             loadFeedbackVisibility(type: type, onCompletion: onCompletion)
+        case .loadOrdersSettings(let siteID, let onCompletion):
+            loadOrdersSettings(siteID: siteID, onCompletion: onCompletion)
+        case .upsertOrdersSettings(let siteID,
+                                   let orderStatusesFilter,
+                                   let dateRangeFilter,
+                                   let onCompletion):
+            upsertOrdersSettings(siteID: siteID,
+                                 orderStatusesFilter: orderStatusesFilter,
+                                 dateRangeFilter: dateRangeFilter,
+                                 onCompletion: onCompletion)
+        case .resetOrdersSettings:
+            resetOrdersSettings()
+        case .loadProductsSettings(let siteID, let onCompletion):
+            loadProductsSettings(siteID: siteID, onCompletion: onCompletion)
+        case .upsertProductsSettings(let siteID,
+                                     let sort,
+                                     let stockStatusFilter,
+                                     let productStatusFilter,
+                                     let productTypeFilter,
+                                     let productCategoryFilter,
+                                     let onCompletion):
+            upsertProductsSettings(siteID: siteID,
+                                   sort: sort,
+                                   stockStatusFilter: stockStatusFilter,
+                                   productStatusFilter: productStatusFilter,
+                                   productTypeFilter: productTypeFilter,
+                                   productCategoryFilter: productCategoryFilter,
+                                   onCompletion: onCompletion)
+        case .resetProductsSettings:
+            resetProductsSettings()
+        case .setOrderAddOnsFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
+            setOrderAddOnsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
+        case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
+            loadOrderAddOnsSwitchState(onCompletion: onCompletion)
+        case .setOrderCreationFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
+            setOrderCreationFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
+        case .loadOrderCreationSwitchState(onCompletion: let onCompletion):
+            loadOrderCreationSwitchState(onCompletion: onCompletion)
+        case .rememberCardReader(cardReaderID: let cardReaderID, onCompletion: let onCompletion):
+            rememberCardReader(cardReaderID: cardReaderID, onCompletion: onCompletion)
+        case .forgetCardReader(onCompletion: let onCompletion):
+            forgetCardReader(onCompletion: onCompletion)
+        case .loadCardReader(onCompletion: let onCompletion):
+            loadCardReader(onCompletion: onCompletion)
+        case .loadEligibilityErrorInfo(onCompletion: let onCompletion):
+            loadEligibilityErrorInfo(onCompletion: onCompletion)
+        case .setEligibilityErrorInfo(errorInfo: let errorInfo, onCompletion: let onCompletion):
+            setEligibilityErrorInfo(errorInfo: errorInfo, onCompletion: onCompletion)
+        case .resetEligibilityErrorInfo:
+            setEligibilityErrorInfo(errorInfo: nil)
+        case .setJetpackBenefitsBannerLastDismissedTime(time: let time):
+            setJetpackBenefitsBannerLastDismissedTime(time: time)
+        case .loadJetpackBenefitsBannerVisibility(currentTime: let currentTime, calendar: let calendar, onCompletion: let onCompletion):
+            loadJetpackBenefitsBannerVisibility(currentTime: currentTime, calendar: calendar, onCompletion: onCompletion)
+        case .setTelemetryAvailability(siteID: let siteID, isAvailable: let isAvailable):
+            setTelemetryAvailability(siteID: siteID, isAvailable: isAvailable)
+        case .setTelemetryLastReportedTime(siteID: let siteID, time: let time):
+            setTelemetryLastReportedTime(siteID: siteID, time: time)
+        case .getTelemetryInfo(siteID: let siteID, onCompletion: let onCompletion):
+            getTelemetryInfo(siteID: siteID, onCompletion: onCompletion)
+        case .resetGeneralStoreSettings:
+            resetGeneralStoreSettings()
         }
     }
 }
@@ -153,11 +207,11 @@ private extension AppSettingsStore {
             let settings = loadOrCreateGeneralAppSettings()
 
             if let installationDate = settings.installationDate,
-                date > installationDate {
+               date > installationDate {
                 return onCompletion(.success(false))
             }
 
-            let settingsToSave = GeneralAppSettings(installationDate: date, feedbacks: settings.feedbacks)
+            let settingsToSave = settings.copy(installationDate: date)
             try saveGeneralAppSettings(settingsToSave)
 
             onCompletion(.success(true))
@@ -190,10 +244,105 @@ private extension AppSettingsStore {
         })
     }
 
+    /// Sets the provided Order Add-Ons beta feature switch state into `GeneralAppSettings`
+    ///
+    func setOrderAddOnsFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(isViewAddOnsSwitchEnabled: isEnabled)
+            try saveGeneralAppSettings(settings)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+
+    }
+
+    /// Loads the current Order Add-Ons beta feature switch state from `GeneralAppSettings`
+    ///
+    func loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        onCompletion(.success(settings.isViewAddOnsSwitchEnabled))
+    }
+
+    /// Loads the current Order Creation beta feature switch state from `GeneralAppSettings`
+    ///
+    func loadOrderCreationSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        onCompletion(.success(settings.isOrderCreationSwitchEnabled))
+    }
+
+    /// Sets the provided Order Creation beta feature switch state into `GeneralAppSettings`
+    ///
+    func setOrderCreationFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(isOrderCreationSwitchEnabled: isEnabled)
+            try saveGeneralAppSettings(settings)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+
+    }
+
+    /// Loads the last persisted eligibility error information from `GeneralAppSettings`
+    ///
+    func loadEligibilityErrorInfo(onCompletion: (Result<EligibilityErrorInfo, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+
+        guard let errorInfo = settings.lastEligibilityErrorInfo else {
+            return onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
+        }
+
+        onCompletion(.success(errorInfo))
+    }
+
+    func setEligibilityErrorInfo(errorInfo: EligibilityErrorInfo?, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(lastEligibilityErrorInfo: errorInfo)
+            try saveGeneralAppSettings(settings)
+            onCompletion?(.success(()))
+        } catch {
+            onCompletion?(.failure(error))
+        }
+    }
+
+    // Visibility of Jetpack benefits banner in the Dashboard
+
+    func setJetpackBenefitsBannerLastDismissedTime(time: Date, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(lastJetpackBenefitsBannerDismissedTime: time)
+            try saveGeneralAppSettings(settings)
+            onCompletion?(.success(()))
+        } catch {
+            onCompletion?(.failure(error))
+        }
+    }
+
+    func loadJetpackBenefitsBannerVisibility(currentTime: Date, calendar: Calendar, onCompletion: (Bool) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+
+        guard let lastDismissedTime = settings.lastJetpackBenefitsBannerDismissedTime else {
+            // If the banner has not been dismissed before, the banner is default to be visible.
+            return onCompletion(true)
+        }
+
+        guard let numberOfDaysSinceLastDismissal = calendar.dateComponents([.day], from: lastDismissedTime, to: currentTime).day else {
+            return onCompletion(true)
+        }
+        onCompletion(numberOfDaysSinceLastDismissal >= 5)
+    }
+
+    // File operations
+
     /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.
     func loadOrCreateGeneralAppSettings() -> GeneralAppSettings {
         guard let settings: GeneralAppSettings = try? fileStorage.data(for: generalAppSettingsFileURL) else {
-            return GeneralAppSettings(installationDate: nil, feedbacks: [:])
+            return GeneralAppSettings(installationDate: nil,
+                                      feedbacks: [:],
+                                      isViewAddOnsSwitchEnabled: false,
+                                      isOrderCreationSwitchEnabled: false,
+                                      knownCardReaders: [],
+                                      lastEligibilityErrorInfo: nil)
         }
 
         return settings
@@ -202,6 +351,65 @@ private extension AppSettingsStore {
     /// Save the `GeneralAppSettings` to the appropriate file.
     func saveGeneralAppSettings(_ settings: GeneralAppSettings) throws {
         try fileStorage.write(settings, to: generalAppSettingsFileURL)
+    }
+}
+
+// MARK: - Card Reader Actions
+//
+private extension AppSettingsStore {
+    /// Remember the given card reader (to support automatic reconnection)
+    /// where `cardReaderID` is a String e.g. "CHB204909005931"
+    ///
+    func rememberCardReader(cardReaderID: String, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings()
+
+            guard !settings.knownCardReaders.contains(cardReaderID) else {
+                return onCompletion(.success(()))
+            }
+
+            /// NOTE: We now only persist one card reader maximum, although for backwards compatibility
+            /// we still do so as an array
+            let knownCardReadersToSave = [cardReaderID]
+            let settingsToSave = settings.copy(knownCardReaders: knownCardReadersToSave)
+            try saveGeneralAppSettings(settingsToSave)
+
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Forget any remembered card reader (i.e. automatic reconnection is no longer desired)
+    ///
+    func forgetCardReader(onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings()
+            /// NOTE: Since we now only persist one card reader maximum, we no longer use
+            /// the argument and always save an empty array to the settings.
+            let settingsToSave = settings.copy(knownCardReaders: [])
+            try saveGeneralAppSettings(settingsToSave)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Loads the most recently remembered card reader, if any (i.e. to reconnect to automatically)
+    /// NOTE: We now only persist one card reader maximum.
+    /// E.g.  "CHB204909005931"
+    ///
+    func loadCardReader(onCompletion: (Result<String?, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        /// NOTE: We now only persist one card reader maximum, although for backwards compatibility
+        /// we still do so as an array. We use last here so that we can get the most recently remembered
+        /// reader from appSettings if populated by an older version
+        guard let knownReader = settings.knownCardReaders.last else {
+            onCompletion(.success(nil))
+            return
+        }
+
+        onCompletion(.success(knownReader))
     }
 }
 
@@ -219,9 +427,9 @@ private extension AppSettingsStore {
     }
 
     func addCustomTrackingProvider(siteID: Int64,
-                             providerName: String,
-                             providerURL: String?,
-                             onCompletion: (Error?) -> Void) {
+                                   providerName: String,
+                                   providerURL: String?,
+                                   onCompletion: (Error?) -> Void) {
         addProvider(siteID: siteID,
                     providerName: providerName,
                     providerURL: providerURL,
@@ -258,8 +466,8 @@ private extension AppSettingsStore {
         }
 
         let providerName = allSavedProviders.filter {
-                $0.siteID == siteID
-            }.first?.providerName
+            $0.siteID == siteID
+        }.first?.providerName
 
         guard let name = providerName else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
@@ -276,7 +484,7 @@ private extension AppSettingsStore {
     }
 
     func loadCustomTrackingProvider(siteID: Int64,
-                              onCompletion: (ShipmentTrackingProvider?, Error?) -> Void) {
+                                    onCompletion: (ShipmentTrackingProvider?, Error?) -> Void) {
         guard let allSavedProviders: [PreselectedProvider] = try? fileStorage.data(for: customSelectedProvidersURL) else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
             onCompletion(nil, error)
@@ -285,11 +493,11 @@ private extension AppSettingsStore {
 
         let providerName = allSavedProviders.filter {
             $0.siteID == siteID
-            }.first?.providerName
+        }.first?.providerName
 
         let providerURL = allSavedProviders.filter {
             $0.siteID == siteID
-            }.first?.providerURL
+        }.first?.providerURL
 
         guard let name = providerName else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
@@ -316,7 +524,7 @@ private extension AppSettingsStore {
         var dataToSave = preselectedData
 
         if preselectedData.contains(newPreselectedProvider),
-            let index = preselectedData.firstIndex(of: newPreselectedProvider) {
+           let index = preselectedData.firstIndex(of: newPreselectedProvider) {
             dataToSave[index] = newPreselectedProvider
         } else {
             dataToSave.append(newPreselectedProvider)
@@ -373,7 +581,7 @@ private extension AppSettingsStore {
 
     func loadInitialStatsVersionToShow(siteID: Int64, onCompletion: (StatsVersion?) -> Void) {
         guard let existingData: StatsVersionBySite = try? fileStorage.data(for: statsVersionLastShownURL),
-            let statsVersion = existingData.statsVersionBySite[siteID] else {
+              let statsVersion = existingData.statsVersionBySite[siteID] else {
             onCompletion(nil)
             return
         }
@@ -403,11 +611,11 @@ private extension AppSettingsStore {
     }
 
     func loadStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner,
-                                         onCompletion: (Bool) -> Void) {
+                                          onCompletion: (Bool) -> Void) {
         guard let existingData: StatsVersionBannerVisibility = try? fileStorage.data(for: statsVersionBannerVisibilityURL),
-            let shouldShowBanner = existingData.visibilityByBanner[banner] else {
-                onCompletion(true)
-                return
+              let shouldShowBanner = existingData.visibilityByBanner[banner] else {
+            onCompletion(true)
+            return
         }
         onCompletion(shouldShowBanner)
     }
@@ -435,38 +643,168 @@ private extension AppSettingsStore {
             DDLogError("⛔️ Deleting the stats version files failed. Error: \(error)")
         }
     }
+}
 
-    func loadProductsFeatureSwitch(onCompletion: (Bool) -> Void) {
-        guard let existingData: ProductsFeatureSwitchPListWrapper = try? fileStorage.data(for: productsRelease4FeatureSwitchURL) else {
-            onCompletion(false)
+// MARK: - Orders Settings
+//
+private extension AppSettingsStore {
+    func loadOrdersSettings(siteID: Int64, onCompletion: (Result<StoredOrderSettings.Setting, Error>) -> Void) {
+        guard let allSavedSettings: StoredOrderSettings = try? fileStorage.data(for: ordersSettingsURL),
+                let settingsUnwrapped = allSavedSettings.settings[siteID] else {
+            let error = AppSettingsStoreErrors.noOrdersSettings
+            onCompletion(.failure(error))
             return
         }
-        onCompletion(existingData.isEnabled)
+
+        onCompletion(.success(settingsUnwrapped))
     }
 
-    func setProductsFeatureSwitch(isEnabled: Bool, onCompletion: () -> Void) {
-        let fileURL = productsRelease4FeatureSwitchURL
-        let wrapper = ProductsFeatureSwitchPListWrapper(isEnabled: isEnabled)
+    func upsertOrdersSettings(siteID: Int64,
+                              orderStatusesFilter: [OrderStatusEnum]?,
+                              dateRangeFilter: OrderDateRangeFilter?,
+                              onCompletion: (Error?) -> Void) {
+        var existingSettings: [Int64: StoredOrderSettings.Setting] = [:]
+        if let storedSettings: StoredOrderSettings = try? fileStorage.data(for: ordersSettingsURL) {
+            existingSettings = storedSettings.settings
+        }
+
+        let newSettings = StoredOrderSettings.Setting(siteID: siteID,
+                                                      orderStatusesFilter: orderStatusesFilter,
+                                                      dateRangeFilter: dateRangeFilter)
+        existingSettings[siteID] = newSettings
+
+        let newStoredOrderSettings = StoredOrderSettings(settings: existingSettings)
         do {
-            try fileStorage.write(wrapper, to: fileURL)
-            onCompletion()
+            try fileStorage.write(newStoredOrderSettings, to: ordersSettingsURL)
+            onCompletion(nil)
         } catch {
-            DDLogError("⛔️ Saving the Products visibility to \(isEnabled) failed: \(error)")
-            onCompletion()
+            onCompletion(AppSettingsStoreErrors.writeOrdersSettings)
         }
     }
 
-    func resetFeatureSwitches() {
+    func resetOrdersSettings() {
         do {
-            try fileStorage.deleteFile(at: productsFeatureSwitchURL)
-            try fileStorage.deleteFile(at: productsRelease3FeatureSwitchURL)
-            try fileStorage.deleteFile(at: productsRelease4FeatureSwitchURL)
+            try fileStorage.deleteFile(at: ordersSettingsURL)
         } catch {
-            DDLogError("⛔️ Deleting the product feature switch files failed. Error: \(error)")
+            DDLogError("⛔️ Deleting the orders settings files failed. Error: \(error)")
         }
     }
 }
 
+// MARK: - Products Settings
+//
+private extension AppSettingsStore {
+    func loadProductsSettings(siteID: Int64, onCompletion: (Result<StoredProductSettings.Setting, Error>) -> Void) {
+        guard let allSavedSettings: StoredProductSettings = try? fileStorage.data(for: productsSettingsURL) else {
+            let error = AppSettingsStoreErrors.noProductsSettings
+            onCompletion(.failure(error))
+            return
+        }
+
+        guard let settingsUnwrapped = allSavedSettings.settings[siteID] else {
+            let error = AppSettingsStoreErrors.noProductsSettings
+            onCompletion(.failure(error))
+            return
+        }
+
+        onCompletion(.success(settingsUnwrapped))
+    }
+
+    func upsertProductsSettings(siteID: Int64,
+                                sort: String? = nil,
+                                stockStatusFilter: ProductStockStatus? = nil,
+                                productStatusFilter: ProductStatus? = nil,
+                                productTypeFilter: ProductType? = nil,
+                                productCategoryFilter: ProductCategory? = nil,
+                                onCompletion: (Error?) -> Void) {
+        var existingSettings: [Int64: StoredProductSettings.Setting] = [:]
+        if let storedSettings: StoredProductSettings = try? fileStorage.data(for: productsSettingsURL) {
+            existingSettings = storedSettings.settings
+        }
+
+        let newSetting = StoredProductSettings.Setting(siteID: siteID,
+                                                       sort: sort,
+                                                       stockStatusFilter: stockStatusFilter,
+                                                       productStatusFilter: productStatusFilter,
+                                                       productTypeFilter: productTypeFilter,
+                                                       productCategoryFilter: productCategoryFilter)
+        existingSettings[siteID] = newSetting
+
+        let newStoredProductSettings = StoredProductSettings(settings: existingSettings)
+        do {
+            try fileStorage.write(newStoredProductSettings, to: productsSettingsURL)
+            onCompletion(nil)
+        } catch {
+            onCompletion(AppSettingsStoreErrors.writeProductsSettings)
+        }
+    }
+
+    func resetProductsSettings() {
+        do {
+            try fileStorage.deleteFile(at: productsSettingsURL)
+        } catch {
+            DDLogError("⛔️ Deleting the product settings files failed. Error: \(error)")
+        }
+    }
+}
+
+// MARK: - Store settings
+//
+private extension AppSettingsStore {
+
+    func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings {
+        guard let existingData: GeneralStoreSettingsBySite = try? fileStorage.data(for: generalStoreSettingsFileURL),
+              let storeSettings = existingData.storeSettingsBySite[siteID] else {
+            return GeneralStoreSettings()
+        }
+
+        return storeSettings
+    }
+
+    func setStoreSettings(settings: GeneralStoreSettings, for siteID: Int64, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        var storeSettingsBySite: [Int64: GeneralStoreSettings] = [:]
+        if let existingData: GeneralStoreSettingsBySite = try? fileStorage.data(for: generalStoreSettingsFileURL) {
+            storeSettingsBySite = existingData.storeSettingsBySite
+        }
+
+        storeSettingsBySite[siteID] = settings
+
+        do {
+            try fileStorage.write(GeneralStoreSettingsBySite(storeSettingsBySite: storeSettingsBySite), to: generalStoreSettingsFileURL)
+            onCompletion?(.success(()))
+        } catch {
+            onCompletion?(.failure(error))
+            DDLogError("⛔️ Saving store settings to file failed. Error: \(error)")
+        }
+    }
+
+    // Telemetry data
+
+    func setTelemetryAvailability(siteID: Int64, isAvailable: Bool, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(isTelemetryAvailable: isAvailable)
+        setStoreSettings(settings: updatedSettings, for: siteID, onCompletion: onCompletion)
+    }
+
+    func setTelemetryLastReportedTime(siteID: Int64, time: Date, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(telemetryLastReportedTime: time)
+        setStoreSettings(settings: updatedSettings, for: siteID, onCompletion: onCompletion)
+    }
+
+    func getTelemetryInfo(siteID: Int64, onCompletion: (Bool, Date?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(storeSettings.isTelemetryAvailable, storeSettings.telemetryLastReportedTime)
+    }
+
+    func resetGeneralStoreSettings() {
+        do {
+            try fileStorage.deleteFile(at: generalStoreSettingsFileURL)
+        } catch {
+            DDLogError("⛔️ Deleting store settings file failed. Error: \(error)")
+        }
+    }
+}
 
 // MARK: - Errors
 
@@ -480,6 +818,11 @@ enum AppSettingsStoreErrors: Error {
     case readPListFromFileStorage
     case writePListToFileStorage
     case deleteStatsVersionStates
+    case noOrdersSettings
+    case noProductsSettings
+    case writeOrdersSettings
+    case writeProductsSettings
+    case noEligibilityErrorInfo
 }
 
 
@@ -494,8 +837,8 @@ private enum Constants {
     static let customShipmentProvidersFileName = "custom-shipment-providers.plist"
     static let statsVersionBannerVisibilityFileName = "stats-version-banner-visibility.plist"
     static let statsVersionLastShownFileName = "stats-version-last-shown.plist"
-    static let productsFeatureSwitchFileName = "products-feature-switch.plist"
-    static let productsRelease3FeatureSwitchFileName = "products-m3-feature-switch.plist"
-    static let productsRelease4FeatureSwitchFileName = "products-m4-feature-switch.plist"
     static let generalAppSettingsFileName = "general-app-settings.plist"
+    static let generalStoreSettingsFileName = "general-store-settings.plist"
+    static let ordersSettings = "orders-settings.plist"
+    static let productsSettings = "products-settings.plist"
 }

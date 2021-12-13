@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents an Address Entity.
 ///
-public struct Address: Decodable {
+public struct Address: Codable, GeneratedFakeable, GeneratedCopiable {
     public let firstName: String
     public let lastName: String
     public let company: String?
@@ -69,8 +69,76 @@ public struct Address: Decodable {
                   phone: phone,
                   email: email)
     }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(firstName, forKey: .firstName)
+        try container.encode(lastName, forKey: .lastName)
+        try container.encodeIfPresent(company, forKey: .company)
+        try container.encode(address1, forKey: .address1)
+        try container.encodeIfPresent(address2, forKey: .address2)
+        try container.encode(city, forKey: .city)
+        try container.encode(state, forKey: .state)
+        try container.encode(postcode, forKey: .postcode)
+        try container.encode(country, forKey: .country)
+        try container.encodeIfPresent(phone, forKey: .phone)
+
+        /// Encoding an `email` has some special conditions.
+        /// - Encode the content to update the value.
+        /// - Encode `nil` to clear the value
+        /// - Don't encode to leave the value unaltered.
+        /// PS: Encoding an empty string will produce an error due to server validations.
+        ///
+        switch email {
+        case .some(let content) where content.isEmpty:
+            try container.encodeNil(forKey: .email)
+        case .some(let content):
+            try container.encode(content, forKey: .email)
+        case .none:
+            break
+        }
+    }
+
+    public static var empty: Address {
+        self.init(firstName: "",
+                  lastName: "",
+                  company: nil,
+                  address1: "",
+                  address2: nil,
+                  city: "",
+                  state: "",
+                  postcode: "",
+                  country: "",
+                  phone: nil,
+                  email: nil)
+    }
 }
 
+extension Address: Equatable {
+    // custom implementation to handle empty strings and `nil` comparison
+    public static func ==(lhs: Address, rhs: Address) -> Bool {
+        return lhs.firstName == rhs.firstName &&
+            lhs.lastName == rhs.lastName &&
+            (lhs.company == rhs.company ||
+                lhs.company == nil && rhs.company?.isEmpty == true ||
+                lhs.company?.isEmpty == true && rhs.company == nil) &&
+            lhs.address1 == rhs.address1 &&
+            (lhs.address2 == rhs.address2 ||
+                lhs.address2 == nil && rhs.address2?.isEmpty == true ||
+                lhs.address2?.isEmpty == true && rhs.address2 == nil) &&
+            lhs.city == rhs.city &&
+            lhs.state == rhs.state &&
+            lhs.postcode == rhs.postcode &&
+            lhs.country == rhs.country &&
+            (lhs.phone == rhs.phone ||
+                lhs.phone == nil && rhs.phone?.isEmpty == true ||
+                lhs.phone?.isEmpty == true && rhs.phone == nil) &&
+            (lhs.email == rhs.email ||
+                lhs.email == nil && rhs.email?.isEmpty == true ||
+                lhs.email?.isEmpty == true && rhs.email == nil)
+    }
+}
 
 /// Defines all of the Address's CodingKeys.
 ///
@@ -88,31 +156,5 @@ private extension Address {
         case country    = "country"
         case phone      = "phone"
         case email      = "email"
-    }
-}
-
-
-// MARK: - Comparable Conformance
-//
-extension Address: Comparable {
-    public static func == (lhs: Address, rhs: Address) -> Bool {
-        return lhs.firstName == rhs.firstName &&
-            lhs.lastName == rhs.lastName &&
-            lhs.company == rhs.company &&
-            lhs.address1 == rhs.address1 &&
-            lhs.address2 == rhs.address2 &&
-            lhs.city == rhs.city &&
-            lhs.state == rhs.state &&
-            lhs.postcode == rhs.postcode &&
-            lhs.country == rhs.country &&
-            lhs.phone == rhs.phone &&
-            lhs.email == rhs.email
-    }
-
-    public static func < (lhs: Address, rhs: Address) -> Bool {
-        return lhs.city < rhs.city ||
-        (lhs.city == rhs.city && lhs.state < rhs.state) ||
-        (lhs.city == rhs.city && lhs.state == rhs.state && lhs.postcode < rhs.postcode) ||
-        (lhs.city == rhs.city && lhs.state == rhs.state && lhs.postcode == rhs.postcode && lhs.lastName < rhs.lastName)
     }
 }

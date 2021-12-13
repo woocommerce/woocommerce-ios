@@ -16,13 +16,17 @@ final class BillingInformationViewController: UIViewController {
 
     /// Order to be Fulfilled
     ///
-    private let order: Order
+    private var order: Order
 
+    /// Allows editing of billing address
+    ///
+    let editingEnabled: Bool
 
     /// Designated Initializer
     ///
-    init(order: Order) {
+    init(order: Order, editingEnabled: Bool) {
         self.order = order
+        self.editingEnabled = editingEnabled
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -89,6 +93,19 @@ private extension BillingInformationViewController {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
         }
     }
+
+    /// Presents EditOrderAddressForm modal view
+    ///
+    func editBillingAddress() {
+        let viewModel = EditOrderAddressFormViewModel(order: order, type: .billing) { [weak self] updatedOrder in
+            self?.order = updatedOrder
+            self?.reloadSections()
+            self?.tableView.reloadData()
+        }
+        let editAddressViewController = EditOrderAddressHostingController(viewModel: viewModel)
+        let navigationController = WooNavigationController(rootViewController: editAddressViewController)
+        present(navigationController, animated: true, completion: nil)
+    }
 }
 
 // MARK: - Initiate communication with a customer (i.e. via email, phone call, sms)
@@ -100,40 +117,42 @@ private extension BillingInformationViewController {
 
     /// Displays an alert that offers several contact methods to reach the customer: [Phone / Message]
     ///
-    func displayContactCustomerAlert(from: UIViewController) {
-        guard let sourceView = from.view else {
-            return
-        }
-
+    func displayContactCustomerAlert(from sourceView: UIView) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
+        // When changing actions in this sheet, please make corresponding accessibility action changes
+        // in BillingInformationViewController.setupBillingPhone(cell:)
         actionSheet.addCancelActionWithTitle(ContactAction.dismiss)
         actionSheet.addDefaultActionWithTitle(ContactAction.call) { [weak self] _ in
-            guard let self = self else {
-                return
-            }
-
-            guard let phoneURL = self.order.billingAddress?.cleanedPhoneNumberAsActionableURL else {
-                return
-            }
-
-            ServiceLocator.analytics.track(.orderDetailCustomerPhoneOptionTapped)
-            self.callCustomerIfPossible(at: phoneURL)
+            self?.callCustomerHandler()
         }
 
         actionSheet.addDefaultActionWithTitle(ContactAction.message) { [weak self] _ in
-            ServiceLocator.analytics.track(.orderDetailCustomerSMSOptionTapped)
-            self?.displayMessageComposerIfPossible(from: from)
+            self?.messageCustomerHandler()
         }
 
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.sourceView = sourceView
         popoverController?.sourceRect = sourceView.bounds
 
-        from.present(actionSheet, animated: true)
+        present(actionSheet, animated: true)
 
         ServiceLocator.analytics.track(.orderDetailCustomerPhoneMenuTapped)
+    }
+
+    private func callCustomerHandler() {
+        guard let phoneURL = order.billingAddress?.cleanedPhoneNumberAsActionableURL else {
+            return
+        }
+
+        ServiceLocator.analytics.track(.orderDetailCustomerPhoneOptionTapped)
+        callCustomerIfPossible(at: phoneURL)
+    }
+
+    private func messageCustomerHandler() {
+        ServiceLocator.analytics.track(.orderDetailCustomerSMSOptionTapped)
+        self.displayMessageComposerIfPossible(from: self)
     }
 
     /// Attempts to perform a phone call at the specified URL
@@ -166,8 +185,8 @@ private extension BillingInformationViewController {
 
     /// Create an action sheet that offers the option to copy the email address
     ///
-    func displayEmailCopyAlert(from: UIViewController) {
-        guard let sourceView = from.view, let email = order.billingAddress?.email else {
+    func displayEmailCopyAlert(from sourceView: UIView) {
+        guard order.billingAddress?.email != nil else {
             return
         }
 
@@ -176,17 +195,25 @@ private extension BillingInformationViewController {
 
         actionSheet.addCancelActionWithTitle(ContactAction.dismiss)
         actionSheet.addDefaultActionWithTitle(ContactAction.copyEmail) { [weak self] _ in
-            ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
-            self?.sendToPasteboard(email, includeTrailingNewline: false)
+            self?.copyEmailHandler()
         }
 
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.sourceView = sourceView
         popoverController?.sourceRect = sourceView.bounds
 
-        from.present(actionSheet, animated: true)
+        present(actionSheet, animated: true)
 
         ServiceLocator.analytics.track(.orderDetailCustomerEmailMenuTapped)
+    }
+
+    private func copyEmailHandler() {
+        guard let email = order.billingAddress?.email else {
+            return
+        }
+
+        ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
+        sendToPasteboard(email, includeTrailingNewline: false)
     }
 }
 
@@ -251,19 +278,31 @@ extension BillingInformationViewController: UITableViewDelegate {
 
         switch sections[indexPath.section].rows[indexPath.row] {
         case .billingPhone:
-            displayContactCustomerAlert(from: self)
+            if let indexPath = sections.indexPathForRow(.billingPhone),
+                let cell = tableView.cellForRow(at: indexPath) as? WooBasicTableViewCell {
+                displayContactCustomerAlert(from: cell)
+            }
             break
 
         case .billingEmail:
-            ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
-            guard displayEmailComposerIfPossible(from: self) else {
-                displayEmailCopyAlert(from: self)
-                return
-            }
+            // When changing actions for this cell, please make corresponding accessibility action changes
+            // in BillingInformationViewController.setupBillingEmail(cell:)
+            emailCustomerHandler()
 
             break
         default:
             break
+        }
+    }
+
+    private func emailCustomerHandler() {
+        ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
+        guard displayEmailComposerIfPossible(from: self) else {
+            if let indexPath = sections.indexPathForRow(.billingEmail),
+                let cell = tableView.cellForRow(at: indexPath) as? WooBasicTableViewCell {
+                displayEmailCopyAlert(from: cell)
+            }
+            return
         }
     }
 
@@ -311,6 +350,13 @@ private extension BillingInformationViewController {
         cell.address = billingAddress?.formattedPostalAddress ??
             NSLocalizedString("No address specified.",
                               comment: "Order details > customer info > billing information. This is where the address would normally display.")
+
+        cell.onEditTapped = editingEnabled ? { [weak self] in
+            self?.editBillingAddress()
+        } : nil
+        cell.editButtonAccessibilityLabel = NSLocalizedString(
+            "Update Address",
+            comment: "Accessibility Label for the edit button to change the Customer Billing Address in Billing Information")
     }
 
     func setupBillingPhone(cell: WooBasicTableViewCell) {
@@ -332,10 +378,19 @@ private extension BillingInformationViewController {
             phoneNumber
         )
 
-        cell.accessibilityHint = NSLocalizedString(
-            "Prompts with the option to call or message the billing customer.",
-            comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer."
-        )
+        let callAccessibilityAction = UIAccessibilityCustomAction(
+            name: ContactAction.call) { [weak self] _ in
+            self?.callCustomerHandler()
+            return true
+        }
+
+        let messageAccessibilityAction = UIAccessibilityCustomAction(
+            name: ContactAction.message) { [weak self] _ in
+            self?.messageCustomerHandler()
+            return true
+        }
+
+        cell.accessibilityCustomActions = [callAccessibilityAction, messageAccessibilityAction]
     }
 
     func setupBillingEmail(cell: WooBasicTableViewCell) {
@@ -355,10 +410,19 @@ private extension BillingInformationViewController {
             email
         )
 
-        cell.accessibilityHint = NSLocalizedString(
-            "Composes a new email message to the billing customer.",
-            comment: "Accessibility hint, informing that a row can be tapped and an email composer view will appear."
-        )
+        let emailAccessibilityAction = UIAccessibilityCustomAction(
+            name: ContactAction.email) { [weak self] _ in
+            self?.emailCustomerHandler()
+            return true
+        }
+
+        let copyEmailAccessibilityAction = UIAccessibilityCustomAction(
+            name: ContactAction.copyEmail) { [weak self] _ in
+            self?.copyEmailHandler()
+            return true
+        }
+
+        cell.accessibilityCustomActions = [emailAccessibilityAction, copyEmailAccessibilityAction]
     }
 }
 
@@ -386,6 +450,9 @@ private extension BillingInformationViewController {
             }
 
             let title = NSLocalizedString("Contact Details", comment: "Section header title for contact details in billing information")
+            guard rows.count != 0 else {
+                return nil
+            }
             return Section(title: title, secondaryTitle: nil, rows: rows)
         }()
 
@@ -452,7 +519,7 @@ private extension BillingInformationViewController {
 
 // MARK: - Section: Represents a TableView Section
 //
-private struct Section {
+private struct Section: RowIterable {
 
     /// Section's Title
     ///
@@ -469,7 +536,7 @@ private struct Section {
 
 // MARK: - Row: Represents a TableView Row
 //
-private enum Row {
+private enum Row: CaseIterable {
 
     /// Represents an address row
     ///
@@ -511,6 +578,7 @@ private extension BillingInformationViewController {
         static let call = NSLocalizedString("Call", comment: "Call phone number button title")
         static let message = NSLocalizedString("Message", comment: "Message phone number button title")
         static let copyEmail = NSLocalizedString("Copy email address", comment: "Copy email address button title")
+        static let email = NSLocalizedString("Email", comment: "Title of Email accessibility action, opens a compose view")
     }
 
     enum Constants {

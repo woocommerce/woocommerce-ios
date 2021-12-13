@@ -1,0 +1,10 @@
+{
+    "data": {
+        "success": true,
+        "refund": {
+            "status": "pending",
+            "request_date": 1607331363627,
+            "is_manual": false
+        }
+    }
+}

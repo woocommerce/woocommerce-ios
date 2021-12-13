@@ -8,6 +8,12 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
 
     private var selectedProductImageOverlayView: UIView?
 
+    /// ProductImageView.width == 0.1*Cell.width
+    private var productImageViewRelationalWidthConstraint: NSLayoutConstraint?
+
+    /// ProductImageView.height == Cell.height
+    private var productImageViewFixedHeightConstraint: NSLayoutConstraint?
+
     private lazy var nameLabel: UILabel = {
         let label = UILabel(frame: .zero)
         return label
@@ -18,7 +24,7 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
         return label
     }()
 
-    /// We use a custom view isntead of the default separator as it's width varies depending on the image size, which varies depending on the screen size.
+    /// We use a custom view instead of the default separator as it's width varies depending on the image size, which varies depending on the screen size.
     private let bottomBorderView: UIView = {
         return UIView(frame: .zero)
     }()
@@ -58,21 +64,27 @@ extension ProductsTabProductTableViewCell: SearchResultCell {
 
 extension ProductsTabProductTableViewCell {
     func update(viewModel: ProductsTabProductViewModel, imageService: ImageService) {
-        nameLabel.text = viewModel.name
-
+        nameLabel.text = viewModel.createNameLabel()
         detailsLabel.attributedText = viewModel.detailsAttributedString
 
         productImageView.contentMode = .center
-        productImageView.image = .productsTabProductCellPlaceholderImage
-        if let productURLString = viewModel.imageUrl {
-            imageService.downloadAndCacheImageForImageView(productImageView,
-                                                           with: productURLString,
-                                                           placeholder: .productsTabProductCellPlaceholderImage,
-                                                           progressBlock: nil) { [weak self] (image, error) in
-                                                            let success = image != nil && error == nil
-                                                            if success {
-                                                                self?.productImageView.contentMode = .scaleAspectFill
-                                                            }
+        if viewModel.isDraggable {
+            configureProductImageViewForSmallIcons()
+            productImageView.image = .alignJustifyImage
+            productImageView.layer.borderWidth = 0
+        } else {
+            configureProductImageViewForBigImages()
+            productImageView.image = .productsTabProductCellPlaceholderImage
+            if let productURLString = viewModel.imageUrl {
+                imageService.downloadAndCacheImageForImageView(productImageView,
+                                                               with: productURLString,
+                                                               placeholder: .productsTabProductCellPlaceholderImage,
+                                                               progressBlock: nil) { [weak self] (image, error) in
+                                                                let success = image != nil && error == nil
+                                                                if success {
+                                                                    self?.productImageView.contentMode = .scaleAspectFill
+                                                                }
+                }
             }
         }
 
@@ -113,6 +125,9 @@ private extension ProductsTabProductTableViewCell {
         contentView.addSubview(bottomBorderView)
         contentView.pinSubviewToAllEdges(stackView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16))
 
+        // Not initially enabled, saved for possible compact icon case
+        productImageViewFixedHeightConstraint = productImageView.heightAnchor.constraint(equalTo: stackView.heightAnchor)
+
         NSLayoutConstraint.activate([
             bottomBorderView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             bottomBorderView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -139,11 +154,11 @@ private extension ProductsTabProductTableViewCell {
 
     func configureNameLabel() {
         nameLabel.applyBodyStyle()
-        nameLabel.numberOfLines = 2
+        nameLabel.numberOfLines = 0
     }
 
     func configureDetailsLabel() {
-        detailsLabel.numberOfLines = 1
+        detailsLabel.numberOfLines = 0
     }
 
     func configureProductImageView() {
@@ -155,11 +170,24 @@ private extension ProductsTabProductTableViewCell {
         productImageView.layer.borderColor = Colors.imageBorderColor.cgColor
         productImageView.clipsToBounds = true
 
+        // This multiplier matches the required size(37.5pt) for a 375pt(as per designs) content view width
+        let widthConstraint = productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.1)
+        productImageViewRelationalWidthConstraint = widthConstraint
+
         NSLayoutConstraint.activate([
-            // This multiplier matches the required size(37.5pt) for a 375pt(as per designs) content view width
-            productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.1),
+            widthConstraint,
             productImageView.widthAnchor.constraint(equalTo: productImageView.heightAnchor)
         ])
+    }
+
+    func configureProductImageViewForBigImages() {
+        productImageViewRelationalWidthConstraint?.isActive = true
+        productImageViewFixedHeightConstraint?.isActive = false
+    }
+
+    func configureProductImageViewForSmallIcons() {
+        productImageViewRelationalWidthConstraint?.isActive = false
+        productImageViewFixedHeightConstraint?.isActive = true
     }
 
     func configureBottomBorderView() {
@@ -219,7 +247,6 @@ private struct ProductsTabProductTableViewCellRepresentable: UIViewRepresentable
     }
 }
 
-@available(iOS 13.0, *)
 struct ProductsTabProductTableViewCell_Previews: PreviewProvider {
     private static var nonSelectedViewModel = ProductsTabProductViewModel(product: Product(), isSelected: false)
     private static var selectedViewModel = ProductsTabProductViewModel(product: Product().copy(statusKey: ProductStatus.pending.rawValue),

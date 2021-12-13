@@ -6,10 +6,12 @@ import Yosemite
 /// Each time range tab is managed by a `StoreStatsAndTopPerformersPeriodViewController`.
 ///
 final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewController {
+    /// For navigation bar large title workaround.
+    weak var scrollDelegate: DashboardUIScrollDelegate?
 
     // MARK: - DashboardUI protocol
 
-    var displaySyncingErrorNotice: () -> Void = {}
+    var displaySyncingError: () -> Void = {}
 
     var onPullToRefresh: () -> Void = {}
 
@@ -29,6 +31,7 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 
     private var periodVCs = [StoreStatsAndTopPerformersPeriodViewController]()
     private let siteID: Int64
+    private var isSyncing = false
 
     // MARK: - View Lifecycle
 
@@ -55,18 +58,6 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
         ensureGhostContentIsAnimated()
     }
 
-    // MARK: - RTL support
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        /// ButtonBarView is a collection view, and it should flip to support
-        /// RTL languages automatically. And yet it doesn't.
-        /// So, for RTL languages, we flip it. This also flips the cells
-        if traitCollection.layoutDirection == .rightToLeft {
-            buttonBarView.transform = CGAffineTransform(scaleX: -1, y: 1)
-        }
-    }
-
     // MARK: - PagerTabStripDataSource
 
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
@@ -87,10 +78,10 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 }
 
 extension StoreStatsAndTopPerformersViewController: DashboardUI {
-    func reloadData(completion: @escaping () -> Void) {
-        syncAllStats { _ in
+    func reloadData(forced: Bool, completion: @escaping () -> Void) {
+        syncAllStats(forced: forced, onCompletion: { _ in
             completion()
-        }
+        })
     }
 
     func remindStatsUpgradeLater() {
@@ -101,26 +92,33 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
 // MARK: - Syncing Data
 //
 private extension StoreStatsAndTopPerformersViewController {
-    func syncAllStats(onCompletion: ((Error?) -> Void)? = nil) {
+    func syncAllStats(forced: Bool, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        guard !isSyncing else {
+            return
+        }
+
+        isSyncing = true
+
         let group = DispatchGroup()
 
         var syncError: Error? = nil
 
         ensureGhostContentIsDisplayed()
-
         showSpinner(shouldShowSpinner: true)
 
         defer {
             group.notify(queue: .main) { [weak self] in
+                self?.isSyncing = false
                 self?.removeGhostContent()
                 self?.showSpinner(shouldShowSpinner: false)
                 if let error = syncError {
                     DDLogError("⛔️ Error loading dashboard: \(error)")
                     self?.handleSyncError(error: error)
+                    onCompletion?(.failure(error))
                 } else {
-                    self?.showSiteVisitors(true)
+                    self?.updateSiteVisitors(mode: .default)
+                    onCompletion?(.success(()))
                 }
-                onCompletion?(syncError)
             }
         }
 
@@ -135,48 +133,75 @@ private extension StoreStatsAndTopPerformersViewController {
                 return
             }
 
+            if !forced, let lastFullSyncTimestamp = vc.lastFullSyncTimestamp, Date().timeIntervalSince(lastFullSyncTimestamp) < vc.minimalIntervalBetweenSync {
+                // data refresh is not required
+                return
+            }
+
+            // local var to catch sync error for period
+            var periodSyncError: Error? = nil
+
             vc.siteTimezone = timezoneForStatsDates
 
             let currentDate = Date()
             vc.currentDate = currentDate
             let latestDateToInclude = vc.timeRange.latestDate(currentDate: currentDate, siteTimezone: timezoneForSync)
 
+            // For tasks dispatched for each time period.
+            let periodGroup = DispatchGroup()
+
             group.enter()
+            periodGroup.enter()
             self.syncStats(for: siteID,
                            siteTimezone: timezoneForSync,
                            timeRange: vc.timeRange,
-                           latestDateToInclude: latestDateToInclude) { [weak self] error in
-                if let error = error {
-                    DDLogError("⛔️ Error synchronizing order stats: \(error)")
-                    syncError = error
-                } else {
+                           latestDateToInclude: latestDateToInclude) { [weak self] result in
+                switch result {
+                case .success:
                     self?.trackStatsLoaded(for: vc.granularity)
+                case .failure(let error):
+                    DDLogError("⛔️ Error synchronizing order stats: \(error)")
+                    periodSyncError = error
                 }
                 group.leave()
+                periodGroup.leave()
             }
 
             group.enter()
+            periodGroup.enter()
             self.syncSiteVisitStats(for: siteID,
                                     siteTimezone: timezoneForSync,
                                     timeRange: vc.timeRange,
-                                    latestDateToInclude: latestDateToInclude) { error in
-                if let error = error {
+                                    latestDateToInclude: latestDateToInclude) { result in
+                if case let .failure(error) = result {
                     DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
-                    syncError = error
+                    periodSyncError = error
                 }
                 group.leave()
+                periodGroup.leave()
             }
 
             group.enter()
+            periodGroup.enter()
             self.syncTopEarnersStats(for: siteID,
                                      siteTimezone: timezoneForSync,
                                      timeRange: vc.timeRange,
-                                     latestDateToInclude: latestDateToInclude) { error in
-                if let error = error {
+                                     latestDateToInclude: latestDateToInclude) { result in
+                if case let .failure(error) = result {
                     DDLogError("⛔️ Error synchronizing top earners stats: \(error)")
-                    syncError = error
+                    periodSyncError = error
                 }
                 group.leave()
+                periodGroup.leave()
+            }
+
+            periodGroup.notify(queue: .main) {
+                // Update last successful data sync timestamp
+                if periodSyncError == nil {
+                    vc.lastFullSyncTimestamp = Date()
+                } else {
+                    syncError = periodSyncError
+                }
             }
         }
     }
@@ -253,11 +278,18 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 
     func configureView() {
-        view.backgroundColor = .systemColor(.systemGroupedBackground)
+        view.backgroundColor = .listBackground
         configureButtonBarBottomBorder()
 
         // Disables any content inset adjustment since `XLPagerTabStrip` doesn't seem to support safe area insets.
         containerView.contentInsetAdjustmentBehavior = .never
+
+        /// ButtonBarView is a collection view, and it should flip to support
+        /// RTL languages automatically. And yet it doesn't.
+        /// So, for RTL languages, we flip it. This also flips the cells
+        if traitCollection.layoutDirection == .rightToLeft {
+            buttonBarView.transform = CGAffineTransform(scaleX: -1, y: 1)
+        }
     }
 
     func configurePeriodViewControllers() {
@@ -285,6 +317,7 @@ private extension StoreStatsAndTopPerformersViewController {
         periodVCs.append(yearVC)
 
         periodVCs.forEach { (vc) in
+            vc.scrollDelegate = scrollDelegate
             vc.onPullToRefresh = { [weak self] in
                 self?.onPullToRefresh()
             }
@@ -322,18 +355,18 @@ private extension StoreStatsAndTopPerformersViewController {
                    siteTimezone: TimeZone,
                    timeRange: StatsTimeRangeV4,
                    latestDateToInclude: Date,
-                   onCompletion: ((Error?) -> Void)? = nil) {
+                   onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         let action = StatsActionV4.retrieveStats(siteID: siteID,
                                                  timeRange: timeRange,
                                                  earliestDateToInclude: earliestDateToInclude,
                                                  latestDateToInclude: latestDateToInclude,
                                                  quantity: timeRange.maxNumberOfIntervals,
-                                                 onCompletion: { error in
-                                                    if let error = error {
+                                                 onCompletion: { result in
+                                                    if case let .failure(error) = result {
                                                         DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats v4: \(error)")
                                                     }
-                                                    onCompletion?(error)
+                                                    onCompletion?(result)
         })
 
         ServiceLocator.stores.dispatch(action)
@@ -343,16 +376,17 @@ private extension StoreStatsAndTopPerformersViewController {
                             siteTimezone: TimeZone,
                             timeRange: StatsTimeRangeV4,
                             latestDateToInclude: Date,
-                            onCompletion: ((Error?) -> Void)? = nil) {
+                            onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         let action = StatsActionV4.retrieveSiteVisitStats(siteID: siteID,
                                                           siteTimezone: siteTimezone,
                                                           timeRange: timeRange,
-                                                          latestDateToInclude: latestDateToInclude) { error in
-                                                            if let error = error {
+                                                          latestDateToInclude: latestDateToInclude,
+                                                          onCompletion: { result in
+                                                            if case let .failure(error) = result {
                                                                 DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
                                                             }
-                                                            onCompletion?(error)
-        }
+                                                            onCompletion?(result)
+        })
 
         ServiceLocator.stores.dispatch(action)
     }
@@ -361,40 +395,50 @@ private extension StoreStatsAndTopPerformersViewController {
                              siteTimezone: TimeZone,
                              timeRange: StatsTimeRangeV4,
                              latestDateToInclude: Date,
-                             onCompletion: ((Error?) -> Void)? = nil) {
+                             onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
                                                           timeRange: timeRange,
                                                           earliestDateToInclude: earliestDateToInclude,
-                                                          latestDateToInclude: latestDateToInclude) { error in
-                                                            if let error = error {
-                                                                DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
-                                                            } else {
+                                                          latestDateToInclude: latestDateToInclude,
+                                                          onCompletion: { result in
+                                                            switch result {
+                                                            case .success:
                                                                 ServiceLocator.analytics.track(.dashboardTopPerformersLoaded,
-                                                                                          withProperties: [
-                                                                                            "granularity": timeRange.topEarnerStatsGranularity.rawValue
-                                                                    ])
+                                                                                               withProperties: [
+                                                                                                "granularity": timeRange.topEarnerStatsGranularity.rawValue
+                                                                                               ])
+                                                            case .failure(let error):
+                                                                DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
                                                             }
-                                                            onCompletion?(error)
-        }
+                                                            onCompletion?(result)
+        })
 
         ServiceLocator.stores.dispatch(action)
     }
 }
 
 private extension StoreStatsAndTopPerformersViewController {
-    func showSiteVisitors(_ shouldShowSiteVisitors: Bool) {
+    func updateSiteVisitors(mode: SiteVisitStatsMode) {
         periodVCs.forEach { vc in
-            vc.shouldShowSiteVisitStats = shouldShowSiteVisitors
+            vc.siteVisitStatsMode = mode
         }
     }
 
     func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
         switch error {
-        case .statsModuleDisabled, .noPermission:
-            showSiteVisitors(false)
+        case .noPermission:
+            updateSiteVisitors(mode: .hidden)
+        case .statsModuleDisabled:
+            let defaultSite = ServiceLocator.stores.sessionManager.defaultSite
+            let jcpFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
+            if defaultSite?.isJetpackCPConnected == true, jcpFeatureFlagEnabled {
+                updateSiteVisitors(mode: .redactedDueToJetpack)
+            } else {
+                updateSiteVisitors(mode: .hidden)
+            }
         default:
-            displaySyncingErrorNotice()
+            displaySyncingError()
         }
     }
 
@@ -403,7 +447,7 @@ private extension StoreStatsAndTopPerformersViewController {
         case let siteVisitStatsStoreError as SiteVisitStatsStoreError:
             handleSiteVisitStatsStoreError(error: siteVisitStatsStoreError)
         default:
-            displaySyncingErrorNotice()
+            displaySyncingError()
         }
     }
 }

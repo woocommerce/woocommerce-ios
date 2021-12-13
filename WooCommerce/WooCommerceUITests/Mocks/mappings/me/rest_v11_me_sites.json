@@ -4,10 +4,10 @@
         "method": "GET",
         "queryParameters": {
           "fields": {
-            "equalTo": "ID,name,description,URL,options"
+            "equalTo": "ID,name,description,URL,options,jetpack,jetpack_connection"
           },
           "options": {
-            "equalTo": "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset"
+            "equalTo": "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset,jetpack_connection_active_plugins,admin_url"
           }
         }
     },
@@ -20,9 +20,12 @@
                       "name": "Your WooCommerce Store",
                       "description": "",
                       "URL": "http:\/\/yourwoosite.com",
+                      "jetpack": true,
+                      "jetpack_connection": true,
                       "options": {
                         "timezone": "",
                         "gmt_offset": 0,
+                        "admin_url": "http:\/\/yourwoosite.com/wp-admin/",
                         "is_wpcom_store": true,
                         "woocommerce_is_active": true,
                         "jetpack_version": "8.1.1",

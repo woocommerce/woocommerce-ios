@@ -20,6 +20,7 @@ final class LoadingView: UIView {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.alignment = .center
+        stackView.distribution = .equalCentering
         stackView.spacing = Layout.stackViewSpacing
         return stackView
     }()
@@ -34,7 +35,7 @@ final class LoadingView: UIView {
     /// Extra Large and purple loading indicator
     ///
     private let loadingIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .gray)
+        let indicator = UIActivityIndicatorView(style: .medium)
         indicator.transform = CGAffineTransform(scaleX: Layout.indicatorScaleFactor, y: Layout.indicatorScaleFactor)
         indicator.startAnimating()
         return indicator
@@ -92,7 +93,7 @@ extension LoadingView {
 // MARK: Constants
 private extension LoadingView {
     enum Layout {
-        static let stackViewEdges = UIEdgeInsets(top: 38, left: 54, bottom: 48, right: 54)
+        static let stackViewEdges = UIEdgeInsets(top: 20, left: 20, bottom: 35, right: 20)
         static let stackViewSpacing = CGFloat(40)
         static let indicatorScaleFactor = CGFloat(2.5)
         static let cornerRadius = CGFloat(14.5)

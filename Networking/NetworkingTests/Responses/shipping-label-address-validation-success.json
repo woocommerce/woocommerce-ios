@@ -1,0 +1,17 @@
+{
+    "data": {
+        "success": true,
+        "normalized": {
+            "address_2": "",
+            "city": "SAN FRANCISCO",
+            "state": "CA",
+            "postcode": "94110-4929",
+            "country": "US",
+            "address": "60 29TH ST # 343",
+            "name": "Anitaa",
+            "company": "",
+            "phone": "41535032"
+        },
+        "is_trivial_normalization": false
+    }
+}

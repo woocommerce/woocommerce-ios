@@ -13,6 +13,10 @@ class ValueOneTableViewCell: UITableViewCell {
 
 
 private extension ValueOneTableViewCell {
+    enum Constants {
+        static let cellValueTextColor = UIColor.systemColor(.secondaryLabel)
+    }
+
     func configureBackground() {
         applyDefaultBackgroundStyle()
     }
@@ -23,6 +27,7 @@ private extension ValueOneTableViewCell {
 
     func configureDetailTextLabel() {
         detailTextLabel?.applySubheadlineStyle()
+        detailTextLabel?.textColor = Constants.cellValueTextColor
         detailTextLabel?.lineBreakMode = .byWordWrapping
         detailTextLabel?.numberOfLines = 0
     }

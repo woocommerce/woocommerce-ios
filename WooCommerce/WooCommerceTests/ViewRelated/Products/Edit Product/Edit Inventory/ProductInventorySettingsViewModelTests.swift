@@ -1,4 +1,5 @@
 import XCTest
+import Observables
 @testable import WooCommerce
 @testable import Yosemite
 
@@ -17,7 +18,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
     func testReadonlyValuesAreAsExpectedAfterInitializingAProductWithManageStockEnabled() {
         // Arrange
         let sku = "134"
-        let product = MockProduct().product()
+        let product = Product.fake()
             .copy(sku: sku, manageStock: true, stockQuantity: 12, backordersKey: ProductBackordersSetting.allowed.rawValue, soldIndividually: true)
         let model = EditableProductModel(product: product)
 
@@ -46,7 +47,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
     func testReadonlyValuesAreAsExpectedAfterInitializingAProductWithManageStockDisabled() {
         // Arrange
         let sku = "134"
-        let product = MockProduct().product()
+        let product = Product.fake()
             .copy(sku: sku, manageStock: false, stockStatusKey: ProductStockStatus.onBackOrder.rawValue, soldIndividually: true)
         let model = EditableProductModel(product: product)
 
@@ -73,7 +74,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
     func test_a_variable_product_with_manage_stock_disabled_has_no_stock_status_row() {
         // Arrange
-        let product = MockProduct().product().copy(productTypeKey: ProductType.variable.rawValue, sku: "134")
+        let product = Product.fake().copy(productTypeKey: ProductType.variable.rawValue, sku: "134")
         let model = EditableProductModel(product: product)
 
         // Act
@@ -94,7 +95,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
     func testOnlySKUSectionIsVisibleForSKUFormType() {
         // Arrange
-        let product = MockProduct().product().copy(sku: "134")
+        let product = Product.fake().copy(sku: "134")
         let model = EditableProductModel(product: product)
 
         // Act
@@ -117,7 +118,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
     func testHandlingADuplicateSKUUpdatesTheSKUSectionWithError() {
         // Arrange
         let sku = "134"
-        let product = MockProduct().product().copy(sku: "", manageStock: false)
+        let product = Product.fake().copy(sku: "", manageStock: false)
         let model = EditableProductModel(product: product)
         let stores = MockProductSKUValidationStoresManager(existingSKUs: [sku])
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, stores: stores)
@@ -152,7 +153,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
     func testHandlingTheOriginalSKUIsAlwaysValid() {
         // Arrange
         let sku = "134"
-        let product = MockProduct().product().copy(sku: sku, manageStock: false)
+        let product = Product.fake().copy(sku: sku, manageStock: false)
         let model = EditableProductModel(product: product)
         let stores = MockProductSKUValidationStoresManager(existingSKUs: [sku])
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, stores: stores)
@@ -189,7 +190,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
     func testDisablingStockManagementUpdatesItsSections() {
         // Arrange
         let sku = "134"
-        let product = MockProduct().product()
+        let product = Product.fake()
             .copy(sku: sku, manageStock: true, stockQuantity: 12, backordersKey: ProductBackordersSetting.allowed.rawValue, soldIndividually: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
@@ -213,7 +214,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
     func testEnablingStockManagementUpdatesItsSections() {
         // Arrange
         let sku = "134"
-        let product = MockProduct().product()
+        let product = Product.fake()
             .copy(sku: sku, manageStock: false, stockStatusKey: ProductStockStatus.onBackOrder.rawValue, soldIndividually: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
@@ -238,7 +239,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
     func testViewModelHasUnsavedChangesAfterUpdatingSoldInvidually() {
         // Arrange
-        let product = MockProduct().product().copy(soldIndividually: true)
+        let product = Product.fake().copy(soldIndividually: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
 
@@ -251,7 +252,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
     func testViewModelHasNoUnsavedChangesAfterUpdatingWithTheOriginalValues() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
             .copy(sku: "sku", manageStock: true, stockQuantity: 12, backordersKey: ProductBackordersSetting.allowed.rawValue, soldIndividually: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)

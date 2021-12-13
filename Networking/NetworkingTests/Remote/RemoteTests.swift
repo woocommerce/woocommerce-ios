@@ -1,22 +1,30 @@
+import Combine
 import XCTest
+import Fakes
 
 @testable import Networking
 
 
 /// Remote UnitTests
 ///
-class RemoteTests: XCTestCase {
+final class RemoteTests: XCTestCase {
 
     /// Sample Request
     ///
     private let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: 123, path: "something", parameters: [:])
 
+    private var cancellables = Set<AnyCancellable>()
+
+    override func setUp() {
+        super.setUp()
+        cancellables = []
+    }
 
     /// Verifies that `enqueue:mapper:` properly wraps up the received request within an AuthenticatedRequest, with
     /// the remote credentials.
     ///
     func testEnqueueProperlyWrapsUpDataRequestsIntoAuthenticatedRequestWithCredentials() {
-        let network = MockupNetwork()
+        let network = MockNetwork()
         let mapper = DummyMapper()
         let remote = Remote(network: network)
         let expectation = self.expectation(description: "Enqueue with Mapper")
@@ -45,7 +53,7 @@ class RemoteTests: XCTestCase {
     ///
     func testEnqueueWithResultProperlyWrapsUpDataRequestsIntoAuthenticatedRequestWithCredentials() throws {
         // Given
-        let network = MockupNetwork()
+        let network = MockNetwork()
         let mapper = DummyMapper()
         let remote = Remote(network: network)
 
@@ -67,10 +75,40 @@ class RemoteTests: XCTestCase {
         XCTAssertEqual(receivedRequest.path, request.path)
     }
 
+    /// Verifies that `enqueuePublisher:` properly wraps up the received request within an AuthenticatedRequest, with
+    /// the remote credentials.
+    ///
+    func test_enqueuePublisher_wraps_up_request_into_authenticated_request_with_credentials() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        // When
+        let result = waitFor { promise in
+            remote.enqueue(self.request, mapper: mapper).sink { result in
+                promise(result)
+            }.store(in: &self.cancellables)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        guard case NetworkError.notFound = error,
+            let receivedRequest = network.requestsForResponseData.first as? JetpackRequest
+            else {
+                XCTFail()
+                return
+        }
+
+        XCTAssertEqual(network.requestsForResponseData.count, 1)
+        XCTAssertEqual(receivedRequest.method, request.method)
+        XCTAssertEqual(receivedRequest.path, request.path)
+    }
+
     /// Verifies that `enqueue:mapper:` relays any received payload over to the Mapper.
     ///
     func testEnqueueWithMapperProperlyRelaysReceivedPayloadToMapper() {
-        let network = MockupNetwork()
+        let network = MockNetwork()
         let mapper = DummyMapper()
         let remote = Remote(network: network)
 
@@ -91,7 +129,7 @@ class RemoteTests: XCTestCase {
     ///
     func testEnqueueWithMapperAndResultCallbackProperlyRelaysReceivedPayloadToMapper() {
         // Given
-        let network = MockupNetwork()
+        let network = MockNetwork()
         let mapper = DummyMapper()
         let remote = Remote(network: network)
 
@@ -109,11 +147,33 @@ class RemoteTests: XCTestCase {
         XCTAssertNotNil(mapper.input)
     }
 
+    /// Verifies that `enqueuePublisher` relays any received payload over to the Mapper.
+    ///
+    func test_enqueuePublisher_relays_received_payload_to_mapper() {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "order")
+
+        // When
+        waitForExpectation { expectation in
+            remote.enqueue(request, mapper: mapper).sink { _ in
+                expectation.fulfill()
+            }.store(in: &cancellables)
+        }
+
+        // Then
+        XCTAssertEqual(mapper.input, Loader.contentsOf("order"))
+        XCTAssertNotNil(mapper.input)
+    }
+
     /// Verifies that `enqueue:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
     /// Request Timeout error.
     ///
     func testEnqueueRequestWithoutMapperPostJetpackTimeoutNotificationWhenTheResponseContainsTimeoutError() {
-        let network = MockupNetwork()
+        let network = MockNetwork()
         let remote = Remote(network: network)
 
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJetpackTimeoutError, object: nil, handler: nil)
@@ -134,7 +194,7 @@ class RemoteTests: XCTestCase {
     /// Request Timeout error.
     ///
     func testEnqueueRequestWithMapperPostsJetpackTimeoutNotificationWhenTheResponseContainsTimeoutError() {
-        let network = MockupNetwork()
+        let network = MockNetwork()
         let mapper = DummyMapper()
         let remote = Remote(network: network)
 
@@ -157,7 +217,7 @@ class RemoteTests: XCTestCase {
     ///
     func testEnqueueRequestWithResultWithMapperPostsJetpackTimeoutNotificationWhenTheResponseContainsTimeoutError() throws {
         // Given
-        let network = MockupNetwork()
+        let network = MockNetwork()
         let mapper = DummyMapper()
         let remote = Remote(network: network)
 
@@ -178,6 +238,30 @@ class RemoteTests: XCTestCase {
         // Then
         XCTAssertTrue(try XCTUnwrap(result).isFailure)
         XCTAssertTrue(try XCTUnwrap(result?.failure) is DotcomError)
+    }
+
+    /// Verifies that `enqueuePublisher` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a Request Timeout error.
+    ///
+    func test_enqueuePublisher_posts_Jetpack_timeout_notification_when_the_response_contains_timeout_error() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "timeout_error")
+
+        // When
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJetpackTimeoutError, object: nil, handler: nil)
+        let result: Result<Any, Error> = waitFor { promise in
+            remote.enqueue(self.request, mapper: mapper).sink { result in
+                promise(result)
+            }.store(in: &self.cancellables)
+        }
+        wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? DotcomError, DotcomError.requestFailed)
     }
 }
 

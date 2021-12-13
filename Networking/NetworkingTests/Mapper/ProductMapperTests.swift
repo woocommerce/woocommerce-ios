@@ -103,14 +103,16 @@ final class ProductMapperTests: XCTestCase {
     }
 
     /// Verifies that the fields of the Product with alternative types are parsed correctly when they have different types than in the struct.
-    /// Currently, `price`, `salePrice` and `manageStock` allow alternative types.
+    /// Currently, `price`, `regularPrice`, `salePrice`, `manageStock`, and `soldIndividually` allow alternative types.
     ///
     func test_that_product_alternative_types_are_properly_parsed() throws {
         let product = try XCTUnwrap(mapLoadProductResponseWithAlternativeTypes())
 
         XCTAssertEqual(product.price, "17")
+        XCTAssertEqual(product.regularPrice, "12.89")
         XCTAssertEqual(product.salePrice, "26.73")
         XCTAssertTrue(product.manageStock)
+        XCTAssertFalse(product.soldIndividually)
     }
 
     /// Verifies that the `salePrice` field of the Product are parsed correctly when the product is on sale, and the sale price is an empty string
@@ -254,6 +256,21 @@ final class ProductMapperTests: XCTestCase {
         XCTAssert(attribute2?.attributeID == 0)
         XCTAssertEqual(attribute2?.name, "Size")
         XCTAssertEqual(attribute2?.option, "Medium")
+    }
+
+    /// Test that product add-ons are properly parsed.
+    ///
+    func test_product_add_ons_are_properly_parsed() {
+        let addOns = mapLoadProductResponse()?.addOns ?? []
+        XCTAssertEqual(addOns.count, 3)
+
+        let firstAddOn = addOns[0]
+        XCTAssertEqual(firstAddOn.name, "Topping")
+        XCTAssertEqual(firstAddOn.options.count, 4)
+
+        let firstOption = firstAddOn.options[0]
+        XCTAssertEqual(firstOption.label, "Peperoni")
+        XCTAssertEqual(firstOption.price, "3")
     }
 }
 

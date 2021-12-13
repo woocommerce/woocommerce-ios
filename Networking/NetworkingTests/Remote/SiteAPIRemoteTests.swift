@@ -8,7 +8,7 @@ class SiteAPIRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockupNetwork()
+    let network = MockNetwork()
 
     /// Dummy Site ID
     ///
@@ -22,34 +22,39 @@ class SiteAPIRemoteTests: XCTestCase {
 
     /// Verifies that loadAPIInformation properly parses the sample response.
     ///
-    func testLoadGeneralSettingsProperlyReturnsParsedSettings() {
+    func test_loadAPIInformation_properly_returns_parsed_settings() throws {
+        // Given
         let remote = SiteAPIRemote(network: network)
-        let expectation = self.expectation(description: "Load site API information")
-
         network.simulateResponse(requestUrlSuffix: "", filename: "site-api")
-        remote.loadAPIInformation(for: sampleSiteID) { (siteAPI, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(siteAPI)
-            XCTAssertEqual(siteAPI?.siteID, self.sampleSiteID)
-            XCTAssertEqual(siteAPI?.highestWooVersion, WooAPIVersion.mark3)
-            expectation.fulfill()
+
+        // When
+        let result: Result<SiteAPI, Error> = waitFor { promise in
+            remote.loadAPIInformation(for: self.sampleSiteID) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let siteAPI = try result.get()
+        XCTAssertEqual(siteAPI.siteID, sampleSiteID)
+        XCTAssertEqual(siteAPI.highestWooVersion, WooAPIVersion.mark3)
     }
 
     /// Verifies that loadAPIInformation properly relays Networking Layer errors.
     ///
-    func testLoadGeneralSettingsProperlyRelaysNetworkingErrors() {
+    func test_loadAPIInformation_properly_relays_networking_errors() {
+        // Given
         let remote = SiteAPIRemote(network: network)
-        let expectation = self.expectation(description: "Load site API information contains errors")
 
-        remote.loadAPIInformation(for: sampleSiteID) { (siteAPI, error) in
-            XCTAssertNil(siteAPI)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When
+        let result: Result<SiteAPI, Error> = waitFor { promise in
+            remote.loadAPIInformation(for: self.sampleSiteID) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 }

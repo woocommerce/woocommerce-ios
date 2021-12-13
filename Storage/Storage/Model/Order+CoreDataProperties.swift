@@ -28,9 +28,11 @@ extension Order {
     @NSManaged public var discountTax: String?
     @NSManaged public var discountTotal: String?
     @NSManaged public var exclusiveForSearch: Bool
+    @NSManaged public var fees: Set<OrderFeeLine>?
     @NSManaged public var number: String?
     @NSManaged public var orderID: Int64
     @NSManaged public var parentID: Int64
+    @NSManaged public var paymentMethodID: String?
     @NSManaged public var paymentMethodTitle: String?
     @NSManaged public var shippingAddress1: String?
     @NSManaged public var shippingAddress2: String?
@@ -55,6 +57,8 @@ extension Order {
     @NSManaged public var notes: Set<OrderNote>?
     @NSManaged public var searchResults: Set<OrderSearchResults>?
     @NSManaged public var refunds: Set<OrderRefundCondensed>?
+    @NSManaged public var shippingLabels: Set<ShippingLabel>?
+    @NSManaged public var shippingLabelSettings: ShippingLabelSettings?
 
 }
 
@@ -157,5 +161,38 @@ extension Order {
 
     @objc(removeRefunds:)
     @NSManaged public func removeFromRefunds(_ values: NSSet)
+}
+
+// MARK: Generated accessors for shippingLabels
+extension Order {
+
+    @objc(addShippingLabelsObject:)
+    @NSManaged public func addToShippingLabels(_ value: ShippingLabel)
+
+    @objc(removeShippingLabelsObject:)
+    @NSManaged public func removeFromShippingLabels(_ value: ShippingLabel)
+
+    @objc(addShippingLabels:)
+    @NSManaged public func addToShippingLabels(_ values: NSSet)
+
+    @objc(removeShippingLabels:)
+    @NSManaged public func removeFromShippingLabels(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for fees
+extension Order {
+
+    @objc(addFeesObject:)
+    @NSManaged public func addToFees(_ value: OrderFeeLine)
+
+    @objc(removeFeesObject:)
+    @NSManaged public func removeFromFees(_ value: OrderFeeLine)
+
+    @objc(addFees:)
+    @NSManaged public func addToFees(_ values: NSSet)
+
+    @objc(removeFees:)
+    @NSManaged public func removeFromFees(_ values: NSSet)
 
 }

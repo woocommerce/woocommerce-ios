@@ -1,0 +1,29 @@
+{
+    "request": {
+        "urlPath": "/wp/v2/sites/161477129/users/me",
+        "method": "GET",
+        "queryParameters": {
+            "context": {
+                "equalTo": "edit"
+            },
+            "fields": {
+                "equalTo": "id,username,id_wpcom,email,first_name,last_name,nickname,roles"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "id": 1234,
+            "username": "john_apple",
+            "first_name": "Johnny",
+            "last_name": "Appleseed",
+            "email": "johnny@email.blog",
+            "nickname": "Johnny",
+            "roles": [
+                "administrator"
+            ],
+            "id_wpcom": 4321
+        }
+    }
+}

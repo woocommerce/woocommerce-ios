@@ -1,5 +1,5 @@
-Products: In Settings → Experimental Features, a Products switch is now available for turning M4 features on and off (currently, the default is off). You can also add a simple, grouped, or external product and publish or save it as a draft.
+The orders tab has gotten an update with this release. The tabs are now gone, and we’ve given you a filter by status or date range option. This is based upon your direct feedback over the years, and we know you’ll like the change!
 
-General enhancements: Now, if you’re not saving a product as “published,” the in-progress modal will show a more accurate message — like “saving your product” instead of “publishing your product.” Also, when you dismiss the product selector search modal when at least one product is selected for a grouped product’s linked products, we’ll first ask you if you want to discard your changes.
+We fixed a possible crash when creating a shipping label on an order from a push notification. We also improved the login experience with your password manager. Your stored username and password for WordPress.com in your manager will be at the top of the list!
 
-Miscellaneous fixes: When opening a product or product variation from Order Details, it now shows read-only product or product variation details (and the product variation no longer appears in the Products tab anymore). Also, in the product and variation list, the stock quantity isn’t shown anymore if stock management is disabled.
+As always, please continue to send us your feedback. Thanks for using WooCommerce!

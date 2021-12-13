@@ -18,6 +18,11 @@ extension Array {
     var isNotEmpty: Bool {
         return !isEmpty
     }
+
+    /// A Bool indicating if the collection has at least two elements
+    var containsMoreThanOne: Bool {
+        return count > 1
+    }
 }
 
 

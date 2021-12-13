@@ -28,7 +28,7 @@ extension DatePickerTableViewCell {
 
     static func getDefaultCellHeight() -> CGFloat {
         if #available(iOS 14, *) {
-            return CGFloat(380)
+            return CGFloat(50)
         }
 
         return CGFloat(216)
@@ -42,7 +42,7 @@ private extension DatePickerTableViewCell {
 
     func configureDatePicker() {
         if #available(iOS 14, *) {
-            picker.preferredDatePickerStyle = .inline
+            picker.preferredDatePickerStyle = .compact
         }
     }
 }

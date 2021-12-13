@@ -164,12 +164,13 @@ private extension WordPressMediaLibraryPickerDataSource {
     func retrieveMedia(pageNumber: Int, pageSize: Int, completion: @escaping (_ mediaItems: [Media], _ error: Error?) -> Void) {
         let action = MediaAction.retrieveMediaLibrary(siteID: siteID,
                                                       pageNumber: pageNumber,
-                                                      pageSize: pageSize) { (mediaItems, error) in
-                                                        guard mediaItems.isEmpty == false else {
-                                                            completion([], error)
-                                                            return
-                                                        }
-                                                        completion(mediaItems, nil)
+                                                      pageSize: pageSize) { result in
+            switch result {
+            case .success(let mediaItems):
+                completion(mediaItems, nil)
+            case .failure(let error):
+                completion([], error)
+            }
         }
         ServiceLocator.stores.dispatch(action)
     }
@@ -177,6 +178,12 @@ private extension WordPressMediaLibraryPickerDataSource {
     /// Appends the new media items to the existing media items.
     ///
     func updateMediaItems(_ newMediaItems: [Media], pageNumber: Int, pageSize: Int) {
+        // If the response contains no new items, there is nothing to update.
+        // We return early since the code would generate an invalid range of indices to update otherwise.
+        guard newMediaItems.isNotEmpty else {
+            return
+        }
+
         let pageFirstIndex = syncingCoordinator.pageFirstIndex
         let mediaStartIndex = (pageNumber - pageFirstIndex) * pageSize
         let mediaStartIndexOfTheNextPage = (pageNumber + 1 - pageFirstIndex) * pageSize

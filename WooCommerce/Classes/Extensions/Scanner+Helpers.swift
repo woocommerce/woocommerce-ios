@@ -13,23 +13,24 @@ extension Scanner {
 
         while isAtEnd == false {
             // Find + Drop the first quotation mark
-            scanUpTo(marker, into: nil)
-            scanString(marker, into: nil)
+            _ = scanUpToString(marker)
+            _ = scanString(marker)
 
             // Scan the actual quoted text
-            let start = scanLocation
-            scanUpTo(marker, into: nil)
-            let end = scanLocation
+            let start = currentIndex
+            _ = scanUpToString(marker)
+            let end = currentIndex
 
             // Drop the closing mark
-            scanString(marker, into: nil)
+            _ = scanString(marker)
 
             // Build the Range
-            guard start >= 0 && end < string.count && start < end else {
+            guard start.utf16Offset(in: self.string) >= 0 && end.utf16Offset(in: self.string) < string.count && start < end else {
                 continue
             }
 
-            let foundationRange = NSRange(location: start, length: end - start)
+            let foundationRange = NSRange(location: start.utf16Offset(in: self.string),
+                                          length: end.utf16Offset(in: self.string) - start.utf16Offset(in: self.string))
             output.append(foundationRange)
         }
 

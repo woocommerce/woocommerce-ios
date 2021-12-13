@@ -54,6 +54,12 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>org-appextension-feature-password-management</string>
+		<string>googlegmail</string>
+		<string>airmail</string>
+		<string>ms-outlook</string>
+		<string>readdle-spark</string>
+		<string>ymail</string>
+		<string>fastmail</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -61,6 +67,14 @@
 	<string>To take photos or videos to add to your Products or support tickets.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>To save photos from camera for Product images, or to add photos or videos to your Products or support tickets.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Location access is required in order to accept payments.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Bluetooth access is required in order to connect to supported card readers.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>This app uses Bluetooth to connect to supported card readers.</string>
+	<key>NSLocationDefaultAccuracyReduced</key>
+	<true/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Noticons.ttf</string>
@@ -69,6 +83,7 @@
 	<array>
 		<string>fetch</string>
 		<string>remote-notification</string>
+		<string>bluetooth-central</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

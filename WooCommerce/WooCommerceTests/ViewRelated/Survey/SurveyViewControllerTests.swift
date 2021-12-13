@@ -19,20 +19,39 @@ final class SurveyViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mirror.webView.isLoading)
-        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.inAppFeedback.asURL().tagPlatform("ios"))
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.inAppFeedback.asURL().tagPlatform("ios").tagAppVersion(Bundle.main.bundleVersion()))
     }
 
     func test_it_loads_the_correct_product_feedback_survey() throws {
         // Given
-        let viewController = SurveyViewController(survey: .productsM4Feedback, onCompletion: {})
+        let viewController = SurveyViewController(survey: .productsVariationsFeedback, onCompletion: {})
 
         // When
         _ = try XCTUnwrap(viewController.view)
         let mirror = try self.mirror(of: viewController)
 
-        //Then
+        // Then
         XCTAssertTrue(mirror.webView.isLoading)
-        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.productsM4Feedback.asURL().tagPlatform("ios").tagProductMilestone("4"))
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.productsFeedback
+                        .asURL().tagPlatform("ios")
+                        .tagAppVersion(Bundle.main.bundleVersion()))
+    }
+
+    func test_it_loads_the_correct_shipping_labels_release_survey() throws {
+        // Given
+        let viewController = SurveyViewController(survey: .shippingLabelsRelease3Feedback, onCompletion: {})
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let mirror = try self.mirror(of: viewController)
+
+        // Then
+        XCTAssertTrue(mirror.webView.isLoading)
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.shippingLabelsRelease3Feedback
+                        .asURL()
+                        .tagPlatform("ios")
+                        .tagShippingLabelsMilestone("3")
+                        .tagAppVersion(Bundle.main.bundleVersion()))
     }
 
     func test_it_completes_after_receiving_a_form_submitted_completed_callback_request() throws {

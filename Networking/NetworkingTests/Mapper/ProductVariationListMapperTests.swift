@@ -47,7 +47,7 @@ final class ProductVariationListMapperTests: XCTestCase {
         XCTAssertEqual(productVariation.taxClass, "")
 
         XCTAssertTrue(productVariation.manageStock)
-        XCTAssertEqual(productVariation.stockQuantity, 16)
+        XCTAssertEqual(productVariation.stockQuantity, 16.5)
 
         XCTAssertEqual(productVariation.backordersKey, "notify")
         XCTAssertTrue(productVariation.backordersAllowed)
@@ -74,6 +74,7 @@ final class ProductVariationListMapperTests: XCTestCase {
 
         XCTAssertEqual(productVariation.price, "16")
         XCTAssertEqual(productVariation.salePrice, "12.5")
+        XCTAssertEqual(productVariation.regularPrice, "12")
         XCTAssertFalse(productVariation.manageStock)
     }
 

@@ -9,17 +9,17 @@ import XCTest
 ///
 final class ProductReviewStoreTests: XCTestCase {
 
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
-    /// Mockup Network: Allows us to inject predefined responses!
+    /// Mock Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Store
     ///
@@ -56,8 +56,8 @@ final class ProductReviewStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        storageManager = MockStorageManager()
+        network = MockNetwork()
         store = ProductReviewStore(dispatcher: dispatcher,
                                    storageManager: storageManager,
                                    network: network)
@@ -437,21 +437,21 @@ private extension ProductReviewStoreTests {
         return Networking.ProductReview(siteID: sampleSiteID,
                                         reviewID: reviewID ?? sampleReviewID,
                                         productID: sampleProductID,
-                                        dateCreated: Date(),
-                                        statusKey: "hold",
-                                        reviewer: "someone",
-                                        reviewerEmail: "somewhere@theinternet.com",
-                                        reviewerAvatarURL: "http://animage.com",
-                                        review: "Meh",
-                                        rating: 1,
-                                        verified: true)
+                                        dateCreated: dateFromGMT("2019-08-20T06:06:29"),
+                                        statusKey: "approved",
+                                        reviewer: "somereviewer",
+                                        reviewerEmail: "somewhere@intheinternet.com",
+                                        reviewerAvatarURL: "http://2.gravatar.com/avatar/b371b7de1e58a5dcc3fc3aa236784081?s=96&d=mm&r=g",
+                                        review: "<p>The fancy chair gets only three stars</p>\n",
+                                        rating: 3,
+                                        verified: false)
     }
 
     func sampleProductReviewMutated() -> Networking.ProductReview {
         return Networking.ProductReview(siteID: sampleSiteID,
                                         reviewID: sampleReviewID,
                                         productID: sampleProductID,
-                                        dateCreated: Date(),
+                                        dateCreated: dateFromGMT("2019-08-20T06:06:29"),
                                         statusKey: "hold",
                                         reviewer: "someone else mutated",
                                         reviewerEmail: "somewhere@theinternet.com",
@@ -459,5 +459,10 @@ private extension ProductReviewStoreTests {
                                         review: "Meh",
                                         rating: 1,
                                         verified: true)
+    }
+
+    func dateFromGMT(_ dateStringInGMT: String) -> Date {
+        let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
+        return dateFormatter.date(from: dateStringInGMT)!
     }
 }

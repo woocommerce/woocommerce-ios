@@ -37,8 +37,10 @@ struct InAppFeedbackCardVisibilityUseCase {
         switch feedbackType {
         case .general:
             return try shouldGeneralFeedbackBeVisible(currentDate: currentDate)
-        case .productsM4:
+        case .productsVariations:
             return shouldProductsFeedbackBeVisible()
+        case .shippingLabelsRelease3:
+            return shouldShippingLabelsRelease3FeedbackBeVisible()
         }
     }
 
@@ -64,9 +66,15 @@ struct InAppFeedbackCardVisibilityUseCase {
         return true
     }
 
-    /// Returns whether the productsM4 feedback request should be displayed
+    /// Returns whether the products feedback request should be displayed
     ///
     private func shouldProductsFeedbackBeVisible() -> Bool {
+        return settings.feedbackStatus(of: feedbackType) == .pending
+    }
+
+    /// Returns whether the shippingLabelsRelease3 feedback request should be displayed
+    ///
+    private func shouldShippingLabelsRelease3FeedbackBeVisible() -> Bool {
         return settings.feedbackStatus(of: feedbackType) == .pending
     }
 

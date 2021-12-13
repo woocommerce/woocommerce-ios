@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents a Shipment Tracking Entity (from the WC Shipment Tracking extension).
 ///
-public struct ShipmentTracking: Decodable {
+public struct ShipmentTracking: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// Site Identifier.
     ///
@@ -105,27 +105,10 @@ enum ShipmentTrackingAPIError: Error {
 // MARK: - Comparable Conformance
 //
 extension ShipmentTracking: Comparable {
-    public static func == (lhs: ShipmentTracking, rhs: ShipmentTracking) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.orderID == rhs.orderID &&
-            lhs.trackingID == rhs.trackingID &&
-            lhs.trackingNumber == rhs.trackingNumber &&
-            lhs.trackingProvider == rhs.trackingProvider &&
-            lhs.trackingURL == rhs.trackingURL &&
-            lhs.dateShipped == rhs.dateShipped
-    }
-
     public static func < (lhs: ShipmentTracking, rhs: ShipmentTracking) -> Bool {
         return lhs.siteID < rhs.siteID ||
             (lhs.siteID == rhs.siteID && lhs.orderID < rhs.orderID) ||
             (lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID < rhs.trackingID) ||
             (lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID == rhs.trackingID && lhs.trackingNumber < rhs.trackingNumber)
-    }
-
-    public static func > (lhs: ShipmentTracking, rhs: ShipmentTracking) -> Bool {
-        return lhs.siteID > rhs.siteID ||
-            (lhs.siteID == rhs.siteID && lhs.orderID > rhs.orderID) ||
-            (lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID > rhs.trackingID) ||
-            (lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID == rhs.trackingID && lhs.trackingNumber > rhs.trackingNumber)
     }
 }

@@ -7,7 +7,7 @@ final class ProductStockStatusListSelectorCommandTests: XCTestCase {
 
     func test_selected_status() {
         let expectedStockStatus = ProductStockStatus.outOfStock
-        let product = MockProduct().product(stockStatus: expectedStockStatus)
+        let product = Product.fake().copy(stockStatusKey: expectedStockStatus.rawValue)
         let command = ProductStockStatusListSelectorCommand(selected: product.productStockStatus)
         let viewController = ListSelectorViewController(command: command, onDismiss: { _ in })
         XCTAssertEqual(command.selected, expectedStockStatus)
@@ -18,13 +18,13 @@ final class ProductStockStatusListSelectorCommandTests: XCTestCase {
     }
 
     func test_stock_status_list_data() {
-        let product = MockProduct().product()
+        let product = Product.fake()
         let command = ProductStockStatusListSelectorCommand(selected: product.productStockStatus)
         XCTAssertEqual(command.data.count, 3)
     }
 
     func test_cell_configuration() {
-        let product = MockProduct().product()
+        let product = Product.fake()
         let command = ProductStockStatusListSelectorCommand(selected: product.productStockStatus)
         let nib = Bundle.main.loadNibNamed(BasicTableViewCell.classNameWithoutNamespaces, owner: self, options: nil)
         guard let cell = nib?.first as? BasicTableViewCell else {

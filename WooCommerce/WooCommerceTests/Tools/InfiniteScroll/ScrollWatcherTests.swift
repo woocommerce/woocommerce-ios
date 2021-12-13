@@ -1,4 +1,6 @@
 import XCTest
+import Observables
+
 @testable import WooCommerce
 
 final class ScrollWatcherTests: XCTestCase {

@@ -4,4 +4,5 @@ struct TestCredentials {
     static let password: String = "mocked_password"
     static let displayName: String = "WooCommerce Store Owner"
     static let siteUrl: String = "http://yourwoosite.com"
+    static let storeName: String = "Your WooCommerce Store"
 }

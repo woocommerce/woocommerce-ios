@@ -1,4 +1,5 @@
 import UIKit
+import SafariServices.SFSafariViewController
 
 
 // MARK: - ReviewsViewController
@@ -57,6 +58,10 @@ final class ReviewsViewController: UIViewController {
         return viewModel.isEmpty
     }
 
+    /// The view shown if the list is empty.
+    ///
+    private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
+
     /// The last seen time for notifications
     ///
     private var lastSeenTime: String? {
@@ -85,8 +90,23 @@ final class ReviewsViewController: UIViewController {
 
     /// Footer "Loading More" Spinner.
     ///
-    private lazy var footerSpinnerView = {
-        return FooterSpinnerView(tableViewStyle: tableView.style)
+    private lazy var footerSpinnerView = FooterSpinnerView()
+
+    /// Top banner that shows an error if there is a problem loading reviews data
+    ///
+    private lazy var topBannerView: TopBannerView = {
+        ErrorTopBannerFactory.createTopBanner(isExpanded: false,
+                                              expandedStateChangeHandler: { [weak self] in
+                                                self?.tableView.updateHeaderHeight()
+                                              },
+                                              onTroubleshootButtonPressed: { [weak self] in
+                                                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+                                                self?.present(safariViewController, animated: true, completion: nil)
+                                              },
+                                              onContactSupportButtonPressed: { [weak self] in
+                                                guard let self = self else { return }
+                                                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+                                              })
     }()
 
     // MARK: - View Lifecycle
@@ -112,7 +132,6 @@ final class ReviewsViewController: UIViewController {
         refreshTitle()
 
         configureSyncingCoordinator()
-        configureNavigationItem()
         configureNavigationBarButtons()
         configureTableView()
         configureTableViewCells()
@@ -126,15 +145,27 @@ final class ReviewsViewController: UIViewController {
         super.viewWillAppear(animated)
 
         resetApplicationBadge()
-        transitionToResultsUpdatedState()
 
-        if isEmpty {
-            transitionToSyncingState(pageNumber: SyncingCoordinator.Defaults.pageFirstIndex)
+        if state == .emptyUnfiltered {
+            syncingCoordinator.resynchronize()
         }
 
         if AppRatingManager.shared.shouldPromptForAppReview(section: Constants.section) {
             displayRatingPrompt()
         }
+
+        // Fix any incomplete animation of the refresh control
+        // when switching tabs mid-animation
+        refreshControl.resetAnimation(in: tableView) { [unowned self] in
+            // ghost animation is also removed after switching tabs
+            // show make sure it's displayed again
+            self.removePlaceholderReviews()
+            self.displayPlaceholderReviews()
+        }
+    }
+
+    override var shouldShowOfflineBanner: Bool {
+        return true
     }
 }
 
@@ -157,13 +188,6 @@ private extension ReviewsViewController {
         tabBarItem.accessibilityIdentifier = "tab-bar-reviews-item"
     }
 
-    /// Setup: Navigation
-    ///
-    func configureNavigationItem() {
-        // Don't show the Settings title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
-    }
-
     /// Setup: NavigationBar Buttons
     ///
     func configureNavigationBarButtons() {
@@ -179,9 +203,14 @@ private extension ReviewsViewController {
     func configureTableView() {
         view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
-        tableView.refreshControl = refreshControl
         tableView.dataSource = viewModel.dataSource
         tableView.tableFooterView = footerSpinnerView
+        tableView.sectionFooterHeight = .leastNonzeroMagnitude
+
+        // Adds the refresh control to table view manually so that the refresh control always appears below the navigation bar title in
+        // large or normal size to be consistent with Dashboard and Orders tab with large titles workaround.
+        // If we do `tableView.refreshControl = refreshControl`, the refresh control appears in the navigation bar when large title is shown.
+        tableView.addSubview(refreshControl)
 
         // We decorate the delegate informally, because we want to intercept
         // didSelectItem:at: but delegate the rest of the implementation of
@@ -303,37 +332,50 @@ private extension ReviewsViewController {
         viewModel.removePlaceholderReviews(tableView: tableView)
     }
 
-    /// Displays the Empty State Overlay.
+    /// Displays the EmptyStateViewController.
     ///
-    func displayEmptyUnfilteredOverlay() {
-        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = .emptyReviewsImage
-        overlayView.messageText = NSLocalizedString("No Reviews Yet!", comment: "Empty Reviews List Message")
-        overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
-        overlayView.onAction = { [weak self] in
-            guard let self = self else {
-                return
-            }
-            guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-                return
-            }
-            guard let url = URL(string: site.url) else {
-                return
-            }
+    func displayEmptyViewController() {
+        let childController = emptyStateViewController
+        let emptyStateConfig = EmptyStateViewController.Config.withLink(message: NSAttributedString(string: Localization.emptyStateMessage),
+                                                              image: .emptyReviewsImage,
+                                                              details: Localization.emptyStateDetail,
+                                                              linkTitle: Localization.emptyStateAction,
+                                                              linkURL: WooConstants.URLs.productReviewInfo.asURL())
 
-            ServiceLocator.analytics.track(.reviewsShareStoreButtonTapped)
-            SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
+        // Abort if we are already displaying this childController
+        guard childController.parent == nil,
+              let childView = childController.view else {
+            return
         }
 
-        overlayView.attach(to: view)
+        childController.configure(emptyStateConfig)
+
+        // Show Error Loading Data banner if the empty state is caused by a sync error
+        if viewModel.hasErrorLoadingData {
+            childController.showTopBannerView()
+        } else {
+            childController.hideTopBannerView()
+        }
+
+        childView.translatesAutoresizingMaskIntoConstraints = false
+
+        addChild(childController)
+        view.addSubview(childView)
+        tableView.pinSubviewToAllEdges(childView)
+        childController.didMove(toParent: self)
     }
 
-    /// Removes all of the the OverlayMessageView instances in the view hierarchy.
-    ///
-    func removeAllOverlays() {
-        for subview in view.subviews where subview is OverlayMessageView {
-            subview.removeFromSuperview()
+    func removeEmptyViewController() {
+        let childController = emptyStateViewController
+
+        guard childController.parent == self,
+            let childView = childController.view else {
+            return
         }
+
+        childController.willMove(toParent: nil)
+        childView.removeFromSuperview()
+        childController.removeFromParent()
     }
 }
 
@@ -379,7 +421,7 @@ private extension ReviewsViewController {
         switch state {
         case .emptyUnfiltered:
             if isEmpty == true {
-                displayEmptyUnfilteredOverlay()
+                displayEmptyViewController()
             }
         case .results:
             break
@@ -399,7 +441,7 @@ private extension ReviewsViewController {
     func didLeave(state: State) {
         switch state {
         case .emptyUnfiltered:
-            removeAllOverlays()
+            removeEmptyViewController()
         case .results:
             break
         case .placeholder:
@@ -414,6 +456,8 @@ private extension ReviewsViewController {
     ///
     func transitionToSyncingState(pageNumber: Int) {
         state = isEmpty ? .placeholder : .syncing(pageNumber: pageNumber)
+        // Remove banner for error loading data during sync
+        hideTopBannerView()
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
@@ -471,9 +515,32 @@ extension ReviewsViewController: SyncingCoordinatorDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
         transitionToSyncingState(pageNumber: pageNumber)
         viewModel.synchronizeReviews(pageNumber: pageNumber, pageSize: pageSize) { [weak self] in
-            self?.transitionToResultsUpdatedState()
+            guard let self = self else { return }
+            self.transitionToResultsUpdatedState()
+            if self.viewModel.hasErrorLoadingData {
+                self.showTopBannerView()
+            }
             onCompletion?(true)
         }
+    }
+
+    /// Display the error banner in the table view header
+    ///
+    private func showTopBannerView() {
+        // Configure header container view
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
+        headerContainer.addSubview(topBannerView)
+        headerContainer.pinSubviewToSafeArea(topBannerView)
+
+        tableView.tableHeaderView = headerContainer
+        tableView.updateHeaderHeight()
+    }
+
+    /// Hide the error banner from the table view header
+    ///
+    private func hideTopBannerView() {
+        topBannerView.removeFromSuperview()
+        tableView.tableHeaderView = nil
     }
 }
 
@@ -528,5 +595,16 @@ private extension ReviewsViewController {
 
     struct Constants {
         static let section = "notifications"
+    }
+}
+
+// MARK: - Localization
+//
+private extension ReviewsViewController {
+    enum Localization {
+        static let emptyStateMessage = NSLocalizedString("Get your first reviews", comment: "Message shown in the Reviews tab if the list is empty")
+        static let emptyStateDetail = NSLocalizedString("Capture high-quality product reviews for your store.",
+                                                        comment: "Detailed message shown in the Reviews tab if the list is empty")
+        static let emptyStateAction = NSLocalizedString("Learn more", comment: "Title of button shown in the Reviews tab if the list is empty")
     }
 }

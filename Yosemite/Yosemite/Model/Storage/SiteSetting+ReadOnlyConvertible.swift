@@ -23,7 +23,7 @@ extension Storage.SiteSetting: ReadOnlyConvertible {
         return SiteSetting(siteID: siteID,
                            settingID: settingID ?? "",
                            label: label ?? "",
-                           description: settingDescription ?? "",
+                           settingDescription: settingDescription ?? "",
                            value: value ?? "",
                            settingGroupKey: settingGroupKey ?? SiteSettingGroup.general.rawValue) // Default to general group
     }

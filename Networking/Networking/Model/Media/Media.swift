@@ -1,9 +1,12 @@
+import Codegen
+
 /// WordPress Site Media
 ///
-public struct Media {
+public struct Media: Equatable, GeneratedFakeable {
     public let mediaID: Int64
     public let date: Date    // gmt iso8601
     public let fileExtension: String
+    public let filename: String
     public let mimeType: String
     public let src: String
     public let thumbnailURL: String?
@@ -17,6 +20,7 @@ public struct Media {
     public init(mediaID: Int64,
                 date: Date,
                 fileExtension: String,
+                filename: String,
                 mimeType: String,
                 src: String,
                 thumbnailURL: String?,
@@ -27,6 +31,7 @@ public struct Media {
         self.mediaID = mediaID
         self.date = date
         self.fileExtension = fileExtension
+        self.filename = filename
         self.mimeType = mimeType
         self.src = src
         self.thumbnailURL = thumbnailURL
@@ -46,8 +51,10 @@ extension Media: Decodable {
         let mediaID = try container.decode(Int64.self, forKey: .mediaID)
         let date = try container.decodeIfPresent(Date.self, forKey: .date) ?? Date()
         let fileExtension = try container.decodeIfPresent(String.self, forKey: .fileExtension) ?? ""
+        let filename = try container.decodeIfPresent(String.self, forKey: .filename) ?? ""
         let mimeType = try container.decodeIfPresent(String.self, forKey: .mimeType) ?? ""
-        let src = try container.decodeIfPresent(URL.self, forKey: .src)?.absoluteString ?? ""
+        // Decoding String instead of URL for `src`, since it may have non-Latin chars and URL init can fail without prior percent encoding
+        let src = try container.decodeIfPresent(String.self, forKey: .src) ?? ""
         let name = try container.decode(String.self, forKey: .name)
         let alt = try container.decodeIfPresent(String.self, forKey: .alt)
         let height = try container.decodeIfPresent(Double.self, forKey: .height)
@@ -59,6 +66,7 @@ extension Media: Decodable {
         self.init(mediaID: mediaID,
                   date: date,
                   fileExtension: fileExtension,
+                  filename: filename,
                   mimeType: mimeType,
                   src: src,
                   thumbnailURL: thumbnailURL,
@@ -74,6 +82,7 @@ private extension Media {
         case mediaID  = "ID"
         case date
         case fileExtension = "extension"
+        case filename = "file"
         case mimeType = "mime_type"
         case src = "URL"
         case thumbnails

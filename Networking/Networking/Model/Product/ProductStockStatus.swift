@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents a ProductStockStatus Entity.
 ///
-public enum ProductStockStatus: Decodable, Hashable {
+public enum ProductStockStatus: Codable, Hashable, GeneratedFakeable {
     case inStock
     case outOfStock
     case onBackOrder

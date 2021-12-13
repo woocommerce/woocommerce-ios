@@ -55,7 +55,7 @@ extension Storage.Product: ReadOnlyConvertible {
 
         var quantity: String? = nil
         if let stockQuantity = product.stockQuantity {
-            quantity = String(stockQuantity)
+            quantity = stockQuantity.description
         }
         stockQuantity = quantity
 
@@ -93,10 +93,11 @@ extension Storage.Product: ReadOnlyConvertible {
         let productAttributes = attributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductAttribute]()
         let productDefaultAttributes = defaultAttributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductDefaultAttribute]()
         let productShippingClassModel = productShippingClass?.toReadOnly()
+        let addOnsArray: [StorageProductAddOn] = addOns?.toArray() ?? []
 
-        var quantity: Int64?
+        var quantity: Decimal?
         if let stockQuantity = stockQuantity {
-            quantity = Int64(stockQuantity)
+            quantity = Decimal(string: stockQuantity)
         }
 
         return Product(siteID: siteID,
@@ -160,7 +161,8 @@ extension Storage.Product: ReadOnlyConvertible {
                        defaultAttributes: productDefaultAttributes.sorted(),
                        variations: variations ?? [],
                        groupedProducts: groupedProducts ?? [],
-                       menuOrder: Int(menuOrder))
+                       menuOrder: Int(menuOrder),
+                       addOns: addOnsArray.map { $0.toReadOnly() })
     }
 
     // MARK: - Private Helpers

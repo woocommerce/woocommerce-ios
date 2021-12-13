@@ -5,7 +5,7 @@ import TestKit
 
 final class InAppFeedbackCardViewControllerTests: XCTestCase {
 
-    private var analyticsProvider: MockupAnalyticsProvider!
+    private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
     override class func setUp() {
@@ -15,7 +15,7 @@ final class InAppFeedbackCardViewControllerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        analyticsProvider = MockupAnalyticsProvider()
+        analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 

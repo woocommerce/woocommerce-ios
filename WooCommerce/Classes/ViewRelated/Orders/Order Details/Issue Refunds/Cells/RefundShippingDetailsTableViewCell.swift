@@ -161,7 +161,6 @@ private struct RefundShippingDetailsTableViewCellRepresentable: UIViewRepresenta
     }
 }
 
-@available(iOS 13.0, *)
 struct RefundShippingDetailsTableViewCell_Previews: PreviewProvider {
 
     private static func makeStack() -> some View {

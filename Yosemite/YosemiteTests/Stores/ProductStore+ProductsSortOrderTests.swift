@@ -8,17 +8,17 @@ import XCTest
 ///
 final class ProductStore_ProductsSortOrderTests: XCTestCase {
 
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
-    /// Mockup Network: Allows us to inject predefined responses!
+    /// Mock Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Testing SiteID
     ///
@@ -37,8 +37,8 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        storageManager = MockStorageManager()
+        network = MockNetwork()
     }
 
     // MARK: - ProductAction.synchronizeProducts
@@ -53,6 +53,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { [weak self] error in
                                                         guard let self = self else {
                                                             XCTFail()
@@ -77,6 +78,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameDescending) { [weak self] error in
                                                         guard let self = self else {
                                                             XCTFail()
@@ -101,6 +103,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .dateAscending) { [weak self] error in
                                                         guard let self = self else {
                                                             XCTFail()
@@ -125,6 +128,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .dateDescending) { [weak self] error in
                                                         guard let self = self else {
                                                             XCTFail()
@@ -142,15 +146,15 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
 
 private extension ProductStore_ProductsSortOrderTests {
     func assertSortOrderParamValues(orderByValue: String, orderValue: String) {
-        guard let pathComponents = network.pathComponents else {
-            XCTFail("Cannot parse path from the API request")
+        guard let queryParameters = network.queryParameters else {
+            XCTFail("Cannot parse query from the API request")
             return
         }
 
         let expectedOrderbyParam = "orderby=\(orderByValue)"
-        XCTAssertTrue(pathComponents.contains(expectedOrderbyParam), "Expected to have param: \(expectedOrderbyParam)")
+        XCTAssertTrue(queryParameters.contains(expectedOrderbyParam), "Expected to have param: \(expectedOrderbyParam)")
 
         let expectedOrderParam = "order=\(orderValue)"
-        XCTAssertTrue(pathComponents.contains(expectedOrderParam), "Expected to have param: \(expectedOrderParam)")
+        XCTAssertTrue(queryParameters.contains(expectedOrderParam), "Expected to have param: \(expectedOrderParam)")
     }
 }

@@ -39,10 +39,8 @@ struct SummaryTableViewCellViewModel {
     /// The full name from the billing address
     ///
     var billedPersonName: String {
-        if let billingAddress = billingAddress,
-            billingAddress.firstName.isNotEmpty || billingAddress.lastName.isNotEmpty {
-            return Localization.billedPerson(firstName: billingAddress.firstName,
-                                             lastName: billingAddress.lastName)
+        if let fullName = billingAddress?.fullName, fullName.isNotEmpty {
+            return fullName
         } else {
             return Localization.guestName
         }
@@ -193,14 +191,6 @@ private extension SummaryTableViewCell {
 
 private extension SummaryTableViewCellViewModel {
     enum Localization {
-        static func billedPerson(firstName: String, lastName: String) -> String {
-            let format = NSLocalizedString("%1$@ %2$@", comment: "In Order Details,"
-                + " the pattern to show the billed person's full name. For example, “John Doe”."
-                + " The %1$@ is the first name. The %2$@ is the last name.")
-
-            return String.localizedStringWithFormat(format, firstName, lastName)
-        }
-
         static let guestName: String = NSLocalizedString("Guest",
                                                          comment: "In Order Details, the name of the billed person when there are no name and last name.")
     }

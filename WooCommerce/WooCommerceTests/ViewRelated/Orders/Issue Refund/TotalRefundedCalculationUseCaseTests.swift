@@ -38,8 +38,7 @@ final class TotalRefundedCalculationUseCaseTests: XCTestCase {
             // Values with currency are probably not possible in the API but we're
             // considering it here for resilience.
             OrderRefundCondensed(refundID: 0, reason: nil, total: "$-8.71972"),
-            // The API returns negative numbers. We're including a positive number to indicate
-            // that we don't do special handling of the sign.
+            // The API returns negative numbers. However, refunds issued but not fetched from the API are positive.
             OrderRefundCondensed(refundID: 0, reason: nil, total: "3719.8850971"),
         ]
         let order = MockOrders().empty().copy(refunds: refundItems)
@@ -50,6 +49,6 @@ final class TotalRefundedCalculationUseCaseTests: XCTestCase {
         let totalRefunded = useCase.totalRefunded()
 
         // Then
-        XCTAssertEqual(totalRefunded, NSDecimalNumber(string: "-43427.9375229"))
+        XCTAssertEqual(totalRefunded, NSDecimalNumber(string: "-50867.7077171"))
     }
 }

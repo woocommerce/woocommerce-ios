@@ -1,0 +1,2 @@
+Consultar detalles de pedidos
+y pagos

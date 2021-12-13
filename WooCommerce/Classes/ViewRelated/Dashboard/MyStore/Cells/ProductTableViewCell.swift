@@ -85,7 +85,7 @@ extension ProductTableViewCell {
         productImage.contentMode = .center
         imageService.downloadAndCacheImageForImageView(productImage,
                                                        with: statsItem?.imageUrl,
-                                                       placeholder: .productPlaceholderImage,
+                                                       placeholder: UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon),
                                                        progressBlock: nil) { [weak productImage] (image, _) in
                                                         guard image != nil else {
                                                             return

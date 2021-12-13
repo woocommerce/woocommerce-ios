@@ -1,7 +1,9 @@
+import Experiments
 import Foundation
 import UserNotifications
 import AutomatticTracks
 import Yosemite
+import Observables
 
 
 
@@ -69,12 +71,16 @@ final class PushNotificationsManager: PushNotesManager {
         configuration.storesManager
     }
 
+    private let featureFlagService: FeatureFlagService
+
     /// Initializes the PushNotificationsManager.
     ///
     /// - Parameter configuration: PushNotificationsConfiguration Instance that should be used.
+    /// - Parameter featureFlagService: called for multi-store push notifications feature.
     ///
-    init(configuration: PushNotificationsConfiguration = .default) {
+    init(configuration: PushNotificationsConfiguration = .default, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.configuration = configuration
+        self.featureFlagService = featureFlagService
     }
 }
 
@@ -108,7 +114,7 @@ extension PushNotificationsManager {
     }
 
 
-    /// Registers the Application for Remote Notifgications.
+    /// Registers the Application for Remote Notifications.
     ///
     func registerForRemoteNotifications() {
         DDLogInfo("📱 Registering for Remote Notifications...")
@@ -150,7 +156,9 @@ extension PushNotificationsManager {
 
     func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void) {
         let action = NotificationCountAction.resetForAllSites() { [weak self] in
-            self?.configuration.application.applicationIconBadgeNumber = 0
+            guard let self = self else { return }
+            self.configuration.application.applicationIconBadgeNumber = AppIconBadgeNumber.clearsBadgeAndPotentiallyAllPushNotifications
+            self.removeAllNotifications()
             onCompletion()
         }
         stores.dispatch(action)
@@ -207,7 +215,7 @@ extension PushNotificationsManager {
     }
 
 
-    /// Handles a Remote Push Notifican Payload. On completion the `completionHandler` will be executed.
+    /// Handles a Remote Push Notification Payload. On completion the `completionHandler` will be executed.
     ///
     func handleNotification(_ userInfo: [AnyHashable: Any],
                             onBadgeUpdateCompletion: @escaping () -> Void,
@@ -217,8 +225,9 @@ extension PushNotificationsManager {
         // Badge: Update
         if let typeString = userInfo.string(forKey: APNSKey.type),
             let type = Note.Kind(rawValue: typeString),
-            let siteID = siteID {
-            incrementNotificationCount(siteID: siteID, type: type, incrementCount: 1) { [weak self] in
+            let siteID = siteID,
+            let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
+            incrementNotificationCount(siteID: notificationSiteID, type: type, incrementCount: 1) { [weak self] in
                 self?.loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: type)
                 onBadgeUpdateCompletion()
             }
@@ -263,7 +272,8 @@ private extension PushNotificationsManager {
 
     func loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: Int64) {
         let action = NotificationCountAction.load(siteID: siteID, type: .allKinds) { [weak self] count in
-            self?.configuration.application.applicationIconBadgeNumber = count
+            self?.configuration.application.applicationIconBadgeNumber = count > 0 ?
+                AppIconBadgeNumber.hasUnreadPushNotifications: AppIconBadgeNumber.clearsBadgeOnly
         }
         stores.dispatch(action)
     }
@@ -286,6 +296,10 @@ private extension PushNotificationsManager {
         default:
             break
         }
+    }
+
+    func removeAllNotifications() {
+        configuration.userNotificationsCenter.removeAllNotifications()
     }
 }
 
@@ -336,8 +350,13 @@ private extension PushNotificationsManager {
             return false
         }
 
-        if let foregroundNotification = PushNotification.from(userInfo: userInfo) {
-            configuration.application.presentInAppNotification(message: foregroundNotification.message)
+        let pushNotificationsForAllStoresEnabled = featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores)
+        if let foregroundNotification = PushNotification.from(userInfo: userInfo,
+                                                              pushNotificationsForAllStoresEnabled: pushNotificationsForAllStoresEnabled) {
+            configuration.application
+                .presentInAppNotification(title: foregroundNotification.title,
+                                          subtitle: foregroundNotification.subtitle,
+                                          message: foregroundNotification.message)
 
             foregroundNotificationsSubject.send(foregroundNotification)
         }
@@ -363,7 +382,9 @@ private extension PushNotificationsManager {
 
         DDLogVerbose("📱 Handling Notification in Inactive State")
 
-        if let notification = PushNotification.from(userInfo: userInfo) {
+        let pushNotificationsForAllStoresEnabled = featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores)
+        if let notification = PushNotification.from(userInfo: userInfo,
+                                                    pushNotificationsForAllStoresEnabled: pushNotificationsForAllStoresEnabled) {
 
             // Handling the product review notifications (`.comment`) has been moved to
             // `ReviewsCoordinator`. All other push notification handling should be in a coordinator
@@ -409,10 +430,12 @@ private extension PushNotificationsManager {
     ///
     func registerDotcomDevice(with deviceToken: String, defaultStoreID: Int64, onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
         let device = APNSDevice(deviceToken: deviceToken)
+        let pushNotificationsForAllStoresEnabled = featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores)
         let action = NotificationAction.registerDevice(device: device,
                                                        applicationId: WooConstants.pushApplicationID,
                                                        applicationVersion: Bundle.main.version,
                                                        defaultStoreID: defaultStoreID,
+                                                       pushNotificationsForAllStoresEnabled: pushNotificationsForAllStoresEnabled,
                                                        onCompletion: onCompletion)
         stores.dispatch(action)
     }
@@ -461,7 +484,7 @@ private extension PushNotificationsManager {
     /// Tracks the specified Notification's Payload.
     ///
     func trackNotification(with userInfo: [AnyHashable: Any]) {
-        var properties = [String: String]()
+        var properties = [String: Any]()
 
         if let noteID = userInfo.string(forKey: APNSKey.identifier) {
             properties[AnalyticKey.identifier] = noteID
@@ -473,6 +496,11 @@ private extension PushNotificationsManager {
 
         if let theToken = deviceToken {
             properties[AnalyticKey.token] = theToken
+        }
+
+        if let siteID = siteID,
+           let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
+            properties[AnalyticKey.fromSelectedSite] = siteID == notificationSiteID
         }
 
         let event: WooAnalyticsStat = (applicationState == .background) ? .pushNotificationReceived : .pushNotificationAlertPressed
@@ -503,16 +531,39 @@ private extension PushNotificationsManager {
 // MARK: - PushNotification Extension
 
 private extension PushNotification {
-    static func from(userInfo: [AnyHashable: Any]) -> PushNotification? {
-        guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
-              let message = userInfo.dictionary(forKey: APNSKey.aps)?.string(forKey: APNSKey.alert),
-              let type = userInfo.string(forKey: APNSKey.type),
-              let noteKind = Note.Kind(rawValue: type) else {
-            return nil
+    static func from(userInfo: [AnyHashable: Any], pushNotificationsForAllStoresEnabled: Bool) -> PushNotification? {
+        if pushNotificationsForAllStoresEnabled {
+            guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
+                  let alert = userInfo.dictionary(forKey: APNSKey.aps)?.dictionary(forKey: APNSKey.alert),
+                  let title = alert.string(forKey: APNSKey.alertTitle),
+                  let type = userInfo.string(forKey: APNSKey.type),
+                  let noteKind = Note.Kind(rawValue: type) else {
+                return nil
+            }
+            let subtitle = alert.string(forKey: APNSKey.alertSubtitle)
+            let message = alert.string(forKey: APNSKey.alertMessage)
+            return PushNotification(noteID: noteID, kind: noteKind, title: title, subtitle: subtitle, message: message)
+        } else {
+            guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
+                  let title = userInfo.dictionary(forKey: APNSKey.aps)?.string(forKey: APNSKey.alert),
+                  let type = userInfo.string(forKey: APNSKey.type),
+                  let noteKind = Note.Kind(rawValue: type) else {
+                return nil
+            }
+            return PushNotification(noteID: noteID, kind: noteKind, title: title, subtitle: nil, message: nil)
         }
-
-        return PushNotification(noteID: noteID, kind: noteKind, message: message)
     }
+}
+
+// MARK: - App Icon Badge Number
+
+enum AppIconBadgeNumber {
+    /// Indicates that there are unread push notifications in Notification Center.
+    static let hasUnreadPushNotifications = 1
+    /// An unofficial workaround to clear the app icon badge without clearing all push notifications in Notification Center.
+    static let clearsBadgeOnly = -1
+    /// Clears the app icon badge and potentially all push notifications in Notification Center.
+    static let clearsBadgeAndPotentiallyAllPushNotifications = 0
 }
 
 // MARK: - Private Types
@@ -520,14 +571,19 @@ private extension PushNotification {
 private enum APNSKey {
     static let aps = "aps"
     static let alert = "alert"
+    static let alertTitle = "title"
+    static let alertSubtitle = "subtitle"
+    static let alertMessage = "body"
     static let identifier = "note_id"
     static let type = "type"
+    static let siteID = "blog"
 }
 
 private enum AnalyticKey {
     static let identifier = "push_notification_note_id"
     static let type = "push_notification_type"
     static let token = "push_notification_token"
+    static let fromSelectedSite = "is_from_selected_site"
 }
 
 private enum PushType {

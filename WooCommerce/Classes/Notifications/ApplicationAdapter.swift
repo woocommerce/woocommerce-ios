@@ -4,7 +4,7 @@ import UIKit
 
 /// ApplicationAdapter: Wraps UIApplication's API. Meant for Unit Testing Purposes.
 ///
-protocol ApplicationAdapter: class {
+protocol ApplicationAdapter: AnyObject {
 
     /// App's Badge Count
     ///
@@ -18,9 +18,9 @@ protocol ApplicationAdapter: class {
     ///
     func registerForRemoteNotifications()
 
-    /// Presents a given Message with an "In App" notification
+    /// Presents a given title and optional subtitle and message with an "In App" notification
     ///
-    func presentInAppNotification(message: String)
+    func presentInAppNotification(title: String, subtitle: String?, message: String?)
 
     /// Presents the Details for the specified Notification.
     ///
@@ -40,8 +40,8 @@ extension UIApplication: ApplicationAdapter {
 
     /// Presents a given Message with an "In App" notification
     ///
-    func presentInAppNotification(message: String) {
-        let notice = Notice(title: message, message: nil, feedbackType: .success)
+    func presentInAppNotification(title: String, subtitle: String?, message: String?) {
+        let notice = Notice(title: title, subtitle: subtitle, message: message, feedbackType: .success)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }

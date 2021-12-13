@@ -1,4 +1,5 @@
 import XCTest
+import Fakes
 @testable import Yosemite
 
 /// LeaderboardProductParser unit tests
@@ -22,7 +23,7 @@ final class LeaderboardStatsConverterTest: XCTestCase {
 
     func testTopProductsAreMissingFromStoredProducts() {
         // Given
-        let products = (2...4).map { MockProduct().product(siteID: siteID, productID: $0) }
+        let products = (2...4).map { Product.fake().copy(siteID: siteID, productID: $0) }
         let leaderboard = sampleLeaderboard(productIDs: Array((1...5)))
 
         // When
@@ -34,7 +35,7 @@ final class LeaderboardStatsConverterTest: XCTestCase {
 
     func testTopProductsAreNotMissingFromStoredProducts() {
         // Given
-        let products = (1...5).map { MockProduct().product(siteID: siteID, productID: $0) }
+        let products = (1...5).map { Product.fake().copy(siteID: siteID, productID: $0) }
         let leaderboard = sampleLeaderboard(productIDs: Array((1...5)))
 
         // When
@@ -46,7 +47,7 @@ final class LeaderboardStatsConverterTest: XCTestCase {
 
     func testConvertToProductsIntoStatItemsUsingStoredProducts() {
         // Given
-        let products = (1...3).map { MockProduct().product(siteID: siteID, productID: $0) }
+        let products = (1...3).map { Product.fake().copy(siteID: siteID, productID: $0, price: "5.0") }
         let topProducts = sampleLeaderboard(productIDs: [1, 2, 3])
 
         // When

@@ -2,7 +2,11 @@ import UIKit
 import Yosemite
 
 
-class ProductListViewController: UIViewController {
+/// A simple Product List presented from the Order Details screen.
+///
+/// The list shows the product name and the purchased quantity.
+///
+final class ProductListViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
     private var items = [OrderItem]()
 
@@ -17,6 +21,7 @@ class ProductListViewController: UIViewController {
         super.viewDidLoad()
 
         self.items = viewModel.order.items
+        self.products = viewModel.products
         configureMainView()
         configureTableView()
     }
@@ -30,11 +35,9 @@ private extension ProductListViewController {
     /// Setup: Main View
     ///
     func configureMainView() {
-        title = NSLocalizedString("Details Order #\(viewModel.order.number)", comment: "Screen title: Details Order number (number)")
+        let titleFormat = NSLocalizedString("Details Order #%1$@", comment: "Screen title: Details Order number. Parameters: %1$@ - order number")
+        title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
         view.backgroundColor = .listBackground
-
-        // Don't show the Order details title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
     /// Setup: TableView
@@ -68,12 +71,17 @@ extension ProductListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
         let product = lookUpProduct(by: item.productOrVariationID)
+        let addOns = itemAddOnsAttributes(item: item)
         let itemViewModel = ProductDetailsCellViewModel(item: item,
                                                         currency: viewModel.order.currency,
-                                                        product: product)
+                                                        product: product,
+                                                        hasAddOns: addOns.isNotEmpty)
         let cell = tableView.dequeueReusableCell(PickListTableViewCell.self, for: indexPath)
         cell.selectionStyle = .default
         cell.configure(item: itemViewModel, imageService: imageService)
+        cell.onViewAddOnsTouchUp = { [weak self] in
+            self?.itemAddOnsButtonTapped(addOns: addOns)
+        }
 
         return cell
     }
@@ -116,14 +124,33 @@ private extension ProductListViewController {
         return products?.filter({ $0.productID == productID }).first
     }
 
+    /// Returns the item attributes that can be identified as add-ons attributes.
+    /// If the "view add-ons" feature is disabled an empty array will be returned.
+    ///
+    func itemAddOnsAttributes(item: OrderItem) -> [OrderItemAttribute] {
+        guard let product = lookUpProduct(by: item.productID), viewModel.dataSource.showAddOns else {
+            return []
+        }
+
+        let globalAddOns = viewModel.dataSource.addOnGroups
+        return AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: globalAddOns).addOnsAttributes()
+    }
+
     /// Displays the product details screen for the provided OrderItem
     ///
     func productWasPressed(orderItem: OrderItem) {
         let loaderViewController = ProductLoaderViewController(model: .init(orderItem: orderItem),
                                                                siteID: viewModel.order.siteID,
-                                                               forceReadOnly: false)
+                                                               forceReadOnly: true)
         let navController = WooNavigationController(rootViewController: loaderViewController)
         present(navController, animated: true, completion: nil)
+    }
+
+    private func itemAddOnsButtonTapped(addOns: [OrderItemAttribute]) {
+        let addOnsViewModel = OrderAddOnListI1ViewModel(attributes: addOns)
+        let addOnsController = OrderAddOnsListViewController(viewModel: addOnsViewModel)
+        let navigationController = WooNavigationController(rootViewController: addOnsController)
+        present(navigationController, animated: true, completion: nil)
     }
 }
 

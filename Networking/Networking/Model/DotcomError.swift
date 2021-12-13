@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// WordPress.com Request Error
 ///
-public enum DotcomError: Error, Decodable {
+public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
 
     /// Non explicit reason
     ///
@@ -39,6 +39,9 @@ public enum DotcomError: Error, Decodable {
     /// Jetpack site stats module disabled
     case statsModuleDisabled
 
+    /// The requested resourced does not exist remotely
+    case resourceDoesNotExist
+
     /// Decodable Initializer.
     ///
     public init(from decoder: Decoder) throws {
@@ -59,6 +62,8 @@ public enum DotcomError: Error, Decodable {
             self = .noRestRoute
         case Constants.invalidBlog where message == ErrorMessages.statsModuleDisabled:
             self = .statsModuleDisabled
+        case Constants.restTermInvalid where message == ErrorMessages.resourceDoesNotExist:
+            self = .resourceDoesNotExist
         default:
             self = .unknown(code: error, message: message)
         }
@@ -73,6 +78,7 @@ public enum DotcomError: Error, Decodable {
         static let invalidToken     = "invalid_token"
         static let requestFailed    = "http_request_failed"
         static let noRestRoute      = "rest_no_route"
+        static let restTermInvalid  = "woocommerce_rest_term_invalid"
     }
 
     /// Coding Keys
@@ -87,6 +93,7 @@ public enum DotcomError: Error, Decodable {
     private enum ErrorMessages {
         static let statsModuleDisabled = "This blog does not have the Stats module enabled"
         static let noStatsPermission = "user cannot view stats"
+        static let resourceDoesNotExist = "Resource does not exist."
     }
 }
 
@@ -111,9 +118,15 @@ extension DotcomError: CustomStringConvertible {
             return NSLocalizedString("Dotcom No Stats Permission", comment: "WordPress.com error thrown when the user has no permission to view site stats.")
         case .statsModuleDisabled:
             return NSLocalizedString("Dotcom Stats Module Disabled", comment: "WordPress.com error thrown when the Jetpack site stats module is disabled.")
+        case .resourceDoesNotExist:
+            return NSLocalizedString("Dotcom Resource does not exist", comment: "WordPress.com error thrown when a requested resource does not exist remotely.")
         case .unknown(let code, let message):
             let theMessage = message ?? String()
-            return NSLocalizedString("Dotcom Error: [\(code)] \(theMessage)", comment: "WordPress.com (unmapped!) error")
+            let messageFormat = NSLocalizedString(
+                "Dotcom Error: [%1$@] %2$@",
+                comment: "WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message"
+            )
+            return String.localizedStringWithFormat(messageFormat, code, theMessage)
         }
     }
 }

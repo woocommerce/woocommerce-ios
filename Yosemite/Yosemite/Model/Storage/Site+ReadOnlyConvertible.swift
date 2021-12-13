@@ -13,9 +13,13 @@ extension Storage.Site: ReadOnlyConvertible {
         name = site.name
         tagline = site.description
         url = site.url
+        adminURL = site.adminURL
 //        plan = site.plan // We're not assigning the plan here because it's not sent on the intial API request.
+        isJetpackThePluginInstalled = site.isJetpackThePluginInstalled
+        isJetpackConnected = site.isJetpackConnected
         isWooCommerceActive = NSNumber(booleanLiteral: site.isWooCommerceActive)
         isWordPressStore = NSNumber(booleanLiteral: site.isWordPressStore)
+        jetpackConnectionActivePlugins = site.jetpackConnectionActivePlugins
         timezone = site.timezone
         gmtOffset = site.gmtOffset
     }
@@ -27,9 +31,13 @@ extension Storage.Site: ReadOnlyConvertible {
                     name: name ?? "",
                     description: tagline ?? "",
                     url: url ?? "",
+                    adminURL: adminURL ?? "",
                     plan: plan ?? "",
+                    isJetpackThePluginInstalled: isJetpackThePluginInstalled,
+                    isJetpackConnected: isJetpackConnected,
                     isWooCommerceActive: isWooCommerceActive?.boolValue ?? false,
                     isWordPressStore: isWordPressStore?.boolValue ?? false,
+                    jetpackConnectionActivePlugins: jetpackConnectionActivePlugins ?? [],
                     timezone: timezone ?? "",
                     gmtOffset: gmtOffset)
     }

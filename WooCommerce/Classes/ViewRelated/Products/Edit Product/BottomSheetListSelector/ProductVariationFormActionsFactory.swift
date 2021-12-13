@@ -43,13 +43,15 @@ private extension ProductVariationFormActionsFactory {
         let shouldShowPriceSettingsRow = editable || productVariation.regularPrice?.isNotEmpty == true
         let shouldShowNoPriceWarningRow = productVariation.isEnabledAndMissingPrice
         let shouldShowShippingSettingsRow = productVariation.isShippingEnabled()
+        let canEditInventorySettingsRow = editable && productVariation.hasIntegerStockQuantity
 
         let actions: [ProductFormEditAction?] = [
-            shouldShowPriceSettingsRow ? .priceSettings(editable: editable): nil,
+            shouldShowPriceSettingsRow ? .priceSettings(editable: editable, hideSeparator: shouldShowNoPriceWarningRow): nil,
             shouldShowNoPriceWarningRow ? .noPriceWarning: nil,
+            .attributes(editable: editable),
             .status(editable: editable),
             shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
-            .inventorySettings(editable: editable),
+            .inventorySettings(editable: canEditInventorySettingsRow),
         ]
         return actions.compactMap { $0 }
     }
@@ -62,8 +64,8 @@ private extension ProductVariationFormActionsFactory {
 
     func isVisibleInSettingsSection(action: ProductFormEditAction) -> Bool {
         switch action {
-        case .priceSettings, .noPriceWarning, .status:
-            // The price settings and visibility actions are always visible in the settings section.
+        case .priceSettings, .noPriceWarning, .status, .attributes:
+            // The price settings, attributes, and visibility actions are always visible in the settings section.
             return true
         case .inventorySettings:
             let hasStockData = productVariation.manageStock ? productVariation.stockQuantity != nil: true

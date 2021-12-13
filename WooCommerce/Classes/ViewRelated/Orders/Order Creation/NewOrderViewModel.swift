@@ -80,9 +80,24 @@ final class NewOrderViewModel: ObservableObject {
         }
     }()
 
-    /// View models for each product row in the order
+    /// Products that have been added to the order, used to generate the product row view models.
     ///
-    var productRows: [ProductRowViewModel] = []
+    /// This list is not the source of truth for products in the order; that is `orderDetails.items`.
+    ///
+    private var addedProducts: [Product] = []
+
+    /// View models for each product row in the order.
+    /// They are generated from `orderDetails` to ensure they are updated when the order details change.
+    ///
+    var productRows: [ProductRowViewModel] {
+        orderDetails.items.compactMap { item in
+            // Get the product that matches the order item's product ID
+            guard let product = addedProducts.first(where: { item.productID == $0.productID }) else {
+                return nil
+            }
+            return ProductRowViewModel(product: product, canChangeQuantity: true)
+        }
+    }
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
@@ -216,15 +231,12 @@ private extension NewOrderViewModel {
             .assign(to: &$statusBadgeViewModel)
     }
 
-    /// Adds a selected product (from the product list) to the order
+    /// Adds a selected product (from the product list) to the order.
+    /// Also saves the product to generate the corresponding product row view model.
     ///
     func addProductToOrder(_ product: Product) {
-        // Add product to the visible product list
-        let productRowViewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        productRows.append(productRowViewModel)
-
-        // Add product to the order details
         let orderItem = product.toOrderItem(quantity: 1)
         orderDetails.items.append(orderItem)
+        addedProducts.append(product)
     }
 }

@@ -19,6 +19,10 @@ struct AddProductToOrder: View {
                     List {
                         ForEach(viewModel.productRows) { rowViewModel in
                             ProductRow(viewModel: rowViewModel)
+                                .onTapGesture {
+                                    viewModel.selectProduct(rowViewModel.id)
+                                    isPresented.toggle()
+                                }
                                 .onAppear {
                                     if rowViewModel == viewModel.productRows.last {
                                         viewModel.syncNextPage()
@@ -78,7 +82,7 @@ private extension AddProductToOrder {
 
 struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = AddProductToOrderViewModel(siteID: 123)
+        let viewModel = AddProductToOrderViewModel(siteID: 123, onProductSelected: { _ in })
 
         AddProductToOrder(isPresented: .constant(true), viewModel: viewModel)
     }

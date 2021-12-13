@@ -74,7 +74,10 @@ final class NewOrderViewModel: ObservableObject {
     /// View model for the product list
     ///
     lazy var addProductViewModel = {
-        AddProductToOrderViewModel(siteID: siteID, storageManager: storageManager)
+        AddProductToOrderViewModel(siteID: siteID, storageManager: storageManager, stores: stores) { [weak self] product in
+            guard let self = self else { return }
+            self.addProductToOrder(product)
+        }
     }()
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
@@ -207,5 +210,25 @@ private extension NewOrderViewModel {
                 return StatusBadgeViewModel(orderStatus: siteOrderStatus)
             }
             .assign(to: &$statusBadgeViewModel)
+    }
+
+    /// Adds a selected product (from the product list) to the order
+    ///
+    func addProductToOrder(_ product: Product) {
+        let newOrderItem = OrderItem(itemID: 0,
+                                     name: product.name,
+                                     productID: product.productID,
+                                     variationID: 0,
+                                     quantity: 1,
+                                     price: NSDecimalNumber(string: product.price),
+                                     sku: product.sku,
+                                     subtotal: product.price,
+                                     subtotalTax: "0",
+                                     taxClass: product.taxClass ?? "",
+                                     taxes: [],
+                                     total: product.price,
+                                     totalTax: "",
+                                     attributes: [])
+        orderDetails.products.append(newOrderItem)
     }
 }

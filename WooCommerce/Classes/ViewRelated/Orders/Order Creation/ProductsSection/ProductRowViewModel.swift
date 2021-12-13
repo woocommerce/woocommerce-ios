@@ -14,7 +14,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
     // MARK: Product properties
 
     /// Product ID
-    /// Required by SwiftUI as a unique identifier
     ///
     let id: Int64
 

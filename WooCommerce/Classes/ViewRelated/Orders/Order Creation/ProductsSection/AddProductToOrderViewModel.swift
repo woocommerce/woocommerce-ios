@@ -5,7 +5,13 @@ import protocol Storage.StorageManagerType
 ///
 final class AddProductToOrderViewModel: ObservableObject {
     private let siteID: Int64
+
+    /// Storage to fetch product list
+    ///
     private let storageManager: StorageManagerType
+
+    /// Stores to sync product list
+    ///
     private let stores: StoresManager
 
     /// Product types excluded from the product list.
@@ -140,7 +146,7 @@ private extension AddProductToOrderViewModel {
 
 // MARK: - Configuration
 private extension AddProductToOrderViewModel {
-    /// Fetches products from storage. If there are no stored products, trigger a sync request.
+    /// Performs initial fetch from storage and updates sync status accordingly.
     ///
     func configureProductsResultsController() {
         updateProductsResultsController()

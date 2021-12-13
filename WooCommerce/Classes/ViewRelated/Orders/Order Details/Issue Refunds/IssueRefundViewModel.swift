@@ -320,7 +320,11 @@ extension IssueRefundViewModel {
             return nil
         }
 
-        let switchRow = FeesSwitchViewModel(title: Localization.refundFeesTitle, isOn: false)
+        let switchRow = FeesSwitchViewModel(title: Localization.refundFeesTitle, isOn: state.shouldRefundFees)
+        guard state.shouldRefundFees else {
+            return Section(rows: [switchRow])
+        }
+
         let detailsRow = RefundFeesDetailsViewModel(fees: state.order.fees,
                                                     currency: state.order.currency,
                                                     currencySettings: state.currencySettings)

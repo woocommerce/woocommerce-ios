@@ -97,6 +97,10 @@ private extension IssueRefundViewController {
         viewModel.toggleRefundShipping()
     }
 
+    func feesSwitchChanged() {
+        viewModel.toggleRefundFees()
+    }
+
     func quantityButtonPressed(sender: UITableViewCell) {
         guard let indexPath = tableView.indexPath(for: sender),
             let refundQuantity = viewModel.quantityAvailableForRefundForItemAtIndex(indexPath.row),
@@ -219,6 +223,9 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
             let cell = tableView.dequeueReusableCell(SwitchTableViewCell.self, for: indexPath)
             cell.title = viewModel.title
             cell.isOn = viewModel.isOn
+            cell.onChange = { [weak self] _ in
+                self?.feesSwitchChanged()
+            }
             return cell
         case let viewModel as RefundFeesDetailsViewModel:
             let cell = tableView.dequeueReusableCell(RefundFeesDetailsTableViewCell.self, for: indexPath)

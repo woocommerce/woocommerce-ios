@@ -28,6 +28,10 @@ final class IssueRefundViewModel {
         ///
         var shouldRefundShipping: Bool = false
 
+        /// Bool indicating if fees will be refunded
+        ///
+        var shouldRefundFees: Bool = false
+
         ///  Holds the quantity of items to refund
         ///
         var refundQuantityStore = RefundQuantityStore()
@@ -123,6 +127,10 @@ extension IssueRefundViewModel {
     func toggleRefundShipping() {
         state.shouldRefundShipping.toggle()
         trackShippingSwitchChanged()
+    }
+
+    func toggleRefundFees() {
+        state.shouldRefundFees.toggle()
     }
 
     /// Returns the number of items available for refund for the provided item index.
@@ -312,7 +320,6 @@ extension IssueRefundViewModel {
             return nil
         }
 
-        // TODO Switching on/off behavior will be added in an upcoming PR
         let switchRow = FeesSwitchViewModel(title: Localization.refundFeesTitle, isOn: false)
         let detailsRow = RefundFeesDetailsViewModel(fees: state.order.fees,
                                                     currency: state.order.currency,

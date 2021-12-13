@@ -80,6 +80,10 @@ final class NewOrderViewModel: ObservableObject {
         }
     }()
 
+    /// View models for each product row in the order
+    ///
+    var productRows: [ProductRowViewModel] = []
+
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.stores = stores
@@ -127,7 +131,7 @@ extension NewOrderViewModel {
     ///
     struct OrderDetails {
         var status: OrderStatusEnum = .pending
-        var products: [OrderItem] = []
+        var items: [OrderItem] = []
         var billingAddress: Address?
         var shippingAddress: Address?
 
@@ -138,7 +142,7 @@ extension NewOrderViewModel {
 
         func toOrder() -> Order {
             emptyOrder.copy(status: status,
-                            items: products,
+                            items: items,
                             billingAddress: billingAddress,
                             shippingAddress: shippingAddress)
         }
@@ -215,20 +219,35 @@ private extension NewOrderViewModel {
     /// Adds a selected product (from the product list) to the order
     ///
     func addProductToOrder(_ product: Product) {
-        let newOrderItem = OrderItem(itemID: 0,
-                                     name: product.name,
-                                     productID: product.productID,
-                                     variationID: 0,
-                                     quantity: 1,
-                                     price: NSDecimalNumber(string: product.price),
-                                     sku: product.sku,
-                                     subtotal: product.price,
-                                     subtotalTax: "0",
-                                     taxClass: product.taxClass ?? "",
-                                     taxes: [],
-                                     total: product.price,
-                                     totalTax: "",
-                                     attributes: [])
-        orderDetails.products.append(newOrderItem)
+        // Add product to the visible product list
+        let productRowViewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
+        productRows.append(productRowViewModel)
+
+        // Add product to the order details
+        let orderItem = convertToOrderItem(product: product, quantity: 1)
+        orderDetails.items.append(orderItem)
+    }
+
+    /// Converts product to order item, so it can be added to the order
+    ///
+    func convertToOrderItem(product: Product, quantity: Decimal) -> OrderItem {
+        let price = NSDecimalNumber(string: product.price)
+        let total = quantity * price.decimalValue
+
+        return OrderItem(itemID: 0,
+                         name: product.name,
+                         productID: product.productID,
+                         variationID: 0,
+                         quantity: quantity,
+                         price: price,
+                         sku: nil,
+                         subtotal: "\(total)",
+                         subtotalTax: "",
+                         taxClass: "",
+                         taxes: [],
+                         total: "\(total)",
+                         totalTax: "0",
+                         attributes: []
+        )
     }
 }

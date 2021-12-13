@@ -31,7 +31,7 @@ struct AddProductToOrder: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                             .listRowInsets(EdgeInsets())
                             .listRowBackground(Color(.listBackground))
-                            .renderedIf(viewModel.hasMoreProducts)
+                            .renderedIf(viewModel.shouldShowScrollIndicator)
                     }
                     .listStyle(PlainListStyle())
                 case .empty:

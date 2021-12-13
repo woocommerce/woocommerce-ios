@@ -43,15 +43,9 @@ final class AddProductToOrderViewModel: ObservableObject {
     ///
     private let syncingCoordinator = SyncingCoordinator()
 
-    /// Tracks if there are more products to sync from remote.
+    /// Tracks if the infinite scroll indicator should be displayed
     ///
-    var hasMoreProducts: Bool {
-        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
-            return false
-        }
-
-        return highestPageBeingSynced * syncingCoordinator.pageSize > productsResultsController.numberOfObjects
-    }
+    @Published private(set) var shouldShowScrollIndicator = false
 
     /// View models of the ghost rows used during the loading process.
     ///
@@ -84,9 +78,7 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
     /// Sync products from remote.
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
-        if products.isEmpty {
-            transitionToInitialSyncingState()
-        }
+        transitionToSyncingState()
         let action = ProductAction.synchronizeProducts(siteID: siteID,
                                                        pageNumber: pageNumber,
                                                        pageSize: pageSize,
@@ -127,15 +119,19 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
 
 // MARK: - Finite State Machine Management
 private extension AddProductToOrderViewModel {
-    /// Update state for initial sync from remote.
+    /// Update state for sync from remote.
     ///
-    func transitionToInitialSyncingState() {
-        syncStatus = .firstPageSync
+    func transitionToSyncingState() {
+        shouldShowScrollIndicator = true
+        if products.isEmpty {
+            syncStatus = .firstPageSync
+        }
     }
 
     /// Update state after sync is complete.
     ///
     func transitionToResultsUpdatedState() {
+        shouldShowScrollIndicator = false
         syncStatus = products.isNotEmpty ? .results: .empty
     }
 }

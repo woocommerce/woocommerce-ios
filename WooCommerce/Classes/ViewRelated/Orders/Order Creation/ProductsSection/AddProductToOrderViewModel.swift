@@ -6,6 +6,7 @@ import protocol Storage.StorageManagerType
 final class AddProductToOrderViewModel: ObservableObject {
     private let siteID: Int64
     private let storageManager: StorageManagerType
+    private let stores: StoresManager
 
     /// Product types excluded from the product list.
     /// For now, only non-variable product types are supported.
@@ -64,9 +65,10 @@ final class AddProductToOrderViewModel: ObservableObject {
         return resultsController
     }()
 
-    init(siteID: Int64, storageManager: StorageManagerType = ServiceLocator.storageManager) {
+    init(siteID: Int64, storageManager: StorageManagerType = ServiceLocator.storageManager, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.storageManager = storageManager
+        self.stores = stores
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -100,7 +102,7 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
             self.transitionToResultsUpdatedState()
             onCompletion?(result.isSuccess)
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Sync first page of products from remote if needed.

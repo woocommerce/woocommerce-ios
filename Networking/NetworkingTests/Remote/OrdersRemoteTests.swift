@@ -270,4 +270,19 @@ final class OrdersRemoteTests: XCTestCase {
         ]
         assertEqual(received, expected)
     }
+
+    func test_create_order_properly_encodes_status() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let status = OrderStatusEnum.onHold
+        let order = Order.fake().copy(status: status)
+
+        // When
+        remote.createOrder(siteID: 123, order: order, fields: [.status]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["status"] as? String)
+        assertEqual(received, status.rawValue)
+    }
 }

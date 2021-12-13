@@ -224,30 +224,7 @@ private extension NewOrderViewModel {
         productRows.append(productRowViewModel)
 
         // Add product to the order details
-        let orderItem = convertToOrderItem(product: product, quantity: 1)
+        let orderItem = product.toOrderItem(quantity: 1)
         orderDetails.items.append(orderItem)
-    }
-
-    /// Converts product to order item, so it can be added to the order
-    ///
-    func convertToOrderItem(product: Product, quantity: Decimal) -> OrderItem {
-        let price = NSDecimalNumber(string: product.price)
-        let total = quantity * price.decimalValue
-
-        return OrderItem(itemID: 0,
-                         name: product.name,
-                         productID: product.productID,
-                         variationID: 0,
-                         quantity: quantity,
-                         price: price,
-                         sku: nil,
-                         subtotal: "\(total)",
-                         subtotalTax: "",
-                         taxClass: "",
-                         taxes: [],
-                         total: "\(total)",
-                         totalTax: "0",
-                         attributes: []
-        )
     }
 }

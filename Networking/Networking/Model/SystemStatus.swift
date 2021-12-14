@@ -3,13 +3,16 @@
 public struct SystemStatus: Decodable {
     let activePlugins: [SystemPlugin]
     let inactivePlugins: [SystemPlugin]
+    let environment: Environment
 
     public init(
         activePlugins: [SystemPlugin],
-        inactivePlugins: [SystemPlugin]
+        inactivePlugins: [SystemPlugin],
+        environment: Environment
     ) {
         self.activePlugins = activePlugins
         self.inactivePlugins = inactivePlugins
+        self.environment = environment
     }
 
     /// The public initializer for System Status.
@@ -18,10 +21,12 @@ public struct SystemStatus: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let activePlugins = try container.decode([SystemPlugin].self, forKey: .activePlugins)
         let inactivePlugins = try container.decode([SystemPlugin].self, forKey: .inactivePlugins)
+        let environment = try container.decode(Environment.self, forKey: .environment)
 
         self.init(
             activePlugins: activePlugins,
-            inactivePlugins: inactivePlugins
+            inactivePlugins: inactivePlugins,
+            environment: environment
         )
     }
 }

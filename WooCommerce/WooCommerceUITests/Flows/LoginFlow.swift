@@ -3,7 +3,6 @@ import XCTest
 
 class LoginFlow {
 
-    // Login with WordPress.com account flow
     @discardableResult
     static func logInWithWPcom() throws -> MyStoreScreen {
        return try PrologueScreen().selectContinueWithWordPress()

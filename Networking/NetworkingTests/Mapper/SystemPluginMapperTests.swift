@@ -97,6 +97,6 @@ private extension SystemPluginMapperTests {
     /// Returns the SystemStatusMapper output upon receiving `systemPlugins`
     ///
     func mapLoadSystemStatusResponse() throws -> [SystemPlugin] {
-        return try mapPlugins(from: "systemStatus")
+        return try mapPlugins(from: "systemStatusWithPluginsOnly")
     }
 }

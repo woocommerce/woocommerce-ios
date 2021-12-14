@@ -40,6 +40,10 @@ final class AddProductToOrderViewModel: ObservableObject {
         products.map { .init(product: $0, canChangeQuantity: false) }
     }
 
+    /// Closure to be invoked when a product is selected
+    ///
+    let onProductSelected: ((Product) -> Void)?
+
     // MARK: Sync & Storage properties
 
     /// Current sync status; used to determine what list view to display.
@@ -71,13 +75,26 @@ final class AddProductToOrderViewModel: ObservableObject {
         return resultsController
     }()
 
-    init(siteID: Int64, storageManager: StorageManagerType = ServiceLocator.storageManager, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         stores: StoresManager = ServiceLocator.stores,
+         onProductSelected: ((Product) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
+        self.onProductSelected = onProductSelected
 
         configureSyncingCoordinator()
         configureProductsResultsController()
+    }
+
+    /// Select a product to add to the order
+    ///
+    func selectProduct(_ productID: Int64) {
+        guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
+            return
+        }
+        onProductSelected?(selectedProduct)
     }
 }
 

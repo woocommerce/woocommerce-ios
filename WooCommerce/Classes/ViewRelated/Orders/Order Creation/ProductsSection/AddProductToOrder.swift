@@ -19,6 +19,10 @@ struct AddProductToOrder: View {
                     List {
                         ForEach(viewModel.productRows) { rowViewModel in
                             ProductRow(viewModel: rowViewModel)
+                                .onTapGesture {
+                                    viewModel.selectProduct(rowViewModel.id)
+                                    isPresented.toggle()
+                                }
                                 .onAppear {
                                     if rowViewModel == viewModel.productRows.last {
                                         viewModel.syncNextPage()

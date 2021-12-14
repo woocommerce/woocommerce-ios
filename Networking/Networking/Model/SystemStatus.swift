@@ -1,5 +1,4 @@
 /// Represent a System Status.
-/// Note: We are only decoding the active and inactive plugins portions at the moment.
 ///
 public struct SystemStatus: Decodable {
     let activePlugins: [SystemPlugin]
@@ -31,5 +30,12 @@ private extension SystemStatus {
     enum CodingKeys: String, CodingKey {
         case activePlugins = "active_plugins"
         case inactivePlugins = "inactive_plugins"
+        case dropinMustUsePlugins = "dropins_mu_plugins"
+        case environment
+        case database
+        case theme
+        case settings
+        case pages
+        case postTypeCounts = "post_type_counts"
     }
 }

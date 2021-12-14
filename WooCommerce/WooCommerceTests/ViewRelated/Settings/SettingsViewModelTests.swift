@@ -127,6 +127,36 @@ final class SettingsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(presenter.refreshViewContentCalled)
     }
+
+    func test_sections_do_not_contain_siteHealthStatusChecker_row_when_feature_flag_is_off() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(siteHealthStatusChecker: false)
+        let viewModel = SettingsViewModel(
+            stores: stores,
+            storageManager: storageManager,
+            featureFlagService: featureFlagService)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.siteHealthStatusChecker) })
+    }
+
+    func test_sections_do_not_contain_siteHealthStatusChecker_row_when_feature_flag_is_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(siteHealthStatusChecker: true)
+        let viewModel = SettingsViewModel(
+            stores: stores,
+            storageManager: storageManager,
+            featureFlagService: featureFlagService)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.siteHealthStatusChecker) })
+    }
 }
 
 private final class MockSettingsPresenter: SettingsViewPresenter {

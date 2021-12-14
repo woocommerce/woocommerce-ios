@@ -58,18 +58,19 @@ private struct ProductStepper: View {
     var body: some View {
         HStack(spacing: Layout.stepperSpacing * scale) {
             Button {
-                // TODO: Decrement the product quantity
+                viewModel.decrementQuantity()
             } label: {
                 Image(uiImage: .minusSmallImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: Layout.stepperButtonSize * scale)
             }
+            .disabled(viewModel.shouldDisableQuantityDecrementer)
 
             Text("\(viewModel.quantity)")
 
             Button {
-                // TODO: Increment the product quantity
+                viewModel.incrementQuantity()
             } label: {
                 Image(uiImage: .plusSmallImage)
                     .resizable()
@@ -88,9 +89,9 @@ private struct ProductStepper: View {
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .decrement:
-                break // TODO: Decrement the product quantity
+                viewModel.decrementQuantity()
             case .increment:
-                break // TODO: Increment the product quantity
+                viewModel.incrementQuantity()
             @unknown default:
                 break
             }

@@ -63,7 +63,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
 
     /// Quantity of product in the order
     ///
-    @Published var quantity: Int64 = 1
+    @Published private(set) var quantity: Int64 = 1
+
+    /// Whether the quantity can be decremented.
+    /// Quantity has a minimum value of 1.
+    ///
+    var shouldDisableQuantityDecrementer: Bool {
+        quantity <= 1
+    }
 
     init(id: Int64,
          name: String,
@@ -120,6 +127,22 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
     private func createPriceText() -> String? {
         let unformattedPrice = price.isNotEmpty ? price : "0"
         return currencyFormatter.formatAmount(unformattedPrice)
+    }
+
+    /// Increment the product quantity.
+    ///
+    func incrementQuantity() {
+        quantity += 1
+    }
+
+    /// Decrement the product quantity.
+    /// This must check that the quantity is above the minimum value before decrementing it.
+    ///
+    func decrementQuantity() {
+        guard shouldDisableQuantityDecrementer == false else {
+            return
+        }
+        quantity -= 1
     }
 }
 

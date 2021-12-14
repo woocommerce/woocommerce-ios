@@ -116,4 +116,34 @@ class ProductRowViewModelTests: XCTestCase {
         let expectedSKULabel = ""
         XCTAssertEqual(viewModel.skuLabel, expectedSKULabel)
     }
+
+    func test_increment_and_decrement_quantity_have_step_value_of_one() {
+        // Given
+        let product = Product.fake()
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
+
+        // When & Then
+        viewModel.incrementQuantity()
+        XCTAssertEqual(viewModel.quantity, 2)
+
+        // When & Then
+        viewModel.decrementQuantity()
+        XCTAssertEqual(viewModel.quantity, 1)
+    }
+
+    func test_quantity_has_minimum_value_of_one() {
+        // Given
+        let product = Product.fake()
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, 1)
+        XCTAssertTrue(viewModel.shouldDisableQuantityDecrementer, "Quantity decrementer is not disabled at minimum value")
+
+        // When
+        viewModel.decrementQuantity()
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, 1)
+    }
 }

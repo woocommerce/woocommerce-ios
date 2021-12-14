@@ -44,7 +44,7 @@ final class AddProductToOrderViewModel: ObservableObject {
 
     /// Current sync status; used to determine what list view to display.
     ///
-    @Published private(set) var syncStatus: SyncStatus = .none
+    @Published private(set) var syncStatus: SyncStatus?
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
@@ -178,7 +178,6 @@ extension AddProductToOrderViewModel {
         case firstPageSync
         case results
         case empty
-        case none
     }
 
     /// Used for ghost list view while syncing

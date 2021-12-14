@@ -147,7 +147,8 @@ private extension HelpAndSupportViewController {
                     .contactSupport,
                     .myTickets,
                     .contactEmail,
-                    .applicationLog]
+                    .applicationLog,
+                    .systemStatusReport]
         }
 
         return [.helpCenter,
@@ -155,7 +156,8 @@ private extension HelpAndSupportViewController {
                 .contactWCPaySupport,
                 .myTickets,
                 .contactEmail,
-                .applicationLog]
+                .applicationLog,
+                .systemStatusReport]
     }
 
     /// Register table cells.
@@ -199,6 +201,8 @@ private extension HelpAndSupportViewController {
             configureMyContactEmail(cell: cell)
         case let cell as ValueOneTableViewCell where row == .applicationLog:
             configureApplicationLog(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .systemStatusReport:
+            configureSystemStatusReport(cell: cell)
         default:
             fatalError()
         }
@@ -264,6 +268,18 @@ private extension HelpAndSupportViewController {
         cell.detailTextLabel?.text = NSLocalizedString(
             "Advanced tool to review the app status",
             comment: "Cell subtitle explaining why you might want to navigate to view the application log."
+        )
+    }
+
+    /// System Status Report cell
+    ///
+    func configureSystemStatusReport(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("System Status Report", comment: "View system status report cell title on Help screen")
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "Various system information about your site",
+            comment: "Description of the system status report on Help screen"
         )
     }
 

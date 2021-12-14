@@ -99,10 +99,10 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
             guard let self = self else { return }
 
             switch result {
-            case .failure(let error):
-                DDLogError("⛔️ Error synchronizing products during order creation: \(error)")
             case .success:
                 self.updateProductsResultsController()
+            case .failure(let error):
+                DDLogError("⛔️ Error synchronizing products during order creation: \(error)")
             }
 
             self.transitionToResultsUpdatedState()

@@ -27,11 +27,20 @@ struct AddProductToOrder: View {
                         }
 
                         // Infinite scroll indicator
-                        ProgressView()
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .listRowInsets(EdgeInsets())
-                            .listRowBackground(Color(.listBackground))
-                            .renderedIf(viewModel.shouldShowScrollIndicator)
+                        if #available(iOS 15.0, *) {
+                            ProgressView()
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .listRowInsets(EdgeInsets())
+                                .listRowBackground(Color(.listBackground))
+                                .listRowSeparator(.hidden, edges: .bottom)
+                                .renderedIf(viewModel.shouldShowScrollIndicator)
+                        } else {
+                            ProgressView()
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .listRowInsets(EdgeInsets())
+                                .listRowBackground(Color(.listBackground))
+                                .renderedIf(viewModel.shouldShowScrollIndicator)
+                        }
                     }
                     .listStyle(PlainListStyle())
                 case .empty:

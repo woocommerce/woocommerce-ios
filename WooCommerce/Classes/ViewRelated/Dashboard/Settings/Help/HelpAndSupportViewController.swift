@@ -358,6 +358,12 @@ private extension HelpAndSupportViewController {
         navigationController?.pushViewController(applicationLogVC, animated: true)
     }
 
+    /// System status report action
+    ///
+    func systemStatusReportWasPressed() {
+        // TODO: Show safari web view
+    }
+
     @objc func dismissWasPressed() {
         dismiss(animated: true, completion: nil)
     }
@@ -412,6 +418,8 @@ extension HelpAndSupportViewController: UITableViewDelegate {
             contactEmailWasPressed()
         case .applicationLog:
             applicationLogWasPressed()
+        case .systemStatusReport:
+            systemStatusReportWasPressed()
         }
     }
 }
@@ -436,6 +444,7 @@ private enum Row: CaseIterable {
     case myTickets
     case contactEmail
     case applicationLog
+    case systemStatusReport
 
     var type: UITableViewCell.Type {
         switch self {
@@ -450,6 +459,8 @@ private enum Row: CaseIterable {
         case .contactEmail:
             return ValueOneTableViewCell.self
         case .applicationLog:
+            return ValueOneTableViewCell.self
+        case .systemStatusReport:
             return ValueOneTableViewCell.self
         }
     }

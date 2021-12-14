@@ -107,7 +107,7 @@ public extension SystemStatus {
             let wpDebugMode = try container.decode(Bool.self, forKey: .wpDebugMode)
             let wpCron = try container.decode(Bool.self, forKey: .wpCron)
             let language = try container.decode(String.self, forKey: .language)
-            let externalObjectCache = try container.decode(Bool.self, forKey: .externalObjectCache)
+            let externalObjectCache = (try? container.decode(Bool.self, forKey: .externalObjectCache)) ?? false
             let serverInfo = try container.decode(String.self, forKey: .serverInfo)
             let phpVersion = try container.decode(String.self, forKey: .phpVersion)
             let phpPostMaxSize = try container.decode(Int64.self, forKey: .phpPostMaxSize)

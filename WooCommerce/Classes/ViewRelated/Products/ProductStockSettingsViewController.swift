@@ -5,7 +5,7 @@ final class ProductStockSettingsViewController: UIViewController {
 
     struct ProductStockEditableData {
         let manageStock: Bool
-        let stockQuantity: Int64?
+        let stockQuantity: Decimal?
         let backordersSetting: ProductBackordersSetting?
         let stockStatus: ProductStockStatus?
     }
@@ -13,14 +13,14 @@ final class ProductStockSettingsViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
 
     private let product: Product
-    private let originalStockQuantity: Int64?
+    private let originalStockQuantity: Decimal?
 
     // Editable data - shared.
     //
     private var manageStockEnabled: Bool
 
     // Editable data - manage stock enabled.
-    private var stockQuantity: Int64?
+    private var stockQuantity: Decimal?
     private var backordersSetting: ProductBackordersSetting?
 
     // Editable data - manage stock disabled.
@@ -33,7 +33,7 @@ final class ProductStockSettingsViewController: UIViewController {
     typealias Completion = (_ data: ProductStockEditableData) -> Void
     private let onCompletion: Completion
 
-    init(product: Product, stockQuantity: Int64?, completion: @escaping Completion) {
+    init(product: Product, stockQuantity: Decimal?, completion: @escaping Completion) {
         self.onCompletion = completion
 
         self.product = product
@@ -211,9 +211,9 @@ private extension ProductStockSettingsViewController {
             configureManageStock(cell: cell)
         case let cell as UnitInputTableViewCell where row == .stockQuantity:
             configureStockQuantity(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .backorders:
+        case let cell as TitleAndValueTableViewCell where row == .backorders:
             configureBackordersSetting(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .stockStatus:
+        case let cell as TitleAndValueTableViewCell where row == .stockStatus:
             configureStockStatus(cell: cell)
         default:
             fatalError()
@@ -238,7 +238,7 @@ private extension ProductStockSettingsViewController {
         cell.configure(viewModel: viewModel)
     }
 
-    func configureBackordersSetting(cell: SettingTitleAndValueTableViewCell) {
+    func configureBackordersSetting(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("Backorders", comment: "Title of the cell in Product Inventory Settings > Backorders")
         cell.updateUI(title: title, value: backordersSetting?.description)
         cell.accessoryType = .disclosureIndicator
@@ -246,7 +246,7 @@ private extension ProductStockSettingsViewController {
 
     // Manage stock disabled.
 
-    func configureStockStatus(cell: SettingTitleAndValueTableViewCell) {
+    func configureStockStatus(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("Stock status", comment: "Title of the cell in Product Inventory Settings > Stock status")
         cell.updateUI(title: title, value: stockStatus?.description)
         cell.accessoryType = .disclosureIndicator
@@ -264,7 +264,7 @@ private extension ProductStockSettingsViewController {
         guard let stockQuantity = stockQuantity else {
             return
         }
-        self.stockQuantity = Int64(stockQuantity)
+        self.stockQuantity = Decimal(string: stockQuantity)
     }
 }
 
@@ -293,7 +293,7 @@ private extension ProductStockSettingsViewController {
             case .stockQuantity:
                 return UnitInputTableViewCell.self
             case .stockStatus, .backorders:
-                return SettingTitleAndValueTableViewCell.self
+                return TitleAndValueTableViewCell.self
             }
         }
 

@@ -72,8 +72,7 @@ extension ProductSKUScannerResult: Equatable {
 final class ProductInventoryScannerViewController: UIViewController {
 
     private lazy var barcodeScannerChildViewController: BarcodeScannerViewController = {
-        let viewProperties = BarcodeScannerViewController.ViewProperties(instructionText: Localization.instructionText)
-        return BarcodeScannerViewController(viewProperties: viewProperties) { [weak self] result in
+        BarcodeScannerViewController(instructionText: Localization.instructionText) { [weak self] result in
             guard let barcode = try? result.get().first else {
                 return
             }

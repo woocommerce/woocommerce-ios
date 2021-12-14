@@ -155,7 +155,7 @@ private extension ProductDetailsTableViewCell {
 }
 
 extension ProductDetailsTableViewCell {
-    func configureForInventoryScannerResult(product: ProductFormDataModel, updatedQuantity: Int64?, imageService: ImageService) {
+    func configureForInventoryScannerResult(product: ProductFormDataModel, updatedQuantity: Decimal?, imageService: ImageService) {
         imageService.downloadAndCacheImageForImageView(productImageView,
                                                        with: product.images.first?.src,
                                                        placeholder: .productPlaceholderImage,

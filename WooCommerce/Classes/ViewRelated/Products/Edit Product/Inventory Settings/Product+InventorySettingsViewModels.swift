@@ -30,7 +30,7 @@ extension Product {
     }
 
     // TODO-jc: move this
-    static func createDiffableStockQuantityViewModel(originalStockQuantity: Int64?, stockQuantity: Int64?, onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
+    static func createDiffableStockQuantityViewModel(originalStockQuantity: Decimal?, stockQuantity: Decimal?, onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
         let title = NSLocalizedString("Quantity (Original: \(originalStockQuantity ?? 0))", comment: "Title of the cell in Product Inventory Settings > Quantity")
         let accessibilityHint = NSLocalizedString(
             "The stock quantity for this product. Editable.",

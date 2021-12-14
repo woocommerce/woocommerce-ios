@@ -57,4 +57,8 @@ public enum FeatureFlag: Int {
     /// Display the new tab "Menu" in the tab bar.
     ///
     case hubMenu
+    
+    /// Display the Site Health Status Checker menu in Settings
+    ///
+    case siteHealthStatusChecker
 }

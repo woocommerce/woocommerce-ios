@@ -124,6 +124,8 @@ private extension SettingsViewController {
             configureWhatsNew(cell: cell)
         case let cell as BasicTableViewCell where row == .licenses:
             configureLicenses(cell: cell)
+        case let cell as BasicTableViewCell where row == .siteHealthStatusChecker:
+            configureSiteHealthStatusChecker(cell: cell)
         case let cell as BasicTableViewCell where row == .deviceSettings:
             configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .wormholy:
@@ -198,6 +200,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.thirdPartyLicenses
+    }
+
+    func configureSiteHealthStatusChecker(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.siteHealthStatusChecker
     }
 
     func configureAppSettings(cell: BasicTableViewCell) {
@@ -546,6 +554,7 @@ extension SettingsViewController {
         case licenses
 
         // Other
+        case siteHealthStatusChecker
         case deviceSettings
         case wormholy
 
@@ -578,6 +587,8 @@ extension SettingsViewController {
             case .about:
                 return BasicTableViewCell.self
             case .licenses:
+                return BasicTableViewCell.self
+            case .siteHealthStatusChecker:
                 return BasicTableViewCell.self
             case .deviceSettings:
                 return BasicTableViewCell.self
@@ -660,6 +671,11 @@ private extension SettingsViewController {
         static let thirdPartyLicenses = NSLocalizedString(
             "Third Party Licenses",
             comment: "Navigates to screen with third party software licenses"
+        )
+
+        static let siteHealthStatusChecker = NSLocalizedString(
+            "Site Health Status Checker",
+            comment: "Opens Site Health Status Checker for the app"
         )
 
         static let openDeviceSettings = NSLocalizedString(

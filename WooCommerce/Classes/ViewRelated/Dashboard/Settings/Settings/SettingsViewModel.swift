@@ -238,12 +238,18 @@ private extension SettingsViewModel {
 
         // Other
         let otherSection: Section = {
-            let rows: [Row]
+            var rows: [Row] = []
+
             #if DEBUG
-            rows = [.deviceSettings, .wormholy]
+            rows += [.deviceSettings, .wormholy]
             #else
-            rows = [.deviceSettings]
+            rows += [.deviceSettings]
             #endif
+
+            if featureFlagService.isFeatureFlagEnabled(.siteHealthStatusChecker) {
+                rows = [.siteHealthStatusChecker]
+            }
+
             return Section(title: Localization.otherTitle,
                            rows: rows,
                            footerHeight: CGFloat.leastNonzeroMagnitude)

@@ -147,7 +147,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
                                                             formattedAmount: formattedTotal,
                                                             paymentGatewayAccount: paymentGateway,
                                                             rootViewController: rootViewController)
-        collectPaymentsUseCase?.collectPayment(onCollect: { [weak self] result in
+        collectPaymentsUseCase?.collectPayment(backButtonTitle: Localization.continueToOrders, onCollect: { [weak self] result in
             if result.isFailure {
                 self?.trackFlowFailed()
             }
@@ -200,6 +200,8 @@ private extension SimplePaymentsMethodsViewModel {
                                                        comment: "Text when there is an error while marking the order as paid for simple payments.")
         static let genericCollectError = NSLocalizedString("There was an error while trying to collect the payment.",
                                                        comment: "Text when there is an unknown error while trying to collect payments")
+        static let continueToOrders = NSLocalizedString("Continue To Orders",
+                                                        comment: "Button to dismiss modal overlay and go back to the orders list after a sucessful payment")
 
         static func title(total: String) -> String {
             NSLocalizedString("Take Payment (\(total))", comment: "Navigation bar title for the Simple Payments Methods screens")

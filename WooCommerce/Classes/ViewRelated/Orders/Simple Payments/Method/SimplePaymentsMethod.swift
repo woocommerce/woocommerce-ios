@@ -38,7 +38,7 @@ struct SimplePaymentsMethod: View {
 
                 if viewModel.showPayWithCardRow {
                     Divider()
-                    
+
                     MethodRow(icon: .creditCardImage, title: Localization.card) {
                         viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
                     }

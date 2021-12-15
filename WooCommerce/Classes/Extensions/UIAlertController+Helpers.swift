@@ -1,5 +1,4 @@
 import UIKit
-import Observables
 
 
 /// UIAlertController Helpers
@@ -74,24 +73,24 @@ extension UIAlertController {
                                                    title: String? = nil,
                                                    message: String? = nil,
                                                    onCancel: (() -> Void)? = nil) {
-        let actionSheet = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        actionSheet.view.tintColor = .text
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.view.tintColor = .text
 
-        actionSheet.addDefaultActionWithTitle(AlertWithLinkToOpenSettings.Localization.openSettings) { _ in
+        alert.addDefaultActionWithTitle(AlertWithLinkToOpenSettings.Localization.openSettings) { _ in
             AlertWithLinkToOpenSettings.openSettings()
         }
 
-        actionSheet.addCancelActionWithTitle(AlertWithLinkToOpenSettings.Localization.cancel) { _ in
+        alert.addCancelActionWithTitle(AlertWithLinkToOpenSettings.Localization.cancel) { _ in
             onCancel?()
         }
 
-        if let popoverController = actionSheet.popoverPresentationController {
+        if let popoverController = alert.popoverPresentationController {
             popoverController.sourceView = viewController.view
             popoverController.sourceRect = viewController.view.bounds
             popoverController.permittedArrowDirections = []
         }
 
-        viewController.present(actionSheet, animated: true)
+        viewController.present(alert, animated: true)
     }
 
     open override func viewWillLayoutSubviews() {

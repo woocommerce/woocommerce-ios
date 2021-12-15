@@ -23,7 +23,7 @@ final class ProductsTests: XCTestCase {
             .gotoProductsScreen()
             .verifyProductScreenLoaded()
             .verifyProductOnProductsScreen(count: numberOfProducts, name: firstProductName, status: firstProductStatus)
-            .selectProduct(atIndex: 0)
+            .selectProductByName(name: firstProductName)
             .verifyProductOnSingleProductScreen(name: firstProductName, status: firstProductStatus, price: firstProductPrice)
             .goBackToProductList()
             .verifyProductScreenLoaded()

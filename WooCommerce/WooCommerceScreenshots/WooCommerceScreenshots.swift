@@ -59,7 +59,7 @@ class WooCommerceScreenshots: XCTestCase {
             .tabBar.gotoProductsScreen()
             .collapseTopBannerIfNeeded()
             .thenTakeScreenshot(named: "product-list")
-            .selectProduct(atIndex: 1)
+            .selectProductByIndex(atIndex: 1)
             .thenTakeScreenshot(named: "product-details")
     }
 

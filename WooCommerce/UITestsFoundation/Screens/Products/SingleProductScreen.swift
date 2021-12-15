@@ -9,7 +9,7 @@ public final class SingleProductScreen: ScreenObject {
         return screen.isLoaded && screen.expectedElement.isHittable
     }
 
-    public init(app: XCUIApplication = XCUIApplication()) throws {
+    init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [ {$0.buttons["edit-product-more-options-button"]} ],
             app: app

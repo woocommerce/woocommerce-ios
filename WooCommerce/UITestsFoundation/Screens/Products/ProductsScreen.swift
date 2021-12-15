@@ -1,4 +1,3 @@
-// swiftlint:disable next opening_brace
 import ScreenObject
 import XCTest
 
@@ -19,12 +18,14 @@ public final class ProductsScreen: ScreenObject {
         (try? ProductsScreen().isLoaded) ?? false
     }
 
-    public init(app: XCUIApplication = XCUIApplication()) throws {
+    init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
+                // swiftlint:disable next opening_brace
                 { $0.buttons["product-add-button"] },
                 { $0.buttons["product-scan-button"] },
                 { $0.buttons["product-search-button"]}
+                // swiftlint:enable next opening_brace
             ],
             app: app
         )
@@ -48,8 +49,13 @@ public final class ProductsScreen: ScreenObject {
     }
 
     @discardableResult
-    public func selectProduct(atIndex index: Int) throws -> SingleProductScreen {
+    public func selectProductByIndex(atIndex index: Int) throws -> SingleProductScreen {
         app.tables.cells.element(boundBy: index).tap()
+        return try SingleProductScreen()
+    }
+
+    public func selectProductByName(name: String) throws -> SingleProductScreen {
+        app.tables.cells.staticTexts[name].tap()
         return try SingleProductScreen()
     }
 

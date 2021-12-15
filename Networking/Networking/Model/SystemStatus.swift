@@ -7,6 +7,11 @@ public struct SystemStatus: Decodable {
     let database: Database?
     let dropinPlugins: [SystemPlugin]
     let mustUsePlugins: [SystemPlugin]
+    let theme: Theme?
+    let settings: Settings?
+    let pages: [Page]
+    let postTypeCounts: [PostTypeCount]
+    let security: Security?
 
     public init(
         activePlugins: [SystemPlugin],
@@ -14,7 +19,12 @@ public struct SystemStatus: Decodable {
         environment: Environment?,
         database: Database?,
         dropinPlugins: [SystemPlugin],
-        mustUsePlugins: [SystemPlugin]
+        mustUsePlugins: [SystemPlugin],
+        theme: Theme?,
+        settings: Settings?,
+        pages: [Page],
+        postTypeCounts: [PostTypeCount],
+        security: Security?
     ) {
         self.activePlugins = activePlugins
         self.inactivePlugins = inactivePlugins
@@ -22,6 +32,11 @@ public struct SystemStatus: Decodable {
         self.database = database
         self.dropinPlugins = dropinPlugins
         self.mustUsePlugins = mustUsePlugins
+        self.theme = theme
+        self.settings = settings
+        self.pages = pages
+        self.postTypeCounts = postTypeCounts
+        self.security = security
     }
 
     /// The public initializer for System Status.
@@ -33,9 +48,15 @@ public struct SystemStatus: Decodable {
         let environment = try container.decodeIfPresent(Environment.self, forKey: .environment)
         let database = try container.decodeIfPresent(Database.self, forKey: .database)
 
-        let dropinMustUsePlugins = try container.nestedContainer(keyedBy: DropinMustUserPluginsCodingKeys.self, forKey: .dropinMustUsePlugins)
-        let dropinPlugins = try dropinMustUsePlugins.decode([SystemPlugin].self, forKey: .dropins)
-        let mustUsePlugins = try dropinMustUsePlugins.decode([SystemPlugin].self, forKey: .mustUsePlugins)
+        let dropinMustUsePlugins = try? container.nestedContainer(keyedBy: DropinMustUserPluginsCodingKeys.self, forKey: .dropinMustUsePlugins)
+        let dropinPlugins = try dropinMustUsePlugins?.decodeIfPresent([SystemPlugin].self, forKey: .dropins) ?? []
+        let mustUsePlugins = try dropinMustUsePlugins?.decodeIfPresent([SystemPlugin].self, forKey: .mustUsePlugins) ?? []
+
+        let theme = try container.decodeIfPresent(Theme.self, forKey: .theme)
+        let settings = try container.decodeIfPresent(Settings.self, forKey: .settings)
+        let pages = try container.decodeIfPresent([Page].self, forKey: .pages) ?? []
+        let postTypeCounts = try container.decodeIfPresent([PostTypeCount].self, forKey: .postTypeCounts) ?? []
+        let security = try container.decodeIfPresent(Security.self, forKey: .security)
 
         self.init(
             activePlugins: activePlugins,
@@ -43,7 +64,12 @@ public struct SystemStatus: Decodable {
             environment: environment,
             database: database,
             dropinPlugins: dropinPlugins,
-            mustUsePlugins: mustUsePlugins
+            mustUsePlugins: mustUsePlugins,
+            theme: theme,
+            settings: settings,
+            pages: pages,
+            postTypeCounts: postTypeCounts,
+            security: security
         )
     }
 }
@@ -59,6 +85,7 @@ private extension SystemStatus {
         case settings
         case pages
         case postTypeCounts = "post_type_counts"
+        case security
     }
 
     enum DropinMustUserPluginsCodingKeys: String, CodingKey {

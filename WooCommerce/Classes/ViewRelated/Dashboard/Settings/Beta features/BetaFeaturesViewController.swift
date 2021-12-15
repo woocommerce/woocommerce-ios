@@ -17,10 +17,6 @@ class BetaFeaturesViewController: UIViewController {
     ///
     private var sections = [Section]()
 
-    /// Use case to tell us if the store is enrolled in the in-person payments program.
-    ///
-    private let paymentsStoreUseCase = CardPresentPaymentsOnboardingUseCase()
-
     init() {
         super.init(nibName: nil, bundle: nil)
     }

@@ -17,7 +17,7 @@ public class SystemStatusRemote: Remote {
             ParameterKeys.fields: [ParameterValues.activePlugins, ParameterValues.inactivePlugins]
         ]
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
-        let mapper = SystemStatusMapper(siteID: siteID)
+        let mapper = SystemPluginMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

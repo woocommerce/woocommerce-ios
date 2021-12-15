@@ -114,6 +114,7 @@ final class IssueRefundViewModel {
         let details = RefundConfirmationViewModel.Details(order: state.order,
                                                           amount: "\(calculateRefundTotal())",
                                                           refundsShipping: state.shouldRefundShipping,
+                                                          refundsFees: state.shouldRefundFees,
                                                           items: state.refundQuantityStore.refundableItems(),
                                                           paymentGateway: paymentGateway)
         return RefundConfirmationViewModel(details: details, currencySettings: state.currencySettings)

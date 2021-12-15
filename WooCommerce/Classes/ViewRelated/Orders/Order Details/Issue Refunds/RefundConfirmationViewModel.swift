@@ -121,6 +121,10 @@ extension RefundConfirmationViewModel {
         ///
         let refundsShipping: Bool
 
+        /// Indicates if fees will be refunded
+        ///
+        let refundsFees: Bool
+
         /// Order items and quantities to refund
         ///
         let items: [RefundableOrderItem]

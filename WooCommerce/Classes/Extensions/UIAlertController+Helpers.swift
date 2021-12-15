@@ -76,9 +76,11 @@ extension UIAlertController {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.view.tintColor = .text
 
-        alert.addDefaultActionWithTitle(AlertWithLinkToOpenSettings.Localization.openSettings) { _ in
+        let openSettingsAction = UIAlertAction(title: AlertWithLinkToOpenSettings.Localization.openSettings, style: .default) { _ in
             AlertWithLinkToOpenSettings.openSettings()
         }
+        alert.addAction(openSettingsAction)
+        alert.preferredAction = openSettingsAction
 
         alert.addCancelActionWithTitle(AlertWithLinkToOpenSettings.Localization.cancel) { _ in
             onCancel?()

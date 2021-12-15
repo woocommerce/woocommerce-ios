@@ -59,7 +59,8 @@ extension UIAlertController {
         viewController.present(actionSheet, animated: true)
     }
 
-    /// Present an alert when the app does not have permission to use camera for barcode scanner. The alert has an action that links to device settings and a cancel action.
+    /// Present an alert when the app does not have permission to use camera for barcode scanner.
+    /// The alert has an action that links to device settings and a cancel action.
     static func presentBarcodeScannerNoCameraPermissionAlert(viewController: UIViewController,
                                                              onCancel: (() -> Void)? = nil) {
         presentAlertWithLinkToOpenSettings(viewController: viewController,
@@ -80,7 +81,7 @@ extension UIAlertController {
             AlertWithLinkToOpenSettings.openSettings()
         }
 
-        actionSheet.addDestructiveActionWithTitle(AlertWithLinkToOpenSettings.Localization.cancel) { _ in
+        actionSheet.addCancelActionWithTitle(AlertWithLinkToOpenSettings.Localization.cancel) { _ in
             onCancel?()
         }
 

@@ -87,10 +87,6 @@ final class OrderListViewModel {
     ///
     @Published private(set) var topBanner: TopBanner = .none
 
-    /// Tracks if the store is ready to receive payments.
-    ///
-    private let inPersonPaymentsReadyUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
-
     /// If true, no simple payments banner will be shown as the user has told us that they are not interested in this information.
     /// Resets with every session.
     ///
@@ -101,15 +97,13 @@ final class OrderListViewModel {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
-         filters: FilterOrderListViewModel.Filters?,
-         inPersonPaymentsReadyUseCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase()) {
+         filters: FilterOrderListViewModel.Filters?) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.filters = filters
-        self.inPersonPaymentsReadyUseCase = inPersonPaymentsReadyUseCase
     }
 
     deinit {
@@ -131,7 +125,6 @@ final class OrderListViewModel {
                                        name: UIApplication.didBecomeActiveNotification, object: nil)
 
         observeForegroundRemoteNotifications()
-        inPersonPaymentsReadyUseCase.refresh()
         bindTopBannerState()
     }
 
@@ -271,10 +264,9 @@ extension OrderListViewModel {
     /// Figures out what top banner should be shown based on the view model internal state.
     ///
     private func bindTopBannerState() {
-        let enrolledState = inPersonPaymentsReadyUseCase.statePublisher.removeDuplicates()
         let errorState = $hasErrorLoadingData.removeDuplicates()
-        Publishers.CombineLatest3(enrolledState, errorState, $hideSimplePaymentsBanners)
-            .map { enrolledState, hasError, hasDismissedBanners -> TopBanner in
+        Publishers.CombineLatest(errorState, $hideSimplePaymentsBanners)
+            .map { hasError, hasDismissedBanners -> TopBanner in
 
                 guard !hasError else {
                     return .error
@@ -283,13 +275,8 @@ extension OrderListViewModel {
                 guard !hasDismissedBanners else {
                     return .none
                 }
-
-                switch enrolledState {
-                case (.completed):
-                    return .simplePaymentsEnabled
-                default:
-                    return .none
-                }
+                
+                return .simplePaymentsEnabled
             }
             .assign(to: &$topBanner)
     }

@@ -231,17 +231,16 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertFalse(resynchronizeRequested)
     }
 
-    func test_having_no_error_and_no_simple_payments_does_not_show_banner() {
+    func test_when_having_no_error_shows_simple_payments_banner() {
         // Given
-        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled)
-        let viewModel = OrderListViewModel(siteID: siteID, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
+        let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
 
         // When
         viewModel.activate()
 
         // Then
         waitUntil {
-            viewModel.topBanner == .none
+            viewModel.topBanner == .simplePaymentsEnabled
         }
     }
 
@@ -259,57 +258,10 @@ final class OrderListViewModelTests: XCTestCase {
         }
     }
 
-    func test_storing_error_shows_error_banner_with_precedence_over_other_state() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
-
-        // When
-        viewModel.activate()
-        viewModel.hasErrorLoadingData = true
-
-        // Then
-        waitUntil {
-            viewModel.topBanner == .error
-        }
-    }
-
-    func test_having_store_onboarded_and_simple_payments_enabled_shows_enabled_top_banner() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
-
-        // When
-        viewModel.activate()
-
-        // Then
-        waitUntil {
-            viewModel.topBanner == .simplePaymentsEnabled
-        }
-    }
-
-    func test_having_store_not_onboarded_and_simple_payments_enabled_shows_no_banner() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
-
-        // When
-        viewModel.activate()
-
-        // Then
-        waitUntil {
-            viewModel.topBanner == .none
-        }
-    }
-
     func test_dismissing_simple_payments_banners_does_not_show_banners() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
 
         // When
         viewModel.activate()

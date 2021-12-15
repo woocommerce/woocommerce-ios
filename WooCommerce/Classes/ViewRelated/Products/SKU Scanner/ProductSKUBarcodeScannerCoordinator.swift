@@ -22,12 +22,24 @@ final class ProductSKUBarcodeScannerCoordinator: Coordinator {
             UIAlertController.presentBarcodeScannerNoCameraPermissionAlert(viewController: navigationController) { [weak self] in
                 self?.navigationController.dismiss(animated: true, completion: nil)
             }
+        case .notDetermined:
+            permissionChecker.requestAccess(for: .video) { [weak self] granted in
+                if granted {
+                    self?.showSKUScanner()
+                }
+            }
         default:
-            let scannerViewController = ProductSKUInputScannerViewController(onBarcodeScanned: { [weak self] barcode in
-                self?.onSKUBarcodeScanned(barcode)
-                self?.navigationController.popViewController(animated: true)
-            })
-            navigationController.show(scannerViewController, sender: self)
+            showSKUScanner()
         }
+    }
+}
+
+private extension ProductSKUBarcodeScannerCoordinator {
+    func showSKUScanner() {
+        let scannerViewController = ProductSKUInputScannerViewController(onBarcodeScanned: { [weak self] barcode in
+            self?.onSKUBarcodeScanned(barcode)
+            self?.navigationController.popViewController(animated: true)
+        })
+        navigationController.show(scannerViewController, sender: self)
     }
 }

@@ -27,10 +27,13 @@ final class ProductSKUBarcodeScannerCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_coordinator_shows_sku_scanner_when_permission_is_not_determined() {
+    func test_coordinator_shows_sku_scanner_after_granting_camera_access() {
         // Given
+        let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .notDetermined)
+        // Grants access.
+        permissionChecker.whenRequestingAccess(thenReturn: true)
         let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
-                                                              permissionChecker: MockCaptureDevicePermissionChecker(authorizationStatus: .notDetermined),
+                                                              permissionChecker: permissionChecker,
                                                               onSKUBarcodeScanned: { _ in })
 
         // When
@@ -38,6 +41,23 @@ final class ProductSKUBarcodeScannerCoordinatorTests: XCTestCase {
 
         // Then
         assertThat(navigationController.topViewController, isAnInstanceOf: ProductSKUInputScannerViewController.self)
+    }
+
+    func test_coordinator_does_nothing_after_denying_camera_access() {
+        // Given
+        let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .notDetermined)
+        // Denies access.
+        permissionChecker.whenRequestingAccess(thenReturn: false)
+        let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
+                                                              permissionChecker: permissionChecker,
+                                                              onSKUBarcodeScanned: { _ in })
+
+        // When
+        coordinator.start()
+
+        // Then
+        XCTAssertNil(navigationController.topViewController)
+        XCTAssertNil(navigationController.presentedViewController)
     }
 
     func test_coordinator_shows_sku_scanner_when_permission_is_authorized() {

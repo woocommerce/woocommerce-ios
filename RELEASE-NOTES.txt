@@ -2,7 +2,6 @@
 
 8.3
 -----
-
 - [*] Add/Edit Product Images: tapping on the last `n` images while `n` images are pending upload does not crash the app anymore. [https://github.com/woocommerce/woocommerce-ios/pull/5672]
 
 8.2

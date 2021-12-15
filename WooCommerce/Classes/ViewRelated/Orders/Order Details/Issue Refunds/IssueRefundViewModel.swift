@@ -369,16 +369,19 @@ extension IssueRefundViewModel {
         let refundItems = state.refundQuantityStore.refundableItems()
         let productsTotalUseCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
 
-        // If shipping is not enabled, return only the products value
-        guard let shippingLine = state.order.shippingLines.first, state.shouldRefundShipping else {
-            return productsTotalUseCase.calculateRefundValues().total
+        var refundsTotal = productsTotalUseCase.calculateRefundValues().total
+
+        // If shipping is enabled, sum the refund value to the total
+        if let shippingLine = state.order.shippingLines.first, state.shouldRefundShipping {
+            refundsTotal += RefundShippingCalculationUseCase(shippingLine: shippingLine, currencyFormatter: formatter).calculateRefundValue()
         }
 
-        let shippingTotalUseCase = RefundShippingCalculationUseCase(shippingLine: shippingLine, currencyFormatter: formatter)
+        // If fees are enabled, sum the refund value to the total
+        if state.shouldRefundFees {
+            refundsTotal += RefundFeesCalculationUseCase(fees: state.order.fees, currencyFormatter: formatter).calculateRefundValues().total
+        }
 
-        let feesTotalUseCase = RefundFeesCalculationUseCase(fees: state.order.fees, currencyFormatter: formatter)
-
-        return productsTotalUseCase.calculateRefundValues().total + shippingTotalUseCase.calculateRefundValue() + feesTotalUseCase.calculateRefundValues().total
+        return refundsTotal
     }
 
     /// Returns a string with the count of how many items are selected for refund.

@@ -10,10 +10,12 @@ class AddProductToOrderViewModelTests: XCTestCase {
     private var storage: StorageType {
         storageManager.viewStorage
     }
+    private let stores = MockStoresManager(sessionManager: .testingInstance)
 
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
+        stores.reset()
     }
 
     override func tearDown() {
@@ -72,6 +74,92 @@ class AddProductToOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.productRows.contains(where: { $0.id == 2 }), "Product rows include draft product")
         XCTAssertFalse(viewModel.productRows.contains(where: { $0.id == 3 }), "Product rows include pending product")
         XCTAssertTrue(viewModel.productRows.contains(where: { $0.id == 4 }), "Product rows do not include private product")
+    }
+
+    func test_scrolling_indicator_appears_only_during_sync() {
+        // Given
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        XCTAssertFalse(viewModel.shouldShowScrollIndicator, "Scroll indicator is not disabled at start")
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+                XCTAssertTrue(viewModel.shouldShowScrollIndicator, "Scroll indicator is not enabled during sync")
+                onCompletion(.success(true))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: { _ in })
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowScrollIndicator, "Scroll indicator is not disabled after sync ends")
+    }
+
+    func test_sync_status_updates_as_expected_for_empty_product_list() {
+        // Given
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+                XCTAssertEqual(viewModel.syncStatus, .firstPageSync)
+                onCompletion(.success(true))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: { _ in })
+
+        // Then
+        XCTAssertEqual(viewModel.syncStatus, .empty)
+    }
+
+    func test_sync_status_updates_as_expected_when_products_are_synced() {
+        // Given
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+                XCTAssertEqual(viewModel.syncStatus, .firstPageSync)
+                let product = Product.fake().copy(siteID: self.sampleSiteID, statusKey: "publish")
+                self.insert(product)
+                onCompletion(.success(true))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: { _ in })
+
+        // Then
+        XCTAssertEqual(viewModel.syncStatus, .results)
+    }
+
+    func test_sync_status_does_not_change_while_syncing_when_storage_contains_products() {
+        // Given
+        let product = Product.fake().copy(siteID: self.sampleSiteID, statusKey: "publish")
+        insert(product)
+
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+                XCTAssertEqual(viewModel.syncStatus, .results)
+                onCompletion(.success(true))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: { _ in })
+
+        // Then
+        XCTAssertEqual(viewModel.syncStatus, .results)
     }
 }
 

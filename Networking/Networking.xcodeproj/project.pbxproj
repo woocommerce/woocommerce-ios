@@ -81,7 +81,7 @@
 		077F39D626A58E4500ABEADC /* SystemStatusRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */; };
 		077F39D826A58EB600ABEADC /* systemStatus.json in Resources */ = {isa = PBXBuildFile; fileRef = 077F39D726A58EB600ABEADC /* systemStatus.json */; };
 		077F39DA26A58ED700ABEADC /* SystemStatusRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D926A58ED700ABEADC /* SystemStatusRemoteTests.swift */; };
-		077F39E626A5D15800ABEADC /* SystemStatusMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39DB26A58F4800ABEADC /* SystemStatusMapperTests.swift */; };
+		077F39E626A5D15800ABEADC /* SystemPluginMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39DB26A58F4800ABEADC /* SystemPluginMapperTests.swift */; };
 		21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */; };
 		24F98C522502E79800F49B68 /* FeatureFlagsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C512502E79800F49B68 /* FeatureFlagsRemote.swift */; };
 		24F98C542502E8DD00F49B68 /* Bundle+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C532502E8DD00F49B68 /* Bundle+Woo.swift */; };
@@ -553,6 +553,9 @@
 		DEC51A97274DD962009F3DF4 /* plugin.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC51A96274DD962009F3DF4 /* plugin.json */; };
 		DEC51A99274DDDC9009F3DF4 /* SitePluginMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51A98274DDDC9009F3DF4 /* SitePluginMapperTests.swift */; };
 		DEC51A9B274E3206009F3DF4 /* plugin-inactive.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC51A9A274E3206009F3DF4 /* plugin-inactive.json */; };
+		DEC51AE7276848A9009F3DF4 /* SystemStatus+Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AE6276848A9009F3DF4 /* SystemStatus+Environment.swift */; };
+		DEC51AE927687AAF009F3DF4 /* SystemPluginMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AE827687AAF009F3DF4 /* SystemPluginMapper.swift */; };
+		DEC51AED2768A0AD009F3DF4 /* systemStatusWithPluginsOnly.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC51AEC2768A0AD009F3DF4 /* systemStatusWithPluginsOnly.json */; };
 		E12552C526385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12552C426385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift */; };
 		FE28F6E226840DED004465C7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E126840DED004465C7 /* User.swift */; };
 		FE28F6E426842848004465C7 /* UserMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E326842848004465C7 /* UserMapper.swift */; };
@@ -671,7 +674,7 @@
 		077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusRemote.swift; sourceTree = "<group>"; };
 		077F39D726A58EB600ABEADC /* systemStatus.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = systemStatus.json; sourceTree = "<group>"; };
 		077F39D926A58ED700ABEADC /* SystemStatusRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusRemoteTests.swift; sourceTree = "<group>"; };
-		077F39DB26A58F4800ABEADC /* SystemStatusMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusMapperTests.swift; sourceTree = "<group>"; };
+		077F39DB26A58F4800ABEADC /* SystemPluginMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPluginMapperTests.swift; sourceTree = "<group>"; };
 		24F98C512502E79800F49B68 /* FeatureFlagsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagsRemote.swift; sourceTree = "<group>"; };
 		24F98C532502E8DD00F49B68 /* Bundle+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Woo.swift"; sourceTree = "<group>"; };
 		24F98C552502EA4800F49B68 /* FeatureFlag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlag.swift; sourceTree = "<group>"; };
@@ -1147,6 +1150,9 @@
 		DEC51A96274DD962009F3DF4 /* plugin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = plugin.json; sourceTree = "<group>"; };
 		DEC51A98274DDDC9009F3DF4 /* SitePluginMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginMapperTests.swift; sourceTree = "<group>"; };
 		DEC51A9A274E3206009F3DF4 /* plugin-inactive.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "plugin-inactive.json"; sourceTree = "<group>"; };
+		DEC51AE6276848A9009F3DF4 /* SystemStatus+Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemStatus+Environment.swift"; sourceTree = "<group>"; };
+		DEC51AE827687AAF009F3DF4 /* SystemPluginMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPluginMapper.swift; sourceTree = "<group>"; };
+		DEC51AEC2768A0AD009F3DF4 /* systemStatusWithPluginsOnly.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = systemStatusWithPluginsOnly.json; sourceTree = "<group>"; };
 		E12552C426385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressValidationSuccess.swift; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -1602,6 +1608,7 @@
 				CE50345F21B5799F007573C6 /* SitePlan.swift */,
 				077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */,
 				3148976F27232982007A86BD /* SystemStatus.swift */,
+				DEC51AE527684717009F3DF4 /* SystemStatusDetails */,
 				450106842399A7CB00E24722 /* TaxClass.swift */,
 				3192F21F260D33BB0067FEF9 /* WCPayAccount.swift */,
 				31799AF7270508C600D78179 /* WCPayReaderLocation.swift */,
@@ -1795,6 +1802,7 @@
 				31799AFB2705189200D78179 /* wcpay-location.json */,
 				31799AFD270518AD00D78179 /* wcpay-location-error.json */,
 				02A26F1A2744F5FC008E4EDB /* wp-site-settings.json */,
+				DEC51AEC2768A0AD009F3DF4 /* systemStatusWithPluginsOnly.json */,
 				077F39D726A58EB600ABEADC /* systemStatus.json */,
 			);
 			path = Responses;
@@ -1873,6 +1881,7 @@
 				CC0786C4267BAF0F00BA9AC1 /* ShippingLabelStatusMapper.swift */,
 				FE28F6E326842848004465C7 /* UserMapper.swift */,
 				077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */,
+				DEC51AE827687AAF009F3DF4 /* SystemPluginMapper.swift */,
 				02C11275274285FF00F4F0B4 /* WooCommerceAvailabilityMapper.swift */,
 				02BE0A7A274B695F001176D2 /* WordPressMediaMapper.swift */,
 				02C112772742862600F4F0B4 /* WordPressSiteSettingsMapper.swift */,
@@ -1940,7 +1949,7 @@
 			children = (
 				B505F6D220BEE3A500BB1B69 /* AccountMapperTests.swift */,
 				9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */,
-				077F39DB26A58F4800ABEADC /* SystemStatusMapperTests.swift */,
+				077F39DB26A58F4800ABEADC /* SystemPluginMapperTests.swift */,
 				2685C0D9263B551300D9EE97 /* AddOnGroupMapperTests.swift */,
 				74AB0AC921948CE4008220CD /* CommentResultMapperTests.swift */,
 				45150A9F26837357006922EA /* CountryListMapperTests.swift */,
@@ -2035,6 +2044,14 @@
 				458C6DE325AC72A1009B300D /* StoredProductSettings.swift */,
 			);
 			path = Product;
+			sourceTree = "<group>";
+		};
+		DEC51AE527684717009F3DF4 /* SystemStatusDetails */ = {
+			isa = PBXGroup;
+			children = (
+				DEC51AE6276848A9009F3DF4 /* SystemStatus+Environment.swift */,
+			);
+			path = SystemStatusDetails;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2251,6 +2268,7 @@
 				7492FAE3217FBDBC00ED2C69 /* settings-general-alt.json in Resources */,
 				93D8BBFF226BC1DA00AD2EB3 /* me-settings.json in Resources */,
 				74C947842193A6C70024CB60 /* comment-moderate-approved.json in Resources */,
+				DEC51AED2768A0AD009F3DF4 /* systemStatusWithPluginsOnly.json in Resources */,
 				D8C11A5C22DFCF8100D4A88D /* order-stats-v4-year-alt.json in Resources */,
 				3158FE6426129B1300E566B9 /* wcpay-account-complete.json in Resources */,
 				B56C1EBA20EA7D2C00D749F9 /* sites.json in Resources */,
@@ -2550,6 +2568,7 @@
 				026CF620237D69D6009563D4 /* ProductVariationsRemote.swift in Sources */,
 				077F39D626A58E4500ABEADC /* SystemStatusRemote.swift in Sources */,
 				4599FC5E24A62AA70056157A /* ProductTagsRemote.swift in Sources */,
+				DEC51AE7276848A9009F3DF4 /* SystemStatus+Environment.swift in Sources */,
 				FE28F6E226840DED004465C7 /* User.swift in Sources */,
 				7426CA0F21AF2C90004E9FFC /* SiteAPI.swift in Sources */,
 				D87F6151226591E10031A13B /* NullNetwork.swift in Sources */,
@@ -2638,6 +2657,7 @@
 				CE6BFEEA2236E191005C79FB /* ProductType.swift in Sources */,
 				CE6D666C2379E19D007835A1 /* Array+Woo.swift in Sources */,
 				CCF48B1E26288FEC0034EA83 /* ShippingLabelPaymentMethod.swift in Sources */,
+				DEC51AE927687AAF009F3DF4 /* SystemPluginMapper.swift in Sources */,
 				B557DA0B20975D7E005962F4 /* WooAPIVersion.swift in Sources */,
 				45150A9E26836A57006922EA /* CountryListMapper.swift in Sources */,
 				CE6BFEE82236D133005C79FB /* ProductDimensions.swift in Sources */,
@@ -2737,7 +2757,7 @@
 				020C907F24C7D359001E2BEB /* ProductVariationMapperTests.swift in Sources */,
 				74ABA1D5213F26B300FFAD30 /* TopEarnerStatsMapperTests.swift in Sources */,
 				74AB5B5121AF426D00859C12 /* SiteAPIRemoteTests.swift in Sources */,
-				077F39E626A5D15800ABEADC /* SystemStatusMapperTests.swift in Sources */,
+				077F39E626A5D15800ABEADC /* SystemPluginMapperTests.swift in Sources */,
 				4599FC6624A633A10056157A /* ProductTagsRemoteTests.swift in Sources */,
 				B567AF2F20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift in Sources */,
 				B5C6FCCD20A34B8300A4F8E4 /* OrderListMapperTests.swift in Sources */,

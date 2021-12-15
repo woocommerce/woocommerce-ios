@@ -1,9 +1,9 @@
 import XCTest
 @testable import Networking
 
-/// SystemStatusMapperTests Unit Tests
+/// SystemPluginMapper Unit Tests
 ///
-class SystemStatusMapperTests: XCTestCase {
+final class SystemPluginMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
@@ -82,7 +82,7 @@ class SystemStatusMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension SystemStatusMapperTests {
+private extension SystemPluginMapperTests {
 
     /// Returns the SystemStatusMapper output upon receiving `filename` (Data Encoded)
     ///
@@ -91,12 +91,12 @@ private extension SystemStatusMapperTests {
             return []
         }
 
-        return try SystemStatusMapper(siteID: dummySiteID).map(response: response)
+        return try SystemPluginMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the SystemStatusMapper output upon receiving `systemPlugins`
     ///
     func mapLoadSystemStatusResponse() throws -> [SystemPlugin] {
-        return try mapPlugins(from: "systemStatus")
+        return try mapPlugins(from: "systemStatusWithPluginsOnly")
     }
 }

@@ -132,6 +132,8 @@ public class OrdersRemote: Remote {
                     switch field {
                     case .feeLines:
                         params[Order.CodingKeys.feeLines.rawValue] = try order.fees.compactMap { try $0.toDictionary() }
+                    case .status:
+                        params[Order.CodingKeys.status.rawValue] = order.status.rawValue
                     }
                 }
             }()
@@ -274,5 +276,6 @@ public extension OrdersRemote {
     ///
     enum CreateOrderField {
         case feeLines
+        case status
     }
 }

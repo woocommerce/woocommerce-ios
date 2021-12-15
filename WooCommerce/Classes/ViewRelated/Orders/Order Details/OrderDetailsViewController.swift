@@ -772,7 +772,8 @@ private extension OrderDetailsViewController {
                         self.viewModel.emailReceipt(params: receiptParameters, onContent: { emailContent in
                             self.emailReceipt(emailContent)
                         })
-                    }, noReceiptTitle: Localization.Payments.backToOrder, noReceiptAction: {})
+                    }, noReceiptTitle: Localization.Payments.backToOrder,
+                       noReceiptAction: {})
                 }
             }
         )
@@ -1092,7 +1093,7 @@ private extension OrderDetailsViewController {
                 NSLocalizedString("Track shipment",
                                   comment: "Track shipment of a shipping label from the shipping label tracking more menu action sheet")
         }
-        
+
         enum Payments {
             static let backToOrder = NSLocalizedString("Back to Order",
                                                        comment: "Button to dismiss modal overlay and go back to the order after a sucessful payment")

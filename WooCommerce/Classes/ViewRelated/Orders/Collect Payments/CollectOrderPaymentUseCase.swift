@@ -243,8 +243,8 @@ private extension CollectOrderPaymentUseCase {
                 self?.onCompleted = onCompleted // Saved to be able to reference from the `MailComposer` delegate.
                 self?.presentEmailForm(content: emailContent)
             }
-            
-        }, noReceiptTitle: backButtonTitle, noReceiptAction: {
+        }, noReceiptTitle: backButtonTitle,
+           noReceiptAction: {
             // Inform about flow completion.
             onCompleted()
         })

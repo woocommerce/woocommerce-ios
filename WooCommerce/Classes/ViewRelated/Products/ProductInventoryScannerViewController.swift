@@ -92,8 +92,6 @@ final class ProductInventoryScannerViewController: UIViewController {
         return label
     }()
 
-    private lazy var throttler: Throttler = Throttler(seconds: 1)
-
     private let siteID: Int64
 
     init(siteID: Int64) {

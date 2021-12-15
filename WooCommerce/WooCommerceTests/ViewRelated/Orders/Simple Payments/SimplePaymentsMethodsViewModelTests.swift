@@ -226,4 +226,36 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowCollect.rawValue])
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "card")
     }
+
+    func test_card_row_is_shown_for_cpp_store() {
+        // Given
+        let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", cppStoreStateObserver: cppStateObserver)
+
+        // Then
+        XCTAssertTrue(viewModel.showPayWithCardRow)
+    }
+
+    func test_card_row_is_note_shown_for_non_cpp_store() {
+        // Given
+        let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", cppStoreStateObserver: cppStateObserver)
+
+        // Then
+        XCTAssertFalse(viewModel.showPayWithCardRow)
+    }
+
+    func test_card_row_sate_changes_when_store_state_changes() {
+        // Given
+        let subject = PassthroughSubject<CardPresentPaymentOnboardingState, Never>()
+        let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled, publisher: subject.eraseToAnyPublisher())
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", cppStoreStateObserver: cppStateObserver)
+        XCTAssertFalse(viewModel.showPayWithCardRow)
+
+        // When
+        subject.send(.completed)
+
+        // Then
+        XCTAssertTrue(viewModel.showPayWithCardRow)
+    }
 }

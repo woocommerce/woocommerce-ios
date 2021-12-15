@@ -275,7 +275,7 @@ extension OrderListViewModel {
                 guard !hasDismissedBanners else {
                     return .none
                 }
-                
+
                 return .simplePaymentsEnabled
             }
             .assign(to: &$topBanner)

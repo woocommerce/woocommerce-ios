@@ -1,4 +1,5 @@
 import UIKit
+import Observables
 
 
 /// UIAlertController Helpers
@@ -58,6 +59,40 @@ extension UIAlertController {
         viewController.present(actionSheet, animated: true)
     }
 
+    /// Present an alert when the app does not have permission to use camera for barcode scanner. The alert has an action that links to device settings and a cancel action.
+    static func presentBarcodeScannerNoCameraPermissionAlert(viewController: UIViewController,
+                                                             onCancel: (() -> Void)? = nil) {
+        presentAlertWithLinkToOpenSettings(viewController: viewController,
+                                           title: BarcodeScannerNoCameraPermissionAlert.Localization.title,
+                                           message: BarcodeScannerNoCameraPermissionAlert.Localization.message,
+                                           onCancel: onCancel)
+    }
+
+    /// Present an alert with an action that links to device settings and cancel action.
+    static func presentAlertWithLinkToOpenSettings(viewController: UIViewController,
+                                                   title: String? = nil,
+                                                   message: String? = nil,
+                                                   onCancel: (() -> Void)? = nil) {
+        let actionSheet = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addDefaultActionWithTitle(AlertWithLinkToOpenSettings.Localization.openSettings) { _ in
+            AlertWithLinkToOpenSettings.openSettings()
+        }
+
+        actionSheet.addDestructiveActionWithTitle(AlertWithLinkToOpenSettings.Localization.cancel) { _ in
+            onCancel?()
+        }
+
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = viewController.view
+            popoverController.sourceRect = viewController.view.bounds
+            popoverController.permittedArrowDirections = []
+        }
+
+        viewController.present(actionSheet, animated: true)
+    }
+
     open override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         if let window = UIApplication.shared.currentKeyWindow {
@@ -75,4 +110,31 @@ private enum ActionSheetStrings {
                                           comment: "Button title Discard Changes in Discard Changes Action Sheet")
     static let cancel = NSLocalizedString("Cancel",
                                           comment: "Button title Cancel in Discard Changes Action Sheet")
+}
+
+private enum AlertWithLinkToOpenSettings {
+    enum Localization {
+        static let openSettings = NSLocalizedString("Open Settings",
+                                                    comment: "Button title to open device settings in an alert")
+        static let cancel = NSLocalizedString("Cancel",
+                                              comment: "Button title to cancel opening device settings in an alert")
+    }
+
+    static let openSettings: () -> Void = {
+        guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
+            return
+        }
+        UIApplication.shared.open(targetURL)
+    }
+}
+
+private enum BarcodeScannerNoCameraPermissionAlert {
+    enum Localization {
+        static let title =
+        NSLocalizedString("Allow camera access",
+                          comment: "Title of alert that links to settings for camera access.")
+        static let message =
+        NSLocalizedString("Please change your camera permissions in device settings.",
+                          comment: "Message of alert that links to settings for camera access.")
+    }
 }

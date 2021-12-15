@@ -25,6 +25,10 @@ struct RefundCreationUseCase {
     ///
     let shippingLine: ShippingLine?
 
+    /// Fees to be refunded, `empty` if fees will not be refunded.
+    ///
+    let fees: [OrderFeeLine]
+
     /// Currency formatted needed for decimal calculations
     ///
     let currencyFormatter: CurrencyFormatter
@@ -86,6 +90,24 @@ struct RefundCreationUseCase {
                         taxClass: "",
                         taxes: createTaxes(from: shippingLine),
                         total: shippingLine.total,
+                        totalTax: "")
+    }
+
+    /// Returns an `OrderItemRefund` based on the provided `FeeLine`
+    /// 
+    private func createFeeItem(from feeLine: OrderFeeLine) -> OrderItemRefund {
+        OrderItemRefund(itemID: feeLine.feeID,
+                        name: "",
+                        productID: .min,
+                        variationID: .min,
+                        quantity: .zero,
+                        price: .zero,
+                        sku: nil,
+                        subtotal: "",
+                        subtotalTax: "",
+                        taxClass: "",
+                        taxes: [],
+                        total: feeLine.total,
                         totalTax: "")
     }
 

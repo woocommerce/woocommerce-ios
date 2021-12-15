@@ -27,7 +27,15 @@ public extension SystemStatus {
     /// Subtype for details about database tables in system status.
     ///
     struct DatabaseTables: Decodable {
-        let woocommerce: [String: [String: String]]
-        let other: [String: [String: String]]
+        let woocommerce: [DatabaseTable]
+        let other: [DatabaseTable]
+    }
+
+    /// Subtype for details about a database table.
+    ///
+    struct DatabaseTable: Decodable {
+        let data: String
+        let index: String
+        let engine: String
     }
 }

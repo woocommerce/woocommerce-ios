@@ -375,7 +375,10 @@ extension IssueRefundViewModel {
         }
 
         let shippingTotalUseCase = RefundShippingCalculationUseCase(shippingLine: shippingLine, currencyFormatter: formatter)
-        return productsTotalUseCase.calculateRefundValues().total + shippingTotalUseCase.calculateRefundValue()
+
+        let feesTotalUseCase = RefundFeesCalculationUseCase(fees: state.order.fees, currencyFormatter: formatter)
+
+        return productsTotalUseCase.calculateRefundValues().total + shippingTotalUseCase.calculateRefundValue() + feesTotalUseCase.calculateRefundValues().total
     }
 
     /// Returns a string with the count of how many items are selected for refund.

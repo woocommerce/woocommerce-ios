@@ -143,6 +143,22 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.productRows.contains(expectedProductRow), "Product rows do not contain expected product")
         XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }), "Order details do not contain expected order item")
     }
+
+    func test_order_details_are_updated_when_product_quantity_changes() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, statusKey: "publish")
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        viewModel.productRows[0].incrementQuantity()
+
+        // Then
+        let expectedOrderItem = product.toOrderItem(quantity: 2)
+        XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }), "Order details do not contain expected order item")
+    }
 }
 
 private extension MockStorageManager {

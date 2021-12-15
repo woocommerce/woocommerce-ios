@@ -67,7 +67,7 @@ private struct ProductStepper: View {
             }
             .disabled(viewModel.shouldDisableQuantityDecrementer)
 
-            Text("\(viewModel.quantity)")
+            Text(viewModel.quantity.description)
 
             Button {
                 viewModel.incrementQuantity()
@@ -85,7 +85,7 @@ private struct ProductStepper: View {
         )
         .accessibilityElement(children: .ignore)
         .accessibility(label: Text(Localization.quantityLabel))
-        .accessibility(value: Text("\(viewModel.quantity)"))
+        .accessibility(value: Text(viewModel.quantity.description))
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .decrement:

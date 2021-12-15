@@ -84,7 +84,12 @@ final class NewOrderViewModel: ObservableObject {
     /// They are generated from `orderDetails` to ensure they are updated when the order details change.
     ///
     var productRows: [ProductRowViewModel] {
-        orderDetails.items.map { .init(product: $0.product, canChangeQuantity: true) }
+        orderDetails.items.enumerated().map { (index, item) in
+            ProductRowViewModel(product: item.product, canChangeQuantity: true) { [weak self] newQuantity in
+                guard let self = self else { return }
+                self.orderDetails.items[index].quantity = newQuantity
+            }
+        }
     }
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {

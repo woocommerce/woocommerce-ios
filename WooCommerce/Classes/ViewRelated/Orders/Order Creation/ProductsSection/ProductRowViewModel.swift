@@ -11,6 +11,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
     ///
     let canChangeQuantity: Bool
 
+    /// Closure to be invoked when the quantity changes
+    ///
+    private let onQuantityChange: ((Decimal) -> Void)?
+
     // MARK: Product properties
 
     /// Product ID
@@ -63,7 +67,11 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
 
     /// Quantity of product in the order
     ///
-    @Published private(set) var quantity: Int64 = 1
+    @Published private(set) var quantity: Decimal = 1 {
+        willSet {
+            onQuantityChange?(newValue)
+        }
+    }
 
     /// Whether the quantity can be decremented.
     /// Quantity has a minimum value of 1.
@@ -80,7 +88,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
          stockQuantity: Decimal?,
          manageStock: Bool,
          canChangeQuantity: Bool,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         onQuantityChange: ((Decimal) -> Void)? = nil) {
         self.id = id
         self.name = name
         self.sku = sku
@@ -90,11 +99,13 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
         self.manageStock = manageStock
         self.canChangeQuantity = canChangeQuantity
         self.currencyFormatter = currencyFormatter
+        self.onQuantityChange = onQuantityChange
     }
 
     convenience init(product: Product,
                      canChangeQuantity: Bool,
-                     currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+                     currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                     onQuantityChange: ((Decimal) -> Void)? = nil) {
         self.init(id: product.productID,
                   name: product.name,
                   sku: product.sku,
@@ -103,7 +114,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
                   stockQuantity: product.stockQuantity,
                   manageStock: product.manageStock,
                   canChangeQuantity: canChangeQuantity,
-                  currencyFormatter: currencyFormatter)
+                  currencyFormatter: currencyFormatter,
+                  onQuantityChange: onQuantityChange)
     }
 
     /// Create the stock text based on a product's stock status/quantity.

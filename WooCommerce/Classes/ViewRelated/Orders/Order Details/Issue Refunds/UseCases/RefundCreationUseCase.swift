@@ -49,7 +49,7 @@ struct RefundCreationUseCase {
                       shippingLines: [])
     }
 
-    /// Returns an array of `OrderItemRefund` based on the provided refundable items and shipping line
+    /// Returns an array of `OrderItemRefund` based on the provided refundable items, shipping line and order fee lines
     ///
     private func createRefundItems() -> [OrderItemRefund] {
         var refundItems = items.map { refundable -> OrderItemRefund in
@@ -93,8 +93,8 @@ struct RefundCreationUseCase {
                         totalTax: "")
     }
 
-    /// Returns an `OrderItemRefund` based on the provided `FeeLine`
-    /// 
+    /// Returns an `OrderItemRefund` based on the provided `OrderFeeLine`
+    ///
     private func createFeeItem(from feeLine: OrderFeeLine) -> OrderItemRefund {
         OrderItemRefund(itemID: feeLine.feeID,
                         name: "",
@@ -106,7 +106,7 @@ struct RefundCreationUseCase {
                         subtotal: "",
                         subtotalTax: "",
                         taxClass: "",
-                        taxes: [],
+                        taxes: createTaxes(from: feeLine),
                         total: feeLine.total,
                         totalTax: "")
     }
@@ -125,6 +125,14 @@ struct RefundCreationUseCase {
     ///
     private func createTaxes(from shippingLine: ShippingLine) -> [OrderItemTaxRefund] {
         shippingLine.taxes.map { taxLine -> OrderItemTaxRefund in
+            OrderItemTaxRefund(taxID: taxLine.taxID, subtotal: "", total: taxLine.total)
+        }
+    }
+
+    /// Creates an array of `OrderItemTaxRefund` from the tax lines in the provided `OrderFeeLine`
+    ///
+    private func createTaxes(from feeLine: OrderFeeLine) -> [OrderItemTaxRefund] {
+        feeLine.taxes.map { taxLine -> OrderItemTaxRefund in
             OrderItemTaxRefund(taxID: taxLine.taxID, subtotal: "", total: taxLine.total)
         }
     }

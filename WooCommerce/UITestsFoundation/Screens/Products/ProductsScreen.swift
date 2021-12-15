@@ -1,3 +1,4 @@
+// swiftlint:disable next opening_brace
 import ScreenObject
 import XCTest
 
@@ -20,7 +21,11 @@ public final class ProductsScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [ { $0.buttons["product-add-button"] }, { $0.buttons["product-scan-button"] }, { $0.buttons["product-search-button"]} ],
+            expectedElementGetters: [
+                { $0.buttons["product-add-button"] },
+                { $0.buttons["product-scan-button"] },
+                { $0.buttons["product-search-button"]}
+            ],
             app: app
         )
     }
@@ -44,13 +49,38 @@ public final class ProductsScreen: ScreenObject {
 
     @discardableResult
     public func selectProduct(atIndex index: Int) throws -> SingleProductScreen {
-        XCUIApplication().tables.cells.element(boundBy: index).tap()
+        app.tables.cells.element(boundBy: index).tap()
         return try SingleProductScreen()
     }
 
-    public func verifyProductNameOnProductsScreen(name: String) {
-        let predicate = NSPredicate(format: "label CONTAINS[c] %@", name)
-        let elementQuery = app.staticTexts.containing(predicate)
+    public func verifyProductOnProductsScreen(count: Int, name: String, status: String) throws -> ProductsScreen {
+        var predicate = NSPredicate(format: "label CONTAINS[c] %@", name)
+        var elementQuery = app.staticTexts.containing(predicate)
+        var displayedStatus = ""
+
         XCTAssertTrue(elementQuery.count == 1, "Product name does not exist!")
+        XCTAssertTrue(app.tables.cells.count == count, "Expecting \(count) products, got \(app.tables.cells.count) instead!")
+
+        switch status {
+            case "instock":
+                displayedStatus = "in stock"
+            case "onbackorder":
+                displayedStatus = "on back order"
+            case "outofstock":
+                displayedStatus = "out of stock"
+            default:
+                fatalError("Status \(status) is not defined! ")
+        }
+
+        predicate = NSPredicate(format: "label CONTAINS[c] %@", displayedStatus)
+        elementQuery = app.staticTexts.containing(predicate)
+        XCTAssertTrue(elementQuery.count > 0, "Stock status does not exist!")
+
+        return try ProductsScreen()
+    }
+
+    public func verifyProductScreenLoaded() throws -> ProductsScreen {
+        XCTAssertTrue(isLoaded)
+        return try ProductsScreen()
     }
 }

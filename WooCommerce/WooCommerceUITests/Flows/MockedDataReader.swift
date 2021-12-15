@@ -21,6 +21,7 @@ class GetMocks {
         let id: Int
         let name: String
         let stock_status: String
+        let regular_price: String
     }
 
     static func getProductsMockedDataContent(withFilename filename: String) -> Data {

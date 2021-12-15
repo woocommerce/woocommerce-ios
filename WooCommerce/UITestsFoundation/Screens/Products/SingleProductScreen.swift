@@ -1,5 +1,6 @@
 import ScreenObject
 import XCTest
+import XCUITestHelpers
 
 public final class SingleProductScreen: ScreenObject {
 
@@ -21,7 +22,29 @@ public final class SingleProductScreen: ScreenObject {
         return try ProductsScreen()
     }
 
-    public func verifyProductNameOnSingleProductScreen(name: String) {
-        XCTAssert(app.textViews[name].exists, "Product name does not exist!")
+    public func verifyProductOnSingleProductScreen(name: String, status: String, price: String) throws -> SingleProductScreen {
+        var displayedStatus = ""
+
+        switch status {
+            case "instock":
+                displayedStatus = "in stock"
+            case "onbackorder":
+                displayedStatus = "on back order"
+            case "outofstock":
+                displayedStatus = "out of stock"
+            default:
+                fatalError("Status \(status) is not defined! ")
+        }
+
+        var predicate = NSPredicate(format: "label CONTAINS[c] %@", displayedStatus)
+        var elementQuery = app.staticTexts.containing(predicate)
+        XCTAssertTrue(elementQuery.count == 1, "Stock status does not exist!")
+
+        predicate = NSPredicate(format: "label CONTAINS[c] %@", price)
+        elementQuery = app.staticTexts.containing(predicate)
+        XCTAssertTrue(elementQuery.count == 1, "Price does not exist!")
+        XCTAssert(app.textViews[name].isFullyVisibleOnScreen(), "Product name does not exist!")
+
+        return try SingleProductScreen()
     }
 }

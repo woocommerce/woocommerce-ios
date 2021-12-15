@@ -13,17 +13,19 @@ final class ProductsTests: XCTestCase {
     }
 
     func testProductsScreenLoad() throws {
-        try TabNavComponent().gotoProductsScreen()
-        XCTAssert(try ProductsScreen().isLoaded)
-
         let products = try GetMocks.readProductsData()
         let firstProductName = products.response.jsonBody.data[0].name
-        try ProductsScreen().verifyProductNameOnProductsScreen(name: firstProductName)
+        let firstProductPrice = products.response.jsonBody.data[0].regular_price
+        let firstProductStatus = products.response.jsonBody.data[0].stock_status
+        let numberOfProducts = products.response.jsonBody.data.count
 
-        try ProductsScreen().selectProduct(atIndex: 0)
-        try SingleProductScreen().verifyProductNameOnSingleProductScreen(name: firstProductName)
-
-        try SingleProductScreen().goBackToProductList()
-        XCTAssert(try ProductsScreen().isLoaded)
+        _ = try TabNavComponent()
+            .gotoProductsScreen()
+            .verifyProductScreenLoaded()
+            .verifyProductOnProductsScreen(count: numberOfProducts, name: firstProductName, status: firstProductStatus)
+            .selectProduct(atIndex: 0)
+            .verifyProductOnSingleProductScreen(name: firstProductName, status: firstProductStatus, price: firstProductPrice)
+            .goBackToProductList()
+            .verifyProductScreenLoaded()
     }
 }

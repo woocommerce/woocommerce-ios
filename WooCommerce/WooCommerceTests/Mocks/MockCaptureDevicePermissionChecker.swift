@@ -1,7 +1,7 @@
 import AVFoundation
 @testable import WooCommerce
 
-/// An implementation of `CaptureDevicePermissionChecker` protocol using `AVFoundation`.
+/// A mock implementation of `CaptureDevicePermissionChecker` protocol.
 struct MockCaptureDevicePermissionChecker: CaptureDevicePermissionChecker {
     private let authorizationStatus: AVAuthorizationStatus
 

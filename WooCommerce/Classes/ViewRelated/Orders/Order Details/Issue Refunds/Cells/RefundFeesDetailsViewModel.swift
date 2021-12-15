@@ -16,18 +16,10 @@ extension RefundFeesDetailsViewModel {
     init(fees: [OrderFeeLine], currency: String, currencySettings: CurrencySettings) {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
-        let totalTaxes = fees.compactMap {
-            currencyFormatter.convertToDecimal(from: $0.totalTax) as Decimal?
-        }.reduce(0, +)
+        let feeRefundValues = RefundFeesCalculationUseCase(fees: fees, currencyFormatter: currencyFormatter).calculateRefundValues()
 
-        let subtotal = fees.compactMap {
-            currencyFormatter.convertToDecimal(from: $0.total) as Decimal?
-        }.reduce(0, +)
-
-        let total = subtotal + totalTaxes
-
-        self.feesTaxes = currencyFormatter.formatAmount(totalTaxes, with: currency) ?? ""
-        self.feesSubtotal = currencyFormatter.formatAmount(subtotal, with: currency) ?? ""
-        self.feesTotal = currencyFormatter.formatAmount(total, with: currency) ?? ""
+        self.feesTaxes = currencyFormatter.formatAmount(feeRefundValues.tax, with: currency) ?? ""
+        self.feesSubtotal = currencyFormatter.formatAmount(feeRefundValues.subtotal, with: currency) ?? ""
+        self.feesTotal = currencyFormatter.formatAmount(feeRefundValues.total, with: currency) ?? ""
     }
 }

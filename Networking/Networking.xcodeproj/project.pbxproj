@@ -556,6 +556,7 @@
 		DEC51AE7276848A9009F3DF4 /* SystemStatus+Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AE6276848A9009F3DF4 /* SystemStatus+Environment.swift */; };
 		DEC51AE927687AAF009F3DF4 /* SystemPluginMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AE827687AAF009F3DF4 /* SystemPluginMapper.swift */; };
 		DEC51AED2768A0AD009F3DF4 /* systemStatusWithPluginsOnly.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC51AEC2768A0AD009F3DF4 /* systemStatusWithPluginsOnly.json */; };
+		DEC51AEF2768A628009F3DF4 /* SystemStatus+Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AEE2768A628009F3DF4 /* SystemStatus+Database.swift */; };
 		E12552C526385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12552C426385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift */; };
 		FE28F6E226840DED004465C7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E126840DED004465C7 /* User.swift */; };
 		FE28F6E426842848004465C7 /* UserMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E326842848004465C7 /* UserMapper.swift */; };
@@ -1153,6 +1154,7 @@
 		DEC51AE6276848A9009F3DF4 /* SystemStatus+Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemStatus+Environment.swift"; sourceTree = "<group>"; };
 		DEC51AE827687AAF009F3DF4 /* SystemPluginMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPluginMapper.swift; sourceTree = "<group>"; };
 		DEC51AEC2768A0AD009F3DF4 /* systemStatusWithPluginsOnly.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = systemStatusWithPluginsOnly.json; sourceTree = "<group>"; };
+		DEC51AEE2768A628009F3DF4 /* SystemStatus+Database.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SystemStatus+Database.swift"; sourceTree = "<group>"; };
 		E12552C426385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressValidationSuccess.swift; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -2049,6 +2051,7 @@
 		DEC51AE527684717009F3DF4 /* SystemStatusDetails */ = {
 			isa = PBXGroup;
 			children = (
+				DEC51AEE2768A628009F3DF4 /* SystemStatus+Database.swift */,
 				DEC51AE6276848A9009F3DF4 /* SystemStatus+Environment.swift */,
 			);
 			path = SystemStatusDetails;
@@ -2683,6 +2686,7 @@
 				CE0A0F1B223989670075ED8D /* ProductsRemote.swift in Sources */,
 				2665032E261F4FBF0079A159 /* ProductAddOnOption.swift in Sources */,
 				028296F7237D588700E84012 /* ProductVariation.swift in Sources */,
+				DEC51AEF2768A628009F3DF4 /* SystemStatus+Database.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

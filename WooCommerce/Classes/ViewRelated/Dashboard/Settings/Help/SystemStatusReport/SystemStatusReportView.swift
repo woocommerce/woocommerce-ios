@@ -19,7 +19,8 @@ final class SystemStatusReportHostingController: UIHostingController<SystemStatu
 /// Displays system status report
 ///
 struct SystemStatusReportView: View {
-    private let viewModel: SystemStatusReportViewModel
+    @ObservedObject private var viewModel: SystemStatusReportViewModel
+    @State private var showingErrorAlert = false
 
     init(viewModel: SystemStatusReportViewModel) {
         self.viewModel = viewModel
@@ -27,15 +28,47 @@ struct SystemStatusReportView: View {
     }
 
     var body: some View {
-        if viewModel.statusReport.isEmpty {
-            ActivityIndicator(isAnimating: .constant(true), style: .medium)
-        } else {
-            ScrollView {
-                Text(viewModel.statusReport)
-                    .multilineTextAlignment(.leading)
-                    .padding()
+        Group {
+            if viewModel.statusReport.isEmpty {
+                ActivityIndicator(isAnimating: .constant(true), style: .medium)
+            } else {
+                ScrollView {
+                    Text(viewModel.statusReport)
+                        .multilineTextAlignment(.leading)
+                        .padding()
+                }
             }
         }
+        .alert(isPresented: $showingErrorAlert) {
+            Alert(title: Text(Localization.errorTitle),
+                  message: Text(Localization.errorMessage),
+                  primaryButton: .default(Text("Try Again"), action: viewModel.fetchReport),
+                  secondaryButton: .default(Text(Localization.cancelButton)))
+        }
+        .onChange(of: viewModel.errorFetchingReport) { newValue in
+            showingErrorAlert = newValue
+        }
+    }
+}
+
+private extension SystemStatusReportView {
+    enum Localization {
+        static let errorTitle = NSLocalizedString(
+            "Error fetching report",
+            comment: "Title for the error alert when fetching system status report fails"
+        )
+        static let errorMessage = NSLocalizedString(
+            "Your site's system status report cannot be fetched. Please try again.",
+            comment: "Message for the error alert when fetching system status report fails"
+        )
+        static let tryAgainButton = NSLocalizedString(
+            "Try Again",
+            comment: "Try Again button on the error alert when fetching system status report fails"
+        )
+        static let cancelButton = NSLocalizedString(
+            "Cancel",
+            comment: "Cancel button on the error alert when fetching system status report fails"
+        )
     }
 }
 

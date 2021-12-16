@@ -134,7 +134,7 @@ private extension ProductInventoryScannerViewController {
     func searchProductBySKU(barcode: String) {
         DispatchQueue.main.async {
             self.statusLabel.applyStyle(for: .refunded)
-            self.statusLabel.text = NSLocalizedString("Searching for product by the SKU...", comment: "")
+            self.statusLabel.text = NSLocalizedString("Scanning barcode", comment: "")
             self.showStatusLabel()
 
             let action = ProductAction.findProductBySKU(siteID: self.siteID, sku: barcode) { [weak self] result in
@@ -147,7 +147,7 @@ private extension ProductInventoryScannerViewController {
                     generator.notificationOccurred(.success)
 
                     self.statusLabel.applyStyle(for: .processing)
-                    self.statusLabel.text = NSLocalizedString("Product found!", comment: "")
+                    self.statusLabel.text = NSLocalizedString("Product Found!", comment: "")
                     self.showStatusLabel()
 
                     self.updateResults(scannedProduct: EditableProductModel(product: product))

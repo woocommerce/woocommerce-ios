@@ -61,4 +61,8 @@ public enum FeatureFlag: Int {
     /// Display the Site Health Status Checker menu in Settings
     ///
     case siteHealthStatusChecker
+
+    /// Displays the System Status Report on Settings/Help screen
+    ///
+    case systemStatusReport
 }

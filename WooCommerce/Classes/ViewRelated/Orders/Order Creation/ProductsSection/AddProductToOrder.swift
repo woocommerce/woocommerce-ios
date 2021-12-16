@@ -14,15 +14,52 @@ struct AddProductToOrder: View {
     var body: some View {
         NavigationView {
             Group {
-                List(viewModel.productRows) { viewModel in
-                    ProductRow(viewModel: viewModel)
-                }
-                .listStyle(PlainListStyle())
-                .renderedIf(viewModel.productRows.isNotEmpty)
+                switch viewModel.syncStatus {
+                case .results:
+                    List {
+                        ForEach(viewModel.productRows) { rowViewModel in
+                            ProductRow(viewModel: rowViewModel)
+                                .onTapGesture {
+                                    viewModel.selectProduct(rowViewModel.id)
+                                    isPresented.toggle()
+                                }
+                                .onAppear {
+                                    if rowViewModel == viewModel.productRows.last {
+                                        viewModel.syncNextPage()
+                                    }
+                                }
+                        }
 
-                EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
-                .frame(maxHeight: .infinity)
-                .renderedIf(viewModel.productRows.isEmpty)
+                        // Infinite scroll indicator
+                        if #available(iOS 15.0, *) {
+                            ProgressView()
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .listRowInsets(EdgeInsets())
+                                .listRowBackground(Color(.listBackground))
+                                .listRowSeparator(.hidden, edges: .bottom)
+                                .renderedIf(viewModel.shouldShowScrollIndicator)
+                        } else {
+                            ProgressView()
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .listRowInsets(EdgeInsets())
+                                .listRowBackground(Color(.listBackground))
+                                .renderedIf(viewModel.shouldShowScrollIndicator)
+                        }
+                    }
+                    .listStyle(PlainListStyle())
+                case .empty:
+                    EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
+                        .frame(maxHeight: .infinity)
+                case .firstPageSync:
+                    List(viewModel.ghostRows) { rowViewModel in
+                        ProductRow(viewModel: rowViewModel)
+                            .redacted(reason: .placeholder)
+                            .shimmering()
+                    }
+                    .listStyle(PlainListStyle())
+                default:
+                    EmptyView()
+                }
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
@@ -34,6 +71,9 @@ struct AddProductToOrder: View {
                         isPresented.toggle()
                     }
                 }
+            }
+            .onAppear {
+                viewModel.syncFirstPage()
             }
         }
         .wooNavigationBarStyle()

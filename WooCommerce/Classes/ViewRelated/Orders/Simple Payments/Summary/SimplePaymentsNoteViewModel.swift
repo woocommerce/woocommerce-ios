@@ -37,9 +37,8 @@ final class SimplePaymentsNoteViewModel: EditCustomerNoteViewModelProtocol {
     }
 
     /// Stores the original note content.
-    /// Temporarily empty.
     ///
-    private var originalNote: String
+    @Published private var originalNote: String
 
     /// Analytics engine.
     ///
@@ -55,9 +54,9 @@ final class SimplePaymentsNoteViewModel: EditCustomerNoteViewModelProtocol {
     /// Assigns the correct navigation trailing item as the new note content changes.
     ///
     private func bindNoteChanges() {
-        $newNote
-            .map { editedContent -> EditCustomerNoteNavigationItem in
-                .done(enabled: editedContent != self.originalNote)
+        Publishers.CombineLatest($newNote, $originalNote)
+            .map { editedContent, originalNote -> EditCustomerNoteNavigationItem in
+                .done(enabled: editedContent != originalNote)
             }
             .assign(to: &$navigationTrailingItem)
     }

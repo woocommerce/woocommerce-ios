@@ -31,6 +31,8 @@ public final class SystemStatusStore: Store {
             synchronizeSystemPlugins(siteID: siteID, completionHandler: onCompletion)
         case .fetchSystemPlugin(let siteID, let systemPluginName, let onCompletion):
             fetchSystemPlugin(siteID: siteID, systemPluginName: systemPluginName, completionHandler: onCompletion)
+        case .fetchSystemStatusReport(let siteID, let onCompletion):
+            fetchSystemStatusReport(siteID: siteID, completionHandler: onCompletion)
         }
     }
 }
@@ -48,6 +50,10 @@ private extension SystemStatusStore {
                 completionHandler(.failure(error))
             }
         }
+    }
+
+    func fetchSystemStatusReport(siteID: Int64, completionHandler: @escaping (Result<SystemStatus, Error>) -> Void) {
+        remote.fetchSystemStatusReport(for: siteID, completion: completionHandler)
     }
 }
 

@@ -31,6 +31,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .siteHealthStatusChecker:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .systemStatusReport:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

@@ -60,27 +60,9 @@ public final class ProductsScreen: ScreenObject {
     }
 
     public func verifyProductOnProductsScreen(count: Int, name: String, status: String) throws -> ProductsScreen {
-        var predicate = NSPredicate(format: "label CONTAINS[c] %@", name)
-        var elementQuery = app.staticTexts.containing(predicate)
-        var displayedStatus = ""
-
-        XCTAssertTrue(elementQuery.count == 1, "Product name does not exist!")
+        XCTAssertTrue(try app.getTextVisibilityCount(text: name) == 1, "Product name does not exist!")
         XCTAssertTrue(app.tables.cells.count == count, "Expecting \(count) products, got \(app.tables.cells.count) instead!")
-
-        switch status {
-            case "instock":
-                displayedStatus = "in stock"
-            case "onbackorder":
-                displayedStatus = "on back order"
-            case "outofstock":
-                displayedStatus = "out of stock"
-            default:
-                fatalError("Status \(status) is not defined! ")
-        }
-
-        predicate = NSPredicate(format: "label CONTAINS[c] %@", displayedStatus)
-        elementQuery = app.staticTexts.containing(predicate)
-        XCTAssertTrue(elementQuery.count > 0, "Stock status does not exist!")
+        XCTAssertTrue(try app.getTextVisibilityCount(text: status) > 0, "Stock status does not exist!")
 
         return try ProductsScreen()
     }

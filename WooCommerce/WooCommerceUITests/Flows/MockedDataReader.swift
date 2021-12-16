@@ -4,6 +4,12 @@ import Foundation
 
 class GetMocks {
 
+    var stockStatus = [
+        "instock": "in stock",
+        "onbackorder": "on back order",
+        "outofstock": "out of stock"
+    ]
+
     struct MockFile: Codable {
         let response: ResponseData
     }

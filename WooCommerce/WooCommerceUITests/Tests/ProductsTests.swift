@@ -16,15 +16,15 @@ final class ProductsTests: XCTestCase {
         let products = try GetMocks.readProductsData()
         let firstProductName = products.response.jsonBody.data[0].name
         let firstProductPrice = products.response.jsonBody.data[0].regular_price
-        let firstProductStatus = products.response.jsonBody.data[0].stock_status
+        let firstProductStatus = GetMocks.init().stockStatus[products.response.jsonBody.data[0].stock_status]
         let numberOfProducts = products.response.jsonBody.data.count
 
         _ = try TabNavComponent()
             .gotoProductsScreen()
             .verifyProductScreenLoaded()
-            .verifyProductOnProductsScreen(count: numberOfProducts, name: firstProductName, status: firstProductStatus)
+            .verifyProductOnProductsScreen(count: numberOfProducts, name: firstProductName, status: firstProductStatus!)
             .selectProductByName(name: firstProductName)
-            .verifyProductOnSingleProductScreen(name: firstProductName, status: firstProductStatus, price: firstProductPrice)
+            .verifyProductOnSingleProductScreen(name: firstProductName, price: firstProductPrice, status: firstProductStatus!)
             .goBackToProductList()
             .verifyProductScreenLoaded()
     }

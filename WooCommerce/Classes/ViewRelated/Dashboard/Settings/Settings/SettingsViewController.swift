@@ -354,6 +354,14 @@ private extension SettingsViewController {
         present(surveyNavigation, animated: true, completion: nil)
     }
 
+    func siteHealthStatusCheckerWasPressed() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return DDLogError("⛔️ Cannot find ID for current site to load Site Health Status Checker!")
+        }
+        let siteHealthStatusCheckerViewController = SiteHealthStatusCheckerViewController(siteID: siteID)
+        navigationController?.pushViewController(siteHealthStatusCheckerViewController, animated: true)
+    }
+
     func deviceSettingsWasPressed() {
         guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
             return
@@ -475,6 +483,8 @@ extension SettingsViewController: UITableViewDelegate {
             aboutWasPressed()
         case .licenses:
             licensesWasPressed()
+        case .siteHealthStatusChecker:
+            siteHealthStatusCheckerWasPressed()
         case .deviceSettings:
             deviceSettingsWasPressed()
         case .wormholy:

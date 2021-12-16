@@ -71,7 +71,7 @@ extension ProductSKUScannerResult: Equatable {
 
 final class ProductInventoryScannerViewController: UIViewController {
 
-    private lazy var barcodeScannerChildViewController: BarcodeScannerViewController = BarcodeScannerViewController(instructionText: Localization.instructionText)
+    private lazy var barcodeScannerChildViewController = BarcodeScannerViewController(instructionText: Localization.instructionText)
 
     private var results: [ProductSKUScannerResult] = []
 

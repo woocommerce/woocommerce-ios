@@ -3,7 +3,7 @@ import UIKit
 
 /// Container view controller of barcode scanner for product SKU input.
 final class ProductSKUInputScannerViewController: UIViewController {
-    private lazy var barcodeScannerChildViewController: BarcodeScannerViewController = BarcodeScannerViewController(instructionText: Localization.instructionText)
+    private lazy var barcodeScannerChildViewController = BarcodeScannerViewController(instructionText: Localization.instructionText)
 
     private let onBarcodeScanned: (String) -> Void
 

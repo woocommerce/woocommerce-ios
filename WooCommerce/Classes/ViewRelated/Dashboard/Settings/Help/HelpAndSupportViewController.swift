@@ -377,7 +377,7 @@ private extension HelpAndSupportViewController {
     /// System status report action
     ///
     func systemStatusReportWasPressed() {
-        // TODO: Show safari web view
+        // TODO: Show system status view
     }
 
     @objc func dismissWasPressed() {

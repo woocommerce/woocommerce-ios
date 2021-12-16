@@ -1,25 +1,13 @@
+import Combine
 import UIKit
 
 /// Container view controller of barcode scanner for product SKU input.
 final class ProductSKUInputScannerViewController: UIViewController {
-    private lazy var barcodeScannerChildViewController: BarcodeScannerViewController = {
-        return BarcodeScannerViewController(instructionText: Localization.instructionText) { [weak self] result in
-            guard let self = self else { return }
-            guard self.hasDetectedBarcode == false else {
-                return
-            }
-            guard let barcode = try? result.get().first else {
-                return
-            }
-            self.hasDetectedBarcode = true
-            self.onBarcodeScanned(barcode)
-        }
-    }()
+    private lazy var barcodeScannerChildViewController: BarcodeScannerViewController = BarcodeScannerViewController(instructionText: Localization.instructionText)
 
     private let onBarcodeScanned: (String) -> Void
 
-    /// Tracks whether a barcode has been detected because the barcode detection callback is only handled once.
-    private var hasDetectedBarcode: Bool = false
+    private var cancellables: Set<AnyCancellable> = []
 
     init(onBarcodeScanned: @escaping (String) -> Void) {
         self.onBarcodeScanned = onBarcodeScanned
@@ -35,6 +23,7 @@ final class ProductSKUInputScannerViewController: UIViewController {
 
         configureNavigation()
         configureBarcodeScannerChildViewController()
+        observeTheFirstBarcode()
     }
 }
 
@@ -53,6 +42,16 @@ private extension ProductSKUInputScannerViewController {
 
         contentView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToAllEdges(contentView)
+    }
+
+    func observeTheFirstBarcode() {
+        barcodeScannerChildViewController.scannedBarcodes
+            .compactMap { $0.first }
+            .first()
+            .sink { [weak self] barcode in
+                self?.onBarcodeScanned(barcode)
+            }
+            .store(in: &cancellables)
     }
 }
 

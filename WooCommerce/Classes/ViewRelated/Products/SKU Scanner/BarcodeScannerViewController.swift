@@ -1,4 +1,5 @@
 import AVFoundation
+import Combine
 import UIKit
 import Vision
 
@@ -19,12 +20,18 @@ final class BarcodeScannerViewController: UIViewController {
 
     private lazy var throttler: Throttler = Throttler(seconds: 0.1)
 
-    private let instructionText: String
-    private let onBarcodeScanned: (Result<[String], Error>) -> Void
+    @Published private var barcodes: [String] = []
 
-    init(instructionText: String, onBarcodeScanned: @escaping (Result<[String], Error>) -> Void) {
+    var scannedBarcodes: AnyPublisher<[String], Never> {
+        $barcodes.eraseToAnyPublisher()
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
+    private let instructionText: String
+
+    init(instructionText: String) {
         self.instructionText = instructionText
-        self.onBarcodeScanned = onBarcodeScanned
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -167,7 +174,7 @@ private extension BarcodeScannerViewController {
             guard self.session.isRunning, barcodes.isNotEmpty else {
                 return
             }
-            self.onBarcodeScanned(.success(barcodes))
+            self.barcodes = barcodes
         }
     }
 }

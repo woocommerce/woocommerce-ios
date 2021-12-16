@@ -71,14 +71,7 @@ extension ProductSKUScannerResult: Equatable {
 
 final class ProductInventoryScannerViewController: UIViewController {
 
-    private lazy var barcodeScannerChildViewController: BarcodeScannerViewController = {
-        BarcodeScannerViewController(instructionText: Localization.instructionText) { [weak self] result in
-            guard let barcode = try? result.get().first else {
-                return
-            }
-            self?.searchProductBySKU(barcode: barcode)
-        }
-    }()
+    private lazy var barcodeScannerChildViewController: BarcodeScannerViewController = BarcodeScannerViewController(instructionText: Localization.instructionText)
 
     private var results: [ProductSKUScannerResult] = []
 
@@ -93,6 +86,8 @@ final class ProductInventoryScannerViewController: UIViewController {
     }()
 
     private let siteID: Int64
+
+    private var cancellables: Set<AnyCancellable> = []
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -289,6 +284,13 @@ private extension ProductInventoryScannerViewController {
 
         contentView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToAllEdges(contentView)
+
+        barcodeScannerChildViewController.scannedBarcodes
+            .sink { [weak self] barcodes in
+                guard let self = self else { return }
+                barcodes.forEach { self.searchProductBySKU(barcode: $0) }
+            }
+            .store(in: &cancellables)
     }
 
     func configureStatusLabel() {

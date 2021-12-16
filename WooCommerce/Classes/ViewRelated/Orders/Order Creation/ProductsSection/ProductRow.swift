@@ -1,4 +1,5 @@
 import SwiftUI
+import Kingfisher
 
 /// Represent a single product row in the Product section of a New Order
 ///
@@ -15,11 +16,14 @@ struct ProductRow: View {
             AdaptiveStack(horizontalAlignment: .leading) {
                 HStack(alignment: .top) {
                     // Product image
-                    // TODO: Display actual product image when available
-                    Image(uiImage: .productPlaceholderImage)
+                    KFImage.url(viewModel.imageURL)
+                        .placeholder {
+                            Image(uiImage: .productPlaceholderImage)
+                        }
                         .resizable()
-                        .aspectRatio(contentMode: .fill)
+                        .scaledToFill()
                         .frame(width: Layout.productImageSize * scale, height: Layout.productImageSize * scale)
+                        .cornerRadius(Layout.cornerRadius)
                         .foregroundColor(Color(UIColor.listSmallIcon))
                         .accessibilityHidden(true)
 
@@ -100,6 +104,7 @@ private struct ProductStepper: View {
 
 private enum Layout {
     static let productImageSize: CGFloat = 44.0
+    static let cornerRadius: CGFloat = 4.0
     static let stepperBorderWidth: CGFloat = 1.0
     static let stepperBorderRadius: CGFloat = 4.0
     static let stepperButtonSize: CGFloat = 22.0
@@ -119,7 +124,8 @@ struct ProductRow_Previews: PreviewProvider {
                                             stockStatusKey: "instock",
                                             stockQuantity: 7,
                                             manageStock: true,
-                                            canChangeQuantity: true)
+                                            canChangeQuantity: true,
+                                            imageURL: nil)
         let viewModelWithoutStepper = ProductRowViewModel(id: 1,
                                                           name: "Love Ficus",
                                                           sku: "123456",
@@ -127,7 +133,8 @@ struct ProductRow_Previews: PreviewProvider {
                                                           stockStatusKey: "instock",
                                                           stockQuantity: 7,
                                                           manageStock: true,
-                                                          canChangeQuantity: false)
+                                                          canChangeQuantity: false,
+                                                          imageURL: nil)
 
         ProductRow(viewModel: viewModel)
             .previewDisplayName("ProductRow with stepper")

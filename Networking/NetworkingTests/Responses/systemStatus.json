@@ -329,8 +329,26 @@
             }
         ],
         "dropins_mu_plugins": {
-            "dropins": [],
-            "mu_plugins": []
+            "dropins": [
+                {
+                    "plugin": "advanced-cache.php",
+                    "name": "advanced-cache.php"
+                },
+                {
+                    "plugin": "object-cache.php",
+                    "name": "Memcached"
+                }
+            ],
+            "mu_plugins": [
+                {
+                    "plugin": "wpcomsh-loader.php",
+                    "name": "WP.com Site Helper",
+                    "version": "",
+                    "url": "",
+                    "author_name": "",
+                    "author_url": ""
+                }
+            ]
         },
         "theme": {
             "name": "Twenty Twenty-One",

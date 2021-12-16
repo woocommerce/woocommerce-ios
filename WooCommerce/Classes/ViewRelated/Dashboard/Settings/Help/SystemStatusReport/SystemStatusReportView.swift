@@ -23,6 +23,7 @@ struct SystemStatusReportView: View {
 
     init(viewModel: SystemStatusReportViewModel) {
         self.viewModel = viewModel
+        viewModel.fetchReport()
     }
 
     var body: some View {

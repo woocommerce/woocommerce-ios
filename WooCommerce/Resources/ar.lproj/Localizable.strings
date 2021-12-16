@@ -4071,10 +4071,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Updating software" = "تحديث البرنامج";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
-"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "فشل تحديث برنامج القارئ لأن بطارية القارئ منخفضة. يرجى شحن القارئ بنسبة تزيد على 50% قبل المحاولة مرة أخرى.";
+"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "فشل تحديث برنامج القارئ لأن بطارية القارئ منخفضة. يرجى شحن القارئ بنسبة تزيد على 50\uFF05 قبل المحاولة مرة أخرى.";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
-"Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "فشل تحديث برنامج القارئ لأن بطارية القارئ مشحونة بنسبة %%%. يرجى شحن القارئ بنسبة تزيد على 50%% قبل المحاولة مرة أخرى.";
+"Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "فشل تحديث برنامج القارئ لأن بطارية القارئ مشحونة بنسبة %.0f%%. يرجى شحن القارئ بنسبة تزيد على 50%% قبل المحاولة مرة أخرى.";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */

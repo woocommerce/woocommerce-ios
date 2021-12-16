@@ -39,8 +39,6 @@ struct ProductRow: View {
                 ProductStepper(viewModel: viewModel)
                     .renderedIf(viewModel.canChangeQuantity)
             }
-
-            Divider()
         }
     }
 }

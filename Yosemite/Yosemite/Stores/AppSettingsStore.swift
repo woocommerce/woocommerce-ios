@@ -161,10 +161,6 @@ public class AppSettingsStore: Store {
             setOrderAddOnsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
             loadOrderAddOnsSwitchState(onCompletion: onCompletion)
-        case .setSimplePaymentsFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
-            setSimplePaymentsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
-        case .loadSimplePaymentsSwitchState(onCompletion: let onCompletion):
-            loadSimplePaymentsSwitchState(onCompletion: onCompletion)
         case .setOrderCreationFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
             setOrderCreationFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadOrderCreationSwitchState(onCompletion: let onCompletion):
@@ -268,26 +264,6 @@ private extension AppSettingsStore {
         onCompletion(.success(settings.isViewAddOnsSwitchEnabled))
     }
 
-    /// Loads the current SimplePayments beta feature switch state from `GeneralAppSettings`
-    ///
-    func loadSimplePaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
-        let settings = loadOrCreateGeneralAppSettings()
-        onCompletion(.success(settings.isSimplePaymentsSwitchEnabled))
-    }
-
-    /// Sets the provided SimplePayments beta feature switch state into `GeneralAppSettings`
-    ///
-    func setSimplePaymentsFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
-        do {
-            let settings = loadOrCreateGeneralAppSettings().copy(isSimplePaymentsSwitchEnabled: isEnabled)
-            try saveGeneralAppSettings(settings)
-            onCompletion(.success(()))
-        } catch {
-            onCompletion(.failure(error))
-        }
-
-    }
-
     /// Loads the current Order Creation beta feature switch state from `GeneralAppSettings`
     ///
     func loadOrderCreationSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
@@ -364,7 +340,6 @@ private extension AppSettingsStore {
             return GeneralAppSettings(installationDate: nil,
                                       feedbacks: [:],
                                       isViewAddOnsSwitchEnabled: false,
-                                      isSimplePaymentsSwitchEnabled: false,
                                       isOrderCreationSwitchEnabled: false,
                                       knownCardReaders: [],
                                       lastEligibilityErrorInfo: nil)

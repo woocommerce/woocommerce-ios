@@ -170,33 +170,10 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         XCTAssertTrue(isLoading)
     }
 
-    func test_order_is_created_with_no_taxes_on_prod_mode() {
+    func test_order_is_created_with_taxes() {
         // Given
         let testingStore = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore, isDevelopmentPrototype: false)
-        viewModel.amount = "$12.30"
-
-        // When
-        let taxable: Bool = waitFor { promise in
-            testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
-                switch action {
-                case let .createSimplePaymentsOrder(_, _, taxable, _):
-                    promise(taxable)
-                default:
-                    XCTFail("Received unsupported action: \(action)")
-                }
-            }
-            viewModel.createSimplePaymentsOrder()
-        }
-
-        // Then
-        XCTAssertFalse(taxable)
-    }
-
-    func test_order_is_created_with_taxes_on_dev_mode() {
-        // Given
-        let testingStore = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore, isDevelopmentPrototype: true)
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore)
         viewModel.amount = "$12.30"
 
         // When
@@ -216,35 +193,10 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         XCTAssertTrue(taxable)
     }
 
-    func test_view_model_call_onOrderCreated_closure_after_an_order_is_created() {
+    func test_summaryViewModel_is_created_after_an_order_is_created() {
         // Given
         let testingStore = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore, isDevelopmentPrototype: false)
-        testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
-            switch action {
-            case let .createSimplePaymentsOrder(_, _, _, onCompletion):
-                onCompletion(.success(.fake()))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-
-        // When
-        let onOrderCreatedCalled: Bool = waitFor { promise in
-            viewModel.onOrderCreated = { _ in
-                promise(true)
-            }
-            viewModel.createSimplePaymentsOrder()
-        }
-
-        // Then
-        XCTAssertTrue(onOrderCreatedCalled)
-    }
-
-    func test_summaryViewModel_is_created_after_an_order_is_created_in_dev_mode() {
-        // Given
-        let testingStore = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore, isDevelopmentPrototype: true)
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore)
 
         // When
         waitForExpectation { exp in
@@ -266,10 +218,10 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.navigateToSummary)
     }
 
-    func test_summaryViewModel_is_nilled_after_navigation_is_set_to_false_in_dev_mode() {
+    func test_summaryViewModel_is_nilled_after_navigation_is_set_to_false() {
         // Given
         let testingStore = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore, isDevelopmentPrototype: true)
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore)
         waitForExpectation { exp in
             testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
@@ -291,7 +243,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.summaryViewModel)
     }
 
-    func test_view_model_attempts_error_notice_presentation_when_failing_to_crete_order() {
+    func test_view_model_attempts_error_notice_presentation_when_failing_to_create_order() {
         // Given
         let testingStore = MockStoresManager(sessionManager: .testingInstance)
         let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
@@ -321,6 +273,29 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(receivedError)
+    }
+
+    func test_failure_is_tracked_when_failing_to_create_order() {
+        // Given
+        let testingStore = MockStoresManager(sessionManager: .testingInstance)
+        testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .createSimplePaymentsOrder(_, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "Error", code: 0)))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        let analytics = MockAnalyticsProvider()
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.createSimplePaymentsOrder()
+
+        // Then
+        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowFailed.rawValue])
+        assertEqual(analytics.receivedProperties.first?["source"] as? String, "amount")
     }
 
     func test_view_model_disable_cancel_button_while_creating_payment_order() {

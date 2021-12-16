@@ -1,102 +1,80 @@
 import XCTest
 @testable import Networking
 
-/// SystemStatusMapperTests Unit Tests
+/// SystemStatusMapper Unit Tests
 ///
-class SystemStatusMapperTests: XCTestCase {
+final class SystemStatusMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
     private let dummySiteID: Int64 = 999999
 
-    /// Verifies the SystemPlugin fields are parsed correctly for an active plugin
-    ///
-    func test_active_plugin_fields_are_properly_parsed() throws {
-        // Given
-        let expectedSiteId: Int64 = 999999
-        let expectedPlugin = "woocommerce/woocommerce.php"
-        let expectedName = "WooCommerce"
-        let expectedUrl = "https://woocommerce.com/"
-        let expectedVersion = "5.8.0"
-        let expectedVersionLatest = "5.8.0"
-        let expectedAuthorName = "Automattic"
-        let expectedAuthorUrl = "https://woocommerce.com"
-        let expectedNetworkActivated = false
-        let expectedActive = true
-
+    func test_system_status_fields_are_properly_parsed() throws {
         // When
-        let systemPlugins = try mapLoadSystemStatusResponse()
+        let report = try mapLoadSystemStatusResponse()
 
         // Then
-        XCTAssertEqual(systemPlugins.count, 6)
+        XCTAssertEqual(report.environment?.homeURL, "https://additional-beetle.jurassic.ninja")
+        XCTAssertEqual(report.environment?.siteURL, "https://additional-beetle.jurassic.ninja")
+        XCTAssertEqual(report.environment?.version, "5.9.0")
+        XCTAssertEqual(report.environment?.wpVersion, "5.8.2")
+        XCTAssertEqual(report.environment?.phpVersion, "7.4.26")
+        XCTAssertEqual(report.environment?.curlVersion, "7.47.0, OpenSSL/1.0.2g")
+        XCTAssertEqual(report.environment?.mysqlVersion, "5.7.33-0ubuntu0.16.04.1-log")
 
-        let systemPlugin = systemPlugins[0]
-        XCTAssertNotNil(systemPlugin)
-        XCTAssertEqual(systemPlugin.siteID, expectedSiteId)
-        XCTAssertEqual(systemPlugin.plugin, expectedPlugin)
-        XCTAssertEqual(systemPlugin.name, expectedName)
-        XCTAssertEqual(systemPlugin.url, expectedUrl)
-        XCTAssertEqual(systemPlugin.version, expectedVersion)
-        XCTAssertEqual(systemPlugin.versionLatest, expectedVersionLatest)
-        XCTAssertEqual(systemPlugin.authorName, expectedAuthorName)
-        XCTAssertEqual(systemPlugin.authorUrl, expectedAuthorUrl)
-        XCTAssertEqual(systemPlugin.networkActivated, expectedNetworkActivated)
-        XCTAssertEqual(systemPlugin.active, expectedActive)
-    }
+        XCTAssertEqual(report.database?.wcDatabaseVersion, "5.9.0")
+        XCTAssertEqual(report.database?.databasePrefix, "wp_")
+        XCTAssertEqual(report.database?.databaseTables.woocommerce.count, 14)
+        XCTAssertEqual(report.database?.databaseTables.other.count, 29)
 
-    /// Verifies the SystemPlugin fields are parsed correctly for an inactive plugin
-    ///
-    func test_inactive_plugin_fields_are_properly_parsed() throws {
-        // Given
-        let expectedSiteId: Int64 = 999999
-        let expectedPlugin = "hello.php"
-        let expectedName = "Hello Dolly"
-        let expectedUrl = "http://wordpress.org/plugins/hello-dolly/"
-        let expectedVersion = "1.7.2"
-        let expectedVersionLatest = "1.7.2"
-        let expectedAuthorName = "Matt Mullenweg"
-        let expectedAuthorUrl = "http://ma.tt/"
-        let expectedNetworkActivated = false
-        let expectedActive = false
+        XCTAssertEqual(report.activePlugins.count, 4)
+        XCTAssertEqual(report.activePlugins[0].siteID, dummySiteID)
+        XCTAssertEqual(report.inactivePlugins.count, 2)
+        XCTAssertEqual(report.inactivePlugins[1].siteID, dummySiteID)
+        XCTAssertEqual(report.dropinPlugins.count, 2)
+        XCTAssertEqual(report.dropinPlugins[0].name, "advanced-cache.php")
+        XCTAssertEqual(report.mustUsePlugins.count, 1)
+        XCTAssertEqual(report.mustUsePlugins[0].name, "WP.com Site Helper")
 
-        // When
-        let systemPlugins = try mapLoadSystemStatusResponse()
+        XCTAssertEqual(report.theme?.name, "Twenty Twenty-One")
+        XCTAssertEqual(report.theme?.version, "1.4")
+        XCTAssertEqual(report.theme?.authorURL, "https://wordpress.org/")
+        XCTAssertEqual(report.theme?.hasWoocommerceSupport, true)
+        XCTAssertEqual(report.theme?.overrides.count, 0)
 
-        // Then
-        XCTAssertEqual(systemPlugins.count, 6)
+        XCTAssertEqual(report.settings?.apiEnabled, false)
+        XCTAssertEqual(report.settings?.currency, "USD")
+        XCTAssertEqual(report.settings?.currencySymbol, "&#36;")
+        XCTAssertEqual(report.settings?.currencyPosition, "left")
+        XCTAssertEqual(report.settings?.numberOfDecimals, 2)
+        XCTAssertEqual(report.settings?.thousandSeparator, ",")
+        XCTAssertEqual(report.settings?.decimalSeparator, ".")
+        XCTAssertEqual(report.settings?.taxonomies.external, "external")
+        XCTAssertEqual(report.settings?.productVisibilityTerms.excludeFromCatalog, "exclude-from-catalog")
 
-        let systemPlugin = systemPlugins[5]
-        XCTAssertNotNil(systemPlugin)
-        XCTAssertEqual(systemPlugin.siteID, expectedSiteId)
-        XCTAssertEqual(systemPlugin.plugin, expectedPlugin)
-        XCTAssertEqual(systemPlugin.name, expectedName)
-        XCTAssertEqual(systemPlugin.url, expectedUrl)
-        XCTAssertEqual(systemPlugin.version, expectedVersion)
-        XCTAssertEqual(systemPlugin.versionLatest, expectedVersionLatest)
-        XCTAssertEqual(systemPlugin.authorName, expectedAuthorName)
-        XCTAssertEqual(systemPlugin.authorUrl, expectedAuthorUrl)
-        XCTAssertEqual(systemPlugin.networkActivated, expectedNetworkActivated)
-        XCTAssertEqual(systemPlugin.active, expectedActive)
+        XCTAssertEqual(report.security?.secureConnection, true)
+        XCTAssertEqual(report.security?.hideErrors, false)
+
+        XCTAssertEqual(report.pages.count, 5)
+        XCTAssertEqual(report.postTypeCounts.count, 3)
     }
 }
 
-/// Private Methods.
-///
 private extension SystemStatusMapperTests {
 
     /// Returns the SystemStatusMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapPlugins(from filename: String) throws -> [SystemPlugin] {
+    func mapReport(from filename: String) throws -> SystemStatus {
         guard let response = Loader.contentsOf(filename) else {
-            return []
+            throw NetworkError.notFound
         }
 
         return try SystemStatusMapper(siteID: dummySiteID).map(response: response)
     }
 
-    /// Returns the SystemStatusMapper output upon receiving `systemPlugins`
+    /// Returns the SystemStatusMapper output upon receiving `systemStatus.json`
     ///
-    func mapLoadSystemStatusResponse() throws -> [SystemPlugin] {
-        return try mapPlugins(from: "systemStatus")
+    func mapLoadSystemStatusResponse() throws -> SystemStatus {
+        return try mapReport(from: "systemStatus")
     }
 }

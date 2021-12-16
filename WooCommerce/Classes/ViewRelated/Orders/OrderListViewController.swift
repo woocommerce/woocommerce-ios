@@ -145,10 +145,6 @@ final class OrderListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Needed in `viewWillAppear` because this ViewController is not recreated
-        // and the toggle can be switch in the Settings section that resides in a different tab.
-        viewModel.reloadSimplePaymentsExperimentalFeatureState()
-
         viewModel.syncOrderStatuses()
 
         syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
@@ -219,10 +215,8 @@ private extension OrderListViewController {
                     self.hideTopBannerView()
                 case .error:
                     self.setErrorTopBanner()
-                case .simplePaymentsEnabled:
+                case .simplePayments:
                     self.setSimplePaymentsEnabledTopBanner()
-                case .simplePaymentsDisabled:
-                    self.setSimplePaymentsDisabledTopBanner()
                 }
             }
             .store(in: &cancellables)
@@ -640,17 +634,6 @@ private extension OrderListViewController {
         onContactSupportButtonPressed: { [weak self] in
             guard let self = self else { return }
             ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
-        })
-        showTopBannerView()
-    }
-
-    /// Sets the `topBannerView` property to a simple payments disabled banner.
-    ///
-    func setSimplePaymentsDisabledTopBanner() {
-        topBannerView = SimplePaymentsTopBannerFactory.createFeatureDisabledBanner(onTopButtonPressed: { [weak self] in
-            self?.tableView.updateHeaderHeight()
-        }, onDismissButtonPressed: { [weak self] in
-            self?.viewModel.hideSimplePaymentsBanners = true
         })
         showTopBannerView()
     }

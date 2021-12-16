@@ -20,7 +20,7 @@ final class ProductVariationsViewModel {
 
     /// Generates a variation in the host site using the product attributes
     ///
-    func generateVariation(for product: Product, onCompletion: @escaping (Result<Product, Error>) -> Void) {
+    func generateVariation(for product: Product, onCompletion: @escaping (Result<(Product, ProductVariation), Error>) -> Void) {
         let useCase = GenerateVariationUseCase(product: product, stores: stores)
         useCase.generateVariation(onCompletion: onCompletion)
     }

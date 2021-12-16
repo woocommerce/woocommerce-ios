@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-12-01 11:32:05+0000 */
+/* Translation-Revision-Date: 2021-12-07 17:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -240,7 +240,7 @@
 "Activate WooCommerce Payments" = "Activar WooCommerce Payments";
 
 /* Name of the activation Jetpack plugin step */
-"Activating" = "Activating";
+"Activating" = "Activando";
 
 /* Application's Active State */
 "Active" = "Activo";
@@ -313,7 +313,7 @@
 "Add a new credit card" = "Añadir una nueva tarjeta de crédito";
 
 /* Navigates to a screen to create a full manual order */
-"Add a new order" = "Add a new order";
+"Add a new order" = "Añadir un nuevo pedido";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -354,7 +354,7 @@
 "Add price to your variations to make them visible on your store" = "Añade un precio a las variaciones para que sean visibles en tu tienda";
 
 /* Title text of the button that adds a product when creating a new order */
-"Add product" = "Add product";
+"Add product" = "Añadir producto";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Añadir enlace del producto";
@@ -418,7 +418,7 @@
 "All available packages have been activated" = "Se han activado todos los paquetes disponibles";
 
 /* Name of final step in Install Jetpack flow. */
-"All done" = "All done";
+"All done" = "Todo listo";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Se han marcado todas las reseñas como leídas";
@@ -647,7 +647,7 @@
 "Capture high-quality product reviews for your store." = "Conseguir reseñas de productos de gran calidad para tu tienda.";
 
 /* Card method title on the select payment method screen for simple payments */
-"Card" = "Card";
+"Card" = "Carta";
 
 /* Navigates to Card Reader manual */
 "Card reader manual" = "Manual del lector de tarjetas";
@@ -659,7 +659,7 @@
 "Carrier name" = "Nombre de la empresa de transporte";
 
 /* Cash method title on the select payment method screen for simple payments */
-"Cash" = "Cash";
+"Cash" = "Efectivo";
 
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
@@ -712,10 +712,10 @@
 "Choose from device" = "Elegir del dispositivo";
 
 /* Opens action sheet to choose a type of a new order */
-"Choose new order type" = "Choose new order type";
+"Choose new order type" = "Elegir un nuevo tipo de pedido";
 
 /* Heading text on the select payment method screen for simple payments */
-"Choose your payment method" = "Choose your payment method";
+"Choose your payment method" = "Elegir el método de pago";
 
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
@@ -794,7 +794,7 @@
 "Connecting to your account" = "Conectando con tu cuenta";
 
 /* Name of the step to connect the store to Jetpack */
-"Connecting your store" = "Connecting your store";
+"Connecting your store" = "Conectando tu tienda";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Contactar con el cliente";
@@ -909,16 +909,16 @@
 "Create Shipping Label" = "Crear etiqueta de envío";
 
 /* Description of the Action sheet option when the user wants to create full manual order */
-"Create a new manual order" = "Create a new manual order";
+"Create a new manual order" = "Crear un nuevo pedido manual";
 
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
-"Create an order with minimal information" = "Create an order with minimal information";
+"Create an order with minimal information" = "Crear un pedido con la información mínima";
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Crear nuevo paquete";
 
 /* Action sheet option when the user wants to create full manual order */
-"Create order" = "Create order";
+"Create order" = "Crear pedido";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "¡Crea etiquetas de envío desde tu dispositivo!";
@@ -1666,7 +1666,7 @@
 "Install WooCommerce Payments" = "Instalar WooCommerce Payments";
 
 /* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
-"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "Install the free Jetpack plugin to %1$@ and experience the best mobile experience.";
+"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "Instala el plugin gratuito de Jetpack para %1$@ y disfruta de la mejor experiencia en dispositivos móviles.";
 
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "Instala el plugin gratuito de Jetpack y disfruta de la mejor experiencia en dispositivos móviles.";
@@ -2044,7 +2044,7 @@
 "New Attribute Name" = "Nombre del nuevo atributo";
 
 /* Title for the order creation screen */
-"New Order" = "New Order";
+"New Order" = "Nuevo pedido";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "Las nuevas vistas de análisis te permiten ver los visitantes, los informes y mucho más.";
@@ -2221,7 +2221,7 @@
 "Order #%1$@" = "Pedido n.º %1$@";
 
 /* Cell title on the beta features screen to enable creating new orders */
-"Order Creation" = "Order Creation";
+"Order Creation" = "Creación de pedidos";
 
 /* Title text of the row that holds the order note when creating a simple payment */
 "Order Note" = "Nota del pedido";
@@ -2458,7 +2458,7 @@
 "Please wait" = "Espera";
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
-"Please wait while we connect your site %1$@ with Jetpack." = "Please wait while we connect your site %1$@ with Jetpack.";
+"Please wait while we connect your site %1$@ with Jetpack." = "Espera mientras conectamos tu sitio %1$@ con Jetpack.";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "Espera un momento mientras creamos la nueva variación";
@@ -2470,7 +2470,7 @@
 "Please wait while we save this product to your store" = "Espera mientras guardamos este producto en tu tienda";
 
 /* Message of the in-progress UI while saving a Variation remotely */
-"Please wait while we save your latest changes" = "Please wait while we save your latest changes";
+"Please wait while we save your latest changes" = "Espera mientras guardamos los últimos cambios que has realizado.";
 
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
@@ -2907,7 +2907,7 @@
 "Saving your product..." = "Guardando tu producto…";
 
 /* Title of the in-progress UI while saving a Variation remotely */
-"Saving your variation..." = "Saving your variation...";
+"Saving your variation..." = "Guardando tu variación...";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "Escanear código de barras para actualizar SKU";
@@ -3457,7 +3457,7 @@
 "Tax" = "Impuesto";
 
 /* Tax percentage to be applied to the simple payments order */
-"Tax ((rate)%)" = "Tax ((rate)%)";
+"Tax ((rate)%)" = "Impuestos ((tasa)%)";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "Configuración de impuestos";
@@ -3482,7 +3482,7 @@
 "Taxes" = "Impuestos";
 
 /* Disclaimer in the simple payments summary screen about taxes. */
-"Taxes are automatically calculated based on your store address." = "Taxes are automatically calculated based on your store address.";
+"Taxes are automatically calculated based on your store address." = "Los impuestos se calculan automáticamente en función de la dirección de tu tienda.";
 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Cuéntanos más sobre %1$@...";
@@ -3491,7 +3491,7 @@
 "Terms of Service" = "Condiciones del servicio";
 
 /* Cell description on the beta features screen to enable creating new orders */
-"Test out creating new manual orders as we get ready to launch" = "Test out creating new manual orders as we get ready to launch";
+"Test out creating new manual orders as we get ready to launch" = "Prueba a crear nuevos pedidos manuales mientras nos preparamos para la publicación.";
 
 /* Cell description on the beta features screen to enable the Simple Payments feature */
 "Test out creating orders with minimal information as we get ready to launch" = "Prueba la creación de pedidos con un mínimo de información mientras nos preparamos para el lanzamiento.";
@@ -3641,7 +3641,7 @@
 
 /* Navigates to screen with third party software licenses
    Software Licenses (information page title) */
-"Third Party Licenses" = "Third Party Licenses";
+"Third Party Licenses" = "Licencias de terceros";
 
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
@@ -3739,7 +3739,7 @@
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Para seguir con esta cuenta de Google, por favor, primero accede con tu contraseña de WordPress.com. Esto solo se te pedirá una vez.";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"To turn on your card reader, briefly press its power button." = "To turn on your card reader, briefly press its power button.";
+"To turn on your card reader, briefly press its power button." = "Para encender el lector de tarjetas, pulsa el botón de encendido.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Para usar esta aplicación para %@ deberás tener el plugin de Jetpack instalado y conectado en tu tienda.";
@@ -3855,7 +3855,7 @@
 "Unable to change status of order #%1$d" = "No se ha podido cambiar el estado del pedido n.º %1$d";
 
 /* Notice displayed when order creation fails */
-"Unable to create new order" = "Unable to create new order";
+"Unable to create new order" = "No se ha podido crear el nuevo pedido";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "No se ha podido eliminar el seguimiento del pedido n.º %1$d";
@@ -4067,7 +4067,7 @@
 "Variable product" = "Producto variable";
 
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
-"Variation #%1$@" = "Variation #%1$@";
+"Variation #%1$@" = "Variación #%1$@";
 
 /* Text for the notice after creating the first variation. */
 "Variation created" = "Variación creada";
@@ -4231,7 +4231,7 @@
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "No podemos conectar con el sitio Jetpack en esa URL. Contacta con nosotros para que te ayudemos.";
 
 /* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
-"We're sorry, we couldn't find any order that match %@" = "We're sorry, we couldn't find any order that match %@";
+"We're sorry, we couldn't find any order that match %@" = "Lo sentimos, no hemos encontrado ningún pedido que coincida con %@";
 
 /* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */

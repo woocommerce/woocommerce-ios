@@ -84,10 +84,10 @@ final class CollectOrderPaymentUseCase: NSObject {
     /// 4. If failure: Allows retry
     ///
     ///
+    /// - Parameter backButtonTitle: Title for the back button after a payment is sucessfull.
     /// - Parameter onCollect: Closure Invoked after the collect process has finished.
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed, Currently after merchant has handled the receipt.
-    // TODO: Remember to check why the amount is provided in order details view model
-    func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
+    func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
         connectReader { [weak self] in
             self?.attemptPayment(onCompletion: { [weak self] result in
                 // Inform about the collect payment state
@@ -97,7 +97,7 @@ final class CollectOrderPaymentUseCase: NSObject {
                 guard let receiptParameters = try? result.get() else {
                     return
                 }
-                self?.presentReceiptAlert(receiptParameters: receiptParameters, onCompleted: onCompleted)
+                self?.presentReceiptAlert(receiptParameters: receiptParameters, backButtonTitle: backButtonTitle, onCompleted: onCompleted)
             })
         }
     }
@@ -225,7 +225,7 @@ private extension CollectOrderPaymentUseCase {
 
     /// Allow merchants to print or email the payment receipt.
     ///
-    func presentReceiptAlert(receiptParameters: CardPresentReceiptParameters, onCompleted: @escaping () -> ()) {
+    func presentReceiptAlert(receiptParameters: CardPresentReceiptParameters, backButtonTitle: String, onCompleted: @escaping () -> ()) {
         // Present receipt alert
         alerts.success(printReceipt: { [order] in
             // Inform about flow completion.
@@ -243,8 +243,8 @@ private extension CollectOrderPaymentUseCase {
                 self?.onCompleted = onCompleted // Saved to be able to reference from the `MailComposer` delegate.
                 self?.presentEmailForm(content: emailContent)
             }
-
-        }, noReceiptAction: {
+        }, noReceiptTitle: backButtonTitle,
+           noReceiptAction: {
             // Inform about flow completion.
             onCompleted()
         })

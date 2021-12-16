@@ -1,6 +1,8 @@
 import Foundation
 
-struct SiteHealthStatusCheckerRequest {
+struct SiteHealthStatusCheckerRequest: Identifiable {
+
+    let id = UUID()
 
     /// Name of the endpoint. Eg. `Orders`
     ///

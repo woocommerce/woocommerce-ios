@@ -5,8 +5,8 @@ public struct SystemStatus: Decodable {
     public let inactivePlugins: [SystemPlugin]
     public let environment: Environment?
     public let database: Database?
-    public let dropinPlugins: [SystemPlugin]
-    public let mustUsePlugins: [SystemPlugin]
+    public let dropinPlugins: [DropinMustUsePlugin]
+    public let mustUsePlugins: [DropinMustUsePlugin]
     public let theme: Theme?
     public let settings: Settings?
     public let pages: [Page]
@@ -18,8 +18,8 @@ public struct SystemStatus: Decodable {
         inactivePlugins: [SystemPlugin],
         environment: Environment?,
         database: Database?,
-        dropinPlugins: [SystemPlugin],
-        mustUsePlugins: [SystemPlugin],
+        dropinPlugins: [DropinMustUsePlugin],
+        mustUsePlugins: [DropinMustUsePlugin],
         theme: Theme?,
         settings: Settings?,
         pages: [Page],
@@ -49,8 +49,8 @@ public struct SystemStatus: Decodable {
         let database = try container.decodeIfPresent(Database.self, forKey: .database)
 
         let dropinMustUsePlugins = try? container.nestedContainer(keyedBy: DropinMustUserPluginsCodingKeys.self, forKey: .dropinMustUsePlugins)
-        let dropinPlugins = try dropinMustUsePlugins?.decodeIfPresent([SystemPlugin].self, forKey: .dropins) ?? []
-        let mustUsePlugins = try dropinMustUsePlugins?.decodeIfPresent([SystemPlugin].self, forKey: .mustUsePlugins) ?? []
+        let dropinPlugins = try dropinMustUsePlugins?.decodeIfPresent([DropinMustUsePlugin].self, forKey: .dropins) ?? []
+        let mustUsePlugins = try dropinMustUsePlugins?.decodeIfPresent([DropinMustUsePlugin].self, forKey: .mustUsePlugins) ?? []
 
         let theme = try container.decodeIfPresent(Theme.self, forKey: .theme)
         let settings = try container.decodeIfPresent(Settings.self, forKey: .settings)

@@ -21,7 +21,7 @@ final class SiteHealthStatusCheckerViewModel: ObservableObject {
         }
     }
 
-    func startChecking() {
+    func startChecking() async {
         requests = await fire()
     }
 

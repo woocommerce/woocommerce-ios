@@ -14,11 +14,19 @@ final class SystemStatusReportHostingController: UIHostingController<SystemStatu
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    func setDismissAction(_ dismissAction: @escaping () -> Void) {
+        rootView.dismissAction = dismissAction
+    }
 }
 
 /// Displays system status report
 ///
 struct SystemStatusReportView: View {
+    /// Dismiss action to be triggered when tapping Cancel button on error alert
+    ///
+    var dismissAction: () -> Void = {}
+
     @ObservedObject private var viewModel: SystemStatusReportViewModel
     @State private var showingErrorAlert = false
 
@@ -42,8 +50,8 @@ struct SystemStatusReportView: View {
         .alert(isPresented: $showingErrorAlert) {
             Alert(title: Text(Localization.errorTitle),
                   message: Text(Localization.errorMessage),
-                  primaryButton: .default(Text("Try Again"), action: viewModel.fetchReport),
-                  secondaryButton: .default(Text(Localization.cancelButton)))
+                  primaryButton: .default(Text(Localization.tryAgainButton), action: viewModel.fetchReport),
+                  secondaryButton: .default(Text(Localization.cancelButton), action: dismissAction))
         }
         .onChange(of: viewModel.errorFetchingReport) { newValue in
             showingErrorAlert = newValue
@@ -58,7 +66,7 @@ private extension SystemStatusReportView {
             comment: "Title for the error alert when fetching system status report fails"
         )
         static let errorMessage = NSLocalizedString(
-            "Your site's system status report cannot be fetched. Please try again.",
+            "The system status report for your site cannot be fetched at the moment. Please try again.",
             comment: "Message for the error alert when fetching system status report fails"
         )
         static let tryAgainButton = NSLocalizedString(

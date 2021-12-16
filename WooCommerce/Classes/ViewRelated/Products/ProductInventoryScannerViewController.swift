@@ -1,10 +1,11 @@
+import Combine
 import UIKit
 import WordPressUI
 import Yosemite
 
 struct ScannedProductsBottomSheetListSelectorCommand: BottomSheetListSelectorCommand {
     typealias Model = ProductSKUScannerResult
-    typealias Cell = ProductDetailsTableViewCell
+    typealias Cell = ProductsTabProductTableViewCell
 
     let data: [ProductSKUScannerResult]
 
@@ -21,7 +22,7 @@ struct ScannedProductsBottomSheetListSelectorCommand: BottomSheetListSelectorCom
         self.data = results
     }
 
-    func configureCell(cell: ProductDetailsTableViewCell, model: ProductSKUScannerResult) {
+    func configureCell(cell: ProductsTabProductTableViewCell, model: ProductSKUScannerResult) {
         cell.selectionStyle = .none
         cell.accessoryType = .disclosureIndicator
 
@@ -31,8 +32,6 @@ struct ScannedProductsBottomSheetListSelectorCommand: BottomSheetListSelectorCom
             cell.configureForInventoryScannerResult(product: product, updatedQuantity: product.stockQuantity, imageService: imageService)
         default:
             break
-            //            let vm = ProductDetailsCellViewModel(
-            //            cell.configure(item: <#T##ProductDetailsCellViewModel#>, imageService: <#T##ImageService#>)
         }
     }
 
@@ -77,7 +76,7 @@ final class ProductInventoryScannerViewController: UIViewController {
 
     private var bottomSheetViewController: BottomSheetViewController?
     private var listSelectorViewController: BottomSheetListSelectorViewController
-    <ScannedProductsBottomSheetListSelectorCommand, ProductSKUScannerResult, ProductDetailsTableViewCell>?
+    <ScannedProductsBottomSheetListSelectorCommand, ProductSKUScannerResult, ProductsTabProductTableViewCell>?
 
     private lazy var statusLabel: PaddedLabel = {
         let label = PaddedLabel()

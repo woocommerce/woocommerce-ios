@@ -109,6 +109,42 @@ extension ProductsTabProductTableViewCell {
         }
         accessoryView = deleteButton
     }
+
+    func configureForInventoryScannerResult(product: ProductFormDataModel, updatedQuantity: Decimal?, imageService: ImageService) {
+        productImageView.contentMode = .center
+        configureProductImageViewForBigImages()
+        productImageView.image = .productsTabProductCellPlaceholderImage
+        if let productURLString = product.images.first?.src {
+            imageService.downloadAndCacheImageForImageView(productImageView,
+                                                           with: productURLString,
+                                                           placeholder: .productsTabProductCellPlaceholderImage,
+                                                           progressBlock: nil) { [weak self] (image, error) in
+                                                            let success = image != nil && error == nil
+                                                            if success {
+                                                                self?.productImageView.contentMode = .scaleAspectFill
+                                                            }
+            }
+        }
+
+        nameLabel.text = product.name
+
+        guard product.manageStock else {
+            detailsLabel.text = NSLocalizedString("Quantity not tracked", comment: "")
+            detailsLabel.textColor = .withColorStudio(.red, shade: .shade50)
+            return
+        }
+
+        let originalQuantity = product.stockQuantity ?? 0
+        if let updatedQuantity = updatedQuantity, updatedQuantity != originalQuantity {
+            // TODO-jc: attributed string
+            detailsLabel.text = "Initial Quantity: \(originalQuantity)・New: \(updatedQuantity)"
+            detailsLabel.textColor = .green
+        } else {
+            detailsLabel.text = "Quantity: \(originalQuantity)"
+            detailsLabel.textColor = .text
+        }
+    }
+
 }
 
 private extension ProductsTabProductTableViewCell {

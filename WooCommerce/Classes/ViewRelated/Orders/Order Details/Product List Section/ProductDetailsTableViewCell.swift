@@ -153,34 +153,3 @@ private extension ProductDetailsTableViewCell {
         static let viewAddOns = NSLocalizedString("View Add-Ons", comment: "Title of the button on the order detail item to navigate to add-ons")
     }
 }
-
-extension ProductDetailsTableViewCell {
-    func configureForInventoryScannerResult(product: ProductFormDataModel, updatedQuantity: Decimal?, imageService: ImageService) {
-        imageService.downloadAndCacheImageForImageView(productImageView,
-                                                       with: product.images.first?.src,
-                                                       placeholder: .productPlaceholderImage,
-                                                       progressBlock: nil,
-                                                       completion: nil)
-
-        nameLabel.text = product.name
-        // TODO-jc: update
-//        skuLabel.text = product.sku
-
-        guard product.manageStock else {
-            priceLabel.text = NSLocalizedString("⚠️ Stock management is disabled", comment: "")
-            subtitleLabel.text = ""
-            return
-        }
-
-        priceLabel.text = ""
-
-        let originalQuantity = product.stockQuantity ?? 0
-        if let updatedQuantity = updatedQuantity, updatedQuantity != originalQuantity {
-            subtitleLabel.text = "\(originalQuantity) → \(updatedQuantity)"
-            subtitleLabel.textColor = .warning
-        } else {
-            subtitleLabel.text = "\(originalQuantity)"
-            subtitleLabel.textColor = .text
-        }
-    }
-}

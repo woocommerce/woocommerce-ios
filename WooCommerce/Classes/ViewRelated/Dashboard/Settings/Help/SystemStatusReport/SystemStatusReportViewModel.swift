@@ -109,6 +109,78 @@ private extension SystemStatusReportViewModel {
             }
         }
 
+        // Post Type Counts
+        if systemStatus.postTypeCounts.isNotEmpty {
+            lines.append(contentsOf: [
+                "\n",
+                "### Post Type Counts ###",
+                "\n"
+            ])
+            for postTypeCount in systemStatus.postTypeCounts {
+                lines.append("\(postTypeCount.type): \(postTypeCount.count)")
+            }
+        }
+        
+
+        // Security
+        if let security = systemStatus.security {
+            lines.append(contentsOf: [
+                "\n",
+                "### Security ###",
+                "\n",
+                "Secure connection (HTTPS): \(security.secureConnection.stringRepresentable)",
+                "Hide errors from visitors: \(security.hideErrors.stringRepresentable)"
+            ])
+        }
+
+        // Active plugins
+        if systemStatus.activePlugins.isNotEmpty {
+            lines.append(contentsOf: [
+                "\n",
+                "### Active Plugins (\(systemStatus.activePlugins.count)) ###",
+                "\n",
+            ])
+            for plugin in systemStatus.activePlugins {
+                lines.append("\(plugin.name): by \(plugin.authorName) - \(plugin.version)")
+            }
+        }
+        
+        // Inactive plugins
+        if systemStatus.inactivePlugins.isNotEmpty {
+            lines.append(contentsOf: [
+                "\n",
+                "### Inactive Plugins (\(systemStatus.inactivePlugins.count)) ###",
+                "\n",
+            ])
+            for plugin in systemStatus.inactivePlugins {
+                lines.append("\(plugin.name): by \(plugin.authorName) - \(plugin.version)")
+            }
+        }
+
+        // Dropin plugins
+        if systemStatus.dropinPlugins.isNotEmpty {
+            lines.append(contentsOf: [
+                "\n",
+                "### Dropin Plugins (\(systemStatus.dropinPlugins.count)) ###",
+                "\n",
+            ])
+            for plugin in systemStatus.dropinPlugins {
+                lines.append("\(plugin.plugin): \(plugin.name)")
+            }
+        }
+
+        // Must Use plugins
+        if systemStatus.mustUsePlugins.isNotEmpty {
+            lines.append(contentsOf: [
+                "\n",
+                "### Must Use Plugins (\(systemStatus.mustUsePlugins.count)) ###",
+                "\n",
+            ])
+            for plugin in systemStatus.mustUsePlugins {
+                lines.append("\(plugin.plugin): \(plugin.name)")
+            }
+        }
+        
         return lines.joined(separator: "\n")
     }
 }

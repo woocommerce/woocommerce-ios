@@ -373,7 +373,14 @@ private extension HelpAndSupportViewController {
     /// System status report action
     ///
     func systemStatusReportWasPressed() {
-        // TODO: Show system status view
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+        let controller = SystemStatusReportHostingController(siteID: site.siteID)
+        controller.setDismissAction { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
+        navigationController?.pushViewController(controller, animated: true)
     }
 
     @objc func dismissWasPressed() {

@@ -276,7 +276,7 @@ extension OrderListViewModel {
                     return .none
                 }
 
-                return .simplePaymentsEnabled
+                return .simplePayments
             }
             .assign(to: &$topBanner)
     }
@@ -318,7 +318,7 @@ extension OrderListViewModel {
     ///
     enum TopBanner {
         case error
-        case simplePaymentsEnabled
+        case simplePayments
         case none
     }
 }

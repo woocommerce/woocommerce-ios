@@ -240,7 +240,7 @@ final class OrderListViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.topBanner == .simplePaymentsEnabled
+            viewModel.topBanner == .simplePayments
         }
     }
 

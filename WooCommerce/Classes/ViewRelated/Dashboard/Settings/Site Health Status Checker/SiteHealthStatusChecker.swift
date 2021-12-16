@@ -9,6 +9,16 @@ struct SiteHealthStatusChecker: View {
     }
 
     var body: some View {
+        ScrollView {
+            LazyVStack {
+                ForEach(viewModel.requests) { request in
+                    TitleAndSubtitleRow(title: request.actionName ?? "",
+                                        subtitle: request.endpointName ?? "",
+                                        isError: !(request.success ?? true))
+                }
+            }
+        }
+
         Button {
             viewModel.startChecking()
         } label: {

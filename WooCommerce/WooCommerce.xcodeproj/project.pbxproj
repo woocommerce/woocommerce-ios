@@ -715,6 +715,9 @@
 		45BBFBC1274FD94300213001 /* HubMenuCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BBFBC0274FD94300213001 /* HubMenuCoordinator.swift */; };
 		45BBFBC3274FDA6400213001 /* HubMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BBFBC2274FDA6400213001 /* HubMenuViewController.swift */; };
 		45BBFBC5274FDCE900213001 /* HubMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BBFBC4274FDCE900213001 /* HubMenu.swift */; };
+		45BC4700276A302B008B9FDE /* SiteHealthStatusCheckerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BC46FF276A302B008B9FDE /* SiteHealthStatusCheckerViewModel.swift */; };
+		45BC4702276B6084008B9FDE /* SiteHealthStatusCheckerRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BC4701276B6084008B9FDE /* SiteHealthStatusCheckerRequest.swift */; };
+		45BC4704276B6755008B9FDE /* SiteHealthStatusChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BC4703276B6755008B9FDE /* SiteHealthStatusChecker.swift */; };
 		45C11B7C2508E156006C2089 /* SelectedSiteSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C11B7B2508E156006C2089 /* SelectedSiteSettings.swift */; };
 		45C8B2582313FA570002FA77 /* CustomerNoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B2562313FA570002FA77 /* CustomerNoteTableViewCell.swift */; };
 		45C8B2592313FA570002FA77 /* CustomerNoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45C8B2572313FA570002FA77 /* CustomerNoteTableViewCell.xib */; };
@@ -2212,6 +2215,9 @@
 		45BBFBC0274FD94300213001 /* HubMenuCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubMenuCoordinator.swift; sourceTree = "<group>"; };
 		45BBFBC2274FDA6400213001 /* HubMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubMenuViewController.swift; sourceTree = "<group>"; };
 		45BBFBC4274FDCE900213001 /* HubMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubMenu.swift; sourceTree = "<group>"; };
+		45BC46FF276A302B008B9FDE /* SiteHealthStatusCheckerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteHealthStatusCheckerViewModel.swift; sourceTree = "<group>"; };
+		45BC4701276B6084008B9FDE /* SiteHealthStatusCheckerRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteHealthStatusCheckerRequest.swift; sourceTree = "<group>"; };
+		45BC4703276B6755008B9FDE /* SiteHealthStatusChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteHealthStatusChecker.swift; sourceTree = "<group>"; };
 		45C11B7B2508E156006C2089 /* SelectedSiteSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedSiteSettings.swift; sourceTree = "<group>"; };
 		45C8B2562313FA570002FA77 /* CustomerNoteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerNoteTableViewCell.swift; sourceTree = "<group>"; };
 		45C8B2572313FA570002FA77 /* CustomerNoteTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerNoteTableViewCell.xib; sourceTree = "<group>"; };
@@ -4699,6 +4705,16 @@
 			path = "Hub Menu";
 			sourceTree = "<group>";
 		};
+		45BC46FE276A300D008B9FDE /* Site Health Status Checker */ = {
+			isa = PBXGroup;
+			children = (
+				45BC4703276B6755008B9FDE /* SiteHealthStatusChecker.swift */,
+				45BC46FF276A302B008B9FDE /* SiteHealthStatusCheckerViewModel.swift */,
+				45BC4701276B6084008B9FDE /* SiteHealthStatusCheckerRequest.swift */,
+			);
+			path = "Site Health Status Checker";
+			sourceTree = "<group>";
+		};
 		45C11B7D2508E99A006C2089 /* Shared Site Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -6481,6 +6497,7 @@
 				E138D4F2269ED99A006EA5C6 /* In-Person Payments */,
 				CE27257A219249B5002B22EB /* Help */,
 				CE22E3F821714639005A6BEF /* Privacy */,
+				45BC46FE276A300D008B9FDE /* Site Health Status Checker */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -7842,6 +7859,7 @@
 				0218B4EC242E06F00083A847 /* MediaType+WPMediaType.swift in Sources */,
 				D85A3C5026C153A500C0E026 /* InPersonPaymentsPluginNotActivatedView.swift in Sources */,
 				D8815AE726383FD600EDAD62 /* CardPresentPaymentsModalViewModel.swift in Sources */,
+				45BC4700276A302B008B9FDE /* SiteHealthStatusCheckerViewModel.swift in Sources */,
 				0216271E2375044D000208D2 /* AztecFormatBar+Update.swift in Sources */,
 				CC254F3626C437AB005F3C82 /* ShippingLabelCustomPackageForm.swift in Sources */,
 				026CF63A237E9ABE009563D4 /* ProductVariationsViewController.swift in Sources */,
@@ -8272,6 +8290,7 @@
 				7E6A01972725B811001668D5 /* FilterProductCategoryListViewController.swift in Sources */,
 				E10DFC7A2673595A0083AFF2 /* ShareSheet.swift in Sources */,
 				933A27372222354600C2143A /* Logging.swift in Sources */,
+				45BC4704276B6755008B9FDE /* SiteHealthStatusChecker.swift in Sources */,
 				0290E26F238E3CE400B5C466 /* ListSelectorViewController.swift in Sources */,
 				B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */,
 				B5980A6121AC878900EBF596 /* UIDevice+Woo.swift in Sources */,
@@ -8442,6 +8461,7 @@
 				CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */,
 				020F41E623163C0100776C4D /* TopBannerView.swift in Sources */,
 				02EEB5C42424AFAA00B8A701 /* TextFieldTableViewCell.swift in Sources */,
+				45BC4702276B6084008B9FDE /* SiteHealthStatusCheckerRequest.swift in Sources */,
 				AE457813275644590092F687 /* OrderStatusSection.swift in Sources */,
 				B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */,
 				0295355B245ADF8100BDC42B /* FilterType+Products.swift in Sources */,

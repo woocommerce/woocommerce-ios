@@ -86,12 +86,6 @@ extension UIAlertController {
             onCancel?()
         }
 
-        if let popoverController = alert.popoverPresentationController {
-            popoverController.sourceView = viewController.view
-            popoverController.sourceRect = viewController.view.bounds
-            popoverController.permittedArrowDirections = []
-        }
-
         viewController.present(alert, animated: true)
     }
 

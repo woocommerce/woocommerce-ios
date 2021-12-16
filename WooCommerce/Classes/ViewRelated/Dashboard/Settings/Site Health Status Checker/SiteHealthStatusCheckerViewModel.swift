@@ -1,7 +1,7 @@
 import Foundation
 import Networking
 
-class SiteHealthStatusCheckerViewModel: NSObject {
+final class SiteHealthStatusCheckerViewModel: ObservableObject {
 
     private typealias RequestCheckedContinuation = CheckedContinuation<SiteHealthStatusCheckerRequest, Never>
 

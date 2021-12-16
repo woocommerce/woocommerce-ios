@@ -18,6 +18,17 @@ class SiteHealthStatusCheckerViewModel: NSObject {
         }
     }
 
+    func startRequests() async -> [SiteHealthStatusCheckerRequest] {
+        var requests: [SiteHealthStatusCheckerRequest] = []
+        requests.append(await fetchOrders())
+
+        return requests
+    }
+}
+
+// MARK: - API Calls
+//
+private extension SiteHealthStatusCheckerViewModel {
     func fetchOrders() async -> SiteHealthStatusCheckerRequest {
         let startTime = Date()
         let remote = OrdersRemote(network: network)

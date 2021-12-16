@@ -11,7 +11,6 @@ final class ProductSKUBarcodeScannerCoordinatorTests: XCTestCase {
         navigationController = UINavigationController()
 
         let window = UIWindow(frame: UIScreen.main.bounds)
-        window.rootViewController = UIViewController()
         window.makeKeyAndVisible()
         window.rootViewController = navigationController
         self.window = window

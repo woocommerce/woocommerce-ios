@@ -142,22 +142,18 @@ private extension HelpAndSupportViewController {
     }
 
     private func calculateRows() -> [Row] {
-        guard isPaymentsAvailable else {
-            return [.helpCenter,
-                    .contactSupport,
-                    .myTickets,
-                    .contactEmail,
-                    .applicationLog,
-                    .systemStatusReport]
+        var rows: [Row] = [.helpCenter, .contactSupport]
+        if isPaymentsAvailable {
+            rows.append(.contactWCPaySupport)
         }
 
-        return [.helpCenter,
-                .contactSupport,
-                .contactWCPaySupport,
-                .myTickets,
-                .contactEmail,
-                .applicationLog,
-                .systemStatusReport]
+        rows.append(contentsOf: [.myTickets,
+                                 .contactEmail,
+                                 .applicationLog])
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.systemStatusReport) {
+            rows.append(.systemStatusReport)
+        }
+        return rows
     }
 
     /// Register table cells.

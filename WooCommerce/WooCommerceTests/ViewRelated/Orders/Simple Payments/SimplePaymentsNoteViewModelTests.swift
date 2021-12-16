@@ -42,4 +42,17 @@ final class SimplePaymentsNoteViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.newNote, "")
     }
+
+    func test_viewModel_done_button_gets_disabled_after_commiting_note() {
+        // Given
+        let viewModel = SimplePaymentsNoteViewModel(originalNote: "")
+        viewModel.newNote = "Content"
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: true))
+
+        // When
+        viewModel.updateNote(onFinish: { _ in })
+
+        // Then
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
+    }
 }

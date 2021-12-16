@@ -180,6 +180,55 @@ private extension SystemStatusReportViewModel {
                 lines.append("\(plugin.plugin): \(plugin.name)")
             }
         }
+
+        // Settings
+        if let settings = systemStatus.settings {
+            lines.append(contentsOf: [
+                "\n",
+                "### Settings ###",
+                "\n",
+                "API Enabled: \(settings.apiEnabled.stringRepresentable)",
+                "Force SSL: \(settings.forceSSL.stringRepresentable)",
+                "Currency: \(settings.currency)",
+                "Currency Position: \(settings.currencyPosition)",
+                "Thousand Separator: \(settings.thousandSeparator)",
+                "Decimal Separator: \(settings.decimalSeparator)",
+                "Number of Decimals: \(settings.numberOfDecimals)"
+            ])
+
+            for (index, content) in settings.taxonomies.enumerated() {
+                if index == 0 {
+                    lines.append("Taxonomies: Product Types: \(content.key) (\(content.value))")
+                } else {
+                    lines.append("\(content.key) (\(content.value))")
+                }
+            }
+            lines.append("\n")
+            for (index, content) in settings.productVisibilityTerms.enumerated() {
+                if index == 0 {
+                    lines.append("Taxonomies: Product Visibility: \(content.key) (\(content.value))")
+                } else {
+                    lines.append("\(content.key) (\(content.value))")
+                }
+            }
+            lines.append(contentsOf: [
+                "\n",
+                "Connected to WooCommerce.com: \((settings.woocommerceCOMConnected != "no").stringRepresentable)"
+            ])
+        }
+
+        // Pages
+        if systemStatus.pages.isNotEmpty {
+            lines.append(contentsOf: [
+                "\n",
+                "### WC Pages ###",
+                "\n"
+            ])
+            for page in systemStatus.pages {
+                let pageID = page.pageID.isNotEmpty ? "#\(page.pageID)" : "❌ Page not set"
+                lines.append("\(page.pageName): \(pageID)")
+            }
+        }
         
         return lines.joined(separator: "\n")
     }

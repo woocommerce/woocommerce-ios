@@ -48,8 +48,8 @@ private extension SiteHealthStatusCheckerViewModel {
             (continuation: RequestCheckedContinuation) in
             remote.loadAllOrders(for: siteID) { result in
                 let timeInterval = Date().timeIntervalSince(startTime)
-                let request = SiteHealthStatusCheckerRequest(endpointName: "orders/fetch",
-                                                             actionName: "Fetch All Orders",
+                let request = SiteHealthStatusCheckerRequest(actionName: "Fetch All Orders",
+                                                             endpointName: "orders/fetch",
                                                              success: result.isSuccess,
                                                              error: result.failure,
                                                              time: timeInterval)

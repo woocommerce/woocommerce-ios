@@ -73,11 +73,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
         }
     }
 
+    /// Minimum value of the product quantity
+    ///
+    private let minimumQuantity: Decimal = 1
+
     /// Whether the quantity can be decremented.
-    /// Quantity has a minimum value of 1.
     ///
     var shouldDisableQuantityDecrementer: Bool {
-        quantity <= 1
+        quantity <= minimumQuantity
     }
 
     init(id: Int64,
@@ -148,10 +151,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
     }
 
     /// Decrement the product quantity.
-    /// This must check that the quantity is above the minimum value before decrementing it.
     ///
     func decrementQuantity() {
-        guard shouldDisableQuantityDecrementer == false else {
+        guard quantity > minimumQuantity else {
             return
         }
         quantity -= 1

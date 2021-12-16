@@ -344,6 +344,7 @@ private extension ProductInventorySettingsViewController {
         let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController) { [weak self] barcode in
             self?.onSKUBarcodeScanned(barcode: barcode)
         }
+        view.endEditing(true)
         skuBarcodeScannerCoordinator = coordinator
         coordinator.start()
     }

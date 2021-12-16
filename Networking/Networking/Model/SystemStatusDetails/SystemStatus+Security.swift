@@ -4,7 +4,7 @@ public extension SystemStatus {
     /// Details about security of a store in its system status report.
     ///
     struct Security: Codable {
-        let secureConnection, hideErrors: Bool
+        public let secureConnection, hideErrors: Bool
 
         enum CodingKeys: String, CodingKey {
             case secureConnection = "secure_connection"

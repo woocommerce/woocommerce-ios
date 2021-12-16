@@ -1,17 +1,17 @@
 /// Represent a System Status.
 ///
 public struct SystemStatus: Decodable {
-    let activePlugins: [SystemPlugin]
-    let inactivePlugins: [SystemPlugin]
-    let environment: Environment?
-    let database: Database?
-    let dropinPlugins: [SystemPlugin]
-    let mustUsePlugins: [SystemPlugin]
-    let theme: Theme?
-    let settings: Settings?
-    let pages: [Page]
-    let postTypeCounts: [PostTypeCount]
-    let security: Security?
+    public let activePlugins: [SystemPlugin]
+    public let inactivePlugins: [SystemPlugin]
+    public let environment: Environment?
+    public let database: Database?
+    public let dropinPlugins: [SystemPlugin]
+    public let mustUsePlugins: [SystemPlugin]
+    public let theme: Theme?
+    public let settings: Settings?
+    public let pages: [Page]
+    public let postTypeCounts: [PostTypeCount]
+    public let security: Security?
 
     public init(
         activePlugins: [SystemPlugin],

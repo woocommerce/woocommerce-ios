@@ -4,17 +4,17 @@ struct SiteHealthStatusCheckerRequest: Identifiable {
 
     let id = UUID()
 
-    /// Name of the endpoint. Eg. `Orders`
-    ///
-    var endpointName: String?
-
     /// Name of the action. Eg. `Orders retrieve`
     ///
-    var actionName: String?
+    var actionName: String
+
+    /// Name of the endpoint. Eg. `Orders`
+    ///
+    var endpointName: String
 
     /// Result of the response
     ///
-    var success: Bool?
+    var success: Bool
 
     /// The error, if available
     ///

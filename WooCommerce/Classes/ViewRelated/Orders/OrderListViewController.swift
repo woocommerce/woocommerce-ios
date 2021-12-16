@@ -215,7 +215,7 @@ private extension OrderListViewController {
                     self.hideTopBannerView()
                 case .error:
                     self.setErrorTopBanner()
-                case .simplePaymentsEnabled:
+                case .simplePayments:
                     self.setSimplePaymentsEnabledTopBanner()
                 }
             }

@@ -284,9 +284,8 @@ extension IssueRefundViewModel {
 
         let refundItems = state.refundQuantityStore.refundableItems()
         let summaryRow = RefundProductsTotalViewModel(refundItems: refundItems, currency: state.order.currency, currencySettings: state.currencySettings)
-        let unsupportedFeesTooltipRows = [createUnsupportedFeesRefundTooltipRow()].compactMap { $0 }
 
-        return Section(rows: itemsRows + [summaryRow] + unsupportedFeesTooltipRows)
+        return Section(rows: itemsRows + [summaryRow])
     }
 
     /// Returns a `Section` with the shipping switch row and the shipping details row.
@@ -335,24 +334,6 @@ extension IssueRefundViewModel {
                                                     currencySettings: state.currencySettings)
 
         return Section(rows: [switchRow, detailsRow])
-    }
-
-    /// If the order has fees, this returns a row with a message that refunding fees is currently
-    /// not supported.
-    ///
-    /// We will implement refunding fees within a few weeks. This is just temporary and is primarily
-    /// for setting expectations for Simple Payments users.
-    ///
-    private func createUnsupportedFeesRefundTooltipRow() -> ImageAndTitleAndTextTableViewCell.ViewModel? {
-        state.order.fees.isEmpty ? nil : ImageAndTitleAndTextTableViewCell.ViewModel(
-            title: Localization.unsupportedFeesRefund,
-            titleFontStyle: .footnote,
-            text: nil,
-            image: .infoOutlineFootnoteImage,
-            imageTintColor: .systemColor(.secondaryLabel),
-            numberOfLinesForTitle: 0,
-            isActionable: false,
-            showsSeparator: false)
     }
 
     /// Returns a string of the refund total formatted with the proper currency settings and store currency.

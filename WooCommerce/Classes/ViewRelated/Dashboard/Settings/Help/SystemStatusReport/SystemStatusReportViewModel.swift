@@ -41,8 +41,68 @@ final class SystemStatusReportViewModel: ObservableObject {
 }
 
 private extension SystemStatusReportViewModel {
+    /// Format system status to match with Core's report.
+    /// Not localizing content and keep English by default.
+    ///
     func formatReport(with systemStatus: SystemStatus) -> String {
-        // TODO: handle formatting
-        return "### WordPress Environment ###"
+        var lines = ["### System Status Report generated via the WooCommerce iOS app ###"]
+
+        // Environment
+        if let environment = systemStatus.environment {
+            lines.append(contentsOf: [
+                "\n",
+                "### WordPress Environment ###",
+                "\n",
+                "WordPress addresss (URL): \(environment.homeURL)",
+                "Site address (URL): \(environment.siteURL)",
+                "WC Version: \(environment.version)",
+                "Log Directory Writable: \(environment.logDirectoryWritable.stringRepresentable)",
+                "WP Version: \(environment.wpVersion)",
+                "WP Multisite: \(environment.wpMultisite)",
+                "WP Memory Limit: \(environment.wpMemoryLimit.byteCountRepresentable)",
+                "WP Debug Mode: \(environment.wpDebugMode.stringRepresentable)",
+                "WP Cron: \(environment.wpCron.stringRepresentable)",
+                "Language: \(environment.language)",
+                "External object cache: \((environment.externalObjectCache ?? false).stringRepresentable)",
+                "\n",
+                "### Server Environment ###",
+                "\n",
+                "Server Info: \(environment.serverInfo)",
+                "PHP Version: \(environment.phpVersion)",
+                "PHP Post Max Size: \(environment.phpPostMaxSize.byteCountRepresentable)",
+                "PHP Time Limit: \(environment.phpMaxExecutionTime)",
+                "PHP Max Input Vars: \(environment.phpMaxInputVars)",
+                "cURL Version: \(environment.curlVersion)",
+                "\n",
+                "SUHOSIN Installed: \(environment.suhosinInstalled.stringRepresentable)",
+                "MySQL Version: \(environment.mysqlVersion)",
+                "Max Upload Size: \(environment.maxUploadSize.byteCountRepresentable)",
+                "Default Timezone is UTC: \((environment.defaultTimezone == "UTC").stringRepresentable)",
+                "fsockopen/cURL: \(environment.fsockopenOrCurlEnabled.stringRepresentable)",
+                "SoapClient: \(environment.soapClientEnabled.stringRepresentable)",
+                "DOMDocument: \(environment.domDocumentEnabled.stringRepresentable)",
+                "GZip: \(environment.gzipEnabled.stringRepresentable)",
+                "Multibyte String: \(environment.mbstringEnabled.stringRepresentable)",
+                "Remote Post: \(environment.remotePostSuccessful.stringRepresentable)",
+                "Remote Get: \(environment.remoteGetSuccessful.stringRepresentable)"
+            ])
+        }
+        
+        return lines.joined(separator: "\n")
+    }
+}
+
+private extension Bool {
+    /// Represents bool value with a string
+    ///
+    var stringRepresentable: String {
+        self ? "✔" : "–"
+    }
+}
+
+private extension Int64 {
+    var byteCountRepresentable: String {
+        let formatter = ByteCountFormatter()
+        return formatter.string(fromByteCount: self)
     }
 }

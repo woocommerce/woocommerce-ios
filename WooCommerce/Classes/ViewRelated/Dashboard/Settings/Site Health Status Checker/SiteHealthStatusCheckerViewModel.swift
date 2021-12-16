@@ -22,9 +22,7 @@ final class SiteHealthStatusCheckerViewModel: ObservableObject {
     }
 
     func startChecking() {
-        Task {
-            requests = await fire()
-        }
+        requests = await fire()
     }
 
     private func fire() async -> [SiteHealthStatusCheckerRequest] {

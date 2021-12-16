@@ -119,7 +119,8 @@ struct ProductRow_Previews: PreviewProvider {
                                             stockStatusKey: "instock",
                                             stockQuantity: 7,
                                             manageStock: true,
-                                            canChangeQuantity: true)
+                                            canChangeQuantity: true,
+                                            imageURL: nil)
         let viewModelWithoutStepper = ProductRowViewModel(id: 1,
                                                           name: "Love Ficus",
                                                           sku: "123456",
@@ -127,7 +128,8 @@ struct ProductRow_Previews: PreviewProvider {
                                                           stockStatusKey: "instock",
                                                           stockQuantity: 7,
                                                           manageStock: true,
-                                                          canChangeQuantity: false)
+                                                          canChangeQuantity: false,
+                                                          imageURL: nil)
 
         ProductRow(viewModel: viewModel)
             .previewDisplayName("ProductRow with stepper")

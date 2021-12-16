@@ -8,6 +8,8 @@ final class SiteHealthStatusCheckerViewModel: ObservableObject {
     let siteID: Int64
     let network: AlamofireNetwork
 
+    @Published private var workInProgress = false
+
     init(siteID: Int64) {
         self.siteID = siteID
         if let credentials = ServiceLocator.stores.sessionManager.defaultCredentials {
@@ -19,9 +21,11 @@ final class SiteHealthStatusCheckerViewModel: ObservableObject {
     }
 
     func startChecking() async -> [SiteHealthStatusCheckerRequest] {
+        workInProgress = true
         var requests: [SiteHealthStatusCheckerRequest] = []
         requests.append(await fetchOrders())
 
+        workInProgress = false
         return requests
     }
 }

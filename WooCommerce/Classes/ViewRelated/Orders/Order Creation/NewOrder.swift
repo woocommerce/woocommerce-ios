@@ -44,6 +44,9 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
 struct NewOrder: View {
     @ObservedObject var viewModel: NewOrderViewModel
 
+    /// Fix for breaking navbar button
+    @State private var navigationButtonID = UUID()
+
     var body: some View {
         GeometryReader { geometry in
             ScrollViewReader { scroll in
@@ -53,7 +56,7 @@ struct NewOrder: View {
 
                         Spacer(minLength: Layout.sectionSpacing)
 
-                        ProductsSection(geometry: geometry, scroll: scroll, viewModel: viewModel)
+                        ProductsSection(geometry: geometry, scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
                     }
                 }
                 .background(Color(.listBackground).ignoresSafeArea())
@@ -70,7 +73,7 @@ struct NewOrder: View {
                 case .create:
                     Button(Localization.createButton) {
                         viewModel.createOrder()
-                    }
+                    }.id(navigationButtonID)
                 case .loading:
                     ProgressView()
                 }
@@ -89,6 +92,9 @@ private struct ProductsSection: View {
 
     /// View model to drive the view content
     @ObservedObject var viewModel: NewOrderViewModel
+
+    /// Fix for breaking navbar button
+    @Binding var navigationButtonID: UUID
 
     /// Defines whether `AddProduct` modal is presented.
     ///
@@ -120,6 +126,9 @@ private struct ProductsSection: View {
                     scroll.scrollTo(addProductButton)
                 }, content: {
                     AddProductToOrder(isPresented: $showAddProduct, viewModel: viewModel.addProductViewModel)
+                        .onDisappear {
+                            navigationButtonID = UUID()
+                        }
                 })
             }
             .padding(.horizontal, insets: geometry.safeAreaInsets)

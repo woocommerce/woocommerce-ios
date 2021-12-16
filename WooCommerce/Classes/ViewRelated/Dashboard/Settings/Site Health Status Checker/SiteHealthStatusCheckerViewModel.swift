@@ -18,7 +18,7 @@ class SiteHealthStatusCheckerViewModel: NSObject {
         }
     }
 
-    func startRequests() async -> [SiteHealthStatusCheckerRequest] {
+    func startChecking() async -> [SiteHealthStatusCheckerRequest] {
         var requests: [SiteHealthStatusCheckerRequest] = []
         requests.append(await fetchOrders())
 

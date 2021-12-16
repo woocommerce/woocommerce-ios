@@ -18,6 +18,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             automaticallyRefundsPayment: true,
                                             items: [],
                                             shippingLine: nil,
+                                            fees: [],
                                             currencyFormatter: formatter)
 
         // When
@@ -40,6 +41,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             automaticallyRefundsPayment: false,
                                             items: items,
                                             shippingLine: nil,
+                                            fees: [],
                                             currencyFormatter: formatter)
 
         // When
@@ -74,6 +76,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             automaticallyRefundsPayment: false,
                                             items: items,
                                             shippingLine: nil,
+                                            fees: [],
                                             currencyFormatter: formatter)
 
         // When
@@ -99,6 +102,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             automaticallyRefundsPayment: false,
                                             items: [],
                                             shippingLine: shippingLine,
+                                            fees: [],
                                             currencyFormatter: formatter)
 
         // When
@@ -130,6 +134,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             automaticallyRefundsPayment: false,
                                             items: items,
                                             shippingLine: shippingLine,
+                                            fees: [],
                                             currencyFormatter: formatter)
 
         // When
@@ -172,6 +177,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             automaticallyRefundsPayment: false,
                                             items: items,
                                             shippingLine: nil,
+                                            fees: [],
                                             currencyFormatter: formatter)
 
         // When

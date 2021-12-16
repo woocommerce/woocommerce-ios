@@ -8,7 +8,8 @@ final class SiteHealthStatusCheckerViewModel: ObservableObject {
     let siteID: Int64
     let network: AlamofireNetwork
 
-    @Published private var workInProgress = false
+    @Published var workInProgress = false
+    @Published var requests: [SiteHealthStatusCheckerRequest] = []
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -20,7 +21,13 @@ final class SiteHealthStatusCheckerViewModel: ObservableObject {
         }
     }
 
-    func startChecking() async -> [SiteHealthStatusCheckerRequest] {
+    func startChecking() {
+        Task {
+            requests = await fire()
+        }
+    }
+
+    private func fire() async -> [SiteHealthStatusCheckerRequest] {
         workInProgress = true
         var requests: [SiteHealthStatusCheckerRequest] = []
         requests.append(await fetchOrders())

@@ -10,9 +10,7 @@ struct SiteHealthStatusChecker: View {
 
     var body: some View {
         Button {
-            Task {
-                await viewModel.startChecking()
-            }
+            viewModel.startChecking()
         } label: {
             Text("Start checking")
         }

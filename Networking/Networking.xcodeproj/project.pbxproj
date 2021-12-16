@@ -563,6 +563,7 @@
 		DEC51AF72769A15B009F3DF4 /* SystemStatus+Security.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AF62769A15B009F3DF4 /* SystemStatus+Security.swift */; };
 		DEC51AF92769A212009F3DF4 /* SystemStatus+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AF82769A212009F3DF4 /* SystemStatus+Settings.swift */; };
 		DEC51AFB2769C66B009F3DF4 /* SystemStatusMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AFA2769C66B009F3DF4 /* SystemStatusMapperTests.swift */; };
+		DEC51B02276AFB35009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51B01276AFB34009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift */; };
 		E12552C526385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12552C426385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift */; };
 		FE28F6E226840DED004465C7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E126840DED004465C7 /* User.swift */; };
 		FE28F6E426842848004465C7 /* UserMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E326842848004465C7 /* UserMapper.swift */; };
@@ -1167,6 +1168,7 @@
 		DEC51AF62769A15B009F3DF4 /* SystemStatus+Security.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemStatus+Security.swift"; sourceTree = "<group>"; };
 		DEC51AF82769A212009F3DF4 /* SystemStatus+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemStatus+Settings.swift"; sourceTree = "<group>"; };
 		DEC51AFA2769C66B009F3DF4 /* SystemStatusMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusMapperTests.swift; sourceTree = "<group>"; };
+		DEC51B01276AFB34009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemStatus+DropinMustUsePlugin.swift"; sourceTree = "<group>"; };
 		E12552C426385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressValidationSuccess.swift; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -2071,6 +2073,7 @@
 				DEC51AE6276848A9009F3DF4 /* SystemStatus+Environment.swift */,
 				DEC51AF427699F3A009F3DF4 /* SystemStatus+Theme.swift */,
 				DEC51AF62769A15B009F3DF4 /* SystemStatus+Security.swift */,
+				DEC51B01276AFB34009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift */,
 			);
 			path = SystemStatusDetails;
 			sourceTree = "<group>";
@@ -2570,6 +2573,7 @@
 				B53EF53C21814900003E146F /* SuccessResultMapper.swift in Sources */,
 				D8EDFE2625EE8A60003D2213 /* WCPayConnectionTokenMapper.swift in Sources */,
 				CC6A1FF5270E042200F6AF4A /* OrderMetaData.swift in Sources */,
+				DEC51B02276AFB35009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift in Sources */,
 				02C254A4256371B200A04423 /* ShippingLabelSettings.swift in Sources */,
 				B554FA912180BCFC00C54DFF /* NoteHash.swift in Sources */,
 				CE0A0F19223987DF0075ED8D /* ProductListMapper.swift in Sources */,

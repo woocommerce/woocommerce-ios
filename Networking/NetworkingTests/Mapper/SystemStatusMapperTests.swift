@@ -31,6 +31,10 @@ final class SystemStatusMapperTests: XCTestCase {
         XCTAssertEqual(report.activePlugins[0].siteID, dummySiteID)
         XCTAssertEqual(report.inactivePlugins.count, 2)
         XCTAssertEqual(report.inactivePlugins[1].siteID, dummySiteID)
+        XCTAssertEqual(report.dropinPlugins.count, 2)
+        XCTAssertEqual(report.dropinPlugins[0].name, "advanced-cache.php")
+        XCTAssertEqual(report.mustUsePlugins.count, 1)
+        XCTAssertEqual(report.mustUsePlugins[0].name, "WP.com Site Helper")
 
         XCTAssertEqual(report.theme?.name, "Twenty Twenty-One")
         XCTAssertEqual(report.theme?.version, "1.4")

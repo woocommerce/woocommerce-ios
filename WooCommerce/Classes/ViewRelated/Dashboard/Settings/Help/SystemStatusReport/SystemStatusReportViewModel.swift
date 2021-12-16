@@ -87,22 +87,28 @@ private extension SystemStatusReportViewModel {
                 "Remote Get: \(environment.remoteGetSuccessful.stringRepresentable)"
             ])
         }
-        
+
+        // Database
+        if let database = systemStatus.database {
+            lines.append(contentsOf: [
+                "\n",
+                "### Database ###",
+                "\n",
+                "WC Database Version: \(database.wcDatabaseVersion)",
+                String(format: "Total Database Size: %.2fMB", database.databaseSize.data + database.databaseSize.index),
+                String(format: "Database Data Size: %.2fMB", database.databaseSize.data),
+                String(format: "Database Index Size: %.2fMB", database.databaseSize.index)
+            ])
+
+            for (tableName, content) in database.databaseTables.woocommerce {
+                lines.append("\(tableName): Data: \(content.data)MB + Index: \(content.index)MB + Engine \(content.engine)")
+            }
+
+            for (tableName, content) in database.databaseTables.other {
+                lines.append("\(tableName): Data: \(content.data)MB + Index: \(content.index)MB + Engine \(content.engine)")
+            }
+        }
+
         return lines.joined(separator: "\n")
-    }
-}
-
-private extension Bool {
-    /// Represents bool value with a string
-    ///
-    var stringRepresentable: String {
-        self ? "✔" : "–"
-    }
-}
-
-private extension Int64 {
-    var byteCountRepresentable: String {
-        let formatter = ByteCountFormatter()
-        return formatter.string(fromByteCount: self)
     }
 }

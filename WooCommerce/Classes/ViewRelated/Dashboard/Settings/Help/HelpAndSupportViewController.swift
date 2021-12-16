@@ -377,6 +377,7 @@ private extension HelpAndSupportViewController {
             return
         }
         let controller = SystemStatusReportHostingController(siteID: site.siteID)
+        controller.hidesBottomBarWhenPushed = true
         controller.setDismissAction { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         }

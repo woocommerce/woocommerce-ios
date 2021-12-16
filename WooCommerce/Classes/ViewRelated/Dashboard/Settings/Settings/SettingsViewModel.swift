@@ -247,7 +247,7 @@ private extension SettingsViewModel {
             #endif
 
             if featureFlagService.isFeatureFlagEnabled(.siteHealthStatusChecker) {
-                rows = [.siteHealthStatusChecker]
+                rows += [.siteHealthStatusChecker]
             }
 
             return Section(title: Localization.otherTitle,

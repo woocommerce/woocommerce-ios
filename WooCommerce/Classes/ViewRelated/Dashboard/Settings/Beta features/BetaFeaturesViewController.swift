@@ -115,8 +115,6 @@ private extension BetaFeaturesViewController {
         case let cell as BasicTableViewCell where row == .orderAddOnsDescription:
             configureOrderAddOnsDescription(cell: cell)
         // Orders
-        case let cell as BasicTableViewCell where row == .simplePaymentsDescription:
-            configureSimplePaymentsDescription(cell: cell)
         case let cell as SwitchTableViewCell where row == .orderCreation:
             configureOrderCreationSwitch(cell: cell)
         case let cell as BasicTableViewCell where row == .orderCreationDescription:
@@ -159,11 +157,6 @@ private extension BetaFeaturesViewController {
     func configureOrderAddOnsDescription(cell: BasicTableViewCell) {
         configureCommonStylesForDescriptionCell(cell)
         cell.textLabel?.text = Localization.orderAddOnsDescription
-    }
-
-    func configureSimplePaymentsDescription(cell: BasicTableViewCell) {
-        configureCommonStylesForDescriptionCell(cell)
-        cell.textLabel?.text = Localization.simplePaymentsDescription
     }
 
     func configureOrderCreationSwitch(cell: SwitchTableViewCell) {
@@ -261,16 +254,14 @@ private enum Row: CaseIterable {
     case orderAddOnsDescription
 
     // Orders.
-    case simplePayments
-    case simplePaymentsDescription
     case orderCreation
     case orderCreationDescription
 
     var type: UITableViewCell.Type {
         switch self {
-        case .orderAddOns, .simplePayments, .orderCreation:
+        case .orderAddOns, .orderCreation:
             return SwitchTableViewCell.self
-        case .orderAddOnsDescription, .simplePaymentsDescription, .orderCreationDescription:
+        case .orderAddOnsDescription, .orderCreationDescription:
             return BasicTableViewCell.self
         }
     }
@@ -286,10 +277,6 @@ private extension BetaFeaturesViewController {
         static let orderAddOnsDescription = NSLocalizedString("Test out viewing Order Add-Ons as we get ready to launch",
                                                               comment: "Cell description on the beta features screen to enable the order add-ons feature")
 
-        static let simplePaymentsTitle = NSLocalizedString("Simple Payments",
-                                                           comment: "Cell title on the beta features screen to enable the Simple Payments feature")
-        static let simplePaymentsDescription = NSLocalizedString("Test out creating orders with minimal information as we get ready to launch",
-                                                              comment: "Cell description on the beta features screen to enable the Simple Payments feature")
         static let orderCreationTitle = NSLocalizedString("Order Creation", comment: "Cell title on the beta features screen to enable creating new orders")
         static let orderCreationDescription = NSLocalizedString("Test out creating new manual orders as we get ready to launch",
                                                                 comment: "Cell description on the beta features screen to enable creating new orders")

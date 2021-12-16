@@ -718,6 +718,7 @@
 		45BC4700276A302B008B9FDE /* SiteHealthStatusCheckerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BC46FF276A302B008B9FDE /* SiteHealthStatusCheckerViewModel.swift */; };
 		45BC4702276B6084008B9FDE /* SiteHealthStatusCheckerRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BC4701276B6084008B9FDE /* SiteHealthStatusCheckerRequest.swift */; };
 		45BC4704276B6755008B9FDE /* SiteHealthStatusChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BC4703276B6755008B9FDE /* SiteHealthStatusChecker.swift */; };
+		45BC4706276B695F008B9FDE /* SiteHealthStatusCheckerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BC4705276B695F008B9FDE /* SiteHealthStatusCheckerViewController.swift */; };
 		45C11B7C2508E156006C2089 /* SelectedSiteSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C11B7B2508E156006C2089 /* SelectedSiteSettings.swift */; };
 		45C8B2582313FA570002FA77 /* CustomerNoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B2562313FA570002FA77 /* CustomerNoteTableViewCell.swift */; };
 		45C8B2592313FA570002FA77 /* CustomerNoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45C8B2572313FA570002FA77 /* CustomerNoteTableViewCell.xib */; };
@@ -2218,6 +2219,7 @@
 		45BC46FF276A302B008B9FDE /* SiteHealthStatusCheckerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteHealthStatusCheckerViewModel.swift; sourceTree = "<group>"; };
 		45BC4701276B6084008B9FDE /* SiteHealthStatusCheckerRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteHealthStatusCheckerRequest.swift; sourceTree = "<group>"; };
 		45BC4703276B6755008B9FDE /* SiteHealthStatusChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteHealthStatusChecker.swift; sourceTree = "<group>"; };
+		45BC4705276B695F008B9FDE /* SiteHealthStatusCheckerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteHealthStatusCheckerViewController.swift; sourceTree = "<group>"; };
 		45C11B7B2508E156006C2089 /* SelectedSiteSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedSiteSettings.swift; sourceTree = "<group>"; };
 		45C8B2562313FA570002FA77 /* CustomerNoteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerNoteTableViewCell.swift; sourceTree = "<group>"; };
 		45C8B2572313FA570002FA77 /* CustomerNoteTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerNoteTableViewCell.xib; sourceTree = "<group>"; };
@@ -4708,6 +4710,7 @@
 		45BC46FE276A300D008B9FDE /* Site Health Status Checker */ = {
 			isa = PBXGroup;
 			children = (
+				45BC4705276B695F008B9FDE /* SiteHealthStatusCheckerViewController.swift */,
 				45BC4703276B6755008B9FDE /* SiteHealthStatusChecker.swift */,
 				45BC46FF276A302B008B9FDE /* SiteHealthStatusCheckerViewModel.swift */,
 				45BC4701276B6084008B9FDE /* SiteHealthStatusCheckerRequest.swift */,
@@ -7987,6 +7990,7 @@
 				0273708024C0094500167204 /* ProductListMultiSelectorDataSource.swift in Sources */,
 				E1ED16E4266E10A10037B8DB /* ApplicationLogViewModel.swift in Sources */,
 				02F6800925807CD300C3BAD2 /* GridStackView.swift in Sources */,
+				45BC4706276B695F008B9FDE /* SiteHealthStatusCheckerViewController.swift in Sources */,
 				DE279BB126EA184A002BA963 /* ShippingLabelPackageListViewModel.swift in Sources */,
 				02B1AFEC24BC5AE5005DB1E3 /* LinkedProductListSelectorDataSource.swift in Sources */,
 				26F94E1C267A3E4500DB6CCF /* ProductAddOnsListViewController.swift in Sources */,

@@ -203,7 +203,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let details = RefundConfirmationViewModel.Details(order: order,
                                                           amount: "100.0",
                                                           refundsShipping: true,
-                                                          refundsFees: false,
+                                                          refundsFees: true,
                                                           items: [],
                                                           paymentGateway: gateway)
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
@@ -232,7 +232,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let details = RefundConfirmationViewModel.Details(order: order,
                                                           amount: "100.0",
                                                           refundsShipping: true,
-                                                          refundsFees: false,
+                                                          refundsFees: true,
                                                           items: [],
                                                           paymentGateway: gateway)
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)

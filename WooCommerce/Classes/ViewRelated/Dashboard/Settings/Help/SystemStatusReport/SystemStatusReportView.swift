@@ -26,7 +26,11 @@ struct SystemStatusReportView: View {
     }
 
     var body: some View {
-        Text("Hello, World!")
+        ScrollView {
+            Text(viewModel.statusReport)
+                .multilineTextAlignment(.leading)
+                .padding()
+        }
     }
 }
 

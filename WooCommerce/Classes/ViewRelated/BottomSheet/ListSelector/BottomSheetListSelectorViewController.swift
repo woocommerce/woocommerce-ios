@@ -125,7 +125,11 @@ private extension BottomSheetListSelectorViewController {
     }
 
     func registerTableViewCells() {
-        tableView.registerNib(for: rowType)
+        if Bundle.main.path(forResource: rowType.classNameWithoutNamespaces, ofType: "nib") != nil {
+            tableView.registerNib(for: rowType)
+        } else {
+            tableView.register(rowType)
+        }
     }
 
     func registerTableViewHeaderFooters() {

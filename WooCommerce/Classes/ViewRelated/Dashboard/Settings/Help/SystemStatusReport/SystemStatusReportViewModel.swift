@@ -22,9 +22,22 @@ final class SystemStatusReportViewModel: ObservableObject {
     }
 
     func fetchReport() {
-        let action = SystemStatusAction.fetchSystemStatusReport(siteID: siteID) { result in
-            // TODO
+        let action = SystemStatusAction.fetchSystemStatusReport(siteID: siteID) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let status):
+                self.statusReport = self.formatReport(with: status)
+            case .failure:
+                // TODO: handle error
+                break
+            }
         }
         stores.dispatch(action)
+    }
+}
+
+private extension SystemStatusReportViewModel {
+    func formatReport(with systemStatus: SystemStatus) -> String {
+        return ""
     }
 }

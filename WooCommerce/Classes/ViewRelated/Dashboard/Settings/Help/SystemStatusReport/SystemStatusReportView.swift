@@ -27,10 +27,14 @@ struct SystemStatusReportView: View {
     }
 
     var body: some View {
-        ScrollView {
-            Text(viewModel.statusReport)
-                .multilineTextAlignment(.leading)
-                .padding()
+        if viewModel.statusReport.isEmpty {
+            ActivityIndicator(isAnimating: .constant(true), style: .medium)
+        } else {
+            ScrollView {
+                Text(viewModel.statusReport)
+                    .multilineTextAlignment(.leading)
+                    .padding()
+            }
         }
     }
 }

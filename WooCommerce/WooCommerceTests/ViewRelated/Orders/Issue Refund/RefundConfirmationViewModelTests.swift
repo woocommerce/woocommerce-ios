@@ -37,7 +37,12 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         ]
         let order = MockOrders().empty().copy(refunds: refundItems)
 
-        let details = RefundConfirmationViewModel.Details(order: order, amount: "0.0", refundsShipping: false, items: [], paymentGateway: nil)
+        let details = RefundConfirmationViewModel.Details(order: order,
+                                                          amount: "0.0",
+                                                          refundsShipping: false,
+                                                          refundsFees: false,
+                                                          items: [],
+                                                          paymentGateway: nil)
 
         let viewModel = RefundConfirmationViewModel(details: details, currencySettings: currencySettings)
 
@@ -58,7 +63,12 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                                                 numberOfDecimals: 2)
 
         let order = MockOrders().empty()
-        let details = RefundConfirmationViewModel.Details(order: order, amount: "130.3473", refundsShipping: false, items: [], paymentGateway: nil)
+        let details = RefundConfirmationViewModel.Details(order: order,
+                                                          amount: "130.3473",
+                                                          refundsShipping: false,
+                                                          refundsFees: false,
+                                                          items: [],
+                                                          paymentGateway: nil)
 
         // When
         let viewModel = RefundConfirmationViewModel(details: details, currencySettings: currencySettings)
@@ -71,7 +81,12 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")
         let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [.refunds])
-        let details = RefundConfirmationViewModel.Details(order: order, amount: "", refundsShipping: false, items: [], paymentGateway: gateway)
+        let details = RefundConfirmationViewModel.Details(order: order,
+                                                          amount: "",
+                                                          refundsShipping: false,
+                                                          refundsFees: false,
+                                                          items: [],
+                                                          paymentGateway: gateway)
 
         // When
         let viewModel = RefundConfirmationViewModel(details: details)
@@ -87,7 +102,12 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")
         let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [])
-        let details = RefundConfirmationViewModel.Details(order: order, amount: "", refundsShipping: false, items: [], paymentGateway: gateway)
+        let details = RefundConfirmationViewModel.Details(order: order,
+                                                          amount: "",
+                                                          refundsShipping: false,
+                                                          refundsFees: false,
+                                                          items: [],
+                                                          paymentGateway: gateway)
 
         // When
         let viewModel = RefundConfirmationViewModel(details: details)
@@ -105,7 +125,12 @@ final class RefundConfirmationViewModelTests: XCTestCase {
     func test_view_model_submits_refund_and_completes_successfully() throws {
         // Given
         let order = MockOrders().empty()
-        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: false, items: [], paymentGateway: nil)
+        let details = RefundConfirmationViewModel.Details(order: order,
+                                                          amount: "100.0",
+                                                          refundsShipping: false,
+                                                          refundsFees: false,
+                                                          items: [],
+                                                          paymentGateway: nil)
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
         dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
             switch action {
@@ -136,7 +161,12 @@ final class RefundConfirmationViewModelTests: XCTestCase {
     func test_view_model_submits_refund_and_updates_order() throws {
         // Given
         let order = MockOrders().empty()
-        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: false, items: [], paymentGateway: nil)
+        let details = RefundConfirmationViewModel.Details(order: order,
+                                                          amount: "100.0",
+                                                          refundsShipping: false,
+                                                          refundsFees: false,
+                                                          items: [],
+                                                          paymentGateway: nil)
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
         dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
             switch action {
@@ -170,7 +200,12 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")
         let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [.refunds])
-        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: true, items: [], paymentGateway: gateway)
+        let details = RefundConfirmationViewModel.Details(order: order,
+                                                          amount: "100.0",
+                                                          refundsShipping: true,
+                                                          refundsFees: false,
+                                                          items: [],
+                                                          paymentGateway: gateway)
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
 
         // When
@@ -194,7 +229,12 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")
         let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [.products])
-        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: true, items: [], paymentGateway: gateway)
+        let details = RefundConfirmationViewModel.Details(order: order,
+                                                          amount: "100.0",
+                                                          refundsShipping: true,
+                                                          refundsFees: false,
+                                                          items: [],
+                                                          paymentGateway: gateway)
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
 
         // When
@@ -216,7 +256,12 @@ final class RefundConfirmationViewModelTests: XCTestCase {
     func test_view_model_submits_refund_and_relays_error() throws {
         // Given
         let order = MockOrders().empty()
-        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: false, items: [], paymentGateway: nil)
+        let details = RefundConfirmationViewModel.Details(order: order,
+                                                          amount: "100.0",
+                                                          refundsShipping: false,
+                                                          refundsFees: false,
+                                                          items: [],
+                                                          paymentGateway: nil)
         let expectedError = NSError(domain: "Refund Error", code: 0, userInfo: nil)
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
         dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
@@ -249,7 +294,12 @@ final class RefundConfirmationViewModelTests: XCTestCase {
     func test_viewModel_correctly_tracks_when_the_summary_button_is_tapped() {
         // Given
         let order = MockOrders().makeOrder()
-        let details = RefundConfirmationViewModel.Details(order: order, amount: "0.0", refundsShipping: false, items: [], paymentGateway: nil)
+        let details = RefundConfirmationViewModel.Details(order: order,
+                                                          amount: "0.0",
+                                                          refundsShipping: false,
+                                                          refundsFees: false,
+                                                          items: [],
+                                                          paymentGateway: nil)
         let viewModel = RefundConfirmationViewModel(details: details, analytics: analytics)
 
         // When
@@ -264,7 +314,12 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().empty().copy(orderID: 123, total: "100.0", paymentMethodID: "stripe")
         let gateway = PaymentGateway(siteID: 234, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [])
-        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: false, items: [], paymentGateway: gateway)
+        let details = RefundConfirmationViewModel.Details(order: order,
+                                                          amount: "100.0",
+                                                          refundsShipping: false,
+                                                          refundsFees: false,
+                                                          items: [],
+                                                          paymentGateway: gateway)
         let viewModel = RefundConfirmationViewModel(details: details, analytics: analytics)
 
         // When
@@ -283,7 +338,12 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().empty().copy(orderID: 123, total: "120.0", paymentMethodID: "stripe")
         let gateway = PaymentGateway(siteID: 234, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [])
-        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: false, items: [], paymentGateway: gateway)
+        let details = RefundConfirmationViewModel.Details(order: order,
+                                                          amount: "100.0",
+                                                          refundsShipping: false,
+                                                          refundsFees: false,
+                                                          items: [],
+                                                          paymentGateway: gateway)
         let viewModel = RefundConfirmationViewModel(details: details, analytics: analytics)
 
         // When
@@ -301,7 +361,12 @@ final class RefundConfirmationViewModelTests: XCTestCase {
     func test_view_model_tracks_when_refund_creation_fails() throws {
         // Given
         let order = MockOrders().empty()
-        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: false, items: [], paymentGateway: nil)
+        let details = RefundConfirmationViewModel.Details(order: order,
+                                                          amount: "100.0",
+                                                          refundsShipping: false,
+                                                          refundsFees: false,
+                                                          items: [],
+                                                          paymentGateway: nil)
         let expectedError = NSError(domain: "Refund Error", code: 0, userInfo: nil)
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
         dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
@@ -330,7 +395,12 @@ final class RefundConfirmationViewModelTests: XCTestCase {
     func test_view_model_tracks_when_refund_creation_succeeds() throws {
         // Given
         let order = MockOrders().empty()
-        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: false, items: [], paymentGateway: nil)
+        let details = RefundConfirmationViewModel.Details(order: order,
+                                                          amount: "100.0",
+                                                          refundsShipping: false,
+                                                          refundsFees: false,
+                                                          items: [],
+                                                          paymentGateway: nil)
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
         dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
             switch action {

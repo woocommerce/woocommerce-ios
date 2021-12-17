@@ -60,7 +60,7 @@ private struct ProductStepper: View {
     @ScaledMetric private var scale: CGFloat = 1
 
     var body: some View {
-        HStack(spacing: Layout.stepperSpacing * scale) {
+        HStack {
             Button {
                 viewModel.decrementQuantity()
             } label: {
@@ -71,7 +71,11 @@ private struct ProductStepper: View {
             }
             .disabled(viewModel.shouldDisableQuantityDecrementer)
 
+            Spacer()
+
             Text(viewModel.quantity.description)
+
+            Spacer()
 
             Button {
                 viewModel.incrementQuantity()
@@ -82,7 +86,8 @@ private struct ProductStepper: View {
                     .frame(height: Layout.stepperButtonSize * scale)
             }
         }
-        .padding(Layout.stepperSpacing/2 * scale)
+        .padding(Layout.stepperPadding * scale)
+        .frame(width: Layout.stepperWidth * scale)
         .overlay(
             RoundedRectangle(cornerRadius: Layout.stepperBorderRadius)
                 .stroke(Color(UIColor.separator), lineWidth: Layout.stepperBorderWidth)
@@ -109,7 +114,8 @@ private enum Layout {
     static let stepperBorderWidth: CGFloat = 1.0
     static let stepperBorderRadius: CGFloat = 4.0
     static let stepperButtonSize: CGFloat = 22.0
-    static let stepperSpacing: CGFloat = 22.0
+    static let stepperPadding: CGFloat = 11.0
+    static let stepperWidth: CGFloat = 112.0
 }
 
 private enum Localization {

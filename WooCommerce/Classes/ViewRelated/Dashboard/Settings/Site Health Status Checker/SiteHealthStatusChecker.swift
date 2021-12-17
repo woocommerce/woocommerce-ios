@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// List all the requests
+///
 struct SiteHealthStatusChecker: View {
 
     @ObservedObject private var viewModel: SiteHealthStatusCheckerViewModel

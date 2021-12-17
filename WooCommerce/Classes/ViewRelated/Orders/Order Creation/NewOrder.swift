@@ -52,7 +52,7 @@ struct NewOrder: View {
 
                     Spacer(minLength: Layout.sectionSpacing)
 
-                    ProductsSection(geometry: geometry)
+                    ProductsSection(geometry: geometry, viewModel: viewModel)
                 }
             }
             .background(Color(.listBackground))
@@ -84,6 +84,9 @@ struct NewOrder: View {
 private struct ProductsSection: View {
     let geometry: GeometryProxy
 
+    /// View model to drive the view content
+    @ObservedObject var viewModel: NewOrderViewModel
+
     /// Defines whether `AddProduct` modal is presented.
     ///
     @State private var showAddProduct: Bool = false
@@ -96,23 +99,17 @@ private struct ProductsSection: View {
                 Text(NewOrder.Localization.products)
                     .headlineStyle()
 
-                // TODO: Add a product row for each product added to the order
-                let viewModel = ProductRowViewModel(id: 1,
-                                                    name: "Love Ficus",
-                                                    sku: "123456",
-                                                    price: "20",
-                                                    stockStatusKey: "instock",
-                                                    stockQuantity: 7,
-                                                    manageStock: true,
-                                                    canChangeQuantity: true) // Temporary view model with fake data
-                ProductRow(viewModel: viewModel)
+                ForEach(viewModel.productRows) { productRowViewModel in
+                    ProductRow(viewModel: productRowViewModel)
+                    Divider()
+                }
 
                 Button(NewOrder.Localization.addProduct) {
                     showAddProduct.toggle()
                 }
                 .buttonStyle(PlusButtonStyle())
                 .sheet(isPresented: $showAddProduct) {
-                    AddProduct(isPresented: $showAddProduct)
+                    AddProductToOrder(isPresented: $showAddProduct, viewModel: viewModel.addProductViewModel)
                 }
             }
             .padding(.horizontal, insets: geometry.safeAreaInsets)

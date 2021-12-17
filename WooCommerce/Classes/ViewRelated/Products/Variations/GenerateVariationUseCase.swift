@@ -25,7 +25,7 @@ final class GenerateVariationUseCase {
 
     /// Generates a variation in the host site using the product attributes
     ///
-    func generateVariation(onCompletion: @escaping (Result<Product, Error>) -> Void) {
+    func generateVariation(onCompletion: @escaping (Result<(Product, ProductVariation), Error>) -> Void) {
 
         let startDate = Date()
         analytics.track(event: WooAnalyticsEvent.Variations.createVariation(productID: product.productID))
@@ -34,12 +34,13 @@ final class GenerateVariationUseCase {
                                                                    productID: product.productID,
                                                                    newVariation: createVariationParameter()) { [product, analytics] result in
 
-            // Convert the variationResult into a productResult by appending the variationID to the variations array
-            let productResult = result.map { variation in
-                product.copy(variations: product.variations + [variation.productVariationID])
+            // Create a result with both the new variation and the updated product (by appending the new variationID to the product variations array)
+            let combinedResult = result.map { variation -> (Product, ProductVariation) in
+                let product = product.copy(variations: product.variations + [variation.productVariationID])
+                return (product, variation)
             }
 
-            onCompletion(productResult)
+            onCompletion(combinedResult)
 
             // Track generation result
             let timeElapsed = Date().timeIntervalSince(startDate)

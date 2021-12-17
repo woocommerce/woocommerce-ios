@@ -27,6 +27,8 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var presentNotice: NewOrderNotice?
 
+    // MARK: Status properties
+
     /// Order creation date. For new order flow it's always current date.
     ///
     let dateString: String = {
@@ -40,6 +42,10 @@ final class NewOrderViewModel: ObservableObject {
     /// Indicates if the order status list (selector) should be shown or not.
     ///
     @Published var shouldShowOrderStatusList: Bool = false
+
+    /// Assign this closure to be notified when a new order is created
+    ///
+    var onOrderCreated: (Order) -> Void = { _ in }
 
     /// Status Results Controller.
     ///
@@ -63,6 +69,36 @@ final class NewOrderViewModel: ObservableObject {
         return statusResultsController.fetchedObjects
     }
 
+    // MARK: Products properties
+
+    /// View model for the product list
+    ///
+    lazy var addProductViewModel = {
+        AddProductToOrderViewModel(siteID: siteID, storageManager: storageManager, stores: stores) { [weak self] product in
+            guard let self = self else { return }
+            self.addProductToOrder(product)
+        }
+    }()
+
+    /// Products that have been added to the order, used to generate the product row view models.
+    ///
+    /// This list is not the source of truth for products in the order; that is `orderDetails.items`.
+    ///
+    private var addedProducts: [Product] = []
+
+    /// View models for each product row in the order.
+    /// They are generated from `orderDetails` to ensure they are updated when the order details change.
+    ///
+    var productRows: [ProductRowViewModel] {
+        orderDetails.items.compactMap { item in
+            // Get the product that matches the order item's product ID
+            guard let product = addedProducts.first(where: { item.productID == $0.productID }) else {
+                return nil
+            }
+            return ProductRowViewModel(product: product, canChangeQuantity: true)
+        }
+    }
+
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.stores = stores
@@ -83,9 +119,10 @@ final class NewOrderViewModel: ObservableObject {
             self.performingNetworkRequest = false
 
             switch result {
-            case .success:
+            case .success(let newOrder):
                 // TODO: Handle newly created order / remove success logging
                 DDLogInfo("New order created successfully!")
+                self.onOrderCreated(newOrder)
             case .failure(let error):
                 self.presentNotice = .error
                 DDLogError("⛔️ Error creating new order: \(error)")
@@ -109,7 +146,7 @@ extension NewOrderViewModel {
     ///
     struct OrderDetails {
         var status: OrderStatusEnum = .pending
-        var products: [OrderItem] = []
+        var items: [OrderItem] = []
         var billingAddress: Address?
         var shippingAddress: Address?
 
@@ -120,7 +157,7 @@ extension NewOrderViewModel {
 
         func toOrder() -> Order {
             emptyOrder.copy(status: status,
-                            items: products,
+                            items: items,
                             billingAddress: billingAddress,
                             shippingAddress: shippingAddress)
         }
@@ -192,5 +229,14 @@ private extension NewOrderViewModel {
                 return StatusBadgeViewModel(orderStatus: siteOrderStatus)
             }
             .assign(to: &$statusBadgeViewModel)
+    }
+
+    /// Adds a selected product (from the product list) to the order.
+    /// Also saves the product to generate the corresponding product row view model.
+    ///
+    func addProductToOrder(_ product: Product) {
+        let orderItem = product.toOrderItem(quantity: 1)
+        orderDetails.items.append(orderItem)
+        addedProducts.append(product)
     }
 }

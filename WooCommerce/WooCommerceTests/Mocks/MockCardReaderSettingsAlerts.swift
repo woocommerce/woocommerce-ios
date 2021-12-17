@@ -85,11 +85,9 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     }
 
     func connectingFailedIncompleteAddress(from: UIViewController,
-                                        adminUrl: URL?,
-                                        site: Site?,
-                                        openUrlInSafari: @escaping (URL) -> Void,
-                                        retrySearch: @escaping () -> Void,
-                                        cancelSearch: @escaping () -> Void) {
+                                           openWCSettings: ((UIViewController) -> Void)?,
+                                           retrySearch: @escaping () -> Void,
+                                           cancelSearch: @escaping () -> Void) {
         if mode == .continueSearchingAfterConnectionFailure {
             retrySearch()
         }

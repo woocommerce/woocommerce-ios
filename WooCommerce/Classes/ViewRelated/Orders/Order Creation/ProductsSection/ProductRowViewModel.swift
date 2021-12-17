@@ -3,7 +3,7 @@ import Yosemite
 
 /// View model for `ProductRow`.
 ///
-final class ProductRowViewModel: ObservableObject, Identifiable {
+final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
     private let currencyFormatter: CurrencyFormatter
 
     /// Whether the product quantity can be changed.
@@ -14,9 +14,12 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     // MARK: Product properties
 
     /// Product ID
-    /// Required by SwiftUI as a unique identifier
     ///
     let id: Int64
+
+    /// The first available product image
+    ///
+    let imageURL: URL?
 
     /// Product name
     ///
@@ -74,6 +77,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          stockQuantity: Decimal?,
          manageStock: Bool,
          canChangeQuantity: Bool,
+         imageURL: URL?,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.id = id
         self.name = name
@@ -83,6 +87,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.stockQuantity = stockQuantity
         self.manageStock = manageStock
         self.canChangeQuantity = canChangeQuantity
+        self.imageURL = imageURL
         self.currencyFormatter = currencyFormatter
     }
 
@@ -97,6 +102,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   stockQuantity: product.stockQuantity,
                   manageStock: product.manageStock,
                   canChangeQuantity: canChangeQuantity,
+                  imageURL: product.imageURL,
                   currencyFormatter: currencyFormatter)
     }
 
@@ -128,5 +134,11 @@ private extension ProductRowViewModel {
     enum Localization {
         static let stockFormat = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown during order creation")
         static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
+    }
+}
+
+extension ProductRowViewModel {
+    static func == (lhs: ProductRowViewModel, rhs: ProductRowViewModel) -> Bool {
+        lhs.id == rhs.id
     }
 }

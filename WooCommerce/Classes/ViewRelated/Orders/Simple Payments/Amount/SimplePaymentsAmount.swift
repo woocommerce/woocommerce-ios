@@ -75,7 +75,7 @@ extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControlle
     }
 
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        !rootView.viewModel.disableCancel
+        !rootView.viewModel.disableViewActions
     }
 }
 
@@ -120,7 +120,7 @@ struct SimplePaymentsAmount: View {
             Spacer()
 
             // Done button
-            Button(Localization.buttonTitle()) {
+            Button(Localization.buttonTitle) {
                 viewModel.createSimplePaymentsOrder()
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
@@ -139,9 +139,9 @@ struct SimplePaymentsAmount: View {
                     dismiss()
                     viewModel.userDidCancelFlow()
                 })
-                    .disabled(viewModel.disableCancel)
             }
         }
+        .disabled(viewModel.disableViewActions)
         .wooNavigationBarStyle()
     }
 
@@ -164,14 +164,7 @@ private extension SimplePaymentsAmount {
         static let instructions = NSLocalizedString("Enter Amount", comment: "Short instructions label in the simple payments screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the simple payments screen")
         static let completed = NSLocalizedString("🎉 Order completed", comment: "Title for the button to cancel the simple payments screen")
-
-        static func buttonTitle() -> String {
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplePaymentsPrototype) {
-                return NSLocalizedString("Next", comment: "Title for the button to confirm the amount in the simple payments screen")
-            } else {
-                return NSLocalizedString("Done", comment: "Title for the button to confirm the amount in the simple payments screen")
-            }
-        }
+        static let buttonTitle = NSLocalizedString("Next", comment: "Title for the button to confirm the amount in the simple payments screen")
     }
 
     enum Layout {

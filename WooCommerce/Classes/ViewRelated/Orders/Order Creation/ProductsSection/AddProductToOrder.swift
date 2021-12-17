@@ -61,8 +61,8 @@ struct AddProductToOrder: View {
                     EmptyView()
                 }
             }
-            .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+            .background(Color(.listBackground).ignoresSafeArea())
+            .ignoresSafeArea(.container, edges: .horizontal)
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

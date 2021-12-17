@@ -2,7 +2,7 @@
 
 8.3
 -----
-
+- [***] All mercants can create Simple Payments orders. [https://github.com/woocommerce/woocommerce-ios/pull/5684]
 
 8.2
 -----

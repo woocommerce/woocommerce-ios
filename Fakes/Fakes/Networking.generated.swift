@@ -1313,11 +1313,13 @@ extension Site {
             name: .fake(),
             description: .fake(),
             url: .fake(),
+            adminURL: .fake(),
             plan: .fake(),
             isJetpackThePluginInstalled: .fake(),
             isJetpackConnected: .fake(),
             isWooCommerceActive: .fake(),
             isWordPressStore: .fake(),
+            jetpackConnectionActivePlugins: .fake(),
             timezone: .fake(),
             gmtOffset: .fake()
         )
@@ -1545,5 +1547,21 @@ extension WCPayPaymentIntentStatusEnum {
     ///
     public static func fake() -> WCPayPaymentIntentStatusEnum {
         .requiresPaymentMethod
+    }
+}
+extension WordPressMedia {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WordPressMedia {
+        .init(
+            mediaID: .fake(),
+            date: .fake(),
+            slug: .fake(),
+            mimeType: .fake(),
+            src: .fake(),
+            alt: .fake(),
+            details: .fake(),
+            title: .fake()
+        )
     }
 }

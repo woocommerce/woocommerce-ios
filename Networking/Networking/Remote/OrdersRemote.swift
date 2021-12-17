@@ -8,7 +8,7 @@ public class OrdersRemote: Remote {
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote orders.
-    ///     - status: Filters the Orders by the specified Status, if any.
+    ///     - statuses: Filters the Orders by the specified Status, if any.
     ///     - after: If given, limit response to orders published after a given compliant date.  Passing a local date is fine. This
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
     ///     - before: If given, limit response to resources published before a given compliant date.. Passing a local date is fine. This
@@ -18,7 +18,7 @@ public class OrdersRemote: Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllOrders(for siteID: Int64,
-                              statusKey: String? = nil,
+                              statuses: [String]? = nil,
                               after: Date? = nil,
                               before: Date? = nil,
                               pageNumber: Int = Defaults.pageNumber,
@@ -26,11 +26,12 @@ public class OrdersRemote: Remote {
                               completion: @escaping (Result<[Order], Error>) -> Void) {
         let utcDateFormatter = DateFormatter.Defaults.iso8601
 
+        let statusesString: String? = statuses?.isEmpty == true ? Defaults.statusAny : statuses?.joined(separator: ",")
         let parameters: [String: Any] = {
             var parameters = [
                 ParameterKeys.page: String(pageNumber),
                 ParameterKeys.perPage: String(pageSize),
-                ParameterKeys.statusKey: statusKey ?? Defaults.statusAny,
+                ParameterKeys.statusKey: statusesString ?? Defaults.statusAny,
                 ParameterKeys.fields: ParameterValues.listFieldValues,
             ]
 
@@ -131,6 +132,8 @@ public class OrdersRemote: Remote {
                     switch field {
                     case .feeLines:
                         params[Order.CodingKeys.feeLines.rawValue] = try order.fees.compactMap { try $0.toDictionary() }
+                    case .status:
+                        params[Order.CodingKeys.status.rawValue] = order.status.rawValue
                     }
                 }
             }()
@@ -182,6 +185,9 @@ public class OrdersRemote: Remote {
                     case .billingAddress:
                         let billingAddressEncoded = try order.billingAddress?.toDictionary()
                         params[Order.CodingKeys.billingAddress.rawValue] = billingAddressEncoded
+                    case .fees:
+                        let feesEncoded = try order.fees.map { try $0.toDictionary() }
+                        params[Order.CodingKeys.feeLines.rawValue] = feesEncoded
                     }
                 }
             }()
@@ -263,11 +269,13 @@ public extension OrdersRemote {
         case customerNote
         case shippingAddress
         case billingAddress
+        case fees
     }
 
     /// Order fields supported for create
     ///
     enum CreateOrderField {
         case feeLines
+        case status
     }
 }

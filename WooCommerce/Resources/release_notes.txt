@@ -1,4 +1,4 @@
-- [*] Product List: Add support for product filtering by category. [https://github.com/woocommerce/woocommerce-ios/pull/5388]
-- [***] Push notifications are now supported for all connected stores. [https://github.com/woocommerce/woocommerce-ios/pull/5299]
-- [*] Fix: in Settings > Switch Store, tapping "Dismiss" after selecting a different store does not switch stores anymore. [https://github.com/woocommerce/woocommerce-ios/pull/5359]
+- [***] In-Person Payments: Now you can collect Simple Payments on the go. [https://github.com/woocommerce/woocommerce-ios/pull/5635]
+- [*] Products: After generating a new variation for a variable product, you are now taken directly to edit the new variation. [https://github.com/woocommerce/woocommerce-ios/pull/5649]
+- [*] Dashboard: the visitor count in the Today tab is now shown when Jetpack site stats are enabled.
 

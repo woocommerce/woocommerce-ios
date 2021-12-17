@@ -102,6 +102,18 @@ extension UIImage {
             .imageWithTintColor(.listBackground)!
     }
 
+    /// Green circle with checkmark
+    ///
+    static var checkCircleImage: UIImage {
+        return UIImage(named: "check-circle-done")!
+    }
+
+    /// Circle without checkmark
+    ///
+    static var checkEmptyCircleImage: UIImage {
+        return UIImage(named: "check-circle-empty")!
+    }
+
     /// WooCommerce Styled Checkmark
     ///
     static var checkmarkStyledImage: UIImage {
@@ -143,6 +155,12 @@ extension UIImage {
     ///
     static var cloudOutlineImage: UIImage {
         return UIImage.gridicon(.cloudOutline)
+    }
+
+    /// Connection Icon
+    ///
+    static var connectionImage: UIImage {
+        return UIImage(named: "icon-connection")!
     }
 
     /// Gear Icon - used in `UIBarButtonItem`
@@ -442,6 +460,12 @@ extension UIImage {
         return UIImage.gridicon(.cloud)
     }
 
+    /// Hub Menu tab icon
+    ///
+    static var hubMenu: UIImage {
+        return UIImage(named: "icon-hub-menu")!
+    }
+
     /// Menu Icon
     ///
     static var menuImage: UIImage {
@@ -588,6 +612,12 @@ extension UIImage {
             .imageWithTintColor(tintColor)!
     }
 
+    /// Simple Payments Icon
+    ///
+    static var simplePaymentsImage: UIImage {
+        return UIImage(named: "icon-simple-payments")!
+    }
+
     /// Work In Progress banner icon on the Products Tab
     ///
     static var workInProgressBanner: UIImage {
@@ -641,6 +671,18 @@ extension UIImage {
     ///
     static var plusBarButtonItemImage: UIImage {
         return UIImage(systemName: "plus", withConfiguration: Configurations.barButtonItemSymbol)!
+    }
+
+    /// Small Plus Icon
+    ///
+    static var plusSmallImage: UIImage {
+        return UIImage.gridicon(.plusSmall)
+    }
+
+    /// Small Minus Icon
+    ///
+    static var minusSmallImage: UIImage {
+        return UIImage.gridicon(.minusSmall)
     }
 
     /// Search Icon - used in `UIBarButtonItem`

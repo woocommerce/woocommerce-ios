@@ -547,8 +547,15 @@ private extension OrderDetailsViewController {
             }
         }
         shippingLabelFormVC.onLabelSave = { [weak self] in
-            guard let self = self else { return }
-            self.navigationController?.popToViewController(self, animated: true)
+            guard let self = self, let navigationController = self.navigationController, navigationController.viewControllers.contains(self) else {
+                // Navigate back to order details when presented from push notification
+                if let orderLoaderVC = self?.parent as? OrderLoaderViewController {
+                    self?.navigationController?.popToViewController(orderLoaderVC, animated: true)
+                }
+                return
+            }
+
+            navigationController.popToViewController(self, animated: true)
         }
         shippingLabelFormVC.hidesBottomBarWhenPushed = true
         navigationController?.show(shippingLabelFormVC, sender: self)
@@ -765,8 +772,8 @@ private extension OrderDetailsViewController {
                         self.viewModel.emailReceipt(params: receiptParameters, onContent: { emailContent in
                             self.emailReceipt(emailContent)
                         })
-                    }
-                    )
+                    }, noReceiptTitle: Localization.Payments.backToOrder,
+                       noReceiptAction: {})
                 }
             }
         )
@@ -959,12 +966,12 @@ private extension OrderDetailsViewController {
         let statusList = OrderStatusListViewController(siteID: viewModel.order.siteID,
                                                        status: viewModel.order.status)
 
-        statusList.didSelectCancel = {
-            statusList.dismiss(animated: true, completion: nil)
+        statusList.didSelectCancel = { [weak statusList] in
+            statusList?.dismiss(animated: true, completion: nil)
         }
 
-        statusList.didSelectApply = { (selectedStatus) in
-            statusList.dismiss(animated: true) {
+        statusList.didSelectApply = { [weak statusList] (selectedStatus) in
+            statusList?.dismiss(animated: true) {
                 self.setOrderStatus(to: selectedStatus)
             }
         }
@@ -974,10 +981,7 @@ private extension OrderDetailsViewController {
         present(navigationController, animated: true)
     }
 
-    func setOrderStatus(to newStatus: OrderStatusEnum?) {
-        guard let newStatus = newStatus else {
-            return
-        }
+    func setOrderStatus(to newStatus: OrderStatusEnum) {
         let orderID = viewModel.order.orderID
         let undoStatus = viewModel.order.status
         let done = updateOrderStatusAction(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, status: newStatus)
@@ -1088,6 +1092,11 @@ private extension OrderDetailsViewController {
             static let trackShipmentAction =
                 NSLocalizedString("Track shipment",
                                   comment: "Track shipment of a shipping label from the shipping label tracking more menu action sheet")
+        }
+
+        enum Payments {
+            static let backToOrder = NSLocalizedString("Back to Order",
+                                                       comment: "Button to dismiss modal overlay and go back to the order after a sucessful payment")
         }
     }
 

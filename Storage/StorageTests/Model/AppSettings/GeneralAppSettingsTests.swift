@@ -1,7 +1,7 @@
 import XCTest
 @testable import Storage
 
-class GeneralAppSettingsTests: XCTestCase {
+final class GeneralAppSettingsTests: XCTestCase {
 
     func test_it_returns_the_correct_status_of_a_stored_feedback() {
         // Given
@@ -9,7 +9,6 @@ class GeneralAppSettingsTests: XCTestCase {
         let settings = GeneralAppSettings(installationDate: nil,
                                           feedbacks: [.general: feedback],
                                           isViewAddOnsSwitchEnabled: false,
-                                          isSimplePaymentsSwitchEnabled: false,
                                           isOrderCreationSwitchEnabled: false,
                                           knownCardReaders: [])
 
@@ -25,7 +24,6 @@ class GeneralAppSettingsTests: XCTestCase {
         let settings = GeneralAppSettings(installationDate: nil,
                                           feedbacks: [:],
                                           isViewAddOnsSwitchEnabled: false,
-                                          isSimplePaymentsSwitchEnabled: false,
                                           isOrderCreationSwitchEnabled: false,
                                           knownCardReaders: [])
 
@@ -43,7 +41,6 @@ class GeneralAppSettingsTests: XCTestCase {
             installationDate: nil,
             feedbacks: [.general: existingFeedback],
             isViewAddOnsSwitchEnabled: false,
-            isSimplePaymentsSwitchEnabled: false,
             isOrderCreationSwitchEnabled: false,
             knownCardReaders: []
         )
@@ -61,7 +58,6 @@ class GeneralAppSettingsTests: XCTestCase {
         let settings = GeneralAppSettings(installationDate: nil,
                                           feedbacks: [:],
                                           isViewAddOnsSwitchEnabled: false,
-                                          isSimplePaymentsSwitchEnabled: false,
                                           isOrderCreationSwitchEnabled: false,
                                           knownCardReaders: [])
 
@@ -82,7 +78,6 @@ class GeneralAppSettingsTests: XCTestCase {
         let previousSettings = GeneralAppSettings(installationDate: currentDate,
                                                   feedbacks: feedbackSettings,
                                                   isViewAddOnsSwitchEnabled: true,
-                                                  isSimplePaymentsSwitchEnabled: true,
                                                   isOrderCreationSwitchEnabled: true,
                                                   knownCardReaders: readers,
                                                   lastEligibilityErrorInfo: eligibilityInfo)
@@ -101,7 +96,6 @@ class GeneralAppSettingsTests: XCTestCase {
         assertEqual(newSettings.knownCardReaders, readers)
         assertEqual(newSettings.lastEligibilityErrorInfo, eligibilityInfo)
         assertEqual(newSettings.isViewAddOnsSwitchEnabled, false)
-        assertEqual(newSettings.isSimplePaymentsSwitchEnabled, true)
         assertEqual(newSettings.isOrderCreationSwitchEnabled, true)
     }
 }

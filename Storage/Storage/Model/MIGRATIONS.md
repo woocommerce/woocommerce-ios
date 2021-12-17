@@ -2,6 +2,13 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 59 (Release 8.2.0.0)
+- @jaclync 2021-11-30
+    - Added `jetpackConnectionActivePlugins` attribute to `Site` entity.
+
+- @itsmeichigo 2021-12-04
+    - Added `adminURL` attribute to `Site` entity.
+
 ## Model 58 (Release 8.1.0.0)
 - @jaclync 2021-11-15
 - Added `isJetpackConnected` attribute to `Site` entity.

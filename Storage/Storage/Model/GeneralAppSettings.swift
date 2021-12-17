@@ -24,10 +24,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let isViewAddOnsSwitchEnabled: Bool
 
-    /// The state(`true` or `false`) for the Simple Payments feature switch.
-    ///
-    public let isSimplePaymentsSwitchEnabled: Bool
-
     /// The state(`true` or `false`) for the Order Creation feature switch.
     ///
     public let isOrderCreationSwitchEnabled: Bool
@@ -41,20 +37,23 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let lastEligibilityErrorInfo: EligibilityErrorInfo?
 
+    /// The last time the Jetpack benefits banner is dismissed.
+    public let lastJetpackBenefitsBannerDismissedTime: Date?
+
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
-                isSimplePaymentsSwitchEnabled: Bool,
                 isOrderCreationSwitchEnabled: Bool,
                 knownCardReaders: [String],
-                lastEligibilityErrorInfo: EligibilityErrorInfo? = nil) {
+                lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
+                lastJetpackBenefitsBannerDismissedTime: Date? = nil) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
-        self.isSimplePaymentsSwitchEnabled = isSimplePaymentsSwitchEnabled
         self.isOrderCreationSwitchEnabled = isOrderCreationSwitchEnabled
         self.knownCardReaders = knownCardReaders
         self.lastEligibilityErrorInfo = lastEligibilityErrorInfo
+        self.lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime
     }
 
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
@@ -78,7 +77,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             installationDate: installationDate,
             feedbacks: updatedFeedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
-            isSimplePaymentsSwitchEnabled: isSimplePaymentsSwitchEnabled,
             isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo
@@ -96,10 +94,10 @@ extension GeneralAppSettings {
         self.installationDate = try container.decodeIfPresent(Date.self, forKey: .installationDate)
         self.feedbacks = try container.decodeIfPresent([FeedbackType: FeedbackSettings].self, forKey: .feedbacks) ?? [:]
         self.isViewAddOnsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isViewAddOnsSwitchEnabled) ?? false
-        self.isSimplePaymentsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSimplePaymentsSwitchEnabled) ?? false
         self.isOrderCreationSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isOrderCreationSwitchEnabled) ?? false
         self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []
         self.lastEligibilityErrorInfo = try container.decodeIfPresent(EligibilityErrorInfo.self, forKey: .lastEligibilityErrorInfo)
+        self.lastJetpackBenefitsBannerDismissedTime = try container.decodeIfPresent(Date.self, forKey: .lastJetpackBenefitsBannerDismissedTime)
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

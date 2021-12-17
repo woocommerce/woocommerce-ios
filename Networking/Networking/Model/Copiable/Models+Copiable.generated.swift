@@ -1150,11 +1150,13 @@ extension Site {
         name: CopiableProp<String> = .copy,
         description: CopiableProp<String> = .copy,
         url: CopiableProp<String> = .copy,
+        adminURL: CopiableProp<String> = .copy,
         plan: CopiableProp<String> = .copy,
         isJetpackThePluginInstalled: CopiableProp<Bool> = .copy,
         isJetpackConnected: CopiableProp<Bool> = .copy,
         isWooCommerceActive: CopiableProp<Bool> = .copy,
         isWordPressStore: CopiableProp<Bool> = .copy,
+        jetpackConnectionActivePlugins: CopiableProp<[String]> = .copy,
         timezone: CopiableProp<String> = .copy,
         gmtOffset: CopiableProp<Double> = .copy
     ) -> Site {
@@ -1162,11 +1164,13 @@ extension Site {
         let name = name ?? self.name
         let description = description ?? self.description
         let url = url ?? self.url
+        let adminURL = adminURL ?? self.adminURL
         let plan = plan ?? self.plan
         let isJetpackThePluginInstalled = isJetpackThePluginInstalled ?? self.isJetpackThePluginInstalled
         let isJetpackConnected = isJetpackConnected ?? self.isJetpackConnected
         let isWooCommerceActive = isWooCommerceActive ?? self.isWooCommerceActive
         let isWordPressStore = isWordPressStore ?? self.isWordPressStore
+        let jetpackConnectionActivePlugins = jetpackConnectionActivePlugins ?? self.jetpackConnectionActivePlugins
         let timezone = timezone ?? self.timezone
         let gmtOffset = gmtOffset ?? self.gmtOffset
 
@@ -1175,11 +1179,13 @@ extension Site {
             name: name,
             description: description,
             url: url,
+            adminURL: adminURL,
             plan: plan,
             isJetpackThePluginInstalled: isJetpackThePluginInstalled,
             isJetpackConnected: isJetpackConnected,
             isWooCommerceActive: isWooCommerceActive,
             isWordPressStore: isWordPressStore,
+            jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
             timezone: timezone,
             gmtOffset: gmtOffset
         )
@@ -1299,6 +1305,39 @@ extension SystemPlugin {
             authorUrl: authorUrl,
             networkActivated: networkActivated,
             active: active
+        )
+    }
+}
+
+extension WordPressMedia {
+    public func copy(
+        mediaID: CopiableProp<Int64> = .copy,
+        date: CopiableProp<Date> = .copy,
+        slug: CopiableProp<String> = .copy,
+        mimeType: CopiableProp<String> = .copy,
+        src: CopiableProp<String> = .copy,
+        alt: NullableCopiableProp<String> = .copy,
+        details: NullableCopiableProp<WordPressMedia.MediaDetails> = .copy,
+        title: NullableCopiableProp<WordPressMedia.MediaTitle> = .copy
+    ) -> WordPressMedia {
+        let mediaID = mediaID ?? self.mediaID
+        let date = date ?? self.date
+        let slug = slug ?? self.slug
+        let mimeType = mimeType ?? self.mimeType
+        let src = src ?? self.src
+        let alt = alt ?? self.alt
+        let details = details ?? self.details
+        let title = title ?? self.title
+
+        return WordPressMedia(
+            mediaID: mediaID,
+            date: date,
+            slug: slug,
+            mimeType: mimeType,
+            src: src,
+            alt: alt,
+            details: details,
+            title: title
         )
     }
 }

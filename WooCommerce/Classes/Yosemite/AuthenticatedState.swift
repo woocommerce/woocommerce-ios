@@ -137,8 +137,13 @@ private extension AuthenticatedState {
     func resetServices() {
         let resetStoredProviders = AppSettingsAction.resetStoredProviders(onCompletion: nil)
         let resetStoredStatsVersionStates = AppSettingsAction.resetStatsVersionStates
+        let resetOrdersSettings = AppSettingsAction.resetOrdersSettings
         let resetProductsSettings = AppSettingsAction.resetProductsSettings
         let resetGeneralStoreSettings = AppSettingsAction.resetGeneralStoreSettings
-        ServiceLocator.stores.dispatch([resetStoredProviders, resetStoredStatsVersionStates, resetProductsSettings, resetGeneralStoreSettings])
+        ServiceLocator.stores.dispatch([resetStoredProviders,
+                                        resetStoredStatsVersionStates,
+                                        resetOrdersSettings,
+                                        resetProductsSettings,
+                                        resetGeneralStoreSettings])
     }
 }

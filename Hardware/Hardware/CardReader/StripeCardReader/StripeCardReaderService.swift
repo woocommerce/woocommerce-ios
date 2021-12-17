@@ -491,6 +491,7 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
             }
         } else {
             softwareUpdateSubject.send(.completed)
+            connectedReadersSubject.send([CardReader(reader: reader)])
             softwareUpdateSubject.send(.none)
         }
     }
@@ -520,6 +521,31 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
         default:
             break
         }
+    }
+
+    /// Receive changes in the reader battery level. Note that the SDK will call this delegate
+    /// not more frequently than every 10 minutes and will not report battery level during payment collection.
+    /// See `https://github.com/stripe/stripe-terminal-ios/issues/121#issuecomment-966589886`
+    ///
+    public func reader(_ reader: Reader, didReportBatteryLevel batteryLevel: Float, status: BatteryStatus, isCharging: Bool) {
+        let connectedReaders = connectedReadersSubject.value
+
+        guard let connectedReader = connectedReaders.first else {
+            return
+        }
+
+        let connectedReaderWithUpdatedBatteryLevel = CardReader(
+            serial: connectedReader.serial,
+            vendorIdentifier: connectedReader.vendorIdentifier,
+            name: connectedReader.name,
+            status: connectedReader.status,
+            softwareVersion: connectedReader.softwareVersion,
+            batteryLevel: batteryLevel,
+            readerType: connectedReader.readerType,
+            locationId: connectedReader.locationId
+        )
+
+        connectedReadersSubject.send([connectedReaderWithUpdatedBatteryLevel])
     }
 }
 

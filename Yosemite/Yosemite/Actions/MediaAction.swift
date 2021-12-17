@@ -14,12 +14,12 @@ public enum MediaAction: Action {
     case retrieveMediaLibrary(siteID: Int64,
         pageNumber: Int,
         pageSize: Int,
-        onCompletion: (_ mediaItems: [Media], _ error: Error?) -> Void)
+        onCompletion: (Result<[Media], Error>) -> Void)
 
     /// Uploads an exportable media asset to the site's WP Media Library.
     ///
     case uploadMedia(siteID: Int64,
         productID: Int64,
         mediaAsset: ExportableAsset,
-        onCompletion: (_ uploadedMedia: Media?, _ error: Error?) -> Void)
+        onCompletion: (Result<Media, Error>) -> Void)
 }

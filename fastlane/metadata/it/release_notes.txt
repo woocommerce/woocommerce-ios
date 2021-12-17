@@ -1,3 +1,5 @@
-Alcuni venditori hanno riscontrato problemi durante il caricamento dei dettagli dell'ordine a causa di problemi tecnici relativi al modo in cui i nomi dei campi nell'API REST vengono riordinati. Abbiamo apportato una correzione che dovrebbe risolverli per te nel momento in cui li riscontri.
+È stato effettuato un aggiornamento della scheda degli ordini a questa versione. Le schede ora sono sparite e ti abbiamo fornito un filtro per stato oppure l'opzione per intervallo di date. Alla base di ciò c'è il feedback diretto che ci hai inviato nel corso degli anni e sappiamo che ti piacerà la modifica.
 
-Questo rilascio contiene molte altre correzioni basate sul tuo feedback. Continua a inviarci feedback: siamo lieti di ascoltarli.
+Abbiamo risolto un possibile arresto anomalo durante la creazione di un'etichetta di spedizione su un ordine da una notifica push. Abbiamo anche migliorato l'esperienza di accesso con il tuo gestore di password. Il nome utente e la password memorizzati per WordPress.com nel tuo strumento per la gestione saranno in cima all'elenco.
+
+Come sempre, continua a inviarci il tuo feedback. Grazie per aver usato WooCommerce.

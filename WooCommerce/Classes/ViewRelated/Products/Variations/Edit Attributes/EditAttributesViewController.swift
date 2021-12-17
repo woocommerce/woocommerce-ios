@@ -16,7 +16,7 @@ final class EditAttributesViewController: UIViewController {
 
     /// Assign this closure to be notified after a variation is created.
     ///
-    var onVariationCreation: ((Product) -> Void)?
+    var onVariationCreation: ((Product, ProductVariation) -> Void)?
 
     /// Assign this closure to be notified after an attribute  is created or updated.
     ///
@@ -126,11 +126,11 @@ extension EditAttributesViewController {
         viewModel.generateVariation { [onVariationCreation, noticePresenter] result in
             progressViewController.dismiss(animated: true)
 
-            guard let variation = try? result.get() else {
+            guard let (product, variation) = try? result.get() else {
                 return noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
             }
 
-            onVariationCreation?(variation)
+            onVariationCreation?(product, variation)
         }
     }
 

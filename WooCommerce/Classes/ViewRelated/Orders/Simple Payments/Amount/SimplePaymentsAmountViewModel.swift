@@ -1,5 +1,7 @@
 import Foundation
 import Yosemite
+import Combine
+import Experiments
 
 /// View Model for the `SimplePaymentsAmount` view.
 ///
@@ -18,20 +20,29 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     @Published private(set) var loading: Bool = false
 
-    /// Defines the current notice that should be shown.
-    /// Defaults to `nil`.
+    /// Defines if the view should navigate to the summary view.
+    /// Setting it to `false` will `nil` the summary view model.
     ///
-    @Published var presentNotice: Notice?
+    @Published var navigateToSummary: Bool = false {
+        didSet {
+            if !navigateToSummary && oldValue != navigateToSummary {
+                summaryViewModel = nil
+            }
+        }
+    }
 
-    /// Assign this closure to be notified when a new order is created
-    ///
-    var onOrderCreated: (Order) -> Void = { _ in }
-
-    /// Returns true when amount has less than two characters.
-    /// Less than two, because `$` should be the first character.
+    /// Returns true when the amount is not a positive number.
     ///
     var shouldDisableDoneButton: Bool {
-        amount.count < 2
+        let decimalAmount = (currencyFormatter.convertToDecimal(from: amount) ?? .zero) as Decimal
+        return decimalAmount <= .zero
+    }
+
+    /// Defines if the view actions should be disabled.
+    /// Currently true while a network operation is happening.
+    ///
+    var disableViewActions: Bool {
+        loading
     }
 
     /// Dynamically builds the amount placeholder based on the store decimal separator.
@@ -40,6 +51,15 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         // TODO: We are appending the currency symbol always to the left, we should use `CurrencyFormatter` when releasing to more countries.
         storeCurrencySymbol + "0" + storeCurrencySettings.decimalSeparator + "00"
     }()
+
+    /// Retains the SummaryViewModel.
+    /// Assigning it will set `navigateToSummary`.
+    ///
+    private(set) var summaryViewModel: SimplePaymentsSummaryViewModel? {
+        didSet {
+            navigateToSummary = summaryViewModel != nil
+        }
+    }
 
     /// Current store ID
     ///
@@ -53,9 +73,17 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     private let userLocale: Locale
 
+    /// Transmits notice presentation intents.
+    ///
+    private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
+
     /// Current store currency settings
     ///
     private let storeCurrencySettings: CurrencySettings
+
+    /// Currency formatter for the provided amount
+    ///
+    private let currencyFormatter: CurrencyFormatter
 
     /// Current store currency symbol
     ///
@@ -68,13 +96,16 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          locale: Locale = Locale.autoupdatingCurrent,
+         presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.userLocale = locale
+        self.presentNoticeSubject = presentNoticeSubject
         self.storeCurrencySettings = storeCurrencySettings
         self.storeCurrencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
+        self.currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
         self.analytics = analytics
     }
 
@@ -82,19 +113,23 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     /// Creates a simple payments order.
     ///
     func createSimplePaymentsOrder() {
+
         loading = true
-        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount) { [weak self] result in
+
+        // Order created as taxable to delegate taxes calculation to the API.
+        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount, taxable: true) { [weak self] result in
             guard let self = self else { return }
             self.loading = false
 
             switch result {
             case .success(let order):
-                self.onOrderCreated(order)
-                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCompleted(amount: order.total))
+                self.summaryViewModel = SimplePaymentsSummaryViewModel(order: order,
+                                                                       providedAmount: self.amount,
+                                                                       presentNoticeSubject: self.presentNoticeSubject)
 
             case .failure(let error):
-                self.presentNotice = .error
-                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed())
+                self.presentNoticeSubject.send(.error(Localization.creationError))
+                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed(source: .amount))
                 DDLogError("⛔️ Error creating simple payments order: \(error)")
             }
         }
@@ -105,10 +140,6 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     func userDidCancelFlow() {
         analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCanceled())
-    }
-
-    func createSummaryViewModel() -> SimplePaymentsSummaryViewModel {
-        SimplePaymentsSummaryViewModel(providedAmount: amount)
     }
 }
 
@@ -153,10 +184,10 @@ private extension SimplePaymentsAmountViewModel {
     }
 }
 
-// MARK: Definitions
-extension SimplePaymentsAmountViewModel {
-    /// Representation of possible notices that can be displayed
-    enum Notice: Equatable {
-        case error
+// MARK: Constants
+private extension SimplePaymentsAmountViewModel {
+    enum Localization {
+        static let creationError = NSLocalizedString("There was an error creating the order",
+                                                     comment: "Notice text after failing to create a simple payments order.")
     }
 }

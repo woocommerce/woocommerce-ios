@@ -12,6 +12,8 @@ extension WooTab {
             return 2
         case .reviews:
             return 3
+        case .hubMenu:
+            return 4
         }
     }
 }

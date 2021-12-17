@@ -1,4 +1,6 @@
+import Codegen
 import XCTest
+import Yosemite
 
 import protocol Storage.StorageType
 import protocol Storage.StorageManagerType
@@ -15,15 +17,19 @@ final class SettingsViewModelTests: XCTestCase {
     ///
     private var stores: MockStoresManager!
 
+    private var sessionManager: SessionManager!
+
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
-        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        sessionManager = .makeForTesting(authenticated: true)
+        stores = MockStoresManager(sessionManager: sessionManager)
     }
 
     override func tearDown() {
         storageManager = nil
         stores = nil
+        sessionManager = nil
         super.tearDown()
     }
 
@@ -36,6 +42,55 @@ final class SettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.sections.count > 0)
+    }
+
+    func test_sections_contain_install_jetpack_row_when_JCP_support_feature_flag_is_on_and_default_site_is_jcp() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isJetpackConnectionPackageSupportOn: true)
+        let site = Site.fake().copy(isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        sessionManager.defaultSite = site
+        let viewModel = SettingsViewModel(
+            stores: stores,
+            storageManager: storageManager,
+            featureFlagService: featureFlagService)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
+    }
+
+    func test_sections_do_not_contain_install_jetpack_row_when_JCP_support_feature_flag_is_on_and_default_site_is_not_jcp() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isJetpackConnectionPackageSupportOn: true)
+        let site = Site.fake().copy(isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        sessionManager.defaultSite = site
+        let viewModel = SettingsViewModel(
+            stores: stores,
+            storageManager: storageManager,
+            featureFlagService: featureFlagService)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
+    }
+
+    func test_sections_do_not_contain_install_jetpack_row_when_JCP_support_feature_flag_is_off() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isJetpackConnectionPackageSupportOn: false)
+        let viewModel = SettingsViewModel(
+            stores: stores,
+            storageManager: storageManager,
+            featureFlagService: featureFlagService)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
     }
 
     func test_refresh_view_content_method_is_invoked_after_view_did_load() {

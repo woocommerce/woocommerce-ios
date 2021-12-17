@@ -1,3 +1,5 @@
-Algunos vendedores tenían problemas al cargar los datos del pedido debido a un problema técnico relacionado con la forma en que se ordenan los nombres de los campos en la API de REST. Hemos implementado una corrección que debería solucionar este problema (si este es tu caso).
+Con esta versión, se ha actualizado la pestaña de pedidos. Las pestañas ya no están, y te ofrecemos la opción de filtrar por estado o por rango de fechas. Este cambio se lleva a cabo a raíz de los comentarios directos que hemos recibido a lo largo de los años, así que estamos seguros de que te gustará.
 
-Esta versión tiene más correcciones que se han basado en vuestros comentarios. Sigue enviando tus comentarios: ¡te escuchamos!
+Hemos corregido un posible error que se producía al crear una etiqueta de envío en un pedido desde una notificación push. También hemos mejorado la experiencia de acceso con el gestor de contraseñas. El nombre de usuario y la contraseña de WordPress.com que tienes guardados en tu gestor aparecerán en la parte superior de la lista.
+
+Como siempre, sigue enviándonos tus comentarios. ¡Gracias por usar WooCommerce!

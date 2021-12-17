@@ -33,6 +33,14 @@ final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
 
     let bottomSubtitle: String? = Localization.tapInsertOrSwipe
 
+    var accessibilityLabel: String? {
+        guard let bottomTitle = bottomTitle else {
+            return topTitle
+        }
+
+        return topTitle + bottomTitle
+    }
+
     init(name: String, amount: String) {
         self.name = name
         self.amount = amount

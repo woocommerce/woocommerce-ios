@@ -232,6 +232,8 @@ class PluginListViewModelTests: XCTestCase {
             switch action {
             case .synchronizeSitePlugins(let siteID, _):
                 triggeredSiteID = siteID
+            default:
+                break
             }
         }
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
@@ -250,6 +252,8 @@ class PluginListViewModelTests: XCTestCase {
             switch action {
             case .synchronizeSitePlugins(_, let completion):
                 completion(.success(()))
+            default:
+                break
             }
         }
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
@@ -272,6 +276,8 @@ class PluginListViewModelTests: XCTestCase {
             switch action {
             case .synchronizeSitePlugins(_, let completion):
                 completion(.failure(MockPluginError.mockError))
+            default:
+                break
             }
         }
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)

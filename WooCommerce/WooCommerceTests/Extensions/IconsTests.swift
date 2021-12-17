@@ -59,6 +59,14 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.checkmarkStyledImage)
     }
 
+    func testCheckCircleDoneImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.checkCircleImage)
+    }
+
+    func testCheckCircleEmptyImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.checkEmptyCircleImage)
+    }
+
     func testChevronImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.chevronImage)
     }
@@ -77,6 +85,10 @@ final class IconsTests: XCTestCase {
 
     func testCloseButtonIconIsNotNil() {
         XCTAssertNotNil(UIImage.closeButton)
+    }
+
+    func testConnectionIconIsNotNil() {
+        XCTAssertNotNil(UIImage.connectionImage)
     }
 
     func testGearBarButtonItemImageIconIsNotNil() {
@@ -234,6 +246,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.mailImage)
     }
 
+    func test_minus_small_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.minusSmallImage)
+    }
+
     func testMoreImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.moreImage)
     }
@@ -304,6 +320,10 @@ final class IconsTests: XCTestCase {
 
     func testPlusBarButtonItemImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.plusBarButtonItemImage)
+    }
+
+    func test_plus_small_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.plusSmallImage)
     }
 
     func testPriceImageIconIsNotNil() {
@@ -485,6 +505,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.cloudImage)
     }
 
+    func testHubMenuIconIsNotNil() {
+        XCTAssertNotNil(UIImage.hubMenu)
+    }
+
     func testMenuImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.menuImage)
     }
@@ -543,5 +567,9 @@ final class IconsTests: XCTestCase {
 
     func test_cardReaderManualIcon_is_not_nil() {
         XCTAssertNotNil(UIImage.cardReaderManualIcon)
+    }
+
+    func test_simplePaymentsImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.simplePaymentsImage)
     }
 }

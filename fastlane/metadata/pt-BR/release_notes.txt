@@ -1,3 +1,5 @@
-Alguns comerciantes não estavam conseguindo carregar detalhes de pedidos devido a um problema técnico na forma como os nomes de campo eram ordenados na API REST. Fizemos uma correção para que você não passe mais por isso.
+A guia de pedidos recebeu uma atualização nesta versão. Agora, as guias não existem mais, e você tem a opção de filtrar por status ou intervalo de datas. Essa decisão foi baseada no seu feedback direto, ao longo dos anos. Temos certeza de que você vai adorar a mudança!
 
-Esta versão contém várias outras correções feitas com base no seu feedback. Continue compartilhando seu feedback conosco. Estamos ouvindo.
+Corrigimos uma possível falha na criação de uma etiqueta de envio de um pedido, a partir de uma notificação por push. Melhoramos também a experiência de login usando o gerenciador de senhas. Seu nome de usuário e senha do WordPress.com armazenados no gerenciador ficarão na parte superior da lista.
+
+Como de costume, continue nos enviando o seu feedback. Obrigado por utilizar o WooCommerce!

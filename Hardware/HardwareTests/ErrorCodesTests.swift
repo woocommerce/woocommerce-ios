@@ -135,7 +135,7 @@ final class CardReaderServiceErrorTests: XCTestCase {
     }
 
     func test_stripe_payment_declined_by_processor_api_maps_to_expected_error() {
-        XCTAssertEqual(.paymentDeclinedByPaymentProcessorAPI, domainError(stripeCode: 6000))
+        XCTAssertEqual(.paymentDeclinedByPaymentProcessorAPI(declineReason: .unknown), domainError(stripeCode: 6000))
     }
 
     func test_stripe_payment_declined_by_card_reader_maps_to_expected_error() {

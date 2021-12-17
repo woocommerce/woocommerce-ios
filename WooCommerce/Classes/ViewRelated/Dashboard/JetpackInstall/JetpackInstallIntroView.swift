@@ -1,31 +1,21 @@
 import SwiftUI
 
-/// Hosting controller wrapper for `JetpackInstallIntroView`
-///
-final class JetpackInstallHostingController: UIHostingController<JetpackInstallIntroView> {
-    init(siteURL: String) {
-        super.init(rootView: JetpackInstallIntroView(siteURL: siteURL))
-    }
-
-    required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    func setDismissAction(_ dismissAction: @escaping () -> Void) {
-        rootView.dismissAction = dismissAction
-    }
-}
-
 /// Displays the intro view for the Jetpack install flow.
 ///
 struct JetpackInstallIntroView: View {
     // Closure invoked when Close button is tapped
-    var dismissAction: () -> Void = {}
+    private let dismissAction: () -> Void
 
+    // Closure invoked when Get Started button is tapped
+    private let startAction: () -> Void
+
+    // URL of the site to install Jetpack to
     private let siteURL: String
 
-    init(siteURL: String) {
+    init(siteURL: String, dismissAction: @escaping () -> Void, startAction: @escaping () -> Void) {
         self.siteURL = siteURL
+        self.dismissAction = dismissAction
+        self.startAction = startAction
     }
 
     private var descriptionAttributedString: NSAttributedString {
@@ -82,9 +72,7 @@ struct JetpackInstallIntroView: View {
             Spacer()
 
             // Primary Button to install Jetpack
-            Button(Localization.installAction, action: {
-                // TODO: Show main install screen
-            })
+            Button(Localization.installAction, action: startAction)
                 .buttonStyle(PrimaryButtonStyle())
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, Constants.actionButtonMargin)
@@ -115,11 +103,11 @@ private extension JetpackInstallIntroView {
 
 struct JetpackInstallIntroView_Previews: PreviewProvider {
     static var previews: some View {
-        JetpackInstallIntroView(siteURL: "automattic.com")
+        JetpackInstallIntroView(siteURL: "automattic.com", dismissAction: {}, startAction: {})
             .preferredColorScheme(.light)
             .previewLayout(.fixed(width: 414, height: 780))
 
-        JetpackInstallIntroView(siteURL: "automattic.com")
+        JetpackInstallIntroView(siteURL: "automattic.com", dismissAction: {}, startAction: {})
             .preferredColorScheme(.dark)
             .previewLayout(.fixed(width: 800, height: 400))
     }

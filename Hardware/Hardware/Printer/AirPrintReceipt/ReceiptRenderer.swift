@@ -103,6 +103,7 @@ private extension ReceiptRenderer {
     private func configureFormatter() {
         let formatter = UIMarkupTextPrintFormatter(markupText: htmlContent())
         formatter.perPageContentInsets = .init(top: 0, left: Constants.margin, bottom: 0, right: Constants.margin)
+        formatter.maximumContentWidth = content.preferredPageSizeForPrinting.width - 2 * Constants.margin
 
         addPrintFormatter(formatter, startingAtPageAt: 0)
     }
@@ -110,7 +111,21 @@ private extension ReceiptRenderer {
     private func summaryTable() -> String {
         var summaryContent = "<table>"
         for line in content.lineItems {
-            let stripedTitle = line.title.htmlStripped()
+            var variations = ""
+            if !line.attributes.isEmpty {
+                variations.append(
+                    line.attributes.map {
+                            "\($0.name) \($0.value)".trimmingCharacters(in: .whitespaces)
+                        }
+                        .joined(separator: ", ")
+                )
+            }
+
+            var title = line.title
+            if !variations.isEmpty {
+                title.append(". \(variations.trimmingCharacters(in: .whitespaces))")
+            }
+            let stripedTitle = title.htmlStripped()
             summaryContent += "<tr><td>\(stripedTitle) × \(line.quantity)</td><td>\(line.amount) \(content.parameters.currency.uppercased())</td></tr>"
         }
         summaryContent += totalRows()

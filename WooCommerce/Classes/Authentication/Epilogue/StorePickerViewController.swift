@@ -4,6 +4,7 @@ import UIKit
 import WordPressAuthenticator
 import WordPressUI
 import Yosemite
+import Experiments
 
 
 typealias SelectStoreClosure = () -> Void
@@ -150,6 +151,7 @@ final class StorePickerViewController: UIViewController {
         switch configuration {
         case .login:
             startListeningToNotifications()
+            startABTesting()
         case .switchingStores:
             secondaryActionButton.isHidden = true
         case .listStores:
@@ -274,10 +276,22 @@ private extension StorePickerViewController {
 //
 private extension StorePickerViewController {
     func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let syncStartTime = Date()
+        let isJetpackConnectionPackageSupported = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
         let action = AccountAction
             .synchronizeSites(selectedSiteID: currentlySelectedSite?.siteID,
-                              isJetpackConnectionPackageSupported: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport),
-                              onCompletion: onCompletion)
+                              isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported) { result in
+                switch result {
+                case .success(let containsJCPSites):
+                    if containsJCPSites {
+                        let syncDuration = round(Date().timeIntervalSince(syncStartTime) * 1000)
+                        ServiceLocator.analytics.track(.jetpackCPSitesFetched, withProperties: ["duration": syncDuration])
+                    }
+                    onCompletion(.success(()))
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                }
+            }
         ServiceLocator.stores.dispatch(action)
     }
 }
@@ -334,15 +348,15 @@ private extension StorePickerViewController {
             return
         }
 
-        // If a site address was passed in credentials, select it
-        if let siteAddress = ServiceLocator.stores.sessionManager.defaultCredentials?.siteAddress,
-            let site = sites.filter({ $0.url == siteAddress }).first {
+        // If there is a defaultSite already set, select it
+        if let site = ServiceLocator.stores.sessionManager.defaultSite {
             currentlySelectedSite = site
             return
         }
 
-        // If there is a defaultSite already set, select it
-        if let site = ServiceLocator.stores.sessionManager.defaultSite {
+        // If a site address was passed in credentials, select it
+        if let siteAddress = ServiceLocator.stores.sessionManager.defaultCredentials?.siteAddress,
+            let site = sites.filter({ $0.url == siteAddress }).first {
             currentlySelectedSite = site
             return
         }
@@ -523,6 +537,15 @@ private extension StorePickerViewController {
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         present(fancyAlert, animated: true)
+    }
+
+    /// Refreshes the AB testing assignments (refresh is needed after a user logs in)
+    ///
+    func startABTesting() {
+        guard ServiceLocator.stores.isAuthenticated else {
+            return
+        }
+        ABTest.start()
     }
 }
 

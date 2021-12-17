@@ -6,7 +6,8 @@ public extension SystemStatus {
     struct Page: Decodable {
         public let pageName, pageID: String
         public let pageSet, pageExists, pageVisible: Bool
-        public let shortcode, block: String
+        public let shortcode: String
+        public let block: String?
         public let shortcodeRequired, shortcodePresent, blockPresent, blockRequired: Bool
 
         enum CodingKeys: String, CodingKey {

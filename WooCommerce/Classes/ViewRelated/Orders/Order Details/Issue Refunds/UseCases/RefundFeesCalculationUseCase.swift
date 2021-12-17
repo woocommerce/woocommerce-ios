@@ -1,11 +1,19 @@
 import Foundation
 import Yosemite
-
+/// Calculates the Order fee values(subtotal, total and tax) to be refunded.
+///
 struct RefundFeesCalculationUseCase {
+
+    /// Order Fees and their quantities to be refunded
+    ///
     let fees: [OrderFeeLine]
 
+    /// Formatter to convert string values to decimal values
+    ///
     let currencyFormatter: CurrencyFormatter
 
+    /// Calculates the Order fee values(subtotal, total and tax) to be refunded.
+    ///
     func calculateRefundValues() -> RefundValues {
         let totalTaxes = fees.compactMap {
             currencyFormatter.convertToDecimal(from: $0.totalTax) as Decimal?

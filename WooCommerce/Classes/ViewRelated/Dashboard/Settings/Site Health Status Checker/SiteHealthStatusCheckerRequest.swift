@@ -6,21 +6,21 @@ struct SiteHealthStatusCheckerRequest: Identifiable {
 
     /// Name of the action. Eg. `Orders retrieve`
     ///
-    var actionName: String
+    let actionName: String
 
     /// Name of the endpoint. Eg. `Orders`
     ///
-    var endpointName: String
+    let endpointName: String
 
     /// Result of the response
     ///
-    var success: Bool
+    let success: Bool
 
     /// The error, if available
     ///
-    var error: Error?
+    let error: Error?
 
     /// The time took for the request
     ///
-    var time: TimeInterval?
+    let time: TimeInterval?
 }

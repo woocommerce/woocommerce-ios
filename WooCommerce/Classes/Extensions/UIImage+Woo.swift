@@ -160,8 +160,7 @@ extension UIImage {
     /// Coooy Icon - used in `UIBarButtonItem`
     ///
     static var copyBarButtonItemImage: UIImage {
-        return UIImage(systemName: "doc.on.doc", withConfiguration: Configurations.barButtonItemSymbol)!
-            .imageFlippedForRightToLeftLayoutDirection()
+        return UIImage(systemName: "doc.on.doc")!
     }
 
     /// Connection Icon
@@ -702,7 +701,7 @@ extension UIImage {
     /// Share Icon - used in `UIBarButtonItem`
     ///
     static var shareBarButtonItemImage: UIImage {
-        return UIImage(systemName: "square.and.arrow.up", withConfiguration: Configurations.barButtonItemSymbol)!
+        return UIImage(systemName: "square.and.arrow.up")!
     }
 
     /// Shipping Icon

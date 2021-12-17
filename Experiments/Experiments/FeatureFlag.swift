@@ -61,4 +61,8 @@ public enum FeatureFlag: Int {
     /// Displays the System Status Report on Settings/Help screen
     ///
     case systemStatusReport
+
+    /// Barcode scanner for product SKU input
+    ///
+    case productSKUInputScanner
 }

@@ -7,6 +7,7 @@ import Networking
 @MainActor final class SiteHealthStatusCheckerViewModel: ObservableObject {
 
     private typealias RequestCheckedContinuation = CheckedContinuation<SiteHealthStatusCheckerRequest, Never>
+    private typealias RequestCheckedContinuationWithID = CheckedContinuation<(SiteHealthStatusCheckerRequest, Int64?), Never>
 
     let siteID: Int64
     let network: AlamofireNetwork
@@ -36,6 +37,13 @@ import Networking
         var requests: [SiteHealthStatusCheckerRequest] = []
         requests.append(await fetchOrders())
 
+        let productsRequest = await fetchProducts()
+        requests.append(productsRequest.0)
+
+        if let productId = productsRequest.1 {
+            requests.append(await fetchSingleProduct(productId: productId))
+        }
+
         isLoading = false
         return requests
     }
@@ -54,6 +62,48 @@ private extension SiteHealthStatusCheckerViewModel {
                 let timeInterval = Date().timeIntervalSince(startTime)
                 let request = SiteHealthStatusCheckerRequest(actionName: "Fetch All Orders",
                                                              endpointName: "/orders",
+                                                             success: result.isSuccess,
+                                                             error: result.failure,
+                                                             time: timeInterval)
+                continuation.resume(returning: request)
+            }
+        })
+    }
+
+    func fetchProducts() async -> (SiteHealthStatusCheckerRequest, Int64?) {
+        let startTime = Date()
+        let remote = ProductsRemote(network: network)
+
+        return await withCheckedContinuation({
+            (continuation: RequestCheckedContinuationWithID) in
+            remote.loadAllProducts(for: siteID) { result in
+                let timeInterval = Date().timeIntervalSince(startTime)
+                let request = SiteHealthStatusCheckerRequest(actionName: "Fetch All Products",
+                                                             endpointName: "/products",
+                                                             success: result.isSuccess,
+                                                             error: result.failure,
+                                                             time: timeInterval)
+                switch result {
+                case .success(let products):
+                    continuation.resume(returning: (request, products.randomElement()?.productID))
+                    break
+                case .failure(_):
+                    continuation.resume(returning: (request, nil))
+                }
+            }
+        })
+    }
+
+    func fetchSingleProduct(productId: Int64) async -> SiteHealthStatusCheckerRequest {
+        let startTime = Date()
+        let remote = ProductsRemote(network: network)
+
+        return await withCheckedContinuation({
+            (continuation: RequestCheckedContinuation) in
+            remote.loadProduct(for: siteID, productID: productId) { result in
+                let timeInterval = Date().timeIntervalSince(startTime)
+                let request = SiteHealthStatusCheckerRequest(actionName: "Fetch Single Product",
+                                                             endpointName: "/products/\(productId)",
                                                              success: result.isSuccess,
                                                              error: result.failure,
                                                              time: timeInterval)

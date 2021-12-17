@@ -285,7 +285,7 @@ private extension ProductInventorySettingsViewController {
         cell.configure(viewModel: cellViewModel)
 
         // Configures accessory view for adding SKU from barcode scanner.
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productSKUInputScanner) {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productSKUInputScanner) && UIImagePickerController.isSourceTypeAvailable(.camera) {
             let button = UIButton(type: .detailDisclosure)
             button.applyIconButtonStyle(icon: .scanImage)
             button.addTarget(self, action: #selector(scanSKUButtonTapped), for: .touchUpInside)

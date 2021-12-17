@@ -225,3 +225,11 @@ private extension SystemStatusReportViewModel {
         return lines.joined(separator: "\n")
     }
 }
+
+private extension Bool {
+    /// Represents bool value with a string
+    ///
+    var stringRepresentable: String {
+        self ? "✔" : "–"
+    }
+}

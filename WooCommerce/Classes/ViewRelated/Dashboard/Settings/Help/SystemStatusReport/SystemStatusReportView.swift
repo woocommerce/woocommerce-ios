@@ -67,16 +67,6 @@ struct SystemStatusReportView: View {
                         .foregroundColor(Color(.accent))
                 }
             }
-
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    // TODO: share the report
-                }) {
-                    Image(uiImage: .shareBarButtonItemImage)
-                        .renderingMode(.template)
-                        .foregroundColor(Color(.accent))
-                }
-            }
         }
     }
 }

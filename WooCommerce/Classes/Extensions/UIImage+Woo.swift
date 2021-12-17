@@ -698,12 +698,6 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
-    /// Share Icon - used in `UIBarButtonItem`
-    ///
-    static var shareBarButtonItemImage: UIImage {
-        return UIImage(systemName: "square.and.arrow.up")!
-    }
-
     /// Shipping Icon
     ///
     static var shippingImage: UIImage {

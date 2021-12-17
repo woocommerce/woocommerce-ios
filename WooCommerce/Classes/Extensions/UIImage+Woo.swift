@@ -157,6 +157,13 @@ extension UIImage {
         return UIImage.gridicon(.cloudOutline)
     }
 
+    /// Coooy Icon - used in `UIBarButtonItem`
+    ///
+    static var copyBarButtonItemImage: UIImage {
+        return UIImage(systemName: "doc.on.doc", withConfiguration: Configurations.barButtonItemSymbol)!
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Connection Icon
     ///
     static var connectionImage: UIImage {
@@ -690,6 +697,12 @@ extension UIImage {
     static var searchBarButtonItemImage: UIImage {
         return UIImage(systemName: "magnifyingglass", withConfiguration: Configurations.barButtonItemSymbol)!
             .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Share Icon - used in `UIBarButtonItem`
+    ///
+    static var shareBarButtonItemImage: UIImage {
+        return UIImage(systemName: "square.and.arrow.up", withConfiguration: Configurations.barButtonItemSymbol)!
     }
 
     /// Shipping Icon

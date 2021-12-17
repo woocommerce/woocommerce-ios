@@ -62,6 +62,7 @@ struct SystemStatusReportView: View {
                     UIPasteboard.general.string = viewModel.statusReport
                     let notice = Notice(title: Localization.copiedToClipboard, feedbackType: .success)
                     ServiceLocator.noticePresenter.enqueue(notice: notice)
+                    ServiceLocator.analytics.track(.supportSSRCopyButtonTapped)
                 }) {
                     Image(uiImage: .copyBarButtonItemImage)
                         .renderingMode(.template)

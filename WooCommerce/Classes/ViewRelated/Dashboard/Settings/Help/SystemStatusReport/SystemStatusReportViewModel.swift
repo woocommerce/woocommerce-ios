@@ -56,7 +56,7 @@ private extension SystemStatusReportViewModel {
                 "WC Version: \(environment.version)",
                 "Log Directory Writable: \(environment.logDirectoryWritable.stringRepresentable)",
                 "WP Version: \(environment.wpVersion)",
-                "WP Multisite: \(environment.wpMultisite)",
+                "WP Multisite: \(environment.wpMultisite.stringRepresentable)",
                 "WP Memory Limit: \(environment.wpMemoryLimit.byteCountRepresentable)",
                 "WP Debug Mode: \(environment.wpDebugMode.stringRepresentable)",
                 "WP Cron: \(environment.wpCron.stringRepresentable)",

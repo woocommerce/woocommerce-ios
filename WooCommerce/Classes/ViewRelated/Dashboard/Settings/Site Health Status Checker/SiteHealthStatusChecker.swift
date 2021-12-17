@@ -6,6 +6,7 @@ struct SiteHealthStatusChecker: View {
 
     @ObservedObject private var viewModel: SiteHealthStatusCheckerViewModel
     @State private var showDetail = false
+    @State private var selectedRequest: SiteHealthStatusCheckerRequest?
 
     init(siteID: Int64) {
         viewModel = SiteHealthStatusCheckerViewModel(siteID: siteID)
@@ -22,14 +23,9 @@ struct SiteHealthStatusChecker: View {
                                                 isError: !request.success)
                                 .contentShape(Rectangle())
                                 .onTapGesture {
+                                    selectedRequest = request
                                     showDetail = true
                                 }
-                            NavigationLink(destination:
-                                            SiteHealthStatusCheckerDetail(request: request),
-                                           isActive: $showDetail) {
-                                EmptyView()
-                            }
-                                           .hidden()
                             Divider()
                         }
                     }
@@ -50,6 +46,22 @@ struct SiteHealthStatusChecker: View {
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
             .disabled(viewModel.isLoading)
             .padding()
+
+            NavigationLink(destination:
+                            navigationDestinationView,
+                           isActive: $showDetail) {
+                EmptyView()
+            }
+                           .hidden()
+        }
+    }
+
+    private var navigationDestinationView: some View {
+        if let selectedRequest = selectedRequest {
+            return AnyView(SiteHealthStatusCheckerDetail(request: selectedRequest))
+        }
+        else {
+            return AnyView(EmptyView())
         }
     }
 

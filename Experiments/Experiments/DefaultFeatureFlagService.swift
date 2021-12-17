@@ -29,8 +29,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .hubMenu:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .refundFees:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .systemStatusReport:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

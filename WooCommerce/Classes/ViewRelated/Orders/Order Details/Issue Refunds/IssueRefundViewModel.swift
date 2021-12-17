@@ -315,9 +315,9 @@ extension IssueRefundViewModel {
     }
 
     private func createFeesSection() -> Section? {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refundFees), isAnyFeeAvailableForRefund() else {
-                    return nil
-                }
+        guard isAnyFeeAvailableForRefund() else {
+            return nil
+        }
 
         let switchRow = FeesSwitchViewModel(title: Localization.refundFeesTitle, isOn: state.shouldRefundFees)
         guard state.shouldRefundFees else {

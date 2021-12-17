@@ -58,10 +58,6 @@ public enum FeatureFlag: Int {
     ///
     case hubMenu
 
-    /// Display the Fees refund section
-    ///
-    case refundFees
-
     /// Displays the System Status Report on Settings/Help screen
     ///
     case systemStatusReport

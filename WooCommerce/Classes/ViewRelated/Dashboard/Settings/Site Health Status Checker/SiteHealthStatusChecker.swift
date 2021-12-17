@@ -24,7 +24,7 @@ struct SiteHealthStatusChecker: View {
                 await viewModel.startChecking()
             }
         } label: {
-            Text("Start checking")
+            Text(Localization.startChecking)
         }
     }
 }
@@ -32,5 +32,13 @@ struct SiteHealthStatusChecker: View {
 struct SiteHealthStatusChecker_Previews: PreviewProvider {
     static var previews: some View {
         SiteHealthStatusChecker(siteID: 123)
+    }
+}
+
+private extension SiteHealthStatusChecker {
+    enum Localization {
+        static let startChecking = NSLocalizedString(
+            "Start Checking",
+            comment: "Button for starting the site health status checker")
     }
 }

@@ -17,6 +17,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
     ///
     let id: Int64
 
+    /// The first available product image
+    ///
+    let imageURL: URL?
+
     /// Product name
     ///
     let name: String
@@ -73,6 +77,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
          stockQuantity: Decimal?,
          manageStock: Bool,
          canChangeQuantity: Bool,
+         imageURL: URL?,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.id = id
         self.name = name
@@ -82,6 +87,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
         self.stockQuantity = stockQuantity
         self.manageStock = manageStock
         self.canChangeQuantity = canChangeQuantity
+        self.imageURL = imageURL
         self.currencyFormatter = currencyFormatter
     }
 
@@ -96,6 +102,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
                   stockQuantity: product.stockQuantity,
                   manageStock: product.manageStock,
                   canChangeQuantity: canChangeQuantity,
+                  imageURL: product.imageURL,
                   currencyFormatter: currencyFormatter)
     }
 

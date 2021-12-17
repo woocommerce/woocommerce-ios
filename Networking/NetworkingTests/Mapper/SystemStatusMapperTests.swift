@@ -49,8 +49,8 @@ final class SystemStatusMapperTests: XCTestCase {
         XCTAssertEqual(report.settings?.numberOfDecimals, 2)
         XCTAssertEqual(report.settings?.thousandSeparator, ",")
         XCTAssertEqual(report.settings?.decimalSeparator, ".")
-        XCTAssertEqual(report.settings?.taxonomies.external, "external")
-        XCTAssertEqual(report.settings?.productVisibilityTerms.excludeFromCatalog, "exclude-from-catalog")
+        XCTAssertEqual(report.settings?.taxonomies["external"], "external")
+        XCTAssertEqual(report.settings?.productVisibilityTerms["exclude-from-catalog"], "exclude-from-catalog")
 
         XCTAssertEqual(report.security?.secureConnection, true)
         XCTAssertEqual(report.security?.hideErrors, false)

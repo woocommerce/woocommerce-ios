@@ -18,6 +18,7 @@ struct SiteHealthStatusChecker: View {
                             TitleAndSubtitleRow(title: request.actionName,
                                                 subtitle: request.endpointName,
                                                 isError: !request.success)
+                                .contentShape(Rectangle())
                                 .onTapGesture {
                                     showDetail = true
                                 }

@@ -66,6 +66,7 @@ platform :ios do
   ENV['DOWNLOAD_METADATA'] = 'fastlane/download_metadata.swift'
   ENV['PROJECT_ROOT_FOLDER'] = './'
   ENV['APP_STORE_STRINGS_FILE_NAME'] = 'AppStoreStrings.pot'
+  ENV['FL_RELEASE_TOOLKIT_DEFAULT_BRANCH'] = 'trunk'
 
   # Other defines used across multiple lanes
   REPOSITORY_NAME = 'woocommerce-ios'

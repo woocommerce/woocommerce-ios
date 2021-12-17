@@ -734,6 +734,7 @@
 		45CDAFAF2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45CDAFAD2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.xib */; };
 		45CE2D322625AA9A00E3CA00 /* ShippingLabelPackageList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CE2D312625AA9A00E3CA00 /* ShippingLabelPackageList.swift */; };
 		45CE2D852625D7ED00E3CA00 /* SelectableItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CE2D842625D7ED00E3CA00 /* SelectableItemRow.swift */; };
+		45CFFDE0276CCE5400B6F74A /* SiteHealthStatusCheckerDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CFFDDF276CCE5400B6F74A /* SiteHealthStatusCheckerDetail.swift */; };
 		45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D1CF4423BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift */; };
 		45D1CF4723BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D1CF4623BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift */; };
 		45D685FE23D0FB25005F87D0 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D685FD23D0FB25005F87D0 /* Throttler.swift */; };
@@ -2235,6 +2236,7 @@
 		45CDAFAD2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductCatalogVisibilityViewController.xib; sourceTree = "<group>"; };
 		45CE2D312625AA9A00E3CA00 /* ShippingLabelPackageList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageList.swift; sourceTree = "<group>"; };
 		45CE2D842625D7ED00E3CA00 /* SelectableItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableItemRow.swift; sourceTree = "<group>"; };
+		45CFFDDF276CCE5400B6F74A /* SiteHealthStatusCheckerDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteHealthStatusCheckerDetail.swift; sourceTree = "<group>"; };
 		45D1CF4423BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxClassListSelectorDataSource.swift; sourceTree = "<group>"; };
 		45D1CF4623BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxStatusListSelectorCommand.swift; sourceTree = "<group>"; };
 		45D685FD23D0FB25005F87D0 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
@@ -4713,7 +4715,8 @@
 				45BC4705276B695F008B9FDE /* SiteHealthStatusCheckerViewController.swift */,
 				45BC4703276B6755008B9FDE /* SiteHealthStatusChecker.swift */,
 				45BC46FF276A302B008B9FDE /* SiteHealthStatusCheckerViewModel.swift */,
-				45BC4701276B6084008B9FDE /* SiteHealthStatusCheckerRequest.swift */,
+				45CFFDDF276CCE5400B6F74A /* SiteHealthStatusCheckerDetail.swift */,
+				45CFFDE1276CCE5C00B6F74A /* Models */,
 			);
 			path = "Site Health Status Checker";
 			sourceTree = "<group>";
@@ -4754,6 +4757,14 @@
 				CC254F2E26C2A4E6005F3C82 /* Package Creation */,
 			);
 			path = "Package Selection";
+			sourceTree = "<group>";
+		};
+		45CFFDE1276CCE5C00B6F74A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				45BC4701276B6084008B9FDE /* SiteHealthStatusCheckerRequest.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		45D875D72611EA3D00226C3F /* SwiftUI Components */ = {
@@ -7946,6 +7957,7 @@
 				DE1B0310268EB2FB00804330 /* ReviewOrderViewModel.swift in Sources */,
 				02DC2ED2242061BF002F9676 /* ProductPriceSettingsViewModel.swift in Sources */,
 				E138D4F4269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift in Sources */,
+				45CFFDE0276CCE5400B6F74A /* SiteHealthStatusCheckerDetail.swift in Sources */,
 				CE2A9FD023C4F2C8002BEC1C /* RefundedProductsViewController.swift in Sources */,
 				0262DA5823A23AC80029AF30 /* ProductShippingSettingsViewController.swift in Sources */,
 				748C7782211E294000814F2C /* Double+Woo.swift in Sources */,

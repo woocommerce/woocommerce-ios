@@ -19,6 +19,7 @@ struct SiteHealthStatusCheckerDetail: View {
                 Divider()
             }
         }
+        .navigationTitle(request.actionName)
     }
 }
 

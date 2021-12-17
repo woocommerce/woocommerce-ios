@@ -408,7 +408,7 @@ extension IssueRefundViewModel {
 
     private func isAnyFeeAvailableForRefund() -> Bool {
         // Return false if there are no fees left to be refunded.
-        return state.order.fees.isEmpty
+        return state.order.fees.isNotEmpty
     }
 
     /// Return an array of `RefundableOrderItems` by taking out all previously refunded items

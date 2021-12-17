@@ -7,7 +7,6 @@ final class AddOrderCoordinator: Coordinator {
 
     private let siteID: Int64
     private let isOrderCreationEnabled: Bool
-    private let shouldShowSimplePaymentsButton: Bool
     private let sourceBarButtonItem: UIBarButtonItem?
     private let sourceView: UIView?
 
@@ -17,12 +16,10 @@ final class AddOrderCoordinator: Coordinator {
 
     init(siteID: Int64,
          isOrderCreationEnabled: Bool,
-         shouldShowSimplePaymentsButton: Bool,
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController) {
         self.siteID = siteID
         self.isOrderCreationEnabled = isOrderCreationEnabled
-        self.shouldShowSimplePaymentsButton = shouldShowSimplePaymentsButton
         self.sourceBarButtonItem = sourceBarButtonItem
         self.sourceView = nil
         self.navigationController = sourceNavigationController
@@ -33,15 +30,10 @@ final class AddOrderCoordinator: Coordinator {
     }
 
     func start() {
-        switch (isOrderCreationEnabled, shouldShowSimplePaymentsButton) {
-        case (true, true):
+        if isOrderCreationEnabled {
             presentOrderTypeBottomSheet()
-        case (false, true):
+        } else {
             presentOrderCreationFlow(bottomSheetOrderType: .simple)
-        case (true, false):
-            presentOrderCreationFlow(bottomSheetOrderType: .full)
-        case (false, false):
-            return
         }
     }
 }

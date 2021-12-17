@@ -6,8 +6,11 @@ class ProductRowViewModelTests: XCTestCase {
 
     func test_viewModel_is_created_with_correct_initial_values() {
         // Given
-        let product = Product.fake().copy(productID: 12, name: "Test Product")
         let rowID = "0"
+        let imageURLString = "https://woo.com/woo.jpg"
+        let product = Product.fake().copy(productID: 12,
+                                          name: "Test Product",
+                                          images: [ProductImage.fake().copy(src: imageURLString)])
 
         // When
         let viewModel = ProductRowViewModel(id: rowID, product: product, canChangeQuantity: false)
@@ -16,6 +19,7 @@ class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.id, rowID)
         XCTAssertEqual(viewModel.productID, product.productID)
         XCTAssertEqual(viewModel.name, product.name)
+        XCTAssertEqual(viewModel.imageURL, URL(string: imageURLString))
         XCTAssertFalse(viewModel.canChangeQuantity)
         XCTAssertEqual(viewModel.quantity, 1)
     }

@@ -247,25 +247,16 @@ private extension NewOrderViewModel {
     ///
     func configureProductRowViewModels() {
         productRows = orderDetails.items.enumerated().map { index, item in
-            // Use index of each order item as product row ID to keep quantity changes in sync
-            ProductRowViewModel(id: index.description, product: item.product, canChangeQuantity: true)
-        }
+            let productRowViewModel = ProductRowViewModel(id: index.description, product: item.product, canChangeQuantity: true)
 
-        observeProductQuantityChanges()
-    }
-
-    /// Observes changes to the product quantity and syncs them with the items in `orderDetails`.
-    ///
-    func observeProductQuantityChanges() {
-        productRows.forEach { productRow in
-            productRow.$quantity
+            // Observe changes to the product quantity
+            productRowViewModel.$quantity
                 .sink { [weak self] newQuantity in
-                    guard let self = self, let index = Int(productRow.id) else {
-                        return
-                    }
-                    self.orderDetails.items[index].quantity = newQuantity
+                    self?.orderDetails.items[index].quantity = newQuantity
                 }
                 .store(in: &cancellables)
+
+            return productRowViewModel
         }
     }
 }

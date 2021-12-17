@@ -11,7 +11,7 @@ import Networking
     let siteID: Int64
     let network: AlamofireNetwork
 
-    @Published var workInProgress = false
+    @Published var isLoading = false
     @Published var requests: [SiteHealthStatusCheckerRequest] = []
 
     init(siteID: Int64) {
@@ -29,11 +29,11 @@ import Networking
     }
 
     private func fire() async -> [SiteHealthStatusCheckerRequest] {
-        workInProgress = true
+        isLoading = true
         var requests: [SiteHealthStatusCheckerRequest] = []
         requests.append(await fetchOrders())
 
-        workInProgress = false
+        isLoading = false
         return requests
     }
 }

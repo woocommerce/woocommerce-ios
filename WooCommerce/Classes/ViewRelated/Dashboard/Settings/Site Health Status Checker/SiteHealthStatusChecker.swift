@@ -26,6 +26,9 @@ struct SiteHealthStatusChecker: View {
         } label: {
             Text(Localization.startChecking)
         }
+        .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
+        .disabled(viewModel.isLoading)
+        .padding()
     }
 }
 

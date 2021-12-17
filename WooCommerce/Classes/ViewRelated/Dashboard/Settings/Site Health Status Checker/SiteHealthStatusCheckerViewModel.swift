@@ -35,13 +35,18 @@ import Networking
     private func fire() async -> [SiteHealthStatusCheckerRequest] {
         isLoading = true
         var requests: [SiteHealthStatusCheckerRequest] = []
-        requests.append(await fetchOrders())
+        let ordersRequest = await fetchOrders()
+        requests.append(ordersRequest.0)
+
+        if let orderID = ordersRequest.1 {
+            requests.append(await fetchSingleOrder(orderID: orderID))
+        }
 
         let productsRequest = await fetchProducts()
         requests.append(productsRequest.0)
 
-        if let productId = productsRequest.1 {
-            requests.append(await fetchSingleProduct(productId: productId))
+        if let productID = productsRequest.1 {
+            requests.append(await fetchSingleProduct(productID: productID))
         }
 
         isLoading = false
@@ -52,18 +57,42 @@ import Networking
 // MARK: - API Calls
 //
 private extension SiteHealthStatusCheckerViewModel {
-    func fetchOrders() async -> SiteHealthStatusCheckerRequest {
+    func fetchOrders() async -> (SiteHealthStatusCheckerRequest, Int64?) {
         let startTime = Date()
         let remote = OrdersRemote(network: network)
 
         return await withCheckedContinuation({
-            (continuation: RequestCheckedContinuation) in
+            (continuation: RequestCheckedContinuationWithID) in
             remote.loadAllOrders(for: siteID) { result in
                 let timeInterval = Date().timeIntervalSince(startTime)
                 let request = SiteHealthStatusCheckerRequest(actionName: "Fetch All Orders",
                                                              endpointName: "/orders",
                                                              success: result.isSuccess,
                                                              error: result.failure,
+                                                             time: timeInterval)
+                switch result {
+                case .success(let orders):
+                    continuation.resume(returning: (request, orders.randomElement()?.orderID))
+                    break
+                case .failure(_):
+                    continuation.resume(returning: (request, nil))
+                }
+            }
+        })
+    }
+
+    func fetchSingleOrder(orderID: Int64) async -> SiteHealthStatusCheckerRequest {
+        let startTime = Date()
+        let remote = OrdersRemote(network: network)
+
+        return await withCheckedContinuation({
+            (continuation: RequestCheckedContinuation) in
+            remote.loadOrder(for: siteID, orderID: orderID) { order, error in
+                let timeInterval = Date().timeIntervalSince(startTime)
+                let request = SiteHealthStatusCheckerRequest(actionName: "Fetch Single Order",
+                                                             endpointName: "/orders/\(orderID)",
+                                                             success: error == nil ? true : false,
+                                                             error: error,
                                                              time: timeInterval)
                 continuation.resume(returning: request)
             }
@@ -94,16 +123,16 @@ private extension SiteHealthStatusCheckerViewModel {
         })
     }
 
-    func fetchSingleProduct(productId: Int64) async -> SiteHealthStatusCheckerRequest {
+    func fetchSingleProduct(productID: Int64) async -> SiteHealthStatusCheckerRequest {
         let startTime = Date()
         let remote = ProductsRemote(network: network)
 
         return await withCheckedContinuation({
             (continuation: RequestCheckedContinuation) in
-            remote.loadProduct(for: siteID, productID: productId) { result in
+            remote.loadProduct(for: siteID, productID: productID) { result in
                 let timeInterval = Date().timeIntervalSince(startTime)
                 let request = SiteHealthStatusCheckerRequest(actionName: "Fetch Single Product",
-                                                             endpointName: "/products/\(productId)",
+                                                             endpointName: "/products/\(productID)",
                                                              success: result.isSuccess,
                                                              error: result.failure,
                                                              time: timeInterval)

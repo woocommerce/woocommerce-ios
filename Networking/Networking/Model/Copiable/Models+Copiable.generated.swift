@@ -157,6 +157,39 @@ extension Order {
     }
 }
 
+extension OrderFeeLine {
+    public func copy(
+        feeID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        taxClass: CopiableProp<String> = .copy,
+        taxStatus: CopiableProp<OrderFeeTaxStatus> = .copy,
+        total: CopiableProp<String> = .copy,
+        totalTax: CopiableProp<String> = .copy,
+        taxes: CopiableProp<[OrderItemTax]> = .copy,
+        attributes: CopiableProp<[OrderItemAttribute]> = .copy
+    ) -> OrderFeeLine {
+        let feeID = feeID ?? self.feeID
+        let name = name ?? self.name
+        let taxClass = taxClass ?? self.taxClass
+        let taxStatus = taxStatus ?? self.taxStatus
+        let total = total ?? self.total
+        let totalTax = totalTax ?? self.totalTax
+        let taxes = taxes ?? self.taxes
+        let attributes = attributes ?? self.attributes
+
+        return OrderFeeLine(
+            feeID: feeID,
+            name: name,
+            taxClass: taxClass,
+            taxStatus: taxStatus,
+            total: total,
+            totalTax: totalTax,
+            taxes: taxes,
+            attributes: attributes
+        )
+    }
+}
+
 extension OrderItem {
     public func copy(
         itemID: CopiableProp<Int64> = .copy,

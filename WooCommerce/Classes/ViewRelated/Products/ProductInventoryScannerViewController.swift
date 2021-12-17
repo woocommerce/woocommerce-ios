@@ -149,7 +149,8 @@ private extension ProductInventoryScannerViewController {
                     self.statusLabel.text = NSLocalizedString("Product Found!", comment: "")
                     self.showStatusLabel()
 
-                    self.updateResults(scannedProduct: EditableProductModel(product: product))
+                    let scannedProduct = EditableProductModel(product: product)
+                    self.updateResults(result: .matched(product: scannedProduct))
                 case .failure(let error):
                     let generator = UINotificationFeedbackGenerator()
                     generator.notificationOccurred(.error)
@@ -158,19 +159,22 @@ private extension ProductInventoryScannerViewController {
                     self.statusLabel.text = NSLocalizedString("Product not found", comment: "")
                     self.showStatusLabel()
                     print("No product matched: \(error)")
+
+                    self.updateResults(result: .noMatch(sku: barcode))
                 }
             }
             ServiceLocator.stores.dispatch(action)
         }
     }
 
-    func updateResults(scannedProduct: ProductFormDataModel) {
-        results.append(.matched(product: scannedProduct))
+    func updateResults(result: ProductSKUScannerResult) {
+        if results.contains(result) == false {
+            results.append(result)
+        }
         presentSearchResults()
     }
 
     func presentSearchResults() {
-        // TODO-jc: singular vs. plural
         let title = NSLocalizedString("Scanned products",
                                       comment: "Title of the bottom sheet that shows a list of scanned products via the barcode scanner.")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
@@ -180,6 +184,7 @@ private extension ProductInventoryScannerViewController {
                 case .matched(let product):
                     self?.editInventorySettings(for: product)
                 case .noMatch(let sku):
+                    // TODO-JC: navigate to let the user select a product for the SKU
                     print("TODO: \(sku)")
                 }
             })

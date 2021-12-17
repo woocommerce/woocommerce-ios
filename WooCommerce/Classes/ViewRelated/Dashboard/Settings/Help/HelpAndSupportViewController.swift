@@ -373,10 +373,10 @@ private extension HelpAndSupportViewController {
     /// System status report action
     ///
     func systemStatusReportWasPressed() {
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
-        let controller = SystemStatusReportHostingController(siteID: site.siteID)
+        let controller = SystemStatusReportHostingController(siteID: siteID)
         controller.hidesBottomBarWhenPushed = true
         controller.setDismissAction { [weak self] in
             self?.navigationController?.popViewController(animated: true)

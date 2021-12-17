@@ -2,7 +2,7 @@ import Foundation
 import Networking
 
 /// The view model of the SiteHealthStatusChecker view.
-/// Declared as `MainActor` because the update of the requests var should be run on the main thread
+/// Declared as `MainActor` because the update of the `requests` var should be updated on the main thread
 ///
 @MainActor final class SiteHealthStatusCheckerViewModel: ObservableObject {
 
@@ -11,8 +11,11 @@ import Networking
     let siteID: Int64
     let network: AlamofireNetwork
 
-    @Published var isLoading = false
+    @Published private(set) var isLoading = false
     @Published var requests: [SiteHealthStatusCheckerRequest] = []
+    var shouldShowEmptyState: Bool {
+        return requests.isEmpty
+    }
 
     init(siteID: Int64) {
         self.siteID = siteID

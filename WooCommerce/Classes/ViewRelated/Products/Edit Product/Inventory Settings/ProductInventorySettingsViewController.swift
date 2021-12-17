@@ -27,6 +27,8 @@ final class ProductInventorySettingsViewController: UIViewController {
     typealias Completion = (_ data: ProductInventoryEditableData) -> Void
     private let onCompletion: Completion
 
+    private var skuBarcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
+
     private var cancellable: ObservationToken?
 
     init(product: ProductFormDataModel, formType: FormType = .inventory, completion: @escaping Completion) {
@@ -336,11 +338,15 @@ private extension ProductInventorySettingsViewController {
 //
 private extension ProductInventorySettingsViewController {
     @objc func scanSKUButtonTapped() {
-        let scannerViewController = ProductSKUInputScannerViewController(onBarcodeScanned: { [weak self] barcode in
+        guard let navigationController = navigationController else {
+            return
+        }
+        let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController) { [weak self] barcode in
             self?.onSKUBarcodeScanned(barcode: barcode)
-            self?.navigationController?.popViewController(animated: true)
-        })
-        show(scannerViewController, sender: self)
+        }
+        view.endEditing(true)
+        skuBarcodeScannerCoordinator = coordinator
+        coordinator.start()
     }
 
     func onSKUBarcodeScanned(barcode: String) {

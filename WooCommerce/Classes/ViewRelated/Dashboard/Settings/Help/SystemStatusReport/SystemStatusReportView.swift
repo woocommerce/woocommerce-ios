@@ -3,12 +3,24 @@ import SwiftUI
 /// Hosting controller wrapper for `SystemStatusReportView`
 ///
 final class SystemStatusReportHostingController: UIHostingController<SystemStatusReportView> {
+
+    /// Notice presenter to present notice from the rootview
+    ///
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     init(siteID: Int64) {
         let viewModel = SystemStatusReportViewModel(siteID: siteID)
         super.init(rootView: SystemStatusReportView(viewModel: viewModel))
         // The navigation title is set here instead of the SwiftUI view's `navigationTitle`
         // to avoid the blinking of the title label when pushed from UIKit view.
         title = NSLocalizedString("System Status Report", comment: "Navigation title of system status report screen")
+
+        // Use custom notice presenter to avoid extra space for tab bar
+        rootView.noticePresenter = noticePresenter
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -26,6 +38,10 @@ struct SystemStatusReportView: View {
     /// Dismiss action to be triggered when tapping Cancel button on error alert
     ///
     var dismissAction: () -> Void = {}
+
+    /// Notice presenter to present successful copy message
+    ///
+    var noticePresenter: NoticePresenter = ServiceLocator.noticePresenter
 
     @ObservedObject private var viewModel: SystemStatusReportViewModel
     @State private var showingErrorAlert = false
@@ -61,7 +77,7 @@ struct SystemStatusReportView: View {
                 Button(action: {
                     UIPasteboard.general.string = viewModel.statusReport
                     let notice = Notice(title: Localization.copiedToClipboard, feedbackType: .success)
-                    ServiceLocator.noticePresenter.enqueue(notice: notice)
+                    noticePresenter.enqueue(notice: notice)
                     ServiceLocator.analytics.track(.supportSSRCopyButtonTapped)
                 }) {
                     Image(uiImage: .copyBarButtonItemImage)

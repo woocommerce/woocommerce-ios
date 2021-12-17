@@ -18,7 +18,7 @@ final class SystemStatusReportViewModel: ObservableObject {
 
     /// Whether fetching system status report failed
     ///
-    @Published var errorFetchingReport: Bool = false
+    @Published private(set) var errorFetchingReport: Bool = false
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID

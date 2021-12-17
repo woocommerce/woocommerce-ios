@@ -4,11 +4,11 @@ public extension SystemStatus {
     /// Details about a store's theme in its system status report.
     ///
     struct Theme: Decodable {
-        let name, version, versionLatest: String
-        let authorURL: String
-        let isChildTheme, hasWoocommerceSupport, hasWoocommerceFile, hasOutdatedTemplates: Bool
-        let overrides: [[String: String]]
-        let parentName, parentVersion, parentVersionLatest, parentAuthorURL: String
+        public let name, version, versionLatest: String
+        public let authorURL: String
+        public let isChildTheme, hasWoocommerceSupport, hasWoocommerceFile, hasOutdatedTemplates: Bool
+        public let overrides: [[String: String]]
+        public let parentName, parentVersion, parentVersionLatest, parentAuthorURL: String
 
         enum CodingKeys: String, CodingKey {
             case name, version

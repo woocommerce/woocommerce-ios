@@ -62,18 +62,19 @@ private struct ProductStepper: View {
     var body: some View {
         HStack(spacing: Layout.stepperSpacing * scale) {
             Button {
-                // TODO: Decrement the product quantity
+                viewModel.decrementQuantity()
             } label: {
                 Image(uiImage: .minusSmallImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: Layout.stepperButtonSize * scale)
             }
+            .disabled(viewModel.shouldDisableQuantityDecrementer)
 
-            Text("\(viewModel.quantity)")
+            Text(viewModel.quantity.description)
 
             Button {
-                // TODO: Increment the product quantity
+                viewModel.incrementQuantity()
             } label: {
                 Image(uiImage: .plusSmallImage)
                     .resizable()
@@ -88,13 +89,13 @@ private struct ProductStepper: View {
         )
         .accessibilityElement(children: .ignore)
         .accessibility(label: Text(Localization.quantityLabel))
-        .accessibility(value: Text("\(viewModel.quantity)"))
+        .accessibility(value: Text(viewModel.quantity.description))
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .decrement:
-                break // TODO: Decrement the product quantity
+                viewModel.decrementQuantity()
             case .increment:
-                break // TODO: Increment the product quantity
+                viewModel.incrementQuantity()
             @unknown default:
                 break
             }
@@ -117,7 +118,7 @@ private enum Localization {
 
 struct ProductRow_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ProductRowViewModel(id: 1,
+        let viewModel = ProductRowViewModel(productID: 1,
                                             name: "Love Ficus",
                                             sku: "123456",
                                             price: "20",
@@ -126,7 +127,7 @@ struct ProductRow_Previews: PreviewProvider {
                                             manageStock: true,
                                             canChangeQuantity: true,
                                             imageURL: nil)
-        let viewModelWithoutStepper = ProductRowViewModel(id: 1,
+        let viewModelWithoutStepper = ProductRowViewModel(productID: 1,
                                                           name: "Love Ficus",
                                                           sku: "123456",
                                                           price: "20",

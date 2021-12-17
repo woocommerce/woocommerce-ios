@@ -9,6 +9,8 @@ final class NewOrderViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
 
+    private var cancellables: Set<AnyCancellable> = []
+
     /// Order details used to create the order
     ///
     @Published var orderDetails = OrderDetails()
@@ -80,24 +82,9 @@ final class NewOrderViewModel: ObservableObject {
         }
     }()
 
-    /// Products that have been added to the order, used to generate the product row view models.
-    ///
-    /// This list is not the source of truth for products in the order; that is `orderDetails.items`.
-    ///
-    private var addedProducts: [Product] = []
-
     /// View models for each product row in the order.
-    /// They are generated from `orderDetails` to ensure they are updated when the order details change.
     ///
-    var productRows: [ProductRowViewModel] {
-        orderDetails.items.compactMap { item in
-            // Get the product that matches the order item's product ID
-            guard let product = addedProducts.first(where: { item.productID == $0.productID }) else {
-                return nil
-            }
-            return ProductRowViewModel(product: product, canChangeQuantity: true)
-        }
-    }
+    @Published private(set) var productRows: [ProductRowViewModel] = []
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
@@ -106,6 +93,7 @@ final class NewOrderViewModel: ObservableObject {
 
         configureNavigationTrailingItem()
         configureStatusBadgeViewModel()
+        configureProductRowViewModels()
     }
 
     // MARK: - API Requests
@@ -146,7 +134,7 @@ extension NewOrderViewModel {
     ///
     struct OrderDetails {
         var status: OrderStatusEnum = .pending
-        var items: [OrderItem] = []
+        var items: [NewOrderItem] = []
         var billingAddress: Address?
         var shippingAddress: Address?
 
@@ -157,7 +145,7 @@ extension NewOrderViewModel {
 
         func toOrder() -> Order {
             emptyOrder.copy(status: status,
-                            items: items,
+                            items: items.map { $0.orderItem },
                             billingAddress: billingAddress,
                             shippingAddress: shippingAddress)
         }
@@ -196,6 +184,22 @@ extension NewOrderViewModel {
             self.init(orderStatus: siteOrderStatus)
         }
     }
+
+    /// Representation of new items in an order.
+    ///
+    struct NewOrderItem {
+        let product: Product
+        var quantity: Decimal
+
+        var orderItem: OrderItem {
+            product.toOrderItem(quantity: quantity)
+        }
+
+        init(product: Product, quantity: Decimal) {
+            self.product = product
+            self.quantity = quantity
+        }
+    }
 }
 
 // MARK: - Helpers
@@ -232,11 +236,27 @@ private extension NewOrderViewModel {
     }
 
     /// Adds a selected product (from the product list) to the order.
-    /// Also saves the product to generate the corresponding product row view model.
     ///
     func addProductToOrder(_ product: Product) {
-        let orderItem = product.toOrderItem(quantity: 1)
-        orderDetails.items.append(orderItem)
-        addedProducts.append(product)
+        let newOrderItem = NewOrderItem(product: product, quantity: 1)
+        orderDetails.items.append(newOrderItem)
+        configureProductRowViewModels()
+    }
+
+    /// Configures product row view models for each item in `orderDetails`.
+    ///
+    func configureProductRowViewModels() {
+        productRows = orderDetails.items.enumerated().map { index, item in
+            let productRowViewModel = ProductRowViewModel(id: index.description, product: item.product, canChangeQuantity: true)
+
+            // Observe changes to the product quantity
+            productRowViewModel.$quantity
+                .sink { [weak self] newQuantity in
+                    self?.orderDetails.items[index].quantity = newQuantity
+                }
+                .store(in: &cancellables)
+
+            return productRowViewModel
+        }
     }
 }

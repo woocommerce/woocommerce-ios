@@ -49,26 +49,29 @@ public final class ProductsScreen: ScreenObject {
     }
 
     @discardableResult
-    public func selectProductByIndex(atIndex index: Int) throws -> SingleProductScreen {
+    public func selectProduct(atIndex index: Int) throws -> SingleProductScreen {
         app.tables.cells.element(boundBy: index).tap()
         return try SingleProductScreen()
     }
 
-    public func selectProductByName(name: String) throws -> SingleProductScreen {
+    public func selectProduct(byName name: String) throws -> SingleProductScreen {
         app.tables.cells.staticTexts[name].tap()
         return try SingleProductScreen()
     }
 
-    public func verifyProductOnProductsScreen(count: Int, name: String, status: String) throws -> ProductsScreen {
+    public func verifyProductListOnProductsScreen(count: Int, name: String, status: String) throws -> Self {
         XCTAssertTrue(try app.getTextVisibilityCount(text: name) == 1, "Product name does not exist!")
         XCTAssertTrue(app.tables.cells.count == count, "Expecting \(count) products, got \(app.tables.cells.count) instead!")
-        XCTAssertTrue(try app.getTextVisibilityCount(text: status) > 0, "Stock status does not exist!")
 
-        return try ProductsScreen()
+        /// TODO: Add AccessibilityIdentifiers to product list cell elements to be able to get stock status label value and update this assert.
+        /// Currently mock response API has "in stock" which is set to the first product repeated 3 times, so current assert will check that it appears 3 times
+        XCTAssertTrue(try app.getTextVisibilityCount(text: status) == 3, "Stock status does not exist!")
+
+        return self
     }
 
-    public func verifyProductScreenLoaded() throws -> ProductsScreen {
+    public func verifyProductScreenLoaded() throws -> Self {
         XCTAssertTrue(isLoaded)
-        return try ProductsScreen()
+        return self
     }
 }

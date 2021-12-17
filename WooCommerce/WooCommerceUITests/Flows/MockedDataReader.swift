@@ -26,7 +26,7 @@ class GetMocks {
     struct ProductData: Codable {
         let id: Int
         let name: String
-        let stock_status: String
+        var stock_status: String
         let regular_price: String
     }
 
@@ -36,7 +36,16 @@ class GetMocks {
         return try! Data(contentsOf: json)
     }
 
-    static func readProductsData() throws -> MockFile {
-        return try! JSONDecoder().decode(MockFile.self, from: GetMocks.getProductsMockedDataContent(withFilename: "products"))
+    static func readProductsData() throws -> [ProductData] {
+        let wrappedProductsData = try JSONDecoder().decode(MockFile.self, from: GetMocks.getProductsMockedDataContent(withFilename: "products"))
+        var unwrappedProductsData = wrappedProductsData.response.jsonBody.data
+
+        for index in 0..<unwrappedProductsData.count {
+            let rawStockStatus = unwrappedProductsData[index].stock_status
+            let humanReadableStockStatus = GetMocks.init().stockStatus[rawStockStatus]!
+            unwrappedProductsData[index].stock_status = humanReadableStockStatus
+        }
+
+        return unwrappedProductsData
     }
 }

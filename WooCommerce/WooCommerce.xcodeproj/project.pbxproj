@@ -905,7 +905,7 @@
 		800A5BC8275889ED009DE2CD /* reports_revenue_stats_year.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BC4275889EC009DE2CD /* reports_revenue_stats_year.json */; };
 		800A5BCB2759CE4B009DE2CD /* ProductsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800A5BCA2759CE4B009DE2CD /* ProductsTests.swift */; };
 		80E6FC6D276312D50086CD67 /* products.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00C923E9BD5500157A78 /* products.json */; };
-		80E6FC752763579D0086CD67 /* MockedDataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E6FC742763579D0086CD67 /* MockedDataReader.swift */; };
+		80E6FC79276C3FD60086CD67 /* MockedDataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E6FC742763579D0086CD67 /* MockedDataReader.swift */; };
 		86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */; };
 		8CD41D4A21F8A7E300CF3C2B /* RELEASE-NOTES.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */; };
 		933A27372222354600C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A27362222354600C2143A /* Logging.swift */; };
@@ -5177,8 +5177,8 @@
 		800A5B9C275623E9009DE2CD /* Flows */ = {
 			isa = PBXGroup;
 			children = (
-				800A5B9D275623FC009DE2CD /* LoginFlow.swift */,
 				80E6FC742763579D0086CD67 /* MockedDataReader.swift */,
+				800A5B9D275623FC009DE2CD /* LoginFlow.swift */,
 			);
 			path = Flows;
 			sourceTree = "<group>";
@@ -8825,11 +8825,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				CCDC49ED24000533003166BA /* TestCredentials.swift in Sources */,
+				80E6FC79276C3FD60086CD67 /* MockedDataReader.swift in Sources */,
 				CCDC49CD23FFFFF4003166BA /* LoginTests.swift in Sources */,
 				800A5B58275483D6009DE2CD /* OrdersTests.swift in Sources */,
 				800A5BCB2759CE4B009DE2CD /* ProductsTests.swift in Sources */,
 				800A5B9E275623FC009DE2CD /* LoginFlow.swift in Sources */,
-				80E6FC752763579D0086CD67 /* MockedDataReader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

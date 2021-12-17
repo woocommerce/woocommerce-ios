@@ -55,6 +55,7 @@ struct NewOrder: View {
 
                         ProductsSection(geometry: geometry, scroll: scroll, viewModel: viewModel)
                     }
+                    .padding(.bottom, insets: geometry.safeAreaInsets)
                 }
                 .background(Color(.listBackground))
                 .ignoresSafeArea(.container, edges: [.horizontal, .bottom])

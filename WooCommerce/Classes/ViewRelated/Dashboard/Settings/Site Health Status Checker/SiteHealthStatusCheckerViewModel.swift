@@ -1,7 +1,10 @@
 import Foundation
 import Networking
 
-final class SiteHealthStatusCheckerViewModel: ObservableObject {
+/// The view model of the SiteHealthStatusChecker view.
+/// Declared as `MainActor` because the update of the requests var should be run on the main thread
+///
+@MainActor final class SiteHealthStatusCheckerViewModel: ObservableObject {
 
     private typealias RequestCheckedContinuation = CheckedContinuation<SiteHealthStatusCheckerRequest, Never>
 

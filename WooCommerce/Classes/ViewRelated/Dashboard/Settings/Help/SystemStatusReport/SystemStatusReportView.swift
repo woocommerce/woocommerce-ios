@@ -60,6 +60,8 @@ struct SystemStatusReportView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     UIPasteboard.general.string = viewModel.statusReport
+                    let notice = Notice(title: Localization.copiedToClipboard, feedbackType: .success)
+                    ServiceLocator.noticePresenter.enqueue(notice: notice)
                 }) {
                     Image(uiImage: .copyBarButtonItemImage)
                         .renderingMode(.template)
@@ -88,6 +90,10 @@ private extension SystemStatusReportView {
         static let cancelButton = NSLocalizedString(
             "Cancel",
             comment: "Cancel button on the error alert when fetching system status report fails"
+        )
+        static let copiedToClipboard = NSLocalizedString(
+            "System status report copied to clipboard",
+            comment: "Toast message showing up when tapping Copy button on System Status Report screen."
         )
     }
 }

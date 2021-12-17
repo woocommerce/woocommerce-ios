@@ -22,5 +22,5 @@ struct SiteHealthStatusCheckerRequest: Identifiable {
 
     /// The time took for the request
     ///
-    let time: TimeInterval?
+    let time: TimeInterval
 }

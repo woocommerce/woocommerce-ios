@@ -47,12 +47,6 @@ struct SiteHealthStatusChecker: View {
     }
 }
 
-struct SiteHealthStatusChecker_Previews: PreviewProvider {
-    static var previews: some View {
-        SiteHealthStatusChecker(siteID: 123)
-    }
-}
-
 private extension SiteHealthStatusChecker {
     enum Localization {
         static let startChecking = NSLocalizedString(
@@ -61,5 +55,11 @@ private extension SiteHealthStatusChecker {
         static let emptyStateMessage = NSLocalizedString(
             "Start checking your website's endpoints to check if something is not working properly.",
             comment: "Message displayed when there are no requests to display in the Site Health Status Checker")
+    }
+}
+
+struct SiteHealthStatusChecker_Previews: PreviewProvider {
+    static var previews: some View {
+        SiteHealthStatusChecker(siteID: 123)
     }
 }

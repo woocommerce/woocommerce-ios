@@ -17,6 +17,7 @@ struct SiteHealthStatusChecker: View {
                             TitleAndSubtitleRow(title: request.actionName,
                                                 subtitle: request.endpointName,
                                                 isError: !request.success)
+                            Divider()
                         }
                     }
                     .renderedIf(!viewModel.shouldShowEmptyState)

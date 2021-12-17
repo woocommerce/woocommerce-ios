@@ -49,6 +49,13 @@ import Networking
             requests.append(await fetchSingleProduct(productID: productID))
         }
 
+        let productsReviewsRequest = await fetchProductsReviews()
+        requests.append(productsReviewsRequest.0)
+
+        if let reviewID = productsReviewsRequest.1 {
+            requests.append(await fetchSingleProductReview(reviewID: reviewID))
+        }
+
         isLoading = false
         return requests
     }
@@ -140,4 +147,41 @@ private extension SiteHealthStatusCheckerViewModel {
             }
         })
     }
+
+    func fetchProductsReviews() async -> (SiteHealthStatusCheckerRequest, Int64?) {
+        let startTime = Date()
+        let remote = ProductReviewsRemote(network: network)
+
+        return await withCheckedContinuation({
+            (continuation: RequestCheckedContinuationWithID) in
+            remote.loadAllProductReviews(for: siteID) { reviews, error in
+                let timeInterval = Date().timeIntervalSince(startTime)
+                let request = SiteHealthStatusCheckerRequest(actionName: "Fetch All Products Reviews",
+                                                             endpointName: "/products/reviews",
+                                                             success: error == nil ? true : false,
+                                                             error: error,
+                                                             time: timeInterval)
+                continuation.resume(returning: (request, reviews?.randomElement()?.reviewID))
+            }
+        })
+    }
+
+    func fetchSingleProductReview(reviewID: Int64) async -> SiteHealthStatusCheckerRequest {
+        let startTime = Date()
+        let remote = ProductReviewsRemote(network: network)
+
+        return await withCheckedContinuation({
+            (continuation: RequestCheckedContinuation) in
+            remote.loadProductReview(for: siteID, reviewID: reviewID) { result in
+                let timeInterval = Date().timeIntervalSince(startTime)
+                let request = SiteHealthStatusCheckerRequest(actionName: "Fetch Single Product Review",
+                                                             endpointName: "/products/reviews/\(reviewID)",
+                                                             success: result.isSuccess,
+                                                             error: result.failure,
+                                                             time: timeInterval)
+                continuation.resume(returning: request)
+            }
+        })
+    }
+
 }

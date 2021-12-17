@@ -3,6 +3,7 @@ import SwiftUI
 struct SiteHealthStatusChecker: View {
 
     @ObservedObject private var viewModel: SiteHealthStatusCheckerViewModel
+    @State private var showDetail = false
 
     init(siteID: Int64) {
         viewModel = SiteHealthStatusCheckerViewModel(siteID: siteID)
@@ -17,6 +18,15 @@ struct SiteHealthStatusChecker: View {
                             TitleAndSubtitleRow(title: request.actionName,
                                                 subtitle: request.endpointName,
                                                 isError: !request.success)
+                                .onTapGesture {
+                                    showDetail = true
+                                }
+                            NavigationLink(destination:
+                                            SiteHealthStatusCheckerDetail(request: request),
+                                           isActive: $showDetail) {
+                                EmptyView()
+                            }
+                                           .hidden()
                             Divider()
                         }
                     }

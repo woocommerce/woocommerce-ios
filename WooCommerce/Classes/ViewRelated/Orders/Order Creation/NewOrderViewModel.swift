@@ -9,6 +9,8 @@ final class NewOrderViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
 
+    private var cancellables: Set<AnyCancellable> = []
+
     /// Order details used to create the order
     ///
     @Published var orderDetails = OrderDetails()
@@ -81,16 +83,8 @@ final class NewOrderViewModel: ObservableObject {
     }()
 
     /// View models for each product row in the order.
-    /// They are generated from `orderDetails` to ensure they are updated when the order details change.
     ///
-    var productRows: [ProductRowViewModel] {
-        orderDetails.items.enumerated().map { (index, item) in
-            ProductRowViewModel(product: item.product, canChangeQuantity: true) { [weak self] newQuantity in
-                guard let self = self else { return }
-                self.orderDetails.items[index].quantity = newQuantity
-            }
-        }
-    }
+    @Published private(set) var productRows: [ProductRowViewModel] = []
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
@@ -99,6 +93,7 @@ final class NewOrderViewModel: ObservableObject {
 
         configureNavigationTrailingItem()
         configureStatusBadgeViewModel()
+        configureProductRowViewModels()
     }
 
     // MARK: - API Requests
@@ -245,5 +240,32 @@ private extension NewOrderViewModel {
     func addProductToOrder(_ product: Product) {
         let newOrderItem = NewOrderItem(product: product, quantity: 1)
         orderDetails.items.append(newOrderItem)
+        configureProductRowViewModels()
+    }
+
+    /// Configures product row view models for each item in `orderDetails`.
+    ///
+    func configureProductRowViewModels() {
+        productRows = orderDetails.items.enumerated().map { index, item in
+            // Use index of each order item as product row ID to keep quantity changes in sync
+            ProductRowViewModel(id: index.description, product: item.product, canChangeQuantity: true)
+        }
+
+        observeProductQuantityChanges()
+    }
+
+    /// Observes changes to the product quantity and syncs them with the items in `orderDetails`.
+    ///
+    func observeProductQuantityChanges() {
+        productRows.forEach { productRow in
+            productRow.$quantity
+                .sink { [weak self] newQuantity in
+                    guard let self = self, let index = Int(productRow.id) else {
+                        return
+                    }
+                    self.orderDetails.items[index].quantity = newQuantity
+                }
+                .store(in: &cancellables)
+        }
     }
 }

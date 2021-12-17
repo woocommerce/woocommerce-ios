@@ -11,15 +11,15 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
     ///
     let canChangeQuantity: Bool
 
-    /// Closure to be invoked when the quantity changes
+    /// Unique ID for the view model.
     ///
-    private let onQuantityChange: ((Decimal) -> Void)?
+    let id: String
 
     // MARK: Product properties
 
     /// Product ID
     ///
-    let id: Int64
+    let productID: Int64
 
     /// Product name
     ///
@@ -67,11 +67,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
 
     /// Quantity of product in the order
     ///
-    @Published private(set) var quantity: Decimal = 1 {
-        willSet {
-            onQuantityChange?(newValue)
-        }
-    }
+    @Published private(set) var quantity: Decimal = 1
 
     /// Minimum value of the product quantity
     ///
@@ -83,7 +79,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
         quantity <= minimumQuantity
     }
 
-    init(id: Int64,
+    init(id: String = UUID().uuidString,
+         productID: Int64,
          name: String,
          sku: String?,
          price: String,
@@ -91,9 +88,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
          stockQuantity: Decimal?,
          manageStock: Bool,
          canChangeQuantity: Bool,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         onQuantityChange: ((Decimal) -> Void)? = nil) {
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.id = id
+        self.productID = productID
         self.name = name
         self.sku = sku
         self.price = price
@@ -102,14 +99,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
         self.manageStock = manageStock
         self.canChangeQuantity = canChangeQuantity
         self.currencyFormatter = currencyFormatter
-        self.onQuantityChange = onQuantityChange
     }
 
-    convenience init(product: Product,
+    convenience init(id: String = UUID().uuidString,
+                     product: Product,
                      canChangeQuantity: Bool,
-                     currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-                     onQuantityChange: ((Decimal) -> Void)? = nil) {
-        self.init(id: product.productID,
+                     currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+        self.init(id: id,
+                  productID: product.productID,
                   name: product.name,
                   sku: product.sku,
                   price: product.price,
@@ -117,8 +114,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
                   stockQuantity: product.stockQuantity,
                   manageStock: product.manageStock,
                   canChangeQuantity: canChangeQuantity,
-                  currencyFormatter: currencyFormatter,
-                  onQuantityChange: onQuantityChange)
+                  currencyFormatter: currencyFormatter)
     }
 
     /// Create the stock text based on a product's stock status/quantity.

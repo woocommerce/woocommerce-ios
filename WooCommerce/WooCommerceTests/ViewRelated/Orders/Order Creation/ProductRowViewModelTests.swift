@@ -7,12 +7,14 @@ class ProductRowViewModelTests: XCTestCase {
     func test_viewModel_is_created_with_correct_initial_values() {
         // Given
         let product = Product.fake().copy(productID: 12, name: "Test Product")
+        let rowID = "0"
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(id: rowID, product: product, canChangeQuantity: false)
 
         // Then
-        XCTAssertEqual(viewModel.id, product.productID)
+        XCTAssertEqual(viewModel.id, rowID)
+        XCTAssertEqual(viewModel.productID, product.productID)
         XCTAssertEqual(viewModel.name, product.name)
         XCTAssertFalse(viewModel.canChangeQuantity)
         XCTAssertEqual(viewModel.quantity, 1)

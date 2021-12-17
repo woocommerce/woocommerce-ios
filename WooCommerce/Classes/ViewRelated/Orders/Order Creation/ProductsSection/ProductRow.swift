@@ -113,7 +113,7 @@ private enum Localization {
 
 struct ProductRow_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ProductRowViewModel(id: 1,
+        let viewModel = ProductRowViewModel(productID: 1,
                                             name: "Love Ficus",
                                             sku: "123456",
                                             price: "20",
@@ -121,7 +121,7 @@ struct ProductRow_Previews: PreviewProvider {
                                             stockQuantity: 7,
                                             manageStock: true,
                                             canChangeQuantity: true)
-        let viewModelWithoutStepper = ProductRowViewModel(id: 1,
+        let viewModelWithoutStepper = ProductRowViewModel(productID: 1,
                                                           name: "Love Ficus",
                                                           sku: "123456",
                                                           price: "20",

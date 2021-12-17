@@ -138,7 +138,7 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product.productID)
 
         // Then
-        let expectedProductRow = ProductRowViewModel(product: product, canChangeQuantity: true)
+        let expectedProductRow = ProductRowViewModel(id: "0", product: product, canChangeQuantity: true)
         let expectedOrderItem = product.toOrderItem(quantity: 1)
         XCTAssertTrue(viewModel.productRows.contains(expectedProductRow), "Product rows do not contain expected product")
         XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }), "Order details do not contain expected order item")

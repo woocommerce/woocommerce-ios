@@ -113,7 +113,7 @@ public struct OrderItem: Decodable, Equatable, Hashable, GeneratedFakeable, Gene
 
 /// Defines all of the OrderItem's CodingKeys.
 ///
-private extension OrderItem {
+internal extension OrderItem {
 
     enum CodingKeys: String, CodingKey {
         case itemID         = "id"

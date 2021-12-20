@@ -82,6 +82,8 @@ struct HubMenu: View {
                                    height: Constants.settingsSize)
                         if let gearImage = UIImage.gearImage.imageWithTintColor(.primary) {
                             Image(uiImage: gearImage)
+                                .resizable()
+                                .frame(width: Constants.settingsIconSize, height: Constants.settingsIconSize)
                         }
                     }
                     .onTapGesture {
@@ -102,6 +104,7 @@ struct HubMenu: View {
         static let padding: CGFloat = 16
         static let topBarSpacing: CGFloat = 2
         static let settingsSize: CGFloat = 24
+        static let settingsIconSize: CGFloat = 20
     }
 
     private enum Localization {

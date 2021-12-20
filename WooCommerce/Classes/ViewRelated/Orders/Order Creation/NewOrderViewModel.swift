@@ -245,7 +245,7 @@ private extension NewOrderViewModel {
     ///
     func configureProductRowViewModels() {
         productRows = orderDetails.items.enumerated().map { index, item in
-            let productRowViewModel = ProductRowViewModel(id: index.description, product: item.product, canChangeQuantity: true)
+            let productRowViewModel = ProductRowViewModel(id: index.description, product: item.product, quantity: item.quantity, canChangeQuantity: true)
 
             // Observe changes to the product quantity
             productRowViewModel.$quantity

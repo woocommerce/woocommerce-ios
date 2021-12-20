@@ -155,9 +155,13 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product.productID)
         viewModel.productRows[0].incrementQuantity()
 
+        // And when another product is added to the order (to confirm the first product's quantity change is retained)
+        viewModel.addProductViewModel.selectProduct(product.productID)
+
         // Then
         let expectedOrderItem = product.toOrderItem(quantity: 2)
-        XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }), "Order details do not contain expected order item")
+        XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }),
+                      "Order details do not contain order item with updated quantity")
     }
 }
 

@@ -419,12 +419,6 @@ private extension StoreStatsV4PeriodViewController {
 //
 private extension StoreStatsV4PeriodViewController {
     func updateSiteVisitStats(mode: SiteVisitStatsMode) {
-        // Hides site visit stats for "today"
-        guard timeRange != .today else {
-            visitorsStackView.isHidden = true
-            return
-        }
-
         visitorsStackView.isHidden = mode == .hidden
         reloadSiteFields()
     }
@@ -485,7 +479,16 @@ private extension StoreStatsV4PeriodViewController {
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateSiteVisitStats(selectedIndex: Int?) {
-        updateSiteVisitStats(mode: siteVisitStatsMode)
+        let mode: SiteVisitStatsMode
+
+        // Hides site visit stats for "today" when an interval bar is selected.
+        if timeRange == .today, selectedIndex != nil {
+            mode = .hidden
+        } else {
+            mode = siteVisitStatsMode
+        }
+
+        updateSiteVisitStats(mode: mode)
 
         switch siteVisitStatsMode {
         case .hidden, .redactedDueToJetpack:

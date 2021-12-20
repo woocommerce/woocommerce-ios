@@ -218,7 +218,7 @@ final class AccountStoreTests: XCTestCase {
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: false) { result in
                 promise(result)
             }
@@ -242,7 +242,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: false) { result in
                 promise(result)
             }
@@ -282,7 +282,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: true) { result in
                 promise(result)
             }
@@ -331,7 +331,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: false) { result in
                 promise(result)
             }
@@ -377,7 +377,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: true) { result in
                 promise(result)
             }
@@ -417,7 +417,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: true) { result in
                 promise(result)
             }
@@ -448,7 +448,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertNotNil(viewStorage.loadSite(siteID: siteIDInStorageOnly))
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: false) { result in
                 promise(result)
             }
@@ -474,7 +474,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertNotNil(viewStorage.loadSite(siteID: selectedSiteID))
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let action = AccountAction.synchronizeSites(selectedSiteID: selectedSiteID, isJetpackConnectionPackageSupported: false) { result in
                 promise(result)
             }
@@ -486,6 +486,54 @@ final class AccountStoreTests: XCTestCase {
         // `sites.json` contains 2 sites that do not match `siteIDInStorageOnly`.
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 3)
         XCTAssertNotNil(viewStorage.loadSite(siteID: selectedSiteID))
+    }
+
+    /// Verifies that `synchronizeSites` returns `false` for JCP sites presence when all sites have Jetpack-the-plugin.
+    ///
+    func test_synchronizeSites_returns_false_when_all_sites_have_jetpack_plugin() throws {
+        // Given
+        let remote = MockAccountRemote()
+        remote.loadSitesResult = .success([
+            Site.fake().copy(siteID: 1, isJetpackThePluginInstalled: true, isJetpackConnected: true),
+            Site.fake().copy(siteID: 2, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        ])
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let containsJCPSites = try XCTUnwrap(result.get())
+        XCTAssertFalse(containsJCPSites)
+    }
+
+    /// Verifies that `synchronizeSites` returns `true` when one site is JCP.
+    ///
+    func test_synchronizeSites_returns_true_when_one_site_is_jcp() throws {
+        // Given
+        let remote = MockAccountRemote()
+        remote.loadSitesResult = .success([
+            Site.fake().copy(siteID: 1, isJetpackThePluginInstalled: true, isJetpackConnected: true),
+            Site.fake().copy(siteID: 2, isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        ])
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil, isJetpackConnectionPackageSupported: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let containsJCPSites = try XCTUnwrap(result.get())
+        XCTAssertTrue(containsJCPSites)
     }
 
     // MARK: - AccountAction.loadAccount

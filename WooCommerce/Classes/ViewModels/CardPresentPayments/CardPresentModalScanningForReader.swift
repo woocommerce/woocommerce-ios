@@ -25,6 +25,13 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
 
     var bottomSubtitle: String?
 
+    var accessibilityLabel: String? {
+        guard let bottomTitle = bottomTitle else {
+            return topTitle
+        }
+        return topTitle + bottomTitle
+    }
+
     init(cancel: @escaping () -> Void) {
         self.cancelAction = cancel
     }

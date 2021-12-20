@@ -46,15 +46,19 @@ struct NewOrder: View {
 
     var body: some View {
         GeometryReader { geometry in
-            ScrollView {
-                VStack(spacing: Layout.noSpacing) {
-                    Spacer(minLength: Layout.sectionSpacing)
+            ScrollViewReader { scroll in
+                ScrollView {
+                    VStack(spacing: Layout.noSpacing) {
+                        OrderStatusSection(geometry: geometry, viewModel: viewModel)
 
-                    ProductsSection(geometry: geometry)
+                        Spacer(minLength: Layout.sectionSpacing)
+
+                        ProductsSection(geometry: geometry, scroll: scroll, viewModel: viewModel)
+                    }
                 }
+                .background(Color(.listBackground).ignoresSafeArea())
+                .ignoresSafeArea(.container, edges: [.horizontal])
             }
-            .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -81,10 +85,18 @@ struct NewOrder: View {
 ///
 private struct ProductsSection: View {
     let geometry: GeometryProxy
+    let scroll: ScrollViewProxy
+
+    /// View model to drive the view content
+    @ObservedObject var viewModel: NewOrderViewModel
 
     /// Defines whether `AddProduct` modal is presented.
     ///
     @State private var showAddProduct: Bool = false
+
+    /// ID for Add Product button
+    ///
+    @Namespace var addProductButton
 
     var body: some View {
         Group {
@@ -94,16 +106,21 @@ private struct ProductsSection: View {
                 Text(NewOrder.Localization.products)
                     .headlineStyle()
 
-                // TODO: Add a product row for each product added to the order
-                ProductRow(canChangeQuantity: true)
+                ForEach(viewModel.productRows) { productRowViewModel in
+                    ProductRow(viewModel: productRowViewModel)
+                    Divider()
+                }
 
                 Button(NewOrder.Localization.addProduct) {
                     showAddProduct.toggle()
                 }
+                .id(addProductButton)
                 .buttonStyle(PlusButtonStyle())
-                .sheet(isPresented: $showAddProduct) {
-                    AddProduct(isPresented: $showAddProduct)
-                }
+                .sheet(isPresented: $showAddProduct, onDismiss: {
+                    scroll.scrollTo(addProductButton)
+                }, content: {
+                    AddProductToOrder(isPresented: $showAddProduct, viewModel: viewModel.addProductViewModel)
+                })
             }
             .padding(.horizontal, insets: geometry.safeAreaInsets)
             .padding()

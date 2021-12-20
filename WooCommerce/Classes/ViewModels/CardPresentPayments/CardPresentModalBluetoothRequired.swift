@@ -29,6 +29,10 @@ final class CardPresentModalBluetoothRequired: CardPresentPaymentsModalViewModel
         error.localizedDescription
     }
 
+    var accessibilityLabel: String? {
+        return topTitle + error.localizedDescription
+    }
+
     let bottomSubtitle: String? = nil
 
     init(error: Error, primaryAction: @escaping () -> Void) {

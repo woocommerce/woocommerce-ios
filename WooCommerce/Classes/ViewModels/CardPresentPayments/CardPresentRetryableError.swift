@@ -23,6 +23,10 @@ final class CardPresentModalRetryableError: CardPresentPaymentsModalViewModel {
 
     let bottomSubtitle: String? = nil
 
+    var accessibilityLabel: String? {
+        return topTitle
+    }
+
     init(primaryAction: @escaping () -> Void) {
         self.primaryAction = primaryAction
     }

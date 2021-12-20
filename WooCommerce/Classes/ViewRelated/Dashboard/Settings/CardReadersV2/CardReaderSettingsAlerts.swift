@@ -25,10 +25,18 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         setViewModelAndPresent(from: from, viewModel: connectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch))
     }
 
-    func connectingFailedMissingAddress(from: UIViewController,
-                                        continueSearch: @escaping () -> Void,
+    func connectingFailedIncompleteAddress(from: UIViewController,
+                                        openWCSettings: ((UIViewController) -> Void)?,
+                                        retrySearch: @escaping () -> Void,
                                         cancelSearch: @escaping () -> Void) {
-        setViewModelAndPresent(from: from, viewModel: connectingFailedUpdateAddress(continueSearch: continueSearch, cancelSearch: cancelSearch))
+        setViewModelAndPresent(from: from,
+                               viewModel: connectingFailedUpdateAddress(openWCSettings: openWCSettings,
+                                                                        retrySearch: retrySearch,
+                                                                        cancelSearch: cancelSearch))
+    }
+
+    func connectingFailedInvalidPostalCode(from: UIViewController, retrySearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+        setViewModelAndPresent(from: from, viewModel: connectingFailedUpdatePostalCode(retrySearch: retrySearch, cancelSearch: cancelSearch))
     }
 
     func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) {
@@ -166,8 +174,17 @@ private extension CardReaderSettingsAlerts {
         CardPresentModalConnectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch)
     }
 
-    func connectingFailedUpdateAddress(continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalConnectingFailedUpdateAddress(continueSearch: continueSearch, cancelSearch: cancelSearch)
+    func connectingFailedUpdateAddress(openWCSettings: ((UIViewController) -> Void)?,
+                                       retrySearch: @escaping () -> Void,
+                                       cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        return CardPresentModalConnectingFailedUpdateAddress(openWCSettings: openWCSettings,
+                                                             retrySearch: retrySearch,
+                                                             cancelSearch: cancelSearch)
+    }
+
+    func connectingFailedUpdatePostalCode(retrySearch: @escaping () -> Void,
+                                          cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        return CardPresentModalConnectingFailedUpdatePostalCode(retrySearch: retrySearch, cancelSearch: cancelSearch)
     }
 
     func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

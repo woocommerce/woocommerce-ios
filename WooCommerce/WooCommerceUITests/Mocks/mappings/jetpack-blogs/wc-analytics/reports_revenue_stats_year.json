@@ -1,0 +1,46 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+    "queryParameters": {
+      "json": {
+        "equalTo": "true"
+      },
+      "path": {
+        "matches": "/wc-analytics/reports/revenue/stats/(.*)"
+      },
+      "query": {
+        "matches": "(.*)interval\":\"year(.*)"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "data": {
+        "totals": {
+          "orders_count": 5,
+          "num_items_sold": 10,
+          "gross_sales": 12345,
+          "total_sales": 0,
+          "coupons": 0,
+          "coupons_count": 0,
+          "refunds": 0,
+          "taxes": 0,
+          "shipping": 0,
+          "net_revenue": 12345,
+          "avg_items_per_order": 0,
+          "avg_order_value": 0,
+          "num_returning_customers": 0,
+          "num_new_customers": 0,
+          "products": 0,
+          "segments": []
+        }
+      }
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Connection": "keep-alive"
+    }
+  }
+}

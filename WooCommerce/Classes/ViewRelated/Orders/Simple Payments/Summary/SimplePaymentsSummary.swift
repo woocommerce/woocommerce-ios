@@ -8,6 +8,10 @@ struct SimplePaymentsSummary: View {
     ///
     var dismiss: (() -> Void) = {}
 
+    /// Needed because IPP capture payments using a UIViewController for providing user feedback.
+    ///
+    weak var rootViewController: UIViewController?
+
     /// Defines if the order note screen should be shown or not.
     ///
     @State var showEditNote = false
@@ -40,19 +44,31 @@ struct SimplePaymentsSummary: View {
             TakePaymentSection(viewModel: viewModel)
 
             // Navigation To Payment Methods
-            LazyNavigationLink(destination: SimplePaymentsMethod(dismiss: dismiss, viewModel: viewModel.createMethodsViewModel()),
+            LazyNavigationLink(destination: SimplePaymentsMethod(dismiss: dismiss,
+                                                                 rootViewController: rootViewController,
+                                                                 viewModel: viewModel.createMethodsViewModel()),
                                isActive: $viewModel.navigateToPaymentMethods) {
                 EmptyView()
             }
         }
         .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(Localization.title)
-        .sheet(isPresented: $showEditNote) {
-            EditCustomerNote(dismiss: {
-                showEditNote.toggle()
+        .sheet(
+            isPresented: $showEditNote,
+            onDismiss: { // Interactive drag dismiss
+                viewModel.noteViewModel.userDidCancelFlow()
                 viewModel.reloadContent()
-                }, viewModel: viewModel.noteViewModel)
-        }
+            },
+            content: {
+                EditCustomerNote(
+                    dismiss: { // Cancel button dismiss
+                        showEditNote.toggle()
+                        viewModel.reloadContent()
+                    },
+                    viewModel: viewModel.noteViewModel
+                )
+            })
+        .disabled(viewModel.disableViewActions)
     }
 }
 
@@ -141,6 +157,7 @@ private struct PaymentsSection: View {
                     Text(SimplePaymentsSummary.Localization.taxesDisclaimer)
                         .footnoteStyle()
                         .padding(.horizontal)
+                        .fixedSize(horizontal: false, vertical: true)
 
                     TitleAndValueRow(title: SimplePaymentsSummary.Localization.taxRate(viewModel.taxRate),
                                      value: .content(viewModel.taxAmount),
@@ -274,7 +291,7 @@ private extension SimplePaymentsSummary {
                                                comment: "Title text of the row that has a switch when creating a simple payment")
         static let total = NSLocalizedString("Order Total",
                                                comment: "Title text of the row that shows the total to charge when creating a simple payment")
-        static let orderNote = NSLocalizedString("Order Note",
+        static let orderNote = NSLocalizedString("Customer Provided Note",
                                                comment: "Title text of the row that holds the order note when creating a simple payment")
         static let addNote = NSLocalizedString("Add Note",
                                                comment: "Title text of the button that adds a note when creating a simple payment")

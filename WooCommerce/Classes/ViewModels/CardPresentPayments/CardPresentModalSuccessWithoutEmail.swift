@@ -6,6 +6,9 @@ final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewMod
     /// Closure to execute when primary button is tapped
     private let printReceiptAction: () -> Void
 
+    /// Closure to execute when secondary button is tapped
+    private let noReceiptAction: () -> Void
+
     let textMode: PaymentsModalTextMode = .noBottomInfo
     let actionsMode: PaymentsModalActionsMode = .twoAction
 
@@ -17,7 +20,7 @@ final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewMod
 
     let primaryButtonTitle: String? = Localization.printReceipt
 
-    let secondaryButtonTitle: String? = Localization.noThanks
+    let secondaryButtonTitle: String?
 
     let auxiliaryButtonTitle: String? = nil
 
@@ -25,8 +28,16 @@ final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewMod
 
     let bottomSubtitle: String? = nil
 
-    init(printReceipt: @escaping () -> Void) {
+    var accessibilityLabel: String? {
+        return Localization.paymentSuccessful
+    }
+
+    init(printReceipt: @escaping () -> Void,
+         noReceiptTitle: String,
+         noReceiptAction: @escaping () -> Void) {
         self.printReceiptAction = printReceipt
+        self.noReceiptAction = noReceiptAction
+        self.secondaryButtonTitle = noReceiptTitle
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
@@ -36,7 +47,9 @@ final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewMod
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        viewController?.dismiss(animated: true)
+        viewController?.dismiss(animated: true) { [weak self] in
+            self?.noReceiptAction()
+        }
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {}
@@ -52,11 +65,6 @@ private extension CardPresentModalSuccessWithoutEmail {
         static let printReceipt = NSLocalizedString(
             "Print receipt",
             comment: "Button to print receipts. Presented to users after a payment has been successfully collected"
-        )
-
-        static let noThanks = NSLocalizedString(
-            "Back to Order",
-            comment: "Button to dismiss modal overlay. Presented to users after a payment has been successfully collected"
         )
     }
 }

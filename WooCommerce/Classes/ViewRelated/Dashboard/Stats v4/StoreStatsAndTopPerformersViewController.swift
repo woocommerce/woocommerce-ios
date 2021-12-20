@@ -147,7 +147,11 @@ private extension StoreStatsAndTopPerformersViewController {
             vc.currentDate = currentDate
             let latestDateToInclude = vc.timeRange.latestDate(currentDate: currentDate, siteTimezone: timezoneForSync)
 
+            // For tasks dispatched for each time period.
+            let periodGroup = DispatchGroup()
+
             group.enter()
+            periodGroup.enter()
             self.syncStats(for: siteID,
                            siteTimezone: timezoneForSync,
                            timeRange: vc.timeRange,
@@ -160,9 +164,11 @@ private extension StoreStatsAndTopPerformersViewController {
                     periodSyncError = error
                 }
                 group.leave()
+                periodGroup.leave()
             }
 
             group.enter()
+            periodGroup.enter()
             self.syncSiteVisitStats(for: siteID,
                                     siteTimezone: timezoneForSync,
                                     timeRange: vc.timeRange,
@@ -172,9 +178,11 @@ private extension StoreStatsAndTopPerformersViewController {
                     periodSyncError = error
                 }
                 group.leave()
+                periodGroup.leave()
             }
 
             group.enter()
+            periodGroup.enter()
             self.syncTopEarnersStats(for: siteID,
                                      siteTimezone: timezoneForSync,
                                      timeRange: vc.timeRange,
@@ -184,13 +192,16 @@ private extension StoreStatsAndTopPerformersViewController {
                     periodSyncError = error
                 }
                 group.leave()
+                periodGroup.leave()
             }
 
-            // Update last successful data sync timestamp
-            if periodSyncError == nil {
-                vc.lastFullSyncTimestamp = Date()
-            } else {
-                syncError = periodSyncError
+            periodGroup.notify(queue: .main) {
+                // Update last successful data sync timestamp
+                if periodSyncError == nil {
+                    vc.lastFullSyncTimestamp = Date()
+                } else {
+                    syncError = periodSyncError
+                }
             }
         }
     }

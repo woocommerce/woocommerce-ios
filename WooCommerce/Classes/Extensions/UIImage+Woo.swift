@@ -157,6 +157,12 @@ extension UIImage {
         return UIImage.gridicon(.cloudOutline)
     }
 
+    /// Coooy Icon - used in `UIBarButtonItem`
+    ///
+    static var copyBarButtonItemImage: UIImage {
+        return UIImage(systemName: "doc.on.doc")!
+    }
+
     /// Connection Icon
     ///
     static var connectionImage: UIImage {

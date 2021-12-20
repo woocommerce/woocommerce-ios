@@ -9,6 +9,10 @@ struct SimplePaymentsMethod: View {
     ///
     var dismiss: (() -> Void) = {}
 
+    /// Needed because IPP capture payments using a UIViewController for providing user feedback.
+    ///
+    weak var rootViewController: UIViewController?
+
     /// ViewModel to render the view content.
     ///
     @ObservedObject var viewModel: SimplePaymentsMethodsViewModel
@@ -29,12 +33,15 @@ struct SimplePaymentsMethod: View {
             Group {
                 MethodRow(icon: .priceImage, title: Localization.cash) {
                     showingCashAlert = true
+                    viewModel.trackCollectByCash()
                 }
 
-                Divider()
+                if viewModel.showPayWithCardRow {
+                    Divider()
 
-                MethodRow(icon: .creditCardImage, title: Localization.card) {
-                    print("Tapped Card")
+                    MethodRow(icon: .creditCardImage, title: Localization.card) {
+                        viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
+                    }
                 }
             }
             .padding(.horizontal)

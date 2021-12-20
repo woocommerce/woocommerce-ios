@@ -1,12 +1,20 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+8.3
+-----
+- [***] All mercants can create Simple Payments orders. [https://github.com/woocommerce/woocommerce-ios/pull/5684]
+
 8.2
 -----
-
+- [***] In-Person Payments: Now you can collect Simple Payments on the go. [https://github.com/woocommerce/woocommerce-ios/pull/5635]
+- [*] Products: After generating a new variation for a variable product, you are now taken directly to edit the new variation. [https://github.com/woocommerce/woocommerce-ios/pull/5649]
+- [*] Dashboard: the visitor count in the Today tab is now shown when Jetpack site stats are enabled.
 
 8.2
 -----
 - [*] Shipping Labels: Fixes a crash when saving a new shipping label after opening the order from a push notification. [https://github.com/woocommerce/woocommerce-ios/pull/5549]
+- [**] In-Person Payments: Improved support for VoiceOver. [https://github.com/woocommerce/woocommerce-ios/pull/5572]
+- [*] In-Person Payments: Fixes a crash when printing more than one receipt. [https://github.com/woocommerce/woocommerce-ios/pull/5575]
 
 8.1
 -----

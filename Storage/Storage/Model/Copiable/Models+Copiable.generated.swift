@@ -9,7 +9,6 @@ extension GeneralAppSettings {
         installationDate: NullableCopiableProp<Date> = .copy,
         feedbacks: CopiableProp<[FeedbackType: FeedbackSettings]> = .copy,
         isViewAddOnsSwitchEnabled: CopiableProp<Bool> = .copy,
-        isSimplePaymentsSwitchEnabled: CopiableProp<Bool> = .copy,
         isOrderCreationSwitchEnabled: CopiableProp<Bool> = .copy,
         knownCardReaders: CopiableProp<[String]> = .copy,
         lastEligibilityErrorInfo: NullableCopiableProp<EligibilityErrorInfo> = .copy,
@@ -18,7 +17,6 @@ extension GeneralAppSettings {
         let installationDate = installationDate ?? self.installationDate
         let feedbacks = feedbacks ?? self.feedbacks
         let isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled ?? self.isViewAddOnsSwitchEnabled
-        let isSimplePaymentsSwitchEnabled = isSimplePaymentsSwitchEnabled ?? self.isSimplePaymentsSwitchEnabled
         let isOrderCreationSwitchEnabled = isOrderCreationSwitchEnabled ?? self.isOrderCreationSwitchEnabled
         let knownCardReaders = knownCardReaders ?? self.knownCardReaders
         let lastEligibilityErrorInfo = lastEligibilityErrorInfo ?? self.lastEligibilityErrorInfo
@@ -28,7 +26,6 @@ extension GeneralAppSettings {
             installationDate: installationDate,
             feedbacks: feedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
-            isSimplePaymentsSwitchEnabled: isSimplePaymentsSwitchEnabled,
             isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,

@@ -119,6 +119,8 @@ public enum WooAnalyticsStat: String {
     case supportHelpCenterUserSearched = "support_help_center_user_searched"
     case supportIdentityFormViewed = "support_identity_form_viewed"
     case supportIdentitySet = "support_identity_set"
+    case supportSSROpened = "support_ssr_opened"
+    case supportSSRCopyButtonTapped = "support_ssr_copy_button_tapped"
 
     // MARK: Settings View Events
     //
@@ -130,7 +132,6 @@ public enum WooAnalyticsStat: String {
     case settingsBetaFeaturesButtonTapped = "settings_beta_features_button_tapped"
     case settingsBetaFeaturesProductsToggled = "settings_beta_features_products_toggled"
     case settingsBetaFeaturesOrderAddOnsToggled = "settings_beta_features_order_addons_toggled"
-    case settingsBetaFeaturesSimplePaymentsToggled = "settings_beta_features_simple_payments_toggled"
 
     case settingsPrivacySettingsTapped = "settings_privacy_settings_button_tapped"
     case settingsCollectInfoToggled = "privacy_settings_collect_info_toggled"
@@ -532,11 +533,15 @@ public enum WooAnalyticsStat: String {
     case simplePaymentsFlowCompleted = "simple_payments_flow_completed"
     case simplePaymentsFlowCanceled = "simple_payments_flow_canceled"
     case simplePaymentsFlowFailed = "simple_payments_flow_failed"
+    case simplePaymentsFlowNoteAdded = "simple_payments_flow_note_added"
+    case simplePaymentsFlowTaxesToggled = "simple_payments_flow_taxes_toggled"
+    case simplePaymentsFlowCollect = "simple_payments_flow_collect"
 
     // MARK: Jetpack-the-plugin events
     //
     case jetpackBenefitsBanner = "feature_jetpack_benefits_banner"
     case jetpackInstallButtonTapped = "jetpack_install_button_tapped"
+    case jetpackCPSitesFetched = "jetpack_cp_sites_fetched"
 }
 
 public extension WooAnalyticsStat {

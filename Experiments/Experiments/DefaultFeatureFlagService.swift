@@ -30,7 +30,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .hubMenu:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .systemStatusReport:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .stripeExtensionInPersonPayments:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

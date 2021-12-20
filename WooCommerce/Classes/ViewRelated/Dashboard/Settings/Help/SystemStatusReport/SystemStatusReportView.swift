@@ -3,12 +3,16 @@ import SwiftUI
 /// Hosting controller wrapper for `SystemStatusReportView`
 ///
 final class SystemStatusReportHostingController: UIHostingController<SystemStatusReportView> {
+
     init(siteID: Int64) {
         let viewModel = SystemStatusReportViewModel(siteID: siteID)
         super.init(rootView: SystemStatusReportView(viewModel: viewModel))
         // The navigation title is set here instead of the SwiftUI view's `navigationTitle`
         // to avoid the blinking of the title label when pushed from UIKit view.
         title = NSLocalizedString("System Status Report", comment: "Navigation title of system status report screen")
+
+        // Set presenting view controller to show the notice presenter here
+        rootView.noticePresenter.presentingViewController = self
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -27,12 +31,17 @@ struct SystemStatusReportView: View {
     ///
     var dismissAction: () -> Void = {}
 
+    /// Notice presenter to present successful copy message
+    ///
+    let noticePresenter: DefaultNoticePresenter
+
     @ObservedObject private var viewModel: SystemStatusReportViewModel
     @State private var showingErrorAlert = false
 
     init(viewModel: SystemStatusReportViewModel) {
         self.viewModel = viewModel
         viewModel.fetchReport()
+        noticePresenter = DefaultNoticePresenter()
     }
 
     var body: some View {
@@ -56,6 +65,22 @@ struct SystemStatusReportView: View {
         .onChange(of: viewModel.errorFetchingReport) { newValue in
             showingErrorAlert = newValue
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    UIPasteboard.general.string = viewModel.statusReport
+                    let notice = Notice(title: Localization.copiedToClipboard, feedbackType: .success)
+                    noticePresenter.enqueue(notice: notice)
+                    ServiceLocator.analytics.track(.supportSSRCopyButtonTapped)
+                }) {
+                    Image(uiImage: .copyBarButtonItemImage)
+                        .renderingMode(.template)
+                        .flipsForRightToLeftLayoutDirection(true)
+                }
+                .disabled(viewModel.statusReport.isEmpty)
+            }
+        }
+        .wooNavigationBarStyle()
     }
 }
 
@@ -76,6 +101,10 @@ private extension SystemStatusReportView {
         static let cancelButton = NSLocalizedString(
             "Cancel",
             comment: "Cancel button on the error alert when fetching system status report fails"
+        )
+        static let copiedToClipboard = NSLocalizedString(
+            "System status report copied to clipboard",
+            comment: "Toast message showing up when tapping Copy button on System Status Report screen."
         )
     }
 }

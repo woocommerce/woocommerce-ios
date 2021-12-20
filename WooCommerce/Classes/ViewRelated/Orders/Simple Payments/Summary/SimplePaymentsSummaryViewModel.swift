@@ -26,6 +26,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     @Published var enableTaxes: Bool = false {
         didSet {
+            storeTaxesToggleState()
             analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowTaxesToggled(isOn: enableTaxes))
         }
     }
@@ -132,6 +133,9 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         if let noteContent = noteContent {
             noteViewModel = SimplePaymentsNoteViewModel(originalNote: noteContent)
         }
+
+        // Loads the latest stored taxes toggle state.
+        loadCurrentTaxesToggleState()
     }
 
     convenience init(order: Order,
@@ -191,6 +195,30 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                                        formattedTotal: total,
                                        presentNoticeSubject: presentNoticeSubject,
                                        stores: stores)
+    }
+}
+
+// MARK: Helpers
+private extension SimplePaymentsSummaryViewModel {
+    /// Loads the current taxes toggle state.
+    ///
+    func loadCurrentTaxesToggleState() {
+        let action = AppSettingsAction.getSimplePaymentsTaxesToggleState(siteID: siteID) { result in
+            guard case .success(let isOn) = result else {
+                return
+            }
+            self.enableTaxes = isOn
+        }
+        stores.dispatch(action)
+    }
+
+    /// Stores the current taxes toggle state for later query.
+    ///
+    func storeTaxesToggleState() {
+        let action = AppSettingsAction.setSimplePaymentsTaxesToggleState(siteID: siteID, isOn: enableTaxes) { _ in
+            // No op
+        }
+        stores.dispatch(action)
     }
 }
 

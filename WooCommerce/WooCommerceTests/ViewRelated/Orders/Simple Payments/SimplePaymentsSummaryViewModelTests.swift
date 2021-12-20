@@ -166,6 +166,30 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.navigateToPaymentMethods)
     }
 
+    func test_when_order_is_updated_email_is_trimmed() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+        viewModel.email = " some@email.com "
+
+        // When
+        let trimmedEmail: String? = waitFor { promise in
+            mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateSimplePaymentsOrder(_, _, _, _, _, _, email, _):
+                    promise(email)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            viewModel.updateOrder()
+        }
+
+        // Then
+        XCTAssertEqual(trimmedEmail, "some@email.com")
+        XCTAssertEqual(trimmedEmail, viewModel.email)
+    }
+
     func test_empty_emails_are_send_as_nil_when_updating_orders() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)

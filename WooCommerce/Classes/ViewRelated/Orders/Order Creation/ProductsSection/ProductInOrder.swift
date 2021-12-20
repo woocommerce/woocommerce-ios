@@ -3,13 +3,15 @@ import Yosemite
 
 struct ProductInOrder: View {
 
-    /// Defines whether the view is presented.
-    ///
-    @Binding var isPresented: Bool
+    @Environment(\.presentationMode) var presentation
 
     /// The product being edited.
     ///
     let productRowViewModel: ProductRowViewModel
+
+    /// Closure invoked when the product is removed.
+    ///
+    let onRemoveProduct: (() -> Void)?
 
     var body: some View {
         NavigationView {
@@ -28,8 +30,8 @@ struct ProductInOrder: View {
                     Section {
                         Divider()
                         Button(Localization.remove) {
-                            // Remove product from order
-                            isPresented.toggle()
+                            onRemoveProduct?()
+                            presentation.wrappedValue.dismiss()
                         }
                         .padding()
                         .frame(maxWidth: .infinity, alignment: .center)
@@ -46,7 +48,7 @@ struct ProductInOrder: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.close) {
-                        isPresented.toggle()
+                        presentation.wrappedValue.dismiss()
                     }
                 }
             }
@@ -81,6 +83,6 @@ struct ProductInOrder_Previews: PreviewProvider {
                                             manageStock: true,
                                             canChangeQuantity: false,
                                             imageURL: nil)
-        ProductInOrder(isPresented: .constant(true), productRowViewModel: viewModel)
+        ProductInOrder(productRowViewModel: viewModel, onRemoveProduct: {})
     }
 }

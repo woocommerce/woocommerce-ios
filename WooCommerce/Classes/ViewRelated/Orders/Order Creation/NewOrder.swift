@@ -98,6 +98,10 @@ private struct ProductsSection: View {
     ///
     @Namespace var addProductButton
 
+    /// View model for the selected product row
+    ///
+    @State private var selectedProduct: ProductRowViewModel? = nil
+
     var body: some View {
         Group {
             Divider()
@@ -108,6 +112,15 @@ private struct ProductsSection: View {
 
                 ForEach(viewModel.productRows) { productRowViewModel in
                     ProductRow(viewModel: productRowViewModel)
+                        .onTapGesture {
+                            selectedProduct = productRowViewModel
+                        }
+                        .sheet(item: $selectedProduct) { product in
+                            ProductInOrder(productRowViewModel: product) {
+                                // Remove the selected product from the order
+                            }
+                        }
+
                     Divider()
                 }
 

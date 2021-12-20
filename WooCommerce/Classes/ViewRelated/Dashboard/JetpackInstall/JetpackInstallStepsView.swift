@@ -10,13 +10,16 @@ struct JetpackInstallStepsView: View {
     /// The site for which Jetpack should be installed
     private let siteURL: String
 
+    /// URL for the site's admin page
+    private let siteAdminURL: String
+
     /// WPAdmin URL to navigate user when install fails.
     private var wpAdminURL: URL? {
         switch viewModel.currentStep {
         case .installation:
-            return URL(string: "\(siteURL)\(Constants.wpAdminInstallPath)")
+            return URL(string: "\(siteAdminURL)\(Constants.wpAdminInstallPath)")
         case .activation:
-            return URL(string: "\(siteURL)\(Constants.wpAdminPluginsPath)")
+            return URL(string: "\(siteAdminURL)\(Constants.wpAdminPluginsPath)")
         default:
             return nil
         }
@@ -49,10 +52,12 @@ struct JetpackInstallStepsView: View {
     }
 
     init(siteURL: String,
+         siteAdminURL: String,
          viewModel: JetpackInstallStepsViewModel,
          supportAction: @escaping () -> Void,
          dismissAction: @escaping () -> Void) {
         self.siteURL = siteURL
+        self.siteAdminURL = siteAdminURL
         self.viewModel = viewModel
         self.supportAction = supportAction
         self.dismissAction = dismissAction
@@ -210,8 +215,8 @@ private extension JetpackInstallStepsView {
         static let stepItemsVerticalSpacing: CGFloat = 20
         static let stepImageSize: CGFloat = 24
         // TODO-5365: Remove the hard-code wp-admin by fetching option admin_url for sites
-        static let wpAdminInstallPath: String = "/wp-admin/plugin-install.php?tab=plugin-information&plugin=jetpack"
-        static let wpAdminPluginsPath: String = "/wp-admin/plugins.php"
+        static let wpAdminInstallPath: String = "plugin-install.php?tab=plugin-information&plugin=jetpack"
+        static let wpAdminPluginsPath: String = "plugins.php"
     }
 
     enum Localization {
@@ -234,11 +239,11 @@ private extension JetpackInstallStepsView {
 struct JetpackInstallStepsView_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = JetpackInstallStepsViewModel(siteID: 123)
-        JetpackInstallStepsView(siteURL: "automattic.com", viewModel: viewModel, supportAction: {}, dismissAction: {})
+        JetpackInstallStepsView(siteURL: "automattic.com", siteAdminURL: "", viewModel: viewModel, supportAction: {}, dismissAction: {})
             .preferredColorScheme(.light)
             .previewLayout(.fixed(width: 414, height: 780))
 
-        JetpackInstallStepsView(siteURL: "automattic.com", viewModel: viewModel, supportAction: {}, dismissAction: {})
+        JetpackInstallStepsView(siteURL: "automattic.com", siteAdminURL: "", viewModel: viewModel, supportAction: {}, dismissAction: {})
             .preferredColorScheme(.dark)
             .previewLayout(.fixed(width: 414, height: 780))
     }

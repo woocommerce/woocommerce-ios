@@ -108,8 +108,6 @@ final class NewOrderViewModel: ObservableObject {
 
             switch result {
             case .success(let newOrder):
-                // TODO: Handle newly created order / remove success logging
-                DDLogInfo("New order created successfully!")
                 self.onOrderCreated(newOrder)
             case .failure(let error):
                 self.presentNotice = .error

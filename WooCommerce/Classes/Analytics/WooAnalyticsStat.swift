@@ -119,6 +119,8 @@ public enum WooAnalyticsStat: String {
     case supportHelpCenterUserSearched = "support_help_center_user_searched"
     case supportIdentityFormViewed = "support_identity_form_viewed"
     case supportIdentitySet = "support_identity_set"
+    case supportSSROpened = "support_ssr_opened"
+    case supportSSRCopyButtonTapped = "support_ssr_copy_button_tapped"
 
     // MARK: Settings View Events
     //

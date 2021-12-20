@@ -505,7 +505,7 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.cloudImage)
     }
 
-    func testCopyBarButtonItemImageIconIsNotNil() {
+    func test_copy_bar_button_item_image_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.copyBarButtonItemImage)
     }
 

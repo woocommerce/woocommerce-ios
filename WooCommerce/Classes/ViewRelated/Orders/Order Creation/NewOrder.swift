@@ -100,7 +100,7 @@ private struct ProductsSection: View {
 
     /// View model for the selected product row
     ///
-    @State private var selectedProduct: ProductRowViewModel? = nil
+    @State private var selectedProductVM: ProductRowViewModel? = nil
 
     var body: some View {
         Group {
@@ -110,12 +110,16 @@ private struct ProductsSection: View {
                 Text(NewOrder.Localization.products)
                     .headlineStyle()
 
-                ForEach(viewModel.productRows) { productRowViewModel in
-                    ProductRow(viewModel: productRowViewModel)
+                ForEach(viewModel.productRows.indices, id: \.self) { index in
+                    ProductRow(viewModel: viewModel.productRows[index])
                         .onTapGesture {
-                            selectedProduct = productRowViewModel
+                            guard viewModel.orderDetails.items.indices.contains(index) else {
+                                return
+                            }
+                            let selectedProduct = viewModel.orderDetails.items[index].product
+                            selectedProductVM = ProductRowViewModel(product: selectedProduct, canChangeQuantity: false)
                         }
-                        .sheet(item: $selectedProduct) { product in
+                        .sheet(item: $selectedProductVM) { product in
                             ProductInOrder(productRowViewModel: product) {
                                 // Remove the selected product from the order
                             }

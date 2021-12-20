@@ -46,7 +46,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
 
     func test_readonly_simple_product_with_decimal_stock_quantities_has_readonly_inventory_settings() {
         // Arrange
-        let product = Product().copy(productTypeKey: ProductType.simple.rawValue, stockQuantity: 1.5)
+        let product = Product.create(productTypeKey: ProductType.simple.rawValue, stockQuantity: 1.5)
         let model = EditableProductModel(product: product)
 
         // Action
@@ -200,7 +200,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
 
     func test_readonly_variable_product_with_decimal_stock_quantities_has_readonly_inventory_settings() {
         // Arrange
-        let product = Product().copy(productTypeKey: ProductType.variable.rawValue, stockQuantity: 1.5)
+        let product = Product.create(productTypeKey: ProductType.variable.rawValue, stockQuantity: 1.5)
         let model = EditableProductModel(product: product)
 
         // Action

@@ -6,7 +6,7 @@ final class ProductVariationsViewModelTests: XCTestCase {
     func test_empty_state_is_shown_when_product_does_not_have_variations_but_has_attributes() {
         // Given
         let attribute = ProductAttribute(siteID: 0, attributeID: 0, name: "attr", position: 0, visible: true, variation: true, options: [])
-        let product = Product().copy(attributes: [attribute], variations: [])
+        let product = Product.create(attributes: [attribute], variations: [])
         let viewModel = ProductVariationsViewModel(formType: .edit)
 
         // Then
@@ -18,7 +18,7 @@ final class ProductVariationsViewModelTests: XCTestCase {
 
     func test_empty_state_is_shown_when_product_does_not_have_attributes_but_has_variations() {
         // Given
-        let product = Product().copy(attributes: [], variations: [1, 2])
+        let product = Product.create(attributes: [], variations: [1, 2])
         let viewModel = ProductVariationsViewModel(formType: .edit)
 
         // Then
@@ -31,7 +31,7 @@ final class ProductVariationsViewModelTests: XCTestCase {
     func test_empty_state_is_not_shown_when_product_has_attributes_and_variations() {
         // Given
         let attribute = ProductAttribute(siteID: 0, attributeID: 0, name: "attr", position: 0, visible: true, variation: true, options: [])
-        let product = Product().copy(attributes: [attribute], variations: [1, 2])
+        let product = Product.create(attributes: [attribute], variations: [1, 2])
         let viewModel = ProductVariationsViewModel(formType: .edit)
 
         // Then

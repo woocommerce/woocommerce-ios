@@ -47,13 +47,13 @@ class Product_ProductFormTests: XCTestCase {
     // MARK: image related
 
     func testProductAllowsMultipleImages() {
-        let product = Product().copy(images: [])
+        let product = Product.create(images: [])
         let model = EditableProductModel(product: product)
         XCTAssertTrue(model.allowsMultipleImages())
     }
 
     func testProductImageDeletionIsEnabled() {
-        let product = Product().copy(images: [])
+        let product = Product.create(images: [])
         let model = EditableProductModel(product: product)
         XCTAssertTrue(model.isImageDeletionEnabled())
     }
@@ -61,12 +61,12 @@ class Product_ProductFormTests: XCTestCase {
     // MARK: `productTaxStatus`
 
     func testProductTaxStatusFromAnUnexpectedRawValueReturnsDefaultTaxable() {
-        let product = Product().copy(taxStatusKey: "unknown tax status")
+        let product = Product.create(taxStatusKey: "unknown tax status")
         XCTAssertEqual(product.productTaxStatus, .taxable)
     }
 
     func testProductTaxStatusFromAValidRawValueReturnsTheCorrespondingCase() {
-        let product = Product().copy(taxStatusKey: ProductTaxStatus.shipping.rawValue)
+        let product = Product.create(taxStatusKey: ProductTaxStatus.shipping.rawValue)
         XCTAssertEqual(product.productTaxStatus, .shipping)
     }
 
@@ -74,12 +74,12 @@ class Product_ProductFormTests: XCTestCase {
 
     func testBackordersSettingFromAnUnexpectedRawValueReturnsACustomCase() {
         let rawValue = "unknown setting"
-        let product = Product().copy(backordersKey: rawValue)
+        let product = Product.create(backordersKey: rawValue)
         XCTAssertEqual(product.backordersSetting, .custom(rawValue))
     }
 
     func testBackordersSettingFromAValidRawValueReturnsTheCorrespondingCase() {
-        let product = Product().copy(backordersKey: ProductBackordersSetting.notAllowed.rawValue)
+        let product = Product.create(backordersKey: ProductBackordersSetting.notAllowed.rawValue)
         XCTAssertEqual(product.backordersSetting, .notAllowed)
     }
 }

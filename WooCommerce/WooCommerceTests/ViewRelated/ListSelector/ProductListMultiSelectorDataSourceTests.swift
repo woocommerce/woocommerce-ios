@@ -27,12 +27,12 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         let siteID: Int64 = 1
         let excludedProductIDs: [Int64] = [17, 630]
         excludedProductIDs.forEach { productID in
-            insert(Product().copy(siteID: siteID, productID: productID))
+            insert(Product.create(siteID: siteID, productID: productID))
         }
 
         let otherProductIDs: [Int64] = [22, 671, 5]
         otherProductIDs.forEach { productID in
-            insert(Product().copy(siteID: siteID, productID: productID))
+            insert(Product.create(siteID: siteID, productID: productID))
         }
 
         let dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: excludedProductIDs)
@@ -56,7 +56,7 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         }
 
         // Action
-        let product = Product().copy(productID: 17)
+        let product = Product.create(productID: 17)
         dataSource.handleSelectedChange(selected: product)
         dataSource.handleSelectedChange(selected: product)
 
@@ -71,7 +71,7 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         // Arrange
         let siteID: Int64 = 1
         let dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: [])
-        let product = Product().copy(productID: 17)
+        let product = Product.create(productID: 17)
         XCTAssertFalse(dataSource.isSelected(model: product))
 
         // Action - step 1: select product

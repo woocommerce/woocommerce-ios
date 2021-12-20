@@ -3,15 +3,11 @@ import Yosemite
 
 struct ProductInOrder: View {
 
-    @Environment(\.presentationMode) var presentation
+    @Environment(\.presentationMode) private var presentation
 
-    /// The product being edited.
+    /// View model to drive the view content
     ///
-    let productRowViewModel: ProductRowViewModel
-
-    /// Closure invoked when the product is removed.
-    ///
-    let onRemoveProduct: (() -> Void)?
+    let viewModel: ProductInOrderViewModel
 
     var body: some View {
         NavigationView {
@@ -19,7 +15,7 @@ struct ProductInOrder: View {
                 VStack(spacing: Layout.noSpacing) {
                     Section {
                         Divider()
-                        ProductRow(viewModel: productRowViewModel)
+                        ProductRow(viewModel: viewModel.productRowViewModel)
                             .padding()
                         Divider()
                     }
@@ -30,7 +26,7 @@ struct ProductInOrder: View {
                     Section {
                         Divider()
                         Button(Localization.remove) {
-                            onRemoveProduct?()
+                            viewModel.onRemoveProduct()
                             presentation.wrappedValue.dismiss()
                         }
                         .padding()
@@ -74,7 +70,7 @@ private extension ProductInOrder {
 
 struct ProductInOrder_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ProductRowViewModel(productID: 1,
+        let productRowVM = ProductRowViewModel(productID: 1,
                                             name: "Love Ficus",
                                             sku: "123456",
                                             price: "20",
@@ -83,6 +79,8 @@ struct ProductInOrder_Previews: PreviewProvider {
                                             manageStock: true,
                                             canChangeQuantity: false,
                                             imageURL: nil)
-        ProductInOrder(productRowViewModel: viewModel, onRemoveProduct: {})
+        let viewModel = ProductInOrderViewModel(productRowViewModel: productRowVM,
+                                                onRemoveProduct: {})
+        ProductInOrder(viewModel: viewModel)
     }
 }

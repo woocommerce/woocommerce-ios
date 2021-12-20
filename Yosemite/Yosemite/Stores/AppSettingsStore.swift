@@ -187,6 +187,10 @@ public class AppSettingsStore: Store {
             setTelemetryLastReportedTime(siteID: siteID, time: time)
         case .getTelemetryInfo(siteID: let siteID, onCompletion: let onCompletion):
             getTelemetryInfo(siteID: siteID, onCompletion: onCompletion)
+        case let .setSimplePaymentsTaxesToggleState(siteID, isOn, onCompletion):
+            setSimplePaymentsTaxesToggleState(siteID: siteID, isOn: isOn, onCompletion: onCompletion)
+        case let .getSimplePaymentsTaxesToggleState(siteID, onCompletion):
+            getSimplePaymentsTaxesToggleState(siteID: siteID, onCompletion: onCompletion)
         case .resetGeneralStoreSettings:
             resetGeneralStoreSettings()
         }
@@ -803,6 +807,23 @@ private extension AppSettingsStore {
         } catch {
             DDLogError("⛔️ Deleting store settings file failed. Error: \(error)")
         }
+    }
+
+    // Simple Payments data
+
+    /// Sets the last state of the simple payments taxes toggle for a provided store.
+    ///
+    func setSimplePaymentsTaxesToggleState(siteID: Int64, isOn: Bool, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let newSettings = storeSettings.copy(areSimplePaymentTaxesEnabled: isOn)
+        setStoreSettings(settings: newSettings, for: siteID, onCompletion: onCompletion)
+    }
+
+    /// Get the last state of the simple payments taxes toggle for a provided store.
+    ///
+    func getSimplePaymentsTaxesToggleState(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(.success(storeSettings.areSimplePaymentTaxesEnabled))
     }
 }
 

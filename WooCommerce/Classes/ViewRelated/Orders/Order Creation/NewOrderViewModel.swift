@@ -86,6 +86,11 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published private(set) var productRows: [ProductRowViewModel] = []
 
+    /// Item selected from the list of products in the order.
+    /// Used to open the product details in `ProductInOrder`.
+    ///
+    @Published var selectedOrderItem: NewOrderItem? = nil
+
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.stores = stores
@@ -93,6 +98,21 @@ final class NewOrderViewModel: ObservableObject {
 
         configureNavigationTrailingItem()
         configureStatusBadgeViewModel()
+        configureProductRowViewModels()
+    }
+
+    /// Selects an order item.
+    ///
+    /// - Parameter id: ID of the order item to select
+    func selectOrderItem(_ id: String) {
+        selectedOrderItem = orderDetails.items.first(where: { $0.id == id })
+    }
+
+    /// Removes an item from the order.
+    ///
+    /// - Parameter item: Item to remove from the order
+    func removeItemFromOrder(_ item: NewOrderItem) {
+        orderDetails.items.removeAll(where: { $0 == item })
         configureProductRowViewModels()
     }
 
@@ -187,7 +207,8 @@ extension NewOrderViewModel {
 
     /// Representation of new items in an order.
     ///
-    struct NewOrderItem {
+    struct NewOrderItem: Equatable, Identifiable {
+        var id: String
         let product: Product
         var quantity: Decimal
 
@@ -196,6 +217,7 @@ extension NewOrderViewModel {
         }
 
         init(product: Product, quantity: Decimal) {
+            self.id = UUID().uuidString
             self.product = product
             self.quantity = quantity
         }
@@ -247,7 +269,7 @@ private extension NewOrderViewModel {
     ///
     func configureProductRowViewModels() {
         productRows = orderDetails.items.enumerated().map { index, item in
-            let productRowViewModel = ProductRowViewModel(id: index.description, product: item.product, canChangeQuantity: true)
+            let productRowViewModel = ProductRowViewModel(id: item.id, product: item.product, canChangeQuantity: true)
 
             // Observe changes to the product quantity
             productRowViewModel.$quantity

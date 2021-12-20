@@ -98,10 +98,6 @@ private struct ProductsSection: View {
     ///
     @Namespace var addProductButton
 
-    /// View model for the selected product row
-    ///
-    @State private var selectedProductVM: ProductRowViewModel? = nil
-
     var body: some View {
         Group {
             Divider()
@@ -110,19 +106,16 @@ private struct ProductsSection: View {
                 Text(NewOrder.Localization.products)
                     .headlineStyle()
 
-                ForEach(viewModel.productRows.indices, id: \.self) { index in
-                    ProductRow(viewModel: viewModel.productRows[index])
+                ForEach(viewModel.productRows) { productRow in
+                    ProductRow(viewModel: productRow)
                         .onTapGesture {
-                            guard viewModel.orderDetails.items.indices.contains(index) else {
-                                return
-                            }
-                            let selectedProduct = viewModel.orderDetails.items[index].product
-                            selectedProductVM = ProductRowViewModel(product: selectedProduct, canChangeQuantity: false)
+                            viewModel.selectOrderItem(productRow.id)
                         }
-                        .sheet(item: $selectedProductVM) { product in
-                            ProductInOrder(productRowViewModel: product) {
-                                // Remove the selected product from the order
+                        .sheet(item: $viewModel.selectedOrderItem) { item in
+                            let productInOrderVM = ProductInOrderViewModel(product: item.product) {
+                                viewModel.removeItemFromOrder(item)
                             }
+                            ProductInOrder(viewModel: productInOrderVM)
                         }
 
                     Divider()

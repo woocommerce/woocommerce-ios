@@ -344,7 +344,7 @@ private extension StripeCardReaderService {
     }
 
     func readerModelForIntent() -> String? {
-        connectedReadersSubject.value.first?.readerType.description
+        connectedReadersSubject.value.first?.readerType.model
     }
 
     func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<StripeTerminal.PaymentIntent, Error> {

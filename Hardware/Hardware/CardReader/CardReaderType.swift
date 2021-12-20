@@ -9,8 +9,8 @@ public enum CardReaderType {
     case other
 }
 
-extension CardReaderType: CustomStringConvertible {
-    public var description: String {
+extension CardReaderType {
+    var model: String {
         switch self {
         case .chipper:
             return "chipper_2x"

@@ -19,6 +19,7 @@ struct HubMenuElement: View {
             .cornerRadius(Constants.imageSize/2)
             .padding(.bottom, Constants.paddingBetweenElements)
             Text(text)
+                .foregroundColor(.black)
         }
     }
 

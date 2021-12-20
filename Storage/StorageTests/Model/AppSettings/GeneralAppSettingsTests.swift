@@ -53,16 +53,18 @@ final class GeneralAppSettingsTests: XCTestCase {
 
     func test_updating_properties_to_generalAppSettings_does_not_breaks_decoding() throws {
         // Given
-        let currentDate = Date()
+        let installationDate = Date(timeIntervalSince1970: 1630314000) // Mon Aug 30 2021 09:00:00 UTC+0000
+        let jetpackBannerDismissedDate = Date(timeIntervalSince1970: 1631523600) // Mon Sep 13 2021 09:00:00 UTC+0000
         let feedbackSettings = [FeedbackType.general: FeedbackSettings(name: .general, status: .pending)]
         let readers = ["aaaaa", "bbbbbb"]
         let eligibilityInfo = EligibilityErrorInfo(name: "user", roles: ["admin"])
-        let previousSettings = GeneralAppSettings(installationDate: currentDate,
+        let previousSettings = GeneralAppSettings(installationDate: installationDate,
                                                   feedbacks: feedbackSettings,
                                                   isViewAddOnsSwitchEnabled: true,
                                                   isOrderCreationSwitchEnabled: true,
                                                   knownCardReaders: readers,
-                                                  lastEligibilityErrorInfo: eligibilityInfo)
+                                                  lastEligibilityErrorInfo: eligibilityInfo,
+                                                  lastJetpackBenefitsBannerDismissedTime: jetpackBannerDismissedDate)
 
         let previousEncodedSettings = try JSONEncoder().encode(previousSettings)
         var previousSettingsJson = try JSONSerialization.jsonObject(with: previousEncodedSettings, options: .allowFragments) as? [String: Any]
@@ -73,12 +75,13 @@ final class GeneralAppSettingsTests: XCTestCase {
         let newSettings = try JSONDecoder().decode(GeneralAppSettings.self, from: newEncodedSettings)
 
         // Then
-        assertEqual(newSettings.installationDate, currentDate)
+        assertEqual(newSettings.installationDate, installationDate)
         assertEqual(newSettings.feedbacks, feedbackSettings)
         assertEqual(newSettings.knownCardReaders, readers)
         assertEqual(newSettings.lastEligibilityErrorInfo, eligibilityInfo)
         assertEqual(newSettings.isViewAddOnsSwitchEnabled, false)
         assertEqual(newSettings.isOrderCreationSwitchEnabled, true)
+        assertEqual(newSettings.lastJetpackBenefitsBannerDismissedTime, jetpackBannerDismissedDate)
     }
 }
 

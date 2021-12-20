@@ -3,34 +3,15 @@ import XCTest
 
 public final class TabNavComponent: ScreenObject {
 
-    private let myStoreTabButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.tabBars.firstMatch.buttons["tab-bar-my-store-item"]
-    }
-
-    private let ordersTabButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.tabBars.firstMatch.buttons["tab-bar-orders-item"]
-    }
-
-    private let reviewsTabButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.tabBars.firstMatch.buttons["tab-bar-reviews-item"]
-    }
-
-    private let productsTabButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.tabBars.firstMatch.buttons["tab-bar-products-item"]
-    }
-
-    private var myStoreTabButton: XCUIElement { myStoreTabButtonGetter(app) }
-    private var ordersTabButton: XCUIElement { ordersTabButtonGetter(app) }
-    private var reviewsTabButton: XCUIElement { reviewsTabButtonGetter(app) }
-    var productsTabButton: XCUIElement { productsTabButtonGetter(app) }
-
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
-                myStoreTabButtonGetter,
-                ordersTabButtonGetter,
-                reviewsTabButtonGetter,
-                productsTabButtonGetter
+                // swiftlint:disable next opening_brace
+                { $0.tabBars.firstMatch.buttons["tab-bar-my-store-item"] },
+                { $0.tabBars.firstMatch.buttons["tab-bar-orders-item"] },
+                { $0.tabBars.firstMatch.buttons["tab-bar-products-item"] },
+                { $0.tabBars.firstMatch.buttons["tab-bar-reviews-item"] }
+                // swiftlint:enable next opening_brace
             ],
             app: app
         )
@@ -40,7 +21,7 @@ public final class TabNavComponent: ScreenObject {
     func gotoMyStoreScreen() throws -> MyStoreScreen {
         // Avoid transitioning if it is already on screen
         if !MyStoreScreen.isVisible {
-            myStoreTabButton.tap()
+            app.tabBars.firstMatch.buttons["tab-bar-my-store-item"].tap()
         }
         return try MyStoreScreen()
     }
@@ -49,7 +30,7 @@ public final class TabNavComponent: ScreenObject {
     public func gotoOrdersScreen() throws -> OrdersScreen {
         // Avoid transitioning if it is already on screen
         guard let orderScreen = try? OrdersScreen(), orderScreen.isLoaded else {
-            ordersTabButton.tap()
+            app.tabBars.firstMatch.buttons["tab-bar-orders-item"].tap()
             return try OrdersScreen()
         }
 
@@ -59,7 +40,7 @@ public final class TabNavComponent: ScreenObject {
     @discardableResult
     public func gotoProductsScreen() throws -> ProductsScreen {
         if !ProductsScreen.isVisible {
-            productsTabButton.tap()
+            app.tabBars.firstMatch.buttons["tab-bar-products-item"].tap()
         }
 
         return try ProductsScreen()
@@ -68,7 +49,7 @@ public final class TabNavComponent: ScreenObject {
     @discardableResult
     public func gotoReviewsScreen() throws -> ReviewsScreen {
         if !ReviewsScreen.isVisible {
-            reviewsTabButton.tap()
+            app.tabBars.firstMatch.buttons["tab-bar-reviews-item"].tap()
         }
 
         return try ReviewsScreen()

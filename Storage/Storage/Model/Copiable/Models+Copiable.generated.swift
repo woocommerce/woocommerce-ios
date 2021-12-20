@@ -10,6 +10,7 @@ extension GeneralAppSettings {
         feedbacks: CopiableProp<[FeedbackType: FeedbackSettings]> = .copy,
         isViewAddOnsSwitchEnabled: CopiableProp<Bool> = .copy,
         isOrderCreationSwitchEnabled: CopiableProp<Bool> = .copy,
+        isStripeInPersonPaymentsSwitchEnabled: CopiableProp<Bool> = .copy,
         knownCardReaders: CopiableProp<[String]> = .copy,
         lastEligibilityErrorInfo: NullableCopiableProp<EligibilityErrorInfo> = .copy,
         lastJetpackBenefitsBannerDismissedTime: NullableCopiableProp<Date> = .copy
@@ -18,6 +19,7 @@ extension GeneralAppSettings {
         let feedbacks = feedbacks ?? self.feedbacks
         let isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled ?? self.isViewAddOnsSwitchEnabled
         let isOrderCreationSwitchEnabled = isOrderCreationSwitchEnabled ?? self.isOrderCreationSwitchEnabled
+        let isStripeInPersonPaymentsSwitchEnabled = isStripeInPersonPaymentsSwitchEnabled ?? self.isStripeInPersonPaymentsSwitchEnabled
         let knownCardReaders = knownCardReaders ?? self.knownCardReaders
         let lastEligibilityErrorInfo = lastEligibilityErrorInfo ?? self.lastEligibilityErrorInfo
         let lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime ?? self.lastJetpackBenefitsBannerDismissedTime
@@ -27,6 +29,7 @@ extension GeneralAppSettings {
             feedbacks: feedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
             isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
+            isStripeInPersonPaymentsSwitchEnabled: isStripeInPersonPaymentsSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime

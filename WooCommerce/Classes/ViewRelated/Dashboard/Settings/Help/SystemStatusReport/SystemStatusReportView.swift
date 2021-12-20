@@ -76,10 +76,11 @@ struct SystemStatusReportView: View {
                     Image(uiImage: .copyBarButtonItemImage)
                         .renderingMode(.template)
                         .flipsForRightToLeftLayoutDirection(true)
-                        .foregroundColor(Color(.accent))
                 }
+                .disabled(viewModel.statusReport.isEmpty)
             }
         }
+        .wooNavigationBarStyle()
     }
 }
 

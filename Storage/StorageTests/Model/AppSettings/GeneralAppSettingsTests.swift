@@ -6,11 +6,7 @@ final class GeneralAppSettingsTests: XCTestCase {
     func test_it_returns_the_correct_status_of_a_stored_feedback() {
         // Given
         let feedback = FeedbackSettings(name: .general, status: .dismissed)
-        let settings = GeneralAppSettings(installationDate: nil,
-                                          feedbacks: [.general: feedback],
-                                          isViewAddOnsSwitchEnabled: false,
-                                          isOrderCreationSwitchEnabled: false,
-                                          knownCardReaders: [])
+        let settings = createGeneralAppSettings(feedbacks: [.general: feedback])
 
         // When
         let loadedStatus = settings.feedbackStatus(of: .general)
@@ -21,11 +17,7 @@ final class GeneralAppSettingsTests: XCTestCase {
 
     func test_it_returns_pending_status_of_a_non_stored_feedback() {
         // Given
-        let settings = GeneralAppSettings(installationDate: nil,
-                                          feedbacks: [:],
-                                          isViewAddOnsSwitchEnabled: false,
-                                          isOrderCreationSwitchEnabled: false,
-                                          knownCardReaders: [])
+        let settings = createGeneralAppSettings()
 
         // When
         let loadedStatus = settings.feedbackStatus(of: .general)
@@ -37,13 +29,7 @@ final class GeneralAppSettingsTests: XCTestCase {
     func test_it_replaces_feedback_when_feedback_exists() {
         // Given
         let existingFeedback = FeedbackSettings(name: .general, status: .dismissed)
-        let settings = GeneralAppSettings(
-            installationDate: nil,
-            feedbacks: [.general: existingFeedback],
-            isViewAddOnsSwitchEnabled: false,
-            isOrderCreationSwitchEnabled: false,
-            knownCardReaders: []
-        )
+        let settings = createGeneralAppSettings(feedbacks: [.general: existingFeedback])
 
         // When
         let newFeedback = FeedbackSettings(name: .general, status: .given(Date()))
@@ -55,11 +41,7 @@ final class GeneralAppSettingsTests: XCTestCase {
 
     func test_it_adds_new_feedback_when_replacing_empty_feedback_store() {
         // Given
-        let settings = GeneralAppSettings(installationDate: nil,
-                                          feedbacks: [:],
-                                          isViewAddOnsSwitchEnabled: false,
-                                          isOrderCreationSwitchEnabled: false,
-                                          knownCardReaders: [])
+        let settings = createGeneralAppSettings()
 
         // When
         let newFeedback = FeedbackSettings(name: .general, status: .given(Date()))
@@ -97,5 +79,23 @@ final class GeneralAppSettingsTests: XCTestCase {
         assertEqual(newSettings.lastEligibilityErrorInfo, eligibilityInfo)
         assertEqual(newSettings.isViewAddOnsSwitchEnabled, false)
         assertEqual(newSettings.isOrderCreationSwitchEnabled, true)
+    }
+}
+
+private extension GeneralAppSettingsTests {
+    func createGeneralAppSettings(installationDate: Date? = nil,
+                                  feedbacks: [FeedbackType: FeedbackSettings] = [:],
+                                  isViewAddOnsSwitchEnabled: Bool = false,
+                                  isOrderCreationSwitchEnabled: Bool = false,
+                                  knownCardReaders: [String] = [],
+                                  lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
+                                  lastJetpackBenefitsBannerDismissedTime: Date? = nil) -> GeneralAppSettings {
+        GeneralAppSettings(installationDate: installationDate,
+                           feedbacks: feedbacks,
+                           isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
+                           isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
+                           knownCardReaders: knownCardReaders,
+                           lastEligibilityErrorInfo: lastEligibilityErrorInfo,
+                           lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime)
     }
 }

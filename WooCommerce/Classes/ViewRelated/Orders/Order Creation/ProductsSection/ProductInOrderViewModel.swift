@@ -1,5 +1,7 @@
 import Yosemite
 
+/// View model for `ProductInOrder`.
+///
 final class ProductInOrderViewModel {
 
     /// The product being edited.

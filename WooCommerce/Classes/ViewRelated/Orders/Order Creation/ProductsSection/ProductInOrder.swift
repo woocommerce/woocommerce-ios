@@ -1,6 +1,8 @@
 import SwiftUI
 import Yosemite
 
+/// View to show a single product in an order, with the option to remove it from the order.
+///
 struct ProductInOrder: View {
 
     @Environment(\.presentationMode) private var presentation

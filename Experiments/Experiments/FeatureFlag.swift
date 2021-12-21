@@ -61,4 +61,8 @@ public enum FeatureFlag: Int {
     /// Displays the System Status Report on Settings/Help screen
     ///
     case systemStatusReport
+
+    /// Allows sites using the WooCommerce Stripe Payment Gateway extension to accept In-Person Payments
+    ///
+    case stripeExtensionInPersonPayments
 }

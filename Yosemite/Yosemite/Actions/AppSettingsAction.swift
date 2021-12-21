@@ -128,6 +128,14 @@ public enum AppSettingsAction: Action {
     ///
     case setOrderCreationFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
 
+    /// Loads the most recent state for the WooCommerce Stripe Payment Gateway extension In-Person Payments beta feature switch
+    ///
+    case loadStripeInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Sets the state for the WooCommerce Stripe Payment Gateway extension In-Person Payments beta feature switch
+    ///
+    case setStripeInPersonPaymentsSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
     /// Remember the given card reader (to support automatic reconnection)
     /// where `cardReaderID` is a String e.g. "CHB204909005931"
     ///

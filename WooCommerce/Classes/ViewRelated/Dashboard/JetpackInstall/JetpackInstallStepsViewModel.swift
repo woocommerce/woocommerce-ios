@@ -133,6 +133,7 @@ final class JetpackInstallStepsViewModel: ObservableObject {
                     return
                 }
                 self.currentStep = .done
+                self.stores.updateDefaultStore(site)
             case .failure:
                 self.installFailed = true
             }

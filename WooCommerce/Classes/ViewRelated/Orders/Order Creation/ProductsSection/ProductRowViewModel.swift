@@ -83,7 +83,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         quantity <= minimumQuantity
     }
 
-    init(id: String = UUID().uuidString,
+    init(id: String? = nil,
          productID: Int64,
          name: String,
          sku: String?,
@@ -94,7 +94,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          canChangeQuantity: Bool,
          imageURL: URL?,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
-        self.id = id
+        self.id = id ?? productID.description
         self.productID = productID
         self.name = name
         self.sku = sku
@@ -107,7 +107,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.currencyFormatter = currencyFormatter
     }
 
-    convenience init(id: String = UUID().uuidString,
+    convenience init(id: String? = nil,
                      product: Product,
                      canChangeQuantity: Bool,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {

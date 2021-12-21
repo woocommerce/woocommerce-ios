@@ -160,6 +160,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     func updateOrder() {
         showLoadingIndicator = true
+
+        // Clean any whitespace as it is not allowed by the remote endpoint
+        email = email.trimmingCharacters(in: .whitespacesAndNewlines)
+
         // Don't send empty emails as older WC stores can't handle them.
         let action = OrderAction.updateSimplePaymentsOrder(siteID: siteID,
                                                            orderID: orderID,

@@ -110,8 +110,18 @@ private struct ProductsSection: View {
                 Text(NewOrder.Localization.products)
                     .headlineStyle()
 
-                ForEach(viewModel.productRows) { productRowViewModel in
-                    ProductRow(viewModel: productRowViewModel)
+                ForEach(viewModel.productRows) { productRow in
+                    ProductRow(viewModel: productRow)
+                        .onTapGesture {
+                            viewModel.selectOrderItem(productRow.id)
+                        }
+                        .sheet(item: $viewModel.selectedOrderItem) { item in
+                            let productInOrderVM = ProductInOrderViewModel(product: item.product) {
+                                viewModel.removeItemFromOrder(item)
+                            }
+                            ProductInOrder(viewModel: productInOrderVM)
+                        }
+
                     Divider()
                 }
 

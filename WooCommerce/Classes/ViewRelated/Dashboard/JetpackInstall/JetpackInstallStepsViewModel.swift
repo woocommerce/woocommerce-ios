@@ -129,13 +129,16 @@ final class JetpackInstallStepsViewModel: ObservableObject {
             switch result {
             case .success(let site):
                 guard site.isWooCommerceActive, !site.isJetpackCPConnected else {
-                    self.installFailed = true
+                    self.retryCount += 1
+                    self.checkJetpackPluginDetailsAndProceed()
                     return
                 }
                 self.currentStep = .done
+                self.retryCount = 0
                 self.stores.updateDefaultStore(site)
             case .failure:
-                self.installFailed = true
+                self.retryCount += 1
+                self.checkJetpackPluginDetailsAndProceed()
             }
         }
         stores.dispatch(siteFetch)

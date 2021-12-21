@@ -20,7 +20,7 @@ struct HubMenu: View {
             ScrollView {
                 let gridItemLayout = [GridItem(.adaptive(minimum: Constants.itemSize), spacing: Constants.itemSpacing)]
 
-                LazyVGrid(columns: gridItemLayout) {
+                LazyVGrid(columns: gridItemLayout, spacing: Constants.itemSpacing) {
                     ForEach(viewModel.menuElements, id: \.self) { menu in
                         HubMenuElement(image: menu.icon, text: menu.title)
                             .frame(width: Constants.itemSize, height: Constants.itemSize)
@@ -52,7 +52,6 @@ struct HubMenu: View {
         }
         .navigationBarHidden(true)
         .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
-
     }
 
     private struct TopBar: View {

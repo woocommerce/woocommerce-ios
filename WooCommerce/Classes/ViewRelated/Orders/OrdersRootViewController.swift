@@ -92,6 +92,8 @@ final class OrdersRootViewController: UIViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
         // Needed in ViewWillAppear because this View Controller is never recreated.
         fetchExperimentalTogglesAndConfigureNavigationButtons()
 

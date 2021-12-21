@@ -157,7 +157,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_update_variations_updates_original_product_while_maintaining_pending_changes() throws {
         // Given
-        let product = Product.create()
+        let product = Product.fake()
         let viewModel = createViewModel(product: product, formType: .edit)
         viewModel.updateName("new-name")
 
@@ -174,7 +174,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_update_variations_fires_replace_product_action() throws {
         // Given
-        let product = Product.create()
+        let product = Product.fake()
         let mockStores = MockStoresManager(sessionManager: SessionManager.testingInstance)
         let viewModel = createViewModel(product: product, formType: .edit, stores: mockStores)
 

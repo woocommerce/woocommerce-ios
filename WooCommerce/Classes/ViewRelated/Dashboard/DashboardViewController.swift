@@ -223,13 +223,18 @@ private extension DashboardViewController {
     func configureBottomJetpackBenefitsBanner() {
         bottomJetpackBenefitsBannerController.setActions { [weak self] in
             guard let self = self else { return }
+
+            ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .tapped))
+
             let benefitsController = JetpackBenefitsHostingController()
             benefitsController.setActions { [weak self] in
                 self?.dismiss(animated: true, completion: { [weak self] in
-                    guard let siteURL = ServiceLocator.stores.sessionManager.defaultSite?.url else {
+                    ServiceLocator.analytics.track(event: .jetpackInstallButtonTapped(source: .benefitsModal))
+
+                    guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
                         return
                     }
-                    let installController = JetpackInstallHostingController(siteURL: siteURL)
+                    let installController = JetpackInstallHostingController(siteID: site.siteID, siteURL: site.url)
                     installController.setDismissAction { [weak self] in
                         self?.dismiss(animated: true, completion: nil)
                     }
@@ -240,6 +245,8 @@ private extension DashboardViewController {
             }
             self.present(benefitsController, animated: true, completion: nil)
         } dismissAction: { [weak self] in
+            ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .dismissed))
+
             let dismissAction = AppSettingsAction.setJetpackBenefitsBannerLastDismissedTime(time: Date())
             ServiceLocator.stores.dispatch(dismissAction)
 
@@ -352,6 +359,8 @@ private extension DashboardViewController {
     }
 
     func showJetpackBenefitsBanner(contentView: UIView) {
+        ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .shown))
+
         hideJetpackBenefitsBanner()
         guard let banner = bottomJetpackBenefitsBannerController.view else {
             return

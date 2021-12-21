@@ -1313,11 +1313,13 @@ extension Site {
             name: .fake(),
             description: .fake(),
             url: .fake(),
+            adminURL: .fake(),
             plan: .fake(),
             isJetpackThePluginInstalled: .fake(),
             isJetpackConnected: .fake(),
             isWooCommerceActive: .fake(),
             isWordPressStore: .fake(),
+            jetpackConnectionActivePlugins: .fake(),
             timezone: .fake(),
             gmtOffset: .fake()
         )

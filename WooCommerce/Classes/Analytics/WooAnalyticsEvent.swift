@@ -377,31 +377,87 @@ extension WooAnalyticsEvent {
 extension WooAnalyticsEvent {
     // Namespace
     enum SimplePayments {
+        /// Possible Payment Methods
+        ///
+        enum PaymentMethod: String {
+            case card
+            case cash
+        }
+
+        /// Possible view sources
+        ///
+        enum Source: String {
+            case amount
+            case summary
+            case paymentMethod = "payment_method"
+        }
+
         /// Common event keys
         ///
         private enum Keys {
             static let state = "state"
             static let amount = "amount"
+            static let paymentMethod = "payment_method"
+            static let source = "source"
         }
 
         static func simplePaymentsFlowStarted() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowStarted, properties: [:])
         }
 
-        static func simplePaymentsFlowCompleted(amount: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .simplePaymentsFlowCompleted, properties: [Keys.amount: amount])
+        static func simplePaymentsFlowCompleted(amount: String, method: PaymentMethod) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsFlowCompleted, properties: [Keys.amount: amount, Keys.paymentMethod: method.rawValue])
         }
 
         static func simplePaymentsFlowCanceled() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowCanceled, properties: [:])
         }
 
-        static func simplePaymentsFlowFailed() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .simplePaymentsFlowFailed, properties: [:])
+        static func simplePaymentsFlowFailed(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsFlowFailed, properties: [Keys.source: source.rawValue])
         }
 
-        static func settingsBetaFeaturesSimplePaymentsToggled(isOn: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .settingsBetaFeaturesSimplePaymentsToggled, properties: [Keys.state: isOn ? "on" : "off"])
+        static func simplePaymentsFlowNoteAdded() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsFlowNoteAdded, properties: [:])
         }
+
+        static func simplePaymentsFlowTaxesToggled(isOn: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsFlowTaxesToggled, properties: [Keys.state: isOn ? "on" : "off"])
+        }
+
+        static func simplePaymentsFlowCollect(method: PaymentMethod) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsFlowCollect, properties: [Keys.paymentMethod: method.rawValue])
+        }
+    }
+}
+
+// MARK: - Jetpack Benefits Banner
+//
+extension WooAnalyticsEvent {
+    /// The action performed on the Jetpack benefits banner.
+    enum JetpackBenefitsBannerAction: String {
+        case shown
+        case dismissed
+        case tapped
+    }
+
+    /// Tracked on various states of the Jetpack benefits banner in dashboard.
+    static func jetpackBenefitsBanner(action: JetpackBenefitsBannerAction) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .jetpackBenefitsBanner, properties: ["action": action.rawValue])
+    }
+}
+
+// MARK: - Jetpack Install
+//
+extension WooAnalyticsEvent {
+    /// The source that presents the Jetpack install screen.
+    enum JetpackInstallSource: String {
+        case settings
+        case benefitsModal = "benefits_modal"
+    }
+
+    /// Tracked when the user taps to install Jetpack.
+    static func jetpackInstallButtonTapped(source: JetpackInstallSource) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .jetpackInstallButtonTapped, properties: ["source": source.rawValue])
     }
 }

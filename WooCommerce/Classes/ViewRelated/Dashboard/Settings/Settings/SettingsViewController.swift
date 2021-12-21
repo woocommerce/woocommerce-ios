@@ -298,10 +298,13 @@ private extension SettingsViewController {
     }
 
     func installJetpackWasPressed() {
-        guard let siteURL = ServiceLocator.stores.sessionManager.defaultSite?.url else {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return
         }
-        let installJetpackController = JetpackInstallHostingController(siteURL: siteURL)
+
+        ServiceLocator.analytics.track(event: .jetpackInstallButtonTapped(source: .settings))
+
+        let installJetpackController = JetpackInstallHostingController(siteID: site.siteID, siteURL: site.url)
         installJetpackController.setDismissAction { [weak self] in
             self?.dismiss(animated: true, completion: nil)
         }

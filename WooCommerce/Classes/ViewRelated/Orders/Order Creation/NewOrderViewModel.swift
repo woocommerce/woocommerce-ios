@@ -1,11 +1,13 @@
 import Yosemite
 import Combine
+import protocol Storage.StorageManagerType
 
 /// View model for `NewOrder`.
 ///
 final class NewOrderViewModel: ObservableObject {
-    private let siteID: Int64
+    let siteID: Int64
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
 
     /// Order details used to create the order
     ///
@@ -25,11 +27,63 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var presentNotice: NewOrderNotice?
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+    // MARK: Status properties
+
+    /// Order creation date. For new order flow it's always current date.
+    ///
+    let dateString: String = {
+        DateFormatter.mediumLengthLocalizedDateFormatter.string(from: Date())
+    }()
+
+    /// Representation of order status display properties.
+    ///
+    @Published private(set) var statusBadgeViewModel: StatusBadgeViewModel = .init(orderStatusEnum: .pending)
+
+    /// Indicates if the order status list (selector) should be shown or not.
+    ///
+    @Published var shouldShowOrderStatusList: Bool = false
+
+    /// Assign this closure to be notified when a new order is created
+    ///
+    var onOrderCreated: (Order) -> Void = { _ in }
+
+    /// Status Results Controller.
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+        let resultsController = ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching order statuses: \(error)")
+        }
+
+        return resultsController
+    }()
+
+    /// Order statuses list
+    ///
+    private var currentSiteStatuses: [OrderStatus] {
+        return statusResultsController.fetchedObjects
+    }
+
+    // MARK: Products properties
+
+    /// View model for the product list
+    ///
+    lazy var addProductViewModel = {
+        AddProductToOrderViewModel(siteID: siteID, storageManager: storageManager)
+    }()
+
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.stores = stores
+        self.storageManager = storageManager
 
         configureNavigationTrailingItem()
+        configureStatusBadgeViewModel()
     }
 
     // MARK: - API Requests
@@ -43,9 +97,10 @@ final class NewOrderViewModel: ObservableObject {
             self.performingNetworkRequest = false
 
             switch result {
-            case .success:
+            case .success(let newOrder):
                 // TODO: Handle newly created order / remove success logging
                 DDLogInfo("New order created successfully!")
+                self.onOrderCreated(newOrder)
             case .failure(let error):
                 self.presentNotice = .error
                 DDLogError("⛔️ Error creating new order: \(error)")
@@ -91,6 +146,34 @@ extension NewOrderViewModel {
     enum NewOrderNotice {
         case error
     }
+
+    /// Representation of order status display properties
+    ///
+    struct StatusBadgeViewModel {
+        let title: String
+        let color: UIColor
+
+        init(orderStatus: OrderStatus) {
+            title = orderStatus.name ?? orderStatus.slug
+            color = {
+                switch orderStatus.status {
+                case .pending, .completed, .cancelled, .refunded, .custom:
+                    return .gray(.shade5)
+                case .onHold:
+                    return .withColorStudio(.orange, shade: .shade5)
+                case .processing:
+                    return .withColorStudio(.green, shade: .shade5)
+                case .failed:
+                    return .withColorStudio(.red, shade: .shade5)
+                }
+            }()
+        }
+
+        init(orderStatusEnum: OrderStatusEnum) {
+            let siteOrderStatus = OrderStatus(name: nil, siteID: 0, slug: orderStatusEnum.rawValue, total: 0)
+            self.init(orderStatus: siteOrderStatus)
+        }
+    }
 }
 
 // MARK: - Helpers
@@ -111,5 +194,18 @@ private extension NewOrderViewModel {
                 return .create
             }
             .assign(to: &$navigationTrailingItem)
+    }
+
+    /// Updates status badge viewmodel based on status order property.
+    ///
+    func configureStatusBadgeViewModel() {
+        $orderDetails
+            .map { [weak self] orderDetails in
+                guard let siteOrderStatus = self?.currentSiteStatuses.first(where: { $0.status == orderDetails.status }) else {
+                    return StatusBadgeViewModel(orderStatusEnum: orderDetails.status)
+                }
+                return StatusBadgeViewModel(orderStatus: siteOrderStatus)
+            }
+            .assign(to: &$statusBadgeViewModel)
     }
 }

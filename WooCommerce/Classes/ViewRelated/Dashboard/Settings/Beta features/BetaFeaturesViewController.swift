@@ -78,7 +78,6 @@ private extension BetaFeaturesViewController {
     func configureSections() {
         self.sections = [
             productsSection(),
-            ordersSection(),
             orderCreationSection()
         ].compactMap { $0 }
     }
@@ -86,17 +85,6 @@ private extension BetaFeaturesViewController {
     func productsSection() -> Section {
         return Section(rows: [.orderAddOns,
                               .orderAddOnsDescription])
-    }
-
-    /// A section is returned only when the store is ready to receive payments
-    ///
-    func ordersSection() -> Section? {
-        guard paymentsStoreUseCase.state == .completed else {
-            return nil
-        }
-
-        return Section(rows: [.simplePayments,
-                              .simplePaymentsDescription])
     }
 
     func orderCreationSection() -> Section? {
@@ -131,8 +119,6 @@ private extension BetaFeaturesViewController {
         case let cell as BasicTableViewCell where row == .orderAddOnsDescription:
             configureOrderAddOnsDescription(cell: cell)
         // Orders
-        case let cell as SwitchTableViewCell where row == .simplePayments:
-            configureSimplePaymentsSwitch(cell: cell)
         case let cell as BasicTableViewCell where row == .simplePaymentsDescription:
             configureSimplePaymentsDescription(cell: cell)
         case let cell as SwitchTableViewCell where row == .orderCreation:
@@ -177,34 +163,6 @@ private extension BetaFeaturesViewController {
     func configureOrderAddOnsDescription(cell: BasicTableViewCell) {
         configureCommonStylesForDescriptionCell(cell)
         cell.textLabel?.text = Localization.orderAddOnsDescription
-    }
-
-    func configureSimplePaymentsSwitch(cell: SwitchTableViewCell) {
-        configureCommonStylesForSwitchCell(cell)
-        cell.title = Localization.simplePaymentsTitle
-
-        // Fetch switch's state stored value.
-        let action = AppSettingsAction.loadSimplePaymentsSwitchState() { result in
-            guard let isEnabled = try? result.get() else {
-                return cell.isOn = false
-            }
-            cell.isOn = isEnabled
-        }
-        ServiceLocator.stores.dispatch(action)
-
-        // Change switch's state stored value
-        cell.onChange = { isSwitchOn in
-            ServiceLocator.analytics.track(event: WooAnalyticsEvent.SimplePayments.settingsBetaFeaturesSimplePaymentsToggled(isOn: isSwitchOn))
-
-            let action = AppSettingsAction.setSimplePaymentsFeatureSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
-                // Roll back toggle if an error occurred
-                if result.isFailure {
-                    cell.isOn.toggle()
-                }
-            })
-            ServiceLocator.stores.dispatch(action)
-        }
-        cell.accessibilityIdentifier = "beta-features-order-simple-payments-cell"
     }
 
     func configureSimplePaymentsDescription(cell: BasicTableViewCell) {

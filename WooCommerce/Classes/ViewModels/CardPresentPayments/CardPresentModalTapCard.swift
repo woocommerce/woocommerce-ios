@@ -36,6 +36,10 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
 
     let bottomSubtitle: String? = Localization.tapInsertOrSwipe
 
+    var accessibilityLabel: String? {
+        return Localization.readerIsReady + Localization.tapInsertOrSwipe
+    }
+
     init(name: String, amount: String, onCancel: @escaping () -> Void) {
         self.name = name
         self.amount = amount

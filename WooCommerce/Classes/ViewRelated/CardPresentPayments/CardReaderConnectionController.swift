@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import UIKit
+import SwiftUI
 import Yosemite
 
 /// Facilitates connecting to a card reader
@@ -45,6 +46,10 @@ final class CardReaderConnectionController {
         /// A mandatory update is being installed
         ///
         case updating(progress: Float)
+
+        /// User chose to retry the connection to the card reader. Starts the search again, by dismissing modals and initializing from scratch
+        ///
+        case retry
 
         /// User cancelled search/connecting to a card reader. The completion passed to `searchAndConnect`
         /// will be called with a `success` `Bool` `False` result. The view controller passed to `searchAndConnect` will be
@@ -142,6 +147,8 @@ private extension CardReaderConnectionController {
             onFoundReader()
         case .foundSeveralReaders:
             onFoundSeveralReaders()
+        case .retry:
+            onRetry()
         case .cancel:
             onCancel()
         case .connectToReader:
@@ -433,6 +440,16 @@ private extension CardReaderConnectionController {
                               cancel: cancel)
     }
 
+    /// Retry a search for a card reader
+    ///
+    func onRetry() {
+        alerts.dismiss()
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
+            self?.state = .beginSearch
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
     /// End the search for a card reader
     ///
     func onCancel() {
@@ -508,10 +525,6 @@ private extension CardReaderConnectionController {
     /// An error occurred while connecting
     ///
     private func onConnectingFailed(error: Error) {
-        guard let from = fromController else {
-            return
-        }
-
         /// Clear our copy of found readers to avoid connecting to a reader that isn't
         /// there while we wait for `onReaderDiscovered` to receive an update.
         /// See also https://github.com/stripe/stripe-terminal-ios/issues/104#issuecomment-916285167
@@ -522,15 +535,7 @@ private extension CardReaderConnectionController {
            underlyingError.isSoftwareUpdateError {
             return onUpdateFailed(error: error)
         }
-
-        alerts.connectingFailed(
-            from: from,
-            continueSearch: {
-                self.state = .searching
-            }, cancelSearch: {
-                self.state = .cancel
-            }
-        )
+        showConnectionFailed(error: error)
     }
 
     private func onUpdateFailed(error: Error) {
@@ -561,6 +566,91 @@ private extension CardReaderConnectionController {
         }
     }
 
+    private func showConnectionFailed(error: Error) {
+        guard let from = fromController else {
+            return
+        }
+
+        let retrySearch = {
+            self.state = .retry
+        }
+
+        let continueSearch = {
+            self.state = .searching
+        }
+
+        let cancelSearch = {
+            self.state = .cancel
+        }
+
+        guard case CardReaderServiceError.connection(let underlyingError) = error else {
+            return alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
+        }
+
+        switch underlyingError {
+        case .incompleteStoreAddress(let adminUrl):
+            alerts.connectingFailedIncompleteAddress(from: from,
+                                                     openWCSettings: openWCSettingsAction(adminUrl: adminUrl,
+                                                                                          from: from,
+                                                                                          retrySearch: retrySearch),
+                                                     retrySearch: retrySearch,
+                                                     cancelSearch: cancelSearch)
+        case .invalidPostalCode:
+            alerts.connectingFailedInvalidPostalCode(from: from, retrySearch: retrySearch, cancelSearch: cancelSearch)
+        default:
+            alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
+        }
+    }
+
+    private func openWCSettingsAction(adminUrl: URL?,
+                                      from viewController: UIViewController,
+                                      retrySearch: @escaping () -> Void) -> ((UIViewController) -> Void)? {
+        if let adminUrl = adminUrl {
+            if let site = ServiceLocator.stores.sessionManager.defaultSite,
+               site.isWordPressStore {
+                return { [weak self] viewController in
+                    self?.openWCSettingsInWebview(url: adminUrl, from: viewController, retrySearch: retrySearch)
+                }
+            } else {
+                return { [weak self] _ in
+                    UIApplication.shared.open(adminUrl)
+                    self?.showIncompleteAddressErrorWithRefreshButton()
+                }
+            }
+        }
+        return nil
+    }
+    private func openWCSettingsInWebview(url adminUrl: URL,
+                                         from viewController: UIViewController,
+                                         retrySearch: @escaping () -> Void) {
+        let nav = NavigationView {
+            AuthenticatedWebView(isPresented: .constant(true),
+                                 url: adminUrl,
+                                 urlToTriggerExit: nil,
+                                 exitTrigger: nil)
+                                 .navigationTitle(Localization.adminWebviewTitle)
+                                 .navigationBarTitleDisplayMode(.inline)
+                                 .toolbar {
+                                     ToolbarItem(placement: .confirmationAction) {
+                                         Button(action: {
+                                             viewController.dismiss(animated: true) {
+                                                 retrySearch()
+                                             }
+                                         }, label: {
+                                             Text(Localization.doneButtonUpdateAddress)
+                                         })
+                                     }
+                                 }
+        }
+        .wooNavigationBarStyle()
+        let hostingController = UIHostingController(rootView: nav)
+        viewController.present(hostingController, animated: true, completion: nil)
+    }
+
+    private func showIncompleteAddressErrorWithRefreshButton() {
+        showConnectionFailed(error: CardReaderServiceError.connection(underlyingError: .incompleteStoreAddress(adminUrl: nil)))
+    }
+
     /// An error occurred during discovery
     /// Presents the error in a modal
     ///
@@ -588,5 +678,20 @@ private extension CardReaderConnectionController {
         self.alerts.dismiss()
         self.onCompletion?(.failure(error))
         self.state = .idle
+    }
+}
+
+private extension CardReaderConnectionController {
+    enum Localization {
+        static let adminWebviewTitle = NSLocalizedString(
+            "WooCommerce Settings",
+            comment: "Navigation title of the webview which used by the merchant to update their store address"
+        )
+
+        static let doneButtonUpdateAddress = NSLocalizedString(
+            "Done",
+            comment: "The button title to indicate that the user has finished updating their store's address and is" +
+            "ready to close the webview. This also tries to connect to the reader again."
+        )
     }
 }

@@ -30,6 +30,13 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
     let bottomSubtitle: String? = nil
 
+    var accessibilityLabel: String? {
+        guard let bottomTitle = bottomTitle else {
+            return topTitle
+        }
+        return topTitle + bottomTitle
+    }
+
     init(error: Error, primaryAction: @escaping () -> Void) {
         self.error = error
         self.primaryAction = primaryAction

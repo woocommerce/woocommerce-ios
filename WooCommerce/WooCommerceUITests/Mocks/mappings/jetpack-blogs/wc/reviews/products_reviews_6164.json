@@ -1,0 +1,51 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "queryParameters": {
+            "json": {
+                "equalTo": "true"
+            },
+            "path": {
+                "matches": "/wc/v3/products/reviews/6164/(.*)"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+             "data": {
+                "id": 6164,
+                "date_created": "{{fnow offset='-4 days' format=customformat}}",
+                "date_created_gmt": "{{fnow offset='-4 days' format=customformat}}",
+                "product_id": 2130,
+                "status": "approved",
+                "reviewer": "Marcus Curtis",
+                "reviewer_email": "marcu@example.com",
+                "review": "Don't really like them! Thought they are waterproof!",
+                "rating": 2,
+                "verified": false,
+                "reviewer_avatar_urls": {
+                    "24": "https:\/\/secure.gravatar.com\/avatar\/01164960f041ff6fe4dff330968194a4?s=24&d=identicon&r=g",
+                    "48": "https:\/\/secure.gravatar.com\/avatar\/01164960f041ff6fe4dff330968194a4?s=48&d=identicon&r=g",
+                    "96": "https:\/\/secure.gravatar.com\/avatar\/01164960f041ff6fe4dff330968194a4?s=96&d=identicon&r=g"
+                },
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews\/6164"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews"
+                    }],
+                    "up": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/2130"
+                    }]
+                }
+            }
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

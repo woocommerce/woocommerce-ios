@@ -1150,11 +1150,13 @@ extension Site {
         name: CopiableProp<String> = .copy,
         description: CopiableProp<String> = .copy,
         url: CopiableProp<String> = .copy,
+        adminURL: CopiableProp<String> = .copy,
         plan: CopiableProp<String> = .copy,
         isJetpackThePluginInstalled: CopiableProp<Bool> = .copy,
         isJetpackConnected: CopiableProp<Bool> = .copy,
         isWooCommerceActive: CopiableProp<Bool> = .copy,
         isWordPressStore: CopiableProp<Bool> = .copy,
+        jetpackConnectionActivePlugins: CopiableProp<[String]> = .copy,
         timezone: CopiableProp<String> = .copy,
         gmtOffset: CopiableProp<Double> = .copy
     ) -> Site {
@@ -1162,11 +1164,13 @@ extension Site {
         let name = name ?? self.name
         let description = description ?? self.description
         let url = url ?? self.url
+        let adminURL = adminURL ?? self.adminURL
         let plan = plan ?? self.plan
         let isJetpackThePluginInstalled = isJetpackThePluginInstalled ?? self.isJetpackThePluginInstalled
         let isJetpackConnected = isJetpackConnected ?? self.isJetpackConnected
         let isWooCommerceActive = isWooCommerceActive ?? self.isWooCommerceActive
         let isWordPressStore = isWordPressStore ?? self.isWordPressStore
+        let jetpackConnectionActivePlugins = jetpackConnectionActivePlugins ?? self.jetpackConnectionActivePlugins
         let timezone = timezone ?? self.timezone
         let gmtOffset = gmtOffset ?? self.gmtOffset
 
@@ -1175,11 +1179,13 @@ extension Site {
             name: name,
             description: description,
             url: url,
+            adminURL: adminURL,
             plan: plan,
             isJetpackThePluginInstalled: isJetpackThePluginInstalled,
             isJetpackConnected: isJetpackConnected,
             isWooCommerceActive: isWooCommerceActive,
             isWordPressStore: isWordPressStore,
+            jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
             timezone: timezone,
             gmtOffset: gmtOffset
         )

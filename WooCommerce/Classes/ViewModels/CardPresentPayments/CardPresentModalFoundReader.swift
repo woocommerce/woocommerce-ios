@@ -28,6 +28,10 @@ final class CardPresentModalFoundReader: CardPresentPaymentsModalViewModel {
 
     var bottomSubtitle: String?
 
+    var accessibilityLabel: String? {
+        return Localization.connect
+    }
+
     init(name: String, connect: @escaping () -> Void, continueSearch: @escaping () -> Void) {
         self.topTitle = String.localizedStringWithFormat(Localization.title, name)
         self.connectAction = connect

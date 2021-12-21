@@ -460,6 +460,12 @@ extension UIImage {
         return UIImage.gridicon(.cloud)
     }
 
+    /// Hub Menu tab icon
+    ///
+    static var hubMenu: UIImage {
+        return UIImage(named: "icon-hub-menu")!
+    }
+
     /// Menu Icon
     ///
     static var menuImage: UIImage {

@@ -50,7 +50,7 @@ struct HubMenu: View {
 
             // Go to the Analytics screen
             NavigationLink(destination:
-                            EmptyView(),
+                            AnalyticsView(),
                            isActive: $showAnalytics) {
                 EmptyView()
             }.hidden()

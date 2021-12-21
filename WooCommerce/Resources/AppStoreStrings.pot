@@ -57,13 +57,13 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v8.0-whats-new"
+msgctxt "v8.1-whats-new"
 msgid ""
-"Are you managing multiple stores in the app? Today is your lucky day! Our app now supports push notifications for ALL of your stores connected with the same Jetpack/WordPress.com account, not just the currently selected store.\n"
+"The orders tab has gotten an update with this release. The tabs are now gone, and we’ve given you a filter by status or date range option. This is based upon your direct feedback over the years, and we know you’ll like the change!\n"
 "\n"
-"In-person payments card readers might have firmware software updates – some are super important and are required to be installed immediately. With this release, you can defer the upgrade of the optional updates for a better time.\n"
+"We fixed a possible crash when creating a shipping label on an order from a push notification. We also improved the login experience with your password manager. Your stored username and password for WordPress.com in your manager will be at the top of the list!\n"
 "\n"
-"You’ll also find you can filter the product list by category in this release.\n"
+"As always, please continue to send us your feedback. Thanks for using WooCommerce!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

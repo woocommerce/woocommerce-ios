@@ -42,10 +42,6 @@ public enum FeatureFlag: Int {
     ///
     case pushNotificationsForAllStores
 
-    /// Allows to create simple payments orders
-    ///
-    case simplePaymentsPrototype
-
     /// Display the bar for displaying the filters in the Order List
     ///
     case orderListFilters
@@ -61,4 +57,8 @@ public enum FeatureFlag: Int {
     /// Display the new tab "Menu" in the tab bar.
     ///
     case hubMenu
+
+    /// Displays the System Status Report on Settings/Help screen
+    ///
+    case systemStatusReport
 }

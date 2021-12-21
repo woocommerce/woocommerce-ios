@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-12-01 11:32:05+0000 */
+/* Translation-Revision-Date: 2021-12-08 11:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -240,7 +240,7 @@
 "Activate WooCommerce Payments" = "WooCommerce Payments を有効化する";
 
 /* Name of the activation Jetpack plugin step */
-"Activating" = "Activating";
+"Activating" = "有効化中";
 
 /* Application's Active State */
 "Active" = "有効";
@@ -313,7 +313,7 @@
 "Add a new credit card" = "新しいクレジットカードを追加";
 
 /* Navigates to a screen to create a full manual order */
-"Add a new order" = "Add a new order";
+"Add a new order" = "新しい注文を追加";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -354,7 +354,7 @@
 "Add price to your variations to make them visible on your store" = "バリエーションの価格を追加してストアで表示します";
 
 /* Title text of the button that adds a product when creating a new order */
-"Add product" = "Add product";
+"Add product" = "商品を追加";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "商品へのリンクを追加";
@@ -418,7 +418,7 @@
 "All available packages have been activated" = "利用可能なすべての荷物が有効化されました";
 
 /* Name of final step in Install Jetpack flow. */
-"All done" = "All done";
+"All done" = "すべて完了";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "すべての既読レビュー";
@@ -647,7 +647,7 @@
 "Capture high-quality product reviews for your store." = "ストアに対する高品質な製品レビューを取得しましょう。";
 
 /* Card method title on the select payment method screen for simple payments */
-"Card" = "Card";
+"Card" = "カード";
 
 /* Navigates to Card Reader manual */
 "Card reader manual" = "カードリーダーマニュアル";
@@ -659,7 +659,7 @@
 "Carrier name" = "配送業者名";
 
 /* Cash method title on the select payment method screen for simple payments */
-"Cash" = "Cash";
+"Cash" = "現金";
 
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
@@ -712,10 +712,10 @@
 "Choose from device" = "デバイスから選択";
 
 /* Opens action sheet to choose a type of a new order */
-"Choose new order type" = "Choose new order type";
+"Choose new order type" = "新しい注文タイプを選択";
 
 /* Heading text on the select payment method screen for simple payments */
-"Choose your payment method" = "Choose your payment method";
+"Choose your payment method" = "支払い方法を選択";
 
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
@@ -794,7 +794,7 @@
 "Connecting to your account" = "アカウントへの接続";
 
 /* Name of the step to connect the store to Jetpack */
-"Connecting your store" = "Connecting your store";
+"Connecting your store" = "ストアを接続しています";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "顧客に連絡";
@@ -909,16 +909,16 @@
 "Create Shipping Label" = "配送ラベルを作成";
 
 /* Description of the Action sheet option when the user wants to create full manual order */
-"Create a new manual order" = "Create a new manual order";
+"Create a new manual order" = "手動で新しい注文を作成します";
 
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
-"Create an order with minimal information" = "Create an order with minimal information";
+"Create an order with minimal information" = "最小限の情報で注文を作成します";
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "新しい荷物を作成する";
 
 /* Action sheet option when the user wants to create full manual order */
-"Create order" = "Create order";
+"Create order" = "注文を作成";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "スマートフォンを使って配送ラベルを作成 !";
@@ -1666,7 +1666,7 @@
 "Install WooCommerce Payments" = "WooCommerce Payments をインストールする";
 
 /* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
-"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "Install the free Jetpack plugin to %1$@ and experience the best mobile experience.";
+"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "無料の Jetpack プラグインを %1$@ にインストールすると、最高のモバイル環境をご利用いただけます。";
 
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "無料の Jetpack プラグインをインストールすると、最高のモバイル環境をご利用いただけます。";
@@ -2044,7 +2044,7 @@
 "New Attribute Name" = "新規属性名";
 
 /* Title for the order creation screen */
-"New Order" = "New Order";
+"New Order" = "新しい注文";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "新しいアナリティクスビューでは、訪問者やレポートなどを確認できます。";
@@ -2221,7 +2221,7 @@
 "Order #%1$@" = "注文番号 %1$@ を注文";
 
 /* Cell title on the beta features screen to enable creating new orders */
-"Order Creation" = "Order Creation";
+"Order Creation" = "注文の作成";
 
 /* Title text of the row that holds the order note when creating a simple payment */
 "Order Note" = "注文メモ";
@@ -2458,7 +2458,7 @@
 "Please wait" = "しばらくお待ちください";
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
-"Please wait while we connect your site %1$@ with Jetpack." = "Please wait while we connect your site %1$@ with Jetpack.";
+"Please wait while we connect your site %1$@ with Jetpack." = "サイト %1$@ を Jetpack に接続する間、しばらくお待ちください";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "新しいバリエーションが作成されるまでしばらくお待ちください";
@@ -2470,7 +2470,7 @@
 "Please wait while we save this product to your store" = "ストアにこの商品を保存しています。しばらくお待ちください";
 
 /* Message of the in-progress UI while saving a Variation remotely */
-"Please wait while we save your latest changes" = "Please wait while we save your latest changes";
+"Please wait while we save your latest changes" = "最新の変更を保存する間、しばらくお待ちください";
 
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
@@ -2907,7 +2907,7 @@
 "Saving your product..." = "商品を保存しています...";
 
 /* Title of the in-progress UI while saving a Variation remotely */
-"Saving your variation..." = "Saving your variation...";
+"Saving your variation..." = "バリエーションを保存しています...";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "バーコードをスキャンして SKU を更新";
@@ -3457,7 +3457,7 @@
 "Tax" = "税";
 
 /* Tax percentage to be applied to the simple payments order */
-"Tax ((rate)%)" = "Tax ((rate)%)";
+"Tax ((rate)%)" = "税率 ((rate)%)";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "税設定";
@@ -3482,7 +3482,7 @@
 "Taxes" = "税";
 
 /* Disclaimer in the simple payments summary screen about taxes. */
-"Taxes are automatically calculated based on your store address." = "Taxes are automatically calculated based on your store address.";
+"Taxes are automatically calculated based on your store address." = "税金は店舗の住所に基づいて自動的に計算されます。";
 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "%1$@ についてもう少しお聞かせください...";
@@ -3491,7 +3491,7 @@
 "Terms of Service" = "利用規約";
 
 /* Cell description on the beta features screen to enable creating new orders */
-"Test out creating new manual orders as we get ready to launch" = "Test out creating new manual orders as we get ready to launch";
+"Test out creating new manual orders as we get ready to launch" = "リリースの準備ができ次第、手動で新しい注文の作成をテストしてください";
 
 /* Cell description on the beta features screen to enable the Simple Payments feature */
 "Test out creating orders with minimal information as we get ready to launch" = "リリースの準備ができ次第、最小限の情報で注文の作成をテストしてください";
@@ -3641,7 +3641,7 @@
 
 /* Navigates to screen with third party software licenses
    Software Licenses (information page title) */
-"Third Party Licenses" = "Third Party Licenses";
+"Third Party Licenses" = "サードパーティのライセンス";
 
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
@@ -3739,7 +3739,7 @@
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "この Google アカウントで先に進むには、最初に WordPress.com パスワードを使用してログインしてください。これは一度しか尋ねられません。";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"To turn on your card reader, briefly press its power button." = "To turn on your card reader, briefly press its power button.";
+"To turn on your card reader, briefly press its power button." = "カードリーダーをオンにするには、電源ボタンを1回押します。";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "﻿%@ にこのアプリを使用するには、Jetpack プラグインをインストールし、ストアと連携する必要があります。";
@@ -3855,7 +3855,7 @@
 "Unable to change status of order #%1$d" = "注文番号%1$dのステータスを変更できません";
 
 /* Notice displayed when order creation fails */
-"Unable to create new order" = "Unable to create new order";
+"Unable to create new order" = "新しい注文を作成できません";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "注文番号%1$dの追跡を削除できません";
@@ -4067,7 +4067,7 @@
 "Variable product" = "バリエーションのある商品";
 
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
-"Variation #%1$@" = "Variation #%1$@";
+"Variation #%1$@" = "バリエーション #%1$@";
 
 /* Text for the notice after creating the first variation. */
 "Variation created" = "バリエーションが作成されました";
@@ -4231,7 +4231,7 @@
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "その URL の Jetpack サイトと連携することはできません。サポートにご連絡ください。";
 
 /* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
-"We're sorry, we couldn't find any order that match %@" = "We're sorry, we couldn't find any order that match %@";
+"We're sorry, we couldn't find any order that match %@" = "「%@」に一致する注文が見つかりませんでした。";
 
 /* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */

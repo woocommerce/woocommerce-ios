@@ -53,12 +53,22 @@ struct SimplePaymentsSummary: View {
         }
         .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(Localization.title)
-        .sheet(isPresented: $showEditNote) {
-            EditCustomerNote(dismiss: {
-                showEditNote.toggle()
+        .sheet(
+            isPresented: $showEditNote,
+            onDismiss: { // Interactive drag dismiss
+                viewModel.noteViewModel.userDidCancelFlow()
                 viewModel.reloadContent()
-                }, viewModel: viewModel.noteViewModel)
-        }
+            },
+            content: {
+                EditCustomerNote(
+                    dismiss: { // Cancel button dismiss
+                        showEditNote.toggle()
+                        viewModel.reloadContent()
+                    },
+                    viewModel: viewModel.noteViewModel
+                )
+            })
+        .disabled(viewModel.disableViewActions)
     }
 }
 
@@ -147,6 +157,7 @@ private struct PaymentsSection: View {
                     Text(SimplePaymentsSummary.Localization.taxesDisclaimer)
                         .footnoteStyle()
                         .padding(.horizontal)
+                        .fixedSize(horizontal: false, vertical: true)
 
                     TitleAndValueRow(title: SimplePaymentsSummary.Localization.taxRate(viewModel.taxRate),
                                      value: .content(viewModel.taxAmount),
@@ -280,7 +291,7 @@ private extension SimplePaymentsSummary {
                                                comment: "Title text of the row that has a switch when creating a simple payment")
         static let total = NSLocalizedString("Order Total",
                                                comment: "Title text of the row that shows the total to charge when creating a simple payment")
-        static let orderNote = NSLocalizedString("Order Note",
+        static let orderNote = NSLocalizedString("Customer Provided Note",
                                                comment: "Title text of the row that holds the order note when creating a simple payment")
         static let addNote = NSLocalizedString("Add Note",
                                                comment: "Title text of the button that adds a note when creating a simple payment")

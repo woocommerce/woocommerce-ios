@@ -152,7 +152,6 @@
 		B59E11E020A9F5E6004121A4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59E11DF20A9F5E6004121A4 /* Constants.swift */; };
 		B5B914C520EFF03500F2F832 /* Site+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B914C320EFF03500F2F832 /* Site+CoreDataClass.swift */; };
 		B5B914C620EFF03500F2F832 /* Site+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B914C420EFF03500F2F832 /* Site+CoreDataProperties.swift */; };
-		B5DC3CAA20D1B2FE0063AC41 /* WooCommerce.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */; };
 		B5FD111E21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111C21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift */; };
 		B5FD111F21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111D21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift */; };
 		CC2C0309262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0305262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataProperties.swift */; };
@@ -198,6 +197,7 @@
 		D8FBFF5822D66A06006E3336 /* OrderStatsV4Totals+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF5222D66A06006E3336 /* OrderStatsV4Totals+CoreDataProperties.swift */; };
 		D8FBFF5922D66A06006E3336 /* OrderStatsV4+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF5322D66A06006E3336 /* OrderStatsV4+CoreDataClass.swift */; };
 		D8FBFF5A22D66A06006E3336 /* OrderStatsV4+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF5422D66A06006E3336 /* OrderStatsV4+CoreDataProperties.swift */; };
+		DEC51AE0275B41BE009F3DF4 /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */; };
 		DEFD6D422641B70400E51E0D /* SitePlugin+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D412641B70400E51E0D /* SitePlugin+CoreDataProperties.swift */; };
 		DEFD6D432641B70400E51E0D /* SitePlugin+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D402641B70400E51E0D /* SitePlugin+CoreDataClass.swift */; };
 		FEDD70AD26A5DBDD00194C3A /* EligibilityErrorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDD70AC26A5DBDD00194C3A /* EligibilityErrorInfo.swift */; };
@@ -227,31 +227,20 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		021EAA42254938AA00AA8CCD /* Model 35.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 35.xcdatamodel"; sourceTree = "<group>"; };
 		021EAA4525493A1600AA8CCD /* OrderItemAttribute+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemAttribute+CoreDataClass.swift"; sourceTree = "<group>"; };
 		021EAA4625493A1600AA8CCD /* OrderItemAttribute+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemAttribute+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		023FA29223316A4D008C1769 /* Product+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		023FA29323316A4D008C1769 /* ProductSearchResults+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductSearchResults+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		023FA29423316A4D008C1769 /* ProductSearchResults+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductSearchResults+CoreDataClass.swift"; sourceTree = "<group>"; };
-		02583189248A25B00026FC78 /* Model 28.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 28.xcdatamodel"; sourceTree = "<group>"; };
-		025CA2BA238EB47200B05C81 /* Model 24.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 24.xcdatamodel"; sourceTree = "<group>"; };
 		025CA2BB238EB86200B05C81 /* ProductShippingClass+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductShippingClass+CoreDataClass.swift"; sourceTree = "<group>"; };
 		025CA2BC238EB86200B05C81 /* ProductShippingClass+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductShippingClass+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		026CF636237D9E84009563D4 /* Model 23.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 23.xcdatamodel"; sourceTree = "<group>"; };
 		027D3E6D23A0EEA4007D91B0 /* StorageType+Deletions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageType+Deletions.swift"; sourceTree = "<group>"; };
 		028296EE237D404F00E84012 /* ProductVariation+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductVariation+CoreDataClass.swift"; sourceTree = "<group>"; };
 		028296EF237D404F00E84012 /* ProductVariation+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductVariation+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		028296F0237D404F00E84012 /* GenericAttribute+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GenericAttribute+CoreDataClass.swift"; sourceTree = "<group>"; };
 		028296F1237D404F00E84012 /* GenericAttribute+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GenericAttribute+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		0284BD8725BAC75500D00C06 /* Model 43.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 43.xcdatamodel"; sourceTree = "<group>"; };
 		0284BD8825BAC83700D00C06 /* WooCommerceModelV42toV43.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV42toV43.xcmappingmodel; sourceTree = "<group>"; };
-		028A81022740E1B400F04D15 /* Model 58.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 58.xcdatamodel"; sourceTree = "<group>"; };
-		028F00652331605000E6C283 /* Model 20.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 20.xcdatamodel"; sourceTree = "<group>"; };
-		029275442755074C0075DCED /* Model 59.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 59.xcdatamodel"; sourceTree = "<group>"; };
-		029DE8AD25C115860046EFF5 /* Model 44.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 44.xcdatamodel"; sourceTree = "<group>"; };
 		02A098262480D160002F8C7A /* MockCrashLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCrashLogger.swift; sourceTree = "<group>"; };
-		02A9F16A22F9873600EE36EA /* Model 19.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 19.xcdatamodel"; sourceTree = "<group>"; };
-		02C254DE2563AC5500A04423 /* Model 38.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 38.xcdatamodel"; sourceTree = "<group>"; };
 		02C254E32563B12E00A04423 /* ShippingLabelSettings+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelSettings+CoreDataClass.swift"; sourceTree = "<group>"; };
 		02C254E42563B12E00A04423 /* ShippingLabelSettings+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelSettings+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		02C254E52563B12E00A04423 /* ShippingLabel+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabel+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -260,68 +249,47 @@
 		02C254E82563B12E00A04423 /* ShippingLabelRefund+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelRefund+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		02C254E92563B12E00A04423 /* ShippingLabelAddress+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAddress+CoreDataClass.swift"; sourceTree = "<group>"; };
 		02C254EA2563B12E00A04423 /* ShippingLabelAddress+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAddress+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		02D200D6253FD90800840173 /* Model 33.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 33.xcdatamodel"; sourceTree = "<group>"; };
 		02D200D7253FDEE500840173 /* WooCommerceModelV32toV33.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV32toV33.xcmappingmodel; sourceTree = "<group>"; };
 		02D45648231CFB27008CF0A9 /* StatsVersionBannerVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVersionBannerVisibility.swift; sourceTree = "<group>"; };
 		02DA64162313C26400284168 /* StatsVersionBySite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVersionBySite.swift; sourceTree = "<group>"; };
 		02DA64182313C2AA00284168 /* StatsVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVersion.swift; sourceTree = "<group>"; };
-		02E4F5E223CD552F003B0010 /* Model 26.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 26.xcdatamodel"; sourceTree = "<group>"; };
 		02EAB6D62480A86D00FD873C /* CrashLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashLogger.swift; sourceTree = "<group>"; };
-		077F39C2269F1E2F00ABEADC /* Model 54.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 54.xcdatamodel"; sourceTree = "<group>"; };
 		077F39C3269F1F4600ABEADC /* SystemPlugin+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemPlugin+CoreDataClass.swift"; sourceTree = "<group>"; };
 		077F39C5269F1F7C00ABEADC /* SystemPlugin+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemPlugin+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		261870702540944C006522A1 /* Model 34.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 34.xcdatamodel"; sourceTree = "<group>"; };
 		2618707125409C65006522A1 /* ShippingLineTax+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLineTax+CoreDataClass.swift"; sourceTree = "<group>"; };
 		2618707225409C65006522A1 /* ShippingLineTax+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLineTax+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		2619F71825AF95020006DAFF /* StorageTypeExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageTypeExtensionsTests.swift; sourceTree = "<group>"; };
 		2619F72425B236E60006DAFF /* TypedPredicates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypedPredicates.swift; sourceTree = "<group>"; };
 		2619F78525B5D29B0006DAFF /* TypedPredicateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypedPredicateTests.swift; sourceTree = "<group>"; };
-		261CF1C1255AFDC40090D8D3 /* Model 36.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 36.xcdatamodel"; sourceTree = "<group>"; };
 		261CF1C2255B291F0090D8D3 /* PaymentGateway+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PaymentGateway+CoreDataClass.swift"; sourceTree = "<group>"; };
 		261CF1C3255B291F0090D8D3 /* PaymentGateway+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PaymentGateway+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		261CF32E255D988F0090D8D3 /* Model 37.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 37.xcdatamodel"; sourceTree = "<group>"; };
 		262B26752621401A00A421CF /* ProductAddOn+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductAddOn+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		262B26762621401A00A421CF /* ProductAddOnOption+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductAddOnOption+CoreDataClass.swift"; sourceTree = "<group>"; };
 		262B26772621401A00A421CF /* ProductAddOnOption+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductAddOnOption+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		262B26782621401A00A421CF /* ProductAddOn+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductAddOn+CoreDataClass.swift"; sourceTree = "<group>"; };
-		262CD20224317C2F00932241 /* Model 27.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 27.xcdatamodel"; sourceTree = "<group>"; };
 		26577518243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV26toV27.xcmappingmodel; sourceTree = "<group>"; };
-		266503372620D44C0079A159 /* Model 47.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 47.xcdatamodel"; sourceTree = "<group>"; };
 		267439D524E5D45A0090696C /* FeedbackSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackSettings.swift; sourceTree = "<group>"; };
-		2685C105263C84C000D9EE97 /* Model 49.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 49.xcdatamodel"; sourceTree = "<group>"; };
 		2685C106263C88B000D9EE97 /* AddOnGroup+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AddOnGroup+CoreDataClass.swift"; sourceTree = "<group>"; };
 		2685C107263C88B000D9EE97 /* AddOnGroup+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AddOnGroup+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		2685C11C263DEF0B00D9EE97 /* StorageTypeDeletionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageTypeDeletionsTests.swift; sourceTree = "<group>"; };
 		268BF6DA2642CBA5003948D8 /* Models+Copiable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models+Copiable.generated.swift"; sourceTree = "<group>"; };
-		26B64551259CDF8B00EF3FB3 /* Model 41.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 41.xcdatamodel"; sourceTree = "<group>"; };
 		26B64554259CE7A800EF3FB3 /* ProductAttributeTerm+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductAttributeTerm+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		26B64555259CE7A800EF3FB3 /* ProductAttributeTerm+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductAttributeTerm+CoreDataClass.swift"; sourceTree = "<group>"; };
-		26DC9F9724FFF0AB00977635 /* Model 30.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 30.xcdatamodel"; sourceTree = "<group>"; };
 		26EA01D024EC3AEA00176A57 /* FeedbackType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackType.swift; sourceTree = "<group>"; };
 		26EA01D424EC44B300176A57 /* GeneralAppSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettingsTests.swift; sourceTree = "<group>"; };
-		26F4E7F12566193500EA633B /* Model 39.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 39.xcdatamodel"; sourceTree = "<group>"; };
-		313FC0B62732EE520067408D /* Model 57.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 57.xcdatamodel"; sourceTree = "<group>"; };
-		31C1D22D2727204200EDEE49 /* Model 56.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 56.xcdatamodel"; sourceTree = "<group>"; };
-		31D9C881266844B8000AC134 /* Model 52.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 52.xcdatamodel"; sourceTree = "<group>"; };
 		31D9C8C626684AEC000AC134 /* PaymentGatewayAccount+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "PaymentGatewayAccount+CoreDataClass.swift"; path = "../../../PaymentGatewayAccount+CoreDataClass.swift"; sourceTree = "<group>"; };
 		31D9C8C726684AEC000AC134 /* PaymentGatewayAccount+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "PaymentGatewayAccount+CoreDataProperties.swift"; path = "../../../PaymentGatewayAccount+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		450106882399AC7400E24722 /* TaxClass+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+CoreDataClass.swift"; sourceTree = "<group>"; };
 		4501068A2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		453227B523C4CE9C00D816B3 /* Model 25.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 25.xcdatamodel"; sourceTree = "<group>"; };
 		454005A924AE4D350087FDD1 /* WooCommerceModelV28toV29.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV28toV29.xcmappingmodel; sourceTree = "<group>"; };
-		455C0C8325DD6C2B007B6F38 /* Model 45.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 45.xcdatamodel"; sourceTree = "<group>"; };
 		455C0C8E25DD6D93007B6F38 /* AccountSettings+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountSettings+CoreDataClass.swift"; sourceTree = "<group>"; };
 		455C0C8F25DD6D93007B6F38 /* AccountSettings+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountSettings+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		45AB8B1824AA539000B5B36E /* Model 29.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 29.xcdatamodel"; sourceTree = "<group>"; };
-		45E1862C2370415C009241F3 /* Model 22.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 22.xcdatamodel"; sourceTree = "<group>"; };
 		45E1862D2370450C009241F3 /* ShippingLine+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+CoreDataClass.swift"; sourceTree = "<group>"; };
 		45E1862F23704519009241F3 /* ShippingLine+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		45E462022684B86F00011BF2 /* Model 53.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 53.xcdatamodel"; sourceTree = "<group>"; };
 		45E462032684BCEE00011BF2 /* StateOfACountry+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StateOfACountry+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		45E462042684BCEE00011BF2 /* StateOfACountry+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StateOfACountry+CoreDataClass.swift"; sourceTree = "<group>"; };
 		45E462052684BCEE00011BF2 /* Country+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Country+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		45E462062684BCEE00011BF2 /* Country+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Country+CoreDataClass.swift"; sourceTree = "<group>"; };
-		45ED6099257EB11B007B4AC6 /* Model 40.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 40.xcdatamodel"; sourceTree = "<group>"; };
 		47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StorageTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5707FBC325B5FE2200B7C1A6 /* CoreDataIterativeMigrator+MigrationStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataIterativeMigrator+MigrationStep.swift"; sourceTree = "<group>"; };
 		5707FBC725B610DA00B7C1A6 /* CoreDataIterativeMigrator+MigrationStepTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataIterativeMigrator+MigrationStepTests.swift"; sourceTree = "<group>"; };
@@ -344,22 +312,16 @@
 		57A29FB725226BDC004DEE01 /* MigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationTests.swift; sourceTree = "<group>"; };
 		57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettings.swift; sourceTree = "<group>"; };
 		57CEB1A12525349B00D8544F /* ProductVariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationTests.swift; sourceTree = "<group>"; };
-		57E144CA2522527C00EEEEE5 /* Model 32.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 32.xcdatamodel"; sourceTree = "<group>"; };
 		5D12CAE2D0EA6AB66F162FF9 /* Pods-StorageTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.debug.xcconfig"; sourceTree = "<group>"; };
-		74159626224D5644003C21CF /* Model 13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 13.xcdatamodel"; sourceTree = "<group>"; };
 		7426A04E20F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCoupon+CoreDataClass.swift"; sourceTree = "<group>"; };
 		7426A04F20F69D00002A4E07 /* OrderCoupon+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCoupon+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7426A05220F69DA4002A4E07 /* OrderItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItem+CoreDataClass.swift"; sourceTree = "<group>"; };
 		7426A05320F69DA4002A4E07 /* OrderItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		742EF49121AC872B00362FE1 /* Model 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 7.xcdatamodel"; sourceTree = "<group>"; };
-		7435E58C21C007D100216F0F /* Model 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 8.xcdatamodel"; sourceTree = "<group>"; };
 		746A9D12214071EB0013F6FF /* MIGRATIONS.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = MIGRATIONS.md; sourceTree = "<group>"; };
-		746A9D14214071F90013F6FF /* Model 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 2.xcdatamodel"; sourceTree = "<group>"; };
 		746A9D1D214078080013F6FF /* TopEarnerStats+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TopEarnerStats+CoreDataClass.swift"; sourceTree = "<group>"; };
 		746A9D1E214078080013F6FF /* TopEarnerStats+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TopEarnerStats+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		746A9D1F214078080013F6FF /* TopEarnerStatsItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TopEarnerStatsItem+CoreDataClass.swift"; sourceTree = "<group>"; };
 		746A9D20214078080013F6FF /* TopEarnerStatsItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TopEarnerStatsItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		7471A50F216CEEA900219F7E /* Model 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 4.xcdatamodel"; sourceTree = "<group>"; };
 		7471A510216CF0FD00219F7E /* SiteVisitStats+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SiteVisitStats+CoreDataClass.swift"; sourceTree = "<group>"; };
 		7471A511216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SiteVisitStatsItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7471A512216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SiteVisitStatsItem+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -377,26 +339,20 @@
 		747453982242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDefaultAttribute+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		747453992242C85E00E0B5EE /* ProductTag+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductTag+CoreDataClass.swift"; sourceTree = "<group>"; };
 		7474539A2242C85E00E0B5EE /* ProductTag+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductTag+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		7492FAD3217FA88E00ED2C69 /* Model 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 5.xcdatamodel"; sourceTree = "<group>"; };
 		7492FAD4217FA9C100ED2C69 /* SiteSetting+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SiteSetting+CoreDataClass.swift"; sourceTree = "<group>"; };
 		7492FAD5217FA9C100ED2C69 /* SiteSetting+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SiteSetting+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7499FA42221C7A60004EC0B4 /* ShipmentTracking+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTracking+CoreDataClass.swift"; sourceTree = "<group>"; };
 		7499FA43221C7A60004EC0B4 /* ShipmentTracking+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTracking+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		74B053702153090F0068EB85 /* Model 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 3.xcdatamodel"; sourceTree = "<group>"; };
 		74B7D6AB20F90CBB002667AC /* OrderNote+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderNote+CoreDataClass.swift"; sourceTree = "<group>"; };
 		74B7D6AC20F90CBB002667AC /* OrderNote+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderNote+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		74F009BE2183B99B002B4566 /* Note+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataClass.swift"; sourceTree = "<group>"; };
 		74F009BF2183B99B002B4566 /* Note+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		7774445B2518C8FE003342BB /* Model 31.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 31.xcdatamodel"; sourceTree = "<group>"; };
 		7C81935EDD982072BBDCC837 /* Pods-Storage.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.release.xcconfig"; sourceTree = "<group>"; };
 		9302E3A5220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataIterativeMigrator.swift; sourceTree = "<group>"; };
-		9302E3A7220DC69400DA5018 /* Model 10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 10.xcdatamodel"; sourceTree = "<group>"; };
 		9302E3AB220E1CE900DA5018 /* CoreDataIterativeMigratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataIterativeMigratorTests.swift; sourceTree = "<group>"; };
 		933A272F2222344D00C2143A /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
-		93D8BBF9226A6B3200AD2EB3 /* Model 14.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 14.xcdatamodel"; sourceTree = "<group>"; };
 		A3821B262583F14863740A37 /* Pods-Storage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.debug.xcconfig"; sourceTree = "<group>"; };
 		AE93BE8F272C0E9F001B55EA /* GeneralStoreSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralStoreSettings.swift; sourceTree = "<group>"; };
-		AEBAAFAE2657C5AC00404651 /* Model 51.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 51.xcdatamodel"; sourceTree = "<group>"; };
 		B505255320EE6914008090F5 /* StorageType+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageType+Extensions.swift"; sourceTree = "<group>"; };
 		B505F6D820BEEA3100BB1B69 /* Account+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B505F6D920BEEA3200BB1B69 /* Account+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -416,33 +372,25 @@
 		B54CA5C120A4BF6900F38CD1 /* NSManagedObjectContextStorageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSManagedObjectContextStorageTests.swift; sourceTree = "<group>"; };
 		B54CA5C620A4BFDC00F38CD1 /* DummyStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyStack.swift; sourceTree = "<group>"; };
 		B54CA5C820A4C17800F38CD1 /* NSObject+Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Storage.swift"; sourceTree = "<group>"; };
-		B59E11D920A9D00C004121A4 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		B59E11DD20A9F1FB004121A4 /* CoreDataManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManagerTests.swift; sourceTree = "<group>"; };
 		B59E11DF20A9F5E6004121A4 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		B5B2358C2190CC22009A4A54 /* Model 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 6.xcdatamodel"; sourceTree = "<group>"; };
 		B5B914C320EFF03500F2F832 /* Site+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Site+CoreDataClass.swift"; sourceTree = "<group>"; };
 		B5B914C420EFF03500F2F832 /* Site+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Site+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		B5FD111721D402C200560344 /* Model 9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 9.xcdatamodel"; sourceTree = "<group>"; };
 		B5FD111C21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderSearchResults+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B5FD111D21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderSearchResults+CoreDataClass.swift"; sourceTree = "<group>"; };
 		BB0EDB0E92A719168B18DAFE /* Pods-StorageTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.release.xcconfig"; sourceTree = "<group>"; };
-		CC2C02F8262DA8FF00928C9C /* Model 48.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 48.xcdatamodel"; sourceTree = "<group>"; };
 		CC2C0305262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAccountSettings+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CC2C0306262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ShippingLabelPaymentMethod+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CC2C0307262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAccountSettings+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CC2C0308262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ShippingLabelPaymentMethod+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		CCD2E70525DE995900BD975D /* Model 46.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 46.xcdatamodel"; sourceTree = "<group>"; };
 		CCD2E70625DE9AAA00BD975D /* WooCommerceModelV45toV46.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV45toV46.xcmappingmodel; sourceTree = "<group>"; };
 		CE12FBCC221F0E1A00C59248 /* Order+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CE12FBCD221F0E1A00C59248 /* Order+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CE12FBE22220515600C59248 /* WooCommerceModelV9toV10.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV9toV10.xcmappingmodel; sourceTree = "<group>"; };
-		CE3B7ACF2225E5CE0050FE4B /* Model 11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 11.xcdatamodel"; sourceTree = "<group>"; };
 		CE3B7AD02225E62C0050FE4B /* OrderStatus+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatus+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CE3B7AD12225E62C0050FE4B /* OrderStatus+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatus+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		CE43A8FA229F475400A4FF29 /* Model 16.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 16.xcdatamodel"; sourceTree = "<group>"; };
 		CE43A8FB229F498D00A4FF29 /* ProductDownload+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDownload+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CE43A8FC229F498D00A4FF29 /* ProductDownload+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDownload+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		CE4FD43E2350D2FA00A16B31 /* Model 21.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 21.xcdatamodel"; sourceTree = "<group>"; };
 		CE4FD43F2350EB7600A16B31 /* OrderItemRefund+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemRefund+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CE4FD4402350EB7600A16B31 /* OrderItemRefund+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemRefund+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CE4FD4412350EB7600A16B31 /* OrderItemTax+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemTax+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -451,7 +399,6 @@
 		CE4FD4442350EB7600A16B31 /* OrderItemTaxRefund+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemTaxRefund+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CE4FD4452350EB7600A16B31 /* Refund+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Refund+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CE4FD4462350EB7600A16B31 /* Refund+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Refund+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		CE6B4810227C915B00488C39 /* Model 15.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 15.xcdatamodel"; sourceTree = "<group>"; };
 		CEF88DB0233EAAF000BED485 /* OrderRefundCondensed+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderRefundCondensed+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CEF88DB1233EAAF000BED485 /* OrderRefundCondensed+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderRefundCondensed+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D0FEE3A91785B0F2C3641C27 /* Pods-Storage.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.release-alpha.xcconfig"; sourceTree = "<group>"; };
@@ -461,27 +408,80 @@
 		D82164582239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProvider+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D82164592239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProviderGroup+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D821645A2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProviderGroup+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		D82A61EF2239EB9900335D40 /* Model 12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 12.xcdatamodel"; sourceTree = "<group>"; };
 		D8550D00230D3F8B00AAC4F8 /* ProductReview+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductReview+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D8550D01230D3F8B00AAC4F8 /* ProductReview+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductReview+CoreDataClass.swift"; sourceTree = "<group>"; };
-		D8736B6322F0AB4E00A14A29 /* Model 18.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 18.xcdatamodel"; sourceTree = "<group>"; };
 		D87F614D22657C2F0031A13B /* PreselectedProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreselectedProvider.swift; sourceTree = "<group>"; };
 		D87F61522265AA230031A13B /* FileStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileStorage.swift; sourceTree = "<group>"; };
 		D87F61542265AA900031A13B /* PListFileStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PListFileStorage.swift; sourceTree = "<group>"; };
 		D87F61562265AD980031A13B /* FileStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FileStorageTests.swift; path = StorageTests/Tools/FileStorageTests.swift; sourceTree = SOURCE_ROOT; };
 		D87F615B2265AF190031A13B /* shipment-provider.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "shipment-provider.plist"; sourceTree = "<group>"; };
-		D88E233925AE04C50023F3B1 /* Model 42.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 42.xcdatamodel"; sourceTree = "<group>"; };
 		D88E233A25AE08C90023F3B1 /* OrderFeeLine+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderFeeLine+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D88E234025AE08F10023F3B1 /* OrderFeeLine+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderFeeLine+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		D8FBFF2A22D63B12006E3336 /* Model 17.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 17.xcdatamodel"; sourceTree = "<group>"; };
 		D8FBFF4F22D66A06006E3336 /* OrderStatsV4Interval+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D8FBFF5022D66A06006E3336 /* OrderStatsV4Interval+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D8FBFF5122D66A06006E3336 /* OrderStatsV4Totals+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Totals+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D8FBFF5222D66A06006E3336 /* OrderStatsV4Totals+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Totals+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D8FBFF5322D66A06006E3336 /* OrderStatsV4+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D8FBFF5422D66A06006E3336 /* OrderStatsV4+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		DE126D1026CE5A28007F901D /* Model 55.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 55.xcdatamodel"; sourceTree = "<group>"; };
-		DEFD6D3B2641B3C200E51E0D /* Model 50.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 50.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AA5275B41BE009F3DF4 /* Model 30.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 30.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AA6275B41BE009F3DF4 /* Model 40.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 40.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AA7275B41BE009F3DF4 /* Model 25.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 25.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AA8275B41BE009F3DF4 /* Model 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 5.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AA9275B41BE009F3DF4 /* Model 55.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 55.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AAA275B41BE009F3DF4 /* Model 49.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 49.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AAB275B41BE009F3DF4 /* Model 39.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 39.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AAC275B41BE009F3DF4 /* Model 17.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 17.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AAD275B41BE009F3DF4 /* Model 50.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 50.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AAE275B41BE009F3DF4 /* Model 20.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 20.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AAF275B41BE009F3DF4 /* Model 12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 12.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AB0275B41BE009F3DF4 /* Model 29.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 29.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AB1275B41BE009F3DF4 /* Model 59.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 59.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AB2275B41BE009F3DF4 /* Model 9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 9.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AB3275B41BE009F3DF4 /* Model 45.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 45.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AB4275B41BE009F3DF4 /* Model 35.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 35.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AB5275B41BE009F3DF4 /* Model 46.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 46.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AB6275B41BE009F3DF4 /* Model 36.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 36.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AB7275B41BE009F3DF4 /* Model 18.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 18.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AB8275B41BE009F3DF4 /* Model 11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 11.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AB9275B41BE009F3DF4 /* Model 53.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 53.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ABA275B41BE009F3DF4 /* Model 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 3.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ABB275B41BE009F3DF4 /* Model 23.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 23.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ABC275B41BE009F3DF4 /* Model 14.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 14.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ABD275B41BE009F3DF4 /* Model 26.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 26.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ABE275B41BE009F3DF4 /* Model 56.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 56.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ABF275B41BE009F3DF4 /* Model 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 6.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AC0275B41BE009F3DF4 /* Model 33.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 33.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AC1275B41BE009F3DF4 /* Model 43.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 43.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AC2275B41BE009F3DF4 /* Model 34.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 34.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AC3275B41BE009F3DF4 /* Model 44.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 44.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AC4275B41BE009F3DF4 /* Model 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 8.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AC5275B41BE009F3DF4 /* Model 58.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 58.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AC6275B41BE009F3DF4 /* Model 28.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 28.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AC7275B41BE009F3DF4 /* Model 13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 13.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AC8275B41BE009F3DF4 /* Model 21.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 21.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AC9275B41BE009F3DF4 /* Model 51.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 51.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ACA275B41BE009F3DF4 /* Model 38.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 38.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ACB275B41BE009F3DF4 /* Model 48.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 48.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ACC275B41BE009F3DF4 /* Model 16.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 16.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ACD275B41BE009F3DF4 /* Model 54.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 54.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ACE275B41BE009F3DF4 /* Model 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 4.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ACF275B41BE009F3DF4 /* Model 24.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 24.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AD0275B41BE009F3DF4 /* Model 41.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 41.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AD1275B41BE009F3DF4 /* Model 31.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 31.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AD2275B41BE009F3DF4 /* Model 42.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 42.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AD3275B41BE009F3DF4 /* Model 32.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 32.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AD4275B41BE009F3DF4 /* Model 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 7.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AD5275B41BE009F3DF4 /* Model 57.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 57.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AD6275B41BE009F3DF4 /* Model 27.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 27.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AD7275B41BE009F3DF4 /* Model 15.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 15.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AD8275B41BE009F3DF4 /* Model 22.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 22.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51AD9275B41BE009F3DF4 /* Model 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 2.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ADA275B41BE009F3DF4 /* Model 52.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 52.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ADB275B41BE009F3DF4 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		DEC51ADC275B41BE009F3DF4 /* Model 10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 10.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ADD275B41BE009F3DF4 /* Model 37.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 37.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ADE275B41BE009F3DF4 /* Model 47.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 47.xcdatamodel"; sourceTree = "<group>"; };
+		DEC51ADF275B41BE009F3DF4 /* Model 19.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 19.xcdatamodel"; sourceTree = "<group>"; };
 		DEFD6D402641B70400E51E0D /* SitePlugin+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+CoreDataClass.swift"; sourceTree = "<group>"; };
 		DEFD6D412641B70400E51E0D /* SitePlugin+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -785,9 +785,9 @@
 				028296F0237D404F00E84012 /* GenericAttribute+CoreDataClass.swift */,
 				028296F1237D404F00E84012 /* GenericAttribute+CoreDataProperties.swift */,
 				AE93BE8F272C0E9F001B55EA /* GeneralStoreSettings.swift */,
+				DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */,
 				9302E3A8220DC7DF00DA5018 /* Mapping Models */,
 				746A9D12214071EB0013F6FF /* MIGRATIONS.md */,
-				B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */,
 				B505F6D920BEEA3200BB1B69 /* Account+CoreDataClass.swift */,
 				B505F6D820BEEA3100BB1B69 /* Account+CoreDataProperties.swift */,
 				455C0C8E25DD6D93007B6F38 /* AccountSettings+CoreDataClass.swift */,
@@ -1025,7 +1025,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5DC3CAA20D1B2FE0063AC41 /* WooCommerce.xcdatamodeld in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1228,6 +1227,7 @@
 				CE4FD44C2350EB7600A16B31 /* OrderItemTaxRefund+CoreDataProperties.swift in Sources */,
 				7474539B2242C85E00E0B5EE /* ProductDimensions+CoreDataClass.swift in Sources */,
 				B505255420EE6914008090F5 /* StorageType+Extensions.swift in Sources */,
+				DEC51AE0275B41BE009F3DF4 /* WooCommerce.xcdatamodeld in Sources */,
 				028296F2237D404F00E84012 /* ProductVariation+CoreDataClass.swift in Sources */,
 				2618707425409C65006522A1 /* ShippingLineTax+CoreDataProperties.swift in Sources */,
 				B52B0F7B20AA28A800477698 /* Object.swift in Sources */,
@@ -1691,70 +1691,70 @@
 /* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
-		B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */ = {
+		DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				029275442755074C0075DCED /* Model 59.xcdatamodel */,
-				028A81022740E1B400F04D15 /* Model 58.xcdatamodel */,
-				313FC0B62732EE520067408D /* Model 57.xcdatamodel */,
-				31C1D22D2727204200EDEE49 /* Model 56.xcdatamodel */,
-				DE126D1026CE5A28007F901D /* Model 55.xcdatamodel */,
-				077F39C2269F1E2F00ABEADC /* Model 54.xcdatamodel */,
-				45E462022684B86F00011BF2 /* Model 53.xcdatamodel */,
-				31D9C881266844B8000AC134 /* Model 52.xcdatamodel */,
-				AEBAAFAE2657C5AC00404651 /* Model 51.xcdatamodel */,
-				DEFD6D3B2641B3C200E51E0D /* Model 50.xcdatamodel */,
-				2685C105263C84C000D9EE97 /* Model 49.xcdatamodel */,
-				CC2C02F8262DA8FF00928C9C /* Model 48.xcdatamodel */,
-				266503372620D44C0079A159 /* Model 47.xcdatamodel */,
-				CCD2E70525DE995900BD975D /* Model 46.xcdatamodel */,
-				455C0C8325DD6C2B007B6F38 /* Model 45.xcdatamodel */,
-				029DE8AD25C115860046EFF5 /* Model 44.xcdatamodel */,
-				0284BD8725BAC75500D00C06 /* Model 43.xcdatamodel */,
-				D88E233925AE04C50023F3B1 /* Model 42.xcdatamodel */,
-				26B64551259CDF8B00EF3FB3 /* Model 41.xcdatamodel */,
-				45ED6099257EB11B007B4AC6 /* Model 40.xcdatamodel */,
-				26F4E7F12566193500EA633B /* Model 39.xcdatamodel */,
-				02C254DE2563AC5500A04423 /* Model 38.xcdatamodel */,
-				261CF32E255D988F0090D8D3 /* Model 37.xcdatamodel */,
-				261CF1C1255AFDC40090D8D3 /* Model 36.xcdatamodel */,
-				021EAA42254938AA00AA8CCD /* Model 35.xcdatamodel */,
-				261870702540944C006522A1 /* Model 34.xcdatamodel */,
-				02D200D6253FD90800840173 /* Model 33.xcdatamodel */,
-				57E144CA2522527C00EEEEE5 /* Model 32.xcdatamodel */,
-				7774445B2518C8FE003342BB /* Model 31.xcdatamodel */,
-				26DC9F9724FFF0AB00977635 /* Model 30.xcdatamodel */,
-				45AB8B1824AA539000B5B36E /* Model 29.xcdatamodel */,
-				02583189248A25B00026FC78 /* Model 28.xcdatamodel */,
-				262CD20224317C2F00932241 /* Model 27.xcdatamodel */,
-				02E4F5E223CD552F003B0010 /* Model 26.xcdatamodel */,
-				453227B523C4CE9C00D816B3 /* Model 25.xcdatamodel */,
-				025CA2BA238EB47200B05C81 /* Model 24.xcdatamodel */,
-				026CF636237D9E84009563D4 /* Model 23.xcdatamodel */,
-				45E1862C2370415C009241F3 /* Model 22.xcdatamodel */,
-				CE4FD43E2350D2FA00A16B31 /* Model 21.xcdatamodel */,
-				028F00652331605000E6C283 /* Model 20.xcdatamodel */,
-				02A9F16A22F9873600EE36EA /* Model 19.xcdatamodel */,
-				D8736B6322F0AB4E00A14A29 /* Model 18.xcdatamodel */,
-				D8FBFF2A22D63B12006E3336 /* Model 17.xcdatamodel */,
-				CE43A8FA229F475400A4FF29 /* Model 16.xcdatamodel */,
-				CE6B4810227C915B00488C39 /* Model 15.xcdatamodel */,
-				93D8BBF9226A6B3200AD2EB3 /* Model 14.xcdatamodel */,
-				74159626224D5644003C21CF /* Model 13.xcdatamodel */,
-				D82A61EF2239EB9900335D40 /* Model 12.xcdatamodel */,
-				CE3B7ACF2225E5CE0050FE4B /* Model 11.xcdatamodel */,
-				9302E3A7220DC69400DA5018 /* Model 10.xcdatamodel */,
-				B5FD111721D402C200560344 /* Model 9.xcdatamodel */,
-				7435E58C21C007D100216F0F /* Model 8.xcdatamodel */,
-				742EF49121AC872B00362FE1 /* Model 7.xcdatamodel */,
-				B5B2358C2190CC22009A4A54 /* Model 6.xcdatamodel */,
-				7492FAD3217FA88E00ED2C69 /* Model 5.xcdatamodel */,
-				7471A50F216CEEA900219F7E /* Model 4.xcdatamodel */,
-				74B053702153090F0068EB85 /* Model 3.xcdatamodel */,
-				746A9D14214071F90013F6FF /* Model 2.xcdatamodel */,
-				B59E11D920A9D00C004121A4 /* Model.xcdatamodel */,
+				DEC51AA5275B41BE009F3DF4 /* Model 30.xcdatamodel */,
+				DEC51AA6275B41BE009F3DF4 /* Model 40.xcdatamodel */,
+				DEC51AA7275B41BE009F3DF4 /* Model 25.xcdatamodel */,
+				DEC51AA8275B41BE009F3DF4 /* Model 5.xcdatamodel */,
+				DEC51AA9275B41BE009F3DF4 /* Model 55.xcdatamodel */,
+				DEC51AAA275B41BE009F3DF4 /* Model 49.xcdatamodel */,
+				DEC51AAB275B41BE009F3DF4 /* Model 39.xcdatamodel */,
+				DEC51AAC275B41BE009F3DF4 /* Model 17.xcdatamodel */,
+				DEC51AAD275B41BE009F3DF4 /* Model 50.xcdatamodel */,
+				DEC51AAE275B41BE009F3DF4 /* Model 20.xcdatamodel */,
+				DEC51AAF275B41BE009F3DF4 /* Model 12.xcdatamodel */,
+				DEC51AB0275B41BE009F3DF4 /* Model 29.xcdatamodel */,
+				DEC51AB1275B41BE009F3DF4 /* Model 59.xcdatamodel */,
+				DEC51AB2275B41BE009F3DF4 /* Model 9.xcdatamodel */,
+				DEC51AB3275B41BE009F3DF4 /* Model 45.xcdatamodel */,
+				DEC51AB4275B41BE009F3DF4 /* Model 35.xcdatamodel */,
+				DEC51AB5275B41BE009F3DF4 /* Model 46.xcdatamodel */,
+				DEC51AB6275B41BE009F3DF4 /* Model 36.xcdatamodel */,
+				DEC51AB7275B41BE009F3DF4 /* Model 18.xcdatamodel */,
+				DEC51AB8275B41BE009F3DF4 /* Model 11.xcdatamodel */,
+				DEC51AB9275B41BE009F3DF4 /* Model 53.xcdatamodel */,
+				DEC51ABA275B41BE009F3DF4 /* Model 3.xcdatamodel */,
+				DEC51ABB275B41BE009F3DF4 /* Model 23.xcdatamodel */,
+				DEC51ABC275B41BE009F3DF4 /* Model 14.xcdatamodel */,
+				DEC51ABD275B41BE009F3DF4 /* Model 26.xcdatamodel */,
+				DEC51ABE275B41BE009F3DF4 /* Model 56.xcdatamodel */,
+				DEC51ABF275B41BE009F3DF4 /* Model 6.xcdatamodel */,
+				DEC51AC0275B41BE009F3DF4 /* Model 33.xcdatamodel */,
+				DEC51AC1275B41BE009F3DF4 /* Model 43.xcdatamodel */,
+				DEC51AC2275B41BE009F3DF4 /* Model 34.xcdatamodel */,
+				DEC51AC3275B41BE009F3DF4 /* Model 44.xcdatamodel */,
+				DEC51AC4275B41BE009F3DF4 /* Model 8.xcdatamodel */,
+				DEC51AC5275B41BE009F3DF4 /* Model 58.xcdatamodel */,
+				DEC51AC6275B41BE009F3DF4 /* Model 28.xcdatamodel */,
+				DEC51AC7275B41BE009F3DF4 /* Model 13.xcdatamodel */,
+				DEC51AC8275B41BE009F3DF4 /* Model 21.xcdatamodel */,
+				DEC51AC9275B41BE009F3DF4 /* Model 51.xcdatamodel */,
+				DEC51ACA275B41BE009F3DF4 /* Model 38.xcdatamodel */,
+				DEC51ACB275B41BE009F3DF4 /* Model 48.xcdatamodel */,
+				DEC51ACC275B41BE009F3DF4 /* Model 16.xcdatamodel */,
+				DEC51ACD275B41BE009F3DF4 /* Model 54.xcdatamodel */,
+				DEC51ACE275B41BE009F3DF4 /* Model 4.xcdatamodel */,
+				DEC51ACF275B41BE009F3DF4 /* Model 24.xcdatamodel */,
+				DEC51AD0275B41BE009F3DF4 /* Model 41.xcdatamodel */,
+				DEC51AD1275B41BE009F3DF4 /* Model 31.xcdatamodel */,
+				DEC51AD2275B41BE009F3DF4 /* Model 42.xcdatamodel */,
+				DEC51AD3275B41BE009F3DF4 /* Model 32.xcdatamodel */,
+				DEC51AD4275B41BE009F3DF4 /* Model 7.xcdatamodel */,
+				DEC51AD5275B41BE009F3DF4 /* Model 57.xcdatamodel */,
+				DEC51AD6275B41BE009F3DF4 /* Model 27.xcdatamodel */,
+				DEC51AD7275B41BE009F3DF4 /* Model 15.xcdatamodel */,
+				DEC51AD8275B41BE009F3DF4 /* Model 22.xcdatamodel */,
+				DEC51AD9275B41BE009F3DF4 /* Model 2.xcdatamodel */,
+				DEC51ADA275B41BE009F3DF4 /* Model 52.xcdatamodel */,
+				DEC51ADB275B41BE009F3DF4 /* Model.xcdatamodel */,
+				DEC51ADC275B41BE009F3DF4 /* Model 10.xcdatamodel */,
+				DEC51ADD275B41BE009F3DF4 /* Model 37.xcdatamodel */,
+				DEC51ADE275B41BE009F3DF4 /* Model 47.xcdatamodel */,
+				DEC51ADF275B41BE009F3DF4 /* Model 19.xcdatamodel */,
 			);
-			currentVersion = 029275442755074C0075DCED /* Model 59.xcdatamodel */;
+			currentVersion = DEC51AB1275B41BE009F3DF4 /* Model 59.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

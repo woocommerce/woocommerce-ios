@@ -1,0 +1,5 @@
+Siparişler sekmesi bu sürümde güncellendi. Sekmeleri kaldırdık ve duruma veya tarih aralığına göre filtreleme seçeneğini sunduk. Bu değişikliği yıllardır sizden aldığımız geri bildirimlere göre yaptık. Beğeneceğinizi biliyoruz!
+
+Bir sipariş için anlık bir bildirimden kargo etiketi oluşturma sırasında meydana gelen bir kilitlenme durumunu düzelttik. Ayrıca şifre yöneticinizde oturum açma deneyimini iyileştirdik. Yöneticinizde WordPress.com için kayıtlı kullanıcı adınız ve şifrenizi listenin başında göreceksiniz!
+
+Her zaman olduğu gibi, lütfen bize geri bildiriminizi göndermeye devam edin. WooCommerce'i kullandığınız için teşekkürler!

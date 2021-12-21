@@ -5,13 +5,19 @@ import Yosemite
 class NewOrderViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
+    let sampleProductID: Int64 = 5
 
-    func test_view_model_starts_with_create_button_hidden() {
+    func test_view_model_inits_with_expected_values() {
         // Given
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        // When
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // Then
         XCTAssertEqual(viewModel.navigationTrailingItem, .none)
+        XCTAssertEqual(viewModel.statusBadgeViewModel.title, "pending")
+        XCTAssertEqual(viewModel.productRows.count, 0)
     }
 
     func test_create_button_is_enabled_when_order_detail_changes_from_default_value() {
@@ -101,15 +107,57 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "Pending payment")
     }
 
-    func test_view_model_inits_order_status_as_pending_when_there_are_no_synced_statuses() {
+    func test_view_model_is_updated_when_order_status_updated() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+        storageManager.insertOrderStatus(.init(name: "Pending payment", siteID: sampleSiteID, slug: "pending", total: 0))
+        storageManager.insertOrderStatus(.init(name: "Processing", siteID: sampleSiteID, slug: "processing", total: 0))
 
         // When
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // Then
-        XCTAssertEqual(viewModel.statusBadgeViewModel.title, "pending")
+        XCTAssertEqual(viewModel.statusBadgeViewModel.title, "Pending payment")
+
+        // When
+        viewModel.orderDetails.status = .processing
+
+        // Then
+        XCTAssertEqual(viewModel.statusBadgeViewModel.title, "Processing")
+    }
+
+    func test_view_model_is_updated_when_product_is_added_to_order() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, statusKey: "publish")
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+
+        // Then
+        let expectedProductRow = ProductRowViewModel(id: "0", product: product, canChangeQuantity: true)
+        let expectedOrderItem = product.toOrderItem(quantity: 1)
+        XCTAssertTrue(viewModel.productRows.contains(expectedProductRow), "Product rows do not contain expected product")
+        XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }), "Order details do not contain expected order item")
+    }
+
+    func test_order_details_are_updated_when_product_quantity_changes() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, statusKey: "publish")
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        viewModel.productRows[0].incrementQuantity()
+
+        // Then
+        let expectedOrderItem = product.toOrderItem(quantity: 2)
+        XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }), "Order details do not contain expected order item")
     }
 }
 

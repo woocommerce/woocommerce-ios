@@ -3,7 +3,7 @@ import Yosemite
 
 /// View model for `ProductRow`.
 ///
-final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
+final class ProductRowViewModel: ObservableObject, Identifiable {
     private let currencyFormatter: CurrencyFormatter
 
     /// Whether the product quantity can be changed.
@@ -170,8 +170,14 @@ private extension ProductRowViewModel {
     }
 }
 
-extension ProductRowViewModel {
+extension ProductRowViewModel: Equatable {
     static func == (lhs: ProductRowViewModel, rhs: ProductRowViewModel) -> Bool {
-        lhs.id == rhs.id
+        return lhs.productID == rhs.productID &&
+        lhs.imageURL == rhs.imageURL &&
+        lhs.name == rhs.name &&
+        lhs.stockAndPriceLabel == rhs.stockAndPriceLabel &&
+        lhs.skuLabel == rhs.skuLabel &&
+        lhs.quantity == rhs.quantity &&
+        lhs.canChangeQuantity == rhs.canChangeQuantity
     }
 }

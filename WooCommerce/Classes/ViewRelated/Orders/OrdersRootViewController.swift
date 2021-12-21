@@ -85,6 +85,8 @@ final class OrdersRootViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         // Needed in ViewWillAppear because this View Controller is never recreated.
         fetchExperimentalTogglesAndConfigureNavigationButtons()
+
+        ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
     }
 
     override var shouldShowOfflineBanner: Bool {

@@ -128,8 +128,6 @@ final class NewOrderViewModel: ObservableObject {
 
             switch result {
             case .success(let newOrder):
-                // TODO: Handle newly created order / remove success logging
-                DDLogInfo("New order created successfully!")
                 self.onOrderCreated(newOrder)
             case .failure(let error):
                 self.presentNotice = .error
@@ -269,7 +267,7 @@ private extension NewOrderViewModel {
     ///
     func configureProductRowViewModels() {
         productRows = orderDetails.items.enumerated().map { index, item in
-            let productRowViewModel = ProductRowViewModel(id: item.id, product: item.product, canChangeQuantity: true)
+            let productRowViewModel = ProductRowViewModel(id: item.id, product: item.product, quantity: item.quantity, canChangeQuantity: true)
 
             // Observe changes to the product quantity
             productRowViewModel.$quantity

@@ -71,7 +71,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Quantity of product in the order
     ///
-    @Published private(set) var quantity: Decimal = 1
+    @Published private(set) var quantity: Decimal
 
     /// Minimum value of the product quantity
     ///
@@ -91,6 +91,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          stockStatusKey: String,
          stockQuantity: Decimal?,
          manageStock: Bool,
+         quantity: Decimal = 1,
          canChangeQuantity: Bool,
          imageURL: URL?,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
@@ -102,6 +103,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.stockStatus = .init(rawValue: stockStatusKey)
         self.stockQuantity = stockQuantity
         self.manageStock = manageStock
+        self.quantity = quantity
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.currencyFormatter = currencyFormatter
@@ -109,6 +111,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     convenience init(id: String? = nil,
                      product: Product,
+                     quantity: Decimal = 1,
                      canChangeQuantity: Bool,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.init(id: id,
@@ -119,6 +122,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   stockStatusKey: product.stockStatusKey,
                   stockQuantity: product.stockQuantity,
                   manageStock: product.manageStock,
+                  quantity: quantity,
                   canChangeQuantity: canChangeQuantity,
                   imageURL: product.imageURL,
                   currencyFormatter: currencyFormatter)

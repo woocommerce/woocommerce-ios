@@ -187,6 +187,14 @@ public enum AppSettingsAction: Action {
     ///
     case getTelemetryInfo(siteID: Int64, onCompletion: (Bool, Date?) -> Void)
 
+    /// Sets the last state of the simple payments taxes toggle for a provided store.
+    ///
+    case setSimplePaymentsTaxesToggleState(siteID: Int64, isOn: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Get the last state of the simple payments taxes toggle for a provided store.
+    ///
+    case getSimplePaymentsTaxesToggleState(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
+
     /// Clears all the products settings
     ///
     case resetGeneralStoreSettings

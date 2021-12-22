@@ -78,9 +78,10 @@ final class JetpackInstallStepsViewModel: ObservableObject {
                 } else {
                     self.activateJetpack()
                 }
-            case .failure:
+            case .failure(let error):
                 // plugin is likely to not have been installed, so proceed to install it.
                 self.installJetpackPlugin()
+                self.installError = error
             }
         }
         stores.dispatch(pluginInfoAction)

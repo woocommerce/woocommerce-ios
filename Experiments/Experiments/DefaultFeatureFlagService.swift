@@ -33,6 +33,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .stripeExtensionInPersonPayments:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .myStoreTabUpdates:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

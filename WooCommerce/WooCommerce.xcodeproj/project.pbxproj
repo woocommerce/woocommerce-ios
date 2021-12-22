@@ -755,6 +755,7 @@
 		45DB70662614CE3F0064A6CF /* Decimal+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB70652614CE3F0064A6CF /* Decimal+Helpers.swift */; };
 		45DB706C26161F970064A6CF /* DecimalWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB706B26161F970064A6CF /* DecimalWooTests.swift */; };
 		45DB7076261623410064A6CF /* ShippingLabelPackageDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB7075261623410064A6CF /* ShippingLabelPackageDetailsViewModelTests.swift */; };
+		45E1482527736D1E0099CF23 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1482427736D1E0099CF23 /* SettingsView.swift */; };
 		45E3C8F325E7D30300102E84 /* ShippingLabelAddress+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E3C8F225E7D30300102E84 /* ShippingLabelAddress+Woo.swift */; };
 		45E9A6E424DAE1EA00A600E8 /* ProductReviewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9A6E224DAE1EA00A600E8 /* ProductReviewsViewController.swift */; };
 		45E9A6E524DAE1EA00A600E8 /* ProductReviewsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45E9A6E324DAE1EA00A600E8 /* ProductReviewsViewController.xib */; };
@@ -2279,6 +2280,7 @@
 		45DB70652614CE3F0064A6CF /* Decimal+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Decimal+Helpers.swift"; sourceTree = "<group>"; };
 		45DB706B26161F970064A6CF /* DecimalWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecimalWooTests.swift; sourceTree = "<group>"; };
 		45DB7075261623410064A6CF /* ShippingLabelPackageDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageDetailsViewModelTests.swift; sourceTree = "<group>"; };
+		45E1482427736D1E0099CF23 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		45E3C8F225E7D30300102E84 /* ShippingLabelAddress+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAddress+Woo.swift"; sourceTree = "<group>"; };
 		45E9A6E224DAE1EA00A600E8 /* ProductReviewsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewsViewController.swift; sourceTree = "<group>"; };
 		45E9A6E324DAE1EA00A600E8 /* ProductReviewsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductReviewsViewController.xib; sourceTree = "<group>"; };
@@ -5955,6 +5957,7 @@
 				027D4A8B2526FD1700108626 /* SettingsViewController.swift */,
 				BAE4F8422734325C00871344 /* SettingsViewModel.swift */,
 				027D4A8C2526FD1700108626 /* SettingsViewController.xib */,
+				45E1482427736D1E0099CF23 /* SettingsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -7994,6 +7997,7 @@
 				311D21E8264AEDB900102316 /* CardPresentModalScanningForReader.swift in Sources */,
 				2688643D25D470C000821BA5 /* EditAttributesViewModel.swift in Sources */,
 				31C21FA426D9949000916E2E /* SeveralReadersFoundViewController.swift in Sources */,
+				45E1482527736D1E0099CF23 /* SettingsView.swift in Sources */,
 				CC078531266E706300BA9AC1 /* ErrorTopBannerFactory.swift in Sources */,
 				DE8C94662646990000C94823 /* PluginListViewController.swift in Sources */,
 				B6E851F3276320C70041D1BA /* RefundFeesDetailsViewModel.swift in Sources */,
@@ -8066,7 +8070,7 @@
 				DEC51A9D274F8528009F3DF4 /* JetpackInstallStepsViewModel.swift in Sources */,
 				455DC3A327393C7E00D4644C /* OrderDatesFilterViewController.swift in Sources */,
 				45B6F4EF27592A4000C18782 /* ReviewsView.swift in Sources */,
-				028BAC4222F30B05008BB4AF /* StoreStatsV4PeriodViewController.swift in Sources */,
+				028BAC4222F30B05008BB4AF /* OldStoreStatsV4PeriodViewController.swift in Sources */,
 				028BAC4222F30B05008BB4AF /* OldStoreStatsV4PeriodViewController.swift in Sources */,
 				268FD44727580A81008FDF9B /* CollectOrderPaymentUseCase.swift in Sources */,
 				740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */,

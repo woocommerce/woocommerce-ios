@@ -58,6 +58,7 @@ struct HubMenu: View {
         let storeTitle: String
         let storeURL: String?
 
+        @State private var showSettings = false
         @ScaledMetric var settingsSize: CGFloat = 24
         @ScaledMetric var settingsIconSize: CGFloat = 20
 
@@ -90,13 +91,19 @@ struct HubMenu: View {
                         }
                     }
                     .onTapGesture {
-                        // TODO-5509: implement tap
+                        showSettings = true
                     }
                     Spacer()
                 }
                 .fixedSize()
             }
             .padding([.top, .leading, .trailing], Constants.padding)
+
+            NavigationLink(destination:
+                            SettingsView(),
+                           isActive: $showSettings) {
+                EmptyView()
+            }.hidden()
         }
     }
 

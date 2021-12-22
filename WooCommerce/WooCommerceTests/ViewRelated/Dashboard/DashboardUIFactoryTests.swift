@@ -1,5 +1,6 @@
 import XCTest
 import Storage
+import TestKit
 import Yosemite
 @testable import WooCommerce
 
@@ -20,7 +21,8 @@ final class DashboardUIFactoryTests: XCTestCase {
         mockStoresManager = MockStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
+        let mockFeatureFlagService = MockFeatureFlagService(isMyStoreTabUpdatesOn: false)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, featureFlagService: mockFeatureFlagService)
 
         // When
         var dashboard: DashboardUI?
@@ -40,7 +42,8 @@ final class DashboardUIFactoryTests: XCTestCase {
         mockStoresManager = MockStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
+        let mockFeatureFlagService = MockFeatureFlagService(isMyStoreTabUpdatesOn: false)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, featureFlagService: mockFeatureFlagService)
 
         // When
         var dashboardUITypes: [UIViewController.Type] = []
@@ -67,7 +70,8 @@ final class DashboardUIFactoryTests: XCTestCase {
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
 
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
+        let mockFeatureFlagService = MockFeatureFlagService(isMyStoreTabUpdatesOn: false)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, featureFlagService: mockFeatureFlagService)
 
         let expectation = self.expectation(description: "Wait for the stats v4")
         expectation.expectedFulfillmentCount = 1
@@ -86,7 +90,8 @@ final class DashboardUIFactoryTests: XCTestCase {
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
 
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
+        let mockFeatureFlagService = MockFeatureFlagService(isMyStoreTabUpdatesOn: false)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, featureFlagService: mockFeatureFlagService)
 
         var dashboardUIArray: [DashboardUI] = []
         let expectation = self.expectation(description: "Wait for the stats v4")
@@ -128,7 +133,8 @@ final class DashboardUIFactoryTests: XCTestCase {
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
+        let mockFeatureFlagService = MockFeatureFlagService(isMyStoreTabUpdatesOn: false)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, featureFlagService: mockFeatureFlagService)
 
         // When
         let exp = self.expectation(description: #function)
@@ -141,5 +147,25 @@ final class DashboardUIFactoryTests: XCTestCase {
 
         //Then
         XCTAssertTrue(renderedDashboard is DeprecatedDashboardStatsViewController)
+    }
+
+    func test_new_stats_screen_is_shown_if_V4_is_available_and_myStoreTabUpdates_feature_enabled() {
+        // Given
+        mockStoresManager = MockStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
+                                                            sessionManager: SessionManager.testingInstance)
+        mockStoresManager.isStatsV4Available = true
+        ServiceLocator.setStores(mockStoresManager)
+        let mockFeatureFlagService = MockFeatureFlagService(isMyStoreTabUpdatesOn: true)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, featureFlagService: mockFeatureFlagService)
+
+        // When
+        let renderedDashboard: DashboardUI = waitFor { promise in
+            self.dashboardUIFactory.reloadDashboardUI { dashboardUI in
+                promise(dashboardUI)
+            }
+        }
+
+        //Then
+        XCTAssertTrue(renderedDashboard is StoreStatsAndTopPerformersViewController)
     }
 }

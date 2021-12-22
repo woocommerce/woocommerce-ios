@@ -76,6 +76,7 @@ extension Order {
         orderID: CopiableProp<Int64> = .copy,
         parentID: CopiableProp<Int64> = .copy,
         customerID: CopiableProp<Int64> = .copy,
+        orderKey: CopiableProp<String> = .copy,
         number: CopiableProp<String> = .copy,
         status: CopiableProp<OrderStatusEnum> = .copy,
         currency: CopiableProp<String> = .copy,
@@ -103,6 +104,7 @@ extension Order {
         let orderID = orderID ?? self.orderID
         let parentID = parentID ?? self.parentID
         let customerID = customerID ?? self.customerID
+        let orderKey = orderKey ?? self.orderKey
         let number = number ?? self.number
         let status = status ?? self.status
         let currency = currency ?? self.currency
@@ -131,6 +133,7 @@ extension Order {
             orderID: orderID,
             parentID: parentID,
             customerID: customerID,
+            orderKey: orderKey,
             number: number,
             status: status,
             currency: currency,

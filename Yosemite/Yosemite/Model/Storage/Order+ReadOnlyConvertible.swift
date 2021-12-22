@@ -74,6 +74,7 @@ extension Storage.Order: ReadOnlyConvertible {
                      orderID: orderID,
                      parentID: parentID,
                      customerID: customerID,
+                     orderKey: "", // TODO: Update this
                      number: number ?? "",
                      status: OrderStatusEnum(rawValue: statusKey),
                      currency: currency ?? "",

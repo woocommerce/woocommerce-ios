@@ -44,6 +44,9 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
 struct NewOrder: View {
     @ObservedObject var viewModel: NewOrderViewModel
 
+    /// Fix for breaking navbar button
+    @State private var navigationButtonID = UUID()
+
     var body: some View {
         GeometryReader { geometry in
             ScrollViewReader { scroll in
@@ -53,7 +56,11 @@ struct NewOrder: View {
 
                         Spacer(minLength: Layout.sectionSpacing)
 
-                        ProductsSection(geometry: geometry, scroll: scroll, viewModel: viewModel)
+                        ProductsSection(geometry: geometry, scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
+
+                        Spacer(minLength: Layout.sectionSpacing)
+
+                        CustomerSection(geometry: geometry)
                     }
                 }
                 .background(Color(.listBackground).ignoresSafeArea())
@@ -70,7 +77,7 @@ struct NewOrder: View {
                 case .create:
                     Button(Localization.createButton) {
                         viewModel.createOrder()
-                    }
+                    }.id(navigationButtonID)
                 case .loading:
                     ProgressView()
                 }
@@ -90,6 +97,9 @@ private struct ProductsSection: View {
     /// View model to drive the view content
     @ObservedObject var viewModel: NewOrderViewModel
 
+    /// Fix for breaking navbar button
+    @Binding var navigationButtonID: UUID
+
     /// Defines whether `AddProduct` modal is presented.
     ///
     @State private var showAddProduct: Bool = false
@@ -106,8 +116,18 @@ private struct ProductsSection: View {
                 Text(NewOrder.Localization.products)
                     .headlineStyle()
 
-                ForEach(viewModel.productRows) { productRowViewModel in
-                    ProductRow(viewModel: productRowViewModel)
+                ForEach(viewModel.productRows) { productRow in
+                    ProductRow(viewModel: productRow)
+                        .onTapGesture {
+                            viewModel.selectOrderItem(productRow.id)
+                        }
+                        .sheet(item: $viewModel.selectedOrderItem) { item in
+                            let productInOrderVM = ProductInOrderViewModel(product: item.product) {
+                                viewModel.removeItemFromOrder(item)
+                            }
+                            ProductInOrder(viewModel: productInOrderVM)
+                        }
+
                     Divider()
                 }
 
@@ -120,7 +140,35 @@ private struct ProductsSection: View {
                     scroll.scrollTo(addProductButton)
                 }, content: {
                     AddProductToOrder(isPresented: $showAddProduct, viewModel: viewModel.addProductViewModel)
+                        .onDisappear {
+                            navigationButtonID = UUID()
+                        }
                 })
+            }
+            .padding(.horizontal, insets: geometry.safeAreaInsets)
+            .padding()
+            .background(Color(.listForeground))
+
+            Divider()
+        }
+    }
+}
+
+/// Represents the Customer section
+///
+private struct CustomerSection: View {
+    let geometry: GeometryProxy
+
+    var body: some View {
+        Group {
+            Divider()
+
+            VStack(alignment: .leading, spacing: NewOrder.Layout.verticalSpacing) {
+                Text(NewOrder.Localization.customer)
+                    .headlineStyle()
+
+                Button(NewOrder.Localization.addCustomer) { }
+                .buttonStyle(PlusButtonStyle())
             }
             .padding(.horizontal, insets: geometry.safeAreaInsets)
             .padding()
@@ -145,6 +193,8 @@ private extension NewOrder {
         static let errorMessage = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating a new order")
         static let addProduct = NSLocalizedString("Add product", comment: "Title text of the button that adds a product when creating a new order")
+        static let customer = NSLocalizedString("Customer", comment: "Title text of the section that shows Customer details when creating a new order")
+        static let addCustomer = NSLocalizedString("Add customer", comment: "Title text of the button that adds a customer when creating a new order")
     }
 }
 

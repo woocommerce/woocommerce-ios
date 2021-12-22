@@ -138,9 +138,8 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product.productID)
 
         // Then
-        let expectedProductRow = ProductRowViewModel(id: "0", product: product, canChangeQuantity: true)
         let expectedOrderItem = product.toOrderItem(quantity: 1)
-        XCTAssertTrue(viewModel.productRows.contains(expectedProductRow), "Product rows do not contain expected product")
+        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productID == sampleProductID }), "Product rows do not contain expected product")
         XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }), "Order details do not contain expected order item")
     }
 
@@ -155,9 +154,51 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product.productID)
         viewModel.productRows[0].incrementQuantity()
 
+        // And when another product is added to the order (to confirm the first product's quantity change is retained)
+        viewModel.addProductViewModel.selectProduct(product.productID)
+
         // Then
         let expectedOrderItem = product.toOrderItem(quantity: 2)
-        XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }), "Order details do not contain expected order item")
+        XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }),
+                      "Order details do not contain order item with updated quantity")
+    }
+
+    func test_selectOrderItem_selects_expected_order_item() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, statusKey: "publish")
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        viewModel.addProductViewModel.selectProduct(product.productID)
+
+        // When
+        let expectedOrderItem = viewModel.orderDetails.items[0]
+        viewModel.selectOrderItem(expectedOrderItem.id)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedOrderItem, expectedOrderItem)
+    }
+
+    func test_view_model_is_updated_when_product_is_removed_from_order() {
+        // Given
+        let product0 = Product.fake().copy(siteID: sampleSiteID, productID: 0, statusKey: "publish")
+        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, statusKey: "publish")
+        let storageManager = MockStorageManager()
+        storageManager.insertProducts([product0, product1])
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Given products are added to order
+        viewModel.addProductViewModel.selectProduct(product0.productID)
+        viewModel.addProductViewModel.selectProduct(product1.productID)
+
+        // When
+        let expectedRemainingItem = viewModel.orderDetails.items[1]
+        viewModel.removeItemFromOrder(viewModel.orderDetails.items[0])
+
+        // Then
+        let expectedProductRow = ProductRowViewModel(id: expectedRemainingItem.id, product: product1, canChangeQuantity: true)
+        XCTAssertEqual(viewModel.productRows, [expectedProductRow])
+        XCTAssertEqual(viewModel.orderDetails.items, [expectedRemainingItem])
     }
 }
 
@@ -167,5 +208,13 @@ private extension MockStorageManager {
         let orderStatus = viewStorage.insertNewObject(ofType: StorageOrderStatus.self)
         orderStatus.update(with: readOnlyOrderStatus)
         viewStorage.saveIfNeeded()
+    }
+
+    func insertProducts(_ readOnlyProducts: [Product]) {
+        for readOnlyProduct in readOnlyProducts {
+            let product = viewStorage.insertNewObject(ofType: StorageProduct.self)
+            product.update(with: readOnlyProduct)
+            viewStorage.saveIfNeeded()
+        }
     }
 }

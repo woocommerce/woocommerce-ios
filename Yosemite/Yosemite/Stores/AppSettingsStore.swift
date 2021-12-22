@@ -189,6 +189,10 @@ public class AppSettingsStore: Store {
             getTelemetryInfo(siteID: siteID, onCompletion: onCompletion)
         case .resetGeneralStoreSettings:
             resetGeneralStoreSettings()
+        case .loadStripeInPersonPaymentsSwitchState(onCompletion: let onCompletion):
+            loadStripeInPersonPaymentsSwitchState(onCompletion: onCompletion)
+        case .setStripeInPersonPaymentsSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
+            setStripeInPersonPaymentsSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         }
     }
 }
@@ -284,6 +288,26 @@ private extension AppSettingsStore {
 
     }
 
+    /// Loads the current WooCommerce Stripe Payment Gateway extension In-Person Payments beta feature switch state from `GeneralAppSettings`
+    ///
+    func loadStripeInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        onCompletion(.success(settings.isStripeInPersonPaymentsSwitchEnabled))
+    }
+
+    /// Sets the provided WooCommerce Stripe Payment Gateway extension In-Person Payments  beta feature switch state into `GeneralAppSettings`
+    ///
+    func setStripeInPersonPaymentsSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(isStripeInPersonPaymentsSwitchEnabled: isEnabled)
+            try saveGeneralAppSettings(settings)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+
+    }
+
     /// Loads the last persisted eligibility error information from `GeneralAppSettings`
     ///
     func loadEligibilityErrorInfo(onCompletion: (Result<EligibilityErrorInfo, Error>) -> Void) {
@@ -341,6 +365,7 @@ private extension AppSettingsStore {
                                       feedbacks: [:],
                                       isViewAddOnsSwitchEnabled: false,
                                       isOrderCreationSwitchEnabled: false,
+                                      isStripeInPersonPaymentsSwitchEnabled: false,
                                       knownCardReaders: [],
                                       lastEligibilityErrorInfo: nil)
         }

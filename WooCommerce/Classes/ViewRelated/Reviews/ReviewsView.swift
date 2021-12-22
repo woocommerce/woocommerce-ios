@@ -14,7 +14,7 @@ struct ReviewsView: UIViewControllerRepresentable {
     /// This is a UIKit solution for fixing Navigation Title and Bar Button Items ignored in NavigationView.
     /// This solution doesn't require making internal changes to the destination `UIViewController`
     /// and should be called once, when wrapped.
-    /// Solution proposed here: https://stackoverflow.com/q/59295507/7241994
+    /// Solution proposed here: https://stackoverflow.com/a/68567095/7241994
     ///
     func makeUIViewController(context: Self.Context) -> ReviewsViewController {
         let viewController = ReviewsViewController(siteID: siteID)

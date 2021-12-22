@@ -6,6 +6,9 @@ struct HubMenuElement: View {
     let image: UIImage
     let text: String
 
+    @ScaledMetric var imageSize: CGFloat = 58
+    @ScaledMetric var iconSize: CGFloat = 34
+
     var body: some View {
         VStack {
             ZStack {
@@ -13,10 +16,10 @@ struct HubMenuElement: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: Constants.iconSize, height: Constants.iconSize)
+                    .frame(width: iconSize, height: iconSize)
             }
-            .frame(width: Constants.imageSize, height: Constants.imageSize, alignment: .center)
-            .cornerRadius(Constants.imageSize/2)
+            .frame(width: imageSize, height: imageSize, alignment: .center)
+            .cornerRadius(imageSize/2)
             .padding(.bottom, Constants.paddingBetweenElements)
             Text(text)
                 .foregroundColor(.black)
@@ -24,8 +27,6 @@ struct HubMenuElement: View {
     }
 
     enum Constants {
-        static let imageSize: CGFloat = 58
-        static let iconSize: CGFloat = 34
         static let paddingBetweenElements: CGFloat = 8
     }
 }

@@ -4,6 +4,7 @@ import Combine
 import UIKit
 
 import protocol Storage.StorageManagerType
+import StoreKit
 
 /// ViewModel for the `SimplePaymentsMethods` view.
 ///
@@ -88,6 +89,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
 
     init(siteID: Int64 = 0,
          orderID: Int64 = 0,
+         orderKey: String = "",
          formattedTotal: String,
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
@@ -105,6 +107,11 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         self.title = Localization.title(total: formattedTotal)
 
         bindStoreCPPState()
+
+        print("------------- Start Payment Link --------------")
+        let linkBuilder = PaymentLinkBuilder(host: stores.sessionManager.defaultSite?.url ?? "", orderID: orderID, orderKey: orderKey)
+        print(linkBuilder.build())
+        print("------------- End Payment Link --------------")
     }
 
     /// Creates the info text when the merchant selects the cash payment method.

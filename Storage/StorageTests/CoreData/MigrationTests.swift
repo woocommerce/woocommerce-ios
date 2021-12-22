@@ -843,6 +843,34 @@ final class MigrationTests: XCTestCase {
         let newAdminURL = try XCTUnwrap(migratedSite.value(forKey: "adminURL") as? String)
         XCTAssertEqual(newAdminURL, adminURL)
     }
+
+    func test_migrating_from_59_to_60_adds_order_orderKey_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 59")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertOrder(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["orderKey"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 60")
+        let targetContext = targetContainer.viewContext
+
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+        let defaultOrderKey = migratedOrder.value(forKey: "orderKey")
+
+        let orderValue = "frtgyh87654567"
+        migratedOrder.setValue(orderValue, forKey: "orderKey")
+
+        // Then
+        // Default value is empty
+        XCTAssertEqual(defaultOrderKey as? String, "")
+
+        let newOrderKey = try XCTUnwrap(migratedOrder.value(forKey: "orderKey") as? String)
+        XCTAssertEqual(newOrderKey, orderValue)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

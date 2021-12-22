@@ -19,7 +19,7 @@ struct ReviewsView: UIViewControllerRepresentable {
     func makeUIViewController(context: Self.Context) -> ReviewsViewController {
         let viewController = ReviewsViewController(siteID: siteID)
         context.coordinator.parentObserver = viewController.observe(\.parent, changeHandler: { vc, _ in
-            vc.parent?.title = vc.title
+            vc.parent?.navigationItem.title = vc.title
             vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
         })
         return viewController

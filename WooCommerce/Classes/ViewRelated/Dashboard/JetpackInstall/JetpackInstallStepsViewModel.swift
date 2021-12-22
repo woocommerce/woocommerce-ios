@@ -25,6 +25,10 @@ final class JetpackInstallStepsViewModel: ObservableObject {
     ///
     private var retryCount: Int = 0
 
+    /// Error occurred in any install step
+    ///
+    private var installError: Error?
+
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
@@ -62,6 +66,7 @@ final class JetpackInstallStepsViewModel: ObservableObject {
     private func checkJetpackPluginDetailsAndProceed() {
         guard retryCount <= Constants.maxRetryCount else {
             installFailed = true
+            ServiceLocator.analytics.track(.jetpackInstallFailed, properties: nil, error: installError)
             return
         }
         let pluginInfoAction = SitePluginAction.getPluginDetails(siteID: siteID, pluginName: Constants.jetpackPluginName) { [weak self] result in
@@ -73,9 +78,10 @@ final class JetpackInstallStepsViewModel: ObservableObject {
                 } else {
                     self.activateJetpack()
                 }
-            case .failure:
+            case .failure(let error):
                 // plugin is likely to not have been installed, so proceed to install it.
                 self.installJetpackPlugin()
+                self.installError = error
             }
         }
         stores.dispatch(pluginInfoAction)
@@ -91,7 +97,8 @@ final class JetpackInstallStepsViewModel: ObservableObject {
             case .success:
                 self.retryCount = 0
                 self.activateJetpack()
-            case .failure:
+            case .failure(let error):
+                self.installError = error
                 self.retryCount += 1
                 self.checkJetpackPluginDetailsAndProceed()
             }
@@ -109,7 +116,8 @@ final class JetpackInstallStepsViewModel: ObservableObject {
             case .success:
                 self.retryCount = 0
                 self.checkSiteConnection()
-            case .failure:
+            case .failure(let error):
+                self.installError = error
                 self.retryCount += 1
                 self.checkJetpackPluginDetailsAndProceed()
             }
@@ -136,7 +144,9 @@ final class JetpackInstallStepsViewModel: ObservableObject {
                 self.currentStep = .done
                 self.retryCount = 0
                 self.stores.updateDefaultStore(site)
-            case .failure:
+                ServiceLocator.analytics.track(.jetpackInstallSucceeded)
+            case .failure(let error):
+                self.installError = error
                 self.retryCount += 1
                 self.checkJetpackPluginDetailsAndProceed()
             }

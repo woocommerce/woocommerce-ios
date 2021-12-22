@@ -51,7 +51,7 @@ extension HubMenuViewModel {
             case .viewStore:
                 return .storeImage.imageWithTintColor(.accent) ?? .storeImage
             case .reviews:
-                return .starImage(size: 24.0).imageWithTintColor(.primary) ?? .starOutlineImage()
+                return .starImage(size: 24.0).imageWithTintColor(.primary) ?? .starImage(size: 24.0)
             }
         }
     }

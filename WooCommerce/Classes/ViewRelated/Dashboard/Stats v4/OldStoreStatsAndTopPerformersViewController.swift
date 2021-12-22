@@ -23,13 +23,13 @@ final class OldStoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripV
 
     // MARK: - Calculated Properties
 
-    private var visibleChildViewController: StoreStatsAndTopPerformersPeriodViewController {
+    private var visibleChildViewController: OldStoreStatsAndTopPerformersPeriodViewController {
         return periodVCs[currentIndex]
     }
 
     // MARK: - Private Properties
 
-    private var periodVCs = [StoreStatsAndTopPerformersPeriodViewController]()
+    private var periodVCs = [OldStoreStatsAndTopPerformersPeriodViewController]()
     private let siteID: Int64
     private var isSyncing = false
 
@@ -294,19 +294,19 @@ private extension OldStoreStatsAndTopPerformersViewController {
 
     func configurePeriodViewControllers() {
         let currentDate = Date()
-        let dayVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+        let dayVC = OldStoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                    timeRange: .today,
                                                                    currentDate: currentDate,
                                                                    canDisplayInAppFeedbackCard: true)
-        let weekVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+        let weekVC = OldStoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                     timeRange: .thisWeek,
                                                                     currentDate: currentDate,
                                                                     canDisplayInAppFeedbackCard: false)
-        let monthVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+        let monthVC = OldStoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                      timeRange: .thisMonth,
                                                                      currentDate: currentDate,
                                                                      canDisplayInAppFeedbackCard: false)
-        let yearVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+        let yearVC = OldStoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                     timeRange: .thisYear,
                                                                     currentDate: currentDate,
                                                                     canDisplayInAppFeedbackCard: false)

@@ -55,6 +55,7 @@ struct JetpackInstallView: View {
         } else {
             JetpackInstallIntroView(siteURL: siteURL, dismissAction: dismissAction) {
                 hasStarted = true
+                ServiceLocator.analytics.track(.jetpackInstallGetStartedButtonTapped)
             }
         }
     }

@@ -7,18 +7,21 @@ struct HubMenuElement: View {
     let text: String
 
     var body: some View {
-        VStack {
-            ZStack {
-                Color(.listBackground)
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: Constants.iconSize, height: Constants.iconSize)
+        ZStack {
+            Color(.listForeground)
+            VStack {
+                ZStack {
+                    Color(.neutral(.shade0))
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: Constants.iconSize, height: Constants.iconSize)
+                }
+                .frame(width: Constants.imageSize, height: Constants.imageSize, alignment: .center)
+                .cornerRadius(Constants.imageSize/2)
+                .padding(.bottom, Constants.paddingBetweenElements)
+                Text(text)
             }
-            .frame(width: Constants.imageSize, height: Constants.imageSize, alignment: .center)
-            .cornerRadius(Constants.imageSize/2)
-            .padding(.bottom, Constants.paddingBetweenElements)
-            Text(text)
         }
     }
 

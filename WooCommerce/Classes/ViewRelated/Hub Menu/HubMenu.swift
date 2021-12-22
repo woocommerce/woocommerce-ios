@@ -6,6 +6,7 @@ import SwiftUI
 struct HubMenu: View {
     @ObservedObject private var viewModel: HubMenuViewModel
     @State private var showViewStore = false
+    @State private var showAnalytics = false
     @State private var showReviews = false
 
     init(siteID: Int64) {
@@ -28,6 +29,8 @@ struct HubMenu: View {
                                 switch menu {
                                 case .viewStore:
                                     showViewStore = true
+                                case .analytics:
+                                    showAnalytics = true
                                 case .reviews:
                                     showReviews = true
                                 default:
@@ -44,6 +47,15 @@ struct HubMenu: View {
                 .background(Color(.listBackground))
             }
             .safariSheet(isPresented: $showViewStore, url: viewModel.storeURL)
+
+            // Go to the Analytics screen
+            NavigationLink(destination:
+                            EmptyView(),
+                           isActive: $showAnalytics) {
+                EmptyView()
+            }.hidden()
+
+            // Go to the Reviews screen
             NavigationLink(destination:
                             ReviewsView(siteID: viewModel.siteID),
                            isActive: $showReviews) {

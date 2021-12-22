@@ -24,6 +24,11 @@ final class HubMenuViewModel: ObservableObject {
     init(siteID: Int64) {
         self.siteID = siteID
         menuElements = [.woocommerceAdmin, .viewStore, .reviews]
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.analytics) {
+            // Add "Analytics" before the "Reviews" button
+            menuElements.insert(.analytics, at: 2)
+        }
     }
 }
 
@@ -31,6 +36,7 @@ extension HubMenuViewModel {
     enum Menu: CaseIterable {
         case woocommerceAdmin
         case viewStore
+        case analytics
         case reviews
 
         var title: String {
@@ -39,6 +45,8 @@ extension HubMenuViewModel {
                 return Localization.woocommerceAdmin
             case .viewStore:
                 return Localization.viewStore
+            case .analytics:
+                return Localization.analytics
             case .reviews:
                 return Localization.reviews
             }
@@ -50,6 +58,8 @@ extension HubMenuViewModel {
                 return .wordPressLogoImage.imageWithTintColor(.blue) ?? .wordPressLogoImage
             case .viewStore:
                 return .storeImage.imageWithTintColor(.accent) ?? .storeImage
+            case .analytics:
+                return .analyticsImage.imageWithTintColor(.accent) ?? .analyticsImage
             case .reviews:
                 return .starImage(size: 24.0).imageWithTintColor(.primary) ?? .starOutlineImage()
             }
@@ -62,6 +72,8 @@ extension HubMenuViewModel {
         static let woocommerceAdmin = NSLocalizedString("WooCommerce Admin",
                                                         comment: "Title of one of the hub menu options")
         static let viewStore = NSLocalizedString("View Store",
+                                                 comment: "Title of one of the hub menu options")
+        static let analytics = NSLocalizedString("Analytics",
                                                  comment: "Title of one of the hub menu options")
         static let reviews = NSLocalizedString("Reviews",
                                                comment: "Title of one of the hub menu options")

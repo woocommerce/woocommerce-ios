@@ -58,6 +58,9 @@ struct HubMenu: View {
         let storeTitle: String
         let storeURL: String?
 
+        @ScaledMetric var settingsSize: CGFloat = 24
+        @ScaledMetric var settingsIconSize: CGFloat = 20
+
         var body: some View {
             HStack() {
                 VStack(alignment: .leading,
@@ -77,12 +80,13 @@ struct HubMenu: View {
                     ZStack {
                         Circle()
                             .fill(Color.white)
-                            .frame(width: Constants.settingsSize,
-                                   height: Constants.settingsSize)
+                            .frame(width: settingsSize,
+                                   height: settingsSize)
                         if let cogImage = UIImage.cogImage.imageWithTintColor(.primary) {
                             Image(uiImage: cogImage)
                                 .resizable()
-                                .frame(width: Constants.settingsIconSize, height: Constants.settingsIconSize)
+                                .frame(width: settingsIconSize,
+                                       height: settingsIconSize)
                         }
                     }
                     .onTapGesture {
@@ -102,8 +106,6 @@ struct HubMenu: View {
         static let itemSize: CGFloat = 160
         static let padding: CGFloat = 16
         static let topBarSpacing: CGFloat = 2
-        static let settingsSize: CGFloat = 24
-        static let settingsIconSize: CGFloat = 20
     }
 
     private enum Localization {

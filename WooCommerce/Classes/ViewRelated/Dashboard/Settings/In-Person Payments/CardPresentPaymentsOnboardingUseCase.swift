@@ -118,6 +118,16 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func checkOnboardingState() -> CardPresentPaymentOnboardingState {
+        guard let stripePlugin = getStripePlugin() else {
+            return wcPayOnlyOnboardingState()
+        }
+
+        print("=== stripePlugin ", stripePlugin)
+        print("=== stop ")
+        return .completed
+    }
+
+    func wcPayOnlyOnboardingState() -> CardPresentPaymentOnboardingState {
         // Country checks
         guard let countryCode = storeCountryCode else {
             DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
@@ -184,7 +194,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isCountrySupported(countryCode: String) -> Bool {
-        return Constants.supportedCountryCodes.contains(countryCode)
+        return Constants.WCPay.supportedCountryCodes.contains(countryCode)
     }
 
     func getWCPayPlugin() -> SystemPlugin? {
@@ -192,12 +202,21 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return nil
         }
         return storageManager.viewStorage
-            .loadSystemPlugin(siteID: siteID, name: Constants.pluginName)?
+            .loadSystemPlugin(siteID: siteID, name: Constants.WCPay.pluginName)?
+            .toReadOnly()
+    }
+
+    func getStripePlugin() -> SystemPlugin? {
+        guard let siteID = siteID else {
+            return nil
+        }
+        return storageManager.viewStorage
+            .loadSystemPlugin(siteID: siteID, name: Constants.Stripe.pluginName)?
             .toReadOnly()
     }
 
     func isWCPayVersionSupported(plugin: SystemPlugin) -> Bool {
-        VersionHelpers.compare(plugin.version, Constants.minimumSupportedWCPayVersion) != .orderedAscending
+        VersionHelpers.compare(plugin.version, Constants.WCPay.minimumSupportedWCPayVersion) != .orderedAscending
     }
 
     func isWCPayActivated(plugin: SystemPlugin) -> Bool {
@@ -263,7 +282,15 @@ private extension PaymentGatewayAccount {
 }
 
 private enum Constants {
-    static let pluginName = "WooCommerce Payments"
-    static let minimumSupportedWCPayVersion = "3.2.1"
-    static let supportedCountryCodes = ["US"]
+    enum WCPay {
+        static let pluginName = "WooCommerce Payments"
+        static let minimumSupportedWCPayVersion = "3.2.1"
+        static let supportedCountryCodes = ["US"]
+    }
+
+    enum Stripe {
+        static let pluginName = "WooCommerce Stripe Gateway"
+        static let minimumSupportedWCPayVersion = "5.9.0"
+        static let supportedCountryCodes = ["US"]
+    }
 }

@@ -123,7 +123,7 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
 
 // MARK: Constants
 private enum Localization {
-    static let title = NSLocalizedString("Edit Note", comment: "Title for the edit customer provided note screen")
+    static let title = NSLocalizedString("Customer Provided Note", comment: "Title for the edit customer provided note screen")
     static let done = NSLocalizedString("Done", comment: "Text for the done button in the edit customer provided note screen")
     static let cancel = NSLocalizedString("Cancel", comment: "Text for the cancel button in the edit customer provided note screen")
     static let success = NSLocalizedString("Successfully updated", comment: "Notice text after updating the order successfully")

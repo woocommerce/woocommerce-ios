@@ -5,9 +5,11 @@ import protocol Storage.StorageManagerType
 /// View model for `NewOrder`.
 ///
 final class NewOrderViewModel: ObservableObject {
-    private let siteID: Int64
+    let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+
+    private var cancellables: Set<AnyCancellable> = []
 
     /// Order details used to create the order
     ///
@@ -27,23 +29,25 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var presentNotice: NewOrderNotice?
 
+    // MARK: Status properties
+
     /// Order creation date. For new order flow it's always current date.
     ///
     let dateString: String = {
         DateFormatter.mediumLengthLocalizedDateFormatter.string(from: Date())
     }()
 
-    /// Order status data model.
-    ///
-    private var orderStatus: OrderStatus {
-        didSet {
-            statusBadgeViewModel = .init(orderStatus: orderStatus)
-        }
-    }
-
     /// Representation of order status display properties.
     ///
-    @Published private(set) var statusBadgeViewModel: StatusBadgeViewModel
+    @Published private(set) var statusBadgeViewModel: StatusBadgeViewModel = .init(orderStatusEnum: .pending)
+
+    /// Indicates if the order status list (selector) should be shown or not.
+    ///
+    @Published var shouldShowOrderStatusList: Bool = false
+
+    /// Assign this closure to be notified when a new order is created
+    ///
+    var onOrderCreated: (Order) -> Void = { _ in }
 
     /// Status Results Controller.
     ///
@@ -67,15 +71,49 @@ final class NewOrderViewModel: ObservableObject {
         return statusResultsController.fetchedObjects
     }
 
+    // MARK: Products properties
+
+    /// View model for the product list
+    ///
+    lazy var addProductViewModel = {
+        AddProductToOrderViewModel(siteID: siteID, storageManager: storageManager, stores: stores) { [weak self] product in
+            guard let self = self else { return }
+            self.addProductToOrder(product)
+        }
+    }()
+
+    /// View models for each product row in the order.
+    ///
+    @Published private(set) var productRows: [ProductRowViewModel] = []
+
+    /// Item selected from the list of products in the order.
+    /// Used to open the product details in `ProductInOrder`.
+    ///
+    @Published var selectedOrderItem: NewOrderItem? = nil
+
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
-        self.orderStatus = .init(name: nil, siteID: siteID, slug: "pending", total: 0)
-        self.statusBadgeViewModel = .init(orderStatus: orderStatus)
 
         configureNavigationTrailingItem()
-        setInitialOrderStatus()
+        configureStatusBadgeViewModel()
+        configureProductRowViewModels()
+    }
+
+    /// Selects an order item.
+    ///
+    /// - Parameter id: ID of the order item to select
+    func selectOrderItem(_ id: String) {
+        selectedOrderItem = orderDetails.items.first(where: { $0.id == id })
+    }
+
+    /// Removes an item from the order.
+    ///
+    /// - Parameter item: Item to remove from the order
+    func removeItemFromOrder(_ item: NewOrderItem) {
+        orderDetails.items.removeAll(where: { $0 == item })
+        configureProductRowViewModels()
     }
 
     // MARK: - API Requests
@@ -89,9 +127,8 @@ final class NewOrderViewModel: ObservableObject {
             self.performingNetworkRequest = false
 
             switch result {
-            case .success:
-                // TODO: Handle newly created order / remove success logging
-                DDLogInfo("New order created successfully!")
+            case .success(let newOrder):
+                self.onOrderCreated(newOrder)
             case .failure(let error):
                 self.presentNotice = .error
                 DDLogError("⛔️ Error creating new order: \(error)")
@@ -115,7 +152,7 @@ extension NewOrderViewModel {
     ///
     struct OrderDetails {
         var status: OrderStatusEnum = .pending
-        var products: [OrderItem] = []
+        var items: [NewOrderItem] = []
         var billingAddress: Address?
         var shippingAddress: Address?
 
@@ -126,7 +163,7 @@ extension NewOrderViewModel {
 
         func toOrder() -> Order {
             emptyOrder.copy(status: status,
-                            items: products,
+                            items: items.map { $0.orderItem },
                             billingAddress: billingAddress,
                             shippingAddress: shippingAddress)
         }
@@ -159,6 +196,29 @@ extension NewOrderViewModel {
                 }
             }()
         }
+
+        init(orderStatusEnum: OrderStatusEnum) {
+            let siteOrderStatus = OrderStatus(name: nil, siteID: 0, slug: orderStatusEnum.rawValue, total: 0)
+            self.init(orderStatus: siteOrderStatus)
+        }
+    }
+
+    /// Representation of new items in an order.
+    ///
+    struct NewOrderItem: Equatable, Identifiable {
+        var id: String
+        let product: Product
+        var quantity: Decimal
+
+        var orderItem: OrderItem {
+            product.toOrderItem(quantity: quantity)
+        }
+
+        init(product: Product, quantity: Decimal) {
+            self.id = UUID().uuidString
+            self.product = product
+            self.quantity = quantity
+        }
     }
 }
 
@@ -182,11 +242,41 @@ private extension NewOrderViewModel {
             .assign(to: &$navigationTrailingItem)
     }
 
-    func setInitialOrderStatus() {
-        guard let pendingSiteStatus = currentSiteStatuses.first(where: { $0.status == .pending }) else {
-            return
-        }
+    /// Updates status badge viewmodel based on status order property.
+    ///
+    func configureStatusBadgeViewModel() {
+        $orderDetails
+            .map { [weak self] orderDetails in
+                guard let siteOrderStatus = self?.currentSiteStatuses.first(where: { $0.status == orderDetails.status }) else {
+                    return StatusBadgeViewModel(orderStatusEnum: orderDetails.status)
+                }
+                return StatusBadgeViewModel(orderStatus: siteOrderStatus)
+            }
+            .assign(to: &$statusBadgeViewModel)
+    }
 
-        orderStatus = pendingSiteStatus
+    /// Adds a selected product (from the product list) to the order.
+    ///
+    func addProductToOrder(_ product: Product) {
+        let newOrderItem = NewOrderItem(product: product, quantity: 1)
+        orderDetails.items.append(newOrderItem)
+        configureProductRowViewModels()
+    }
+
+    /// Configures product row view models for each item in `orderDetails`.
+    ///
+    func configureProductRowViewModels() {
+        productRows = orderDetails.items.enumerated().map { index, item in
+            let productRowViewModel = ProductRowViewModel(id: item.id, product: item.product, quantity: item.quantity, canChangeQuantity: true)
+
+            // Observe changes to the product quantity
+            productRowViewModel.$quantity
+                .sink { [weak self] newQuantity in
+                    self?.orderDetails.items[index].quantity = newQuantity
+                }
+                .store(in: &cancellables)
+
+            return productRowViewModel
+        }
     }
 }

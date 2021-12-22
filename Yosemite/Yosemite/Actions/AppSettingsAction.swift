@@ -120,14 +120,6 @@ public enum AppSettingsAction: Action {
     ///
     case loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
-    /// Loads the most recent state for the Simple Payments beta feature switch
-    ///
-    case loadSimplePaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
-
-    /// Sets the state for the Simple Payments beta feature switch.
-    ///
-    case setSimplePaymentsFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
-
     /// Loads the most recent state for the Order Creation beta feature switch
     ///
     case loadOrderCreationSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
@@ -135,6 +127,14 @@ public enum AppSettingsAction: Action {
     /// Sets the state for the Order Creation beta feature switch.
     ///
     case setOrderCreationFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Loads the most recent state for the WooCommerce Stripe Payment Gateway extension In-Person Payments beta feature switch
+    ///
+    case loadStripeInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Sets the state for the WooCommerce Stripe Payment Gateway extension In-Person Payments beta feature switch
+    ///
+    case setStripeInPersonPaymentsSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
 
     /// Remember the given card reader (to support automatic reconnection)
     /// where `cardReaderID` is a String e.g. "CHB204909005931"

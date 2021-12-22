@@ -1,0 +1,55 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "queryParameters": {
+            "json": {
+                "equalTo": "true"
+            },
+            "path": {
+                "matches": "/wc/v3/products/reviews/6154/(.*)"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+             "data": {
+                "id": 6154,
+                "date_created": "{{fnow offset='-7 days' format=customformat}}",
+                "date_created_gmt": "{{fnow offset='-7 days' format=customformat}}",
+                "product_id": 2132,
+                "status": "approved",
+                "reviewer": "Wang King",
+                "reviewer_email": "w@example.com",
+                "review": "I love these shades! They are super sturdy and stylish at the same time. I'm planning to buy them again for a birthday gift next month.",
+                "rating": 5,
+                "verified": false,
+                "reviewer_avatar_urls": {
+                    "24": "https:\/\/secure.gravatar.com\/avatar\/1683ce7f573f1af1584ea5b33bbf0e19?s=24&d=identicon&r=g",
+                    "48": "https:\/\/secure.gravatar.com\/avatar\/1683ce7f573f1af1584ea5b33bbf0e19?s=48&d=identicon&r=g",
+                    "96": "https:\/\/secure.gravatar.com\/avatar\/1683ce7f573f1af1584ea5b33bbf0e19?s=96&d=identicon&r=g"
+                },
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews\/6154"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews"
+                    }],
+                    "up": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/2132"
+                    }],
+                    "reviewer": [{
+                        "embeddable": true,
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wp\/v2\/users\/742102"
+                    }]
+                }
+            }
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

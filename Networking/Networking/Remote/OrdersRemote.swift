@@ -132,6 +132,13 @@ public class OrdersRemote: Remote {
                     switch field {
                     case .feeLines:
                         params[Order.CodingKeys.feeLines.rawValue] = try order.fees.compactMap { try $0.toDictionary() }
+                    case .status:
+                        params[Order.CodingKeys.status.rawValue] = order.status.rawValue
+                    case .items:
+                        params[Order.CodingKeys.items.rawValue] = order.items.map { item in
+                            [OrderItem.CodingKeys.productID.rawValue: item.productID,
+                             OrderItem.CodingKeys.quantity.rawValue: Int64(truncating: item.quantity as NSDecimalNumber)]
+                        }
                     }
                 }
             }()
@@ -274,5 +281,7 @@ public extension OrdersRemote {
     ///
     enum CreateOrderField {
         case feeLines
+        case status
+        case items
     }
 }

@@ -87,14 +87,6 @@ final class OrderListViewModel {
     ///
     @Published private(set) var topBanner: TopBanner = .none
 
-    /// Tracks if the store is ready to receive payments.
-    ///
-    private let inPersonPaymentsReadyUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
-
-    /// Tracks if the merchant has enabled the Simple Payments experimental feature toggle
-    ///
-    @Published private var isSimplePaymentsEnabled = false
-
     /// If true, no simple payments banner will be shown as the user has told us that they are not interested in this information.
     /// Resets with every session.
     ///
@@ -105,15 +97,13 @@ final class OrderListViewModel {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
-         filters: FilterOrderListViewModel.Filters?,
-         inPersonPaymentsReadyUseCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase()) {
+         filters: FilterOrderListViewModel.Filters?) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.filters = filters
-        self.inPersonPaymentsReadyUseCase = inPersonPaymentsReadyUseCase
     }
 
     deinit {
@@ -135,7 +125,6 @@ final class OrderListViewModel {
                                        name: UIApplication.didBecomeActiveNotification, object: nil)
 
         observeForegroundRemoteNotifications()
-        inPersonPaymentsReadyUseCase.refresh()
         bindTopBannerState()
     }
 
@@ -272,23 +261,12 @@ private extension OrderListViewModel {
 // MARK: Simple Payments
 
 extension OrderListViewModel {
-    /// Reloads the state of the Simple Payments experimental feature switch state.
-    ///
-    func reloadSimplePaymentsExperimentalFeatureState() {
-        let action = AppSettingsAction.loadSimplePaymentsSwitchState { [weak self] result in
-            self?.isSimplePaymentsEnabled = (try? result.get()) ?? false
-        }
-        stores.dispatch(action)
-    }
-
     /// Figures out what top banner should be shown based on the view model internal state.
     ///
     private func bindTopBannerState() {
-        let enrolledState = inPersonPaymentsReadyUseCase.statePublisher.removeDuplicates()
         let errorState = $hasErrorLoadingData.removeDuplicates()
-        let experimentalState = $isSimplePaymentsEnabled.removeDuplicates()
-        Publishers.CombineLatest4(enrolledState, errorState, experimentalState, $hideSimplePaymentsBanners)
-            .map { enrolledState, hasError, isSimplePaymentsEnabled, hasDismissedBanners -> TopBanner in
+        Publishers.CombineLatest(errorState, $hideSimplePaymentsBanners)
+            .map { hasError, hasDismissedBanners -> TopBanner in
 
                 guard !hasError else {
                     return .error
@@ -298,14 +276,7 @@ extension OrderListViewModel {
                     return .none
                 }
 
-                switch (enrolledState, isSimplePaymentsEnabled) {
-                case (.completed, false):
-                    return .simplePaymentsDisabled
-                case (.completed, true):
-                    return .simplePaymentsEnabled
-                default:
-                    return .none
-                }
+                return .simplePayments
             }
             .assign(to: &$topBanner)
     }
@@ -347,8 +318,7 @@ extension OrderListViewModel {
     ///
     enum TopBanner {
         case error
-        case simplePaymentsEnabled
-        case simplePaymentsDisabled
+        case simplePayments
         case none
     }
 }

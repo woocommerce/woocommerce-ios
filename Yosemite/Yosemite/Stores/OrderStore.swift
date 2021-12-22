@@ -315,7 +315,7 @@ private extension OrderStore {
     /// Creates a manual order with the provided order details.
     ///
     func createOrder(siteID: Int64, order: Order, onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        remote.createOrder(siteID: siteID, order: order, fields: []) { [weak self] result in
+        remote.createOrder(siteID: siteID, order: order, fields: [.status, .items]) { [weak self] result in
             switch result {
             case .success(let order):
                 self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {

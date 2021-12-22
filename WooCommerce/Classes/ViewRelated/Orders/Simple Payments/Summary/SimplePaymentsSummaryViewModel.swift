@@ -24,7 +24,11 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     /// Determines if taxes should be added to the provided amount.
     ///
-    @Published var enableTaxes: Bool = false
+    @Published var enableTaxes: Bool = false {
+        didSet {
+            analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowTaxesToggled(isOn: enableTaxes))
+        }
+    }
 
     /// Defines when to navigate to the payments method screen.
     ///
@@ -44,6 +48,12 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     var noteContent: String {
         noteViewModel.newNote
+    }
+
+    /// Disable view actions while a network request is being performed
+    ///
+    var disableViewActions: Bool {
+        return showLoadingIndicator
     }
 
     /// Total to charge with taxes.
@@ -74,9 +84,13 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
+    /// Tracks analytics events.
+    ///
+    private let analytics: Analytics
+
     /// ViewModel for the edit order note view.
     ///
-    lazy private(set) var noteViewModel = SimplePaymentsNoteViewModel()
+    lazy private(set) var noteViewModel = { SimplePaymentsNoteViewModel(analytics: analytics) }()
 
     init(providedAmount: String,
          totalWithTaxes: String,
@@ -87,13 +101,15 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
          feeID: Int64 = 0,
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.orderID = orderID
         self.feeID = feeID
         self.presentNoticeSubject = presentNoticeSubject
         self.currencyFormatter = currencyFormatter
         self.stores = stores
+        self.analytics = analytics
         self.providedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
         self.totalWithTaxes = currencyFormatter.formatAmount(totalWithTaxes) ?? totalWithTaxes
         self.taxAmount = currencyFormatter.formatAmount(taxAmount) ?? taxAmount
@@ -144,24 +160,28 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     func updateOrder() {
         showLoadingIndicator = true
+
+        // Clean any whitespace as it is not allowed by the remote endpoint
+        email = email.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // Don't send empty emails as older WC stores can't handle them.
         let action = OrderAction.updateSimplePaymentsOrder(siteID: siteID,
                                                            orderID: orderID,
                                                            feeID: feeID,
                                                            amount: providedAmount,
                                                            taxable: enableTaxes,
                                                            orderNote: noteContent,
-                                                           email: email) { [weak self] result in
+                                                           email: email.isEmpty ? nil : email) { [weak self] result in
             guard let self = self else { return }
             self.showLoadingIndicator = false
 
             switch result {
             case .success:
                 self.navigateToPaymentMethods = true
-                // TODO: Analytics
-                break
-            case .failure:
+            case .failure(let error):
                 self.presentNoticeSubject.send(.error(Localization.updateError))
-                // TODO: Analytics
+                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed(source: .summary))
+                DDLogError("⛔️ Error updating simple payments order: \(error)")
             }
         }
         stores.dispatch(action)

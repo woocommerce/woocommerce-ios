@@ -48,7 +48,7 @@ extension EditAttributesViewModel {
 
     /// Generates a variation in the host site using the product attributes
     ///
-    func generateVariation(onCompletion: @escaping (Result<Product, Error>) -> Void) {
+    func generateVariation(onCompletion: @escaping (Result<(Product, ProductVariation), Error>) -> Void) {
         let useCase = GenerateVariationUseCase(product: product, stores: stores)
         useCase.generateVariation(onCompletion: onCompletion)
     }

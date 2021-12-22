@@ -133,6 +133,8 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
                 switch intent {
                 case .error:
                     promise(true)
+                case .completed:
+                    promise(false)
                 }
             }
             .store(in: &self.subscriptions)
@@ -162,5 +164,117 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.navigateToPaymentMethods)
+    }
+
+    func test_when_order_is_updated_email_is_trimmed() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+        viewModel.email = " some@email.com "
+
+        // When
+        let trimmedEmail: String? = waitFor { promise in
+            mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateSimplePaymentsOrder(_, _, _, _, _, _, email, _):
+                    promise(email)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            viewModel.updateOrder()
+        }
+
+        // Then
+        XCTAssertEqual(trimmedEmail, "some@email.com")
+        XCTAssertEqual(trimmedEmail, viewModel.email)
+    }
+
+    func test_empty_emails_are_send_as_nil_when_updating_orders() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+        viewModel.email = ""
+
+        // When
+        let emailSent: String? = waitFor { promise in
+            mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateSimplePaymentsOrder(_, _, _, _, _, _, email, _):
+                    promise(email)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            viewModel.updateOrder()
+        }
+
+        // Then
+        XCTAssertNil(emailSent)
+    }
+
+    func test_noteAdded_event_is_tracked_after_editing_note() {
+        // Given
+        let mockAnalytics = MockAnalyticsProvider()
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
+                                                       totalWithTaxes: "1.0",
+                                                       taxAmount: "0.0",
+                                                       analytics: WooAnalytics(analyticsProvider: mockAnalytics))
+
+        // When
+        viewModel.noteViewModel.newNote = "content"
+        viewModel.noteViewModel.updateNote(onFinish: { _ in })
+
+        // Then
+        assertEqual(mockAnalytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowNoteAdded.rawValue])
+    }
+
+    func test_taxesToggled_event_is_tracked_after_switching_taxes_toggle() {
+        // Given
+        let mockAnalytics = MockAnalyticsProvider()
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
+                                                       totalWithTaxes: "1.0",
+                                                       taxAmount: "0.0",
+                                                       analytics: WooAnalytics(analyticsProvider: mockAnalytics))
+
+        // When
+        viewModel.enableTaxes = true
+        viewModel.enableTaxes = false
+
+        // Then
+        assertEqual(mockAnalytics.receivedEvents, [
+            WooAnalyticsStat.simplePaymentsFlowTaxesToggled.rawValue,  // Taxes enabled
+            WooAnalyticsStat.simplePaymentsFlowTaxesToggled.rawValue   // Taxes disabled
+        ])
+
+        assertEqual(mockAnalytics.receivedProperties[0]["state"] as? String, "on")  // Taxes enabled
+        assertEqual(mockAnalytics.receivedProperties[1]["state"] as? String, "off") // Taxes disabled
+    }
+
+    func test_failing_event_is_tracked_when_order_fails_to_update() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "", code: 0, userInfo: nil)))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let mockAnalytics = MockAnalyticsProvider()
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
+                                                       totalWithTaxes: "1.0",
+                                                       taxAmount: "0.0",
+                                                       stores: mockStores,
+                                                       analytics: WooAnalytics(analyticsProvider: mockAnalytics))
+
+        // When
+        viewModel.updateOrder()
+
+        // Then
+        assertEqual(mockAnalytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowFailed.rawValue])
+        assertEqual(mockAnalytics.receivedProperties.first?["source"] as? String, "summary")
     }
 }

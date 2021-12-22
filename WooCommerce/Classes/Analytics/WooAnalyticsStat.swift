@@ -544,6 +544,10 @@ public enum WooAnalyticsStat: String {
     case jetpackBenefitsBanner = "feature_jetpack_benefits_banner"
     case jetpackInstallButtonTapped = "jetpack_install_button_tapped"
     case jetpackCPSitesFetched = "jetpack_cp_sites_fetched"
+    case jetpackInstallSucceeded = "jetpack_install_succeeded"
+    case jetpackInstallFailed = "jetpack_install_failed"
+    case jetpackInstallInWPAdminButtonTapped = "jetpack_install_in_wpadmin_button_tapped"
+    case jetpackInstallContactSupportButtonTapped = "jetpack_install_contact_support_button_tapped"
 }
 
 public extension WooAnalyticsStat {

@@ -136,6 +136,7 @@ final class JetpackInstallStepsViewModel: ObservableObject {
                 self.currentStep = .done
                 self.retryCount = 0
                 self.stores.updateDefaultStore(site)
+                ServiceLocator.analytics.track(.jetpackInstallSucceeded)
             case .failure:
                 self.retryCount += 1
                 self.checkJetpackPluginDetailsAndProceed()

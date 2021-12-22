@@ -79,8 +79,8 @@ struct HubMenu: View {
                             .fill(Color.white)
                             .frame(width: Constants.settingsSize,
                                    height: Constants.settingsSize)
-                        if let gearImage = UIImage.gearImage.imageWithTintColor(.primary) {
-                            Image(uiImage: gearImage)
+                        if let cogImage = UIImage.cogImage.imageWithTintColor(.primary) {
+                            Image(uiImage: cogImage)
                                 .resizable()
                                 .frame(width: Constants.settingsIconSize, height: Constants.settingsIconSize)
                         }

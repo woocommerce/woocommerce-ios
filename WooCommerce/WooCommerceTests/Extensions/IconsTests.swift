@@ -180,8 +180,8 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.storeImage)
     }
 
-    func testGearImageIsNotNil() {
-        XCTAssertNotNil(UIImage.gearImage)
+    func testCotImageIsNotNil() {
+        XCTAssertNotNil(UIImage.cogImage)
     }
 
     func testIconImageIsNotNil() {

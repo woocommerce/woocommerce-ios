@@ -308,10 +308,10 @@ extension UIImage {
         UIImage(named: "icon-store")!
     }
 
-    /// Gear Image
+    /// Cog Image
     ///
-    static var gearImage: UIImage {
-        UIImage(named: "icon-gear")!
+    static var cogImage: UIImage {
+        return UIImage.gridicon(.cog)
     }
 
     /// Login prologue curved rectangle

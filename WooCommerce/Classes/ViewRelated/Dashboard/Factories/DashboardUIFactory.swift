@@ -52,7 +52,7 @@ final class DashboardUIFactory {
         if let lastStatsV4DashboardUI = lastStatsV4DashboardUI {
             return lastStatsV4DashboardUI
         }
-        let dashboardUI = StoreStatsAndTopPerformersViewController(siteID: siteID)
+        let dashboardUI = OldStoreStatsAndTopPerformersViewController(siteID: siteID)
         lastStatsV4DashboardUI = dashboardUI
         return dashboardUI
     }

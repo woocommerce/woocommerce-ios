@@ -72,6 +72,7 @@
 		02162727237963AF000208D2 /* ProductFormViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02162725237963AF000208D2 /* ProductFormViewController.xib */; };
 		02162729237965E8000208D2 /* ProductFormTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02162728237965E8000208D2 /* ProductFormTableViewModel.swift */; };
 		0216272B2379662C000208D2 /* DefaultProductFormTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0216272A2379662C000208D2 /* DefaultProductFormTableViewModel.swift */; };
+		021739982772CE220084CD89 /* OldStoreStatsAndTopPerformersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021739972772CE220084CD89 /* OldStoreStatsAndTopPerformersViewController.swift */; };
 		0218B4EC242E06F00083A847 /* MediaType+WPMediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0218B4EB242E06F00083A847 /* MediaType+WPMediaType.swift */; };
 		0219B03723964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0219B03623964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift */; };
 		021A84E0257DFC2A00BC71D1 /* RefundShippingLabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021A84DE257DFC2A00BC71D1 /* RefundShippingLabelViewController.swift */; };
@@ -1623,6 +1624,7 @@
 		02162725237963AF000208D2 /* ProductFormViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductFormViewController.xib; sourceTree = "<group>"; };
 		02162728237965E8000208D2 /* ProductFormTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormTableViewModel.swift; sourceTree = "<group>"; };
 		0216272A2379662C000208D2 /* DefaultProductFormTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultProductFormTableViewModel.swift; sourceTree = "<group>"; };
+		021739972772CE220084CD89 /* OldStoreStatsAndTopPerformersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldStoreStatsAndTopPerformersViewController.swift; sourceTree = "<group>"; };
 		0218B4EB242E06F00083A847 /* MediaType+WPMediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaType+WPMediaType.swift"; sourceTree = "<group>"; };
 		0219B03623964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedProductShippingClassListSelectorDataSource.swift; sourceTree = "<group>"; };
 		021A84DE257DFC2A00BC71D1 /* RefundShippingLabelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingLabelViewController.swift; sourceTree = "<group>"; };
@@ -3777,6 +3779,7 @@
 			isa = PBXGroup;
 			children = (
 				028BAC3C22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift */,
+				021739972772CE220084CD89 /* OldStoreStatsAndTopPerformersViewController.swift */,
 				028BAC3F22F2EFA5008BB4AF /* StoreStatsAndTopPerformersPeriodViewController.swift */,
 				028BAC4122F30B05008BB4AF /* StoreStatsV4PeriodViewController.swift */,
 				028BAC4422F3AE5C008BB4AF /* StoreStatsV4PeriodViewController.xib */,
@@ -8228,6 +8231,7 @@
 				B5F8B7E02194759100DAB7E2 /* ReviewDetailsViewController.swift in Sources */,
 				262A098B2628C51D0033AD20 /* OrderAddOnListViewModel.swift in Sources */,
 				0262DA5323A238460029AF30 /* UnitInputTableViewCell.swift in Sources */,
+				021739982772CE220084CD89 /* OldStoreStatsAndTopPerformersViewController.swift in Sources */,
 				D8EE9692264D328A0033B2F9 /* ReceiptViewController.swift in Sources */,
 				02E4FD7C2306A04C0049610C /* StatsTimeRangeBarView.swift in Sources */,
 				D8810086257DCCF0008DE6F2 /* WordPressComSiteInfo+Woo.swift in Sources */,

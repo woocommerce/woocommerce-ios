@@ -175,13 +175,17 @@ struct JetpackInstallStepsView: View {
                                 viewModel.checkSiteConnection()
                             } else {
                                 showingWPAdminWebview = true
+                                ServiceLocator.analytics.track(.jetpackInstallInWPAdminButtonTapped)
                             }
                         }
                         .buttonStyle(SecondaryButtonStyle())
                         .fixedSize(horizontal: false, vertical: true)
                     }
 
-                    Button(Localization.supportAction, action: supportAction)
+                    Button(Localization.supportAction) {
+                        supportAction()
+                        ServiceLocator.analytics.track(.jetpackInstallContactSupportButtonTapped)
+                    }
                     .buttonStyle(SecondaryButtonStyle())
                     .fixedSize(horizontal: false, vertical: true)
                 }

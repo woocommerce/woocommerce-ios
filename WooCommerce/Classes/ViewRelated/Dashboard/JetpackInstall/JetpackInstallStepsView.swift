@@ -109,7 +109,7 @@ struct JetpackInstallStepsView: View {
                         .fixedSize(horizontal: false, vertical: true)
 
                     if viewModel.installFailed {
-                        Text(viewModel.currentStep == .connection ? Localization.connectionErrorMessage :  Localization.installErrorMessage)
+                        viewModel.currentStep?.errorMessage.map(Text.init)
                             .fixedSize(horizontal: false, vertical: true)
                     } else {
                         AttributedText(descriptionAttributedString)
@@ -169,15 +169,13 @@ struct JetpackInstallStepsView: View {
             // Error state action buttons
             if viewModel.installFailed {
                 VStack(spacing: Constants.actionButtonMargin) {
-                    if viewModel.currentStep == .connection {
-                        Button(Localization.checkConnectionAction) {
-                            viewModel.checkSiteConnection()
-                        }
-                        .buttonStyle(SecondaryButtonStyle())
-                        .fixedSize(horizontal: false, vertical: true)
-                    } else {
-                        Button(Localization.wpAdminAction) {
-                            showingWPAdminWebview = true
+                    viewModel.currentStep?.errorActionTitle.map { title in
+                        Button(title) {
+                            if viewModel.currentStep == .connection {
+                                viewModel.checkSiteConnection()
+                            } else {
+                                showingWPAdminWebview = true
+                            }
                         }
                         .buttonStyle(SecondaryButtonStyle())
                         .fixedSize(horizontal: false, vertical: true)
@@ -226,13 +224,7 @@ private extension JetpackInstallStepsView {
                                                           comment: "Message on the Jetpack Install Progress screen. The %1$@ is the site address.")
         static let doneButton = NSLocalizedString("Done", comment: "Done button on the Jetpack Install Progress screen.")
         static let errorTitle = NSLocalizedString("Sorry, something went wrong during install", comment: "Error title when Jetpack install fails")
-        static let installErrorMessage = NSLocalizedString("Please try again. Alternatively, you can install Jetpack through your WP-Admin.",
-                                                    comment: "Error message when Jetpack install fails")
-        static let connectionErrorMessage = NSLocalizedString("Please try again or contact us for support.",
-                                                              comment: "Error message when Jetpack connection fails")
-        static let wpAdminAction = NSLocalizedString("Install Jetpack in WP-Admin", comment: "Action button to install Jetpack win WP-Admin instead of on app")
         static let supportAction = NSLocalizedString("Contact Support", comment: "Action button to contact support when Jetpack install fails")
-        static let checkConnectionAction = NSLocalizedString("Retry Connection", comment: "Action button to check site's connection again.")
     }
 }
 

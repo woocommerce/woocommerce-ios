@@ -118,16 +118,20 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func checkOnboardingState() -> CardPresentPaymentOnboardingState {
-        guard let stripePlugin = getStripePlugin() else {
-            return wcPayOnlyOnboardingState()
+        let wcPay = getWCPayPlugin()
+        let stripe = getStripePlugin()
+
+        // If both the Stripe plugin and WCPay are installed and activated, the user needs
+        // to deactivate one: pdfdoF-fW-p2#comment-683
+        if bothPluginsInstalledAndActive(wcPay: wcPay, stripe: stripe) {
+            return .selectPlugin
+        } else {
+            return wcPayOnlyOnboardingState(plugin: wcPay)
         }
 
-        print("=== stripePlugin ", stripePlugin)
-        print("=== stop ")
-        return .completed
     }
 
-    func wcPayOnlyOnboardingState() -> CardPresentPaymentOnboardingState {
+    func wcPayOnlyOnboardingState(plugin: SystemPlugin?) -> CardPresentPaymentOnboardingState {
         // Country checks
         guard let countryCode = storeCountryCode else {
             DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
@@ -139,7 +143,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         }
 
         // Plugin checks
-        guard let plugin = getWCPayPlugin() else {
+        guard let plugin = plugin else {
             return .wcpayNotInstalled
         }
         guard isWCPayVersionSupported(plugin: plugin) else {
@@ -213,6 +217,14 @@ private extension CardPresentPaymentsOnboardingUseCase {
         return storageManager.viewStorage
             .loadSystemPlugin(siteID: siteID, name: Constants.Stripe.pluginName)?
             .toReadOnly()
+    }
+
+    func bothPluginsInstalledAndActive(wcPay: SystemPlugin?, stripe: SystemPlugin?) -> Bool {
+        guard let wcPay = wcPay, let stripe = stripe else {
+            return false
+        }
+
+        return wcPay.active && stripe.active
     }
 
     func isWCPayVersionSupported(plugin: SystemPlugin) -> Bool {

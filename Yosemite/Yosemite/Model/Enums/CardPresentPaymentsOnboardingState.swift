@@ -8,6 +8,10 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     ///
     case completed
 
+    /// There is one than more plugin installed and activated, The user must select
+    /// 
+    case selectPlugin
+
     /// Store is not located in one of the supported countries.
     ///
     case countryNotSupported(countryCode: String)
@@ -67,6 +71,8 @@ extension CardPresentPaymentOnboardingState {
             return nil
         case .completed:
             return nil
+        case .selectPlugin:
+            return "multiple_plugins_installed"
         case .countryNotSupported(countryCode: _):
             return "country_not_supported"
         case .wcpayNotInstalled:

@@ -1,5 +1,0 @@
-Beställningsfliken har fått en uppdatering i den här version. Flikarna är nu borta och vi har skapat ett alternativ för att filtrera efter status eller datumintervall. Denna ändring är baserad på direkt feedback från er genom åren och vi vet att du kommer att gilla den!
-
-Vi har åtgärdat en möjlig krasch vid skapandet av en fraktetikett för en beställning från en push-notis. Vi har också förbättrat inloggningsupplevelsen med din lösenordshanterare. Ditt användarnamn och lösenord för WordPress.com som finns lagrat i din hanterare kommer att visas högst upp i listan!
-
-Som alltid, fortsätt att skicka in feedback. Tack för att du använder WooCommerce!

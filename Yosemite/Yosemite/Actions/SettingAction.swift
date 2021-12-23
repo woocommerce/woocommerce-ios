@@ -21,4 +21,8 @@ public enum SettingAction: Action {
     /// Retrieves the site API details (used to determine the WC version)
     ///
     case retrieveSiteAPI(siteID: Int64, onCompletion: (Result<SiteAPI, Error>) -> Void)
+
+    /// Retrievs the store payments page path.
+    ///
+    case getPaymentsPagePath(siteID: Int64, onCompletion: (Result<String, SettingStore.SettingError>) -> Void)
 }

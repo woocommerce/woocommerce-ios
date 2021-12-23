@@ -42,6 +42,8 @@ public class SettingStore: Store {
             synchronizeAdvancedSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .retrieveSiteAPI(let siteID, let onCompletion):
             retrieveSiteAPI(siteID: siteID, onCompletion: onCompletion)
+        case let .getPaymentsPagePath(siteID, onCompletion):
+            getPaymentsPagePath(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -101,6 +103,17 @@ private extension SettingStore {
     ///
     func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void) {
         siteAPIRemote.loadAPIInformation(for: siteID, completion: onCompletion)
+    }
+
+    /// Retrieves the store payments page path.
+    ///
+    func getPaymentsPagePath(siteID: Int64, onCompletion: @escaping (Result<String, SettingStore.SettingError>) -> Void) {
+        guard let paymentPageSettings = sharedDerivedStorage.loadSiteSetting(siteID: siteID, settingID: SettingKeys.paymentsPage),
+              let paymentPagePath = paymentPageSettings.value else {
+                  return onCompletion(.failure(SettingError.paymentsPageNotFound))
+              }
+
+        onCompletion(.success(paymentPagePath))
     }
 }
 
@@ -188,5 +201,22 @@ extension SettingStore {
     ///
     func upsertStoredProductSiteSettings(siteID: Int64, readOnlySiteSettings: [Networking.SiteSetting], in storage: StorageType) {
         upsertSettings(readOnlySiteSettings, in: storage, siteID: siteID, settingGroup: SiteSettingGroup.product)
+    }
+}
+
+// MARK: Definitions
+extension SettingStore {
+    /// Possible store errors.
+    ///
+    public enum SettingError: Swift.Error {
+        /// Payment page path was not found
+        ///
+        case paymentsPageNotFound
+    }
+
+    /// Settings keys.
+    ///
+    private enum SettingKeys {
+        static let paymentsPage = "woocommerce_checkout_pay_endpoint"
     }
 }

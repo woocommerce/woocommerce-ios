@@ -18,7 +18,10 @@ public final class OrdersScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [searchButtonGetter, filterButtonGetter],
+            expectedElementGetters: [
+                searchButtonGetter,
+                filterButtonGetter
+            ],
             app: app
         )
     }

@@ -6,6 +6,10 @@ import XCTest
 // it'll be already available if someone needs to work with it or on it in the future.
 class BetaFeaturesScreen: ScreenObject {
 
+    // `expectedElement` is a `ScreenObject` utility to get the first element from the
+    // `expectedElementGetters` list.
+    private var enableProductsButton: XCUIElement { expectedElement }
+
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [ { $0.cells["beta-features-products-cell"] } ],
@@ -15,8 +19,8 @@ class BetaFeaturesScreen: ScreenObject {
 
     @discardableResult
     func enableProducts() -> Self {
-        if app.cells["beta-features-products-cell"].switches.firstMatch.value as? String == "0" {
-            app.cells["beta-features-products-cell"].tap()
+        if enableProductsButton.switches.firstMatch.value as? String == "0" {
+            enableProductsButton.tap()
         }
 
         return self

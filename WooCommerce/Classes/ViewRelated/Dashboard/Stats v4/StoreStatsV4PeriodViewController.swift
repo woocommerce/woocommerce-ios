@@ -795,7 +795,7 @@ private extension StoreStatsV4PeriodViewController {
         dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
         dataSet.drawHorizontalHighlightIndicatorEnabled = false
 
-        // Gradient that fills the area from top to bottom when there is any positive revenue.
+        // Configures gradient to fill the area from top to bottom when there is any positive revenue.
         let hasNegativeRevenueOnly = orderStatsIntervals.map { $0.revenueValue }.contains(where: { $0 > 0 }) == false
         if hasRevenueData && !hasNegativeRevenueOnly {
             let gradientColors = [Constants.chartGradientBottomColor.cgColor, Constants.chartGradientTopColor.cgColor] as CFArray

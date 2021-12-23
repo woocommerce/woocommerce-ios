@@ -17,6 +17,10 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     @Published private(set) var showPayWithCardRow = false
 
+    /// Defines if the view should show a payment link payment method.
+    ///
+    @Published private(set) var showPaymentLinkRow = false
+
     /// Defines if the view should show a loading indicator.
     /// Currently set while marking the order as complete
     ///
@@ -40,6 +44,17 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     /// Formatted total to charge.
     ///
     private let formattedTotal: String
+
+    /// Stores the payment link for the order.
+    /// Sets `showPaymentLinkRow` to `true` when a value is asigned.
+    ///
+    private var paymentLink: String? {
+        didSet {
+            if !paymentLink.isNilOrEmpty {
+                showPaymentLinkRow = true
+            }
+        }
+    }
 
     /// Transmits notice presentation intents.
     ///
@@ -205,17 +220,17 @@ private extension SimplePaymentsMethodsViewModel {
     /// Fetches and builds the order payment link based on the store settings.
     ///
     func fetchPaymentLink(orderKey: String) {
+        guard let storeURL = stores.sessionManager.defaultSite?.url else {
+            return DDLogError("⛔️ Couldn't find a valid store URL")
+        }
+
         let action = SettingAction.getPaymentsPagePath(siteID: siteID) { [weak self] result in
             guard let self = self else { return }
+
             switch result {
             case .success(let paymentPagePath):
-                print("------------- Start Payment Link --------------")
-                let linkBuilder = PaymentLinkBuilder(host: self.stores.sessionManager.defaultSite?.url ?? "",
-                                                     orderID: self.orderID,
-                                                     orderKey: orderKey,
-                                                     paymentPagePath: paymentPagePath)
-                print(linkBuilder.build())
-                print("------------- End Payment Link --------------")
+                let linkBuilder = PaymentLinkBuilder(host: storeURL, orderID: self.orderID, orderKey: orderKey, paymentPagePath: paymentPagePath)
+                self.paymentLink = linkBuilder.build()
 
             case .failure(let error):
                 DDLogError("⛔️ Error retrieving the payments page path: \(error.localizedDescription)")

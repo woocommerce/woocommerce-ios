@@ -258,4 +258,23 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.showPayWithCardRow)
     }
+
+    func test_paymentLinkRow_is_hidden_if_payment_path_is_not_available() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .getPaymentsPagePath(_, onCompletion):
+                onCompletion(.failure(.paymentsPageNotFound))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores)
+
+        // Then
+        XCTAssertFalse(viewModel.showPaymentLinkRow)
+    }
 }

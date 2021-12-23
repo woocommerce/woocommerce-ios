@@ -21,6 +21,7 @@ struct HubMenu: View {
                    storeURL: viewModel.storeURL.absoluteString) {
                 viewModel.presentSwitchStore()
             }
+                   .padding([.leading, .trailing], Constants.padding)
 
             ScrollView {
                 let gridItemLayout = [GridItem(.adaptive(minimum: Constants.itemSize), spacing: Constants.itemSpacing)]
@@ -80,10 +81,13 @@ struct HubMenu: View {
 
                 VStack(alignment: .leading,
                        spacing: Constants.topBarSpacing) {
-                    Text(storeTitle).headlineStyle()
+                    Text(storeTitle)
+                        .headlineStyle()
+                        .lineLimit(1)
                     if let storeURL = storeURL {
                         Text(storeURL)
                             .subheadlineStyle()
+                            .lineLimit(1)
                     }
                     Button(Localization.switchStore) {
                         presenSwitchStore?()

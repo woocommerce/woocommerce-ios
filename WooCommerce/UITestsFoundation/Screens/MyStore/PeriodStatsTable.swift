@@ -3,34 +3,44 @@ import XCTest
 
 public final class PeriodStatsTable: ScreenObject {
 
+    private let daysTabGetter: (XCUIApplication) -> XCUIElement = {
+        $0.cells["period-data-today-tab"]
+    }
+
+    private let weeksTabGetter: (XCUIApplication) -> XCUIElement = {
+        $0.cells["period-data-thisWeek-tab"]
+    }
+
+    private let yearsTabGetter: (XCUIApplication) -> XCUIElement = {
+        $0.cells["period-data-thisYear-tab"]
+    }
+
+    private var daysTab: XCUIElement { daysTabGetter(app) }
+    private var weeksTab: XCUIElement { weeksTabGetter(app) }
+    private var yearsTab: XCUIElement { yearsTabGetter(app) }
+
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [
-                // swiftlint:disable next opening_brace
-                { $0.cells["period-data-today-tab"] },
-                { $0.cells["period-data-thisWeek-tab"] },
-                { $0.cells["period-data-thisYear-tab"] }
-                // swiftlint:enable next opening_brace
-            ],
+            expectedElementGetters: [daysTabGetter, weeksTabGetter, yearsTabGetter],
             app: app
         )
     }
 
     @discardableResult
     func switchToDaysTab() -> Self {
-        app.cells["period-data-today-tab"].tap()
+        daysTab.tap()
         return self
     }
 
     @discardableResult
        func switchToWeeksTab() -> Self {
-           app.cells["period-data-thisWeek-tab"].tap()
+           weeksTab.tap()
            return self
        }
 
     @discardableResult
     public func switchToYearsTab() -> Self {
-        app.cells["period-data-thisYear-tab"].tap()
+        yearsTab.tap()
         return self
     }
 }

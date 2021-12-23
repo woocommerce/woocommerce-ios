@@ -8,13 +8,19 @@ public final class MyStoreScreen: ScreenObject {
     // TODO: Remove force `try` once `ScreenObject` migration is completed
     public let periodStatsTable = try! PeriodStatsTable()
 
+    private let settingsButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["dashboard-settings-button"]
+    }
+
+    private var settingsButton: XCUIElement { settingsButtonGetter(app) }
+
     static var isVisible: Bool {
         (try? MyStoreScreen().isLoaded) ?? false
     }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [ {$0.buttons["dashboard-settings-button"]} ],
+            expectedElementGetters: [settingsButtonGetter],
             app: app
         )
     }
@@ -30,7 +36,7 @@ public final class MyStoreScreen: ScreenObject {
 
     @discardableResult
     public func openSettingsPane() throws -> SettingsScreen {
-        app.buttons["dashboard-settings-button"].tap()
+        settingsButton.tap()
         return try SettingsScreen()
     }
 }

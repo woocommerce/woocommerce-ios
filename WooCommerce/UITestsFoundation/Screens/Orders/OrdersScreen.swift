@@ -3,14 +3,22 @@ import XCTest
 
 public final class OrdersScreen: ScreenObject {
 
+    // TODO: Remove force `try` once `ScreenObject` migration is completed
+    public let tabBar = try! TabNavComponent()
+
+    private let searchButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["order-search-button"]
+    }
+
+    private let filterButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Filter"]
+    }
+
+    private var searchButton: XCUIElement { searchButtonGetter(app) }
+
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [
-                // swiftlint:disable next opening_brace
-                { $0.buttons["order-search-button"] },
-                { $0.buttons["Filter"] }
-                // swiftlint:enable next opening_brace
-            ],
+            expectedElementGetters: [searchButtonGetter, filterButtonGetter],
             app: app
         )
     }
@@ -23,7 +31,7 @@ public final class OrdersScreen: ScreenObject {
 
     @discardableResult
     public func openSearchPane() throws -> OrderSearchScreen {
-        app.buttons["order-search-button"].tap()
+        searchButton.tap()
         return try OrderSearchScreen()
     }
 }

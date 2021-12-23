@@ -17,11 +17,11 @@ final class ProductsTests: XCTestCase {
 
         _ = try TabNavComponent()
             .gotoProductsScreen()
-            .verifyProductScreenLoaded()
+            .verifyProductsScreenLoaded()
             .verifyProductListOnProductsScreen(products: products)
             .selectProduct(byName: products[0].name)
-            .verifyProductOnSingleProductScreen(products: products)
+            .verifyProductOnSingleProductScreen(product: products[0])
             .goBackToProductList()
-            .verifyProductScreenLoaded()
+            .verifyProductsScreenLoaded()
     }
 }

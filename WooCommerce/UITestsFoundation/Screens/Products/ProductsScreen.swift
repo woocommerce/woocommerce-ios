@@ -50,19 +50,22 @@ public final class ProductsScreen: ScreenObject {
 
     func verifyStockStatusForProduct(name: String, status: String) throws -> Bool {
         let namePredicate = NSPredicate(format: "identifier == %@", name)
-        let statusPredicate = NSPredicate(format: "label CONTAINS[c] %@", status)
+        let statusPredicate = NSPredicate(format: "label ==[c] %@", status)
 
-        return app.tables.cells.containing(namePredicate).children(matching: .staticText).element(matching: statusPredicate).firstMatch.exists
+        return app.tables.cells.matching(namePredicate).children(matching: .staticText).element(matching: statusPredicate).firstMatch.exists
     }
 
     public func verifyProductListOnProductsScreen(products: [ProductData]) throws -> Self {
-        XCTAssertTrue(try app.getTextVisibilityCount(text: products[0].name) == 1, "Product name does not exist!")
-        XCTAssertTrue(app.tables.cells.count == products.count, "Expecting \(products.count) products, got \(app.tables.cells.count) instead!")
-        XCTAssertTrue(try verifyStockStatusForProduct(name: products[0].name, status: products[0].stock_status), "Stock status does not exist!")
+        let nameVisibilityCount = try app.getTextVisibilityCount(text: products[0].name)
+
+        XCTAssertTrue(nameVisibilityCount == 1, "Expecting name to appear once, appeared \(nameVisibilityCount) times instead!")
+        XCTAssertEqual(products.count, app.tables.cells.count, "Expecting \(products.count) products, got \(app.tables.cells.count) instead!")
+        XCTAssertTrue(try verifyStockStatusForProduct(name: products[0].name, status: products[0].stock_status), "Stock status does not exist for product!")
+
         return self
     }
 
-    public func verifyProductScreenLoaded() throws -> Self {
+    public func verifyProductsScreenLoaded() throws -> Self {
         XCTAssertTrue(isLoaded)
         return self
     }

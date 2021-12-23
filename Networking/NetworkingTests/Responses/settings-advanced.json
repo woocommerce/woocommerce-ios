@@ -3,7 +3,7 @@
         {
             "id": "woocommerce_checkout_pay_endpoint",
             "label": "Pay",
-            "description": "Endpoint for the \"Checkout &rarr; Pay\" page.",
+            "description": "Endpoint for the pay page",
             "type": "text",
             "default": "order-pay",
             "tip": "Endpoint for the \"Checkout &rarr; Pay\" page.",

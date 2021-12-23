@@ -38,6 +38,8 @@ public class SettingStore: Store {
             synchronizeGeneralSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .synchronizeProductSiteSettings(let siteID, let onCompletion):
             synchronizeProductSiteSettings(siteID: siteID, onCompletion: onCompletion)
+        case let .synchronizeAdvancedSiteSettings(siteID, onCompletion):
+            synchronizeAdvancedSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .retrieveSiteAPI(let siteID, let onCompletion):
             retrieveSiteAPI(siteID: siteID, onCompletion: onCompletion)
         }
@@ -79,6 +81,21 @@ private extension SettingStore {
         }
     }
 
+    /// Synchronizes the advanced site settings associated with the provided Site ID (if any!).
+    ///
+    func synchronizeAdvancedSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
+        siteSettingsRemote.loadAdvancedSettings(for: siteID) { [weak self] result in
+            switch result {
+            case .success(let settings):
+                self?.upsertStoredAdvancedSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
+                    onCompletion(nil)
+                }
+            case .failure(let error):
+                onCompletion(error)
+            }
+        }
+    }
+
     /// Retrieves the site API information associated with the provided Site ID (if any!).
     /// This call does NOT persist returned data into the Storage layer.
     ///
@@ -113,6 +130,20 @@ private extension SettingStore {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
             self.upsertSettings(readOnlySiteSettings, in: derivedStorage, siteID: siteID, settingGroup: SiteSettingGroup.product)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates (OR Inserts) the specified **advanced** ReadOnly `SiteSetting` entities **in a background thread**. `onCompletion` will be called
+    /// on the main thread!
+    ///
+    func upsertStoredAdvancedSettingsInBackground(siteID: Int64, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            self.upsertSettings(readOnlySiteSettings, in: derivedStorage, siteID: siteID, settingGroup: SiteSettingGroup.advanced)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {

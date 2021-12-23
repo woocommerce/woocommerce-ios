@@ -472,6 +472,48 @@ class SettingStoreTests: XCTestCase {
         XCTAssertEqual(storageProductSiteSettings2?.map({ $0.toReadOnly() }).sorted(), [sampleProductSiteSetting2Mutated()])
     }
 
+    func test_advanced_site_gets_stored_correctly() throws {
+        // Given
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/advanced", filename: "settings-advanced")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
+
+        // When
+        let action = SettingAction.synchronizeAdvancedSiteSettings(siteID: sampleSiteID) { _ in }
+        settingStore.onAction(action)
+
+        // Then
+        waitUntil {
+            self.viewStorage.countObjects(ofType: Storage.SiteSetting.self) == 2
+        }
+    }
+
+    func test_advanced_site_gets_updated_correctly() throws {
+        // Given
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: sampleAdvancedSiteSettingMutated())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 1)
+
+        network.simulateResponse(requestUrlSuffix: "settings/advanced", filename: "settings-advanced")
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let completed: Bool = waitFor { promise in
+            let action = SettingAction.synchronizeAdvancedSiteSettings(siteID: self.sampleSiteID) { _ in
+                promise(true)
+            }
+            settingStore.onAction(action)
+        }
+
+
+        // Then
+        XCTAssertTrue(completed)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
+
+        let sample = sampleAdvancedSiteSetting()
+        let updated = viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: sample.settingID)?.toReadOnly()
+        XCTAssertEqual(sample, updated)
+    }
+
 
     // MARK: - SettingAction.retrieveSiteAPI
 
@@ -635,6 +677,26 @@ private extension SettingStoreTests {
                            settingDescription: "This controls what animal you will define weights in.",
                            value: "elephants",
                            settingGroupKey: SiteSettingGroup.product.rawValue)
+    }
+
+    // MARK: - Advanced SiteSetting Samples
+
+    func sampleAdvancedSiteSetting() -> Networking.SiteSetting {
+        return SiteSetting(siteID: sampleSiteID,
+                           settingID: "woocommerce_checkout_pay_endpoint",
+                           label: "Pay",
+                           settingDescription: "Endpoint for the pay page",
+                           value: "order-pay",
+                           settingGroupKey: SiteSettingGroup.advanced.rawValue)
+    }
+
+    func sampleAdvancedSiteSettingMutated() -> Networking.SiteSetting {
+        return SiteSetting(siteID: sampleSiteID,
+                           settingID: "woocommerce_checkout_pay_endpoint",
+                           label: "Pay",
+                           settingDescription: "Endpoint for the pay page",
+                           value: "order-pay-2",
+                           settingGroupKey: SiteSettingGroup.advanced.rawValue)
     }
 
     // MARK: - SiteAPI Samples

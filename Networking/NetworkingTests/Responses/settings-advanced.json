@@ -1,0 +1,46 @@
+{
+    "data": [
+        {
+            "id": "woocommerce_checkout_pay_endpoint",
+            "label": "Pay",
+            "description": "Endpoint for the \"Checkout &rarr; Pay\" page.",
+            "type": "text",
+            "default": "order-pay",
+            "tip": "Endpoint for the \"Checkout &rarr; Pay\" page.",
+            "value": "order-pay",
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://dulces.mystagingwebsite.com/wp-json/wc/v3/settings/advanced/woocommerce_checkout_pay_endpoint"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://dulces.mystagingwebsite.com/wp-json/wc/v3/settings/advanced"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "woocommerce_checkout_order_received_endpoint",
+            "label": "Order received",
+            "description": "Endpoint for the \"Checkout &rarr; Order received\" page.",
+            "type": "text",
+            "default": "order-received",
+            "tip": "Endpoint for the \"Checkout &rarr; Order received\" page.",
+            "value": "order-received",
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://dulces.mystagingwebsite.com/wp-json/wc/v3/settings/advanced/woocommerce_checkout_order_received_endpoint"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://dulces.mystagingwebsite.com/wp-json/wc/v3/settings/advanced"
+                    }
+                ]
+            }
+        }
+    ]
+}

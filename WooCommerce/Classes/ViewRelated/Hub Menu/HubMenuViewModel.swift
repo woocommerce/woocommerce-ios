@@ -11,7 +11,9 @@ final class HubMenuViewModel: ObservableObject {
 
     private(set) unowned var navigationController: UINavigationController?
 
-    let storeTitle = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.myStore
+    var storeTitle: String {
+        ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.myStore
+    }
     var storeURL: URL {
         guard let urlString = ServiceLocator.stores.sessionManager.defaultSite?.url, let url = URL(string: urlString) else {
             return WooConstants.URLs.blog.asURL()

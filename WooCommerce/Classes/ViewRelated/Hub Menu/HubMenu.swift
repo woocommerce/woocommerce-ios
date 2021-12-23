@@ -8,14 +8,16 @@ struct HubMenu: View {
     @State private var showViewStore = false
     @State private var showReviews = false
 
-    init(siteID: Int64) {
-        viewModel = HubMenuViewModel(siteID: siteID)
+    init(siteID: Int64, navigationController: UINavigationController? = nil) {
+        viewModel = HubMenuViewModel(siteID: siteID, navigationController: navigationController)
     }
 
     var body: some View {
         VStack {
             TopBar(storeTitle: viewModel.storeTitle,
-                   storeURL: viewModel.storeURL.absoluteString)
+                   storeURL: viewModel.storeURL.absoluteString) {
+                viewModel.presentSwitchStore()
+            }
 
             ScrollView {
                 let gridItemLayout = [GridItem(.adaptive(minimum: Constants.itemSize), spacing: Constants.itemSpacing)]
@@ -57,10 +59,11 @@ struct HubMenu: View {
     private struct TopBar: View {
         let storeTitle: String
         let storeURL: String?
+        var presenSwitchStore: (() -> Void)?
 
         @State private var showSettings = false
-        @ScaledMetric var settingsSize: CGFloat = 24
-        @ScaledMetric var settingsIconSize: CGFloat = 20
+        @ScaledMetric private var settingsSize: CGFloat = 24
+        @ScaledMetric private var settingsIconSize: CGFloat = 20
 
         var body: some View {
             HStack() {
@@ -72,7 +75,7 @@ struct HubMenu: View {
                             .subheadlineStyle()
                     }
                     Button(Localization.switchStore) {
-
+                        presenSwitchStore?()
                     }
                     .linkStyle()
                 }

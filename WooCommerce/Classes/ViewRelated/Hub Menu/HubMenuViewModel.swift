@@ -1,12 +1,15 @@
 import Foundation
 import UIKit
 import SwiftUI
+import Combine
 
 /// View model for `HubMenu`.
 ///
 final class HubMenuViewModel: ObservableObject {
 
-    let siteID: Int64
+    @Published private(set) var siteID: Int64
+
+    private(set) unowned var navigationController: UINavigationController?
 
     let storeTitle = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.myStore
     var storeURL: URL {
@@ -21,9 +24,33 @@ final class HubMenuViewModel: ObservableObject {
     ///
     @Published private(set) var menuElements: [Menu] = []
 
-    init(siteID: Int64) {
+    private var storePickerCoordinator: StorePickerCoordinator?
+
+    private var cancellables = Set<AnyCancellable>()
+
+    init(siteID: Int64, navigationController: UINavigationController? = nil) {
         self.siteID = siteID
+        self.navigationController = navigationController
         menuElements = [.woocommerceAdmin, .viewStore, .reviews]
+        observeSiteForUIUpdates()
+    }
+
+    /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.
+    ///
+    func presentSwitchStore() {
+        //TODO-5509: add analytics events
+        if let navigationController = navigationController {
+            storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
+            storePickerCoordinator?.start()
+        }
+    }
+
+    private func observeSiteForUIUpdates() {
+        ServiceLocator.stores.site.sink { [weak self] site in
+            guard let self = self else { return }
+            guard let siteID = site?.siteID else { return }
+            self.siteID = siteID
+        }.store(in: &cancellables)
     }
 }
 

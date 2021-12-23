@@ -9,6 +9,8 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private(set) var siteID: Int64
 
+    /// The view controller that will be used for presenting the `StorePickerViewController` via `StorePickerCoordinator`
+    ///
     private(set) unowned var navigationController: UINavigationController?
 
     var storeTitle: String {

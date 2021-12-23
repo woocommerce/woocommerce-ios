@@ -106,11 +106,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         self.title = Localization.title(total: formattedTotal)
 
         bindStoreCPPState()
-
-        print("------------- Start Payment Link --------------")
-        let linkBuilder = PaymentLinkBuilder(host: stores.sessionManager.defaultSite?.url ?? "", orderID: orderID, orderKey: orderKey)
-        print(linkBuilder.build())
-        print("------------- End Payment Link --------------")
+        fetchPaymentLink(orderKey: orderKey)
     }
 
     /// Creates the info text when the merchant selects the cash payment method.
@@ -203,6 +199,29 @@ private extension SimplePaymentsMethodsViewModel {
             .removeDuplicates()
             .assign(to: &$showPayWithCardRow)
         cppStoreStateObserver.refresh()
+    }
+
+
+    /// Fetches and builds the order payment link based on the store settings.
+    ///
+    func fetchPaymentLink(orderKey: String) {
+        let action = SettingAction.getPaymentsPagePath(siteID: siteID) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let paymentPagePath):
+                print("------------- Start Payment Link --------------")
+                let linkBuilder = PaymentLinkBuilder(host: self.stores.sessionManager.defaultSite?.url ?? "",
+                                                     orderID: self.orderID,
+                                                     orderKey: orderKey,
+                                                     paymentPagePath: paymentPagePath)
+                print(linkBuilder.build())
+                print("------------- End Payment Link --------------")
+
+            case .failure(let error):
+                DDLogError("⛔️ Error retrieving the payments page path: \(error.localizedDescription)")
+            }
+        }
+        stores.dispatch(action)
     }
 
     /// Tracks the `simplePaymentsFlowCompleted` event.

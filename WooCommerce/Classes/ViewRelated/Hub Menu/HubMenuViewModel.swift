@@ -20,7 +20,12 @@ final class HubMenuViewModel: ObservableObject {
         guard let urlString = ServiceLocator.stores.sessionManager.defaultSite?.url, let url = URL(string: urlString) else {
             return WooConstants.URLs.blog.asURL()
         }
-
+        return url
+    }
+    var woocommerceAdminURL: URL {
+        guard let urlString = ServiceLocator.stores.sessionManager.defaultSite?.adminURL, let url = URL(string: urlString) else {
+            return WooConstants.URLs.blog.asURL()
+        }
         return url
     }
 

@@ -5,6 +5,7 @@ import SwiftUI
 ///
 struct HubMenu: View {
     @ObservedObject private var viewModel: HubMenuViewModel
+    @State private var showWooCommerceAdmin = false
     @State private var showViewStore = false
     @State private var showReviews = false
 
@@ -28,13 +29,12 @@ struct HubMenu: View {
                             .frame(width: Constants.itemSize, height: Constants.itemSize)
                             .onTapGesture {
                                 switch menu {
+                                case .woocommerceAdmin:
+                                    showWooCommerceAdmin = true
                                 case .viewStore:
                                     showViewStore = true
                                 case .reviews:
                                     showReviews = true
-                                default:
-                                    // TODO-5509: handle the remaining cases
-                                    break
                                 }
                             }
                     }
@@ -45,6 +45,7 @@ struct HubMenu: View {
                 .padding(Constants.padding)
                 .background(Color(.listBackground))
             }
+            .safariSheet(isPresented: $showWooCommerceAdmin, url: viewModel.woocommerceAdminURL)
             .safariSheet(isPresented: $showViewStore, url: viewModel.storeURL)
             NavigationLink(destination:
                             ReviewsView(siteID: viewModel.siteID),

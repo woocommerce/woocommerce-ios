@@ -176,6 +176,14 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.houseOutlinedImage)
     }
 
+    func testStoreImageIsNotNil() {
+        XCTAssertNotNil(UIImage.storeImage)
+    }
+
+    func testCotImageIsNotNil() {
+        XCTAssertNotNil(UIImage.cogImage)
+    }
+
     func testIconImageIsNotNil() {
         XCTAssertNotNil(UIImage.infoImage)
     }
@@ -503,6 +511,10 @@ final class IconsTests: XCTestCase {
 
     func testCloudImageIsNotNil() {
         XCTAssertNotNil(UIImage.cloudImage)
+    }
+
+    func test_copy_bar_button_item_image_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.copyBarButtonItemImage)
     }
 
     func testHubMenuIconIsNotNil() {

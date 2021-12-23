@@ -25,10 +25,16 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let telemetryLastReportedTime: Date?
 
+    /// Stores the last simple payments toggle state.
+    ///
+    public let areSimplePaymentTaxesEnabled: Bool
+
     public init(isTelemetryAvailable: Bool = false,
-                telemetryLastReportedTime: Date? = nil) {
+                telemetryLastReportedTime: Date? = nil,
+                areSimplePaymentTaxesEnabled: Bool = false) {
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
+        self.areSimplePaymentTaxesEnabled = areSimplePaymentTaxesEnabled
     }
 }
 
@@ -41,6 +47,7 @@ extension GeneralStoreSettings {
 
         self.isTelemetryAvailable = try container.decodeIfPresent(Bool.self, forKey: .isTelemetryAvailable) ?? false
         self.telemetryLastReportedTime = try container.decodeIfPresent(Date.self, forKey: .telemetryLastReportedTime)
+        self.areSimplePaymentTaxesEnabled = try container.decodeIfPresent(Bool.self, forKey: .areSimplePaymentTaxesEnabled) ?? false
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

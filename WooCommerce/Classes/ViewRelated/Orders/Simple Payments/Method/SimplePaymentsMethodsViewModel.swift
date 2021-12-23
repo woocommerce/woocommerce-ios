@@ -13,6 +13,10 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     let title: String
 
+    /// Defines if the view should show a card payment method.
+    ///
+    @Published private(set) var showPayWithCardRow = false
+
     /// Defines if the view should show a loading indicator.
     /// Currently set while marking the order as complete
     ///
@@ -40,6 +44,10 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     /// Transmits notice presentation intents.
     ///
     private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
+
+    /// Observes the store's current CPP state.
+    ///
+    private let cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol
 
     /// Store manager to update order.
     ///
@@ -82,6 +90,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
          orderID: Int64 = 0,
          formattedTotal: String,
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
+         cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -89,10 +98,13 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         self.orderID = orderID
         self.formattedTotal = formattedTotal
         self.presentNoticeSubject = presentNoticeSubject
+        self.cppStoreStateObserver = cppStoreStateObserver
         self.stores = stores
         self.storage = storage
         self.analytics = analytics
         self.title = Localization.title(total: formattedTotal)
+
+        bindStoreCPPState()
     }
 
     /// Creates the info text when the merchant selects the cash payment method.
@@ -147,7 +159,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
                                                             formattedAmount: formattedTotal,
                                                             paymentGatewayAccount: paymentGateway,
                                                             rootViewController: rootViewController)
-        collectPaymentsUseCase?.collectPayment(onCollect: { [weak self] result in
+        collectPaymentsUseCase?.collectPayment(backButtonTitle: Localization.continueToOrders, onCollect: { [weak self] result in
             if result.isFailure {
                 self?.trackFlowFailed()
             }
@@ -175,6 +187,18 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
 
 // MARK: Helpers
 private extension SimplePaymentsMethodsViewModel {
+
+    /// Observes the store CPP state and update publish variables accordingly.
+    ///
+    func bindStoreCPPState() {
+        cppStoreStateObserver
+            .statePublisher
+            .map { $0 == .completed }
+            .removeDuplicates()
+            .assign(to: &$showPayWithCardRow)
+        cppStoreStateObserver.refresh()
+    }
+
     /// Tracks the `simplePaymentsFlowCompleted` event.
     ///
     func trackFlowCompleted(method: WooAnalyticsEvent.SimplePayments.PaymentMethod) {
@@ -200,6 +224,8 @@ private extension SimplePaymentsMethodsViewModel {
                                                        comment: "Text when there is an error while marking the order as paid for simple payments.")
         static let genericCollectError = NSLocalizedString("There was an error while trying to collect the payment.",
                                                        comment: "Text when there is an unknown error while trying to collect payments")
+        static let continueToOrders = NSLocalizedString("Continue To Orders",
+                                                        comment: "Button to dismiss modal overlay and go back to the orders list after a sucessful payment")
 
         static func title(total: String) -> String {
             NSLocalizedString("Take Payment (\(total))", comment: "Navigation bar title for the Simple Payments Methods screens")

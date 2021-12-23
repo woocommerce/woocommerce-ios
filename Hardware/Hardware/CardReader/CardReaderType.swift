@@ -8,3 +8,16 @@ public enum CardReaderType {
     /// Other
     case other
 }
+
+extension CardReaderType {
+    var model: String {
+        switch self {
+        case .chipper:
+            return "chipper_2x"
+        case .stripeM2:
+            return "stripe_m2"
+        default:
+            return "other"
+        }
+    }
+}

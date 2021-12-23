@@ -232,7 +232,7 @@ private extension ReviewsViewController {
     }
 
     func refreshTitle() {
-        navigationItem.title = NSLocalizedString(
+        title = NSLocalizedString(
             "Reviews",
             comment: "Title that appears on top of the main Reviews screen (plural form of the word Review)."
         )

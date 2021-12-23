@@ -53,12 +53,21 @@ struct SimplePaymentsSummary: View {
         }
         .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(Localization.title)
-        .sheet(isPresented: $showEditNote) {
-            EditCustomerNote(dismiss: {
-                showEditNote.toggle()
+        .sheet(
+            isPresented: $showEditNote,
+            onDismiss: { // Interactive drag dismiss
+                viewModel.noteViewModel.userDidCancelFlow()
                 viewModel.reloadContent()
-                }, viewModel: viewModel.noteViewModel)
-        }
+            },
+            content: {
+                EditCustomerNote(
+                    dismiss: { // Cancel button dismiss
+                        showEditNote.toggle()
+                        viewModel.reloadContent()
+                    },
+                    viewModel: viewModel.noteViewModel
+                )
+            })
         .disabled(viewModel.disableViewActions)
     }
 }

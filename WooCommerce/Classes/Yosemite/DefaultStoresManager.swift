@@ -188,6 +188,15 @@ class DefaultStoresManager: StoresManager {
         NotificationCenter.default.post(name: .StoresManagerDidUpdateDefaultSite, object: nil)
     }
 
+    /// Updates the default site only in cases where a site's properties are updated (e.g. after installing & activating Jetpack-the-plugin).
+    ///
+    func updateDefaultStore(_ site: Site) {
+        guard site.siteID == sessionManager.defaultStoreID else {
+            return
+        }
+        sessionManager.defaultSite = site
+    }
+
     /// Updates the user roles for the default Store site.
     ///
     func updateDefaultRoles(_ roles: [User.Role]) {

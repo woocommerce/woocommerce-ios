@@ -28,6 +28,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let isOrderCreationSwitchEnabled: Bool
 
+    /// Thes state for the Stripe Gateway Extension IPP feature switch
+    ///
+    public let isStripeInPersonPaymentsSwitchEnabled: Bool
+
     /// A list (possibly empty) of known card reader IDs - i.e. IDs of card readers that should be reconnected to automatically
     /// e.g. ["CHB204909005931"]
     ///
@@ -44,6 +48,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
                 isOrderCreationSwitchEnabled: Bool,
+                isStripeInPersonPaymentsSwitchEnabled: Bool,
                 knownCardReaders: [String],
                 lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
                 lastJetpackBenefitsBannerDismissedTime: Date? = nil) {
@@ -51,6 +56,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
         self.isOrderCreationSwitchEnabled = isOrderCreationSwitchEnabled
+        self.isStripeInPersonPaymentsSwitchEnabled = isStripeInPersonPaymentsSwitchEnabled
         self.knownCardReaders = knownCardReaders
         self.lastEligibilityErrorInfo = lastEligibilityErrorInfo
         self.lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime
@@ -78,6 +84,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             feedbacks: updatedFeedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
             isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
+            isStripeInPersonPaymentsSwitchEnabled: isStripeInPersonPaymentsSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo
         )
@@ -95,6 +102,7 @@ extension GeneralAppSettings {
         self.feedbacks = try container.decodeIfPresent([FeedbackType: FeedbackSettings].self, forKey: .feedbacks) ?? [:]
         self.isViewAddOnsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isViewAddOnsSwitchEnabled) ?? false
         self.isOrderCreationSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isOrderCreationSwitchEnabled) ?? false
+        self.isStripeInPersonPaymentsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isStripeInPersonPaymentsSwitchEnabled) ?? false
         self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []
         self.lastEligibilityErrorInfo = try container.decodeIfPresent(EligibilityErrorInfo.self, forKey: .lastEligibilityErrorInfo)
         self.lastJetpackBenefitsBannerDismissedTime = try container.decodeIfPresent(Date.self, forKey: .lastJetpackBenefitsBannerDismissedTime)

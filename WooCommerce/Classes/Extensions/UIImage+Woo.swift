@@ -157,6 +157,12 @@ extension UIImage {
         return UIImage.gridicon(.cloudOutline)
     }
 
+    /// Coooy Icon - used in `UIBarButtonItem`
+    ///
+    static var copyBarButtonItemImage: UIImage {
+        return UIImage(systemName: "doc.on.doc")!
+    }
+
     /// Connection Icon
     ///
     static var connectionImage: UIImage {
@@ -300,6 +306,18 @@ extension UIImage {
     ///
     static var houseOutlinedImage: UIImage {
         UIImage(imageLiteralResourceName: "icon-house-outlined")
+    }
+
+    /// Store Image
+    ///
+    static var storeImage: UIImage {
+        UIImage(named: "icon-store")!
+    }
+
+    /// Cog Image
+    ///
+    static var cogImage: UIImage {
+        return UIImage.gridicon(.cog)
     }
 
     /// Login prologue curved rectangle

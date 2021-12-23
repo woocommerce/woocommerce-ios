@@ -783,24 +783,29 @@ private extension StoreStatsV4PeriodViewController {
             barCount += 1
         }
 
+        let hasRevenueData = hasRevenue()
+
         let dataSet = LineChartDataSet(entries: dataEntries, label: "Data")
         dataSet.drawCirclesEnabled = false
-        dataSet.colors = barColors
+        dataSet.colors = hasRevenueData ? barColors: .init(repeating: .clear, count: barColors.count)
         dataSet.lineWidth = Constants.chartLineWidth
-        dataSet.highlightEnabled = true
+        dataSet.highlightEnabled = hasRevenueData
         dataSet.highlightColor = Constants.chartHighlightLineColor
         dataSet.highlightLineWidth = Constants.chartHighlightLineWidth
         dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
         dataSet.drawHorizontalHighlightIndicatorEnabled = false
 
-        // Gradient that fills the area to the baseline.
-        let gradientColors = [Constants.chartGradientBottomColor.cgColor, Constants.chartGradientTopColor.cgColor] as CFArray
-        let gradientColorSpace = CGColorSpaceCreateDeviceRGB()
-        let locations: [CGFloat] = [0.0, 1.0]
-        if let gradient = CGGradient(colorsSpace: gradientColorSpace, colors: gradientColors, locations: locations) {
-            dataSet.fill = .init(linearGradient: gradient, angle: 90.0)
-            dataSet.fillAlpha = 1.0
-            dataSet.drawFilledEnabled = true
+        // Gradient that fills the area from top to bottom when there is any positive revenue.
+        let hasNegativeRevenueOnly = orderStatsIntervals.map { $0.revenueValue }.contains(where: { $0 > 0 }) == false
+        if hasRevenueData && !hasNegativeRevenueOnly {
+            let gradientColors = [Constants.chartGradientBottomColor.cgColor, Constants.chartGradientTopColor.cgColor] as CFArray
+            let gradientColorSpace = CGColorSpaceCreateDeviceRGB()
+            let locations: [CGFloat] = hasNegativeRevenueOnly ? [1.0, 0.0]: [0.0, 1.0]
+            if let gradient = CGGradient(colorsSpace: gradientColorSpace, colors: gradientColors, locations: locations) {
+                dataSet.fill = .init(linearGradient: gradient, angle: 90.0)
+                dataSet.fillAlpha = 1.0
+                dataSet.drawFilledEnabled = true
+            }
         }
         return LineChartData(dataSet: dataSet)
     }

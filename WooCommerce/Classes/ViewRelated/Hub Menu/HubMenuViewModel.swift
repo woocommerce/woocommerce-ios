@@ -13,6 +13,12 @@ final class HubMenuViewModel: ObservableObject {
     ///
     private(set) unowned var navigationController: UINavigationController?
 
+    var avatarURL: URL? {
+        guard let urlString = ServiceLocator.stores.sessionManager.defaultAccount?.gravatarUrl, let url = URL(string: urlString) else {
+            return nil
+        }
+        return url
+    }
     var storeTitle: String {
         ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.myStore
     }

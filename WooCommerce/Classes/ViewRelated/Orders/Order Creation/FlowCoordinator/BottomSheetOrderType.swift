@@ -9,7 +9,7 @@ public enum BottomSheetOrderType: Hashable {
     var actionSheetTitle: String {
         switch self {
         case .simple:
-            return NSLocalizedString("Simple Payments",
+            return NSLocalizedString("Simple payment",
                                      comment: "Action sheet option when the user wants to create Simple Payments order")
         case .full:
             return NSLocalizedString("Create order",

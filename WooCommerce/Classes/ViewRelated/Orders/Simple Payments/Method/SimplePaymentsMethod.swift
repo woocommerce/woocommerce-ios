@@ -33,12 +33,15 @@ struct SimplePaymentsMethod: View {
             Group {
                 MethodRow(icon: .priceImage, title: Localization.cash) {
                     showingCashAlert = true
+                    viewModel.trackCollectByCash()
                 }
 
-                Divider()
+                if viewModel.showPayWithCardRow {
+                    Divider()
 
-                MethodRow(icon: .creditCardImage, title: Localization.card) {
-                    viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
+                    MethodRow(icon: .creditCardImage, title: Localization.card) {
+                        viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
+                    }
                 }
             }
             .padding(.horizontal)

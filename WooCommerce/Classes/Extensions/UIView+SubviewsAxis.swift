@@ -5,7 +5,7 @@ extension UIView {
     /// This is based on the assumption that there are two subviews.
     /// Otherwise, nil is returned.
     ///
-    func axisOfTwoSubviews() -> UIView.Axis? {
+    func axisOfTwoSubviews() -> NSLayoutConstraint.Axis? {
         guard subviews.count == 2 else {
             return nil
         }

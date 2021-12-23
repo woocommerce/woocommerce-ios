@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-12-01 11:32:05+0000 */
+/* Translation-Revision-Date: 2021-12-08 16:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -240,7 +240,7 @@
 "Activate WooCommerce Payments" = "WooCommerce Payments'ı Etkinleştirin";
 
 /* Name of the activation Jetpack plugin step */
-"Activating" = "Activating";
+"Activating" = "Etkinleştiriliyor";
 
 /* Application's Active State */
 "Active" = "Etkin";
@@ -313,7 +313,7 @@
 "Add a new credit card" = "Yeni bir kredi kartı ekle";
 
 /* Navigates to a screen to create a full manual order */
-"Add a new order" = "Add a new order";
+"Add a new order" = "Yeni sipariş ekleyin";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -354,7 +354,7 @@
 "Add price to your variations to make them visible on your store" = "Mağazanızda görünmesi için varyasyonlarınıza fiyat ekleyin";
 
 /* Title text of the button that adds a product when creating a new order */
-"Add product" = "Add product";
+"Add product" = "Ürün ekle";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Ürün bağlantısı ekle";
@@ -418,7 +418,7 @@
 "All available packages have been activated" = "Mevcut tüm paketler etkinleştirildi";
 
 /* Name of final step in Install Jetpack flow. */
-"All done" = "All done";
+"All done" = "Her şey hazır";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Tüm incelemeler okundu olarak işaretlendi";
@@ -647,7 +647,7 @@
 "Capture high-quality product reviews for your store." = "Mağazanız için yüksek kalitede ürün yorumları alın.";
 
 /* Card method title on the select payment method screen for simple payments */
-"Card" = "Card";
+"Card" = "Kart";
 
 /* Navigates to Card Reader manual */
 "Card reader manual" = "Kart okuyucu kılavuzu";
@@ -659,7 +659,7 @@
 "Carrier name" = "Kargo şirketi adı";
 
 /* Cash method title on the select payment method screen for simple payments */
-"Cash" = "Cash";
+"Cash" = "Nakit";
 
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
@@ -712,10 +712,10 @@
 "Choose from device" = "Cihazdan seç";
 
 /* Opens action sheet to choose a type of a new order */
-"Choose new order type" = "Choose new order type";
+"Choose new order type" = "Yeni sipariş türü seçin";
 
 /* Heading text on the select payment method screen for simple payments */
-"Choose your payment method" = "Choose your payment method";
+"Choose your payment method" = "Ödeme yönteminizi seçin";
 
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
@@ -794,7 +794,7 @@
 "Connecting to your account" = "Hesabınıza bağlanılıyor";
 
 /* Name of the step to connect the store to Jetpack */
-"Connecting your store" = "Connecting your store";
+"Connecting your store" = "Mağazanızı bağlama";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Müşteri İle İletişime Geç";
@@ -909,16 +909,16 @@
 "Create Shipping Label" = "Gönderi Etiketi Oluşturun";
 
 /* Description of the Action sheet option when the user wants to create full manual order */
-"Create a new manual order" = "Create a new manual order";
+"Create a new manual order" = "Yeni bir manuel sipariş oluşturun";
 
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
-"Create an order with minimal information" = "Create an order with minimal information";
+"Create an order with minimal information" = "Minimum bilgi ile sipariş oluşturun";
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "Yeni paket oluştur";
 
 /* Action sheet option when the user wants to create full manual order */
-"Create order" = "Create order";
+"Create order" = "Sipariş oluştur";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "Cihazınızdan gönderim etiketleri oluşturun!";
@@ -1666,7 +1666,7 @@
 "Install WooCommerce Payments" = "WooCommerce Payments'ı Yükleyin";
 
 /* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
-"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "Install the free Jetpack plugin to %1$@ and experience the best mobile experience.";
+"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "Ücretsiz Jetpack eklentisini %1$@ sitesine yükleyerek en iyi mobil deneyimi yaşayın.";
 
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "En iyi mobil deneyimi yaşamak için ücretsiz Jetpack eklentisini yükleyin.";
@@ -2044,7 +2044,7 @@
 "New Attribute Name" = "Yeni Özellik Adı";
 
 /* Title for the order creation screen */
-"New Order" = "New Order";
+"New Order" = "Yeni Sipariş";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "Yeni analiz görünümleri, ziyaretçileri, raporları ve daha fazlasını görmenizi sağlar.";
@@ -2221,7 +2221,7 @@
 "Order #%1$@" = "Sipariş no: %1$@";
 
 /* Cell title on the beta features screen to enable creating new orders */
-"Order Creation" = "Order Creation";
+"Order Creation" = "Sipariş Oluşturma";
 
 /* Title text of the row that holds the order note when creating a simple payment */
 "Order Note" = "Sipariş Notu";
@@ -2458,7 +2458,7 @@
 "Please wait" = "Lütfen bekleyin";
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
-"Please wait while we connect your site %1$@ with Jetpack." = "Please wait while we connect your site %1$@ with Jetpack.";
+"Please wait while we connect your site %1$@ with Jetpack." = "%1$@ siteniz Jetpack ile bağlanırken lütfen bekleyin.";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "Yeni varyasyon oluşturulurken lütfen bekleyin";
@@ -2470,7 +2470,7 @@
 "Please wait while we save this product to your store" = "Bu ürünü mağazanıza kaydederken lütfen bekleyin";
 
 /* Message of the in-progress UI while saving a Variation remotely */
-"Please wait while we save your latest changes" = "Please wait while we save your latest changes";
+"Please wait while we save your latest changes" = "En son değişikliklerinizi kaydederken lütfen bekleyin";
 
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
@@ -2907,7 +2907,7 @@
 "Saving your product..." = "Ürününüz kaydediliyor...";
 
 /* Title of the in-progress UI while saving a Variation remotely */
-"Saving your variation..." = "Saving your variation...";
+"Saving your variation..." = "Varyasyonunuz kaydediliyor...";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "SKU'yu güncellemek için barkodu tarayın";
@@ -3457,7 +3457,7 @@
 "Tax" = "Vergi";
 
 /* Tax percentage to be applied to the simple payments order */
-"Tax ((rate)%)" = "Tax ((rate)%)";
+"Tax ((rate)%)" = "Vergi (%(oran))";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "Vergi Ayarları";
@@ -3482,7 +3482,7 @@
 "Taxes" = "Vergiler";
 
 /* Disclaimer in the simple payments summary screen about taxes. */
-"Taxes are automatically calculated based on your store address." = "Taxes are automatically calculated based on your store address.";
+"Taxes are automatically calculated based on your store address." = "Vergiler, mağaza adresinize göre otomatik olarak hesaplanır.";
 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Bize %1$@ ile ilgili daha fazla bilgi verin...";
@@ -3491,7 +3491,7 @@
 "Terms of Service" = "Hizmet Koşulları";
 
 /* Cell description on the beta features screen to enable creating new orders */
-"Test out creating new manual orders as we get ready to launch" = "Test out creating new manual orders as we get ready to launch";
+"Test out creating new manual orders as we get ready to launch" = "Lansmana hazırlanırken yeni manuel siparişler oluşturmayı deneyin";
 
 /* Cell description on the beta features screen to enable the Simple Payments feature */
 "Test out creating orders with minimal information as we get ready to launch" = "Lansmana hazırlanırken minimum bilgi ile sipariş oluşturmayı test edin";
@@ -3641,7 +3641,7 @@
 
 /* Navigates to screen with third party software licenses
    Software Licenses (information page title) */
-"Third Party Licenses" = "Third Party Licenses";
+"Third Party Licenses" = "Üçüncü Taraf Lisansları";
 
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
@@ -3739,7 +3739,7 @@
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Bu Google hesabı ile devam etmek için lütfen ilk önce WordPress.com parolanızla giriş yapın. Bu sadece bir kez sorulacak.";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"To turn on your card reader, briefly press its power button." = "To turn on your card reader, briefly press its power button.";
+"To turn on your card reader, briefly press its power button." = "Kart okuyucunuzu açmak için güç düğmesine kısa basın.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Bu uygulamayı %@ için kullanabilmek Jetpack eklentisinin yüklenip mağazanıza bağlanmasını gerektirir.";
@@ -3855,7 +3855,7 @@
 "Unable to change status of order #%1$d" = "%1$d no'lu siparişin durumu değiştirilemiyor";
 
 /* Notice displayed when order creation fails */
-"Unable to create new order" = "Unable to create new order";
+"Unable to create new order" = "Yeni sipariş oluşturulamıyor";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "%1$d No'lu sipariş için takip silinemiyor";
@@ -4067,7 +4067,7 @@
 "Variable product" = "Varyasyonlu ürün";
 
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
-"Variation #%1$@" = "Variation #%1$@";
+"Variation #%1$@" = "Varyasyon #%1$@";
 
 /* Text for the notice after creating the first variation. */
 "Variation created" = "Varyasyon oluşturuldu";
@@ -4231,7 +4231,7 @@
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "Bu URL’deki Jetpack sitesine bağlanamıyoruz. Yardım için bizimle iletişime geçin.";
 
 /* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
-"We're sorry, we couldn't find any order that match %@" = "We're sorry, we couldn't find any order that match %@";
+"We're sorry, we couldn't find any order that match %@" = "Üzgünüz, %@ ile eşleşen herhangi bir sipariş bulamadık";
 
 /* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */

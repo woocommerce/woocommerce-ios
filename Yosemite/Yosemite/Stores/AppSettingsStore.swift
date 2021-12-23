@@ -161,10 +161,6 @@ public class AppSettingsStore: Store {
             setOrderAddOnsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
             loadOrderAddOnsSwitchState(onCompletion: onCompletion)
-        case .setSimplePaymentsFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
-            setSimplePaymentsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
-        case .loadSimplePaymentsSwitchState(onCompletion: let onCompletion):
-            loadSimplePaymentsSwitchState(onCompletion: onCompletion)
         case .setOrderCreationFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
             setOrderCreationFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadOrderCreationSwitchState(onCompletion: let onCompletion):
@@ -191,8 +187,16 @@ public class AppSettingsStore: Store {
             setTelemetryLastReportedTime(siteID: siteID, time: time)
         case .getTelemetryInfo(siteID: let siteID, onCompletion: let onCompletion):
             getTelemetryInfo(siteID: siteID, onCompletion: onCompletion)
+        case let .setSimplePaymentsTaxesToggleState(siteID, isOn, onCompletion):
+            setSimplePaymentsTaxesToggleState(siteID: siteID, isOn: isOn, onCompletion: onCompletion)
+        case let .getSimplePaymentsTaxesToggleState(siteID, onCompletion):
+            getSimplePaymentsTaxesToggleState(siteID: siteID, onCompletion: onCompletion)
         case .resetGeneralStoreSettings:
             resetGeneralStoreSettings()
+        case .loadStripeInPersonPaymentsSwitchState(onCompletion: let onCompletion):
+            loadStripeInPersonPaymentsSwitchState(onCompletion: onCompletion)
+        case .setStripeInPersonPaymentsSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
+            setStripeInPersonPaymentsSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         }
     }
 }
@@ -268,26 +272,6 @@ private extension AppSettingsStore {
         onCompletion(.success(settings.isViewAddOnsSwitchEnabled))
     }
 
-    /// Loads the current SimplePayments beta feature switch state from `GeneralAppSettings`
-    ///
-    func loadSimplePaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
-        let settings = loadOrCreateGeneralAppSettings()
-        onCompletion(.success(settings.isSimplePaymentsSwitchEnabled))
-    }
-
-    /// Sets the provided SimplePayments beta feature switch state into `GeneralAppSettings`
-    ///
-    func setSimplePaymentsFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
-        do {
-            let settings = loadOrCreateGeneralAppSettings().copy(isSimplePaymentsSwitchEnabled: isEnabled)
-            try saveGeneralAppSettings(settings)
-            onCompletion(.success(()))
-        } catch {
-            onCompletion(.failure(error))
-        }
-
-    }
-
     /// Loads the current Order Creation beta feature switch state from `GeneralAppSettings`
     ///
     func loadOrderCreationSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
@@ -300,6 +284,26 @@ private extension AppSettingsStore {
     func setOrderCreationFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
         do {
             let settings = loadOrCreateGeneralAppSettings().copy(isOrderCreationSwitchEnabled: isEnabled)
+            try saveGeneralAppSettings(settings)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+
+    }
+
+    /// Loads the current WooCommerce Stripe Payment Gateway extension In-Person Payments beta feature switch state from `GeneralAppSettings`
+    ///
+    func loadStripeInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        onCompletion(.success(settings.isStripeInPersonPaymentsSwitchEnabled))
+    }
+
+    /// Sets the provided WooCommerce Stripe Payment Gateway extension In-Person Payments  beta feature switch state into `GeneralAppSettings`
+    ///
+    func setStripeInPersonPaymentsSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(isStripeInPersonPaymentsSwitchEnabled: isEnabled)
             try saveGeneralAppSettings(settings)
             onCompletion(.success(()))
         } catch {
@@ -364,8 +368,8 @@ private extension AppSettingsStore {
             return GeneralAppSettings(installationDate: nil,
                                       feedbacks: [:],
                                       isViewAddOnsSwitchEnabled: false,
-                                      isSimplePaymentsSwitchEnabled: false,
                                       isOrderCreationSwitchEnabled: false,
+                                      isStripeInPersonPaymentsSwitchEnabled: false,
                                       knownCardReaders: [],
                                       lastEligibilityErrorInfo: nil)
         }
@@ -828,6 +832,23 @@ private extension AppSettingsStore {
         } catch {
             DDLogError("⛔️ Deleting store settings file failed. Error: \(error)")
         }
+    }
+
+    // Simple Payments data
+
+    /// Sets the last state of the simple payments taxes toggle for a provided store.
+    ///
+    func setSimplePaymentsTaxesToggleState(siteID: Int64, isOn: Bool, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let newSettings = storeSettings.copy(areSimplePaymentTaxesEnabled: isOn)
+        setStoreSettings(settings: newSettings, for: siteID, onCompletion: onCompletion)
+    }
+
+    /// Get the last state of the simple payments taxes toggle for a provided store.
+    ///
+    func getSimplePaymentsTaxesToggleState(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(.success(storeSettings.areSimplePaymentTaxesEnabled))
     }
 }
 

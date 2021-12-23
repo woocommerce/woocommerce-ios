@@ -273,20 +273,19 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
         // When
         storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
             switch action {
-            case .installSitePlugin(_, _, let onCompletion):
-                onCompletion(.success(()))
-            case .activateSitePlugin(_, _, let onCompletion):
-                onCompletion(.success(()))
-            case .getPluginDetails(_, _, let onCompletion):
-                onCompletion(.failure(NSError(domain: "Not Found", code: 404)))
+            case .getPluginDetails(let siteID, let pluginName, let onCompletion):
+                let jetpack = SitePlugin.fake().copy(siteID: siteID, plugin: pluginName, status: .active)
+                onCompletion(.success(jetpack))
             default:
                 break
             }
         }
+        var checkConnectionInvokedCount = 0
         storesManager.whenReceivingAction(ofType: AccountAction.self) { [weak self] action in
             guard let self = self else { return }
             switch action {
             case .loadAndSynchronizeSite(_, _, _, let onCompletion):
+                checkConnectionInvokedCount += 1
                 let fetchedSite = Site.fake().copy(siteID: self.testSiteID,
                                                    isJetpackThePluginInstalled: true,
                                                    isJetpackConnected: true,
@@ -301,5 +300,6 @@ final class JetpackInstallStepsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.currentStep, .connection)
         XCTAssertTrue(viewModel.installFailed)
+        XCTAssertEqual(checkConnectionInvokedCount, 3) // 1 initial time plus 2 retries
     }
 }

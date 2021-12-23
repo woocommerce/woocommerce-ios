@@ -270,4 +270,55 @@ final class OrdersRemoteTests: XCTestCase {
         ]
         assertEqual(received, expected)
     }
+
+    func test_create_order_properly_encodes_status() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let status = OrderStatusEnum.onHold
+        let order = Order.fake().copy(status: status)
+
+        // When
+        remote.createOrder(siteID: 123, order: order, fields: [.status]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["status"] as? String)
+        assertEqual(received, status.rawValue)
+    }
+
+    func test_create_order_properly_encodes_custom_status() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let expectedStatusString = "backorder"
+        let status = OrderStatusEnum.custom(expectedStatusString)
+        let order = Order.fake().copy(status: status)
+
+        // When
+        remote.createOrder(siteID: 123, order: order, fields: [.status]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["status"] as? String)
+        assertEqual(received, expectedStatusString)
+    }
+
+    func test_create_order_properly_encodes_order_items() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let expectedQuantity: Int64 = 2
+        let orderItem = OrderItem.fake().copy(productID: 5, quantity: Decimal(expectedQuantity))
+        let order = Order.fake().copy(items: [orderItem])
+
+        // When
+        remote.createOrder(siteID: 123, order: order, fields: [.items]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["line_items"] as? [[String: AnyHashable]]).first
+        let expected: [String: Int64] = [
+            "product_id": orderItem.productID,
+            "quantity": expectedQuantity
+        ]
+        assertEqual(received, expected)
+    }
 }

@@ -4,6 +4,7 @@ import UIKit
 import WordPressAuthenticator
 import WordPressUI
 import Yosemite
+import Experiments
 
 
 typealias SelectStoreClosure = () -> Void
@@ -150,6 +151,7 @@ final class StorePickerViewController: UIViewController {
         switch configuration {
         case .login:
             startListeningToNotifications()
+            startABTesting()
         case .switchingStores:
             secondaryActionButton.isHidden = true
         case .listStores:
@@ -535,6 +537,15 @@ private extension StorePickerViewController {
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         present(fancyAlert, animated: true)
+    }
+
+    /// Refreshes the AB testing assignments (refresh is needed after a user logs in)
+    ///
+    func startABTesting() {
+        guard ServiceLocator.stores.isAuthenticated else {
+            return
+        }
+        ABTest.start()
     }
 }
 

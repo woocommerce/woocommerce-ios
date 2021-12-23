@@ -1,0 +1,144 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "queryParameters": {
+            "json": {
+                "equalTo": "true"
+            },
+            "path": {
+                "equalTo": "/wc/v3/system_status&_method=get"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "data": {
+                "active_plugins": [{
+                    "plugin": "akismet\/akismet.php",
+                    "name": "Akismet Anti-Spam",
+                    "version": "4.2.1",
+                    "version_latest": "4.2.1",
+                    "url": "https:\/\/akismet.com\/",
+                    "author_name": "Automattic",
+                    "author_url": "https:\/\/automattic.com\/wordpress-plugins\/",
+                    "network_activated": false
+                }, {
+                    "plugin": "amp\/amp.php",
+                    "name": "AMP",
+                    "version": "2.1.4",
+                    "version_latest": "2.1.4",
+                    "url": "https:\/\/amp-wp.org",
+                    "author_name": "AMP Project Contributors",
+                    "author_url": "https:\/\/github.com\/ampproject\/amp-wp\/graphs\/contributors",
+                    "network_activated": false
+                }, {
+                    "plugin": "coblocks\/class-coblocks.php",
+                    "name": "CoBlocks",
+                    "version": "2.19.1",
+                    "version_latest": "2.19.1",
+                    "url": "",
+                    "author_name": "GoDaddy",
+                    "author_url": "https:\/\/www.godaddy.com",
+                    "network_activated": false
+                }, {
+                    "plugin": "crowdsignal-forms\/crowdsignal-forms.php",
+                    "name": "Crowdsignal Forms",
+                    "version": "1.5.12",
+                    "version_latest": "1.5.12",
+                    "url": "https:\/\/crowdsignal.com\/crowdsignal-forms\/",
+                    "author_name": "Automattic",
+                    "author_url": "https:\/\/automattic.com\/",
+                    "network_activated": false
+                }, {
+                    "plugin": "full-site-editing\/full-site-editing-plugin.php",
+                    "name": "WordPress.com Editing Toolkit",
+                    "version": "3.20657",
+                    "version_latest": "3.20657",
+                    "url": "",
+                    "author_name": "Automattic",
+                    "author_url": "https:\/\/automattic.com\/wordpress-plugins\/",
+                    "network_activated": false
+                }, {
+                    "plugin": "gutenberg\/gutenberg.php",
+                    "name": "Gutenberg",
+                    "version": "12.0.1",
+                    "version_latest": "12.0.1",
+                    "url": "https:\/\/github.com\/WordPress\/gutenberg",
+                    "author_name": "Gutenberg Team",
+                    "author_url": "",
+                    "network_activated": false
+                }, {
+                    "plugin": "jetpack\/jetpack.php",
+                    "name": "Jetpack",
+                    "version": "10.4-a.9",
+                    "version_latest": "10.4-a.9",
+                    "url": "https:\/\/jetpack.com",
+                    "author_name": "Automattic",
+                    "author_url": "https:\/\/jetpack.com",
+                    "network_activated": false
+                }, {
+                    "plugin": "layout-grid\/index.php",
+                    "name": "Layout Grid",
+                    "version": "1.7.2",
+                    "version_latest": "1.7.2",
+                    "url": "",
+                    "author_name": "Automattic",
+                    "author_url": "https:\/\/automattic.com",
+                    "network_activated": false
+                }, {
+                    "plugin": "page-optimize\/page-optimize.php",
+                    "name": "Page Optimize",
+                    "version": "0.5.1",
+                    "version_latest": "0.5.1",
+                    "url": "https:\/\/wordpress.org\/plugins\/page-optimize\/",
+                    "author_name": "Automattic",
+                    "author_url": "http:\/\/automattic.com\/",
+                    "network_activated": false
+                }, {
+                    "plugin": "polldaddy\/polldaddy.php",
+                    "name": "Crowdsignal Polls &amp; Ratings",
+                    "version": "3.0.1",
+                    "version_latest": "3.0.1",
+                    "url": "http:\/\/wordpress.org\/extend\/plugins\/polldaddy\/",
+                    "author_name": "Automattic, Inc.",
+                    "author_url": "",
+                    "network_activated": false
+                }, {
+                    "plugin": "woocommerce-payments\/woocommerce-payments.php",
+                    "name": "WooCommerce Payments",
+                    "version": "3.3.0",
+                    "version_latest": "3.3.0",
+                    "url": "https:\/\/woocommerce.com\/payments\/",
+                    "author_name": "Automattic",
+                    "author_url": "https:\/\/woocommerce.com\/",
+                    "network_activated": false
+                }, {
+                    "plugin": "woocommerce\/woocommerce.php",
+                    "name": "WooCommerce",
+                    "version": "5.9.0",
+                    "version_latest": "5.9.0",
+                    "url": "https:\/\/woocommerce.com\/",
+                    "author_name": "Automattic",
+                    "author_url": "https:\/\/woocommerce.com",
+                    "network_activated": false
+                }],
+                "inactive_plugins": [{
+                    "plugin": "classic-editor\/classic-editor.php",
+                    "name": "Classic Editor",
+                    "version": "1.6.2",
+                    "version_latest": "1.6.2",
+                    "url": "https:\/\/wordpress.org\/plugins\/classic-editor\/",
+                    "author_name": "WordPress Contributors",
+                    "author_url": "https:\/\/github.com\/WordPress\/classic-editor\/",
+                    "network_activated": false
+                }]
+            }
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

@@ -113,4 +113,9 @@ extension XCUIElement {
 
         startCoordinate.press(forDuration: 0.01, thenDragTo: destination)
     }
+
+    public func getTextVisibilityCount(text: String) throws -> Int {
+        let predicate = NSPredicate(format: "label CONTAINS[c] %@", text)
+        return XCUIApplication().staticTexts.containing(predicate).count
+    }
 }

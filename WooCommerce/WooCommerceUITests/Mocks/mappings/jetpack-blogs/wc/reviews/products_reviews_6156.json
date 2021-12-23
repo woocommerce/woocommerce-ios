@@ -1,0 +1,55 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "queryParameters": {
+            "json": {
+                "equalTo": "true"
+            },
+            "path": {
+                "matches": "/wc/v3/products/reviews/6156/(.*)"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+             "data": {
+                "id": 6156,
+                "date_created": "{{fnow offset='-5 days' format=customformat}}",
+                "date_created_gmt": "{{fnow offset='-5 days' format=customformat}}",
+                "product_id": 2130,
+                "status": "approved",
+                "reviewer": "Lucy Liu",
+                "reviewer_email": "lucy@example.com",
+                "review": "Great UV protection, I've dropped them a few times and they are still holding up perfectly.",
+                "rating": 5,
+                "verified": false,
+                "reviewer_avatar_urls": {
+                    "24": "https:\/\/secure.gravatar.com\/avatar\/7c07b96537fbe2512c7a08fce2f431e4?s=24&d=identicon&r=g",
+                    "48": "https:\/\/secure.gravatar.com\/avatar\/7c07b96537fbe2512c7a08fce2f431e4?s=48&d=identicon&r=g",
+                    "96": "https:\/\/secure.gravatar.com\/avatar\/7c07b96537fbe2512c7a08fce2f431e4?s=96&d=identicon&r=g"
+                },
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews\/6156"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews"
+                    }],
+                    "up": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/2130"
+                    }],
+                    "reviewer": [{
+                        "embeddable": true,
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wp\/v2\/users\/742102"
+                    }]
+                }
+            }
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

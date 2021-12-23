@@ -68,7 +68,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var ordersData: UILabel!
     @IBOutlet private weak var revenueTitle: UILabel!
     @IBOutlet private weak var revenueData: UILabel!
-    @IBOutlet private weak var barChartView: BarChartView!
+    @IBOutlet private weak var barChartView: LineChartView!
     @IBOutlet private weak var lastUpdated: UILabel!
     @IBOutlet private weak var yAxisAccessibilityView: UIView!
     @IBOutlet private weak var xAxisAccessibilityView: UIView!
@@ -339,13 +339,13 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func configureBarChart() {
+        barChartView.marker = StoreStatsChartCircleMarker()
         barChartView.chartDescription?.enabled = false
         barChartView.dragEnabled = true
         barChartView.setScaleEnabled(false)
         barChartView.pinchZoomEnabled = false
         barChartView.rightAxis.enabled = false
         barChartView.legend.enabled = false
-        barChartView.drawValueAboveBarEnabled = true
         barChartView.noDataText = NSLocalizedString("No data available", comment: "Text displayed when no data is available for revenue chart.")
         barChartView.noDataFont = StyleManager.chartLabelFont
         barChartView.noDataTextColor = .textSubtle
@@ -593,7 +593,7 @@ private extension StoreStatsV4PeriodViewController {
 
 
     func chartSummaryString() -> String {
-        guard let dataSet = barChartView.barData?.dataSets.first as? BarChartDataSet, dataSet.count > 0 else {
+        guard let dataSet = barChartView.lineData?.dataSets.first as? LineChartDataSet, dataSet.count > 0 else {
             return barChartView.noDataText
         }
 
@@ -745,7 +745,6 @@ private extension StoreStatsV4PeriodViewController {
             return
         }
         barChartView.data = generateBarDataSet()
-        barChartView.fitBars = true
         barChartView.notifyDataSetChanged()
         if animateChart {
             barChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
@@ -763,34 +762,47 @@ private extension StoreStatsV4PeriodViewController {
         if lastUpdated != nil { lastUpdated.text = summaryDateUpdated }
     }
 
-    func generateBarDataSet() -> BarChartData? {
+    func generateBarDataSet() -> LineChartData? {
         guard !orderStatsIntervals.isEmpty else {
             return nil
         }
 
         var barCount = 0
         var barColors: [UIColor] = []
-        var dataEntries: [BarChartDataEntry] = []
+        var dataEntries: [ChartDataEntry] = []
         let currencyCode = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
         orderStatsIntervals.forEach { (item) in
-            let entry = BarChartDataEntry(x: Double(barCount), y: (item.revenueValue as NSDecimalNumber).doubleValue)
+            let entry = ChartDataEntry(x: Double(barCount), y: (item.revenueValue as NSDecimalNumber).doubleValue)
             let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
             let formattedAmount = currencyFormatter.formatHumanReadableAmount(String("\(item.revenueValue)"),
                                                                                 with: currencyCode,
                                                                                 roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"
-            barColors.append(.chartDataBar)
+            barColors.append(Constants.chartLineColor)
             dataEntries.append(entry)
             barCount += 1
         }
 
-        let dataSet = BarChartDataSet(entries: dataEntries, label: "Data")
+        let dataSet = LineChartDataSet(entries: dataEntries, label: "Data")
+        dataSet.drawCirclesEnabled = false
         dataSet.colors = barColors
+        dataSet.lineWidth = Constants.chartLineWidth
         dataSet.highlightEnabled = true
-        dataSet.highlightColor = .chartDataBarHighlighted
-        dataSet.highlightAlpha = Constants.chartHighlightAlpha
+        dataSet.highlightColor = Constants.chartHighlightLineColor
+        dataSet.highlightLineWidth = Constants.chartHighlightLineWidth
         dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
-        return BarChartData(dataSet: dataSet)
+        dataSet.drawHorizontalHighlightIndicatorEnabled = false
+
+        // Gradient that fills the area to the baseline.
+        let gradientColors = [Constants.chartGradientBottomColor.cgColor, Constants.chartGradientTopColor.cgColor] as CFArray
+        let gradientColorSpace = CGColorSpaceCreateDeviceRGB()
+        let locations: [CGFloat] = [0.0, 1.0]
+        if let gradient = CGGradient(colorsSpace: gradientColorSpace, colors: gradientColors, locations: locations) {
+            dataSet.fill = .init(linearGradient: gradient, angle: 90.0)
+            dataSet.fillAlpha = 1.0
+            dataSet.drawFilledEnabled = true
+        }
+        return LineChartData(dataSet: dataSet)
     }
 
     func formattedAxisPeriodString(for item: OrderStatsV4Interval) -> String {
@@ -814,12 +826,22 @@ private extension StoreStatsV4PeriodViewController {
         static let chartAnimationDuration: TimeInterval = 0.75
         static let chartExtraRightOffset: CGFloat       = 25.0
         static let chartExtraTopOffset: CGFloat         = 20.0
-        static let chartHighlightAlpha: CGFloat         = 1.0
+        static let chartLineWidth: CGFloat = 2.0
+        static let chartHighlightLineWidth: CGFloat = 1.5
 
         static let chartMarkerInsets: UIEdgeInsets      = UIEdgeInsets(top: 5.0, left: 2.0, bottom: 5.0, right: 2.0)
         static let chartMarkerMinimumSize: CGSize       = CGSize(width: 50.0, height: 30.0)
         static let chartMarkerArrowSize: CGSize         = CGSize(width: 8, height: 6)
 
         static let chartXAxisGranularity: Double        = 1.0
+
+        static var chartLineColor: UIColor {
+            UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
+                    dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
+        }
+        static let chartHighlightLineColor: UIColor = .accent
+        static let chartGradientTopColor: UIColor = UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade50).withAlphaComponent(0.1),
+                                                            dark: UIColor(red: 204.0/256, green: 204.0/256, blue: 204.0/256, alpha: 0.3))
+        static let chartGradientBottomColor: UIColor = .clear.withAlphaComponent(0)
     }
 }

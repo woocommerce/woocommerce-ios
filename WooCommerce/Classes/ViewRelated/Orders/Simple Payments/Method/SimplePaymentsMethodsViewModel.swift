@@ -4,7 +4,6 @@ import Combine
 import UIKit
 
 import protocol Storage.StorageManagerType
-import StoreKit
 
 /// ViewModel for the `SimplePaymentsMethods` view.
 ///

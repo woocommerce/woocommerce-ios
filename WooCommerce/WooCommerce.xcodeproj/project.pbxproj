@@ -383,10 +383,6 @@
 		02F6800925807CD300C3BAD2 /* GridStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F6800825807CD300C3BAD2 /* GridStackView.swift */; };
 		02F843DA273646A30017FE12 /* JetpackBenefitsBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F843D9273646A30017FE12 /* JetpackBenefitsBanner.swift */; };
 		02FE89C7231FAA4100E85EF8 /* MainTabBarControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */; };
-		03FBDA9D263AD49200ACE257 /* CouponManagementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDA9C263AD49100ACE257 /* CouponManagementViewController.swift */; };
-		03FBDAA3263AED2F00ACE257 /* CouponManagementViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03FBDAA2263AED2F00ACE257 /* CouponManagementViewController.xib */; };
-		03FBDAF2263EE47C00ACE257 /* CouponManagementListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDAF1263EE47C00ACE257 /* CouponManagementListViewModel.swift */; };
-		03FBDAFD263EE4E800ACE257 /* CouponManagementListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDAFC263EE4E700ACE257 /* CouponManagementListViewModelTests.swift */; };
 		031B10E3274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031B10E2274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift */; };
 		035C6DEB273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */; };
 		035F2308275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */; };
@@ -394,6 +390,10 @@
 		039D948F276113490044EF38 /* UIView+SuperviewConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */; };
 		03AA165E2719B7EF005CCB7B /* ReceiptActionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AA165D2719B7EF005CCB7B /* ReceiptActionCoordinator.swift */; };
 		03AA16602719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AA165F2719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift */; };
+		03FBDA9D263AD49200ACE257 /* CouponManagementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDA9C263AD49100ACE257 /* CouponManagementViewController.swift */; };
+		03FBDAA3263AED2F00ACE257 /* CouponManagementViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03FBDAA2263AED2F00ACE257 /* CouponManagementViewController.xib */; };
+		03FBDAF2263EE47C00ACE257 /* CouponManagementListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDAF1263EE47C00ACE257 /* CouponManagementListViewModel.swift */; };
+		03FBDAFD263EE4E800ACE257 /* CouponManagementListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDAFC263EE4E700ACE257 /* CouponManagementListViewModelTests.swift */; };
 		247CE89C2583402A00F9D9D1 /* Embassy in Frameworks */ = {isa = PBXBuildFile; productRef = 247CE89B2583402A00F9D9D1 /* Embassy */; };
 		247CE8A6258340E600F9D9D1 /* ScreenshotImages.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 247CE8A5258340E600F9D9D1 /* ScreenshotImages.xcassets */; };
 		24C5AC7625A53021008FD769 /* Embassy in Frameworks */ = {isa = PBXBuildFile; productRef = 247CE89B2583402A00F9D9D1 /* Embassy */; };
@@ -1406,6 +1406,7 @@
 		DE1B030E268DD01A00804330 /* ReviewOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */; };
 		DE1B0310268EB2FB00804330 /* ReviewOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */; };
 		DE23CFFA27462D8F003BE54E /* JetpackInstallIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE23CFF927462D8F003BE54E /* JetpackInstallIntroView.swift */; };
+		DE26B5292775C76C00A2EA0A /* MockSyncingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE26B5282775C76B00A2EA0A /* MockSyncingCoordinator.swift */; };
 		DE279BA426E9C4DC002BA963 /* ShippingLabelPackagesForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BA326E9C4DC002BA963 /* ShippingLabelPackagesForm.swift */; };
 		DE279BA626E9C582002BA963 /* ShippingLabelPackagesFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BA526E9C582002BA963 /* ShippingLabelPackagesFormViewModel.swift */; };
 		DE279BA826E9C8E3002BA963 /* ShippingLabelSinglePackage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BA726E9C8E3002BA963 /* ShippingLabelSinglePackage.swift */; };
@@ -1944,10 +1945,6 @@
 		02F6800825807CD300C3BAD2 /* GridStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridStackView.swift; sourceTree = "<group>"; };
 		02F843D9273646A30017FE12 /* JetpackBenefitsBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackBenefitsBanner.swift; sourceTree = "<group>"; };
 		02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarControllerTests.swift; sourceTree = "<group>"; };
-		03FBDA9C263AD49100ACE257 /* CouponManagementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponManagementViewController.swift; sourceTree = "<group>"; };
-		03FBDAA2263AED2F00ACE257 /* CouponManagementViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CouponManagementViewController.xib; sourceTree = "<group>"; };
-		03FBDAF1263EE47C00ACE257 /* CouponManagementListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponManagementListViewModel.swift; sourceTree = "<group>"; };
-		03FBDAFC263EE4E700ACE257 /* CouponManagementListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponManagementListViewModelTests.swift; sourceTree = "<group>"; };
 		031B10E2274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectionFailedUpdateAddress.swift; sourceTree = "<group>"; };
 		035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareUpdateTypeProperty.swift; sourceTree = "<group>"; };
 		035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectingFailedUpdatePostalCode.swift; sourceTree = "<group>"; };
@@ -1955,6 +1952,10 @@
 		039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SuperviewConstraints.swift"; sourceTree = "<group>"; };
 		03AA165D2719B7EF005CCB7B /* ReceiptActionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptActionCoordinator.swift; sourceTree = "<group>"; };
 		03AA165F2719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptActionCoordinatorTests.swift; sourceTree = "<group>"; };
+		03FBDA9C263AD49100ACE257 /* CouponManagementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponManagementViewController.swift; sourceTree = "<group>"; };
+		03FBDAA2263AED2F00ACE257 /* CouponManagementViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CouponManagementViewController.xib; sourceTree = "<group>"; };
+		03FBDAF1263EE47C00ACE257 /* CouponManagementListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponManagementListViewModel.swift; sourceTree = "<group>"; };
+		03FBDAFC263EE4E700ACE257 /* CouponManagementListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponManagementListViewModelTests.swift; sourceTree = "<group>"; };
 		247CE8A5258340E600F9D9D1 /* ScreenshotImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ScreenshotImages.xcassets; sourceTree = "<group>"; };
 		24C579D124F476300076E1B4 /* Woo-Alpha.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Woo-Alpha.entitlements"; sourceTree = "<group>"; };
 		24F98C4F2502AEE200F49B68 /* EventLogging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventLogging.swift; sourceTree = "<group>"; };
@@ -2971,6 +2972,7 @@
 		DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewOrderViewController.xib; sourceTree = "<group>"; };
 		DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModel.swift; sourceTree = "<group>"; };
 		DE23CFF927462D8F003BE54E /* JetpackInstallIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallIntroView.swift; sourceTree = "<group>"; };
+		DE26B5282775C76B00A2EA0A /* MockSyncingCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockSyncingCoordinator.swift; sourceTree = "<group>"; };
 		DE279BA326E9C4DC002BA963 /* ShippingLabelPackagesForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackagesForm.swift; sourceTree = "<group>"; };
 		DE279BA526E9C582002BA963 /* ShippingLabelPackagesFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackagesFormViewModel.swift; sourceTree = "<group>"; };
 		DE279BA726E9C8E3002BA963 /* ShippingLabelSinglePackage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelSinglePackage.swift; sourceTree = "<group>"; };
@@ -4073,6 +4075,16 @@
 			path = "Shipping Label";
 			sourceTree = "<group>";
 		};
+		02F843D8273646190017FE12 /* JetpackConnectionPackageSites */ = {
+			isa = PBXGroup;
+			children = (
+				02F843D9273646A30017FE12 /* JetpackBenefitsBanner.swift */,
+				02A9BCD32737DE0D00159C79 /* JetpackBenefitsView.swift */,
+				02A9BCD52737F73C00159C79 /* JetpackBenefitItem.swift */,
+			);
+			path = JetpackConnectionPackageSites;
+			sourceTree = "<group>";
+		};
 		03FBDA9B263AD47200ACE257 /* Coupons */ = {
 			isa = PBXGroup;
 			children = (
@@ -4089,16 +4101,6 @@
 				03FBDAFC263EE4E700ACE257 /* CouponManagementListViewModelTests.swift */,
 			);
 			path = Coupons;
-			sourceTree = "<group>";
-		};
-		02F843D8273646190017FE12 /* JetpackConnectionPackageSites */ = {
-			isa = PBXGroup;
-			children = (
-				02F843D9273646A30017FE12 /* JetpackBenefitsBanner.swift */,
-				02A9BCD32737DE0D00159C79 /* JetpackBenefitsView.swift */,
-				02A9BCD52737F73C00159C79 /* JetpackBenefitItem.swift */,
-			);
-			path = JetpackConnectionPackageSites;
 			sourceTree = "<group>";
 		};
 		2611EE57243A46C500A74490 /* Categories */ = {
@@ -5489,6 +5491,7 @@
 				D83A6A7923792B2400419D48 /* UIColor+Muriel-Tests.swift */,
 				CE50345621B1F26C007573C6 /* ZendeskManagerTests.swift */,
 				0277AEA4256CAA4200F45C4A /* MockShippingLabel.swift */,
+				DE26B5282775C76B00A2EA0A /* MockSyncingCoordinator.swift */,
 				CC0324A2263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift */,
 				0277AEAA256CAA5300F45C4A /* MockShippingLabelAddress.swift */,
 				0211252D25773FB00075AD2A /* MockAggregateOrderItem.swift */,
@@ -8092,7 +8095,7 @@
 				DEC51A9D274F8528009F3DF4 /* JetpackInstallStepsViewModel.swift in Sources */,
 				455DC3A327393C7E00D4644C /* OrderDatesFilterViewController.swift in Sources */,
 				45B6F4EF27592A4000C18782 /* ReviewsView.swift in Sources */,
-				028BAC4222F30B05008BB4AF /* StoreStatsV4PeriodViewController.swift in Sources */,
+				028BAC4222F30B05008BB4AF /* OldStoreStatsV4PeriodViewController.swift in Sources */,
 				028BAC4222F30B05008BB4AF /* OldStoreStatsV4PeriodViewController.swift in Sources */,
 				268FD44727580A81008FDF9B /* CollectOrderPaymentUseCase.swift in Sources */,
 				740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */,
@@ -8987,6 +8990,7 @@
 				A650BE872578E76600C655E0 /* MockStorageManager.swift in Sources */,
 				029700EF24FE38F000D242F8 /* ScrollWatcherTests.swift in Sources */,
 				0236BCA425087B660043EB43 /* ProductFormRemoteActionUseCaseTests.swift in Sources */,
+				DE26B5292775C76C00A2EA0A /* MockSyncingCoordinator.swift in Sources */,
 				DE126D0F26CA71E8007F901D /* ShippingLabelCustomsFormInputViewModelTests.swift in Sources */,
 				0277AE9B256CA8A200F45C4A /* AggregatedShippingLabelOrderItemsTests.swift in Sources */,
 				0225C42A24768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift in Sources */,

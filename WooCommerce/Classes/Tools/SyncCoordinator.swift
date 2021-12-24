@@ -18,13 +18,12 @@ protocol SyncingCoordinatorDelegate: AnyObject {
 
 /// SyncingCoordinatorProtocol: Used for providing mocks in testing
 ///
-protocol SyncingCoordinatorProtocol: class {
+protocol SyncingCoordinatorProtocol: AnyObject {
     func ensureNextPageIsSynchronized(lastVisibleIndex: Int)
     func resynchronize(reason: String?, onCompletion: (() -> Void)?)
     func synchronizeFirstPage(reason: String?, onCompletion: (() -> Void)?)
     var delegate: SyncingCoordinatorDelegate? { get set }
 }
-
 
 /// SyncingCoordinator: Encapsulates all of the "Last Refreshed / Should Refresh" Paging Logic.
 ///

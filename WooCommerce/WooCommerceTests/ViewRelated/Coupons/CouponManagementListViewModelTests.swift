@@ -99,8 +99,6 @@ final class CouponManagementListViewModelTests: XCTestCase {
             XCTAssertEqual(siteID, 123)
             XCTAssertEqual(pageNumber, 4)
             XCTAssertEqual(pageSize, 8)
-        default:
-            XCTFail("Expected action to be .synchronizeCoupons")
         }
     }
 

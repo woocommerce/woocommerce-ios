@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 
 /// Enum containing the available moderation statuses

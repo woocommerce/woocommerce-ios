@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 @testable import CocoaLumberjack
+@testable import Hardware
 
 final class ServiceLocatorTests: XCTestCase {
 
@@ -36,12 +37,6 @@ final class ServiceLocatorTests: XCTestCase {
 
     func test_ServiceLocator_provides_pushNotificationsManager() {
         XCTAssertNotNil(ServiceLocator.pushNotesManager)
-    }
-
-    func test_pushNotesManager_defaults_to_PushNotificationsManager() {
-        let pushNotes = ServiceLocator.pushNotesManager
-
-        XCTAssertTrue(pushNotes is PushNotificationsManager)
     }
 
     func test_ServiceLocator_provides_authenticationManager() {
@@ -83,5 +78,35 @@ final class ServiceLocatorTests: XCTestCase {
         let fileLogger = ServiceLocator.fileLogger
 
         XCTAssertTrue(fileLogger is DDFileLogger)
+    }
+
+    func test_ServiceLocator_provides_card_reader() {
+       XCTAssertNotNil(ServiceLocator.cardReaderService)
+   }
+
+    func test_card_reader_service_defaults_to_Stripe() {
+       let cardReader = ServiceLocator.cardReaderService
+
+        XCTAssertTrue(cardReader is StripeCardReaderService)
+   }
+
+    func test_ServiceLocator_provides_receipt_printer() {
+       XCTAssertNotNil(ServiceLocator.receiptPrinterService)
+   }
+
+    func test_receipt_printer_service_defaults_to_airprint() {
+       let cardReader = ServiceLocator.receiptPrinterService
+
+        XCTAssertTrue(cardReader is AirPrintReceiptPrinterService)
+   }
+
+    func test_ServiceLocator_provides_crash_logging() {
+        XCTAssertNotNil(ServiceLocator.crashLogging)
+    }
+
+    func test_crash_logging_defaults_to_woo_crash_logging() {
+        let crashLogging = ServiceLocator.crashLogging
+        XCTAssertTrue(crashLogging is WooCrashLoggingStack)
+
     }
 }

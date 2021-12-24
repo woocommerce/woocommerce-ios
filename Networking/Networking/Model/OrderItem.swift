@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents an Order's Item Entity.
 ///
-public struct OrderItem: Decodable, Hashable, GeneratedFakeable {
+public struct OrderItem: Decodable, Equatable, Hashable, GeneratedFakeable, GeneratedCopiable {
     public let itemID: Int64
     public let name: String
     public let productID: Int64
@@ -113,7 +113,7 @@ public struct OrderItem: Decodable, Hashable, GeneratedFakeable {
 
 /// Defines all of the OrderItem's CodingKeys.
 ///
-private extension OrderItem {
+extension OrderItem {
 
     enum CodingKeys: String, CodingKey {
         case itemID         = "id"
@@ -137,7 +137,7 @@ private extension OrderItem {
 
 // MARK: - Comparable Conformance
 //
-extension OrderItem: Equatable, Comparable {
+extension OrderItem: Comparable {
     public static func < (lhs: OrderItem, rhs: OrderItem) -> Bool {
         return lhs.itemID < rhs.itemID ||
             (lhs.itemID == rhs.itemID && lhs.productID < rhs.productID) ||

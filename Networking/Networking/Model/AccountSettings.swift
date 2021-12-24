@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// WordPress.com Account Settings
 ///

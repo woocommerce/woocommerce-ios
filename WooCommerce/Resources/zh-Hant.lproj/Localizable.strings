@@ -1,12 +1,24 @@
-/* Translation-Revision-Date: 2021-04-01 09:54:04+0000 */
+/* Translation-Revision-Date: 2021-12-15 11:32:07+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
 
 /* No comment provided by engineer. */
+"#%1$@" = "#%1$@";
+
+/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
-/* Format for each Product attribute */
+/* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"%.0f%% complete" = "%.0f%% complete";
+
+/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
+"%1$@" = "%1$@";
+
+/* Format for each Product attribute in singular form */
+"%1$@ (%2$ld option)" = "%1$@ (%2$ld 個選項)";
+
+/* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld 選項)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -18,7 +30,12 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (向顧客顯示)";
 
-/* Label about product's inventory stock status shown on Products tab */
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string, - which should be translated separately and considered part of this sentence. */
+"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ about accepting payments with your mobile device and ordering card readers";
+
+/* Label about product's inventory stock status shown during order creation
+   Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ 尚有庫存";
 
 /* Review title. Reads as {Review author} left a review */
@@ -29,6 +46,9 @@
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "已提出 %1$@ 退款要求 (%2$@)";
+
+/* Total value for the selected rates in Shipping Labels > Carrier and Rates */
+"%1$@ total" = "總共 %1$@ 個";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "已在 %1$@ 收到 %2$@ 付款";
@@ -42,11 +62,41 @@
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
 
+/* Card reader battery level as an integer percentage */
+"%1$@%% Battery" = "電池電量：%1$@%%";
+
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
+/* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
+"%1$@・%2$@" = "%1$@・%2$@";
+
 /* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
+
+/* Singular format of number of business day in Shipping Labels > Carrier and Rates */
+"%1$d business day" = "%1$d 個工作天";
+
+/* Plural format of number of business days in Shipping Labels > Carrier and Rates */
+"%1$d business days" = "%1$d 個工作天";
+
+/* For example: `1 item` in Shipping Label package row */
+"%1$d item" = "%1$d 件商品";
+
+/* For example: `5 items` in Shipping Label package row */
+"%1$d items" = "%1$d 件商品";
+
+/* Total number of items and packages in Shipping Label form. */
+"%1$d items in %2$d packages" = "%2$d 包裹中有 %1$d 項商品";
+
+/* Number of rates selected in Shipping Labels > Carrier and Rates */
+"%1$d rates selected" = "已選取 %1$d 個費率";
+
+/* Format for the variations detail row in singular form. Reads, `1 variation` */
+"%1$ld variation" = "%1$ld 個款式";
+
+/* Format for the variations detail row in plural form. Reads, `2 variations` */
+"%1$ld variations" = "%1$ld 個款式";
 
 /* 1 Item */
 "%@ Item" = "%@ 個品項";
@@ -62,6 +112,12 @@
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "已在 %1$@ 收到 %2$@ 付款";
+
+/* For example: `1 item` in Aggregated Product List */
+"%d item" = "%d 件商品";
+
+/* For example: `5 items` in Aggregated Product List */
+"%d items" = "%d 件商品";
 
 /* Title of the label indicating that there are multiple items to refund. */
 "%d items selected" = "已選取 %d 個項目";
@@ -110,14 +166,29 @@
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "請在印表機設定中**確認 AirPrint 已啟用**。 你可能需要直接在印表機上進行這項設定。\n\n詳情請參閱印表機隨附的說明文件。";
 
+/* Number of item in packages in Shipping Labels in singular form. Reads like - 1 items */
+"- %1$d item" = "- %1$d 項目";
+
+/* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
+"- %1$d items" = "- %1$d 個項目";
+
+/* Settings > Manage Card Reader > Connect > Help hint number 1 */
+"1" = "1";
+
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "已選取　1 件商品";
 
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "已選取 1 個項目";
 
-/* Shown when there are more than 99 items of something (e.g. Processing Orders). */
-"99+" = "99 筆以上";
+/* Settings > Manage Card Reader > Connect > Help hint number 2 */
+"2" = "2";
+
+/* Settings > Manage Card Reader > Connect > Help hint number 3 */
+"3" = "3";
+
+/* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
+"99+" = "99+";
 
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "關於產品的簡短摘錄";
@@ -128,6 +199,15 @@
 /* Description of the Action sheet option when the user wants to change the Product type to grouped product */
 "A collection of related products" = "相關商品系列";
 
+/* Main message on the Print Customs Invoice screen of Shipping Label flow */
+"A customs form must be printed and included on this international shipment" = "此國際貨件須列印並附上海關表格";
+
+/* Error message when there was a network error checking In-Person Payments requirements */
+"A network error occurred. Please check your connection and try again." = "網路發生錯誤。 請檢查你的連線並再試一次。";
+
+/* Error shown in Shipping Label Origin Address validation for phone number field for international shipment */
+"A phone number is required because this shipment requires a customs form" = "必須提供電話號碼，因為此貨件需要提交海關表格";
+
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "A product with variations like color or size" = "設有變化版本 (顏色或尺寸) 的商品";
 
@@ -137,8 +217,14 @@
 /* No comment provided by engineer. */
 "A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "不會發放退款給顧客。 你需要透過 Stripe 手動退款。";
 
-/* Description of the Action sheet option when the user wants to change the Product type to simple product */
-"A unique item to sell" = "獨特的銷售商品";
+/* Message explaining that the site may have an invalid SSL certificate. */
+"A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "無法與該網站建立安全連線。 請確認你的網站具有效的 SSL 憑證。";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
+"A unique digital product like services, downloadable books, music or videos" = "獨特的數位產品，例如各式服務、可下載的書籍、音樂或影片";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
+"A unique physical product that you may have to ship to the customer" = "需要運送給顧客的獨特實體產品";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "需要有效的電子郵件地址才能傳送驗證連結。請返回上一個畫面，並提供有效的電子郵件地址。";
@@ -155,8 +241,17 @@
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "關於此應用程式";
 
+/* Title for the error screen when WooCommerce Payments is installed but not activated */
+"Activate WooCommerce Payments" = "啟用 WooCommerce Payments";
+
+/* Name of the activation Jetpack plugin step */
+"Activating" = "啟用";
+
 /* Application's Active State */
 "Active" = "啟用";
+
+/* Title for table view section of active plugins */
+"Active Plugins" = "啟用中的外掛程式";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "已啟用，關閉自動更新";
@@ -168,9 +263,15 @@
    A button title used for a unit test - Action for adding a Products' downloadable files' info remotely - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "新增";
 
+/* Title on empty state button when the product has no attributes and variations */
+"Add Attributes" = "新增屬性";
+
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "新增類別";
+
+/* Title for the button to add the Customer Provided Note in Order Details */
+"Add Customer Note" = "新增顧客備註";
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "新增可下載的檔案";
@@ -181,6 +282,12 @@
 /* Action to add new attribute on the Product Attributes screen */
 "Add New Attribute" = "新增屬性";
 
+/* Add New Package screen title in Shipping Label flow */
+"Add New Package" = "新增包裹";
+
+/* Title text of the button that adds a note when creating a simple payment */
+"Add Note" = "新增備註";
+
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "新增相片";
 
@@ -190,20 +297,29 @@
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "新增價格";
 
-/* Action to add product on the placeholder overlay when there are no products on the Products tab */
+/* Action to add product on the placeholder overlay when there are no products on the Products tab
+   Title for the screen to add a product to an order */
 "Add Product" = "新增商品";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
 "Add Products" = "新增商品";
 
+/* Title for the button to add the Shipping Address in Order Details */
+"Add Shipping Address" = "新增運送地址";
+
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "新增追蹤";
 
-/* Action to add new variation on the variations list
-   Title on add variation button when there are no variations */
+/* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "新增款式";
+
+/* Placeholder in Shipping Label form for the Payment Method row. */
+"Add a new credit card" = "新增信用卡";
+
+/* Navigates to a screen to create a full manual order */
+"Add a new order" = "新增訂單";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -221,8 +337,14 @@
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "新增追蹤";
 
+/* Button title in the Shipping Label Payment Method screen if there is an existing payment method */
+"Add another credit card" = "新增其他信用卡";
+
 /* Add Product Attribute screen navigation title */
 "Add attribute" = "新增屬性";
+
+/* Button title in the Shipping Label Payment Method screen */
+"Add credit card" = "新增信用卡";
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "在新增每個選項後按下 Enter 鍵";
@@ -234,6 +356,12 @@
 /* Voiceover accessibility label for the tags field in product tags. */
 "Add new tags, separated by commas." = "新增標籤，並以逗號作為分隔。";
 
+/* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
+"Add price to your variations to make them visible on your store" = "為款式新增價格以顯示於商店中";
+
+/* Title text of the button that adds a product when creating a new order */
+"Add product" = "新增商品";
+
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "新增產品連結";
 
@@ -243,19 +371,26 @@
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "遠端新增商品的「可下載檔案」資訊";
 
+/* Navigates to a screen to create a simple payments order */
+"Add simple payments order" = "新增輕鬆付款訂單";
+
+/* Option to add item to new package on Package Details screen of Shipping Label flow. */
+"Add to new package" = "加入新包裹";
+
 /* Title for adding variations row on Product main screen for a variable product */
 "Add variations" = "新增款式類型";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "新增重量和尺寸";
 
-/* Title on the variations list screen when there are no variations */
-"Add your first variation" = "新增第一個款式";
-
 /* Text field address in Shipping Label Address Validation */
 "Address" = "地址";
 
-/* Text field address 2 in Shipping Label Address Validation */
+/* Text field address 1 in Edit Address Form */
+"Address 1" = "地址 1";
+
+/* Text field address 2 in Edit Address Form
+   Text field address 2 in Shipping Label Address Validation */
 "Address 2" = "地址行 2";
 
 /* Shipping Label Suggested Address entered placeholder */
@@ -267,8 +402,14 @@
 /* Error showed in Shipping Label Address Validation for the address field */
 "Address missing" = "未填寫地址";
 
+/* Notice text after updating the shipping or billing address */
+"Address successfully updated." = "已成功更新地址。";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "新增訂單追蹤。";
+
+/* Adult signature required in Shipping Labels > Carrier and Rates */
+"Adult signature required (+%1$@)" = "需成人簽名 (+%1$@)";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "檢視應用程式狀態的進階工具";
@@ -276,17 +417,23 @@
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
 
-/* Title for the second page in the Orders tab. */
+/* Header bar label on top of order list when no filters are applied */
 "All Orders" = "全部訂單";
 
-/* The message shown in the Orders → Processing tab if the list is empty. */
-"All orders have been fulfilled" = "所有訂單均已完成";
+/* Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow */
+"All available packages have been activated" = "所有可用包裹均已啟用";
+
+/* Name of final step in Install Jetpack flow. */
+"All done" = "全部完成";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "已將所有評論標記為已讀";
 
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "允許";
+
+/* Subtitle of user profiles as part of Jetpack benefits. */
+"Allow multiple users to access WooCommerce Mobile." = "允許多位使用者存取 WooCommerce Mobile。";
 
 /* Display label for the product's inventory backorders setting option */
 "Allow, but notify customer" = "允許，但通知顧客";
@@ -318,8 +465,11 @@
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "可選擇在購買之後傳送備註給客戶";
 
-/* Product variation attribute description where the attribute is set to any value.
-   Title when there is no filter set. */
+/* Title of analytics as part of Jetpack benefits. */
+"Analytics" = "分析";
+
+/* Case Any in Order Filters for Order Statuses
+   Display label for all order statuses selected in Order Filters - Label for one of the filters in order date range - Product variation attribute description where the attribute is set to any value. - Title when there is no filter set. */
 "Any" = "任何";
 
 /* Format of a product variation attribute description where the attribute is set to any value.
@@ -379,6 +529,9 @@
    Title of the attributes row on Product Variation main screen */
 "Attributes" = "屬性";
 
+/* Primary text for the generate first variation screen */
+"Attributes added!" = "已新增屬性！";
+
 /* No comment provided by engineer. */
 "Authenticating" = "驗證中";
 
@@ -399,9 +552,21 @@
    Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "正在等待透過 %@ 支付的款項";
 
-/* Alert button title - dismisses alert, which cancels the log out attempt
-   Back button title. */
+/* Details section title in the Edit Address Form */
+"BILLING ADDRESS" = "帳單地址";
+
+/* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "上一步";
+
+/* Accessibility announcement message when device goes back online */
+"Back online" = "重新上線";
+
+/* Button to dismiss modal overlay. Presented to users after a payment has been successfully collected
+   Button to dismiss modal overlay. Presented to users after collecting a payment fails */
+"Back to Order" = "返回訂單";
+
+/* Text for the button to dismiss the store picker error screen */
+"Back to Sites" = "返回網站";
 
 /* Title of a button to dismiss the survey complete screen */
 "Back to store" = "返回商店";
@@ -416,7 +581,8 @@
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "長條數目 %1$i, %2$@,";
 
-/* Section header title for billing address in billing information */
+/* Section header title for billing address in billing information
+   Title for the Edit Billing Address Form */
 "Billing Address" = "帳單地址";
 
 /* Billing Information view Title */
@@ -425,8 +591,14 @@
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "封鎖引文";
 
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"Bluetooth permission required" = "需要藍牙權限";
+
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "粗體";
+
+/* Box package type, used to create a custom package in the Shipping Label flow */
+"Box" = "便利箱";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "按鈕文字";
@@ -440,6 +612,9 @@
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "註冊即代表你同意我們的「服務條款」。";
 
+/* Header for the Custom Packages section in Shipping Label Package listing */
+"CUSTOM PACKAGES" = "自訂包裹";
+
 /* Call phone number button title */
 "Call" = "致電";
 
@@ -450,14 +625,20 @@
 "Can Not Request Link" = "無法要求連結";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "取消";
+
+/* Display label for cancelled order status. */
+"Cancelled" = "已取消";
 
 /* Title of the alert when there is an error creating a new product category */
 "Cannot Add Category" = "無法新增類別";
 
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "無法新增標籤";
+
+/* The title of the alert when there is a generic error adding the package */
+"Cannot add package" = "無法新增包裹";
 
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
@@ -467,11 +648,24 @@
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "無法上傳圖片";
 
-/* Card reader settings screen title */
-"Card Readers" = "讀卡機";
+/* Detailed message shown in the Reviews tab if the list is empty
+   Detailed message shown on the Product Reviews screen if the list is empty */
+"Capture high-quality product reviews for your store." = "為你的商店擷取高品質的產品評論。";
+
+/* Card method title on the select payment method screen for simple payments */
+"Card" = "卡片";
+
+/* Navigates to Card Reader manual */
+"Card reader manual" = "讀卡機手冊";
+
+/* Navigation bar title of shipping label carrier and rates screen */
+"Carrier and Rates" = "貨運業者和費率";
 
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "貨運業者名稱";
+
+/* Cash method title on the select payment method screen for simple payments */
+"Cash" = "現金";
 
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
@@ -481,7 +675,7 @@
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "隨時隨地掌握最愛網站的最新動態並加入討論。";
 
 /* Edit product categories screen - Screen title
-   Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
+   Filter product categories screen - Screen title - Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
 "Categories" = "分類";
 
 /* Popup title for wrong SSL certificate. */
@@ -495,6 +689,9 @@
 
 /* Body of the alert when a user is changing the product type */
 "Changing the product type will modify some of the product data and delete all your attributes and variations" = "變更產品類型會修改部分商品資料，並刪除所有屬性和款式";
+
+/* Title text of the row that has a switch when creating a simple payment */
+"Charge Taxes" = "收取稅金";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "檢查輸入的 URL 是否有效";
@@ -511,29 +708,75 @@
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "選擇紙張大小";
 
+/* Navigation title on the shipping label country selector screen */
+"Choose a Country" = "選擇國家\/地區";
+
+/* Navigation title on the shipping label states of a country selector screen */
+"Choose a State" = "選擇州";
+
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "從裝置中選擇";
 
-/* Text field city in Shipping Label Address Validation */
+/* Opens action sheet to choose a type of a new order */
+"Choose new order type" = "選擇全新訂單類型";
+
+/* Heading text on the select payment method screen for simple payments */
+"Choose your payment method" = "選擇付款方式";
+
+/* Text field city in Edit Address Form
+   Text field city in Shipping Label Address Validation */
 "City" = "城市";
 
 /* Error showed in Shipping Label Address Validation for the city field */
 "City missing" = "未填寫城市";
 
+/* Action to add product on the placeholder overlay when no products match the filter on the Products tab
+   Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
+"Clear Filters" = "清除篩選條件";
+
 /* Button title for clearing all filters for the list. */
 "Clear all" = "全部清除";
+
+/* Text for the close button in the Add Product screen
+   Text for the close button in the Edit Address Form - Title of the Close action on the Jetpack Install view */
+"Close" = "關閉";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "收集資訊";
 
-/* Text field company in Shipping Label Address Validation */
+/* Text on the button that starts collecting a card present payment. */
+"Collect Payment" = "收取款項";
+
+/* Alert title when starting the collect payment flow without a user name. */
+"Collect payment" = "Collect payment";
+
+/* Alert title when starting the collect payment flow with a user name. */
+"Collect payment from %1$@" = "Collect payment from %1$@";
+
+/* Text field company in Edit Address Form
+   Text field company in Shipping Label Address Validation */
 "Company" = "公司";
 
-/* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
-"Composes a new email message to the billing customer." = "撰寫新的電子郵件訊息給帳單客戶。";
+/* Display label for completed order status. */
+"Completed" = "已完成";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "撰寫新訂單備註";
+
+/* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
+"Congratulations! Your reader is running the latest software" = "恭喜！ 你的讀卡機已在執行最新的軟體";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"Connect" = "連結";
+
+/* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
+"Connect Card Reader" = "連接讀卡機";
+
+/* Label for a button that when tapped, starts the process of connecting to a card reader */
+"Connect to Reader" = "連線至讀卡機";
+
+/* Settings > Manage Card Reader > Prompt user to connect their first reader */
+"Connect your card reader" = "連接讀卡機";
 
 /* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
 "Connect your store with Jetpack" = "將你的商店與 Jetpack 連結";
@@ -541,14 +784,32 @@
 /* Title shown when a user logs in with Google but no matching WordPress.com account is found */
 "Connected But…" = "已連線，但是…";
 
+/* Settings > Manage Card Reader > Connected Reader Table Section Heading */
+"Connected Reader" = "連接的讀卡機";
+
 /* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
 "Connected Store" = "連結的商店";
 
 /* Page title for the list of connected stores */
 "Connected Stores" = "連結的商店";
 
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
+"Connecting reader failed" = "連線至讀卡機失敗";
+
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "正在連線至 WordPress.com";
+
+/* Title label for modal dialog that appears when connecting to a card reader */
+"Connecting to reader" = "正在連線至讀卡機";
+
+/* Title when checking if WooCommerce Payments is supported */
+"Connecting to your account" = "連結你的帳號";
+
+/* Name of the step to connect the store to Jetpack */
+"Connecting your store" = "連結至你的商店";
+
+/* Contact Customer action in Shipping Label Address Validation. */
+"Contact Customer" = "聯絡客戶";
 
 /* Section header title for contact details in billing information */
 "Contact Details" = "聯絡詳細資料";
@@ -556,14 +817,27 @@
 /* Contact Email title */
 "Contact Email" = "聯絡電子郵件";
 
-/* Contact Support title */
+/* Contact Support title
+   Text for the button to contact support from the store picker error screen - The title of the button to contact support in the Error Loading Data banner */
 "Contact Support" = "聯絡支援團隊";
+
+/* Contact WooComerce Payments Support title */
+"Contact WooCommerce Payments Support" = "聯絡 WooCommerce Payments 支援團隊";
+
+/* Title of a button to contact support in the error screen for In-Person payments */
+"Contact us" = "聯絡我們";
 
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "在此處聯絡我們";
 
+/* Title for the Content Details row in Customs screen of Shipping Label flow */
+"Content Details" = "內容物詳細資訊";
+
+/* Title for the Content Type row in Customs screen of Shipping Label flow */
+"Content Type" = "內容物類型";
+
 /* Continue button inside every cell inside Create Shipping Label form
-   The button title text when there is a next step for logging in or signing up. - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
+   The button title text when there is a next step for logging in or signing up. - Title of continue button - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
 "Continue" = "繼續";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
@@ -620,11 +894,15 @@
 /* Error message when tag loading failed */
 "Couldn't load tags." = "無法載入標籤。";
 
-/* Text field country in Shipping Label Address Validation */
+/* Text field country in Edit Address Form
+   Text field country in Shipping Label Address Validation - Title to select country from the edit address screen */
 "Country" = "國家";
 
 /* Error showed in Shipping Label Address Validation for the country field */
 "Country missing" = "未填寫國家\/地區";
+
+/* Description for the Origin Country row in Customs screen of Shipping Label flow */
+"Country where the product was manufactured or assembled" = "產品製造或組裝的國家\/地區";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "當機偵錯選單";
@@ -632,18 +910,42 @@
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "立即當機";
 
+/* Button to create an order on the New Order screen */
+"Create" = "建立";
+
 /* The button title text for creating a new account. */
 "Create Account" = "建立帳號";
 
 /* Create Shipping Label form navigation title
-   Text on the button that starts shipping label creation */
+   Option to create new shipping label from the action sheet on Products section of Order Details screen - Text on the button that starts shipping label creation */
 "Create Shipping Label" = "建立運送標籤";
 
-/* My Store > Settings > Experimental features > Products */
-"Creating products" = "正在建立商品";
+/* Description of the Action sheet option when the user wants to create full manual order */
+"Create a new manual order" = "建立全新手動訂單";
+
+/* Description of the Action sheet option when the user wants to create Simple Payments order */
+"Create an order with minimal information" = "建立包含最少資訊的訂單";
+
+/* Button to create a new package in Shipping Label Package screen */
+"Create new package" = "建立新包裹";
+
+/* Action sheet option when the user wants to create full manual order */
+"Create order" = "建立訂單";
+
+/* The title of the shipping labels top banner in order details */
+"Create shipping labels from your device!" = "從你的裝置建立郵寄標籤！";
+
+/* Title on the variations list screen when there are no variations */
+"Create your first variation" = "建立第一個款式";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "信用卡";
+
+/* Selected credit card in Shipping Label form. %1$@ is a placeholder for the last four digits of the credit card. */
+"Credit card ending in %1$@" = "末碼是 %1$@ 的信用卡";
+
+/* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
+"Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "從以下 WordPress.com 帳號擷取信用卡：%1$@ <%2$@>";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
@@ -652,21 +954,65 @@
 /* Cell title: the current date. */
 "Current" = "最新";
 
+/* Error when the user tap on Country field in Shipping Label Address Validation */
+"Currently we support just the United States from mobile." = "我們目前只支援美國的手機使用者。";
+
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "自訂";
+
+/* Title text of the row that shows the provided amount when creating a simple payment */
+"Custom Amount" = "自訂金額";
 
 /* Add custom shipping carrier. Content of cell titled Shipping Carrier
    Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "自訂貨運業者";
 
-/* Customer info section title */
+/* Custom line index in Customs Form of Shipping Label flow */
+"Custom Line %1$d" = "自訂行 %1$d";
+
+/* Custom Package menu in Shipping Label Add New Package flow */
+"Custom Package" = "自訂包裹";
+
+/* Label for one of the filters in order date range
+   Navigation title of the orders filter selector screen for custom date range */
+"Custom Range" = "自訂範圍";
+
+/* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
+"Custom forms require a 10-digit phone number" = "海關表格要求填寫 10 位數電話號碼";
+
+/* Customer info section title
+   Customer info section title in Review Order screen */
 "Customer" = "顧客";
 
-/* Customer note section title */
+/* Customer note row title
+   Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
 "Customer Provided Note" = "顧客所提出的備註";
 
+/* Title of the banner notice in Shipping Labels -> Carrier and Rates */
+"Customer paid a %1$@ of %2$@ for shipping" = "客戶支付 %1$@ (%2$@) 運費";
+
+/* Navigation title for Customs screen in Shipping Label flow
+   Title of the cell Customs inside Create Shipping Label form */
+"Customs" = "海關";
+
+/* Title on the Print Customs Invoice screen of Shipping Label flow */
+"Customs form" = "海關表格";
+
+/* Subtitle of the cell Customs inside Create Shipping Label form when the form is completed */
+"Customs form completed" = "已填妥海關表格";
+
+/* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
+"Customs forms must be printed and included on these international shipments" = "這些國際貨件須列印並附上海關表格";
+
 /* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "在家使用手機列印郵寄標籤，不必在郵局排隊，還可享優惠費率！";
+"Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "在家使用行動裝置列印郵寄標籤，不必在郵局排隊，還可享優惠費率！";
+
+/* Details section title in the Edit Address Form */
+"DETAILS" = "詳細資訊";
+
+/* Navigation title of the orders filter selector screen for date range
+   Row title for filtering orders by date range. */
+"Date Range" = "日期範圍";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "出貨日期";
@@ -694,17 +1040,17 @@
 "Describe your product to your future customers..." = "請向未來的客戶描述你的產品…";
 
 /* The navigation bar title of the Aztec editor screen.
-   Title in the Product description row on Product form screen when the description is non-empty. */
+   Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "說明";
-
-/* The row label to tap for a detailed product list */
-"Details" = "詳細資料";
 
 /* Screen title: Details Order number. Parameters: %1$@ - order number */
 "Details Order #%1$@" = "訂單 #%1$@ 詳細資訊";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "決定產品在目錄中的位置。數值越低，品項在產品清單中的位置越前面。您也可以輸入負數值";
+
+/* Instructions after a Magic Link was sent, but email is incorrect. */
+"Didn't mean to create a new account? Go back to re-enter your email address." = "不是要建立一個新帳號嗎？ 返回並重新輸入你的電子郵件地址。";
 
 /* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
 "Dimensions: %1$@ x %2$@ %3$@" = "尺寸：%1$@ x %2$@%3$@";
@@ -724,31 +1070,40 @@
 /* Button title Discard Changes in Discard Changes Action Sheet */
 "Discard changes" = "捨棄變更";
 
+/* Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader */
+"Disconnect Reader" = "與讀卡機中斷連線";
+
 /* Discount label for payment view */
 "Discount" = "折扣";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view */
 "Dismiss" = "關閉";
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "不允許";
 
+/* Dialog title that displays the name of a found card reader */
+"Do you want to connect to reader %@?" = "你要連線至讀卡機 %@ 嗎？";
+
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "你要將此商品移至垃圾桶嗎？";
+
+/* Type Documents of content to be declared for the customs form in Shipping Label flow */
+"Documents" = "文件";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "還沒有帳號？_註冊_";
 
 /* Action title to select products to add to a grouped product from search results
-   Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
+   Done button on the Jetpack Install Progress screen. - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
 "Done" = "完成";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
 "Don’t know how to print from your device?" = "不知道如何從裝置列印？";
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
-"Don’t know how to print from your phone?" = "不知道如何從手機列印？";
+"Don’t know how to print from your mobile device?" = "不知道如何從行動裝置列印嗎？";
 
 /* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "Dotcom Error: [%1$@] %2$@" = "Dotcom 錯誤：[%1$@] %2$@";
@@ -764,6 +1119,9 @@
 
 /* WordPress.com Request Failure */
 "Dotcom Request Failed" = "Dotcom 要求失敗";
+
+/* WordPress.com error thrown when a requested resource does not exist remotely. */
+"Dotcom Resource does not exist" = "Dotcom 資源不存在";
 
 /* WordPress.com Error thrown when the response body is empty */
 "Dotcom Response Empty" = "Dotcom 回應為空白";
@@ -808,6 +1166,10 @@
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "使用唯一代碼輕鬆識別你的產品";
 
+/* Button to edit an order status on the New Order screen
+   Title text of the button that edits a note when creating a simple payment */
+"Edit" = "編輯";
+
 /* Action to edit the address in Shipping Label Suggested screen */
 "Edit Address" = "編輯地址";
 
@@ -818,7 +1180,14 @@
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "編輯產品";
 
-/* Email address text field placeholder */
+/* Caption displayed in promotional screens shown during the login flow. */
+"Edit and add new products from anywhere" = "從任何地方編輯和新增新產品";
+
+/* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
+"Eligible for free pickup" = "符合免費取貨資格";
+
+/* Email address text field placeholder
+   Email button title - Text field email in Edit Address Form - Title of Email accessibility action, opens a compose view - Title text of the row that holds the provided email when creating a simple payment */
 "Email" = "電子郵件";
 
 /* Accessibility label for the email address text field.
@@ -831,11 +1200,20 @@
 /* No comment provided by engineer. */
 "Email note to customer %@" = "將備註透過電子郵件傳送給客戶 %@";
 
+/* Button to email receipts. Presented to users after a payment has been successfully collected */
+"Email receipt" = "電子郵件收據";
+
+/* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
+"Email the label purchase receipts to %1$@ (%2$@) at %3$@" = "透過電子郵件傳送標籤購買收據給%1$@ (%2$@)，電子郵件地址是 %3$@";
+
 /* Accessibility label that lets the user know the billing customer's email address */
 "Email: %@" = "電子郵件：%@";
 
 /* Accessibility text for Unit Input cell */
 "Empty" = "清空";
+
+/* Title for the row to enter the empty package weight on the Add New Custom Package screen in Shipping Label flow */
+"Empty Package Weight" = "空包裹重量";
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空的網址";
@@ -846,14 +1224,36 @@
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "啟用";
 
+/* Label for one of the filters in order custom date range */
+"End Date" = "結束日期";
+
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "喜歡 WooCommerce 應用程式嗎？";
 
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "請確認你的**印表機韌體是最新的版本**。 如需瞭解如何更新，請參閱印表機的說明文件。";
 
-/* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
+/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+"Enter Address" = "Enter Address";
+
+/* Short instructions label in the simple payments screen */
+"Enter Amount" = "輸入金額";
+
+/* Action button linking to instructions for enter another store.Presented when logging in with a site address that appears to be invalid.
+   Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "輸入其他商店";
+
+/* Placeholder of the row that holds the provided email when creating a simple payment */
+"Enter Email" = "輸入電子郵件地址";
+
+/* Placeholder for the required ITN row in Customs screen of Shipping Label flow */
+"Enter ITN" = "輸入 ITN";
+
+/* Placeholder for the ITN row in Customs screen of Shippling Label flow */
+"Enter ITN (Optional)" = "輸入 ITN (選填)";
+
+/* Placeholder for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+"Enter Name" = "輸入名稱";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "輸入 URL";
@@ -865,18 +1265,24 @@
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "輸入貨運業者名稱";
 
+/* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
+"Enter description" = "輸入說明";
+
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "輸入檔案 URL";
+
+/* Placeholder of HS Tariff Number row in Package Content section in Customs screen of Shipping Label flow */
+"Enter number (Optional)" = "輸入號碼 (選填)";
 
 /* Enter password placeholder in Product Visibility */
 "Enter password" = "輸入密碼";
 
+/* Sign in instructions for logging in with a URL. */
+"Enter the address of the WooCommerce store you'd like to connect." = "Enter the address of the WooCommerce store you'd like to connect.";
+
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
 "Enter the address of the WordPress site you'd like to connect." = "請輸入要連結的 WordPress 網站位址。";
-
-/* Sign in instructions for logging in with a URL. */
-"Enter the address of your WooCommerce store you'd like to connect." = "請輸入要連結的 WooCommerce 商店位址。";
 
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "請輸入此產品的外部 URL。";
@@ -909,8 +1315,17 @@
    Title of a button. */
 "Enter your password instead." = "請改為輸入你的密碼。";
 
-/* Alert title when there is an error requesting shipping label document for reprinting */
+/* Envelope package type, used to create a custom package in the Shipping Label flow */
+"Envelope" = "信封";
+
+/* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
+"Error in finding the address in Apple Maps" = "在 Apple 地圖中尋找位址時的錯誤";
+
+/* Alert title when there is an error requesting shipping label document for printing */
 "Error previewing shipping label" = "預覽郵寄標籤時發生錯誤";
+
+/* Notice displayed when the label purchase fails */
+"Error purchasing the label" = "購買標籤時發生錯誤";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -921,6 +1336,9 @@
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "外部\/加盟";
+
+/* Display label for failed order status. */
+"Failed" = "失敗";
 
 /* An error message shown when failing to retrieve information to present a view for a review push notification. */
 "Failed to retrieve the review notification details." = "無法擷取評論通知詳細資訊。";
@@ -951,17 +1369,31 @@
    Title of the cell in Product Downloadable File URL > File URL */
 "File URL" = "檔案 URL";
 
+/* Subtitle of the cell Customs inside Create Shipping Label form */
+"Fill out customs form" = "填寫海關表格";
+
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "使用密碼管理員填寫";
 
-/* Title of the toolbar button to filter products by different attributes.
-   Title of the toolbar button to filter products without any filters applied. */
+/* Title of the toolbar button to filter orders without filters applied.
+   Title of the toolbar button to filter products by different attributes. - Title of the toolbar button to filter products without any filters applied. */
 "Filter" = "篩選";
 
-/* Title of the toolbar button to filter products with filters applied. */
+/* Title of the toolbar button to filter orders with filters applied.
+   Title of the toolbar button to filter products with filters applied. */
 "Filter (%ld)" = "篩選條件 (%ld)";
 
-/* Navigation bar title format for filtering a list of products without filters applied. */
+/* Placeholder on the search field to search for a specific country */
+"Filter Countries" = "篩選國家\/地區";
+
+/* Placeholder on the search field to search for a specific state */
+"Filter States" = "篩選狀態";
+
+/* Header bar label on top of order list when filters are applied */
+"Filtered Orders" = "篩選的訂單";
+
+/* Filters button text on header bar on top of order list
+   Navigation bar title format for filtering a list of products without filters applied. */
 "Filters" = "篩選條件";
 
 /* Navigation bar title format for filtering a list of products with filters applied. */
@@ -976,8 +1408,17 @@
 /* The hint button's title text to help users find their store address. */
 "Find your store address" = "尋找你的商店地址";
 
+/* Button to set up the WooCommerce Payments plugin after installing it */
+"Finish Setup in Store Admin" = "在商店管理員中完成設定";
+
+/* Title for the error screen when WooCommerce Payments is installed but not set up */
+"Finish setup WooCommerce Payments in your store admin" = "在商店管理員中完成 WooCommerce Payments 設定";
+
+/* Text field name in Edit Address Form */
+"First name" = "名字";
+
 /* Shown in the prologue carousel (promotional screens) during first launch. */
-"Follow your favorite sites and discover new reads." = "關注你喜歡的網站並發掘新讀物。";
+"Follow your favorite sites and discover new blogs." = "關注你喜歡的網站並發掘新網誌。";
 
 /* User role badge */
 "Follower" = "關注者";
@@ -994,10 +1435,17 @@
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "深入瞭解產品在商店上的成效";
 
+/* Action to add new variation on the variations list */
+"Generate New Variation" = "產生新款式";
+
+/* Title of the action to generate the first variation */
+"Generate Variation" = "產生款式";
+
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "正在產生款式";
 
-/* View title for initial auth views. */
+/* Title of install action in the Jetpack Install view.
+   View title for initial auth views. */
 "Get Started" = "開始使用";
 
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
@@ -1006,11 +1454,27 @@
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "取得問題的解答";
 
+/* Subtitle of push notifications as part of Jetpack benefits. */
+"Get push notifications for new orders, reviews, etc. delivered to your device." = "將新訂單、評論等內容的推播通知傳送至你的裝置。";
+
+/* Title of the Jetpack benefits banner. */
+"Get the full experience with Jetpack" = "取得 Jetpack 完整功能";
+
+/* Title of the Jetpack benefits view. */
+"Get the most out of your store" = "從自己的商店獲得最大利益";
+
+/* Message shown in the Reviews tab if the list is empty
+   Message shown on the Product Reviews screen if the list is empty */
+"Get your first reviews" = "取得你的第一批評論";
+
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "取得帳號資訊";
 
+/* Type Gift of content to be declared for the customs form in Shipping Label flow */
+"Gift" = "禮物";
+
 /* The title of the button to give feedback about products beta features on the banner on the products tab
-   The title of the button to give feedback about shipping labels features on the banner in order details - Title on the navigation bar for the products feedback survey */
+   The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title of the button to give feedback about the Simple Payments feature - Title on the navigation bar for the products feedback survey */
 "Give feedback" = "提供意見回饋";
 
 /* Option to select the Gmail app when logging in with magic links */
@@ -1037,6 +1501,12 @@
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "需要哪方面的協助呢？";
+
+/* Title of HS Tariff Number row in Package Content section in Customs screen of Shipping Label flow */
+"HS Tariff Number" = "HS 關稅號碼";
+
+/* Validation error for HS Tariff Number row in Customs screen of Shipping Label flow */
+"HS Tariff Number must be 6 digits long" = "HS 關稅號碼必須為 6 位數";
 
 /* Accessibility label for HTML button on formatting toolbar.
    HTML Attachment Label */
@@ -1081,7 +1551,8 @@
 /* H6 Aztec Style */
 "Heading 6" = "標題 6";
 
-/* Title of the cell in Product Shipping Settings > Height */
+/* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Height */
 "Height" = "高度";
 
 /* Help and Support navigation title
@@ -1104,11 +1575,29 @@
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "我們可以如何改進？";
 
+/* Navigation bar title of hub menu view */
+"Hub Menu" = "Hub Menu";
+
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "我喜歡";
 
+/* Header section items to fulfill in Shipping Label Package Detail */
+"ITEMS TO FULFILL" = "需履行的項目";
+
+/* Title for the ITN row in Customs screen of Shipping Label flow */
+"ITN" = "ITN";
+
+/* Error message for missing ITN for destination country inCustoms screen of Shipping Label flow. The placeholder is the destination country. */
+"ITN is required for shipments to %1$@" = "貨件目的地為 %1$@ 時，ITN 為必填欄位";
+
+/* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
+"ITN is required for shipping items valued over $2,500 per tariff number" = "貨運物品每個關稅號碼的價值高於 $2,500 時，ITN 為必填欄位";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "若停用，此備註將變成私人狀態";
+
+/* The text below the order add-ons list indicating that the content could be stale. */
+"If renaming an add-on in your web dashboard, please note that previous orders will no longer show that add-on within the app." = "請注意，如果你在網路控制台為附加元件重新命名，應用程式內將不再顯示先前訂單的附加元件。";
 
 /* Header text when reprinting a shipping label */
 "If there was a printing error when you purchased the label, you can print it again." = "如果購買標籤時發生列印錯誤，可以重新列印。";
@@ -1135,8 +1624,25 @@
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "在你的網站管理中，你可以從 Jetpack 控制台的「連結」>「帳號連結」找到用於連結 WordPress.com 的電子郵件。";
 
+/* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
+"In-Person Payment for Order #%1$@ for %2$@" = "親自支付 %2$@ 訂單的 #%1$@ 費用";
+
+/* Navigates to In-Person Payments screen
+   Title for the In-Person Payments settings screen */
+"In-Person Payments" = "親自收款";
+
+/* Title for the error screen when In-Person Payments is unavailable
+   Title for the error screen when the Stripe account is restricted because it's under reviw - Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
+"In-Person Payments is currently unavailable" = "目前無法親自收款";
+
+/* Title for the error screen when the Stripe account rejected. */
+"In-Person Payments isn't available for this store" = "此商店無法使用親自收款功能";
+
 /* Application's Inactive State */
 "Inactive" = "未啟用";
+
+/* Title for table view section of inactive plugins */
+"Inactive Plugins" = "未啟用的外掛程式";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "未啟用，關閉自動更新";
@@ -1147,11 +1653,17 @@
 /* Describes a standard *.wordpress.com site domain */
 "Included with Site" = "已隨附於網站中";
 
+/* Includes tracking of a specific carrier in Shipping Labels > Carrier and Rates */
+"Includes %1$@ tracking" = "包括 %1$@ 追蹤";
+
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "錯誤的使用者名稱或密碼。請再次嘗試輸入你的登入詳細資料。";
 
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "透過追加銷售和交叉銷售提高銷售額";
+
+/* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
+"Individually shipped item" = "個別出貨的商品";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "插入";
@@ -1161,6 +1673,34 @@
 
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "插入連結";
+
+/* Navigates to Install Jetpack screen.
+   Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
+"Install Jetpack" = "安裝 Jetpack";
+
+/* Title for the error screen when WooCommerce Payments is not installed */
+"Install WooCommerce Payments" = "安裝 WooCommerce Payments";
+
+/* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
+"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "將 Jetpack 免費外掛程式安裝至 %1$@，獲得最佳行動體驗。";
+
+/* Subtitle of the Jetpack benefits view. */
+"Install the free Jetpack plugin to experience the best mobile experience." = "安裝 Jetpack 免費外掛程式，獲得最佳行動體驗。";
+
+/* Name of installing Jetpack plugin step */
+"Installing Jetpack" = "正在安裝 Jetpack";
+
+/* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
+"Insurance (%1$@)" = "保險 (%1$@)";
+
+/* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Place holder is an amount. */
+"Insurance (up to %1$@)" = "保險 (最高 %1$@)";
+
+/* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
+"Invalid ITN format" = "ITN 格式無效";
+
+/* The title of the alert when there is an error with the package name */
+"Invalid Package Name" = "無效的包裹名稱";
 
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "無效的商品貨號";
@@ -1182,6 +1722,12 @@
 
 /* No comment provided by engineer. */
 "Invalid username" = "無效的使用者名稱";
+
+/* Error for invalid package details on the Add New Custom Package screen in Shipping Label flow */
+"Invalid value" = "無效值";
+
+/* Error message when total weight is invalid in Package Detail screen */
+"Invalid weight" = "重量無效";
 
 /* Product Inventory Settings navigation title
    Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
@@ -1208,11 +1754,26 @@
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "斜體";
 
+/* Error message for missing value in Description row in Customs screen of Shipping Label flow */
+"Item description is required" = "商品說明為必填";
+
+/* Row title for dimensions of package shipped in original packaging Package Details screen in Shipping Labels flow. */
+"Item dimensions" = "商品尺寸";
+
+/* Error message for missing value in Value row in Customs screen of Shipping Label flow */
+"Item value must be larger than 0" = "商品價值必須大於 0";
+
+/* Error message for missing value in Weight row in Customs screen of Shipping Label flow */
+"Item weight must be larger than 0" = "商品目重量必須大於 0";
+
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack 是一款免費的 WordPress 外掛程式，能夠透過所需工具連結你的商店，為你提供最佳行動裝置體驗，包含推播通知和統計資料";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "繼續編輯";
+
+/* Label for a button that when tapped, continues searching for card readers */
+"Keep Searching" = "繼續搜尋";
 
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "請注意，這不是客服支援表單，我們將無法針對個人意見給予回覆";
@@ -1223,36 +1784,55 @@
 /* Navigation bar title of shipping label paper size options screen */
 "Label Format Options" = "標籤格式選項";
 
+/* Label for one of the filters in order date range */
+"Last 2 Days" = "過去 2 天";
+
 /* Last 24 hours section header */
 "Last 24 hours" = "過去 24 小時";
+
+/* Label for one of the filters in order date range */
+"Last 30 Days" = "過去 30 天";
+
+/* Label for one of the filters in order date range */
+"Last 7 Days" = "過去 7 天";
 
 /* Last 7 days section header */
 "Last 7 days" = "過去 7 天";
 
+/* Text field name in Edit Address Form */
+"Last name" = "姓氏";
+
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "啟動 Wormholy 除錯";
 
-/* Button title in the shipping label creation info screen
-   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. */
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. - Button title in the shipping label creation info screen - Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
 "Learn more" = "瞭解更多";
+
+/* A label prompting users to learn more about HS Tariff Number in Customs screen of Shipping Label flow */
+"Learn more about HS Tariff Number" = "深入瞭解 HS 關稅號碼";
+
+/* A label prompting users to learn more about internal transaction number */
+"Learn more about Internal Transaction Number" = "深入瞭解內部交易號碼";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "深入瞭解 Jetpack";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your phone" = "深入瞭解如何使用手機建立標籤";
+"Learn more about creating labels with your mobile device" = "深入瞭解如何使用行動裝置建立標籤";
+
+/* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
+"Learn more about roles and permissions" = "瞭解更多有關角色和權限的資訊";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "法律文件紙 (8.5 x 14 吋)";
 
-/* Title of the cell in Product Shipping Settings > Length */
+/* Title for the row to enter the package length on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Length */
 "Length" = "長度";
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "信紙 (8.5 x 11 吋)";
-
-/* Licenses (information page title) */
-"Licenses" = "授權";
 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
 "Limit one per order" = "每筆訂單僅限一個";
@@ -1286,15 +1866,15 @@
 /* Displayed when an Product is being retrieved */
 "Loading Product" = "載入產品";
 
-/* Loading tags in Product Tags screen */
-"Loading..." = "正在載入...";
+/* Text of the loading banner in Order Detail when loaded for the first time */
+"Loading content" = "正在載入內容";
 
 /* Button title.  Tapping takes the user to the login form.
    Log In button label. - View title during the log in process. */
 "Log In" = "登入";
 
-/* Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
-   Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+/* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation - Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "使用其他帳號登入";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -1336,23 +1916,30 @@
 /* Option to select the Apple Mail app when logging in with magic links */
 "Mail (Default)" = "郵件 (預設)";
 
+/* Settings > Manage Card Reader > Connect > Hint to charge card reader */
+"Make sure card reader is charged" = "請確認讀卡機已充電";
+
 /* Text that explains how to update VC to get the latest stats */
 "Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated." = "請確認你的網站執行最新版本的 WooCommerce，並已啟用 WooCommerce Admin。";
 
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "透過標籤輕鬆找到你的產品";
 
-/* Navigates to Card Reader management screen */
+/* Card reader settings screen title
+   Settings > Manage Card Reader > Title for the no-reader-connected screen in settings. - Settings > Manage Card Reader > Title for the reader connected screen in settings. */
 "Manage Card Reader" = "管理讀卡機";
 
-/* Login Prologue Legend */
-"Manage orders, track sales and monitor store activity with real-time alerts." = "透過即時警示管理訂單、追蹤銷售狀況，並監控商店活動。";
+/* Navigates to Card Reader management screen */
+"Manage card reader" = "管理讀卡機";
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "庫存管理";
 
 /* shown in promotional screens during first launch */
 "Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "隨時隨地管理以 Jetpack 建置的網站，就像把 WordPress 裝在口袋隨身帶著走。";
+
+/* Caption displayed in promotional screens shown during the login flow. */
+"Manage your store orders on the go " = "隨時管理你的商店訂單 ";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "手動時差";
@@ -1369,8 +1956,18 @@
 /* Accessibility label for the Mark All Reviews as Read Button */
 "Mark All as Read" = "將全部標示為已讀";
 
-/* Fulfill Order Action Button */
+/* Action button on Review Order screen
+   Fulfill Order Action Button */
 "Mark Order Complete" = "將訂單標示為完成";
+
+/* Alert button when selecting the cash payment method for simple payments */
+"Mark as Paid" = "Mark as Paid";
+
+/* Alert title when selecting the cash payment method for simple payments */
+"Mark as Paid?" = "Mark as Paid?";
+
+/* Create Shipping Label form -> Mark order as complete label */
+"Mark this order as complete and notify the customer" = "將此訂單標示為完成並通知客戶";
 
 /* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
 "Marks Every Review as Read" = "將所有評論標示為已讀";
@@ -1378,12 +1975,18 @@
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "媒體沒有可上傳的相關檔案。";
 
+/* Title of the Menu tab */
+"Menu" = "選單";
+
 /* Menu order label in Product Settings
    Product Menu Order navigation title */
 "Menu Order" = "選單順序";
 
 /* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
 "Menu order" = "選單順序";
+
+/* Type Merchandise of content to be declared for the customs form in Shipping Label flow */
+"Merchandise" = "商品";
 
 /* Message phone number button title */
 "Message" = "訊息";
@@ -1393,6 +1996,9 @@
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "最小值：%1$@；最大值：%2$@";
+
+/* Caption displayed in promotional screens shown during the login flow. */
+"Monitor and approve your product reviews" = "監控和核准你的產品評論";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -1404,6 +2010,12 @@
 /* Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "更多選項";
+
+/* Button on each order item of the Package Details screen in Shipping Labels flow. */
+"Move" = "移動";
+
+/* Title of the action sheet displayed when moving items in thePackage Details screen in Shipping Label flow. */
+"Move Item" = "移動商品";
 
 /* Confirmation button on the alert when the user is moving a product to the trash */
 "Move to Trash" = "移至垃圾桶";
@@ -1417,8 +2029,7 @@
 /* My Tickets title */
 "My Tickets" = "我的票證";
 
-/* My Store Notice Title for loading error
-   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "My store" = "我的商店";
 
 /* Name text field placeholder
@@ -1444,27 +2055,31 @@
    Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "需要更多協助嗎？";
 
-/* Text preceding the Contact Us button in the survey completed screen */
+/* Text preceding the Contact Us button in the error screen for In-Person payments
+   Text preceding the Contact Us button in the survey completed screen */
 "Need some help?" = "需要幫助嗎？";
 
 /* The title for the net amount paid cell */
 "Net Payment" = "付款淨額";
 
+/* Title for table view section of network active plugins */
+"Network Active Plugins" = "網路啟用中的外掛程式";
+
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "新屬性名稱";
+
+/* Title for the order creation screen */
+"New Order" = "新訂單";
+
+/* Subtitle of analytics as part of Jetpack benefits. */
+"New analytics views, let you see visitors, reports and more." = "新的分析檢視，讓你查看訪客、報告等內容。";
 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "現已推出新功能！";
 
-/* Next nav bar button title in Add Product Attribute Options screen
-   Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
+/* Action navigate to the variation creation screen
+   Next nav bar button title in Add Product Attribute Options screen - Next nav bar button title in Add Product Attribute screen - Title for the button to confirm the amount in the simple payments screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "下一步";
-
-/* Empty Product Reviews List Message */
-"No Reviews Yet for this Product!" = "此產品暫無評論！";
-
-/* Empty Reviews List Message */
-"No Reviews Yet!" = "目前沒有評論！";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "此期間沒有任何活動";
@@ -1472,6 +2087,9 @@
 /* Order details > customer info > billing information. This is where the address would normally display.
    Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "指定任何地址";
+
+/* Title for the error screen when there was a network error checking In-Person Payments requirements. */
+"No connection" = "沒有連線";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "目前沒有資料";
@@ -1488,8 +2106,14 @@
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "沒有限制";
 
+/* The text on the placeholder overlay when no products match the filter on the Products tab */
+"No matching products found" = "找不到相符的產品";
+
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "未設定價格";
+
+/* Message displayed if there are no products to display in the Add Product screen */
+"No products found" = "找不到商品";
 
 /* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
@@ -1507,6 +2131,9 @@
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "尚未有運送類別";
 
+/* Error state title in shipping label carrier and rates screen */
+"No shipping rates available" = "沒有可用的運費";
+
 /* Placeholder of the Product Tags row on Product main screen */
 "No tags" = "無標籤";
 
@@ -1514,8 +2141,11 @@
 "No tax classes yet" = "尚未有稅金類別";
 
 /* Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option */
+   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow */
 "None" = "無";
+
+/* Title of dismiss action in the Jetpack benefits view. */
+"Not now" = "現在不要";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
 "Not seeing the email? Check your Spam or Junk Mail folder." = "沒看到電子郵件？ 請檢查你的「垃圾郵件」資料夾。";
@@ -1526,8 +2156,11 @@
 /* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "給顧客的備註";
 
+/* Info text for the generate first variation screen */
+"Now that you’ve added attributes, you can create your first variation!" = "現在您已新增屬性，可以建立第一個款式了！";
+
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for printing - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "確定";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -1535,6 +2168,10 @@
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "關閉";
+
+/* Accessibility announcement message when device goes offline
+   Message for offline banner */
+"Offline - using cached data" = "離線 - 正在使用快取資料";
 
 /* +2 Days Section Header */
 "Older than 2 days" = "超過 2 天";
@@ -1554,8 +2191,17 @@
 /* Display label for the product's inventory stock status */
 "On back order" = "延期交貨";
 
+/* Display label for on hold order status. */
+"On hold" = "保留";
+
 /* Accessibility label for 1 password button */
 "One Password button" = "One Password 按鈕";
+
+/* Helper text above photo list in Product images screen */
+"Only one photo can be displayed by variation" = "每個款式只能顯示一張相片";
+
+/* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
+"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "僅限網站擁有者能管理郵寄標籤付款方式。 請聯絡 %1$@ (%2$@) 以管理付款方式。";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "開啟裝置設定";
@@ -1564,8 +2210,8 @@
    Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "開啟郵件";
 
-/* Navigates to screen about open source licenses */
-"Open Source Licenses" = "開放原始碼授權";
+/* Open Map action in Shipping Label Address Validation. */
+"Open Map" = "開啟地圖";
 
 /* Label for the description of openening a link using a new window */
 "Open in a new Window\/Tab" = "在新視窗\/分頁中開啟";
@@ -1580,7 +2226,7 @@
 "Option name" = "選項名稱";
 
 /* Add Product Category. Placeholder of cell presenting the parent category.
-   Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Shipping Label Address Validation */
+   Name text field placeholder in Shipping Label Address Validation when it's optional - Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Edit Address Form - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "選用";
 
 /* No comment provided by engineer. */
@@ -1602,18 +2248,22 @@
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "訂單 #%1$@";
 
+/* Cell title on the beta features screen to enable creating new orders */
+"Order Creation" = "建立訂單";
+
 /* Order notes section title */
 "Order Notes" = "訂單備註";
 
 /* Change order status screen - Screen title
-   The section title for the list of Order statuses in the Order Search. */
+   Navigation title of the orders filter selector screen for order statuses - Row title for filtering orders by order status. */
 "Order Status" = "訂單狀態";
 
-/* Order Total label for payment view */
+/* Create Shipping Label form -> Order Total label
+   Order Total label for payment view - Title text of the row that shows the total to charge when creating a simple payment */
 "Order Total" = "訂單總額";
 
-/* Order fulfillment success notice */
-"Order marked as fulfilled" = "訂單標示為已履行";
+/* Navigates to Card Reader ordering screen */
+"Order card reader" = "訂購讀卡機";
 
 /* Order status update success notice */
 "Order status updated" = "已更新訂單狀態";
@@ -1621,33 +2271,69 @@
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "已排序清單";
 
-/* Default title for Orders List shown when tapping on the Search filter.
-   Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
+/* Orders stat label on dashboard - should be plural.
+   The title of the Orders tab. */
 "Orders" = "訂單";
 
 /* Subtitle of the product form bottom sheet action for editing categories. */
 "Organise your products into related groups" = "將你的產品整理至相關群組";
 
-/* My Store > Settings > Other app section */
+/* Title for the Origin Country row in Customs screen of Shipping Label flow */
+"Origin Country" = "來源國家\/地區";
+
+/* Error message for missing value in Origin Country row in Customs screen of Shipping Label flow */
+"Origin Country is required" = "國家\/地區為必填";
+
+/* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
+"Original packaging" = "原包裝";
+
+/* My Store > Settings > Other app section
+   Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "其他";
 
 /* Display label for the product's inventory stock status */
 "Out of stock" = "沒有存貨";
 
+/* Header section package details in Shipping Label Package Detail */
+"PACKAGE DETAILS" = "包裹詳細資訊";
+
 /* Product section title */
 "PRODUCT" = "產品";
+
+/* Create Shipping Label form -> Package number
+   Package index in Customs screen of Shipping Label flow - Package index in Print Customs Invoice screen of Shipping Label flow if there are more than one invoice - Package term in Shipping Labels. Reads like Package 1 */
+"Package %1$d" = "包裹 %1$d";
+
+/* Name of package to be listed in Move Item action sheet on Package Details screen of Shipping Label flow. */
+"Package %1$d: %2$@" = "包裹 %1$d：%2$@";
 
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "包裹 %d";
 
-/* Title of package details in shipping label details
-   Title of the cell Package Details inside Create Shipping Label form */
+/* Title of Package Content section in Customs screen of Shipping Label flow */
+"Package Content" = "包裹內容物";
+
+/* Navigation bar title of shipping label package details screen
+   Title of package details in shipping label details - Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "包裹詳細資訊";
+
+/* Title for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+"Package Name" = "包裹名稱";
+
+/* Package Selected screen title in Shipping Label flow
+   Title of the row for selecting a package in Shipping Label Package Detail screen */
+"Package Selected" = "包裹已選";
+
+/* Title for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
+"Package Type" = "包裹類型";
+
+/* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
+"Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "包裹尺寸必須大於零。 請在產品頁面的「出貨」部分更新產品尺寸以繼續操作。";
 
 /* The title for the customer payment cell */
 "Paid" = "已付費";
 
-/* Title of the paper size selector row for reprinting a shipping label */
+/* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "紙張大小";
 
 /* Add Product Category. Title of cell presenting the parent category. */
@@ -1663,14 +2349,32 @@
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "貼上並且不設定格式";
 
-/* Payment section title */
+/* Payment section title
+   Title text of the row that shows the payment headline when creating a simple payment */
 "Payment" = "付款";
 
-/* Title of payment method in shipping label details
-   Title of the cell Payment Method inside Create Shipping Label form */
+/* Navigation bar title in the Shipping Label Payment Method screen
+   Title of payment method in shipping label details - Title of the cell Payment Method inside Create Shipping Label form */
 "Payment Method" = "付款方式";
 
-/* Display label for the review's pending status */
+/* Header for list of payment methods in Payment Method screen */
+"Payment Method Selected" = "已選取付款方式";
+
+/* Error message. Presented to users after a collecting a payment fails
+   Error message. Presented to users after collecting a payment fails */
+"Payment failed" = "付款失敗";
+
+/* Title of the webview of adding a payment method in Shipping Labels */
+"Payment method" = "付款方式";
+
+/* Notice that will be displayed after adding a new Shipping Label payment method */
+"Payment method added" = "已新增付款方式";
+
+/* Label informing users that the payment succeeded. Presented to users when a payment is collected */
+"Payment successful" = "付款成功";
+
+/* Display label for pending order status.
+   Display label for the review's pending status */
 "Pending" = "待審核";
 
 /* A unit test string, appended before the title of a review.
@@ -1680,7 +2384,8 @@
 /* Display label for the product's pending status */
 "Pending review" = "待審中";
 
-/* Text field phone in Shipping Label Address Validation */
+/* Text field phone in Edit Address Form
+   Text field phone in Shipping Label Address Validation */
 "Phone" = "電話";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
@@ -1698,11 +2403,32 @@
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "正在將你的商品放入垃圾桶…";
 
+/* Title of the alert presented when an update fails because the reader is low on battery. */
+"Please charge reader" = "請為讀卡機充電";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
+"Please correct your store address to proceed" = "Please correct your store address to proceed";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"Please correct your store's postcode\/ZIP" = "Please correct your store's postcode\/ZIP";
+
+/* Error message for missing explanation when Content Typeis Other in Customs screen of Shipping Label flow */
+"Please describe what kind of goods this package contains" = "請說明此包裹有哪些內容物";
+
+/* Error message for missing comments when Restriction Typeis Other in Customs screen of Shipping Label flow */
+"Please describe what kind of restrictions this package must have" = "請說明此包裹有哪些限制";
+
+/* Error state description in shipping label carrier and rates screen */
+"Please double check your package dimensions and weight or try using a different package in Package Details." = "請再次檢查包裹尺寸和重量，或嘗試使用「包裹詳細資訊」中的其他包裹。";
+
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "請輸入 URL。";
 
 /* Error message shown when a URL is invalid. */
 "Please enter a complete website address, like example.com." = "請輸入完整的網站位址，例如 example.com。";
+
+/* Product price error notice message, when the sale price was not set during a sale setup */
+"Please enter a sale price for the scheduled sale" = "請為排定的銷售輸入銷售價格";
 
 /* No comment provided by engineer. */
 "Please enter a site address." = "請輸入網站位址。";
@@ -1740,12 +2466,30 @@
 /* Error message when an image captured by camera cannot be saved to the device Photos library */
 "Please make sure the app can access Photos in device settings" = "請在裝置設定中確認應用程式可以存取相片";
 
+/* Error notice recovery suggestion when we fail to update an address in the edit address screen. */
+"Please make sure you are running the latest version of WooCommerce and try again later." = "請確認執行的是 WooCommerce 最新版本，並於稍後再試一次。";
+
+/* Error message when no package is selected on Shipping Label Package Details screen */
+"Please select a package" = "請選取包裹";
+
+/* The info of the Error Loading Data banner */
+"Please try again later or reach out to us and we'll be happy to assist you!" = "請稍後再試或與我們聯絡，我們將很樂意提供協助！";
+
+/* Body text for the default store picker error screen */
+"Please try again or reach out to us and we'll be happy to assist you!" = "請再試一次或與我們聯絡，我們將很樂意提供協助！";
+
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "請再試一次。";
 
-/* Message of in-progress modal when requesting shipping label document for reprinting
-   Text on the loading view of the survey screen indicating the user to wait */
+/* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
+"Please update your reader software to keep accepting payments" = "請更新你的讀卡機軟體以接受付款";
+
+/* Message of in-progress modal when preparing for printing customs invoice
+   Message of in-progress modal when requesting shipping label document for printing - Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait - VoiceOver Accessibility label for the instruction */
 "Please wait" = "請稍候";
+
+/* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
+"Please wait while we connect your site %1$@ with Jetpack." = "我們正在連結你的網站 %1$@ 與 Jetpack，請稍候。";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "我們正在建立新款式，請稍候";
@@ -1756,14 +2500,26 @@
 /* Message of the in-progress UI while saving a Product as draft remotely */
 "Please wait while we save this product to your store" = "請稍候，我們正在將此商品儲存到你的商店";
 
+/* Message of the in-progress UI while saving a Variation remotely */
+"Please wait while we save your latest changes" = "我們正在儲存你的最新變更，請稍候";
+
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
 "Please wait while we update your store details" = "請稍候，我們正在更新你的商店詳細資料";
 
-/* Text on the loading view of the product downloadable file screen indicating the user to wait */
+/* Label within the modal dialog that appears when connecting to a card reader
+   Text on the loading view of the product downloadable file screen indicating the user to wait */
 "Please wait..." = "請稍候…";
 
-/* Text field postcode in Shipping Label Address Validation */
+/* Message that will be displayed if there are no Shipping Label payment methods. */
+"Please, add a new payment method" = "請新增付款方式";
+
+/* My Store > Settings > Plugins section title
+   Navigates to Plugins screen. - Title of the Plugin List screen */
+"Plugins" = "外掛程式";
+
+/* Text field postcode in Edit Address Form
+   Text field postcode in Shipping Label Address Validation */
 "Postcode" = "郵遞區號";
 
 /* Error showed in Shipping Label Address Validation for the postcode field */
@@ -1772,6 +2528,9 @@
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "由 Automattic 提供技術";
 
+/* Title of in-progress modal when preparing for printing customs invoice */
+"Preparing document" = "正在準備文件";
+
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "之前已退款";
 
@@ -1779,17 +2538,37 @@
    Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
 "Price" = "價格";
 
-/* Button title to generate a shipping label document for printing */
+/* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
+"Print" = "列印";
+
+/* Print the customs form for the shipping label from the shipping label more menu action sheet */
+"Print Customs Form" = "列印海關表格";
+
+/* Button title to generate a shipping label document for printing
+   Navigation bar title to print a shipping label - Text on the button that prints a shipping label */
 "Print Shipping Label" = "列印郵寄標籤";
 
+/* Button title to generate a document with multiple shipping labels for printing
+   Navigation bar title to print multiple shipping labels */
+"Print Shipping Labels" = "列印郵寄標籤";
+
+/* Title of print button on Print Customs Invoice screen of Shipping Label flow when there's only one invoice */
+"Print customs form" = "列印海關表格";
+
+/* Navigation title of the Print Customs Invoice screen of Shipping Label flow */
+"Print customs invoice" = "列印海關發票";
+
 /* Navigation bar title of shipping label printing instructions screen */
-"Print from your Phone" = "透過手機列印";
+"Print from your mobile device" = "從你的行動裝置列印";
 
-/* The title of the shipping labels top banner in order details */
-"Print shipping labels from your device!" = "從你的裝置列印郵寄標籤！";
+/* Button to print receipts. Presented to users after a payment has been successfully collected */
+"Print receipt" = "列印收據";
 
-/* Title of in-progress modal when requesting shipping label document for reprinting */
+/* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "列印標籤";
+
+/* Title of in-progress modal when requesting document with multiple shipping labels for printing */
+"Printing Labels" = "列印標籤";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "加州使用者的隱私權聲明";
@@ -1810,12 +2589,25 @@
 /* Display label for the product's private status */
 "Privately published" = "私密發佈";
 
-/* Title for the first page in the Orders tab. */
+/* Display label for processing order status. */
 "Processing" = "處理中";
 
+/* VoiceOver accessibility label. Indicates that a payment is being processed */
+"Processing payment" = "Processing payment";
+
+/* Indicates that a payment is being processed */
+"Processing payment..." = "正在處理付款…";
+
 /* Description for Top Performers left column header
-   Product section title - Product section title if there is only one product. */
+   Product section title - Product section title if there is only one product. - Product section title in Review Order screen if there is one product. */
 "Product" = "產品";
+
+/* The title on the navigation bar when viewing an order item add-ons
+   Title for Add-ons row in the product form screen. - Title for the product add-ons screen */
+"Product Add-ons" = "產品附加元件";
+
+/* Row title for filtering products by product category. */
+"Product Category" = "商品分類";
 
 /* Edit Product External Link navigation title */
 "Product Link" = "產品連結";
@@ -1842,11 +2634,14 @@
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "產品連結";
 
+/* Title of the alert when a user is saving a product */
+"Product saved" = "商品已儲存";
+
 /* Title of the Product Type row on Product main screen */
 "Product type" = "產品類型";
 
 /* Product section title if there is more than one product.
-   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
+   Product section title in Review Order screen if there is more than one product. - Title of the Products tab — plural form of Product - Title text of the section that shows the Products when creating a new order - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "產品";
 
 /* Label for computed value `product refunds + taxes = subtotal`.
@@ -1858,9 +2653,6 @@
 
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "客戶檢視目前商品時推銷其他商品 (例如：獲利更高的商品)";
-
-/* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
-"Prompts with the option to call or message the billing customer." = "提示致電或傳簡訊給帳單客戶的選項。";
 
 /* One of the possible options in Product Visibility */
 "Public" = "公開";
@@ -1883,6 +2675,9 @@
 /* Title of shipping label purchase date in Refund Shipping Label screen */
 "Purchase Date" = "購買日期";
 
+/* Create Shipping Label form -> Purchase Label button */
+"Purchase Label" = "購買標籤";
+
 /* Product Note navigation title
    Purchase note label in Product Settings */
 "Purchase Note" = "購買備註";
@@ -1890,14 +2685,20 @@
 /* Title for purchase note alert. */
 "Purchase note" = "購買備註";
 
+/* Title of the in-progress UI while purchasing a shipping label */
+"Purchasing Label" = "購買標籤";
+
+/* Title of push notifications as part of Jetpack benefits. */
+"Push Notifications" = "推播通知";
+
 /* Quantity abbreviation for section title */
 "QTY" = "數量";
 
 /* Quantity abbreviation for section title */
 "Qty" = "數量";
 
-/* The accessibility label for the quantity button when selecting an item to refund
-   Title of the cell in Product Inventory Settings > Quantity */
+/* Accessibility label for product quantity field
+   The accessibility label for the quantity button when selecting an item to refund - Title of the cell in Product Inventory Settings > Quantity */
 "Quantity" = "數量";
 
 /* Navigation title on the quantity item selector screen */
@@ -1906,11 +2707,23 @@
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %@" = "數量：%@";
 
+/* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
+"Quarantine" = "檢疫";
+
+/* Subtitle for Contact WooCommerce Payments Support */
+"Reach our happiness engineers who can help answer payments related questions" = "聯絡我們的 happiness engineer，他們很樂於協助解決有關付款的問題";
+
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "聯絡我們的 happiness engineer，他們很樂於協助解決疑難問題。";
 
+/* Text for the button to navigate to troubleshooting tips from the store picker error screen */
+"Read our Troubleshooting Tips" = "閱讀疑難排解秘訣";
+
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "閱讀隱私權政策";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"Reader is ready" = "閱讀器已準備就緒";
 
 /* Refund note section title */
 "Reason for Refund" = "退款原因";
@@ -1920,6 +2733,19 @@
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "退還訂單費用原因";
+
+/* The title of the view containing a receipt preview */
+"Receipt" = "收據";
+
+/* Button to reload plugin data after activating the WooCommerce Payments plugin */
+"Refresh After Activating" = "在啟用後重新整理";
+
+/* Button to reload plugin data after installing the WooCommerce Payments plugin */
+"Refresh After Installing" = "在安裝後重新整理";
+
+/* Button to reload plugin data after updating the WooCommerce Payments plugin
+   Button to reload plugin data after updating the WooCommerce Payments plugin settings */
+"Refresh After Updating" = "在更新後重新整理";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "退費";
@@ -1943,7 +2769,8 @@
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "退款方式：";
 
-/* The title for the refunded amount cell */
+/* Display label for refunded order status.
+   The title for the refunded amount cell */
 "Refunded" = "已退款";
 
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
@@ -2002,15 +2829,12 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "報告當機";
 
-/* Navigation bar title to reprint a shipping label
-   Text on the button that reprints a shipping label */
-"Reprint Shipping Label" = "重新列印郵寄標籤";
-
 /* Navigation bar title to request a refund for a shipping label
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "要求退款";
 
-/* Text field placeholder in Shipping Label Address Validation */
+/* Name text field placeholder in Shipping Label Address Validation when it's required
+   Text field placeholder in Edit Address Form - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "必填";
 
 /* Deletes all activity logs except for the marked 'Current'. */
@@ -2019,18 +2843,34 @@
 /* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "重設密碼";
 
+/* Title for the Restriction Details row in Customs screen of Shipping Label flow */
+"Restriction Details" = "限制詳細資料";
+
+/* Title for the Restriction Type row in Customs screen of Shipping Label flow */
+"Restriction Type" = "限制類型";
+
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "擷取內含指定關鍵字的訂單清單。";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search products. */
 "Retrieves a list of products that contain a given keyword." = "擷取含有指定關鍵字的產品清單。";
 
-/* Retry Action
-   Retry the last action */
+/* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
+   Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
 "Retry" = "重試";
+
+/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
+   Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
+"Retry After Updating" = "Retry After Updating";
+
+/* Title for the return policy in Customs screen of Shipping Label flow */
+"Return to sender if package is unable to be delivered" = "包裹無法投遞時退還寄件者";
 
 /* Revenue stat label on dashboard. */
 "Revenue" = "收益";
+
+/* Title of Review Order screen */
+"Review Order" = "檢閱訂單";
 
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "已將評論標記為%@";
@@ -2041,6 +2881,9 @@
 
 /* Post Rich content */
 "Rich Content" = "豐富內容";
+
+/* Details section title in the Edit Address Form */
+"SHIPPING ADDRESS" = "運送地址";
 
 /* Edit Product SKU navigation title
    Title of the cell in Product Inventory Settings > SKU - Title of the product form bottom sheet action for editing short description. - Title of the SKU row on Product main screen */
@@ -2073,6 +2916,12 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "折扣價格：%@";
 
+/* Type Sample of content to be declared for the customs form in Shipping Label flow */
+"Sample" = "樣本";
+
+/* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
+"Sanitary \/ Phytosanitary Inspection" = "衛生\/植物檢疫稽查";
+
 /* Action for saving a Product remotely
    Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. */
 "Save" = "儲存";
@@ -2083,11 +2932,20 @@
 /* Button title to save a product as draft in Product More Options Action Sheet */
 "Save as draft" = "儲存為草稿";
 
+/* Button title to save a shipping label to print later */
+"Save for Later" = "儲存以供稍後使用";
+
+/* Save for later button on Print Customs Invoice screen of Shipping Label flow */
+"Save for later" = "儲存以供稍後使用";
+
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "使用 WooCommerce Shipping 完成運送，省時又省錢";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "正在儲存你的商品…";
+
+/* Title of the in-progress UI while saving a Variation remotely */
+"Saving your variation..." = "正在儲存你的款式…";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "掃瞄條碼以更新貨號";
@@ -2097,6 +2955,12 @@
 
 /* Scan Products */
 "Scan products" = "掃描產品";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"Scanning for reader" = "掃瞄讀卡機";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"Scanning for readers" = "正在掃瞄讀卡機";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
 "Scans barcodes that are associated with a product SKU for stock management." = "掃描與產品 SKU 關聯的條碼，以便管理庫存。";
@@ -2125,11 +2989,17 @@
 /* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "See Instructions" = "查看說明";
 
+/* Text on the button to see a saved receipt */
+"See Receipt" = "查看收據";
+
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "See comments and notifications in real time." = "即時查看留言和通知。";
 
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "查看版面配置和紙張大小選項";
+
+/* Subtitle of the Jetpack benefits banner. */
+"See the benefits" = "查看優勢";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "全部選取";
@@ -2140,8 +3010,17 @@
 /* Page title for the select a different store screen */
 "Select Store" = "選取商店";
 
+/* Placeholder for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
+"Select Type" = "選取類型";
+
+/* Placeholder for the selected package in the Shipping Labels Package Details screen */
+"Select a package" = "選取包裹";
+
 /* Message title of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "請選取商品類型";
+
+/* Text field placeholder in Edit Address Form */
+"Select an option" = "選取一個選項";
 
 /* Add the shipping carrier. Placeholder of cell presenting carrier name */
 "Select carrier" = "選擇貨運業者";
@@ -2155,8 +3034,14 @@
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "選擇開始日期";
 
+/* Placeholder in Shipping Label form for the Package Details row. */
+"Select the type of packaging you'd like to ship your items in" = "選取你想用來運送物品的包裝類型";
+
 /* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
 "Select upload method" = "選取上傳方式";
+
+/* Placeholder in Shipping Label form for the Carrier and Rates row. */
+"Select your shipping carrier and rates" = "選擇你的貨運業者與費率";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "已選取商店";
@@ -2170,12 +3055,22 @@
 /* The button title text for sending a magic link. */
 "Send Link by Email" = "以電子郵件傳送連結";
 
+/* Service Package menu in Shipping Label Add New Package flow */
+"Service Package" = "服務包裹";
+
 /* Tells user to set an email that support can use for replies */
 "Set email" = "設定電子郵件";
+
+/* Header text on Add New Custom Package screen in Shipping Label flow
+   Header text on Add New Service Package screen in Shipping Label flow */
+"Set up the package you'll be using to ship your products. We'll save it for future orders." = "設定你要運送產品的包裹。 我們會儲存該設定，以供未來的訂單使用。";
 
 /* Accessibility label for the Settings button.
    Settings navigation title */
 "Settings" = "設定";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"Several readers found" = "找到數個讀卡機";
 
 /* Button title Share in Edit Product More Options Action Sheet */
 "Share" = "分享";
@@ -2183,12 +3078,12 @@
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "在登入你的 WordPress.com 帳號時，請將你的服務使用情況相關資訊與我們的分析工具分享。";
 
-/* Action: Opens the Store in a browser */
-"Share your Store" = "分享你的商店";
-
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
 "Ship from" = "出貨地址";
+
+/* Option to ship in original packaging on action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow. */
+"Ship in Original Packaging" = "以原包裝出貨";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of destination address in shipping label details - Title of the cell Ship From inside Create Shipping Label form */
@@ -2209,6 +3104,10 @@
    Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "運送方式";
 
+/* Shipping Address title for customer info section
+   Title for the Edit Shipping Address Form */
+"Shipping Address" = "運送地址";
+
 /* Title of shipping carrier and rates in shipping label details
    Title of the cell Shipping Carrier inside Create Shipping Label form */
 "Shipping Carrier and Rates" = "貨運業者與費率";
@@ -2216,7 +3115,11 @@
 /* Title of view displaying all available Shipment Tracking Carriers */
 "Shipping Carriers" = "貨運業者";
 
-/* Shipping method title for customer info cell */
+/* Shipping title for customer info cell */
+"Shipping Details" = "運送詳細資料";
+
+/* Shipping method title for customer info cell
+   Shipping method title for customer info section */
 "Shipping Method" = "運送方式";
 
 /* Title on the refund screen that lists the shipping total cost */
@@ -2231,8 +3134,14 @@
 /* Navigation bar title of the Product shipping class selector screen */
 "Shipping classes" = "運送類別";
 
-/* Shipping title for customer info cell */
-"Shipping details" = "運送詳細資料";
+/* Header of the order summary section in the shipping label creation form */
+"Shipping label order summary" = "郵寄標籤訂單摘要";
+
+/* Header text when printing a newly purchased shipping label */
+"Shipping label purchased!" = "已購買郵寄標籤！";
+
+/* Header text when printing multiple newly purchased shipping labels */
+"Shipping labels purchased!" = "已購買郵寄標籤！";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "訂單的運送通知";
@@ -2249,6 +3158,9 @@
 /* The navigation bar title of the edit short description screen.
    Title of the product form bottom sheet action for editing short description. - Title of the Short Description row on Product main screen */
 "Short description" = "簡短說明";
+
+/* Button title for applying filters to a list of orders. */
+"Show Orders" = "顯示訂單";
 
 /* Button title for applying filters to a list of products. */
 "Show Products" = "顯示產品";
@@ -2268,6 +3180,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "顯示此訂單的帳單詳細資料。";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view the items inside the shipping label package */
+"Show the items included inside this shipping label package." = "顯示此郵寄標籤包裹中包含的商品。";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
 "Show the shipment details for this shipping label." = "顯示此郵寄標籤的貨件詳細資訊。";
@@ -2290,14 +3205,24 @@
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "透過電子郵件註冊";
 
+/* Signature required in Shipping Labels > Carrier and Rates */
+"Signature required (+%1$@)" = "需簽名 (+%1$@)";
+
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "已經以 @%1$@ 身分登入";
 
 /* Display label for simple product type. */
 "Simple" = "簡單";
 
-/* Action sheet option when the user wants to change the Product type to simple product */
-"Simple product" = "簡單商品";
+/* Action sheet option when the user wants to create Simple Payments order
+   Cell title on the beta features screen to enable the Simple Payments feature */
+"Simple Payments" = "輕鬆付款";
+
+/* Action sheet option when the user wants to change the Product type to simple physical product */
+"Simple physical product" = "簡單的實體產品";
+
+/* Action sheet option when the user wants to change the Product type to simple virtual product */
+"Simple virtual product" = "簡單的虛擬產品";
 
 /* Describes a site redirect domain */
 "Site Redirect" = "網站重新導向";
@@ -2312,12 +3237,16 @@
    Product Slug navigation title - Slug label in Product Settings */
 "Slug" = "代稱";
 
-/* Banner title in product variation list top banner when some variations do not have a price */
-"Some variations do not have prices" = "部分商品變化項目沒有標示價格";
+/* Dialog title that displays when a software update just finished installing */
+"Software updated" = "已更新軟體";
 
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "某人";
+
+/* Error message presented to users after a failure occurs
+   The text on the placeholder overlay when there is issue syncing site plugins */
+"Something went wrong" = "發生錯誤";
 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "退款發生錯誤。 請再試一次。";
@@ -2384,13 +3313,17 @@
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "標準稅率";
 
+/* Label for one of the filters in order custom date range */
+"Start Date" = "開始日期";
+
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "為商店新增第一個產品，立即開始銷售。";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "期限：%1$@ 至 %2$@";
 
-/* Text field state in Shipping Label Address Validation */
+/* Text field state in Edit Address Form
+   Text field state in Shipping Label Address Validation - Title to select state from the edit address screen */
 "State" = "州";
 
 /* Error showed in Shipping Label Address Validation for the state field */
@@ -2428,14 +3361,26 @@
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "刪除線";
 
-/* Subtotal label for a refund details view
-   Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost */
+/* Display label for subscription product type. */
+"Subscription" = "訂購";
+
+/* Create Shipping Label form -> Subtotal label
+   Subtotal label for a refund details view - Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost - Title text of the row that shows the subtotal when creating a simple payment */
 "Subtotal" = "小計";
+
+/* Notice text after updating the order successfully */
+"Successfully updated" = "已成功更新";
+
+/* Title of the footer in Shipping Label Package Detail screen */
+"Sum of products and package weight" = "產品與包裹總重";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "切換商店";
 
-/* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
+/* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
+"Switched to %1$@." = "已切換為「%1$@」。";
+
+/* Message presented after users switch to a new store when multi-store push notifications are not supported. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
 "Switched to %1$@. You will only receive notifications from this store." = "已切換為「%1$@」。 你只會收到此商店傳送的通知。";
 
 /* Accessibility Identifier for the H1 Aztec Style */
@@ -2463,8 +3408,18 @@
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
 "Tags" = "標籤";
 
+/* Title for the simple payments screen */
+"Take Payment" = "收取款項";
+
+/* Navigation bar title for the Simple Payments Methods screens
+   Text of the button that creates a simple payment order. Contains the total amount to collect */
+"Take Payment ((total))" = "收取款項 ((總金額))";
+
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "拍攝相片";
+
+/* Title of the banner notice in the Simple Payments feature */
+"Take payments from your device!" = "從裝置收款！";
 
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "點選以取得更多格式選項";
@@ -2474,6 +3429,9 @@
 
 /* Accessibility hint for insert link button on formatting toolbar. */
 "Tap to insert a Link" = "點選以插入連結";
+
+/* A label prompting users to learn more about card readers */
+"Tap to learn more about accepting payments with your mobile device and ordering card readers" = "點選以瞭解有關使用行動裝置接受付款和訂購讀卡機的更多資訊";
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "點選以修改項目退款數量";
@@ -2529,9 +3487,16 @@
 /* Accessibility hint for selecting paragraph style button on formatting toolbar. */
 "Tap to toggle paragraph style" = "點選以切換段落風格";
 
+/* Indicates the action expected from a user. Presented to users when payment collection starts
+   Label asking users to present a card. Presented to users when a payment is going to be collected */
+"Tap, insert or swipe to pay" = "點選、插入或撥動以付款";
+
 /* Tax label for a refund details view
    Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "稅金";
+
+/* Tax percentage to be applied to the simple payments order */
+"Tax ((rate)%)" = "稅金 ((rate)%)";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "稅金設定";
@@ -2555,14 +3520,23 @@
 /* Taxes label for payment view */
 "Taxes" = "稅金";
 
+/* Disclaimer in the simple payments summary screen about taxes. */
+"Taxes are automatically calculated based on your store address." = "稅金會根據你的商店地址自動計算。";
+
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "告訴我們更多關於 %1$@ 的資訊…";
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "服務條款";
 
-/* My Store > Settings > Experimental features > Products */
-"Test out the new product creation as we get ready to launch" = "在推出新商品建立功能之前，搶先試用";
+/* Cell description on the beta features screen to enable creating new orders */
+"Test out creating new manual orders as we get ready to launch" = "測試即將推出的「建立全新手動訂單」功能";
+
+/* Cell description on the beta features screen to enable the Simple Payments feature */
+"Test out creating orders with minimal information as we get ready to launch" = "即將推出新功能，歡迎試用並了解如何以最低限度的資訊量建立訂單";
+
+/* Cell description on the beta features screen to enable the order add-ons feature */
+"Test out viewing Order Add-Ons as we get ready to launch" = "搶先試用訂單附加元件檢視功能";
 
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
@@ -2601,6 +3575,15 @@
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "網址缺少有效的主機。";
 
+/* Error message when WooCommerce Payments is in test mode on a live site */
+"The WooCommerce Payments extension cannot be in test mode for In-Person Payments. Please disable test mode." = "WooCommerce Payments 擴充功能的親自收款無法設為測試模式。 請停用測試模式。";
+
+/* Error message when WooCommerce Payments is not activated */
+"The WooCommerce Payments extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "貴店已安裝 WooCommerce Payments 擴充功能，但尚未啟用。 請啟用擴充功能以使用親自收款功能";
+
+/* Error message when WooCommerce Payments is installed but the version is not supported */
+"The WooCommerce Payments extension is installed on your store, but needs to be updated for In-Person Payments. Please update WooCommerce Payments to the most recent version." = "貴店已安裝 WooCommerce Payments 擴充功能，但需要更新才能使用親自收款功能。 請將 WooCommerce Payments 更新至最新版本。";
+
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "無法移除該屬性。";
 
@@ -2609,6 +3592,18 @@
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "此伺服器的憑證無效。你可能正連線至冒充為「%@」的伺服器，而這可能洩漏你的機密資料。\n\n是否仍然要信任憑證？";
+
+/* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
+"The customer will receive an email once order is completed" = "訂單完成後，客戶會收到電子郵件";
+
+/* The message of the alert when another custom package has the same name */
+"The new custom package name is not unique." = "新的自訂包裹名稱與其他包裹名稱重複。";
+
+/* The message of the alert when another service package has the same name */
+"The new service package name is not unique." = "新的服務包裹名稱與其他包裹名稱重複。";
+
+/* Error in calling the phone number of the customer in the Shipping Label Address Validation */
+"The phone number is not valid or you can't call the customer from this device." = "電話號碼無效，或是你無法使用此裝置致電顧客。";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "此產品的價格。可編輯。";
@@ -2655,8 +3650,14 @@
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "無法產生該款式。";
 
-/* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
-"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "這不是 WordPress 網站。 若需要我們連結網站，網站必須安裝 WordPress。";
+/* Error message when the Stripe account is restricted because there are pending requirements */
+"There are pending requirements in your account. Please complete those requirements by" = "你的帳號有待確認的要求。 請在以下期限前完成這些要求：";
+
+/* Error message when WooCommerce Payments is not supported because there are pending requirements in the Stripe account.%1$d will contain the localized deadline (e.g. August 11, 2021) */
+"There are pending requirements in your account. Please complete those requirements by %1$@ to keep accepting in-Person Payments." = "你的帳號有待確認的要求。 請在 %1$@ 前完成這些要求，以繼續使用親自收款功能。";
+
+/* Error message when WooCommerce Payments is not supportedThere are pending requirements in the Stripe account (without a known deadline) */
+"There are pending requirements in your account. Please complete those requirements to keep accepting in-Person Payments." = "你的帳號有待確認的要求。 請完成這些要求，以繼續使用親自收款功能。";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "封鎖指定網站的文章時發生問題。";
@@ -2664,8 +3665,28 @@
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "移除指定網站的封鎖時發生問題。";
 
+/* The details on the placeholder overlay when there is issue syncing site plugins */
+"There was a problem while trying to load plugins. Check your internet and try again." = "嘗試載入外掛程式時出現問題。 請檢查你的網際網路，然後再試一次。";
+
+/* Notice text after failing to create a simple payments order. */
+"There was an error creating the order" = "建立訂單時發生錯誤";
+
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "核發退款時發生錯誤";
+
+/* Notice text after failing to update a simple payments order.
+   Notice text after failing to update the order successfully */
+"There was an error updating the order" = "更新訂單時發生錯誤";
+
+/* Text when there is an error while marking the order as paid for simple payments. */
+"There was an error while marking the order as paid." = "There was an error while marking the order as paid.";
+
+/* Text when there is an unknown error while trying to collect payments */
+"There was an error while trying to collect the payment." = "There was an error while trying to collect the payment.";
+
+/* Navigates to screen with third party software licenses
+   Software Licenses (information page title) */
+"Third Party Licenses" = "第三方授權";
 
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
@@ -2685,8 +3706,14 @@
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "此應用程式要求你在伺服器上安裝 WooCommerce 3.5，否則無法正常運作。請儘快更新以繼續使用此應用程式。";
 
+/* Message explaining more detail on why the user's role is incorrect. */
+"This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "此應用程式只支援「管理員」和「商店經理」使用者角色。 請聯絡商店擁有者以升級你的角色。";
+
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "這個電子郵件地址沒有在 WordPress.com 上註冊。";
+
+/* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
+"This field is required" = "此欄位為必填";
 
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "這類資訊有助我們改進產品、提供與你更加相關的行銷活動、帶來更為個人化的 WordPress.com 使用體驗；若要瞭解更多詳細內容，請參見我們的「隱私權政策」。";
@@ -2702,6 +3729,9 @@
 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "這是顧客能夠存取的檔案 URL。 輸入的 URL 應該已編碼。";
+
+/* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
+"This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "此商品目前在包裹 %1$d 中：%2$@。 你想移到哪裡？";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2719,6 +3749,9 @@
 /* Footer text for editing external product button text */
 "This text will be shown on the button linking to the external product." = "這些文字會顯示在連結至外部商品的按鈕上。";
 
+/* Alert info when selecting the cash payment method for simple payments */
+"This will mark your order as complete if you received (total) outside of WooCommerce" = "This will mark your order as complete if you received (total) outside of WooCommerce";
+
 /* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "標題";
@@ -2735,6 +3768,9 @@
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "至";
 
+/* Subtitle on the variations list screen when there are no variations and attributes */
+"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "若要新增款式，你需要先設定其屬性 (即「顏色」、「尺寸」)";
+
 /* Footer of text field section in Add Attribute screen */
 "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "若要建立款式，你需要先設定其屬性 (即「顏色」、「尺寸」)";
 
@@ -2750,11 +3786,14 @@
 /* Instructional text shown when requesting the user's password for Google login. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "若要繼續使用這個 Google 帳號，請先使用你的 WordPress.com 密碼登入。系統只會向你要求一次。";
 
+/* Label within the modal dialog that appears when searching for a card reader */
+"To turn on your card reader, briefly press its power button." = "若要開啟讀卡機，請按一下電源鍵。";
+
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "若要將此應用程式用於 %@，你需要在自己的商店安裝並連結 Jetpack 外掛程式。";
 
-/* Tab selector title that shows the statistics for today
-   Today Section Header - Top Performers section title - today */
+/* Label for one of the filters in order date range
+   Tab selector title that shows the statistics for today - Today Section Header - Top Performers section title - today */
 "Today" = "今天";
 
 /* Accessibility Identifier for the Aztec Ordered List Style. */
@@ -2775,13 +3814,23 @@
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "訂單總數：%ld";
 
+/* Title of the row for adding the package weight in Shipping Label Package Detail screen */
+"Total package weight" = "包裹總重";
+
+/* Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight */
+"Total package weight: %1$@" = "包裹總重：%1$@";
+
 /* Track shipment button title */
 "Track Shipment" = "追蹤貨件";
+
+/* Caption displayed in promotional screens shown during the login flow. */
+"Track sales and high performing products" = "追蹤銷售額和高銷售額商品";
 
 /* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
 "Track shipment" = "追蹤貨件";
 
-/* Order tracking section title */
+/* Order tracking section title
+   Tracking section title in Review Order screen */
 "Tracking" = "追蹤中";
 
 /* Add custom shipping carrier. Title of cell presenting carrier link */
@@ -2799,17 +3848,43 @@
    Move a comment to the trash */
 "Trash" = "移至垃圾桶";
 
+/* The title of the button to get troubleshooting information in the Error Loading Data banner */
+"Troubleshoot" = "疑難排解";
+
 /* Connect when the SSL certificate is invalid */
 "Trust" = "信任";
 
+/* Button to retry a software update. Presented to users when updating the card reader software fails
+   Button to try again. Presented to users after a failure occurs */
+"Try Again" = "再試一次";
+
+/* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
+"Try Collecting Again" = "重新嘗試收款";
+
 /* Button to trigger connection to another account in store picker */
 "Try With Another Account" = "嘗試其他帳號";
+
+/* Action to resync on the placeholder overlay when there is issue syncing site plugins
+   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+"Try again" = "再試一次";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "請嘗試使用其他電子郵件登入";
 
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "請嘗試使用網站位址登入";
+
+/* Settings > Manage Card Reader > Connect > Hint to power on reader */
+"Turn card reader on and place it next to mobile device" = "開啟讀卡機並將其放在行動裝置旁";
+
+/* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
+"Turn mobile device Bluetooth on" = "開啟行動裝置藍牙";
+
+/* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
+"Type of contents" = "內容物類型";
+
+/* Placeholder for the Restriction Details row in Customs screen of Shipping Label flow */
+"Type of restriction" = "限制類型";
 
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
@@ -2827,8 +3902,17 @@
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
 "Unable to change status of order #%1$d" = "無法變更訂單 #%1$d 的狀態";
 
+/* Notice displayed when order creation fails */
+"Unable to create new order" = "無法建立新訂單";
+
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "無法刪除訂單 #%1$d 的追蹤";
+
+/* Unable to fetch countries action failed in Shipping Label Form */
+"Unable to fetch countries." = "無法擷取國家\/地區。";
+
+/* Error notice when we fail to load country information in the edit address screen. */
+"Unable to fetch country information, please try again later." = "無法擷取國家\/地區資訊，請稍後再試一次。";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "無法完成訂單 #%1$d";
@@ -2842,14 +3926,17 @@
 /* Load Product Categories Action Failed */
 "Unable to load categories" = "無法載入目錄";
 
-/* Load Action Failed */
-"Unable to load content" = "無法載入內容";
-
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "無法載入商品屬性";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "無法將評論標記為%@";
+
+/* Error message when the order amount is below the minimum amount allowed. */
+"Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "無法處理付款。 訂單總金額低於可以收取的最低金額 %1$@";
+
+/* Error message when the order amount is not valid. */
+"Unable to process payment. Order total amount is not valid." = "無法處理付款。 訂單總金額無效。";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "無法透過該 URL 讀取 WordPress 網站。點選「需要說明？」即可檢視常見問題集。";
@@ -2857,8 +3944,17 @@
 /* Refresh Action Failed */
 "Unable to refresh list" = "無法重新整理清單";
 
-/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
-"Unable to successfully connect to %@" = "無法成功連線至 %@";
+/* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
+"Unable to retrieve user roles." = "無法擷取使用者角色。";
+
+/* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
+"Unable to save changes to the payment method" = "無法儲存付款方式變更";
+
+/* Error notice title when we fail to update an address in the edit address screen. */
+"Unable to update address." = "無法更新地址。";
+
+/* Title for the error screen when In-Person Payments is unavailable */
+"Unable to verify In-Person Payments for this store" = "無法驗證此商店的親自收款功能";
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "無法驗證電子郵件地址。請稍後再試一次。";
@@ -2875,12 +3971,19 @@
 /* Undo Action */
 "Undo" = "復原";
 
-/* The message of the alert when there is an unexpected error updating the product */
+/* The message of the alert when there is an unexpected error adding the package
+   The message of the alert when there is an unexpected error updating the product */
 "Unexpected error" = "未預期的錯誤";
 
 /* Unknown Application State
    Unknown product name, displayed in a review - Unknown Tag Name */
 "Unknown" = "不明";
+
+/* Displayed in the unlikely event a card reader has an indeterminate battery status */
+"Unknown Battery Level" = "電池電量不明";
+
+/* Displayed in the unlikely event a card reader has an indeterminate software version */
+"Unknown Software Version" = "未知的軟體版本";
 
 /* No comment provided by engineer. */
 "Unknown error" = "發生未知的錯誤";
@@ -2888,11 +3991,17 @@
 /* Error message when capturing a unknown media type */
 "Unknown media type" = "未知的媒體類型";
 
+/* Back button title when the product doesn't have a name */
+"Unnamed product" = "未命名產品";
+
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "未排序清單";
 
 /* Display label for the review's unspam status */
 "Unspam" = "取消標記為垃圾";
+
+/* Title for the error screen when the installed version of WooCommerce Payments is unsupported */
+"Unsupported WooCommerce Payments version" = "不支援的 WooCommerce Payments 版本";
 
 /* Display label for the review's untrash status */
 "Untrash" = "還原";
@@ -2910,11 +4019,21 @@
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
 "Update %@ to WooCommerce 3.5" = "將 %@ 更新至 WooCommerce 3.5";
 
+/* Accessibility Label for the edit button to change the Customer Billing Address in Billing Information
+   Accessibility Label for the edit button to change the Customer Shipping Address in Order Details */
+"Update Address" = "更新地址";
+
 /* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
 "Update Instructions" = "更新指示";
 
+/* Accessibility Label for the edit button to change the Customer Provided Note in Order Details */
+"Update Note" = "更新筆記";
+
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "已更新訂單狀態";
+
+/* Settings > Manage Card Reader > Connected Reader > A button to update the reader software */
+"Update Reader Software" = "更新讀卡機軟體";
 
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "更新產品庫存和 SKU";
@@ -2948,6 +4067,15 @@
    Updated on <date> */
 "Updated on %@" = "更新日期：%@";
 
+/* Dialog title that displays when a software update is being installed */
+"Updating software" = "正在更新軟體";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
+"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "讀卡機軟體更新失敗，因為讀卡機電量不足。 請將讀卡機充電至 50% 以上，然後再試一次。";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "讀卡機軟體更新失敗，因為讀卡機電池充電量為 %.0f%%。 請將讀卡機充電至 50%% 以上，然後再試一次。";
+
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "追加銷售";
@@ -2961,6 +4089,15 @@
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "使用建議地址";
 
+/* Title for the Use as Billing Address switch in the Address form */
+"Use as Billing Address" = "當作帳單地址";
+
+/* Title for the Use as Shipping Address switch in the Address form */
+"Use as Shipping Address" = "當作運送地址";
+
+/* Title of user profiles as part of Jetpack benefits. */
+"User Profiles" = "使用者個人檔案";
+
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "使用者名稱";
@@ -2968,21 +4105,27 @@
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "使用者名稱至少必須為 4 個字元。";
 
+/* Title for the Value row in item details in Customs screen of Shipping Label flow */
+"Value (%1$@ per unit)" = "價格 (每件 %1$@)";
+
 /* Display label for variable product type. */
 "Variable" = "款式";
 
 /* Action sheet option when the user wants to change the Product type to varible product */
 "Variable product" = "變化商品";
 
-/* Title of the Product Variations row on Product main screen for a variable product
-   Title that appears on top of the Product Variation List screen. */
+/* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
+"Variation #%1$@" = "款式 #%1$@";
+
+/* Text for the notice after creating the first variation. */
+"Variation created" = "已建立款式";
+
+/* Title for the generate first variation screen
+   Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
 "Variations" = "不同型號";
 
-/* Banner caption in my store when the stats will be deprecated */
-"Variations without price will not be shown in your store." = "未標示價格的商品變化項目不會顯示在你的商店中。";
-
-/* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
-"Variations without price won’t be shown in your store" = "未標示價格的商品變化項目不會顯示在你的商店中";
+/* Title of the variations attributes row on Product screen */
+"Variations Attributes" = "款式屬性";
 
 /* two factor code placeholder */
 "Verification code" = "驗證碼";
@@ -2992,6 +4135,13 @@
 
 /* Displays the version of the App */
 "Version %@" = "版本 %@";
+
+/* Displays the connected reader software version */
+"Version: %1$@" = "版本：%1$@";
+
+/* Cell title on the beta features screen to enable the order add-ons feature
+   Title of the button on the order detail item to navigate to add-ons - Title of the button on the order details product list item to navigate to add-ons */
+"View Add-Ons" = "檢視附加元件";
 
 /* View application log cell title */
 "View Application Log" = "檢視應用程式記錄檔";
@@ -3007,8 +4157,14 @@
    Button on bottom of shipping label package card to show shipping details */
 "View Shipment Details" = "檢視貨件詳細資訊";
 
+/* Title of the banner notice in the add-ons view */
+"View add-ons from your device!" = "查看裝置的附加元件！";
+
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "查看可下載的檔案設定";
+
+/* Accessibility label for the items inside a Shipping Label package */
+"View items in this shipping label package." = "檢視此郵寄標籤包裹中的商品。";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "檢視先前提交的支援票證";
@@ -3053,11 +4209,35 @@
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "透過深入分析資料拓展讀者群。";
 
-/* The info of the shipping labels top banner in order details */
-"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "我們致力讓你以更輕鬆的方式直接從裝置列印郵寄標籤！ 如果你已經使用 WooCommerce Shipping 在商店管理員中為訂單建立標籤，就可以在此處的「訂單詳細資料」中列印。";
+/* Error message when WooCommerce Payments is not supported because the Stripe account has been rejected */
+"We are sorry but we can't support In-Person Payments for this store." = "很抱歉，我們不支援此商店的親自收款功能。";
+
+/* Content of the banner notice in the add-ons view */
+"We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "我們正努力讓你能更輕鬆查看裝置的產品附加元件！ 你現在可以查看訂單的附加元件。 你可以在 Web 控制台中建立和編輯這些附加元件。";
+
+/* Content of the banner notice in the Simple Payments view */
+"We are working on making it easier for you to take payments from your device! For now, tap on the \"+\" button and you’ll be able to create an order with the amount you want to collect" = "我們努力讓你更輕鬆地從裝置收款！ 現在點選「+」按鈕，就能依據收取金額建立訂單";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "我們無法顯示你的商店分析資料";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
+"We couldn't connect your reader" = "無法連線至讀卡機";
+
+/* The title of the Error Loading Data banner */
+"We couldn't load your data" = "無法載入你的資料";
+
+/* Title for the default store picker error screen */
+"We couldn't load your site" = "無法載入你的網站";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"We couldn’t update your reader’s software" = "我們無法更新你的讀卡機軟體";
+
+/* Title for the error screen when WooCommerce Payments is not supported in a specific country */
+"We don’t support In-Person Payments in %@" = "我們不支援在%@使用親自收款功能";
+
+/* Title for the error screen when WooCommerce Payments is not supported because we don't know the name of the country */
+"We don’t support In-Person Payments in your country" = "我們不支援在你的國家\/地區使用親自收款功能";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "我們稍微修改了輸入的地址。 如果內容正確，請使用建議地址，確保正確運送。";
@@ -3068,8 +4248,17 @@
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "我們會使用其他的追蹤工具，包括由第三方所提供的追蹤工具。瞭解相關資訊及其控制方式。";
 
-/* Banner caption in Shipping Label Address Validation when the address can't be verified. */
+/* Message explaining that WordPress was not detected. */
+"We were not able to detect a WordPress site at the address you entered. Please make sure WordPress is installed and that you are running the latest available version." = "我們在你輸入的位址偵測不到 WordPress 網站。 請確認已安裝 WordPress，而且正在執行最新的可用版本。";
+
+/* Banner caption in Shipping Label Address Validation when the origin address can't be verified. */
+"We were unable to automatically verify the origin address." = "我們無法自動驗證原始地址。";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified. */
 "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "我們無法自動驗證運送地址。 請透過 Apple 地圖檢視該地址或與客戶聯絡，確認地址正確無誤。";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
+"We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "我們無法自動驗證運送地址。 請檢視 Apple 地圖，確認地址是否正確。";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "我們目前無法寄送電子郵件給你。請稍後再試一次。";
@@ -3080,30 +4269,33 @@
 /* Instruction text on the Sign Up screen. */
 "We'll email you a signup link to create your new WordPress.com account." = "我們會透過電子郵件傳送註冊連結給你，使用此連結即可建立新的 WordPress.com 帳號。";
 
-/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "我們會在收到新訂單時通知你。在此期間，請探索如何提高商店銷售量。";
-
 /* Text confirming email address to be used for new account. */
 "We'll use this email address to create your new WordPress.com account." = "我們會使用這個電子郵件地址，為你建立全新的 WordPress.com 帳號。";
 
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "我們無法用此 URL 連上 Jetpack 網站。如需協助，請與我們聯絡。";
 
-/* Default message to show if a filtered Orders list is empty. */
-"We're sorry, we couldn't find any orders." = "很抱歉，我們找不到任何訂單。";
-
-/* Message shown if a filtered Orders list is empty. The %@ is a placeholder for the order status. */
-"We're sorry, we couldn't find any “%@” orders" = "很抱歉，我們找不到任何「%@」訂單";
+/* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
+"We're sorry, we couldn't find any order that match %@" = "不好意思，我們找不到任何符合「%@」的訂單";
 
 /* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "很抱歉，我們找不到「%@」的搜尋結果";
+
+/* Generic error message when In-Person Payments is unavailable */
+"We're sorry, we were unable to verify In-Person Payments for this store." = "很抱歉，我們無法驗證此商店的親自收款功能。";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "我們已透過電子郵件傳送註冊連結給你，使用此連結即可建立新的 WordPress.com 帳號。 請使用此裝置查看電子郵件，並點選 WordPress.com 所傳送電子郵件中的連結。";
 
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "重量";
+
+/* Title for the Weight row in item details in Customs screen of Shipping Label flow */
+"Weight (%1$@ per unit)" = "重量 (每件 %1$@)";
+
+/* Footer text for the empty package weight on the Add New Custom Package screen in Shipping Label flow */
+"Weight of empty package" = "空包裹重量";
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "重量：%1$@%2$@";
@@ -3118,8 +4310,20 @@
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "什麼是 Jetpack？";
 
+/* Shipping Labels: info title about WooCommerce Services discount */
+"What is WooCommerce Services discount?" = "什麼是 WooCommerce 服務折扣？";
+
+/* Navigates to screen containing the latest WooCommerce Features */
+"What's New in WooCommerce" = "WooCommerce 新功能";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "我的網站位址是？";
+
+/* Title of Whats New Component */
+"What’s New in WooCommerce" = "WooCommerce 新功能";
+
+/* Shipping Labels: info description about WooCommerce Services discount */
+"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "透過 WooCommerce 購買郵寄標籤可享折扣商業價。";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "糟糕，發生了點錯誤，我們無法將你登入。請再試一次！";
@@ -3127,7 +4331,8 @@
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "糟糕，此雙重驗證碼無效。請再次檢查你的驗證碼，然後再試一次！";
 
-/* Title of the cell in Product Shipping Settings > Width */
+/* Title for the row to enter the package width on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Width */
 "Width" = "寬度";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
@@ -3135,6 +4340,15 @@
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
+
+/* Create Shipping Label form -> WooCommerce Discount label */
+"WooCommerce Discount" = "WooCommerce 折扣";
+
+/* Title for the error screen when WooCommerce Payments is in test mode on a live site */
+"WooCommerce Payments is in Test Mode" = "WooCommerce Payments 處於測試模式";
+
+/* Navigation title of the webview which used by the merchant to update their store address */
+"WooCommerce Settings" = "WooCommerce Settings";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
@@ -3161,14 +4375,36 @@
 /* Yesterday Section Header */
 "Yesterday" = "昨天";
 
+/* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
+"You are not authorized to access this store." = "你沒有存取此商店的權限。";
+
+/* Info notice at the bottom of the product add-ons screen */
+"You can edit product add-ons in the web dashboard." = "你可以在 Web 儀表板中編輯產品附加元件。";
+
 /* The info of the top banner on the Products tab. */
-"You can now add downloadable files to a product and link upsell & cross-sell products. No longer want a product? Trash it!" = "你現在可將可下載檔案新增到產品，並連結追加銷售和交叉銷售產品。 不再需要某個產品了嗎？ 移至垃圾桶！";
+"You can now create and manage product variations!" = "現在你可以建立和管理產品款式！";
+
+/* The info of the shipping labels top banner in order details */
+"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "你現在可以使用免費的 WooCommerce Shipping 外掛程式，直接從你的裝置為所有實體訂單建立郵寄標籤。 點選「建立郵寄標籤」，開始試用搶鮮版 (Beta) 功能！";
+
+/* Shown in Refunds screen. Refunding fees are currently not supported. */
+"You can refund fees in your store admin" = "You can refund fees in your store admin";
 
 /* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "你可以針對尚未用於運送包裹的郵寄標籤要求退款。\n需要至少 14 天來處理。";
+"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "你可以為尚未用於運送包裹的郵寄標籤要求退款。\n需要至少 14 天的處理時間。";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)";
+
+/* Error message when WooCommerce Payments is not supported in a specific country
+   Generic error message when In-Person Payments is unavailable */
+"You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "你仍可採用「親自收取現金」，只要為商店啟用「貨到付款」付款方式即可。";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "你無法使用該電子郵件地址註冊。我們無法使用這些電子郵件地址，因為它們會阻擋我們的某些郵件。請使用其他電子郵件供應商。";
+
+/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
+"You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "你的帳號中有至少一個逾期要求。 請處理此要求以繼續使用親自收款功能。";
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "你需要新增密碼，才能讓產品受密碼保護";
@@ -3176,11 +4412,35 @@
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "你似乎安裝了 DudaMobile 的行動版外掛程式，導致應用程式無法連接至你的網誌";
 
+/* Error message when WooCommerce Payments is not supported because the Stripe account is under review */
+"You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "你的帳號審核完畢後，就能使用親自收款功能了。";
+
+/* Title for the error screen when the Stripe account is restricted because there are pending requirements */
+"Your WooCommerce Payments account has pending requirements" = "你的 WooCommerce Payments 帳號有待處理的要求";
+
+/* Label that displays when a mandatory software update is happening */
+"Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "你的讀卡機軟體需要更新才能收取款項。 取消更新將會封鎖你的讀卡機連線。";
+
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "你走到哪，通知就到哪，第一時間查看留言和讚。";
 
+/* Label that displays when an optional software update is happening */
+"Your reader will automatically restart and reconnect after the update is complete." = "更新完成後，你的讀卡機會自動重新啟動並重新連線";
+
+/* Subject of email sent with a card present payment receipt */
+"Your receipt" = "你的收據";
+
+/* Subject of email sent with a card present payment receipt */
+"Your receipt from %1$@" = "你的 %1$@ 收據";
+
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "當你使用 Safari 造訪自己的網站時，網站位址會顯示在畫面上方的網址列中。";
+
+/* Error message when WooCommerce Payments is not installed */
+"You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "你需要為商店安裝免費 WooCommerce Payments 擴充功能，才能使用親自收款功能。";
+
+/* Error message when WooCommerce Payments is installed but not set up */
+"You’re almost there! Please finish setting up WooCommerce Payments to start accepting Card-Present Payments." = "快完成了！ 請完成 WooCommerce Payments 設定以開始接受卡片付款。";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[留言]";
@@ -3220,8 +4480,11 @@
 /* About View's Footer Text. The variable is the current year */
 "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. 與 WooCommerce Ireland Ltd.";
 
-/* Customer note, wrapped in quotes */
-"“%@”" = "「%@」";
+/* Success notice when tapping Mark Order Complete on Review Order screen */
+"🎉 Order Completed" = "🎉 已完成訂單";
+
+/* Title for the button to cancel the simple payments screen */
+"🎉 Order completed" = "";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 已成功退還商品款項";

@@ -157,7 +157,11 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
     func test_shouldBeVisible_for_productM5_is_true_if_no_settings_are_found() throws {
         // Given
-        let settings = GeneralAppSettings(installationDate: nil, feedbacks: [:])
+        let settings = GeneralAppSettings(installationDate: nil,
+                                          feedbacks: [:], isViewAddOnsSwitchEnabled: false,
+                                          isOrderCreationSwitchEnabled: false,
+                                          isStripeInPersonPaymentsSwitchEnabled: false,
+                                          knownCardReaders: [])
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsVariations)
 
         // When
@@ -217,7 +221,14 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
 
     func createAppSetting(instalationDate: Date?, feedbackType: FeedbackType, feedbackSatus: FeedbackSettings.Status) -> GeneralAppSettings {
         let feedback = FeedbackSettings(name: feedbackType, status: feedbackSatus)
-        let settings = GeneralAppSettings(installationDate: instalationDate, feedbacks: [feedback.name: feedback])
+        let settings = GeneralAppSettings(
+            installationDate: instalationDate,
+            feedbacks: [feedback.name: feedback],
+            isViewAddOnsSwitchEnabled: false,
+            isOrderCreationSwitchEnabled: false,
+            isStripeInPersonPaymentsSwitchEnabled: false,
+            knownCardReaders: []
+        )
         return settings
     }
 }

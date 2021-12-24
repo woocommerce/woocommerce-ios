@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -52,13 +51,13 @@
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="NOW-uQ-x7Y" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="05b-9E-4gi"/>
+                <constraint firstItem="NOW-uQ-x7Y" firstAttribute="trailing" secondItem="i5M-Pr-FkT" secondAttribute="trailing" id="05b-9E-4gi"/>
                 <constraint firstItem="NOW-uQ-x7Y" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="3X0-2P-tKl"/>
                 <constraint firstItem="7hH-ph-gl0" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="Ayb-JM-ZMD"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="7hH-ph-gl0" secondAttribute="trailing" constant="16" id="BIH-og-6hK"/>
                 <constraint firstItem="7hH-ph-gl0" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" constant="-10" id="cAy-hV-e5F"/>
                 <constraint firstItem="7hH-ph-gl0" firstAttribute="top" secondItem="NOW-uQ-x7Y" secondAttribute="bottom" constant="10" id="hHo-9r-Std"/>
-                <constraint firstItem="NOW-uQ-x7Y" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="njd-IR-9Fc"/>
+                <constraint firstItem="NOW-uQ-x7Y" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="njd-IR-9Fc"/>
             </constraints>
             <point key="canvasLocation" x="71.014492753623188" y="75"/>
         </view>

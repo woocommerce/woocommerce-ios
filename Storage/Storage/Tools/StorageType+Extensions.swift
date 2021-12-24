@@ -26,6 +26,12 @@ public extension StorageType {
         return firstObject(ofType: Site.self, matching: predicate)
     }
 
+    /// Retrieves all stored sites.
+    ///
+    func loadAllSites() -> [Site] {
+        allObjects(ofType: Site.self, matching: nil, sortedBy: nil)
+    }
+
     // MARK: - Orders
 
     /// Retrieves the Stored Order.
@@ -99,13 +105,6 @@ public extension StorageType {
     }
 
     // MARK: - Stats
-
-    /// Retrieves the Stored OrderCount.
-    ///
-    func loadOrderCount(siteID: Int64) -> OrderCount? {
-        let predicate = \OrderCount.siteID == siteID
-        return firstObject(ofType: OrderCount.self, matching: predicate)
-    }
 
     /// Retrieves the Stored TopEarnerStats.
     ///
@@ -470,6 +469,15 @@ public extension StorageType {
         return firstObject(ofType: PaymentGateway.self, matching: predicate)
     }
 
+    // MARK: - Data
+
+    /// Returns all the countries stored.
+    ///
+    func loadCountries() -> [Country] {
+        let descriptor = NSSortDescriptor(keyPath: \Country.name, ascending: true)
+        return allObjects(ofType: Country.self, matching: nil, sortedBy: [descriptor])
+    }
+
     // MARK: - Shipping Labels
 
     /// Returns all stored shipping labels for a site and order.
@@ -508,5 +516,74 @@ public extension StorageType {
     func loadAllCoupons(siteID: Int64) -> [Coupon] {
         let predicate = \Coupon.siteID == siteID
         return allObjects(ofType: Coupon.self, matching: predicate, sortedBy: nil)
+    }
+
+    /// Returns all stored shipping label account settings for a site.
+    ///
+    func loadShippingLabelAccountSettings(siteID: Int64) -> ShippingLabelAccountSettings? {
+        let predicate = \ShippingLabelAccountSettings.siteID == siteID
+        return firstObject(ofType: ShippingLabelAccountSettings.self, matching: predicate)
+    }
+
+    /// Returns all stored add-on groups for a provided `siteID`.
+    ///
+    func loadAddOnGroups(siteID: Int64) -> [AddOnGroup] {
+        let predicate = \AddOnGroup.siteID == siteID
+        let descriptor = NSSortDescriptor(keyPath: \AddOnGroup.name, ascending: true)
+        return allObjects(ofType: AddOnGroup.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Returns a single stored add-on group for a provided `siteID` and `groupID`.
+    ///
+    func loadAddOnGroup(siteID: Int64, groupID: Int64) -> AddOnGroup? {
+        let predicate = \AddOnGroup.siteID == siteID && \AddOnGroup.groupID == groupID
+        return firstObject(ofType: AddOnGroup.self, matching: predicate)
+    }
+
+    /// Returns all stored plugins for a provided `siteID`.
+    ///
+    func loadPlugins(siteID: Int64) -> [SitePlugin] {
+        let predicate = \SitePlugin.siteID == siteID
+        let descriptor = NSSortDescriptor(keyPath: \SitePlugin.name, ascending: true)
+        return allObjects(ofType: SitePlugin.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Returns a plugin with a specified `siteID` and `name`
+    ///
+    func loadPlugin(siteID: Int64, name: String) -> SitePlugin? {
+        let predicate = \SitePlugin.siteID == siteID && \SitePlugin.name == name
+        return firstObject(ofType: SitePlugin.self, matching: predicate)
+    }
+
+    /// Returns all payment gateway accounts for a provided `siteID`
+    ///
+    func loadPaymentGatewayAccounts(siteID: Int64) -> [PaymentGatewayAccount] {
+        let predicate = \PaymentGatewayAccount.siteID == siteID
+        let descriptor = NSSortDescriptor(keyPath: \PaymentGatewayAccount.gatewayID, ascending: true)
+        return allObjects(ofType: PaymentGatewayAccount.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Returns a payment gateway account with a specified `siteID` and `gatewayID`
+    ///
+    func loadPaymentGatewayAccount(siteID: Int64, gatewayID: String) -> PaymentGatewayAccount? {
+        let predicate = \PaymentGatewayAccount.siteID == siteID && \PaymentGatewayAccount.gatewayID == gatewayID
+        return firstObject(ofType: PaymentGatewayAccount.self, matching: predicate)
+    }
+
+    // MARK: - System plugins
+
+    /// Returns all stored system plugins for a provided `siteID`.
+    ///
+    func loadSystemPlugins(siteID: Int64) -> [SystemPlugin] {
+        let predicate = \SystemPlugin.siteID == siteID
+        let descriptor = NSSortDescriptor(keyPath: \SystemPlugin.name, ascending: true)
+        return allObjects(ofType: SystemPlugin.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Returns a system plugin with a specified `siteID` and `name`
+    ///
+    func loadSystemPlugin(siteID: Int64, name: String) -> SystemPlugin? {
+        let predicate = \SystemPlugin.siteID == siteID && \SystemPlugin.name == name
+        return firstObject(ofType: SystemPlugin.self, matching: predicate)
     }
 }

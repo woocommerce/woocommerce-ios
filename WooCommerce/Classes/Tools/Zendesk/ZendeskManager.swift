@@ -22,6 +22,10 @@ protocol ZendeskManagerProtocol {
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.
     ///
     func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String?)
+
+    /// Displays a Zendesk New Request view from the given controller, tagged to show in the WCPay queues, for users to submit new tickets.
+    ///
+    func showNewWCPayRequestIfPossible(from controller: UIViewController, with sourceTag: String?)
 }
 
 /// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
@@ -138,6 +142,22 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         }
     }
 
+    /// Displays a Zendesk New Request view from the given controller, tagged to show in the WCPay queues, for users to submit new tickets.
+    ///
+    func showNewWCPayRequestIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
+        createIdentity(presentIn: controller) { success in
+            guard success else {
+                return
+            }
+
+            ServiceLocator.analytics.track(.supportNewRequestViewed)
+
+            let newRequestConfig = self.createWCPayRequest(supportSourceTag: sourceTag)
+            let newRequestController = RequestUi.buildRequestUi(with: [newRequestConfig])
+            self.showZendeskView(newRequestController, from: controller)
+        }
+    }
+
     /// Displays the Zendesk Request List view from the given controller, allowing user to access their tickets.
     ///
     func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
@@ -196,24 +216,42 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
     ///
     func getTags(supportSourceTag: String?) -> [String] {
-        var tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
+        let tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
+
+        return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
+    }
+
+    func getWCPayTags(supportSourceTag: String?) -> [String] {
+        let tags = [Constants.platformTag,
+                    Constants.sdkTag,
+                    Constants.paymentsProduct,
+                    Constants.paymentsCategory,
+                    Constants.paymentsSubcategory,
+                    Constants.paymentsProductArea]
+
+        return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
+    }
+
+    func decorateTags(tags: [String], supportSourceTag: String?) -> [String] {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return tags
         }
 
+        var decoratedTags = tags
+
         if site.isWordPressStore == true {
-            tags.append(Constants.wpComTag)
+            decoratedTags.append(Constants.wpComTag)
         }
 
         if site.plan.isEmpty == false {
-            tags.append(site.plan)
+            decoratedTags.append(site.plan)
         }
 
         if let sourceTagOrigin = supportSourceTag, sourceTagOrigin.isEmpty == false {
-            tags.append(sourceTagOrigin)
+            decoratedTags.append(sourceTagOrigin)
         }
 
-        return tags
+        return decoratedTags
     }
 }
 
@@ -429,13 +467,6 @@ private extension ZendeskManager {
     /// Without it, the tickets won't appear in the correct view(s) in the web portal and they won't contain all the metadata needed to solve a ticket.
     ///
     func createRequest(supportSourceTag: String?) -> RequestUiConfiguration {
-
-        let requestConfig = RequestUiConfiguration()
-
-        // Set Zendesk ticket form to use
-        requestConfig.ticketFormID = TicketFieldIDs.form as NSNumber
-
-        // Set form field values
         let ticketFields = [
             CustomField(fieldId: TicketFieldIDs.appVersion, value: Bundle.main.version),
             CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
@@ -447,10 +478,43 @@ private extension ZendeskManager {
             CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.subcategory)
         ].compactMap { $0 }
 
+        return createRequest(supportSourceTag: supportSourceTag,
+                             formID: TicketFieldIDs.form,
+                             ticketFields: ticketFields,
+                             tags: getTags(supportSourceTag: supportSourceTag))
+    }
+
+    func createWCPayRequest(supportSourceTag: String?) -> RequestUiConfiguration {
+
+        // Set form field values
+        let ticketFields = [
+            CustomField(fieldId: TicketFieldIDs.appVersion, value: Bundle.main.version),
+            CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
+            CustomField(fieldId: TicketFieldIDs.networkInformation, value: getNetworkInformation()),
+            CustomField(fieldId: TicketFieldIDs.logs, value: getLogFile()),
+            CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
+            CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
+            CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
+            CustomField(fieldId: TicketFieldIDs.category, value: Constants.paymentsCategory),
+            CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.paymentsSubcategory),
+        ].compactMap { $0 }
+
+        return createRequest(supportSourceTag: supportSourceTag,
+                             formID: TicketFieldIDs.paymentsForm,
+                             ticketFields: ticketFields,
+                             tags: getWCPayTags(supportSourceTag: supportSourceTag))
+    }
+
+    func createRequest(supportSourceTag: String?, formID: Int64, ticketFields: [CustomField], tags: [String]) -> RequestUiConfiguration {
+        let requestConfig = RequestUiConfiguration()
+
+        // Set Zendesk ticket form to use
+        requestConfig.ticketFormID = formID as NSNumber
+
         requestConfig.customFields = ticketFields
 
         // Set tags
-        requestConfig.tags = getTags(supportSourceTag: supportSourceTag)
+        requestConfig.tags = tags
 
         // Set the ticket subject
         requestConfig.subject = Constants.ticketSubject
@@ -467,10 +531,7 @@ private extension ZendeskManager {
 
         // If the controller is a UIViewController, set the modal display for iPad.
         if !controller.isKind(of: UINavigationController.self) && UIDevice.current.userInterfaceIdiom == .pad {
-            let navController = WooNavigationController(rootViewController: zendeskView)
-            navController.modalPresentationStyle = .fullScreen
-            navController.modalTransitionStyle = .crossDissolve
-            controller.present(navController, animated: true)
+            presentZendeskViewModally(zendeskView, from: controller)
             return
         }
 
@@ -486,9 +547,21 @@ private extension ZendeskManager {
 
         if let navController = presentInController as? UINavigationController {
             navController.pushViewController(zendeskView, animated: true)
+            return
         }
+
+        presentZendeskViewModally(zendeskView, from: controller)
     }
 
+    private func presentZendeskViewModally(_ zendeskView: UIViewController, from controller: UIViewController) {
+        let navController = WooNavigationController(rootViewController: zendeskView)
+        // Keeping the modal fullscreen on iPad like previous implementation.
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            navController.modalPresentationStyle = .fullScreen
+            navController.modalTransitionStyle = .crossDissolve
+        }
+        controller.present(navController, animated: true)
+    }
 
     // MARK: - User Defaults
     //
@@ -826,12 +899,18 @@ private extension ZendeskManager {
         static let nameFieldCharacterLimit = 50
         static let sourcePlatform = "mobile_-_woo_ios"
         static let subcategory = "WooCommerce Mobile Apps"
+        static let paymentsCategory = "support"
+        static let paymentsSubcategory = "payment"
+        static let paymentsProduct = "woocommerce_payments"
+        static let paymentsProductArea = "product_area_woo_payment_gateway"
     }
 
     // Zendesk expects these as NSNumber. However, they are defined as UInt64 to satisfy 32-bit devices (ex: iPhone 5).
     // Which means they then have to be converted to NSNumber when sending to Zendesk.
     struct TicketFieldIDs {
         static let form: Int64 = 360000010286
+        static let paymentsForm: Int64 = 189946
+        static let paymentsGroup: Int64 = 27709263
         static let appVersion: Int64 = 360000086866
         static let allBlogs: Int64 = 360000087183
         static let deviceFreeSpace: Int64 = 360000089123
@@ -840,7 +919,10 @@ private extension ZendeskManager {
         static let currentSite: Int64 = 360000103103
         static let sourcePlatform: Int64 = 360009311651
         static let appLanguage: Int64 = 360008583691
+        static let category: Int64 = 25176003
         static let subcategory: Int64 = 25176023
+        static let product: Int64 = 25254766
+        static let productArea: Int64 = 360025069951
     }
 
     struct LocalizedText {

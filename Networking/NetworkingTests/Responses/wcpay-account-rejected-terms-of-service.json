@@ -1,0 +1,18 @@
+{
+    "data": {
+        "is_live": true,
+        "has_pending_requirements": false,
+        "has_overdue_requirements": false,
+        "current_deadline": null,
+        "status": "rejected.terms_of_service",
+        "statement_descriptor": "TOS.STORE",
+        "store_currencies": {
+            "default": "usd",
+            "supported": [
+                "usd"
+            ]
+        },
+        "country": "US",
+        "test_mode": false
+    }
+}

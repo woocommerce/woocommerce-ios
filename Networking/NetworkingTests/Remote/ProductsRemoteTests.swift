@@ -372,41 +372,45 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that searchProducts properly parses the `products-load-all` sample response.
     ///
-    func testSearchProductsProperlyReturnsParsedProducts() {
+    func test_searchProducts_properly_returns_parsed_products() throws {
+        // Given
         let remote = ProductsRemote(network: network)
-        let expectation = self.expectation(description: "Wait for product search results")
-
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
 
-        remote.searchProducts(for: sampleSiteID,
-                              keyword: "photo",
-                              pageNumber: 0,
-                              pageSize: 100) { (products, error) in
-                                XCTAssertNil(error)
-                                XCTAssertNotNil(products)
-                                XCTAssertEqual(products?.count, 2)
-                                expectation.fulfill()
+        // When
+        let result: Result<[Product], Error> = waitFor { promise in
+            remote.searchProducts(for: self.sampleSiteID,
+                                  keyword: "photo",
+                                  pageNumber: 0,
+                                  pageSize: 100) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let products = try result.get()
+        XCTAssertEqual(products.count, 2)
     }
 
     /// Verifies that searchProducts properly relays Networking Layer errors.
     ///
-    func testSearchProductsProperlyRelaysNetwokingErrors() {
+    func test_searchProducts_properly_relays_netwoking_errors() {
+        // Given
         let remote = ProductsRemote(network: network)
-        let expectation = self.expectation(description: "Wait for product search results")
 
-        remote.searchProducts(for: sampleSiteID,
-                              keyword: String(),
-                              pageNumber: 0,
-                              pageSize: 100) { (products, error) in
-                                XCTAssertNil(products)
-                                XCTAssertNotNil(error)
-                                expectation.fulfill()
+        // When
+        let result: Result<[Product], Error> = waitFor { promise in
+            remote.searchProducts(for: self.sampleSiteID,
+                                  keyword: String(),
+                                  pageNumber: 0,
+                                  pageSize: 100) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 
 
@@ -414,39 +418,41 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that searchSku properly parses the product `sku` sample response.
     ///
-    func testSearchSkuProperlyReturnsParsedSku() {
+    func test_searchSku_properly_returns_parsed_sku() throws {
+        // Given
         let remote = ProductsRemote(network: network)
-        let expectation = self.expectation(description: "Search for a product sku")
-
         network.simulateResponse(requestUrlSuffix: "products", filename: "product-search-sku")
-
         let expectedSku = "T-SHIRT-HAPPY-NINJA"
 
-        remote.searchSku(for: sampleSiteID, sku: expectedSku) { (sku, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(sku)
-            XCTAssertEqual(sku, expectedSku)
-            expectation.fulfill()
+        // When
+        let result: Result<String, Error> = waitFor { promise in
+            remote.searchSku(for: self.sampleSiteID, sku: expectedSku) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let sku = try result.get()
+        XCTAssertEqual(sku, expectedSku)
     }
 
     /// Verifies that searchSku properly relays Networking Layer errors.
     ///
-    func testSearchSkuProperlyRelaysNetwokingErrors() {
+    func test_searchSku_properly_relays_netwoking_errors() {
+        // Given
         let remote = ProductsRemote(network: network)
-        let expectation = self.expectation(description: "Wait for a product sku result")
-
         let skuToSearch = "T-SHIRT-HAPPY-NINJA"
 
-        remote.searchSku(for: sampleSiteID, sku: skuToSearch) { (sku, error) in
-            XCTAssertNil(sku)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When
+        let result: Result<String, Error> = waitFor { promise in
+            remote.searchSku(for: self.sampleSiteID, sku: skuToSearch) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 
 

@@ -2,17 +2,25 @@ import Charts
 import UIKit
 import Yosemite
 
+/// Different display modes of site visit stats
+///
+enum SiteVisitStatsMode {
+    case `default`
+    case redactedDueToJetpack
+    case hidden
+}
+
 /// Shows the store stats with v4 API for a time range.
 ///
-class StoreStatsV4PeriodViewController: UIViewController {
+final class StoreStatsV4PeriodViewController: UIViewController {
 
     // MARK: - Public Properties
 
     let granularity: StatsGranularityV4
 
-    var shouldShowSiteVisitStats: Bool = true {
+    var siteVisitStatsMode: SiteVisitStatsMode = .default {
         didSet {
-            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+            updateSiteVisitStats(mode: siteVisitStatsMode)
         }
     }
 
@@ -145,6 +153,7 @@ class StoreStatsV4PeriodViewController: UIViewController {
                                                              roundSmallNumbers: false) ?? String()
     }
 
+    private lazy var visitorsEmptyView = StoreStatsSiteVisitEmptyView()
     // MARK: - Initialization
 
     /// Designated Initializer
@@ -270,6 +279,12 @@ private extension StoreStatsV4PeriodViewController {
         timeRangeBarView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         visitorsStackView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
 
+        // Visitor empty view - insert it at the second-to-last index,
+        // since we need the footer view (with height = 20) as the last item in the stack view.
+        let emptyViewIndex = max(0, visitorsStackView.arrangedSubviews.count - 2)
+        visitorsStackView.insertArrangedSubview(visitorsEmptyView, at: emptyViewIndex)
+        visitorsEmptyView.isHidden = true
+
         // Time range bar bottom border view
         timeRangeBarBottomBorderView.backgroundColor = .systemColor(.separator)
 
@@ -292,7 +307,7 @@ private extension StoreStatsV4PeriodViewController {
         lastUpdated.backgroundColor = .listForeground
 
         // Visibility
-        updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+        updateSiteVisitStats(mode: siteVisitStatsMode)
 
         // Accessibility elements
         xAxisAccessibilityView.isAccessibilityElement = true
@@ -402,9 +417,10 @@ private extension StoreStatsV4PeriodViewController {
 
 // MARK: - UI Updates
 //
-extension StoreStatsV4PeriodViewController {
-    func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
-        visitorsStackView?.isHidden = !shouldShowSiteVisitStats
+private extension StoreStatsV4PeriodViewController {
+    func updateSiteVisitStats(mode: SiteVisitStatsMode) {
+        visitorsStackView.isHidden = mode == .hidden
+        reloadSiteFields()
     }
 }
 
@@ -463,30 +479,37 @@ private extension StoreStatsV4PeriodViewController {
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateSiteVisitStats(selectedIndex: Int?) {
-        guard shouldShowSiteVisitStats else {
-            return
-        }
-        guard let selectedIndex = selectedIndex else {
-            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
-            reloadSiteFields()
-            return
-        }
-        // Hides site visit stats for "today".
-        guard timeRange != .today else {
-            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: false)
-            return
-        }
-        updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: true)
-        guard visitorsData != nil else {
-            return
+        let mode: SiteVisitStatsMode
+
+        // Hides site visit stats for "today" when an interval bar is selected.
+        if timeRange == .today, selectedIndex != nil {
+            mode = .hidden
+        } else {
+            mode = siteVisitStatsMode
         }
 
-        var visitorsText = Constants.placeholderText
-        if selectedIndex < siteStatsItems.count {
-            let siteStatsItem = siteStatsItems[selectedIndex]
-            visitorsText = Double(siteStatsItem.visitors).humanReadableString()
+        updateSiteVisitStats(mode: mode)
+
+        switch siteVisitStatsMode {
+        case .hidden, .redactedDueToJetpack:
+            break
+        case .default:
+            guard let selectedIndex = selectedIndex else {
+                reloadSiteFields()
+                return
+            }
+            guard visitorsData != nil else {
+                return
+            }
+            var visitorsText = Constants.placeholderText
+            if selectedIndex < siteStatsItems.count {
+                let siteStatsItem = siteStatsItems[selectedIndex]
+                visitorsText = Double(siteStatsItem.visitors).humanReadableString()
+            }
+            visitorsData.text = visitorsText
+            visitorsData.isHidden = false
+            visitorsEmptyView.isHidden = true
         }
-        visitorsData.text = visitorsText
     }
 
     /// Updates date bar based on the selected bar index.
@@ -655,8 +678,19 @@ private extension StoreStatsV4PeriodViewController {
         reloadSiteFields()
         reloadChart(animateChart: animateChart)
         reloadLastUpdatedField()
-        let visitStatsElements = shouldShowSiteVisitStats ? [visitorsTitle as Any,
-                                                             visitorsData as Any]: []
+        let visitStatsElements: [Any] = {
+            switch siteVisitStatsMode {
+            case .default:
+                return [visitorsTitle as Any,
+                        visitorsData as Any]
+            case .redactedDueToJetpack:
+                return [visitorsTitle as Any,
+                        visitorsEmptyView as Any]
+            case .hidden:
+                return []
+            }
+        }()
+
         view.accessibilityElements = visitStatsElements + [ordersTitle as Any,
                                                            ordersData as Any,
                                                            revenueTitle as Any,
@@ -685,15 +719,25 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func reloadSiteFields() {
-        guard visitorsData != nil else {
-            return
-        }
+        switch siteVisitStatsMode {
+        case .hidden:
+            break
+        case .redactedDueToJetpack:
+            visitorsData.isHidden = true
+            visitorsEmptyView.isHidden = false
+        case .default:
+            guard visitorsData != nil else {
+                return
+            }
 
-        var visitorsText = Constants.placeholderText
-        if let siteStats = siteStats {
-            visitorsText = Double(siteStats.totalVisitors).humanReadableString()
+            var visitorsText = Constants.placeholderText
+            if let siteStats = siteStats {
+                visitorsText = Double(siteStats.totalVisitors).humanReadableString()
+            }
+            visitorsData.text = visitorsText
+            visitorsData.isHidden = false
+            visitorsEmptyView.isHidden = true
         }
-        visitorsData.text = visitorsText
     }
 
     func reloadChart(animateChart: Bool = true) {

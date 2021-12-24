@@ -1,12 +1,24 @@
-/* Translation-Revision-Date: 2021-03-30 11:54:04+0000 */
+/* Translation-Revision-Date: 2021-12-15 11:32:07+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
 
 /* No comment provided by engineer. */
+"#%1$@" = "#%1$@";
+
+/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
-/* Format for each Product attribute */
+/* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"%.0f%% complete" = "%.0f%% tamamlandı";
+
+/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
+"%1$@" = "%1$@";
+
+/* Format for each Product attribute in singular form */
+"%1$@ (%2$ld option)" = "%1$@ (%2$ld seçenek)";
+
+/* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld options)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -18,7 +30,12 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (Müşteriye)";
 
-/* Label about product's inventory stock status shown on Products tab */
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string, - which should be translated separately and considered part of this sentence. */
+"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ about accepting payments with your mobile device and ordering card readers";
+
+/* Label about product's inventory stock status shown during order creation
+   Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ stokta";
 
 /* Review title. Reads as {Review author} left a review */
@@ -29,6 +46,9 @@
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "%1$@ geri ödeme istendi (%2$@)";
+
+/* Total value for the selected rates in Shipping Labels > Carrier and Rates */
+"%1$@ total" = "Toplam %1$@";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%2$@ üzerinden %1$@";
@@ -42,11 +62,41 @@
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
 
+/* Card reader battery level as an integer percentage */
+"%1$@%% Battery" = "%1$@%% Pil için eşleşme yok";
+
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
+/* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
+"%1$@・%2$@" = "%1$@・%2$@";
+
 /* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
+
+/* Singular format of number of business day in Shipping Labels > Carrier and Rates */
+"%1$d business day" = "%1$d iş günü";
+
+/* Plural format of number of business days in Shipping Labels > Carrier and Rates */
+"%1$d business days" = "%1$d iş günü ";
+
+/* For example: `1 item` in Shipping Label package row */
+"%1$d item" = "%1$d ürün";
+
+/* For example: `5 items` in Shipping Label package row */
+"%1$d items" = "%1$d öğeler";
+
+/* Total number of items and packages in Shipping Label form. */
+"%1$d items in %2$d packages" = "%2$d pakette %1$d öğe";
+
+/* Number of rates selected in Shipping Labels > Carrier and Rates */
+"%1$d rates selected" = "%1$d ücret seçildi";
+
+/* Format for the variations detail row in singular form. Reads, `1 variation` */
+"%1$ld variation" = "%1$ld varyasyon";
+
+/* Format for the variations detail row in plural form. Reads, `2 variations` */
+"%1$ld variations" = "%1$ld varyasyon";
 
 /* 1 Item */
 "%@ Item" = "%@ Ürün";
@@ -62,6 +112,12 @@
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "%2$@ üzerinden %1$@";
+
+/* For example: `1 item` in Aggregated Product List */
+"%d item" = "%d ürün";
+
+/* For example: `5 items` in Aggregated Product List */
+"%d items" = "%d öğeler";
 
 /* Title of the label indicating that there are multiple items to refund. */
 "%d items selected" = "%d ürün seçildi";
@@ -110,13 +166,28 @@
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "Yazıcı ayarlarınızda **AirPrint'in etkinleştirildiğinden emin olun**. Bu ayarı yazıcının kendisinde yapılandırmanız gerekebilir.\n\nAyrıntılar için yazıcınızla birlikte gelen belgelere bakın.";
 
+/* Number of item in packages in Shipping Labels in singular form. Reads like - 1 items */
+"- %1$d item" = "- %1$d ürün";
+
+/* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
+"- %1$d items" = "- %1$d öğe";
+
+/* Settings > Manage Card Reader > Connect > Help hint number 1 */
+"1" = "1";
+
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "1 Ürün Seçildi";
 
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "1 öğe seçildi";
 
-/* Shown when there are more than 99 items of something (e.g. Processing Orders). */
+/* Settings > Manage Card Reader > Connect > Help hint number 2 */
+"2" = "2";
+
+/* Settings > Manage Card Reader > Connect > Help hint number 3 */
+"3" = "3";
+
+/* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
 /* Placeholder of the Product Short Description row on Product main screen */
@@ -128,6 +199,15 @@
 /* Description of the Action sheet option when the user wants to change the Product type to grouped product */
 "A collection of related products" = "İlgili ürünlerden oluşan bir koleksiyon";
 
+/* Main message on the Print Customs Invoice screen of Shipping Label flow */
+"A customs form must be printed and included on this international shipment" = "Bu uluslararası gönderiye bir gümrük formu yazdırılmalı ve eklenmelidir.";
+
+/* Error message when there was a network error checking In-Person Payments requirements */
+"A network error occurred. Please check your connection and try again." = "Bir ağ sorunu meydana geldi. Lütfen bağlantınızı kontrol edip tekrar deneyin.";
+
+/* Error shown in Shipping Label Origin Address validation for phone number field for international shipment */
+"A phone number is required because this shipment requires a customs form" = "Bu gönderi bir gümrük formu gerektirdiğinden telefon numarası gerekir";
+
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "A product with variations like color or size" = "Renk veya beden gibi çeşitleri olan bir ürün";
 
@@ -137,8 +217,14 @@
 /* No comment provided by engineer. */
 "A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "Müşteriye para iadesi yapılmayacaktır. Para iadesini Stripe üzerinden manuel olarak yapmanız gerekecektir.";
 
-/* Description of the Action sheet option when the user wants to change the Product type to simple product */
-"A unique item to sell" = "Satılacak benzersiz bir ürün";
+/* Message explaining that the site may have an invalid SSL certificate. */
+"A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "Siteyle güvenli bağlantı kurulamadı. Lütfen sitenizin geçerli bir SSL sertifikasına sahip olduğundan emin olun.";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
+"A unique digital product like services, downloadable books, music or videos" = "Hizmetler, indirilebilir kitaplar, müzik veya videolar gibi benzersiz bir dijital ürün";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
+"A unique physical product that you may have to ship to the customer" = "Müşteriye göndermeniz gerekebilecek benzersiz bir fiziksel ürün";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Kimlik doğrulama bağlantısının gönderilebilmesi için geçerli bir e-posta adresi gerekir. Geçerli bir e-posta adresi sağlamak için lütfen önceki ekrana dönün.";
@@ -155,8 +241,17 @@
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Uygulama hakkında";
 
+/* Title for the error screen when WooCommerce Payments is installed but not activated */
+"Activate WooCommerce Payments" = "WooCommerce Payments'ı Etkinleştirin";
+
+/* Name of the activation Jetpack plugin step */
+"Activating" = "Etkinleştiriliyor";
+
 /* Application's Active State */
 "Active" = "Etkin";
+
+/* Title for table view section of active plugins */
+"Active Plugins" = "Etkin eklentiler";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "Etkin, otomatik güncellemeler kapalı";
@@ -168,9 +263,15 @@
    A button title used for a unit test - Action for adding a Products' downloadable files' info remotely - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "Ekle";
 
+/* Title on empty state button when the product has no attributes and variations */
+"Add Attributes" = "Nitelik Ekle";
+
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "Kategori Ekle";
+
+/* Title for the button to add the Customer Provided Note in Order Details */
+"Add Customer Note" = "Müşteri Notu Ekle";
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "İndirilebilir Dosya Ekle";
@@ -181,6 +282,12 @@
 /* Action to add new attribute on the Product Attributes screen */
 "Add New Attribute" = "Yeni Öznitelik Ekle";
 
+/* Add New Package screen title in Shipping Label flow */
+"Add New Package" = "Yeni Paket Ekle";
+
+/* Title text of the button that adds a note when creating a simple payment */
+"Add Note" = "Not Ekle";
+
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Fotoğraf Ekle";
 
@@ -190,20 +297,29 @@
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "Fiyat Ekle";
 
-/* Action to add product on the placeholder overlay when there are no products on the Products tab */
+/* Action to add product on the placeholder overlay when there are no products on the Products tab
+   Title for the screen to add a product to an order */
 "Add Product" = "Ürün Ekle";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
 "Add Products" = "Ürün Ekle";
 
+/* Title for the button to add the Shipping Address in Order Details */
+"Add Shipping Address" = "Teslimat Adresi ekle";
+
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "Takip Ekle";
 
-/* Action to add new variation on the variations list
-   Title on add variation button when there are no variations */
+/* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "Varyasyon Ekle";
+
+/* Placeholder in Shipping Label form for the Payment Method row. */
+"Add a new credit card" = "Yeni bir kredi kartı ekle";
+
+/* Navigates to a screen to create a full manual order */
+"Add a new order" = "Yeni sipariş ekleyin";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -221,8 +337,14 @@
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "Bir takip ekle";
 
+/* Button title in the Shipping Label Payment Method screen if there is an existing payment method */
+"Add another credit card" = "Başka kredi kartı ekle";
+
 /* Add Product Attribute screen navigation title */
 "Add attribute" = "Nitelik ekle";
+
+/* Button title in the Shipping Label Payment Method screen */
+"Add credit card" = "Kredi kartı ekle";
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "Her seçeneği ekleyin ve enter tuşuna basın ";
@@ -234,6 +356,12 @@
 /* Voiceover accessibility label for the tags field in product tags. */
 "Add new tags, separated by commas." = "Virgülle ayırarak yeni etiketler ekleyin.";
 
+/* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
+"Add price to your variations to make them visible on your store" = "Mağazanızda görünmesi için varyasyonlarınıza fiyat ekleyin";
+
+/* Title text of the button that adds a product when creating a new order */
+"Add product" = "Ürün ekle";
+
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Ürün bağlantısı ekle";
 
@@ -243,19 +371,26 @@
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Ürünlerin indirilebilir dosyalarına ait bilgileri uzaktan ekleyin";
 
+/* Navigates to a screen to create a simple payments order */
+"Add simple payments order" = "Basit ödeme talimatı ekleyin";
+
+/* Option to add item to new package on Package Details screen of Shipping Label flow. */
+"Add to new package" = "Yeni pakete ekle";
+
 /* Title for adding variations row on Product main screen for a variable product */
 "Add variations" = "Varyasyon ekle";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Ağırlık ve boyutları ekleme";
 
-/* Title on the variations list screen when there are no variations */
-"Add your first variation" = "İlk varyasyonunuzu ekleyin";
-
 /* Text field address in Shipping Label Address Validation */
 "Address" = "Adres";
 
-/* Text field address 2 in Shipping Label Address Validation */
+/* Text field address 1 in Edit Address Form */
+"Address 1" = "Adres 1";
+
+/* Text field address 2 in Edit Address Form
+   Text field address 2 in Shipping Label Address Validation */
 "Address 2" = "Adres 2";
 
 /* Shipping Label Suggested Address entered placeholder */
@@ -267,8 +402,14 @@
 /* Error showed in Shipping Label Address Validation for the address field */
 "Address missing" = "Adres eksik";
 
+/* Notice text after updating the shipping or billing address */
+"Address successfully updated." = "Adres başarıyla güncellendi.";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Bir siparişe takip ekler.";
+
+/* Adult signature required in Shipping Labels > Carrier and Rates */
+"Adult signature required (+%1$@)" = "Yetişkin imzası gerekli (+%1$@)";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Uygulama durumunu incelemek için gelişmiş araç";
@@ -276,17 +417,23 @@
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
 
-/* Title for the second page in the Orders tab. */
+/* Header bar label on top of order list when no filters are applied */
 "All Orders" = "Tüm Siparişler";
 
-/* The message shown in the Orders → Processing tab if the list is empty. */
-"All orders have been fulfilled" = "Tüm siparişler gönderildi";
+/* Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow */
+"All available packages have been activated" = "Mevcut tüm paketler etkinleştirildi";
+
+/* Name of final step in Install Jetpack flow. */
+"All done" = "Her şey hazır";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Tüm incelemeler okundu olarak işaretlendi";
 
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "İzin ver";
+
+/* Subtitle of user profiles as part of Jetpack benefits. */
+"Allow multiple users to access WooCommerce Mobile." = "Birden fazla kullanıcının WooCommerce Mobile'a erişmesine izin verin.";
 
 /* Display label for the product's inventory backorders setting option */
 "Allow, but notify customer" = "İzin ver fakat müşteriyi bilgilendir";
@@ -318,8 +465,11 @@
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Satın alma işleminden sonra müşteriye göndermek için isteğe bağlı not";
 
-/* Product variation attribute description where the attribute is set to any value.
-   Title when there is no filter set. */
+/* Title of analytics as part of Jetpack benefits. */
+"Analytics" = "Analiz";
+
+/* Case Any in Order Filters for Order Statuses
+   Display label for all order statuses selected in Order Filters - Label for one of the filters in order date range - Product variation attribute description where the attribute is set to any value. - Title when there is no filter set. */
 "Any" = "Herhangi biri";
 
 /* Format of a product variation attribute description where the attribute is set to any value.
@@ -379,6 +529,9 @@
    Title of the attributes row on Product Variation main screen */
 "Attributes" = "Nitelikler";
 
+/* Primary text for the generate first variation screen */
+"Attributes added!" = "Özellikler eklendi.";
+
 /* No comment provided by engineer. */
 "Authenticating" = "Doğrulanıyor";
 
@@ -399,9 +552,21 @@
    Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "%@ üzerinden ödeme bekleniyor";
 
-/* Alert button title - dismisses alert, which cancels the log out attempt
-   Back button title. */
+/* Details section title in the Edit Address Form */
+"BILLING ADDRESS" = "FATURA ADRESİ";
+
+/* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Geri";
+
+/* Accessibility announcement message when device goes back online */
+"Back online" = "Yeniden çevrimiçi";
+
+/* Button to dismiss modal overlay. Presented to users after a payment has been successfully collected
+   Button to dismiss modal overlay. Presented to users after collecting a payment fails */
+"Back to Order" = "Siparişe Geri Dön";
+
+/* Text for the button to dismiss the store picker error screen */
+"Back to Sites" = "Sitelere Geri Dön";
 
 /* Title of a button to dismiss the survey complete screen */
 "Back to store" = "Mağazaya dön";
@@ -416,7 +581,8 @@
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Barkod numarası %1$i, %2$@, ";
 
-/* Section header title for billing address in billing information */
+/* Section header title for billing address in billing information
+   Title for the Edit Billing Address Form */
 "Billing Address" = "Fatura Adresi";
 
 /* Billing Information view Title */
@@ -425,8 +591,14 @@
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Blok Alıntı";
 
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"Bluetooth permission required" = "Bluetooth izni gerekli";
+
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Kalın";
+
+/* Box package type, used to create a custom package in the Shipping Label flow */
+"Box" = "Kutu";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Düğme Metni";
@@ -440,6 +612,9 @@
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Kaydolarak_Hizmet Koşullarını_ kabul etmiş olursunuz.";
 
+/* Header for the Custom Packages section in Shipping Label Package listing */
+"CUSTOM PACKAGES" = "ÖZEL PAKETLER";
+
 /* Call phone number button title */
 "Call" = "Ara";
 
@@ -450,14 +625,20 @@
 "Can Not Request Link" = "Bağlantı istenemiyor";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "İptal";
+
+/* Display label for cancelled order status. */
+"Cancelled" = "İptal Edildi";
 
 /* Title of the alert when there is an error creating a new product category */
 "Cannot Add Category" = "Kategori Eklenemiyor";
 
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "Etiketler Eklenemiyor";
+
+/* The title of the alert when there is a generic error adding the package */
+"Cannot add package" = "Paket eklenemiyor";
 
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
@@ -467,11 +648,24 @@
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Resim yüklenemiyor";
 
-/* Card reader settings screen title */
-"Card Readers" = "Kart Okuyucular";
+/* Detailed message shown in the Reviews tab if the list is empty
+   Detailed message shown on the Product Reviews screen if the list is empty */
+"Capture high-quality product reviews for your store." = "Mağazanız için yüksek kalitede ürün yorumları alın.";
+
+/* Card method title on the select payment method screen for simple payments */
+"Card" = "Kart";
+
+/* Navigates to Card Reader manual */
+"Card reader manual" = "Kart okuyucu kılavuzu";
+
+/* Navigation bar title of shipping label carrier and rates screen */
+"Carrier and Rates" = "Kargo Şirketi ve Ücretler";
 
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "Kargo şirketi adı";
+
+/* Cash method title on the select payment method screen for simple payments */
+"Cash" = "Nakit";
 
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
@@ -481,7 +675,7 @@
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Her an, her yerde sevdiğiniz siteleri kontrol edip sohbetin bir parçası olun.";
 
 /* Edit product categories screen - Screen title
-   Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
+   Filter product categories screen - Screen title - Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
 "Categories" = "Kategoriler";
 
 /* Popup title for wrong SSL certificate. */
@@ -495,6 +689,9 @@
 
 /* Body of the alert when a user is changing the product type */
 "Changing the product type will modify some of the product data and delete all your attributes and variations" = "Ürün türünü değiştirdiğinizde ürün verilerinin bir kısmı değişir ve tüm özellikleriniz ile varyasyonlarınız silinir.";
+
+/* Title text of the row that has a switch when creating a simple payment */
+"Charge Taxes" = "Vergileri Al";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Girilen URL'nin geçerli olup olmadığını kontrol edin";
@@ -511,29 +708,75 @@
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Kağıt Boyutu Seç";
 
+/* Navigation title on the shipping label country selector screen */
+"Choose a Country" = "Ülke seçin";
+
+/* Navigation title on the shipping label states of a country selector screen */
+"Choose a State" = "Bir Eyalet Seçin";
+
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Cihazdan seç";
 
-/* Text field city in Shipping Label Address Validation */
+/* Opens action sheet to choose a type of a new order */
+"Choose new order type" = "Yeni sipariş türü seçin";
+
+/* Heading text on the select payment method screen for simple payments */
+"Choose your payment method" = "Ödeme yönteminizi seçin";
+
+/* Text field city in Edit Address Form
+   Text field city in Shipping Label Address Validation */
 "City" = "Şehir";
 
 /* Error showed in Shipping Label Address Validation for the city field */
 "City missing" = "Şehir eksik";
 
+/* Action to add product on the placeholder overlay when no products match the filter on the Products tab
+   Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
+"Clear Filters" = "Filtreleri Temizle";
+
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Tümünü temizle";
+
+/* Text for the close button in the Add Product screen
+   Text for the close button in the Edit Address Form - Title of the Close action on the Jetpack Install view */
+"Close" = "Kapat";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Bilgi topla";
 
-/* Text field company in Shipping Label Address Validation */
+/* Text on the button that starts collecting a card present payment. */
+"Collect Payment" = "Ödeme Alın";
+
+/* Alert title when starting the collect payment flow without a user name. */
+"Collect payment" = "Collect payment";
+
+/* Alert title when starting the collect payment flow with a user name. */
+"Collect payment from %1$@" = "Collect payment from %1$@";
+
+/* Text field company in Edit Address Form
+   Text field company in Shipping Label Address Validation */
 "Company" = "Firma";
 
-/* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
-"Composes a new email message to the billing customer." = "Müşteriye yeni bir e-posta mesajı oluşturur.";
+/* Display label for completed order status. */
+"Completed" = "Tamamlandı";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Yeni bir sipariş notu oluşturur.";
+
+/* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
+"Congratulations! Your reader is running the latest software" = "Tebrikler! Okuyucunuz en son yazılımı çalıştırıyor";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"Connect" = "Bağlan";
+
+/* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
+"Connect Card Reader" = "Kart Okuyucuyu Bağlayın";
+
+/* Label for a button that when tapped, starts the process of connecting to a card reader */
+"Connect to Reader" = "Okuyucuya Bağlan";
+
+/* Settings > Manage Card Reader > Prompt user to connect their first reader */
+"Connect your card reader" = "Kart okuyucunuzu bağlayın";
 
 /* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
 "Connect your store with Jetpack" = "Mağazanızı Jetpack ile bağlayın";
@@ -541,14 +784,32 @@
 /* Title shown when a user logs in with Google but no matching WordPress.com account is found */
 "Connected But…" = "Bağlandı ancak...";
 
+/* Settings > Manage Card Reader > Connected Reader Table Section Heading */
+"Connected Reader" = "Bağlı Okuyucu";
+
 /* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
 "Connected Store" = "Bağlı Mağaza";
 
 /* Page title for the list of connected stores */
 "Connected Stores" = "Bağlı Mağazalar";
 
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
+"Connecting reader failed" = "Okuyucuya bağlanılamadı";
+
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "WordPress.com'a bağlanılıyor";
+
+/* Title label for modal dialog that appears when connecting to a card reader */
+"Connecting to reader" = "Okuyucuya bağlanılıyor";
+
+/* Title when checking if WooCommerce Payments is supported */
+"Connecting to your account" = "Hesabınıza bağlanılıyor";
+
+/* Name of the step to connect the store to Jetpack */
+"Connecting your store" = "Mağazanızı bağlama";
+
+/* Contact Customer action in Shipping Label Address Validation. */
+"Contact Customer" = "Müşteri İle İletişime Geç";
 
 /* Section header title for contact details in billing information */
 "Contact Details" = "İletişim Bilgileri";
@@ -556,14 +817,27 @@
 /* Contact Email title */
 "Contact Email" = "İletişim E-postası";
 
-/* Contact Support title */
+/* Contact Support title
+   Text for the button to contact support from the store picker error screen - The title of the button to contact support in the Error Loading Data banner */
 "Contact Support" = "Destek Birimine Başvurun";
+
+/* Contact WooComerce Payments Support title */
+"Contact WooCommerce Payments Support" = "WooCommerce Payments Desteği ile iletişime geçin";
+
+/* Title of a button to contact support in the error screen for In-Person payments */
+"Contact us" = "Bizimle iletişim kurun";
 
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "Buradan bize ulaşın";
 
+/* Title for the Content Details row in Customs screen of Shipping Label flow */
+"Content Details" = "İçerik Ayrıntıları";
+
+/* Title for the Content Type row in Customs screen of Shipping Label flow */
+"Content Type" = "İçerik Türü";
+
 /* Continue button inside every cell inside Create Shipping Label form
-   The button title text when there is a next step for logging in or signing up. - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
+   The button title text when there is a next step for logging in or signing up. - Title of continue button - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
 "Continue" = "Devam et";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
@@ -620,11 +894,15 @@
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Etiketler yüklenemedi.";
 
-/* Text field country in Shipping Label Address Validation */
+/* Text field country in Edit Address Form
+   Text field country in Shipping Label Address Validation - Title to select country from the edit address screen */
 "Country" = "Ülke";
 
 /* Error showed in Shipping Label Address Validation for the country field */
 "Country missing" = "Ülke eksik";
+
+/* Description for the Origin Country row in Customs screen of Shipping Label flow */
+"Country where the product was manufactured or assembled" = "Ürünün üretildiği veya monte edildiği ülke";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Kilitlenme Hata Ayıklama Menüsü";
@@ -632,18 +910,42 @@
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "Anında Kilitlenme";
 
+/* Button to create an order on the New Order screen */
+"Create" = "Oluştur";
+
 /* The button title text for creating a new account. */
 "Create Account" = "Hesap Oluştur";
 
 /* Create Shipping Label form navigation title
-   Text on the button that starts shipping label creation */
+   Option to create new shipping label from the action sheet on Products section of Order Details screen - Text on the button that starts shipping label creation */
 "Create Shipping Label" = "Gönderi Etiketi Oluşturun";
 
-/* My Store > Settings > Experimental features > Products */
-"Creating products" = "Ürün oluşturma";
+/* Description of the Action sheet option when the user wants to create full manual order */
+"Create a new manual order" = "Yeni bir manuel sipariş oluşturun";
+
+/* Description of the Action sheet option when the user wants to create Simple Payments order */
+"Create an order with minimal information" = "Minimum bilgi ile sipariş oluşturun";
+
+/* Button to create a new package in Shipping Label Package screen */
+"Create new package" = "Yeni paket oluştur";
+
+/* Action sheet option when the user wants to create full manual order */
+"Create order" = "Sipariş oluştur";
+
+/* The title of the shipping labels top banner in order details */
+"Create shipping labels from your device!" = "Cihazınızdan gönderim etiketleri oluşturun!";
+
+/* Title on the variations list screen when there are no variations */
+"Create your first variation" = "İlk varyasyonunuzu oluşturun";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "Kredi kartı";
+
+/* Selected credit card in Shipping Label form. %1$@ is a placeholder for the last four digits of the credit card. */
+"Credit card ending in %1$@" = "%1$@ ile biten kredi kartı";
+
+/* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
+"Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "Kredi kartları şu WordPress.com hesabından alınır: %1$@ <%2$@>";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
@@ -652,21 +954,65 @@
 /* Cell title: the current date. */
 "Current" = "Geçerli";
 
+/* Error when the user tap on Country field in Shipping Label Address Validation */
+"Currently we support just the United States from mobile." = "Mobil uygulamamız şu anda yalnızca Amerika Birleşik Devletleri'nde destekleniyor.";
+
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "Özel";
+
+/* Title text of the row that shows the provided amount when creating a simple payment */
+"Custom Amount" = "Özel Tutar";
 
 /* Add custom shipping carrier. Content of cell titled Shipping Carrier
    Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "Özel Kargo Şirketi";
 
-/* Customer info section title */
+/* Custom line index in Customs Form of Shipping Label flow */
+"Custom Line %1$d" = "Özel Hat %1$d";
+
+/* Custom Package menu in Shipping Label Add New Package flow */
+"Custom Package" = "Özelleştirilmiş Paket";
+
+/* Label for one of the filters in order date range
+   Navigation title of the orders filter selector screen for custom date range */
+"Custom Range" = "Özel Aralık";
+
+/* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
+"Custom forms require a 10-digit phone number" = "Gümrük formları 10 haneli bir telefon numarası gerektirir";
+
+/* Customer info section title
+   Customer info section title in Review Order screen */
 "Customer" = "Müşteri";
 
-/* Customer note section title */
+/* Customer note row title
+   Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
 "Customer Provided Note" = "Müşterinin Verdiği Not";
 
+/* Title of the banner notice in Shipping Labels -> Carrier and Rates */
+"Customer paid a %1$@ of %2$@ for shipping" = "Müşteri gönderim için %1$@ (%2$@) ödedi";
+
+/* Navigation title for Customs screen in Shipping Label flow
+   Title of the cell Customs inside Create Shipping Label form */
+"Customs" = "Gümrük";
+
+/* Title on the Print Customs Invoice screen of Shipping Label flow */
+"Customs form" = "Gümrük formu";
+
+/* Subtitle of the cell Customs inside Create Shipping Label form when the form is completed */
+"Customs form completed" = "Gümrük formu tamamlandı";
+
+/* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
+"Customs forms must be printed and included on these international shipments" = "Gümrük formları yazdırılmalı ve bu uluslararası gönderilere eklenmelidir.";
+
 /* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Telefonunuzla evde indirimli fiyatlara gönderim etiketleri yazdırarak postane ile olan bağınızı koparın.";
+"Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "Mobil cihazınızla evde indirimli fiyatlara gönderim etiketleri yazdırarak postane ile olan bağınızı koparın.";
+
+/* Details section title in the Edit Address Form */
+"DETAILS" = "AYRINTILAR";
+
+/* Navigation title of the orders filter selector screen for date range
+   Row title for filtering orders by date range. */
+"Date Range" = "Tarih aralığı";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Gönderim tarihi";
@@ -694,17 +1040,17 @@
 "Describe your product to your future customers..." = "Ürününüzü gelecekteki müşterilerinize anlatın...";
 
 /* The navigation bar title of the Aztec editor screen.
-   Title in the Product description row on Product form screen when the description is non-empty. */
+   Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Tanım";
-
-/* The row label to tap for a detailed product list */
-"Details" = "Detaylar";
 
 /* Screen title: Details Order number. Parameters: %1$@ - order number */
 "Details Order #%1$@" = "%1$@ No'lu Siparişin Ayrıntıları";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Ürünlerin katalogdaki konumlandırmasını belirler. Sayı ne kadar küçükse öğe, ürün listesinde o kadar üstte olacaktır. Negatif değerler de kullanabilirsiniz";
+
+/* Instructions after a Magic Link was sent, but email is incorrect. */
+"Didn't mean to create a new account? Go back to re-enter your email address." = "Yeni bir hesap oluşturmak istemediniz mi? E-posta adresinizi yeniden girmek için geri dönün.";
 
 /* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
 "Dimensions: %1$@ x %2$@ %3$@" = "Ölçüler: %1$@ x %2$@%3$@";
@@ -724,31 +1070,40 @@
 /* Button title Discard Changes in Discard Changes Action Sheet */
 "Discard changes" = "Değişiklikleri iptal et";
 
+/* Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader */
+"Disconnect Reader" = "Okuyucunun bağlantısını kes";
+
 /* Discount label for payment view */
 "Discount" = "İndirim";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view */
 "Dismiss" = "Kapat";
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "İzin verme";
 
+/* Dialog title that displays the name of a found card reader */
+"Do you want to connect to reader %@?" = "%@ okuyucusuna bağlanmak istiyor musunuz?";
+
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Bu ürünü Çöp Kutusu'na taşımak istiyor musunuz?";
+
+/* Type Documents of content to be declared for the customs form in Shipping Label flow */
+"Documents" = "Belgeler";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Hesabınız yok mu? _Kaydol_";
 
 /* Action title to select products to add to a grouped product from search results
-   Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
+   Done button on the Jetpack Install Progress screen. - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
 "Done" = "Bitti";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
 "Don’t know how to print from your device?" = "Cihazınızla nasıl yazdıracağınızı bilmiyor musunuz?";
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
-"Don’t know how to print from your phone?" = "Telefonunuzla nasıl yazdıracağınızı bilmiyor musunuz?";
+"Don’t know how to print from your mobile device?" = "Mobil cihazınızla nasıl yazdıracağınızı bilmiyor musunuz?";
 
 /* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "Dotcom Error: [%1$@] %2$@" = "Dotcom Hatası: [%1$@] %2$@";
@@ -764,6 +1119,9 @@
 
 /* WordPress.com Request Failure */
 "Dotcom Request Failed" = "Dotcom İsteği Başarısız Oldu";
+
+/* WordPress.com error thrown when a requested resource does not exist remotely. */
+"Dotcom Resource does not exist" = "Dotcom Kaynağı mevcut değil";
 
 /* WordPress.com Error thrown when the response body is empty */
 "Dotcom Response Empty" = "Dotcom Yanıtı Boş";
@@ -808,6 +1166,10 @@
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Ürünlerinizi benzersiz kodlarla kolayca tanımlayın";
 
+/* Button to edit an order status on the New Order screen
+   Title text of the button that edits a note when creating a simple payment */
+"Edit" = "Düzenle";
+
 /* Action to edit the address in Shipping Label Suggested screen */
 "Edit Address" = "Adresi Düzelt";
 
@@ -818,7 +1180,14 @@
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Ürünleri Düzenle";
 
-/* Email address text field placeholder */
+/* Caption displayed in promotional screens shown during the login flow. */
+"Edit and add new products from anywhere" = "Her yerden yeni ürünler ekleyin ve düzenleyin";
+
+/* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
+"Eligible for free pickup" = "Ücretsiz teslim almaya uygun";
+
+/* Email address text field placeholder
+   Email button title - Text field email in Edit Address Form - Title of Email accessibility action, opens a compose view - Title text of the row that holds the provided email when creating a simple payment */
 "Email" = "E-posta";
 
 /* Accessibility label for the email address text field.
@@ -831,11 +1200,20 @@
 /* No comment provided by engineer. */
 "Email note to customer %@" = "%@ müşterisine notu e-posta ile gönderin";
 
+/* Button to email receipts. Presented to users after a payment has been successfully collected */
+"Email receipt" = "Makbuzu e-posta ile gönderin";
+
+/* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
+"Email the label purchase receipts to %1$@ (%2$@) at %3$@" = "Etiket satın alma makbuzlarını %1$@ adresine (%2$@) (%3$@) e-posta ile gönderin";
+
 /* Accessibility label that lets the user know the billing customer's email address */
 "Email: %@" = "E-posta: %@";
 
 /* Accessibility text for Unit Input cell */
 "Empty" = "Boş";
+
+/* Title for the row to enter the empty package weight on the Add New Custom Package screen in Shipping Label flow */
+"Empty Package Weight" = "Boş Paket Ağırlığı";
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Boş adres";
@@ -846,14 +1224,36 @@
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "Etkin";
 
+/* Label for one of the filters in order custom date range */
+"End Date" = "Bitiş tarihi";
+
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "WooCommerce uygulaması hoşunuza gidiyor mu?";
 
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "**Yazıcınızın ürün yazılımının güncel olduğundan** emin olun. Güncelleme ile ilgili talimatlar için yazıcınızın belgelerine bakın.";
 
-/* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
+/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+"Enter Address" = "Enter Address";
+
+/* Short instructions label in the simple payments screen */
+"Enter Amount" = "Miktar Gir";
+
+/* Action button linking to instructions for enter another store.Presented when logging in with a site address that appears to be invalid.
+   Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "Başka Bir Mağaza Girin";
+
+/* Placeholder of the row that holds the provided email when creating a simple payment */
+"Enter Email" = "E-posta Gir";
+
+/* Placeholder for the required ITN row in Customs screen of Shipping Label flow */
+"Enter ITN" = "ITN'yi Gir";
+
+/* Placeholder for the ITN row in Customs screen of Shippling Label flow */
+"Enter ITN (Optional)" = "ITN gir (İsteğe bağlı)";
+
+/* Placeholder for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+"Enter Name" = "Ad gir";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "URL gir";
@@ -865,18 +1265,24 @@
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Kargo şirketi adını girin";
 
+/* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
+"Enter description" = "Açıklama gir";
+
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "Dosya URL'si girin";
+
+/* Placeholder of HS Tariff Number row in Package Content section in Customs screen of Shipping Label flow */
+"Enter number (Optional)" = "Numara gir (İsteğe bağlı)";
 
 /* Enter password placeholder in Product Visibility */
 "Enter password" = "Parola girin";
 
+/* Sign in instructions for logging in with a URL. */
+"Enter the address of the WooCommerce store you'd like to connect." = "Enter the address of the WooCommerce store you'd like to connect.";
+
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
 "Enter the address of the WordPress site you'd like to connect." = "Bağlanmak istediğiniz WordPress sitesinin adresini girin.";
-
-/* Sign in instructions for logging in with a URL. */
-"Enter the address of your WooCommerce store you'd like to connect." = "Bağlanmak istediğiniz WooCommerce mağazasının adresini girin.";
 
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "Ürünün harici URL'sini girin.";
@@ -909,8 +1315,17 @@
    Title of a button. */
 "Enter your password instead." = "Bunun yerine parolanızı girin.";
 
-/* Alert title when there is an error requesting shipping label document for reprinting */
+/* Envelope package type, used to create a custom package in the Shipping Label flow */
+"Envelope" = "Zarf";
+
+/* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
+"Error in finding the address in Apple Maps" = "Apple Haritalar'da adres bulunurken hata oluştu";
+
+/* Alert title when there is an error requesting shipping label document for printing */
 "Error previewing shipping label" = "Kargo etiketi önizlenirken hata oluştu";
+
+/* Notice displayed when the label purchase fails */
+"Error purchasing the label" = "Etiket satın alınırken hata oluştu";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -921,6 +1336,9 @@
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Harici\/İş Ortağı";
+
+/* Display label for failed order status. */
+"Failed" = "Başarısız";
 
 /* An error message shown when failing to retrieve information to present a view for a review push notification. */
 "Failed to retrieve the review notification details." = "Yorum bildirimiyle ilgili ayrıntılar alınamadı.";
@@ -951,17 +1369,31 @@
    Title of the cell in Product Downloadable File URL > File URL */
 "File URL" = "Dosya URL'si";
 
+/* Subtitle of the cell Customs inside Create Shipping Label form */
+"Fill out customs form" = "Gümrük formunu doldurun";
+
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "Parola yöneticisi ile doldur";
 
-/* Title of the toolbar button to filter products by different attributes.
-   Title of the toolbar button to filter products without any filters applied. */
+/* Title of the toolbar button to filter orders without filters applied.
+   Title of the toolbar button to filter products by different attributes. - Title of the toolbar button to filter products without any filters applied. */
 "Filter" = "Filtreleme";
 
-/* Title of the toolbar button to filter products with filters applied. */
+/* Title of the toolbar button to filter orders with filters applied.
+   Title of the toolbar button to filter products with filters applied. */
 "Filter (%ld)" = "Filtreleme (%ld)";
 
-/* Navigation bar title format for filtering a list of products without filters applied. */
+/* Placeholder on the search field to search for a specific country */
+"Filter Countries" = "Ülkeleri Filtrele";
+
+/* Placeholder on the search field to search for a specific state */
+"Filter States" = "Durumları Filtrele";
+
+/* Header bar label on top of order list when filters are applied */
+"Filtered Orders" = "Filtrelenmiş Siparişler";
+
+/* Filters button text on header bar on top of order list
+   Navigation bar title format for filtering a list of products without filters applied. */
 "Filters" = "Filtreler";
 
 /* Navigation bar title format for filtering a list of products with filters applied. */
@@ -976,8 +1408,17 @@
 /* The hint button's title text to help users find their store address. */
 "Find your store address" = "Mağaza adresinizi bulun";
 
+/* Button to set up the WooCommerce Payments plugin after installing it */
+"Finish Setup in Store Admin" = "Mağaza Yöneticisinde Kurulumu Tamamla";
+
+/* Title for the error screen when WooCommerce Payments is installed but not set up */
+"Finish setup WooCommerce Payments in your store admin" = "Mağaza yönetici bölümünüzde WooCommerce Payments kurulumunu tamamlayın";
+
+/* Text field name in Edit Address Form */
+"First name" = "İsim";
+
 /* Shown in the prologue carousel (promotional screens) during first launch. */
-"Follow your favorite sites and discover new reads." = "Favori sitelerinizi takip edin ve yeni yazılar keşfedin.";
+"Follow your favorite sites and discover new blogs." = "Favori sitelerinizi takip edin ve yeni bloglar keşfedin.";
 
 /* User role badge */
 "Follower" = "Takipçi";
@@ -994,10 +1435,17 @@
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Ürünlerin mağazanızdaki performansına dair içgörüler edinin";
 
+/* Action to add new variation on the variations list */
+"Generate New Variation" = "Yeni Varyasyon Oluştur";
+
+/* Title of the action to generate the first variation */
+"Generate Variation" = "Varyasyon Oluştur";
+
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Varyasyon Oluşturma";
 
-/* View title for initial auth views. */
+/* Title of install action in the Jetpack Install view.
+   View title for initial auth views. */
 "Get Started" = "Başlangıç";
 
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
@@ -1006,11 +1454,27 @@
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "Sorularınıza yanıt alın";
 
+/* Subtitle of push notifications as part of Jetpack benefits. */
+"Get push notifications for new orders, reviews, etc. delivered to your device." = "Yeni siparişler, yorumlar vb. ile ilgili anlık bildirimlerin cihazına gelmesini sağlayın.";
+
+/* Title of the Jetpack benefits banner. */
+"Get the full experience with Jetpack" = "Jetpack ile tam deneyimi yaşayın";
+
+/* Title of the Jetpack benefits view. */
+"Get the most out of your store" = "Mağazanızdan en iyi şekilde yararlanın";
+
+/* Message shown in the Reviews tab if the list is empty
+   Message shown on the Product Reviews screen if the list is empty */
+"Get your first reviews" = "İlk yorumlarınızı alın";
+
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Hesap bilgileri alınıyor";
 
+/* Type Gift of content to be declared for the customs form in Shipping Label flow */
+"Gift" = "Hediye";
+
 /* The title of the button to give feedback about products beta features on the banner on the products tab
-   The title of the button to give feedback about shipping labels features on the banner in order details - Title on the navigation bar for the products feedback survey */
+   The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title of the button to give feedback about the Simple Payments feature - Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Görüşlerinizi paylaşın";
 
 /* Option to select the Gmail app when logging in with magic links */
@@ -1037,6 +1501,12 @@
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "NASIL YARDIMCI OLABİLİRİZ?";
+
+/* Title of HS Tariff Number row in Package Content section in Customs screen of Shipping Label flow */
+"HS Tariff Number" = "HS Tarife Numarası";
+
+/* Validation error for HS Tariff Number row in Customs screen of Shipping Label flow */
+"HS Tariff Number must be 6 digits long" = "HS Tarife numarası 6 haneli olmalıdır";
 
 /* Accessibility label for HTML button on formatting toolbar.
    HTML Attachment Label */
@@ -1081,7 +1551,8 @@
 /* H6 Aztec Style */
 "Heading 6" = "Başlık 6";
 
-/* Title of the cell in Product Shipping Settings > Height */
+/* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Height */
 "Height" = "Yükseklik";
 
 /* Help and Support navigation title
@@ -1104,11 +1575,29 @@
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Nasıl iyileştirebiliriz?";
 
+/* Navigation bar title of hub menu view */
+"Hub Menu" = "Hub Menu";
+
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "Beğendim";
 
+/* Header section items to fulfill in Shipping Label Package Detail */
+"ITEMS TO FULFILL" = "TAMAMLANACAK ÖĞELER";
+
+/* Title for the ITN row in Customs screen of Shipping Label flow */
+"ITN" = "ITN";
+
+/* Error message for missing ITN for destination country inCustoms screen of Shipping Label flow. The placeholder is the destination country. */
+"ITN is required for shipments to %1$@" = "%1$@ gönderileri için ITN gereklidir";
+
+/* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
+"ITN is required for shipping items valued over $2,500 per tariff number" = "Tarife numarasına göre değeri 2.500 ABD Dolarının üzerindeki gönderiler için ITN gereklidir";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Devre dışıysa not gizli olur";
+
+/* The text below the order add-ons list indicating that the content could be stale. */
+"If renaming an add-on in your web dashboard, please note that previous orders will no longer show that add-on within the app." = "Web yönetim panelinizde bir eklentiyi yeniden adlandırıyorsanız, önceki siparişlerin artık uygulama içinde bu eklentiyi göstermeyeceğini lütfen unutmayın.";
 
 /* Header text when reprinting a shipping label */
 "If there was a printing error when you purchased the label, you can print it again." = "Etiketi satın aldığınızda bir yazdırma hatası olduysa tekrar yazdırabilirsiniz.";
@@ -1135,8 +1624,25 @@
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "Site yöneticinizde, Bağlantılar > Hesap bağlantısı bölümünde yer alan Jetpack Yönetim Panelinden WordPress.com'a bağlanmak için kullandığınız e-postayı bulabilirsiniz.";
 
+/* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
+"In-Person Payment for Order #%1$@ for %2$@" = "%1$@ numaralı Sipariş (%2$@) için Şahsen Ödeme";
+
+/* Navigates to In-Person Payments screen
+   Title for the In-Person Payments settings screen */
+"In-Person Payments" = "Şahsen Ödemeler";
+
+/* Title for the error screen when In-Person Payments is unavailable
+   Title for the error screen when the Stripe account is restricted because it's under reviw - Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
+"In-Person Payments is currently unavailable" = "Şahsen Ödemeler şu anda kullanılamıyor";
+
+/* Title for the error screen when the Stripe account rejected. */
+"In-Person Payments isn't available for this store" = "Bu mağazada Şahsen Ödemeler kullanılamıyor";
+
 /* Application's Inactive State */
 "Inactive" = "Etkin değil";
+
+/* Title for table view section of inactive plugins */
+"Inactive Plugins" = "Pasif eklentiler";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "Etkin değil, otomatik güncellemeler kapalı";
@@ -1147,11 +1653,17 @@
 /* Describes a standard *.wordpress.com site domain */
 "Included with Site" = "Site ile beraber";
 
+/* Includes tracking of a specific carrier in Shipping Labels > Carrier and Rates */
+"Includes %1$@ tracking" = "%1$@ izleme içerir";
+
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "Yanlış kullanıcı adı ya da parola. Lütfen giriş detaylarınızı girerek tekrar deneyin.";
 
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "Yukarı satış ve çapraz satış ile satışları artırın";
+
+/* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
+"Individually shipped item" = "Tek başına gönderilen öğe";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "Ekle";
@@ -1161,6 +1673,34 @@
 
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "Bağlantı Ekle";
+
+/* Navigates to Install Jetpack screen.
+   Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
+"Install Jetpack" = "Jetpack yükle";
+
+/* Title for the error screen when WooCommerce Payments is not installed */
+"Install WooCommerce Payments" = "WooCommerce Payments'ı Yükleyin";
+
+/* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
+"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "Ücretsiz Jetpack eklentisini %1$@ sitesine yükleyerek en iyi mobil deneyimi yaşayın.";
+
+/* Subtitle of the Jetpack benefits view. */
+"Install the free Jetpack plugin to experience the best mobile experience." = "En iyi mobil deneyimi yaşamak için ücretsiz Jetpack eklentisini yükleyin.";
+
+/* Name of installing Jetpack plugin step */
+"Installing Jetpack" = "Jetpack yükleniyor";
+
+/* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
+"Insurance (%1$@)" = "Sigorta (%1$@)";
+
+/* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Place holder is an amount. */
+"Insurance (up to %1$@)" = "Sigorta (en fazla %1$@)";
+
+/* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
+"Invalid ITN format" = "Geçersiz ITN biçimi";
+
+/* The title of the alert when there is an error with the package name */
+"Invalid Package Name" = "Geçersiz Paket Adı";
 
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "Geçersiz Ürün SKU'su";
@@ -1182,6 +1722,12 @@
 
 /* No comment provided by engineer. */
 "Invalid username" = "Geçersiz kullanıcı adı";
+
+/* Error for invalid package details on the Add New Custom Package screen in Shipping Label flow */
+"Invalid value" = "Geçersiz değer";
+
+/* Error message when total weight is invalid in Package Detail screen */
+"Invalid weight" = "Geçersiz ağırlık";
 
 /* Product Inventory Settings navigation title
    Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
@@ -1208,11 +1754,26 @@
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "İtalik";
 
+/* Error message for missing value in Description row in Customs screen of Shipping Label flow */
+"Item description is required" = "Öğe açıklaması gereklidir";
+
+/* Row title for dimensions of package shipped in original packaging Package Details screen in Shipping Labels flow. */
+"Item dimensions" = "Öğe boyutları";
+
+/* Error message for missing value in Value row in Customs screen of Shipping Label flow */
+"Item value must be larger than 0" = "Öğe değeri 0'dan büyük olmalıdır";
+
+/* Error message for missing value in Weight row in Customs screen of Shipping Label flow */
+"Item weight must be larger than 0" = "Öğe ağırlığı 0'dan büyük olmalıdır";
+
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack, size en iyi mobil deneyimi sunmak için anında bildirimler ve istatistikler dahil olmak üzere gerekli araçlarla sizi mağazaya bağlayan ücretsiz bir WordPress eklentisidir.";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Düzenlemeye Devam Et";
+
+/* Label for a button that when tapped, continues searching for card readers */
+"Keep Searching" = "Aramaya Devam Et";
 
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "Bunun bir destek bileti olmadığını ve bireysel geri bildirimleri ele alamayacağımızı unutmayın";
@@ -1223,36 +1784,55 @@
 /* Navigation bar title of shipping label paper size options screen */
 "Label Format Options" = "Etiket Biçimi Seçenekleri";
 
+/* Label for one of the filters in order date range */
+"Last 2 Days" = " Son 2 Gün";
+
 /* Last 24 hours section header */
 "Last 24 hours" = "Son 24 saat";
+
+/* Label for one of the filters in order date range */
+"Last 30 Days" = "Son 30 gün";
+
+/* Label for one of the filters in order date range */
+"Last 7 Days" = "Son 7 Gün";
 
 /* Last 7 days section header */
 "Last 7 days" = "Son 7 gün";
 
+/* Text field name in Edit Address Form */
+"Last name" = "Soyad";
+
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Wormholy hata bulmayı başlat";
 
-/* Button title in the shipping label creation info screen
-   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. */
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. - Button title in the shipping label creation info screen - Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
 "Learn more" = "Daha fazlasını öğrenin";
+
+/* A label prompting users to learn more about HS Tariff Number in Customs screen of Shipping Label flow */
+"Learn more about HS Tariff Number" = "HS Tarif Numarası hakkında daha fazla bilgi edinin";
+
+/* A label prompting users to learn more about internal transaction number */
+"Learn more about Internal Transaction Number" = "Dahili İşlem Numarası hakkında daha fazla bilgi edinin";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Jetpack hakkında daha fazlasını öğrenin";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your phone" = "Telefonunuzla etiket oluşturma hakkında daha fazla bilgi edinin";
+"Learn more about creating labels with your mobile device" = "Mobil cihazınızla etiket oluşturma hakkında daha fazla bilgi edinin";
+
+/* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
+"Learn more about roles and permissions" = "Roller ve izinler hakkında daha fazla bilgi edinin";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8,5 x 14 inç)";
 
-/* Title of the cell in Product Shipping Settings > Length */
+/* Title for the row to enter the package length on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Length */
 "Length" = "Uzunluk";
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter (8,5 x 11 inç)";
-
-/* Licenses (information page title) */
-"Licenses" = "Lisanslar";
 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
 "Limit one per order" = "Her sipariş için limiti bir olarak belirle";
@@ -1286,15 +1866,15 @@
 /* Displayed when an Product is being retrieved */
 "Loading Product" = "Ürün yükleniyor";
 
-/* Loading tags in Product Tags screen */
-"Loading..." = "Yükleniyor...";
+/* Text of the loading banner in Order Detail when loaded for the first time */
+"Loading content" = "İçerik yükleniyor";
 
 /* Button title.  Tapping takes the user to the login form.
    Log In button label. - View title during the log in process. */
 "Log In" = "Giriş yap";
 
-/* Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
-   Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+/* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation - Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "Başka Bir Hesapla Oturum Açın";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -1336,23 +1916,30 @@
 /* Option to select the Apple Mail app when logging in with magic links */
 "Mail (Default)" = "Mail (Varsayılan)";
 
+/* Settings > Manage Card Reader > Connect > Hint to charge card reader */
+"Make sure card reader is charged" = "Kart okuyucunun şarjlı olduğundan emin olun";
+
 /* Text that explains how to update VC to get the latest stats */
 "Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated." = "Sitenizde en son WooCommerce sürümünü çalıştırdığınızdan ve WooCommerce Admin'i etkinleştirdiğinizden emin olun.";
 
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "Etiket kullanarak ürünlerinizin bulunmasını kolaylaştırın";
 
-/* Navigates to Card Reader management screen */
+/* Card reader settings screen title
+   Settings > Manage Card Reader > Title for the no-reader-connected screen in settings. - Settings > Manage Card Reader > Title for the reader connected screen in settings. */
 "Manage Card Reader" = "Kart Okuyucuyu Yönet";
 
-/* Login Prologue Legend */
-"Manage orders, track sales and monitor store activity with real-time alerts." = "Siparişleri yönetin, satışları takip edin ve gerçek zamanlı uyarılarla mağaza etkinliğini izleyin.";
+/* Navigates to Card Reader management screen */
+"Manage card reader" = "Kart Okuyucuyu Yönet";
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Stok yönet";
 
 /* shown in promotional screens during first launch */
 "Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "Jetpack tarafından desteklenen sitenizi hareket halindeyken yönetin; WordPress’iniz cebinizde.";
+
+/* Caption displayed in promotional screens shown during the login flow. */
+"Manage your store orders on the go " = "Mağaza siparişlerinizi hareket halindeyken yönetin ";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Özel saat farkı";
@@ -1369,8 +1956,18 @@
 /* Accessibility label for the Mark All Reviews as Read Button */
 "Mark All as Read" = "Tümünü Okundu Olarak İşaretle";
 
-/* Fulfill Order Action Button */
+/* Action button on Review Order screen
+   Fulfill Order Action Button */
 "Mark Order Complete" = "Siparişi Tamamlanmış Olarak İşaretle";
+
+/* Alert button when selecting the cash payment method for simple payments */
+"Mark as Paid" = "Mark as Paid";
+
+/* Alert title when selecting the cash payment method for simple payments */
+"Mark as Paid?" = "Mark as Paid?";
+
+/* Create Shipping Label form -> Mark order as complete label */
+"Mark this order as complete and notify the customer" = "Bu siparişi tamamlandı olarak işaretleyin ve müşteriyi bilgilendirin";
 
 /* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
 "Marks Every Review as Read" = "Her Yorumu Okundu Olarak İşaretler";
@@ -1378,12 +1975,18 @@
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Medyada karşıya yüklenecek ilişkili dosya bulunmuyor.";
 
+/* Title of the Menu tab */
+"Menu" = "Menü";
+
 /* Menu order label in Product Settings
    Product Menu Order navigation title */
 "Menu Order" = "Menü Sıralaması";
 
 /* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
 "Menu order" = "Menü sıralaması";
+
+/* Type Merchandise of content to be declared for the customs form in Shipping Label flow */
+"Merchandise" = "Ticari Mal";
 
 /* Message phone number button title */
 "Message" = "Mesaj";
@@ -1393,6 +1996,9 @@
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "Minimum değer %1$@, maksimum değer %2$@";
+
+/* Caption displayed in promotional screens shown during the login flow. */
+"Monitor and approve your product reviews" = "Ürün incelemelerinizi izleyin ve onaylayın";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -1404,6 +2010,12 @@
 /* Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "Diğer seçenekler";
+
+/* Button on each order item of the Package Details screen in Shipping Labels flow. */
+"Move" = "Taşı";
+
+/* Title of the action sheet displayed when moving items in thePackage Details screen in Shipping Label flow. */
+"Move Item" = "Öğeyi Taşı";
 
 /* Confirmation button on the alert when the user is moving a product to the trash */
 "Move to Trash" = "Çöpe taşı";
@@ -1417,8 +2029,7 @@
 /* My Tickets title */
 "My Tickets" = "Biletlerim";
 
-/* My Store Notice Title for loading error
-   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "My store" = "Mağazam";
 
 /* Name text field placeholder
@@ -1444,27 +2055,31 @@
    Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "Daha fazla yardım mı gerekli?";
 
-/* Text preceding the Contact Us button in the survey completed screen */
+/* Text preceding the Contact Us button in the error screen for In-Person payments
+   Text preceding the Contact Us button in the survey completed screen */
 "Need some help?" = "Biraz yardıma mı ihtiyacınız var?";
 
 /* The title for the net amount paid cell */
 "Net Payment" = "Net ödeme";
 
+/* Title for table view section of network active plugins */
+"Network Active Plugins" = "Ağ Etkin Eklentileri";
+
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "Yeni Özellik Adı";
+
+/* Title for the order creation screen */
+"New Order" = "Yeni Sipariş";
+
+/* Subtitle of analytics as part of Jetpack benefits. */
+"New analytics views, let you see visitors, reports and more." = "Yeni analiz görünümleri, ziyaretçileri, raporları ve daha fazlasını görmenizi sağlar.";
 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "Yeni özellikler mevcut.";
 
-/* Next nav bar button title in Add Product Attribute Options screen
-   Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
+/* Action navigate to the variation creation screen
+   Next nav bar button title in Add Product Attribute Options screen - Next nav bar button title in Add Product Attribute screen - Title for the button to confirm the amount in the simple payments screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "Sonraki";
-
-/* Empty Product Reviews List Message */
-"No Reviews Yet for this Product!" = "Bu Ürün için Henüz Yorum Yapılmadı";
-
-/* Empty Reviews List Message */
-"No Reviews Yet!" = "Henüz Yorum yok!";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Bu dönemde hiç etkinlik yok";
@@ -1472,6 +2087,9 @@
 /* Order details > customer info > billing information. This is where the address would normally display.
    Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "Adres belirtilmedi.";
+
+/* Title for the error screen when there was a network error checking In-Person Payments requirements. */
+"No connection" = "Bağlantı yok";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Veri bulunmuyor";
@@ -1488,8 +2106,14 @@
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "Limit yok";
 
+/* The text on the placeholder overlay when no products match the filter on the Products tab */
+"No matching products found" = "Eşleşen ürün bulunamadı";
+
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Fiyat belirtilmemiş";
+
+/* Message displayed if there are no products to display in the Add Product screen */
+"No products found" = "Ürün bulunamadı";
 
 /* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
@@ -1507,6 +2131,9 @@
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Henüz bir kargo sınıfı yok";
 
+/* Error state title in shipping label carrier and rates screen */
+"No shipping rates available" = "Gönderim ücreti yok";
+
 /* Placeholder of the Product Tags row on Product main screen */
 "No tags" = "Etiket yok";
 
@@ -1514,8 +2141,11 @@
 "No tax classes yet" = "Henüz bir vergi sınıfı yok";
 
 /* Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option */
+   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow */
 "None" = "Hiçbiri";
+
+/* Title of dismiss action in the Jetpack benefits view. */
+"Not now" = "Şimdi değil";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
 "Not seeing the email? Check your Spam or Junk Mail folder." = "E-postayı görmüyor musunuz? İstenmeyen veya Gereksiz Posta klasörünü kontrol edin.";
@@ -1526,8 +2156,11 @@
 /* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Müşteriye not";
 
+/* Info text for the generate first variation screen */
+"Now that you’ve added attributes, you can create your first variation!" = "Nitelikleri eklediğinize göre ilk varyasyonunuzu oluşturabilirsiniz.";
+
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for printing - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "Tamam";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -1535,6 +2168,10 @@
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "Kapalı";
+
+/* Accessibility announcement message when device goes offline
+   Message for offline banner */
+"Offline - using cached data" = "Çevrimdışı - önbelleğe alınmış veriler kullanılıyor";
 
 /* +2 Days Section Header */
 "Older than 2 days" = "İki günden daha eski";
@@ -1554,8 +2191,17 @@
 /* Display label for the product's inventory stock status */
 "On back order" = "Geri dönen sipariş";
 
+/* Display label for on hold order status. */
+"On hold" = "Beklemede";
+
 /* Accessibility label for 1 password button */
 "One Password button" = "Tek Parola düğmesi";
+
+/* Helper text above photo list in Product images screen */
+"Only one photo can be displayed by variation" = "Varyasyon başına yalnızca bir fotoğraf görüntülenebilir";
+
+/* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
+"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Gönderim etiketi ödeme yöntemlerini yalnızca site sahibi yönetebilir. Ödeme yöntemlerini yönetmek için lütfen %1$@ (%2$@) ile iletişime geçin. ";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Cihaz ayarlarını aç";
@@ -1564,8 +2210,8 @@
    Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Postayı Aç";
 
-/* Navigates to screen about open source licenses */
-"Open Source Licenses" = "Açık kaynak lisanslar";
+/* Open Map action in Shipping Label Address Validation. */
+"Open Map" = "Haritayı Aç";
 
 /* Label for the description of openening a link using a new window */
 "Open in a new Window\/Tab" = "Yeni Pencerede\/Sekmede aç";
@@ -1580,7 +2226,7 @@
 "Option name" = "Seçenek adı";
 
 /* Add Product Category. Placeholder of cell presenting the parent category.
-   Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Shipping Label Address Validation */
+   Name text field placeholder in Shipping Label Address Validation when it's optional - Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Edit Address Form - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "İsteğe Bağlı";
 
 /* No comment provided by engineer. */
@@ -1602,18 +2248,22 @@
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "Sipariş no: %1$@";
 
+/* Cell title on the beta features screen to enable creating new orders */
+"Order Creation" = "Sipariş Oluşturma";
+
 /* Order notes section title */
 "Order Notes" = "Sipariş Notları";
 
 /* Change order status screen - Screen title
-   The section title for the list of Order statuses in the Order Search. */
+   Navigation title of the orders filter selector screen for order statuses - Row title for filtering orders by order status. */
 "Order Status" = "Sipariş Durumu";
 
-/* Order Total label for payment view */
+/* Create Shipping Label form -> Order Total label
+   Order Total label for payment view - Title text of the row that shows the total to charge when creating a simple payment */
 "Order Total" = "Sipariş Toplamı";
 
-/* Order fulfillment success notice */
-"Order marked as fulfilled" = "Sipariş, yerine getirildi olarak işaretlendi";
+/* Navigates to Card Reader ordering screen */
+"Order card reader" = "Kart okuyucu siparişi";
 
 /* Order status update success notice */
 "Order status updated" = "Sipariş durumu güncellendi";
@@ -1621,33 +2271,69 @@
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Sıralanmış Liste";
 
-/* Default title for Orders List shown when tapping on the Search filter.
-   Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
+/* Orders stat label on dashboard - should be plural.
+   The title of the Orders tab. */
 "Orders" = "Siparişler";
 
 /* Subtitle of the product form bottom sheet action for editing categories. */
 "Organise your products into related groups" = "Ürünlerinizi ilgili gruplara düzenleyin";
 
-/* My Store > Settings > Other app section */
+/* Title for the Origin Country row in Customs screen of Shipping Label flow */
+"Origin Country" = "Menşe Ülke";
+
+/* Error message for missing value in Origin Country row in Customs screen of Shipping Label flow */
+"Origin Country is required" = "Menşe Ülke Gereklidir";
+
+/* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
+"Original packaging" = "Orijinal paket";
+
+/* My Store > Settings > Other app section
+   Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Diğer";
 
 /* Display label for the product's inventory stock status */
 "Out of stock" = "Stokta kalmadı";
 
+/* Header section package details in Shipping Label Package Detail */
+"PACKAGE DETAILS" = "PAKET AYRINTILARI";
+
 /* Product section title */
 "PRODUCT" = "ÜRÜN";
+
+/* Create Shipping Label form -> Package number
+   Package index in Customs screen of Shipping Label flow - Package index in Print Customs Invoice screen of Shipping Label flow if there are more than one invoice - Package term in Shipping Labels. Reads like Package 1 */
+"Package %1$d" = "Paket %1$d";
+
+/* Name of package to be listed in Move Item action sheet on Package Details screen of Shipping Label flow. */
+"Package %1$d: %2$@" = "%1$d Paketi: %2$@";
 
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "Paket %d";
 
-/* Title of package details in shipping label details
-   Title of the cell Package Details inside Create Shipping Label form */
+/* Title of Package Content section in Customs screen of Shipping Label flow */
+"Package Content" = "Paket İçeriği";
+
+/* Navigation bar title of shipping label package details screen
+   Title of package details in shipping label details - Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "Paket Ayrıntıları ";
+
+/* Title for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+"Package Name" = "Paket Adı";
+
+/* Package Selected screen title in Shipping Label flow
+   Title of the row for selecting a package in Shipping Label Package Detail screen */
+"Package Selected" = "Paket Seçildi";
+
+/* Title for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
+"Package Type" = "Paket Türü";
+
+/* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
+"Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "Paket boyutları sıfırdan büyük olmalıdır. Devam etmek için lütfen ürün sayfanızın Gönderim kısmındaki öğenizin ölçülerini güncelleyin.";
 
 /* The title for the customer payment cell */
 "Paid" = "Ödendi";
 
-/* Title of the paper size selector row for reprinting a shipping label */
+/* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "Kağıt Boyutu";
 
 /* Add Product Category. Title of cell presenting the parent category. */
@@ -1663,14 +2349,32 @@
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "Biçimlendirmeden Yapıştır";
 
-/* Payment section title */
+/* Payment section title
+   Title text of the row that shows the payment headline when creating a simple payment */
 "Payment" = "Ödeme";
 
-/* Title of payment method in shipping label details
-   Title of the cell Payment Method inside Create Shipping Label form */
+/* Navigation bar title in the Shipping Label Payment Method screen
+   Title of payment method in shipping label details - Title of the cell Payment Method inside Create Shipping Label form */
 "Payment Method" = "Ödeme Yöntemi";
 
-/* Display label for the review's pending status */
+/* Header for list of payment methods in Payment Method screen */
+"Payment Method Selected" = "Ödeme Yöntemi Seçildi";
+
+/* Error message. Presented to users after a collecting a payment fails
+   Error message. Presented to users after collecting a payment fails */
+"Payment failed" = "Ödeme başarısız";
+
+/* Title of the webview of adding a payment method in Shipping Labels */
+"Payment method" = "Ödeme yöntemi";
+
+/* Notice that will be displayed after adding a new Shipping Label payment method */
+"Payment method added" = "Ödeme yöntemi eklendi";
+
+/* Label informing users that the payment succeeded. Presented to users when a payment is collected */
+"Payment successful" = "Ödeme başarılı";
+
+/* Display label for pending order status.
+   Display label for the review's pending status */
 "Pending" = "Bekleyen";
 
 /* A unit test string, appended before the title of a review.
@@ -1680,7 +2384,8 @@
 /* Display label for the product's pending status */
 "Pending review" = "İnceleme bekliyor";
 
-/* Text field phone in Shipping Label Address Validation */
+/* Text field phone in Edit Address Form
+   Text field phone in Shipping Label Address Validation */
 "Phone" = "Telefon";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
@@ -1698,11 +2403,32 @@
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Ürününüz çöp kutusuna atılıyor... ";
 
+/* Title of the alert presented when an update fails because the reader is low on battery. */
+"Please charge reader" = "Lütfen okuyucuyu şarj edin";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
+"Please correct your store address to proceed" = "Please correct your store address to proceed";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"Please correct your store's postcode\/ZIP" = "Please correct your store's postcode\/ZIP";
+
+/* Error message for missing explanation when Content Typeis Other in Customs screen of Shipping Label flow */
+"Please describe what kind of goods this package contains" = "Lütfen bu paketin ne tür bir ürün içerdiğini açıklayın";
+
+/* Error message for missing comments when Restriction Typeis Other in Customs screen of Shipping Label flow */
+"Please describe what kind of restrictions this package must have" = "Lütfen bu paketin ne tür kısıtlamalara sahip olması gerektiğini açıklayın";
+
+/* Error state description in shipping label carrier and rates screen */
+"Please double check your package dimensions and weight or try using a different package in Package Details." = "Lütfen paketinizin boyutlarını ve ağırlığını bir daha kontrol edin veya Paket Ayrıntıları'ndan farklı bir paket kullanmayı deneyin.";
+
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "Lütfen bir URL girin.";
 
 /* Error message shown when a URL is invalid. */
 "Please enter a complete website address, like example.com." = "Lütfen example.com gibi eksiksiz bir web sitesi adresi girin.";
+
+/* Product price error notice message, when the sale price was not set during a sale setup */
+"Please enter a sale price for the scheduled sale" = "Lütfen planlanan indirim için bir indirim fiyatı girin";
 
 /* No comment provided by engineer. */
 "Please enter a site address." = "Lütfen bir site adresi girin.";
@@ -1740,12 +2466,30 @@
 /* Error message when an image captured by camera cannot be saved to the device Photos library */
 "Please make sure the app can access Photos in device settings" = "Lütfen cihaz ayarlarında uygulamanın Fotoğraflar'a erişebildiğinden emin olun";
 
+/* Error notice recovery suggestion when we fail to update an address in the edit address screen. */
+"Please make sure you are running the latest version of WooCommerce and try again later." = "Lütfen WooCommerce'in en son sürümünü çalıştırdığınızdan emin olun ve daha sonra tekrar deneyin.";
+
+/* Error message when no package is selected on Shipping Label Package Details screen */
+"Please select a package" = "Lütfen bir paket seçin";
+
+/* The info of the Error Loading Data banner */
+"Please try again later or reach out to us and we'll be happy to assist you!" = "Lütfen daha sonra tekrar deneyin veya bize ulaşın, size yardımcı olmaktan memnuniyet duyarız.";
+
+/* Body text for the default store picker error screen */
+"Please try again or reach out to us and we'll be happy to assist you!" = "Lütfen tekrar deneyin veya bize ulaşın, size yardımcı olmaktan memnuniyet duyarız!";
+
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Lütfen yeniden deneyin.";
 
-/* Message of in-progress modal when requesting shipping label document for reprinting
-   Text on the loading view of the survey screen indicating the user to wait */
+/* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
+"Please update your reader software to keep accepting payments" = "Ödemeleri kabul etmeye devam edebilmek için lütfen okuyucu yazılımınızı güncelleyin";
+
+/* Message of in-progress modal when preparing for printing customs invoice
+   Message of in-progress modal when requesting shipping label document for printing - Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait - VoiceOver Accessibility label for the instruction */
 "Please wait" = "Lütfen bekleyin";
+
+/* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
+"Please wait while we connect your site %1$@ with Jetpack." = "%1$@ siteniz Jetpack ile bağlanırken lütfen bekleyin.";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "Yeni varyasyon oluşturulurken lütfen bekleyin";
@@ -1756,14 +2500,26 @@
 /* Message of the in-progress UI while saving a Product as draft remotely */
 "Please wait while we save this product to your store" = "Bu ürünü mağazanıza kaydederken lütfen bekleyin";
 
+/* Message of the in-progress UI while saving a Variation remotely */
+"Please wait while we save your latest changes" = "En son değişikliklerinizi kaydederken lütfen bekleyin";
+
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
 "Please wait while we update your store details" = "Mağaza bilgileriniz güncellenirken lütfen bekleyin";
 
-/* Text on the loading view of the product downloadable file screen indicating the user to wait */
+/* Label within the modal dialog that appears when connecting to a card reader
+   Text on the loading view of the product downloadable file screen indicating the user to wait */
 "Please wait..." = "Lütfen bekleyin...";
 
-/* Text field postcode in Shipping Label Address Validation */
+/* Message that will be displayed if there are no Shipping Label payment methods. */
+"Please, add a new payment method" = "Lütfen yeni bir ödeme yöntemi ekleyin";
+
+/* My Store > Settings > Plugins section title
+   Navigates to Plugins screen. - Title of the Plugin List screen */
+"Plugins" = "Eklentiler";
+
+/* Text field postcode in Edit Address Form
+   Text field postcode in Shipping Label Address Validation */
 "Postcode" = "Posta Kodu";
 
 /* Error showed in Shipping Label Address Validation for the postcode field */
@@ -1772,6 +2528,9 @@
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Automattic tarafından desteklenmektedir";
 
+/* Title of in-progress modal when preparing for printing customs invoice */
+"Preparing document" = "Belge hazırlanıyor";
+
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "Daha Önce Para İadesi Yapıldı";
 
@@ -1779,17 +2538,37 @@
    Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
 "Price" = "Fiyat";
 
-/* Button title to generate a shipping label document for printing */
+/* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
+"Print" = "Yazdır";
+
+/* Print the customs form for the shipping label from the shipping label more menu action sheet */
+"Print Customs Form" = "Gümrük Formu Yazdır";
+
+/* Button title to generate a shipping label document for printing
+   Navigation bar title to print a shipping label - Text on the button that prints a shipping label */
 "Print Shipping Label" = "Gönderi Etiketini Yazdır";
 
+/* Button title to generate a document with multiple shipping labels for printing
+   Navigation bar title to print multiple shipping labels */
+"Print Shipping Labels" = "Gönderim Etiketleri Yazdır";
+
+/* Title of print button on Print Customs Invoice screen of Shipping Label flow when there's only one invoice */
+"Print customs form" = "Gümrük formu yazdır";
+
+/* Navigation title of the Print Customs Invoice screen of Shipping Label flow */
+"Print customs invoice" = "Gümrük faturası yazdır";
+
 /* Navigation bar title of shipping label printing instructions screen */
-"Print from your Phone" = "Telefonunuzla yazdırın";
+"Print from your mobile device" = "Mobil cihazınızdan yazdırın";
 
-/* The title of the shipping labels top banner in order details */
-"Print shipping labels from your device!" = "Cihazınızdan kargo etiketleri yazdırın!";
+/* Button to print receipts. Presented to users after a payment has been successfully collected */
+"Print receipt" = "Makbuz yazdır";
 
-/* Title of in-progress modal when requesting shipping label document for reprinting */
+/* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "Etiket Yazdırma";
+
+/* Title of in-progress modal when requesting document with multiple shipping labels for printing */
+"Printing Labels" = "Etiketleri Yazdırma";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "Kaliforniya'daki Kullanıcılar için Gizlilik Bildirimi";
@@ -1810,12 +2589,25 @@
 /* Display label for the product's private status */
 "Privately published" = "Özel olarak yayınlanan";
 
-/* Title for the first page in the Orders tab. */
+/* Display label for processing order status. */
 "Processing" = "İşlemde";
 
+/* VoiceOver accessibility label. Indicates that a payment is being processed */
+"Processing payment" = "Processing payment";
+
+/* Indicates that a payment is being processed */
+"Processing payment..." = "Ödeme işleniyor...";
+
 /* Description for Top Performers left column header
-   Product section title - Product section title if there is only one product. */
+   Product section title - Product section title if there is only one product. - Product section title in Review Order screen if there is one product. */
 "Product" = "Ürün";
+
+/* The title on the navigation bar when viewing an order item add-ons
+   Title for Add-ons row in the product form screen. - Title for the product add-ons screen */
+"Product Add-ons" = "Ürün Eklentileri";
+
+/* Row title for filtering products by product category. */
+"Product Category" = "Ürün Kategorisi";
 
 /* Edit Product External Link navigation title */
 "Product Link" = "Ürün Bağlantısı";
@@ -1842,11 +2634,14 @@
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Ürün bağlantısı";
 
+/* Title of the alert when a user is saving a product */
+"Product saved" = "Ürün kaydedildi";
+
 /* Title of the Product Type row on Product main screen */
 "Product type" = "Ürün türü";
 
 /* Product section title if there is more than one product.
-   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
+   Product section title in Review Order screen if there is more than one product. - Title of the Products tab — plural form of Product - Title text of the section that shows the Products when creating a new order - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Ürünler";
 
 /* Label for computed value `product refunds + taxes = subtotal`.
@@ -1858,9 +2653,6 @@
 
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "Şu anda görüntülenen ürün yerine tanıtılan ürünler (yani daha kârlı ürünler)";
-
-/* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
-"Prompts with the option to call or message the billing customer." = "Müşteriyi arama veya müşteriye mesaj gönderme seçenekli istemler.";
 
 /* One of the possible options in Product Visibility */
 "Public" = "Herkese Açık";
@@ -1883,6 +2675,9 @@
 /* Title of shipping label purchase date in Refund Shipping Label screen */
 "Purchase Date" = "Satın Alma Tarihi";
 
+/* Create Shipping Label form -> Purchase Label button */
+"Purchase Label" = "Satın Alma Etiketi";
+
 /* Product Note navigation title
    Purchase note label in Product Settings */
 "Purchase Note" = "Satın Alma Notu";
@@ -1890,14 +2685,20 @@
 /* Title for purchase note alert. */
 "Purchase note" = "Satın alma notu";
 
+/* Title of the in-progress UI while purchasing a shipping label */
+"Purchasing Label" = "Etiket Satın Alınıyor";
+
+/* Title of push notifications as part of Jetpack benefits. */
+"Push Notifications" = "Uzaktan bildirimler";
+
 /* Quantity abbreviation for section title */
 "QTY" = "QTY";
 
 /* Quantity abbreviation for section title */
 "Qty" = "Qty";
 
-/* The accessibility label for the quantity button when selecting an item to refund
-   Title of the cell in Product Inventory Settings > Quantity */
+/* Accessibility label for product quantity field
+   The accessibility label for the quantity button when selecting an item to refund - Title of the cell in Product Inventory Settings > Quantity */
 "Quantity" = "Miktar";
 
 /* Navigation title on the quantity item selector screen */
@@ -1906,11 +2707,23 @@
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %@" = "Miktar: %@";
 
+/* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
+"Quarantine" = "Karantina";
+
+/* Subtitle for Contact WooCommerce Payments Support */
+"Reach our happiness engineers who can help answer payments related questions" = "Ödemelerle ilgili sorularınızda size yardımcı olabilecek mutluluk mühendislerimize ulaşın";
+
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Zor sorulara yanıt verilmesine yardımcı olabilecek mutluluk mühendislerimize ulaşın";
 
+/* Text for the button to navigate to troubleshooting tips from the store picker error screen */
+"Read our Troubleshooting Tips" = "Sorun Giderme İpuçlarımızı okuyun";
+
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Gizlilik politikasını okuyun";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"Reader is ready" = "Okuyucu hazır";
 
 /* Refund note section title */
 "Reason for Refund" = "İade Nedeni";
@@ -1920,6 +2733,19 @@
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Siparişin para iadesinin nedeni";
+
+/* The title of the view containing a receipt preview */
+"Receipt" = "Makbuz";
+
+/* Button to reload plugin data after activating the WooCommerce Payments plugin */
+"Refresh After Activating" = "Etkinleştirdikten sonra yenileyin";
+
+/* Button to reload plugin data after installing the WooCommerce Payments plugin */
+"Refresh After Installing" = "Kurulumdan sonra yenileyin";
+
+/* Button to reload plugin data after updating the WooCommerce Payments plugin
+   Button to reload plugin data after updating the WooCommerce Payments plugin settings */
+"Refresh After Updating" = "Güncellemeden sonra yenileyin";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Para iadesi";
@@ -1943,7 +2769,8 @@
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "Şununla Para İadesi Yap:";
 
-/* The title for the refunded amount cell */
+/* Display label for refunded order status.
+   The title for the refunded amount cell */
 "Refunded" = "İade Edildi";
 
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
@@ -2002,15 +2829,12 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Çökmeleri bildirin";
 
-/* Navigation bar title to reprint a shipping label
-   Text on the button that reprints a shipping label */
-"Reprint Shipping Label" = "Gönderi Etiketini Yeniden Yazdır";
-
 /* Navigation bar title to request a refund for a shipping label
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Geri Ödeme İste";
 
-/* Text field placeholder in Shipping Label Address Validation */
+/* Name text field placeholder in Shipping Label Address Validation when it's required
+   Text field placeholder in Edit Address Form - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "Gerekli";
 
 /* Deletes all activity logs except for the marked 'Current'. */
@@ -2019,18 +2843,34 @@
 /* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Parolanızı sıfırlayın";
 
+/* Title for the Restriction Details row in Customs screen of Shipping Label flow */
+"Restriction Details" = "Kısıtlama Ayrıntıları";
+
+/* Title for the Restriction Type row in Customs screen of Shipping Label flow */
+"Restriction Type" = "Kısıtlama Türü";
+
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "Belirli bir anahtar sözcüğü içeren siparişlerin bir listesini alır.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search products. */
 "Retrieves a list of products that contain a given keyword." = "Belirli bir anahtar sözcüğü içeren ürünlerin bir listesini alır.";
 
-/* Retry Action
-   Retry the last action */
+/* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
+   Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
 "Retry" = "Tekrar";
+
+/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
+   Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
+"Retry After Updating" = "Retry After Updating";
+
+/* Title for the return policy in Customs screen of Shipping Label flow */
+"Return to sender if package is unable to be delivered" = "Paket teslim edilemezse gönderene iade et";
 
 /* Revenue stat label on dashboard. */
 "Revenue" = "Kazanç";
+
+/* Title of Review Order screen */
+"Review Order" = "Siparişi İncele";
 
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "İnceleme %@ olarak işaretlendi";
@@ -2041,6 +2881,9 @@
 
 /* Post Rich content */
 "Rich Content" = "Zengin içerik";
+
+/* Details section title in the Edit Address Form */
+"SHIPPING ADDRESS" = "GÖNDERİM ADRESİ";
 
 /* Edit Product SKU navigation title
    Title of the cell in Product Inventory Settings > SKU - Title of the product form bottom sheet action for editing short description. - Title of the SKU row on Product main screen */
@@ -2073,6 +2916,12 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "İndirimli satış fiyatı: %@";
 
+/* Type Sample of content to be declared for the customs form in Shipping Label flow */
+"Sample" = "Örnek";
+
+/* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
+"Sanitary \/ Phytosanitary Inspection" = "Sağlık\/Bitki Sağlığı denetimi";
+
 /* Action for saving a Product remotely
    Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. */
 "Save" = "Kaydet";
@@ -2083,11 +2932,20 @@
 /* Button title to save a product as draft in Product More Options Action Sheet */
 "Save as draft" = "Taslak olarak kaydet";
 
+/* Button title to save a shipping label to print later */
+"Save for Later" = "Sonrası için Kaydet";
+
+/* Save for later button on Print Customs Invoice screen of Shipping Label flow */
+"Save for later" = "Daha sonra kullanmak için kaydet";
+
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "İşinizi WooCommerce Shipping ile yaparak zamandan ve paradan tasarruf edin";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Ürününüz kaydediliyor...";
+
+/* Title of the in-progress UI while saving a Variation remotely */
+"Saving your variation..." = "Varyasyonunuz kaydediliyor...";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "SKU'yu güncellemek için barkodu tarayın";
@@ -2097,6 +2955,12 @@
 
 /* Scan Products */
 "Scan products" = "Ürünleri tara";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"Scanning for reader" = "Okuyucu için taranıyor";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"Scanning for readers" = "Okuyucular taranıyor";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
 "Scans barcodes that are associated with a product SKU for stock management." = "Stok yönetimi için ürün SKU'su ile ilişkili barkodları tarar.";
@@ -2125,11 +2989,17 @@
 /* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "See Instructions" = "Talimatlara bakın";
 
+/* Text on the button to see a saved receipt */
+"See Receipt" = "Makbuzu Gör";
+
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "See comments and notifications in real time." = "Yorumları ve bildirimleri gerçek zamanlı olarak görün.";
 
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "Düzen ve kağıt boyutu seçeneklerine bakın";
+
+/* Subtitle of the Jetpack benefits banner. */
+"See the benefits" = "Avantajları görün";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "Tümünü Seç";
@@ -2140,8 +3010,17 @@
 /* Page title for the select a different store screen */
 "Select Store" = "Mağaza Seç";
 
+/* Placeholder for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
+"Select Type" = "Tür Seç";
+
+/* Placeholder for the selected package in the Shipping Labels Package Details screen */
+"Select a package" = "Paket seç";
+
 /* Message title of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "Bir ürün türü seç";
+
+/* Text field placeholder in Edit Address Form */
+"Select an option" = "Bir seçenek seçin";
 
 /* Add the shipping carrier. Placeholder of cell presenting carrier name */
 "Select carrier" = "Kargo şirketi seçin";
@@ -2155,8 +3034,14 @@
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "Başlangıç tarihini seç";
 
+/* Placeholder in Shipping Label form for the Package Details row. */
+"Select the type of packaging you'd like to ship your items in" = "Ürünlerinizi göndermek için kullanmak istediğiniz ambalaj türünü seçin";
+
 /* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
 "Select upload method" = "Karşıya yükleme yöntemi seç";
+
+/* Placeholder in Shipping Label form for the Carrier and Rates row. */
+"Select your shipping carrier and rates" = "Kargo şirketinizi ve ücretlerinizi seçin";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "Seçili Mağaza";
@@ -2170,12 +3055,22 @@
 /* The button title text for sending a magic link. */
 "Send Link by Email" = "E-posta ile Bağlantı Gönder";
 
+/* Service Package menu in Shipping Label Add New Package flow */
+"Service Package" = "Hizmet Paketi";
+
 /* Tells user to set an email that support can use for replies */
 "Set email" = "E-postayı belirleyin";
+
+/* Header text on Add New Custom Package screen in Shipping Label flow
+   Header text on Add New Service Package screen in Shipping Label flow */
+"Set up the package you'll be using to ship your products. We'll save it for future orders." = "Ürünlerinizi göndereceğiniz paket tipini ayarlayın. Gelecekte aldığınız siparişler için bu seçiminizi hatırlayacağız.";
 
 /* Accessibility label for the Settings button.
    Settings navigation title */
 "Settings" = "Ayarlar";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"Several readers found" = "Birkaç okuyucu bulundu";
 
 /* Button title Share in Edit Product More Options Action Sheet */
 "Share" = "Paylaş";
@@ -2183,12 +3078,12 @@
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "WordPress.com hesabınızda oturum açmış durumdayken hizmetlerini kullanımınız hakkında bilgileri analiz aracımızla paylaşın.";
 
-/* Action: Opens the Store in a browser */
-"Share your Store" = "Mağazanızı paylaşın";
-
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
 "Ship from" = "Gönderen:";
+
+/* Option to ship in original packaging on action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow. */
+"Ship in Original Packaging" = "Orijinal Paketinde gönder";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of destination address in shipping label details - Title of the cell Ship From inside Create Shipping Label form */
@@ -2209,6 +3104,10 @@
    Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Gönderim";
 
+/* Shipping Address title for customer info section
+   Title for the Edit Shipping Address Form */
+"Shipping Address" = "Gönderim Adresi";
+
 /* Title of shipping carrier and rates in shipping label details
    Title of the cell Shipping Carrier inside Create Shipping Label form */
 "Shipping Carrier and Rates" = "Kargo Şirketi ve Ücretler";
@@ -2216,7 +3115,11 @@
 /* Title of view displaying all available Shipment Tracking Carriers */
 "Shipping Carriers" = "Kargo Şirketleri";
 
-/* Shipping method title for customer info cell */
+/* Shipping title for customer info cell */
+"Shipping Details" = "Gönderim ayrıntıları";
+
+/* Shipping method title for customer info cell
+   Shipping method title for customer info section */
 "Shipping Method" = "Gönderi Yöntemi";
 
 /* Title on the refund screen that lists the shipping total cost */
@@ -2231,8 +3134,14 @@
 /* Navigation bar title of the Product shipping class selector screen */
 "Shipping classes" = "Kargo sınıfları";
 
-/* Shipping title for customer info cell */
-"Shipping details" = "Gönderim ayrıntıları";
+/* Header of the order summary section in the shipping label creation form */
+"Shipping label order summary" = "Gönderim etiketi sipariş özeti";
+
+/* Header text when printing a newly purchased shipping label */
+"Shipping label purchased!" = "Gönderim etiketi satın alındı!";
+
+/* Header text when printing multiple newly purchased shipping labels */
+"Shipping labels purchased!" = "Gönderi etiketleri satın alındı!";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "Sipariş hakkında gönderi bildirimi";
@@ -2249,6 +3158,9 @@
 /* The navigation bar title of the edit short description screen.
    Title of the product form bottom sheet action for editing short description. - Title of the Short Description row on Product main screen */
 "Short description" = "Kısa açıklama";
+
+/* Button title for applying filters to a list of orders. */
+"Show Orders" = "Siparişleri Göster";
 
 /* Button title for applying filters to a list of products. */
 "Show Products" = "Ürünleri Göster";
@@ -2268,6 +3180,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "Bu siparişin fatura bilgilerini göster.";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view the items inside the shipping label package */
+"Show the items included inside this shipping label package." = "Bu gönderi etiketi paketinde bulunan öğeleri gösterin.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
 "Show the shipment details for this shipping label." = "Bu gönderi etiketi için gönderi ayrıntılarını gösterin.";
@@ -2290,14 +3205,24 @@
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "E-posta ile üye ol";
 
+/* Signature required in Shipping Labels > Carrier and Rates */
+"Signature required (+%1$@)" = "İmza gerekli (+%1$@)";
+
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "@%1$@ olarak oturum açıldı";
 
 /* Display label for simple product type. */
 "Simple" = "Basit";
 
-/* Action sheet option when the user wants to change the Product type to simple product */
-"Simple product" = "Basit ürün";
+/* Action sheet option when the user wants to create Simple Payments order
+   Cell title on the beta features screen to enable the Simple Payments feature */
+"Simple Payments" = "Basit Ödemeler";
+
+/* Action sheet option when the user wants to change the Product type to simple physical product */
+"Simple physical product" = "Basit fiziksel ürün";
+
+/* Action sheet option when the user wants to change the Product type to simple virtual product */
+"Simple virtual product" = "Basit sanal ürün";
 
 /* Describes a site redirect domain */
 "Site Redirect" = "Site yönlendirme";
@@ -2312,12 +3237,16 @@
    Product Slug navigation title - Slug label in Product Settings */
 "Slug" = "Kısaltma";
 
-/* Banner title in product variation list top banner when some variations do not have a price */
-"Some variations do not have prices" = "Bazı varyasyonların fiyatı yok";
+/* Dialog title that displays when a software update just finished installing */
+"Software updated" = "Yazılım güncellendi";
 
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Biri";
+
+/* Error message presented to users after a failure occurs
+   The text on the placeholder overlay when there is issue syncing site plugins */
+"Something went wrong" = "Bir şeyler yanlış gitti";
 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "Para iadesiyle ilgili bir şeyler yanlış gitti. Lütfen yeniden deneyin.";
@@ -2384,13 +3313,17 @@
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Standart oran";
 
+/* Label for one of the filters in order custom date range */
+"Start Date" = "Başlangıç tarihi";
+
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Mağazanıza ilk ürünü ekleyerek hemen bugün satışa başlayın.";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "%1$@ başlangıç süreci, %2$@ bitiş süreci";
 
-/* Text field state in Shipping Label Address Validation */
+/* Text field state in Edit Address Form
+   Text field state in Shipping Label Address Validation - Title to select state from the edit address screen */
 "State" = "Eyalet";
 
 /* Error showed in Shipping Label Address Validation for the state field */
@@ -2428,14 +3361,26 @@
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Üzerini Çiz";
 
-/* Subtotal label for a refund details view
-   Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost */
+/* Display label for subscription product type. */
+"Subscription" = "Abonelik";
+
+/* Create Shipping Label form -> Subtotal label
+   Subtotal label for a refund details view - Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost - Title text of the row that shows the subtotal when creating a simple payment */
 "Subtotal" = "Ara Toplam";
+
+/* Notice text after updating the order successfully */
+"Successfully updated" = "Başarıyla güncellendi";
+
+/* Title of the footer in Shipping Label Package Detail screen */
+"Sum of products and package weight" = "Ürünlerin toplamı ve paket ağırlığı";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Mağaza Değiştir";
 
-/* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
+/* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
+"Switched to %1$@." = "%1$@ mağazasına geçildi.";
+
+/* Message presented after users switch to a new store when multi-store push notifications are not supported. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
 "Switched to %1$@. You will only receive notifications from this store." = "%1$@ mağazasına geçildi. Sadece bu mağazadan bildirim alacaksınız.";
 
 /* Accessibility Identifier for the H1 Aztec Style */
@@ -2463,8 +3408,18 @@
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
 "Tags" = "Etiketler";
 
+/* Title for the simple payments screen */
+"Take Payment" = "Ödeme Al";
+
+/* Navigation bar title for the Simple Payments Methods screens
+   Text of the button that creates a simple payment order. Contains the total amount to collect */
+"Take Payment ((total))" = "Ödeme Al ((toplam))";
+
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Fotoğraf çek";
+
+/* Title of the banner notice in the Simple Payments feature */
+"Take payments from your device!" = "Cihazınızdan ödeme alın.";
 
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "Daha fazla format seçeneği için dokunun";
@@ -2474,6 +3429,9 @@
 
 /* Accessibility hint for insert link button on formatting toolbar. */
 "Tap to insert a Link" = "Bağlantı eklemek için dokunun";
+
+/* A label prompting users to learn more about card readers */
+"Tap to learn more about accepting payments with your mobile device and ordering card readers" = "Mobil cihazınızla ödeme kabul etme ve kart okuyucu sipariş etme hakkında daha fazla bilgi edinmek için dokunun";
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "Öğe iade miktarını değiştirmek için dokunun";
@@ -2529,9 +3487,16 @@
 /* Accessibility hint for selecting paragraph style button on formatting toolbar. */
 "Tap to toggle paragraph style" = "Paragraf stiline geçmek için dokunun";
 
+/* Indicates the action expected from a user. Presented to users when payment collection starts
+   Label asking users to present a card. Presented to users when a payment is going to be collected */
+"Tap, insert or swipe to pay" = "Ödeme yapmak için dokunun, ekleyin veya kaydırın";
+
 /* Tax label for a refund details view
    Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "Vergi";
+
+/* Tax percentage to be applied to the simple payments order */
+"Tax ((rate)%)" = "Vergi (%(oran))";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "Vergi Ayarları";
@@ -2555,14 +3520,23 @@
 /* Taxes label for payment view */
 "Taxes" = "Vergiler";
 
+/* Disclaimer in the simple payments summary screen about taxes. */
+"Taxes are automatically calculated based on your store address." = "Vergiler, mağaza adresinize göre otomatik olarak hesaplanır.";
+
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Bize %1$@ ile ilgili daha fazla bilgi verin...";
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Hizmet Koşulları";
 
-/* My Store > Settings > Experimental features > Products */
-"Test out the new product creation as we get ready to launch" = "Yayımlamaya hazırlanırken yeni ürün oluşturma işlemini test edin";
+/* Cell description on the beta features screen to enable creating new orders */
+"Test out creating new manual orders as we get ready to launch" = "Lansmana hazırlanırken yeni manuel siparişler oluşturmayı deneyin";
+
+/* Cell description on the beta features screen to enable the Simple Payments feature */
+"Test out creating orders with minimal information as we get ready to launch" = "Lansmana hazırlanırken minimum bilgi ile sipariş oluşturmayı test edin";
+
+/* Cell description on the beta features screen to enable the order add-ons feature */
+"Test out viewing Order Add-Ons as we get ready to launch" = "Biz lansmana hazırlanırken, Sipariş Eklentilerini görüntüleme işlevini test edin";
 
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
@@ -2601,6 +3575,15 @@
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "URL'de geçerli ana bilgisayar yok.";
 
+/* Error message when WooCommerce Payments is in test mode on a live site */
+"The WooCommerce Payments extension cannot be in test mode for In-Person Payments. Please disable test mode." = "WooCommerce Payments uzantısı Şahsen Ödemeler için test modunda kullanılamaz. Lütfen test modunu devre dışı bırakın.";
+
+/* Error message when WooCommerce Payments is not activated */
+"The WooCommerce Payments extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "WooCommerce Payments uzantısı mağazanıza yüklendi ancak etkinleştirilmedi. Şahsen Ödemeleri kabul etmek için lütfen etkinleştirin.";
+
+/* Error message when WooCommerce Payments is installed but the version is not supported */
+"The WooCommerce Payments extension is installed on your store, but needs to be updated for In-Person Payments. Please update WooCommerce Payments to the most recent version." = "WooCommerce Payments uzantısı mağazanızda yüklü, ancak Şahsen Ödemeler için güncellenmesi gerekiyor. Lütfen WooCommerce Payments'ı en son sürüme güncelleyin.";
+
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "Nitelik kaldırılamadı.";
 
@@ -2609,6 +3592,18 @@
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Bu sunucunun sertifikası geçersiz. “%@” taklidi yapan bir siteye bağlanıyor olabilirsiniz ki bu kişisel bilgilerinizin ele geçirilebilmesi açısından büyük bir risktir.\n\nSertifikaya güvenip devam etmek istiyor musunuz?";
+
+/* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
+"The customer will receive an email once order is completed" = "Sipariş tamamlandığında müşteri bir e-posta alacak.";
+
+/* The message of the alert when another custom package has the same name */
+"The new custom package name is not unique." = "Yeni özel paket adı benzersiz değil.";
+
+/* The message of the alert when another service package has the same name */
+"The new service package name is not unique." = "Yeni hizmet paketi adı benzersiz değil.";
+
+/* Error in calling the phone number of the customer in the Shipping Label Address Validation */
+"The phone number is not valid or you can't call the customer from this device." = "Telefon numarası geçerli değil veya müşteriyi bu cihazdan arayamazsınız.";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "Bu ürünün fiyatı. Düzenlenebilir.";
@@ -2655,8 +3650,14 @@
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "Varyasyon oluşturulamadı.";
 
-/* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
-"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "Web sitesi bir WordPress sitesi değil. Siteyle bağlantı kurabilmemiz için sitede WordPress yüklü olmalıdır.";
+/* Error message when the Stripe account is restricted because there are pending requirements */
+"There are pending requirements in your account. Please complete those requirements by" = "Hesabınızda bekleyen gereksinimler var. Lütfen şu tarihe kadar gereksinimleri karşılayın:";
+
+/* Error message when WooCommerce Payments is not supported because there are pending requirements in the Stripe account.%1$d will contain the localized deadline (e.g. August 11, 2021) */
+"There are pending requirements in your account. Please complete those requirements by %1$@ to keep accepting in-Person Payments." = "Hesabınızda bekleyen gereksinimler var. Şahsen Ödemeleri kabul etmeye devam etmek için lütfen %1$@ tarihine kadar bu gereksinimleri karşılayın.";
+
+/* Error message when WooCommerce Payments is not supportedThere are pending requirements in the Stripe account (without a known deadline) */
+"There are pending requirements in your account. Please complete those requirements to keep accepting in-Person Payments." = "Hesabınızda bekleyen gereksinimler var. Şahsen Ödemeleri kabul etmeye devam etmek için lütfen bu gereksinimleri karşılayın.";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Belirlenen sitenin yazıları engellenirken hata oluştu.";
@@ -2664,8 +3665,28 @@
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Belirtilen sitenin engeli kaldırılırken hata oluştu.";
 
+/* The details on the placeholder overlay when there is issue syncing site plugins */
+"There was a problem while trying to load plugins. Check your internet and try again." = "Eklentileri yüklemeye çalışırken bir sorun oluştu.  İnternetinizi kontrol edin ve tekrar deneyin.";
+
+/* Notice text after failing to create a simple payments order. */
+"There was an error creating the order" = "Sipariş oluşturulurken bir hata oluştu";
+
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Geri ödeme yapılırken bir hata oluştu";
+
+/* Notice text after failing to update a simple payments order.
+   Notice text after failing to update the order successfully */
+"There was an error updating the order" = "Sipariş güncellenirken bir hata oluştu";
+
+/* Text when there is an error while marking the order as paid for simple payments. */
+"There was an error while marking the order as paid." = "There was an error while marking the order as paid.";
+
+/* Text when there is an unknown error while trying to collect payments */
+"There was an error while trying to collect the payment." = "There was an error while trying to collect the payment.";
+
+/* Navigates to screen with third party software licenses
+   Software Licenses (information page title) */
+"Third Party Licenses" = "Üçüncü Taraf Lisansları";
 
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
@@ -2685,8 +3706,14 @@
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Bu uygulama için sunucunuza WooCommerce 3.5'i yüklemeniz gerekir; bu olmadan düzgün çalışmaz. Bu uygulamayı kullanmaya devam etmek için mümkün olan en kısa süre içinde güncelleyin.";
 
+/* Message explaining more detail on why the user's role is incorrect. */
+"This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "Bu uygulama yalnızca Yönetici ve Mağaza Yöneticisi kullanıcı rollerini destekler. Rolünüzü yükseltmek için lütfen mağazanızın sahibiyle iletişime geçin.";
+
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Bu e-posta adresi WordPress.com üzerinde kayıtlı değil.";
+
+/* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
+"This field is required" = "Bu alan zorunludur";
 
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "Bu bilgiler, ürünlerimizi geliştirmemize, pazarlamayı sizin için daha alakalı hale getirmemize, WordPress.com deneyiminizi kişiselleştirmemize ve ayrıntılı olarak gizlilik politikamızda belirttiğimiz şekilde daha fazlasına yardımcı olur.";
@@ -2702,6 +3729,9 @@
 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Bu, müşterilerin erişeceği dosyanın url'sidir. Girilen URL'ler önceden kodlanmış olmalıdır.";
+
+/* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
+"This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "Bu öğe şu anda %1$d Paketinde: %2$@. Bunu nereye taşımak istersiniz?";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2719,6 +3749,9 @@
 /* Footer text for editing external product button text */
 "This text will be shown on the button linking to the external product." = "Bu metin harici ürüne bağlantı düğmesinde gösterilecektir.";
 
+/* Alert info when selecting the cash payment method for simple payments */
+"This will mark your order as complete if you received (total) outside of WooCommerce" = "This will mark your order as complete if you received (total) outside of WooCommerce";
+
 /* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "Başlık";
@@ -2735,6 +3768,9 @@
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "Şuraya:";
 
+/* Subtitle on the variations list screen when there are no variations and attributes */
+"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Bir varyasyon eklemek için önce niteliklerini (yani \"Renk\", \"Boyut\") ayarlamanız gerekir.";
+
 /* Footer of text field section in Add Attribute screen */
 "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "Bir varyasyon oluşturmak için önce özelliklerini (yani \"Renk\", \"Boyut\") ayarlamanız gerekir";
 
@@ -2750,11 +3786,14 @@
 /* Instructional text shown when requesting the user's password for Google login. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Bu Google hesabı ile devam etmek için lütfen ilk önce WordPress.com parolanızla giriş yapın. Bu sadece bir kez sorulacak.";
 
+/* Label within the modal dialog that appears when searching for a card reader */
+"To turn on your card reader, briefly press its power button." = "Kart okuyucunuzu açmak için güç düğmesine kısa basın.";
+
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Bu uygulamayı %@ için kullanabilmek Jetpack eklentisinin yüklenip mağazanıza bağlanmasını gerektirir.";
 
-/* Tab selector title that shows the statistics for today
-   Today Section Header - Top Performers section title - today */
+/* Label for one of the filters in order date range
+   Tab selector title that shows the statistics for today - Today Section Header - Top Performers section title - today */
 "Today" = "Bugün";
 
 /* Accessibility Identifier for the Aztec Ordered List Style. */
@@ -2775,13 +3814,23 @@
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "Toplam sipariş: %ld";
 
+/* Title of the row for adding the package weight in Shipping Label Package Detail screen */
+"Total package weight" = "Toplam paket ağırlığı";
+
+/* Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight */
+"Total package weight: %1$@" = "Toplam paket ağırlığı: %1$@";
+
 /* Track shipment button title */
 "Track Shipment" = "Gönderim Takibi";
+
+/* Caption displayed in promotional screens shown during the login flow. */
+"Track sales and high performing products" = "Satışları ve yüksek performanslı ürünleri takip edin";
 
 /* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
 "Track shipment" = "Gönderimi takip et";
 
-/* Order tracking section title */
+/* Order tracking section title
+   Tracking section title in Review Order screen */
 "Tracking" = "İzleme";
 
 /* Add custom shipping carrier. Title of cell presenting carrier link */
@@ -2799,17 +3848,43 @@
    Move a comment to the trash */
 "Trash" = "Çöp Kutusu";
 
+/* The title of the button to get troubleshooting information in the Error Loading Data banner */
+"Troubleshoot" = "Sorun giderme";
+
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Güven";
 
+/* Button to retry a software update. Presented to users when updating the card reader software fails
+   Button to try again. Presented to users after a failure occurs */
+"Try Again" = "Tekrar deneyin";
+
+/* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
+"Try Collecting Again" = "Tekrar Almayı Deneyin";
+
 /* Button to trigger connection to another account in store picker */
 "Try With Another Account" = "Başka Bir Hesapla Deneyin";
+
+/* Action to resync on the placeholder overlay when there is issue syncing site plugins
+   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+"Try again" = "Tekrar deneyin";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Başka bir e-posta ile deneyin";
 
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "Site adresi ile deneyin";
+
+/* Settings > Manage Card Reader > Connect > Hint to power on reader */
+"Turn card reader on and place it next to mobile device" = "Kart okuyucuyu çalıştırın ve mobil cihazın yanına koyun";
+
+/* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
+"Turn mobile device Bluetooth on" = "Mobil cihazda Bluetooth'u açın";
+
+/* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
+"Type of contents" = "İçerik türü";
+
+/* Placeholder for the Restriction Details row in Customs screen of Shipping Label flow */
+"Type of restriction" = "Kısıtlama türü";
 
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
@@ -2827,8 +3902,17 @@
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
 "Unable to change status of order #%1$d" = "%1$d no'lu siparişin durumu değiştirilemiyor";
 
+/* Notice displayed when order creation fails */
+"Unable to create new order" = "Yeni sipariş oluşturulamıyor";
+
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "%1$d No'lu sipariş için takip silinemiyor";
+
+/* Unable to fetch countries action failed in Shipping Label Form */
+"Unable to fetch countries." = "Ülkeler getirilemedi.";
+
+/* Error notice when we fail to load country information in the edit address screen. */
+"Unable to fetch country information, please try again later." = "Ülke bilgileri alınamadı, lütfen daha sonra tekrar deneyin.";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "%1$d numaralı sipariş yerine getirilemiyor";
@@ -2842,14 +3926,17 @@
 /* Load Product Categories Action Failed */
 "Unable to load categories" = "Kategoriler yüklenemiyor";
 
-/* Load Action Failed */
-"Unable to load content" = "İçerik yüklenemiyor";
-
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Ürün özellikleri yüklenemiyor";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "%@ olarak işaretlenemedi";
+
+/* Error message when the order amount is below the minimum amount allowed. */
+"Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "Ödeme işlenemiyor. Sipariş toplam tutarı, tahsil edebileceğiniz minimum tutarın altında (%1$@)";
+
+/* Error message when the order amount is not valid. */
+"Unable to process payment. Order total amount is not valid." = "Ödeme işlenemiyor. Sipariş toplam tutarı geçerli değil.";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Belirtilen adresteki WordPress sitesi okunamadı. 'Yardım lazım mı?' tuşuna tıklayarak SSS'i görüntüleyebilirsiniz.";
@@ -2857,8 +3944,17 @@
 /* Refresh Action Failed */
 "Unable to refresh list" = "Liste yenilenemedi";
 
-/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
-"Unable to successfully connect to %@" = "%@ adlı siteye başarıyla bağlanılamıyor";
+/* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
+"Unable to retrieve user roles." = "Kullanıcı rolleri alınamıyor.";
+
+/* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
+"Unable to save changes to the payment method" = "Ödeme yöntemindeki değişiklikler kaydedilemiyor";
+
+/* Error notice title when we fail to update an address in the edit address screen. */
+"Unable to update address." = "Adres güncellenemiyor.";
+
+/* Title for the error screen when In-Person Payments is unavailable */
+"Unable to verify In-Person Payments for this store" = "Bu mağaza için Şahsen Ödemeler doğrulanamıyor";
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "E-posta adresi doğrulanamıyor. Lütfen daha sonra tekrar deneyin.";
@@ -2875,12 +3971,19 @@
 /* Undo Action */
 "Undo" = "Geri al";
 
-/* The message of the alert when there is an unexpected error updating the product */
+/* The message of the alert when there is an unexpected error adding the package
+   The message of the alert when there is an unexpected error updating the product */
 "Unexpected error" = "Beklenmedik hata";
 
 /* Unknown Application State
    Unknown product name, displayed in a review - Unknown Tag Name */
 "Unknown" = "Bilinmiyor";
+
+/* Displayed in the unlikely event a card reader has an indeterminate battery status */
+"Unknown Battery Level" = "Pil Seviyesi Bilinmiyor";
+
+/* Displayed in the unlikely event a card reader has an indeterminate software version */
+"Unknown Software Version" = "Bilinmeyen Yazılım Sürümü";
 
 /* No comment provided by engineer. */
 "Unknown error" = "Bilinmeyen hata";
@@ -2888,11 +3991,17 @@
 /* Error message when capturing a unknown media type */
 "Unknown media type" = "Bilinmeyen medya türü";
 
+/* Back button title when the product doesn't have a name */
+"Unnamed product" = "Adsız ürün";
+
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "Sıralanmamış Liste";
 
 /* Display label for the review's unspam status */
 "Unspam" = "Spam Değil";
+
+/* Title for the error screen when the installed version of WooCommerce Payments is unsupported */
+"Unsupported WooCommerce Payments version" = "Desteklenmeyen WooCommerce Payments sürümü";
 
 /* Display label for the review's untrash status */
 "Untrash" = "Çöpten Çıkar";
@@ -2910,11 +4019,21 @@
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
 "Update %@ to WooCommerce 3.5" = "%@ sitesini WooCommerce 3.5’e Yükseltin";
 
+/* Accessibility Label for the edit button to change the Customer Billing Address in Billing Information
+   Accessibility Label for the edit button to change the Customer Shipping Address in Order Details */
+"Update Address" = "Adresi Güncelle";
+
 /* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
 "Update Instructions" = "Güncelleme Yönergeleri";
 
+/* Accessibility Label for the edit button to change the Customer Provided Note in Order Details */
+"Update Note" = "Notu Güncelle";
+
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Sipariş Durumunu Güncelle";
+
+/* Settings > Manage Card Reader > Connected Reader > A button to update the reader software */
+"Update Reader Software" = "Okuyucu Yazılımını Güncelle";
 
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "Ürün envanterini ve SKU’sunu güncelleme";
@@ -2948,6 +4067,15 @@
    Updated on <date> */
 "Updated on %@" = "Son güncelleme zamanı: %@";
 
+/* Dialog title that displays when a software update is being installed */
+"Updating software" = "Yazılım güncelleniyor";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
+"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "Okuyucunun pili zayıf olduğundan okuyucu yazılımı güncellenemedi. Lütfen tekrar denemeden önce okuyucuyu %50'den fazla şarj edin.";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "Okuyucunun pil şarj düzeyi %.0f%% olduğundan okuyucu yazılımı güncellenemedi.  Lütfen tekrar denemeden önce okuyucuyu %%50'den fazla şarj edin.";
+
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "Yukarı satışlar";
@@ -2961,6 +4089,15 @@
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "Önerilen Adresi Kullan";
 
+/* Title for the Use as Billing Address switch in the Address form */
+"Use as Billing Address" = "Fatura Adresi olarak kullan";
+
+/* Title for the Use as Shipping Address switch in the Address form */
+"Use as Shipping Address" = "Gönderim Adresi olarak kullan";
+
+/* Title of user profiles as part of Jetpack benefits. */
+"User Profiles" = "Kullanıcı Profilleri";
+
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "Kullanıcı adı";
@@ -2968,21 +4105,27 @@
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "Kullanıcı adı en az dört karakter olmalıdır. ";
 
+/* Title for the Value row in item details in Customs screen of Shipping Label flow */
+"Value (%1$@ per unit)" = "Değer (birim başına %1$@)";
+
 /* Display label for variable product type. */
 "Variable" = "Değişken";
 
 /* Action sheet option when the user wants to change the Product type to varible product */
 "Variable product" = "Varyasyonlu ürün";
 
-/* Title of the Product Variations row on Product main screen for a variable product
-   Title that appears on top of the Product Variation List screen. */
+/* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
+"Variation #%1$@" = "Varyasyon #%1$@";
+
+/* Text for the notice after creating the first variation. */
+"Variation created" = "Varyasyon oluşturuldu";
+
+/* Title for the generate first variation screen
+   Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
 "Variations" = "Varyasyonlar";
 
-/* Banner caption in my store when the stats will be deprecated */
-"Variations without price will not be shown in your store." = "Fiyatı olmayan varyasyonlar mağazanızda gösterilmeyecektir.";
-
-/* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
-"Variations without price won’t be shown in your store" = "Fiyatı olmayan varyasyonlar mağazanızda gösterilmeyecektir";
+/* Title of the variations attributes row on Product screen */
+"Variations Attributes" = "Varyasyonların Nitelikleri";
 
 /* two factor code placeholder */
 "Verification code" = "Doğrulama kodu";
@@ -2992,6 +4135,13 @@
 
 /* Displays the version of the App */
 "Version %@" = "Sürüm %@";
+
+/* Displays the connected reader software version */
+"Version: %1$@" = "Sürüm: %1$@";
+
+/* Cell title on the beta features screen to enable the order add-ons feature
+   Title of the button on the order detail item to navigate to add-ons - Title of the button on the order details product list item to navigate to add-ons */
+"View Add-Ons" = "Eklentileri Görüntüle";
 
 /* View application log cell title */
 "View Application Log" = "Uygulama Günlüğü’nü Görüntüleyin";
@@ -3007,8 +4157,14 @@
    Button on bottom of shipping label package card to show shipping details */
 "View Shipment Details" = "Gönderi Ayrıntılarını Görüntüle";
 
+/* Title of the banner notice in the add-ons view */
+"View add-ons from your device!" = "Eklentileri cihazınızdan görüntüleyin.";
+
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "İndirilebilir dosya ayarlarını görüntüleyin";
+
+/* Accessibility label for the items inside a Shipping Label package */
+"View items in this shipping label package." = "Bu gönderi etiketi paketindeki öğeleri görüntüleyin.";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Daha önce verilen destek biletlerini görüntüleyin";
@@ -3053,11 +4209,35 @@
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "Kapsamlı analizlerle kitlenizin nasıl büyüdüğünü izleyin.";
 
-/* The info of the shipping labels top banner in order details */
-"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "Gönderim etiketlerini doğrudan cihazınızdan yazdırmayı kolaylaştırmak için çalışmalarımız devam ediyor. Mağaza yöneticinizde WooCommerce Shipping ile bir sipariş için gönderim etiketleri oluşturduysanız, şimdilik bunları burada, yani Sipariş detayları bölümünüzde yazdırabilirsiniz.";
+/* Error message when WooCommerce Payments is not supported because the Stripe account has been rejected */
+"We are sorry but we can't support In-Person Payments for this store." = "Maalesef bu mağaza için Şahsen Ödemeleri destekleyemiyoruz.";
+
+/* Content of the banner notice in the add-ons view */
+"We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Ürün eklentilerini cihazınızdan görmenizi kolaylaştırmak için çalışıyoruz. Şimdilik, siparişleriniz için eklentileri görebilirsiniz. Bu eklentileri web yönetim panelinizde oluşturabilir ve düzenleyebilirsiniz.";
+
+/* Content of the banner notice in the Simple Payments view */
+"We are working on making it easier for you to take payments from your device! For now, tap on the \"+\" button and you’ll be able to create an order with the amount you want to collect" = "Cihazınızdan ödeme almanızı kolaylaştırmak için çalışıyoruz. Şimdilik \"+\" düğmesine dokunun, tahsil etmek istediğiniz tutarla bir sipariş oluşturabilirsiniz.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "Mağazanızın analizlerini görüntüleyemiyoruz";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
+"We couldn't connect your reader" = "Okuyucunuza bağlanılamadı";
+
+/* The title of the Error Loading Data banner */
+"We couldn't load your data" = "Verileriniz yüklenemedi";
+
+/* Title for the default store picker error screen */
+"We couldn't load your site" = "Sitenizi yükleyemedik";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"We couldn’t update your reader’s software" = "Okuyucunuzun yazılımı güncellenemedi";
+
+/* Title for the error screen when WooCommerce Payments is not supported in a specific country */
+"We don’t support In-Person Payments in %@" = "%@ için Şahsen Ödemeleri desteklemiyoruz";
+
+/* Title for the error screen when WooCommerce Payments is not supported because we don't know the name of the country */
+"We don’t support In-Person Payments in your country" = "Ülkeniz için Şahsen Ödemeleri desteklemiyoruz";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "Girilen adresi biraz değiştirdik. Doğruysa, teslimatın doğru yapılması için lütfen önerilen adresi kullanın.";
@@ -3068,8 +4248,17 @@
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "Üçüncü taraflara ait olanlar dahil diğer izleme araçlarını kullanıyoruz. Bunlar ve nasıl kontrol edilecekleri hakkında bilgi alın.";
 
-/* Banner caption in Shipping Label Address Validation when the address can't be verified. */
+/* Message explaining that WordPress was not detected. */
+"We were not able to detect a WordPress site at the address you entered. Please make sure WordPress is installed and that you are running the latest available version." = "Girdiğiniz adreste bir WordPress sitesi tespit edemedik. Lütfen WordPress'in kurulu olduğundan ve mevcut en son sürümü çalıştırdığınızdan emin olun.";
+
+/* Banner caption in Shipping Label Address Validation when the origin address can't be verified. */
+"We were unable to automatically verify the origin address." = "Gönderen adresini otomatik olarak doğrulayamadık.";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified. */
 "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "Gönderim adresini otomatik olarak doğrulayamadık. Apple Haritalar'da görüntüleyin veya adresin doğru olduğundan emin olmak için müşteriyle iletişim kurmayı deneyin.";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
+"We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "Gönderim adresini otomatik olarak doğrulayamadık. Adresin doğru olduğundan emin olmak için Apple Haritalar'da görüntüleyin.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "Size şu anda e-posta gönderemedik. Lütfen daha sonra tekrar deneyin.";
@@ -3080,30 +4269,33 @@
 /* Instruction text on the Sign Up screen. */
 "We'll email you a signup link to create your new WordPress.com account." = "Yeni WordPress.com hesabınızı oluşturmak için size e-postayla bir kayıt bağlantısı göndereceğiz.";
 
-/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "Yeni bir sipariş aldığınızda sizi bilgilendireceğiz. Bu sırada siz de mağaza satışlarınızı nasıl artırabileceğiniz keşfedebilirsiniz.";
-
 /* Text confirming email address to be used for new account. */
 "We'll use this email address to create your new WordPress.com account." = "Bu e-posta adresini yeni WordPress.com hesabınızı oluşturmak için kullanacağız.";
 
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "Bu URL’deki Jetpack sitesine bağlanamıyoruz. Yardım için bizimle iletişime geçin.";
 
-/* Default message to show if a filtered Orders list is empty. */
-"We're sorry, we couldn't find any orders." = "Maalesef hiç sipariş bulamadık.";
-
-/* Message shown if a filtered Orders list is empty. The %@ is a placeholder for the order status. */
-"We're sorry, we couldn't find any “%@” orders" = "Maalesef hiç “%@” siparişi bulamadık";
+/* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
+"We're sorry, we couldn't find any order that match %@" = "Üzgünüz, %@ ile eşleşen herhangi bir sipariş bulamadık";
 
 /* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "Üzgünüz, \"%@\" için sonuç bulamadık";
+
+/* Generic error message when In-Person Payments is unavailable */
+"We're sorry, we were unable to verify In-Person Payments for this store." = "Maalesef bu mağaza için Şahsen Ödemeleri doğrulayamadık";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Yeni WordPress.com hesabınızı oluşturmanız için size e-postayla bir kayıt bağlantısı gönderdik. Bu cihazda e-postanızı kontrol edin ve WordPress.com'dan aldığınız e-postadaki bağlantıya dokunun.";
 
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Ağırlık";
+
+/* Title for the Weight row in item details in Customs screen of Shipping Label flow */
+"Weight (%1$@ per unit)" = "Ağırlık (birim başına %1$@)";
+
+/* Footer text for the empty package weight on the Add New Custom Package screen in Shipping Label flow */
+"Weight of empty package" = "Boş paketin ağırlığı";
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Ağırlık: %1$@%2$@";
@@ -3118,8 +4310,20 @@
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "Jetpack nedir?";
 
+/* Shipping Labels: info title about WooCommerce Services discount */
+"What is WooCommerce Services discount?" = "WooCommerce Hizmetleri indirimi nedir?";
+
+/* Navigates to screen containing the latest WooCommerce Features */
+"What's New in WooCommerce" = "WooCommerce'deki Yenilikler";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Sitemin adresi ne?";
+
+/* Title of Whats New Component */
+"What’s New in WooCommerce" = "WooCommerce'deki Yenilikler";
+
+/* Shipping Labels: info description about WooCommerce Services discount */
+"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "WooCommerce ile gönderi etiketleri satın alırken indirimli ticari fiyatlara erişebilirsiniz.";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "Amanın, bir şeyler yanlış gitti ve giriş yapmanızı sağlayamadık. Lütfen tekrar deneyin!";
@@ -3127,7 +4331,8 @@
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "I-ıh, bu geçerli bir iki adımlı doğrulama kodu değil. Kodunuzu iki kere kontrol edin ve tekrar deneyin!";
 
-/* Title of the cell in Product Shipping Settings > Width */
+/* Title for the row to enter the package width on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Width */
 "Width" = "Genişlik";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
@@ -3135,6 +4340,15 @@
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
+
+/* Create Shipping Label form -> WooCommerce Discount label */
+"WooCommerce Discount" = "WooCommerce İndirimi";
+
+/* Title for the error screen when WooCommerce Payments is in test mode on a live site */
+"WooCommerce Payments is in Test Mode" = "Test Modunda WooCommerce Ödemeleri";
+
+/* Navigation title of the webview which used by the merchant to update their store address */
+"WooCommerce Settings" = "WooCommerce Settings";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
@@ -3161,14 +4375,36 @@
 /* Yesterday Section Header */
 "Yesterday" = "Dün";
 
+/* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
+"You are not authorized to access this store." = "Bu mağazaya erişme yetkiniz yok.";
+
+/* Info notice at the bottom of the product add-ons screen */
+"You can edit product add-ons in the web dashboard." = "Ürün eklentilerini web panosunda düzenleyebilirsiniz.";
+
 /* The info of the top banner on the Products tab. */
-"You can now add downloadable files to a product and link upsell & cross-sell products. No longer want a product? Trash it!" = "Artık bir ürüne indirilebilir dosyalar ekleyebilir ve daha yüksek satış ve çapraz satış ürünleri arasında bağlantı oluşturabilirsiniz. Bir ürünü artık istemiyor musunuz? Çöpe atın.";
+"You can now create and manage product variations!" = "Artık ürün çeşitleri oluşturabilir ve yönetebilirsiniz";
+
+/* The info of the shipping labels top banner in order details */
+"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Artık ücretsiz WooCommerce Shipping eklentisi ile tüm fiziksel siparişler için gönderi etiketlerini doğrudan cihazınızdan oluşturabilirsiniz. Beta özelliğimizi denemek için Gönderi Etiketi Oluştur üzerine dokunun!";
+
+/* Shown in Refunds screen. Refunding fees are currently not supported. */
+"You can refund fees in your store admin" = "You can refund fees in your store admin";
 
 /* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "Bir paketi göndermek için kullanılmamış bir gönderi etiketi için para iadesi talep edebilirsiniz.\nİşleme alınması en az 14 gün sürer.";
+"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "Bir paketi göndermek için kullanılmamış bir gönderi etiketi için para iadesi talep edebilirsiniz.\nİşleme alınması en az 14 gün sürer.";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)";
+
+/* Error message when WooCommerce Payments is not supported in a specific country
+   Generic error message when In-Person Payments is unavailable */
+"You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "Mağazanızda \"Kapıda Nakit\" ödeme yöntemini etkinleştirerek elden şahsen nakit ödeme kabul edebilirsiniz.";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Bu e-posta adresini kayıt olmak için kullanamazsınız. Bazı e-postalarımızın engellenmesiyle ilgili problem yaşıyoruz. Farklı bir e-posta sağlayıcısı kullanın.";
+
+/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
+"You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Hesabınızda en az bir vadesi geçmiş gereksinim var. Şahsen Ödemeleri kullanmaya devam etmek için lütfen bu durumu giderin";
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Ürününüzün parolayla korunmasını sağlamak için bir parola eklemelisiniz";
@@ -3176,11 +4412,35 @@
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "DudaMobilden uygulamanın bloğunuza bağlanmasını engelleyen bir eklenti yüklemiş görünüyorsunuz ";
 
+/* Error message when WooCommerce Payments is not supported because the Stripe account is under review */
+"You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "Hesabınızın incelenmesi biter bitirmez Şahsen Ödemeleri kabul edebileceksiniz.";
+
+/* Title for the error screen when the Stripe account is restricted because there are pending requirements */
+"Your WooCommerce Payments account has pending requirements" = "WooCommerce Payments hesabınızda bekleyen gereksinimler var";
+
+/* Label that displays when a mandatory software update is happening */
+"Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Ödeme almak için kart okuyucu yazılımınızın güncellenmesi gerekiyor.  İptal ederseniz okuyucu bağlantınız engellenir.";
+
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "Bildirimleriniz sizinle birlikte geziyor; yorumları ve beğenileri gerçekleştikleri sırada görün.";
 
+/* Label that displays when an optional software update is happening */
+"Your reader will automatically restart and reconnect after the update is complete." = "Güncelleme tamamlandıktan sonra okuyucunuz otomatik olarak yeniden başlayacak ve yeniden bağlanacaktır";
+
+/* Subject of email sent with a card present payment receipt */
+"Your receipt" = "Makbuzunuz";
+
+/* Subject of email sent with a card present payment receipt */
+"Your receipt from %1$@" = "%1$@ kaynağından aldığınız makbuz";
+
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Sitenizin adresi, Safari ile sitenizi ziyaret ettiğinizde en üstte görüntülenir.";
+
+/* Error message when WooCommerce Payments is not installed */
+"You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "Şahsen Ödemeleri kabul etmek için mağazanıza ücretsiz WooCommerce Payments uzantısını yüklemeniz gerekir.";
+
+/* Error message when WooCommerce Payments is installed but not set up */
+"You’re almost there! Please finish setting up WooCommerce Payments to start accepting Card-Present Payments." = "Çok az kaldı! Card-Present Payments'ı kabul etmeye başlamak için lütfen WooCommerce Payments kurulumunu tamamlayın.";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[YORUM]";
@@ -3220,8 +4480,11 @@
 /* About View's Footer Text. The variable is the current year */
 "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. ve WooCommerce Ireland Ltd.";
 
-/* Customer note, wrapped in quotes */
-"“%@”" = "“%@”";
+/* Success notice when tapping Mark Order Complete on Review Order screen */
+"🎉 Order Completed" = "🎉 Sipariş Tamamlandı";
+
+/* Title for the button to cancel the simple payments screen */
+"🎉 Order completed" = "";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 Ürünlerin geri ödemesi başarıyla yapıldı";

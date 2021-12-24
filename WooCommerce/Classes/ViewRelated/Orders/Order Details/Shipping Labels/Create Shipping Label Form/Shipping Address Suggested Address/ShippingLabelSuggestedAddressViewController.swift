@@ -28,6 +28,7 @@ final class ShippingLabelSuggestedAddressViewController: UIViewController {
     private let type: ShipType
     private let address: ShippingLabelAddress?
     private let suggestedAddress: ShippingLabelAddress?
+    private let email: String?
     private let sections: [Section] = [Section(rows: [.addressEntered, .addressSuggested])]
 
     /// Completion callback
@@ -38,17 +39,27 @@ final class ShippingLabelSuggestedAddressViewController: UIViewController {
     private var selectedAddress: SelectedAddress = .suggested {
         didSet {
             tableView.reloadData()
-            configureUseAddressButton()
+            updateUseAddressButton()
         }
     }
 
+    private(set) var countries: [Country]
+
     /// Init
     ///
-    init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?, suggestedAddress: ShippingLabelAddress?, completion: @escaping Completion) {
+    init(siteID: Int64,
+         type: ShipType,
+         address: ShippingLabelAddress?,
+         suggestedAddress: ShippingLabelAddress?,
+         email: String?,
+         countries: [Country],
+         completion: @escaping Completion) {
         self.siteID = siteID
         self.type = type
         self.address = address
         self.suggestedAddress = suggestedAddress
+        self.email = email
+        self.countries = countries
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -98,7 +109,7 @@ private extension ShippingLabelSuggestedAddressViewController {
         // Configure header container view
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
         headerContainer.addSubview(topStackView)
-        headerContainer.pinSubviewToSafeArea(topStackView)
+        headerContainer.pinSubviewToAllEdges(topStackView)
         topStackView.addArrangedSubview(topBannerView)
 
         tableView.tableHeaderView = headerContainer
@@ -111,11 +122,17 @@ private extension ShippingLabelSuggestedAddressViewController {
         }
     }
 
+    // Initial configuration for the address button, should only run once
     func configureUseAddressButton() {
-        let title = selectedAddress == .entered ? Localization.useAddressEnteredButton : Localization.useAddressSuggestedButton
-        useAddressButton.setTitle(title, for: .normal)
         useAddressButton.addTarget(self, action: #selector(didTapUseAddressButton), for: .touchUpInside)
         useAddressButton.applyPrimaryButtonStyle()
+        updateUseAddressButton()
+    }
+
+    // Configuration for the address button when the UI needs to change
+    func updateUseAddressButton() {
+        let title = selectedAddress == .entered ? Localization.useAddressEnteredButton : Localization.useAddressSuggestedButton
+        useAddressButton.setTitle(title, for: .normal)
     }
 
     func configureEditAddressButton() {
@@ -131,9 +148,11 @@ private extension ShippingLabelSuggestedAddressViewController {
     @objc func didTapUseAddressButton() {
         switch selectedAddress {
         case .entered:
+            ServiceLocator.analytics.track(.shippingLabelAddressSuggestionsUseSelectedAddressButtonTapped, withProperties: ["type": "original"])
             onCompletion(address)
             navigationController?.popViewController(animated: true)
         case .suggested:
+            ServiceLocator.analytics.track(.shippingLabelAddressSuggestionsUseSelectedAddressButtonTapped, withProperties: ["type": "suggested"])
             onCompletion(suggestedAddress)
             navigationController?.popViewController(animated: true)
         }
@@ -142,22 +161,28 @@ private extension ShippingLabelSuggestedAddressViewController {
     @objc func didTapEditAddressButton() {
         switch selectedAddress {
         case .entered:
-            displayEditAddressFormVC(address: address, type: type)
+            ServiceLocator.analytics.track(.shippingLabelAddressSuggestionsEditSelectedAddressButtonTapped, withProperties: ["type": "original"])
+            displayEditAddressFormVC(address: address, email: email, type: type)
         case .suggested:
-            displayEditAddressFormVC(address: suggestedAddress, type: type)
+            ServiceLocator.analytics.track(.shippingLabelAddressSuggestionsEditSelectedAddressButtonTapped, withProperties: ["type": "suggested"])
+            displayEditAddressFormVC(address: suggestedAddress, email: email, type: type)
         }
 
     }
 
-    func displayEditAddressFormVC(address: ShippingLabelAddress?, type: ShipType) {
-        let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: siteID,
-                                                                       type: type,
-                                                                       address: address,
-                                                                       completion: { [weak self] (newShippingLabelAddress) in
-                                                                        guard let self = self else { return }
-                                                                        self.onCompletion(newShippingLabelAddress)
-                                                                        self.navigationController?.popViewController(animated: true)
-                                                                       })
+    func displayEditAddressFormVC(address: ShippingLabelAddress?, email: String?, type: ShipType) {
+        let shippingAddressVC = ShippingLabelAddressFormViewController(
+            siteID: siteID,
+            type: type,
+            address: address,
+            email: email,
+            validationError: nil,
+            countries: countries,
+            completion: { [weak self] (newShippingLabelAddress) in
+                guard let self = self else { return }
+                self.onCompletion(newShippingLabelAddress)
+                self.navigationController?.popViewController(animated: true)
+            })
         navigationController?.pushViewController(shippingAddressVC, animated: true)
     }
 }

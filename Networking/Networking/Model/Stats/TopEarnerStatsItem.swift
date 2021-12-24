@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents a single top earner stat for a specific period.
 ///
-public struct TopEarnerStatsItem: Decodable, GeneratedFakeable {
+public struct TopEarnerStatsItem: Decodable, Equatable, GeneratedFakeable {
 
     /// Product ID
     ///
@@ -66,23 +66,8 @@ private extension TopEarnerStatsItem {
 // MARK: - Comparable Conformance
 //
 extension TopEarnerStatsItem: Comparable {
-    public static func == (lhs: TopEarnerStatsItem, rhs: TopEarnerStatsItem) -> Bool {
-        return lhs.productID == rhs.productID &&
-            lhs.productName == rhs.productName &&
-            lhs.quantity == rhs.quantity &&
-            lhs.price == rhs.price &&
-            lhs.total == rhs.total &&
-            lhs.currency == rhs.currency &&
-            lhs.imageUrl == rhs.imageUrl
-    }
-
     public static func < (lhs: TopEarnerStatsItem, rhs: TopEarnerStatsItem) -> Bool {
         return lhs.total < rhs.total ||
             (lhs.total == rhs.total && lhs.quantity < rhs.quantity)
-    }
-
-    public static func > (lhs: TopEarnerStatsItem, rhs: TopEarnerStatsItem) -> Bool {
-        return lhs.total > rhs.total ||
-            (lhs.total == rhs.total && lhs.quantity > rhs.quantity)
     }
 }

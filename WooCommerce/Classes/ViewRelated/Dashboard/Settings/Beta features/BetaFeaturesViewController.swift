@@ -2,13 +2,6 @@ import Storage
 import UIKit
 import Yosemite
 
-// MARK: - BetaFeaturesViewController's Notifications
-//
-extension Notification.Name {
-    static let ProductsFeatureSwitchDidChange = Notification.Name(rawValue: "ProductsFeatureSwitchDidChange")
-}
-
-
 /// Contains UI for Beta features that can be turned on and off.
 ///
 class BetaFeaturesViewController: UIViewController {
@@ -80,13 +73,33 @@ private extension BetaFeaturesViewController {
     ///
     func configureSections() {
         self.sections = [
-            productsSection()
-        ]
+            productsSection(),
+            orderCreationSection(),
+            inPersonPaymentsSection()
+        ].compactMap { $0 }
     }
 
     func productsSection() -> Section {
-        return Section(rows: [.productsSwitch,
-                              .productsDescription])
+        return Section(rows: [.orderAddOns,
+                              .orderAddOnsDescription])
+    }
+
+    func orderCreationSection() -> Section? {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) else {
+            return nil
+        }
+
+        return Section(rows: [.orderCreation,
+                              .orderCreationDescription])
+    }
+
+    func inPersonPaymentsSection() -> Section? {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.stripeExtensionInPersonPayments) else {
+            return nil
+        }
+
+        return Section(rows: [.stripeExtensionInPersonPayments,
+                              .stripeExtensionInPersonPaymentsDescription])
     }
 
     /// Register table cells.
@@ -107,10 +120,20 @@ private extension BetaFeaturesViewController {
 
         switch cell {
         // Product list
-        case let cell as SwitchTableViewCell where row == .productsSwitch:
-            configureProductsSwitch(cell: cell)
-        case let cell as BasicTableViewCell where row == .productsDescription:
-            configureProductsDescription(cell: cell)
+        case let cell as SwitchTableViewCell where row == .orderAddOns:
+            configureOrderAddOnsSwitch(cell: cell)
+        case let cell as BasicTableViewCell where row == .orderAddOnsDescription:
+            configureOrderAddOnsDescription(cell: cell)
+        // Orders
+        case let cell as SwitchTableViewCell where row == .orderCreation:
+            configureOrderCreationSwitch(cell: cell)
+        case let cell as BasicTableViewCell where row == .orderCreationDescription:
+            configureOrderCreationDescription(cell: cell)
+        // WooCommerce Stripe Payment Gateway extension In-Person Payments
+        case let cell as SwitchTableViewCell where row == .stripeExtensionInPersonPayments:
+            configureStripeExtensionInPersonPaymentsSwitch(cell: cell)
+        case let cell as BasicTableViewCell where row == .stripeExtensionInPersonPaymentsDescription:
+            configureStripeExtensionInPersonPaymentsDescription(cell: cell)
         default:
             fatalError()
         }
@@ -118,36 +141,99 @@ private extension BetaFeaturesViewController {
 
     // MARK: - Product List feature
 
-    func configureProductsSwitch(cell: SwitchTableViewCell) {
+    func configureOrderAddOnsSwitch(cell: SwitchTableViewCell) {
         configureCommonStylesForSwitchCell(cell)
+        cell.title = Localization.orderAddOnsTitle
 
-        let title = NSLocalizedString("Creating products",
-                                      comment: "My Store > Settings > Experimental features > Products")
-
-        cell.title = title
-
-        let action = AppSettingsAction.loadProductsFeatureSwitch() { isVisible in
-            cell.isOn = isVisible
+        // Fetch switch's state stored value.
+        let action = AppSettingsAction.loadOrderAddOnsSwitchState() { result in
+            guard let isEnabled = try? result.get() else {
+                return cell.isOn = false
+            }
+            cell.isOn = isEnabled
         }
         ServiceLocator.stores.dispatch(action)
 
+        // Change switch's state stored value
         cell.onChange = { isSwitchOn in
-            ServiceLocator.analytics.track(.settingsBetaFeaturesProductsToggled)
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailAddOns.betaFeaturesSwitchToggled(isOn: isSwitchOn))
 
-            let action = AppSettingsAction.setProductsFeatureSwitch(isEnabled: isSwitchOn) {
-                NotificationCenter.default.post(name: .ProductsFeatureSwitchDidChange, object: self)
-            }
+            let action = AppSettingsAction.setOrderAddOnsFeatureSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
+                // Roll back toggle if an error occurred
+                if result.isFailure {
+                    cell.isOn.toggle()
+                }
+            })
             ServiceLocator.stores.dispatch(action)
         }
-        cell.accessibilityIdentifier = "beta-features-products-cell"
+        cell.accessibilityIdentifier = "beta-features-order-add-ons-cell"
     }
 
-    func configureProductsDescription(cell: BasicTableViewCell) {
+    func configureOrderAddOnsDescription(cell: BasicTableViewCell) {
         configureCommonStylesForDescriptionCell(cell)
+        cell.textLabel?.text = Localization.orderAddOnsDescription
+    }
 
-        let description = NSLocalizedString("Test out the new product creation as we get ready to launch",
-                                            comment: "My Store > Settings > Experimental features > Products")
-        cell.textLabel?.text = description
+    func configureOrderCreationSwitch(cell: SwitchTableViewCell) {
+        configureCommonStylesForSwitchCell(cell)
+        cell.title = Localization.orderCreationTitle
+
+        // Fetch switch's state stored value.
+        let action = AppSettingsAction.loadOrderCreationSwitchState() { result in
+            guard let isEnabled = try? result.get() else {
+                return cell.isOn = false
+            }
+            cell.isOn = isEnabled
+        }
+        ServiceLocator.stores.dispatch(action)
+
+        // Change switch's state stored value
+        cell.onChange = { isSwitchOn in
+            let action = AppSettingsAction.setOrderCreationFeatureSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
+                // Roll back toggle if an error occurred
+                if result.isFailure {
+                    cell.isOn.toggle()
+                }
+            })
+            ServiceLocator.stores.dispatch(action)
+        }
+        cell.accessibilityIdentifier = "beta-features-order-order-creation-cell"
+    }
+
+    func configureOrderCreationDescription(cell: BasicTableViewCell) {
+        configureCommonStylesForDescriptionCell(cell)
+        cell.textLabel?.text = Localization.orderCreationDescription
+    }
+
+    func configureStripeExtensionInPersonPaymentsSwitch(cell: SwitchTableViewCell) {
+        configureCommonStylesForSwitchCell(cell)
+        cell.title = Localization.stripeExtensionInPersonPaymentsTitle
+
+        // Fetch switch's state stored value.
+        let action = AppSettingsAction.loadStripeInPersonPaymentsSwitchState { result in
+            guard let isEnabled = try? result.get() else {
+                return cell.isOn = false
+            }
+            cell.isOn = isEnabled
+        }
+        ServiceLocator.stores.dispatch(action)
+
+        // Change switch's state stored value
+        cell.onChange = { isSwitchOn in
+            let action = AppSettingsAction.setStripeInPersonPaymentsSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
+                // Roll back toggle if an error occurred
+                if result.isFailure {
+                    cell.isOn.toggle()
+                }
+            })
+            ServiceLocator.stores.dispatch(action)
+        }
+        cell.accessibilityIdentifier = "beta-features-stripe-extension-in-person-payments-cell"
+    }
+
+    func configureStripeExtensionInPersonPaymentsDescription(cell: BasicTableViewCell) {
+        configureCommonStylesForDescriptionCell(cell)
+        cell.textLabel?.text = Localization.stripeExtensionInPersonPaymentsDescription
     }
 }
 
@@ -210,19 +296,54 @@ private struct Section {
 
 private enum Row: CaseIterable {
     // Products.
-    case productsSwitch
-    case productsDescription
+    case orderAddOns
+    case orderAddOnsDescription
+
+    // Orders.
+    case orderCreation
+    case orderCreationDescription
+
+    // WooCommerce Stripe Payment Gateway extension In-Person Payments
+    case stripeExtensionInPersonPayments
+    case stripeExtensionInPersonPaymentsDescription
 
     var type: UITableViewCell.Type {
         switch self {
-        case .productsSwitch:
+        case .orderAddOns, .orderCreation, .stripeExtensionInPersonPayments:
             return SwitchTableViewCell.self
-        case .productsDescription:
+        case .orderAddOnsDescription, .orderCreationDescription, .stripeExtensionInPersonPaymentsDescription:
             return BasicTableViewCell.self
         }
     }
 
     var reuseIdentifier: String {
         return type.reuseIdentifier
+    }
+}
+
+private extension BetaFeaturesViewController {
+    enum Localization {
+        static let orderAddOnsTitle = NSLocalizedString(
+            "View Add-Ons",
+            comment: "Cell title on the beta features screen to enable the order add-ons feature")
+        static let orderAddOnsDescription = NSLocalizedString(
+            "Test out viewing Order Add-Ons as we get ready to launch",
+            comment: "Cell description on the beta features screen to enable the order add-ons feature")
+
+        static let orderCreationTitle = NSLocalizedString(
+            "Order Creation",
+            comment: "Cell title on the beta features screen to enable creating new orders")
+        static let orderCreationDescription = NSLocalizedString(
+            "Test out creating new manual orders as we get ready to launch",
+            comment: "Cell description on the beta features screen to enable creating new orders")
+
+        static let stripeExtensionInPersonPaymentsTitle = NSLocalizedString(
+            "IPP with Stripe extension",
+            comment: "Cell title on beta features screen to enable accepting in-person payments for stores with the " +
+            "WooCommerce Stripe Payment Gateway extension")
+        static let stripeExtensionInPersonPaymentsDescription = NSLocalizedString(
+            "Test out In-Person Payments with the Stripe Payment Gateway extension",
+            comment: "Cell description on beta features screen to enable accepting in-person payments for stores with " +
+            "the WooCommerce Stripe Payment Gateway extension")
     }
 }

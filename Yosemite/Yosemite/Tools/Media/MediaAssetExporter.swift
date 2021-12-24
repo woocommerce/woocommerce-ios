@@ -108,11 +108,10 @@ private extension MediaAssetExporter {
         }
 
         guard allowableFileExtensions.isEmpty == false,
-            let extensionType = UTTypeCopyPreferredTagWithClass(uti as CFString, kUTTagClassFilenameExtension)?.takeRetainedValue() as String?
-            else {
+              let fileExtensionForType = URL.fileExtensionForUTType(uti) else {
                 return nil
         }
-        guard allowableFileExtensions.contains(extensionType) else {
+        guard allowableFileExtensions.contains(fileExtensionForType) else {
             return kUTTypeJPEG as String
         }
         return uti

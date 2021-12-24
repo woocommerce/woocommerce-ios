@@ -31,6 +31,28 @@ class HelpAndSupportViewController: UIViewController {
         return NSLocalizedString("Set email", comment: "Tells user to set an email that support can use for replies")
     }
 
+    /// Payment Gateway Accounts Results Controller: Loads Payment Gateway Accounts from the Storage Layer
+    /// e.g. WooCommerce Payments, but eventually other in-person payment accounts too
+    ///
+    private var paymentGatewayAccountsResultsController: ResultsController<StoragePaymentGatewayAccount>? = {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return nil
+        }
+
+        let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
+    private var isPaymentsAvailable: Bool {
+        guard let accounts = paymentGatewayAccountsResultsController?.fetchedObjects else {
+            return false
+        }
+
+        return accounts.contains(where: \.isCardPresentEligible)
+    }
+
     /// Indicates if the NavBar should display a dismiss button
     ///
     var displaysDismissAction = false
@@ -46,7 +68,11 @@ class HelpAndSupportViewController: UIViewController {
         configureSections()
         configureTableView()
         registerTableViewCells()
+        configureResultsControllers { [weak self] in
+            self?.refreshViewContent()
+        }
         warnDeveloperIfNeeded()
+        refreshViewContent()
     }
 }
 
@@ -84,6 +110,22 @@ private extension HelpAndSupportViewController {
         tableView.backgroundColor = .listBackground
     }
 
+    func configureResultsControllers(onReload: @escaping () -> Void) {
+        guard paymentGatewayAccountsResultsController != nil else {
+            return
+        }
+
+        paymentGatewayAccountsResultsController?.onDidChangeContent = {
+            onReload()
+        }
+
+        paymentGatewayAccountsResultsController?.onDidResetContent = {
+            onReload()
+        }
+
+        try? paymentGatewayAccountsResultsController?.performFetch()
+    }
+
     /// Disable Zendesk if configuration on ZD init fails.
     ///
     func configureSections() {
@@ -95,12 +137,23 @@ private extension HelpAndSupportViewController {
         }
 
         sections = [
-            Section(title: helpAndSupportTitle, rows: [.helpCenter,
-                                                       .contactSupport,
-                                                       .myTickets,
-                                                       .contactEmail,
-                                                       .applicationLog])
+            Section(title: helpAndSupportTitle, rows: calculateRows())
         ]
+    }
+
+    private func calculateRows() -> [Row] {
+        var rows: [Row] = [.helpCenter, .contactSupport]
+        if isPaymentsAvailable {
+            rows.append(.contactWCPaySupport)
+        }
+
+        rows.append(contentsOf: [.myTickets,
+                                 .contactEmail,
+                                 .applicationLog])
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.systemStatusReport) {
+            rows.append(.systemStatusReport)
+        }
+        return rows
     }
 
     /// Register table cells.
@@ -136,12 +189,16 @@ private extension HelpAndSupportViewController {
             configureHelpCenter(cell: cell)
         case let cell as ValueOneTableViewCell where row == .contactSupport:
             configureContactSupport(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .contactWCPaySupport:
+            configureContactWCPaySupport(cell: cell)
         case let cell as ValueOneTableViewCell where row == .myTickets:
             configureMyTickets(cell: cell)
         case let cell as ValueOneTableViewCell where row == .contactEmail:
             configureMyContactEmail(cell: cell)
         case let cell as ValueOneTableViewCell where row == .applicationLog:
             configureApplicationLog(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .systemStatusReport:
+            configureSystemStatusReport(cell: cell)
         default:
             fatalError()
         }
@@ -165,6 +222,18 @@ private extension HelpAndSupportViewController {
         cell.detailTextLabel?.text = NSLocalizedString(
             "Reach our happiness engineers who can help answer tough questions",
             comment: "Subtitle for Contact Support"
+        )
+    }
+
+    /// Contact WCPay Support cell.
+    ///
+    func configureContactWCPaySupport(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Contact WooCommerce Payments Support", comment: "Contact WooComerce Payments Support title")
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "Reach our happiness engineers who can help answer payments related questions",
+            comment: "Subtitle for Contact WooCommerce Payments Support"
         )
     }
 
@@ -197,6 +266,23 @@ private extension HelpAndSupportViewController {
             comment: "Cell subtitle explaining why you might want to navigate to view the application log."
         )
     }
+
+    /// System Status Report cell
+    ///
+    func configureSystemStatusReport(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("System Status Report", comment: "View system status report cell title on Help screen")
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "Various system information about your site",
+            comment: "Description of the system status report on Help screen"
+        )
+    }
+
+    func refreshViewContent() {
+        configureSections()
+        tableView.reloadData()
+    }
 }
 
 
@@ -227,6 +313,16 @@ private extension HelpAndSupportViewController {
         }
 
         ZendeskManager.shared.showNewRequestIfPossible(from: navController)
+    }
+
+    /// Contact WCPay Support action
+    ///
+    func contactWCPaySupportWasPressed() {
+        guard let navController = navigationController else {
+            return
+        }
+
+        ZendeskManager.shared.showNewWCPayRequestIfPossible(from: navController)
     }
 
     /// My Tickets action
@@ -272,6 +368,21 @@ private extension HelpAndSupportViewController {
             return
         }
         navigationController?.pushViewController(applicationLogVC, animated: true)
+    }
+
+    /// System status report action
+    ///
+    func systemStatusReportWasPressed() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+        let controller = SystemStatusReportHostingController(siteID: siteID)
+        controller.hidesBottomBarWhenPushed = true
+        controller.setDismissAction { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
+        navigationController?.pushViewController(controller, animated: true)
+        ServiceLocator.analytics.track(.supportSSROpened)
     }
 
     @objc func dismissWasPressed() {
@@ -320,12 +431,16 @@ extension HelpAndSupportViewController: UITableViewDelegate {
             helpCenterWasPressed()
         case .contactSupport:
             contactSupportWasPressed()
+        case .contactWCPaySupport:
+            contactWCPaySupportWasPressed()
         case .myTickets:
             myTicketsWasPressed()
         case .contactEmail:
             contactEmailWasPressed()
         case .applicationLog:
             applicationLogWasPressed()
+        case .systemStatusReport:
+            systemStatusReportWasPressed()
         }
     }
 }
@@ -346,9 +461,11 @@ private struct Section {
 private enum Row: CaseIterable {
     case helpCenter
     case contactSupport
+    case contactWCPaySupport
     case myTickets
     case contactEmail
     case applicationLog
+    case systemStatusReport
 
     var type: UITableViewCell.Type {
         switch self {
@@ -356,11 +473,15 @@ private enum Row: CaseIterable {
             return ValueOneTableViewCell.self
         case .contactSupport:
             return ValueOneTableViewCell.self
+        case .contactWCPaySupport:
+            return ValueOneTableViewCell.self
         case .myTickets:
             return ValueOneTableViewCell.self
         case .contactEmail:
             return ValueOneTableViewCell.self
         case .applicationLog:
+            return ValueOneTableViewCell.self
+        case .systemStatusReport:
             return ValueOneTableViewCell.self
         }
     }

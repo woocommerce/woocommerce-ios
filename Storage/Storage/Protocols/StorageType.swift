@@ -5,7 +5,7 @@ import CoreData.NSFetchRequest
 
 /// Defines all of the methods made available by the Storage.
 ///
-public protocol StorageType: class {
+public protocol StorageType: AnyObject {
 
     var parentStorage: StorageType? {get}
 

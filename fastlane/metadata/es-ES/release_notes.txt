@@ -1,4 +1,0 @@
-Tienes mejoras de WooCommerce para iOS disponibles con las que llevar tu negocio será aún más fácil.
-
-Ahora, puedes crear productos variables desde cero y publicar el borrador de un producto/un producto pendiente desde la barra de navegación.
-Hemos corregido algunos errores que afectaban a la adición de atributos o variaciones de producto y hemos mejorado la presentación del texto y las imágenes en la orientación apaisada.

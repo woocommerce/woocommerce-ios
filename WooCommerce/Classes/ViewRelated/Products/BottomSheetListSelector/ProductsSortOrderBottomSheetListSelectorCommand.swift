@@ -31,8 +31,9 @@ final class ProductsSortOrderBottomSheetListSelectorCommand: BottomSheetListSele
     ]
 
     var selected: ProductsSortOrder?
-
-    init(selected: ProductsSortOrder?) {
+    private let onSelection: (ProductsSortOrder) -> Void
+    init(selected: ProductsSortOrder?, onSelection: @escaping (ProductsSortOrder) -> Void) {
+        self.onSelection = onSelection
         self.selected = selected
     }
 
@@ -43,7 +44,7 @@ final class ProductsSortOrderBottomSheetListSelectorCommand: BottomSheetListSele
     }
 
     func handleSelectedChange(selected: ProductsSortOrder) {
-        self.selected = selected
+        onSelection(selected)
     }
 
     func isSelected(model: ProductsSortOrder) -> Bool {

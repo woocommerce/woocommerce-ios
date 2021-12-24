@@ -1,12 +1,24 @@
-/* Translation-Revision-Date: 2021-03-31 09:54:04+0000 */
+/* Translation-Revision-Date: 2021-12-15 11:32:07+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
 
 /* No comment provided by engineer. */
+"#%1$@" = "#%1$@";
+
+/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
-/* Format for each Product attribute */
+/* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"%.0f%% complete" = "%.0f%% 完了";
+
+/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
+"%1$@" = "%1$@";
+
+/* Format for each Product attribute in singular form */
+"%1$@ (%2$ld option)" = "%1$@ (%2$ld オプション)";
+
+/* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld オプション)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -18,7 +30,12 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (顧客向け)";
 
-/* Label about product's inventory stock status shown on Products tab */
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string, - which should be translated separately and considered part of this sentence. */
+"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ about accepting payments with your mobile device and ordering card readers";
+
+/* Label about product's inventory stock status shown during order creation
+   Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ の在庫あり";
 
 /* Review title. Reads as {Review author} left a review */
@@ -29,6 +46,9 @@
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "%1$@ の返金がリクエストされました (%2$@)";
+
+/* Total value for the selected rates in Shipping Labels > Carrier and Rates */
+"%1$@ total" = "合計%1$@";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%2$@ 経由 %1$@";
@@ -42,11 +62,41 @@
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
 
+/* Card reader battery level as an integer percentage */
+"%1$@%% Battery" = "バッテリー%1$@%%";
+
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
+/* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
+"%1$@・%2$@" = "%1$@・%2$@";
+
 /* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
+
+/* Singular format of number of business day in Shipping Labels > Carrier and Rates */
+"%1$d business day" = "%1$d営業日";
+
+/* Plural format of number of business days in Shipping Labels > Carrier and Rates */
+"%1$d business days" = "%1$d営業日";
+
+/* For example: `1 item` in Shipping Label package row */
+"%1$d item" = "%1$d アイテム";
+
+/* For example: `5 items` in Shipping Label package row */
+"%1$d items" = "%1$d 項目";
+
+/* Total number of items and packages in Shipping Label form. */
+"%1$d items in %2$d packages" = "荷物%2$d個中に商品%1$d個";
+
+/* Number of rates selected in Shipping Labels > Carrier and Rates */
+"%1$d rates selected" = "%1$d件の評価を選択済み";
+
+/* Format for the variations detail row in singular form. Reads, `1 variation` */
+"%1$ld variation" = "%1$ld バリエーション";
+
+/* Format for the variations detail row in plural form. Reads, `2 variations` */
+"%1$ld variations" = "%1$ld バリエーション";
 
 /* 1 Item */
 "%@ Item" = "%@個のアイテム";
@@ -62,6 +112,12 @@
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "%2$@ 経由 %1$@";
+
+/* For example: `1 item` in Aggregated Product List */
+"%d item" = "%d アイテム";
+
+/* For example: `5 items` in Aggregated Product List */
+"%d items" = "%d 項目";
 
 /* Title of the label indicating that there are multiple items to refund. */
 "%d items selected" = "%d 複数のアイテムを選択済み";
@@ -110,13 +166,28 @@
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "プリンターの設定で **AirPrint が有効になっていることを確認** します。 この設定はプリンター本体で操作しなければならない場合があります。\n\n詳細については、プリンター付属のドキュメントをご確認ください。";
 
+/* Number of item in packages in Shipping Labels in singular form. Reads like - 1 items */
+"- %1$d item" = "- %1$d個のアイテム";
+
+/* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
+"- %1$d items" = "- %1$d個のアイテム";
+
+/* Settings > Manage Card Reader > Connect > Help hint number 1 */
+"1" = "1";
+
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "1件の商品を選択済み";
 
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "1個のアイテムを選択済み";
 
-/* Shown when there are more than 99 items of something (e.g. Processing Orders). */
+/* Settings > Manage Card Reader > Connect > Help hint number 2 */
+"2" = "2";
+
+/* Settings > Manage Card Reader > Connect > Help hint number 3 */
+"3" = "2";
+
+/* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
 /* Placeholder of the Product Short Description row on Product main screen */
@@ -128,6 +199,15 @@
 /* Description of the Action sheet option when the user wants to change the Product type to grouped product */
 "A collection of related products" = "関連商品のコレクション";
 
+/* Main message on the Print Customs Invoice screen of Shipping Label flow */
+"A customs form must be printed and included on this international shipment" = "この国外配送では税関申告書を印刷して添付する必要があります";
+
+/* Error message when there was a network error checking In-Person Payments requirements */
+"A network error occurred. Please check your connection and try again." = "ネットワークエラーが発生しました。 接続を確認して、もう一度お試しください。";
+
+/* Error shown in Shipping Label Origin Address validation for phone number field for international shipment */
+"A phone number is required because this shipment requires a customs form" = "この配送にはカスタムフォームが必要なため、電話番号が必須です";
+
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "A product with variations like color or size" = "色やサイズのバリエーションがある商品";
 
@@ -137,8 +217,14 @@
 /* No comment provided by engineer. */
 "A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "顧客への返金は行われません。 Stripe 経由での返金を手動で行う必要があります。";
 
-/* Description of the Action sheet option when the user wants to change the Product type to simple product */
-"A unique item to sell" = "ユニークな商品の販売";
+/* Message explaining that the site may have an invalid SSL certificate. */
+"A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "サイトへの安全な接続ができませんでした。 サイトに有効な SSL 証明書があることを確認してください。";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
+"A unique digital product like services, downloadable books, music or videos" = "サービス、ダウンロードできる書籍、音楽、動画などの独自のデジタル製品";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
+"A unique physical product that you may have to ship to the customer" = "顧客に配送する必要がある可能性のある独自の物理的製品";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "認証リンクをメールで送信するには、有効なメールアドレスが必要です。前の画面に戻り、有効なメールアドレスを入力してください。";
@@ -155,8 +241,17 @@
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "このアプリについて";
 
+/* Title for the error screen when WooCommerce Payments is installed but not activated */
+"Activate WooCommerce Payments" = "WooCommerce Payments を有効化する";
+
+/* Name of the activation Jetpack plugin step */
+"Activating" = "有効化中";
+
 /* Application's Active State */
 "Active" = "有効";
+
+/* Title for table view section of active plugins */
+"Active Plugins" = "使用中のプラグイン";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "プラグイン有効化中。自動更新オフ。";
@@ -168,9 +263,15 @@
    A button title used for a unit test - Action for adding a Products' downloadable files' info remotely - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "追加";
 
+/* Title on empty state button when the product has no attributes and variations */
+"Add Attributes" = "属性を追加";
+
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "カテゴリーを追加";
+
+/* Title for the button to add the Customer Provided Note in Order Details */
+"Add Customer Note" = "注文メモを追加";
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "ダウンロード可能なファイルを追加";
@@ -181,6 +282,12 @@
 /* Action to add new attribute on the Product Attributes screen */
 "Add New Attribute" = "新規属性を追加";
 
+/* Add New Package screen title in Shipping Label flow */
+"Add New Package" = "新しい荷物を追加";
+
+/* Title text of the button that adds a note when creating a simple payment */
+"Add Note" = "メモを追加";
+
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "写真を追加";
 
@@ -190,20 +297,29 @@
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "価格を追加";
 
-/* Action to add product on the placeholder overlay when there are no products on the Products tab */
+/* Action to add product on the placeholder overlay when there are no products on the Products tab
+   Title for the screen to add a product to an order */
 "Add Product" = "商品を追加";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
 "Add Products" = "すべての商品";
 
+/* Title for the button to add the Shipping Address in Order Details */
+"Add Shipping Address" = "配送先住所を追加";
+
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "トラッキングを追加";
 
-/* Action to add new variation on the variations list
-   Title on add variation button when there are no variations */
+/* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "バリエーションを追加";
+
+/* Placeholder in Shipping Label form for the Payment Method row. */
+"Add a new credit card" = "新しいクレジットカードを追加";
+
+/* Navigates to a screen to create a full manual order */
+"Add a new order" = "新しい注文を追加";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -221,8 +337,14 @@
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "追跡を追加";
 
+/* Button title in the Shipping Label Payment Method screen if there is an existing payment method */
+"Add another credit card" = "別のクレジットカードを追加";
+
 /* Add Product Attribute screen navigation title */
 "Add attribute" = "属性を追加";
+
+/* Button title in the Shipping Label Payment Method screen */
+"Add credit card" = "クレジットカードを追加";
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "各オプションを追加して Enter を押します";
@@ -234,6 +356,12 @@
 /* Voiceover accessibility label for the tags field in product tags. */
 "Add new tags, separated by commas." = "カンマで区切って新しいタグを追加します。";
 
+/* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
+"Add price to your variations to make them visible on your store" = "バリエーションの価格を追加してストアで表示します";
+
+/* Title text of the button that adds a product when creating a new order */
+"Add product" = "商品を追加";
+
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "商品へのリンクを追加";
 
@@ -243,19 +371,26 @@
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "商品のダウンロード可能なファイルの情報をリモートで追加";
 
+/* Navigates to a screen to create a simple payments order */
+"Add simple payments order" = "シンプルペイメントの注文を追加";
+
+/* Option to add item to new package on Package Details screen of Shipping Label flow. */
+"Add to new package" = "新しい荷物に追加";
+
 /* Title for adding variations row on Product main screen for a variable product */
 "Add variations" = "バリエーションを追加";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "重さとサイズを追加";
 
-/* Title on the variations list screen when there are no variations */
-"Add your first variation" = "最初のバリエーションを追加";
-
 /* Text field address in Shipping Label Address Validation */
 "Address" = "住所";
 
-/* Text field address 2 in Shipping Label Address Validation */
+/* Text field address 1 in Edit Address Form */
+"Address 1" = "住所1";
+
+/* Text field address 2 in Edit Address Form
+   Text field address 2 in Shipping Label Address Validation */
 "Address 2" = "住所2";
 
 /* Shipping Label Suggested Address entered placeholder */
@@ -267,8 +402,14 @@
 /* Error showed in Shipping Label Address Validation for the address field */
 "Address missing" = "住所がありません";
 
+/* Notice text after updating the shipping or billing address */
+"Address successfully updated." = "住所が正常に更新されました。";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "注文に追跡を追加";
+
+/* Adult signature required in Shipping Labels > Carrier and Rates */
+"Adult signature required (+%1$@)" = "成人の方の署名が必要 (+%1$@)";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Advanced tool to review the app status";
@@ -276,17 +417,23 @@
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
 
-/* Title for the second page in the Orders tab. */
+/* Header bar label on top of order list when no filters are applied */
 "All Orders" = "すべての注文";
 
-/* The message shown in the Orders → Processing tab if the list is empty. */
-"All orders have been fulfilled" = "注文がすべて処理されました";
+/* Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow */
+"All available packages have been activated" = "利用可能なすべての荷物が有効化されました";
+
+/* Name of final step in Install Jetpack flow. */
+"All done" = "すべて完了";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "すべての既読レビュー";
 
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "許可する";
+
+/* Subtitle of user profiles as part of Jetpack benefits. */
+"Allow multiple users to access WooCommerce Mobile." = "複数のユーザーに WooCommerce モバイルへのアクセスを許可します。";
 
 /* Display label for the product's inventory backorders setting option */
 "Allow, but notify customer" = "許可し、顧客に通知する";
@@ -318,8 +465,11 @@
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "購入後、お客様に送るオプション備考";
 
-/* Product variation attribute description where the attribute is set to any value.
-   Title when there is no filter set. */
+/* Title of analytics as part of Jetpack benefits. */
+"Analytics" = "アナリティクス";
+
+/* Case Any in Order Filters for Order Statuses
+   Display label for all order statuses selected in Order Filters - Label for one of the filters in order date range - Product variation attribute description where the attribute is set to any value. - Title when there is no filter set. */
 "Any" = "任意";
 
 /* Format of a product variation attribute description where the attribute is set to any value.
@@ -379,6 +529,9 @@
    Title of the attributes row on Product Variation main screen */
 "Attributes" = "属性";
 
+/* Primary text for the generate first variation screen */
+"Attributes added!" = "属性を追加しました";
+
 /* No comment provided by engineer. */
 "Authenticating" = "認証中";
 
@@ -399,9 +552,21 @@
    Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "%@ による決済待ち";
 
-/* Alert button title - dismisses alert, which cancels the log out attempt
-   Back button title. */
+/* Details section title in the Edit Address Form */
+"BILLING ADDRESS" = "請求先住所";
+
+/* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "戻る";
+
+/* Accessibility announcement message when device goes back online */
+"Back online" = "再びオンラインになる";
+
+/* Button to dismiss modal overlay. Presented to users after a payment has been successfully collected
+   Button to dismiss modal overlay. Presented to users after collecting a payment fails */
+"Back to Order" = "注文に戻る";
+
+/* Text for the button to dismiss the store picker error screen */
+"Back to Sites" = "サイトに戻る";
 
 /* Title of a button to dismiss the survey complete screen */
 "Back to store" = "ストアに戻る";
@@ -416,7 +581,8 @@
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "バー番号%1$i、%2$@、";
 
-/* Section header title for billing address in billing information */
+/* Section header title for billing address in billing information
+   Title for the Edit Billing Address Form */
 "Billing Address" = "請求先住所";
 
 /* Billing Information view Title */
@@ -425,8 +591,14 @@
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "ブロック引用";
 
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"Bluetooth permission required" = "Bluetooth の権限が必要";
+
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "太字";
+
+/* Box package type, used to create a custom package in the Shipping Label flow */
+"Box" = "ボックス";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "ボタンテキスト";
@@ -440,6 +612,9 @@
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "登録することで、利用規約に合意したことになります。";
 
+/* Header for the Custom Packages section in Shipping Label Package listing */
+"CUSTOM PACKAGES" = "カスタム荷物";
+
 /* Call phone number button title */
 "Call" = "通話";
 
@@ -450,14 +625,20 @@
 "Can Not Request Link" = "リンクをリクエストできません";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "キャンセル";
+
+/* Display label for cancelled order status. */
+"Cancelled" = "キャンセル済み";
 
 /* Title of the alert when there is an error creating a new product category */
 "Cannot Add Category" = "カテゴリーを追加できません";
 
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "タグを追加できません";
+
+/* The title of the alert when there is a generic error adding the package */
+"Cannot add package" = "荷物を追加できません";
 
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
@@ -467,11 +648,24 @@
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "画像をアップロードできません";
 
-/* Card reader settings screen title */
-"Card Readers" = "カードリーダー";
+/* Detailed message shown in the Reviews tab if the list is empty
+   Detailed message shown on the Product Reviews screen if the list is empty */
+"Capture high-quality product reviews for your store." = "ストアに対する高品質な製品レビューを取得しましょう。";
+
+/* Card method title on the select payment method screen for simple payments */
+"Card" = "カード";
+
+/* Navigates to Card Reader manual */
+"Card reader manual" = "カードリーダーマニュアル";
+
+/* Navigation bar title of shipping label carrier and rates screen */
+"Carrier and Rates" = "配送業者と金額";
 
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "配送業者名";
+
+/* Cash method title on the select payment method screen for simple payments */
+"Cash" = "現金";
 
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
@@ -481,7 +675,7 @@
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "お気に入りのサイトをいつでもチェックし、いつでもどこからでもコメントできます。";
 
 /* Edit product categories screen - Screen title
-   Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
+   Filter product categories screen - Screen title - Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
 "Categories" = "カテゴリー";
 
 /* Popup title for wrong SSL certificate. */
@@ -495,6 +689,9 @@
 
 /* Body of the alert when a user is changing the product type */
 "Changing the product type will modify some of the product data and delete all your attributes and variations" = "商品タイプを変更すると商品データの一部が変更され、属性とバリエーションがすべて削除されます";
+
+/* Title text of the row that has a switch when creating a simple payment */
+"Charge Taxes" = "税金を請求";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "入力した URL が正しいかどうかを確認してください";
@@ -511,29 +708,75 @@
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "用紙サイズを選択";
 
+/* Navigation title on the shipping label country selector screen */
+"Choose a Country" = "国を選択";
+
+/* Navigation title on the shipping label states of a country selector screen */
+"Choose a State" = "都道府県を選択する";
+
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "デバイスから選択";
 
-/* Text field city in Shipping Label Address Validation */
+/* Opens action sheet to choose a type of a new order */
+"Choose new order type" = "新しい注文タイプを選択";
+
+/* Heading text on the select payment method screen for simple payments */
+"Choose your payment method" = "支払い方法を選択";
+
+/* Text field city in Edit Address Form
+   Text field city in Shipping Label Address Validation */
 "City" = "市区町村";
 
 /* Error showed in Shipping Label Address Validation for the city field */
 "City missing" = "市区町村がありません";
 
+/* Action to add product on the placeholder overlay when no products match the filter on the Products tab
+   Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
+"Clear Filters" = "フィルターをクリア";
+
 /* Button title for clearing all filters for the list. */
 "Clear all" = "すべてクリア";
+
+/* Text for the close button in the Add Product screen
+   Text for the close button in the Edit Address Form - Title of the Close action on the Jetpack Install view */
+"Close" = "閉じる";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "情報を収集";
 
-/* Text field company in Shipping Label Address Validation */
+/* Text on the button that starts collecting a card present payment. */
+"Collect Payment" = "支払いを受け取る";
+
+/* Alert title when starting the collect payment flow without a user name. */
+"Collect payment" = "Collect payment";
+
+/* Alert title when starting the collect payment flow with a user name. */
+"Collect payment from %1$@" = "Collect payment from %1$@";
+
+/* Text field company in Edit Address Form
+   Text field company in Shipping Label Address Validation */
 "Company" = "会社";
 
-/* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
-"Composes a new email message to the billing customer." = "請求対象の顧客に送信する新しいメールメッセージを作成します。";
+/* Display label for completed order status. */
+"Completed" = "完了";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "新しい注文メモを作成します。";
+
+/* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
+"Congratulations! Your reader is running the latest software" = "おめでとうございます !  お使いのリーダーは最新のソフトウェアを実行しています";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"Connect" = "連携";
+
+/* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
+"Connect Card Reader" = "カードリーダーを接続";
+
+/* Label for a button that when tapped, starts the process of connecting to a card reader */
+"Connect to Reader" = "Reader に接続";
+
+/* Settings > Manage Card Reader > Prompt user to connect their first reader */
+"Connect your card reader" = "カードリーダーを接続";
 
 /* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
 "Connect your store with Jetpack" = "ストアを Jetpack に連携する";
@@ -541,14 +784,32 @@
 /* Title shown when a user logs in with Google but no matching WordPress.com account is found */
 "Connected But…" = "接続されたが…";
 
+/* Settings > Manage Card Reader > Connected Reader Table Section Heading */
+"Connected Reader" = "Reader を接続しました";
+
 /* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
 "Connected Store" = "連携ストア";
 
 /* Page title for the list of connected stores */
 "Connected Stores" = "連携ストア";
 
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
+"Connecting reader failed" = "Reader に接続できませんでした";
+
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "WordPress.com に接続中";
+
+/* Title label for modal dialog that appears when connecting to a card reader */
+"Connecting to reader" = "Reader に接続しています";
+
+/* Title when checking if WooCommerce Payments is supported */
+"Connecting to your account" = "アカウントへの接続";
+
+/* Name of the step to connect the store to Jetpack */
+"Connecting your store" = "ストアを接続しています";
+
+/* Contact Customer action in Shipping Label Address Validation. */
+"Contact Customer" = "顧客に連絡";
 
 /* Section header title for contact details in billing information */
 "Contact Details" = "連絡先詳細";
@@ -556,14 +817,27 @@
 /* Contact Email title */
 "Contact Email" = "連絡先メールアドレス";
 
-/* Contact Support title */
+/* Contact Support title
+   Text for the button to contact support from the store picker error screen - The title of the button to contact support in the Error Loading Data banner */
 "Contact Support" = "サポートに問い合わせる";
+
+/* Contact WooComerce Payments Support title */
+"Contact WooCommerce Payments Support" = "WooCommerce Payments サポートに連絡";
+
+/* Title of a button to contact support in the error screen for In-Person payments */
+"Contact us" = "お問い合わせ";
 
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "こちらから問い合わせ";
 
+/* Title for the Content Details row in Customs screen of Shipping Label flow */
+"Content Details" = "中身の詳細";
+
+/* Title for the Content Type row in Customs screen of Shipping Label flow */
+"Content Type" = "中身の種類";
+
 /* Continue button inside every cell inside Create Shipping Label form
-   The button title text when there is a next step for logging in or signing up. - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
+   The button title text when there is a next step for logging in or signing up. - Title of continue button - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
 "Continue" = "次へ";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
@@ -620,11 +894,15 @@
 /* Error message when tag loading failed */
 "Couldn't load tags." = "タグを読み込めませんでした。";
 
-/* Text field country in Shipping Label Address Validation */
+/* Text field country in Edit Address Form
+   Text field country in Shipping Label Address Validation - Title to select country from the edit address screen */
 "Country" = "国";
 
 /* Error showed in Shipping Label Address Validation for the country field */
 "Country missing" = "国がありません";
+
+/* Description for the Origin Country row in Customs screen of Shipping Label flow */
+"Country where the product was manufactured or assembled" = "商品製造国または商品の組み立てが行われた国";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "クラッシュのデバッグメニュー";
@@ -632,18 +910,42 @@
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "今すぐクラッシュさせる";
 
+/* Button to create an order on the New Order screen */
+"Create" = "作成";
+
 /* The button title text for creating a new account. */
 "Create Account" = "アカウントを作成";
 
 /* Create Shipping Label form navigation title
-   Text on the button that starts shipping label creation */
+   Option to create new shipping label from the action sheet on Products section of Order Details screen - Text on the button that starts shipping label creation */
 "Create Shipping Label" = "配送ラベルを作成";
 
-/* My Store > Settings > Experimental features > Products */
-"Creating products" = "商品を作成中";
+/* Description of the Action sheet option when the user wants to create full manual order */
+"Create a new manual order" = "手動で新しい注文を作成します";
+
+/* Description of the Action sheet option when the user wants to create Simple Payments order */
+"Create an order with minimal information" = "最小限の情報で注文を作成します";
+
+/* Button to create a new package in Shipping Label Package screen */
+"Create new package" = "新しい荷物を作成する";
+
+/* Action sheet option when the user wants to create full manual order */
+"Create order" = "注文を作成";
+
+/* The title of the shipping labels top banner in order details */
+"Create shipping labels from your device!" = "スマートフォンを使って配送ラベルを作成 !";
+
+/* Title on the variations list screen when there are no variations */
+"Create your first variation" = "最初のバリエーションを作成";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "クレジットカード";
+
+/* Selected credit card in Shipping Label form. %1$@ is a placeholder for the last four digits of the credit card. */
+"Credit card ending in %1$@" = "クレジットカードの有効期限は%1$@です";
+
+/* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
+"Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "クレジットカードが次の WordPress.com アカウントから読み込まれました: %1$@ <%2$@>";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
@@ -652,21 +954,65 @@
 /* Cell title: the current date. */
 "Current" = "Current";
 
+/* Error when the user tap on Country field in Shipping Label Address Validation */
+"Currently we support just the United States from mobile." = "現在モバイルでは米国にのみ対応しています";
+
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "カスタム";
+
+/* Title text of the row that shows the provided amount when creating a simple payment */
+"Custom Amount" = "カスタム金額";
 
 /* Add custom shipping carrier. Content of cell titled Shipping Carrier
    Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "カスタムの配送業者";
 
-/* Customer info section title */
+/* Custom line index in Customs Form of Shipping Label flow */
+"Custom Line %1$d" = "カスタムライン%1$d";
+
+/* Custom Package menu in Shipping Label Add New Package flow */
+"Custom Package" = "カスタム荷物";
+
+/* Label for one of the filters in order date range
+   Navigation title of the orders filter selector screen for custom date range */
+"Custom Range" = "カスタム範囲";
+
+/* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
+"Custom forms require a 10-digit phone number" = "カスタムフォームには10桁の電話番号を入力してください";
+
+/* Customer info section title
+   Customer info section title in Review Order screen */
 "Customer" = "顧客";
 
-/* Customer note section title */
+/* Customer note row title
+   Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
 "Customer Provided Note" = "顧客提供メモ";
 
+/* Title of the banner notice in Shipping Labels -> Carrier and Rates */
+"Customer paid a %1$@ of %2$@ for shipping" = "配送料としてお客様から %2$@ の %1$@ の支払いがありました";
+
+/* Navigation title for Customs screen in Shipping Label flow
+   Title of the cell Customs inside Create Shipping Label form */
+"Customs" = "税関";
+
+/* Title on the Print Customs Invoice screen of Shipping Label flow */
+"Customs form" = "税関申告書";
+
+/* Subtitle of the cell Customs inside Create Shipping Label form when the form is completed */
+"Customs form completed" = "税関申告書の入力が完了しました";
+
+/* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
+"Customs forms must be printed and included on these international shipments" = "この国外配送では税関申告書を印刷して添付する必要があります";
+
 /* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "自宅でスマートフォンを使い、割引料金で配送ラベルを印刷して、郵便局での待ち時間をカット !";
+"Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "自宅でモバイルデバイスを使い、割引料金で配送ラベルを印刷して、郵便局での待ち時間をカット !";
+
+/* Details section title in the Edit Address Form */
+"DETAILS" = "詳細";
+
+/* Navigation title of the orders filter selector screen for date range
+   Row title for filtering orders by date range. */
+"Date Range" = "日付の範囲";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "出荷日";
@@ -694,17 +1040,17 @@
 "Describe your product to your future customers..." = "将来の顧客に商品を説明してください...";
 
 /* The navigation bar title of the Aztec editor screen.
-   Title in the Product description row on Product form screen when the description is non-empty. */
+   Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "説明";
-
-/* The row label to tap for a detailed product list */
-"Details" = "詳細";
 
 /* Screen title: Details Order number. Parameters: %1$@ - order number */
 "Details Order #%1$@" = "注文番号 %1$@ の詳細";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "カタログ内の製品の位置を決定します。数字の値が小さいほど、アイテムは商品リストの上の方に表示されます。マイナスの値も利用できます";
+
+/* Instructions after a Magic Link was sent, but email is incorrect. */
+"Didn't mean to create a new account? Go back to re-enter your email address." = "新しいアカウントを作成しない場合は、 戻ってメールアドレスを再度入力してください。";
 
 /* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
 "Dimensions: %1$@ x %2$@ %3$@" = "サイズ :%1$@ x %2$@%3$@";
@@ -724,31 +1070,40 @@
 /* Button title Discard Changes in Discard Changes Action Sheet */
 "Discard changes" = "変更を破棄";
 
+/* Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader */
+"Disconnect Reader" = "Reader の接続を解除";
+
 /* Discount label for payment view */
 "Discount" = "割引";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view */
 "Dismiss" = "非表示";
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "許可しない";
 
+/* Dialog title that displays the name of a found card reader */
+"Do you want to connect to reader %@?" = "Reader %@ に接続しますか ? ";
+
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "この商品をゴミ箱に移動しますか ?";
+
+/* Type Documents of content to be declared for the customs form in Shipping Label flow */
+"Documents" = "文書";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "アカウントをお持ちでない場合は_登録_してください。";
 
 /* Action title to select products to add to a grouped product from search results
-   Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
+   Done button on the Jetpack Install Progress screen. - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
 "Done" = "完了";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
 "Don’t know how to print from your device?" = "端末を使って印刷する方法をご存知ですか ?";
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
-"Don’t know how to print from your phone?" = "スマートフォンを使って印刷する方法をご存知ですか ?";
+"Don’t know how to print from your mobile device?" = "モバイルデバイスを使って印刷する方法をご存知ですか ?";
 
 /* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "Dotcom Error: [%1$@] %2$@" = "Dotcom エラー: [%1$@] %2$@";
@@ -764,6 +1119,9 @@
 
 /* WordPress.com Request Failure */
 "Dotcom Request Failed" = "Dotcom のリクエストに失敗しました";
+
+/* WordPress.com error thrown when a requested resource does not exist remotely. */
+"Dotcom Resource does not exist" = "Dotcom のリソースが存在しません";
 
 /* WordPress.com Error thrown when the response body is empty */
 "Dotcom Response Empty" = "Dotcom のレスポンスがありません";
@@ -808,6 +1166,10 @@
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "一意のコードで商品を簡単に特定";
 
+/* Button to edit an order status on the New Order screen
+   Title text of the button that edits a note when creating a simple payment */
+"Edit" = "編集";
+
 /* Action to edit the address in Shipping Label Suggested screen */
 "Edit Address" = "アドレスを編集";
 
@@ -818,7 +1180,14 @@
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "商品を編集";
 
-/* Email address text field placeholder */
+/* Caption displayed in promotional screens shown during the login flow. */
+"Edit and add new products from anywhere" = "どこからでも新しい商品を編集、追加";
+
+/* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
+"Eligible for free pickup" = "無料の受け取りを利用可能";
+
+/* Email address text field placeholder
+   Email button title - Text field email in Edit Address Form - Title of Email accessibility action, opens a compose view - Title text of the row that holds the provided email when creating a simple payment */
 "Email" = "メール";
 
 /* Accessibility label for the email address text field.
@@ -831,11 +1200,20 @@
 /* No comment provided by engineer. */
 "Email note to customer %@" = "顧客 %@ にメールでメモを送信";
 
+/* Button to email receipts. Presented to users after a payment has been successfully collected */
+"Email receipt" = "レシートをメールで送信";
+
+/* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
+"Email the label purchase receipts to %1$@ (%2$@) at %3$@" = "ラベルの購入レシートを %1$@  (%2$@) に %3$@ でメール送信します";
+
 /* Accessibility label that lets the user know the billing customer's email address */
 "Email: %@" = "メール:%@";
 
 /* Accessibility text for Unit Input cell */
 "Empty" = "空にする";
+
+/* Title for the row to enter the empty package weight on the Add New Custom Package screen in Shipping Label flow */
+"Empty Package Weight" = "空の荷物の重量";
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空の URL";
@@ -846,14 +1224,36 @@
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "有効";
 
+/* Label for one of the filters in order custom date range */
+"End Date" = "終了日";
+
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "WooCommerce アプリの感想をお聞かせください";
 
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "**プリンターのファームウェアが最新である** ことを確認してください。 更新の手順については、プリンターのドキュメントを確認してください。";
 
-/* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
+/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+"Enter Address" = "Enter Address";
+
+/* Short instructions label in the simple payments screen */
+"Enter Amount" = "金額を入力";
+
+/* Action button linking to instructions for enter another store.Presented when logging in with a site address that appears to be invalid.
+   Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "別のストアを入力";
+
+/* Placeholder of the row that holds the provided email when creating a simple payment */
+"Enter Email" = "メールアドレスを入力";
+
+/* Placeholder for the required ITN row in Customs screen of Shipping Label flow */
+"Enter ITN" = "ITN を入力";
+
+/* Placeholder for the ITN row in Customs screen of Shippling Label flow */
+"Enter ITN (Optional)" = "ITN を入力 (オプション)";
+
+/* Placeholder for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+"Enter Name" = "名称を入力";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "URL を入力";
@@ -865,18 +1265,24 @@
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "配送業者名を入力";
 
+/* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
+"Enter description" = "説明を入力";
+
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "ファイル URL を入力";
+
+/* Placeholder of HS Tariff Number row in Package Content section in Customs screen of Shipping Label flow */
+"Enter number (Optional)" = "番号を入力 (オプション)";
 
 /* Enter password placeholder in Product Visibility */
 "Enter password" = "パスワードを入力";
 
+/* Sign in instructions for logging in with a URL. */
+"Enter the address of the WooCommerce store you'd like to connect." = "Enter the address of the WooCommerce store you'd like to connect.";
+
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
 "Enter the address of the WordPress site you'd like to connect." = "連携する WordPress サイトのアドレスを入力してください。";
-
-/* Sign in instructions for logging in with a URL. */
-"Enter the address of your WooCommerce store you'd like to connect." = "連携させる WooCommerce ストアのアドレスを入力してください。";
 
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "商品の外部 URL を入力してください。";
@@ -909,8 +1315,17 @@
    Title of a button. */
 "Enter your password instead." = "代わりにパスワードを入力してください。";
 
-/* Alert title when there is an error requesting shipping label document for reprinting */
+/* Envelope package type, used to create a custom package in the Shipping Label flow */
+"Envelope" = "封筒";
+
+/* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
+"Error in finding the address in Apple Maps" = "Apple Maps で住所の検索中に発生したエラー";
+
+/* Alert title when there is an error requesting shipping label document for printing */
 "Error previewing shipping label" = "配送ラベルのプレビューでエラーが発生しました";
+
+/* Notice displayed when the label purchase fails */
+"Error purchasing the label" = "ラベルの購入時にエラーが発生しました";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -921,6 +1336,9 @@
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "外部 \/ アフィリエイト";
+
+/* Display label for failed order status. */
+"Failed" = "失敗";
 
 /* An error message shown when failing to retrieve information to present a view for a review push notification. */
 "Failed to retrieve the review notification details." = "レビューの詳細通知の取得に失敗しました。";
@@ -951,17 +1369,31 @@
    Title of the cell in Product Downloadable File URL > File URL */
 "File URL" = "ファイルの URL";
 
+/* Subtitle of the cell Customs inside Create Shipping Label form */
+"Fill out customs form" = "税関申告書を記入";
+
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "パスワードマネージャーで入力";
 
-/* Title of the toolbar button to filter products by different attributes.
-   Title of the toolbar button to filter products without any filters applied. */
+/* Title of the toolbar button to filter orders without filters applied.
+   Title of the toolbar button to filter products by different attributes. - Title of the toolbar button to filter products without any filters applied. */
 "Filter" = "フィルター";
 
-/* Title of the toolbar button to filter products with filters applied. */
+/* Title of the toolbar button to filter orders with filters applied.
+   Title of the toolbar button to filter products with filters applied. */
 "Filter (%ld)" = "フィルター (%ld)";
 
-/* Navigation bar title format for filtering a list of products without filters applied. */
+/* Placeholder on the search field to search for a specific country */
+"Filter Countries" = "国を絞り込む";
+
+/* Placeholder on the search field to search for a specific state */
+"Filter States" = "都道府県で絞り込む";
+
+/* Header bar label on top of order list when filters are applied */
+"Filtered Orders" = "絞り込み済み注文";
+
+/* Filters button text on header bar on top of order list
+   Navigation bar title format for filtering a list of products without filters applied. */
 "Filters" = "フィルター";
 
 /* Navigation bar title format for filtering a list of products with filters applied. */
@@ -976,8 +1408,17 @@
 /* The hint button's title text to help users find their store address. */
 "Find your store address" = "ストアの住所を検索";
 
+/* Button to set up the WooCommerce Payments plugin after installing it */
+"Finish Setup in Store Admin" = "ストア管理で設定を完了させる";
+
+/* Title for the error screen when WooCommerce Payments is installed but not set up */
+"Finish setup WooCommerce Payments in your store admin" = "ストア管理で WooCommerce Payments のセットアップを完了させる";
+
+/* Text field name in Edit Address Form */
+"First name" = "名";
+
 /* Shown in the prologue carousel (promotional screens) during first launch. */
-"Follow your favorite sites and discover new reads." = "お気に入りのサイトをフォローして新しい読み物を発見しましょう。";
+"Follow your favorite sites and discover new blogs." = "お気に入りのサイトをフォローして新しい読み物を発見しましょう。";
 
 /* User role badge */
 "Follower" = "フォロワー";
@@ -994,10 +1435,17 @@
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "ストアでの商品売り上げ状況の統計概要をチェック";
 
+/* Action to add new variation on the variations list */
+"Generate New Variation" = "新しいバリエーションを生成";
+
+/* Title of the action to generate the first variation */
+"Generate Variation" = "バリエーションを生成";
+
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "バリエーションを生成しています";
 
-/* View title for initial auth views. */
+/* Title of install action in the Jetpack Install view.
+   View title for initial auth views. */
 "Get Started" = "今すぐ始める";
 
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
@@ -1006,11 +1454,27 @@
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "不明な点について問い合わせます";
 
+/* Subtitle of push notifications as part of Jetpack benefits. */
+"Get push notifications for new orders, reviews, etc. delivered to your device." = "新しい注文やレビューなどのプッシュ通知がお使いのデバイスに届きます。";
+
+/* Title of the Jetpack benefits banner. */
+"Get the full experience with Jetpack" = "Jetpack でフル機能を利用";
+
+/* Title of the Jetpack benefits view. */
+"Get the most out of your store" = "ストアを最大限に活用する";
+
+/* Message shown in the Reviews tab if the list is empty
+   Message shown on the Product Reviews screen if the list is empty */
+"Get your first reviews" = "最初のレビューを受け取る";
+
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "アカウント情報を取得中";
 
+/* Type Gift of content to be declared for the customs form in Shipping Label flow */
+"Gift" = "ギフト";
+
 /* The title of the button to give feedback about products beta features on the banner on the products tab
-   The title of the button to give feedback about shipping labels features on the banner in order details - Title on the navigation bar for the products feedback survey */
+   The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title of the button to give feedback about the Simple Payments feature - Title on the navigation bar for the products feedback survey */
 "Give feedback" = "フィードバックを残す";
 
 /* Option to select the Gmail app when logging in with magic links */
@@ -1037,6 +1501,12 @@
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "どのようなサポートをお求めですか ?";
+
+/* Title of HS Tariff Number row in Package Content section in Customs screen of Shipping Label flow */
+"HS Tariff Number" = "HS コード番号";
+
+/* Validation error for HS Tariff Number row in Customs screen of Shipping Label flow */
+"HS Tariff Number must be 6 digits long" = "6桁の HS コード番号が必要です";
 
 /* Accessibility label for HTML button on formatting toolbar.
    HTML Attachment Label */
@@ -1081,7 +1551,8 @@
 /* H6 Aztec Style */
 "Heading 6" = "見出し6";
 
-/* Title of the cell in Product Shipping Settings > Height */
+/* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Height */
 "Height" = "高さ";
 
 /* Help and Support navigation title
@@ -1104,11 +1575,29 @@
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "改善すべき点をお聞かせください";
 
+/* Navigation bar title of hub menu view */
+"Hub Menu" = "Hub Menu";
+
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "満足している";
 
+/* Header section items to fulfill in Shipping Label Package Detail */
+"ITEMS TO FULFILL" = "処理するアイテム";
+
+/* Title for the ITN row in Customs screen of Shipping Label flow */
+"ITN" = "ITN";
+
+/* Error message for missing ITN for destination country inCustoms screen of Shipping Label flow. The placeholder is the destination country. */
+"ITN is required for shipments to %1$@" = "%1$@への出荷には ITN が必要です。";
+
+/* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
+"ITN is required for shipping items valued over $2,500 per tariff number" = "出荷品目の価値が HS コードあたり $2,500を超える荷物の出荷には ITN が必要です";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "無効の場合はメモが非公開になります";
+
+/* The text below the order add-ons list indicating that the content could be stale. */
+"If renaming an add-on in your web dashboard, please note that previous orders will no longer show that add-on within the app." = "ウェブダッシュボードにアドオンが残っている場合に、以前の注文がアプリ内に表示されなくなることにご注意ください。";
 
 /* Header text when reprinting a shipping label */
 "If there was a printing error when you purchased the label, you can print it again." = "購入したラベルで印刷エラーが発生した場合は、そのラベルをもう一度印刷できます。";
@@ -1135,8 +1624,25 @@
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "サイト管理画面で、Jetpack ダッシュボードの「接続」>「アカウント接続」から WordPress.com への接続に使用したメールアドレスを確認できます。";
 
+/* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
+"In-Person Payment for Order #%1$@ for %2$@" = "%2$@ への #%1$@ の注文のオフラインでの支払い";
+
+/* Navigates to In-Person Payments screen
+   Title for the In-Person Payments settings screen */
+"In-Person Payments" = "オフラインでの支払い";
+
+/* Title for the error screen when In-Person Payments is unavailable
+   Title for the error screen when the Stripe account is restricted because it's under reviw - Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
+"In-Person Payments is currently unavailable" = "オフラインでの支払いは現在利用できません";
+
+/* Title for the error screen when the Stripe account rejected. */
+"In-Person Payments isn't available for this store" = "このストアではオフラインでの支払いを使用できません";
+
 /* Application's Inactive State */
 "Inactive" = "停止中";
+
+/* Title for table view section of inactive plugins */
+"Inactive Plugins" = "停止中のプラグイン";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "プラグイン無効化中。自動更新オフ。";
@@ -1147,11 +1653,17 @@
 /* Describes a standard *.wordpress.com site domain */
 "Included with Site" = "サイトに含まれています";
 
+/* Includes tracking of a specific carrier in Shipping Labels > Carrier and Rates */
+"Includes %1$@ tracking" = "%1$@の追跡を含む";
+
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "ユーザー名またはパスワードが間違っています。もう一度ログイン詳細を入力し直してください。";
 
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "アップセルとクロスセルで販売を伸ばしましょう";
+
+/* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
+"Individually shipped item" = "個別に配送した商品";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "挿入";
@@ -1161,6 +1673,34 @@
 
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "リンクを挿入";
+
+/* Navigates to Install Jetpack screen.
+   Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
+"Install Jetpack" = "Jetpack をインストール";
+
+/* Title for the error screen when WooCommerce Payments is not installed */
+"Install WooCommerce Payments" = "WooCommerce Payments をインストールする";
+
+/* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
+"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "無料の Jetpack プラグインを %1$@ にインストールすると、最高のモバイル環境をご利用いただけます。";
+
+/* Subtitle of the Jetpack benefits view. */
+"Install the free Jetpack plugin to experience the best mobile experience." = "無料の Jetpack プラグインをインストールすると、最高のモバイル環境をご利用いただけます。";
+
+/* Name of installing Jetpack plugin step */
+"Installing Jetpack" = "Jetpack をインストール中";
+
+/* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
+"Insurance (%1$@)" = "保険 (%1$@)";
+
+/* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Place holder is an amount. */
+"Insurance (up to %1$@)" = "保険 (最大%1$@)";
+
+/* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
+"Invalid ITN format" = "無効な ITN フォーマットです";
+
+/* The title of the alert when there is an error with the package name */
+"Invalid Package Name" = "無効な荷物名";
 
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "無効な商品 SKU";
@@ -1182,6 +1722,12 @@
 
 /* No comment provided by engineer. */
 "Invalid username" = "無効なユーザー名";
+
+/* Error for invalid package details on the Add New Custom Package screen in Shipping Label flow */
+"Invalid value" = "無効な値";
+
+/* Error message when total weight is invalid in Package Detail screen */
+"Invalid weight" = "無効な重量";
 
 /* Product Inventory Settings navigation title
    Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
@@ -1208,11 +1754,26 @@
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "斜体";
 
+/* Error message for missing value in Description row in Customs screen of Shipping Label flow */
+"Item description is required" = "アイテムの説明は必須です";
+
+/* Row title for dimensions of package shipped in original packaging Package Details screen in Shipping Labels flow. */
+"Item dimensions" = "商品の寸法";
+
+/* Error message for missing value in Value row in Customs screen of Shipping Label flow */
+"Item value must be larger than 0" = "アイテムの価値は0以上にしてください";
+
+/* Error message for missing value in Weight row in Customs screen of Shipping Label flow */
+"Item weight must be larger than 0" = "アイテムの重量は0以上にしてください";
+
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack は WordPress の無料のプラグインであり、ストアをモバイルでの最適な操作に必要なツール (プッシュ通知および統計を含む) と接続します。";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "編集を続行";
+
+/* Label for a button that when tapped, continues searching for card readers */
+"Keep Searching" = "検索を続行";
 
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "これはサポートチケットではありませんので、個別のフィードバックには対応いたしかねます";
@@ -1223,36 +1784,55 @@
 /* Navigation bar title of shipping label paper size options screen */
 "Label Format Options" = "ラベルの書式設定オプション";
 
+/* Label for one of the filters in order date range */
+"Last 2 Days" = "過去2日間";
+
 /* Last 24 hours section header */
 "Last 24 hours" = "過去24時間";
+
+/* Label for one of the filters in order date range */
+"Last 30 Days" = "過去30日間";
+
+/* Label for one of the filters in order date range */
+"Last 7 Days" = "過去7日間";
 
 /* Last 7 days section header */
 "Last 7 days" = "過去1週間";
 
+/* Text field name in Edit Address Form */
+"Last name" = "姓";
+
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Wormholy デバッグを起動";
 
-/* Button title in the shipping label creation info screen
-   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. */
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. - Button title in the shipping label creation info screen - Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
 "Learn more" = "さらに詳しく";
+
+/* A label prompting users to learn more about HS Tariff Number in Customs screen of Shipping Label flow */
+"Learn more about HS Tariff Number" = "HS コード番号に関する詳細はこちら";
+
+/* A label prompting users to learn more about internal transaction number */
+"Learn more about Internal Transaction Number" = "国内取引番号 (ITN) に関する詳細はこちら";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Jetpack についてさらに詳しく";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your phone" = "スマートフォンでのラベル作成に関する詳細はこちら";
+"Learn more about creating labels with your mobile device" = "モバイルデバイスでのラベル作成に関する詳細はこちら";
+
+/* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
+"Learn more about roles and permissions" = "権限グループと権限の詳細";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "リーガル (8.5 x 14インチ)";
 
-/* Title of the cell in Product Shipping Settings > Length */
+/* Title for the row to enter the package length on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Length */
 "Length" = "長さ";
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "レター (8.5 x 11インチ)";
-
-/* Licenses (information page title) */
-"Licenses" = "ライセンス";
 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
 "Limit one per order" = "1回の注文あたり1個に制限";
@@ -1286,15 +1866,15 @@
 /* Displayed when an Product is being retrieved */
 "Loading Product" = "商品を読み込み中";
 
-/* Loading tags in Product Tags screen */
-"Loading..." = "読み込み中…";
+/* Text of the loading banner in Order Detail when loaded for the first time */
+"Loading content" = "コンテンツを読み込んでいます";
 
 /* Button title.  Tapping takes the user to the login form.
    Log In button label. - View title during the log in process. */
 "Log In" = "ログイン";
 
-/* Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
-   Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+/* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation - Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "別のアカウントでログイン";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -1336,23 +1916,30 @@
 /* Option to select the Apple Mail app when logging in with magic links */
 "Mail (Default)" = "メールアドレス (デフォルト)";
 
+/* Settings > Manage Card Reader > Connect > Hint to charge card reader */
+"Make sure card reader is charged" = "カードリーダーが充電されていることを確認する";
+
 /* Text that explains how to update VC to get the latest stats */
 "Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated." = "サイトで最新バージョンの WooCommerce を実行していることと、WooCommerce Admin を有効にしていることを確認してください。";
 
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "タグを使用して商品を見つけやすくする";
 
-/* Navigates to Card Reader management screen */
+/* Card reader settings screen title
+   Settings > Manage Card Reader > Title for the no-reader-connected screen in settings. - Settings > Manage Card Reader > Title for the reader connected screen in settings. */
 "Manage Card Reader" = "カードリーダーを管理";
 
-/* Login Prologue Legend */
-"Manage orders, track sales and monitor store activity with real-time alerts." = "注文を管理し、売り上げをトラッキングし、ストアのアクティビティをリアルタイムのアラートでモニターします。";
+/* Navigates to Card Reader management screen */
+"Manage card reader" = "カードリーダーを管理";
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "在庫管理";
 
 /* shown in promotional screens during first launch */
 "Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "Jetpack 搭載のサイトを外出先で管理 — WordPress をどこでも持ち歩けます。";
+
+/* Caption displayed in promotional screens shown during the login flow. */
+"Manage your store orders on the go " = "外出先でもストアを管理 ";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "マニュアルオフセット";
@@ -1369,8 +1956,18 @@
 /* Accessibility label for the Mark All Reviews as Read Button */
 "Mark All as Read" = "すべて既読にする";
 
-/* Fulfill Order Action Button */
+/* Action button on Review Order screen
+   Fulfill Order Action Button */
 "Mark Order Complete" = "注文を完了としてマーク";
+
+/* Alert button when selecting the cash payment method for simple payments */
+"Mark as Paid" = "Mark as Paid";
+
+/* Alert title when selecting the cash payment method for simple payments */
+"Mark as Paid?" = "Mark as Paid?";
+
+/* Create Shipping Label form -> Mark order as complete label */
+"Mark this order as complete and notify the customer" = "この注文に完了のマークを付けてお客様に通知";
 
 /* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
 "Marks Every Review as Read" = "すべてのレビューを既読にする";
@@ -1378,12 +1975,18 @@
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "メディアにはアップロードする関連したファイルはありません。";
 
+/* Title of the Menu tab */
+"Menu" = "メニュー";
+
 /* Menu order label in Product Settings
    Product Menu Order navigation title */
 "Menu Order" = "メニューの表示順";
 
 /* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
 "Menu order" = "メニューの表示順";
+
+/* Type Merchandise of content to be declared for the customs form in Shipping Label flow */
+"Merchandise" = "商品";
 
 /* Message phone number button title */
 "Message" = "メッセージ";
@@ -1393,6 +1996,9 @@
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "最小値%1$@、最大値%2$@";
+
+/* Caption displayed in promotional screens shown during the login flow. */
+"Monitor and approve your product reviews" = "商品レビューを監視、承認";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -1404,6 +2010,12 @@
 /* Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "追加オプション";
+
+/* Button on each order item of the Package Details screen in Shipping Labels flow. */
+"Move" = "移動";
+
+/* Title of the action sheet displayed when moving items in thePackage Details screen in Shipping Label flow. */
+"Move Item" = "項目を移動";
 
 /* Confirmation button on the alert when the user is moving a product to the trash */
 "Move to Trash" = "ゴミ箱へ移動";
@@ -1417,8 +2029,7 @@
 /* My Tickets title */
 "My Tickets" = "自分のチケット";
 
-/* My Store Notice Title for loading error
-   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "My store" = "自分のストア";
 
 /* Name text field placeholder
@@ -1444,27 +2055,31 @@
    Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "問題が解決しない場合";
 
-/* Text preceding the Contact Us button in the survey completed screen */
+/* Text preceding the Contact Us button in the error screen for In-Person payments
+   Text preceding the Contact Us button in the survey completed screen */
 "Need some help?" = "ヘルプが必要ですか ?";
 
 /* The title for the net amount paid cell */
 "Net Payment" = "支払額 (正味)";
 
+/* Title for table view section of network active plugins */
+"Network Active Plugins" = "ネットワークが有効なプラグイン";
+
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "新規属性名";
+
+/* Title for the order creation screen */
+"New Order" = "新しい注文";
+
+/* Subtitle of analytics as part of Jetpack benefits. */
+"New analytics views, let you see visitors, reports and more." = "新しいアナリティクスビューでは、訪問者やレポートなどを確認できます。";
 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "新機能を利用できます。";
 
-/* Next nav bar button title in Add Product Attribute Options screen
-   Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
+/* Action navigate to the variation creation screen
+   Next nav bar button title in Add Product Attribute Options screen - Next nav bar button title in Add Product Attribute screen - Title for the button to confirm the amount in the simple payments screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "次へ";
-
-/* Empty Product Reviews List Message */
-"No Reviews Yet for this Product!" = "この製品のレビューがまだありません";
-
-/* Empty Reviews List Message */
-"No Reviews Yet!" = "まだレビューがありません。";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "この期間のアクティビティはありません";
@@ -1472,6 +2087,9 @@
 /* Order details > customer info > billing information. This is where the address would normally display.
    Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "住所が指定されていません。";
+
+/* Title for the error screen when there was a network error checking In-Person Payments requirements. */
+"No connection" = "接続できません";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "使用可能なデータがありません";
@@ -1488,8 +2106,14 @@
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "制限がありません";
 
+/* The text on the placeholder overlay when no products match the filter on the Products tab */
+"No matching products found" = "一致する商品が見つかりません";
+
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "価格未設定";
+
+/* Message displayed if there are no products to display in the Add Product screen */
+"No products found" = "商品が見つかりません";
 
 /* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
@@ -1507,6 +2131,9 @@
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "送料区分がまだありません";
 
+/* Error state title in shipping label carrier and rates screen */
+"No shipping rates available" = "利用できる配送料金がありません";
+
 /* Placeholder of the Product Tags row on Product main screen */
 "No tags" = "タグなし";
 
@@ -1514,8 +2141,11 @@
 "No tax classes yet" = "税区分がまだありません";
 
 /* Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option */
+   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow */
 "None" = "なし";
+
+/* Title of dismiss action in the Jetpack benefits view. */
+"Not now" = "後で";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
 "Not seeing the email? Check your Spam or Junk Mail folder." = "メールが表示されない場合は、 スパムメールや迷惑メールのフォルダーを確認してください。";
@@ -1526,8 +2156,11 @@
 /* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "お客様への通知";
 
+/* Info text for the generate first variation screen */
+"Now that you’ve added attributes, you can create your first variation!" = "属性の追加が完了しました。最初のバリエーションを作成してください。";
+
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for printing - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -1535,6 +2168,10 @@
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "オフ";
+
+/* Accessibility announcement message when device goes offline
+   Message for offline banner */
+"Offline - using cached data" = "オフライン - キャッシュされたデータを使用します";
 
 /* +2 Days Section Header */
 "Older than 2 days" = "2日以上前";
@@ -1554,8 +2191,17 @@
 /* Display label for the product's inventory stock status */
 "On back order" = "入荷待ち";
 
+/* Display label for on hold order status. */
+"On hold" = "保留中";
+
 /* Accessibility label for 1 password button */
 "One Password button" = "One Password ボタン";
+
+/* Helper text above photo list in Product images screen */
+"Only one photo can be displayed by variation" = "表示できる写真はバリエーションごとに1点のみです";
+
+/* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
+"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "配送ラベルのお支払い方法を管理できるのは、サイトの所有者のみです。 お支払い方法を管理するには、%1$@ (%2$@) にお問い合わせください。";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "デバイス設定を開く";
@@ -1564,8 +2210,8 @@
    Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "メールを開く";
 
-/* Navigates to screen about open source licenses */
-"Open Source Licenses" = "オープンソースライセンス";
+/* Open Map action in Shipping Label Address Validation. */
+"Open Map" = "マップを開く";
 
 /* Label for the description of openening a link using a new window */
 "Open in a new Window\/Tab" = "新しいウィンドウまたはタブで開く";
@@ -1580,7 +2226,7 @@
 "Option name" = "オプション名";
 
 /* Add Product Category. Placeholder of cell presenting the parent category.
-   Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Shipping Label Address Validation */
+   Name text field placeholder in Shipping Label Address Validation when it's optional - Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Edit Address Form - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "オプション";
 
 /* No comment provided by engineer. */
@@ -1602,18 +2248,22 @@
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "注文番号 %1$@ を注文";
 
+/* Cell title on the beta features screen to enable creating new orders */
+"Order Creation" = "注文の作成";
+
 /* Order notes section title */
 "Order Notes" = "注文メモ";
 
 /* Change order status screen - Screen title
-   The section title for the list of Order statuses in the Order Search. */
+   Navigation title of the orders filter selector screen for order statuses - Row title for filtering orders by order status. */
 "Order Status" = "注文ステータス";
 
-/* Order Total label for payment view */
+/* Create Shipping Label form -> Order Total label
+   Order Total label for payment view - Title text of the row that shows the total to charge when creating a simple payment */
 "Order Total" = "注文合計";
 
-/* Order fulfillment success notice */
-"Order marked as fulfilled" = "注文を処理済みにしました";
+/* Navigates to Card Reader ordering screen */
+"Order card reader" = "カードリーダーを注文";
 
 /* Order status update success notice */
 "Order status updated" = "注文ステータスを更新しました";
@@ -1621,33 +2271,69 @@
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "順序付きリスト";
 
-/* Default title for Orders List shown when tapping on the Search filter.
-   Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
+/* Orders stat label on dashboard - should be plural.
+   The title of the Orders tab. */
 "Orders" = "注文";
 
 /* Subtitle of the product form bottom sheet action for editing categories. */
 "Organise your products into related groups" = "商品を関連グループに整理する";
 
-/* My Store > Settings > Other app section */
+/* Title for the Origin Country row in Customs screen of Shipping Label flow */
+"Origin Country" = "原産国";
+
+/* Error message for missing value in Origin Country row in Customs screen of Shipping Label flow */
+"Origin Country is required" = "原産国は必須項目です";
+
+/* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
+"Original packaging" = "初期の梱包";
+
+/* My Store > Settings > Other app section
+   Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "その他";
 
 /* Display label for the product's inventory stock status */
 "Out of stock" = "在庫なし";
 
+/* Header section package details in Shipping Label Package Detail */
+"PACKAGE DETAILS" = "荷物の詳細";
+
 /* Product section title */
 "PRODUCT" = "商品";
+
+/* Create Shipping Label form -> Package number
+   Package index in Customs screen of Shipping Label flow - Package index in Print Customs Invoice screen of Shipping Label flow if there are more than one invoice - Package term in Shipping Labels. Reads like Package 1 */
+"Package %1$d" = "荷物 %1$d";
+
+/* Name of package to be listed in Move Item action sheet on Package Details screen of Shipping Label flow. */
+"Package %1$d: %2$@" = "荷物 %1$d: %2$@";
 
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "荷物 %d";
 
-/* Title of package details in shipping label details
-   Title of the cell Package Details inside Create Shipping Label form */
+/* Title of Package Content section in Customs screen of Shipping Label flow */
+"Package Content" = "荷物の中身";
+
+/* Navigation bar title of shipping label package details screen
+   Title of package details in shipping label details - Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "荷物の詳細";
+
+/* Title for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+"Package Name" = "荷物の名称";
+
+/* Package Selected screen title in Shipping Label flow
+   Title of the row for selecting a package in Shipping Label Package Detail screen */
+"Package Selected" = "荷物が選択されました";
+
+/* Title for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
+"Package Type" = "荷物の種類";
+
+/* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
+"Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "荷物の寸法は0以上にする必要があります。 商品ページの「配送」セクションで商品の寸法を更新して続行してください。";
 
 /* The title for the customer payment cell */
 "Paid" = "支払済み";
 
-/* Title of the paper size selector row for reprinting a shipping label */
+/* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "用紙サイズ";
 
 /* Add Product Category. Title of cell presenting the parent category. */
@@ -1663,14 +2349,32 @@
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "書式を解除して貼り付け";
 
-/* Payment section title */
+/* Payment section title
+   Title text of the row that shows the payment headline when creating a simple payment */
 "Payment" = "決済";
 
-/* Title of payment method in shipping label details
-   Title of the cell Payment Method inside Create Shipping Label form */
+/* Navigation bar title in the Shipping Label Payment Method screen
+   Title of payment method in shipping label details - Title of the cell Payment Method inside Create Shipping Label form */
 "Payment Method" = "支払方法";
 
-/* Display label for the review's pending status */
+/* Header for list of payment methods in Payment Method screen */
+"Payment Method Selected" = "お支払い方法が選択されました";
+
+/* Error message. Presented to users after a collecting a payment fails
+   Error message. Presented to users after collecting a payment fails */
+"Payment failed" = "支払いに失敗しました";
+
+/* Title of the webview of adding a payment method in Shipping Labels */
+"Payment method" = "決済方法";
+
+/* Notice that will be displayed after adding a new Shipping Label payment method */
+"Payment method added" = "支払い方法が追加されました";
+
+/* Label informing users that the payment succeeded. Presented to users when a payment is collected */
+"Payment successful" = "支払いに成功しました";
+
+/* Display label for pending order status.
+   Display label for the review's pending status */
 "Pending" = "承認待ち";
 
 /* A unit test string, appended before the title of a review.
@@ -1680,7 +2384,8 @@
 /* Display label for the product's pending status */
 "Pending review" = "レビュー待ち";
 
-/* Text field phone in Shipping Label Address Validation */
+/* Text field phone in Edit Address Form
+   Text field phone in Shipping Label Address Validation */
 "Phone" = "電話";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
@@ -1698,11 +2403,32 @@
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "商品をゴミ箱に移動しています...";
 
+/* Title of the alert presented when an update fails because the reader is low on battery. */
+"Please charge reader" = "リーダーを充電してください";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
+"Please correct your store address to proceed" = "Please correct your store address to proceed";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"Please correct your store's postcode\/ZIP" = "Please correct your store's postcode\/ZIP";
+
+/* Error message for missing explanation when Content Typeis Other in Customs screen of Shipping Label flow */
+"Please describe what kind of goods this package contains" = "この荷物に含まれている商品の種類について説明してください";
+
+/* Error message for missing comments when Restriction Typeis Other in Customs screen of Shipping Label flow */
+"Please describe what kind of restrictions this package must have" = "この荷物にかける必要がある制限の種類について説明してください";
+
+/* Error state description in shipping label carrier and rates screen */
+"Please double check your package dimensions and weight or try using a different package in Package Details." = "荷物の寸法と重量を再度ご確認いただくか、「荷物の詳細」で別の荷物のご利用をお試しください。";
+
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "URL を入力してください";
 
 /* Error message shown when a URL is invalid. */
 "Please enter a complete website address, like example.com." = "ウェブサイトの完全なアドレス (例 : example.com) を入力してください。";
+
+/* Product price error notice message, when the sale price was not set during a sale setup */
+"Please enter a sale price for the scheduled sale" = "セール期間のセール価格を入力してください";
 
 /* No comment provided by engineer. */
 "Please enter a site address." = "サイトアドレスを入力してください。";
@@ -1740,12 +2466,30 @@
 /* Error message when an image captured by camera cannot be saved to the device Photos library */
 "Please make sure the app can access Photos in device settings" = "デバイスの設定で、アプリが写真にアクセスできることを確認してください。";
 
+/* Error notice recovery suggestion when we fail to update an address in the edit address screen. */
+"Please make sure you are running the latest version of WooCommerce and try again later." = "最新バージョンの WooCommerce を使用していることを確認し、後でもう一度お試しください。";
+
+/* Error message when no package is selected on Shipping Label Package Details screen */
+"Please select a package" = "荷物を選択してください";
+
+/* The info of the Error Loading Data banner */
+"Please try again later or reach out to us and we'll be happy to assist you!" = "しばらくしてから再度お試しいただくか、サポートをご依頼ください。";
+
+/* Body text for the default store picker error screen */
+"Please try again or reach out to us and we'll be happy to assist you!" = "再度お試しいただくか、サポートをご依頼ください。";
+
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "もう一度お試しください。";
 
-/* Message of in-progress modal when requesting shipping label document for reprinting
-   Text on the loading view of the survey screen indicating the user to wait */
+/* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
+"Please update your reader software to keep accepting payments" = "引き続き支払いを受け入れるには、Reader のソフトウェアを更新してください";
+
+/* Message of in-progress modal when preparing for printing customs invoice
+   Message of in-progress modal when requesting shipping label document for printing - Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait - VoiceOver Accessibility label for the instruction */
 "Please wait" = "しばらくお待ちください";
+
+/* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
+"Please wait while we connect your site %1$@ with Jetpack." = "サイト %1$@ を Jetpack に接続する間、しばらくお待ちください";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "新しいバリエーションが作成されるまでしばらくお待ちください";
@@ -1756,14 +2500,26 @@
 /* Message of the in-progress UI while saving a Product as draft remotely */
 "Please wait while we save this product to your store" = "ストアにこの商品を保存しています。しばらくお待ちください";
 
+/* Message of the in-progress UI while saving a Variation remotely */
+"Please wait while we save your latest changes" = "最新の変更を保存する間、しばらくお待ちください";
+
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
 "Please wait while we update your store details" = "ストアの詳細を更新しています。しばらくお待ちください";
 
-/* Text on the loading view of the product downloadable file screen indicating the user to wait */
+/* Label within the modal dialog that appears when connecting to a card reader
+   Text on the loading view of the product downloadable file screen indicating the user to wait */
 "Please wait..." = "しばらくお待ちください...";
 
-/* Text field postcode in Shipping Label Address Validation */
+/* Message that will be displayed if there are no Shipping Label payment methods. */
+"Please, add a new payment method" = "新しい決済方法を追加してください";
+
+/* My Store > Settings > Plugins section title
+   Navigates to Plugins screen. - Title of the Plugin List screen */
+"Plugins" = "プラグイン";
+
+/* Text field postcode in Edit Address Form
+   Text field postcode in Shipping Label Address Validation */
 "Postcode" = "郵便番号";
 
 /* Error showed in Shipping Label Address Validation for the postcode field */
@@ -1772,6 +2528,9 @@
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Powered by Automattic";
 
+/* Title of in-progress modal when preparing for printing customs invoice */
+"Preparing document" = "Document を準備中";
+
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "過去に返金済み";
 
@@ -1779,17 +2538,37 @@
    Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
 "Price" = "価格";
 
-/* Button title to generate a shipping label document for printing */
+/* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
+"Print" = "印刷";
+
+/* Print the customs form for the shipping label from the shipping label more menu action sheet */
+"Print Customs Form" = "税関申告書を印刷";
+
+/* Button title to generate a shipping label document for printing
+   Navigation bar title to print a shipping label - Text on the button that prints a shipping label */
 "Print Shipping Label" = "配送ラベルを印刷";
 
+/* Button title to generate a document with multiple shipping labels for printing
+   Navigation bar title to print multiple shipping labels */
+"Print Shipping Labels" = "配送ラベルを印刷";
+
+/* Title of print button on Print Customs Invoice screen of Shipping Label flow when there's only one invoice */
+"Print customs form" = "税関申告書を印刷";
+
+/* Navigation title of the Print Customs Invoice screen of Shipping Label flow */
+"Print customs invoice" = "税関送り状を印刷";
+
 /* Navigation bar title of shipping label printing instructions screen */
-"Print from your Phone" = "スマートフォンから印刷";
+"Print from your mobile device" = "モバイルデバイスを使って印刷する";
 
-/* The title of the shipping labels top banner in order details */
-"Print shipping labels from your device!" = "お手元の端末から配送ラベルを印刷しましょう !";
+/* Button to print receipts. Presented to users after a payment has been successfully collected */
+"Print receipt" = "レシートを印刷";
 
-/* Title of in-progress modal when requesting shipping label document for reprinting */
+/* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "ラベルを印刷中";
+
+/* Title of in-progress modal when requesting document with multiple shipping labels for printing */
+"Printing Labels" = "ラベルを印刷中";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "カリフォルニア州のユーザーへのプライバシー通知";
@@ -1810,12 +2589,25 @@
 /* Display label for the product's private status */
 "Privately published" = "非公開";
 
-/* Title for the first page in the Orders tab. */
+/* Display label for processing order status. */
 "Processing" = "処理中";
 
+/* VoiceOver accessibility label. Indicates that a payment is being processed */
+"Processing payment" = "Processing payment";
+
+/* Indicates that a payment is being processed */
+"Processing payment..." = "支払いを処理しています...";
+
 /* Description for Top Performers left column header
-   Product section title - Product section title if there is only one product. */
+   Product section title - Product section title if there is only one product. - Product section title in Review Order screen if there is one product. */
 "Product" = "商品";
+
+/* The title on the navigation bar when viewing an order item add-ons
+   Title for Add-ons row in the product form screen. - Title for the product add-ons screen */
+"Product Add-ons" = "製品アドイン";
+
+/* Row title for filtering products by product category. */
+"Product Category" = "商品カテゴリー";
 
 /* Edit Product External Link navigation title */
 "Product Link" = "商品へのリンク";
@@ -1842,11 +2634,14 @@
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "商品へのリンク";
 
+/* Title of the alert when a user is saving a product */
+"Product saved" = "商品を保存しました";
+
 /* Title of the Product Type row on Product main screen */
 "Product type" = "商品タイプ";
 
 /* Product section title if there is more than one product.
-   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
+   Product section title in Review Order screen if there is more than one product. - Title of the Products tab — plural form of Product - Title text of the section that shows the Products when creating a new order - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "商品";
 
 /* Label for computed value `product refunds + taxes = subtotal`.
@@ -1858,9 +2653,6 @@
 
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "現在表示中の商品の代わりに宣伝される商品です (より安価な商品など)";
-
-/* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
-"Prompts with the option to call or message the billing customer." = "請求対象の顧客に電話で連絡するかメッセージを送信するか選択するよう求めます。";
 
 /* One of the possible options in Product Visibility */
 "Public" = "公開";
@@ -1883,6 +2675,9 @@
 /* Title of shipping label purchase date in Refund Shipping Label screen */
 "Purchase Date" = "購入日";
 
+/* Create Shipping Label form -> Purchase Label button */
+"Purchase Label" = "ラベルを購入";
+
 /* Product Note navigation title
    Purchase note label in Product Settings */
 "Purchase Note" = "注意事項";
@@ -1890,14 +2685,20 @@
 /* Title for purchase note alert. */
 "Purchase note" = "注意事項";
 
+/* Title of the in-progress UI while purchasing a shipping label */
+"Purchasing Label" = "ラベルを購入しています";
+
+/* Title of push notifications as part of Jetpack benefits. */
+"Push Notifications" = "プッシュ通知";
+
 /* Quantity abbreviation for section title */
 "QTY" = "数量";
 
 /* Quantity abbreviation for section title */
 "Qty" = "数量";
 
-/* The accessibility label for the quantity button when selecting an item to refund
-   Title of the cell in Product Inventory Settings > Quantity */
+/* Accessibility label for product quantity field
+   The accessibility label for the quantity button when selecting an item to refund - Title of the cell in Product Inventory Settings > Quantity */
 "Quantity" = "数量";
 
 /* Navigation title on the quantity item selector screen */
@@ -1906,11 +2707,23 @@
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %@" = "数量: %@";
 
+/* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
+"Quarantine" = "検疫";
+
+/* Subtitle for Contact WooCommerce Payments Support */
+"Reach our happiness engineers who can help answer payments related questions" = "サポートスタッフにお問い合わせください。お支払いに関する質問にお答えします";
+
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "サポートスタッフにお問い合わせください。難しい質問にもお答えします";
 
+/* Text for the button to navigate to troubleshooting tips from the store picker error screen */
+"Read our Troubleshooting Tips" = "トラブルシューティングのヒントを参照";
+
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "個人情報保護方針を読む";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"Reader is ready" = "Reader の準備ができています";
 
 /* Refund note section title */
 "Reason for Refund" = "返金の理由";
@@ -1920,6 +2733,19 @@
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "﻿注文返金﻿の理由";
+
+/* The title of the view containing a receipt preview */
+"Receipt" = "領収書";
+
+/* Button to reload plugin data after activating the WooCommerce Payments plugin */
+"Refresh After Activating" = "アクティベート後に再度読み込む";
+
+/* Button to reload plugin data after installing the WooCommerce Payments plugin */
+"Refresh After Installing" = "インストール後に再度読み込む";
+
+/* Button to reload plugin data after updating the WooCommerce Payments plugin
+   Button to reload plugin data after updating the WooCommerce Payments plugin settings */
+"Refresh After Updating" = "アップデート後に再度読み込む";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "払戻額";
@@ -1943,7 +2769,8 @@
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "返金方法";
 
-/* The title for the refunded amount cell */
+/* Display label for refunded order status.
+   The title for the refunded amount cell */
 "Refunded" = "返金済み";
 
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
@@ -2002,15 +2829,12 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "クラッシュをレポート";
 
-/* Navigation bar title to reprint a shipping label
-   Text on the button that reprints a shipping label */
-"Reprint Shipping Label" = "配送ラベルを再印刷";
-
 /* Navigation bar title to request a refund for a shipping label
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "返金をリクエスト";
 
-/* Text field placeholder in Shipping Label Address Validation */
+/* Name text field placeholder in Shipping Label Address Validation when it's required
+   Text field placeholder in Edit Address Form - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "必須";
 
 /* Deletes all activity logs except for the marked 'Current'. */
@@ -2019,18 +2843,34 @@
 /* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "パスワードをリセット";
 
+/* Title for the Restriction Details row in Customs screen of Shipping Label flow */
+"Restriction Details" = "制限の詳細";
+
+/* Title for the Restriction Type row in Customs screen of Shipping Label flow */
+"Restriction Type" = "制限の種類";
+
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "特定のキーワードを含む注文一覧を取得します。";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search products. */
 "Retrieves a list of products that contain a given keyword." = "特定のキーワードを含む商品リストを検索します。";
 
-/* Retry Action
-   Retry the last action */
+/* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
+   Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
 "Retry" = "再度試す";
+
+/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
+   Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
+"Retry After Updating" = "Retry After Updating";
+
+/* Title for the return policy in Customs screen of Shipping Label flow */
+"Return to sender if package is unable to be delivered" = "荷物を配達できなかった場合、荷送人に差し戻す";
 
 /* Revenue stat label on dashboard. */
 "Revenue" = "収益";
+
+/* Title of Review Order screen */
+"Review Order" = "注文を確認する";
 
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "レビューを%@にしました";
@@ -2041,6 +2881,9 @@
 
 /* Post Rich content */
 "Rich Content" = "リッチコンテンツ";
+
+/* Details section title in the Edit Address Form */
+"SHIPPING ADDRESS" = "配送先住所";
 
 /* Edit Product SKU navigation title
    Title of the cell in Product Inventory Settings > SKU - Title of the product form bottom sheet action for editing short description. - Title of the SKU row on Product main screen */
@@ -2073,6 +2916,12 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "セール価格 :%@";
 
+/* Type Sample of content to be declared for the customs form in Shipping Label flow */
+"Sample" = "サンプル";
+
+/* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
+"Sanitary \/ Phytosanitary Inspection" = "検疫 \/ 植物検疫検査";
+
 /* Action for saving a Product remotely
    Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. */
 "Save" = "保存";
@@ -2083,11 +2932,20 @@
 /* Button title to save a product as draft in Product More Options Action Sheet */
 "Save as draft" = "下書きとして保存";
 
+/* Button title to save a shipping label to print later */
+"Save for Later" = "保存して後で読む";
+
+/* Save for later button on Print Customs Invoice screen of Shipping Label flow */
+"Save for later" = "保存して後で使用";
+
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "WooCommerce Shipping を利用して、時間とお金を節約";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "商品を保存しています...";
+
+/* Title of the in-progress UI while saving a Variation remotely */
+"Saving your variation..." = "バリエーションを保存しています...";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "バーコードをスキャンして SKU を更新";
@@ -2097,6 +2955,12 @@
 
 /* Scan Products */
 "Scan products" = "商品をスキャン";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"Scanning for reader" = "Reader をスキャンしています";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"Scanning for readers" = "Reader をスキャンしています";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
 "Scans barcodes that are associated with a product SKU for stock management." = "在庫管理用に商品 SKU と関連付けられたバーコードをスキャンします。";
@@ -2125,11 +2989,17 @@
 /* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "See Instructions" = "手順を参照してください";
 
+/* Text on the button to see a saved receipt */
+"See Receipt" = "レシートを確認";
+
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "See comments and notifications in real time." = "コメントと通知をリアルタイムで表示します。";
 
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "レイアウトと用紙サイズのオプションを見る";
+
+/* Subtitle of the Jetpack benefits banner. */
+"See the benefits" = "メリットを見る";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "すべてを選択";
@@ -2140,8 +3010,17 @@
 /* Page title for the select a different store screen */
 "Select Store" = "ストアを選択";
 
+/* Placeholder for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
+"Select Type" = "タイプを選択";
+
+/* Placeholder for the selected package in the Shipping Labels Package Details screen */
+"Select a package" = "荷物を選択";
+
 /* Message title of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "商品タイプを選択";
+
+/* Text field placeholder in Edit Address Form */
+"Select an option" = "オプションを選択";
 
 /* Add the shipping carrier. Placeholder of cell presenting carrier name */
 "Select carrier" = "配送業者を選択";
@@ -2155,8 +3034,14 @@
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "開始日を選択";
 
+/* Placeholder in Shipping Label form for the Package Details row. */
+"Select the type of packaging you'd like to ship your items in" = "アイテム配送時の梱包の種類を選択";
+
 /* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
 "Select upload method" = "アップロード方法を選択";
+
+/* Placeholder in Shipping Label form for the Carrier and Rates row. */
+"Select your shipping carrier and rates" = "配送業者と金額を選択";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "選択したストア";
@@ -2170,12 +3055,22 @@
 /* The button title text for sending a magic link. */
 "Send Link by Email" = "リンクをメールで送信";
 
+/* Service Package menu in Shipping Label Add New Package flow */
+"Service Package" = "サービスパッケージ";
+
 /* Tells user to set an email that support can use for replies */
 "Set email" = "メールを設定";
+
+/* Header text on Add New Custom Package screen in Shipping Label flow
+   Header text on Add New Service Package screen in Shipping Label flow */
+"Set up the package you'll be using to ship your products. We'll save it for future orders." = "商品の配送に使用する荷物を設定します。 今後の注文用に保存されます。";
 
 /* Accessibility label for the Settings button.
    Settings navigation title */
 "Settings" = "設定";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"Several readers found" = "複数の Reader が見つかりました";
 
 /* Button title Share in Edit Product More Options Action Sheet */
 "Share" = "共有";
@@ -2183,12 +3078,12 @@
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "WordPress.com アカウントへのログイン中のサービス利用の情報を分析ツールと共有してください。";
 
-/* Action: Opens the Store in a browser */
-"Share your Store" = "ストアを共有";
-
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
 "Ship from" = "出荷元";
+
+/* Option to ship in original packaging on action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow. */
+"Ship in Original Packaging" = "初期の梱包で配送する";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of destination address in shipping label details - Title of the cell Ship From inside Create Shipping Label form */
@@ -2209,6 +3104,10 @@
    Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "配送";
 
+/* Shipping Address title for customer info section
+   Title for the Edit Shipping Address Form */
+"Shipping Address" = "配送先住所";
+
 /* Title of shipping carrier and rates in shipping label details
    Title of the cell Shipping Carrier inside Create Shipping Label form */
 "Shipping Carrier and Rates" = "配送業者と金額";
@@ -2216,7 +3115,11 @@
 /* Title of view displaying all available Shipment Tracking Carriers */
 "Shipping Carriers" = "配送業者";
 
-/* Shipping method title for customer info cell */
+/* Shipping title for customer info cell */
+"Shipping Details" = "配送詳細";
+
+/* Shipping method title for customer info cell
+   Shipping method title for customer info section */
 "Shipping Method" = "配送方法";
 
 /* Title on the refund screen that lists the shipping total cost */
@@ -2231,8 +3134,14 @@
 /* Navigation bar title of the Product shipping class selector screen */
 "Shipping classes" = "配送クラス";
 
-/* Shipping title for customer info cell */
-"Shipping details" = "配送詳細";
+/* Header of the order summary section in the shipping label creation form */
+"Shipping label order summary" = "配送ラベル注文の概要";
+
+/* Header text when printing a newly purchased shipping label */
+"Shipping label purchased!" = "配送ラベルを購入しました";
+
+/* Header text when printing multiple newly purchased shipping labels */
+"Shipping labels purchased!" = "配送ラベルを購入しました";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "注文の配送に関するお知らせ";
@@ -2249,6 +3158,9 @@
 /* The navigation bar title of the edit short description screen.
    Title of the product form bottom sheet action for editing short description. - Title of the Short Description row on Product main screen */
 "Short description" = "簡単な説明";
+
+/* Button title for applying filters to a list of orders. */
+"Show Orders" = "注文を表示";
 
 /* Button title for applying filters to a list of products. */
 "Show Products" = "商品を表示";
@@ -2268,6 +3180,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "この注文の請求詳細を表示";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view the items inside the shipping label package */
+"Show the items included inside this shipping label package." = "この配送ラベルの荷物内の商品を表示します。";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
 "Show the shipment details for this shipping label." = "この配送ラベルの配送状況の詳細を表示します。";
@@ -2290,14 +3205,24 @@
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "メールアドレスで登録";
 
+/* Signature required in Shipping Labels > Carrier and Rates */
+"Signature required (+%1$@)" = "署名が必要 (+%1$@)";
+
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "@%1$@ にログイン中";
 
 /* Display label for simple product type. */
 "Simple" = "シンプル";
 
-/* Action sheet option when the user wants to change the Product type to simple product */
-"Simple product" = "基本的な商品";
+/* Action sheet option when the user wants to create Simple Payments order
+   Cell title on the beta features screen to enable the Simple Payments feature */
+"Simple Payments" = "シンプルペイメント";
+
+/* Action sheet option when the user wants to change the Product type to simple physical product */
+"Simple physical product" = "シンプルな非物理的商品";
+
+/* Action sheet option when the user wants to change the Product type to simple virtual product */
+"Simple virtual product" = "シンプルな物理的商品";
 
 /* Describes a site redirect domain */
 "Site Redirect" = "サイト転送";
@@ -2312,12 +3237,16 @@
    Product Slug navigation title - Slug label in Product Settings */
 "Slug" = "スラッグ";
 
-/* Banner title in product variation list top banner when some variations do not have a price */
-"Some variations do not have prices" = "一部のバリエーションに価格情報がありません";
+/* Dialog title that displays when a software update just finished installing */
+"Software updated" = "ソフトウェアが更新されました";
 
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "だれか";
+
+/* Error message presented to users after a failure occurs
+   The text on the placeholder overlay when there is issue syncing site plugins */
+"Something went wrong" = "問題が発生しました。";
 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "返金処理でエラーが発生しました。 もう一度お試しください。";
@@ -2384,13 +3313,17 @@
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "標準税率";
 
+/* Label for one of the filters in order custom date range */
+"Start Date" = "開始日";
+
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "今すぐ販売を開始するには、最初の商品をストアに追加してください。";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "開始期間%1$@、終了期間%2$@";
 
-/* Text field state in Shipping Label Address Validation */
+/* Text field state in Edit Address Form
+   Text field state in Shipping Label Address Validation - Title to select state from the edit address screen */
 "State" = "州";
 
 /* Error showed in Shipping Label Address Validation for the state field */
@@ -2428,14 +3361,26 @@
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "取り消し線";
 
-/* Subtotal label for a refund details view
-   Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost */
+/* Display label for subscription product type. */
+"Subscription" = "定期購入";
+
+/* Create Shipping Label form -> Subtotal label
+   Subtotal label for a refund details view - Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost - Title text of the row that shows the subtotal when creating a simple payment */
 "Subtotal" = "小計";
+
+/* Notice text after updating the order successfully */
+"Successfully updated" = "正常に更新されました";
+
+/* Title of the footer in Shipping Label Package Detail screen */
+"Sum of products and package weight" = "商品と荷物の重量の合計";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "ストアを切り替える";
 
-/* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
+/* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
+"Switched to %1$@." = "%1$@ に切り替えました。";
+
+/* Message presented after users switch to a new store when multi-store push notifications are not supported. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
 "Switched to %1$@. You will only receive notifications from this store." = "%1$@ に切り替えました。 このストアの通知のみ受信します。";
 
 /* Accessibility Identifier for the H1 Aztec Style */
@@ -2463,8 +3408,18 @@
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
 "Tags" = "タグ";
 
+/* Title for the simple payments screen */
+"Take Payment" = "支払いを受け取る";
+
+/* Navigation bar title for the Simple Payments Methods screens
+   Text of the button that creates a simple payment order. Contains the total amount to collect */
+"Take Payment ((total))" = "お支払い ((合計))";
+
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "写真を撮る";
+
+/* Title of the banner notice in the Simple Payments feature */
+"Take payments from your device!" = "端末で支払いを受ける";
 
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "タップしてその他の書式設定オプションを表示します";
@@ -2474,6 +3429,9 @@
 
 /* Accessibility hint for insert link button on formatting toolbar. */
 "Tap to insert a Link" = "タップしてリンクを挿入します";
+
+/* A label prompting users to learn more about card readers */
+"Tap to learn more about accepting payments with your mobile device and ordering card readers" = "モバイルデバイスや注文用カードリーダーでの支払いの受領方法については、タップして詳細をご確認ください";
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "タップしてアイテムの返金数量を変更";
@@ -2529,9 +3487,16 @@
 /* Accessibility hint for selecting paragraph style button on formatting toolbar. */
 "Tap to toggle paragraph style" = "タップして段落スタイルを切り替えます";
 
+/* Indicates the action expected from a user. Presented to users when payment collection starts
+   Label asking users to present a card. Presented to users when a payment is going to be collected */
+"Tap, insert or swipe to pay" = "タップ、挿入、またはスワイプして支払う";
+
 /* Tax label for a refund details view
    Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "税";
+
+/* Tax percentage to be applied to the simple payments order */
+"Tax ((rate)%)" = "税率 ((rate)%)";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "税設定";
@@ -2555,14 +3520,23 @@
 /* Taxes label for payment view */
 "Taxes" = "税";
 
+/* Disclaimer in the simple payments summary screen about taxes. */
+"Taxes are automatically calculated based on your store address." = "税金は店舗の住所に基づいて自動的に計算されます。";
+
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "%1$@ についてもう少しお聞かせください...";
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "利用規約";
 
-/* My Store > Settings > Experimental features > Products */
-"Test out the new product creation as we get ready to launch" = "リリースの準備ができ次第、新商品の作成をテストしてください";
+/* Cell description on the beta features screen to enable creating new orders */
+"Test out creating new manual orders as we get ready to launch" = "リリースの準備ができ次第、手動で新しい注文の作成をテストしてください";
+
+/* Cell description on the beta features screen to enable the Simple Payments feature */
+"Test out creating orders with minimal information as we get ready to launch" = "リリースの準備ができ次第、最小限の情報で注文の作成をテストしてください";
+
+/* Cell description on the beta features screen to enable the order add-ons feature */
+"Test out viewing Order Add-Ons as we get ready to launch" = "起動の準備ができたら、注文アドオンの表示をテストします";
 
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
@@ -2601,6 +3575,15 @@
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "この URL には有効なホストがありません。";
 
+/* Error message when WooCommerce Payments is in test mode on a live site */
+"The WooCommerce Payments extension cannot be in test mode for In-Person Payments. Please disable test mode." = "オフラインでの支払いでは、WooCommerce Payments 拡張機能をテストモードにすることはできません。 テストモードを無効にしてください。";
+
+/* Error message when WooCommerce Payments is not activated */
+"The WooCommerce Payments extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "ご使用のストアに WooCommerce Payments 拡張機能がインストールされていますが、アクティベートされていません。 オフラインでの支払いを受け取るには、この拡張機能を有効化してください";
+
+/* Error message when WooCommerce Payments is installed but the version is not supported */
+"The WooCommerce Payments extension is installed on your store, but needs to be updated for In-Person Payments. Please update WooCommerce Payments to the most recent version." = "ご使用のストアに WooCommerce Payments 拡張機能がインストールされていますが、オフラインでの支払いを行うには更新する必要があります。 WooCommerce Payments を最新バージョンにアップデートしてください。";
+
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "属性を削除できませんでした。";
 
@@ -2609,6 +3592,18 @@
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "このサーバーの証明書が無効です。「%@」を偽装しているサーバーに接続中の可能性があるため、機密情報が危険にさらされる恐れがあります。\n\nこの証明書をそのまま信頼しますか ?";
+
+/* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
+"The customer will receive an email once order is completed" = "お客様は注文を完了するとメールを受信します";
+
+/* The message of the alert when another custom package has the same name */
+"The new custom package name is not unique." = "新しいカスタムパッケージの名前が一意ではありません。";
+
+/* The message of the alert when another service package has the same name */
+"The new service package name is not unique." = "新しいサービスパッケージの名前が一意ではありません。";
+
+/* Error in calling the phone number of the customer in the Shipping Label Address Validation */
+"The phone number is not valid or you can't call the customer from this device." = "電話番号が有効でないか、この端末から顧客に電話できません。";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "この商品の価格。編集可能。";
@@ -2655,8 +3650,14 @@
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "バリエーションを生成できませんでした。";
 
-/* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
-"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "このサイトは WordPress のサイトではありません。 接続するには、接続先のサイトに WordPress がインストールされている必要があります。";
+/* Error message when the Stripe account is restricted because there are pending requirements */
+"There are pending requirements in your account. Please complete those requirements by" = "口座に保留中の要件があります。 までにこれらの要件を完了させてください";
+
+/* Error message when WooCommerce Payments is not supported because there are pending requirements in the Stripe account.%1$d will contain the localized deadline (e.g. August 11, 2021) */
+"There are pending requirements in your account. Please complete those requirements by %1$@ to keep accepting in-Person Payments." = "口座に保留中の要件があります。 引き続きオフラインでのお支払いを受け取る場合は、%1$@までに要件を完了させてください。";
+
+/* Error message when WooCommerce Payments is not supportedThere are pending requirements in the Stripe account (without a known deadline) */
+"There are pending requirements in your account. Please complete those requirements to keep accepting in-Person Payments." = "口座に保留中の要件があります。 引き続きオフラインでのお支払いを受け取る場合は、要件を完了させてください。";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "指定のサイトからの投稿をブロックする際に問題が発生しました。";
@@ -2664,8 +3665,28 @@
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "指定したサイトのブロックを解除する際に問題が発生しました。";
 
+/* The details on the placeholder overlay when there is issue syncing site plugins */
+"There was a problem while trying to load plugins. Check your internet and try again." = "プラグインを読み込む際に問題が発生しました。 インターネット接続を確認して再度お試しください。";
+
+/* Notice text after failing to create a simple payments order. */
+"There was an error creating the order" = "注文の作成中にエラーが発生しました";
+
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "返金の実行中にエラーが発生しました";
+
+/* Notice text after failing to update a simple payments order.
+   Notice text after failing to update the order successfully */
+"There was an error updating the order" = "注文の更新中にエラーが発生しました";
+
+/* Text when there is an error while marking the order as paid for simple payments. */
+"There was an error while marking the order as paid." = "There was an error while marking the order as paid.";
+
+/* Text when there is an unknown error while trying to collect payments */
+"There was an error while trying to collect the payment." = "There was an error while trying to collect the payment.";
+
+/* Navigates to screen with third party software licenses
+   Software Licenses (information page title) */
+"Third Party Licenses" = "サードパーティのライセンス";
 
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
@@ -2685,8 +3706,14 @@
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "このアプリは、サーバーに WooCommerce 3.5をインストールしない限り、正常に機能しません。引き続きアプリを使用するには、すぐに更新する必要があります。";
 
+/* Message explaining more detail on why the user's role is incorrect. */
+"This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "このアプリでサポートされているユーザー権限グループは、管理者とショップマネージャーのみです。 自分の権限グループを更新するには、ストア所有者に連絡してください。";
+
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "このメールアドレスは WordPress.com に登録されていません。";
+
+/* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
+"This field is required" = "このフィールドは必須です";
 
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "この情報は、製品を改善し、マーケティングをより関連性の高いものとし、WordPress.com の利用をパーソナライズするのに役立ちます。さらに詳しくは、個人情報保護方針をご覧ください。";
@@ -2702,6 +3729,9 @@
 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "顧客がアクセスできるファイルの URL です。 入力する URL はエンコード済みである必要があります。";
+
+/* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
+"This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "現在この商品は荷物 %1$d: %2$@ に入っています。 どこに移動しますか ?";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2719,6 +3749,9 @@
 /* Footer text for editing external product button text */
 "This text will be shown on the button linking to the external product." = "このテキストは外部商品のリンクボタンに表示されます";
 
+/* Alert info when selecting the cash payment method for simple payments */
+"This will mark your order as complete if you received (total) outside of WooCommerce" = "This will mark your order as complete if you received (total) outside of WooCommerce";
+
 /* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "タイトル";
@@ -2735,6 +3768,9 @@
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "送信先";
 
+/* Subtitle on the variations list screen when there are no variations and attributes */
+"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "バリエーションを追加するには、最初にその属性 (「色」、「サイズ」など) の設定が必要になります";
+
 /* Footer of text field section in Add Attribute screen */
 "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "バリエーションを作るには、最初にその属性 (「色」、「サイズ」など) を設定する必要があります";
 
@@ -2750,11 +3786,14 @@
 /* Instructional text shown when requesting the user's password for Google login. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "この Google アカウントで先に進むには、最初に WordPress.com パスワードを使用してログインしてください。これは一度しか尋ねられません。";
 
+/* Label within the modal dialog that appears when searching for a card reader */
+"To turn on your card reader, briefly press its power button." = "カードリーダーをオンにするには、電源ボタンを1回押します。";
+
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "﻿%@ にこのアプリを使用するには、Jetpack プラグインをインストールし、ストアと連携する必要があります。";
 
-/* Tab selector title that shows the statistics for today
-   Today Section Header - Top Performers section title - today */
+/* Label for one of the filters in order date range
+   Tab selector title that shows the statistics for today - Today Section Header - Top Performers section title - today */
 "Today" = "今日";
 
 /* Accessibility Identifier for the Aztec Ordered List Style. */
@@ -2775,13 +3814,23 @@
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "注文合計:%ld";
 
+/* Title of the row for adding the package weight in Shipping Label Package Detail screen */
+"Total package weight" = "荷物の総重量";
+
+/* Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight */
+"Total package weight: %1$@" = "荷物の総重量: %1$@";
+
 /* Track shipment button title */
 "Track Shipment" = "発送を追跡";
+
+/* Caption displayed in promotional screens shown during the login flow. */
+"Track sales and high performing products" = "セールスと売れ行きが好調な商品を追跡する";
 
 /* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
 "Track shipment" = "配送状況を追跡";
 
-/* Order tracking section title */
+/* Order tracking section title
+   Tracking section title in Review Order screen */
 "Tracking" = "追跡";
 
 /* Add custom shipping carrier. Title of cell presenting carrier link */
@@ -2799,17 +3848,43 @@
    Move a comment to the trash */
 "Trash" = "ゴミ箱";
 
+/* The title of the button to get troubleshooting information in the Error Loading Data banner */
+"Troubleshoot" = "トラブルシューティング";
+
 /* Connect when the SSL certificate is invalid */
 "Trust" = "信用する";
 
+/* Button to retry a software update. Presented to users when updating the card reader software fails
+   Button to try again. Presented to users after a failure occurs */
+"Try Again" = "もう一度お試しください";
+
+/* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
+"Try Collecting Again" = "もう一度受け取りを試みる";
+
 /* Button to trigger connection to another account in store picker */
 "Try With Another Account" = "別のアカウントで試行";
+
+/* Action to resync on the placeholder overlay when there is issue syncing site plugins
+   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+"Try again" = "もう一度お試しください";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "別のメールで試す";
 
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "サイトアドレスで試す";
+
+/* Settings > Manage Card Reader > Connect > Hint to power on reader */
+"Turn card reader on and place it next to mobile device" = "カードリーダーをオンにしてモバイルデバイスの横に配置";
+
+/* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
+"Turn mobile device Bluetooth on" = "モバイルデバイスの Bluetooth をオンに切り替える";
+
+/* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
+"Type of contents" = "中身の種類";
+
+/* Placeholder for the Restriction Details row in Customs screen of Shipping Label flow */
+"Type of restriction" = "制限の種類";
 
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
@@ -2827,8 +3902,17 @@
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
 "Unable to change status of order #%1$d" = "注文番号%1$dのステータスを変更できません";
 
+/* Notice displayed when order creation fails */
+"Unable to create new order" = "新しい注文を作成できません";
+
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "注文番号%1$dの追跡を削除できません";
+
+/* Unable to fetch countries action failed in Shipping Label Form */
+"Unable to fetch countries." = "国を取得できません。";
+
+/* Error notice when we fail to load country information in the edit address screen. */
+"Unable to fetch country information, please try again later." = "国情報を取得できませんでした。後ほど、もう一度お試しください。";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "注文番号%1$dを受け付けられません";
@@ -2842,14 +3926,17 @@
 /* Load Product Categories Action Failed */
 "Unable to load categories" = "カテゴリーを読み込めませんでした";
 
-/* Load Action Failed */
-"Unable to load content" = "コンテンツを読み込めませんでした";
-
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "商品属性を読み込めません";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "レビューを%@に変更できませんでした";
+
+/* Error message when the order amount is below the minimum amount allowed. */
+"Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "支払いを処理できません。 注文の合計金額が請求可能な最低金額 (%1$@) を下回っています。";
+
+/* Error message when the order amount is not valid. */
+"Unable to process payment. Order total amount is not valid." = "支払いを処理できません。 注文の合計金額が有効ではありません。";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "ご指定の URL に WordPress サイトが見つかりませんでした。「ヘルプ !」をタップしてよくある質問をご覧ください。";
@@ -2857,8 +3944,17 @@
 /* Refresh Action Failed */
 "Unable to refresh list" = "リストを更新できません";
 
-/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
-"Unable to successfully connect to %@" = "%@ に接続できませんでした";
+/* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
+"Unable to retrieve user roles." = "ユーザー権限グループを取得できません。";
+
+/* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
+"Unable to save changes to the payment method" = "お支払い方法の変更を保存できませんでした";
+
+/* Error notice title when we fail to update an address in the edit address screen. */
+"Unable to update address." = "住所を更新できません。";
+
+/* Title for the error screen when In-Person Payments is unavailable */
+"Unable to verify In-Person Payments for this store" = "このストアのオフラインでの支払いを検証できません";
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "メールアドレスを検証できません。後ほど、もう一度お試しください。";
@@ -2875,12 +3971,19 @@
 /* Undo Action */
 "Undo" = "元に戻す";
 
-/* The message of the alert when there is an unexpected error updating the product */
+/* The message of the alert when there is an unexpected error adding the package
+   The message of the alert when there is an unexpected error updating the product */
 "Unexpected error" = "予期しないエラー";
 
 /* Unknown Application State
    Unknown product name, displayed in a review - Unknown Tag Name */
 "Unknown" = "不明";
+
+/* Displayed in the unlikely event a card reader has an indeterminate battery status */
+"Unknown Battery Level" = "不明なバッテリー残量";
+
+/* Displayed in the unlikely event a card reader has an indeterminate software version */
+"Unknown Software Version" = "不明なソフトウェアバージョン";
 
 /* No comment provided by engineer. */
 "Unknown error" = "不明なエラー";
@@ -2888,11 +3991,17 @@
 /* Error message when capturing a unknown media type */
 "Unknown media type" = "不明なメディアタイプ";
 
+/* Back button title when the product doesn't have a name */
+"Unnamed product" = "名前のない商品";
+
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "順序なしリスト";
 
 /* Display label for the review's unspam status */
 "Unspam" = "スパム解除";
+
+/* Title for the error screen when the installed version of WooCommerce Payments is unsupported */
+"Unsupported WooCommerce Payments version" = "サポート対象外の WooCommerce Payments のバージョン";
 
 /* Display label for the review's untrash status */
 "Untrash" = "ゴミ箱から元に戻す";
@@ -2910,11 +4019,21 @@
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
 "Update %@ to WooCommerce 3.5" = "%@ を WooCommerce 3.5に更新";
 
+/* Accessibility Label for the edit button to change the Customer Billing Address in Billing Information
+   Accessibility Label for the edit button to change the Customer Shipping Address in Order Details */
+"Update Address" = "住所を更新";
+
 /* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
 "Update Instructions" = "手順を更新";
 
+/* Accessibility Label for the edit button to change the Customer Provided Note in Order Details */
+"Update Note" = "ノートを更新";
+
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "注文ステータスを更新";
+
+/* Settings > Manage Card Reader > Connected Reader > A button to update the reader software */
+"Update Reader Software" = "Reader ソフトウェアを更新";
 
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "商品在庫と SKU を更新";
@@ -2948,6 +4067,15 @@
    Updated on <date> */
 "Updated on %@" = "%@ に更新";
 
+/* Dialog title that displays when a software update is being installed */
+"Updating software" = "ソフトウェアを更新しています";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
+"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "リーダーのバッテリー残量が少ないため、リーダーのソフトウェアの更新に失敗しました。 リーダーを50% 以上充電してからもう一度お試しください。";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "リーダーのバッテリー残量が少なくなっているため (%.0f%%)、リーダーのソフトウェアの更新に失敗しました。 リーダーを50%% 以上充電してからもう一度お試しください。";
+
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "アップセル";
@@ -2961,6 +4089,15 @@
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "提案された住所を使用";
 
+/* Title for the Use as Billing Address switch in the Address form */
+"Use as Billing Address" = "請求先住所として使用";
+
+/* Title for the Use as Shipping Address switch in the Address form */
+"Use as Shipping Address" = "配送先住所として使用";
+
+/* Title of user profiles as part of Jetpack benefits. */
+"User Profiles" = "ユーザープロフィール";
+
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "ユーザー名";
@@ -2968,21 +4105,27 @@
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "ユーザー名は4文字以上にしてください。";
 
+/* Title for the Value row in item details in Customs screen of Shipping Label flow */
+"Value (%1$@ per unit)" = "価値 (%1$@\/ 個)";
+
 /* Display label for variable product type. */
 "Variable" = "変数";
 
 /* Action sheet option when the user wants to change the Product type to varible product */
 "Variable product" = "バリエーションのある商品";
 
-/* Title of the Product Variations row on Product main screen for a variable product
-   Title that appears on top of the Product Variation List screen. */
+/* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
+"Variation #%1$@" = "バリエーション #%1$@";
+
+/* Text for the notice after creating the first variation. */
+"Variation created" = "バリエーションが作成されました";
+
+/* Title for the generate first variation screen
+   Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
 "Variations" = "バリエーション";
 
-/* Banner caption in my store when the stats will be deprecated */
-"Variations without price will not be shown in your store." = "価格が設定されていないバリエーションはストアに表示されません。";
-
-/* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
-"Variations without price won’t be shown in your store" = "価格が設定されていないバリエーションはストアに表示されません";
+/* Title of the variations attributes row on Product screen */
+"Variations Attributes" = "バリエーション属性";
 
 /* two factor code placeholder */
 "Verification code" = "認証コード";
@@ -2992,6 +4135,13 @@
 
 /* Displays the version of the App */
 "Version %@" = "バージョン %@";
+
+/* Displays the connected reader software version */
+"Version: %1$@" = "バージョン: %1$@";
+
+/* Cell title on the beta features screen to enable the order add-ons feature
+   Title of the button on the order detail item to navigate to add-ons - Title of the button on the order details product list item to navigate to add-ons */
+"View Add-Ons" = "アドインを表示";
 
 /* View application log cell title */
 "View Application Log" = "アプリケーションログを表示";
@@ -3007,8 +4157,14 @@
    Button on bottom of shipping label package card to show shipping details */
 "View Shipment Details" = "配送状況の詳細を表示";
 
+/* Title of the banner notice in the add-ons view */
+"View add-ons from your device!" = "お使いの端末でアドオンを表示します。";
+
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "ダウンロード可能なファイル設定を表示";
+
+/* Accessibility label for the items inside a Shipping Label package */
+"View items in this shipping label package." = "この配送ラベルの荷物の商品を表示します。";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "送信済みのサポートチケットを表示";
@@ -3053,11 +4209,35 @@
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "詳細な分析により、オーディエンスの成長を見守れます。";
 
-/* The info of the shipping labels top banner in order details */
-"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "より簡単に、お使いの端末から配送ラベルを直接印刷できるよう、改善を重ねているところです ! 現時点では、WooCommerce Shipping のストア管理からこの注文用にラベルを作成した場合、こちらの「注文詳細」から印刷できます。";
+/* Error message when WooCommerce Payments is not supported because the Stripe account has been rejected */
+"We are sorry but we can't support In-Person Payments for this store." = "このストアはオフラインでの支払いに対応していません。";
+
+/* Content of the banner notice in the add-ons view */
+"We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "お使いの端末から Product Add-ons をより簡単に確認できるように取り組んでいます。 当面は、注文のアドオンを表示できるようにする予定です。 ウェブダッシュボードでこれらのアドオンを作成および編集できます。";
+
+/* Content of the banner notice in the Simple Payments view */
+"We are working on making it easier for you to take payments from your device! For now, tap on the \"+\" button and you’ll be able to create an order with the amount you want to collect" = "お使いの端末からより簡単に支払いを受けることができるように取り組んでいます。 現在は、「+」ボタンをタップすると、希望の金額で注文を作成できます。";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "ストアのアナリティクスを表示できません";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
+"We couldn't connect your reader" = "Reader に接続できませんでした";
+
+/* The title of the Error Loading Data banner */
+"We couldn't load your data" = "データを読み込めませんでした";
+
+/* Title for the default store picker error screen */
+"We couldn't load your site" = "サイトを読み込めませんでした";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"We couldn’t update your reader’s software" = "リーダーのソフトウェアを更新できませんでした";
+
+/* Title for the error screen when WooCommerce Payments is not supported in a specific country */
+"We don’t support In-Person Payments in %@" = "%@ ではオフラインでの支払いがサポートされていません";
+
+/* Title for the error screen when WooCommerce Payments is not supported because we don't know the name of the country */
+"We don’t support In-Person Payments in your country" = "お住まいの国ではオフラインでの支払いがサポートされていません";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "入力された住所が一部修正されました。 正しい場合は、正確に配送できるように提案された住所を使用してください。";
@@ -3068,8 +4248,17 @@
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "サードパーティのものを含め、他の追跡ツールを使用します。それらについての詳細と設定方法についてお読みください。";
 
-/* Banner caption in Shipping Label Address Validation when the address can't be verified. */
+/* Message explaining that WordPress was not detected. */
+"We were not able to detect a WordPress site at the address you entered. Please make sure WordPress is installed and that you are running the latest available version." = "入力されたアドレスでは、WordPress サイトを検出できませんでした。 WordPress がインストールされていて、入手可能な最新のバージョンで実行されていることを確認してください。";
+
+/* Banner caption in Shipping Label Address Validation when the origin address can't be verified. */
+"We were unable to automatically verify the origin address." = "自動的に配送元住所を確認できませんでした。";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified. */
 "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "自動的に配送先住所を確認できませんでした。 Apple マップで表示するか、顧客に連絡して住所が正しいことを確認してください。";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
+"We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "自動的に配送先住所を確認できませんでした。 Apple マップで表示して住所が正しいことを確認してください。";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "メールを送信できませんでした。後ほど、もう一度お試しください。";
@@ -3080,30 +4269,33 @@
 /* Instruction text on the Sign Up screen. */
 "We'll email you a signup link to create your new WordPress.com account." = "新しい WordPress.com アカウントを作成するための登録リンクをメールでお送りします。";
 
-/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "新しい注文が入ると通知が届きます。それまでの間、ストアの売り上げを伸ばす方法を見つけましょう。";
-
 /* Text confirming email address to be used for new account. */
 "We'll use this email address to create your new WordPress.com account." = "このメールアドレスは新しい WordPress.com アカウントの作成に使用します。";
 
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "その URL の Jetpack サイトと連携することはできません。サポートにご連絡ください。";
 
-/* Default message to show if a filtered Orders list is empty. */
-"We're sorry, we couldn't find any orders." = "注文が見つかりませんでした。";
-
-/* Message shown if a filtered Orders list is empty. The %@ is a placeholder for the order status. */
-"We're sorry, we couldn't find any “%@” orders" = "「%@」の注文が見つかりませんでした";
+/* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
+"We're sorry, we couldn't find any order that match %@" = "「%@」に一致する注文が見つかりませんでした。";
 
 /* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "「%@」の検索結果が見つかりませんでした。";
+
+/* Generic error message when In-Person Payments is unavailable */
+"We're sorry, we were unable to verify In-Person Payments for this store." = "このストアのオフラインでの支払いを検証できませんでした。";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "新しい WordPress.com アカウントを作成するための登録リンクをメールでお送りしました。 このデバイスでメールをチェックして、WordPress.com から届いたメールにあるリンクをタップしてください。";
 
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "重さ";
+
+/* Title for the Weight row in item details in Customs screen of Shipping Label flow */
+"Weight (%1$@ per unit)" = "重量 (%1$@\/ 個)";
+
+/* Footer text for the empty package weight on the Add New Custom Package screen in Shipping Label flow */
+"Weight of empty package" = "空の荷物の重量";
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "重量 :%1$@%2$@";
@@ -3118,8 +4310,20 @@
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "Jetpack とは ?";
 
+/* Shipping Labels: info title about WooCommerce Services discount */
+"What is WooCommerce Services discount?" = "WooCommerce サービスの割引はどのくらいですか ?";
+
+/* Navigates to screen containing the latest WooCommerce Features */
+"What's New in WooCommerce" = "WooCommerce の最新情報";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "ご使用のサイトアドレス。";
+
+/* Title of Whats New Component */
+"What’s New in WooCommerce" = "WooCommerce の最新情報";
+
+/* Shipping Labels: info description about WooCommerce Services discount */
+"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "WooCommerce で配送ラベルを購入する際には、業務用価格の割引が適用されます。";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "エラーが発生し、ログインできませんでした。もう一度お試しください。";
@@ -3127,7 +4331,8 @@
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "正しい二段階認証コードではありません。コードを再確認してもう一度お試しください。";
 
-/* Title of the cell in Product Shipping Settings > Width */
+/* Title for the row to enter the package width on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Width */
 "Width" = "横幅";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
@@ -3135,6 +4340,15 @@
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
+
+/* Create Shipping Label form -> WooCommerce Discount label */
+"WooCommerce Discount" = "WooCommerce の割引";
+
+/* Title for the error screen when WooCommerce Payments is in test mode on a live site */
+"WooCommerce Payments is in Test Mode" = "WooCommerce Payments はテストモードです";
+
+/* Navigation title of the webview which used by the merchant to update their store address */
+"WooCommerce Settings" = "WooCommerce Settings";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce の送料";
@@ -3161,14 +4375,36 @@
 /* Yesterday Section Header */
 "Yesterday" = "昨日";
 
+/* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
+"You are not authorized to access this store." = "このストアにアクセスする権限がありません。";
+
+/* Info notice at the bottom of the product add-ons screen */
+"You can edit product add-ons in the web dashboard." = "ウェブダッシュボードで製品アドオンを編集できます。";
+
 /* The info of the top banner on the Products tab. */
-"You can now add downloadable files to a product and link upsell & cross-sell products. No longer want a product? Trash it!" = "商品にダウンロード可能なファイルを追加して、アップセルとクロスセルの商品をリンクできるようになりました。 商品が不要になりましたか ? ゴミ箱に移動しましょう。";
+"You can now create and manage product variations!" = "商品のバリエーションを作成、管理できるようになりました。";
+
+/* The info of the shipping labels top banner in order details */
+"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "無料の WooCommerce Shipping プラグインを使用して、お使いの端末から直接、すべての物理的な注文の配送ラベルを作成できるようになりました。 「配送ラベルを作成」をタップしてベータ機能をお試しください !";
+
+/* Shown in Refunds screen. Refunding fees are currently not supported. */
+"You can refund fees in your store admin" = "You can refund fees in your store admin";
 
 /* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "荷物の配送に使用されていない配送ラベルの返金をリクエストできます。\n処理には少なくとも14日かかります。";
+"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "荷物の配送に使用されていない配送ラベルの返金をリクエストできます。\n処理には少なくとも14日かかります。";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)";
+
+/* Error message when WooCommerce Payments is not supported in a specific country
+   Generic error message when In-Person Payments is unavailable */
+"You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "ストアで「代金引換」の支払い方法を有効にすれば、オフラインでの現金支払いを受け取ることもできます。";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "ご指定のメールアドレスはアカウント登録にご利用いただけません。このメールプロバイダによって、こちらから送信するメールがブロックされる問題が発生することがあるためです。恐れ入りますが、他のメールプロバイダのアドレスをお使いください。";
+
+/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
+"You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "ご使用のアカウントに期限切れの要件があります。 オフラインでの支払いを再開するには、この要件を処理してください。";
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "商品をパスワードで保護するには、パスワードを追加する必要があります";
@@ -3176,11 +4412,35 @@
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "アプリがブログに接続するのを防止するモバイルプラグインが DudaMobile からインストールされたようです。";
 
+/* Error message when WooCommerce Payments is not supported because the Stripe account is under review */
+"You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "アカウントのレビューが完了すると、すぐにオフラインでの支払いを受け取れるようになります。";
+
+/* Title for the error screen when the Stripe account is restricted because there are pending requirements */
+"Your WooCommerce Payments account has pending requirements" = "WooCommerce Payments アカウントに保留中の要件があります";
+
+/* Label that displays when a mandatory software update is happening */
+"Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "支払いを受け取るには、カードリーダーのソフトウェアを更新する必要があります。 キャンセルするとリーダーの接続がブロックされます。";
+
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "モバイルでも通知を受信し、コメントやいいねをリアルタイムで確認できます。";
 
+/* Label that displays when an optional software update is happening */
+"Your reader will automatically restart and reconnect after the update is complete." = "更新が完了すると、Reader が自動的に再度起動し接続されます";
+
+/* Subject of email sent with a card present payment receipt */
+"Your receipt" = "レシート";
+
+/* Subject of email sent with a card present payment receipt */
+"Your receipt from %1$@" = "%1$@からのレシート";
+
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Safari でサイトにアクセスすると、画面の上部にあるバーにサイトアドレスが表示されます。";
+
+/* Error message when WooCommerce Payments is not installed */
+"You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "オフラインでの支払いを受け取るには、無料の WooCommerce Payments 拡張機能をストアにインストールする必要があります。";
+
+/* Error message when WooCommerce Payments is installed but not set up */
+"You’re almost there! Please finish setting up WooCommerce Payments to start accepting Card-Present Payments." = "あともう少しです。 カードを使用した支払いを開始するには、WooCommerce Payments のセットアップを完了させてください。";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[コメント]";
@@ -3220,8 +4480,11 @@
 /* About View's Footer Text. The variable is the current year */
 "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd.";
 
-/* Customer note, wrapped in quotes */
-"“%@”" = "“%@”";
+/* Success notice when tapping Mark Order Complete on Review Order screen */
+"🎉 Order Completed" = "🎉 注文完了";
+
+/* Title for the button to cancel the simple payments screen */
+"🎉 Order completed" = "";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 商品は正常に返金されました";

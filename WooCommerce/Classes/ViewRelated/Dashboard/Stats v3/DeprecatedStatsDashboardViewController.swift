@@ -45,7 +45,7 @@ final class DeprecatedDashboardStatsViewController: UIViewController {
 // Everything is empty as this deprecated stats screen is static
 extension DeprecatedDashboardStatsViewController: DashboardUI {
 
-    var displaySyncingErrorNotice: () -> Void {
+    var displaySyncingError: () -> Void {
         get {
             return {}
         }
@@ -60,7 +60,7 @@ extension DeprecatedDashboardStatsViewController: DashboardUI {
     }
 
     func remindStatsUpgradeLater() {}
-    func reloadData(completion: @escaping () -> Void) {}
+    func reloadData(forced: Bool, completion: @escaping () -> Void) {}
 }
 
 // MARK: Constants

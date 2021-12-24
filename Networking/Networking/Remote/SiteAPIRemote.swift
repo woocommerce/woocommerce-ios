@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 
 /// Site API: Remote Endpoints
@@ -13,7 +12,7 @@ public class SiteAPIRemote: Remote {
     ///   - siteID: Site for which we'll fetch the API settings.
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadAPIInformation(for siteID: Int64, completion: @escaping (SiteAPI?, Error?) -> Void) {
+    public func loadAPIInformation(for siteID: Int64, completion: @escaping (Result<SiteAPI, Error>) -> Void) {
         let path = String()
         let parameters = [ParameterKeys.fields: ParameterValues.fieldValues]
         let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: path, parameters: parameters)

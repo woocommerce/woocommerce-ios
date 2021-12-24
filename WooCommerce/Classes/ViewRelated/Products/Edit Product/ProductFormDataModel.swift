@@ -65,6 +65,11 @@ protocol ProductFormDataModel {
     // Linked Products
     var upsellIDs: [Int64] { get }
     var crossSellIDs: [Int64] { get }
+
+    var hasAddOns: Bool { get }
+
+    /// True if a product has been saved remotely.
+    var existsRemotely: Bool { get }
 }
 
 // MARK: Helpers that can be derived from `ProductFormDataModel`

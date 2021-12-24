@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents a CouponLine Entity within an Order.
 ///
-public struct OrderCouponLine: Decodable, GeneratedFakeable {
+public struct OrderCouponLine: Decodable, Equatable, GeneratedFakeable {
     public let couponID: Int64
     public let code: String
     public let discount: String
@@ -36,13 +36,6 @@ private extension OrderCouponLine {
 // MARK: - Comparable Conformance
 //
 extension OrderCouponLine: Comparable {
-    public static func == (lhs: OrderCouponLine, rhs: OrderCouponLine) -> Bool {
-        return lhs.couponID == rhs.couponID &&
-            lhs.code == rhs.code &&
-            lhs.discount == rhs.discount &&
-            lhs.discountTax == rhs.discountTax
-    }
-
     public static func < (lhs: OrderCouponLine, rhs: OrderCouponLine) -> Bool {
         return lhs.couponID < rhs.couponID ||
             (lhs.couponID == rhs.couponID && lhs.code < rhs.code) ||

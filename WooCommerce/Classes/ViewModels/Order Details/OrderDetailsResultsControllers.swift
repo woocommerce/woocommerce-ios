@@ -7,7 +7,7 @@ import protocol Storage.StorageManagerType
 final class OrderDetailsResultsControllers {
     private let storageManager: StorageManagerType
 
-    private let order: Order
+    private var order: Order
     private let siteID: Int64
 
     /// Shipment Tracking ResultsController.
@@ -32,12 +32,7 @@ final class OrderDetailsResultsControllers {
 
     /// ProductVariation ResultsController.
     ///
-    private lazy var productVariationResultsController: ResultsController<StorageProductVariation> = {
-        let variationIDs = order.items.map(\.variationID).filter { $0 != 0 }
-        let predicate = NSPredicate(format: "siteID == %lld AND productVariationID in %@", siteID, variationIDs)
-
-        return ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [])
-    }()
+    private lazy var productVariationResultsController: ResultsController<StorageProductVariation> = getProductVariationResultsController()
 
     /// Status Results Controller.
     ///
@@ -68,6 +63,20 @@ final class OrderDetailsResultsControllers {
         return ResultsController<StorageShippingLabel>(storageManager: storageManager,
                                                        matching: predicate,
                                                        sortedBy: [dateCreatedDescriptor, shippingLabelIDDescriptor])
+    }()
+
+    /// PaymentGatewayAccount Results Controller.
+    ///
+    private lazy var paymentGatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount> = {
+        let predicate = NSPredicate(format: "siteID = %ld", order.siteID)
+        return ResultsController<StoragePaymentGatewayAccount>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
+    /// AddOnGroup ResultsController.
+    ///
+    private lazy var addOnGroupResultsController: ResultsController<StorageAddOnGroup> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        return ResultsController<StorageAddOnGroup>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
     /// Order shipment tracking list
@@ -106,6 +115,21 @@ final class OrderDetailsResultsControllers {
         return shippingLabelResultsController.fetchedObjects
     }
 
+    /// Payment Gateway Accounts for the Site (i.e. that can be used to collect payment for an order)
+    var paymentGatewayAccounts: [PaymentGatewayAccount] {
+        return paymentGatewayAccountResultsController.fetchedObjects
+    }
+
+    /// Site's add-on groups.
+    ///
+    var addOnGroups: [AddOnGroup] {
+        return addOnGroupResultsController.fetchedObjects
+    }
+
+    /// Completion handler for when results controllers reload.
+    ///
+    var onReload: (() -> Void)?
+
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.order = order
@@ -114,18 +138,38 @@ final class OrderDetailsResultsControllers {
     }
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
+        self.onReload = onReload
         configureStatusResultsController()
         configureTrackingResultsController(onReload: onReload)
         configureProductResultsController(onReload: onReload)
         configureProductVariationResultsController(onReload: onReload)
         configureRefundResultsController(onReload: onReload)
         configureShippingLabelResultsController(onReload: onReload)
+        configurePaymentGatewayAccountResultsController(onReload: onReload)
+        configureAddOnGroupResultsController(onReload: onReload)
+    }
+
+    func update(order: Order) {
+        self.order = order
+        // Product variation results controller depends on order items to load variations,
+        // so we need to recreate it whenever receiving an updated order.
+        self.productVariationResultsController = getProductVariationResultsController()
+        if let onReload = onReload {
+            configureProductVariationResultsController(onReload: onReload)
+        }
     }
 }
 
 // MARK: - Configuring results controllers
 //
 private extension OrderDetailsResultsControllers {
+
+    func getProductVariationResultsController() -> ResultsController<StorageProductVariation> {
+        let variationIDs = order.items.map(\.variationID).filter { $0 != 0 }
+        let predicate = NSPredicate(format: "siteID == %lld AND productVariationID in %@", siteID, variationIDs)
+
+        return ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }
 
     func configureStatusResultsController() {
         try? statusResultsController.performFetch()
@@ -213,6 +257,37 @@ private extension OrderDetailsResultsControllers {
         try? shippingLabelResultsController.performFetch()
     }
 
+    private func configurePaymentGatewayAccountResultsController(onReload: @escaping () -> Void) {
+        paymentGatewayAccountResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        paymentGatewayAccountResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            self.refetchAllResultsControllers()
+            onReload()
+        }
+
+        try? paymentGatewayAccountResultsController.performFetch()
+    }
+
+    private func configureAddOnGroupResultsController(onReload: @escaping () -> Void) {
+        addOnGroupResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        addOnGroupResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else { return }
+            self.refetchAllResultsControllers()
+            onReload()
+        }
+
+        try? addOnGroupResultsController.performFetch()
+    }
+
     /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
     /// involves more than one results controller.
     func refetchAllResultsControllers() {
@@ -222,5 +297,7 @@ private extension OrderDetailsResultsControllers {
         try? trackingResultsController.performFetch()
         try? statusResultsController.performFetch()
         try? shippingLabelResultsController.performFetch()
+        try? paymentGatewayAccountResultsController.performFetch()
+        try? addOnGroupResultsController.performFetch()
     }
 }

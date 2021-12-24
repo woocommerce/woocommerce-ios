@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductTagsViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="ghostTableView" destination="iGf-7j-RA7" id="8bf-Qd-2gU"/>
                 <outlet property="separatorView" destination="Yju-A0-WgT" id="Xfk-TL-To5"/>
                 <outlet property="tableView" destination="zVJ-8z-2vs" id="KHA-P7-8J7"/>
                 <outlet property="textView" destination="6Wz-Zl-b7p" id="3gD-hq-Ybw"/>
@@ -58,19 +59,27 @@
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="zVJ-8z-2vs">
                     <rect key="frame" x="0.0" y="113" width="414" height="749"/>
                 </tableView>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" estimatedSectionHeaderHeight="-1" sectionFooterHeight="28" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="iGf-7j-RA7" userLabel="Ghost Table View">
+                    <rect key="frame" x="0.0" y="113" width="414" height="783"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                </tableView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="zVJ-8z-2vs" firstAttribute="top" secondItem="Ip2-5h-wvk" secondAttribute="bottom" id="51P-yI-3FR"/>
                 <constraint firstAttribute="trailing" secondItem="Ip2-5h-wvk" secondAttribute="trailing" id="5AZ-8i-UZP"/>
+                <constraint firstItem="iGf-7j-RA7" firstAttribute="trailing" secondItem="i5M-Pr-FkT" secondAttribute="trailing" id="9at-iB-L88"/>
+                <constraint firstItem="iGf-7j-RA7" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="A0R-gI-Qdc"/>
                 <constraint firstItem="zVJ-8z-2vs" firstAttribute="trailing" secondItem="i5M-Pr-FkT" secondAttribute="trailing" id="Chb-li-7pc"/>
                 <constraint firstItem="zVJ-8z-2vs" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="ECp-36-O08"/>
+                <constraint firstItem="iGf-7j-RA7" firstAttribute="bottom" secondItem="i5M-Pr-FkT" secondAttribute="bottom" id="Q1i-f0-IsN"/>
                 <constraint firstItem="Ip2-5h-wvk" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="24" id="REa-GU-ALk"/>
+                <constraint firstItem="iGf-7j-RA7" firstAttribute="top" secondItem="Ip2-5h-wvk" secondAttribute="bottom" id="RF7-tb-0sL"/>
                 <constraint firstItem="zVJ-8z-2vs" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="eeY-QK-my7"/>
                 <constraint firstItem="Ip2-5h-wvk" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="oUV-Mg-GkZ"/>
             </constraints>
-            <point key="canvasLocation" x="131.8840579710145" y="135.9375"/>
+            <point key="canvasLocation" x="128.98550724637681" y="98.4375"/>
         </view>
     </objects>
     <resources>

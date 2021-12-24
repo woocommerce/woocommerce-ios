@@ -1,0 +1,55 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "queryParameters": {
+            "json": {
+                "equalTo": "true"
+            },
+            "path": {
+                "matches": "/wc/v3/products/reviews/6155/(.*)"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+             "data": {
+                "id": 6155,
+                "date_created": "{{fnow offset='-7 days' format=customformat}}",
+                "date_created_gmt": "{{fnow offset='-7 days' format=customformat}}",
+                "product_id": 2131,
+                "status": "approved",
+                "reviewer": "Mathilde Gerard",
+                "reviewer_email": "m@example.com",
+                "review": "Can't go outside without them anymore!",
+                "rating": 5,
+                "verified": false,
+                "reviewer_avatar_urls": {
+                    "24": "https:\/\/secure.gravatar.com\/avatar\/e4ba34574a801931a8fc2913a12bf6f0?s=24&d=identicon&r=g",
+                    "48": "https:\/\/secure.gravatar.com\/avatar\/e4ba34574a801931a8fc2913a12bf6f0?s=48&d=identicon&r=g",
+                    "96": "https:\/\/secure.gravatar.com\/avatar\/e4ba34574a801931a8fc2913a12bf6f0?s=96&d=identicon&r=g"
+                },
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews\/6155"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews"
+                    }],
+                    "up": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/2131"
+                    }],
+                    "reviewer": [{
+                        "embeddable": true,
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wp\/v2\/users\/742102"
+                    }]
+                }
+            }
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

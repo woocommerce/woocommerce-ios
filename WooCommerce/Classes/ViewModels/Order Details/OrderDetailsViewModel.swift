@@ -3,9 +3,11 @@ import UIKit
 import Gridicons
 import Yosemite
 import MessageUI
+import Combine
+import enum Networking.DotcomError
 
 final class OrderDetailsViewModel {
-    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+    private let paymentOrchestrator = PaymentCaptureOrchestrator()
     private let stores: StoresManager
 
     private(set) var order: Order
@@ -83,6 +85,16 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// Name of the user we will be collecting car present payments from
+    ///
+    var collectPaymentFrom: String {
+        guard let name = order.billingAddress?.firstName else {
+            return "Collect payment"
+        }
+
+        return "Collect payment from \(name)"
+    }
+
     /// Closure to be executed when the UI needs to be reloaded.
     /// That could happen, for example, when new incoming data is detected
     ///
@@ -100,6 +112,14 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// Closure to be executed when the more menu on Products section is tapped.
+    ///
+    var onProductsMoreMenuTapped: ((_ sourceView: UIView) -> Void)? {
+        didSet {
+            dataSource.onProductsMoreMenuTapped = onProductsMoreMenuTapped
+        }
+    }
+
     /// Closure to be executed when the shipping label more menu is tapped.
     ///
     var onShippingLabelMoreMenuTapped: ((_ shippingLabel: ShippingLabel, _ sourceView: UIView) -> Void)? {
@@ -107,6 +127,28 @@ final class OrderDetailsViewModel {
             dataSource.onShippingLabelMoreMenuTapped = onShippingLabelMoreMenuTapped
         }
     }
+
+    /// The customer's email address, if available
+    ///
+    var customerEmail: String? {
+        order.billingAddress?.email
+    }
+
+    /// Subject for the email containing a receipt generated after a card present payment has been captured
+    ///
+    var paymentReceiptEmailSubject: String {
+        guard let storeName = stores.sessionManager.defaultSite?.name else {
+            return Localization.emailSubjectWithoutStoreName
+        }
+
+        return String.localizedStringWithFormat(Localization.emailSubjectWithStoreName, storeName)
+    }
+
+    private var cardPresentPaymentGatewayAccounts: [PaymentGatewayAccount] {
+        return dataSource.cardPresentPaymentGatewayAccounts()
+    }
+
+    private var receipt: CardPresentReceiptParameters? = nil
 
     /// Helpers
     ///
@@ -225,28 +267,22 @@ extension OrderDetailsViewModel {
             let printingInstructionsViewController = ShippingLabelPrintingInstructionsViewController()
             let navigationController = WooNavigationController(rootViewController: printingInstructionsViewController)
             viewController.present(navigationController, animated: true, completion: nil)
-        case .shippingLabelProduct:
-            guard let item = dataSource.shippingLabelOrderItem(at: indexPath), item.productOrVariationID > 0 else {
-                return
-            }
-            let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: item),
-                                                                   siteID: order.siteID,
-                                                                   forceReadOnly: true)
-            let navController = WooNavigationController(rootViewController: loaderViewController)
-            viewController.present(navController, animated: true, completion: nil)
+        case .shippingLabelProducts:
+            let shippingLabelItems = dataSource.shippingLabelOrderItems(at: indexPath)
+            let productListVC = AggregatedProductListViewController(viewModel: self, items: shippingLabelItems)
+            viewController.show(productListVC, sender: nil)
         case .billingDetail:
             ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
-            let billingInformationViewController = BillingInformationViewController(order: order)
+            let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: true)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
-        case .details:
-            ServiceLocator.analytics.track(.orderDetailProductDetailTapped)
-            let identifier = ProductListViewController.classNameWithoutNamespaces
-            guard let productListVC = UIStoryboard.orders.instantiateViewController(identifier: identifier) as? ProductListViewController else {
-                DDLogError("Error: attempted to instantiate ProductListViewController. Instantiation failed.")
+        case .seeReceipt:
+            ServiceLocator.analytics.track(.receiptViewTapped)
+            guard let receipt = receipt else {
                 return
             }
-            productListVC.viewModel = self
-            viewController.navigationController?.pushViewController(productListVC, animated: true)
+            let viewModel = ReceiptViewModel(order: order, receipt: receipt)
+            let receiptViewController = ReceiptViewController(viewModel: viewModel)
+            viewController.navigationController?.pushViewController(receiptViewController, animated: true)
         case .refund:
             ServiceLocator.analytics.track(.orderDetailRefundDetailTapped)
             guard let refund = dataSource.refund(at: indexPath) else {
@@ -381,19 +417,70 @@ extension OrderDetailsViewModel {
                 onCompletion?(nil)
             case .failure(let error):
                 ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
-                DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
+                if error as? DotcomError == .noRestRoute {
+                    DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
+                } else {
+                    DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
+                }
                 onCompletion?(error)
             }
         }
         stores.dispatch(action)
     }
 
+    func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ReceiptAction.loadReceipt(order: order) { [weak self] result in
+            switch result {
+            case .success(let parameters):
+                self?.receipt = parameters
+                self?.dataSource.shouldShowReceipts = true
+            case .failure:
+                self?.dataSource.shouldShowReceipts = false
+            }
+            onCompletion?(nil)
+        }
+        stores.dispatch(action)
+    }
+
     func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {
-        let isFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease2)
+        // No orders are eligible for shipping label creation unless feature flag for Milestones 2 & 3 is enabled
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsM2M3) else {
+            dataSource.isEligibleForShippingLabelCreation = false
+            onCompletion?()
+            return
+        }
+
+        // Check shipping label creation eligibility remotely, according to client features available in Shipping Labels Milestone 4
+        // like creating Shipping Labels outside of United States
+        let isCustomsFormEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsInternational)
+        let isPaymentMethodCreationEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddPaymentMethods)
+        let isPackageCreationEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddCustomPackages)
         let action = ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
                                                                   orderID: order.orderID,
-                                                                  isFeatureFlagEnabled: isFeatureFlagEnabled) { [weak self] isEligible in
+                                                                  canCreatePaymentMethod: isPaymentMethodCreationEnabled,
+                                                                  canCreateCustomsForm: isCustomsFormEnabled,
+                                                                  canCreatePackage: isPackageCreationEnabled) { [weak self] isEligible in
             self?.dataSource.isEligibleForShippingLabelCreation = isEligible
+            if isEligible, let orderStatus = self?.orderStatus?.status.rawValue {
+                ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
+                                               withProperties: ["order_status": orderStatus])
+            }
+            onCompletion?()
+        }
+        stores.dispatch(action)
+    }
+
+    func refreshCardPresentPaymentEligibility() {
+        /// No need for a completion here. The VC will be notified of changes to the stored paymentGatewayAccounts
+        /// by the viewModel (after passing up through the dataSource and originating in the resultsControllers)
+        ///
+        let action = PaymentGatewayAccountAction.loadAccounts(siteID: order.siteID) {_ in}
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {
+        let action = AppSettingsAction.loadOrderAddOnsSwitchState { [weak self] result in
+            self?.dataSource.showAddOns = (try? result.get()) ?? false
             onCompletion?()
         }
         ServiceLocator.stores.dispatch(action)
@@ -430,5 +517,68 @@ extension OrderDetailsViewModel {
         }
 
         stores.dispatch(deleteTrackingAction)
+    }
+
+    /// Returns a publisher that emits an initial value if there is no reader connected and completes as soon as a
+    /// reader connects.
+    func cardReaderAvailable() -> AnyPublisher<[CardReader], Never> {
+        Future<AnyPublisher<[CardReader], Never>, Never> { [stores] promise in
+            let action = CardPresentPaymentAction.checkCardReaderConnected(onCompletion: { publisher in
+                promise(.success(publisher))
+            })
+
+            stores.dispatch(action)
+        }
+        .switchToLatest()
+        .eraseToAnyPublisher()
+    }
+
+    /// We are passing the ReceiptParameters as part of the completon block
+    /// We do so at this point for testing purposes.
+    /// When we implement persistance, the receipt metadata would be persisted
+    /// to Storage, associated to an order. We would not need to propagate
+    /// that object outside of Yosemite.
+    func collectPayment(onWaitingForInput: @escaping () -> Void, // i.e. waiting for buyer to swipe/insert/tap card
+                        onProcessingMessage: @escaping () -> Void, // i.e. payment is processing
+                        onDisplayMessage: @escaping (String) -> Void, // e.g. "Remove Card"
+                        onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) { // used to tell user payment completed (or not)
+        /// We don't have a concept of priority yet, so use the first paymentGatewayAccount for now
+        /// since we can't yet have multiple accounts
+        ///
+        if self.cardPresentPaymentGatewayAccounts.count != 1 {
+            DDLogWarn("Expected one card present gateway account. Got something else.")
+        }
+
+        let statementDescriptor = cardPresentPaymentGatewayAccounts.first?.statementDescriptor
+
+        paymentOrchestrator.collectPayment(for: self.order,
+                                           statementDescriptor: statementDescriptor,
+                                           onWaitingForInput: onWaitingForInput,
+                                           onProcessingMessage: onProcessingMessage,
+                                           onDisplayMessage: onDisplayMessage,
+                                           onCompletion: onCompletion)
+
+    }
+
+    func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        paymentOrchestrator.cancelPayment(onCompletion: onCompletion)
+    }
+
+    func printReceipt(params: CardPresentReceiptParameters) {
+        ReceiptActionCoordinator.printReceipt(for: order, params: params)
+    }
+
+    func emailReceipt(params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
+        ServiceLocator.analytics.track(.receiptEmailTapped)
+        paymentOrchestrator.emailReceipt(for: order, params: params, onContent: onContent)
+    }
+}
+
+private extension OrderDetailsViewModel {
+    enum Localization {
+        static let emailSubjectWithStoreName = NSLocalizedString("Your receipt from %1$@",
+                                                                 comment: "Subject of email sent with a card present payment receipt")
+        static let emailSubjectWithoutStoreName = NSLocalizedString("Your receipt",
+                                                                    comment: "Subject of email sent with a card present payment receipt")
     }
 }

@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Represents Shipping Label Address Validation Error.
 ///
-public struct ShippingLabelAddressValidationError: Equatable, GeneratedFakeable {
+public struct ShippingLabelAddressValidationError: Error, Equatable, GeneratedFakeable {
     public let addressError: String?
     public let generalError: String?
 

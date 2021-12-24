@@ -15,6 +15,8 @@ final class ShippingLabelPackagesMapperTests: XCTestCase {
         XCTAssertEqual(shippingLabelPackages.customPackages, sampleShippingLabelCustomPackages())
         XCTAssertTrue(shippingLabelPackages.predefinedOptions.contains(sampleShippingLabelPredefinedOptions().first!))
         XCTAssertTrue(shippingLabelPackages.predefinedOptions.contains(sampleShippingLabelPredefinedOptions()[1]))
+        XCTAssertTrue(shippingLabelPackages.unactivatedPredefinedOptions.contains(sampleShippingLabelUnactivatedPredefinedOption()))
+        XCTAssertFalse(shippingLabelPackages.unactivatedPredefinedOptions.contains(sampleShippingLabelPredefinedOptions()[1]))
     }
 }
 
@@ -70,6 +72,7 @@ private extension ShippingLabelPackagesMapperTests {
                                                                  isLetter: false,
                                                                  dimensions: "28.57 x 22.22 x 15.24")]
         let predefinedOption1 = ShippingLabelPredefinedOption(title: "USPS Priority Mail Flat Rate Boxes",
+                                                              providerID: "usps",
                                                               predefinedPackages: predefinedPackages1)
 
         let predefinedPackages2 = [ShippingLabelPredefinedPackage(id: "LargePaddedPouch",
@@ -77,8 +80,37 @@ private extension ShippingLabelPackagesMapperTests {
                                                                   isLetter: true,
                                                                   dimensions: "30.22 x 35.56 x 2.54")]
         let predefinedOption2 = ShippingLabelPredefinedOption(title: "DHL Express",
+                                                              providerID: "dhlexpress",
                                                               predefinedPackages: predefinedPackages2)
 
         return [predefinedOption1, predefinedOption2]
+    }
+
+    func sampleShippingLabelUnactivatedPredefinedOption() -> ShippingLabelPredefinedOption {
+        let predefinedPackages = [ShippingLabelPredefinedPackage(id: "SmallPaddedPouch",
+                                                                  title: "Small Padded Pouch",
+                                                                  isLetter: true,
+                                                                  dimensions: "24.89 x 30.48 x 2.54"),
+                                  ShippingLabelPredefinedPackage(id: "Box2Cube",
+                                                                 title: "Box #2 Cube",
+                                                                 isLetter: false,
+                                                                 dimensions: "25.65 x 14.73 x 14.99"),
+                                  ShippingLabelPredefinedPackage(id: "Box2Small",
+                                                                 title: "Box #2 Small",
+                                                                 isLetter: false,
+                                                                 dimensions: "31.75 x 28.19 x 3.81"),
+                                  ShippingLabelPredefinedPackage(id: "Box2Medium",
+                                                                 title: "Box #2 Medium",
+                                                                 isLetter: false,
+                                                                 dimensions: "33.53 x 32 x 5.08"),
+                                  ShippingLabelPredefinedPackage(id: "Box3Large",
+                                                                 title: "Box #3 Large",
+                                                                 isLetter: false,
+                                                                 dimensions: "44.45 x 31.75 x 7.62")]
+        let predefinedOption = ShippingLabelPredefinedOption(title: "DHL Express",
+                                                             providerID: "dhlexpress",
+                                                             predefinedPackages: predefinedPackages)
+
+        return predefinedOption
     }
 }

@@ -173,12 +173,12 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         // Media items to upload to site media library.
         let mockMedia1 = Media(mediaID: 134, date: Date(),
-                               fileExtension: "jpg", mimeType: "image/jpeg",
+                               fileExtension: "jpg", filename: "pic1.jpg", mimeType: "image/jpeg",
                                src: "pic", thumbnailURL: "https://test.com/pic1",
                                name: "pic1", alt: "the first image",
                                height: 136, width: 120)
         let mockMedia2 = Media(mediaID: 990, date: Date(),
-                               fileExtension: "png", mimeType: "image/png",
+                               fileExtension: "png", filename: "pic2.png", mimeType: "image/png",
                                src: "woo", thumbnailURL: "https://test.com/woo",
                                name: "woo", alt: "the second image",
                                height: 320, width: 776)
@@ -239,6 +239,7 @@ private extension ProductImageActionHandlerTests {
         return Media(mediaID: 123,
                      date: Date(),
                      fileExtension: "jpg",
+                     filename: "test.jpg",
                      mimeType: "image/jpeg",
                      src: "wp.com/test.jpg",
                      thumbnailURL: "wp.com/test.jpg",

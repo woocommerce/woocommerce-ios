@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents an OrderStatus Entity.
 ///
-public struct OrderStatus: Decodable, GeneratedFakeable {
+public struct OrderStatus: Decodable, Equatable, GeneratedFakeable {
     public let name: String?
     public let siteID: Int64
     public let slug: String
@@ -54,12 +54,6 @@ private extension OrderStatus {
 // MARK: - Comparable Conformance
 //
 extension OrderStatus: Comparable {
-    public static func == (lhs: OrderStatus, rhs: OrderStatus) -> Bool {
-        return lhs.name == rhs.name &&
-            lhs.slug == rhs.slug &&
-            lhs.total == rhs.total
-    }
-
     public static func < (lhs: OrderStatus, rhs: OrderStatus) -> Bool {
         return lhs.total < rhs.total ||
             (lhs.total == rhs.total && lhs.slug < rhs.slug)

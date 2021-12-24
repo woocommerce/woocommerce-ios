@@ -1,8 +1,0 @@
-project:
-    file: ../../Networking/Networking.xcodeproj
-    target:
-        name: Networking
-templates:
-    - Fakes.swifttemplate
-output: ../../Fakes/Fakes/
-

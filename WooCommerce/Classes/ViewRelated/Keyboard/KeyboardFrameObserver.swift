@@ -48,7 +48,10 @@ final class KeyboardFrameObserver {
                                        object: nil)
 
         if sendInitialEvent {
-            keyboardFrame = keyboardStateProvider.state.frameEnd
+            let currentState = keyboardStateProvider.state
+            // Always check the `isVisible` because `frameEnd` can still return a non-zero value.
+            // See the `frameEnd` documentation why.
+            keyboardFrame = currentState.isVisible ? currentState.frameEnd : .zero
         }
     }
 }

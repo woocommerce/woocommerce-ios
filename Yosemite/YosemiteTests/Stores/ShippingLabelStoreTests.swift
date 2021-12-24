@@ -1,3 +1,4 @@
+import Foundation
 import XCTest
 @testable import Yosemite
 @testable import Networking
@@ -20,6 +21,7 @@ final class ShippingLabelStoreTests: XCTestCase {
     }
 
     private let sampleSiteID: Int64 = 123
+    private let sampleOrderID: Int64 = 2345
     private let sampleShippingLabelID: Int64 = 1234
 
     // MARK: - Overridden Methods
@@ -80,7 +82,8 @@ final class ShippingLabelStoreTests: XCTestCase {
                                  originAddress: origin,
                                  destinationAddress: destination,
                                  productIDs: [3013],
-                                 productNames: ["Password protected!"])
+                                 productNames: ["Password protected!"],
+                                 commercialInvoiceURL: nil)
         }()
         let expectedSettings = Yosemite.ShippingLabelSettings(siteID: sampleSiteID, orderID: orderID, paperSize: .letter)
         let expectedResponse = OrderShippingLabelListResponse(shippingLabels: [expectedShippingLabel], settings: expectedSettings)
@@ -171,7 +174,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let remote = MockShippingLabelRemote()
         let expectedPrintData = ShippingLabelPrintData(mimeType: "application/pdf", base64Content: "////")
         remote.whenPrintingShippingLabel(siteID: sampleSiteID,
-                                         shippingLabelID: sampleShippingLabelID,
+                                         shippingLabelIDs: [sampleShippingLabelID],
                                          paperSize: "label",
                                          thenReturn: .success(expectedPrintData))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
@@ -179,7 +182,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         // When
         let result: Result<ShippingLabelPrintData, Error> = waitFor { promise in
             let action = ShippingLabelAction.printShippingLabel(siteID: self.sampleSiteID,
-                                                                shippingLabelID: self.sampleShippingLabelID,
+                                                                shippingLabelIDs: [self.sampleShippingLabelID],
                                                                 paperSize: .label) { result in
                 promise(result)
             }
@@ -196,7 +199,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let remote = MockShippingLabelRemote()
         let expectedError = NetworkError.notFound
         remote.whenPrintingShippingLabel(siteID: sampleSiteID,
-                                         shippingLabelID: sampleShippingLabelID,
+                                         shippingLabelIDs: [sampleShippingLabelID],
                                          paperSize: "label",
                                          thenReturn: .failure(expectedError))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
@@ -204,7 +207,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         // When
         let result: Result<ShippingLabelPrintData, Error> = waitFor { promise in
             let action = ShippingLabelAction.printShippingLabel(siteID: self.sampleSiteID,
-                                                                shippingLabelID: self.sampleShippingLabelID,
+                                                                shippingLabelIDs: [self.sampleShippingLabelID],
                                                                 paperSize: .label) { result in
                 promise(result)
             }
@@ -351,18 +354,17 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: `validateAddress`
 
-    func test_validateAddress_returns_ShippingLabelAddressValidationResponse_on_success() throws {
+    func test_validateAddress_returns_ShippingLabelAddressValidationSuccess_on_success() throws {
         // Given
         let remote = MockShippingLabelRemote()
-        let expectedResult = ShippingLabelAddressValidationResponse(address: sampleShippingLabelAddress(),
-                                                                    errors: nil,
+        let expectedResult = ShippingLabelAddressValidationSuccess(address: sampleShippingLabelAddress(),
                                                                     isTrivialNormalization: true)
         remote.whenValidatingAddress(siteID: sampleSiteID,
                                      thenReturn: .success(expectedResult))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<ShippingLabelAddressValidationResponse, Error> = waitFor { promise in
+        let result: Result<ShippingLabelAddressValidationSuccess, Error> = waitFor { promise in
             let action = ShippingLabelAction.validateAddress(siteID: self.sampleSiteID,
                                                              address: self.sampleShippingLabelAddressVerification()) { result in
                 promise(result)
@@ -375,7 +377,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(printData, expectedResult)
     }
 
-    func test_validateAddress_returns_ShippingLabelAddressValidationResponse_on_failure() throws {
+    func test_validateAddress_returns_error_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()
         let expectedError = NetworkError.notFound
@@ -384,7 +386,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<ShippingLabelAddressValidationResponse, Error> = waitFor { promise in
+        let result: Result<ShippingLabelAddressValidationSuccess, Error> = waitFor { promise in
             let action = ShippingLabelAction.validateAddress(siteID: self.sampleSiteID,
                                                              address: self.sampleShippingLabelAddressVerification()) { result in
                 promise(result)
@@ -443,23 +445,64 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: `checkCreationEligibility`
 
-    func test_checkCreationEligibility_returns_feature_flag_value() throws {
+    func test_checkCreationEligibility_returns_eligibility_on_success() throws {
         // Given
-        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remote = MockShippingLabelRemote()
+        let orderID: Int64 = 22
+        let isFeatureFlagEnabled = false
+        let expectedEligibility = true
+        remote.whenCheckingCreationEligiblity(siteID: sampleSiteID,
+                                              orderID: orderID,
+                                              canCreatePaymentMethod: isFeatureFlagEnabled,
+                                              canCreateCustomsForm: isFeatureFlagEnabled,
+                                              canCreatePackage: isFeatureFlagEnabled,
+                                              thenReturn: .success(ShippingLabelCreationEligibilityResponse(isEligible: expectedEligibility, reason: nil)))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let isFeatureFlagEnabled = false
         let isEligibleForCreation: Bool = waitFor { promise in
             let action = ShippingLabelAction.checkCreationEligibility(siteID: self.sampleSiteID,
-                                                                      orderID: 134,
-                                                                      isFeatureFlagEnabled: isFeatureFlagEnabled) { isEligible in
+                                                                      orderID: orderID,
+                                                                      canCreatePaymentMethod: isFeatureFlagEnabled,
+                                                                      canCreateCustomsForm: isFeatureFlagEnabled,
+                                                                      canCreatePackage: isFeatureFlagEnabled) { isEligible in
                 promise(isEligible)
             }
             store.onAction(action)
         }
 
         // Then
-        XCTAssertEqual(isEligibleForCreation, isFeatureFlagEnabled)
+        XCTAssertEqual(isEligibleForCreation, expectedEligibility)
+    }
+
+    func test_checkCreationEligibility_returns_false_on_failure() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let orderID: Int64 = 22
+        let isFeatureFlagEnabled = false
+        let expectedEligibility = false
+        remote.whenCheckingCreationEligiblity(siteID: sampleSiteID,
+                                              orderID: orderID,
+                                              canCreatePaymentMethod: isFeatureFlagEnabled,
+                                              canCreateCustomsForm: isFeatureFlagEnabled,
+                                              canCreatePackage: isFeatureFlagEnabled,
+                                              thenReturn: .failure(NetworkError.notFound))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let isEligibleForCreation: Bool = waitFor { promise in
+            let action = ShippingLabelAction.checkCreationEligibility(siteID: self.sampleSiteID,
+                                                                      orderID: orderID,
+                                                                      canCreatePaymentMethod: isFeatureFlagEnabled,
+                                                                      canCreateCustomsForm: isFeatureFlagEnabled,
+                                                                      canCreatePackage: isFeatureFlagEnabled) { isEligible in
+                promise(isEligible)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(isEligibleForCreation, expectedEligibility)
     }
 
     // MARK: `createPackage`
@@ -472,7 +515,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, PackageCreationError> = waitFor { promise in
             let action = ShippingLabelAction.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackage()) { result in
                 promise(result)
             }
@@ -492,8 +535,55 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, PackageCreationError> = waitFor { promise in
             let action = ShippingLabelAction.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackage()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    // MARK: `loadCarriersAndRates`
+
+    func test_loadCarriersAndRates_returns_success_response() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        remote.whenLoadCarriersAndRates(siteID: sampleSiteID, thenReturn: .success(sampleShippingLabelCarriersAndRates()))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[ShippingLabelCarriersAndRates], Error> = waitFor { promise in
+            let action = ShippingLabelAction.loadCarriersAndRates(siteID: self.sampleSiteID,
+                                                                  orderID: self.sampleOrderID,
+                                                                  originAddress: ShippingLabelAddress.fake(),
+                                                                  destinationAddress: ShippingLabelAddress.fake(),
+                                                                  packages: [ShippingLabelPackageSelected.fake()]) { (result) in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_loadCarriersAndRates_returns_error_on_failure() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let expectedError = NetworkError.notFound
+        remote.whenLoadCarriersAndRates(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[ShippingLabelCarriersAndRates], Error> = waitFor { promise in
+            let action = ShippingLabelAction.loadCarriersAndRates(siteID: self.sampleSiteID,
+                                                                  orderID: self.sampleOrderID,
+                                                                  originAddress: ShippingLabelAddress.fake(),
+                                                                  destinationAddress: ShippingLabelAddress.fake(),
+                                                                  packages: [ShippingLabelPackageSelected.fake()]) { (result) in
                 promise(result)
             }
             store.onAction(action)
@@ -502,6 +592,285 @@ final class ShippingLabelStoreTests: XCTestCase {
         // Then
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    // MARK: `synchronizeShippingLabelAccountSettings`
+
+    func test_synchronizeShippingLabelAccountSettings_persists_account_settings_on_success() throws {
+        // Given
+        let expectedSettings = sampleShippingLabelAccountSettings()
+        let remote = MockShippingLabelRemote()
+        remote.whenLoadShippingLabelAccountSettings(siteID: sampleSiteID,
+                                                    thenReturn: .success(expectedSettings))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Yosemite.ShippingLabelAccountSettings, Error> = waitFor { promise in
+            let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+
+        let persistedSettings = try XCTUnwrap(viewStorage.loadShippingLabelAccountSettings(siteID: sampleSiteID))
+        XCTAssertEqual(persistedSettings.toReadOnly(), expectedSettings)
+    }
+
+    func test_synchronizeShippingLabelAccountSettings_returns_error_on_failure() throws {
+        // Given
+        let expectedError = NetworkError.notFound
+        let remote = MockShippingLabelRemote()
+        remote.whenLoadShippingLabelAccountSettings(siteID: sampleSiteID,
+                                                    thenReturn: .failure(expectedError))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Yosemite.ShippingLabelAccountSettings, Error> = waitFor { promise in
+            let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    // MARK: `updateShippingLabelAccountSettings`
+
+    func test_updateShippingLabelAccountSettings_returns_success_response() throws {
+        // Given
+        let settings = ShippingLabelAccountSettings.fake().copy()
+        let remote = MockShippingLabelRemote()
+        remote.whenUpdateShippingLabelAccountSettings(siteID: sampleSiteID,
+                                                      settings: settings,
+                                                      thenReturn: .success(true))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = ShippingLabelAction.updateShippingLabelAccountSettings(siteID: self.sampleSiteID, settings: settings) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_updateShippingLabelAccountSettings_returns_error_on_failure() throws {
+        // Given
+        let settings = ShippingLabelAccountSettings.fake().copy()
+        let remote = MockShippingLabelRemote()
+        let expectedError = NetworkError.notFound
+        remote.whenUpdateShippingLabelAccountSettings(siteID: sampleSiteID,
+                                                      settings: settings,
+                                                      thenReturn: .failure(expectedError))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = ShippingLabelAction.updateShippingLabelAccountSettings(siteID: self.sampleSiteID, settings: settings) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    func test_purchaseShippingLabel_returns_shipping_label_on_success() throws {
+        // Given
+        let mockAddress = ShippingLabelAddress.fake()
+        let mockPackages = [ShippingLabelPackagePurchase.fake()]
+        let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579)
+        let labelStatusResponse = ShippingLabelStatusPollingResponse.purchased(expectedLabel)
+        let remote = MockShippingLabelRemote()
+        remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
+                                         orderID: sampleOrderID,
+                                         originAddress: mockAddress,
+                                         destinationAddress: mockAddress,
+                                         packages: mockPackages,
+                                         emailCustomerReceipt: true,
+                                         thenReturn: .success([ShippingLabelPurchase.fake().copy(shippingLabelID: 13579)]))
+        remote.whenCheckLabelStatus(siteID: sampleSiteID,
+                                    orderID: sampleOrderID,
+                                    labelIDs: [13579],
+                                    thenReturn: .success([labelStatusResponse]))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
+            let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                                                   orderID: self.sampleOrderID,
+                                                                   originAddress: mockAddress,
+                                                                   destinationAddress: mockAddress,
+                                                                   packages: mockPackages,
+                                                                   emailCustomerReceipt: true) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let actualLabels = try XCTUnwrap(result.get())
+        XCTAssertEqual(actualLabels, [expectedLabel])
+    }
+
+    func test_purchaseShippingLabel_returns_error_on_purchaseShippingLabel_request_failure() throws {
+        // Given
+        let mockAddress = ShippingLabelAddress.fake()
+        let mockPackages = [ShippingLabelPackagePurchase.fake()]
+        let expectedError = NetworkError.timeout
+        let remote = MockShippingLabelRemote()
+        remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
+                                         orderID: sampleOrderID,
+                                         originAddress: mockAddress,
+                                         destinationAddress: mockAddress,
+                                         packages: mockPackages,
+                                         emailCustomerReceipt: true,
+                                         thenReturn: .failure(expectedError))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
+            let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                                                   orderID: self.sampleOrderID,
+                                                                   originAddress: mockAddress,
+                                                                   destinationAddress: mockAddress,
+                                                                   packages: mockPackages,
+                                                                   emailCustomerReceipt: true) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    func test_purchaseShippingLabel_returns_error_on_checkLabelStatus_request_failure() throws {
+        // Given
+        let mockAddress = ShippingLabelAddress.fake()
+        let mockPackages = [ShippingLabelPackagePurchase.fake()]
+        let expectedError = NetworkError.timeout
+        let remote = MockShippingLabelRemote()
+        remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
+                                         orderID: sampleOrderID,
+                                         originAddress: mockAddress,
+                                         destinationAddress: mockAddress,
+                                         packages: mockPackages,
+                                         emailCustomerReceipt: true,
+                                         thenReturn: .success([ShippingLabelPurchase.fake().copy(shippingLabelID: 13579)]))
+        remote.whenCheckLabelStatus(siteID: sampleSiteID,
+                                    orderID: sampleOrderID,
+                                    labelIDs: [13579],
+                                    thenReturn: .failure(expectedError))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor(timeout: 6.0) { promise in
+            let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                                                   orderID: self.sampleOrderID,
+                                                                   originAddress: mockAddress,
+                                                                   destinationAddress: mockAddress,
+                                                                   packages: mockPackages,
+                                                                   emailCustomerReceipt: true) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    func test_purchaseShippingLabel_returns_error_on_purchase_error() throws {
+        // Given
+        let mockAddress = ShippingLabelAddress.fake()
+        let mockPackages = [ShippingLabelPackagePurchase.fake()]
+        let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579, status: .purchaseError)
+        let labelStatusResponse = ShippingLabelStatusPollingResponse.purchased(expectedLabel)
+        let remote = MockShippingLabelRemote()
+        remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
+                                         orderID: sampleOrderID,
+                                         originAddress: mockAddress,
+                                         destinationAddress: mockAddress,
+                                         packages: mockPackages,
+                                         emailCustomerReceipt: true,
+                                         thenReturn: .success([ShippingLabelPurchase.fake().copy(shippingLabelID: 13579)]))
+        remote.whenCheckLabelStatus(siteID: sampleSiteID,
+                                    orderID: sampleOrderID,
+                                    labelIDs: [13579],
+                                    thenReturn: .success([labelStatusResponse]))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
+            let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                                                   orderID: self.sampleOrderID,
+                                                                   originAddress: mockAddress,
+                                                                   destinationAddress: mockAddress,
+                                                                   packages: mockPackages,
+                                                                   emailCustomerReceipt: true) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? LabelPurchaseError, LabelPurchaseError.purchaseErrorStatus)
+    }
+
+    func test_purchaseShippingLabel_does_not_return_error_if_purchase_remains_in_progress() throws {
+        // Given
+        let mockAddress = ShippingLabelAddress.fake()
+        let mockPackages = [ShippingLabelPackagePurchase.fake()]
+        let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579, status: .purchaseInProgress)
+        let labelStatusResponse = ShippingLabelStatusPollingResponse.purchased(expectedLabel)
+        let remote = MockShippingLabelRemote()
+        remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
+                                         orderID: sampleOrderID,
+                                         originAddress: mockAddress,
+                                         destinationAddress: mockAddress,
+                                         packages: mockPackages,
+                                         emailCustomerReceipt: true,
+                                         thenReturn: .success([ShippingLabelPurchase.fake().copy(shippingLabelID: 13579)]))
+        remote.whenCheckLabelStatus(siteID: sampleSiteID,
+                                    orderID: sampleOrderID,
+                                    labelIDs: [13579],
+                                    thenReturn: .success([labelStatusResponse]))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        var purchaseResult: Result<[Yosemite.ShippingLabel], Error>? = waitFor(timeout: 6.0) { promise in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.9) {
+                promise(nil)
+            }
+        }
+        let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                                               orderID: self.sampleOrderID,
+                                                               originAddress: mockAddress,
+                                                               destinationAddress: mockAddress,
+                                                               packages: mockPackages,
+                                                               emailCustomerReceipt: true) { result in
+            purchaseResult = result
+        }
+        store.onAction(action)
+
+        // Then
+        XCTAssertNil(purchaseResult)
     }
 }
 
@@ -545,7 +914,8 @@ private extension ShippingLabelStoreTests {
     func sampleShippingLabelPackagesResponse() -> Yosemite.ShippingLabelPackagesResponse {
         return ShippingLabelPackagesResponse(storeOptions: sampleShippingLabelStoreOptions(),
                                              customPackages: sampleShippingLabelCustomPackages(),
-                                             predefinedOptions: sampleShippingLabelPredefinedOptions())
+                                             predefinedOptions: sampleShippingLabelPredefinedOptions(),
+                                             unactivatedPredefinedOptions: [])
 
     }
 
@@ -589,6 +959,7 @@ private extension ShippingLabelStoreTests {
                                                                  isLetter: false,
                                                                  dimensions: "28.57 x 22.22 x 15.24")]
         let predefinedOption1 = ShippingLabelPredefinedOption(title: "USPS Priority Mail Flat Rate Boxes",
+                                                              providerID: "usps",
                                                               predefinedPackages: predefinedPackages1)
 
         let predefinedPackages2 = [ShippingLabelPredefinedPackage(id: "LargePaddedPouch",
@@ -596,8 +967,55 @@ private extension ShippingLabelStoreTests {
                                                                   isLetter: true,
                                                                   dimensions: "30.22 x 35.56 x 2.54")]
         let predefinedOption2 = ShippingLabelPredefinedOption(title: "DHL Express",
+                                                              providerID: "dhlexpress",
                                                               predefinedPackages: predefinedPackages2)
 
         return [predefinedOption1, predefinedOption2]
+    }
+
+    func sampleShippingLabelAccountSettings() -> Yosemite.ShippingLabelAccountSettings {
+        let paymentMethod = ShippingLabelPaymentMethod(paymentMethodID: 11743265,
+                                                       name: "Example User",
+                                                       cardType: .visa,
+                                                       cardDigits: "4242",
+                                                       expiry: DateFormatter.Defaults.yearMonthDayDateFormatter.date(from: "2030-12-31"))
+
+        return ShippingLabelAccountSettings(siteID: sampleSiteID,
+                                            canManagePayments: true,
+                                            canEditSettings: true,
+                                            storeOwnerDisplayName: "Example User",
+                                            storeOwnerUsername: "admin",
+                                            storeOwnerWpcomUsername: "example@example.com",
+                                            storeOwnerWpcomEmail: "apiexamples",
+                                            paymentMethods: [paymentMethod],
+                                            selectedPaymentMethodID: 11743265,
+                                            isEmailReceiptsEnabled: true,
+                                            paperSize: .label,
+                                            lastSelectedPackageID: "small_flat_box")
+    }
+
+    func sampleShippingLabelCarriersAndRates() -> [ShippingLabelCarriersAndRates] {
+        return [ShippingLabelCarriersAndRates(packageID: "123",
+                                             defaultRates: [sampleShippingLabelCarrierRate()],
+                                             signatureRequired: [],
+                                             adultSignatureRequired: [])]
+    }
+
+    func sampleShippingLabelCarrierRate() -> ShippingLabelCarrierRate {
+        let rate = ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                            insurance: "0",
+                                            retailRate: 40.060000000000002,
+                                            rate: 40.060000000000002,
+                                            rateID: "rate_a8a29d5f34984722942f466c30ea27ef",
+                                            serviceID: "ParcelSelect",
+                                            carrierID: "usps",
+                                            shipmentID: "shp_e0e3c2f4606c4b198d0cbd6294baed56",
+                                            hasTracking: true,
+                                            isSelected: false,
+                                            isPickupFree: true,
+                                            deliveryDays: 2,
+                                            deliveryDateGuaranteed: false)
+
+        return rate
     }
 }

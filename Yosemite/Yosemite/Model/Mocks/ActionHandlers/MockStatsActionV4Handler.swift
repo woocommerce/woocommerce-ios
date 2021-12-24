@@ -20,7 +20,7 @@ struct MockStatsActionV4Handler: MockActionHandler {
         }
     }
 
-    func retrieveStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Error?) -> ()) {
+    func retrieveStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Result<Void, Error>) -> ()) {
         let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
 
         switch timeRange {
@@ -32,11 +32,11 @@ struct MockStatsActionV4Handler: MockActionHandler {
                 success(onCompletion)
             case .thisYear:
                 store.upsertStoredOrderStats(readOnlyStats: objectGraph.thisYearOrderStats, timeRange: timeRange)
-                onCompletion(nil)
+                onCompletion(.success(()))
         }
     }
 
-    func retrieveSiteVisitStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Error?) -> ()) {
+    func retrieveSiteVisitStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Result<Void, Error>) -> ()) {
         let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
 
         switch timeRange {
@@ -48,11 +48,11 @@ struct MockStatsActionV4Handler: MockActionHandler {
                 success(onCompletion)
             case .thisYear:
                 store.upsertStoredSiteVisitStats(readOnlyStats: objectGraph.thisYearVisitStats, timeRange: timeRange)
-                onCompletion(nil)
+                onCompletion(.success(()))
         }
     }
 
-    func retrieveTopEarnerStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Error?) -> ()) {
+    func retrieveTopEarnerStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Result<Void, Error>) -> ()) {
         let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
 
         switch timeRange {
@@ -64,7 +64,7 @@ struct MockStatsActionV4Handler: MockActionHandler {
                 success(onCompletion)
             case .thisYear:
                 store.upsertStoredTopEarnerStats(readOnlyStats: objectGraph.thisYearTopProducts)
-                onCompletion(nil)
+                onCompletion(.success(()))
         }
     }
 }

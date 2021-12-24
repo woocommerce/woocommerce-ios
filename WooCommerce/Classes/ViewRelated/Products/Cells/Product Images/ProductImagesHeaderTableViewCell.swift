@@ -36,15 +36,13 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
     ///
     func configure(with productImageStatuses: [ProductImageStatus],
                    config: ProductImagesCellConfig,
-                   productUIImageLoader: ProductUIImageLoader) {
-        let viewModel = ProductImagesHeaderViewModel(productImageStatuses: productImageStatuses,
-                                               config: config)
+                   productUIImageLoader: ProductUIImageLoader
+                    ) {
+        let viewModel = ProductImagesHeaderViewModel(productImageStatuses: productImageStatuses, config: config)
         self.viewModel = viewModel
         dataSource = ProductImagesCollectionViewDataSource(viewModel: viewModel,
                                                            productUIImageLoader: productUIImageLoader)
-
         configureCollectionView(config: config)
-
         viewModel.registerCollectionViewCells(collectionView)
 
         if viewModel.shouldScrollToStart {
@@ -121,6 +119,7 @@ private extension ProductImagesHeaderTableViewCell {
 
     func configureSeparator() {
         separatorInset.left = 0
+        hideSeparator()
     }
 
     func configureCollectionView(config: ProductImagesCellConfig) {

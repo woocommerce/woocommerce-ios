@@ -247,6 +247,7 @@ final class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { result in
                                                         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 10)
                                                         XCTAssertTrue(result.isSuccess)
@@ -274,6 +275,7 @@ final class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { result in
             XCTAssertTrue(result.isSuccess)
 
@@ -306,6 +308,7 @@ final class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { error in
             expectation.fulfill()
         }
@@ -341,6 +344,7 @@ final class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { result in
             XCTAssertTrue(result.isSuccess)
 
@@ -383,6 +387,7 @@ final class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { result in
             XCTAssertTrue(result.isSuccess)
 
@@ -422,6 +427,7 @@ final class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { result in
             XCTAssertTrue(result.isFailure)
 
@@ -452,6 +458,7 @@ final class ProductStoreTests: XCTestCase {
                                                            stockStatus: nil,
                                                            productStatus: nil,
                                                            productType: nil,
+                                                           productCategory: nil,
                                                            sortOrder: .nameAscending) { aResult in
                 result = aResult
                 expectation.fulfill()
@@ -477,6 +484,7 @@ final class ProductStoreTests: XCTestCase {
                                                            stockStatus: nil,
                                                            productStatus: nil,
                                                            productType: nil,
+                                                           productCategory: nil,
                                                            sortOrder: .nameAscending) { aResult in
                 result = aResult
                 expectation.fulfill()
@@ -501,6 +509,7 @@ final class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { result in
             XCTAssertTrue(result.isFailure)
             expectation.fulfill()
@@ -522,6 +531,7 @@ final class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { result in
             XCTAssertTrue(result.isFailure)
             expectation.fulfill()
@@ -930,10 +940,9 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.searchProducts` effectively persists the retrieved products.
     ///
-    func testSearchProductsEffectivelyPersistsRetrievedSearchProducts() {
-        let expectation = self.expectation(description: "Search Products")
+    func test_searchProducts_effectively_persists_retrieved_search_products() throws {
+        // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
@@ -941,117 +950,100 @@ final class ProductStoreTests: XCTestCase {
         let expectedProductID: Int64 = 67
         let expectedProductName = "Photo"
 
+        // When
         let keyword = "photo"
-        let action = ProductAction.searchProducts(siteID: sampleSiteID,
-                                                  keyword: keyword,
-                                                  pageNumber: defaultPageNumber,
-                                                  pageSize: defaultPageSize,
-                                                  onCompletion: { [weak self] error in
-                                                    guard let self = self else {
-                                                        XCTFail()
-                                                        return
-                                                    }
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = ProductAction.searchProducts(siteID: self.sampleSiteID,
+                                                      keyword: keyword,
+                                                      pageNumber: self.defaultPageNumber,
+                                                      pageSize: self.defaultPageSize,
+                                                      onCompletion: { result in
+                                                        promise(result)
+                                                      })
+            store.onAction(action)
+        }
 
-                                                    let expectedProduct = self.viewStorage
-                                                        .loadProduct(siteID: self.sampleSiteID,
-                                                                     productID: expectedProductID)?.toReadOnly()
-                                                    XCTAssertEqual(expectedProduct?.name, expectedProductName)
-
-                                                    XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 2)
-
-                                                    XCTAssertNil(error)
-
-                                                    expectation.fulfill()
-        })
-
-        store.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let expectedProduct = try XCTUnwrap(viewStorage.loadProduct(siteID: sampleSiteID, productID: expectedProductID)?.toReadOnly())
+        XCTAssertEqual(expectedProduct.name, expectedProductName)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 2)
     }
 
     /// Verifies that `ProductAction.searchProducts` effectively upserts the `ProductSearchResults` entity.
     ///
-    func testSearchProductsEffectivelyPersistsSearchResultsEntity() {
-        let expectation = self.expectation(description: "Search Products")
+    func test_searchProducts_effectively_persists_search_eesults_entity() throws {
+        // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
+        // When
         let keyword = "hiii"
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = ProductAction.searchProducts(siteID: self.sampleSiteID,
+                                                      keyword: keyword,
+                                                      pageNumber: self.defaultPageNumber,
+                                                      pageSize: self.defaultPageSize,
+                                                      onCompletion: { result in
+                                                        promise(result)
+                                                      })
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let searchResults = try XCTUnwrap(viewStorage.loadProductSearchResults(keyword: keyword))
+        XCTAssertEqual(searchResults.keyword, keyword)
+        XCTAssertEqual(searchResults.products?.count, viewStorage.countObjects(ofType: Storage.Product.self))
+
         let anotherKeyword = "hello"
-        let action = ProductAction.searchProducts(siteID: sampleSiteID,
-                                                  keyword: keyword,
-                                                  pageNumber: defaultPageNumber,
-                                                  pageSize: defaultPageSize,
-                                                  onCompletion: { [weak self] error in
-                                                    guard let self = self else {
-                                                        XCTFail()
-                                                        return
-                                                    }
-
-                                                    XCTAssertNil(error)
-
-                                                    let searchResults = self.viewStorage.loadProductSearchResults(keyword: keyword)
-                                                    XCTAssertEqual(searchResults?.keyword, keyword)
-                                                    XCTAssertEqual(searchResults?.products?.count, self.viewStorage.countObjects(ofType: Storage.Product.self))
-
-                                                    let searchResultsWithAnotherKeyword = self.viewStorage.loadProductSearchResults(keyword: anotherKeyword)
-                                                    XCTAssertNil(searchResultsWithAnotherKeyword)
-
-                                                    expectation.fulfill()
-        })
-
-        store.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        let searchResultsWithAnotherKeyword = viewStorage.loadProductSearchResults(keyword: anotherKeyword)
+        XCTAssertNil(searchResultsWithAnotherKeyword)
     }
 
     /// Verifies that `ProductAction.searchProducts` does not result in duplicated entries in the ProductSearchResults entity.
     ///
-    func testSearchProductsDoesNotProduceDuplicatedReferences() {
-        let expectation = self.expectation(description: "Search Products")
+    func test_searchProducts_does_not_produce_duplicated_references() {
+        // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
+        // When
         let keyword = "hiii"
-        let nestedAction = ProductAction
-            .searchProducts(siteID: sampleSiteID,
-                            keyword: keyword,
-                            pageNumber: defaultPageNumber,
-                            pageSize: defaultPageSize,
-                            onCompletion: { [weak self] error in
-                                guard let self = self else {
-                                    XCTFail()
-                                    return
-                                }
-                                let products = self.viewStorage.allObjects(ofType: Storage.Product.self, matching: nil, sortedBy: nil)
-                                XCTAssertEqual(products.count, 10)
-                                for product in products {
-                                    XCTAssertEqual(product.searchResults?.count, 1)
-                                    XCTAssertEqual(product.searchResults?.first?.keyword, keyword)
-                                }
+        let result: Result<Void, Error> = waitFor { promise in
+            let nestedAction = ProductAction.searchProducts(siteID: self.sampleSiteID,
+                                                            keyword: keyword,
+                                                            pageNumber: self.defaultPageNumber,
+                                                            pageSize: self.defaultPageSize,
+                                                            onCompletion: { result in
+                                                                promise(result)
+                                                            })
+            let firstAction = ProductAction.searchProducts(siteID: self.sampleSiteID,
+                                                           keyword: keyword,
+                                                           pageNumber: self.defaultPageNumber,
+                                                           pageSize: self.defaultPageSize,
+                                                           onCompletion: { result in
+                                                            store.onAction(nestedAction)
+                                                           })
+            store.onAction(firstAction)
+        }
 
-                                let searchResults = self.viewStorage.allObjects(ofType: Storage.ProductSearchResults.self, matching: nil, sortedBy: nil)
-                                XCTAssertEqual(searchResults.count, 1)
-                                XCTAssertEqual(searchResults.first?.products?.count, 10)
-                                XCTAssertEqual(searchResults.first?.keyword, keyword)
+        // Then
+        XCTAssertTrue(result.isSuccess)
 
-                                XCTAssertNil(error)
+        let products = viewStorage.allObjects(ofType: Storage.Product.self, matching: nil, sortedBy: nil)
+        XCTAssertEqual(products.count, 10)
+        for product in products {
+            XCTAssertEqual(product.searchResults?.count, 1)
+            XCTAssertEqual(product.searchResults?.first?.keyword, keyword)
+        }
 
-                                expectation.fulfill()
-            })
-
-        let firstAction = ProductAction.searchProducts(siteID: sampleSiteID,
-                                                       keyword: keyword,
-                                                       pageNumber: defaultPageNumber,
-                                                       pageSize: defaultPageSize,
-                                                       onCompletion: { error in
-                                                        store.onAction(nestedAction)
-        })
-
-        store.onAction(firstAction)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        let searchResults = viewStorage.allObjects(ofType: Storage.ProductSearchResults.self, matching: nil, sortedBy: nil)
+        XCTAssertEqual(searchResults.count, 1)
+        XCTAssertEqual(searchResults.first?.products?.count, 10)
+        XCTAssertEqual(searchResults.first?.keyword, keyword)
     }
 
     // MARK: - ProductAction.updateProduct

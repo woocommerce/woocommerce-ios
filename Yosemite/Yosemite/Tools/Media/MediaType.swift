@@ -1,4 +1,4 @@
-import MobileCoreServices
+import UniformTypeIdentifiers
 
 /// Types of media.
 ///
@@ -10,35 +10,42 @@ public enum MediaType {
     case other
 
     init(fileExtension: String) {
-        let unmanagedFileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExtension as CFString, nil)
-        guard let fileUTI = unmanagedFileUTI?.takeRetainedValue() else {
+        guard let typeIdentifier = UTType(filenameExtension: fileExtension) else {
             self = .other
             return
         }
-        self.init(fileUTI: fileUTI)
+        self.init(dataType: typeIdentifier)
     }
 
     init(mimeType: String) {
-        let unmanagedFileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, mimeType as CFString, nil)
-        guard let fileUTI = unmanagedFileUTI?.takeRetainedValue() else {
+        guard let typeIdentifier = UTType(mimeType: mimeType) else {
             self = .other
             return
         }
-        self.init(fileUTI: fileUTI)
+        self.init(dataType: typeIdentifier)
     }
 
-    private init(fileUTI: CFString) {
-        if UTTypeConformsTo(fileUTI, kUTTypeImage) {
+    private init(dataType: UTType) {
+        // Prior to iOS 14.4, video/webm and audio/webm were not natively supported and would
+        // have resulted as `self = .other` in the code below. iOS 14.4 added support for them,
+        // interpreting both as video types, but we don't want the app to allow users to upload
+        // them because WooCommerce/WordPress don't support that format, yet.
+        //
+        // The UT type identifier for both video/webm and audio/webm is "org.webmproject.webm"
+        //
+        // See https://github.com/woocommerce/woocommerce-ios/pull/4459/files#r656194065
+        guard dataType != UTType("org.webmproject.webm") else {
+            self = .other
+            return
+        }
+
+        if dataType.conforms(to: UTType.image) {
             self = .image
-        } else if UTTypeConformsTo(fileUTI, kUTTypeVideo) {
+        } else if dataType.conforms(to: UTType.movie) {
             self = .video
-        } else if UTTypeConformsTo(fileUTI, kUTTypeMovie) {
-            self = .video
-        } else if UTTypeConformsTo(fileUTI, kUTTypeMPEG4) {
-            self = .video
-        } else if UTTypeConformsTo(fileUTI, kUTTypePresentation) {
+        } else if dataType.conforms(to: UTType.presentation) {
             self = .powerpoint
-        } else if UTTypeConformsTo(fileUTI, kUTTypeAudio) {
+        } else if dataType.conforms(to: UTType.audio) {
             self = .audio
         } else {
             self = .other

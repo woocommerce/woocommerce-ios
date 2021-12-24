@@ -5,22 +5,22 @@
   "files_to_copy": [
     {
       "file": "shared/google_cloud_keys.json",
-      "destination": ".configure-files/google_cloud_keys.json",
+      "destination": "~/.configure/woocommerce-ios/secrets/google_cloud_keys.json",
       "encrypt": true
     },
     {
       "file": "iOS/WCiOS/woo_app_credentials.json",
-      "destination": ".configure-files/woo_app_credentials.json",
+      "destination": "~/.configure/woocommerce-ios/secrets/woo_app_credentials.json",
       "encrypt": true
     },
     {
       "file": "iOS/WCiOS/project.env",
-      "destination": ".configure-files/project.env",
+      "destination": "~/.configure/woocommerce-ios/secrets/project.env",
       "encrypt": true
     },
     {
       "file": "iOS/app_store_connect_fastlane_api_key.json",
-      "destination": ".configure-files/app_store_connect_fastlane_api_key.json",
+      "destination": "~/.configure/woocommerce-ios/secrets/app_store_connect_fastlane_api_key.json",
       "encrypt": true
     }
   ],

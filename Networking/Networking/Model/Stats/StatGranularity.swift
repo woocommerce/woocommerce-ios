@@ -1,5 +1,5 @@
 import Foundation
-
+import Codegen
 
 /// Represents data granularity for stats (e.g. day, week, month, year)
 ///

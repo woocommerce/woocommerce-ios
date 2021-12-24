@@ -50,7 +50,7 @@ private extension ShippingLabelCreationInfoViewController {
                                              comment: "Navigation bar title in the shipping label creation info screen")
         static let message = NSLocalizedString("Save time and money by fulfilling with WooCommerce Shipping",
                                                comment: "Message text in the shipping label creation info screen")
-        static let details = NSLocalizedString("Cut the post office line by printing shipping labels at home with your phone at discounted rates!",
+        static let details = NSLocalizedString("Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!",
                                                comment: "Details text in the shipping label creation info screen")
         static let buttonTitle = NSLocalizedString("Learn more",
                                                    comment: "Button title in the shipping label creation info screen")

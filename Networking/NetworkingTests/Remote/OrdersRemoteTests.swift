@@ -36,6 +36,18 @@ final class OrdersRemoteTests: XCTestCase {
         network.removeAllSimulatedResponses()
     }
 
+    /// Verifies that the parameter `_fields` in single order and order list requests do not contain whitespace.
+    ///
+    func test_order_fields_parameter_values_do_not_contain_whitespace() throws {
+        // When
+        let orderListFieldsValue = OrdersRemote.ParameterValues.listFieldValues
+        let orderFieldsValue = OrdersRemote.ParameterValues.singleOrderFieldValues
+
+        // Then
+        XCTAssertFalse(orderListFieldsValue.contains(" "))
+        XCTAssertFalse(orderFieldsValue.contains(" "))
+    }
+
     // MARK: - Load All Orders Tests
 
     /// Verifies that loadAllOrders properly parses the `orders-load-all` sample response.
@@ -237,48 +249,76 @@ final class OrdersRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-
-    // MARK: - Count Orders Tests
-
-    /// Verifies that countOrders properly parses response.
-    ///
-    func testCountOrdersProperlyReturnsParsedOrderCount() {
+    func test_create_order_properly_encodes_fee_lines() throws {
+        // Given
         let remote = OrdersRemote(network: network)
-        let expectation = self.expectation(description: "Count Orders")
+        let fee = OrderFeeLine(feeID: 333, name: "Line", taxClass: "", taxStatus: .none, total: "12.34", totalTax: "", taxes: [], attributes: [])
+        let order = Order.fake().copy(fees: [fee])
 
-        network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "orders-count")
+        // When
+        remote.createOrder(siteID: 123, order: order, fields: [.feeLines]) { result in }
 
-        remote.countOrders(for: sampleSiteID,
-                           statusKey: "processing") { orderCount, error in
-                            XCTAssertNil(error)
-                            XCTAssertNotNil(orderCount)
-
-                            // Take the opportunity to test the custom subscript works
-                            let numberOfProcessingOrders = orderCount!["processing"]?.total
-
-                            XCTAssertEqual(numberOfProcessingOrders, 6)
-
-                            expectation.fulfill()
-
-        }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: AnyHashable]]).first
+        let expected: [String: AnyHashable] = [
+            "id": fee.feeID,
+            "name": fee.name,
+            "tax_status": fee.taxStatus.rawValue,
+            "tax_class": fee.taxClass,
+            "total": fee.total
+        ]
+        assertEqual(received, expected)
     }
 
-    /// Verifies that countOrders properly relays Networking Layer errors.
-    ///
-    func testCountOrdersProperlyRelaysNetwokingErrors() {
+    func test_create_order_properly_encodes_status() throws {
+        // Given
         let remote = OrdersRemote(network: network)
-        let expectation = self.expectation(description: "Count Orders")
+        let status = OrderStatusEnum.onHold
+        let order = Order.fake().copy(status: status)
 
-        remote.countOrders(for: sampleSiteID,
-                           statusKey: "processing") { orderCount, error in
-                            XCTAssertNil(orderCount)
-                            XCTAssertNotNil(error)
-                            expectation.fulfill()
+        // When
+        remote.createOrder(siteID: 123, order: order, fields: [.status]) { result in }
 
-        }
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["status"] as? String)
+        assertEqual(received, status.rawValue)
+    }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    func test_create_order_properly_encodes_custom_status() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let expectedStatusString = "backorder"
+        let status = OrderStatusEnum.custom(expectedStatusString)
+        let order = Order.fake().copy(status: status)
+
+        // When
+        remote.createOrder(siteID: 123, order: order, fields: [.status]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["status"] as? String)
+        assertEqual(received, expectedStatusString)
+    }
+
+    func test_create_order_properly_encodes_order_items() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let expectedQuantity: Int64 = 2
+        let orderItem = OrderItem.fake().copy(productID: 5, quantity: Decimal(expectedQuantity))
+        let order = Order.fake().copy(items: [orderItem])
+
+        // When
+        remote.createOrder(siteID: 123, order: order, fields: [.items]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["line_items"] as? [[String: AnyHashable]]).first
+        let expected: [String: Int64] = [
+            "product_id": orderItem.productID,
+            "quantity": expectedQuantity
+        ]
+        assertEqual(received, expected)
     }
 }

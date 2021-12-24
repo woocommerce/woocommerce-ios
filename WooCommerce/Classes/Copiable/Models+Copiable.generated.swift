@@ -1,6 +1,8 @@
 // Generated using Sourcery 1.0.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
-import Networking
+import Codegen
+import Foundation
+import Yosemite
 
 
 extension AggregateOrderItem {
@@ -35,6 +37,27 @@ extension AggregateOrderItem {
             total: total,
             imageURL: imageURL,
             attributes: attributes
+        )
+    }
+}
+
+extension ShippingLabelSelectedRate {
+    func copy(
+        packageID: CopiableProp<String> = .copy,
+        rate: CopiableProp<ShippingLabelCarrierRate> = .copy,
+        signatureRate: NullableCopiableProp<ShippingLabelCarrierRate> = .copy,
+        adultSignatureRate: NullableCopiableProp<ShippingLabelCarrierRate> = .copy
+    ) -> ShippingLabelSelectedRate {
+        let packageID = packageID ?? self.packageID
+        let rate = rate ?? self.rate
+        let signatureRate = signatureRate ?? self.signatureRate
+        let adultSignatureRate = adultSignatureRate ?? self.adultSignatureRate
+
+        return ShippingLabelSelectedRate(
+            packageID: packageID,
+            rate: rate,
+            signatureRate: signatureRate,
+            adultSignatureRate: adultSignatureRate
         )
     }
 }

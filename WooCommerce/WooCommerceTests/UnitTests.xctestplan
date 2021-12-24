@@ -2,7 +2,7 @@
   "configurations" : [
     {
       "id" : "7E8B43A4-950E-425F-A333-D1D696025D02",
-      "name" : "Configuration 1",
+      "name" : "Default",
       "options" : {
 
       }
@@ -16,6 +16,8 @@
         "enabled" : false
       }
     ],
+    "language" : "en",
+    "region" : "US",
     "targetForVariableExpansion" : {
       "containerPath" : "container:WooCommerce.xcodeproj",
       "identifier" : "B56DB3C52049BFAA00D4AA8E",
@@ -24,6 +26,9 @@
   },
   "testTargets" : [
     {
+      "skippedTests" : [
+        "StripeCardReaderIntegrationTests"
+      ],
       "target" : {
         "containerPath" : "container:WooCommerce.xcodeproj",
         "identifier" : "B56DB3DC2049BFAA00D4AA8E",
@@ -31,6 +36,10 @@
       }
     },
     {
+      "skippedTests" : [
+        "WCPayRemoteTests\/test_loadAccount_properly_handles_implicitly_not_eligible_for_card_present_payments()",
+        "WCPayRemoteTests\/test_loadAccount_properly_handles_not_eligible_for_card_present_payments()"
+      ],
       "target" : {
         "containerPath" : "container:..\/Networking\/Networking.xcodeproj",
         "identifier" : "B557D9EB209753AA005962F4",
@@ -56,6 +65,13 @@
         "containerPath" : "container:..\/Observables",
         "identifier" : "ObservablesTests",
         "name" : "ObservablesTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Hardware\/Hardware.xcodeproj",
+        "identifier" : "D88FDB0725DD216B00CB0DBD",
+        "name" : "HardwareTests"
       }
     }
   ],

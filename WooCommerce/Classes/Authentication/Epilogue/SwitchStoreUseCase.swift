@@ -16,6 +16,8 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
     }
 
     /// A static method which allows easily to switch store. The boolean argument in `onCompletion` indicates that the site was changed.
+    /// When `onCompletion` is called, the selected site ID is updated while `Site` might still not be available if the site does not exist in storage yet
+    /// (e.g. a newly connected site).
     ///
     func switchStore(with storeID: Int64, onCompletion: @escaping (Bool) -> Void) {
         guard storeID != stores.sessionManager.defaultStoreID else {
@@ -34,7 +36,7 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         }
     }
 
-    /// Do all the operations to log out from the current selected store, mantaining the Authentication
+    /// Do all the operations to log out from the current selected store, maintaining the Authentication
     ///
     private func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {
         guard stores.sessionManager.defaultStoreID != nil else {
@@ -67,6 +69,13 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         }
         stores.dispatch(reviewAction)
 
+        group.enter()
+        let resetAction = CardPresentPaymentAction.reset
+
+        stores.dispatch(resetAction)
+
+        group.leave()
+
         group.notify(queue: .main) {
             onCompletion()
         }
@@ -80,8 +89,14 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         // We need to call refreshUserData() here because the user selected
         // their default store and tracks should to know about it.
         ServiceLocator.analytics.refreshUserData()
+
+        let jetpackCPActivePlugins = (stores.sessionManager.defaultSite?.jetpackConnectionActivePlugins ?? []).joined(separator: ",")
         ServiceLocator.analytics.track(.sitePickerContinueTapped,
-                                  withProperties: ["selected_store_id": stores.sessionManager.defaultStoreID ?? String()])
+                                  withProperties: [
+                                    "selected_store_id": stores.sessionManager.defaultStoreID ?? String(),
+                                    "is_jetpack_cp_connected": stores.sessionManager.defaultSite?.isJetpackCPConnected == true,
+                                    "jetpack_cp_active_plugins": jetpackCPActivePlugins
+                                  ])
 
         AppDelegate.shared.authenticatorWasDismissed()
     }

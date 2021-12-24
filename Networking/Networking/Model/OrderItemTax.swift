@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents the Taxes for a specific Order Item.
 ///
-public struct OrderItemTax: Codable, Hashable, GeneratedFakeable {
+public struct OrderItemTax: Codable, Equatable, Hashable, GeneratedFakeable {
 
     /// Tax ID for line item
     ///
@@ -58,22 +58,5 @@ private extension OrderItemTax {
         case taxID      = "id"
         case subtotal
         case total
-    }
-}
-
-
-// MARK: - Comparable Conformance
-//
-extension OrderItemTax: Comparable {
-    public static func == (lhs: OrderItemTax, rhs: OrderItemTax) -> Bool {
-        return lhs.taxID == rhs.taxID &&
-            lhs.subtotal == rhs.subtotal &&
-            lhs.total == rhs.total
-    }
-
-    public static func < (lhs: OrderItemTax, rhs: OrderItemTax) -> Bool {
-        return lhs.taxID < rhs.taxID ||
-            (lhs.taxID == rhs.taxID && lhs.subtotal < rhs.subtotal) ||
-            (lhs.taxID == rhs.taxID && lhs.subtotal == rhs.subtotal && lhs.total < rhs.total)
     }
 }

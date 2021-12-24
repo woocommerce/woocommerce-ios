@@ -48,6 +48,20 @@ extension UIColor {
                        dark: .withColorStudio(.orange, shade: .shade90))
     }
 
+    /// Info. Celadon-40 (< iOS 13 and Light Mode) and Green-50 (Dark Mode)
+    ///
+    static var info: UIColor {
+        return UIColor(light: .withColorStudio(.celadon, shade: .shade40),
+                       dark: .withColorStudio(.green, shade: .shade50))
+    }
+
+    /// Info. Celadon-5 (< iOS 13 and Light Mode) and Green-80 (Dark Mode)
+    ///
+    static var infoBackground: UIColor {
+        return UIColor(light: .withColorStudio(.celadon, shade: .shade5),
+                       dark: .withColorStudio(.green, shade: .shade80))
+    }
+
     /// Blue. Blue-50 (< iOS 13 and Light Mode) and Blue-30 (Dark Mode)
     ///
     static var blue: UIColor {
@@ -218,6 +232,10 @@ extension UIColor {
         return .systemColor(.systemGray3)
     }
 
+    /// Secondary Light Button Background.
+    ///
+    static var secondaryLightButtonBackground: UIColor = .white
+
     /// Button Disabled Background.
     ///
     static var buttonDisabledBackground: UIColor {
@@ -270,6 +288,30 @@ extension UIColor {
         } else {
             return .white
         }
+    }
+
+    /// SearchBar background color.
+    ///
+    static var searchBarBackground: UIColor {
+        .secondarySystemFill
+    }
+
+    /// Fill color for the software update progress animation.
+    ///
+    static var softwareUpdateProgressFill: UIColor {
+        return UIColor(red: 0.498, green: 0.329, blue: 0.702, alpha: 1)
+    }
+
+    /// Jetpack benefits banner background color.
+    ///
+    static var jetpackBenefitsBackground: UIColor {
+        UIColor(red: 11.0/255, green: 38.0/255, blue: 33.0/255, alpha: 1)
+    }
+
+    /// Jetpack logo color.
+    ///
+    static var jetpackGreen: UIColor {
+        .withColorStudio(.jetpackGreen, shade: .shade20)
     }
 }
 

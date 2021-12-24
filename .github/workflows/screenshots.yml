@@ -13,7 +13,7 @@ env:
 jobs:
   build:
     name: Build Application
-    if: contains(github.event.pull_request.labels.*.name, 'Needs Screenshots')
+    if: contains(github.event.pull_request.labels.*.name, 'generate screenshots')
     runs-on: macos-latest
 
     steps:

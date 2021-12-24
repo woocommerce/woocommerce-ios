@@ -9,7 +9,8 @@ private extension ProductFormSection.SettingsRow.ViewModel {
                                                            image: icon,
                                                            imageTintColor: tintColor ?? .textSubtle,
                                                            numberOfLinesForText: numberOfLinesForDetails,
-                                                           isActionable: isActionable)
+                                                           isActionable: isActionable,
+                                                           showsSeparator: !hideSeparator)
     }
 }
 
@@ -80,18 +81,17 @@ private extension ProductFormTableViewDataSource {
 private extension ProductFormTableViewDataSource {
     func configureCellInPrimaryFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.PrimaryFieldRow) {
         switch row {
-        case .images(let editable):
-            configureImages(cell: cell, isEditable: editable)
-        case .name(let name, let editable):
-            configureName(cell: cell, name: name, isEditable: editable)
+        case .images(let editable, let allowsMultipleImages):
+            configureImages(cell: cell, isEditable: editable, allowsMultipleImages: allowsMultipleImages)
+        case .name(let name, let editable, let productStatus):
+            configureName(cell: cell, name: name, isEditable: editable, productStatus: productStatus)
         case .variationName(let name):
             configureReadonlyName(cell: cell, name: name)
         case .description(let description, let editable):
             configureDescription(cell: cell, description: description, isEditable: editable)
         }
     }
-
-    func configureImages(cell: UITableViewCell, isEditable: Bool) {
+    func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool) {
         guard let cell = cell as? ProductImagesHeaderTableViewCell else {
             fatalError()
         }
@@ -109,14 +109,18 @@ private extension ProductFormTableViewDataSource {
                            productUIImageLoader: productUIImageLoader)
             return
         }
-
         if productImageStatuses.count > 0 {
-            cell.configure(with: productImageStatuses, config: .addImages, productUIImageLoader: productUIImageLoader)
+            if allowsMultipleImages {
+                cell.configure(with: productImageStatuses,
+                               config: .addImages,
+                               productUIImageLoader: productUIImageLoader)
+            } else {
+                cell.configure(with: productImageStatuses, config: .images, productUIImageLoader: productUIImageLoader)
+            }
         }
         else {
             cell.configure(with: productImageStatuses, config: .extendedAddImages, productUIImageLoader: productUIImageLoader)
         }
-
         cell.onImageSelected = { [weak self] (productImage, indexPath) in
             self?.onAddImage?()
         }
@@ -124,17 +128,16 @@ private extension ProductFormTableViewDataSource {
             self?.onAddImage?()
         }
     }
-
-    func configureName(cell: UITableViewCell, name: String?, isEditable: Bool) {
+    func configureName(cell: UITableViewCell, name: String?, isEditable: Bool, productStatus: ProductStatus) {
         if isEditable {
-            configureEditableName(cell: cell, name: name)
+            configureEditableName(cell: cell, name: name, productStatus: productStatus)
         } else {
             configureReadonlyName(cell: cell, name: name ?? "")
         }
     }
 
-    func configureEditableName(cell: UITableViewCell, name: String?) {
-        guard let cell = cell as? TextViewTableViewCell else {
+    func configureEditableName(cell: UITableViewCell, name: String?, productStatus: ProductStatus) {
+        guard let cell = cell as? LabeledTextViewTableViewCell else {
             fatalError()
         }
 
@@ -142,16 +145,12 @@ private extension ProductFormTableViewDataSource {
 
         let placeholder = NSLocalizedString("Title", comment: "Placeholder in the Product Title row on Product form screen.")
 
-        let cellViewModel = TextViewTableViewCell.ViewModel(text: name,
-                                                            placeholder: placeholder,
-                                                            textViewMinimumHeight: 10.0,
-                                                            isScrollEnabled: false,
-                                                            onTextChange: { [weak self] (newName) in
-            self?.onNameChange?(newName)
-            },
-                                                            style: .headline,
-                                                            edgeInsets: UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0))
-
+        let cellViewModel = LabeledTextViewTableViewCell.ViewModel(text: name,
+                                                                   productStatus: productStatus,
+                                                                   placeholder: placeholder,
+                                                                   textViewMinimumHeight: 10.0,
+                                                                   onNameChange: { [weak self] (newName) in self?.onNameChange?(newName) },
+                                                                   style: .headline)
         cell.configure(with: cellViewModel)
         cell.accessibilityLabel = NSLocalizedString(
             "Title of the product",
@@ -204,6 +203,7 @@ private extension ProductFormTableViewDataSource {
              .inventory(let viewModel, _),
              .productType(let viewModel, _),
              .shipping(let viewModel, _),
+             .addOns(let viewModel, _),
              .categories(let viewModel, _),
              .tags(let viewModel, _),
              .shortDescription(let viewModel, _),
@@ -268,6 +268,7 @@ private extension ProductFormTableViewDataSource {
                     data: .init(title: viewModel.title,
                                 image: viewModel.icon,
                                 numberOfLinesForTitle: 0,
-                                isActionable: false))
+                                isActionable: false,
+                                showsSeparator: false))
     }
 }

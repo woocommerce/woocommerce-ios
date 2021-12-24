@@ -36,7 +36,7 @@ final class OrderSearchUICommand: SearchUICommand {
     }
 
     func createStarterViewController() -> UIViewController? {
-        OrderSearchStarterViewController(siteID: siteID)
+        nil
     }
 
     func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewController,

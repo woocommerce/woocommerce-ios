@@ -3,8 +3,6 @@ import Yosemite
 import Networking
 import Storage
 
-
-
 // MARK: - AuthenticatedState
 //
 class AuthenticatedState: StoresManagerState {
@@ -31,9 +29,11 @@ class AuthenticatedState: StoresManagerState {
         services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
+            AddOnGroupStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             AvailabilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CouponStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            DataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationCountStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
@@ -41,6 +41,7 @@ class AuthenticatedState: StoresManagerState {
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             PaymentGatewayStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            PaymentGatewayAccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductAttributeStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductAttributeTermStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -53,9 +54,26 @@ class AuthenticatedState: StoresManagerState {
             SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            SitePluginStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            TelemetryStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            UserStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            CardPresentPaymentStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    cardReaderService: ServiceLocator.cardReaderService),
+            ReceiptStore(dispatcher: dispatcher,
+                         storageManager: storageManager,
+                         network: network,
+                         receiptPrinterService: ServiceLocator.receiptPrinterService,
+                         fileStorage: PListFileStorage()),
+            AnnouncementsStore(dispatcher: dispatcher,
+                               storageManager: storageManager,
+                               network: network,
+                               fileStorage: PListFileStorage())
         ]
 
         startListeningToNotifications()
@@ -120,8 +138,13 @@ private extension AuthenticatedState {
     func resetServices() {
         let resetStoredProviders = AppSettingsAction.resetStoredProviders(onCompletion: nil)
         let resetStoredStatsVersionStates = AppSettingsAction.resetStatsVersionStates
-        let resetFeatureSwitchStates = AppSettingsAction.resetFeatureSwitches
+        let resetOrdersSettings = AppSettingsAction.resetOrdersSettings
         let resetProductsSettings = AppSettingsAction.resetProductsSettings
-        ServiceLocator.stores.dispatch([resetStoredProviders, resetStoredStatsVersionStates, resetFeatureSwitchStates, resetProductsSettings])
+        let resetGeneralStoreSettings = AppSettingsAction.resetGeneralStoreSettings
+        ServiceLocator.stores.dispatch([resetStoredProviders,
+                                        resetStoredStatsVersionStates,
+                                        resetOrdersSettings,
+                                        resetProductsSettings,
+                                        resetGeneralStoreSettings])
     }
 }

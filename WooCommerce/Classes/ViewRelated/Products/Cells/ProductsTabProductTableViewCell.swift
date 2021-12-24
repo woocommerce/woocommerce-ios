@@ -64,8 +64,7 @@ extension ProductsTabProductTableViewCell: SearchResultCell {
 
 extension ProductsTabProductTableViewCell {
     func update(viewModel: ProductsTabProductViewModel, imageService: ImageService) {
-        nameLabel.text = viewModel.name
-
+        nameLabel.text = viewModel.createNameLabel()
         detailsLabel.attributedText = viewModel.detailsAttributedString
 
         productImageView.contentMode = .center
@@ -155,7 +154,7 @@ private extension ProductsTabProductTableViewCell {
 
     func configureNameLabel() {
         nameLabel.applyBodyStyle()
-        nameLabel.numberOfLines = 2
+        nameLabel.numberOfLines = 0
     }
 
     func configureDetailsLabel() {
@@ -249,8 +248,8 @@ private struct ProductsTabProductTableViewCellRepresentable: UIViewRepresentable
 }
 
 struct ProductsTabProductTableViewCell_Previews: PreviewProvider {
-    private static var nonSelectedViewModel = ProductsTabProductViewModel(product: Product(), isSelected: false)
-    private static var selectedViewModel = ProductsTabProductViewModel(product: Product().copy(statusKey: ProductStatus.pending.rawValue),
+    private static var nonSelectedViewModel = ProductsTabProductViewModel(product: Product.swiftUIPreviewSample(), isSelected: false)
+    private static var selectedViewModel = ProductsTabProductViewModel(product: Product.swiftUIPreviewSample().copy(statusKey: ProductStatus.pending.rawValue),
                                                                        isSelected: true)
 
     private static func makeStack() -> some View {

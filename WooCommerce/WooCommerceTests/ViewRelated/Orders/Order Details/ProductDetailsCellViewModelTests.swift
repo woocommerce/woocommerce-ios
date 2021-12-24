@@ -95,6 +95,40 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
         XCTAssertNotEqual(total, "")
         XCTAssertNotEqual(subtitle, "")
     }
+    func test_if_total_and_subtitle_are_positive_when_product_price_sum_is_positive() {
+        // Given
+        let item = makeOrderItem(quantity: 2.5,
+                                 price: 10,
+                                 total: "25",
+                                 sku: "sku",
+                                 attributes: [])
+
+        // When
+        let viewModel = ProductDetailsCellViewModel(item: item, currency: "$",
+                                                    hasAddOns: false)
+        let quantity = NumberFormatter.localizedString(from: item.quantity as NSDecimalNumber, number: .decimal)
+        let subtitle = String.localizedStringWithFormat(Localization.subtitleFormat, quantity, "$10.00")
+        // Then
+        XCTAssertEqual(viewModel.total, "$25.00")
+        XCTAssertEqual(viewModel.subtitle, subtitle)
+    }
+    func test_if_total_and_subtitle_are_negative_when_product_price_sum_is_negative() {
+        // Given
+        let item = makeOrderItem(quantity: 2.5,
+                                 price: -10,
+                                 total: "-25",
+                                 sku: "sku",
+                                 attributes: [])
+
+        // When
+        let viewModel = ProductDetailsCellViewModel(item: item, currency: "$",
+                                                    hasAddOns: false)
+        let quantity = NumberFormatter.localizedString(from: item.quantity as NSDecimalNumber, number: .decimal)
+        let subtitle = String.localizedStringWithFormat(Localization.subtitleFormat, quantity, "-$10.00")
+        // Then
+        XCTAssertEqual(viewModel.total, "-$25.00")
+        XCTAssertEqual(viewModel.subtitle, subtitle)
+    }
 
     // MARK: `OrderItemRefund`
 
@@ -115,10 +149,46 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.name, item.name)
         let quantity = NumberFormatter.localizedString(from: item.quantity as NSDecimalNumber, number: .decimal)
         XCTAssertEqual(viewModel.quantity, quantity)
-        XCTAssertEqual(viewModel.total, "$18.00")
-        let subtitle = String.localizedStringWithFormat(Localization.subtitleFormat, quantity, "$18.00")
+        XCTAssertEqual(viewModel.total, "-$18.00")
+        let subtitle = String.localizedStringWithFormat(Localization.subtitleFormat, quantity, "-$18.00")
         XCTAssertEqual(viewModel.subtitle, subtitle)
         XCTAssertEqual(viewModel.sku, nil)
+    }
+    func test_if_OrderItemRefund_can_be_negative() {
+        // Given
+        let item = makeOrderItemRefund(quantity: 2.5,
+                                       price: -18,
+                                       total: "-18",
+                                       sku: "sku")
+        // When
+        let viewModel = ProductDetailsCellViewModel(refundedItem: item,
+                                                    currency: "$",
+                                                    formatter: currencyFormatter)
+        // Then
+        let quantity = NumberFormatter.localizedString(from: item.quantity as NSDecimalNumber, number: .decimal)
+        let subtitle = String.localizedStringWithFormat(Localization.subtitleFormat, quantity, "-$18.00")
+        XCTAssertEqual(viewModel.quantity, quantity)
+        XCTAssertEqual(viewModel.total, "-$18.00")
+        XCTAssertEqual(viewModel.subtitle, subtitle)
+    }
+
+    func test_if_OrderItemRefund_can_be_positive() {
+        // Given
+        let item = makeOrderItemRefund(quantity: 2.5,
+                                       price: 18,
+                                       total: "18",
+                                       sku: "sku")
+
+        // When
+        let viewModel = ProductDetailsCellViewModel(refundedItem: item,
+                                                    currency: "$",
+                                                    formatter: currencyFormatter)
+        // Then
+        let quantity = NumberFormatter.localizedString(from: item.quantity as NSDecimalNumber, number: .decimal)
+        let subtitle = String.localizedStringWithFormat(Localization.subtitleFormat, quantity, "$18.00")
+        XCTAssertEqual(viewModel.quantity, quantity)
+        XCTAssertEqual(viewModel.total, "$18.00")
+        XCTAssertEqual(viewModel.subtitle, subtitle)
     }
 }
 

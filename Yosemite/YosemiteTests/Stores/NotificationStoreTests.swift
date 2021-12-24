@@ -365,7 +365,8 @@ class NotificationStoreTests: XCTestCase {
         let action = NotificationAction.registerDevice(device: sampleAPNSDevice(),
                                                        applicationId: sampleApplicationID,
                                                        applicationVersion: sampleApplicationVersion,
-                                                       defaultStoreID: sampleDefaultStoreID) { (device, error) in
+                                                       defaultStoreID: sampleDefaultStoreID,
+                                                       pushNotificationsForAllStoresEnabled: false) { (device, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(device)
             XCTAssertEqual(device?.deviceID, "12345678")
@@ -389,7 +390,8 @@ class NotificationStoreTests: XCTestCase {
         let action = NotificationAction.registerDevice(device: sampleAPNSDevice(),
                                                        applicationId: sampleApplicationID,
                                                        applicationVersion: sampleApplicationVersion,
-                                                       defaultStoreID: sampleDefaultStoreID) { (device, error) in
+                                                       defaultStoreID: sampleDefaultStoreID,
+                                                       pushNotificationsForAllStoresEnabled: false) { (device, error) in
             XCTAssertNotNil(error)
             XCTAssertNil(device)
 

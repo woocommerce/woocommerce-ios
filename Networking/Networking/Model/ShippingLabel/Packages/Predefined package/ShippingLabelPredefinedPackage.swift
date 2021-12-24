@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Represents a predefined package in Shipping Labels.
 ///
-public struct ShippingLabelPredefinedPackage: Equatable, GeneratedFakeable {
+public struct ShippingLabelPredefinedPackage: Equatable, GeneratedFakeable, Identifiable {
 
     /// The id of the predefined package
     public let id: String
@@ -21,6 +22,21 @@ public struct ShippingLabelPredefinedPackage: Equatable, GeneratedFakeable {
         self.title = title
         self.isLetter = isLetter
         self.dimensions = dimensions
+    }
+
+    public func getLength() -> Double {
+        let firstComponent = dimensions.components(separatedBy: " x ").first ?? ""
+        return Double(firstComponent) ?? 0
+    }
+
+    public func getWidth() -> Double {
+        let secondComponent = dimensions.components(separatedBy: " x ")[safe: 1] ?? ""
+        return Double(secondComponent) ?? 0
+    }
+
+    public func getHeight() -> Double {
+        let lastComponent = dimensions.components(separatedBy: " x ").last ?? ""
+        return Double(lastComponent) ?? 0
     }
 }
 

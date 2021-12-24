@@ -15,6 +15,14 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.alignJustifyImage)
     }
 
+    func test_alarmBellRing_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.alarmBellRingImage)
+    }
+
+    func test_analytics_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.analyticsImage)
+    }
+
     func testNoticeImageIsNotNil() {
         XCTAssertNotNil(UIImage.noticeImage)
     }
@@ -51,8 +59,20 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.checkmarkStyledImage)
     }
 
+    func testCheckCircleDoneImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.checkCircleImage)
+    }
+
+    func testCheckCircleEmptyImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.checkEmptyCircleImage)
+    }
+
     func testChevronImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.chevronImage)
+    }
+
+    func testChevronLeftImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.chevronLeftImage)
     }
 
     func testChevronDownImageIconIsNotNil() {
@@ -65,6 +85,10 @@ final class IconsTests: XCTestCase {
 
     func testCloseButtonIconIsNotNil() {
         XCTAssertNotNil(UIImage.closeButton)
+    }
+
+    func testConnectionIconIsNotNil() {
+        XCTAssertNotNil(UIImage.connectionImage)
     }
 
     func testGearBarButtonItemImageIconIsNotNil() {
@@ -152,12 +176,24 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.houseOutlinedImage)
     }
 
+    func testStoreImageIsNotNil() {
+        XCTAssertNotNil(UIImage.storeImage)
+    }
+
+    func testCotImageIsNotNil() {
+        XCTAssertNotNil(UIImage.cogImage)
+    }
+
     func testIconImageIsNotNil() {
         XCTAssertNotNil(UIImage.infoImage)
     }
 
     func testJetpackLogoImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.jetpackLogoImage)
+    }
+
+    func testJetpackGreenLogoImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.jetpackGreenLogoImage)
     }
 
     func testInfoOutlineImageIconIsNotNil() {
@@ -210,12 +246,80 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.loginNoWordPressError)
     }
 
+    func test_plugin_list_error_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.pluginListError)
+    }
+
     func testMailImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.mailImage)
     }
 
+    func test_minus_small_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.minusSmallImage)
+    }
+
     func testMoreImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.moreImage)
+    }
+
+    func test_multipleUsers_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.multipleUsersImage)
+    }
+
+    func test_payment_card_reader_scanning_image() {
+        XCTAssertNotNil(UIImage.cardReaderScanning)
+    }
+
+    func test_payment_card_reader_found_image() {
+        XCTAssertNotNil(UIImage.cardReaderFound)
+    }
+
+    func test_payment_card_reader_connect_image() {
+        XCTAssertNotNil(UIImage.cardReaderConnect)
+    }
+
+    func test_payment_card_reader_connecting_image() {
+        XCTAssertNotNil(UIImage.cardReaderConnecting)
+    }
+
+    func test_payment_card_reader_update_progress_background() {
+        XCTAssertNotNil(UIImage.cardReaderUpdateProgressBackground)
+    }
+
+    func test_payment_card_reader_update_progress_arrow() {
+        XCTAssertNotNil(UIImage.cardReaderUpdateProgressArrow)
+    }
+
+    func test_payment_card_reader_update_progress_checkmark() {
+        XCTAssertNotNil(UIImage.cardReaderUpdateProgressCheckmark)
+    }
+
+    func test_payment_card_reader_low_battery() {
+        XCTAssertNotNil(UIImage.cardReaderLowBattery)
+    }
+
+    func test_payment_card_image() {
+        XCTAssertNotNil(UIImage.cardPresentImage)
+    }
+
+    func test_payment_celebration_image() {
+        XCTAssertNotNil(UIImage.celebrationImage)
+    }
+
+    func test_payment_error_image() {
+        XCTAssertNotNil(UIImage.paymentErrorImage)
+    }
+
+    func test_payments_loading_not_nil() {
+        XCTAssertNotNil(UIImage.paymentsLoading)
+    }
+
+    func test_payments_plugin_not_nil() {
+        XCTAssertNotNil(UIImage.paymentsPlugin)
+    }
+
+    func test_print_icon_in_not_nil() {
+        XCTAssertNotNil(UIImage.print)
     }
 
     func testPlusImageIconIsNotNil() {
@@ -224,6 +328,10 @@ final class IconsTests: XCTestCase {
 
     func testPlusBarButtonItemImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.plusBarButtonItemImage)
+    }
+
+    func test_plus_small_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.plusSmallImage)
     }
 
     func testPriceImageIconIsNotNil() {
@@ -294,6 +402,10 @@ final class IconsTests: XCTestCase {
 
     func test_shippingLabelCreationInfoImage_is_not_nil() {
         XCTAssertNotNil(UIImage.shippingLabelCreationInfoImage)
+    }
+
+    func test_globeImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.globeImage)
     }
 
     func testSpamImageIconIsNotNil() {
@@ -401,6 +513,14 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.cloudImage)
     }
 
+    func test_copy_bar_button_item_image_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.copyBarButtonItemImage)
+    }
+
+    func testHubMenuIconIsNotNil() {
+        XCTAssertNotNil(UIImage.hubMenu)
+    }
+
     func testMenuImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.menuImage)
     }
@@ -435,5 +555,33 @@ final class IconsTests: XCTestCase {
 
     func test_prologueReviewsImage_is_not_nil() {
         XCTAssertNotNil(UIImage.prologueReviewsImage)
+    }
+
+    func test_cloudOutlineImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.cloudOutlineImage)
+    }
+
+    func test_welcomeImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.welcomeImage)
+    }
+
+    func test_lightningImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.lightningImage)
+    }
+
+    func test_shoppingCartIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.shoppingCartIcon)
+    }
+
+    func test_creditCardIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.creditCardIcon)
+    }
+
+    func test_cardReaderManualIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.cardReaderManualIcon)
+    }
+
+    func test_simplePaymentsImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.simplePaymentsImage)
     }
 }

@@ -24,6 +24,13 @@ final class ShippingLabelPackageDetailsResultsControllers {
         return productVariationResultsController.fetchedObjects
     }
 
+    /// Get the account settings in Core Data and that match the predicate.
+    ///
+    var accountSettings: ShippingLabelAccountSettings? {
+        try? accountSettingsResultsController.performFetch()
+        return accountSettingsResultsController.fetchedObjects.first
+    }
+
     /// Product ResultsController.
     ///
     private lazy var productResultsController: ResultsController<StorageProduct> = {
@@ -40,6 +47,13 @@ final class ShippingLabelPackageDetailsResultsControllers {
         let predicate = NSPredicate(format: "siteID == %lld AND productVariationID in %@", siteID, variationIDs)
 
         return ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
+    /// Shipping Label Account Settings ResultsController
+    ///
+    private lazy var accountSettingsResultsController: ResultsController<StorageShippingLabelAccountSettings> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        return ResultsController<StorageShippingLabelAccountSettings>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
 

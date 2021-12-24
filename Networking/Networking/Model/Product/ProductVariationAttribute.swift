@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Represents a Product Variation Attribute Entity.
 ///
-public struct ProductVariationAttribute: Codable, GeneratedFakeable {
+public struct ProductVariationAttribute: Codable, Equatable, GeneratedFakeable {
     public let id: Int64
     public let name: String
     public let option: String
@@ -30,15 +31,5 @@ private extension ProductVariationAttribute {
         case id
         case name
         case option
-    }
-}
-
-// MARK: - Equatable Conformance
-//
-extension ProductVariationAttribute: Equatable {
-    public static func == (lhs: ProductVariationAttribute, rhs: ProductVariationAttribute) -> Bool {
-        return lhs.id == rhs.id &&
-            lhs.name == rhs.name &&
-            lhs.option == rhs.option
     }
 }

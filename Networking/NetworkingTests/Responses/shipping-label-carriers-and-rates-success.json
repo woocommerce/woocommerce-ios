@@ -1,0 +1,132 @@
+{
+    "data" : {
+        "success" : true,
+        "rates" : {
+            "default_box" : {
+                "default" : {
+                    "rates" : [
+                        {
+                            "insurance" : "0",
+                            "retail_rate" : 40.060000000000002,
+                            "rate_id" : "rate_a8a29d5f34984722942f466c30ea27ef",
+                            "service_id" : "ParcelSelect",
+                            "tracking" : true,
+                            "free_pickup" : true,
+                            "delivery_date_guaranteed" : false,
+                            "title" : "USPS - Parcel Select Mail",
+                            "delivery_date" : null,
+                            "is_selected" : false,
+                            "shipment_id" : "shp_e0e3c2f4606c4b198d0cbd6294baed56",
+                            "delivery_days" : 2,
+                            "carrier_id" : "usps",
+                            "rate" : 40.060000000000002,
+                            "list_rate" : 40.060000000000002
+                        },
+                        {
+                            "insurance" : "0",
+                            "retail_rate" : 40.409999999999997,
+                            "rate_id" : "rate_99e38b9a69344a51a4fda0c13a0e68b9",
+                            "service_id" : "MediaMail",
+                            "tracking" : true,
+                            "free_pickup" : false,
+                            "delivery_date_guaranteed" : false,
+                            "title" : "USPS - Media Mail",
+                            "delivery_date" : null,
+                            "is_selected" : false,
+                            "shipment_id" : "shp_e0e3c2f4606c4b198d0cbd6294baed56",
+                            "delivery_days" : 2,
+                            "carrier_id" : "usps",
+                            "rate" : 40.409999999999997,
+                            "list_rate" : 40.409999999999997
+                        },
+                        {
+                            "insurance" : "100",
+                            "retail_rate" : 47.799999999999997,
+                            "rate_id" : "rate_0e21c0f7cff34ababa756a774e01ecdf",
+                            "service_id" : "Priority",
+                            "tracking" : true,
+                            "free_pickup" : true,
+                            "delivery_date_guaranteed" : false,
+                            "title" : "USPS - Priority Mail",
+                            "delivery_date" : null,
+                            "is_selected" : false,
+                            "shipment_id" : "shp_e0e3c2f4606c4b198d0cbd6294baed56",
+                            "delivery_days" : 1,
+                            "carrier_id" : "usps",
+                            "rate" : 40.560000000000002,
+                            "list_rate" : 40.560000000000002
+                        },
+                        {
+                            "insurance" : "100",
+                            "retail_rate" : 178.19999999999999,
+                            "rate_id" : "rate_e066c77d80594d15a131c1af979cd650",
+                            "service_id" : "Express",
+                            "tracking" : true,
+                            "free_pickup" : true,
+                            "delivery_date_guaranteed" : true,
+                            "title" : "USPS - Express Mail",
+                            "delivery_date" : "2021-05-15T10:30:00.000Z",
+                            "is_selected" : false,
+                            "shipment_id" : "shp_e0e3c2f4606c4b198d0cbd6294baed56",
+                            "delivery_days" : 1,
+                            "carrier_id" : "usps",
+                            "rate" : 158.19999999999999,
+                            "list_rate" : 158.19999999999999
+                        }
+                    ],
+                    "errors" : [
+                        
+                    ]
+                },
+                "signature_required" : {
+                    "rates" : [
+                        {
+                            "insurance" : "0",
+                            "retail_rate" : 42.759999999999998,
+                            "rate_id" : "rate_fcb686579b774c05875676b27e429599",
+                            "service_id" : "ParcelSelect",
+                            "tracking" : true,
+                            "free_pickup" : true,
+                            "delivery_date_guaranteed" : false,
+                            "title" : "USPS - Parcel Select Mail",
+                            "delivery_date" : null,
+                            "is_selected" : false,
+                            "shipment_id" : "shp_653402153df848df93f98d4aa18336a1",
+                            "delivery_days" : 2,
+                            "carrier_id" : "usps",
+                            "rate" : 42.759999999999998,
+                            "list_rate" : 42.759999999999998
+                        }
+                    ],
+                    "errors" : [
+                        
+                    ]
+                },
+                "adult_signature_required" : {
+                    "rates" : [
+                        {
+                            "insurance" : "0",
+                            "retail_rate" : 46.960000000000001,
+                            "rate_id" : "rate_47603a8870d24d538de806a381b76f7f",
+                            "service_id" : "ParcelSelect",
+                            "tracking" : true,
+                            "free_pickup" : true,
+                            "delivery_date_guaranteed" : false,
+                            "title" : "USPS - Parcel Select Mail",
+                            "delivery_date" : null,
+                            "is_selected" : false,
+                            "shipment_id" : "shp_b068a16275e84a93b7f75cda00788c08",
+                            "delivery_days" : 2,
+                            "carrier_id" : "usps",
+                            "rate" : 46.960000000000001,
+                            "list_rate" : 46.960000000000001
+                        }
+                    ],
+                    "errors" : [
+                        
+                    ]
+                }
+            }
+        }
+    }
+}

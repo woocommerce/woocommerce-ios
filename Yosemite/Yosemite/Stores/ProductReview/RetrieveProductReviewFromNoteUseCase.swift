@@ -3,20 +3,6 @@ import Foundation
 import Networking
 import protocol Storage.StorageType
 
-/// The result from `RetrieveProductReviewFromNoteUseCase`.
-///
-public struct ProductReviewFromNoteParcel {
-    public let note: Note
-    public let review: ProductReview
-    public let product: Product
-
-    public init(note: Note, review: ProductReview, product: Product) {
-        self.note = note
-        self.review = review
-        self.product = product
-    }
-}
-
 /// Fetches the `Note`, `ProductReview`, and `Product` in sequence from the Storage and/or API
 /// using a `noteID`.
 ///

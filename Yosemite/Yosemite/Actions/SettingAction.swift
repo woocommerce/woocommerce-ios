@@ -16,5 +16,5 @@ public enum SettingAction: Action {
 
     /// Retrieves the site API details (used to determine the WC version)
     ///
-    case retrieveSiteAPI(siteID: Int64, onCompletion: (SiteAPI?, Error?) -> Void)
+    case retrieveSiteAPI(siteID: Int64, onCompletion: (Result<SiteAPI, Error>) -> Void)
 }

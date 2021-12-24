@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import Observables
 
 public protocol SessionManagerProtocol {
 
@@ -16,9 +15,17 @@ public protocol SessionManagerProtocol {
     ///
     var defaultSite: Site? { get set }
 
+    /// Publishes default site on change.
+    ///
+    var defaultSitePublisher: AnyPublisher<Site?, Never> { get }
+
     /// Default StoreID.
     ///
     var defaultStoreID: Int64? { get set }
+
+    /// Roles for the default Store Site.
+    ///
+    var defaultRoles: [User.Role] { get set }
 
     /// Publishes default store ID on change.
     ///
@@ -27,10 +34,6 @@ public protocol SessionManagerProtocol {
     /// Anonymous UserID.
     ///
     var anonymousUserID: String? { get }
-
-    /// Observable site ID
-    ///
-    var siteID: Observable<Int64?> { get }
 
     /// Default Credentials.
     ///

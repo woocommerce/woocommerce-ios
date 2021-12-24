@@ -6,9 +6,20 @@ import UIKit
 struct KeyboardState: Equatable {
     /// True if the keyboard is visible.
     let isVisible: Bool
+
     /// The frame of the keyboard when it is fully shown or hidden.
     ///
-    /// The value is usually from `UIResponder.keyboardFrameEndUserInfoKey`.
+    /// The value is from `UIResponder.keyboardFrameEndUserInfoKey`.
+    ///
+    /// Note that even if `isVisible` is `false`, this can still have a **non-zero** value. This
+    /// can happen in this scenario:
+    ///
+    /// 1. View-A is shown and the keyboard is shown.
+    /// 2. User taps on something which presents View-B **while** the keyboard is present.
+    ///    View-B does not have a user responder (text field) so the keyboard is not visible.
+    /// 3. NSNotificationCenter emits a `keyboardWillHideNotification` but with a
+    ///    `keyboardFrameEndUserInfoKey` value set to the **previously shown keyboard's frame**.
+    ///
     let frameEnd: CGRect
 }
 
@@ -43,7 +54,7 @@ final class KeyboardStateProvider: KeyboardStateProviding {
     init(notificationCenter: NotificationCenter = NotificationCenter.default) {
         self.notificationCenter = notificationCenter
 
-        let notificationNames = [UIResponder.keyboardDidShowNotification, UIResponder.keyboardDidHideNotification]
+        let notificationNames = [UIResponder.keyboardWillShowNotification, UIResponder.keyboardWillHideNotification]
 
         observations.append(contentsOf: notificationNames.map { notificationName in
             notificationCenter.addObserver(forName: notificationName, object: nil, queue: nil) { [weak self] notification in
@@ -54,7 +65,7 @@ final class KeyboardStateProvider: KeyboardStateProviding {
 
     private func updateState(from notification: Notification) {
         state = KeyboardState(
-            isVisible: notification.name == UIResponder.keyboardDidShowNotification,
+            isVisible: notification.name == UIResponder.keyboardWillShowNotification,
             frameEnd: notification.keyboardFrameEnd ?? .zero
         )
     }

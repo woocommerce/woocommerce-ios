@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents a custom package in Shipping Labels.
 ///
@@ -7,7 +8,7 @@ public struct ShippingLabelCustomPackage: Equatable, GeneratedFakeable {
     /// Usually is always `true` for custom packages
     public let isUserDefined: Bool
 
-    /// The name of the custom package, like `Krabica`
+    /// The name of the custom package, like `Krabica`. This is also the unique ID of a custom package.
     public let title: String
 
     /// Defines if package is a box or a letter. By default is a box, so it's equal to `false`
@@ -27,6 +28,21 @@ public struct ShippingLabelCustomPackage: Equatable, GeneratedFakeable {
         self.dimensions = dimensions
         self.boxWeight = boxWeight
         self.maxWeight = maxWeight
+    }
+
+    public func getLength() -> Double {
+        let firstComponent = dimensions.components(separatedBy: " x ").first ?? ""
+        return Double(firstComponent) ?? 0
+    }
+
+    public func getWidth() -> Double {
+        let secondComponent = dimensions.components(separatedBy: " x ")[safe: 1] ?? ""
+        return Double(secondComponent) ?? 0
+    }
+
+    public func getHeight() -> Double {
+        let lastComponent = dimensions.components(separatedBy: " x ").last ?? ""
+        return Double(lastComponent) ?? 0
     }
 }
 

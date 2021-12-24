@@ -20,7 +20,7 @@ final class ProductVariationsViewModel {
 
     /// Generates a variation in the host site using the product attributes
     ///
-    func generateVariation(for product: Product, onCompletion: @escaping (Result<Product, Error>) -> Void) {
+    func generateVariation(for product: Product, onCompletion: @escaping (Result<(Product, ProductVariation), Error>) -> Void) {
         let useCase = GenerateVariationUseCase(product: product, stores: stores)
         useCase.generateVariation(onCompletion: onCompletion)
     }
@@ -43,9 +43,9 @@ extension ProductVariationsViewModel {
         product.variations.isEmpty || product.attributesForVariations.isEmpty
     }
 
-    /// Defines if the More Options button should be shown
+    /// Defines if empty state screen should show guide for creating attributes
     ///
-    func shouldShowMoreButton(for product: Product) -> Bool {
-        product.attributesForVariations.isNotEmpty
+    func shouldShowAttributeGuide(for product: Product) -> Bool {
+        product.attributesForVariations.isEmpty
     }
 }

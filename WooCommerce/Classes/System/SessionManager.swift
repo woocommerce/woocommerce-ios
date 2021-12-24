@@ -95,11 +95,29 @@ final class SessionManager: SessionManagerProtocol {
         }
     }
 
+    /// Roles for the default Store Site.
+    ///
+    var defaultRoles: [User.Role] {
+        get {
+            guard let rawRoles = defaults[.defaultRoles] as? [String] else {
+                return []
+            }
+            return rawRoles.compactMap { User.Role(rawValue: $0) }
+        }
+        set {
+            defaults[.defaultRoles] = newValue.map(\.rawValue)
+        }
+    }
+
     var defaultStoreIDPublisher: AnyPublisher<Int64?, Never> {
         defaultStoreIDSubject.eraseToAnyPublisher()
     }
 
     private let defaultStoreIDSubject: CurrentValueSubject<Int64?, Never>
+
+    var defaultSitePublisher: AnyPublisher<Site?, Never> {
+        $defaultSite.eraseToAnyPublisher()
+    }
 
     /// Anonymous UserID.
     ///
@@ -117,16 +135,7 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Default Store Site
     ///
-    var defaultSite: Yosemite.Site?
-
-    /// Observable site ID
-    ///
-    var siteID: Observable<Int64?> {
-        storeIDSubject
-    }
-    private let storeIDSubject = BehaviorSubject<Int64?>(nil)
-
-    private var defaultStoreIDObserver: NSKeyValueObservation?
+    @Published var defaultSite: Site?
 
     /// Designated Initializer.
     ///
@@ -135,14 +144,6 @@ final class SessionManager: SessionManagerProtocol {
         self.keychain = Keychain(service: keychainServiceName).accessibility(.afterFirstUnlock)
 
         defaultStoreIDSubject = .init(defaults[.defaultStoreID])
-        defaultStoreIDObserver = defaults.observe(\.defaultStoreID, options: [.initial, .new], changeHandler: { [weak self] _, change in
-            let storeID = change.newValue.flatMap { Int64($0) }
-            self?.storeIDSubject.send(storeID)
-        })
-    }
-
-    deinit {
-        defaultStoreIDObserver?.invalidate()
     }
 
     /// Nukes all of the known Session's properties.

@@ -1,6 +1,6 @@
 import Foundation
-import Networking
 import Yosemite
+import Codegen
 
 /// This model represents a computed summary of order items.
 /// (order items - refunded order items) = aggregate order item data.
@@ -49,22 +49,13 @@ struct AggregateOrderItem: Equatable, GeneratedCopiable {
 }
 
 
-// MARK: - Comparable Conformance
-//
-extension AggregateOrderItem: Comparable {
-    public static func < (lhs: AggregateOrderItem, rhs: AggregateOrderItem) -> Bool {
-        return lhs.productID < rhs.productID ||
-            (lhs.productID == rhs.productID && lhs.variationID < rhs.variationID)
-    }
-}
-
-
 // MARK: - Hashable Conformance
 //
 extension AggregateOrderItem: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(productID)
         hasher.combine(variationID)
+        hasher.combine(attributes)
     }
 }
 

@@ -1,13 +1,13 @@
-import MobileCoreServices
+import UniformTypeIdentifiers
 
 extension URL {
     var mimeTypeForPathExtension: String {
         guard
-            let id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension as CFString, nil)?.takeRetainedValue(),
-            let contentType = UTTypeCopyPreferredTagWithClass(id, kUTTagClassMIMEType)?.takeRetainedValue() else {
+            let typeIdentifier = UTType(filenameExtension: pathExtension),
+            let mimeType = typeIdentifier.preferredMIMEType else {
                 return "application/octet-stream"
         }
-        return contentType as String
+        return mimeType
     }
 
     /// The expected file extension string for a given UTType identifier string.
@@ -16,7 +16,6 @@ extension URL {
     /// - returns: The expected file extension or nil if unknown.
     ///
     static func fileExtensionForUTType(_ type: String) -> String? {
-        let fileExtension = UTTypeCopyPreferredTagWithClass(type as CFString, kUTTagClassFilenameExtension)?.takeRetainedValue()
-        return fileExtension as String?
+        return UTType(type)?.preferredFilenameExtension
     }
 }

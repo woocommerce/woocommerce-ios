@@ -11,7 +11,7 @@ struct MockOrderStatusActionHandler: MockActionHandler {
     func handle(action: ActionType) {
         switch action {
             // Order status is not currently supported by `MockObjectGraph`, so pretend none exist
-            case .retrieveOrderStatuses(_, let onCompletion): success(onCompletion)
+            case .retrieveOrderStatuses(_, let onCompletion): onCompletion(.success([]))
             default: unimplementedAction(action: action)
         }
     }

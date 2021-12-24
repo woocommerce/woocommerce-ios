@@ -4,17 +4,19 @@ import Foundation
 struct ShippingLabelPackageNumberRow: View {
     let packageNumber: Int
     let numberOfItems: Int
+    let isValid: Bool
 
-    init(packageNumber: Int, numberOfItems: Int) {
+    init(packageNumber: Int, numberOfItems: Int, isValid: Bool = true) {
         self.packageNumber = packageNumber
         self.numberOfItems = numberOfItems
+        self.isValid = isValid
     }
 
     var body: some View {
         HStack {
             Text(String(format: Localization.package, packageNumber))
                 .font(.headline)
-            if numberOfItems == 0 {
+            if numberOfItems <= 1 {
                 Text(String(format: Localization.numberOfItem, numberOfItems))
                     .font(.body)
             }
@@ -23,9 +25,10 @@ struct ShippingLabelPackageNumberRow: View {
                     .font(.body)
             }
             Spacer()
+            Image(uiImage: .noticeImage)
+                .foregroundColor(Color(.error))
+                .renderedIf(!isValid)
         }
-        .frame(height: Constants.height)
-        .padding([.leading, .trailing], Constants.padding)
     }
 }
 
@@ -37,11 +40,6 @@ private extension ShippingLabelPackageNumberRow {
         static let numberOfItem = NSLocalizedString("- %1$d item",
                                                     comment: "Number of item in packages in Shipping Labels in singular form. Reads like - 1 items")
     }
-
-    enum Constants {
-        static let height: CGFloat = 44
-        static let padding: CGFloat = 16
-    }
 }
 
 
@@ -51,6 +49,9 @@ struct ShippingLabelPackageNumberRow_Previews: PreviewProvider {
             .previewLayout(.fixed(width: 375, height: 50))
 
         ShippingLabelPackageNumberRow(packageNumber: 7, numberOfItems: 1)
+            .previewLayout(.fixed(width: 375, height: 50))
+
+        ShippingLabelPackageNumberRow(packageNumber: 7, numberOfItems: 1, isValid: false)
             .previewLayout(.fixed(width: 375, height: 50))
     }
 }

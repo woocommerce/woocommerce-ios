@@ -1,5 +1,5 @@
-
 import UIKit
+import SafariServices.SFSafariViewController
 
 /// A configurable view to display an "empty state".
 ///
@@ -54,9 +54,13 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// The scrollable view which contains the `contentView`.
     ///
     @IBOutlet private var scrollView: UIScrollView!
-    /// The child of the scrollView containing all the content (labels, image, etc).
+    /// The child of the scrollView which contains the `stackView`.
     ///
     @IBOutlet private var contentView: UIView!
+    /// The child of the contentView containing all the content (labels, image, etc).
+    ///
+    @IBOutlet private weak var stackView: UIStackView!
+
 
     /// The height adjustment constraint for the content view.
     ///
@@ -71,6 +75,11 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// The configured style for this view.
     ///
     private let style: Style
+
+    /// Initial configuration.
+    /// Useful when rendering this view controller using the UIKit presentation APIs.
+    ///
+    private var configuration: Config?
 
     /// The handler to execute when the button is tapped.
     ///
@@ -89,8 +98,39 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// Used to present the Contact Support dialog if the `Config` is `.withSupportRequest`.
     private let zendeskManager: ZendeskManagerProtocol
 
-    init(style: Style = .basic, zendeskManager: ZendeskManagerProtocol = ZendeskManager.shared) {
+    /// Used to pin the stackView to the center of the visible area in the contact view,
+    /// taking account of the banner view when it's shown.
+    private lazy var visiblyCenteredLayoutGuide: UILayoutGuide = {
+        let centerGuide = UILayoutGuide()
+        contentView.addLayoutGuide(centerGuide)
+        let topConstraint = centerGuide.topAnchor.constraint(equalTo: contentView.topAnchor)
+        topConstraint.priority = UILayoutPriority(250)
+        NSLayoutConstraint.activate([
+            topConstraint,
+            centerGuide.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            centerGuide.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            centerGuide.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)])
+        return centerGuide
+    }()
+
+    /// Top banner that shows an error if there is a problem loading reviews data
+    ///
+    private lazy var topBannerView: TopBannerView = {
+        ErrorTopBannerFactory.createTopBanner(isExpanded: false,
+                                              expandedStateChangeHandler: {},
+                                              onTroubleshootButtonPressed: { [weak self] in
+                                                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+                                                self?.present(safariViewController, animated: true, completion: nil)
+                                              },
+                                              onContactSupportButtonPressed: { [weak self] in
+                                                guard let self = self else { return }
+                                                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+                                              })
+    }()
+
+    init(style: Style = .basic, configuration: Config? = nil, zendeskManager: ZendeskManagerProtocol = ZendeskManager.shared) {
         self.style = style
+        self.configuration = configuration
         self.zendeskManager = zendeskManager
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -104,11 +144,16 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
         view.backgroundColor = style.backgroundColor
         contentView.backgroundColor = style.backgroundColor
+        NSLayoutConstraint.activate([stackView.centerYAnchor.constraint(equalTo: visiblyCenteredLayoutGuide.centerYAnchor)])
 
         messageLabel.applySecondaryTitleStyle()
         detailsLabel.applySecondaryBodyStyle()
 
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
+
+        if let configuration = configuration {
+            configure(configuration)
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -120,6 +165,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// Configure the elements to be displayed.
     ///
     func configure(_ config: Config) {
+        configuration = config
         messageLabel.attributedText = config.message
 
         imageView.image = config.image
@@ -201,6 +247,25 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// OnTouchUpInside handler for the `actionButton`.
     @IBAction private func actionButtonTapped(_ sender: Any) {
         lastActionButtonTapHandler?()
+    }
+
+    /// Display the error banner at the top of the view
+    ///
+    func showTopBannerView() {
+        contentView.insertSubview(topBannerView, at: 0)
+        NSLayoutConstraint.activate([
+            topBannerView.leadingAnchor.constraint(equalTo: contentView.safeLeadingAnchor),
+            topBannerView.trailingAnchor.constraint(equalTo: contentView.safeTrailingAnchor),
+            topBannerView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            topBannerView.bottomAnchor.constraint(lessThanOrEqualTo: stackView.topAnchor, constant: -16),
+            visiblyCenteredLayoutGuide.topAnchor.constraint(equalTo: topBannerView.bottomAnchor)
+        ])
+    }
+
+    /// Hide the error banner at the top of the view
+    ///
+    func hideTopBannerView() {
+        topBannerView.removeFromSuperview()
     }
 }
 

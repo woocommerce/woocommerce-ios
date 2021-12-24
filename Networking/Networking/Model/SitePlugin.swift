@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Represents a specific plugin entity for a specific site.
 ///
-public struct SitePlugin: Decodable, GeneratedFakeable {
+public struct SitePlugin: Decodable, GeneratedFakeable, GeneratedCopiable {
     public let siteID: Int64
     public let plugin: String                   // e.g. woocommerce/woocommerce (i.e. [folder/]main php file)
     public let status: SitePluginStatusEnum     // i.e. .active | .networkActive | .inactive

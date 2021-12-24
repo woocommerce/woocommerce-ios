@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents the store options returned in the packages details.
 ///

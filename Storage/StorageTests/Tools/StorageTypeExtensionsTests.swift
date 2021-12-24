@@ -6,6 +6,8 @@ class StorageTypeExtensionsTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 98765
 
+    private let sampleGatewayID: String = "woocommerce-payments"
+
     private var storageManager: StorageManagerType!
 
     private var storage: StorageType! {
@@ -206,18 +208,6 @@ class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(orderNote, storedNote)
-    }
-
-    func test_loadOrderCount_by_siteID() throws {
-        // Given
-        let orderCount = storage.insertNewObject(ofType: OrderCount.self)
-        orderCount.siteID = sampleSiteID
-
-        // When
-        let storedOrderCount = try XCTUnwrap(storage.loadOrderCount(siteID: sampleSiteID))
-
-        // Then
-        XCTAssertEqual(orderCount, storedOrderCount)
     }
 
     func test_loadTopEarnerStats_by_date_granularity() throws {
@@ -1004,5 +994,150 @@ class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(Set([coupon1, coupon2]), Set(storedCoupons))
+    }
+
+    func test_loadShippingLabelAccountSettings_by_siteID() throws {
+        // Given
+        let accountSettings = storage.insertNewObject(ofType: ShippingLabelAccountSettings.self)
+        accountSettings.siteID = sampleSiteID
+
+        // When
+        let storedAccountSettings = try XCTUnwrap(storage.loadShippingLabelAccountSettings(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual(accountSettings, storedAccountSettings)
+    }
+
+    func test_loadAddOnGroups_by_site_ID_and_sorted_by_name() throws {
+        // Given
+        let addOnGroup1 = storage.insertNewObject(ofType: AddOnGroup.self)
+        addOnGroup1.name = "BBB"
+        addOnGroup1.siteID = sampleSiteID
+
+        let addOnGroup2 = storage.insertNewObject(ofType: AddOnGroup.self)
+        addOnGroup2.name = "AAA"
+        addOnGroup2.siteID = sampleSiteID
+
+        // When
+        let storedGroups = try XCTUnwrap(storage.loadAddOnGroups(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual(storedGroups, [addOnGroup2, addOnGroup1])
+    }
+
+    func test_loadAddOnGroup_by_siteID_and_groupID() throws {
+        // Given
+        let addOnGroup1 = storage.insertNewObject(ofType: AddOnGroup.self)
+        addOnGroup1.siteID = sampleSiteID
+        addOnGroup1.groupID = 1234
+
+        let addOnGroup2 = storage.insertNewObject(ofType: AddOnGroup.self)
+        addOnGroup2.siteID = sampleSiteID
+        addOnGroup2.groupID = 2345
+
+        // When
+        let storedGroup = try XCTUnwrap(storage.loadAddOnGroup(siteID: sampleSiteID, groupID: 1234))
+
+        // Then
+        XCTAssertEqual(storedGroup, addOnGroup1)
+    }
+
+    func test_loadPlugins_by_siteID_and_sorted_by_name() throws {
+        // Given
+        let plugin1 = storage.insertNewObject(ofType: SitePlugin.self)
+        plugin1.name = "BBB"
+        plugin1.siteID = sampleSiteID
+
+        let plugin2 = storage.insertNewObject(ofType: SitePlugin.self)
+        plugin2.name = "AAA"
+        plugin2.siteID = sampleSiteID
+
+        let plugin3 = storage.insertNewObject(ofType: SitePlugin.self)
+        plugin3.name = "ZZZ"
+        plugin3.siteID = sampleSiteID + 1
+
+        // When
+        let storedPlugins = try XCTUnwrap(storage.loadPlugins(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual(storedPlugins, [plugin2, plugin1])
+    }
+
+    func test_loadPlugin_by_siteID_and_name() throws {
+        // Given
+        let plugin1 = storage.insertNewObject(ofType: SitePlugin.self)
+        plugin1.name = "AAA"
+        plugin1.siteID = sampleSiteID
+
+        let plugin2 = storage.insertNewObject(ofType: SitePlugin.self)
+        plugin2.name = "BBB"
+        plugin2.siteID = sampleSiteID
+
+        // When
+        let foundPlugin = try XCTUnwrap(storage.loadPlugin(siteID: sampleSiteID, name: "AAA"))
+
+        // Then
+        XCTAssertEqual(foundPlugin, plugin1)
+    }
+
+    func test_loadPaymentGatewayAccount_by_siteID() throws {
+        // Given
+        let account = storage.insertNewObject(ofType: PaymentGatewayAccount.self)
+        account.country = "US"
+        account.defaultCurrency = "USD"
+        account.gatewayID = sampleGatewayID
+        account.hasOverdueRequirements = false
+        account.hasPendingRequirements = false
+        account.isCardPresentEligible = true
+        account.siteID = sampleSiteID
+        account.statementDescriptor = "STAGING.MARS"
+        account.status = "complete"
+        account.supportedCurrencies = ["USD"]
+
+        // When
+        let foundAccount = try XCTUnwrap(storage.loadPaymentGatewayAccount(siteID: sampleSiteID, gatewayID: sampleGatewayID))
+
+        // Then
+        XCTAssertEqual(foundAccount, account)
+    }
+
+    // MARK: - System plugins
+
+    func test_loadSystemPlugins_by_siteID_and_sorted_by_name() throws {
+        // Given
+        let systemPlugin1 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin1.name = "Plugin 1"
+        systemPlugin1.siteID = sampleSiteID
+
+        let systemPlugin2 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin2.name = "Plugin 2"
+        systemPlugin2.siteID = sampleSiteID + 1
+
+        let systemPlugin3 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin3.name = "Plugin 3"
+        systemPlugin3.siteID = sampleSiteID
+
+        // When
+        let storedSystemPlugins = try XCTUnwrap(storage.loadSystemPlugins(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual(storedSystemPlugins, [systemPlugin1, systemPlugin3])
+    }
+
+    func test_loadSystemPlugin_by_siteID_and_name() throws {
+        // Given
+        let systemPlugin1 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin1.name = "Plugin 1"
+        systemPlugin1.siteID = sampleSiteID
+
+        let systemPlugin2 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin2.name = "Plugin 2"
+        systemPlugin2.siteID = sampleSiteID
+
+        // When
+        let foundSystemPlugin = try XCTUnwrap(storage.loadSystemPlugin(siteID: sampleSiteID, name: "Plugin 2"))
+
+        // Then
+        XCTAssertEqual(foundSystemPlugin, systemPlugin2)
     }
 }

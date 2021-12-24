@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Represents a FeeLine Entity within an Order.
 ///
-public struct OrderFeeLine: Equatable, Decodable, GeneratedFakeable {
+public struct OrderFeeLine: Equatable, Codable, GeneratedFakeable, GeneratedCopiable {
     public let feeID: Int64
     public let name: String
     public let taxClass: String
@@ -33,6 +34,20 @@ public struct OrderFeeLine: Equatable, Decodable, GeneratedFakeable {
     }
 }
 
+// MARK: Codable
+extension OrderFeeLine {
+    /// Encodes OrderFeeLine writable fields.
+    ///
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(feeID, forKey: .feeID)
+        try container.encode(name, forKey: .name)
+        try container.encode(taxClass, forKey: .taxClass)
+        try container.encode(taxStatus, forKey: .taxStatus)
+        try container.encode(total, forKey: .total)
+    }
+}
 
 /// Defines all of the OrderFeeLine's CodingKeys.
 ///

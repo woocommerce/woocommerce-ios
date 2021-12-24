@@ -126,6 +126,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                          stockStatus: ProductStockStatus?,
                          productStatus: ProductStatus?,
                          productType: ProductType?,
+                         productCategory: ProductCategory?,
                          orderBy: ProductsRemote.OrderKey,
                          order: ProductsRemote.Order,
                          excludedProductIDs: [Int64],
@@ -138,11 +139,11 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                         pageNumber: Int,
                         pageSize: Int,
                         excludedProductIDs: [Int64],
-                        completion: @escaping ([Product]?, Error?) -> Void) {
+                        completion: @escaping (Result<[Product], Error>) -> Void) {
         // no-op
     }
 
-    func searchSku(for siteID: Int64, sku: String, completion: @escaping (String?, Error?) -> Void) {
+    func searchSku(for siteID: Int64, sku: String, completion: @escaping (Result<String, Error>) -> Void) {
         // no-op
     }
 

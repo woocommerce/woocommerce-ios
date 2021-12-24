@@ -48,7 +48,7 @@ final class ProductReviewsViewModel {
         do {
             try data.observeReviews()
         } catch {
-            CrashLogging.logError(error)
+            ServiceLocator.crashLogging.logError(error)
         }
 
         // Reload table because observeReviews() executes performFetch()

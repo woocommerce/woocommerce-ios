@@ -2,6 +2,63 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 59 (Release 8.2.0.0)
+- @jaclync 2021-11-30
+    - Added `jetpackConnectionActivePlugins` attribute to `Site` entity.
+
+- @itsmeichigo 2021-12-04
+    - Added `adminURL` attribute to `Site` entity.
+
+## Model 58 (Release 8.1.0.0)
+- @jaclync 2021-11-15
+- Added `isJetpackConnected` attribute to `Site` entity.
+- Added `isJetpackThePluginInstalled` attribute to `Site` entity.
+
+## Model 57 (Release 8.0.0.0)
+- @allendav 2021-11-03
+- Added `isLive` attribute to `PaymentGatewayAccount` entity
+- Added `isInTestMode` attribute to `PaymentGatewayAccount` entity
+
+## Model 56 (Release 7.9.0.0)
+- @allendav 2021-10-25
+- Added `active` attribute to `SystemPlugin` entity
+
+## Model 55 (Release 7.5.0.0)
+- @itsmeichigo 2021-08-19
+- Added `commercialInvoiceURL` attribute to `ShippingLabel` entity.
+
+## Model 54 (Release 7.2.0.0)
+- @fernandofgfer 2021-07-14
+- Added `SystemPlugin` entity
+
+## Model 53 (Release 7.0.0.0)
+- @pmusolino 2021-06-24
+- Added `Country` entity
+- Added `StateOfACountry` entity
+
+## Model 52 (Release 6.9.0.0)
+- @allendav 2021-06-02
+- Added `PaymentGatewayAccount` entity
+
+## Model 51 (Release 6.8.0.0)
+- @ealeksandrov 2021-05-21
+- Removed `OrderCount` entity
+- Removed `OrderCountItem` entity
+
+## Model 50 (Release 6.7.0.0)
+- @itsmeichigo 2021-05-05
+- Added `SitePlugin` entity.
+
+## Model 49 (Release 6.7.0.0)
+- @ecarrion 2021-04-30
+- Added `AddOnGroup` entity.
+- Added to-many relationship between `AddOnGroup` and `ProductAddOn`.
+
+## Model 48 (Release 6.6.0.0)
+- @rachelmcr 2021-04-19
+- Added `ShippingLabelAccountSettings` entity.
+- Added `ShippingLabelPaymentMethod` entity.
+
 ## Model 47 (Release 6.5.0.0)
 - @ecarrion 2021-04-09
 - Added `ProductAddOnOption` entity.

@@ -1,6 +1,7 @@
 import Storage
 import UIKit
 import Yosemite
+import Experiments
 
 /// Contains all UI content to show on Dashboard
 ///
@@ -9,19 +10,20 @@ protocol DashboardUI: UIViewController {
     var scrollDelegate: DashboardUIScrollDelegate? { get set }
 
     /// Called when the Dashboard should display syncing error
-    var displaySyncingErrorNotice: () -> Void { get set }
+    var displaySyncingError: () -> Void { get set }
 
     /// Called when the user pulls to refresh
     var onPullToRefresh: () -> Void { get set }
 
     /// Reloads data in Dashboard
     ///
+    /// - Parameter forced: pass `true` to override sync throttling
     /// - Parameter completion: called when Dashboard data reload finishes
-    func reloadData(completion: @escaping () -> Void)
+    func reloadData(forced: Bool, completion: @escaping () -> Void)
 }
 
 /// Relays the scroll events to a delegate for navigation bar large title workaround.
-protocol DashboardUIScrollDelegate: class {
+protocol DashboardUIScrollDelegate: AnyObject {
     /// Called when a dashboard tab `UIScrollView`'s `scrollViewDidScroll` event is triggered from the user.
     func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView)
 }
@@ -32,10 +34,12 @@ final class DashboardUIFactory {
 
     private var lastStatsV4DashboardUI: DashboardUI?
     private lazy var deprecatedStatsViewController = DeprecatedDashboardStatsViewController()
+    private let featureFlagService: FeatureFlagService
 
-    init(siteID: Int64, currentDateProvider: @escaping () -> Date = Date.init) {
+    init(siteID: Int64, currentDateProvider: @escaping () -> Date = Date.init, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.statsVersionCoordinator = StatsVersionCoordinator(siteID: siteID)
+        self.featureFlagService = featureFlagService
     }
 
     func reloadDashboardUI(onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
@@ -51,7 +55,12 @@ final class DashboardUIFactory {
         if let lastStatsV4DashboardUI = lastStatsV4DashboardUI {
             return lastStatsV4DashboardUI
         }
-        let dashboardUI = StoreStatsAndTopPerformersViewController(siteID: siteID)
+        let dashboardUI: DashboardUI
+        if featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) {
+            dashboardUI = StoreStatsAndTopPerformersViewController(siteID: siteID)
+        } else {
+            dashboardUI = OldStoreStatsAndTopPerformersViewController(siteID: siteID)
+        }
         lastStatsV4DashboardUI = dashboardUI
         return dashboardUI
     }

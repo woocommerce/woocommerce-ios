@@ -71,7 +71,21 @@ internal struct ProductAddOnEnvelope: Decodable {
     /// Converts an addOnJsonObject(`Dictionary`) to a `ProductAddOn` entity.
     ///
     private func decode(addOnJsonObject: AnyDictionary, using decoder: JSONDecoder) throws -> ProductAddOn {
+        // It appears to be unexpected crashes when parsing some JSON objects that are not handled inside subsequent `try JSONSerialization.data` call.
+        // https://github.com/woocommerce/woocommerce-ios/issues/4205
+        guard JSONSerialization.isValidJSONObject(addOnJsonObject) else {
+            throw ProductAddOnEnvelopeError.invalidJsonObject(addOnJsonObject)
+        }
+
         let jsonData = try JSONSerialization.data(withJSONObject: addOnJsonObject, options: .fragmentsAllowed)
         return try decoder.decode(ProductAddOn.self, from: jsonData)
     }
+}
+
+/// Custom errors that can happen during the `ProductAddOnEnvelope` decoding.
+///
+public enum ProductAddOnEnvelopeError: Error {
+    /// Represents an error when a `add-on JSON object` can't be converted to `JSON data`.
+    ///
+    case invalidJsonObject([String: Any])
 }

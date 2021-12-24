@@ -52,7 +52,7 @@ Mappers receive an instance of `Data` and return  the result of parsing that dat
 ## Model objects
 Model objects declared in `Networking` are immutable, and modelled as value types (structs) that typically implement `Decodable`.
 
-Model objects should implement `Comparable`.
+Model objects should conform to `GeneratedFakeable` and `GeneratedCopiable`. [Fakeable](fakeable.md) and [Copiable](copiable.md) methods should be generated automatically with `rake generate`.
 
 ## Unit tests
 As mentioned previously, there is an implementation of the `Network` protocol called [`MockNetwork`](../Networking/Networking/Network/MockNetwork.swift) used to mock network requests in the unit tests. This way we prevent the tests from hitting the actual network.

@@ -1,4 +1,5 @@
 import XCTest
+import Difference
 
 /// Asserts that a collection is empty.
 ///
@@ -46,4 +47,29 @@ public func assertThat<T>(_ subject: Any?, isAnInstanceOf expectedType: T.Type, 
                   "Expected \(subject) to be an instance of \(expectedType)",
                   file: file,
                   line: line)
+}
+
+extension XCTestCase {
+    /// Alternative to the regular `XCTAssertEqual` that outputs a `diff` between the `expect` and `received` objects.
+    ///
+    public func assertEqual<T: Equatable>(_ expected: @autoclosure () throws -> T,
+                                          _ received: @autoclosure () throws -> T) {
+        do {
+            let expected = try expected()
+            let received = try received()
+            guard expected != received else {
+                return
+            }
+
+            record(
+                XCTIssue(type: .assertionFailure,
+                         compactDescription: "assertEqual failed: Found difference for \n" + diff(expected, received).joined(separator: ", "))
+            )
+        }
+        catch {
+            record(
+                XCTIssue(type: .uncaughtException, compactDescription: "Caught error while testing: \(error)")
+            )
+        }
+    }
 }

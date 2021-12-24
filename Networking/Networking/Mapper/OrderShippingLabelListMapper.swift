@@ -81,11 +81,14 @@ private struct OrderShippingLabelListData: Decodable {
         // Shipping labels.
         let formData = try container.decode(OrderShippingLabelListFormData.self, forKey: .formData)
         let shippingLabelsWithoutAddresses = try container.decode([ShippingLabel].self, forKey: .labelsData)
-        // Populates each shipping label's `originAddress` and `destinationAddress` from `formData` because they are not available
+        // Filters only labels with a tracking number and status `.purchased`.
+        // Then populates each shipping label's `originAddress` and `destinationAddress` from `formData` because they are not available
         // in each shipping label response.
-        let shippingLabels = shippingLabelsWithoutAddresses.map {
-            $0.copy(originAddress: formData.originAddress, destinationAddress: formData.destinationAddress)
-        }
+        let shippingLabels = shippingLabelsWithoutAddresses
+            .filter { !$0.trackingNumber.isEmpty && $0.status == .purchased }
+            .map {
+                $0.copy(originAddress: formData.originAddress, destinationAddress: formData.destinationAddress)
+            }
 
         self.init(shippingLabels: shippingLabels, settings: settings)
     }

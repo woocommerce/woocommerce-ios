@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Encapsulates API Information for a given site
 ///
-public struct SiteAPI: Decodable, GeneratedFakeable {
+public struct SiteAPI: Decodable, Equatable, GeneratedFakeable {
 
     /// Site Identifier.
     ///
@@ -27,6 +27,12 @@ public struct SiteAPI: Decodable, GeneratedFakeable {
         return .none
     }
 
+    /// Check if telemetry reporting namespace is available
+    ///
+    public var telemetryIsAvailable: Bool {
+        return namespaces.contains(WooAPIVersion.wcTelemetry.rawValue)
+    }
+
     /// Decodable Conformance.
     ///
     public init(from decoder: Decoder) throws {
@@ -45,26 +51,6 @@ public struct SiteAPI: Decodable, GeneratedFakeable {
     public init(siteID: Int64, namespaces: [String]) {
         self.siteID = siteID
         self.namespaces = namespaces
-    }
-}
-
-
-// MARK: - Comparable Conformance
-//
-extension SiteAPI: Comparable {
-    public static func == (lhs: SiteAPI, rhs: SiteAPI) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.namespaces == rhs.namespaces &&
-            lhs.highestWooVersion == rhs.highestWooVersion
-
-    }
-
-    public static func < (lhs: SiteAPI, rhs: SiteAPI) -> Bool {
-        return lhs.siteID < rhs.siteID
-    }
-
-    public static func > (lhs: SiteAPI, rhs: SiteAPI) -> Bool {
-        return lhs.siteID > rhs.siteID
     }
 }
 

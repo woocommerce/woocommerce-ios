@@ -42,9 +42,47 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var isEligibleForShippingLabelCreation: Bool = false
 
+    /// Whether the order is eligible for card present payment.
+    ///
+    var isEligibleForCardPresentPayment: Bool {
+        return isOrderAmountEligibleForCardPayment() &&
+            isOrderCurrencyEligibleForCardPayment() &&
+            isOrderStatusEligibleForCardPayment() &&
+            isOrderPaymentMethodEligibleForCardPayment() &&
+            hasCardPresentEligiblePaymentGatewayAccount() &&
+            !orderContainsAnySubscription()
+    }
+
+    /// Whether the button to create shipping labels should be visible.
+    ///
+    var shouldShowShippingLabelCreation: Bool {
+        return isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty &&
+            !isEligibleForCardPresentPayment
+    }
+
+    /// Whether the option to re-create shipping labels should be visible.
+    ///
+    var shouldAllowRecreatingShippingLabels: Bool {
+        return isEligibleForShippingLabelCreation && shippingLabels.isNotEmpty &&
+            !isEligibleForCardPresentPayment
+    }
+
+    func cardPresentPaymentGatewayAccounts() -> [PaymentGatewayAccount] {
+        resultsControllers.paymentGatewayAccounts.filter { $0.isCardPresentEligible }
+    }
+
+
+    /// Whether the order has a receipt associated.
+    ///
+    var shouldShowReceipts: Bool = false
+
     /// Closure to be executed when the cell was tapped.
     ///
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
+
+    /// Closure to be executed when the more menu on Products section is tapped.
+    ///
+    var onProductsMoreMenuTapped: ((_ sourceView: UIView) -> Void)?
 
     /// Closure to be executed when the shipping label more menu is tapped.
     ///
@@ -53,6 +91,11 @@ final class OrderDetailsDataSource: NSObject {
     /// Closure to be executed when the UI needs to be reloaded.
     ///
     var onUIReloadRequired: (() -> Void)?
+
+    /// Indicates if the product cell will be configured with add on information or not.
+    /// Property provided while "view add-ons" feature is in development.
+    ///
+    var showAddOns = false
 
     /// Order shipment tracking list
     ///
@@ -82,6 +125,10 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var refunds: [Refund] {
         return resultsControllers.refunds
+    }
+
+    var addOnGroups: [AddOnGroup] {
+        resultsControllers.addOnGroups
     }
 
     /// Shipping Labels for an Order
@@ -119,10 +166,7 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var aggregateOrderItems: [AggregateOrderItem] {
         let orderItemsAfterCombiningWithRefunds = AggregateDataHelper.combineOrderItems(items, with: refunds)
-        let orderItemsAfterCombiningWithRefundsAndShippingLabels = AggregateDataHelper
-            .combineAggregatedOrderItems(orderItemsAfterCombiningWithRefunds,
-                                         with: shippingLabelOrderItemsAggregator.orderItemsOfNonRefundedShippingLabels(shippingLabels))
-        return orderItemsAfterCombiningWithRefundsAndShippingLabels
+        return orderItemsAfterCombiningWithRefunds
     }
 
     /// All the condensed refunds in an order
@@ -157,28 +201,21 @@ final class OrderDetailsDataSource: NSObject {
         return AsyncDictionary()
     }()
 
-    /// Indicates if the product cell will be configured with add on information or not.
-    /// Set to the the value of the `addOnsI1` feature flag in it's default parameter.
-    ///
-    private let showAddOns: Bool
-
     private lazy var currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     private let imageService: ImageService = ServiceLocator.imageService
 
-    init(order: Order,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
-         showAddOns: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.addOnsI1)) {
+    init(order: Order, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.storageManager = storageManager
         self.order = order
         self.couponLines = order.coupons
-        self.showAddOns = showAddOns
 
         super.init()
     }
 
     func update(order: Order) {
         self.order = order
+        resultsControllers.update(order: order)
     }
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
@@ -198,6 +235,13 @@ final class OrderDetailsDataSource: NSObject {
             return nil
         }
         return shippingLabelOrderItemsAggregator.orderItem(of: shippingLabel, at: indexPath.row)
+    }
+
+    func shippingLabelOrderItems(at indexPath: IndexPath) -> [AggregateOrderItem] {
+        guard let shippingLabel = shippingLabel(at: indexPath) else {
+            return []
+        }
+        return shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel)
     }
 }
 
@@ -259,8 +303,6 @@ extension OrderDetailsDataSource {
 private extension OrderDetailsDataSource {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as WooBasicTableViewCell where row == .details:
-            configureDetails(cell: cell)
         case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
             configureShippingAddress(cell: cell)
         case let cell as CustomerNoteTableViewCell where row == .customerNote:
@@ -288,16 +330,20 @@ private extension OrderDetailsDataSource {
             configureOrderNote(cell: cell, at: indexPath)
         case let cell as LedgerTableViewCell:
             configurePayment(cell: cell)
+        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .seeReceipt:
+            configureSeeReceipt(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .customerPaid:
             configureCustomerPaid(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .refund:
             configureRefund(cell: cell, at: indexPath)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .netAmount:
             configureNetAmount(cell: cell)
-        case let cell as ProductDetailsTableViewCell where row == .shippingLabelProduct:
-            configureShippingLabelProduct(cell: cell, at: indexPath)
+        case let cell as WooBasicTableViewCell where row == .shippingLabelProducts:
+            configureShippingLabelProducts(cell: cell, at: indexPath)
         case let cell as ProductDetailsTableViewCell where row == .aggregateOrderItem:
             configureAggregateOrderItem(cell: cell, at: indexPath)
+        case let cell as ButtonTableViewCell where row == .collectCardPaymentButton:
+            configureCollectPaymentButton(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .shippingLabelCreateButton:
             configureCreateShippingLabelButton(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .markCompleteButton(style: .primary, showsBottomSpacing: true),
@@ -330,12 +376,23 @@ private extension OrderDetailsDataSource {
 
     private func configureCustomerNote(cell: CustomerNoteTableViewCell) {
         cell.headline = Title.customerNote
-        let localizedBody = String.localizedStringWithFormat(
-            NSLocalizedString("“%@”",
-                              comment: "Customer note, wrapped in quotes"),
-            customerNote)
-        cell.body = localizedBody
         cell.selectionStyle = .none
+        if customerNote.isNotEmpty {
+            cell.body = customerNote.quoted
+            cell.onEditTapped = { [weak self] in
+                self?.onCellAction?(.editCustomerNote, nil)
+            }
+        } else {
+            cell.body = nil
+            cell.onAddTapped = { [weak self] in
+                self?.onCellAction?(.editCustomerNote, nil)
+            }
+        }
+
+        cell.addButtonTitle = NSLocalizedString("Add Customer Note", comment: "Title for the button to add the Customer Provided Note in Order Details")
+        cell.editButtonAccessibilityLabel = NSLocalizedString(
+            "Update Note",
+            comment: "Accessibility Label for the edit button to change the Customer Provided Note in Order Details")
     }
 
     private func configureBillingDetail(cell: WooBasicTableViewCell) {
@@ -428,12 +485,12 @@ private extension OrderDetailsDataSource {
         cell.updateFootnoteText(paymentViewModel.paymentSummary)
     }
 
-    private func configureDetails(cell: WooBasicTableViewCell) {
-        cell.bodyLabel?.text = Titles.productDetails
-        cell.applyPlainTextStyle()
-        cell.accessoryImage = nil
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
+    private func configureSeeReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
+        cell.setLeftTitleToLinkStyle(true)
+        cell.leftText = Titles.seeReceipt
+        cell.rightText = nil
+        cell.hideFootnote()
+        cell.hideSeparator()
     }
 
     private func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
@@ -465,6 +522,14 @@ private extension OrderDetailsDataSource {
         cell.leftText = Titles.netAmount
         cell.rightText = paymentViewModel.netAmount
         cell.hideFootnote()
+    }
+
+    private func configureCollectPaymentButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
+        cell.configure(style: .primary,
+                       title: Titles.collectPayment) {
+            self.onCellAction?(.collectPayment, indexPath)
+        }
+        cell.hideSeparator()
     }
 
     private func configureCreateShippingLabelButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
@@ -531,22 +596,33 @@ private extension OrderDetailsDataSource {
                                 "VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device")
     }
 
-    private func configureShippingLabelProduct(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
-        cell.selectionStyle = .default
-
-        guard let shippingLabel = shippingLabel(at: indexPath),
-              let orderItem = shippingLabelOrderItemsAggregator.orderItem(of: shippingLabel, at: indexPath.row) else {
+    private func configureShippingLabelProducts(cell: WooBasicTableViewCell, at indexPath: IndexPath) {
+        guard let shippingLabel = shippingLabel(at: indexPath) else {
             assertionFailure("Cannot access shipping label and/or order item at \(indexPath)")
             return
         }
 
-        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: orderItem,
-                                                        currency: order.currency,
-                                                        hasAddOns: checkAddOnsExistence(on: orderItem))
-        cell.configure(item: itemViewModel, imageService: imageService)
-        cell.onViewAddOnsTouchUp = {
-            print("TODO: Navigate to add ons")
-        }
+        let orderItems = shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel)
+        let singular = NSLocalizedString("%1$d item",
+                                         comment: "For example: `1 item` in Shipping Label package row")
+        let plural = NSLocalizedString("%1$d items",
+                                       comment: "For example: `5 items` in Shipping Label package row")
+        let itemsText = String.pluralize(orderItems.map { $0.quantity.intValue }.reduce(0, +), singular: singular, plural: plural)
+
+        cell.bodyLabel?.text = itemsText
+        cell.applySecondaryTextStyle()
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.hideSeparator()
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = NSLocalizedString(
+            "View items in this shipping label package.",
+            comment: "Accessibility label for the items inside a Shipping Label package"
+        )
+
+        cell.accessibilityHint = NSLocalizedString("Show the items included inside this shipping label package.",
+        comment: "VoiceOver accessibility hint, informing the user that the button can be used to view the items inside the shipping label package")
     }
 
     private func configureShippingLabelTrackingNumber(cell: ImageAndTitleAndTextTableViewCell, at indexPath: IndexPath) {
@@ -595,6 +671,7 @@ private extension OrderDetailsDataSource {
     private func configureReprintShippingLabelButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
         cell.configure(style: .secondary,
                        title: Titles.reprintShippingLabel,
+                       topSpacing: 0,
                        bottomSpacing: 8) { [weak self] in
             guard let self = self else { return }
             guard let shippingLabel = self.shippingLabel(at: indexPath) else {
@@ -618,13 +695,15 @@ private extension OrderDetailsDataSource {
             }
             return URL(string: encodedImageURLString)
         }()
+
+        let addOns = filterAddOns(of: aggregateItem)
         let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem.copy(imageURL: imageURL),
                                                         currency: order.currency,
-                                                        hasAddOns: checkAddOnsExistence(on: aggregateItem))
+                                                        hasAddOns: addOns.isNotEmpty)
 
         cell.configure(item: itemViewModel, imageService: imageService)
-        cell.onViewAddOnsTouchUp = {
-            print("TODO: Navigate to add ons")
+        cell.onViewAddOnsTouchUp = { [weak self] in
+            self?.onCellAction?(.viewAddOns(addOns: addOns), nil)
         }
     }
 
@@ -655,7 +734,7 @@ private extension OrderDetailsDataSource {
     private func configureMarkCompleteButton(cell: ButtonTableViewCell,
                                              buttonStyle: ButtonTableViewCell.Style,
                                              showsBottomSpacing: Bool) {
-        let bottomSpacing: CGFloat = showsBottomSpacing ? ButtonTableViewCell.Constants.defaultBottomSpacing : 0
+        let bottomSpacing: CGFloat = showsBottomSpacing ? ButtonTableViewCell.Constants.defaultSpacing : 0
         cell.configure(style: buttonStyle, title: Titles.markComplete, bottomSpacing: bottomSpacing) { [weak self] in
             self?.onCellAction?(.markComplete, nil)
         }
@@ -713,15 +792,25 @@ private extension OrderDetailsDataSource {
     private func configureShippingAddress(cell: CustomerInfoTableViewCell) {
         let shippingAddress = order.shippingAddress
 
-        cell.title = NSLocalizedString("Shipping details",
-                                       comment: "Shipping title for customer info cell")
+        cell.title = Title.shippingAddress
         cell.name = shippingAddress?.fullNameWithCompany
-        cell.address = shippingAddress?.formattedPostalAddress ??
-            NSLocalizedString(
-                "No address specified.",
-                comment: "Order details > customer info > shipping details. " +
-                "This is where the address would normally display."
-        )
+
+        if let formattedPostalAddress = shippingAddress?.formattedPostalAddress {
+            cell.address = formattedPostalAddress
+            cell.onEditTapped = { [weak self] in
+                self?.onCellAction?(.editShippingAddress, nil)
+            }
+        } else {
+            cell.address = nil
+            cell.onAddTapped = { [weak self] in
+                self?.onCellAction?(.editShippingAddress, nil)
+            }
+        }
+
+        cell.addButtonTitle = NSLocalizedString("Add Shipping Address", comment: "Title for the button to add the Shipping Address in Order Details")
+        cell.editButtonAccessibilityLabel = NSLocalizedString(
+            "Update Address",
+            comment: "Accessibility Label for the edit button to change the Customer Shipping Address in Order Details")
     }
 
     private func configureShippingMethod(cell: CustomerNoteTableViewCell) {
@@ -744,14 +833,14 @@ private extension OrderDetailsDataSource {
         }
     }
 
-    /// Returns `true` if an aggregate item has add-ons and the receiver is enabled to show add-ons information.
-    /// Returns `false` otherwise or if we can't find an associated product with the order.
+    /// Returns attributes that can be categorized as `Add-ons`.
+    /// Returns an `empty` array if we can't find the product associated with order item or if the `addOns` feature is disabled.
     ///
-    private func checkAddOnsExistence(on item: AggregateOrderItem) -> Bool {
-        guard let product = products.first(where: { $0.productID == item.productOrVariationID }), showAddOns else {
-            return false
+    private func filterAddOns(of item: AggregateOrderItem) -> [OrderItemAttribute] {
+        guard let product = products.first(where: { $0.productID == item.productID }), showAddOns else {
+            return []
         }
-        return AddOnCrossreferenceUseCase(orderItem: item, product: product).addOnsAttributes().isNotEmpty
+        return AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: addOnGroups).addOnsAttributes()
     }
 }
 
@@ -820,30 +909,42 @@ extension OrderDetailsDataSource {
 
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
-            if isEligibleForShippingLabelCreation {
+            if shouldShowShippingLabelCreation {
                 rows.append(.shippingLabelCreateButton)
             }
 
             if isProcessingPayment {
-                if isEligibleForShippingLabelCreation {
+                if shouldShowShippingLabelCreation {
                     rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
                     rows.append(.shippingLabelCreationInfo(showsSeparator: false))
                 } else {
                     rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
                 }
             } else if isRefundedStatus == false {
-                if isEligibleForShippingLabelCreation {
+                if shouldShowShippingLabelCreation {
                     rows.append(.shippingLabelCreationInfo(showsSeparator: true))
                 }
-
-                rows.append(.details)
             }
 
             if rows.count == 0 {
                 return nil
             }
 
-            return Section(category: .products, title: Localization.pluralizedProducts(count: items.count), rightTitle: nil, rows: rows, headerStyle: .primary)
+            let headerStyle: Section.HeaderStyle
+            if shouldAllowRecreatingShippingLabels {
+                let headerActionConfig = PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] sourceView in
+                    self?.onProductsMoreMenuTapped?(sourceView)
+                }
+                headerStyle = .actionablePrimary(actionConfig: headerActionConfig)
+            } else {
+                headerStyle = .primary
+            }
+
+            return Section(category: .products,
+                           title: Localization.pluralizedProducts(count: items.count),
+                           rightTitle: nil,
+                           rows: rows,
+                           headerStyle: headerStyle)
         }()
 
         let refundedProducts: Section? = {
@@ -871,10 +972,7 @@ extension OrderDetailsDataSource {
                     rows = [.shippingLabelRefunded, .shippingLabelDetail]
                     headerStyle = .primary
                 } else {
-                    // TODO-2167: show printing instructions
-                    let orderItemsCount = shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel).count
-                    rows = Array(repeating: .shippingLabelProduct, count: orderItemsCount)
-                        + [.shippingLabelReprintButton, .shippingLabelPrintingInfo, .shippingLabelTrackingNumber, .shippingLabelDetail]
+                    rows = [.shippingLabelProducts, .shippingLabelReprintButton, .shippingLabelPrintingInfo, .shippingLabelTrackingNumber, .shippingLabelDetail]
                     let headerActionConfig = PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] sourceView in
                         self?.onShippingLabelMoreMenuTapped?(shippingLabel, sourceView)
                     }
@@ -888,9 +986,8 @@ extension OrderDetailsDataSource {
         let customerInformation: Section = {
             var rows: [Row] = []
 
-            if customerNote.isEmpty == false {
-                rows.append(.customerNote)
-            }
+            /// Always visible to allow editing.
+            rows.append(.customerNote)
 
             let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
                 return items.first(where: { $0.productID == product.productID}) != nil
@@ -915,7 +1012,16 @@ extension OrderDetailsDataSource {
                 rows.append(.netAmount)
             }
 
-            if !isRefundedStatus {
+            if isEligibleForCardPresentPayment {
+                rows.append(.collectCardPaymentButton)
+            }
+
+            if shouldShowReceipts {
+                rows.append(.seeReceipt)
+            }
+            let orderTotal = Double(order.total) ?? 0
+            let isEligibleForRefund = orderTotal > 0
+            if !isRefundedStatus && !isEligibleForCardPresentPayment && isEligibleForRefund {
                 rows.append(.issueRefundButton)
             }
 
@@ -1121,8 +1227,6 @@ extension OrderDetailsDataSource {
 // MARK: - Constants
 extension OrderDetailsDataSource {
     enum Titles {
-        static let productDetails = NSLocalizedString("Details",
-                                                      comment: "The row label to tap for a detailed product list")
         static let markComplete = NSLocalizedString("Mark Order Complete", comment: "Fulfill Order Action Button")
         static let addNoteText = NSLocalizedString("Add a note",
                                                    comment: "Button text for adding a new order note")
@@ -1131,8 +1235,10 @@ extension OrderDetailsDataSource {
         static let refunded = NSLocalizedString("Refunded",
                                                 comment: "The title for the refunded amount cell")
         static let netAmount = NSLocalizedString("Net Payment", comment: "The title for the net amount paid cell")
+        static let collectPayment = NSLocalizedString("Collect Payment", comment: "Text on the button that starts collecting a card present payment.")
         static let createShippingLabel = NSLocalizedString("Create Shipping Label", comment: "Text on the button that starts shipping label creation")
-        static let reprintShippingLabel = NSLocalizedString("Reprint Shipping Label", comment: "Text on the button that reprints a shipping label")
+        static let reprintShippingLabel = NSLocalizedString("Print Shipping Label", comment: "Text on the button that prints a shipping label")
+        static let seeReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
     }
 
     enum Icons {
@@ -1146,11 +1252,13 @@ extension OrderDetailsDataSource {
         static let refundedProducts = NSLocalizedString("Refunded Products", comment: "Section title")
         static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
         static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
+        static let shippingAddress = NSLocalizedString("Shipping Details",
+                                                       comment: "Shipping title for customer info cell")
         static let information = NSLocalizedString("Customer", comment: "Customer info section title")
         static let payment = NSLocalizedString("Payment", comment: "Payment section title")
         static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
         static let shippingLabelCreationInfoAction =
-            NSLocalizedString("Learn more about creating labels with your phone",
+            NSLocalizedString("Learn more about creating labels with your mobile device",
                               comment: "Title of button in order details > info link for creating a shipping label on the mobile device.")
         static let shippingLabelPackageFormat =
             NSLocalizedString("Package %d",
@@ -1164,7 +1272,7 @@ extension OrderDetailsDataSource {
             NSLocalizedString("%@ label refund requested",
                               comment: "Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS).")
         static let shippingLabelPrintingInfoAction =
-            NSLocalizedString("Don’t know how to print from your phone?",
+            NSLocalizedString("Don’t know how to print from your mobile device?",
                               comment: "Title of button in order details > shipping label that shows the instructions on how to print " +
                                 "a shipping label on the mobile device.")
     }
@@ -1261,7 +1369,6 @@ extension OrderDetailsDataSource {
         case summary
         case aggregateOrderItem
         case markCompleteButton(style: ButtonTableViewCell.Style, showsBottomSpacing: Bool)
-        case details
         case refundedProducts
         case issueRefundButton
         case customerNote
@@ -1270,15 +1377,17 @@ extension OrderDetailsDataSource {
         case billingDetail
         case payment
         case customerPaid
+        case seeReceipt
         case refund
         case netAmount
         case tracking
         case trackingAdd
+        case collectCardPaymentButton
         case shippingLabelCreateButton
         case shippingLabelCreationInfo(showsSeparator: Bool)
         case shippingLabelDetail
         case shippingLabelPrintingInfo
-        case shippingLabelProduct
+        case shippingLabelProducts
         case shippingLabelRefunded
         case shippingLabelReprintButton
         case shippingLabelTrackingNumber
@@ -1295,8 +1404,6 @@ extension OrderDetailsDataSource {
                 return ProductDetailsTableViewCell.reuseIdentifier
             case .markCompleteButton:
                 return ButtonTableViewCell.reuseIdentifier
-            case .details:
-                return WooBasicTableViewCell.reuseIdentifier
             case .refundedProducts:
                 return WooBasicTableViewCell.reuseIdentifier
             case .issueRefundButton:
@@ -1313,6 +1420,8 @@ extension OrderDetailsDataSource {
                 return LedgerTableViewCell.reuseIdentifier
             case .customerPaid:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
+            case .seeReceipt:
+                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .refund:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .netAmount:
@@ -1321,6 +1430,8 @@ extension OrderDetailsDataSource {
                 return OrderTrackingTableViewCell.reuseIdentifier
             case .trackingAdd:
                 return LeftImageTableViewCell.reuseIdentifier
+            case .collectCardPaymentButton:
+                return ButtonTableViewCell.reuseIdentifier
             case .shippingLabelCreateButton:
                 return ButtonTableViewCell.reuseIdentifier
             case .shippingLabelCreationInfo:
@@ -1329,8 +1440,8 @@ extension OrderDetailsDataSource {
                 return WooBasicTableViewCell.reuseIdentifier
             case .shippingLabelPrintingInfo:
                 return ImageAndTitleAndTextTableViewCell.reuseIdentifier
-            case .shippingLabelProduct:
-                return ProductDetailsTableViewCell.reuseIdentifier
+            case .shippingLabelProducts:
+                return WooBasicTableViewCell.reuseIdentifier
             case .shippingLabelTrackingNumber, .shippingLabelRefunded:
                 return ImageAndTitleAndTextTableViewCell.reuseIdentifier
             case .shippingLabelReprintButton:
@@ -1352,15 +1463,65 @@ extension OrderDetailsDataSource {
         case tracking
         case summary
         case issueRefund
+        case collectPayment
         case reprintShippingLabel(shippingLabel: ShippingLabel)
         case createShippingLabel
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
+        case viewAddOns(addOns: [OrderItemAttribute])
+        case editCustomerNote
+        case editShippingAddress
     }
 
     struct Constants {
         static let addOrderCell = 1
         static let paymentCell = 1
         static let paidByCustomerCell = 1
+    }
+}
+
+// MARK: - Private Payments Logic
+
+private extension OrderDetailsDataSource {
+    func isOrderAmountEligibleForCardPayment() -> Bool {
+        // If the order is paid, it is not eligible.
+        guard order.datePaid == nil else {
+            return false
+        }
+
+        guard let totalAmount = currencyFormatter.convertToDecimal(from: order.total), totalAmount.decimalValue > 0 else {
+            return false
+        }
+
+        // If there is a discrepancy between the orderTotal and the remaining amount to collect, it is not eligible
+        // This is a temporary solution that will exclude, for example:
+        // * orders that have been partially refunded.
+        // * orders where the merchant has applied a discount manually
+        // * in general, all orders where we might want to capture a payment for less than the total order amount
+        let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
+        return !paymentViewModel.hasBeenPartiallyCharged
+    }
+
+    func isOrderCurrencyEligibleForCardPayment() -> Bool {
+        CurrencySettings.CurrencyCode(rawValue: order.currency) == .USD
+    }
+
+    func isOrderStatusEligibleForCardPayment() -> Bool {
+        (order.status == .pending || order.status == .onHold || order.status == .processing)
+    }
+
+    func isOrderPaymentMethodEligibleForCardPayment() -> Bool {
+        let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
+        return paymentMethod == .cod || paymentMethod == .woocommercePayments || paymentMethod == .none
+    }
+
+    func hasCardPresentEligiblePaymentGatewayAccount() -> Bool {
+        resultsControllers.paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
+    }
+
+    func orderContainsAnySubscription() -> Bool {
+        order.items.contains { item in
+            lookUpProduct(by: item.productID)?.productType == .subscription
+        }
     }
 }
 

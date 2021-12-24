@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Shipping label data for printing
 ///

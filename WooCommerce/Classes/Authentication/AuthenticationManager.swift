@@ -1,6 +1,7 @@
 import Foundation
 import KeychainAccess
 import WordPressAuthenticator
+import WordPressKit
 import Yosemite
 import class Networking.UserAgent
 import struct Networking.Settings
@@ -345,13 +346,14 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         appleUserID = nil
 
         ServiceLocator.stores.authenticate(credentials: .init(authToken: wpcom.authToken))
-        let action = AccountAction.synchronizeAccount { (account, error) in
-            if let account = account {
+        let action = AccountAction.synchronizeAccount { result in
+            switch result {
+            case .success(let account):
                 let credentials = Credentials(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
                 ServiceLocator.stores
                     .authenticate(credentials: credentials)
                     .synchronizeEntities(onCompletion: onCompletion)
-            } else {
+            case .failure:
                 ServiceLocator.stores.synchronizeEntities(onCompletion: onCompletion)
             }
         }
@@ -389,38 +391,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 }
 
-
-// MARK: - Error handling
-private extension AuthenticationManager {
-
-    /// Maps error codes emitted by WPAuthenticator to a domain error object
-    enum AuthenticationError: Int, Error {
-        case emailDoesNotMatchWPAccount = 7
-        case notWPSite = 406
-        case notValidAddress = -1022
-        case unknown
-
-        static func make(with error: Error) -> AuthenticationError {
-            let error = error as NSError
-
-            switch error.code {
-            case emailDoesNotMatchWPAccount.rawValue:
-                return .emailDoesNotMatchWPAccount
-            case notWPSite.rawValue:
-                return .notWPSite
-            case notValidAddress.rawValue:
-                return .notValidAddress
-            default:
-                return .unknown
-            }
-        }
-    }
-
-    func isSupportedError(_ error: Error) -> Bool {
-        let wooAuthError = AuthenticationError.make(with: error)
-        return wooAuthError != .unknown
-    }
-
+// MARK: - ViewModel Factory
+extension AuthenticationManager {
+    /// This is only exposed for testing.
     func viewModel(_ error: Error) -> ULErrorViewModel? {
         let wooAuthError = AuthenticationError.make(with: error)
 
@@ -430,8 +403,54 @@ private extension AuthenticationManager {
         case .notWPSite,
              .notValidAddress:
             return NotWPErrorViewModel()
-        default:
+        case .noSecureConnection:
+            return NoSecureConnectionErrorViewModel()
+        case .unknown:
             return nil
         }
+    }
+}
+
+// MARK: - Error handling
+private extension AuthenticationManager {
+
+    /// Maps error codes emitted by WPAuthenticator to a domain error object
+    enum AuthenticationError: Int, Error {
+        case emailDoesNotMatchWPAccount
+        case notWPSite
+        case notValidAddress
+        case noSecureConnection
+        case unknown
+
+        static func make(with error: Error) -> AuthenticationError {
+            let error = error as NSError
+
+            switch error.code {
+            case WordPressComRestApiError.unknown.rawValue:
+                let restAPIErrorCode = error.userInfo[WordPressComRestApi.ErrorKeyErrorCode] as? String
+                if restAPIErrorCode == "unknown_user" {
+                    return .emailDoesNotMatchWPAccount
+                } else {
+                    return .unknown
+                }
+            case WordPressOrgXMLRPCValidatorError.invalid.rawValue:
+                // We were able to connect to the site but it does not seem to be a WordPress site.
+                return .notWPSite
+            case NSURLErrorCannotFindHost,
+                 NSURLErrorCannotConnectToHost:
+                // The site cannot be found. This can mean that the domain is invalid.
+                return .notValidAddress
+            case NSURLErrorSecureConnectionFailed:
+                // The site does not have a valid SSL. It could be that it is only HTTP.
+                return .noSecureConnection
+            default:
+                return .unknown
+            }
+        }
+    }
+
+    func isSupportedError(_ error: Error) -> Bool {
+        let wooAuthError = AuthenticationError.make(with: error)
+        return wooAuthError != .unknown
     }
 }

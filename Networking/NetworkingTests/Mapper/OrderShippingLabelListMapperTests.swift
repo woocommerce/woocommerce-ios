@@ -54,7 +54,8 @@ final class OrderShippingLabelListMapperTests: XCTestCase {
                                                        originAddress: originAddress,
                                                        destinationAddress: destinationAddress,
                                                        productIDs: [3013],
-                                                       productNames: ["Password protected!"])
+                                                       productNames: ["Password protected!"],
+                                                       commercialInvoiceURL: "https://woocommerce.com")
         let shippingLabelWithRefund = ShippingLabel(siteID: sampleSiteID,
                                                        orderID: sampleOrderID,
                                                        shippingLabelID: 2511668,
@@ -71,7 +72,8 @@ final class OrderShippingLabelListMapperTests: XCTestCase {
                                                        originAddress: originAddress,
                                                        destinationAddress: destinationAddress,
                                                        productIDs: [3013],
-                                                       productNames: ["Password protected!"])
+                                                       productNames: ["Password protected!"],
+                                                       commercialInvoiceURL: nil)
         XCTAssertEqual(response.shippingLabels, [shippingLabelWithoutRefund, shippingLabelWithRefund])
     }
 }

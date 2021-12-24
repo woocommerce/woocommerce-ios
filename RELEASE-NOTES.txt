@@ -1,8 +1,161 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+8.3
+-----
+- [***] All mercants can create Simple Payments orders. [https://github.com/woocommerce/woocommerce-ios/pull/5684]
+- [**] System status report can now be viewed and copied directly from within the app. [https://github.com/woocommerce/woocommerce-ios/pull/5702]
+
+8.2
+-----
+- [***] In-Person Payments: Now you can collect Simple Payments on the go. [https://github.com/woocommerce/woocommerce-ios/pull/5635]
+- [*] Products: After generating a new variation for a variable product, you are now taken directly to edit the new variation. [https://github.com/woocommerce/woocommerce-ios/pull/5649]
+- [*] Dashboard: the visitor count in the Today tab is now shown when Jetpack site stats are enabled.
+- [*] Add/Edit Product Images: tapping on the last `n` images while `n` images are pending upload does not crash the app anymore. [https://github.com/woocommerce/woocommerce-ios/pull/5672]
+
+8.2
+-----
+- [*] Shipping Labels: Fixes a crash when saving a new shipping label after opening the order from a push notification. [https://github.com/woocommerce/woocommerce-ios/pull/5549]
+- [**] In-Person Payments: Improved support for VoiceOver. [https://github.com/woocommerce/woocommerce-ios/pull/5572]
+- [*] In-Person Payments: Fixes a crash when printing more than one receipt. [https://github.com/woocommerce/woocommerce-ios/pull/5575]
+
+8.1
+-----
+- [***] Now it's possible to filter Order List by multiple statuses and date ranges. Plus, we removed the top tab bar on Orders Tab. [https://github.com/woocommerce/woocommerce-ios/pull/5491]
+- [*] Login: Password AutoFill will suggest wordpress.com accounts. [https://github.com/woocommerce/woocommerce-ios/pull/5399]
+- [*] Store picker: after logging in with store address, the pre-selected store is now the currently selected store instead of the store from login flow. [https://github.com/woocommerce/woocommerce-ios/pull/5508]
+- [*] The application icon number from order push notifications is now cleared after visiting the orders tab. [https://github.com/woocommerce/woocommerce-ios/pull/5715]
+- [internal] Migrated Settings screen to MVVM [https://github.com/woocommerce/woocommerce-ios/pull/5393]
+
+
+8.0
+-----
+- [*] Product List: Add support for product filtering by category. [https://github.com/woocommerce/woocommerce-ios/pull/5388]
+- [***] Push notifications are now supported for all connected stores. [https://github.com/woocommerce/woocommerce-ios/pull/5299]
+- [*] Fix: in Settings > Switch Store, tapping "Dismiss" after selecting a different store does not switch stores anymore. [https://github.com/woocommerce/woocommerce-ios/pull/5359]
+
+7.9
+-----
+- [*] Fix: after disconnecting a site or connecting to a new site, the sites in site picker (Settings > Switch Store) should be updated accordingly. The only exception is when the newly disconnected site is the currently selected site. [https://github.com/woocommerce/woocommerce-ios/pull/5241]
+- [*] Order Details: Show a button on the "Product" section of Order Details screen to allow recreating shipping labels. [https://github.com/woocommerce/woocommerce-ios/pull/5255]
+- [*] Edit Order Address - Enable `Done` button when `Use as {Shipping/Billing} Address` toggle is turned on. [https://github.com/woocommerce/woocommerce-ios/pull/5254]
+- [*] Add/Edit Product: fix an issue where the product name keyboard is English only. [https://github.com/woocommerce/woocommerce-ios/pull/5288]
+- [*] Order Details: some sites cannot parse order requests where the fields parameter has spaces, and the products section cannot load as a result. The spaces are now removed. [https://github.com/woocommerce/woocommerce-ios/pull/5298]
+
+7.8
+-----
+- [***] Shipping Labels: merchants can create multiple packages for the same order, moving the items between different packages. [https://github.com/woocommerce/woocommerce-ios/pull/5190]
+- [*] Fix: Navigation bar buttons are now consistently pink on iOS 15. [https://github.com/woocommerce/woocommerce-ios/pull/5139]
+- [*] Fix incorrect info banner color and signature option spacing on Carrier and Rates screen. [https://github.com/woocommerce/woocommerce-ios/pull/5144]
+- [x] Fix an error where merchants were unable to connect to valid stores when they have other stores with corrupted information https://github.com/woocommerce/woocommerce-ios/pull/5161
+- [*] Shipping Labels: Fix issue with decimal values on customs form when setting the device with locales that use comma as decimal point. [https://github.com/woocommerce/woocommerce-ios/pull/5195]
+- [*] Shipping Labels: Fix crash when tapping on Learn more rows of customs form. [https://github.com/woocommerce/woocommerce-ios/pull/5207]
+- [*] Shipping Labels: The shipping address now prefills the phone number from the billing address if a shipping phone number is not available. [https://github.com/woocommerce/woocommerce-ios/pull/5177]
+- [*] Shipping Labels: now in Carrier and Rates we always display the discounted rate instead of the retail rate if available. [https://github.com/woocommerce/woocommerce-ios/pull/5188]
+- [*] Shipping Labels: If the shipping address is invalid, there are now options to email, call, or message the customer. [https://github.com/woocommerce/woocommerce-ios/pull/5228]
+- [*] Accessibility: notify when offline mode banner appears or disappears. [https://github.com/woocommerce/woocommerce-ios/pull/5225]
+
+7.7
+-----
+- [***] In-Person Payments: US merchants can now obtain a card reader and then collect payments directly from the app. [https://github.com/woocommerce/woocommerce-ios/pull/5030]
+- [***] Shipping Labels: Merchants can now add new payment methods for shipping labels directly from the app. [https://github.com/woocommerce/woocommerce-ios/pull/5023]
+- [**] Merchants can now edit shipping & billing addresses from orders. [https://github.com/woocommerce/woocommerce-ios/pull/5097]
+- [x] Fix: now a default paper size will be selected in Shipping Label print screen. [https://github.com/woocommerce/woocommerce-ios/pull/5035]
+- [*] Show banner on screens that use cached data when device is offline. [https://github.com/woocommerce/woocommerce-ios/pull/5000]
+- [*] Fix incorrect subtitle on customs row of Shipping Label purchase flow. [https://github.com/woocommerce/woocommerce-ios/pull/5093]
+- [*] Make sure customs form printing option is not available on non-international orders. [https://github.com/woocommerce/woocommerce-ios/pull/5104]
+- [*] Fix incorrect logo for DHL in Shipping Labels flow. [https://github.com/woocommerce/woocommerce-ios/pull/5105]
+ 
+7.6
+-----
+- [x] Show an improved error modal if there are problems while selecting a store. [https://github.com/woocommerce/woocommerce-ios/pull/5006]
+- [***] Shipping Labels: Merchants can now add new custom and service packages for shipping labels directly from the app. [https://github.com/woocommerce/woocommerce-ios/pull/4976]
+- [*] Fix: when product image upload fails, the image cell stop loading. [https://github.com/woocommerce/woocommerce-ios/pull/4989]
+
+7.5
+-----
+- [***] Merchants can now purchase shipping labels and declare customs forms for international orders. [https://github.com/woocommerce/woocommerce-ios/pull/4896]
+- [**] Merchants can now edit customer provided notes from orders. [https://github.com/woocommerce/woocommerce-ios/pull/4893]
+- [*] Fix empty states sometimes not centered vertically [https://github.com/woocommerce/woocommerce-ios/pull/4890]
+- [*] Fix error syncing products due to decoding failure of regular_price in product variations. [https://github.com/woocommerce/woocommerce-ios/pull/4901]
+- [*] Hide bottom bar on shipping label purchase form. [https://github.com/woocommerce/woocommerce-ios/pull/4902]
+
+7.4
+-----
+- [*] Fix an issue where some extension was not shown in order item details. [https://github.com/woocommerce/woocommerce-ios/pull/4753]
+- [*] Fix: The refund button within Order Details will be hidden if the refund is zero. [https://github.com/woocommerce/woocommerce-ios/pull/4789]
+- [*] Fix: Incorrect arrow direction for right-to-left languages on Shipping Label flow. [https://github.com/woocommerce/woocommerce-ios/pull/4796]
+- [*] Fix: Shouldn't be able to schedule a sale without sale price. [https://github.com/woocommerce/woocommerce-ios/pull/4825]
+- [*] Fix: Edit address screen is pushed twice in Shipping Label flow when missing name in origin or destination address. [https://github.com/woocommerce/woocommerce-ios/pull/4845]
+
+7.3
+-----
+- [*] Order Detail: now we do not offer the "email note to customer" option if no email is available. [https://github.com/woocommerce/woocommerce-ios/pull/4680]
+- [*] My Store: If there are errors loading the My Store screen, a banner now appears at the top of the screen with links to troubleshoot or contact support. [https://github.com/woocommerce/woocommerce-ios/pull/4704]
+- [*] Fix: Added 'Product saved' confirmation message when a product is updated [https://github.com/woocommerce/woocommerce-ios/pull/4709]
+- [*] Shipping Labels: Updated address validation to automatically use trivially normalized address for origin and destination. [https://github.com/woocommerce/woocommerce-ios/pull/4719]
+- [*] Fix: Order details for products with negative prices now will show correctly [https://github.com/woocommerce/woocommerce-ios/pull/4683]
+- [*] Fix: Order list not extend edge-to-edge in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/4728]
+- [*] Plugins: Added list of active and inactive plugins that can be reached by admins in the settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/4735]
+- [*] Login: Updated appearance of back buttons in navigation bar to minimal style. [https://github.com/woocommerce/woocommerce-ios/pull/4726]
+- [internal] Upgraded Zendesk SDK to version 5.3.0. [https://github.com/woocommerce/woocommerce-ios/pull/4699]
+- [internal] Updated GoogleSignIn to version 6.0.1 through WordPressAuthenticator. There should be no functional changes, but may impact Google sign in flow. [https://github.com/woocommerce/woocommerce-ios/pull/4725]
+
+7.2
+-----
+- [*] Order Fulfillment: Updated success notice message [https://github.com/woocommerce/woocommerce-ios/pull/4589]
+- [*] Order Fulfillment: Fixed issue footer view getting clipped of by iPhone notch [https://github.com/woocommerce/woocommerce-ios/pull/4631]
+- [*] Shipping Labels: Updated address validation to make sure a name is entered for each address. [https://github.com/woocommerce/woocommerce-ios/pull/4601]
+- [*] Shipping Labels: Hide Contact button on Shipping To Address form when customer phone number is not provided. [https://github.com/woocommerce/woocommerce-ios/pull/4663]
+- [*] Shipping Labels: Updated edge-to-edge table views for all forms. [https://github.com/woocommerce/woocommerce-ios/pull/4657]
+- [*] Orders and Order Details: Updated edge-to-edge table views for consistent look across the app. [https://github.com/woocommerce/woocommerce-ios/pull/4638]
+- [*] Reviews and Review Details: Updated edge-to-edge table views for consistent look across the app. [https://github.com/woocommerce/woocommerce-ios/pull/4637]
+- [*] New error screen displayed to users without the required roles to access the store. [https://github.com/woocommerce/woocommerce-ios/pull/4493]
+
+7.1
+-----
+- [***] Merchants from US can create shipping labels for physical orders from the app. The feature supports for now only orders where the shipping address is in the US. [https://github.com/woocommerce/woocommerce-ios/pull/4578]
+- [**] Due to popular demand, the Order fulfill is displayed once again when clicking on the Mark order complete button. [https://github.com/woocommerce/woocommerce-ios/pull/4567]
+- [*] Fix: Interactive pop gesture on Order Details and Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/4504]
+- [*] Fix: Frozen refresh control and placeholder when switching tabs [https://github.com/woocommerce/woocommerce-ios/pull/4505]
+- [internal] Stats tab: added network sync throttling [https://github.com/woocommerce/woocommerce-ios/pull/4494]
+
+7.0
+-----
+- [**] Order Detail: now we display Order Items and Shipping Label Packages as separate sections. [https://github.com/woocommerce/woocommerce-ios/pull/4445]
+- [*] Fix: Orders for a variable product with different configurations of a single variation will now show each order item separately. [https://github.com/woocommerce/woocommerce-ios/pull/4445]
+- [*] If the Orders, Products, or Reviews lists can't load, a banner now appears at the top of the screen with links to troubleshoot or contact support. [https://github.com/woocommerce/woocommerce-ios/pull/4400, https://github.com/woocommerce/woocommerce-ios/pull/4407]
+- [*] Fix: Stats tabs are now displayed and ordered correctly in RTL languages. [https://github.com/woocommerce/woocommerce-ios/pull/4444]
+- [*] Fix: Missing "Add Tracking" button in orders details. [https://github.com/woocommerce/woocommerce-ios/pull/4520]
+
+
+6.9
+-----
+- [*] Order Detail: now we display a loader on top, to communicate that the order detail view has not yet been fully loaded. [https://github.com/woocommerce/woocommerce-ios/pull/4396]
+- [*] Products: You can edit product attributes for variations right from the main product form. [https://github.com/woocommerce/woocommerce-ios/pull/4350]
+- [*] Improved CTA. "Print Shipping Label" instead of "Reprint Shipping Label". [https://github.com/woocommerce/woocommerce-ios/pull/4394]
+- [*] Improved application log viewer. [https://github.com/woocommerce/woocommerce-ios/pull/4387]
+- [*] Improved the experience when creating the first variation. [https://github.com/woocommerce/woocommerce-ios/pull/4405]
+
+6.8
+-----
+
+- [***] Dropped iOS 13 support. From now we support iOS 14 and later. [https://github.com/woocommerce/woocommerce-ios/pull/4209]
+- [**] Products: Added the option to create and edit a virtual product directly from the product detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/4214]
+
+6.7
+-----
+- [**] Add-Ons: Order add-ons are now available as a beta feature. To try it, enable it from settings! [https://github.com/woocommerce/woocommerce-ios/pull/4119]
+
+6.6
+-----
+- [*] Fix: Product variations only support at most one image, so we won't show an option to add a second one. [https://github.com/woocommerce/woocommerce-ios/pull/3994]
+- [*] Fix: The screen to select images from the Media Library would sometimes crash when the library had a specific number of images. [https://github.com/woocommerce/woocommerce-ios/pull/4003]
+- [*] Improved error messages for logins. [https://github.com/woocommerce/woocommerce-ios/pull/3957]
+
 6.5
 -----
 - [*] Fix: Product images with non-latin characters in filenames now will load correctly and won't break Media Library. [https://github.com/woocommerce/woocommerce-ios/pull/3935]
+- [*] Fix: The screen to select images from the Media Library would sometimes crash when the library had a specific number of images. [https://github.com/woocommerce/woocommerce-ios/pull/4070]
 
 6.4
 -----

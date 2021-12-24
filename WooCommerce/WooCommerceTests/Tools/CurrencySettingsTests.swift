@@ -58,35 +58,35 @@ final class CurrencySettingsTests: XCTestCase {
         let wooCurrencyCode = SiteSetting(siteID: 1,
                                           settingID: "woocommerce_currency",
                                           label: "",
-                                          description: "",
+                                          settingDescription: "",
                                           value: "SHP",
                                           settingGroupKey: SiteSettingGroup.general.rawValue)
 
         let wooCurrencyPosition = SiteSetting(siteID: 1,
                                               settingID: "woocommerce_currency_pos",
                                               label: "",
-                                              description: "",
+                                              settingDescription: "",
                                               value: "right",
                                               settingGroupKey: SiteSettingGroup.general.rawValue)
 
         let thousandsSeparator = SiteSetting(siteID: 1,
                                              settingID: "woocommerce_price_thousand_sep",
                                              label: "",
-                                             description: "",
+                                             settingDescription: "",
                                              value: "X",
                                              settingGroupKey: SiteSettingGroup.general.rawValue)
 
         let decimalSeparator = SiteSetting(siteID: 1,
                                            settingID: "woocommerce_price_decimal_sep",
                                            label: "",
-                                           description: "",
+                                           settingDescription: "",
                                            value: "Y",
                                            settingGroupKey: SiteSettingGroup.general.rawValue)
 
         let numberOfDecimals = SiteSetting(siteID: 1,
                                            settingID: "woocommerce_price_num_decimals",
                                            label: "",
-                                           description: "",
+                                           settingDescription: "",
                                            value: "3",
                                            settingGroupKey: SiteSettingGroup.general.rawValue)
 
@@ -109,28 +109,28 @@ final class CurrencySettingsTests: XCTestCase {
         let wooCurrencyCode = SiteSetting(siteID: 1,
                                           settingID: "woocommerce_currency",
                                           label: "",
-                                          description: "",
+                                          settingDescription: "",
                                           value: "SHP",
                                           settingGroupKey: SiteSettingGroup.general.rawValue)
 
         let wooCurrencyPosition = SiteSetting(siteID: 1,
                                               settingID: "woocommerce_currency_pos",
                                               label: "",
-                                              description: "",
+                                              settingDescription: "",
                                               value: "right",
                                               settingGroupKey: SiteSettingGroup.general.rawValue)
 
         let thousandsSeparator = SiteSetting(siteID: 1,
                                              settingID: "woocommerce_price_thousand_sep",
                                              label: "",
-                                             description: "",
+                                             settingDescription: "",
                                              value: "X",
                                              settingGroupKey: SiteSettingGroup.general.rawValue)
 
         let decimalSeparator = SiteSetting(siteID: 1,
                                            settingID: "woocommerce_price_decimal_sep",
                                            label: "",
-                                           description: "",
+                                           settingDescription: "",
                                            value: "Y",
                                            settingGroupKey: SiteSettingGroup.general.rawValue)
 

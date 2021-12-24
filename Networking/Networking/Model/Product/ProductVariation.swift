@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents a Product Variation Entity.
 ///
@@ -177,7 +178,10 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
                                                       alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
             ?? ""
 
-        let regularPrice = try container.decodeIfPresent(String.self, forKey: .regularPrice)
+        let regularPrice = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                             forKey: .regularPrice,
+                                                             alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
+            ?? ""
         let onSale = try container.decode(Bool.self, forKey: .onSale)
 
         // Even though a plain install of WooCommerce Core provides string values,

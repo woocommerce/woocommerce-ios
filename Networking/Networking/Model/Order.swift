@@ -1,5 +1,5 @@
 import Foundation
-
+import Codegen
 
 /// Represents an Order Entity.
 ///
@@ -60,7 +60,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 totalTax: String,
                 paymentMethodID: String,
                 paymentMethodTitle: String,
-                items: [OrderItem],
+                items: [OrderItem]?,
                 billingAddress: Address?,
                 shippingAddress: Address?,
                 shippingLines: [ShippingLine],
@@ -91,7 +91,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.paymentMethodID = paymentMethodID
         self.paymentMethodTitle = paymentMethodTitle
 
-        self.items = items
+        self.items = items ?? []
         self.billingAddress = billingAddress
         self.shippingAddress = shippingAddress
         self.shippingLines = shippingLines
@@ -133,9 +133,16 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         let paymentMethodID = try container.decode(String.self, forKey: .paymentMethodID)
         let paymentMethodTitle = try container.decode(String.self, forKey: .paymentMethodTitle)
 
-        let items = try container.decode([OrderItem].self, forKey: .items)
+        let items = try? container.decodeIfPresent([OrderItem].self, forKey: .items) ?? []
 
-        let shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
+        var shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
+        // In WooCommerce <5.6.0, the shipping phone number can be stored in the order metadata
+        if let address = shippingAddress, address.phone == nil {
+            let allOrderMetaData = try? container.decode([OrderMetaData].self, forKey: .metadata)
+            let shippingPhone = allOrderMetaData?.first(where: { $0.key == "_shipping_phone" })?.value
+            shippingAddress = address.copy(phone: shippingPhone)
+        }
+
         let billingAddress = try? container.decode(Address.self, forKey: .billingAddress)
         let shippingLines = try container.decodeIfPresent([ShippingLine].self, forKey: .shippingLines) ?? []
 
@@ -176,12 +183,41 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   refunds: refunds,
                   fees: fees)
     }
+
+    public static var empty: Order {
+        self.init(siteID: 0,
+              orderID: 0,
+              parentID: 0,
+              customerID: 0,
+              number: "",
+              status: .pending,
+              currency: "",
+              customerNote: "",
+              dateCreated: Date(),
+              dateModified: Date(),
+              datePaid: Date(),
+              discountTotal: "",
+              discountTax: "",
+              shippingTotal: "",
+              shippingTax: "",
+              total: "",
+              totalTax: "",
+              paymentMethodID: "",
+              paymentMethodTitle: "",
+              items: [],
+              billingAddress: nil,
+              shippingAddress: nil,
+              shippingLines: [],
+              coupons: [],
+              refunds: [],
+              fees: [])
+    }
 }
 
 
 /// Defines all of the Order CodingKeys
 ///
-private extension Order {
+internal extension Order {
 
     enum CodingKeys: String, CodingKey {
         case orderID            = "id"
@@ -213,13 +249,15 @@ private extension Order {
         case couponLines        = "coupon_lines"
         case refunds            = "refunds"
         case feeLines           = "fee_lines"
+        case metadata           = "meta_data"
     }
 }
 
 
-// MARK: - Comparable Conformance
+// MARK: - Equatable Conformance
 //
-extension Order: Comparable {
+extension Order: Equatable {
+    // custom implementation to ignore order for shippingLines, coupons, refunds, items
     public static func == (lhs: Order, rhs: Order) -> Bool {
         return lhs.siteID == rhs.siteID &&
             lhs.orderID == rhs.orderID &&
@@ -248,12 +286,6 @@ extension Order: Comparable {
             lhs.refunds.sorted() == rhs.refunds.sorted() &&
             lhs.items.count == rhs.items.count &&
             lhs.items.sorted() == rhs.items.sorted()
-    }
-
-    public static func < (lhs: Order, rhs: Order) -> Bool {
-        return lhs.orderID < rhs.orderID ||
-            (lhs.orderID == rhs.orderID && lhs.dateCreated < rhs.dateCreated) ||
-            (lhs.orderID == rhs.orderID && lhs.dateCreated == rhs.dateCreated && lhs.dateModified < rhs.dateModified)
     }
 }
 

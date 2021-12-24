@@ -70,12 +70,17 @@ extension UIButton {
 
     /// Applies the Link Button Style: Clear BG / Brand Text Color
     ///
-    func applyLinkButtonStyle() {
+    func applyLinkButtonStyle(enableMultipleLines: Bool = false) {
         backgroundColor = .clear
         contentEdgeInsets = Style.defaultEdgeInsets
         tintColor = .accent
         titleLabel?.applyBodyStyle()
         titleLabel?.textAlignment = .natural
+
+        if enableMultipleLines {
+            self.enableMultipleLines()
+        }
+
         setTitleColor(.accent, for: .normal)
         setTitleColor(.accentDark, for: .highlighted)
     }
@@ -87,6 +92,36 @@ extension UIButton {
         titleLabel?.applyBodyStyle()
         titleLabel?.textAlignment = .natural
         setTitleColor(.modalCancelAction, for: .normal)
+    }
+
+    func applyPaymentsModalCancelButtonStyle() {
+        backgroundColor = .tertiarySystemBackground
+        contentEdgeInsets = Style.defaultEdgeInsets
+        layer.borderColor = UIColor.secondaryButtonBorder.cgColor
+        layer.borderWidth = Style.defaultBorderWidth
+        layer.cornerRadius = Style.defaultCornerRadius
+        titleLabel?.applyHeadlineStyle()
+        enableMultipleLines()
+        titleLabel?.textAlignment = .center
+
+        setTitleColor(.secondaryButtonTitle, for: .normal)
+        setTitleColor(.secondaryButtonTitle, for: .highlighted)
+        setTitleColor(.buttonDisabledTitle, for: .disabled)
+
+        let normalBackgroundImage = UIImage.renderBackgroundImage(fill: .tertiarySystemBackground,
+                                                                  border: .secondaryButtonBorder)
+            .applyTintColorToiOS13(.tertiarySystemBackground)
+        setBackgroundImage(normalBackgroundImage, for: .normal)
+
+        let highlightedBackgroundImage = UIImage.renderBackgroundImage(fill: .secondaryButtonDownBackground,
+                                                                       border: .secondaryButtonDownBorder)
+            .applyTintColorToiOS13(.secondaryButtonDownBackground)
+        setBackgroundImage(highlightedBackgroundImage, for: .highlighted)
+
+        let disabledBackgroundImage = UIImage.renderBackgroundImage(fill: .buttonDisabledBackground,
+                                                                    border: .buttonDisabledBorder)
+            .applyTintColorToiOS13(.buttonDisabledBackground)
+        setBackgroundImage(disabledBackgroundImage, for: .disabled)
     }
 
     /// Applies the Single-Color Icon Button Style: accent/accent dark tint color

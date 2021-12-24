@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents a decoded Refund entity.
 ///
-public struct Refund: Codable, GeneratedFakeable {
+public struct Refund: Codable, GeneratedFakeable, GeneratedCopiable {
     public let refundID: Int64
     public let orderID: Int64
     public let siteID: Int64
@@ -137,9 +137,10 @@ private extension Refund {
 }
 
 
-// MARK: - Comparable Conformance
+// MARK: - Equatable Conformance
 //
-extension Refund: Comparable {
+extension Refund: Equatable {
+    // custom implementation to ignore `createAutomated` and order for items
     public static func == (lhs: Refund, rhs: Refund) -> Bool {
         return lhs.refundID == rhs.refundID &&
             lhs.orderID == rhs.orderID &&
@@ -149,26 +150,9 @@ extension Refund: Comparable {
             lhs.reason == rhs.reason &&
             lhs.refundedByUserID == rhs.refundedByUserID &&
             lhs.isAutomated == rhs.isAutomated &&
-            lhs.items.sorted() == rhs.items.sorted() &&
+            lhs.items.count == rhs.items.count &&
+            Set(lhs.items) == Set(rhs.items) &&
             lhs.shippingLines?.sorted() == rhs.shippingLines?.sorted()
-    }
-
-    public static func < (lhs: Refund, rhs: Refund) -> Bool {
-        return lhs.orderID == rhs.orderID ||
-            (lhs.orderID == rhs.orderID && lhs.refundID < rhs.refundID) ||
-            (lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID &&
-                lhs.dateCreated < rhs.dateCreated) ||
-            (lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID &&
-                lhs.dateCreated == rhs.dateCreated  &&
-                lhs.amount < rhs.amount) ||
-            (lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID &&
-                lhs.dateCreated == rhs.dateCreated  &&
-                lhs.amount == rhs.amount &&
-                rhs.items.count < rhs.items.count) ||
-            (lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.amount == rhs.amount &&
-                rhs.items.count == rhs.items.count)
     }
 }
 

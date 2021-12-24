@@ -64,7 +64,9 @@ extension SurveyViewController {
     enum Source {
         case inAppFeedback
         case productsVariationsFeedback
-        case shippingLabelsRelease1Feedback
+        case shippingLabelsRelease3Feedback
+        case addOnsI1
+        case simplePaymentsPrototype
 
         fileprivate var url: URL {
             switch self {
@@ -79,11 +81,21 @@ extension SurveyViewController {
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
-            case .shippingLabelsRelease1Feedback:
-                return WooConstants.URLs.shippingLabelsRelease1Feedback
+            case .shippingLabelsRelease3Feedback:
+                return WooConstants.URLs.shippingLabelsRelease3Feedback
                     .asURL()
                     .tagPlatform("ios")
-                    .tagShippingLabelsMilestone("1")
+                    .tagShippingLabelsMilestone("3")
+                    .tagAppVersion(Bundle.main.bundleVersion())
+            case .addOnsI1:
+                return WooConstants.URLs.orderAddOnI1Feedback
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
+            case .simplePaymentsPrototype:
+                return WooConstants.URLs.simplePaymentsPrototypeFeedback
+                    .asURL()
+                    .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
             }
         }
@@ -92,7 +104,7 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return Localization.title
-            case .productsVariationsFeedback, .shippingLabelsRelease1Feedback:
+            case .productsVariationsFeedback, .shippingLabelsRelease3Feedback, .addOnsI1, .simplePaymentsPrototype:
                 return Localization.giveFeedback
             }
         }
@@ -104,8 +116,12 @@ extension SurveyViewController {
                 return .general
             case .productsVariationsFeedback:
                 return .productsVariations
-            case .shippingLabelsRelease1Feedback:
-                return .shippingLabelsRelease1
+            case .shippingLabelsRelease3Feedback:
+                return .shippingLabelsRelease3
+            case .addOnsI1:
+                return .addOnsI1
+            case .simplePaymentsPrototype:
+                return .simplePaymentsPrototype
             }
         }
     }

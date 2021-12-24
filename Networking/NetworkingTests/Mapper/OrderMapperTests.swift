@@ -63,7 +63,19 @@ final class OrderMapperTests: XCTestCase {
             XCTAssertEqual(address.state, "NY")
             XCTAssertEqual(address.postcode, "14304")
             XCTAssertEqual(address.country, "US")
+            XCTAssertEqual(address.phone, "333-333-3333")
         }
+    }
+
+    /// Verifies that Order shipping phone is parsed correctly from metadata.
+    ///
+    func test_Order_shipping_phone_is_correctly_parsed_from_metadata() {
+        guard let order = mapLoadFullyRefundedOrderResponse(), let shippingAddress = order.shippingAddress else {
+            XCTFail("Expected a mapped order response with a non-nil shipping address.")
+            return
+        }
+
+        XCTAssertEqual(shippingAddress.phone, "555-666-7777")
     }
 
     /// Verifies that all of the Order Items are parsed correctly.
@@ -278,6 +290,18 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(fee.taxes, [])
         XCTAssertEqual(fee.attributes, [])
     }
+
+    func test_order_line_item_attributes_handle_unexpected_formatted_attributes() throws {
+        // Given
+        let order = try XCTUnwrap(mapLoadOrderWithFaultyAttributesResponse())
+
+        // When
+        let attributes = try XCTUnwrap(order.items.first?.attributes)
+
+        // Then
+        let expectedAttributes = [OrderItemAttribute(metaID: 3665, name: "Required Weight (kg)", value: "2.3")]
+        assertEqual(attributes, expectedAttributes)
+    }
 }
 
 
@@ -323,6 +347,13 @@ private extension OrderMapperTests {
     ///
     func mapLoadOrderWithLineItemAttributesResponse() -> Order? {
         return mapOrder(from: "order-with-line-item-attributes")
+    }
+
+    /// Returns the OrderMapper output upon receiving `order-with-faulty-attributes`
+    /// Where the `value` to `_measurement_data` is not a `string` but a `JSON object`
+    ///
+    func mapLoadOrderWithFaultyAttributesResponse() -> Order? {
+        return mapOrder(from: "order-with-faulty-attributes")
     }
 
     /// Returns the OrderMapper output upon receiving `order-with-line-item-attributes-before-API-support`

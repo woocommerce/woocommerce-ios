@@ -49,15 +49,15 @@ private extension OrderStatusStore {
 
     /// Retrieves the order statuses associated with the provided Site ID (if any!).
     ///
-    func retrieveOrderStatuses(siteID: Int64, onCompletion: @escaping ([OrderStatus]?, Error?) -> Void) {
-        remote.loadOrderStatuses(for: siteID) { [weak self] (orderStatuses, error) in
-            guard let orderStatuses = orderStatuses else {
-                onCompletion(nil, error)
-                return
-            }
-
-            self?.upsertStatusesInBackground(siteID: siteID, readOnlyOrderStatuses: orderStatuses) {
-                onCompletion(orderStatuses, nil)
+    func retrieveOrderStatuses(siteID: Int64, onCompletion: @escaping (Result<[OrderStatus], Error>) -> Void) {
+        remote.loadOrdersTotals(for: siteID) { result in
+            switch result {
+            case .success(let orderStatuses):
+                self.upsertStatusesInBackground(siteID: siteID, readOnlyOrderStatuses: orderStatuses) {
+                    onCompletion(.success(orderStatuses))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
         }
     }

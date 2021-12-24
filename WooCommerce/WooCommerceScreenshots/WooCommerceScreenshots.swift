@@ -1,5 +1,7 @@
-import XCTest
 import Embassy
+import ScreenObject
+import UITestsFoundation
+import XCTest
 
 class WooCommerceScreenshots: XCTestCase {
 
@@ -17,7 +19,7 @@ class WooCommerceScreenshots: XCTestCase {
         stopWebServer()
     }
 
-    func testScreenshots() {
+    func testScreenshots() throws {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         setupSnapshot(app)
@@ -28,7 +30,7 @@ class WooCommerceScreenshots: XCTestCase {
 
         app.launch()
 
-        MyStoreScreen()
+        try MyStoreScreen()
 
             // My Store
             .dismissTopBannerIfNeeded()
@@ -134,7 +136,22 @@ extension BaseScreen {
     func thenTakeScreenshot(named title: String) -> Self {
         screenshotCount += 1
 
-        let mode = isDarkMode ? "dark" : "light"
+        let mode = XCUIDevice.inDarkMode ? "dark" : "light"
+        let filename = "\(screenshotCount)-\(mode)-\(title)"
+
+        snapshot(filename)
+
+        return self
+    }
+}
+
+extension ScreenObject {
+
+    @discardableResult
+    func thenTakeScreenshot(named title: String) -> Self {
+        screenshotCount += 1
+
+        let mode = XCUIDevice.inDarkMode ? "dark" : "light"
         let filename = "\(screenshotCount)-\(mode)-\(title)"
 
         snapshot(filename)

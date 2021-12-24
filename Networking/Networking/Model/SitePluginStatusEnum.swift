@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents all of the possible Site Plugin Statuses in enum form
 ///
@@ -36,6 +37,15 @@ extension SitePluginStatusEnum: RawRepresentable {
         case .networkActive: return Keys.networkActive
         case .inactive:      return Keys.inactive
         case .unknown:       return Keys.unknown
+        }
+    }
+
+    /// Returns true if the plugin is active, either individually or network-wide
+    ///
+    public var isActive: Bool {
+        switch self {
+        case .active, .networkActive:   return true
+        case .inactive, .unknown:       return false
         }
     }
 }

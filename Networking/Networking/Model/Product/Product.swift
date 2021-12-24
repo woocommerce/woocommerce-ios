@@ -1,5 +1,5 @@
 import Foundation
-
+import Codegen
 
 /// Represents a Product Entity.
 ///
@@ -385,7 +385,10 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
 
-        let addOns = try container.decodeIfPresent(ProductAddOnEnvelope.self, forKey: .metadata)?.revolve() ?? []
+        // In some isolated cases, it appears to be some malformed meta-data that causes this line to throw hence the whole product decoding to throw.
+        // Since add-ons are optional, `try?` will be used to prevent the whole decoding to stop.
+        // https://github.com/woocommerce/woocommerce-ios/issues/4205
+        let addOns = (try? container.decodeIfPresent(ProductAddOnEnvelope.self, forKey: .metadata)?.revolve()) ?? []
 
         self.init(siteID: siteID,
                   productID: productID,
@@ -633,56 +636,6 @@ private extension Product {
         case groupedProducts    = "grouped_products"
         case menuOrder          = "menu_order"
         case metadata           = "meta_data"
-    }
-}
-
-
-// MARK: - Comparable Conformance
-//
-extension Product: Comparable {
-    public static func < (lhs: Product, rhs: Product) -> Bool {
-        /// Note: stockQuantity can be `null` in the API,
-        /// which is why we are unable to sort by it here.
-        ///
-        return lhs.siteID < rhs.siteID ||
-            (lhs.siteID == rhs.siteID && lhs.productID < rhs.productID) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name < rhs.name) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug < rhs.slug) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated < rhs.dateCreated) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey < rhs.productTypeKey) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey == rhs.productTypeKey &&
-                lhs.statusKey < rhs.statusKey) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey == rhs.productTypeKey &&
-                lhs.statusKey == rhs.statusKey &&
-                lhs.stockStatusKey < rhs.stockStatusKey) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey == rhs.productTypeKey &&
-                lhs.statusKey == rhs.statusKey &&
-                lhs.stockStatusKey == rhs.stockStatusKey &&
-                lhs.averageRating < rhs.averageRating) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey == rhs.productTypeKey &&
-                lhs.statusKey == rhs.statusKey &&
-                lhs.stockStatusKey == rhs.stockStatusKey &&
-                lhs.averageRating == rhs.averageRating &&
-                lhs.ratingCount < rhs.ratingCount)
     }
 }
 

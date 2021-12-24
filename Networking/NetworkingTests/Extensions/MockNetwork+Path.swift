@@ -13,6 +13,11 @@ extension MockNetwork {
         guard let urlComponents = URLComponents(string: url.absoluteString) else {
             return nil
         }
+
+        if let dotcomRequest = request as? DotcomRequest {
+            return dotcomRequest.parameters?.map { "\($0.key)=\($0.value)" }
+        }
+
         let parameters = urlComponents.queryItems
 
         guard let queryString = parameters?.first(where: { $0.name == "query" })?.value,

@@ -24,6 +24,7 @@ extension ProductAddOn {
     @NSManaged public var max: Int64
     @NSManaged public var options: NSOrderedSet?
     @NSManaged public var product: Product?
+    @NSManaged public var group: AddOnGroup?
 
 }
 

@@ -59,6 +59,7 @@ public class ProductStore: Store {
                                   let stockStatus,
                                   let productStatus,
                                   let productType,
+                                  let productCategory,
                                   let sortOrder,
                                   let excludedProductIDs,
                                   let shouldDeleteStoredProductsOnFirstPage,
@@ -69,6 +70,7 @@ public class ProductStore: Store {
                                 stockStatus: stockStatus,
                                 productStatus: productStatus,
                                 productType: productType,
+                                productCategory: productCategory,
                                 sortOrder: sortOrder,
                                 excludedProductIDs: excludedProductIDs,
                                 shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage,
@@ -103,22 +105,27 @@ private extension ProductStore {
 
     /// Searches all of the products that contain a given Keyword.
     ///
-    func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, excludedProductIDs: [Int64], onCompletion: @escaping (Error?) -> Void) {
+    func searchProducts(siteID: Int64,
+                        keyword: String,
+                        pageNumber: Int,
+                        pageSize: Int,
+                        excludedProductIDs: [Int64],
+                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
         remote.searchProducts(for: siteID,
                               keyword: keyword,
                               pageNumber: pageNumber,
                               pageSize: pageSize,
-                              excludedProductIDs: excludedProductIDs) { [weak self] (products, error) in
-                                guard let products = products else {
-                                    onCompletion(error)
-                                    return
-                                }
-
-                                self?.upsertSearchResultsInBackground(siteID: siteID,
-                                                                      keyword: keyword,
-                                                                      readOnlyProducts: products) {
-                                    onCompletion(nil)
-                                }
+                              excludedProductIDs: excludedProductIDs) { [weak self] result in
+            switch result {
+            case .success(let products):
+                self?.upsertSearchResultsInBackground(siteID: siteID,
+                                                      keyword: keyword,
+                                                      readOnlyProducts: products) {
+                    onCompletion(.success(()))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
         }
     }
 
@@ -130,6 +137,7 @@ private extension ProductStore {
                              stockStatus: ProductStockStatus?,
                              productStatus: ProductStatus?,
                              productType: ProductType?,
+                             productCategory: ProductCategory?,
                              sortOrder: ProductsSortOrder,
                              excludedProductIDs: [Int64],
                              shouldDeleteStoredProductsOnFirstPage: Bool,
@@ -141,6 +149,7 @@ private extension ProductStore {
                                stockStatus: stockStatus,
                                productStatus: productStatus,
                                productType: productType,
+                               productCategory: productCategory,
                                orderBy: sortOrder.remoteOrderKey,
                                order: sortOrder.remoteOrder,
                                excludedProductIDs: excludedProductIDs) { [weak self] result in
@@ -307,13 +316,14 @@ private extension ProductStore {
             return
         }
 
-        remote.searchSku(for: siteID, sku: sku) { (result, error) in
-            guard error == nil else {
+        remote.searchSku(for: siteID, sku: sku) { result in
+            switch result {
+            case .success(let checkResult):
+                let isValid = checkResult != sku
+                onCompletion(isValid)
+            case .failure:
                 onCompletion(true)
-                return
             }
-            let isValid = (result != nil && result == sku) ? false : true
-            onCompletion(isValid)
         }
     }
 

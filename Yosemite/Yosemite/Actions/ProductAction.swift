@@ -8,7 +8,12 @@ public enum ProductAction: Action {
 
     /// Searches products that contain a given keyword.
     ///
-    case searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, excludedProductIDs: [Int64] = [], onCompletion: (Error?) -> Void)
+    case searchProducts(siteID: Int64,
+                        keyword: String,
+                        pageNumber: Int,
+                        pageSize: Int,
+                        excludedProductIDs: [Int64] = [],
+                        onCompletion: (Result<Void, Error>) -> Void)
 
     /// Synchronizes the Products matching the specified criteria.
     ///
@@ -20,6 +25,7 @@ public enum ProductAction: Action {
         stockStatus: ProductStockStatus?,
         productStatus: ProductStatus?,
         productType: ProductType?,
+        productCategory: ProductCategory?,
         sortOrder: ProductsSortOrder,
         excludedProductIDs: [Int64] = [],
         shouldDeleteStoredProductsOnFirstPage: Bool = true,

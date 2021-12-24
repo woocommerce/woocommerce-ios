@@ -74,6 +74,7 @@ final class ProductVariationListMapperTests: XCTestCase {
 
         XCTAssertEqual(productVariation.price, "16")
         XCTAssertEqual(productVariation.salePrice, "12.5")
+        XCTAssertEqual(productVariation.regularPrice, "12")
         XCTAssertFalse(productVariation.manageStock)
     }
 

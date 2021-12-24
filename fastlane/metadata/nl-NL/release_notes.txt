@@ -1,4 +1,0 @@
-WooCommerce iOS is bijgewerkt zodat je bedrijfsvoering eenvoudiger wordt.
-
-Je kunt nu variabele producten maken en een productconcept/product in afwachting publiceren vanuit de navigatiebalk.
-We hebben glitches verholpen die te maken hadden met het toevoegen van producteigenschappen of -variaties. Ook hebben we de weergave van tekst en afbeeldingen in de liggende stand verbeterd.

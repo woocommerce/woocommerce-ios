@@ -90,7 +90,6 @@ private extension RefundShippingLabelViewController {
     }
 
     func configureCellCommonProperties(_ cell: ValueOneTableViewCell) {
-        cell.detailTextLabel?.textColor = Constants.cellValueTextColor
         cell.selectionStyle = .none
         cell.accessoryType = .none
     }
@@ -158,7 +157,7 @@ private extension RefundShippingLabelViewController {
         static let navigationBarTitle = NSLocalizedString("Request a Refund",
                                                           comment: "Navigation bar title to request a refund for a shipping label")
         static let headerText = NSLocalizedString(
-            "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process.",
+            "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process.",
             comment: "Header text in Refund Shipping Label screen")
         static let purchaseDateTitle = NSLocalizedString("Purchase Date",
                                                          comment: "Title of shipping label purchase date in Refund Shipping Label screen")

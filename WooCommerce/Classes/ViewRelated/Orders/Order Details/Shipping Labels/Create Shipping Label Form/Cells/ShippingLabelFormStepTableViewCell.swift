@@ -71,7 +71,7 @@ private extension ShippingLabelFormStepTableViewCell {
         applyDefaultBackgroundStyle()
         iconView.tintColor = .neutral(.shade100)
         selectionStyle = .none
-        chevronView.image = .chevronImage
+        chevronView.image = .chevronImage.imageFlippedForRightToLeftLayoutDirection()
         chevronView.tintColor = .neutral(.shade100)
         chevronView.alpha = 0.3
         separator.backgroundColor = .systemColor(.separator)
@@ -79,6 +79,7 @@ private extension ShippingLabelFormStepTableViewCell {
 
     func configureLabels() {
         titleLabel.applyBodyStyle()
+        titleLabel.numberOfLines = 0
         bodyLabel.applySubheadlineStyle()
         bodyLabel.numberOfLines = 0
     }

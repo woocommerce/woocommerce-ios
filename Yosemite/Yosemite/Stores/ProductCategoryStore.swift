@@ -35,6 +35,8 @@ public final class ProductCategoryStore: Store {
             synchronizeAllProductCategories(siteID: siteID, fromPageNumber: fromPageNumber, onCompletion: onCompletion)
         case .addProductCategory(siteID: let siteID, name: let name, parentID: let parentID, onCompletion: let onCompletion):
             addProductCategory(siteID: siteID, name: name, parentID: parentID, onCompletion: onCompletion)
+        case .synchronizeProductCategory(siteID: let siteID, categoryID: let CategoryID, onCompletion: let onCompletion):
+            synchronizeProductCategory(siteID: siteID, categoryID: CategoryID, onCompletion: onCompletion)
         }
     }
 }
@@ -106,6 +108,26 @@ private extension ProductCategoryStore {
                 }
             case .failure(let error):
                 onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Loads a remote product category associated with the given Category ID and Site ID
+    ///
+    func synchronizeProductCategory(siteID: Int64, categoryID: Int64, onCompletion: @escaping (Result<ProductCategory, Error>) -> Void) {
+        remote.loadProductCategory(with: categoryID, siteID: siteID) { [weak self] result in
+            switch result {
+            case .success(let productCategory):
+                self?.upsertStoredProductCategoriesInBackground([productCategory], siteID: siteID) {
+                    onCompletion(.success(productCategory))
+                }
+            case .failure(let error):
+                if let error = error as? DotcomError,
+                   case .resourceDoesNotExist = error {
+                    onCompletion(.failure(ProductCategoryActionError.categoryDoesNotExistRemotely))
+                } else {
+                    onCompletion(.failure(error))
+                }
             }
         }
     }

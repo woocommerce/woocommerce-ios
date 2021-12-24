@@ -1,4 +1,0 @@
-WooCommerce per iOS dispone di aggiornamenti che renderanno sicuramente più facile la gestione della tua attività.
-
-Ora puoi creare prodotti variabili da zero e pubblicare una bozza del prodotto/un prodotto in attesa dalla barra di navigazione.
-Abbiamo risolto gli errori tecnici che interessavano l'aggiunta di attributi o varianti del prodotto e abbiamo migliorato la visualizzazione del testo e delle immagini in orientamento orizzontale.

@@ -23,7 +23,7 @@ private extension ShippingLabelPrintingInstructionsViewController {
 private extension ShippingLabelPrintingInstructionsViewController {
     enum Localization {
         static let navigationBarTitle =
-            NSLocalizedString("Print from your Phone",
+            NSLocalizedString("Print from your mobile device",
                               comment: "Navigation bar title of shipping label printing instructions screen")
     }
 }

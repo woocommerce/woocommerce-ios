@@ -21,6 +21,12 @@ struct MockAppSettingsActionHandler: MockActionHandler {
                 setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
             case .loadProductsSettings(let siteId, let onCompletion):
                 loadProductSettings(siteId: siteId, onCompletion: onCompletion)
+            case .loadEligibilityErrorInfo(let onCompletion):
+                onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
+            case .loadOrderAddOnsSwitchState(let onCompletion):
+                onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
+            case .resetEligibilityErrorInfo:
+                break
             default: unimplementedAction(action: action)
         }
     }
@@ -38,7 +44,12 @@ struct MockAppSettingsActionHandler: MockActionHandler {
     }
 
     func loadProductSettings(siteId: Int64, onCompletion: (Result<StoredProductSettings.Setting, Error>) -> Void) {
-        let emptySetting = StoredProductSettings.Setting(siteID: siteId, sort: nil, stockStatusFilter: nil, productStatusFilter: nil, productTypeFilter: nil)
+        let emptySetting = StoredProductSettings.Setting(siteID: siteId,
+                                                         sort: nil,
+                                                         stockStatusFilter: nil,
+                                                         productStatusFilter: nil,
+                                                         productTypeFilter: nil,
+                                                         productCategoryFilter: nil)
         onCompletion(.success(emptySetting))
     }
 }

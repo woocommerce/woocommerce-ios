@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 /// OrderStats: Remote Endpoints found in wc-admin's v4 API
 ///
@@ -19,7 +18,7 @@ public final class OrderStatsRemoteV4: Remote {
                                earliestDateToInclude: Date,
                                latestDateToInclude: Date,
                                quantity: Int,
-                               completion: @escaping (OrderStatsV4?, Error?) -> Void) {
+                               completion: @escaping (Result<OrderStatsV4, Error>) -> Void) {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
 
         // Workaround for #1183: random number between 31-100 for `num_page` param.

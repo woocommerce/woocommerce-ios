@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Networking
 import Storage
@@ -6,7 +7,8 @@ import Storage
 // MARK: - AccountStore
 //
 public class AccountStore: Store {
-    private let remote: AccountRemote
+    private let remote: AccountRemoteProtocol
+    private var cancellables = Set<AnyCancellable>()
 
     /// Shared private StorageType for use during synchronizeSites and synchronizeSitePlan processes
     ///
@@ -19,7 +21,7 @@ public class AccountStore: Store {
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
-    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: AccountRemote) {
+    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: AccountRemoteProtocol) {
         self.remote = remote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -41,14 +43,19 @@ public class AccountStore: Store {
         switch action {
         case .loadAccount(let userID, let onCompletion):
             loadAccount(userID: userID, onCompletion: onCompletion)
-        case .loadSite(let siteID, let onCompletion):
-            loadSite(siteID: siteID, onCompletion: onCompletion)
+        case .loadAndSynchronizeSite(let siteID, let forcedUpdate, let isJetpackConnectionPackageSupported, let onCompletion):
+            loadAndSynchronizeSite(siteID: siteID,
+                                   forcedUpdate: forcedUpdate,
+                                   isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported,
+                                   onCompletion: onCompletion)
         case .synchronizeAccount(let onCompletion):
             synchronizeAccount(onCompletion: onCompletion)
         case .synchronizeAccountSettings(let userID, let onCompletion):
             synchronizeAccountSettings(userID: userID, onCompletion: onCompletion)
-        case .synchronizeSites(let onCompletion):
-            synchronizeSites(onCompletion: onCompletion)
+        case .synchronizeSites(let selectedSiteID, let isJetpackConnectionPackageSupported, let onCompletion):
+            synchronizeSites(selectedSiteID: selectedSiteID,
+                             isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported,
+                             onCompletion: onCompletion)
         case .synchronizeSitePlan(let siteID, let onCompletion):
             synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
         case .updateAccountSettings(let userID, let tracksOptOut, let onCompletion):
@@ -64,15 +71,13 @@ private extension AccountStore {
 
     /// Synchronizes the WordPress.com account associated with the Network's Auth Token.
     ///
-    func synchronizeAccount(onCompletion: @escaping (Account?, Error?) -> Void) {
-        remote.loadAccount { [weak self] (account, error) in
-            guard let account = account else {
-                onCompletion(nil, error)
-                return
+    func synchronizeAccount(onCompletion: @escaping (Result<Account, Error>) -> Void) {
+        remote.loadAccount { [weak self] result in
+            if case let .success(account) = result {
+                self?.upsertStoredAccount(readOnlyAccount: account)
             }
 
-            self?.upsertStoredAccount(readOnlyAccount: account)
-            onCompletion(account, nil)
+            onCompletion(result)
         }
     }
 
@@ -80,44 +85,101 @@ private extension AccountStore {
     /// Synchronizes the WordPress.com account settings associated with the Network's Auth Token.
     /// User ID is passed along because the API doesn't include it in the response.
     ///
-    func synchronizeAccountSettings(userID: Int64, onCompletion: @escaping (AccountSettings?, Error?) -> Void) {
-        remote.loadAccountSettings(for: userID) { [weak self] (accountSettings, error) in
-            guard let accountSettings = accountSettings else {
-                onCompletion(nil, error)
-                return
+    func synchronizeAccountSettings(userID: Int64, onCompletion: @escaping (Result<AccountSettings, Error>) -> Void) {
+        remote.loadAccountSettings(for: userID) { [weak self] result in
+            if case let .success(accountSettings) = result {
+                self?.upsertStoredAccountSettings(readOnlyAccountSettings: accountSettings)
             }
 
-            self?.upsertStoredAccountSettings(readOnlyAccountSettings: accountSettings)
-            onCompletion(accountSettings, nil)
+            onCompletion(result)
+        }
+    }
+
+    /// Returns the site if it exists in storage already and if forced update is not required.
+    /// Otherwise, it synchronizes the WordPress.com sites and returns the site if it exists.
+    ///
+    func loadAndSynchronizeSite(siteID: Int64,
+                                forcedUpdate: Bool,
+                                isJetpackConnectionPackageSupported: Bool,
+                                onCompletion: @escaping (Result<Site, Error>) -> Void) {
+        if let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly(), !forcedUpdate {
+            onCompletion(.success(site))
+        } else {
+            synchronizeSites(selectedSiteID: siteID, isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported) { [weak self] result in
+                guard let self = self else { return }
+                guard let site = self.storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
+                    return onCompletion(.failure(SynchronizeSiteError.unknownSite))
+                }
+                onCompletion(.success(site))
+            }
         }
     }
 
     /// Synchronizes the WordPress.com sites associated with the Network's Auth Token.
     ///
-    func synchronizeSites(onCompletion: @escaping (Error?) -> Void) {
-        remote.loadSites { [weak self]  (sites, error) in
-            guard let sites = sites else {
-                onCompletion(error)
-                return
-            }
+    func synchronizeSites(selectedSiteID: Int64?, isJetpackConnectionPackageSupported: Bool, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        remote.loadSites()
+            .flatMap { result -> AnyPublisher<Result<[Site], Error>, Never> in
+                switch result {
+                case .success(let sites):
+                    return sites.publisher.flatMap { [weak self] site -> AnyPublisher<Site, Never> in
+                        let sitePublisher = Just<Site>(site).eraseToAnyPublisher()
+                        guard let self = self else {
+                            return sitePublisher
+                        }
 
-            self?.upsertStoredSitesInBackground(readOnlySites: sites) {
-                onCompletion(nil)
+                        // If a site is connected to Jetpack via Jetpack Connection Package, some information about the site is unavailable or inaccurate
+                        // in `me/sites` endpoint made in `AccountRemote.loadSites`.
+                        // As a workaround, we need to make 2 other API requests (ref p91TBi-6lK-p2):
+                        // - Check if WooCommerce plugin is active via `wc/v3/settings` endpoint
+                        // - Fetch site metadata like the site name, description, and URL via `wp/v2/settings` endpoint
+                        if site.isJetpackCPConnected, isJetpackConnectionPackageSupported {
+                            let wcAvailabilityPublisher = self.remote.checkIfWooCommerceIsActive(for: site.siteID)
+                            let wpSiteSettingsPublisher = self.remote.fetchWordPressSiteSettings(for: site.siteID)
+                            return Publishers.Zip3(sitePublisher, wcAvailabilityPublisher, wpSiteSettingsPublisher)
+                                .map {
+                                    (site, isWooCommerceActiveResult, wpSiteSettingsResult) -> Site in
+                                    var site = site
+                                    if case let .success(isWooCommerceActive) = isWooCommerceActiveResult {
+                                        site = site.copy(isWooCommerceActive: isWooCommerceActive)
+                                    }
+                                    if case let .success(wpSiteSettings) = wpSiteSettingsResult {
+                                        site = site.copy(name: wpSiteSettings.name, description: wpSiteSettings.description, url: wpSiteSettings.url)
+                                    }
+                                    return site
+                                }.eraseToAnyPublisher()
+                        } else {
+                            return sitePublisher
+                        }
+                    }.collect().map { .success($0) }.eraseToAnyPublisher()
+                case .failure:
+                    return Just<Result<[Site], Error>>(result).eraseToAnyPublisher()
+                }
             }
-        }
+            .sink { [weak self] result in
+                switch result {
+                case .success(let sites):
+                    let containsJCPSites = sites.contains(where: { $0.isJetpackCPConnected })
+                    self?.upsertStoredSitesInBackground(readOnlySites: sites, selectedSiteID: selectedSiteID) {
+                        onCompletion(.success(containsJCPSites))
+                    }
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                }
+            }.store(in: &cancellables)
     }
 
     /// Loads the site plan for the default site.
     ///
-    func synchronizeSitePlan(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        remote.loadSitePlan(for: siteID) { [weak self]  (siteplan, error) in
-            guard let siteplan = siteplan else {
-                onCompletion(error)
-                return
-            }
-
-            self?.updateStoredSitePlanInBackground(plan: siteplan) {
-                onCompletion(nil)
+    func synchronizeSitePlan(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        remote.loadSitePlan(for: siteID) { [weak self] result in
+            switch result {
+            case .success(let siteplan):
+                self?.updateStoredSitePlanInBackground(plan: siteplan) {
+                    onCompletion(.success(()))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
         }
     }
@@ -129,23 +191,16 @@ private extension AccountStore {
         onCompletion(account)
     }
 
-    /// Loads the Site associated with the specified siteID (if any!)
-    ///
-    func loadSite(siteID: Int64, onCompletion: @escaping (Site?) -> Void) {
-        let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly()
-        onCompletion(site)
-    }
-
     /// Submits the tracks opt-in / opt-out setting to be synced globally. 
     ///
-    func updateAccountSettings(userID: Int64, tracksOptOut: Bool, onCompletion: @escaping (Error?) -> Void) {
-        remote.updateAccountSettings(for: userID, tracksOptOut: tracksOptOut) { accountSettings, error in
-            guard let _ = accountSettings else {
-                onCompletion(error)
-                return
+    func updateAccountSettings(userID: Int64, tracksOptOut: Bool, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        remote.updateAccountSettings(for: userID, tracksOptOut: tracksOptOut) { result in
+            switch result {
+            case .success:
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
-
-            onCompletion(nil)
         }
     }
 }
@@ -196,9 +251,17 @@ extension AccountStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Site Entities into the Storage Layer.
     ///
-    func upsertStoredSitesInBackground(readOnlySites: [Networking.Site], onCompletion: @escaping () -> Void) {
+    func upsertStoredSitesInBackground(readOnlySites: [Networking.Site], selectedSiteID: Int64? = nil, onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
+            // Deletes sites in storage that are not in `readOnlySites` and not the selected site.
+            let storageSites = derivedStorage.loadAllSites()
+            let readOnlySiteIDs = readOnlySites.map(\.siteID)
+            storageSites.filter { readOnlySiteIDs.contains($0.siteID) == false && $0.siteID != selectedSiteID }
+                .forEach { remotelyDeletedSite in
+                    derivedStorage.deleteObject(remotelyDeletedSite)
+                }
+
             for readOnlySite in readOnlySites {
                 let storageSite = derivedStorage.loadSite(siteID: readOnlySite.siteID) ?? derivedStorage.insertNewObject(ofType: Storage.Site.self)
                 storageSite.update(with: readOnlySite)
@@ -209,4 +272,8 @@ extension AccountStore {
             DispatchQueue.main.async(execute: onCompletion)
         }
     }
+}
+
+enum SynchronizeSiteError: Error, Equatable {
+    case unknownSite
 }

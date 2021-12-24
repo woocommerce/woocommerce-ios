@@ -75,9 +75,12 @@ final class NotWPErrorViewModelTests: XCTestCase {
 private extension NotWPErrorViewModelTests {
     private enum Expectations {
         static let image = UIImage.loginNoWordPressError
-        static let errorMessage = NSLocalizedString("The website is not a WordPress site. For us to connect to it, the site must have WordPress installed.",
-                                                    comment: "Message explaining that a site is not a WordPress site. "
-                                                        + "Reads like 'The website awebsite.com you'll is not a WordPress site...")
+
+        static let errorMessage =
+            NSLocalizedString("We were not able to detect a WordPress site at the address you entered."
+                                + " Please make sure WordPress is installed and that you are running"
+                                + " the latest available version.",
+                              comment: "Message explaining that WordPress was not detected.")
 
         static let primaryButtonTitle = NSLocalizedString("Enter Another Store",
                                                           comment: "Action button linking to instructions for enter another store."

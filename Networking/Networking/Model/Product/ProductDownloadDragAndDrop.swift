@@ -1,5 +1,6 @@
 import Foundation
 import CoreServices
+import Codegen
 
 /// A wrapper around `ProductDownload`, to make it compatible in using as Drag and Drop data source in a table view. Represents a `ProductDownload` entity.
 /// To make a data draggable and droppable, on an Table/Collection view,

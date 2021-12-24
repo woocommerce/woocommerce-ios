@@ -1,5 +1,5 @@
 import Foundation
-
+import Codegen
 
 // MARK: - NoteRange
 //
@@ -151,18 +151,4 @@ extension NoteRange {
         case link
         case unknown
     }
-}
-
-
-// MARK: - Equatable Conformance
-//
-public func ==(lhs: NoteRange, rhs: NoteRange) -> Bool {
-    return lhs.type == rhs.type &&
-            lhs.range == rhs.range &&
-            lhs.url == rhs.url &&
-            lhs.commentID == rhs.commentID &&
-            lhs.postID == rhs.postID &&
-            lhs.siteID == rhs.siteID &&
-            lhs.userID == rhs.userID &&
-            lhs.value == rhs.value
 }

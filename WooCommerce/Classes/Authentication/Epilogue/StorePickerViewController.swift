@@ -4,6 +4,7 @@ import UIKit
 import WordPressAuthenticator
 import WordPressUI
 import Yosemite
+import Experiments
 
 
 typealias SelectStoreClosure = () -> Void
@@ -47,7 +48,7 @@ enum StorePickerConfiguration {
 
 /// Allows the user to pick which WordPress.com (OR) Jetpack-Connected-Store we should set up as the Main Store.
 ///
-class StorePickerViewController: UIViewController {
+final class StorePickerViewController: UIViewController {
 
     /// StorePickerViewController Delegate
     ///
@@ -150,6 +151,7 @@ class StorePickerViewController: UIViewController {
         switch configuration {
         case .login:
             startListeningToNotifications()
+            startABTesting()
         case .switchingStores:
             secondaryActionButton.isHidden = true
         case .listStores:
@@ -214,7 +216,7 @@ private extension StorePickerViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: dismissLiteral,
                                                            style: .plain,
                                                            target: self,
-                                                           action: #selector(cleanupAndDismiss))
+                                                           action: #selector(dismissStorePicker))
     }
 
     func setupNavigationForListOfConnectedStores() {
@@ -243,8 +245,16 @@ private extension StorePickerViewController {
     }
 
     func refreshResults() {
-        try? resultsController.performFetch()
+        refetchSitesAndUpdateState()
         ServiceLocator.analytics.track(.sitePickerStoresShown, withProperties: ["num_of_stores": resultsController.numberOfObjects])
+
+        synchronizeSites { [weak self] _ in
+            self?.refetchSitesAndUpdateState()
+        }
+    }
+
+    func refetchSitesAndUpdateState() {
+        try? resultsController.performFetch()
         state = StorePickerState(sites: resultsController.fetchedObjects)
     }
 
@@ -259,6 +269,30 @@ private extension StorePickerViewController {
 
     func presentHelp() {
         ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
+    }
+}
+
+// MARK: - Syncing
+//
+private extension StorePickerViewController {
+    func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let syncStartTime = Date()
+        let isJetpackConnectionPackageSupported = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
+        let action = AccountAction
+            .synchronizeSites(selectedSiteID: currentlySelectedSite?.siteID,
+                              isJetpackConnectionPackageSupported: isJetpackConnectionPackageSupported) { result in
+                switch result {
+                case .success(let containsJCPSites):
+                    if containsJCPSites {
+                        let syncDuration = round(Date().timeIntervalSince(syncStartTime) * 1000)
+                        ServiceLocator.analytics.track(.jetpackCPSitesFetched, withProperties: ["duration": syncDuration])
+                    }
+                    onCompletion(.success(()))
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                }
+            }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -314,15 +348,15 @@ private extension StorePickerViewController {
             return
         }
 
-        // If a site address was passed in credentials, select it
-        if let siteAddress = ServiceLocator.stores.sessionManager.defaultCredentials?.siteAddress,
-            let site = sites.filter({ $0.url == siteAddress }).first {
+        // If there is a defaultSite already set, select it
+        if let site = ServiceLocator.stores.sessionManager.defaultSite {
             currentlySelectedSite = site
             return
         }
 
-        // If there is a defaultSite already set, select it
-        if let site = ServiceLocator.stores.sessionManager.defaultSite {
+        // If a site address was passed in credentials, select it
+        if let siteAddress = ServiceLocator.stores.sessionManager.defaultCredentials?.siteAddress,
+            let site = sites.filter({ $0.url == siteAddress }).first {
             currentlySelectedSite = site
             return
         }
@@ -348,12 +382,7 @@ private extension StorePickerViewController {
 
     /// Dismiss this VC
     ///
-    @objc func cleanupAndDismiss() {
-        if let siteID = currentlySelectedSite?.siteID {
-            delegate?.didSelectStore(with: siteID, onCompletion: {
-            })
-        }
-
+    @objc func dismissStorePicker() {
         dismiss()
     }
 
@@ -420,13 +449,13 @@ private extension StorePickerViewController {
     ///
     func displaySiteWCRequirementWarningIfNeeded(siteID: Int64, siteName: String) {
         updateActionButtonAndTableState(animating: true, enabled: false)
-        RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] (result, error) in
+        RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] result in
             switch result {
-            case .validWCVersion:
+            case .success(.validWCVersion):
                 self?.updateUIForValidSite()
-            case .invalidWCVersion:
+            case .success(.invalidWCVersion):
                 self?.updateUIForInvalidSite(named: siteName)
-            case .empty, .error:
+            case .failure:
                 self?.updateUIForEmptyOrErroredSite(named: siteName, with: siteID)
             }
         }
@@ -456,7 +485,7 @@ private extension StorePickerViewController {
     func updateUIForEmptyOrErroredSite(named siteName: String, with siteID: Int64) {
         toggleDismissButton(enabled: false)
         updateActionButtonAndTableState(animating: false, enabled: false)
-        displayVersionCheckErrorNotice(siteID: siteID, siteName: siteName)
+        displayUnknownErrorModal()
     }
 
     /// Little helper func that helps manage the actionButton and Table state while checking on a
@@ -492,23 +521,13 @@ private extension StorePickerViewController {
         actionButton.showActivityIndicator(false)
     }
 
-    /// Displays the Error Notice for the version check.
+    /// Displays a generic error view as a modal with options to see troubleshooting tips and to contact support.
     ///
-    func displayVersionCheckErrorNotice(siteID: Int64, siteName: String) {
-        let message = String.localizedStringWithFormat(
-            NSLocalizedString(
-                "Unable to successfully connect to %@",
-                comment: "On the site picker screen, the error displayed when connecting to a site fails. " +
-                "It reads: Unable to successfully connect to {site name}"
-            ),
-            siteName
-        )
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.displaySiteWCRequirementWarningIfNeeded(siteID: siteID, siteName: siteName)
-        }
-
-        noticePresenter.enqueue(notice: notice)
+    func displayUnknownErrorModal() {
+        let viewController = StorePickerErrorHostingController.createWithActions(presenting: self)
+        viewController.modalPresentationStyle = .custom
+        viewController.transitioningDelegate = self
+        present(viewController, animated: true)
     }
 
     /// Displays the Fancy Alert notice for a failed WC requirement check
@@ -519,8 +538,25 @@ private extension StorePickerViewController {
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         present(fancyAlert, animated: true)
     }
+
+    /// Refreshes the AB testing assignments (refresh is needed after a user logs in)
+    ///
+    func startABTesting() {
+        guard ServiceLocator.stores.isAuthenticated else {
+            return
+        }
+        ABTest.start()
+    }
 }
 
+// MARK: Transition Controller Delegate
+extension StorePickerViewController: UIViewControllerTransitioningDelegate {
+    func presentationController(forPresented presented: UIViewController,
+                                presenting: UIViewController?,
+                                source: UIViewController) -> UIPresentationController? {
+        ModalHostingPresentationController(presentedViewController: presented, presenting: presenting)
+    }
+}
 
 // MARK: - Action Handlers
 //
@@ -589,7 +625,7 @@ extension StorePickerViewController: UITableViewDataSource {
         cell.name = site.name
         cell.url = site.url
         cell.allowsCheckmark = state.multipleStoresAvailable
-        cell.displaysCheckmark = currentlySelectedSite == site
+        cell.displaysCheckmark = currentlySelectedSite?.siteID == site.siteID
 
         return cell
     }

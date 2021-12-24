@@ -97,6 +97,10 @@ private extension IssueRefundViewController {
         viewModel.toggleRefundShipping()
     }
 
+    func feesSwitchChanged() {
+        viewModel.toggleRefundFees()
+    }
+
     func quantityButtonPressed(sender: UITableViewCell) {
         guard let indexPath = tableView.indexPath(for: sender),
             let refundQuantity = viewModel.quantityAvailableForRefundForItemAtIndex(indexPath.row),
@@ -133,7 +137,9 @@ private extension IssueRefundViewController {
         tableView.registerNib(for: RefundItemTableViewCell.self)
         tableView.registerNib(for: RefundProductsTotalTableViewCell.self)
         tableView.registerNib(for: RefundShippingDetailsTableViewCell.self)
+        tableView.registerNib(for: RefundFeesDetailsTableViewCell.self)
         tableView.registerNib(for: SwitchTableViewCell.self)
+        tableView.registerNib(for: ImageAndTitleAndTextTableViewCell.self)
     }
 
     func configureHeaderView() {
@@ -212,6 +218,22 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
         case let viewModel as RefundShippingDetailsViewModel:
             let cell = tableView.dequeueReusableCell(RefundShippingDetailsTableViewCell.self, for: indexPath)
             cell.configure(with: viewModel)
+            return cell
+        case let viewModel as IssueRefundViewModel.FeesSwitchViewModel:
+            let cell = tableView.dequeueReusableCell(SwitchTableViewCell.self, for: indexPath)
+            cell.title = viewModel.title
+            cell.isOn = viewModel.isOn
+            cell.onChange = { [weak self] _ in
+                self?.feesSwitchChanged()
+            }
+            return cell
+        case let viewModel as RefundFeesDetailsViewModel:
+            let cell = tableView.dequeueReusableCell(RefundFeesDetailsTableViewCell.self, for: indexPath)
+            cell.configure(with: viewModel)
+            return cell
+        case let viewModel as ImageAndTitleAndTextTableViewCell.ViewModel:
+            let cell = tableView.dequeueReusableCell(ImageAndTitleAndTextTableViewCell.self, for: indexPath)
+            cell.updateUI(viewModel: viewModel)
             return cell
         default:
             return UITableViewCell()

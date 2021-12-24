@@ -120,4 +120,35 @@ public extension StorageType {
             deleteObject(coupon)
         }
     }
+
+    /// Deletes all of the stored `AddOnGroups` for a `siteID` that are not included in the provided `activeGroupIDs` array.
+    ///
+    func deleteStaleAddOnGroups(siteID: Int64, activeGroupIDs: [Int64]) {
+        let staleGroups = loadAddOnGroups(siteID: siteID).filter { !activeGroupIDs.contains($0.groupID) }
+        staleGroups.forEach {
+            deleteObject($0)
+        }
+    }
+
+    /// Deletes all of the stored `SitePlugin` entities with a specified `siteID` whose name is not included in `installedPluginNames` array.
+    ///
+    func deleteStalePlugins(siteID: Int64, installedPluginNames: [String]) {
+        let plugins = loadPlugins(siteID: siteID).filter {
+            !installedPluginNames.contains($0.name)
+        }
+        plugins.forEach {
+            deleteObject($0)
+        }
+    }
+
+    /// Deletes all of the stored SystemPlugins for the provided siteID whose name is not included in `currentSystemPlugins` array
+    ///
+    func deleteStaleSystemPlugins(siteID: Int64, currentSystemPlugins: [String]) {
+        let systemPlugins = loadSystemPlugins(siteID: siteID).filter {
+            !currentSystemPlugins.contains($0.name)
+        }
+        systemPlugins.forEach {
+            deleteObject($0)
+        }
+    }
 }

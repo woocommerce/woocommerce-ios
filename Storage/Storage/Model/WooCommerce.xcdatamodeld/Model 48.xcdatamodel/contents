@@ -13,32 +13,6 @@
         <attribute name="tracksOptOut" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="userID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
-    <entity name="Coupon" representedClassName="Coupon" syncable="YES">
-        <attribute name="amount" attributeType="String"/>
-        <attribute name="code" attributeType="String"/>
-        <attribute name="couponID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="dateExpires" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="dateModified" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="discountType" attributeType="String"/>
-        <attribute name="emailRestrictions" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
-        <attribute name="excludedProductCategories" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
-        <attribute name="excludedProducts" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
-        <attribute name="excludeSaleItems" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="freeShipping" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="fullDescription" attributeType="String"/>
-        <attribute name="individualUse" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="limitUsageToXItems" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="maximumAmount" attributeType="String"/>
-        <attribute name="minimumAmount" attributeType="String"/>
-        <attribute name="productCategories" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
-        <attribute name="products" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
-        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="usageCount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="usageLimit" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="usageLimitPerUser" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="usedBy" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
-    </entity>
     <entity name="GenericAttribute" representedClassName="GenericAttribute" syncable="YES">
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="key" attributeType="String"/>
@@ -533,6 +507,20 @@
         <relationship name="originAddress" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelAddress" inverseName="originShippingLabel" inverseEntity="ShippingLabelAddress"/>
         <relationship name="refund" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelRefund" inverseName="shippingLabel" inverseEntity="ShippingLabelRefund"/>
     </entity>
+    <entity name="ShippingLabelAccountSettings" representedClassName="ShippingLabelAccountSettings" syncable="YES">
+        <attribute name="canEditSettings" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="canManagePayments" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isEmailReceiptsEnabled" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="lastSelectedPackageID" attributeType="String" defaultValueString=""/>
+        <attribute name="paperSize" attributeType="String"/>
+        <attribute name="selectedPaymentMethodID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="storeOwnerDisplayName" attributeType="String"/>
+        <attribute name="storeOwnerUsername" attributeType="String"/>
+        <attribute name="storeOwnerWpcomEmail" attributeType="String"/>
+        <attribute name="storeOwnerWpcomUsername" attributeType="String"/>
+        <relationship name="paymentMethods" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ShippingLabelPaymentMethod" inverseName="accountSettings" inverseEntity="ShippingLabelPaymentMethod"/>
+    </entity>
     <entity name="ShippingLabelAddress" representedClassName="ShippingLabelAddress" syncable="YES">
         <attribute name="address1" attributeType="String" defaultValueString=""/>
         <attribute name="address2" attributeType="String" defaultValueString=""/>
@@ -545,6 +533,14 @@
         <attribute name="state" attributeType="String" defaultValueString=""/>
         <relationship name="destinationShippingLabel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShippingLabel" inverseName="destinationAddress" inverseEntity="ShippingLabel"/>
         <relationship name="originShippingLabel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShippingLabel" inverseName="originAddress" inverseEntity="ShippingLabel"/>
+    </entity>
+    <entity name="ShippingLabelPaymentMethod" representedClassName="ShippingLabelPaymentMethod" syncable="YES">
+        <attribute name="cardDigits" attributeType="String"/>
+        <attribute name="cardType" attributeType="String"/>
+        <attribute name="expiry" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="paymentMethodID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="accountSettings" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShippingLabelAccountSettings" inverseName="paymentMethods" inverseEntity="ShippingLabelAccountSettings"/>
     </entity>
     <entity name="ShippingLabelRefund" representedClassName="ShippingLabelRefund" syncable="YES">
         <attribute name="dateRequested" attributeType="Date" usesScalarValueType="NO"/>
@@ -629,7 +625,6 @@
     <elements>
         <element name="Account" positionX="-200.9765625" positionY="63.5625" width="128" height="120"/>
         <element name="AccountSettings" positionX="-846" positionY="270" width="128" height="89"/>
-        <element name="Coupon" positionX="-684" positionY="54" width="128" height="389"/>
         <element name="GenericAttribute" positionX="-684" positionY="45" width="128" height="89"/>
         <element name="Note" positionX="-369.61328125" positionY="-95.85546875" width="128" height="283"/>
         <element name="Order" positionX="-41.5859375" positionY="23.53125" width="128" height="794"/>
@@ -655,7 +650,7 @@
         <element name="ProductAddOnOption" positionX="-684" positionY="54" width="128" height="104"/>
         <element name="ProductAttribute" positionX="-733.52734375" positionY="-73.046875" width="128" height="164"/>
         <element name="ProductAttributeTerm" positionX="-693" positionY="45" width="128" height="119"/>
-        <element name="ProductCategory" positionX="-885.69921875" positionY="65.46484375" width="128" height="119"/>
+        <element name="ProductCategory" positionX="-885.69921875" positionY="65.46484375" width="128" height="133"/>
         <element name="ProductDefaultAttribute" positionX="-819.42578125" positionY="224.1171875" width="145.12109375" height="103"/>
         <element name="ProductDimensions" positionX="-830.15234375" positionY="345.6328125" width="128" height="118"/>
         <element name="ProductDownload" positionX="-684" positionY="45" width="128" height="118"/>
@@ -670,7 +665,9 @@
         <element name="ShipmentTrackingProvider" positionX="248.25" positionY="-117.6640625" width="180.32421875" height="103"/>
         <element name="ShipmentTrackingProviderGroup" positionX="-8.2734375" positionY="-117.890625" width="187.5" height="88"/>
         <element name="ShippingLabel" positionX="-675" positionY="54" width="128" height="313"/>
+        <element name="ShippingLabelAccountSettings" positionX="-702" positionY="36" width="128" height="209"/>
         <element name="ShippingLabelAddress" positionX="-684" positionY="45" width="128" height="208"/>
+        <element name="ShippingLabelPaymentMethod" positionX="-693" positionY="45" width="128" height="119"/>
         <element name="ShippingLabelRefund" positionX="-693" positionY="36" width="128" height="88"/>
         <element name="ShippingLabelSettings" positionX="-666" positionY="63" width="128" height="103"/>
         <element name="ShippingLine" positionX="-247.203125" positionY="907.53125" width="128" height="149"/>

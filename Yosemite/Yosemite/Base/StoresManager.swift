@@ -37,6 +37,11 @@ public protocol StoresManager {
     ///
     func updateDefaultStore(storeID: Int64)
 
+    /// Updates the default site only in cases where a site's properties are updated (e.g. after installing & activating Jetpack-the-plugin).
+    /// The given site's site ID should match the default site ID, otherwise nothing is updated.
+    ///
+    func updateDefaultStore(_ site: Site)
+
     /// Indicates if the StoresManager is currently authenticated, or not.
     ///
     var isAuthenticated: Bool { get }
@@ -47,7 +52,11 @@ public protocol StoresManager {
 
     /// The currently logged in store/site ID. Nil when the app is logged out.
     ///
-    var siteID: Observable<Int64?> { get }
+    var siteID: AnyPublisher<Int64?, Never> { get }
+
+    /// Observable currently selected site.
+    ///
+    var site: AnyPublisher<Site?, Never> { get }
 
     /// Indicates if we need a Default StoreID, or there's one already set.
     ///
@@ -60,4 +69,8 @@ public protocol StoresManager {
     /// SessionManagerProtocol: Persistent Storage for Session-Y Properties.
     /// This property is thread safe
     var sessionManager: SessionManagerProtocol { get }
+
+    /// Update the user roles for the default site.
+    ///
+    func updateDefaultRoles(_ roles: [User.Role])
 }

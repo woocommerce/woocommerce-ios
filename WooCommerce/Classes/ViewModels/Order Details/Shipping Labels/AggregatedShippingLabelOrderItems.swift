@@ -40,11 +40,6 @@ struct AggregatedShippingLabelOrderItems {
     func orderItem(of shippingLabel: ShippingLabel, at index: Int) -> AggregateOrderItem? {
         orderItems(of: shippingLabel)[safe: index]
     }
-
-    /// Returns an array of order items from all of the given non-refunded shipping labels.
-    func orderItemsOfNonRefundedShippingLabels(_ shippingLabels: [ShippingLabel]) -> [AggregateOrderItem] {
-        shippingLabels.nonRefunded.flatMap { orderItems(of: $0) }
-    }
 }
 
 private extension AggregatedShippingLabelOrderItems {

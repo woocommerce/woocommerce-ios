@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import Yosemite
 
@@ -20,19 +21,22 @@ final class ShippingLabelAddressFormViewModel {
     private(set) var address: ShippingLabelAddress?
     private(set) var addressValidationError: ShippingLabelAddressValidationError?
     private(set) var addressValidated: Validation = .none
+    private(set) var phoneNumberRequired: Bool
+    private(set) var email: String?
 
     private let stores: StoresManager
 
     /// Closure to notify the `ViewController` when the view model properties change.
+    /// Accepts optional index for row to be focused after reloading the table view.
     ///
-    var onChange: (() -> (Void))?
+    var onChange: ((_ focusedRowIndex: Int?) -> (Void))?
 
     /// Current `ViewModel` state.
     ///
     private var state: State = State() {
         didSet {
             updateSections()
-            onChange?()
+            onChange?(nil)
         }
     }
 
@@ -44,14 +48,61 @@ final class ShippingLabelAddressFormViewModel {
         return state.isLoading
     }
 
+    var isUSAddress: Bool {
+        address?.country == "US"
+    }
+
     var sections: [Section] = []
 
-    init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?, stores: StoresManager = ServiceLocator.stores) {
+    private(set) var countries: [Country]
+
+    var nameRequired: Bool {
+        address?.company.isEmpty == true
+    }
+
+    var statesOfSelectedCountry: [StateOfACountry] {
+        countries.first { $0.code == address?.country }?.states.sorted { $0.name < $1.name } ?? []
+    }
+
+    var stateOfCountryRequired: Bool {
+        statesOfSelectedCountry.isNotEmpty
+    }
+
+    var extendedCountryName: String? {
+        return countries.first { $0.code == address?.country }?.name
+    }
+
+    var extendedStateName: String? {
+        return statesOfSelectedCountry.first { $0.code == address?.state }?.name
+    }
+
+    private let localErrors = CurrentValueSubject<[ValidationError], Never>([])
+    private let currentRow = CurrentValueSubject<Row?, Never>(nil)
+    private var validationSubscription: AnyCancellable?
+
+    init(
+        siteID: Int64,
+        type: ShipType,
+        address: ShippingLabelAddress?,
+        email: String?,
+        phoneNumberRequired: Bool = false,
+        stores: StoresManager = ServiceLocator.stores,
+        validationError: ShippingLabelAddressValidationError?,
+        countries: [Country]
+    ) {
         self.siteID = siteID
         self.type = type
         self.address = address
+        self.email = email
+        self.phoneNumberRequired = phoneNumberRequired
         self.stores = stores
+        if let validationError = validationError {
+            addressValidationError = validationError
+            addressValidated = .remote
+        }
+        self.countries = countries
         updateSections()
+        configureValidationError()
     }
 
     func handleAddressValueChanges(row: Row, newValue: String?) {
@@ -73,10 +124,13 @@ final class ShippingLabelAddressFormViewModel {
         case .state:
             address = address?.copy(state: newValue)
         case .country:
-            address = address?.copy(country: newValue)
+            address = address?.copy(country: newValue, state: "")
         default:
             return
         }
+
+        currentRow.send(row)
+        localErrors.send(validateAddressLocally())
     }
 
     func updateSections() {
@@ -114,6 +168,15 @@ final class ShippingLabelAddressFormViewModel {
                 rows.insert(.fieldError(.country), at: rows.index(after: index))
             }
         }
+        if localErrors.contains(.missingPhoneNumber) {
+            if let index = rows.firstIndex(where: { $0 == .phone }) {
+                rows.insert(.fieldError(.missingPhoneNumber), at: rows.index(after: index))
+            }
+        } else if localErrors.contains(.invalidPhoneNumber) {
+            if let index = rows.firstIndex(where: { $0 == .phone }) {
+                rows.insert(.fieldError(.invalidPhoneNumber), at: rows.index(after: index))
+            }
+        }
         sections = [Section(rows: rows)]
     }
 }
@@ -135,13 +198,64 @@ extension ShippingLabelAddressFormViewModel {
         case postcode
         case state
         case country
+        case missingPhoneNumber
+        case invalidPhoneNumber
+    }
+
+    /// Triggers reloading table view if there's a change in local errors.
+    ///
+    private func configureValidationError() {
+        validationSubscription = localErrors
+            .removeDuplicates()
+            .withLatestFrom(currentRow)
+            .sink { [weak self] _, row in
+                guard let self = self else { return }
+                self.updateSections()
+                let index: Int? = self.sections.first?.rows.firstIndex(where: { $0 == row })
+                self.onChange?(index)
+            }
+
+        // Append any initial local error.
+        localErrors.send(validateAddressLocally())
+    }
+
+    /// Validates phone number for the address.
+    /// This take into account whether phone is not empty,
+    /// has length 10 with additional "1" area code for US.
+    ///
+    private var isPhoneNumberValid: Bool {
+        guard let phone = address?.phone, phone.isNotEmpty else {
+            return false
+        }
+        guard isUSAddress else {
+            return true
+        }
+        if phone.hasPrefix("1") {
+            return phone.count == 11
+        } else {
+            return phone.count == 10
+        }
+    }
+
+    private var phoneValidationError: ValidationError? {
+        guard let addressToBeValidated = address else {
+            return nil
+        }
+        if phoneNumberRequired {
+            if addressToBeValidated.phone.isEmpty {
+                return .missingPhoneNumber
+            } else if !isPhoneNumberValid {
+                return .invalidPhoneNumber
+            }
+        }
+        return nil
     }
 
     private func validateAddressLocally() -> [ValidationError] {
         var errors: [ValidationError] = []
 
         if let addressToBeValidated = address {
-            if addressToBeValidated.name.isEmpty {
+            if addressToBeValidated.name.isEmpty && nameRequired {
                 errors.append(.name)
             }
             if addressToBeValidated.address1.isEmpty {
@@ -153,11 +267,14 @@ extension ShippingLabelAddressFormViewModel {
             if addressToBeValidated.postcode.isEmpty {
                 errors.append(.postcode)
             }
-            if addressToBeValidated.state.isEmpty {
+            if addressToBeValidated.state.isEmpty && stateOfCountryRequired {
                 errors.append(.state)
             }
             if addressToBeValidated.country.isEmpty {
                 errors.append(.country)
+            }
+            if let error = phoneValidationError {
+                errors.append(error)
             }
         }
 
@@ -196,19 +313,19 @@ extension ShippingLabelAddressFormViewModel {
         let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
             switch result {
             case .success:
-                if (try? result.get().errors) == nil {
-                    self?.addressValidated = .remote
-                    self?.addressValidationError = nil
-                    self?.state.isLoading = false
-                    completion(.success(()))
-                }
-                else {
-                    self?.addressValidated = .none
-                    self?.addressValidationError = try? result.get().errors
-                    self?.state.isLoading = false
-                    completion(.failure(.remote(try? result.get().errors)))
-                }
+                ServiceLocator.analytics.track(.shippingLabelAddressValidationSucceeded)
+                self?.addressValidated = .remote
+                self?.addressValidationError = nil
+                self?.state.isLoading = false
+                completion(.success(()))
+            case .failure(let error as ShippingLabelAddressValidationError):
+                ServiceLocator.analytics.track(.shippingLabelAddressValidationFailed, withProperties: ["error": error.localizedDescription])
+                self?.addressValidated = .none
+                self?.addressValidationError = error
+                self?.state.isLoading = false
+                completion(.failure(.remote(error)))
             case .failure(let error):
+                ServiceLocator.analytics.track(.shippingLabelAddressValidationFailed, withProperties: ["error": error.localizedDescription])
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
                 self?.addressValidated = .none
                 self?.addressValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)

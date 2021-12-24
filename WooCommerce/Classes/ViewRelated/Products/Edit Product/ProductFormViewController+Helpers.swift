@@ -33,7 +33,16 @@ extension ProductFormViewController {
         alertController.addAction(confirm)
         present(alertController, animated: true)
     }
-
+    /// Product Confirmation Save alert
+    ///
+    func presentProductConfirmationSaveAlert() {
+        let contextNoticePresenter: NoticePresenter = {
+            let noticePresenter = DefaultNoticePresenter()
+            noticePresenter.presentingViewController = self
+            return noticePresenter
+        }()
+        contextNoticePresenter.enqueue(notice: .init(title: Localization.Alert.presentProductConfirmationSaveAlert))
+    }
     /// Product Confirmation Delete alert
     ///
     func presentProductConfirmationDeleteAlert(completion: @escaping (_ isConfirmed: Bool) -> ()) {
@@ -74,14 +83,16 @@ extension ProductFormViewController {
 
     // MARK: - Progress
 
-    /// Progress view for save action
+    /// Progress view for save action.
     ///
-    func showSavingProgress(for productStatus: ProductStatus) {
-        switch productStatus {
+    func showSavingProgress(_ messageType: SaveMessageType) {
+        switch messageType {
         case .publish:
             displayInProgressView(title: Localization.ProgressView.productPublishingTitle, message: Localization.ProgressView.productPublishingMessage)
-        default:
+        case .save:
             displayInProgressView(title: Localization.ProgressView.productSavingTitle, message: Localization.ProgressView.productSavingMessage)
+        case .saveVariation:
+            displayInProgressView(title: Localization.ProgressView.productVariationTitle, message: Localization.ProgressView.productVariationMessage)
         }
     }
 
@@ -110,6 +121,9 @@ private extension ProductFormViewController {
 
 private enum Localization {
     enum Alert {
+        // Product saved or updated
+        static let presentProductConfirmationSaveAlert = NSLocalizedString("Product saved",
+                                                                           comment: "Title of the alert when a user is saving a product")
         // Product type change
         static let productTypeChangeTitle = NSLocalizedString("Are you sure you want to change the product type?",
                                                               comment: "Title of the alert when a user is changing the product type")
@@ -165,5 +179,9 @@ private enum Localization {
                                                               comment: "Title of the in-progress UI while deleting the Variation remotely")
         static let variationDeletionMessage = NSLocalizedString("Please wait while we update your store details",
                                                                 comment: "Message of the in-progress UI while deleting the Variation remotely")
+        static let productVariationTitle = NSLocalizedString("Saving your variation...",
+                                                          comment: "Title of the in-progress UI while saving a Variation remotely")
+        static let productVariationMessage = NSLocalizedString("Please wait while we save your latest changes",
+                                                            comment: "Message of the in-progress UI while saving a Variation remotely")
     }
 }

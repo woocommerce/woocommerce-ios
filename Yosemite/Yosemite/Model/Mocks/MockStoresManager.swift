@@ -18,20 +18,24 @@ public class MockStoresManager: StoresManager {
 
     /// All of our action handlers
     private let appSettingsActionHandler: MockAppSettingsActionHandler
+    private let announcementsActionHandler: MockAnnouncementsActionHandler
     private let availabilityActionHandler: MockAvailabilityActionHandler
     private let notificationActionHandler: MockNotificationActionHandler
     private let notificationCountActionHandler: MockNotificationCountActionHandler
     private let orderActionHandler: MockOrderActionHandler
     private let orderStatusActionHandler: MockOrderStatusActionHandler
     private let orderNoteActionHandler: MockOrderNoteActionHandler
+    private let paymentGatewayAccountActionHandler: MockPaymentGatewayAccountActionHandler
     private let productActionHandler: MockProductActionHandler
     private let productReviewActionHandler: MockProductReviewActionHandler
     private let productVariationActionHandler: MockProductVariationActionHandler
+    private let receiptActionHandler: MockReceiptActionHandler
     private let refundActionHandler: MockRefundActionHandler
     private let settingActionHandler: MockSettingActionHandler
     private let shipmentActionHandler: MockShipmentActionHandler
     private let shippingLabelActionHandler: MockShippingLabelActionHandler
     private let statsV4ActionHandler: MockStatsActionV4Handler
+    private let userActionHandler: MockUserActionHandler
 
 
     init(objectGraph: MockObjectGraph, storageManager: StorageManagerType) {
@@ -41,18 +45,22 @@ public class MockStoresManager: StoresManager {
         orderActionHandler = MockOrderActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         notificationCountActionHandler = MockNotificationCountActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         appSettingsActionHandler = MockAppSettingsActionHandler(objectGraph: objectGraph, storageManager: storageManager)
+        announcementsActionHandler = MockAnnouncementsActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         statsV4ActionHandler = MockStatsActionV4Handler(objectGraph: objectGraph, storageManager: storageManager)
         availabilityActionHandler = MockAvailabilityActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         settingActionHandler = MockSettingActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         orderStatusActionHandler = MockOrderStatusActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         orderNoteActionHandler = MockOrderNoteActionHandler(objectGraph: objectGraph, storageManager: storageManager)
+        paymentGatewayAccountActionHandler = MockPaymentGatewayAccountActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         productActionHandler = MockProductActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         productVariationActionHandler = MockProductVariationActionHandler(objectGraph: objectGraph, storageManager: storageManager)
+        receiptActionHandler = MockReceiptActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         refundActionHandler = MockRefundActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         shippingLabelActionHandler = MockShippingLabelActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         shipmentActionHandler = MockShipmentActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         productReviewActionHandler = MockProductReviewActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         notificationActionHandler = MockNotificationActionHandler(objectGraph: objectGraph, storageManager: storageManager)
+        userActionHandler = MockUserActionHandler(objectGraph: objectGraph, storageManager: storageManager)
     }
 
     /// Accessor for whether the user is logged in (spoiler: they always will be when mocking)
@@ -74,8 +82,12 @@ public class MockStoresManager: StoresManager {
 
     /// The current site ID
     ///
-    public var siteID: Observable<Int64?> {
-        sessionManager.siteID
+    public var siteID: AnyPublisher<Int64?, Never> {
+        sessionManager.defaultStoreIDPublisher
+    }
+
+    public var site: AnyPublisher<Site?, Never> {
+        sessionManager.defaultSitePublisher
     }
 
     public func dispatch(_ action: Action) {
@@ -111,6 +123,14 @@ public class MockStoresManager: StoresManager {
                 productReviewActionHandler.handle(action: action)
             case let action as NotificationAction:
                 notificationActionHandler.handle(action: action)
+            case let action as UserAction:
+                userActionHandler.handle(action: action)
+            case let action as AnnouncementsAction:
+                announcementsActionHandler.handle(action: action)
+            case let action as PaymentGatewayAccountAction:
+                paymentGatewayAccountActionHandler.handle(action: action)
+            case let action as ReceiptAction:
+                receiptActionHandler.handle(action: action)
             default:
                 fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")
         }
@@ -157,5 +177,13 @@ public class MockStoresManager: StoresManager {
             .map { $0 == nil }
             .removeDuplicates()
             .eraseToAnyPublisher()
+    }
+
+    public func updateDefaultRoles(_ roles: [User.Role]) {
+        // No op
+    }
+
+    public func updateDefaultStore(_ site: Site) {
+        sessionManager.defaultSite = site
     }
 }

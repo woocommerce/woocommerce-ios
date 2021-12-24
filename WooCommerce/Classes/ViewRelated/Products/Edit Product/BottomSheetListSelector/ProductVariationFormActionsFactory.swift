@@ -46,7 +46,7 @@ private extension ProductVariationFormActionsFactory {
         let canEditInventorySettingsRow = editable && productVariation.hasIntegerStockQuantity
 
         let actions: [ProductFormEditAction?] = [
-            shouldShowPriceSettingsRow ? .priceSettings(editable: editable): nil,
+            shouldShowPriceSettingsRow ? .priceSettings(editable: editable, hideSeparator: shouldShowNoPriceWarningRow): nil,
             shouldShowNoPriceWarningRow ? .noPriceWarning: nil,
             .attributes(editable: editable),
             .status(editable: editable),

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="109" id="U1w-T7-U6Q" customClass="ConnectedReaderTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="84"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="U1w-T7-U6Q" id="JJm-pT-xv2">
+                <rect key="frame" x="0.0" y="0.0" width="414" height="84"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CHB204999999999" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="URa-xk-ZnX" userLabel="Name Label">
+                        <rect key="frame" x="20" y="9" width="374" height="20"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="jdk-QY-NJg"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="44% Battery" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rws-DM-4n4">
+                        <rect key="frame" x="20" y="34" width="374" height="15"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="15" id="vhv-1f-sz5"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" systemColor="secondaryLabelColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version: 1.00.03.34-SZZZ_Generic_v45-300001" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h7d-re-rAr">
+                        <rect key="frame" x="20" y="54" width="374" height="25"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" systemColor="secondaryLabelColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="URa-xk-ZnX" firstAttribute="top" secondItem="JJm-pT-xv2" secondAttribute="top" constant="9" id="9ON-nS-TT9"/>
+                    <constraint firstItem="rws-DM-4n4" firstAttribute="leading" secondItem="JJm-pT-xv2" secondAttribute="leading" constant="20" id="9hB-FN-5re"/>
+                    <constraint firstItem="rws-DM-4n4" firstAttribute="top" secondItem="URa-xk-ZnX" secondAttribute="bottom" constant="5" id="F0v-xu-10B"/>
+                    <constraint firstItem="URa-xk-ZnX" firstAttribute="leading" secondItem="JJm-pT-xv2" secondAttribute="leading" constant="20" id="K23-JF-BdP"/>
+                    <constraint firstItem="h7d-re-rAr" firstAttribute="leading" secondItem="JJm-pT-xv2" secondAttribute="leading" constant="20" id="PGY-31-Zxl"/>
+                    <constraint firstAttribute="bottom" secondItem="h7d-re-rAr" secondAttribute="bottom" constant="5" id="erh-Dw-UEE"/>
+                    <constraint firstAttribute="trailing" secondItem="h7d-re-rAr" secondAttribute="trailing" constant="20" id="hci-eg-Umv"/>
+                    <constraint firstAttribute="trailing" secondItem="rws-DM-4n4" secondAttribute="trailing" constant="20" id="lVF-PB-1iC"/>
+                    <constraint firstItem="h7d-re-rAr" firstAttribute="top" secondItem="rws-DM-4n4" secondAttribute="bottom" constant="5" id="sNx-1F-8oV"/>
+                    <constraint firstAttribute="trailing" secondItem="URa-xk-ZnX" secondAttribute="trailing" constant="20" id="zX8-ar-MO5"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="batteryLevelLabel" destination="rws-DM-4n4" id="1o2-Jn-wjZ"/>
+                <outlet property="nameLabel" destination="URa-xk-ZnX" id="1KX-pN-ZaW"/>
+                <outlet property="softwareVersionLabel" destination="h7d-re-rAr" id="mUb-ni-70S"/>
+            </connections>
+            <point key="canvasLocation" x="24.637681159420293" y="123.21428571428571"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

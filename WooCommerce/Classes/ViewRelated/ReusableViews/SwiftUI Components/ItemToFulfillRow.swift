@@ -4,37 +4,67 @@ import SwiftUI
 ///
 struct ItemToFulfillRow: View, Identifiable {
     let id = UUID()
+    let productOrVariationID: Int64
     let title: String
     let subtitle: String
+    var moveItemActionSheetTitle: String = ""
+    var moveItemActionSheetButtons: [ActionSheet.Button] = []
+    var onMoveAction: () -> Void = {}
+    @State var showingMoveItemDialog: Bool = false
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading,
-                   spacing: 8) {
-                Text(title)
-                    .font(.body)
-                Text(subtitle)
-                    .font(.footnote)
-                    .foregroundColor(Color(.textSubtle))
-            }.padding([.leading, .trailing], Constants.vStackPadding)
-            Spacer()
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsInternational) {
+            HStack {
+                TitleAndSubtitleRow(title: title, subtitle: subtitle)
+                Spacer()
+                Button(action: {
+                    guard !showingMoveItemDialog else {
+                        return
+                    }
+                    switch horizontalSizeClass {
+                    case .some(.regular): // popover is displayed instead of action sheet
+                        onMoveAction()
+                        // delay to make sure that any other popover has been dismissed.
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            showingMoveItemDialog = true
+                            ServiceLocator.analytics.track(.shippingLabelMoveItemTapped)
+                        }
+                    default:
+                        showingMoveItemDialog = true
+                        ServiceLocator.analytics.track(.shippingLabelMoveItemTapped)
+                    }
+
+                }, label: {
+                    Text(Localization.moveButton)
+                        .font(.footnote)
+                        .foregroundColor(Color(UIColor(color: .accent)))
+                })
+                .padding(.trailing, Constants.horizontalPadding)
+                .actionSheet(isPresented: $showingMoveItemDialog, content: {
+                    ActionSheet(title: Text(moveItemActionSheetTitle),
+                                buttons: moveItemActionSheetButtons)
+                })
+            }
+        } else {
+            TitleAndSubtitleRow(title: title, subtitle: subtitle)
         }
-        .padding([.top, .bottom], Constants.hStackPadding)
-        .frame(minHeight: Constants.height)
     }
 }
 
 private extension ItemToFulfillRow {
+    enum Localization {
+        static let moveButton = NSLocalizedString("Move", comment: "Button on each order item of the Package Details screen in Shipping Labels flow.")
+    }
+
     enum Constants {
-        static let vStackPadding: CGFloat = 16
-        static let hStackPadding: CGFloat = 10
-        static let height: CGFloat = 64
+        static let horizontalPadding: CGFloat = 16
     }
 }
 
 struct ItemToFulfillRow_Previews: PreviewProvider {
     static var previews: some View {
-        ItemToFulfillRow(title: "Title", subtitle: "My subtitle")
+        ItemToFulfillRow(productOrVariationID: 123, title: "Title", subtitle: "My subtitle")
             .previewLayout(.fixed(width: 375, height: 100))
     }
 }

@@ -2,6 +2,7 @@ import UIKit
 import CoreData
 import Storage
 import class Networking.UserAgent
+import Experiments
 
 import CocoaLumberjack
 import KeychainAccess
@@ -48,10 +49,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - AppDelegate Methods
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-
-        // As first thing, setup the crash logging
-        setupCrashLogging()
-
         // Setup Components
         setupAnalytics()
         setupAuthenticationManager()
@@ -77,6 +74,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        startABTesting()
 
         // Setup the Interface!
         setupMainWindow()
@@ -212,13 +211,6 @@ private extension AppDelegate {
         appearance.primaryHighlightBorderColor = .primaryButtonDownBorder
     }
 
-    /// Sets up Crash Logging
-    ///
-    func setupCrashLogging() {
-        let eventLogging = EventLogging(dataSource: WCEventLoggingDataSource(), delegate: WCEventLoggingDelegate())
-        CrashLogging.start(withDataProvider: WCCrashLoggingDataProvider(), eventLogging: eventLogging)
-    }
-
     /// Sets up the Zendesk SDK.
     ///
     func setupZendesk() {
@@ -314,20 +306,29 @@ private extension AppDelegate {
     }
 
     func handleLaunchArguments() {
-        if BuildConfiguration.shouldLogoutAtLaunch {
+        if ProcessConfiguration.shouldLogoutAtLaunch {
             ServiceLocator.stores.deauthenticate()
         }
 
-        if BuildConfiguration.shouldUseScreenshotsNetworkLayer {
+        if ProcessConfiguration.shouldUseScreenshotsNetworkLayer {
             ServiceLocator.setStores(ScreenshotStoresManager(storageManager: ServiceLocator.storageManager))
         }
 
-        if BuildConfiguration.shouldDisableAnimations {
+        if ProcessConfiguration.shouldDisableAnimations {
             UIView.setAnimationsEnabled(false)
 
             /// Trick found at: https://twitter.com/twannl/status/1232966604142653446
             UIApplication.shared.currentKeyWindow?.layer.speed = 100
         }
+    }
+
+    /// Starts the AB testing platform
+    ///
+    func startABTesting() {
+        guard ServiceLocator.stores.isAuthenticated else {
+            return
+        }
+        ABTest.start()
     }
 }
 

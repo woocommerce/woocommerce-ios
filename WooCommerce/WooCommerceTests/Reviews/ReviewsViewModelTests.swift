@@ -78,6 +78,40 @@ final class ReviewsViewModelTests: XCTestCase {
 
         waitForExpectations(timeout: 10, handler: nil)
     }
+
+    func test_hasErrorLoadingData_false_after_successful_sync() {
+        // Given
+        viewModel.hasErrorLoadingData = true
+        let storesManager = MockReviewsStoresManager()
+        ServiceLocator.setStores(storesManager)
+
+        // When
+        viewModel.synchronizeReviews()
+
+        // Then
+        XCTAssertFalse(viewModel.hasErrorLoadingData)
+    }
+
+    func test_hasErrorLoadingData_true_after_failed_sync() {
+        // Given
+        viewModel.hasErrorLoadingData = false
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        storesManager.whenReceivingAction(ofType: ProductReviewAction.self) { action in
+            switch action {
+            case .synchronizeProductReviews(_, _, _, _, _, let onCompletion):
+                onCompletion(SampleError.first)
+            default:
+                return
+            }
+        }
+        ServiceLocator.setStores(storesManager)
+
+        // When
+        viewModel.synchronizeReviews()
+
+        // Then
+        XCTAssertTrue(viewModel.hasErrorLoadingData)
+    }
 }
 
 

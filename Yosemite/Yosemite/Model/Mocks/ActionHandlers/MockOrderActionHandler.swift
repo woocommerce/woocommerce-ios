@@ -10,11 +10,10 @@ struct MockOrderActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-            case .fetchFilteredAndAllOrders(let siteID, _, _, _, _, let onCompletion):
+            case .fetchFilteredOrders(let siteID, _, _, _, _, _, let onCompletion):
                 fetchFilteredAndAllOrders(siteID: siteID, onCompletion: onCompletion)
-            case .countProcessingOrders(let siteID, let onCompletion):
-                countOrders(status: .processing, siteID: siteID, onCompletion: onCompletion)
-
+            case .retrieveOrder(let siteID, let orderID, let onCompletion):
+                onCompletion(objectGraph.order(forSiteId: siteID, orderId: orderID), nil)
             default: unimplementedAction(action: action)
         }
     }
@@ -23,14 +22,6 @@ struct MockOrderActionHandler: MockActionHandler {
         saveOrders(orders: objectGraph.orders(forSiteId: siteID)) {
             onCompletion(0, nil)
         }
-    }
-
-    func countOrders(status: OrderStatusEnum, siteID: Int64, onCompletion: (OrderCount?, Error?) -> Void) {
-        let count = objectGraph.orders(withStatus: status, forSiteId: siteID).count
-
-        onCompletion(OrderCount(siteID: siteID, items: [
-            OrderCountItem(slug: "", name: "", total: count)
-        ]), nil)
     }
 
     private func saveOrders(orders: [Order], onCompletion: @escaping () -> ()) {

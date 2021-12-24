@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Represent a Tax Class Entity.
 ///
-public struct TaxClass: Decodable, GeneratedFakeable {
+public struct TaxClass: Decodable, Equatable, GeneratedFakeable {
 
     /// WordPress.com Site Identifier.
     ///
@@ -38,16 +39,6 @@ public struct TaxClass: Decodable, GeneratedFakeable {
         let slug = try container.decode(String.self, forKey: .slug)
 
         self.init(siteID: siteID, name: name, slug: slug)
-    }
-}
-
-// MARK: - Equatable Conformance
-//
-extension TaxClass: Equatable {
-
-    public static func == (lhs: TaxClass, rhs: TaxClass) -> Bool {
-        return lhs.name == rhs.name &&
-            lhs.slug == rhs.slug
     }
 }
 

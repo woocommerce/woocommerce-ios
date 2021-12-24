@@ -173,6 +173,12 @@ final class OrderPaymentDetailsViewModel {
         return order.coupons
     }
 
+    /// Signals whether the net amount for the order matches the total order amount
+    ///
+    var hasBeenPartiallyCharged: Bool {
+        return totalValue != netAmount
+    }
+
     init(order: Order, refund: Refund? = nil, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.order = order
         self.refund = refund

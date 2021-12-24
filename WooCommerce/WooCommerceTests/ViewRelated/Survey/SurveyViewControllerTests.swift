@@ -39,7 +39,7 @@ final class SurveyViewControllerTests: XCTestCase {
 
     func test_it_loads_the_correct_shipping_labels_release_survey() throws {
         // Given
-        let viewController = SurveyViewController(survey: .shippingLabelsRelease1Feedback, onCompletion: {})
+        let viewController = SurveyViewController(survey: .shippingLabelsRelease3Feedback, onCompletion: {})
 
         // When
         _ = try XCTUnwrap(viewController.view)
@@ -47,10 +47,10 @@ final class SurveyViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mirror.webView.isLoading)
-        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.shippingLabelsRelease1Feedback
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.shippingLabelsRelease3Feedback
                         .asURL()
                         .tagPlatform("ios")
-                        .tagShippingLabelsMilestone("1")
+                        .tagShippingLabelsMilestone("3")
                         .tagAppVersion(Bundle.main.bundleVersion()))
     }
 

@@ -1,5 +1,4 @@
-What’s new in this release?
+- [***] In-Person Payments: Now you can collect Simple Payments on the go. [https://github.com/woocommerce/woocommerce-ios/pull/5635]
+- [*] Products: After generating a new variation for a variable product, you are now taken directly to edit the new variation. [https://github.com/woocommerce/woocommerce-ios/pull/5649]
+- [*] Dashboard: the visitor count in the Today tab is now shown when Jetpack site stats are enabled.
 
- - A redesigned login experience, with new illustrations to promote the app’s main features and benefits.
- - Other fixes, including making the back button style on your navigation bar more consistent.
- 

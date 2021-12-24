@@ -1,3 +1,4 @@
+import Experiments
 import XCTest
 import UserNotifications
 import Yosemite
@@ -81,37 +82,6 @@ final class PushNotificationsManagerTests: XCTestCase {
         manager.registerForRemoteNotifications()
         XCTAssertTrue(application.registerWasCalled)
     }
-
-
-    /// Verifies that `resetBadgeCount` sets the badgeNumber to zero
-    ///
-    func testResetBadgeCountEffectivelyDropsTheBadgeNumberToZero() {
-        // Arrange
-        // The default stores are required to update the application badge number.
-        let stores = DefaultStoresManager.testingInstance
-        manager = {
-            let configuration = PushNotificationsConfiguration(application: self.application,
-                                                               defaults: self.defaults,
-                                                               storesManager: stores,
-                                                               supportManager: self.supportManager,
-                                                               userNotificationsCenter: self.userNotificationCenter)
-
-            return PushNotificationsManager(configuration: configuration)
-        }()
-
-        application.applicationIconBadgeNumber = 90
-
-        // Action
-        let expectation = self.expectation(description: "Wait for badge count reset for all stores")
-        manager.resetBadgeCountForAllStores {
-            expectation.fulfill()
-        }
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
-
-        // Assert
-        XCTAssertEqual(application.applicationIconBadgeNumber, 0)
-    }
-
 
     /// Verifies that `ensureAuthorizationIsRequested` effectively requests Push Notes Auth via UNUserNotificationsCenter,
     /// whenever the initial status is `.notDetermined`. This specific tests verifies the `Non Authorized` flow.
@@ -217,7 +187,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         manager.registerDeviceToken(with: tokenAsData, defaultStoreID: Sample.defaultStoreID)
 
-        guard case let .registerDevice(_, _, _, storeID, _) = storesManager.receivedActions.first as! NotificationAction else {
+        guard case let .registerDevice(_, _, _, storeID, _, _) = storesManager.receivedActions.first as! NotificationAction else {
             XCTFail()
             return
         }
@@ -272,41 +242,6 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
     }
 
-
-    /// Verifies that `handleNotification` effectively updates the App's Badge Number.
-    ///
-    func testHandleNotificationUpdatesApplicationsBadgeNumber() {
-        // Arrange
-        // A site ID and the default stores are required to update the application badge number.
-        let stores = DefaultStoresManager.testingInstance
-        stores.authenticate(credentials: SessionSettings.credentials)
-        stores.updateDefaultStore(storeID: 123)
-        manager = {
-            let configuration = PushNotificationsConfiguration(application: self.application,
-                                                               defaults: self.defaults,
-                                                               storesManager: stores,
-                                                               supportManager: self.supportManager,
-                                                               userNotificationsCenter: self.userNotificationCenter)
-
-            return PushNotificationsManager(configuration: configuration)
-        }()
-
-        let updatedBadgeNumber = 10
-        let userInfo = notificationPayload(badgeCount: updatedBadgeNumber, type: .comment)
-        XCTAssertEqual(application.applicationIconBadgeNumber, Int.min)
-
-        // Action
-        let expectation = self.expectation(description: "Wait for badge update from handling notification")
-        manager.handleNotification(userInfo, onBadgeUpdateCompletion: {
-            expectation.fulfill()
-        }) { _ in }
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
-
-        // Assert
-        XCTAssertEqual(application.applicationIconBadgeNumber, 1)
-    }
-
-
     /// Verifies that `handleNotification` dispatches a `synchronizeNotifications` Action, which, in turn, signals that there's
     /// new data available in the app, on success.
     ///
@@ -320,7 +255,8 @@ final class PushNotificationsManagerTests: XCTestCase {
             handleNotificationCallbackWasExecuted = true
         }
 
-        guard case let .synchronizeNotifications(onCompletion) = storesManager.receivedActions.first as! NotificationAction else {
+        guard case let .synchronizeNotifications(onCompletion) =
+                storesManager.receivedActions.compactMap({ $0 as? NotificationAction }).first else {
             XCTFail()
             return
         }
@@ -344,7 +280,8 @@ final class PushNotificationsManagerTests: XCTestCase {
             handleNotificationCallbackWasExecuted = true
         }
 
-        guard case let .synchronizeNotifications(onCompletion) = storesManager.receivedActions.first as! NotificationAction else {
+        guard case let .synchronizeNotifications(onCompletion) =
+                storesManager.receivedActions.compactMap({ $0 as? NotificationAction }).first else {
             XCTFail()
             return
         }
@@ -358,8 +295,19 @@ final class PushNotificationsManagerTests: XCTestCase {
     /// Verifies that `handleNotification` opens the Notification Details for the newly received note, whenever the application
     /// state is inactive.
     ///
-    func testHandleNotificationDisplaysDetailsForTheNewNotificationWheneverTheAppStateIsInactive() {
-        let payload = notificationPayload(type: .storeOrder)
+    func test_handleNotification_displays_new_notification_details_whenever_the_app_state_is_inactive_with_multi_store_notifications_disabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: false)
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration, featureFlagService: featureFlagService)
+        }()
+        let payload = notificationPayload(type: .storeOrder, featureFlagService: featureFlagService)
         var handleNotificationCallbackWasExecuted = false
 
         application.applicationState = .inactive
@@ -372,32 +320,149 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertTrue(handleNotificationCallbackWasExecuted)
     }
 
-
-    /// Verifies that `handleNotification` displays an InApp Notification whenever the app is in active state.
+    /// Verifies that `handleNotification` opens the Notification Details for the newly received note, whenever the application
+    /// state is inactive.
     ///
-    func testHandleNotificationDisplaysInAppNotificationWheneverTheAppStateIsActive() {
-        let payload = notificationPayload()
+    func test_handleNotification_displays_details_for_the_new_notification_whenever_the_app_state_is_inactive() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: true)
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
 
+            return PushNotificationsManager(configuration: configuration, featureFlagService: featureFlagService)
+        }()
+        let payload = notificationPayload(type: .storeOrder, featureFlagService: featureFlagService)
+        var handleNotificationCallbackWasExecuted = false
+
+        // When
+        application.applicationState = .inactive
+        manager.handleNotification(payload, onBadgeUpdateCompletion: {}) { result in
+            XCTAssertEqual(result, .newData)
+            handleNotificationCallbackWasExecuted = true
+        }
+
+        // Then
+        XCTAssertEqual(application.presentDetailsNoteIDs.first, 1234)
+        XCTAssertTrue(handleNotificationCallbackWasExecuted)
+    }
+
+    /// Verifies that `handleNotification` displays an InApp Notification with only the title whenever the app is in active state when
+    /// multi-store push notifications feature is disabled.
+    ///
+    func test_handleNotification_displays_inApp_notice_with_title_only_when_app_state_is_active_with_multi_store_notifications_disabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: false)
+        let payload = notificationPayload(featureFlagService: featureFlagService)
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration, featureFlagService: featureFlagService)
+        }()
+
+        // When
         application.applicationState = .active
         manager.handleNotification(payload, onBadgeUpdateCompletion: {}) { _ in
             // NO-OP
         }
 
-        XCTAssertEqual(application.presentInAppMessages.first, Sample.defaultMessage)
+        // Then
+        XCTAssertEqual(application.presentInAppMessages.first?.title, Sample.defaultMessage)
+        XCTAssertNil(application.presentInAppMessages.first?.subtitle)
+        XCTAssertNil(application.presentInAppMessages.first?.message)
+    }
+
+    /// Verifies that `handleNotification` displays an InApp Notification with title and message whenever the app is in active state and both title
+    /// and message are present in the payload.
+    ///
+    func test_handleNotification_displays_inApp_notice_with_title_and_message_when_app_state_is_active() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: true)
+        let payload = notificationPayload(title: Sample.defaultTitle,
+                                          subtitle: Sample.defaultSubtitle,
+                                          message: Sample.defaultMessage,
+                                          featureFlagService: featureFlagService)
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration, featureFlagService: featureFlagService)
+        }()
+
+        // When
+        application.applicationState = .active
+        manager.handleNotification(payload, onBadgeUpdateCompletion: {}) { _ in
+            // NO-OP
+        }
+
+        // Then
+        XCTAssertEqual(application.presentInAppMessages.first?.title, Sample.defaultTitle)
+        XCTAssertEqual(application.presentInAppMessages.first?.subtitle, Sample.defaultSubtitle)
+        XCTAssertEqual(application.presentInAppMessages.first?.message, Sample.defaultMessage)
+    }
+
+    /// Verifies that `handleNotification` displays an InApp Notification with title only whenever the app is in active state and only title
+    /// is present in the payload.
+    ///
+    func test_handleNotification_displays_inApp_notice_with_title_only_when_app_state_is_active_and_only_title_in_payload() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: true)
+        let payload = notificationPayload(title: Sample.defaultTitle, message: nil, featureFlagService: featureFlagService)
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration, featureFlagService: featureFlagService)
+        }()
+
+        // When
+        application.applicationState = .active
+        manager.handleNotification(payload, onBadgeUpdateCompletion: {}) { _ in
+            // NO-OP
+        }
+
+        // Then
+        XCTAssertEqual(application.presentInAppMessages.first?.title, Sample.defaultTitle)
+        XCTAssertNil(application.presentInAppMessages.first?.subtitle)
+        XCTAssertNil(application.presentInAppMessages.first?.message)
     }
 
     // MARK: - Foreground Notification Observable
 
-    func testItEmitsForegroundNotificationsWhenItReceivesANotificationWhileAppIsActive() {
+    func test_it_emits_foreground_notifs_with_title_only_when_receiving_notification_when_app_is_active_with_multi_store_notifications_disabled() throws {
         // Given
         application.applicationState = .active
+
+        let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: false)
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration, featureFlagService: featureFlagService)
+        }()
 
         var emittedNotifications = [PushNotification]()
         _ = manager.foregroundNotifications.subscribe { notification in
             emittedNotifications.append(notification)
         }
 
-        let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder)
+        let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder, featureFlagService: featureFlagService)
 
         // When
         manager.handleNotification(userinfo, onBadgeUpdateCompletion: {}) { _ in
@@ -410,10 +475,55 @@ final class PushNotificationsManagerTests: XCTestCase {
         let emittedNotification = emittedNotifications.first!
         XCTAssertEqual(emittedNotification.kind, .storeOrder)
         XCTAssertEqual(emittedNotification.noteID, 9_981)
+        XCTAssertEqual(emittedNotification.title, Sample.defaultMessage)
+        XCTAssertNil(emittedNotification.subtitle)
+        XCTAssertNil(emittedNotification.message)
+    }
+
+    func test_it_emits_foreground_notifications_when_it_receives_a_notification_while_app_is_active() throws {
+        // Given
+        application.applicationState = .active
+
+        let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: true)
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration, featureFlagService: featureFlagService)
+        }()
+
+        var emittedNotifications = [PushNotification]()
+        _ = manager.foregroundNotifications.subscribe { notification in
+            emittedNotifications.append(notification)
+        }
+
+        let userinfo = notificationPayload(noteID: 9_981,
+                                           type: .storeOrder,
+                                           title: Sample.defaultTitle,
+                                           subtitle: Sample.defaultSubtitle,
+                                           message: Sample.defaultMessage,
+                                           featureFlagService: featureFlagService)
+
+        // When
+        manager.handleNotification(userinfo, onBadgeUpdateCompletion: {}) { _ in
+            // noop
+        }
+
+        // Then
+        XCTAssertEqual(emittedNotifications.count, 1)
+
+        let emittedNotification = try XCTUnwrap(emittedNotifications.first)
+        XCTAssertEqual(emittedNotification.kind, .storeOrder)
+        XCTAssertEqual(emittedNotification.noteID, 9_981)
+        XCTAssertEqual(emittedNotification.title, Sample.defaultTitle)
+        XCTAssertEqual(emittedNotification.subtitle, Sample.defaultSubtitle)
         XCTAssertEqual(emittedNotification.message, Sample.defaultMessage)
     }
 
-    func testItDoesNotEmitForegroundNotificationsWhenItReceivesANotificationWhileAppIsNotActive() {
+    func test_it_does_not_emit_foreground_notifications_when_it_receives_a_notification_while_app_is_not_active() {
         // Given
         application.applicationState = .background
 
@@ -433,16 +543,26 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertTrue(emittedNotifications.isEmpty)
     }
 
-    func testItEmitsInactiveNotificationsWhenItReceivesANotificationWhileTheAppIsNotActive() throws {
+    func test_it_emits_inactive_notifications_with_title_only_when_it_receives_a_notification_while_the_app_is_not_active_and_only_title_in_payload() throws {
         // Given
         application.applicationState = .inactive
+        let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: true)
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration, featureFlagService: featureFlagService)
+        }()
 
         var emittedNotifications = [PushNotification]()
         _ = manager.inactiveNotifications.subscribe { notification in
             emittedNotifications.append(notification)
         }
 
-        let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder)
+        let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder, title: Sample.defaultTitle, featureFlagService: featureFlagService)
 
         // When
         manager.handleNotification(userinfo, onBadgeUpdateCompletion: {}) { _ in
@@ -455,7 +575,133 @@ final class PushNotificationsManagerTests: XCTestCase {
         let emittedNotification = try XCTUnwrap(emittedNotifications.first)
         XCTAssertEqual(emittedNotification.kind, .storeOrder)
         XCTAssertEqual(emittedNotification.noteID, 9_981)
-        XCTAssertEqual(emittedNotification.message, Sample.defaultMessage)
+        XCTAssertEqual(emittedNotification.title, Sample.defaultTitle)
+        XCTAssertNil(emittedNotification.subtitle)
+        XCTAssertNil(emittedNotification.message)
+    }
+
+    // MARK: - App Badge Number
+
+    /// Verifies that `handleNotification` updates app badge number to 1 when the notification is from the same site.
+    func test_receiving_notification_from_the_same_site_updates_app_badge_number() {
+        // Arrange
+        // A site ID and the default stores are required to update the application badge number.
+        let stores = DefaultStoresManager.testingInstance
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: stores,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+            return PushNotificationsManager(configuration: configuration)
+        }()
+        stores.authenticate(credentials: SessionSettings.credentials)
+        let siteID = Int64(123)
+        stores.updateDefaultStore(storeID: siteID)
+        XCTAssertEqual(application.applicationIconBadgeNumber, .min)
+
+        // Action
+        let userInfo = notificationPayload(badgeCount: 10, type: .comment, siteID: siteID)
+        waitFor { promise in
+            self.manager.handleNotification(userInfo, onBadgeUpdateCompletion: {
+                promise(())
+            }) { _ in }
+        }
+
+        // Assert
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
+        XCTAssertFalse(userNotificationCenter.removeAllNotificationsWasCalled)
+    }
+
+    /// Verifies that `handleNotification` twice does not change app badge number from 1 when both notifications are from the same site.
+    func test_receiving_two_notifications_from_the_same_site_does_does_not_change_app_badge_number() {
+        // Arrange
+        // A site ID and the default stores are required to update the application badge number.
+        let stores = DefaultStoresManager.testingInstance
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: stores,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+            return PushNotificationsManager(configuration: configuration)
+        }()
+        stores.authenticate(credentials: SessionSettings.credentials)
+        let siteID = Int64(123)
+        stores.updateDefaultStore(storeID: siteID)
+        XCTAssertEqual(application.applicationIconBadgeNumber, .min)
+
+        // Action
+        let userInfoForTheFirstNotification = notificationPayload(badgeCount: 10, type: .comment, siteID: siteID)
+        let userInfoForTheSecondNotification = notificationPayload(badgeCount: 2, type: .storeOrder, siteID: siteID)
+        waitFor { promise in
+            self.manager.handleNotification(userInfoForTheFirstNotification, onBadgeUpdateCompletion: {
+                self.manager.handleNotification(userInfoForTheSecondNotification, onBadgeUpdateCompletion: {
+                    promise(())
+                }) { _ in }
+            }) { _ in }
+        }
+
+        // Assert
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
+        XCTAssertFalse(userNotificationCenter.removeAllNotificationsWasCalled)
+    }
+
+    /// Verifies that `handleNotification` clears app badge number without clearing push notifications when the notification is from a different site.
+    func test_receiving_notification_from_a_different_site_clears_app_badge_number_only() {
+        // Arrange
+        // A site ID and the default stores are required to update the application badge number.
+        let stores = DefaultStoresManager.testingInstance
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: stores,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+            return PushNotificationsManager(configuration: configuration)
+        }()
+        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.updateDefaultStore(storeID: 123)
+        XCTAssertEqual(application.applicationIconBadgeNumber, .min)
+
+        // Action
+        let userInfo = notificationPayload(badgeCount: 10, type: .comment, siteID: 556)
+        waitFor { promise in
+            self.manager.handleNotification(userInfo, onBadgeUpdateCompletion: {
+                promise(())
+            }) { _ in }
+        }
+
+        // Assert
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.clearsBadgeOnly)
+        XCTAssertFalse(userNotificationCenter.removeAllNotificationsWasCalled)
+    }
+
+    /// Verifies that `resetBadgeCountForAllStores` clears app badge number and push notifications.
+    func test_resetBadgeCountForAllStores_clears_app_badge_number_and_push_notifications() {
+        // Arrange
+        // The default stores are required to update the application badge number.
+        let stores = DefaultStoresManager.testingInstance
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: stores,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+            return PushNotificationsManager(configuration: configuration)
+        }()
+        application.applicationIconBadgeNumber = 90
+
+        // Action
+        waitFor { promise in
+            self.manager.resetBadgeCountForAllStores {
+                promise(())
+            }
+        }
+
+        // Assert
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.clearsBadgeAndPotentiallyAllPushNotifications)
+        XCTAssertTrue(userNotificationCenter.removeAllNotificationsWasCalled)
     }
 }
 
@@ -466,15 +712,39 @@ private extension PushNotificationsManagerTests {
 
     /// Returns a Sample Notification Payload
     ///
-    func notificationPayload(badgeCount: Int = 0, noteID: Int64 = 1234, type: Note.Kind = .comment) -> [String: Any] {
-        return [
-            "aps": [
-                "badge": badgeCount,
-                "alert": Sample.defaultMessage
-            ],
-            "note_id": noteID,
-            "type": type.rawValue
-        ]
+    func notificationPayload(badgeCount: Int = 0,
+                             noteID: Int64 = 1234,
+                             type: Note.Kind = .comment,
+                             siteID: Int64 = 134,
+                             title: String = Sample.defaultTitle,
+                             subtitle: String? = nil,
+                             message: String? = nil,
+                             featureFlagService: FeatureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: true)) -> [String: Any] {
+        if featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores) {
+            return [
+                "aps": [
+                    "badge": badgeCount,
+                    "alert": [
+                        "title": title,
+                        "subtitle": subtitle,
+                        "body": message
+                    ]
+                ],
+                "note_id": noteID,
+                "type": type.rawValue,
+                "blog": siteID
+            ]
+        } else {
+            return [
+                "aps": [
+                    "badge": badgeCount,
+                    "alert": Sample.defaultMessage
+                ],
+                "note_id": noteID,
+                "type": type.rawValue,
+                "blog": siteID
+            ]
+        }
     }
 }
 
@@ -498,6 +768,14 @@ private struct Sample {
     /// UserDefaults Suite Name
     ///
     static let defaultSuiteName = "PushNotificationsTests"
+
+    /// Sample Title
+    ///
+    static let defaultTitle = "You have a new order! 🎊"
+
+    /// Sample Subtitle
+    ///
+    static let defaultSubtitle = "Your favorite shop"
 
     /// Sample Message
     ///

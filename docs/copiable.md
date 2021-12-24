@@ -27,7 +27,7 @@ store.dispatch(action)
 
 This is quite cumbersome, especially since `Product` has more than 50 properties.
 
-To help with this, we generate `copy()` methods for these objects. These `copy()` methods follow a specific pattern and will make use of the [`CopiableProp` and `NullableCopiableProp` typealiases](../Networking/Networking/Copiable/Copiable.swift).
+To help with this, we generate `copy()` methods for these objects. These `copy()` methods follow a specific pattern and will make use of the [`CopiableProp` and `NullableCopiableProp` typealiases](../CodeGeneration/Sources/Codegen/Copiable/Copiable.swift).
 
 Here is an example implementation on a `Person` `struct`:
 
@@ -109,14 +109,14 @@ let lukeWithNoAddress = luke.copy(address: .some(nil))
 
 ## Generating Copiable Methods
 
-The `copy()` methods are generated using [Sourcery](https://github.com/krzysztofzablocki/Sourcery). For now, only the classes or structs in the WooCommerce, Yosemite, and Networking modules are supported.
+The `copy()` methods are generated using [Sourcery](https://github.com/krzysztofzablocki/Sourcery). For now, only the classes or structs in the WooCommerce, Yosemite, Networking, and Storage modules are supported.
 
 To generate a `copy()` method for a `class` or `struct`:
 
-1. Make it conform to [`GeneratedCopiable`](../Networking/Networking/Copiable/GeneratedCopiable.swift). Consider importing the `protocol` only.
+1. Make it conform to [`GeneratedCopiable`](../CodeGeneration/Sources/Codegen/Copiable/GeneratedCopiable.swift). 
 
     ```swift
-    import protocol Networking.GeneratedCopiable
+    import Codegen
 
     struct ProductSettings: GeneratedCopiable {
         ...
@@ -140,19 +140,18 @@ To generate a `copy()` method for a `class` or `struct`:
 3. Add the generated files to the appropriate project if they're not added yet.
 4. Compile the project.
 
-PS: If you get any error while running `rake generate` it is likely due to a conflict with `SPM` and how it modifies the Xcode project. You can find a [temporary fix here](https://github.com/woocommerce/woocommerce-ios/issues/2864).
-
 ## Modifying The Copiable Code Generation
 
-The [`rake generate`](../Rakefile) command executes the Sourcery configuration files located in the [`CodeGeneration` folder](../CodeGeneration). There are different configuration files for every module:
+The [`rake generate`](../Rakefile) command executes the Sourcery configuration files located in the [`CodeGeneration` folder](../CodeGeneration/Sourcery/Copiable). There are different configuration files for every module:
 
 ```
 Networking module → Networking-Copiable.sourcery.yaml
+Storage module → Storage-Copiable.sourcery.yaml
 WooCommerce module → WooCommerce-Copiable.sourcery.yaml
 Yosemite module → Yosemite-Copiable.sourcery.yaml
 ```
 
-All of them use a single template, [`Models+Copiable.swifttemplate`](../CodeGeneration/Models+Copiable.swifttemplate), to generate the code. It's written using [Swift templates](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/writing-templates.html).
+All of them use a single template, [`Models+Copiable.swifttemplate`](../CodeGeneration/Sourcery/Copiable/Models+Copiable.swifttemplate), to generate the code. It's written using [Swift templates](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/writing-templates.html).
 
 Please refer to the [Sourcery reference](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html) for more info about how to write templates.
 

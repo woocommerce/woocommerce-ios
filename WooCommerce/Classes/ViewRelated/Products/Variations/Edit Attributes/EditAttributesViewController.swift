@@ -16,7 +16,7 @@ final class EditAttributesViewController: UIViewController {
 
     /// Assign this closure to be notified after a variation is created.
     ///
-    var onVariationCreation: ((Product) -> Void)?
+    var onVariationCreation: ((Product, ProductVariation) -> Void)?
 
     /// Assign this closure to be notified after an attribute  is created or updated.
     ///
@@ -83,7 +83,7 @@ private extension EditAttributesViewController {
         guard viewModel.showDoneButton else {
             return
         }
-        let rightBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+        let rightBarButton = UIBarButtonItem(title: Localization.next, style: .plain, target: self, action: #selector(doneButtonTapped))
         navigationItem.setRightBarButton(rightBarButton, animated: false)
     }
 }
@@ -91,12 +91,30 @@ private extension EditAttributesViewController {
 // MARK: Button Actions & Navigation Handling
 extension EditAttributesViewController {
     @objc private func doneButtonTapped() {
-        createVariation()
+        navigateToCreateVariation()
     }
 
     @objc private func addButtonTapped() {
         navigateToAddAttributeViewController()
         analytics.track(event: WooAnalyticsEvent.Variations.addAttributeButtonTapped(productID: viewModel.product.productID))
+    }
+
+    /// Navigates to an intermediate screen where we can generate our first variation.
+    ///
+    private func navigateToCreateVariation() {
+        let createVariationViewController = EmptyStateViewController(
+            style: .basic,
+            configuration: .withButton(
+                message: .init(string: Localization.attributesAddedTitle),
+                image: .welcomeImage,
+                details: Localization.attributesAddedInfo,
+                buttonTitle: Localization.generateButtonTitle,
+                onTap: { [weak self] _ in
+                    self?.createVariation()
+                }
+            ))
+        createVariationViewController.title = Localization.generateTitle
+        show(createVariationViewController, sender: self)
     }
 
     /// Creates a variation and presents a loading screen while it is created.
@@ -108,11 +126,11 @@ extension EditAttributesViewController {
         viewModel.generateVariation { [onVariationCreation, noticePresenter] result in
             progressViewController.dismiss(animated: true)
 
-            guard let variation = try? result.get() else {
+            guard let (product, variation) = try? result.get() else {
                 return noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
             }
 
-            onVariationCreation?(variation)
+            onVariationCreation?(product, variation)
         }
     }
 
@@ -171,6 +189,13 @@ private extension EditAttributesViewController {
     enum Localization {
         static let addNewAttribute = NSLocalizedString("Add New Attribute", comment: "Action to add new attribute on the Product Attributes screen")
         static let title = NSLocalizedString("Edit Attributes", comment: "Navigation title for the Product Attributes screen")
+        static let next = NSLocalizedString("Next", comment: "Action navigate to the variation creation screen")
+
+        static let generateTitle = NSLocalizedString("Variations", comment: "Title for the generate first variation screen")
+        static let attributesAddedTitle = NSLocalizedString("Attributes added!", comment: "Primary text for the generate first variation screen")
+        static let attributesAddedInfo = NSLocalizedString("Now that you’ve added attributes, you can create your first variation!",
+                                                           comment: "Info text for the generate first variation screen")
+        static let generateButtonTitle = NSLocalizedString("Generate Variation", comment: "Title of the action to generate the first variation")
 
         static let generatingVariation = NSLocalizedString("Generating Variation", comment: "Title for the progress screen while generating a variation")
         static let waitInstructions = NSLocalizedString("Please wait while we create the new variation",

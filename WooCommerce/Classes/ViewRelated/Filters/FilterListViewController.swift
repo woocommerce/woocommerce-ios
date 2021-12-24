@@ -1,5 +1,6 @@
 import UIKit
 import Observables
+import Yosemite
 
 /// The view model protocol for filtering a list of models with generic filters.
 ///
@@ -51,8 +52,12 @@ final class FilterTypeViewModel {
 enum FilterListValueSelectorConfig {
     // Standard list selector with fixed options
     case staticOptions(options: [FilterType])
-    // Example: Categories
-    case custom
+    // Filter list selector for categories linked to that site id, retrieved dynamically
+    case productCategories(siteID: Int64)
+    // Filter list selector for order statuses
+    case ordersStatuses
+    // Filter list selector for date range
+    case ordersDateRange
 }
 
 /// Contains data for rendering a filter type row.
@@ -207,26 +212,48 @@ private extension FilterListViewController {
                 return
             }
 
+            let selectedValueAction: (FilterType) -> Void = { [weak self] selectedOption in
+                guard let self = self else {
+                    return
+                }
+                if selectedOption.description != selected.selectedValue.description {
+                    selected.selectedValue = selectedOption
+                    self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
+                    self.listSelector.reloadData()
+                }
+            }
+
             switch selected.listSelectorConfig {
             case .staticOptions(let options):
                 self.cancellableSelectedFilterValue?.cancel()
                 let command = StaticListSelectorCommand(navigationBarTitle: selected.title,
                                                         data: options,
                                                         selected: selected.selectedValue)
-                self.cancellableSelectedFilterValue = command.onItemSelected.subscribe { [weak self] selectedOption in
-                    guard let self = self else {
-                        return
-                    }
-                    if selectedOption.description != selected.selectedValue.description {
-                        selected.selectedValue = selectedOption
-                        self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
-                        self.listSelector.reloadData()
-                    }
-                }
+                self.cancellableSelectedFilterValue = command.onItemSelected.subscribe (selectedValueAction)
                 let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
-            case .custom:
-                break
+            case let .productCategories(siteID):
+                let selectedProductCategory = selected.selectedValue as? ProductCategory
+                let filterProductCategoryListViewController = FilterProductCategoryListViewController(siteID: siteID,
+                                                                                                      selectedCategory: selectedProductCategory,
+                                                                                                      onProductCategorySelection: selectedValueAction)
+                self.listSelector.navigationController?.pushViewController(filterProductCategoryListViewController, animated: true)
+            case .ordersStatuses:
+                let selectedOrderFilters = selected.selectedValue as? Array<OrderStatusEnum> ?? []
+                let statusesFilterVC = OrderStatusFilterViewController(selected: selectedOrderFilters) { statuses in
+                    selected.selectedValue = statuses.isEmpty ? nil : statuses
+                    self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
+                    self.listSelector.reloadData()
+                }
+                self.listSelector.navigationController?.pushViewController(statusesFilterVC, animated: true)
+            case .ordersDateRange:
+                let selectedOrderFilter = selected.selectedValue as? OrderDateRangeFilter
+                let datesFilterVC = OrderDatesFilterViewController(selected: selectedOrderFilter) { dateRangeFilter in
+                    selected.selectedValue = dateRangeFilter
+                    self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
+                    self.listSelector.reloadData()
+                }
+                self.listSelector.navigationController?.pushViewController(datesFilterVC, animated: true)
             }
         }
     }

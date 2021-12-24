@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// Represents a ProductDownload entity.
 ///
-public struct ProductDownload: Codable, GeneratedFakeable {
+public struct ProductDownload: Codable, Equatable, GeneratedFakeable {
     public let downloadID: String
     public let name: String?
     public let fileURL: String?
@@ -49,20 +49,5 @@ private extension ProductDownload {
         case downloadID = "id"
         case name       = "name"
         case fileURL    = "file"
-    }
-}
-
-
-// MARK: - Comparable Conformance
-//
-extension ProductDownload: Comparable {
-    public static func == (lhs: ProductDownload, rhs: ProductDownload) -> Bool {
-        return lhs.downloadID == rhs.downloadID &&
-            lhs.name == rhs.name &&
-            lhs.fileURL == rhs.fileURL
-    }
-
-    public static func < (lhs: ProductDownload, rhs: ProductDownload) -> Bool {
-        return lhs.downloadID < rhs.downloadID
     }
 }

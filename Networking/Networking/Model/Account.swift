@@ -1,9 +1,9 @@
 import Foundation
-
+import Codegen
 
 /// WordPress.com Account
 ///
-public struct Account: Decodable, GeneratedFakeable {
+public struct Account: Decodable, Equatable, GeneratedFakeable {
 
     /// Dotcom UserID
     ///
@@ -48,24 +48,5 @@ private extension Account {
         case email          = "email"
         case username       = "username"
         case gravatarUrl    = "avatar_URL"
-    }
-}
-
-
-// MARK: - Comparable Conformance
-//
-extension Account: Comparable {
-    public static func == (lhs: Account, rhs: Account) -> Bool {
-        return lhs.userID == rhs.userID &&
-            lhs.displayName == rhs.displayName &&
-            lhs.email == rhs.email &&
-            lhs.username == rhs.username &&
-            lhs.gravatarUrl == rhs.gravatarUrl
-    }
-
-    public static func < (lhs: Account, rhs: Account) -> Bool {
-        return lhs.userID < rhs.userID ||
-            (lhs.userID == rhs.userID && lhs.username < rhs.username) ||
-            (lhs.userID == rhs.userID && lhs.username == rhs.username && lhs.displayName < rhs.displayName)
     }
 }

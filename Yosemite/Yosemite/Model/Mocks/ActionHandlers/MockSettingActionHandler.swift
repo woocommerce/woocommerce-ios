@@ -16,7 +16,7 @@ struct MockSettingActionHandler: MockActionHandler {
         }
     }
 
-    func retreiveSiteAPI(siteId: Int64, onCompletion: (SiteAPI?, Error?) -> Void) {
-        onCompletion(objectGraph.defaultSiteAPI, nil)
+    func retreiveSiteAPI(siteId: Int64, onCompletion: (Result<SiteAPI, Error>) -> Void) {
+        onCompletion(.success(objectGraph.defaultSiteAPI))
     }
 }

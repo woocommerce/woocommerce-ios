@@ -11,6 +11,7 @@ struct i18n {
     struct DefaultSite {
         static let name = NSLocalizedString("Your WooCommerce Store", comment: "Store Name for the screenshot demo account")
         static let url = NSLocalizedString("example.com", comment: "")
+        static let adminURL = NSLocalizedString("example.com/wp-admin", comment: "")
     }
 }
 
@@ -35,9 +36,13 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         name: i18n.DefaultSite.name,
         description: "",
         url: i18n.DefaultSite.url,
+        adminURL: i18n.DefaultSite.adminURL,
         plan: "",
+        isJetpackThePluginInstalled: true,
+        isJetpackConnected: true,
         isWooCommerceActive: true,
         isWordPressStore: true,
+        jetpackConnectionActivePlugins: [],
         timezone: "UTC",
         gmtOffset: 0
     )

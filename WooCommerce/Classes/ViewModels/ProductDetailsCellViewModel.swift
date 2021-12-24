@@ -3,7 +3,7 @@ import Yosemite
 
 // MARK: - View Model for a Variation Attribute
 //
-struct VariationAttributeViewModel {
+struct VariationAttributeViewModel: Equatable {
 
     /// Attribute name
     ///
@@ -85,8 +85,8 @@ struct ProductDetailsCellViewModel {
                  imageURL: URL?,
                  name: String,
                  positiveQuantity: Decimal,
-                 positiveTotal: NSDecimalNumber?,
-                 positivePrice: NSDecimalNumber?,
+                 total: NSDecimalNumber?,
+                 price: NSDecimalNumber?,
                  skuText: String?,
                  attributes: [VariationAttributeViewModel],
                  hasAddOns: Bool) {
@@ -103,17 +103,17 @@ struct ProductDetailsCellViewModel {
         }()
 
         self.total = {
-            guard let positiveTotal = positiveTotal else {
+            guard let total = total else {
                 return String()
             }
-            return currencyFormatter.formatAmount(positiveTotal, with: currency) ?? String()
+            return currencyFormatter.formatAmount(total, with: currency) ?? String()
         }()
 
         self.subtitle = {
-            guard let positivePrice = positivePrice else {
+            guard let price = price else {
                 return String()
             }
-            let itemPrice = currencyFormatter.formatAmount(positivePrice, with: currency) ?? String()
+            let itemPrice = currencyFormatter.formatAmount(price, with: currency) ?? String()
             return Localization.subtitle(quantity: quantity, price: itemPrice, attributes: attributes)
         }()
     }
@@ -130,8 +130,8 @@ struct ProductDetailsCellViewModel {
                   imageURL: product?.imageURL,
                   name: item.name,
                   positiveQuantity: abs(item.quantity),
-                  positiveTotal: formatter.convertToDecimal(from: item.total)?.abs() ?? NSDecimalNumber.zero,
-                  positivePrice: item.price.abs(),
+                  total: formatter.convertToDecimal(from: item.total) ?? NSDecimalNumber.zero,
+                  price: item.price,
                   skuText: item.sku,
                   attributes: item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) },
                   hasAddOns: hasAddOns)
@@ -149,8 +149,8 @@ struct ProductDetailsCellViewModel {
                   imageURL: aggregateItem.imageURL ?? product?.imageURL,
                   name: aggregateItem.name,
                   positiveQuantity: abs(aggregateItem.quantity),
-                  positiveTotal: aggregateItem.total?.abs(),
-                  positivePrice: aggregateItem.price?.abs(),
+                  total: aggregateItem.total,
+                  price: aggregateItem.price,
                   skuText: aggregateItem.sku,
                   attributes: aggregateItem.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) },
                   hasAddOns: hasAddOns)
@@ -167,8 +167,8 @@ struct ProductDetailsCellViewModel {
                   imageURL: product?.imageURL,
                   name: refundedItem.name,
                   positiveQuantity: abs(refundedItem.quantity),
-                  positiveTotal: formatter.convertToDecimal(from: refundedItem.total)?.abs() ?? NSDecimalNumber.zero,
-                  positivePrice: refundedItem.price.abs(),
+                  total: formatter.convertToDecimal(from: refundedItem.total) ?? NSDecimalNumber.zero,
+                  price: refundedItem.price,
                   skuText: refundedItem.sku,
                   attributes: [], // Attributes are not supported for a refund item yet.
                   hasAddOns: false) // AddOns are not supported for a refund item yet.
@@ -197,16 +197,5 @@ private extension ProductDetailsCellViewModel {
                 return String.localizedStringWithFormat(subtitleWithAttributesFormat, attributesText, quantity, price)
             }
         }
-    }
-}
-
-private extension Product {
-    /// Returns the URL of the first image, if available. Otherwise, nil is returned.
-    var imageURL: URL? {
-        guard let productImageURLString = images.first?.src,
-              let encodedProductImageURLString = productImageURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
-            return nil
-        }
-        return URL(string: encodedProductImageURLString)
     }
 }

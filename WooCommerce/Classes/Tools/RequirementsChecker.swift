@@ -15,15 +15,6 @@ enum RequirementCheckResult: Int, CaseIterable {
     /// The installed version of WC is NOT valid
     ///
     case invalidWCVersion
-
-    /// The response returned from the server successfully however it was empty or missing information
-    /// that prevents us from verifing the WC version
-    ///
-    case empty
-
-    /// The request to the server timed out or resulted in an error
-    ///
-    case error
 }
 
 
@@ -51,12 +42,9 @@ class RequirementsChecker {
             return
         }
 
-        checkMinimumWooVersion(for: siteID) { (result, error) in
-            switch result {
-            case .invalidWCVersion:
+        checkMinimumWooVersion(for: siteID) { result in
+            if case .success(.invalidWCVersion) = result {
                 displayWCVersionAlert()
-            default:
-                break
             }
         }
     }
@@ -64,11 +52,9 @@ class RequirementsChecker {
     /// This function simply checks the provided site's API version. No warning will be displayed to the user.
     ///
     /// - parameter siteID: The SiteID to perform a version check on
-    /// - parameter onCompletion: Closure to be executed upon completion
-    /// - parameter result: Closure param that is the result of the requirement check
-    /// - parameter error: Closure param that is any error that occured while checking the WC version
+    /// - parameter onCompletion: Closure to be executed upon completion with the result of the requirement check
     ///
-    static func checkMinimumWooVersion(for siteID: Int64, onCompletion: ((_ result: RequirementCheckResult, _ error: Error?) -> Void)? = nil) {
+    static func checkMinimumWooVersion(for siteID: Int64, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) {
         let action = retrieveSiteAPIAction(siteID: siteID, onCompletion: onCompletion)
         ServiceLocator.stores.dispatch(action)
     }
@@ -90,24 +76,22 @@ private extension RequirementsChecker {
 
     /// Returns a `SettingAction.retrieveSiteAPI` action
     ///
-    static func retrieveSiteAPIAction(siteID: Int64, onCompletion: ((RequirementCheckResult, Error?) -> Void)? = nil) -> SettingAction {
-        return SettingAction.retrieveSiteAPI(siteID: siteID) { (siteAPI, error) in
-            guard error == nil else {
-                DDLogError("⛔️ An error occurred while fetching API info for siteID \(siteID): \(String(describing: error))")
-                onCompletion?(.error, error)
-                return
-            }
-            guard let siteAPI = siteAPI else {
-                DDLogWarn("⚠️ Empty or invalid response while fetching API info for siteID \(siteID))")
-                onCompletion?(.empty, nil)
-                return
-            }
+    static func retrieveSiteAPIAction(siteID: Int64, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) -> SettingAction {
+        return SettingAction.retrieveSiteAPI(siteID: siteID) { result in
+            switch result {
+            case .success(let siteAPI):
+                let saveTelemetryAvailabilityAction = AppSettingsAction.setTelemetryAvailability(siteID: siteID, isAvailable: siteAPI.telemetryIsAvailable)
+                ServiceLocator.stores.dispatch(saveTelemetryAvailabilityAction)
 
-            if siteAPI.highestWooVersion == .mark3 {
-                onCompletion?(.validWCVersion, nil)
-            } else {
-                DDLogWarn("⚠️ WC version older than v3.5 — highest API version: \(siteAPI.highestWooVersion.rawValue) for siteID: \(siteAPI.siteID)")
-                onCompletion?(.invalidWCVersion, nil)
+                if siteAPI.highestWooVersion == .mark3 {
+                    onCompletion?(.success(.validWCVersion))
+                } else {
+                    DDLogWarn("⚠️ WC version older than v3.5 — highest API version: \(siteAPI.highestWooVersion.rawValue) for siteID: \(siteAPI.siteID)")
+                    onCompletion?(.success(.invalidWCVersion))
+                }
+            case .failure(let error):
+                DDLogError("⛔️ An error occurred while fetching API info for siteID \(siteID): \(String(describing: error))")
+                onCompletion?(.failure(error))
             }
         }
     }

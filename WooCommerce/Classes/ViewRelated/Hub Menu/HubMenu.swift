@@ -73,10 +73,14 @@ struct HubMenu: View {
         var body: some View {
             HStack(spacing: Constants.padding) {
                 if let avatarURL = avatarURL {
-                    KFImage(avatarURL)
-                        .resizable()
-                        .clipShape(Circle())
-                        .frame(width: Constants.avatarSize, height: Constants.avatarSize)
+                    VStack {
+                        KFImage(avatarURL)
+                            .resizable()
+                            .clipShape(Circle())
+                            .frame(width: Constants.avatarSize, height: Constants.avatarSize)
+                        Spacer()
+                    }
+                    .fixedSize()
                 }
 
                 VStack(alignment: .leading,

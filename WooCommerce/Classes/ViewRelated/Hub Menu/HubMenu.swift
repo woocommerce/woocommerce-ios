@@ -6,9 +6,9 @@ import Kingfisher
 ///
 struct HubMenu: View {
     @ObservedObject private var viewModel: HubMenuViewModel
-    @State private var showWooCommerceAdmin = false
-    @State private var showViewStore = false
-    @State private var showReviews = false
+    @State private var showingWooCommerceAdmin = false
+    @State private var showingViewStore = false
+    @State private var showingReviews = false
 
     init(siteID: Int64, navigationController: UINavigationController? = nil) {
         viewModel = HubMenuViewModel(siteID: siteID, navigationController: navigationController)
@@ -33,11 +33,11 @@ struct HubMenu: View {
                             .onTapGesture {
                                 switch menu {
                                 case .woocommerceAdmin:
-                                    showWooCommerceAdmin = true
+                                    showingWooCommerceAdmin = true
                                 case .viewStore:
-                                    showViewStore = true
+                                    showingViewStore = true
                                 case .reviews:
-                                    showReviews = true
+                                    showingReviews = true
                                 }
                             }
                     }
@@ -48,11 +48,11 @@ struct HubMenu: View {
                 .padding(Constants.padding)
                 .background(Color(.listBackground))
             }
-            .safariSheet(isPresented: $showWooCommerceAdmin, url: viewModel.woocommerceAdminURL)
-            .safariSheet(isPresented: $showViewStore, url: viewModel.storeURL)
+            .safariSheet(isPresented: $showingWooCommerceAdmin, url: viewModel.woocommerceAdminURL)
+            .safariSheet(isPresented: $showingViewStore, url: viewModel.storeURL)
             NavigationLink(destination:
                             ReviewsView(siteID: viewModel.siteID),
-                           isActive: $showReviews) {
+                           isActive: $showingReviews) {
                 EmptyView()
             }.hidden()
         }
@@ -64,7 +64,7 @@ struct HubMenu: View {
         let avatarURL: URL?
         let storeTitle: String
         let storeURL: String?
-        var presenSwitchStore: (() -> Void)?
+        var switchStoreHandler: (() -> Void)?
 
         @State private var showSettings = false
         @ScaledMetric private var settingsSize: CGFloat = 24
@@ -90,7 +90,7 @@ struct HubMenu: View {
                             .lineLimit(1)
                     }
                     Button(Localization.switchStore) {
-                        presenSwitchStore?()
+                        switchStoreHandler?()
                     }
                     .linkStyle()
                 }

@@ -7,7 +7,7 @@ import Combine
 ///
 final class HubMenuViewModel: ObservableObject {
 
-    @Published private(set) var siteID: Int64
+    let siteID: Int64
 
     /// The view controller that will be used for presenting the `StorePickerViewController` via `StorePickerCoordinator`
     ///
@@ -55,10 +55,8 @@ final class HubMenuViewModel: ObservableObject {
     }
 
     private func observeSiteForUIUpdates() {
-        ServiceLocator.stores.site.sink { [weak self] site in
-            guard let self = self else { return }
-            guard let siteID = site?.siteID else { return }
-            self.siteID = siteID
+        ServiceLocator.stores.site.sink { site in
+            // This will be useful in the future for updating some info of the screen depending on the store site info
         }.store(in: &cancellables)
     }
 }

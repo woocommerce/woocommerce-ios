@@ -1,4 +1,5 @@
 import SwiftUI
+import Kingfisher
 
 /// This view will be embedded inside the `HubMenuViewController`
 /// and will be the entry point of the `Menu` Tab.
@@ -15,10 +16,12 @@ struct HubMenu: View {
 
     var body: some View {
         VStack {
-            TopBar(storeTitle: viewModel.storeTitle,
+            TopBar(avatarURL: viewModel.avatarURL,
+                   storeTitle: viewModel.storeTitle,
                    storeURL: viewModel.storeURL.absoluteString) {
                 viewModel.presentSwitchStore()
             }
+                   .padding([.leading, .trailing], Constants.padding)
 
             ScrollView {
                 let gridItemLayout = [GridItem(.adaptive(minimum: Constants.itemSize), spacing: Constants.itemSpacing)]
@@ -58,6 +61,7 @@ struct HubMenu: View {
     }
 
     private struct TopBar: View {
+        let avatarURL: URL?
         let storeTitle: String
         let storeURL: String?
         var switchStoreHandler: (() -> Void)?
@@ -67,13 +71,27 @@ struct HubMenu: View {
         @ScaledMetric private var settingsIconSize: CGFloat = 20
 
         var body: some View {
-            HStack() {
+            HStack(spacing: Constants.padding) {
+                if let avatarURL = avatarURL {
+                    VStack {
+                        KFImage(avatarURL)
+                            .resizable()
+                            .clipShape(Circle())
+                            .frame(width: Constants.avatarSize, height: Constants.avatarSize)
+                        Spacer()
+                    }
+                    .fixedSize()
+                }
+
                 VStack(alignment: .leading,
                        spacing: Constants.topBarSpacing) {
-                    Text(storeTitle).headlineStyle()
+                    Text(storeTitle)
+                        .headlineStyle()
+                        .lineLimit(1)
                     if let storeURL = storeURL {
                         Text(storeURL)
                             .subheadlineStyle()
+                            .lineLimit(1)
                     }
                     Button(Localization.switchStore) {
                         switchStoreHandler?()
@@ -117,6 +135,7 @@ struct HubMenu: View {
         static let itemSize: CGFloat = 160
         static let padding: CGFloat = 16
         static let topBarSpacing: CGFloat = 2
+        static let avatarSize: CGFloat = 40
     }
 
     private enum Localization {

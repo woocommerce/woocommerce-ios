@@ -60,7 +60,7 @@ struct HubMenu: View {
     private struct TopBar: View {
         let storeTitle: String
         let storeURL: String?
-        var presenSwitchStore: (() -> Void)?
+        var switchStoreHandler: (() -> Void)?
 
         @State private var showSettings = false
         @ScaledMetric private var settingsSize: CGFloat = 24
@@ -76,7 +76,7 @@ struct HubMenu: View {
                             .subheadlineStyle()
                     }
                     Button(Localization.switchStore) {
-                        presenSwitchStore?()
+                        switchStoreHandler?()
                     }
                     .linkStyle()
                 }

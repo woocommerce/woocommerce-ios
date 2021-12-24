@@ -843,6 +843,27 @@ final class MigrationTests: XCTestCase {
         let newAdminURL = try XCTUnwrap(migratedSite.value(forKey: "adminURL") as? String)
         XCTAssertEqual(newAdminURL, adminURL)
     }
+
+    func test_migrating_from_59_to_60_enables_creating_new_Coupon() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 59")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 60")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 0)
+
+        // Creates an `Coupon`
+        let coupon = insertCoupon(to: targetContext)
+
+        XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 1)
+        XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: Coupon.self)), coupon)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

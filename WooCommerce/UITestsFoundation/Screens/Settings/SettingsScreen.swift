@@ -22,7 +22,8 @@ public final class SettingsScreen: ScreenObject {
                 selectedSiteUrlGetter,
                 logOutButtonGetter
             ],
-            app: app
+            app: app,
+            waitTimeout: 7
         )
     }
 

@@ -27,7 +27,8 @@ public final class OrdersScreen: ScreenObject {
                 searchButtonGetter,
                 filterButtonGetter
             ],
-            app: app
+            app: app,
+            waitTimeout: 7
         )
     }
 

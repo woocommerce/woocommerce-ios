@@ -32,7 +32,8 @@ public final class TabNavComponent: ScreenObject {
                 reviewsTabButtonGetter,
                 productsTabButtonGetter
             ],
-            app: app
+            app: app,
+            waitTimeout: 7
         )
     }
 

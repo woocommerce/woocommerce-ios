@@ -16,7 +16,8 @@ public final class OrderSearchScreen: ScreenObject {
                 // swiftlint:disable:next opening_braces
                 { $0.otherElements["order-search-screen-search-field"] }
             ],
-            app: app
+            app: app,
+            waitTimeout: 7
         )
     }
 

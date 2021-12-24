@@ -13,7 +13,8 @@ class BetaFeaturesScreen: ScreenObject {
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [ { $0.cells["beta-features-products-cell"] } ],
-            app: app
+            app: app,
+            waitTimeout: 7
         )
     }
 

@@ -12,7 +12,8 @@ public final class SingleProductScreen: ScreenObject {
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [ {$0.buttons["edit-product-more-options-button"]} ],
-            app: app
+            app: app,
+            waitTimeout: 7
         )
     }
 

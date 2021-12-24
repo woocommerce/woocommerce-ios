@@ -9,7 +9,8 @@ public final class SingleOrderScreen: ScreenObject {
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [ { $0.staticTexts["summary-table-view-cell-title-label"] } ],
-            app: app
+            app: app,
+            waitTimeout: 7
         )
     }
 

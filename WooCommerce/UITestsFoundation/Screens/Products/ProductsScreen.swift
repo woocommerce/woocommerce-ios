@@ -27,7 +27,8 @@ public final class ProductsScreen: ScreenObject {
                 { $0.buttons["product-search-button"]}
                 // swiftlint:enable next opening_brace
             ],
-            app: app
+            app: app,
+            waitTimeout: 7
         )
     }
 

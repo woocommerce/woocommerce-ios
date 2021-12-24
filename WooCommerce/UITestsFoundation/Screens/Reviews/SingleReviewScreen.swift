@@ -12,7 +12,8 @@ public final class SingleReviewScreen: ScreenObject {
                 { $0.buttons["single-review-approval-button"] }
                 // swiftlint:enable opening_brace
             ],
-            app: app
+            app: app,
+            waitTimeout: 7
         )
     }
 

@@ -13,7 +13,8 @@ public final class ReviewsScreen: ScreenObject {
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [ { $0.buttons["reviews-mark-all-as-read-button"] } ],
-            app: app
+            app: app,
+            waitTimeout: 7
         )
     }
 

@@ -22,7 +22,8 @@ public final class PeriodStatsTable: ScreenObject {
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [daysTabGetter, weeksTabGetter, yearsTabGetter],
-            app: app
+            app: app,
+            waitTimeout: 7
         )
     }
 

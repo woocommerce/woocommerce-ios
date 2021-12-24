@@ -22,7 +22,8 @@ public final class MyStoreScreen: ScreenObject {
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [settingsButtonGetter],
-            app: app
+            app: app,
+            waitTimeout: 7
         )
     }
 

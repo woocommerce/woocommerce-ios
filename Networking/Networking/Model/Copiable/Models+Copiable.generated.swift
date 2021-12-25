@@ -70,6 +70,87 @@ extension Address {
     }
 }
 
+extension Coupon {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        couponID: CopiableProp<Int64> = .copy,
+        code: CopiableProp<String> = .copy,
+        amount: CopiableProp<String> = .copy,
+        dateCreated: CopiableProp<Date> = .copy,
+        dateModified: CopiableProp<Date> = .copy,
+        discountType: CopiableProp<Coupon.DiscountType> = .copy,
+        description: CopiableProp<String> = .copy,
+        dateExpires: NullableCopiableProp<Date> = .copy,
+        usageCount: CopiableProp<Int64> = .copy,
+        individualUse: CopiableProp<Bool> = .copy,
+        productIds: CopiableProp<[Int64]> = .copy,
+        excludedProductIds: CopiableProp<[Int64]> = .copy,
+        usageLimit: NullableCopiableProp<Int64> = .copy,
+        usageLimitPerUser: NullableCopiableProp<Int64> = .copy,
+        limitUsageToXItems: NullableCopiableProp<Int64> = .copy,
+        freeShipping: CopiableProp<Bool> = .copy,
+        productCategories: CopiableProp<[Int64]> = .copy,
+        excludedProductCategories: CopiableProp<[Int64]> = .copy,
+        excludeSaleItems: CopiableProp<Bool> = .copy,
+        minimumAmount: CopiableProp<String> = .copy,
+        maximumAmount: CopiableProp<String> = .copy,
+        emailRestrictions: CopiableProp<[String]> = .copy,
+        usedBy: CopiableProp<[String]> = .copy
+    ) -> Coupon {
+        let siteID = siteID ?? self.siteID
+        let couponID = couponID ?? self.couponID
+        let code = code ?? self.code
+        let amount = amount ?? self.amount
+        let dateCreated = dateCreated ?? self.dateCreated
+        let dateModified = dateModified ?? self.dateModified
+        let discountType = discountType ?? self.discountType
+        let description = description ?? self.description
+        let dateExpires = dateExpires ?? self.dateExpires
+        let usageCount = usageCount ?? self.usageCount
+        let individualUse = individualUse ?? self.individualUse
+        let productIds = productIds ?? self.productIds
+        let excludedProductIds = excludedProductIds ?? self.excludedProductIds
+        let usageLimit = usageLimit ?? self.usageLimit
+        let usageLimitPerUser = usageLimitPerUser ?? self.usageLimitPerUser
+        let limitUsageToXItems = limitUsageToXItems ?? self.limitUsageToXItems
+        let freeShipping = freeShipping ?? self.freeShipping
+        let productCategories = productCategories ?? self.productCategories
+        let excludedProductCategories = excludedProductCategories ?? self.excludedProductCategories
+        let excludeSaleItems = excludeSaleItems ?? self.excludeSaleItems
+        let minimumAmount = minimumAmount ?? self.minimumAmount
+        let maximumAmount = maximumAmount ?? self.maximumAmount
+        let emailRestrictions = emailRestrictions ?? self.emailRestrictions
+        let usedBy = usedBy ?? self.usedBy
+
+        return Coupon(
+            siteID: siteID,
+            couponID: couponID,
+            code: code,
+            amount: amount,
+            dateCreated: dateCreated,
+            dateModified: dateModified,
+            discountType: discountType,
+            description: description,
+            dateExpires: dateExpires,
+            usageCount: usageCount,
+            individualUse: individualUse,
+            productIds: productIds,
+            excludedProductIds: excludedProductIds,
+            usageLimit: usageLimit,
+            usageLimitPerUser: usageLimitPerUser,
+            limitUsageToXItems: limitUsageToXItems,
+            freeShipping: freeShipping,
+            productCategories: productCategories,
+            excludedProductCategories: excludedProductCategories,
+            excludeSaleItems: excludeSaleItems,
+            minimumAmount: minimumAmount,
+            maximumAmount: maximumAmount,
+            emailRestrictions: emailRestrictions,
+            usedBy: usedBy
+        )
+    }
+}
+
 extension Order {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

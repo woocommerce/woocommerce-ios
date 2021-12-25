@@ -843,6 +843,27 @@ final class MigrationTests: XCTestCase {
         let newAdminURL = try XCTUnwrap(migratedSite.value(forKey: "adminURL") as? String)
         XCTAssertEqual(newAdminURL, adminURL)
     }
+
+    func test_migrating_from_59_to_60_enables_creating_new_Coupon() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 59")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 60")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 0)
+
+        // Creates an `Coupon`
+        let coupon = insertCoupon(to: targetContext)
+
+        XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 1)
+        XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: Coupon.self)), coupon)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -948,6 +969,36 @@ private extension MigrationTests {
         context.insert(entityName: "Account", properties: [
             "userID": 0,
             "username": ""
+        ])
+    }
+
+    @discardableResult
+    func insertCoupon(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Coupon", properties: [
+            "couponID": 123123,
+            "maximumAmount": "12.00",
+            "minimumAmount": "1.00",
+            "excludeSaleItems": true,
+            "freeShipping": false,
+            "limitUsageToXItems": 3,
+            "usageLimitPerUser": 1,
+            "usageLimit": 1000,
+            "individualUse": true,
+            "usageCount": 200,
+            "dateExpires": Date(),
+            "fullDescription": "Coupon for getting discounts",
+            "discountType": "fixed_cart",
+            "dateModified": Date(),
+            "dateCreated": Date(),
+            "amount": "2.00",
+            "code": "2off2021",
+            "usedBy": ["me@example.com"],
+            "emailRestrictions": ["*@woocommerce.com"],
+            "siteID": 1212,
+            "products": [1231, 111],
+            "excludedProducts": [19182, 192],
+            "productCategories": [1092281],
+            "excludedProductCategories": [128121212]
         ])
     }
 

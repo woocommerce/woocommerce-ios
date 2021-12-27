@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19574" systemVersion="21C52" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19461" systemVersion="21A559" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -24,6 +24,32 @@
         <attribute name="code" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <relationship name="states" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="StateOfACountry" inverseName="relationship" inverseEntity="StateOfACountry"/>
+    </entity>
+    <entity name="Coupon" representedClassName="Coupon" syncable="YES">
+        <attribute name="amount" optional="YES" attributeType="String"/>
+        <attribute name="code" optional="YES" attributeType="String"/>
+        <attribute name="couponID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="dateCreated" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dateExpires" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dateModified" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="discountType" optional="YES" attributeType="String"/>
+        <attribute name="emailRestrictions" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
+        <attribute name="excludedProductCategories" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
+        <attribute name="excludedProducts" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
+        <attribute name="excludeSaleItems" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="freeShipping" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="fullDescription" optional="YES" attributeType="String"/>
+        <attribute name="individualUse" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="limitUsageToXItems" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="maximumAmount" optional="YES" attributeType="String"/>
+        <attribute name="minimumAmount" optional="YES" attributeType="String"/>
+        <attribute name="productCategories" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
+        <attribute name="products" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="usageCount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="usageLimit" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="usageLimitPerUser" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="usedBy" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
     </entity>
     <entity name="GenericAttribute" representedClassName="GenericAttribute" syncable="YES">
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -686,7 +712,7 @@
         <element name="Country" positionX="-702" positionY="36" width="128" height="74"/>
         <element name="GenericAttribute" positionX="-684" positionY="45" width="128" height="89"/>
         <element name="Note" positionX="-369.61328125" positionY="-95.85546875" width="128" height="283"/>
-        <element name="Order" positionX="-41.5859375" positionY="23.53125" width="128" height="809"/>
+        <element name="Order" positionX="-41.5859375" positionY="23.53125" width="128" height="794"/>
         <element name="OrderCoupon" positionX="-206.01953125" positionY="379.74609375" width="128" height="120"/>
         <element name="OrderFeeLine" positionX="-693" positionY="45" width="128" height="164"/>
         <element name="OrderItem" positionX="-343.4609375" positionY="444.4296875" width="128" height="268"/>
@@ -740,5 +766,6 @@
         <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="88"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="118"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
+        <element name="Coupon" positionX="-693" positionY="45" width="128" height="389"/>
     </elements>
 </model>

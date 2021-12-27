@@ -2,7 +2,7 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
-## Model 59 (Release 8.3.0.0)
+## Model 60 (Release 8.3.0.0)
 - @ecarrion 2021-12-22
     - Added `OrderKey` attribute to `Order` entity.
 

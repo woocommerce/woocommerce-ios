@@ -123,8 +123,14 @@ extension ProductImagesCollectionViewController {
             return
         }
 
+        let selectedImageIndex: Int = {
+            // In case of any pending images, deduct the number of pending images from the index.
+            let imageStatusIndex = indexPath.row
+            let numberOfPendingImages = productImageStatuses.count - productImageStatuses.images.count
+            return imageStatusIndex - numberOfPendingImages
+        }()
         let productImagesGalleryViewController = ProductImagesGalleryViewController(images: productImageStatuses.images,
-                                                                                    selectedIndex: indexPath.row,
+                                                                                    selectedIndex: selectedImageIndex,
                                                                                     isDeletionEnabled: isDeletionEnabled,
                                                                                     productUIImageLoader: productUIImageLoader) { [weak self] (productImage) in
                                                                                         self?.onDeletion(productImage)

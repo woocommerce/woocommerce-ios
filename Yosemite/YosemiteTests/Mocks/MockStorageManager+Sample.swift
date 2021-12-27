@@ -131,6 +131,16 @@ extension MockStorageManager {
         return newOrder
     }
 
+    /// Inserts a new (Sample) Coupon into the specified context.
+    ///
+    @discardableResult
+    func insertSampleCoupon(readOnlyCoupon: Coupon) -> StorageCoupon {
+        let newCoupon = viewStorage.insertNewObject(ofType: StorageCoupon.self)
+        newCoupon.update(with: readOnlyCoupon)
+
+        return newCoupon
+    }
+
     /// Inserts a new (Sample) site into the specified context.
     ///
     @discardableResult

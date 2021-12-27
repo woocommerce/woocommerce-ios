@@ -3,18 +3,13 @@ import XCTest
 
 public final class OrderSearchScreen: ScreenObject {
 
-    private let cancelButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["order-search-screen-cancel-button"]
-    }
-
-    private var cancelButton: XCUIElement { cancelButtonGetter(app) }
-
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
-                cancelButtonGetter,
-                // swiftlint:disable:next opening_braces
+                // swiftlint:disable next opening_brace
+                { $0.buttons["order-search-screen-cancel-button"] },
                 { $0.otherElements["order-search-screen-search-field"] }
+                // swiftlint:enable next opening_brace
             ],
             app: app
         )
@@ -22,7 +17,7 @@ public final class OrderSearchScreen: ScreenObject {
 
     @discardableResult
     public func cancel() throws -> OrdersScreen {
-        cancelButton.tap()
+        app.buttons["order-search-screen-cancel-button"].tap()
         return try OrdersScreen()
     }
 }

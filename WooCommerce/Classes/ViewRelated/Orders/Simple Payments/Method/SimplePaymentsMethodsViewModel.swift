@@ -1,3 +1,4 @@
+import Experiments
 import Foundation
 import Yosemite
 import Combine
@@ -36,7 +37,10 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     /// Defines if the view should show a payment link payment method.
     ///
     var showPaymentLinkRow: Bool {
-        paymentLink != nil
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.simplePaymentsLink) else {
+            return false
+        }
+        return paymentLink != nil
     }
 
     /// Store's ID.
@@ -194,6 +198,13 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     func trackCollectByCash() {
         trackCollectIntention(method: .cash)
+    }
+
+    /// Perform the necesary tasks after a link is shared.
+    ///
+    func performLinkSharedTasks() {
+        self.presentNoticeSubject.send(.created)
+        // TODO: Analytics
     }
 }
 

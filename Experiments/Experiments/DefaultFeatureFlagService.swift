@@ -35,6 +35,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .myStoreTabUpdates:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .simplePaymentsLink:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

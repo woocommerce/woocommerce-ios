@@ -107,7 +107,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         let receivedCompleted: Bool = waitFor { promise in
             noticeSubject.sink { intent in
                 switch intent {
-                case .error:
+                case .error, .created:
                     promise(false)
                 case .completed:
                     promise(true)
@@ -141,7 +141,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
                 switch intent {
                 case .error:
                     promise(true)
-                case .completed:
+                case .completed, .created:
                     promise(false)
                 }
             }
@@ -301,5 +301,28 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.showPaymentLinkRow)
         XCTAssertNotNil(viewModel.paymentLink)
+    }
+
+    func test_view_model_attempts_completed_notice_after_sharing_link() {
+        // Given
+        let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", presentNoticeSubject: noticeSubject)
+
+        // When
+        let receivedCompleted: Bool = waitFor { promise in
+            noticeSubject.sink { intent in
+                switch intent {
+                case .error, .completed:
+                    promise(false)
+                case .created:
+                    promise(true)
+                }
+            }
+            .store(in: &self.subscriptions)
+            viewModel.performLinkSharedTasks()
+        }
+
+        // Then
+        XCTAssertTrue(receivedCompleted)
     }
 }

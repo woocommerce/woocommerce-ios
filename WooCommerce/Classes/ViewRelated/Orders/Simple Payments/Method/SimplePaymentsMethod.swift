@@ -88,9 +88,9 @@ struct SimplePaymentsMethod: View {
             // If paymentLink is available it already contains a valid URL.
             // CompactMap is required due to Swift URL APIs.
             ShareSheet(activityItems: [viewModel.paymentLink].compactMap { $0 } ) { _, completed, _, _ in
-                // TODO: Analytics
                 if completed {
                     dismiss()
+                    viewModel.performLinkSharedTasks()
                 }
             }
         }

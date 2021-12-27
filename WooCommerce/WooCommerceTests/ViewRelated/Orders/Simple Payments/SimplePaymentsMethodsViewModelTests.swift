@@ -273,7 +273,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, enablePaymentLink: true)
 
         // Then
         XCTAssertFalse(viewModel.showPaymentLinkRow)
@@ -296,7 +296,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores)
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, enablePaymentLink: true)
 
         // Then
         XCTAssertTrue(viewModel.showPaymentLinkRow)

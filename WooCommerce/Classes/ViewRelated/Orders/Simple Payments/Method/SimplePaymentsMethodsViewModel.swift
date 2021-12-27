@@ -17,20 +17,26 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     @Published private(set) var showPayWithCardRow = false
 
-    /// Defines if the view should show a payment link payment method.
-    ///
-    @Published private(set) var showPaymentLinkRow = false
-
     /// Defines if the view should show a loading indicator.
     /// Currently set while marking the order as complete
     ///
     @Published private(set) var showLoadingIndicator = false
+
+    /// Stores the payment link for the order.
+    ///
+    @Published private(set) var paymentLink: URL?
 
     /// Defines if the view should be disabled to prevent any further action.
     /// Useful to prevent any double tap while a network operation is being performed.
     ///
     var disableViewActions: Bool {
         showLoadingIndicator
+    }
+
+    /// Defines if the view should show a payment link payment method.
+    ///
+    var showPaymentLinkRow: Bool {
+        paymentLink != nil
     }
 
     /// Store's ID.
@@ -44,17 +50,6 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     /// Formatted total to charge.
     ///
     private let formattedTotal: String
-
-    /// Stores the payment link for the order.
-    /// Sets `showPaymentLinkRow` to `true` when a value is asigned.
-    ///
-    private var paymentLink: String? {
-        didSet {
-            if !paymentLink.isNilOrEmpty {
-                showPaymentLinkRow = true
-            }
-        }
-    }
 
     /// Transmits notice presentation intents.
     ///
@@ -230,7 +225,7 @@ private extension SimplePaymentsMethodsViewModel {
             switch result {
             case .success(let paymentPagePath):
                 let linkBuilder = PaymentLinkBuilder(host: storeURL, orderID: self.orderID, orderKey: orderKey, paymentPagePath: paymentPagePath)
-                self.paymentLink = linkBuilder.build()
+                self.paymentLink = URL(string: linkBuilder.build())
 
             case .failure(let error):
                 DDLogError("⛔️ Error retrieving the payments page path: \(error.localizedDescription)")

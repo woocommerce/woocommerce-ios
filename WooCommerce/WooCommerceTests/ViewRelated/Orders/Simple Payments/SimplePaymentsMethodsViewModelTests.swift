@@ -1,6 +1,7 @@
 import Foundation
 import XCTest
 import Combine
+import Fakes
 
 @testable import WooCommerce
 @testable import Yosemite
@@ -276,5 +277,29 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.showPaymentLinkRow)
+        XCTAssertNil(viewModel.paymentLink)
+    }
+
+    func test_paymentLinkRow_is_shown_if_payment_path_is_available() {
+        // Given
+        let session = SessionManager.testingInstance
+        session.defaultSite = .fake().copy(url: "https://www.test-store.com")
+
+        let stores = MockStoresManager(sessionManager: session)
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .getPaymentsPagePath(_, onCompletion):
+                onCompletion(.success("order-pay"))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores)
+
+        // Then
+        XCTAssertTrue(viewModel.showPaymentLinkRow)
+        XCTAssertNotNil(viewModel.paymentLink)
     }
 }

@@ -85,7 +85,8 @@ struct SimplePaymentsMethod: View {
             }))
         }
         .shareSheet(isPresented: $sharingPaymentLink) {
-            ShareSheet(activityItems: [viewModel.paymentLink]) { _, completed, _, _ in
+            ShareSheet(activityItems: [viewModel.paymentLink].compactMap { $0 } ) { _, completed, _, _ in
+                // TODO: Analytics
                 if completed {
                     dismiss()
                 }

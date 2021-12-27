@@ -109,19 +109,17 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     ///
     var dismiss: (() -> Void) = {}
 
+    /// View Model for the view
+    ///
     @ObservedObject private(set) var viewModel: ViewModel
 
     /// Set it to `true` to present the country selector.
     ///
-    @State var showCountrySelector: Bool = false
-
-    init(viewModel: ViewModel) {
-        self.viewModel = viewModel
-    }
+    @State private var showCountrySelector: Bool = false
 
     /// Set it to `true` to present the state selector.
     ///
-    @State var showStateSelector = false
+    @State private var showStateSelector = false
 
     var body: some View {
         GeometryReader { geometry in

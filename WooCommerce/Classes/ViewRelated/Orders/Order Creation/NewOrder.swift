@@ -178,9 +178,11 @@ private struct CustomerSection: View {
                 .buttonStyle(PlusButtonStyle())
                 .sheet(isPresented: $showAddressForm) {
                     NavigationView {
-                        EditOrderAddressForm(viewModel: CreateOrderAddressFormViewModel(siteID: viewModel.siteID,
-                                                                                        address: viewModel.orderDetails.billingAddress,
-                                                                                        onAddressUpdate: { updatedAddress in
+                        EditOrderAddressForm(dismiss: {
+                            showAddressForm.toggle()
+                        }, viewModel: CreateOrderAddressFormViewModel(siteID: viewModel.siteID,
+                                                                      address: viewModel.orderDetails.billingAddress,
+                                                                      onAddressUpdate: { updatedAddress in
                             viewModel.orderDetails.billingAddress = updatedAddress
                         }))
                     }

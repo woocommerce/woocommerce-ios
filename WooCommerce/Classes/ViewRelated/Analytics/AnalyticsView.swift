@@ -3,7 +3,10 @@ import SwiftUI
 struct AnalyticsView: View {
     var body: some View {
         ZStack {
-            Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+            VStack {
+                DateRangeView()
+                Spacer()
+            }
         }
         .navigationTitle(Localization.title)
     }

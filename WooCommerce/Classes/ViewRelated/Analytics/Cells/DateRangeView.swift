@@ -1,11 +1,16 @@
 import SwiftUI
 
+// MARK: - DateRangeView
+//
 struct DateRangeView: View {
+
+    @State private var showingSheet = false
+
     var body: some View {
         VStack {
             Divider()
             Button {
-                // Open Date Range Sheet
+                showingSheet.toggle()
             } label: {
                 HStack {
                     VStack(alignment: .leading, spacing: 12, content: {
@@ -22,6 +27,9 @@ struct DateRangeView: View {
                         .foregroundColor(Color(UIColor.accent))
                 }
                 .padding(EdgeInsets(top: 18, leading: 16, bottom: 13, trailing: 16))
+            }
+            .sheet(isPresented: $showingSheet) {
+                DateRangeSheet()
             }
             Divider()
         }

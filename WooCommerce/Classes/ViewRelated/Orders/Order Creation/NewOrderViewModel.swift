@@ -45,6 +45,10 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var shouldShowOrderStatusList: Bool = false
 
+    /// Representation of customer data display properties.
+    ///
+    @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)
+
     /// Assign this closure to be notified when a new order is created
     ///
     var onOrderCreated: (Order) -> Void = { _ in }
@@ -99,6 +103,7 @@ final class NewOrderViewModel: ObservableObject {
         configureNavigationTrailingItem()
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
+        configureCustomerDataViewModel()
     }
 
     /// Selects an order item.
@@ -220,6 +225,30 @@ extension NewOrderViewModel {
             self.quantity = quantity
         }
     }
+
+    /// Representation of customer data display properties
+    ///
+    struct CustomerDataViewModel {
+        let isDataAvailable: Bool
+        let fullName: String?
+        let email: String?
+        let billingAddressFormatted: String?
+        let shippingAddressFormatted: String?
+
+        init(billingAddress: Address?, shippingAddress: Address?) {
+            if billingAddress == nil, shippingAddress == nil {
+                isDataAvailable = false
+            } else {
+                isDataAvailable = true
+            }
+
+            fullName = billingAddress?.fullName ?? shippingAddress?.fullName
+            email = billingAddress?.hasEmailAddress == true ? billingAddress?.email : nil
+
+            billingAddressFormatted = billingAddress?.fullNameWithCompanyAndAddress
+            shippingAddressFormatted = shippingAddress?.fullNameWithCompanyAndAddress
+        }
+    }
 }
 
 // MARK: - Helpers
@@ -278,5 +307,15 @@ private extension NewOrderViewModel {
 
             return productRowViewModel
         }
+    }
+
+    /// Updates customer data viewmodel based on order addresses.
+    ///
+    func configureCustomerDataViewModel() {
+        $orderDetails
+            .map {
+                CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
+            }
+            .assign(to: &$customerDataViewModel)
     }
 }

@@ -22,7 +22,7 @@ public enum SettingAction: Action {
     ///
     case retrieveSiteAPI(siteID: Int64, onCompletion: (Result<SiteAPI, Error>) -> Void)
 
-    /// Retrievs the store payments page path.
+    /// Retrieves the store payments page path.
     ///
     case getPaymentsPagePath(siteID: Int64, onCompletion: (Result<String, SettingStore.SettingError>) -> Void)
 }

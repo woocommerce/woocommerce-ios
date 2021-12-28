@@ -184,6 +184,7 @@ private struct CustomerSection: View {
                                                                       address: viewModel.orderDetails.billingAddress,
                                                                       onAddressUpdate: { updatedAddress in
                             viewModel.orderDetails.billingAddress = updatedAddress
+                            viewModel.orderDetails.shippingAddress = updatedAddress
                         }))
                     }
                 }

@@ -29,13 +29,17 @@ private extension StatsTimeRangeBarView {
         label.setContentCompressionResistancePriority(.required, for: .vertical)
         pinSubviewToAllEdges(label, insets: Constants.labelInsets)
 
-        label.font = StyleManager.headlineSemiBold
-        label.textColor = .text
+        label.font = Constants.labelFont
+        label.textColor = Constants.labelColor
+        label.textAlignment = Constants.labelTextAlignment
     }
 }
 
 private extension StatsTimeRangeBarView {
     enum Constants {
         static let labelInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
+        static let labelFont: UIFont = .footnote
+        static let labelColor: UIColor = .secondaryLabel
+        static let labelTextAlignment: NSTextAlignment = .center
     }
 }

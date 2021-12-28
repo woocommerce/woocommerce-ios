@@ -1,5 +1,0 @@
-Het bestellingentabblad is in deze versie bijgewerkt. De tabbladen zijn nu weggehaald. We hebben de optie gegeven om te filteren op status of binnen een datumbereik. We hebben dit op basis van jullie feedback van de afgelopen jaren gedaan, dus we verwachten dat deze update met open armen wordt onthaald!
-
-We hebben mogelijk crashen verholpen wanneer er vanuit een pushbericht een verzendlabel wordt aangemaakt voor een bestelling. Daarnaast hebben we het aanmelden met je wachtwoordmanager verbetert. De in je wachtwoordmanager opgeslagen WordPress.com-aanmeldgegevens, staan nu bovenaan!
-
-En ga vooral door met ons feedback geven. Bedankt dat je WooCommerce gebruikt!

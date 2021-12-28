@@ -3,17 +3,6 @@ import XCTest
 
 public final class ProductsScreen: ScreenObject {
 
-    private let topBannerCollapseButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["top-banner-view-expand-collapse-button"]
-    }
-
-    private let topBannerInfoLabelGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["top-banner-view-info-label"]
-    }
-
-    private var topBannerInfoLabel: XCUIElement { topBannerInfoLabelGetter(app) }
-    private var topBannerCollapseButton: XCUIElement { topBannerCollapseButtonGetter(app) }
-
     static var isVisible: Bool {
         (try? ProductsScreen().isLoaded) ?? false
     }
@@ -35,16 +24,16 @@ public final class ProductsScreen: ScreenObject {
     public func collapseTopBannerIfNeeded() -> Self {
 
         /// Without the info label, we don't need to collapse the top banner
-        guard topBannerInfoLabel.waitForExistence(timeout: 3) else {
+        guard app.buttons["top-banner-view-info-label"].waitForExistence(timeout: 3) else {
            return self
         }
 
         /// If the banner isn't present, there's no need to collapse it
-        guard topBannerCollapseButton.waitForExistence(timeout: 3) else {
+        guard app.buttons["top-banner-view-expand-collapse-button"].waitForExistence(timeout: 3) else {
             return self
         }
 
-        topBannerCollapseButton.tap()
+        app.buttons["top-banner-view-expand-collapse-button"].tap()
         return self
     }
 
@@ -59,18 +48,24 @@ public final class ProductsScreen: ScreenObject {
         return try SingleProductScreen()
     }
 
-    public func verifyProductListOnProductsScreen(count: Int, name: String, status: String) throws -> Self {
-        XCTAssertTrue(try app.getTextVisibilityCount(text: name) == 1, "Product name does not exist!")
-        XCTAssertTrue(app.tables.cells.count == count, "Expecting \(count) products, got \(app.tables.cells.count) instead!")
+    func verifyStockStatusForProduct(name: String, status: String) throws -> Bool {
+        let namePredicate = NSPredicate(format: "identifier == %@", name)
+        let statusPredicate = NSPredicate(format: "label ==[c] %@", status)
 
-        /// TODO: Add AccessibilityIdentifiers to product list cell elements to be able to get stock status label value and update this assert.
-        /// Currently mock response API has "in stock" which is set to the first product repeated 3 times, so current assert will check that it appears 3 times
-        XCTAssertTrue(try app.getTextVisibilityCount(text: status) == 3, "Stock status does not exist!")
+        return app.tables.cells.matching(namePredicate).children(matching: .staticText).element(matching: statusPredicate).firstMatch.exists
+    }
+
+    public func verifyProductListOnProductsScreen(products: [ProductData]) throws -> Self {
+        let nameVisibilityCount = try app.getTextVisibilityCount(text: products[0].name)
+
+        XCTAssertTrue(nameVisibilityCount == 1, "Expecting name to appear once, appeared \(nameVisibilityCount) times instead!")
+        XCTAssertEqual(products.count, app.tables.cells.count, "Expecting \(products.count) products, got \(app.tables.cells.count) instead!")
+        XCTAssertTrue(try verifyStockStatusForProduct(name: products[0].name, status: products[0].stock_status), "Stock status does not exist for product!")
 
         return self
     }
 
-    public func verifyProductScreenLoaded() throws -> Self {
+    public func verifyProductsScreenLoaded() throws -> Self {
         XCTAssertTrue(isLoaded)
         return self
     }

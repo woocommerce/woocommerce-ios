@@ -73,4 +73,8 @@ public enum FeatureFlag: Int {
     /// Allow merchants to share a payment link when creating a simple payments order.
     ///
     case simplePaymentsLink
+
+    /// Displays the option to manage coupons
+    ///
+    case couponManagement
 }

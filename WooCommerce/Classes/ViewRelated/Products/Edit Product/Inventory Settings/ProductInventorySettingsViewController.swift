@@ -296,9 +296,9 @@ private extension ProductInventorySettingsViewController {
 
             let button = UIButton(type: .detailDisclosure)
             button.applyIconButtonStyle(icon: .scanImage)
-            button.on(.touchUpInside) { [weak self] _ in
+            button.addAction(UIAction(handler: { [weak self] _ in
                 self?.scanSKUButtonTapped()
-            }
+            }), for: .touchUpInside)
             cell.accessoryView = button
         }
         ServiceLocator.stores.dispatch(action)
@@ -347,7 +347,7 @@ private extension ProductInventorySettingsViewController {
 // MARK: - SKU Scanner
 //
 private extension ProductInventorySettingsViewController {
-    @objc func scanSKUButtonTapped() {
+    func scanSKUButtonTapped() {
         guard let navigationController = navigationController else {
             return
         }

@@ -1,3 +1,4 @@
+import Experiments
 import Foundation
 import Yosemite
 import Combine
@@ -22,11 +23,21 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     @Published private(set) var showLoadingIndicator = false
 
+    /// Stores the payment link for the order.
+    ///
+    @Published private(set) var paymentLink: URL?
+
     /// Defines if the view should be disabled to prevent any further action.
     /// Useful to prevent any double tap while a network operation is being performed.
     ///
     var disableViewActions: Bool {
         showLoadingIndicator
+    }
+
+    /// Defines if the view should show a payment link payment method.
+    ///
+    var showPaymentLinkRow: Bool {
+        enablePaymentLink && paymentLink != nil
     }
 
     /// Store's ID.
@@ -61,6 +72,10 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     private let analytics: Analytics
 
+    /// Defines if sharing a payment link should be enabled or not.
+    ///
+    private let enablePaymentLink: Bool
+
     /// Stored payment gateways accounts.
     /// We will care about the first one because only one is supported right now.
     ///
@@ -94,7 +109,8 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
          cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         enablePaymentLink: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.simplePaymentsLink)) {
         self.siteID = siteID
         self.orderID = orderID
         self.formattedTotal = formattedTotal
@@ -103,6 +119,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         self.stores = stores
         self.storage = storage
         self.analytics = analytics
+        self.enablePaymentLink = enablePaymentLink
         self.title = Localization.title(total: formattedTotal)
 
         bindStoreCPPState()
@@ -185,6 +202,13 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     func trackCollectByCash() {
         trackCollectIntention(method: .cash)
     }
+
+    /// Perform the necesary tasks after a link is shared.
+    ///
+    func performLinkSharedTasks() {
+        self.presentNoticeSubject.send(.created)
+        // TODO: Analytics
+    }
 }
 
 // MARK: Helpers
@@ -205,17 +229,17 @@ private extension SimplePaymentsMethodsViewModel {
     /// Fetches and builds the order payment link based on the store settings.
     ///
     func fetchPaymentLink(orderKey: String) {
+        guard let storeURL = stores.sessionManager.defaultSite?.url else {
+            return DDLogError("⛔️ Couldn't find a valid store URL")
+        }
+
         let action = SettingAction.getPaymentsPagePath(siteID: siteID) { [weak self] result in
             guard let self = self else { return }
+
             switch result {
             case .success(let paymentPagePath):
-                print("------------- Start Payment Link --------------")
-                let linkBuilder = PaymentLinkBuilder(host: self.stores.sessionManager.defaultSite?.url ?? "",
-                                                     orderID: self.orderID,
-                                                     orderKey: orderKey,
-                                                     paymentPagePath: paymentPagePath)
-                print(linkBuilder.build())
-                print("------------- End Payment Link --------------")
+                let linkBuilder = PaymentLinkBuilder(host: storeURL, orderID: self.orderID, orderKey: orderKey, paymentPagePath: paymentPagePath)
+                self.paymentLink = URL(string: linkBuilder.build())
 
             case .failure(let error):
                 DDLogError("⛔️ Error retrieving the payments page path: \(error.localizedDescription)")

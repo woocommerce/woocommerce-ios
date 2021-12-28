@@ -36,12 +36,12 @@ struct OrderCustomerSection: View {
                 if !viewModel.customerDataViewModel.isDataAvailable {
                     createCustomerView
                 } else {
-                    if let fullName = viewModel.customerDataViewModel.fullName {
-                        Text(fullName)
-                            .bodyStyle()
-
+                    VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+                        if let fullName = viewModel.customerDataViewModel.fullName {
+                            Text(fullName)
+                                .bodyStyle()
+                        }
                         if let email = viewModel.customerDataViewModel.email {
-                            Spacer()
                             Text(email)
                                 .footnoteStyle()
                         }
@@ -94,7 +94,7 @@ struct OrderCustomerSection: View {
 // MARK: Constants
 private extension OrderCustomerSection {
     enum Layout {
-        static let verticalSpacing: CGFloat = 22.0
+        static let verticalSpacing: CGFloat = 4.0
         static let linkButtonTopPadding: CGFloat = 12.0
         static let linkButtonTrailingPadding: CGFloat = 22.0
     }

@@ -955,6 +955,7 @@
 		ABC35F18E744C5576B986CB3 /* InPersonPaymentsUnavailableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC35055F8AC8C8EB649F421 /* InPersonPaymentsUnavailableView.swift */; };
 		AE457813275644590092F687 /* OrderStatusSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE457812275644590092F687 /* OrderStatusSection.swift */; };
 		AE6DBE3B2732CAAD00957E7A /* AdaptiveStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6DBE3A2732CAAD00957E7A /* AdaptiveStack.swift */; };
+		AE9E04752776213E003FA09E /* OrderCustomerSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9E04742776213E003FA09E /* OrderCustomerSection.swift */; };
 		AEA622B2274669D3002A9B57 /* AddOrderCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B1274669D3002A9B57 /* AddOrderCoordinator.swift */; };
 		AEA622B427466B78002A9B57 /* BottomSheetOrderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */; };
 		AEA622B727468790002A9B57 /* AddOrderCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */; };
@@ -2494,6 +2495,7 @@
 		ABC35A4B736A0B2D8348DD08 /* InPersonPaymentsOnboardingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsOnboardingError.swift; sourceTree = "<group>"; };
 		AE457812275644590092F687 /* OrderStatusSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusSection.swift; sourceTree = "<group>"; };
 		AE6DBE3A2732CAAD00957E7A /* AdaptiveStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveStack.swift; sourceTree = "<group>"; };
+		AE9E04742776213E003FA09E /* OrderCustomerSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomerSection.swift; sourceTree = "<group>"; };
 		AEA622B1274669D3002A9B57 /* AddOrderCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderCoordinator.swift; sourceTree = "<group>"; };
 		AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetOrderType.swift; sourceTree = "<group>"; };
 		AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderCoordinatorTests.swift; sourceTree = "<group>"; };
@@ -5423,6 +5425,7 @@
 		AE9E04732776034B003FA09E /* CustomerSection */ = {
 			isa = PBXGroup;
 			children = (
+				AE9E04742776213E003FA09E /* OrderCustomerSection.swift */,
 				AEC95D422774D07B001571F5 /* CreateOrderAddressFormViewModel.swift */,
 			);
 			path = CustomerSection;
@@ -7973,6 +7976,7 @@
 				CE1D5A55228A0AD200DF3715 /* TwoColumnTableViewCell.swift in Sources */,
 				74460D4222289C7A00D7316A /* StorePickerCoordinator.swift in Sources */,
 				FEDD70AF26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift in Sources */,
+				AE9E04752776213E003FA09E /* OrderCustomerSection.swift in Sources */,
 				CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */,
 				02E8B17A23E2C4BD00A43403 /* CircleSpinnerView.swift in Sources */,
 				CCE4CD282669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift in Sources */,

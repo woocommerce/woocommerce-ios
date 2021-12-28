@@ -1,9 +1,9 @@
 import SwiftUI
 
 // MARK: - DateRangeView
-
 //
 struct DateRangeView: View {
+    @State var dateRangeText: String
     @State var selectedRange: String
     @State private var showingSheet = false
 
@@ -15,12 +15,12 @@ struct DateRangeView: View {
             } label: {
                 HStack {
                     VStack(alignment: .leading, spacing: 12, content: {
-                        Text("Today (Sep 10, 2020)")
+                        Text(dateRangeText)
                             .font(.system(size: 17))
                             .foregroundColor(Color(UIColor.text))
-                        Text("vs Previous Period (Sep 9, 2020)")
-                            .font(.system(size: 13))
-                            .foregroundColor(Color(UIColor.text))
+//                        Text("vs Previous Period (Sep 9, 2020)")
+//                            .font(.system(size: 13))
+//                            .foregroundColor(Color(UIColor.text))
                     })
                     Spacer()
                     Image(systemName: "calendar")
@@ -43,7 +43,7 @@ struct DateRangeView: View {
 
 struct DateRangeView_Previews: PreviewProvider {
     static var previews: some View {
-        DateRangeView(selectedRange: "Today").previewLayout(.fixed(width: 375, height: 83))
+        DateRangeView(dateRangeText: "Today (Sep 10, 2020)", selectedRange: "Today").previewLayout(.fixed(width: 375, height: 83))
     }
 }
 

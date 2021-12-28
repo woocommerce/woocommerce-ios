@@ -156,6 +156,8 @@
 		26E5A08225A66868000DF8F6 /* ProductAttributeTermStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E5A08125A66868000DF8F6 /* ProductAttributeTermStore.swift */; };
 		26E5A09225A8A453000DF8F6 /* ProductAttributeTermStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E5A09125A8A453000DF8F6 /* ProductAttributeTermStoreTests.swift */; };
 		26FB056A25F6CB7600A40B26 /* Fakes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FB056925F6CB7600A40B26 /* Fakes.framework */; };
+		3041992C277B71D0004A317E /* AnalyticsRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3041992B277B71D0004A317E /* AnalyticsRange.swift */; };
+		3041992E277B8DA2004A317E /* AnalyticsStatsAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3041992D277B8DA2004A317E /* AnalyticsStatsAction.swift */; };
 		312A3D6E266AEA6900D28BC9 /* PaymentGatewayAccount+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312A3D6D266AEA6900D28BC9 /* PaymentGatewayAccount+ReadOnlyConvertible.swift */; };
 		312DB64D268BD22B00AA0EE9 /* AppSettingsStoreTests+CardReaderSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312DB64C268BD22B00AA0EE9 /* AppSettingsStoreTests+CardReaderSettings.swift */; };
 		3147030626701E2800EF253A /* PaymentGatewayAccountAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3147030526701E2800EF253A /* PaymentGatewayAccountAction.swift */; };
@@ -535,6 +537,8 @@
 		26E5A08125A66868000DF8F6 /* ProductAttributeTermStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeTermStore.swift; sourceTree = "<group>"; };
 		26E5A09125A8A453000DF8F6 /* ProductAttributeTermStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeTermStoreTests.swift; sourceTree = "<group>"; };
 		26FB056925F6CB7600A40B26 /* Fakes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Fakes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3041992B277B71D0004A317E /* AnalyticsRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsRange.swift; sourceTree = "<group>"; };
+		3041992D277B8DA2004A317E /* AnalyticsStatsAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsStatsAction.swift; sourceTree = "<group>"; };
 		312A3D6D266AEA6900D28BC9 /* PaymentGatewayAccount+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaymentGatewayAccount+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		312DB64C268BD22B00AA0EE9 /* AppSettingsStoreTests+CardReaderSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+CardReaderSettings.swift"; sourceTree = "<group>"; };
 		3147030526701E2800EF253A /* PaymentGatewayAccountAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayAccountAction.swift; sourceTree = "<group>"; };
@@ -857,6 +861,7 @@
 			children = (
 				0232372822F7DA6E00715FAB /* StatsTimeRangeV4.swift */,
 				E138D4F9269EE5BD006EA5C6 /* CardPresentPaymentsOnboardingState.swift */,
+				3041992B277B71D0004A317E /* AnalyticsRange.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -1526,6 +1531,7 @@
 				DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */,
 				077F39DD26A5A1CB00ABEADC /* SystemStatusAction.swift */,
 				FE28F6ED268440B1004465C7 /* UserAction.swift */,
+				3041992D277B8DA2004A317E /* AnalyticsStatsAction.swift */,
 			);
 			path = Actions;
 			sourceTree = "<group>";
@@ -1846,6 +1852,7 @@
 				0271E1662509CF0100633F7A /* AnyError.swift in Sources */,
 				45ED6096257E7472007B4AC6 /* ProductAttributeStore.swift in Sources */,
 				077F39E026A5A6F500ABEADC /* SystemStatusStore.swift in Sources */,
+				3041992E277B8DA2004A317E /* AnalyticsStatsAction.swift in Sources */,
 				02FF054D23D983F30058E6E7 /* MediaFileManager.swift in Sources */,
 				02137901270AB204006430F7 /* MockUserActionHandler.swift in Sources */,
 				B56C1EC220EAE2E500D749F9 /* ReadOnlyConvertible.swift in Sources */,
@@ -1926,6 +1933,7 @@
 				026CF628237D8F30009563D4 /* ProductVariationAction.swift in Sources */,
 				24163B9E257F41A600F94EC3 /* StoresManager.swift in Sources */,
 				247CE8442582F3BB00F9D9D1 /* MockSettingActionHandler.swift in Sources */,
+				3041992C277B71D0004A317E /* AnalyticsRange.swift in Sources */,
 				B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */,
 				5726456F250BD4E4005BBD7C /* OrdersUpsertUseCase.swift in Sources */,
 				3147030C2670333200EF253A /* WCPayAccount+PaymentGatewayAccount.swift in Sources */,

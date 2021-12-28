@@ -1,10 +1,12 @@
 import SwiftUI
 
+// MARK: - AnalyticsView
+//
 struct AnalyticsView: View {
     var body: some View {
         ZStack {
             VStack {
-                DateRangeView(selectedRange: "Today")
+                DateRangeView(dateRangeText: "Today (Sep 10, 2020)", selectedRange: "Yesterday")
                 Spacer()
             }
         }

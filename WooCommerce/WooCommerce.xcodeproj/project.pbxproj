@@ -491,6 +491,7 @@
 		26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */; };
 		26FE09E424DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E324DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift */; };
 		26FF455F24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */; };
+		30419930277B9A0F004A317E /* DateRangeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3041992F277B9A0F004A317E /* DateRangeModel.swift */; };
 		306F943B277A526900DC6111 /* DateRangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306F943A277A526900DC6111 /* DateRangeView.swift */; };
 		306F943E277A5C7F00DC6111 /* DateRangeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306F943D277A5C7F00DC6111 /* DateRangeSheet.swift */; };
 		306F9440277A72DF00DC6111 /* DateRangeSheetRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306F943F277A72DF00DC6111 /* DateRangeSheetRow.swift */; };
@@ -1999,6 +2000,7 @@
 		26FE09E324DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppFeedbackCardViewControllerTests.swift; sourceTree = "<group>"; };
 		26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedStatsDashboardViewController.swift; sourceTree = "<group>"; };
 		2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		3041992F277B9A0F004A317E /* DateRangeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateRangeModel.swift; sourceTree = "<group>"; };
 		306F943A277A526900DC6111 /* DateRangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateRangeView.swift; sourceTree = "<group>"; };
 		306F943D277A5C7F00DC6111 /* DateRangeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateRangeSheet.swift; sourceTree = "<group>"; };
 		306F943F277A72DF00DC6111 /* DateRangeSheetRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateRangeSheetRow.swift; sourceTree = "<group>"; };
@@ -5230,6 +5232,7 @@
 				306F943C277A526E00DC6111 /* Cells */,
 				8EEEB78527728F5C0089BFF3 /* AnalyticsView.swift */,
 				306F943D277A5C7F00DC6111 /* DateRangeSheet.swift */,
+				3041992F277B9A0F004A317E /* DateRangeModel.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -8004,6 +8007,7 @@
 				D82BB3AA26454F3300A82741 /* CardPresentModalProcessing.swift in Sources */,
 				0225C42C2477D0D500C5B4F0 /* ProductFormViewModel.swift in Sources */,
 				020F41E523163C0100776C4D /* TopBannerViewModel.swift in Sources */,
+				30419930277B9A0F004A317E /* DateRangeModel.swift in Sources */,
 				7E7C5F792719A8F900315B61 /* EditProductCategoryListViewModel.swift in Sources */,
 				DE525499268C8B32007A5829 /* UIRefreshControl+Woo.swift in Sources */,
 				B541B2172189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift in Sources */,

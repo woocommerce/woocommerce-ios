@@ -7,7 +7,10 @@ struct OrderCustomerSection: View {
     let geometry: GeometryProxy
 
     /// View model to drive the view content
-    @ObservedObject var viewModel: NewOrderViewModel
+    let viewModel: NewOrderViewModel.CustomerDataViewModel
+
+    /// View model to access navigation flow
+    @ObservedObject var orderViewModel: NewOrderViewModel
 
     @State private var showAddressForm: Bool = false
 
@@ -22,7 +25,7 @@ struct OrderCustomerSection: View {
 
                     Spacer()
 
-                    if viewModel.customerDataViewModel.isDataAvailable {
+                    if viewModel.isDataAvailable {
                         Button(Localization.editButton) {
                             showAddressForm.toggle()
                         }
@@ -33,7 +36,7 @@ struct OrderCustomerSection: View {
                     }
                 }
 
-                if !viewModel.customerDataViewModel.isDataAvailable {
+                if !viewModel.isDataAvailable {
                     createCustomerView
                 } else {
                     customerDataView
@@ -56,10 +59,10 @@ struct OrderCustomerSection: View {
             NavigationView {
                 EditOrderAddressForm(dismiss: {
                     showAddressForm.toggle()
-                }, viewModel: CreateOrderAddressFormViewModel(siteID: viewModel.siteID,
-                                                              address: viewModel.orderDetails.billingAddress,
+                }, viewModel: CreateOrderAddressFormViewModel(siteID: orderViewModel.siteID,
+                                                              address: orderViewModel.orderDetails.billingAddress,
                                                               onAddressUpdate: { updatedAddress in
-                    viewModel.orderDetails.billingAddress = updatedAddress
+                    orderViewModel.orderDetails.billingAddress = updatedAddress
                 }))
             }
         }
@@ -68,19 +71,19 @@ struct OrderCustomerSection: View {
     private var customerDataView: some View {
         Group {
             VStack(alignment: .leading, spacing: Layout.verticalEmailSpacing) {
-                if let fullName = viewModel.customerDataViewModel.fullName {
+                if let fullName = viewModel.fullName {
                     Text(fullName)
                         .bodyStyle()
                 }
-                if let email = viewModel.customerDataViewModel.email {
+                if let email = viewModel.email {
                     Text(email)
                         .footnoteStyle()
                 }
             }
-            if let billingAddressFormatted = viewModel.customerDataViewModel.billingAddressFormatted {
+            if let billingAddressFormatted = viewModel.billingAddressFormatted {
                 addressDetails(title: Localization.billingTitle, formattedAddress: billingAddressFormatted)
             }
-            if let shippingAddressFormatted = viewModel.customerDataViewModel.shippingAddressFormatted {
+            if let shippingAddressFormatted = viewModel.shippingAddressFormatted {
                 addressDetails(title: Localization.shippingTitle, formattedAddress: shippingAddressFormatted)
             }
         }
@@ -118,9 +121,9 @@ private extension OrderCustomerSection {
 
 struct OrderCustomerSection_Previews: PreviewProvider {
     static var previews: some View {
-        let emptyViewModel = NewOrderViewModel(siteID: 123)
-        let viewModel: NewOrderViewModel = {
-            let vm = NewOrderViewModel(siteID: 123)
+        let orderViewModel = NewOrderViewModel(siteID: 123)
+        let emptyViewModel = NewOrderViewModel.CustomerDataViewModel(billingAddress: nil, shippingAddress: nil)
+        let addressViewModel: NewOrderViewModel.CustomerDataViewModel = {
             let sampleAddress = Address(firstName: "Johnny",
                                         lastName: "Appleseed",
                                         company: nil,
@@ -132,16 +135,13 @@ struct OrderCustomerSection_Previews: PreviewProvider {
                                         country: "US",
                                         phone: "333-333-3333",
                                         email: "scrambled@scrambled.com")
-
-            vm.orderDetails.billingAddress = sampleAddress
-            vm.orderDetails.shippingAddress = sampleAddress
-            return vm
+            return .init(billingAddress: sampleAddress, shippingAddress: sampleAddress)
         }()
 
         GeometryReader { geometry in
             ScrollView {
-                OrderCustomerSection(geometry: geometry, viewModel: emptyViewModel)
-                OrderCustomerSection(geometry: geometry, viewModel: viewModel)
+                OrderCustomerSection(geometry: geometry, viewModel: emptyViewModel, orderViewModel: orderViewModel)
+                OrderCustomerSection(geometry: geometry, viewModel: addressViewModel, orderViewModel: orderViewModel)
             }
         }
     }

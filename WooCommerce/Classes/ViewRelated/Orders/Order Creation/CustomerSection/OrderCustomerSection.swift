@@ -48,13 +48,6 @@ struct OrderCustomerSection: View {
 
             Divider()
         }
-    }
-
-    private var createCustomerView: some View {
-        Button(Localization.addCustomer) {
-            showAddressForm.toggle()
-        }
-        .buttonStyle(PlusButtonStyle())
         .sheet(isPresented: $showAddressForm) {
             NavigationView {
                 EditOrderAddressForm(dismiss: {
@@ -66,6 +59,13 @@ struct OrderCustomerSection: View {
                 }))
             }
         }
+    }
+
+    private var createCustomerView: some View {
+        Button(Localization.addCustomer) {
+            showAddressForm.toggle()
+        }
+        .buttonStyle(PlusButtonStyle())
     }
 
     private var customerDataView: some View {

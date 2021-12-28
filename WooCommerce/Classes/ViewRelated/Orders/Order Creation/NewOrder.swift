@@ -180,12 +180,7 @@ private struct CustomerSection: View {
                     NavigationView {
                         EditOrderAddressForm(dismiss: {
                             showAddressForm.toggle()
-                        }, viewModel: CreateOrderAddressFormViewModel(siteID: viewModel.siteID,
-                                                                      address: viewModel.orderDetails.billingAddress,
-                                                                      onAddressUpdate: { updatedAddress in
-                            viewModel.orderDetails.billingAddress = updatedAddress
-                            viewModel.orderDetails.shippingAddress = updatedAddress
-                        }))
+                        }, viewModel: viewModel.createOrderAddressFormViewModel())
                     }
                 }
             }

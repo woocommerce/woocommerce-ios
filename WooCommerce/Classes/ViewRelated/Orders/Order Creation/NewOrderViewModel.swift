@@ -116,6 +116,17 @@ final class NewOrderViewModel: ObservableObject {
         configureProductRowViewModels()
     }
 
+    /// Creates a view model to be used in Address Form for customer address.
+    ///
+    func createOrderAddressFormViewModel() -> CreateOrderAddressFormViewModel {
+        CreateOrderAddressFormViewModel(siteID: siteID,
+                                        address: orderDetails.billingAddress,
+                                        onAddressUpdate: { [weak self] updatedAddress in
+            self?.orderDetails.billingAddress = updatedAddress
+            self?.orderDetails.shippingAddress = updatedAddress
+        })
+    }
+
     // MARK: - API Requests
     /// Creates an order remotely using the provided order details.
     ///

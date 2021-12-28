@@ -7,7 +7,8 @@ final class PaymentLinkBuilderTests: XCTestCase {
         // Given
         let builder = PaymentLinkBuilder(host: "https://www.test-store.com",
                                          orderID: 123,
-                                         orderKey: "wc-456")
+                                         orderKey: "wc-456",
+                                         paymentPagePath: "order-pay")
 
         // When
         let paymentLink = builder.build()

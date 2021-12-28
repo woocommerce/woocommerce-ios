@@ -1,7 +1,7 @@
 import Foundation
 
 /// Build a payment link for an order using the following format.
-/// `{:store_address}/checkout/order-pay/{:order_id}/?pay_for_order=true&key={:order_key}`
+/// `{:store_address}/checkout/{:payment_page_path}/{:order_id}/?pay_for_order=true&key={:order_key}`
 ///
 struct PaymentLinkBuilder {
     /// Default site url.
@@ -15,9 +15,13 @@ struct PaymentLinkBuilder {
     ///
     let orderKey: String
 
+    /// Stores custom payment page path
+    ///
+    let paymentPagePath: String
+
     /// Assembles the payment link with the provided values
     ///
     func build() -> String {
-        "\(host)/checkout/order-pay/\(orderID)/?pay_for_order=true&key=\(orderKey)"
+        "\(host)/checkout/\(paymentPagePath)/\(orderID)/?pay_for_order=true&key=\(orderKey)"
     }
 }

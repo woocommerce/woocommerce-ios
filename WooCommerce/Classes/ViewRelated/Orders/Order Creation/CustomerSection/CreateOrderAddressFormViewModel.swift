@@ -37,7 +37,11 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
         Localization.billingAddressSection
     }
 
-    var toggleTitle: String {
+    var showAlternativeUsageToggle: Bool {
+        false
+    }
+
+    var alternativeUsageToggleTitle: String {
         ""
     }
 

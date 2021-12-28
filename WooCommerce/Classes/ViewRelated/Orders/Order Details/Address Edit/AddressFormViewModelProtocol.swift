@@ -39,9 +39,13 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     ///
     var sectionTitle: String { get }
 
-    /// Defines bottom toggle title
+    /// Defines if "use as billing/shipping" toggle should be displayed.
     ///
-    var toggleTitle: String { get }
+    var showAlternativeUsageToggle: Bool { get }
+
+    /// Defines "use as billing/shipping" toggle title
+    ///
+    var alternativeUsageToggleTitle: String { get }
 
     /// Save the address and invoke a completion block when finished
     ///

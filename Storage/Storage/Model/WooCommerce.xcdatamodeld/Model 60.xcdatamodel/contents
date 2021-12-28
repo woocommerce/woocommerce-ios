@@ -98,6 +98,7 @@
         <attribute name="exclusiveForSearch" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="number" optional="YES" attributeType="String"/>
         <attribute name="orderID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="orderKey" attributeType="String" defaultValueString=""/>
         <attribute name="parentID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="paymentMethodID" optional="YES" attributeType="String"/>
         <attribute name="paymentMethodTitle" optional="YES" attributeType="String"/>

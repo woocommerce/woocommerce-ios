@@ -278,6 +278,7 @@ extension Order {
             orderID: .fake(),
             parentID: .fake(),
             customerID: .fake(),
+            orderKey: .fake(),
             number: .fake(),
             status: .fake(),
             currency: .fake(),

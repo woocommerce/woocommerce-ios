@@ -123,20 +123,15 @@ struct OrderCustomerSection_Previews: PreviewProvider {
     static var previews: some View {
         let orderViewModel = NewOrderViewModel(siteID: 123)
         let emptyViewModel = NewOrderViewModel.CustomerDataViewModel(billingAddress: nil, shippingAddress: nil)
-        let addressViewModel: NewOrderViewModel.CustomerDataViewModel = {
-            let sampleAddress = Address(firstName: "Johnny",
-                                        lastName: "Appleseed",
-                                        company: nil,
-                                        address1: "234 70th Street",
-                                        address2: nil,
-                                        city: "Niagara Falls",
-                                        state: "NY",
-                                        postcode: "14304",
-                                        country: "US",
-                                        phone: "333-333-3333",
-                                        email: "scrambled@scrambled.com")
-            return .init(billingAddress: sampleAddress, shippingAddress: sampleAddress)
-        }()
+        let addressViewModel = NewOrderViewModel.CustomerDataViewModel(fullName: "Johnny Appleseed",
+                                                                       email: "scrambled@scrambled.com",
+                                                                       billingAddressFormatted: """
+                                                                            Johnny Appleseed
+                                                                            234 70th Street
+                                                                            Niagara Falls NY 14304
+                                                                            US
+                                                                            """,
+                                                                       shippingAddressFormatted: nil)
 
         GeometryReader { geometry in
             ScrollView {

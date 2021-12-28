@@ -235,19 +235,21 @@ extension NewOrderViewModel {
         let billingAddressFormatted: String?
         let shippingAddressFormatted: String?
 
+        init(fullName: String? = nil, email: String? = nil, billingAddressFormatted: String? = nil, shippingAddressFormatted: String? = nil) {
+            self.isDataAvailable = fullName != nil || email != nil || billingAddressFormatted != nil || shippingAddressFormatted != nil
+            self.fullName = fullName
+            self.email = email
+            self.billingAddressFormatted = billingAddressFormatted
+            self.shippingAddressFormatted = shippingAddressFormatted
+        }
+
         init(billingAddress: Address?, shippingAddress: Address?) {
-            if billingAddress == nil, shippingAddress == nil {
-                isDataAvailable = false
-            } else {
-                isDataAvailable = true
-            }
-
             let availableFullName = billingAddress?.fullName ?? shippingAddress?.fullName
-            fullName = availableFullName?.isNotEmpty == true ? availableFullName : nil
-            email = billingAddress?.hasEmailAddress == true ? billingAddress?.email : nil
 
-            billingAddressFormatted = billingAddress?.fullNameWithCompanyAndAddress
-            shippingAddressFormatted = shippingAddress?.fullNameWithCompanyAndAddress
+            self.init(fullName: availableFullName?.isNotEmpty == true ? availableFullName : nil,
+                      email: billingAddress?.hasEmailAddress == true ? billingAddress?.email : nil,
+                      billingAddressFormatted: billingAddress?.fullNameWithCompanyAndAddress,
+                      shippingAddressFormatted: shippingAddress?.fullNameWithCompanyAndAddress)
         }
     }
 }

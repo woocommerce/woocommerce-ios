@@ -83,6 +83,7 @@ final class ProductReviewTableViewCell: UITableViewCell {
         snippetLabel.attributedText = viewModel.snippet
         noticonLabel.text = viewModel.notIcon
         noticonLabel.textColor = viewModel.notIconColor
+        accessibilityIdentifier = viewModel.subject
 
         read = viewModel.read
 

@@ -34,11 +34,15 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
     }
 
     var sectionTitle: String {
-        Localization.billingAddressSection
+        Localization.addressSection
     }
 
-    var toggleTitle: String {
-        String()
+    var showAlternativeUsageToggle: Bool {
+        false
+    }
+
+    var alternativeUsageToggleTitle: String {
+        ""
     }
 
     func saveAddress(onFinish: @escaping (Bool) -> Void) {
@@ -59,6 +63,8 @@ private extension CreateOrderAddressFormViewModel {
 
         static let shippingTitle = NSLocalizedString("Shipping Address", comment: "Title for the Edit Shipping Address Form")
         static let billingTitle = NSLocalizedString("Billing Address", comment: "Title for the Edit Billing Address Form")
+
+        static let addressSection = NSLocalizedString("Address", comment: "Details section title in the Edit Address Form")
 
         static let shippingAddressSection = NSLocalizedString("SHIPPING ADDRESS", comment: "Details section title in the Edit Address Form")
         static let billingAddressSection = NSLocalizedString("BILLING ADDRESS", comment: "Details section title in the Edit Address Form")

@@ -1,5 +1,0 @@
-Melalui rilis ini, tab pesanan akan diperbarui. Sekarang tab sudah dihilangkan, dan kami memberi Anda penyaring berdasarkan status atau pilihan rentang tanggal. Pembaruan ini didasarkan pada feedback langsung Anda, dan kami tahu Anda akan menyukai perubahan ini! 
-
-Kami mengatasi crash yang mungkin terjadi saat membuat label pengiriman pada sebuah pesanan dari pemberitahuan push.  Kami juga meningkatkan pengalaman login dengan pengelola kata sandi Anda. Nama pengguna dan kata sandi yang disimpan untuk WordPress.com pada pengelola Anda akan muncul paling atas di dalam daftar! 
-
-Seperti biasa, terus kirimkan feedback Anda pada kami. Terima kasih telah menggunakan WooCommerce!

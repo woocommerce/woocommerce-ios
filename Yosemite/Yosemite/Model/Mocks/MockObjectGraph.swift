@@ -214,6 +214,7 @@ extension MockObjectGraph {
             orderID: number,
             parentID: 0,
             customerID: 1,
+            orderKey: "",
             number: "\(number)",
             status: status,
             currency: "USD",

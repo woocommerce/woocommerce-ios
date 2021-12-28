@@ -445,6 +445,7 @@ extension ShippingLabelPackagesFormViewModel {
                      orderID: 963,
                      parentID: 0,
                      customerID: 11,
+                     orderKey: "",
                      number: "963",
                      status: .processing,
                      currency: "USD",

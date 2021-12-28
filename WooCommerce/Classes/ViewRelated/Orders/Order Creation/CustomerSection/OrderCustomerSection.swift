@@ -51,11 +51,7 @@ struct OrderCustomerSection: View {
             NavigationView {
                 EditOrderAddressForm(dismiss: {
                     showAddressForm.toggle()
-                }, viewModel: CreateOrderAddressFormViewModel(siteID: orderViewModel.siteID,
-                                                              address: orderViewModel.orderDetails.billingAddress,
-                                                              onAddressUpdate: { updatedAddress in
-                    orderViewModel.orderDetails.billingAddress = updatedAddress
-                }))
+                }, viewModel: orderViewModel.createOrderAddressFormViewModel())
             }
         }
     }

@@ -11,11 +11,15 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
     ///
     let canChangeQuantity: Bool
 
+    /// Unique ID for the view model.
+    ///
+    let id: String
+
     // MARK: Product properties
 
     /// Product ID
     ///
-    let id: Int64
+    let productID: Int64
 
     /// The first available product image
     ///
@@ -67,40 +71,58 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
 
     /// Quantity of product in the order
     ///
-    @Published var quantity: Int64 = 1
+    @Published private(set) var quantity: Decimal
 
-    init(id: Int64,
+    /// Minimum value of the product quantity
+    ///
+    private let minimumQuantity: Decimal = 1
+
+    /// Whether the quantity can be decremented.
+    ///
+    var shouldDisableQuantityDecrementer: Bool {
+        quantity <= minimumQuantity
+    }
+
+    init(id: String = UUID().uuidString,
+         productID: Int64,
          name: String,
          sku: String?,
          price: String,
          stockStatusKey: String,
          stockQuantity: Decimal?,
          manageStock: Bool,
+         quantity: Decimal = 1,
          canChangeQuantity: Bool,
          imageURL: URL?,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.id = id
+        self.productID = productID
         self.name = name
         self.sku = sku
         self.price = price
         self.stockStatus = .init(rawValue: stockStatusKey)
         self.stockQuantity = stockQuantity
         self.manageStock = manageStock
+        self.quantity = quantity
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.currencyFormatter = currencyFormatter
     }
 
-    convenience init(product: Product,
+    convenience init(id: String = UUID().uuidString,
+                     product: Product,
+                     quantity: Decimal = 1,
                      canChangeQuantity: Bool,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
-        self.init(id: product.productID,
+        self.init(id: id,
+                  productID: product.productID,
                   name: product.name,
                   sku: product.sku,
                   price: product.price,
                   stockStatusKey: product.stockStatusKey,
                   stockQuantity: product.stockQuantity,
                   manageStock: product.manageStock,
+                  quantity: quantity,
                   canChangeQuantity: canChangeQuantity,
                   imageURL: product.imageURL,
                   currencyFormatter: currencyFormatter)
@@ -127,6 +149,21 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
     private func createPriceText() -> String? {
         let unformattedPrice = price.isNotEmpty ? price : "0"
         return currencyFormatter.formatAmount(unformattedPrice)
+    }
+
+    /// Increment the product quantity.
+    ///
+    func incrementQuantity() {
+        quantity += 1
+    }
+
+    /// Decrement the product quantity.
+    ///
+    func decrementQuantity() {
+        guard quantity > minimumQuantity else {
+            return
+        }
+        quantity -= 1
     }
 }
 

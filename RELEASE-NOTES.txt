@@ -3,12 +3,14 @@
 8.3
 -----
 - [***] All mercants can create Simple Payments orders. [https://github.com/woocommerce/woocommerce-ios/pull/5684]
+- [**] System status report can now be viewed and copied directly from within the app. [https://github.com/woocommerce/woocommerce-ios/pull/5702]
 
 8.2
 -----
 - [***] In-Person Payments: Now you can collect Simple Payments on the go. [https://github.com/woocommerce/woocommerce-ios/pull/5635]
 - [*] Products: After generating a new variation for a variable product, you are now taken directly to edit the new variation. [https://github.com/woocommerce/woocommerce-ios/pull/5649]
 - [*] Dashboard: the visitor count in the Today tab is now shown when Jetpack site stats are enabled.
+- [*] Add/Edit Product Images: tapping on the last `n` images while `n` images are pending upload does not crash the app anymore. [https://github.com/woocommerce/woocommerce-ios/pull/5672]
 
 8.2
 -----
@@ -21,6 +23,7 @@
 - [***] Now it's possible to filter Order List by multiple statuses and date ranges. Plus, we removed the top tab bar on Orders Tab. [https://github.com/woocommerce/woocommerce-ios/pull/5491]
 - [*] Login: Password AutoFill will suggest wordpress.com accounts. [https://github.com/woocommerce/woocommerce-ios/pull/5399]
 - [*] Store picker: after logging in with store address, the pre-selected store is now the currently selected store instead of the store from login flow. [https://github.com/woocommerce/woocommerce-ios/pull/5508]
+- [*] The application icon number from order push notifications is now cleared after visiting the orders tab. [https://github.com/woocommerce/woocommerce-ios/pull/5715]
 - [internal] Migrated Settings screen to MVVM [https://github.com/woocommerce/woocommerce-ios/pull/5393]
 
 

@@ -48,6 +48,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         titleLabel.text = viewModel.title
         totalLabel.text = viewModel.total
         dateCreatedLabel.text = viewModel.dateCreated
+        accessibilityIdentifier = viewModel.title
 
         paymentStatusLabel.applyStyle(for: viewModel.status)
         paymentStatusLabel.text = viewModel.statusString

@@ -39,6 +39,8 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
             .sink { [weak self] notice in
 
                 switch notice {
+                case .created:
+                    self?.systemNoticePresenter.enqueue(notice: .init(title: SimplePaymentsAmount.Localization.created, feedbackType: .success))
                 case .completed:
                     self?.systemNoticePresenter.enqueue(notice: .init(title: SimplePaymentsAmount.Localization.completed, feedbackType: .success))
                 case .error(let description):
@@ -163,7 +165,8 @@ private extension SimplePaymentsAmount {
         static let title = NSLocalizedString("Take Payment", comment: "Title for the simple payments screen")
         static let instructions = NSLocalizedString("Enter Amount", comment: "Short instructions label in the simple payments screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the simple payments screen")
-        static let completed = NSLocalizedString("🎉 Order completed", comment: "Title for the button to cancel the simple payments screen")
+        static let created = NSLocalizedString("🎉 Order created", comment: "Notice text after creating a simple payment order")
+        static let completed = NSLocalizedString("🎉 Order completed", comment: "Notice text after completing a simple payment order")
         static let buttonTitle = NSLocalizedString("Next", comment: "Title for the button to confirm the amount in the simple payments screen")
     }
 
@@ -178,6 +181,7 @@ private extension SimplePaymentsAmount {
 /// Representation of possible notices that can be displayed
 ///
 enum SimplePaymentsNotice: Equatable {
+    case created
     case completed
     case error(String)
 }

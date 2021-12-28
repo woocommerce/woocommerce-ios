@@ -70,12 +70,94 @@ extension Address {
     }
 }
 
+extension Coupon {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        couponID: CopiableProp<Int64> = .copy,
+        code: CopiableProp<String> = .copy,
+        amount: CopiableProp<String> = .copy,
+        dateCreated: CopiableProp<Date> = .copy,
+        dateModified: CopiableProp<Date> = .copy,
+        discountType: CopiableProp<Coupon.DiscountType> = .copy,
+        description: CopiableProp<String> = .copy,
+        dateExpires: NullableCopiableProp<Date> = .copy,
+        usageCount: CopiableProp<Int64> = .copy,
+        individualUse: CopiableProp<Bool> = .copy,
+        productIds: CopiableProp<[Int64]> = .copy,
+        excludedProductIds: CopiableProp<[Int64]> = .copy,
+        usageLimit: NullableCopiableProp<Int64> = .copy,
+        usageLimitPerUser: NullableCopiableProp<Int64> = .copy,
+        limitUsageToXItems: NullableCopiableProp<Int64> = .copy,
+        freeShipping: CopiableProp<Bool> = .copy,
+        productCategories: CopiableProp<[Int64]> = .copy,
+        excludedProductCategories: CopiableProp<[Int64]> = .copy,
+        excludeSaleItems: CopiableProp<Bool> = .copy,
+        minimumAmount: CopiableProp<String> = .copy,
+        maximumAmount: CopiableProp<String> = .copy,
+        emailRestrictions: CopiableProp<[String]> = .copy,
+        usedBy: CopiableProp<[String]> = .copy
+    ) -> Coupon {
+        let siteID = siteID ?? self.siteID
+        let couponID = couponID ?? self.couponID
+        let code = code ?? self.code
+        let amount = amount ?? self.amount
+        let dateCreated = dateCreated ?? self.dateCreated
+        let dateModified = dateModified ?? self.dateModified
+        let discountType = discountType ?? self.discountType
+        let description = description ?? self.description
+        let dateExpires = dateExpires ?? self.dateExpires
+        let usageCount = usageCount ?? self.usageCount
+        let individualUse = individualUse ?? self.individualUse
+        let productIds = productIds ?? self.productIds
+        let excludedProductIds = excludedProductIds ?? self.excludedProductIds
+        let usageLimit = usageLimit ?? self.usageLimit
+        let usageLimitPerUser = usageLimitPerUser ?? self.usageLimitPerUser
+        let limitUsageToXItems = limitUsageToXItems ?? self.limitUsageToXItems
+        let freeShipping = freeShipping ?? self.freeShipping
+        let productCategories = productCategories ?? self.productCategories
+        let excludedProductCategories = excludedProductCategories ?? self.excludedProductCategories
+        let excludeSaleItems = excludeSaleItems ?? self.excludeSaleItems
+        let minimumAmount = minimumAmount ?? self.minimumAmount
+        let maximumAmount = maximumAmount ?? self.maximumAmount
+        let emailRestrictions = emailRestrictions ?? self.emailRestrictions
+        let usedBy = usedBy ?? self.usedBy
+
+        return Coupon(
+            siteID: siteID,
+            couponID: couponID,
+            code: code,
+            amount: amount,
+            dateCreated: dateCreated,
+            dateModified: dateModified,
+            discountType: discountType,
+            description: description,
+            dateExpires: dateExpires,
+            usageCount: usageCount,
+            individualUse: individualUse,
+            productIds: productIds,
+            excludedProductIds: excludedProductIds,
+            usageLimit: usageLimit,
+            usageLimitPerUser: usageLimitPerUser,
+            limitUsageToXItems: limitUsageToXItems,
+            freeShipping: freeShipping,
+            productCategories: productCategories,
+            excludedProductCategories: excludedProductCategories,
+            excludeSaleItems: excludeSaleItems,
+            minimumAmount: minimumAmount,
+            maximumAmount: maximumAmount,
+            emailRestrictions: emailRestrictions,
+            usedBy: usedBy
+        )
+    }
+}
+
 extension Order {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
         orderID: CopiableProp<Int64> = .copy,
         parentID: CopiableProp<Int64> = .copy,
         customerID: CopiableProp<Int64> = .copy,
+        orderKey: CopiableProp<String> = .copy,
         number: CopiableProp<String> = .copy,
         status: CopiableProp<OrderStatusEnum> = .copy,
         currency: CopiableProp<String> = .copy,
@@ -103,6 +185,7 @@ extension Order {
         let orderID = orderID ?? self.orderID
         let parentID = parentID ?? self.parentID
         let customerID = customerID ?? self.customerID
+        let orderKey = orderKey ?? self.orderKey
         let number = number ?? self.number
         let status = status ?? self.status
         let currency = currency ?? self.currency
@@ -131,6 +214,7 @@ extension Order {
             orderID: orderID,
             parentID: parentID,
             customerID: customerID,
+            orderKey: orderKey,
             number: number,
             status: status,
             currency: currency,
@@ -153,6 +237,39 @@ extension Order {
             coupons: coupons,
             refunds: refunds,
             fees: fees
+        )
+    }
+}
+
+extension OrderFeeLine {
+    public func copy(
+        feeID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        taxClass: CopiableProp<String> = .copy,
+        taxStatus: CopiableProp<OrderFeeTaxStatus> = .copy,
+        total: CopiableProp<String> = .copy,
+        totalTax: CopiableProp<String> = .copy,
+        taxes: CopiableProp<[OrderItemTax]> = .copy,
+        attributes: CopiableProp<[OrderItemAttribute]> = .copy
+    ) -> OrderFeeLine {
+        let feeID = feeID ?? self.feeID
+        let name = name ?? self.name
+        let taxClass = taxClass ?? self.taxClass
+        let taxStatus = taxStatus ?? self.taxStatus
+        let total = total ?? self.total
+        let totalTax = totalTax ?? self.totalTax
+        let taxes = taxes ?? self.taxes
+        let attributes = attributes ?? self.attributes
+
+        return OrderFeeLine(
+            feeID: feeID,
+            name: name,
+            taxClass: taxClass,
+            taxStatus: taxStatus,
+            total: total,
+            totalTax: totalTax,
+            taxes: taxes,
+            attributes: attributes
         )
     }
 }

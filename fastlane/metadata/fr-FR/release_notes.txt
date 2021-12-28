@@ -1,5 +1,0 @@
-L’onglet Commandes a fait peau neuve ! À la place des onglets, vous pouvez désormais filtrer les commandes par état ou plage de dates. Cette mise à jour tient compte des commentaires que vous avez formulés au fil des ans. Elle va vous plaire.
-
-Nous avons corrigé un problème potentiel lors de la création d’une étiquette de livraison pour une commande à partir d’une notification push. Nous avons également amélioré l’expérience de connexion avec votre gestionnaire de mot de passe. L’identifiant et le mot de passe enregistrés pour WordPress.com dans votre gestionnaire se trouveront en haut de la liste !
-
-Comme toujours, n’hésitez pas à nous envoyer vos commentaires. Merci d’utiliser WooCommerce !

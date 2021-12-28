@@ -341,7 +341,11 @@ private extension ProductInventorySettingsViewController {
         guard let navigationController = navigationController else {
             return
         }
+
+        ServiceLocator.analytics.track(.productInventorySettingsSKUScannerButtonTapped)
+
         let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController) { [weak self] barcode in
+            ServiceLocator.analytics.track(.productInventorySettingsSKUScanned)
             self?.onSKUBarcodeScanned(barcode: barcode)
         }
         view.endEditing(true)

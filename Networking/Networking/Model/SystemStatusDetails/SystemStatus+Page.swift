@@ -4,10 +4,11 @@ public extension SystemStatus {
     /// Subtype for details about a site's pages in system status.
     ///
     struct Page: Decodable {
-        let pageName, pageID: String
-        let pageSet, pageExists, pageVisible: Bool
-        let shortcode, block: String
-        let shortcodeRequired, shortcodePresent, blockPresent, blockRequired: Bool
+        public let pageName, pageID: String
+        public let pageSet, pageExists, pageVisible: Bool
+        public let shortcode: String
+        public let block: String?
+        public let shortcodeRequired, shortcodePresent, blockPresent, blockRequired: Bool
 
         enum CodingKeys: String, CodingKey {
             case pageName = "page_name"

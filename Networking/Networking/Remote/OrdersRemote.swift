@@ -134,6 +134,11 @@ public class OrdersRemote: Remote {
                         params[Order.CodingKeys.feeLines.rawValue] = try order.fees.compactMap { try $0.toDictionary() }
                     case .status:
                         params[Order.CodingKeys.status.rawValue] = order.status.rawValue
+                    case .items:
+                        params[Order.CodingKeys.items.rawValue] = order.items.map { item in
+                            [OrderItem.CodingKeys.productID.rawValue: item.productID,
+                             OrderItem.CodingKeys.quantity.rawValue: Int64(truncating: item.quantity as NSDecimalNumber)]
+                        }
                     }
                 }
             }()
@@ -256,7 +261,7 @@ public extension OrdersRemote {
         private static let commonOrderFieldValues = [
             "id", "parent_id", "number", "status", "currency", "customer_id", "customer_note", "date_created_gmt", "date_modified_gmt", "date_paid_gmt",
             "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
-            "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines"
+            "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key"
         ]
         private static let singleOrderExtraFieldValues = [
             "line_items", "shipping"
@@ -277,5 +282,6 @@ public extension OrdersRemote {
     enum CreateOrderField {
         case feeLines
         case status
+        case items
     }
 }

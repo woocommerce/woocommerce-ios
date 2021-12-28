@@ -60,7 +60,7 @@ struct NewOrder: View {
 
                         Spacer(minLength: Layout.sectionSpacing)
 
-                        CustomerSection(geometry: geometry)
+                        CustomerSection(geometry: geometry, viewModel: viewModel)
                     }
                 }
                 .background(Color(.listBackground).ignoresSafeArea())
@@ -159,6 +159,11 @@ private struct ProductsSection: View {
 private struct CustomerSection: View {
     let geometry: GeometryProxy
 
+    /// View model to drive the view content
+    @ObservedObject var viewModel: NewOrderViewModel
+
+    @State private var showAddressForm: Bool = false
+
     var body: some View {
         Group {
             Divider()
@@ -167,8 +172,17 @@ private struct CustomerSection: View {
                 Text(NewOrder.Localization.customer)
                     .headlineStyle()
 
-                Button(NewOrder.Localization.addCustomer) { }
+                Button(NewOrder.Localization.addCustomer) {
+                    showAddressForm.toggle()
+                }
                 .buttonStyle(PlusButtonStyle())
+                .sheet(isPresented: $showAddressForm) {
+                    NavigationView {
+                        EditOrderAddressForm(dismiss: {
+                            showAddressForm.toggle()
+                        }, viewModel: viewModel.createOrderAddressFormViewModel())
+                    }
+                }
             }
             .padding(.horizontal, insets: geometry.safeAreaInsets)
             .padding()

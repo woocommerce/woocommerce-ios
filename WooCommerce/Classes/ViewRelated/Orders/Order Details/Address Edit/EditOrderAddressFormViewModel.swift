@@ -81,7 +81,11 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
         }
     }
 
-    var toggleTitle: String {
+    var showAlternativeUsageToggle: Bool {
+        true
+    }
+
+    var alternativeUsageToggleTitle: String {
         switch type {
         case .shipping:
             return Localization.useAsBillingToggle

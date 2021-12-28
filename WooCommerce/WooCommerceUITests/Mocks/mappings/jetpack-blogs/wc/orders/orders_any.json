@@ -21,7 +21,7 @@
                 "id": 2201,
                 "parent_id": 0,
                 "number": "2201",
-                "status": "processing"
+                "status": "processing",
                 "order_key": "abc123",
                 "currency": "USD",
                 "date_created_gmt": "{{#assign 'customformat'}}yyyy-MM-dd'T'HH:mm:ss{{/assign}}{{now format=customformat}}",

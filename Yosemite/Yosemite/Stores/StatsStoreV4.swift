@@ -62,11 +62,13 @@ public final class StatsStoreV4: Store {
                                      let timeRange,
                                      let earliestDateToInclude,
                                      let latestDateToInclude,
+                                     let quantity,
                                      let onCompletion):
             retrieveTopEarnerStats(siteID: siteID,
                                    timeRange: timeRange,
                                    earliestDateToInclude: earliestDateToInclude,
                                    latestDateToInclude: latestDateToInclude,
+                                   quantity: quantity,
                                    onCompletion: onCompletion)
         }
     }
@@ -143,6 +145,7 @@ public extension StatsStoreV4 {
                                 timeRange: StatsTimeRangeV4,
                                 earliestDateToInclude: Date,
                                 latestDateToInclude: Date,
+                                quantity: Int,
                                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         let earliestDate = dateFormatter.string(from: earliestDateToInclude)
@@ -151,7 +154,7 @@ public extension StatsStoreV4 {
                                 unit: timeRange.leaderboardsGranularity,
                                 earliestDateToInclude: earliestDate,
                                 latestDateToInclude: latestDate,
-                                quantity: Constants.defaultTopEarnerStatsLimit) { [weak self] result in
+                                quantity: quantity) { [weak self] result in
             guard let self = self else { return }
 
             switch result {

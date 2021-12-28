@@ -37,12 +37,19 @@ public class ResultsController<T: ResultsControllerMutableType> {
         }
     }
 
+    /// Optional limit on the number of objects to fetch.
+    ///
+    private let fetchLimit: Int?
+
     /// NSFetchRequest instance used to do the fetching.
     ///
     private lazy var fetchRequest: NSFetchRequest<T> = {
         let request = NSFetchRequest<T>(entityName: T.entityName)
         request.predicate = predicate
         request.sortDescriptors = sortDescriptors
+        if let fetchLimit = fetchLimit {
+            request.fetchLimit = fetchLimit
+        }
         return request
     }()
 
@@ -91,12 +98,14 @@ public class ResultsController<T: ResultsControllerMutableType> {
     public init(viewStorage: StorageType,
                 sectionNameKeyPath: String? = nil,
                 matching predicate: NSPredicate? = nil,
-                sortedBy descriptors: [NSSortDescriptor]) {
+                sortedBy descriptors: [NSSortDescriptor],
+                fetchLimit: Int? = nil) {
 
         self.viewStorage = viewStorage
         self.sectionNameKeyPath = sectionNameKeyPath
         self.predicate = predicate
         self.sortDescriptors = descriptors
+        self.fetchLimit = fetchLimit
 
         setupResultsController()
         setupEventsForwarding()
@@ -108,12 +117,14 @@ public class ResultsController<T: ResultsControllerMutableType> {
     public convenience init(storageManager: StorageManagerType,
                             sectionNameKeyPath: String? = nil,
                             matching predicate: NSPredicate? = nil,
-                            sortedBy descriptors: [NSSortDescriptor]) {
+                            sortedBy descriptors: [NSSortDescriptor],
+                            fetchLimit: Int? = nil) {
 
         self.init(viewStorage: storageManager.viewStorage,
                   sectionNameKeyPath: sectionNameKeyPath,
                   matching: predicate,
-                  sortedBy: descriptors)
+                  sortedBy: descriptors,
+                  fetchLimit: fetchLimit)
     }
 
 

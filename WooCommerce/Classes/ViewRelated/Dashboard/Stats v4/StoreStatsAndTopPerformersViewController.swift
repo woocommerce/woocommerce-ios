@@ -297,19 +297,23 @@ private extension StoreStatsAndTopPerformersViewController {
         let dayVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                    timeRange: .today,
                                                                    currentDate: currentDate,
-                                                                   canDisplayInAppFeedbackCard: true)
+                                                                   canDisplayInAppFeedbackCard: true,
+                                                                   topEarnerStatsLimit: Constants.topEarnerStatsLimit)
         let weekVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                     timeRange: .thisWeek,
                                                                     currentDate: currentDate,
-                                                                    canDisplayInAppFeedbackCard: false)
+                                                                    canDisplayInAppFeedbackCard: false,
+                                                                    topEarnerStatsLimit: Constants.topEarnerStatsLimit)
         let monthVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                      timeRange: .thisMonth,
                                                                      currentDate: currentDate,
-                                                                     canDisplayInAppFeedbackCard: false)
+                                                                     canDisplayInAppFeedbackCard: false,
+                                                                     topEarnerStatsLimit: Constants.topEarnerStatsLimit)
         let yearVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                     timeRange: .thisYear,
                                                                     currentDate: currentDate,
-                                                                    canDisplayInAppFeedbackCard: false)
+                                                                    canDisplayInAppFeedbackCard: false,
+                                                                    topEarnerStatsLimit: Constants.topEarnerStatsLimit)
 
         periodVCs.append(dayVC)
         periodVCs.append(weekVC)
@@ -401,6 +405,7 @@ private extension StoreStatsAndTopPerformersViewController {
                                                           timeRange: timeRange,
                                                           earliestDateToInclude: earliestDateToInclude,
                                                           latestDateToInclude: latestDateToInclude,
+                                                          quantity: Constants.topEarnerStatsLimit,
                                                           onCompletion: { result in
                                                             switch result {
                                                             case .success:
@@ -470,5 +475,9 @@ private extension StoreStatsAndTopPerformersViewController {
     enum TabStrip {
         static let buttonLeftRightMargin: CGFloat   = 14.0
         static let selectedBarHeight: CGFloat       = 3.0
+    }
+
+    enum Constants {
+        static let topEarnerStatsLimit: Int = 5
     }
 }

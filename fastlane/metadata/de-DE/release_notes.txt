@@ -1,5 +1,0 @@
-Der Tab „Bestellungen“ wurde in dieser Version aktualisiert. Wir haben die Tabs entfernt und stattdessen eine Option zum Filtern nach Status oder Zeitraum hinzugefügt. Diese Änderung basiert auf jahrelangem Feedback der Benutzer. Deshalb wissen wir, dass sie dir gefallen wird!
-
-Wir haben einen möglichen Absturz behoben, der beim Erstellen eines Versandetiketts für eine Bestellung aus einer Push-Benachrichtigung aufgetreten ist. Darüber hinaus haben wir den Anmeldeprozess mit dem Passwort-Manager optimiert. Deine im Passwort-Manager gespeicherten Daten zu Benutzername und Passwort für WordPress.com werden ganz oben auf der Liste angezeigt!
-
-Wir freuen uns auf weiteres Feedback. Vielen Dank, dass du WooCommerce nutzt!

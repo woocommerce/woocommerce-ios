@@ -26,6 +26,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     @Published var enableTaxes: Bool = false {
         didSet {
+            storeTaxesToggleState()
             analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowTaxesToggled(isOn: enableTaxes))
         }
     }
@@ -72,6 +73,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     private let orderID: Int64
 
+    /// Order Key. Needed to generate the payment link in `PaymentMethodViewModel`
+    ///
+    private let orderKey: String
+
     /// Fee ID to update.
     ///
     private let feeID: Int64
@@ -98,6 +103,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
          noteContent: String? = nil,
          siteID: Int64 = 0,
          orderID: Int64 = 0,
+         orderKey: String = "",
          feeID: Int64 = 0,
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
@@ -105,6 +111,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.orderID = orderID
+        self.orderKey = orderKey
         self.feeID = feeID
         self.presentNoticeSubject = presentNoticeSubject
         self.currencyFormatter = currencyFormatter
@@ -132,6 +139,9 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         if let noteContent = noteContent {
             noteViewModel = SimplePaymentsNoteViewModel(originalNote: noteContent)
         }
+
+        // Loads the latest stored taxes toggle state.
+        loadCurrentTaxesToggleState()
     }
 
     convenience init(order: Order,
@@ -144,6 +154,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                   taxAmount: order.totalTax,
                   siteID: order.siteID,
                   orderID: order.orderID,
+                  orderKey: order.orderKey,
                   feeID: order.fees.first?.feeID ?? 0,
                   presentNoticeSubject: presentNoticeSubject,
                   currencyFormatter: currencyFormatter,
@@ -192,9 +203,34 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     func createMethodsViewModel() -> SimplePaymentsMethodsViewModel {
         SimplePaymentsMethodsViewModel(siteID: siteID,
                                        orderID: orderID,
+                                       orderKey: orderKey,
                                        formattedTotal: total,
                                        presentNoticeSubject: presentNoticeSubject,
                                        stores: stores)
+    }
+}
+
+// MARK: Helpers
+private extension SimplePaymentsSummaryViewModel {
+    /// Loads the current taxes toggle state.
+    ///
+    func loadCurrentTaxesToggleState() {
+        let action = AppSettingsAction.getSimplePaymentsTaxesToggleState(siteID: siteID) { result in
+            guard case .success(let isOn) = result else {
+                return
+            }
+            self.enableTaxes = isOn
+        }
+        stores.dispatch(action)
+    }
+
+    /// Stores the current taxes toggle state for later query.
+    ///
+    func storeTaxesToggleState() {
+        let action = AppSettingsAction.setSimplePaymentsTaxesToggleState(siteID: siteID, isOn: enableTaxes) { _ in
+            // No op
+        }
+        stores.dispatch(action)
     }
 }
 

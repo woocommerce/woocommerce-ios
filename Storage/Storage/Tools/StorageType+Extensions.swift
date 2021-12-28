@@ -501,6 +501,23 @@ public extension StorageType {
         return firstObject(ofType: ShippingLabelSettings.self, matching: predicate)
     }
 
+
+    // MARK: - Coupons
+
+    /// Returns a single Coupon given a `siteID` and `CouponID`
+    ///
+    func loadCoupon(siteID: Int64, couponID: Int64) -> Coupon? {
+        let predicate = \Coupon.siteID == siteID && \Coupon.couponID == couponID
+        return firstObject(ofType: Coupon.self, matching: predicate)
+    }
+
+    /// Returns all stored coupons for a site
+    ///
+    func loadAllCoupons(siteID: Int64) -> [Coupon] {
+        let predicate = \Coupon.siteID == siteID
+        return allObjects(ofType: Coupon.self, matching: predicate, sortedBy: nil)
+    }
+
     /// Returns all stored shipping label account settings for a site.
     ///
     func loadShippingLabelAccountSettings(siteID: Int64) -> ShippingLabelAccountSettings? {

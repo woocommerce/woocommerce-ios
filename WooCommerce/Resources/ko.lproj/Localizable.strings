@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-12-07 11:54:03+0000 */
+/* Translation-Revision-Date: 2021-12-15 11:32:07+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -30,7 +30,12 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@(고객에게)";
 
-/* Label about product's inventory stock status shown on Products tab */
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string, - which should be translated separately and considered part of this sentence. */
+"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ about accepting payments with your mobile device and ordering card readers";
+
+/* Label about product's inventory stock status shown during order creation
+   Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ 재고 있음";
 
 /* Review title. Reads as {Review author} left a review */
@@ -292,7 +297,8 @@
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "가격 추가";
 
-/* Action to add product on the placeholder overlay when there are no products on the Products tab */
+/* Action to add product on the placeholder overlay when there are no products on the Products tab
+   Title for the screen to add a product to an order */
 "Add Product" = "제품 추가";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
@@ -619,7 +625,7 @@
 "Can Not Request Link" = "링크를 요청할 수 없음";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "취소";
 
 /* Display label for cancelled order status. */
@@ -731,8 +737,8 @@
 /* Button title for clearing all filters for the list. */
 "Clear all" = "모두 지우기";
 
-/* Text for the close button in the Edit Address Form
-   Title of the Close action on the Jetpack Install view */
+/* Text for the close button in the Add Product screen
+   Text for the close button in the Edit Address Form - Title of the Close action on the Jetpack Install view */
 "Close" = "닫기";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
@@ -740,6 +746,12 @@
 
 /* Text on the button that starts collecting a card present payment. */
 "Collect Payment" = "결제받기";
+
+/* Alert title when starting the collect payment flow without a user name. */
+"Collect payment" = "Collect payment";
+
+/* Alert title when starting the collect payment flow with a user name. */
+"Collect payment from %1$@" = "Collect payment from %1$@";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -973,7 +985,7 @@
 "Customer" = "고객";
 
 /* Customer note row title
-   Customer note section title */
+   Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
 "Customer Provided Note" = "고객이 남긴 메모";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
@@ -1084,7 +1096,7 @@
 "Don't have an account? _Sign up_" = "아직 계정이 없으신가요? _가입_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done button on the Jetpack Install Progress screen. - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Title for the button to confirm the amount in the simple payments screen */
+   Done button on the Jetpack Install Progress screen. - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
 "Done" = "완료";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1154,7 +1166,8 @@
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "고유 코드로 제품을 간편하게 식별합니다.";
 
-/* Title text of the button that edits a note when creating a simple payment */
+/* Button to edit an order status on the New Order screen
+   Title text of the button that edits a note when creating a simple payment */
 "Edit" = "편집";
 
 /* Action to edit the address in Shipping Label Suggested screen */
@@ -1163,9 +1176,6 @@
 /* Action to edit the attributes and options used for variations
    Navigation title for the Product Attributes screen */
 "Edit Attributes" = "속성 편집";
-
-/* Title for the edit customer provided note screen */
-"Edit Note" = "메모 편집";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "제품 편집";
@@ -1223,6 +1233,9 @@
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "**프린터 펌웨어가 최신 상태**인지 확인하세요. 프린터 설명서에서 업데이트에 대한 지침을 참조하세요.";
 
+/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+"Enter Address" = "Enter Address";
+
 /* Short instructions label in the simple payments screen */
 "Enter Amount" = "금액 입력";
 
@@ -1264,12 +1277,12 @@
 /* Enter password placeholder in Product Visibility */
 "Enter password" = "비밀번호 입력";
 
+/* Sign in instructions for logging in with a URL. */
+"Enter the address of the WooCommerce store you'd like to connect." = "Enter the address of the WooCommerce store you'd like to connect.";
+
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
 "Enter the address of the WordPress site you'd like to connect." = "연결하려는 워드프레스 사이트 주소를 입력하세요.";
-
-/* Sign in instructions for logging in with a URL. */
-"Enter the address of your WooCommerce store you'd like to connect." = "연결하려는 WooCommerce 스토어의 주소를 입력합니다.";
 
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "제품의 외부 URL을 입력하세요.";
@@ -1562,6 +1575,9 @@
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "어떻게 개선할 수 있을까요?";
 
+/* Navigation bar title of hub menu view */
+"Hub Menu" = "Hub Menu";
+
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "좋아요";
 
@@ -1789,8 +1805,8 @@
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Wormholy 디버그 시작";
 
-/* Button title in the shipping label creation info screen
-   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. - Button title in the shipping label creation info screen - Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
 "Learn more" = "더 알아보기";
 
 /* A label prompting users to learn more about HS Tariff Number in Customs screen of Shipping Label flow */
@@ -1944,6 +1960,12 @@
    Fulfill Order Action Button */
 "Mark Order Complete" = "주문을 완료로 표시";
 
+/* Alert button when selecting the cash payment method for simple payments */
+"Mark as Paid" = "Mark as Paid";
+
+/* Alert title when selecting the cash payment method for simple payments */
+"Mark as Paid?" = "Mark as Paid?";
+
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "이 주문을 완료로 표시하고 고객에게 알립니다.";
 
@@ -1952,6 +1974,9 @@
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "미디어에 업로드할 관련 파일이 없습니다.";
+
+/* Title of the Menu tab */
+"Menu" = "메뉴";
 
 /* Menu order label in Product Settings
    Product Menu Order navigation title */
@@ -2086,6 +2111,9 @@
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "가격이 설정되지 않음";
+
+/* Message displayed if there are no products to display in the Add Product screen */
+"No products found" = "제품을 찾을 수 없음";
 
 /* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
@@ -2222,9 +2250,6 @@
 
 /* Cell title on the beta features screen to enable creating new orders */
 "Order Creation" = "주문 생성";
-
-/* Title text of the row that holds the order note when creating a simple payment */
-"Order Note" = "주문 메모";
 
 /* Order notes section title */
 "Order Notes" = "주문 메모";
@@ -2381,6 +2406,12 @@
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "리더를 충전하세요.";
 
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
+"Please correct your store address to proceed" = "Please correct your store address to proceed";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"Please correct your store's postcode\/ZIP" = "Please correct your store's postcode\/ZIP";
+
 /* Error message for missing explanation when Content Typeis Other in Customs screen of Shipping Label flow */
 "Please describe what kind of goods this package contains" = "이 패키지에 들어 있는 상품의 종류를 설명하세요.";
 
@@ -2454,7 +2485,7 @@
 "Please update your reader software to keep accepting payments" = "결제를 계속 수락하려면 리더 소프트웨어를 업데이트하세요.";
 
 /* Message of in-progress modal when preparing for printing customs invoice
-   Message of in-progress modal when requesting shipping label document for printing - Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait */
+   Message of in-progress modal when requesting shipping label document for printing - Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait - VoiceOver Accessibility label for the instruction */
 "Please wait" = "기다려 주세요.";
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
@@ -2561,6 +2592,9 @@
 /* Display label for processing order status. */
 "Processing" = "처리 중";
 
+/* VoiceOver accessibility label. Indicates that a payment is being processed */
+"Processing payment" = "Processing payment";
+
 /* Indicates that a payment is being processed */
 "Processing payment..." = "결제 처리 중...";
 
@@ -2663,8 +2697,8 @@
 /* Quantity abbreviation for section title */
 "Qty" = "수량";
 
-/* The accessibility label for the quantity button when selecting an item to refund
-   Title of the cell in Product Inventory Settings > Quantity */
+/* Accessibility label for product quantity field
+   The accessibility label for the quantity button when selecting an item to refund - Title of the cell in Product Inventory Settings > Quantity */
 "Quantity" = "수량";
 
 /* Navigation title on the quantity item selector screen */
@@ -2824,6 +2858,10 @@
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
    Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
 "Retry" = "재실행";
+
+/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
+   Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
+"Retry After Updating" = "Retry After Updating";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "패키지를 배송할 수 없는 경우 보낸 사람에게 반송";
@@ -3373,7 +3411,8 @@
 /* Title for the simple payments screen */
 "Take Payment" = "결제하기";
 
-/* Text of the button that creates a simple payment order. Contains the total amount to collect */
+/* Navigation bar title for the Simple Payments Methods screens
+   Text of the button that creates a simple payment order. Contains the total amount to collect */
 "Take Payment ((total))" = "결제 진행((합계))";
 
 /* Menu option for taking an image or video with the device's camera. */
@@ -3639,6 +3678,12 @@
    Notice text after failing to update the order successfully */
 "There was an error updating the order" = "주문 업데이트 중 오류가 발생했습니다.";
 
+/* Text when there is an error while marking the order as paid for simple payments. */
+"There was an error while marking the order as paid." = "There was an error while marking the order as paid.";
+
+/* Text when there is an unknown error while trying to collect payments */
+"There was an error while trying to collect the payment." = "There was an error while trying to collect the payment.";
+
 /* Navigates to screen with third party software licenses
    Software Licenses (information page title) */
 "Third Party Licenses" = "타사 라이선스";
@@ -3703,6 +3748,9 @@
 
 /* Footer text for editing external product button text */
 "This text will be shown on the button linking to the external product." = "외부 제품으로 연결되는 버튼에 표시되는 텍스트입니다.";
+
+/* Alert info when selecting the cash payment method for simple payments */
+"This will mark your order as complete if you received (total) outside of WooCommerce" = "This will mark your order as complete if you received (total) outside of WooCommerce";
 
 /* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
@@ -4167,9 +4215,6 @@
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "기기에서 제품 애드온을 더 쉽게 보실 수 있도록 하려고 작업하는 중입니다. 지금 당장은 주문에 대한 애드온을 보실 수 있습니다. 웹 대시보드에서 이러한 애드온을 생성하고 편집하실 수 있습니다.";
 
-/* Content of the top banner to announce the simple payments feature. */
-"We are working on making it easier for you to take payments from your device! Enable Simple Payments in Settings > Experimental Features." = "기기에서 더 쉽게 결제할 수 있도록 만들려고 노력하고 있습니다! 설정 > 실험 기능에서 간편한 결제를 활성화하세요.";
-
 /* Content of the banner notice in the Simple Payments view */
 "We are working on making it easier for you to take payments from your device! For now, tap on the \"+\" button and you’ll be able to create an order with the amount you want to collect" = "기기에서 더 쉽게 결제할 수 있도록 만들려고 노력하고 있습니다! 지금은 \"+\" 버튼을 누르면 받으려는 금액으로 주문을 생성할 수 있습니다.";
 
@@ -4302,6 +4347,9 @@
 /* Title for the error screen when WooCommerce Payments is in test mode on a live site */
 "WooCommerce Payments is in Test Mode" = "우커머스 결제가 테스트 모드로 되어 있습니다.";
 
+/* Navigation title of the webview which used by the merchant to update their store address */
+"WooCommerce Settings" = "WooCommerce Settings";
+
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce 배송";
 
@@ -4339,8 +4387,14 @@
 /* The info of the shipping labels top banner in order details */
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "이제 무료 WooCommerce 배송 플러그인이 있는 기기에서 바로 모든 실물 주문의 배송 레이블을 만들 수 있습니다. \"배송 레이블 만들기\"를 눌러 베타 기능을 사용해 보세요!";
 
+/* Shown in Refunds screen. Refunding fees are currently not supported. */
+"You can refund fees in your store admin" = "You can refund fees in your store admin";
+
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "패키지를 배송하는 데 사용되지 않은 배송 레이블은 환불을 요청할 수 있습니다.\n처리하는 데 14일 이상 걸립니다.";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)";
 
 /* Error message when WooCommerce Payments is not supported in a specific country
    Generic error message when In-Person Payments is unavailable */
@@ -4426,11 +4480,11 @@
 /* About View's Footer Text. The variable is the current year */
 "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. 및 WooCommerce Ireland Ltd.";
 
-/* Customer note, wrapped in quotes */
-"“%@”" = "“%@”";
-
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 주문 완료됨";
+
+/* Title for the button to cancel the simple payments screen */
+"🎉 Order completed" = "";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉개 제품이 환불되었음";

@@ -176,6 +176,14 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.houseOutlinedImage)
     }
 
+    func testStoreImageIsNotNil() {
+        XCTAssertNotNil(UIImage.storeImage)
+    }
+
+    func testCotImageIsNotNil() {
+        XCTAssertNotNil(UIImage.cogImage)
+    }
+
     func testIconImageIsNotNil() {
         XCTAssertNotNil(UIImage.infoImage)
     }
@@ -362,10 +370,6 @@ final class IconsTests: XCTestCase {
 
     func testPencilImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.pencilImage)
-    }
-
-    func testQuoteImageIconIsNotNil() {
-        XCTAssertNotNil(UIImage.quoteImage)
     }
 
     func testPagesImageIconIsNotNil() {

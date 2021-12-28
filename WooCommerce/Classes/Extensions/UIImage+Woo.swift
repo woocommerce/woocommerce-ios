@@ -308,6 +308,18 @@ extension UIImage {
         UIImage(imageLiteralResourceName: "icon-house-outlined")
     }
 
+    /// Store Image
+    ///
+    static var storeImage: UIImage {
+        UIImage(named: "icon-store")!
+    }
+
+    /// Cog Image
+    ///
+    static var cogImage: UIImage {
+        return UIImage.gridicon(.cog)
+    }
+
     /// Login prologue curved rectangle
     ///
     static var curvedRectangle: UIImage {
@@ -645,12 +657,6 @@ extension UIImage {
         return UIImage.gridicon(.pencil)
             .imageWithTintColor(tintColor)!
             .imageFlippedForRightToLeftLayoutDirection()
-    }
-
-    /// Quote Image
-    ///
-    static var quoteImage: UIImage {
-        return UIImage.gridicon(.quote)
     }
 
     /// Pages Icon

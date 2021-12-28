@@ -66,6 +66,7 @@ extension ProductsTabProductTableViewCell {
     func update(viewModel: ProductsTabProductViewModel, imageService: ImageService) {
         nameLabel.text = viewModel.createNameLabel()
         detailsLabel.attributedText = viewModel.detailsAttributedString
+        accessibilityIdentifier = viewModel.createNameLabel()
 
         productImageView.contentMode = .center
         if viewModel.isDraggable {

@@ -208,11 +208,27 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.customerDataViewModel.isDataAvailable)
 
         // When
-        viewModel.orderDetails.billingAddress = sampleAddress()
+        viewModel.orderDetails.billingAddress = sampleAddress1()
 
         // Then
         XCTAssertTrue(viewModel.customerDataViewModel.isDataAvailable)
-        XCTAssertEqual(viewModel.customerDataViewModel.fullName, sampleAddress().fullName)
+        XCTAssertEqual(viewModel.customerDataViewModel.fullName, sampleAddress1().fullName)
+    }
+
+    func test_customer_data_view_model_is_initialized_correctly_from_addresses() {
+        // Given
+        let sampleAddressWithoutNameAndEmail = sampleAddress2()
+
+        // When
+        let customerDataViewModel = NewOrderViewModel.CustomerDataViewModel(billingAddress: sampleAddressWithoutNameAndEmail,
+                                                                            shippingAddress: nil)
+
+        // Then
+        XCTAssertTrue(customerDataViewModel.isDataAvailable)
+        XCTAssertNil(customerDataViewModel.fullName)
+        XCTAssertNil(customerDataViewModel.email)
+        XCTAssertNotNil(customerDataViewModel.billingAddressFormatted)
+        XCTAssertNil(customerDataViewModel.shippingAddressFormatted)
     }
 }
 
@@ -234,7 +250,7 @@ private extension MockStorageManager {
 }
 
 private extension NewOrderViewModelTests {
-    func sampleAddress() -> Address {
+    func sampleAddress1() -> Address {
         return Address(firstName: "Johnny",
                        lastName: "Appleseed",
                        company: nil,
@@ -246,5 +262,19 @@ private extension NewOrderViewModelTests {
                        country: "US",
                        phone: "333-333-3333",
                        email: "scrambled@scrambled.com")
+    }
+
+    func sampleAddress2() -> Address {
+        return Address(firstName: "",
+                       lastName: "",
+                       company: "Automattic",
+                       address1: "234 70th Street",
+                       address2: nil,
+                       city: "Niagara Falls",
+                       state: "NY",
+                       postcode: "14304",
+                       country: "US",
+                       phone: "333-333-3333",
+                       email: "")
     }
 }

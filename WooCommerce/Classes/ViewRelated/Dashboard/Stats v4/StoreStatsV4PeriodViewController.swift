@@ -68,7 +68,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var ordersData: UILabel!
     @IBOutlet private weak var revenueTitle: UILabel!
     @IBOutlet private weak var revenueData: UILabel!
-    @IBOutlet private weak var barChartView: LineChartView!
+    @IBOutlet private weak var lineChartView: LineChartView!
     @IBOutlet private weak var lastUpdated: UILabel!
     @IBOutlet private weak var yAxisAccessibilityView: UIView!
     @IBOutlet private weak var xAxisAccessibilityView: UIView!
@@ -191,7 +191,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        barChartView?.clear()
+        lineChartView?.clear()
     }
 }
 
@@ -199,7 +199,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
 //
 extension StoreStatsV4PeriodViewController {
     func clearAllFields() {
-        barChartView?.clear()
+        lineChartView?.clear()
         reloadAllFields(animateChart: false)
     }
 }
@@ -339,21 +339,21 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func configureBarChart() {
-        barChartView.marker = StoreStatsChartCircleMarker()
-        barChartView.chartDescription?.enabled = false
-        barChartView.dragEnabled = true
-        barChartView.setScaleEnabled(false)
-        barChartView.pinchZoomEnabled = false
-        barChartView.rightAxis.enabled = false
-        barChartView.legend.enabled = false
-        barChartView.noDataText = NSLocalizedString("No data available", comment: "Text displayed when no data is available for revenue chart.")
-        barChartView.noDataFont = StyleManager.chartLabelFont
-        barChartView.noDataTextColor = .textSubtle
-        barChartView.extraRightOffset = Constants.chartExtraRightOffset
-        barChartView.extraTopOffset = Constants.chartExtraTopOffset
-        barChartView.delegate = self
+        lineChartView.marker = StoreStatsChartCircleMarker()
+        lineChartView.chartDescription?.enabled = false
+        lineChartView.dragEnabled = true
+        lineChartView.setScaleEnabled(false)
+        lineChartView.pinchZoomEnabled = false
+        lineChartView.rightAxis.enabled = false
+        lineChartView.legend.enabled = false
+        lineChartView.noDataText = NSLocalizedString("No data available", comment: "Text displayed when no data is available for revenue chart.")
+        lineChartView.noDataFont = StyleManager.chartLabelFont
+        lineChartView.noDataTextColor = .textSubtle
+        lineChartView.extraRightOffset = Constants.chartExtraRightOffset
+        lineChartView.extraTopOffset = Constants.chartExtraTopOffset
+        lineChartView.delegate = self
 
-        let xAxis = barChartView.xAxis
+        let xAxis = lineChartView.xAxis
         xAxis.labelPosition = .bottom
         xAxis.labelFont = StyleManager.chartLabelFont
         xAxis.labelTextColor = .textSubtle
@@ -367,7 +367,7 @@ private extension StoreStatsV4PeriodViewController {
         xAxis.valueFormatter = self
         updateChartXAxisLabelCount(xAxis: xAxis, timeRange: timeRange)
 
-        let yAxis = barChartView.leftAxis
+        let yAxis = lineChartView.leftAxis
         yAxis.labelFont = StyleManager.chartLabelFont
         yAxis.labelTextColor = .textSubtle
         yAxis.axisLineColor = .systemColor(.separator)
@@ -407,10 +407,10 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func updateBarChartAxisUI(hasRevenue: Bool) {
-        let xAxis = barChartView.xAxis
+        let xAxis = lineChartView.xAxis
         xAxis.labelTextColor = .textSubtle
 
-        let yAxis = barChartView.leftAxis
+        let yAxis = lineChartView.leftAxis
         yAxis.labelTextColor = .textSubtle
     }
 }
@@ -593,8 +593,8 @@ private extension StoreStatsV4PeriodViewController {
 
 
     func chartSummaryString() -> String {
-        guard let dataSet = barChartView.lineData?.dataSets.first as? LineChartDataSet, dataSet.count > 0 else {
-            return barChartView.noDataText
+        guard let dataSet = lineChartView.lineData?.dataSets.first as? LineChartDataSet, dataSet.count > 0 else {
+            return lineChartView.noDataText
         }
 
         var chartSummaryString = ""
@@ -741,13 +741,13 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func reloadChart(animateChart: Bool = true) {
-        guard barChartView != nil else {
+        guard lineChartView != nil else {
             return
         }
-        barChartView.data = generateBarDataSet()
-        barChartView.notifyDataSetChanged()
+        lineChartView.data = generateChartDataSet()
+        lineChartView.notifyDataSetChanged()
         if animateChart {
-            barChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
+            lineChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
         }
         updateChartAccessibilityValues()
 
@@ -762,7 +762,7 @@ private extension StoreStatsV4PeriodViewController {
         if lastUpdated != nil { lastUpdated.text = summaryDateUpdated }
     }
 
-    func generateBarDataSet() -> LineChartData? {
+    func generateChartDataSet() -> LineChartData? {
         guard !orderStatsIntervals.isEmpty else {
             return nil
         }

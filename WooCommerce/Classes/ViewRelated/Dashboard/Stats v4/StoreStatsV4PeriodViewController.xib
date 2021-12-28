@@ -11,10 +11,10 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="StoreStatsV4PeriodViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
-                <outlet property="barChartView" destination="zPE-Y0-ax8" id="3VU-s1-JmV"/>
                 <outlet property="chartAccessibilityView" destination="NEo-bw-gS4" id="Ep1-tI-L3J"/>
                 <outlet property="containerStackView" destination="0he-5g-kXa" id="ni7-uB-XHh"/>
                 <outlet property="lastUpdated" destination="0Wi-nd-Ucs" id="XPO-tH-TLR"/>
+                <outlet property="lineChartView" destination="zPE-Y0-ax8" id="3VU-s1-JmV"/>
                 <outlet property="noRevenueLabel" destination="5uh-zy-gDZ" id="ZRx-lP-Af2"/>
                 <outlet property="noRevenueView" destination="fg2-ey-bVn" id="LBf-aq-yXB"/>
                 <outlet property="ordersData" destination="6HA-Qe-PkT" id="zOF-dV-3LN"/>

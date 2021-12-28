@@ -839,6 +839,7 @@ private extension AppSettingsStoreTests {
             isViewAddOnsSwitchEnabled: false,
             isOrderCreationSwitchEnabled: false,
             isStripeInPersonPaymentsSwitchEnabled: false,
+            isProductSKUInputScannerSwitchEnabled: false,
             knownCardReaders: []
         )
         return (settings, feedback)

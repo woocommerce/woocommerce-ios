@@ -4,7 +4,7 @@ import Yosemite
 
 /// Contains UI for Beta features that can be turned on and off.
 ///
-class BetaFeaturesViewController: UIViewController {
+final class BetaFeaturesViewController: UIViewController {
 
     /// Main TableView
     ///
@@ -75,7 +75,8 @@ private extension BetaFeaturesViewController {
         self.sections = [
             productsSection(),
             orderCreationSection(),
-            inPersonPaymentsSection()
+            inPersonPaymentsSection(),
+            productSKUInputScannerSection()
         ].compactMap { $0 }
     }
 
@@ -100,6 +101,15 @@ private extension BetaFeaturesViewController {
 
         return Section(rows: [.stripeExtensionInPersonPayments,
                               .stripeExtensionInPersonPaymentsDescription])
+    }
+
+    func productSKUInputScannerSection() -> Section? {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productSKUInputScanner), UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            return nil
+        }
+
+        return Section(rows: [.productSKUInputScanner,
+                              .productSKUInputScannerDescription])
     }
 
     /// Register table cells.
@@ -134,6 +144,11 @@ private extension BetaFeaturesViewController {
             configureStripeExtensionInPersonPaymentsSwitch(cell: cell)
         case let cell as BasicTableViewCell where row == .stripeExtensionInPersonPaymentsDescription:
             configureStripeExtensionInPersonPaymentsDescription(cell: cell)
+        // Product SKU Input Scanner
+        case let cell as SwitchTableViewCell where row == .productSKUInputScanner:
+            configureProductSKUInputScannerSwitch(cell: cell)
+        case let cell as BasicTableViewCell where row == .productSKUInputScannerDescription:
+            configureProductSKUInputScannerDescription(cell: cell)
         default:
             fatalError()
         }
@@ -235,6 +250,37 @@ private extension BetaFeaturesViewController {
         configureCommonStylesForDescriptionCell(cell)
         cell.textLabel?.text = Localization.stripeExtensionInPersonPaymentsDescription
     }
+
+    func configureProductSKUInputScannerSwitch(cell: SwitchTableViewCell) {
+        configureCommonStylesForSwitchCell(cell)
+        cell.title = Localization.productSKUInputScannerTitle
+
+        // Fetch switch's state stored value.
+        let action = AppSettingsAction.loadProductSKUInputScannerFeatureSwitchState { result in
+            guard let isEnabled = try? result.get() else {
+                return cell.isOn = false
+            }
+            cell.isOn = isEnabled
+        }
+        ServiceLocator.stores.dispatch(action)
+
+        // Change switch's state stored value
+        cell.onChange = { isSwitchOn in
+            let action = AppSettingsAction.setProductSKUInputScannerFeatureSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
+                // Roll back toggle if an error occurred
+                if result.isFailure {
+                    cell.isOn.toggle()
+                }
+            })
+            ServiceLocator.stores.dispatch(action)
+        }
+        cell.accessibilityIdentifier = "beta-features-product-sku-input-scanner-cell"
+    }
+
+    func configureProductSKUInputScannerDescription(cell: BasicTableViewCell) {
+        configureCommonStylesForDescriptionCell(cell)
+        cell.textLabel?.text = Localization.productSKUInputScannerDescription
+    }
 }
 
 // MARK: - Shared Configurations
@@ -307,11 +353,15 @@ private enum Row: CaseIterable {
     case stripeExtensionInPersonPayments
     case stripeExtensionInPersonPaymentsDescription
 
+    // Product SKU Input Scanner
+    case productSKUInputScanner
+    case productSKUInputScannerDescription
+
     var type: UITableViewCell.Type {
         switch self {
-        case .orderAddOns, .orderCreation, .stripeExtensionInPersonPayments:
+        case .orderAddOns, .orderCreation, .stripeExtensionInPersonPayments, .productSKUInputScanner:
             return SwitchTableViewCell.self
-        case .orderAddOnsDescription, .orderCreationDescription, .stripeExtensionInPersonPaymentsDescription:
+        case .orderAddOnsDescription, .orderCreationDescription, .stripeExtensionInPersonPaymentsDescription, .productSKUInputScannerDescription:
             return BasicTableViewCell.self
         }
     }
@@ -345,5 +395,12 @@ private extension BetaFeaturesViewController {
             "Test out In-Person Payments with the Stripe Payment Gateway extension",
             comment: "Cell description on beta features screen to enable accepting in-person payments for stores with " +
             "the WooCommerce Stripe Payment Gateway extension")
+
+        static let productSKUInputScannerTitle = NSLocalizedString(
+            "Product SKU Scanner",
+            comment: "Cell title on beta features screen to enable product SKU input scanner in inventory settings.")
+        static let productSKUInputScannerDescription = NSLocalizedString(
+            "Test out scanning a barcode for a product SKU in the product inventory settings",
+            comment: "Cell description on beta features screen to enable product SKU input scanner in inventory settings.")
     }
 }

@@ -161,6 +161,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
                                           feedbacks: [:], isViewAddOnsSwitchEnabled: false,
                                           isOrderCreationSwitchEnabled: false,
                                           isStripeInPersonPaymentsSwitchEnabled: false,
+                                          isProductSKUInputScannerSwitchEnabled: false,
                                           knownCardReaders: [])
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsVariations)
 
@@ -227,6 +228,7 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
             isViewAddOnsSwitchEnabled: false,
             isOrderCreationSwitchEnabled: false,
             isStripeInPersonPaymentsSwitchEnabled: false,
+            isProductSKUInputScannerSwitchEnabled: false,
             knownCardReaders: []
         )
         return settings

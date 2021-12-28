@@ -76,6 +76,7 @@
 		0217399B2772F9DD0084CD89 /* StoreStatsV4PeriodViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 021739992772F9DC0084CD89 /* StoreStatsV4PeriodViewController.xib */; };
 		0217399C2772F9DD0084CD89 /* StoreStatsV4PeriodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0217399A2772F9DD0084CD89 /* StoreStatsV4PeriodViewController.swift */; };
 		0217399E2772FB7E0084CD89 /* StoreStatsAndTopPerformersPeriodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0217399D2772FB7E0084CD89 /* StoreStatsAndTopPerformersPeriodViewController.swift */; };
+		021739A02773F5F60084CD89 /* StoreStatsChartCircleMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0217399F2773F5F50084CD89 /* StoreStatsChartCircleMarker.swift */; };
 		0218B4EC242E06F00083A847 /* MediaType+WPMediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0218B4EB242E06F00083A847 /* MediaType+WPMediaType.swift */; };
 		0219B03723964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0219B03623964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift */; };
 		021A84E0257DFC2A00BC71D1 /* RefundShippingLabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021A84DE257DFC2A00BC71D1 /* RefundShippingLabelViewController.swift */; };
@@ -1642,6 +1643,7 @@
 		021739992772F9DC0084CD89 /* StoreStatsV4PeriodViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoreStatsV4PeriodViewController.xib; sourceTree = "<group>"; };
 		0217399A2772F9DD0084CD89 /* StoreStatsV4PeriodViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreStatsV4PeriodViewController.swift; sourceTree = "<group>"; };
 		0217399D2772FB7E0084CD89 /* StoreStatsAndTopPerformersPeriodViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreStatsAndTopPerformersPeriodViewController.swift; sourceTree = "<group>"; };
+		0217399F2773F5F50084CD89 /* StoreStatsChartCircleMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsChartCircleMarker.swift; sourceTree = "<group>"; };
 		0218B4EB242E06F00083A847 /* MediaType+WPMediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaType+WPMediaType.swift"; sourceTree = "<group>"; };
 		0219B03623964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedProductShippingClassListSelectorDataSource.swift; sourceTree = "<group>"; };
 		021A84DE257DFC2A00BC71D1 /* RefundShippingLabelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingLabelViewController.swift; sourceTree = "<group>"; };
@@ -3810,6 +3812,7 @@
 				0217399D2772FB7E0084CD89 /* StoreStatsAndTopPerformersPeriodViewController.swift */,
 				0217399A2772F9DD0084CD89 /* StoreStatsV4PeriodViewController.swift */,
 				021739992772F9DC0084CD89 /* StoreStatsV4PeriodViewController.xib */,
+				0217399F2773F5F50084CD89 /* StoreStatsChartCircleMarker.swift */,
 				021739972772CE220084CD89 /* OldStoreStatsAndTopPerformersViewController.swift */,
 				028BAC3F22F2EFA5008BB4AF /* OldStoreStatsAndTopPerformersPeriodViewController.swift */,
 				0222729127746D8B007D3851 /* OldStoreStatsV4PeriodViewController.swift */,
@@ -8077,6 +8080,7 @@
 				748C7782211E294000814F2C /* Double+Woo.swift in Sources */,
 				451C77732404534000413F73 /* ProductSettingsSections.swift in Sources */,
 				D8915DC32372C9EF00F63762 /* UIColor+ColorStudio.swift in Sources */,
+				021739A02773F5F60084CD89 /* StoreStatsChartCircleMarker.swift in Sources */,
 				024DF31623742BB6006658FE /* AztecStrikethroughFormatBarCommand.swift in Sources */,
 				02817B39242B34560050AD8B /* ToolbarView.swift in Sources */,
 				D817586222BB64C300289CFE /* OrderDetailsNotices.swift in Sources */,

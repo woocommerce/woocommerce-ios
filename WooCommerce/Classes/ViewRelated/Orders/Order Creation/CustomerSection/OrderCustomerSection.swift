@@ -8,8 +8,8 @@ struct OrderCustomerSection: View {
     /// View model to drive the view content
     let viewModel: NewOrderViewModel.CustomerDataViewModel
 
-    /// View model to access navigation flow
-    @ObservedObject var orderViewModel: NewOrderViewModel
+    /// View model for Address Form
+    let addressFormViewModel: CreateOrderAddressFormViewModel
 
     @State private var showAddressForm: Bool = false
 
@@ -51,7 +51,7 @@ struct OrderCustomerSection: View {
             NavigationView {
                 EditOrderAddressForm(dismiss: {
                     showAddressForm.toggle()
-                }, viewModel: orderViewModel.createOrderAddressFormViewModel())
+                }, viewModel: addressFormViewModel)
             }
         }
     }
@@ -116,7 +116,7 @@ private extension OrderCustomerSection {
 
 struct OrderCustomerSection_Previews: PreviewProvider {
     static var previews: some View {
-        let orderViewModel = NewOrderViewModel(siteID: 123)
+        let orderAdressFormViewModel = NewOrderViewModel(siteID: 123).createOrderAddressFormViewModel()
         let emptyViewModel = NewOrderViewModel.CustomerDataViewModel(billingAddress: nil, shippingAddress: nil)
         let addressViewModel = NewOrderViewModel.CustomerDataViewModel(fullName: "Johnny Appleseed",
                                                                        email: "scrambled@scrambled.com",
@@ -130,8 +130,8 @@ struct OrderCustomerSection_Previews: PreviewProvider {
 
         GeometryReader { geometry in
             ScrollView {
-                OrderCustomerSection(geometry: geometry, viewModel: emptyViewModel, orderViewModel: orderViewModel)
-                OrderCustomerSection(geometry: geometry, viewModel: addressViewModel, orderViewModel: orderViewModel)
+                OrderCustomerSection(geometry: geometry, viewModel: emptyViewModel, addressFormViewModel: orderAdressFormViewModel)
+                OrderCustomerSection(geometry: geometry, viewModel: addressViewModel, addressFormViewModel: orderAdressFormViewModel)
             }
         }
     }

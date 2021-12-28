@@ -372,10 +372,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.pencilImage)
     }
 
-    func testQuoteImageIconIsNotNil() {
-        XCTAssertNotNil(UIImage.quoteImage)
-    }
-
     func testPagesImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.pagesImage)
     }

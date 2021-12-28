@@ -659,12 +659,6 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
-    /// Quote Image
-    ///
-    static var quoteImage: UIImage {
-        return UIImage.gridicon(.quote)
-    }
-
     /// Pages Icon
     ///
     static var pagesImage: UIImage {

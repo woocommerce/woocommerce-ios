@@ -4,7 +4,7 @@ struct AnalyticsView: View {
     var body: some View {
         ZStack {
             VStack {
-                DateRangeView()
+                DateRangeView(selectedRange: "Today")
                 Spacer()
             }
         }

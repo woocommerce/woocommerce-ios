@@ -1,9 +1,10 @@
 import SwiftUI
 
 // MARK: - DateRangeView
+
 //
 struct DateRangeView: View {
-
+    @State var selectedRange: String
     @State private var showingSheet = false
 
     var body: some View {
@@ -26,10 +27,13 @@ struct DateRangeView: View {
                         .renderingMode(.template)
                         .foregroundColor(Color(UIColor.accent))
                 }
-                .padding(EdgeInsets(top: 18, leading: 16, bottom: 13, trailing: 16))
+                .padding(EdgeInsets(top: Constants.buttonContentTop,
+                                    leading: Constants.buttonContentLeading,
+                                    bottom: Constants.buttonContentBottom,
+                                    trailing: Constants.buttonContentTrailing))
             }
             .sheet(isPresented: $showingSheet) {
-                DateRangeSheet()
+                DateRangeSheet(selectedDateRange: $selectedRange)
             }
             Divider()
         }
@@ -39,6 +43,15 @@ struct DateRangeView: View {
 
 struct DateRangeView_Previews: PreviewProvider {
     static var previews: some View {
-        DateRangeView().previewLayout(.fixed(width: 375, height: 83))
+        DateRangeView(selectedRange: "Today").previewLayout(.fixed(width: 375, height: 83))
+    }
+}
+
+private extension DateRangeView {
+    enum Constants {
+        static let buttonContentTop: CGFloat = 18
+        static let buttonContentLeading: CGFloat = 16
+        static let buttonContentBottom: CGFloat = 13
+        static let buttonContentTrailing: CGFloat = 16
     }
 }

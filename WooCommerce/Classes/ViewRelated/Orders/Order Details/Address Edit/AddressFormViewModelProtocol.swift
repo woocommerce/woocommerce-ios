@@ -170,7 +170,6 @@ class AddressFormViewModel: ObservableObject {
     /// Creates a view model to be used when selecting a country
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {
-        print("created country view model")
         let selectedCountryBinding = Binding(
             get: { self.selectedCountry },
             set: { self.selectedCountry = $0 }

@@ -36,32 +36,7 @@ struct OrderCustomerSection: View {
                 if !viewModel.customerDataViewModel.isDataAvailable {
                     createCustomerView
                 } else {
-                    VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
-                        if let fullName = viewModel.customerDataViewModel.fullName {
-                            Text(fullName)
-                                .bodyStyle()
-                        }
-                        if let email = viewModel.customerDataViewModel.email {
-                            Text(email)
-                                .footnoteStyle()
-                        }
-                    }
-                    if let billingAddressFormatted = viewModel.customerDataViewModel.billingAddressFormatted {
-                        Divider()
-                        Text(Localization.billingTitle)
-                            .headlineStyle()
-                        Spacer()
-                        Text(billingAddressFormatted)
-                            .bodyStyle()
-                    }
-                    if let shippingAddressFormatted = viewModel.customerDataViewModel.shippingAddressFormatted {
-                        Divider()
-                        Text(Localization.shippingTitle)
-                            .headlineStyle()
-                        Spacer()
-                        Text(shippingAddressFormatted)
-                            .bodyStyle()
-                    }
+                    customerDataView
                 }
             }
             .padding(.horizontal, insets: geometry.safeAreaInsets)
@@ -72,7 +47,7 @@ struct OrderCustomerSection: View {
         }
     }
 
-    var createCustomerView: some View {
+    private var createCustomerView: some View {
         Button(Localization.addCustomer) {
             showAddressForm.toggle()
         }
@@ -89,12 +64,44 @@ struct OrderCustomerSection: View {
             }
         }
     }
+
+    private var customerDataView: some View {
+        Group {
+            VStack(alignment: .leading, spacing: Layout.verticalEmailSpacing) {
+                if let fullName = viewModel.customerDataViewModel.fullName {
+                    Text(fullName)
+                        .bodyStyle()
+                }
+                if let email = viewModel.customerDataViewModel.email {
+                    Text(email)
+                        .footnoteStyle()
+                }
+            }
+            if let billingAddressFormatted = viewModel.customerDataViewModel.billingAddressFormatted {
+                addressDetails(title: Localization.billingTitle, formattedAddress: billingAddressFormatted)
+            }
+            if let shippingAddressFormatted = viewModel.customerDataViewModel.shippingAddressFormatted {
+                addressDetails(title: Localization.shippingTitle, formattedAddress: shippingAddressFormatted)
+            }
+        }
+    }
+
+    @ViewBuilder private func addressDetails(title: String, formattedAddress: String) -> some View {
+        Divider()
+        VStack(alignment: .leading, spacing: Layout.verticalAddressSpacing) {
+            Text(title)
+                .headlineStyle()
+            Text(formattedAddress)
+                .bodyStyle()
+        }
+    }
 }
 
 // MARK: Constants
 private extension OrderCustomerSection {
     enum Layout {
-        static let verticalSpacing: CGFloat = 4.0
+        static let verticalEmailSpacing: CGFloat = 4.0
+        static let verticalAddressSpacing: CGFloat = 6.0
         static let linkButtonTopPadding: CGFloat = 12.0
         static let linkButtonTrailingPadding: CGFloat = 22.0
     }

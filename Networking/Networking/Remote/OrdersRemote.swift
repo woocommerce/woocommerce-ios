@@ -139,6 +139,14 @@ public class OrdersRemote: Remote {
                             [OrderItem.CodingKeys.productID.rawValue: item.productID,
                              OrderItem.CodingKeys.quantity.rawValue: Int64(truncating: item.quantity as NSDecimalNumber)]
                         }
+                    case .billingAddress:
+                        if let billingAddress = order.billingAddress {
+                            params[Order.CodingKeys.billingAddress.rawValue] = try billingAddress.toDictionary()
+                        }
+                    case .shippingAddress:
+                        if let shippingAddress = order.shippingAddress {
+                            params[Order.CodingKeys.shippingAddress.rawValue] = try shippingAddress.toDictionary()
+                        }
                     }
                 }
             }()
@@ -283,5 +291,7 @@ public extension OrdersRemote {
         case feeLines
         case status
         case items
+        case billingAddress
+        case shippingAddress
     }
 }

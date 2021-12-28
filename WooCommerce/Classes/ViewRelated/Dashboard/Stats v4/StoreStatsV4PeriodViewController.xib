@@ -21,7 +21,6 @@
                 <outlet property="ordersTitle" destination="vlW-do-oXj" id="zdd-DS-zvJ"/>
                 <outlet property="revenueData" destination="ukd-qU-WVq" id="ydx-PH-lcl"/>
                 <outlet property="revenueTitle" destination="Sam-pk-BxI" id="HI1-z6-dRL"/>
-                <outlet property="timeRangeBarBottomBorderView" destination="XXt-Kt-RL6" id="oeb-lG-wY3"/>
                 <outlet property="timeRangeBarView" destination="8nR-qE-vPw" id="vbk-sJ-3jq"/>
                 <outlet property="view" destination="Wvk-wb-yYI" id="EXC-1a-66J"/>
                 <outlet property="visitorsData" destination="SZF-f7-8Va" id="ZY0-s6-PDq"/>
@@ -40,17 +39,10 @@
                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8nR-qE-vPw" customClass="StatsTimeRangeBarView" customModule="WooCommerce" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="23"/>
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="23.5"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstAttribute="height" priority="250" constant="20" placeholder="YES" id="Hdx-tY-N2P"/>
-                            </constraints>
-                        </view>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XXt-Kt-RL6" userLabel="Border view">
-                            <rect key="frame" x="0.0" y="23" width="375" height="0.5"/>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="0.5" id="VSv-HK-GcX"/>
                             </constraints>
                         </view>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="-1" translatesAutoresizingMaskIntoConstraints="NO" id="PkT-rJ-Rn6">

@@ -76,7 +76,6 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var noRevenueView: UIView!
     @IBOutlet private weak var noRevenueLabel: UILabel!
     @IBOutlet private weak var timeRangeBarView: StatsTimeRangeBarView!
-    @IBOutlet private weak var timeRangeBarBottomBorderView: UIView!
 
     private var lastUpdatedDate: Date?
 
@@ -284,9 +283,6 @@ private extension StoreStatsV4PeriodViewController {
         let emptyViewIndex = max(0, visitorsStackView.arrangedSubviews.count - 2)
         visitorsStackView.insertArrangedSubview(visitorsEmptyView, at: emptyViewIndex)
         visitorsEmptyView.isHidden = true
-
-        // Time range bar bottom border view
-        timeRangeBarBottomBorderView.backgroundColor = .systemColor(.separator)
 
         // Titles
         visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")

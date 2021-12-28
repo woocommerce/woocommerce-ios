@@ -38,7 +38,7 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
     }
 
     var toggleTitle: String {
-        String()
+        ""
     }
 
     func saveAddress(onFinish: @escaping (Bool) -> Void) {

@@ -8,12 +8,12 @@ protocol AddressFormViewModelProtocol: ObservableObject {
 
     /// Address form fields
     ///
-    var fields: AddressFormViewModel.FormFields { get set }
+    var fields: AddressFormFields { get set }
 
     /// Active navigation bar trailing item.
     /// Defaults to a disabled done button.
     ///
-    var navigationTrailingItem: AddressFormViewModel.NavigationItem { get }
+    var navigationTrailingItem: AddressFormNavigationItem { get }
 
     /// Trigger to perform any one time setups.
     ///
@@ -60,8 +60,71 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     func createStateViewModel() -> StateSelectorViewModel
 }
 
-class AddressFormViewModel: ObservableObject {
+/// Type to hold values from all the form fields
+///
+struct AddressFormFields {
+    // MARK: User Fields
+    var firstName: String = ""
+    var lastName: String = ""
+    var email: String = ""
+    var phone: String = ""
 
+    // MARK: Address Fields
+    var company: String = ""
+    var address1: String = ""
+    var address2: String = ""
+    var city: String = ""
+    var postcode: String = ""
+    var country: String = ""
+    var state: String = ""
+
+    var useAsToggle: Bool = false
+
+    mutating func update(with address: Address) {
+        firstName = address.firstName
+        lastName = address.lastName
+        email = address.email ?? ""
+        phone = address.phone ?? ""
+
+        company = address.company ?? ""
+        address1 = address.address1
+        address2 = address.address2 ?? ""
+        city = address.city
+        postcode = address.postcode
+
+        // Only use the address.state if we haven't set a value before.
+        // Like when selecting a state from the picker
+        state = state.isEmpty ? address.state : state
+    }
+
+    mutating func update(with country: Country?, and state: StateOfACountry?) {
+        self.country = country?.name ?? self.country
+        self.state = state?.name ?? self.state
+    }
+
+    func toAddress(country: Country?, state: StateOfACountry?) -> Yosemite.Address {
+        Address(firstName: firstName,
+                lastName: lastName,
+                company: company,
+                address1: address1,
+                address2: address2,
+                city: city,
+                state: state?.code ?? self.state,
+                postcode: postcode,
+                country: country?.code ?? self.country,
+                phone: phone,
+                email: email)
+    }
+}
+
+/// Representation of possible navigation bar trailing buttons
+///
+enum AddressFormNavigationItem: Equatable {
+    case done(enabled: Bool)
+    case loading
+}
+
+class AddressFormViewModel: ObservableObject {
     /// ResultsController for stored countries.
     ///
     private lazy var countriesResultsController: ResultsController<StorageCountry> = {
@@ -137,7 +200,7 @@ class AddressFormViewModel: ObservableObject {
 
     /// Address form fields
     ///
-    @Published var fields = FormFields()
+    @Published var fields = AddressFormFields()
 
     /// Trigger to perform any one time setups.
     ///
@@ -150,7 +213,7 @@ class AddressFormViewModel: ObservableObject {
     /// Active navigation bar trailing item.
     /// Defaults to a disabled done button.
     ///
-    @Published private(set) var navigationTrailingItem: NavigationItem = .done(enabled: false)
+    @Published private(set) var navigationTrailingItem: AddressFormNavigationItem = .done(enabled: false)
 
     /// Define if the view should show placeholders instead of the real elements.
     ///
@@ -198,69 +261,6 @@ class AddressFormViewModel: ObservableObject {
 }
 
 extension AddressFormViewModel {
-    /// Representation of possible navigation bar trailing buttons
-    ///
-    enum NavigationItem: Equatable {
-        case done(enabled: Bool)
-        case loading
-    }
-
-    /// Type to hold values from all the form fields
-    ///
-    struct FormFields {
-        // MARK: User Fields
-        var firstName: String = ""
-        var lastName: String = ""
-        var email: String = ""
-        var phone: String = ""
-
-        // MARK: Address Fields
-        var company: String = ""
-        var address1: String = ""
-        var address2: String = ""
-        var city: String = ""
-        var postcode: String = ""
-        var country: String = ""
-        var state: String = ""
-
-        var useAsToggle: Bool = false
-
-        mutating func update(with address: Address) {
-            firstName = address.firstName
-            lastName = address.lastName
-            email = address.email ?? ""
-            phone = address.phone ?? ""
-
-            company = address.company ?? ""
-            address1 = address.address1
-            address2 = address.address2 ?? ""
-            city = address.city
-            postcode = address.postcode
-
-            // Only use the address.state if we haven't set a value before.
-            // Like when selecting a state from the picker
-            state = state.isEmpty ? address.state : state
-        }
-
-        mutating func update(with country: Country?, and state: StateOfACountry?) {
-            self.country = country?.name ?? self.country
-            self.state = state?.name ?? self.state
-        }
-
-        func toAddress(country: Country?, state: StateOfACountry?) -> Yosemite.Address {
-            Address(firstName: firstName,
-                    lastName: lastName,
-                    company: company,
-                    address1: address1,
-                    address2: address2,
-                    city: city,
-                    state: state?.code ?? self.state,
-                    postcode: postcode,
-                    country: country?.code ?? self.country,
-                    phone: phone,
-                    email: email)
-        }
-    }
 
     /// Representation of possible notices that can be displayed
     enum Notice: Equatable {
@@ -309,7 +309,7 @@ private extension AddressFormViewModel {
     ///
     func bindNavigationTrailingItemPublisher() {
         Publishers.CombineLatest4($fields, performingNetworkRequest, $selectedCountry, $selectedState)
-            .map { [originalAddress] fields, performingNetworkRequest, selectedCountry, selectedState -> NavigationItem in
+            .map { [originalAddress] fields, performingNetworkRequest, selectedCountry, selectedState -> AddressFormNavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }

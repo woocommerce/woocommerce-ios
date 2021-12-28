@@ -124,7 +124,10 @@ enum AddressFormNavigationItem: Equatable {
     case loading
 }
 
-class AddressFormViewModel: ObservableObject {
+/// Parent class for AddressFormViewModelProtocol implementations. Holds shared sync/management logic.
+/// Not to be used on its own, so it doesn't conform to AddressFormViewModelProtocol.
+///
+open class AddressFormViewModel: ObservableObject {
     /// ResultsController for stored countries.
     ///
     private lazy var countriesResultsController: ResultsController<StorageCountry> = {
@@ -253,7 +256,7 @@ class AddressFormViewModel: ObservableObject {
         return StateSelectorViewModel(states: states, selected: selectedStateBinding)
     }
 
-    /// Track the flow start.
+    /// Track the flow start. Override in subclass.
     ///
     func trackOnLoad() {
         // override in subclass

@@ -297,23 +297,19 @@ private extension StoreStatsAndTopPerformersViewController {
         let dayVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                    timeRange: .today,
                                                                    currentDate: currentDate,
-                                                                   canDisplayInAppFeedbackCard: true,
-                                                                   topEarnerStatsLimit: Constants.topEarnerStatsLimit)
+                                                                   canDisplayInAppFeedbackCard: true)
         let weekVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                     timeRange: .thisWeek,
                                                                     currentDate: currentDate,
-                                                                    canDisplayInAppFeedbackCard: false,
-                                                                    topEarnerStatsLimit: Constants.topEarnerStatsLimit)
+                                                                    canDisplayInAppFeedbackCard: false)
         let monthVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                      timeRange: .thisMonth,
                                                                      currentDate: currentDate,
-                                                                     canDisplayInAppFeedbackCard: false,
-                                                                     topEarnerStatsLimit: Constants.topEarnerStatsLimit)
+                                                                     canDisplayInAppFeedbackCard: false)
         let yearVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                     timeRange: .thisYear,
                                                                     currentDate: currentDate,
-                                                                    canDisplayInAppFeedbackCard: false,
-                                                                    topEarnerStatsLimit: Constants.topEarnerStatsLimit)
+                                                                    canDisplayInAppFeedbackCard: false)
 
         periodVCs.append(dayVC)
         periodVCs.append(weekVC)

@@ -295,25 +295,21 @@ private extension OldStoreStatsAndTopPerformersViewController {
     func configurePeriodViewControllers() {
         let currentDate = Date()
         let dayVC = OldStoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                      timeRange: .today,
-                                                                      currentDate: currentDate,
-                                                                      canDisplayInAppFeedbackCard: true,
-                                                                      topEarnerStatsLimit: Constants.topEarnerStatsLimit)
+                                                                   timeRange: .today,
+                                                                   currentDate: currentDate,
+                                                                   canDisplayInAppFeedbackCard: true)
         let weekVC = OldStoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                       timeRange: .thisWeek,
-                                                                       currentDate: currentDate,
-                                                                       canDisplayInAppFeedbackCard: false,
-                                                                       topEarnerStatsLimit: Constants.topEarnerStatsLimit)
+                                                                    timeRange: .thisWeek,
+                                                                    currentDate: currentDate,
+                                                                    canDisplayInAppFeedbackCard: false)
         let monthVC = OldStoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                        timeRange: .thisMonth,
-                                                                        currentDate: currentDate,
-                                                                        canDisplayInAppFeedbackCard: false,
-                                                                        topEarnerStatsLimit: Constants.topEarnerStatsLimit)
+                                                                     timeRange: .thisMonth,
+                                                                     currentDate: currentDate,
+                                                                     canDisplayInAppFeedbackCard: false)
         let yearVC = OldStoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                       timeRange: .thisYear,
-                                                                       currentDate: currentDate,
-                                                                       canDisplayInAppFeedbackCard: false,
-                                                                       topEarnerStatsLimit: Constants.topEarnerStatsLimit)
+                                                                    timeRange: .thisYear,
+                                                                    currentDate: currentDate,
+                                                                    canDisplayInAppFeedbackCard: false)
 
         periodVCs.append(dayVC)
         periodVCs.append(weekVC)

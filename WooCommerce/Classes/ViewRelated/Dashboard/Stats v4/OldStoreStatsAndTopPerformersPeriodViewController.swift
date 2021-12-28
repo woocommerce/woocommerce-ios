@@ -94,8 +94,7 @@ final class OldStoreStatsAndTopPerformersPeriodViewController: UIViewController 
         return TopPerformerDataViewController(siteID: siteID,
                                               siteTimeZone: siteTimezone,
                                               currentDate: currentDate,
-                                              timeRange: timeRange,
-                                              quantityLimit: topEarnerStatsLimit)
+                                              timeRange: timeRange)
     }()
 
     // MARK: Internal Properties
@@ -107,8 +106,6 @@ final class OldStoreStatsAndTopPerformersPeriodViewController: UIViewController 
     private let viewModel: StoreStatsAndTopPerformersPeriodViewModel
 
     private let siteID: Int64
-
-    private let topEarnerStatsLimit: Int
 
     /// Subscriptions that should be cancelled on `deinit`.
     private var cancellables = [ObservationToken]()
@@ -122,14 +119,12 @@ final class OldStoreStatsAndTopPerformersPeriodViewController: UIViewController 
     init(siteID: Int64,
          timeRange: StatsTimeRangeV4,
          currentDate: Date,
-         canDisplayInAppFeedbackCard: Bool,
-         topEarnerStatsLimit: Int) {
+         canDisplayInAppFeedbackCard: Bool) {
         self.siteID = siteID
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
         self.currentDate = currentDate
         self.viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: canDisplayInAppFeedbackCard)
-        self.topEarnerStatsLimit = topEarnerStatsLimit
 
         super.init(nibName: nil, bundle: nil)
 

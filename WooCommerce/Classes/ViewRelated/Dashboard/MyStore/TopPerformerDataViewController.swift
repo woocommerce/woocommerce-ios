@@ -37,14 +37,12 @@ final class TopPerformerDataViewController: UIViewController {
         let predicate = NSPredicate(format: "granularity = %@ AND date = %@ AND siteID = %ld", granularity.rawValue, formattedDateString, siteID)
         let descriptor = NSSortDescriptor(key: "date", ascending: true)
 
-        return ResultsController<StorageTopEarnerStats>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor], fetchLimit: quantityLimit)
+        return ResultsController<StorageTopEarnerStats>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
     private let imageService: ImageService = ServiceLocator.imageService
-
-    private let quantityLimit: Int
 
     // MARK: - Computed Properties
 
@@ -69,13 +67,12 @@ final class TopPerformerDataViewController: UIViewController {
 
     /// Designated Initializer
     ///
-    init(siteID: Int64, siteTimeZone: TimeZone, currentDate: Date, timeRange: StatsTimeRangeV4, quantityLimit: Int) {
+    init(siteID: Int64, siteTimeZone: TimeZone, currentDate: Date, timeRange: StatsTimeRangeV4) {
         self.siteID = siteID
         self.siteTimeZone = siteTimeZone
         self.currentDate = currentDate
         self.granularity = timeRange.topEarnerStatsGranularity
         self.timeRange = timeRange
-        self.quantityLimit = quantityLimit
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 

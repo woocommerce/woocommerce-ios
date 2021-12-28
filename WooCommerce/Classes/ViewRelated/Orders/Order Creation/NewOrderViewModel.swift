@@ -242,7 +242,8 @@ extension NewOrderViewModel {
                 isDataAvailable = true
             }
 
-            fullName = billingAddress?.fullName ?? shippingAddress?.fullName
+            let availableFullName = billingAddress?.fullName ?? shippingAddress?.fullName
+            fullName = availableFullName?.isNotEmpty == true ? availableFullName : nil
             email = billingAddress?.hasEmailAddress == true ? billingAddress?.email : nil
 
             billingAddressFormatted = billingAddress?.fullNameWithCompanyAndAddress

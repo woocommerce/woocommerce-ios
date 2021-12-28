@@ -21,4 +21,21 @@ public final class SingleReviewScreen: ScreenObject {
         pop()
         return try ReviewsScreen()
     }
+
+    @discardableResult
+    public func verifyReviewOnSingleProductScreen(review: ReviewData) throws -> Self {
+        let reviewVisibilityCount = app.tables.textViews.matching(NSPredicate(format: "identifier == %@", "single-review-comment")).firstMatch.exists
+
+        app.assertTextVisibilityCount(text: review.reviewer)
+        app.assertTextVisibilityCount(text: review.product_name ?? "")
+        XCTAssertTrue(reviewVisibilityCount, "Expecting review to appear once, appeared \(reviewVisibilityCount) times instead!")
+
+        return self
+    }
+
+    @discardableResult
+    public func verifySingleReviewScreenLoaded() throws -> Self {
+        XCTAssertTrue(isLoaded)
+        return self
+    }
 }

@@ -1,13 +1,13 @@
 {
     "request": {
         "method": "GET",
-        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "urlPathPattern": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
         "queryParameters": {
             "json": {
                 "equalTo": "true"
             },
             "path": {
-                "matches": "/wc/v3/products/reviews/6162/(.*)"
+                "matches": "/wc/v3/products/reviews/6163/(.*)"
             }
         }
     },
@@ -15,24 +15,24 @@
         "status": 200,
         "jsonBody": {
              "data": {
-                "id": 6162,
-                "date_created": "{{fnow offset='-1 days' format=customformat}}",
-                "date_created_gmt": "{{fnow offset='-1 days' format=customformat}}",
+                "id": 6163,
+                "date_created": "{{#assign 'customformat'}}yyyy-MM-dd'T'HH:mm:ss{{/assign}}{{fnow format=customformat}}",
+                "date_created_gmt": "{{fnow format=customformat}}",
                 "product_id": 2132,
                 "status": "hold",
-                "reviewer": "Lydia Donin",
-                "reviewer_email": "lydia@example.com",
-                "review": "I love these shades! They are super sturdy and stylish at the same time. I'm planning to buy them again for a birthday gift next month.",
-                "rating": 4,
+                "reviewer": "Paytin Lubin",
+                "reviewer_email": "pa@example.com",
+                "review": "Travel in style!",
+                "rating": 5,
                 "verified": false,
                 "reviewer_avatar_urls": {
-                    "24": "https:\/\/secure.gravatar.com\/avatar\/54d8a49ef3170cf44d2bdc52133d52cf?s=24&d=identicon&r=g",
-                    "48": "https:\/\/secure.gravatar.com\/avatar\/54d8a49ef3170cf44d2bdc52133d52cf?s=48&d=identicon&r=g",
-                    "96": "https:\/\/secure.gravatar.com\/avatar\/54d8a49ef3170cf44d2bdc52133d52cf?s=96&d=identicon&r=g"
+                    "24": "https:\/\/secure.gravatar.com\/avatar\/c1204ffc1a5bc3086f26cd3b23389e16?s=24&d=identicon&r=g",
+                    "48": "https:\/\/secure.gravatar.com\/avatar\/c1204ffc1a5bc3086f26cd3b23389e16?s=48&d=identicon&r=g",
+                    "96": "https:\/\/secure.gravatar.com\/avatar\/c1204ffc1a5bc3086f26cd3b23389e16?s=96&d=identicon&r=g"
                 },
                 "_links": {
                     "self": [{
-                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews\/6162"
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews\/6163"
                     }],
                     "collection": [{
                         "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews"

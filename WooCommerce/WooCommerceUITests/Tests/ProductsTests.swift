@@ -15,7 +15,7 @@ final class ProductsTests: XCTestCase {
     func testProductsScreenLoad() throws {
         let products = try GetMocks.readProductsData()
 
-        _ = try TabNavComponent()
+        try TabNavComponent()
             .gotoProductsScreen()
             .verifyProductsScreenLoaded()
             .verifyProductListOnProductsScreen(products: products)

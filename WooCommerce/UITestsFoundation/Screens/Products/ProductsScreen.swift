@@ -43,6 +43,7 @@ public final class ProductsScreen: ScreenObject {
         return try SingleProductScreen()
     }
 
+    @discardableResult
     public func selectProduct(byName name: String) throws -> SingleProductScreen {
         app.tables.cells.staticTexts[name].tap()
         return try SingleProductScreen()
@@ -55,16 +56,16 @@ public final class ProductsScreen: ScreenObject {
         return app.tables.cells.matching(namePredicate).children(matching: .staticText).element(matching: statusPredicate).firstMatch.exists
     }
 
+    @discardableResult
     public func verifyProductListOnProductsScreen(products: [ProductData]) throws -> Self {
-        let nameVisibilityCount = try app.getTextVisibilityCount(text: products[0].name)
-
-        XCTAssertTrue(nameVisibilityCount == 1, "Expecting name to appear once, appeared \(nameVisibilityCount) times instead!")
+        app.assertTextVisibilityCount(text: products[0].name)
         XCTAssertEqual(products.count, app.tables.cells.count, "Expecting \(products.count) products, got \(app.tables.cells.count) instead!")
         XCTAssertTrue(try verifyStockStatusForProduct(name: products[0].name, status: products[0].stock_status), "Stock status does not exist for product!")
 
         return self
     }
 
+    @discardableResult
     public func verifyProductsScreenLoaded() throws -> Self {
         XCTAssertTrue(isLoaded)
         return self

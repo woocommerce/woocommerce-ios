@@ -114,8 +114,13 @@ extension XCUIElement {
         startCoordinate.press(forDuration: 0.01, thenDragTo: destination)
     }
 
-    public func getTextVisibilityCount(text: String) throws -> Int {
-        let predicate = NSPredicate(format: "label CONTAINS[c] %@", text)
+    public func getTextVisibilityCount(textToFind: String) throws -> Int {
+        let predicate = NSPredicate(format: "label CONTAINS[c] %@", textToFind)
         return XCUIApplication().staticTexts.containing(predicate).count
+    }
+
+    public func assertTextVisibilityCount(text: String) {
+        let count = try! getTextVisibilityCount(textToFind: text)
+        XCTAssertTrue(count == 1, "Expected '\(text)' to appear once, but it appeared '\(count)' times!")
     }
 }

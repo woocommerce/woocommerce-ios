@@ -908,7 +908,7 @@
 		800A5BAE27586876009DE2CD /* products_2131.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BAD27586876009DE2CD /* products_2131.json */; };
 		800A5BB027586898009DE2CD /* products_2132.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BAF27586898009DE2CD /* products_2132.json */; };
 		800A5BB2275869DC009DE2CD /* products_reviews_6154.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BB1275869DC009DE2CD /* products_reviews_6154.json */; };
-		800A5BB427586A0E009DE2CD /* products_review_6155.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BB327586A0E009DE2CD /* products_review_6155.json */; };
+		800A5BB427586A0E009DE2CD /* products_reviews_6155.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BB327586A0E009DE2CD /* products_reviews_6155.json */; };
 		800A5BB827586A96009DE2CD /* products_reviews_6156.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BB727586A96009DE2CD /* products_reviews_6156.json */; };
 		800A5BBA27586AC8009DE2CD /* products_reviews_6161.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BB927586AC8009DE2CD /* products_reviews_6161.json */; };
 		800A5BBC27586AE1009DE2CD /* products_reviews_6162.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BBB27586AE1009DE2CD /* products_reviews_6162.json */; };
@@ -2425,7 +2425,7 @@
 		800A5BAD27586876009DE2CD /* products_2131.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_2131.json; sourceTree = "<group>"; };
 		800A5BAF27586898009DE2CD /* products_2132.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_2132.json; sourceTree = "<group>"; };
 		800A5BB1275869DC009DE2CD /* products_reviews_6154.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_reviews_6154.json; sourceTree = "<group>"; };
-		800A5BB327586A0E009DE2CD /* products_review_6155.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_review_6155.json; sourceTree = "<group>"; };
+		800A5BB327586A0E009DE2CD /* products_reviews_6155.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_reviews_6155.json; sourceTree = "<group>"; };
 		800A5BB727586A96009DE2CD /* products_reviews_6156.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_reviews_6156.json; sourceTree = "<group>"; };
 		800A5BB927586AC8009DE2CD /* products_reviews_6161.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_reviews_6161.json; sourceTree = "<group>"; };
 		800A5BBB27586AE1009DE2CD /* products_reviews_6162.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_reviews_6162.json; sourceTree = "<group>"; };
@@ -6159,7 +6159,7 @@
 			children = (
 				80C362722779A7EF005CEAD3 /* products_reviews_all.json */,
 				800A5BB1275869DC009DE2CD /* products_reviews_6154.json */,
-				800A5BB327586A0E009DE2CD /* products_review_6155.json */,
+				800A5BB327586A0E009DE2CD /* products_reviews_6155.json */,
 				800A5BB727586A96009DE2CD /* products_reviews_6156.json */,
 				800A5BB927586AC8009DE2CD /* products_reviews_6161.json */,
 				800A5BBB27586AE1009DE2CD /* products_reviews_6162.json */,
@@ -7671,7 +7671,7 @@
 				800A5BC8275889ED009DE2CD /* reports_revenue_stats_year.json in Resources */,
 				800A5BBC27586AE1009DE2CD /* products_reviews_6162.json in Resources */,
 				800A5B6127548F53009DE2CD /* sites_posts_password.json in Resources */,
-				800A5BB427586A0E009DE2CD /* products_review_6155.json in Resources */,
+				800A5BB427586A0E009DE2CD /* products_reviews_6155.json in Resources */,
 				800A5B5F27548F31009DE2CD /* site_info_wordpress_com.json in Resources */,
 				800A5BBA27586AC8009DE2CD /* products_reviews_6161.json in Resources */,
 			);

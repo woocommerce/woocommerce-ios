@@ -1,7 +1,7 @@
 {
     "request": {
         "method": "GET",
-        "urlPathPattern": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
         "queryParameters": {
             "json": {
                 "equalTo": "true"

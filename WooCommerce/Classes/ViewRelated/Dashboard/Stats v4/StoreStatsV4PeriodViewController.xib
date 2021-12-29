@@ -14,6 +14,7 @@
                 <outlet property="chartAccessibilityView" destination="NEo-bw-gS4" id="Ep1-tI-L3J"/>
                 <outlet property="containerStackView" destination="0he-5g-kXa" id="ni7-uB-XHh"/>
                 <outlet property="conversionData" destination="ukd-qU-WVq" id="7gQ-1E-zCN"/>
+                <outlet property="conversionStackView" destination="EqQ-GQ-06J" id="zT6-NT-JiG"/>
                 <outlet property="conversionTitle" destination="Sam-pk-BxI" id="HI1-z6-dRL"/>
                 <outlet property="lastUpdated" destination="0Wi-nd-Ucs" id="XPO-tH-TLR"/>
                 <outlet property="lineChartView" destination="zPE-Y0-ax8" id="3VU-s1-JmV"/>

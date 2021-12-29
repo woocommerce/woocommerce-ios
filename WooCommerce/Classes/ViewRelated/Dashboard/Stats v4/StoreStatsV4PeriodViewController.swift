@@ -66,6 +66,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var visitorsData: UILabel!
     @IBOutlet private weak var ordersTitle: UILabel!
     @IBOutlet private weak var ordersData: UILabel!
+    @IBOutlet private weak var conversionStackView: UIStackView!
     @IBOutlet private weak var conversionTitle: UILabel!
     @IBOutlet private weak var conversionData: UILabel!
     @IBOutlet private weak var revenueTitle: UILabel!
@@ -445,7 +446,7 @@ private extension StoreStatsV4PeriodViewController {
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateUI(selectedBarIndex selectedIndex: Int?) {
-        updateSiteVisitStats(selectedIndex: selectedIndex)
+        updateSiteVisitStatsAndConversionRate(selectedIndex: selectedIndex)
         updateOrderStats(selectedIndex: selectedIndex)
         updateTimeRangeBar(selectedIndex: selectedIndex)
     }
@@ -455,7 +456,6 @@ private extension StoreStatsV4PeriodViewController {
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateOrderStats(selectedIndex: Int?) {
         ordersData.textColor = selectedIndex == nil ? Constants.statsTextColor: Constants.statsHighlightTextColor
-        conversionData.textColor = selectedIndex == nil ? Constants.statsTextColor: Constants.statsHighlightTextColor
         revenueData.textColor = selectedIndex == nil ? Constants.statsTextColor: Constants.statsHighlightTextColor
 
         guard let selectedIndex = selectedIndex else {
@@ -475,14 +475,13 @@ private extension StoreStatsV4PeriodViewController {
             totalRevenueText = currencyFormatter.formatHumanReadableAmount(String("\(orderStats.subtotals.grossRevenue)"), with: currencyCode) ?? String()
         }
         ordersData.text = totalOrdersText
-        conversionData.text = totalRevenueText
         revenueData.text = totalRevenueText
     }
 
-    /// Updates stats based on the selected bar index.
+    /// Updates visitor and conversion stats based on the selected bar index.
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
-    func updateSiteVisitStats(selectedIndex: Int?) {
+    func updateSiteVisitStatsAndConversionRate(selectedIndex: Int?) {
         let mode: SiteVisitStatsMode
 
         // Hides site visit stats for "today" when an interval bar is selected.
@@ -493,6 +492,7 @@ private extension StoreStatsV4PeriodViewController {
         }
 
         updateSiteVisitStats(mode: mode)
+        updateConversionStats(visitStatsMode: mode, selectedIndex: selectedIndex)
 
         switch siteVisitStatsMode {
         case .hidden, .redactedDueToJetpack:
@@ -515,6 +515,35 @@ private extension StoreStatsV4PeriodViewController {
             visitorsData.text = visitorsText
             visitorsData.isHidden = false
             visitorsEmptyView.isHidden = true
+        }
+    }
+
+    func updateConversionStats(visitStatsMode: SiteVisitStatsMode, selectedIndex: Int?) {
+        guard conversionData != nil else {
+            return
+        }
+
+        switch visitStatsMode {
+        case .hidden, .redactedDueToJetpack:
+            conversionStackView.isHidden = true
+        case .default:
+            conversionStackView.isHidden = false
+            conversionData.textColor = selectedIndex == nil ? Constants.statsTextColor: Constants.statsHighlightTextColor
+
+            let visitors = visitorCount(at: selectedIndex)
+            let orders = orderCount(at: selectedIndex)
+            let conversionText: String
+            if let visitors = visitors, let orders = orders, visitors > 0 {
+                // Maximum conversion rate is 100%.
+                let conversionRate = min(orders/visitors, 1)
+                let numberFormatter = NumberFormatter()
+                numberFormatter.numberStyle = .percent
+                numberFormatter.minimumFractionDigits = 1
+                conversionText = numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.placeholderText
+            } else {
+                conversionText = Constants.placeholderText
+            }
+            conversionData.text = conversionText
         }
     }
 
@@ -541,6 +570,30 @@ private extension StoreStatsV4PeriodViewController {
                                                                timeRange: timeRange,
                                                                timezone: siteTimezone)
         timeRangeBarView.updateUI(viewModel: timeRangeBarViewModel)
+    }
+
+    func visitorCount(at selectedIndex: Int?) -> Double? {
+        if let selectedIndex = selectedIndex {
+            guard selectedIndex < siteStatsItems.count else {
+                return nil
+            }
+            return Double(siteStatsItems[selectedIndex].visitors)
+        } else if let siteStats = siteStats {
+            return Double(siteStats.totalVisitors)
+        } else {
+            return nil
+        }
+    }
+
+    func orderCount(at selectedIndex: Int?) -> Double? {
+        if let selectedIndex = selectedIndex {
+            let orderStats = orderStatsIntervals[selectedIndex]
+            return Double(orderStats.subtotals.totalOrders)
+        } else if let orderStats = orderStats {
+            return Double(orderStats.totals.totalOrders)
+        } else {
+            return nil
+        }
     }
 }
 
@@ -640,6 +693,7 @@ private extension StoreStatsV4PeriodViewController {
             return lhs.period < rhs.period
         }) ?? []
         reloadSiteFields()
+        updateConversionData()
         reloadLastUpdatedField()
     }
 
@@ -662,11 +716,17 @@ private extension StoreStatsV4PeriodViewController {
             lastUpdatedDate = nil
         }
         reloadOrderFields()
+        updateConversionData()
 
         // Don't animate the chart here - this helps avoid a "double animation" effect if a
         // small number of values change (the chart WILL be updated correctly however)
         reloadChart(animateChart: false)
         reloadLastUpdatedField()
+    }
+
+    /// Called when either visitor or order stats change.
+    func updateConversionData() {
+        updateConversionStats(visitStatsMode: siteVisitStatsMode, selectedIndex: nil)
     }
 
     func trackChangedTabIfNeeded() {
@@ -724,7 +784,6 @@ private extension StoreStatsV4PeriodViewController {
             totalRevenueText = currencyFormatter.formatHumanReadableAmount(String("\(orderStats.totals.grossRevenue)"), with: currencyCode) ?? String()
         }
         ordersData.text = totalOrdersText
-        conversionData.text = totalRevenueText
         revenueData.text = totalRevenueText
     }
 

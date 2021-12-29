@@ -30,9 +30,11 @@ public final class SingleReviewScreen: ScreenObject {
 
     @discardableResult
     public func verifyReviewOnSingleProductScreen(review: ReviewData) throws -> Self {
+        let reviewExistsOnScreen = app.tables.textViews.matching(NSPredicate(format: "identifier == %@", "single-review-comment")).firstMatch.exists
+
         app.assertTextVisibilityCount(textToFind: review.reviewer)
         app.assertTextVisibilityCount(textToFind: review.product_name ?? "")
-        XCTAssertTrue(app.tables.textViews.matching(NSPredicate(format: "identifier == %@", "single-review-comment")).firstMatch.exists, "Review does not exist on screen!")
+        XCTAssertTrue(reviewExistsOnScreen, "Review does not exist on screen!")
 
         return self
     }

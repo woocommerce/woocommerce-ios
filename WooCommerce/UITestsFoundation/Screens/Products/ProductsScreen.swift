@@ -12,7 +12,6 @@ public final class ProductsScreen: ScreenObject {
             expectedElementGetters: [
                 // swiftlint:disable next opening_brace
                 { $0.buttons["product-add-button"] },
-                { $0.buttons["product-scan-button"] },
                 { $0.buttons["product-search-button"]}
                 // swiftlint:enable next opening_brace
             ],

@@ -66,6 +66,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var visitorsData: UILabel!
     @IBOutlet private weak var ordersTitle: UILabel!
     @IBOutlet private weak var ordersData: UILabel!
+    @IBOutlet private weak var conversionTitle: UILabel!
+    @IBOutlet private weak var conversionData: UILabel!
     @IBOutlet private weak var revenueTitle: UILabel!
     @IBOutlet private weak var revenueData: UILabel!
     @IBOutlet private weak var lineChartView: LineChartView!
@@ -287,9 +289,10 @@ private extension StoreStatsV4PeriodViewController {
         // Titles
         visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")
         ordersTitle.text = NSLocalizedString("Orders", comment: "Orders stat label on dashboard - should be plural.")
+        conversionTitle.text = NSLocalizedString("Conversion", comment: "Conversion stat label on dashboard.")
         revenueTitle.text = NSLocalizedString("Revenue", comment: "Revenue stat label on dashboard.")
 
-        [visitorsTitle, ordersTitle, revenueTitle].forEach { label in
+        [visitorsTitle, ordersTitle, conversionTitle, revenueTitle].forEach { label in
             label?.applyCaption2Style()
             label?.textColor = Constants.statsTextColor
         }
@@ -452,13 +455,14 @@ private extension StoreStatsV4PeriodViewController {
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateOrderStats(selectedIndex: Int?) {
         ordersData.textColor = selectedIndex == nil ? Constants.statsTextColor: Constants.statsHighlightTextColor
+        conversionData.textColor = selectedIndex == nil ? Constants.statsTextColor: Constants.statsHighlightTextColor
         revenueData.textColor = selectedIndex == nil ? Constants.statsTextColor: Constants.statsHighlightTextColor
 
         guard let selectedIndex = selectedIndex else {
             reloadOrderFields()
             return
         }
-        guard ordersData != nil, revenueData != nil else {
+        guard ordersData != nil, conversionData != nil, revenueData != nil else {
             return
         }
         var totalOrdersText = Constants.placeholderText
@@ -471,6 +475,7 @@ private extension StoreStatsV4PeriodViewController {
             totalRevenueText = currencyFormatter.formatHumanReadableAmount(String("\(orderStats.subtotals.grossRevenue)"), with: currencyCode) ?? String()
         }
         ordersData.text = totalOrdersText
+        conversionData.text = totalRevenueText
         revenueData.text = totalRevenueText
     }
 
@@ -697,6 +702,8 @@ private extension StoreStatsV4PeriodViewController {
                                                            ordersData as Any,
                                                            revenueTitle as Any,
                                                            revenueData as Any,
+                                                           conversionTitle as Any,
+                                                           conversionData as Any,
                                                            lastUpdated as Any,
                                                            yAxisAccessibilityView as Any,
                                                            xAxisAccessibilityView as Any,
@@ -704,7 +711,7 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func reloadOrderFields() {
-        guard ordersData != nil, revenueData != nil else {
+        guard ordersData != nil, conversionData != nil, revenueData != nil else {
             return
         }
 
@@ -717,6 +724,7 @@ private extension StoreStatsV4PeriodViewController {
             totalRevenueText = currencyFormatter.formatHumanReadableAmount(String("\(orderStats.totals.grossRevenue)"), with: currencyCode) ?? String()
         }
         ordersData.text = totalOrdersText
+        conversionData.text = totalRevenueText
         revenueData.text = totalRevenueText
     }
 
@@ -823,10 +831,13 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func updateStatsDataToDefaultStyles() {
-        [visitorsData, ordersData, revenueData].forEach { label in
-            label?.applyTitleStyle()
+        [visitorsData, ordersData, conversionData].forEach { label in
+            label?.adjustsFontForContentSizeCategory = true
             label?.font = Constants.statsFont
+            label?.textColor = Constants.statsTextColor
         }
+        revenueData.font = Constants.revenueFont
+        revenueData.textColor = Constants.statsTextColor
     }
 }
 
@@ -839,6 +850,7 @@ private extension StoreStatsV4PeriodViewController {
         static let statsTextColor: UIColor = .text
         static let statsHighlightTextColor: UIColor = .accent
         static let statsFont: UIFont = .font(forStyle: .title3, weight: .semibold)
+        static let revenueFont: UIFont = .font(forStyle: .largeTitle, weight: .semibold)
 
         static let chartAnimationDuration: TimeInterval = 0.75
         static let chartExtraRightOffset: CGFloat       = 25.0

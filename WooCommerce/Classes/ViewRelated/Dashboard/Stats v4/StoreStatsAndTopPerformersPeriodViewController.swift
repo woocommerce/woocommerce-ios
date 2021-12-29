@@ -265,7 +265,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         let storeStatsPeriodView = storeStatsPeriodViewController.view!
         stackView.addArrangedSubview(storeStatsPeriodView)
         NSLayoutConstraint.activate([
-            storeStatsPeriodView.heightAnchor.constraint(equalToConstant: 380),
+            storeStatsPeriodView.heightAnchor.constraint(equalToConstant: 444),
             ])
 
         // In-app Feedback Card

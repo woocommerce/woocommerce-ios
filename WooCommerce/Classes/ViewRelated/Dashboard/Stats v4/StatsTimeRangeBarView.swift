@@ -37,7 +37,7 @@ private extension StatsTimeRangeBarView {
 
 private extension StatsTimeRangeBarView {
     enum Constants {
-        static let labelInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
+        static let labelInsets = UIEdgeInsets(top: 15, left: 16, bottom: 10, right: 16)
         static let labelFont: UIFont = .footnote
         static let labelColor: UIColor = .secondaryLabel
         static let labelTextAlignment: NSTextAlignment = .center

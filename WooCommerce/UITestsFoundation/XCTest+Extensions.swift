@@ -114,13 +114,44 @@ extension XCUIElement {
         startCoordinate.press(forDuration: 0.01, thenDragTo: destination)
     }
 
-    public func getTextVisibilityCount(textToFind: String) throws -> Int {
+    func getStaticTextVisibilityCount(textToFind: String) throws -> Int {
         let predicate = NSPredicate(format: "label CONTAINS[c] %@", textToFind)
         return XCUIApplication().staticTexts.containing(predicate).count
     }
 
-    public func assertTextVisibilityCount(text: String) {
-        let count = try! getTextVisibilityCount(textToFind: text)
-        XCTAssertTrue(count == 1, "Expected '\(text)' to appear once, but it appeared '\(count)' times!")
+    public func assertTextVisibilityCount(textToFind: String) {
+        let count = try! getStaticTextVisibilityCount(textToFind: textToFind)
+        XCTAssertTrue(count == 1, "Expected '\(textToFind)' to appear once, but it appeared '\(count)' times!")
+    }
+
+    // Parent is using accessibilityIdentifier, child is using staticText
+    func verifyChildElementOnParentCell(parent: String, child: String) throws -> Bool {
+        let parentPredicate = NSPredicate(format: "identifier == %@", parent)
+        let childPredicate = NSPredicate(format: "label ==[c] %@", child)
+
+        return XCUIApplication().tables.cells.matching(parentPredicate).children(matching: .staticText).element(matching: childPredicate).firstMatch.exists
+    }
+
+    public func assertElementExistsOnCell(mainCell: String, elementToFind: String) {
+        XCTAssertTrue(try verifyChildElementOnParentCell(parent: mainCell, child: elementToFind), "Element does not exist on cell!")
+    }
+
+    func verifyLabelContainsTwoPredicates(firstSubstring: String, secondSubstring: String) throws -> Bool {
+        let firstPredicate = NSPredicate(format: "label CONTAINS[c] %@", firstSubstring)
+        let secondPredicate = NSPredicate(format: "label CONTAINS[c] %@", secondSubstring)
+        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [firstPredicate, secondPredicate])
+
+        return XCUIApplication().staticTexts.containing(predicateCompound).count == 1
+    }
+
+    public func assertTwoTextsAppearOnSameLabel(firstSubstring: String, secondSubstring: String) {
+        XCTAssertTrue(try verifyLabelContainsTwoPredicates(firstSubstring: firstSubstring, secondSubstring: secondSubstring),
+        """
+        '\(firstSubstring)' and '\(secondSubstring)' does not appear on the same label!
+        """)
+    }
+
+    public func assertCorrectCellCountDisplayed(expectedCount: Int, actualCount: Int) {
+        XCTAssertEqual(expectedCount, actualCount, "Expecting '\(expectedCount)' reviews, got '\(actualCount)' instead!")
     }
 }

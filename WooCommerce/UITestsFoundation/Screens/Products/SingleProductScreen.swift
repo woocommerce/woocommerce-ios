@@ -24,8 +24,8 @@ public final class SingleProductScreen: ScreenObject {
 
     @discardableResult
     public func verifyProductOnSingleProductScreen(product: ProductData) throws -> Self {
-        app.assertTextVisibilityCount(text: product.stock_status)
-        app.assertTextVisibilityCount(text: product.regular_price)
+        app.assertTextVisibilityCount(textToFind: product.stock_status)
+        app.assertTextVisibilityCount(textToFind: product.regular_price)
         XCTAssertTrue(app.textViews[product.name].isFullyVisibleOnScreen(), "Product name is not visible on screen!")
 
         return self

@@ -49,18 +49,11 @@ public final class ProductsScreen: ScreenObject {
         return try SingleProductScreen()
     }
 
-    func verifyStockStatusForProduct(name: String, status: String) throws -> Bool {
-        let namePredicate = NSPredicate(format: "identifier == %@", name)
-        let statusPredicate = NSPredicate(format: "label ==[c] %@", status)
-
-        return app.tables.cells.matching(namePredicate).children(matching: .staticText).element(matching: statusPredicate).firstMatch.exists
-    }
-
     @discardableResult
     public func verifyProductListOnProductsScreen(products: [ProductData]) throws -> Self {
-        app.assertTextVisibilityCount(text: products[0].name)
-        XCTAssertEqual(products.count, app.tables.cells.count, "Expecting \(products.count) products, got \(app.tables.cells.count) instead!")
-        XCTAssertTrue(try verifyStockStatusForProduct(name: products[0].name, status: products[0].stock_status), "Stock status does not exist for product!")
+        app.assertTextVisibilityCount(textToFind: products[0].name)
+        app.assertElementExistsOnCell(mainCell: products[0].name, elementToFind: products[0].stock_status)
+        app.assertCorrectCellCountDisplayed(expectedCount: products.count, actualCount: app.tables.cells.count)
 
         return self
     }

@@ -37,19 +37,11 @@ public final class ReviewsScreen: ScreenObject {
         return self
     }
 
-    func verifyProductNameForReview(reviewer: String, product: String) throws -> Bool {
-        let reviewerPredicate = NSPredicate(format: "label CONTAINS[c] %@", reviewer)
-        let productPredicate = NSPredicate(format: "label CONTAINS[c] %@", product)
-        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [reviewerPredicate, productPredicate])
-
-        return XCUIApplication().staticTexts.containing(predicateCompound).count == 1
-    }
-
     @discardableResult
     public func verifyReviewListOnReviewsScreen(reviews: [ReviewData]) throws -> Self {
-        app.assertTextVisibilityCount(text: reviews[0].reviewer)
-        XCTAssertEqual(reviews.count, app.tables.cells.count, "Expecting \(reviews.count) reviews, got \(app.tables.cells.count) instead!")
-        XCTAssertTrue(try verifyProductNameForReview(reviewer: reviews[0].reviewer, product: reviews[0].product_name!), "Product does not appear on review!")
+        app.assertTextVisibilityCount(textToFind: reviews[0].reviewer)
+        app.assertCorrectCellCountDisplayed(expectedCount: reviews.count, actualCount: app.tables.cells.count)
+        app.assertTwoTextsAppearOnSameLabel(firstSubstring: reviews[0].reviewer, secondSubstring: reviews[0].product_name!)
 
         return self
     }

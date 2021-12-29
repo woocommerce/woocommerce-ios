@@ -191,6 +191,10 @@ public class AppSettingsStore: Store {
             setTelemetryLastReportedTime(siteID: siteID, time: time)
         case .getTelemetryInfo(siteID: let siteID, onCompletion: let onCompletion):
             getTelemetryInfo(siteID: siteID, onCompletion: onCompletion)
+        case .setSelectedDateRange(siteID: let siteID, range: let range):
+            setSelectedDateRange(siteID: siteID, range: range)
+        case .getSelectedDateRange(siteID: let siteID, onCompletion: let onCompletion):
+            getSelectedDateRange(siteID: siteID, onCompletion: onCompletion)
         case .resetGeneralStoreSettings:
             resetGeneralStoreSettings()
         }
@@ -820,6 +824,19 @@ private extension AppSettingsStore {
     func getTelemetryInfo(siteID: Int64, onCompletion: (Bool, Date?) -> Void) {
         let storeSettings = getStoreSettings(for: siteID)
         onCompletion(storeSettings.isTelemetryAvailable, storeSettings.telemetryLastReportedTime)
+    }
+
+    // Analytics selected date range
+
+    func setSelectedDateRange(siteID: Int64, range: String, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(selectedDateRange: range)
+        setStoreSettings(settings: updatedSettings, for: siteID, onCompletion: onCompletion)
+    }
+
+    func getSelectedDateRange(siteID: Int64, onCompletion: (String) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(storeSettings.selectedDateRange)
     }
 
     func resetGeneralStoreSettings() {

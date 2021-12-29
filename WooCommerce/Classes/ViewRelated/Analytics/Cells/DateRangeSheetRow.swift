@@ -3,7 +3,6 @@ import SwiftUI
 // MARK: - DateRangeSheetRow
 //
 struct DateRangeSheetRow: View {
-
     let dateRange: String
     @Binding var selectedDateRange: String
 
@@ -33,9 +32,6 @@ struct DateRangeSheetRow: View {
         .onTapGesture {
             self.selectedDateRange = self.dateRange
         }
-        .onAppear(perform: {
-            selectedDateRange = dateRange
-        })
     }
 }
 

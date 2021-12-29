@@ -187,6 +187,14 @@ public enum AppSettingsAction: Action {
     ///
     case getTelemetryInfo(siteID: Int64, onCompletion: (Bool, Date?) -> Void)
 
+    /// Sets selected date range value for Analytics.
+    ///
+    case setSelectedDateRange(siteID: Int64, range: String)
+
+    /// Loads selected date range value for Analytics.
+    ///
+    case getSelectedDateRange(siteID: Int64, onCompletion: (String) -> Void)
+
     /// Clears all the products settings
     ///
     case resetGeneralStoreSettings

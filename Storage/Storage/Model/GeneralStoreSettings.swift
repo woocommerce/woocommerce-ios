@@ -25,10 +25,15 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let telemetryLastReportedTime: Date?
 
+    /// The selected date range value from the Analytics.
+    ///
+    public let selectedDateRange: String
+
     public init(isTelemetryAvailable: Bool = false,
-                telemetryLastReportedTime: Date? = nil) {
+                telemetryLastReportedTime: Date? = nil, selectedDateRange: String = "Today") {
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
+        self.selectedDateRange = selectedDateRange
     }
 }
 
@@ -41,6 +46,8 @@ extension GeneralStoreSettings {
 
         self.isTelemetryAvailable = try container.decodeIfPresent(Bool.self, forKey: .isTelemetryAvailable) ?? false
         self.telemetryLastReportedTime = try container.decodeIfPresent(Date.self, forKey: .telemetryLastReportedTime)
+
+        self.selectedDateRange = try container.decodeIfPresent(String.self, forKey: .selectedDateRange) ?? "Today"
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

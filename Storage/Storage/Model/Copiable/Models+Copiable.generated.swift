@@ -40,14 +40,17 @@ extension GeneralAppSettings {
 extension GeneralStoreSettings {
     public func copy(
         isTelemetryAvailable: CopiableProp<Bool> = .copy,
-        telemetryLastReportedTime: NullableCopiableProp<Date> = .copy
+        telemetryLastReportedTime: NullableCopiableProp<Date> = .copy,
+        selectedDateRange: CopiableProp<String> = .copy
     ) -> GeneralStoreSettings {
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
         let telemetryLastReportedTime = telemetryLastReportedTime ?? self.telemetryLastReportedTime
+        let selectedDateRange = selectedDateRange ?? self.selectedDateRange
 
         return GeneralStoreSettings(
             isTelemetryAvailable: isTelemetryAvailable,
-            telemetryLastReportedTime: telemetryLastReportedTime
+            telemetryLastReportedTime: telemetryLastReportedTime,
+            selectedDateRange: selectedDateRange
         )
     }
 }

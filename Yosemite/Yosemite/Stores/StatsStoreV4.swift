@@ -62,11 +62,13 @@ public final class StatsStoreV4: Store {
                                      let timeRange,
                                      let earliestDateToInclude,
                                      let latestDateToInclude,
+                                     let quantity,
                                      let onCompletion):
             retrieveTopEarnerStats(siteID: siteID,
                                    timeRange: timeRange,
                                    earliestDateToInclude: earliestDateToInclude,
                                    latestDateToInclude: latestDateToInclude,
+                                   quantity: quantity,
                                    onCompletion: onCompletion)
         }
     }
@@ -143,6 +145,7 @@ public extension StatsStoreV4 {
                                 timeRange: StatsTimeRangeV4,
                                 earliestDateToInclude: Date,
                                 latestDateToInclude: Date,
+                                quantity: Int,
                                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         let earliestDate = dateFormatter.string(from: earliestDateToInclude)
@@ -151,7 +154,7 @@ public extension StatsStoreV4 {
                                 unit: timeRange.leaderboardsGranularity,
                                 earliestDateToInclude: earliestDate,
                                 latestDateToInclude: latestDate,
-                                quantity: Constants.defaultTopEarnerStatsLimit) { [weak self] result in
+                                quantity: quantity) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
@@ -160,6 +163,7 @@ public extension StatsStoreV4 {
                                                                granularity: timeRange.topEarnerStatsGranularity,
                                                                date: latestDateToInclude,
                                                                leaderboards: leaderboards,
+                                                               quantity: quantity,
                                                                onCompletion: onCompletion)
 
             case .failure(let error):
@@ -308,12 +312,13 @@ extension StatsStoreV4 {
 private extension StatsStoreV4 {
 
     /// Converts and stores a top-product `leaderboard` into a `StatsTopEarner`
-    /// Since  a `leaderboard` does not containt  the necesary product information, this method fetches the related product before starting the convertion.
+    /// Since  a `leaderboard` does not contain the necessary product information, this method fetches the related product before starting the conversion.
     ///
     func convertAndStoreLeaderboardsIntoTopEarners(siteID: Int64,
                                                    granularity: StatGranularity,
                                                    date: Date,
                                                    leaderboards: [Leaderboard],
+                                                   quantity: Int,
                                                    onCompletion: @escaping (Result<Void, Error>) -> Void) {
 
         // Find the top products leaderboard by its ID
@@ -322,7 +327,7 @@ private extension StatsStoreV4 {
             return
         }
 
-        // Make sure we have all the necesary product data before converting and storing top earners.
+        // Make sure we have all the necessary product data before converting and storing top earners.
         loadProducts(for: topProducts, siteID: siteID) { [weak self] topProductsResult in
             guard let self = self else { return }
 
@@ -332,7 +337,8 @@ private extension StatsStoreV4 {
                                                                              granularity: granularity,
                                                                              date: date,
                                                                              topProducts: topProducts,
-                                                                             storedProducts: products)
+                                                                             storedProducts: products,
+                                                                             quantityLimit: quantity)
                 onCompletion(.success(()))
             case .failure(let error):
                 onCompletion(.failure(error))
@@ -383,13 +389,14 @@ private extension StatsStoreV4 {
                                                                  granularity: StatGranularity,
                                                                  date: Date,
                                                                  topProducts: Leaderboard,
-                                                                 storedProducts: [Product]) {
+                                                                 storedProducts: [Product],
+                                                                 quantityLimit: Int) {
         let statsDate = Self.buildDateString(from: date, with: granularity)
         let statsItems = LeaderboardStatsConverter.topEarnerStatsItems(from: topProducts, using: storedProducts)
         let stats = TopEarnerStats(siteID: siteID,
                                    date: statsDate,
                                    granularity: granularity,
-                                   limit: String(Constants.defaultTopEarnerStatsLimit),
+                                   limit: String(quantityLimit),
                                    items: statsItems
         )
 
@@ -422,11 +429,6 @@ public extension StatsStoreV4 {
 private extension StatsStoreV4 {
 
     enum Constants {
-
-        /// Default limit value for TopEarnerStats
-        ///
-        static let defaultTopEarnerStatsLimit: Int = 3
-
         /// ID of top products section in leaderboards API
         ///
         static let topProductsID = "products"

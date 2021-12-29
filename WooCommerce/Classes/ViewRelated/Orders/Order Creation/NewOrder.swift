@@ -60,7 +60,9 @@ struct NewOrder: View {
 
                         Spacer(minLength: Layout.sectionSpacing)
 
-                        CustomerSection(geometry: geometry)
+                        OrderCustomerSection(geometry: geometry,
+                                             viewModel: viewModel.customerDataViewModel,
+                                             addressFormViewModel: viewModel.createOrderAddressFormViewModel())
                     }
                 }
                 .background(Color(.listBackground).ignoresSafeArea())
@@ -154,31 +156,6 @@ private struct ProductsSection: View {
     }
 }
 
-/// Represents the Customer section
-///
-private struct CustomerSection: View {
-    let geometry: GeometryProxy
-
-    var body: some View {
-        Group {
-            Divider()
-
-            VStack(alignment: .leading, spacing: NewOrder.Layout.verticalSpacing) {
-                Text(NewOrder.Localization.customer)
-                    .headlineStyle()
-
-                Button(NewOrder.Localization.addCustomer) { }
-                .buttonStyle(PlusButtonStyle())
-            }
-            .padding(.horizontal, insets: geometry.safeAreaInsets)
-            .padding()
-            .background(Color(.listForeground))
-
-            Divider()
-        }
-    }
-}
-
 // MARK: Constants
 private extension NewOrder {
     enum Layout {
@@ -193,8 +170,6 @@ private extension NewOrder {
         static let errorMessage = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating a new order")
         static let addProduct = NSLocalizedString("Add product", comment: "Title text of the button that adds a product when creating a new order")
-        static let customer = NSLocalizedString("Customer", comment: "Title text of the section that shows Customer details when creating a new order")
-        static let addCustomer = NSLocalizedString("Add customer", comment: "Title text of the button that adds a customer when creating a new order")
     }
 }
 

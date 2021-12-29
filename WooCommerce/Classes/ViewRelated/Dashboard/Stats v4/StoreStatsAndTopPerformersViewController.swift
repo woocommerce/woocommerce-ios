@@ -401,6 +401,7 @@ private extension StoreStatsAndTopPerformersViewController {
                                                           timeRange: timeRange,
                                                           earliestDateToInclude: earliestDateToInclude,
                                                           latestDateToInclude: latestDateToInclude,
+                                                          quantity: Constants.topEarnerStatsLimit,
                                                           onCompletion: { result in
                                                             switch result {
                                                             case .success:
@@ -470,5 +471,9 @@ private extension StoreStatsAndTopPerformersViewController {
     enum TabStrip {
         static let buttonLeftRightMargin: CGFloat   = 14.0
         static let selectedBarHeight: CGFloat       = 3.0
+    }
+
+    enum Constants {
+        static let topEarnerStatsLimit: Int = 5
     }
 }

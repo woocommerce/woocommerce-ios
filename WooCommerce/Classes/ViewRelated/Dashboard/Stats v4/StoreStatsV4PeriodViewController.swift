@@ -295,10 +295,7 @@ private extension StoreStatsV4PeriodViewController {
         }
 
         // Data
-        [visitorsData, ordersData, revenueData].forEach { label in
-            label?.applyTitleStyle()
-            label?.font = Constants.statsFont
-        }
+        updateStatsDataToDefaultStyles()
 
         // Footer
         lastUpdated.font = UIFont.footnote
@@ -678,6 +675,7 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func reloadAllFields(animateChart: Bool = true) {
+        updateStatsDataToDefaultStyles()
         reloadOrderFields()
         reloadSiteFields()
         reloadChart(animateChart: animateChart)
@@ -822,6 +820,13 @@ private extension StoreStatsV4PeriodViewController {
     func formattedChartMarkerPeriodString(for item: OrderStatsV4Interval) -> String {
         let chartDateFormatter = timeRange.chartDateFormatter(siteTimezone: siteTimezone)
         return chartDateFormatter.string(from: item.dateStart(timeZone: siteTimezone))
+    }
+
+    func updateStatsDataToDefaultStyles() {
+        [visitorsData, ordersData, revenueData].forEach { label in
+            label?.applyTitleStyle()
+            label?.font = Constants.statsFont
+        }
     }
 }
 

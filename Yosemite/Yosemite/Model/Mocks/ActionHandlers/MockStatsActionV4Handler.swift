@@ -14,7 +14,7 @@ struct MockStatsActionV4Handler: MockActionHandler {
                 retrieveStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
             case .retrieveSiteVisitStats(let siteID, _, let timeRange, _, let onCompletion):
                 retrieveSiteVisitStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
-            case .retrieveTopEarnerStats(let siteID, let timeRange, _, _, let onCompletion):
+            case .retrieveTopEarnerStats(let siteID, let timeRange, _, _, _, let onCompletion):
                 retrieveTopEarnerStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
             default: unimplementedAction(action: action)
         }

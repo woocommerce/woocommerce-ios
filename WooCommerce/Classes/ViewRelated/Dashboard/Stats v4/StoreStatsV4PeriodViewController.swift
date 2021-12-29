@@ -286,16 +286,19 @@ private extension StoreStatsV4PeriodViewController {
 
         // Titles
         visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")
-        visitorsTitle.applyFootnoteStyle()
         ordersTitle.text = NSLocalizedString("Orders", comment: "Orders stat label on dashboard - should be plural.")
-        ordersTitle.applyFootnoteStyle()
         revenueTitle.text = NSLocalizedString("Revenue", comment: "Revenue stat label on dashboard.")
-        revenueTitle.applyFootnoteStyle()
+
+        [visitorsTitle, ordersTitle, revenueTitle].forEach { label in
+            label?.applyCaption2Style()
+            label?.textColor = Constants.statsTextColor
+        }
 
         // Data
-        visitorsData.applyTitleStyle()
-        ordersData.applyTitleStyle()
-        revenueData.applyTitleStyle()
+        [visitorsData, ordersData, revenueData].forEach { label in
+            label?.applyTitleStyle()
+            label?.font = Constants.statsFont
+        }
 
         // Footer
         lastUpdated.font = UIFont.footnote
@@ -451,6 +454,9 @@ private extension StoreStatsV4PeriodViewController {
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateOrderStats(selectedIndex: Int?) {
+        ordersData.textColor = selectedIndex == nil ? Constants.statsTextColor: Constants.statsHighlightTextColor
+        revenueData.textColor = selectedIndex == nil ? Constants.statsTextColor: Constants.statsHighlightTextColor
+
         guard let selectedIndex = selectedIndex else {
             reloadOrderFields()
             return
@@ -490,6 +496,8 @@ private extension StoreStatsV4PeriodViewController {
         case .hidden, .redactedDueToJetpack:
             break
         case .default:
+            visitorsData.textColor = selectedIndex == nil ? Constants.statsTextColor: Constants.statsHighlightTextColor
+
             guard let selectedIndex = selectedIndex else {
                 reloadSiteFields()
                 return
@@ -823,6 +831,9 @@ private extension StoreStatsV4PeriodViewController {
 private extension StoreStatsV4PeriodViewController {
     enum Constants {
         static let placeholderText                      = "-"
+        static let statsTextColor: UIColor = .text
+        static let statsHighlightTextColor: UIColor = .accent
+        static let statsFont: UIFont = .font(forStyle: .title3, weight: .semibold)
 
         static let chartAnimationDuration: TimeInterval = 0.75
         static let chartExtraRightOffset: CGFloat       = 25.0

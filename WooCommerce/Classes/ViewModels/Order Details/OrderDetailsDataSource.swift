@@ -476,6 +476,7 @@ private extension OrderDetailsDataSource {
     private func configurePayment(cell: LedgerTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.configure(with: paymentViewModel)
+        cell.accessibilityIdentifier = "single-order-payment-cell"
     }
 
     private func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
@@ -702,6 +703,7 @@ private extension OrderDetailsDataSource {
                                                         hasAddOns: addOns.isNotEmpty)
 
         cell.configure(item: itemViewModel, imageService: imageService)
+        cell.accessibilityIdentifier = "single-product-cell"
         cell.onViewAddOnsTouchUp = { [weak self] in
             self?.onCellAction?(.viewAddOns(addOns: addOns), nil)
         }
@@ -811,6 +813,7 @@ private extension OrderDetailsDataSource {
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Address",
             comment: "Accessibility Label for the edit button to change the Customer Shipping Address in Order Details")
+        cell.accessibilityIdentifier = "customer-shipping-details-address"
     }
 
     private func configureShippingMethod(cell: CustomerNoteTableViewCell) {

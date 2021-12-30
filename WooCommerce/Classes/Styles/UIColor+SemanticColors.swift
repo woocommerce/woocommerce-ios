@@ -135,6 +135,13 @@ extension UIColor {
         return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
         dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
     }
+
+    /// Analytics Stats Value Title Color.
+    ///
+    static var statsValueTitle: UIColor {
+        return UIColor(light: UIColor(red: 60/255, green: 60/255, blue: 67/255, alpha: 0.6),
+                       dark: UIColor(red: 235/255, green: 235/255, blue: 245/255, alpha: 0.6))
+    }
 }
 
 
@@ -328,6 +335,27 @@ extension UIColor {
     static var chartDataBarHighlighted: UIColor {
         return UIColor(light: .withColorStudio(.pink, shade: .shade70),
                        dark: .withColorStudio(.pink, shade: .shade10))
+    }
+
+    /// Percentage box color for positive stats
+    ///
+    static var percentagePositive: UIColor {
+        return UIColor(light: UIColor(red: 105/255, green: 181/255, blue: 110/255, alpha: 1),
+                       dark: UIColor(red: 184/255, green: 230/255, blue: 191/255, alpha: 1))
+    }
+
+    /// Percentage box color for negative stats
+    ///
+    static var percentageNegative: UIColor {
+        return UIColor(light: UIColor(red: 201/255, green: 88/255, blue: 84/255, alpha: 1),
+                       dark: UIColor(red: 229/255, green: 159/255, blue: 162/255, alpha: 1))
+    }
+
+    /// Percentage box color for neutral stats
+    ///
+    static var percentageNeutral: UIColor {
+        return UIColor(light: UIColor(red: 246/255, green: 247/255, blue: 247/255, alpha: 1),
+                       dark: UIColor(red: 44/255, green: 44/255, blue: 46/255, alpha: 1))
     }
 }
 

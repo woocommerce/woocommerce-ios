@@ -36,7 +36,7 @@ struct HubMenu: View {
                                 }
                             }
                     }
-                    .background(Color.white)
+                    .background(Color(.listForeground))
                     .cornerRadius(Constants.cornerRadius)
                     .padding([.bottom], Constants.padding)
                 }
@@ -58,7 +58,7 @@ struct HubMenu: View {
         let storeTitle: String
         let storeURL: String?
 
-        @ScaledMetric var settingsSize: CGFloat = 24
+        @ScaledMetric var settingsSize: CGFloat = 28
         @ScaledMetric var settingsIconSize: CGFloat = 20
 
         var body: some View {
@@ -79,10 +79,11 @@ struct HubMenu: View {
                 VStack {
                     ZStack {
                         Circle()
-                            .fill(Color.white)
+                            .fill(Color(UIColor(light: .white,
+                                                dark: .secondaryButtonBackground)))
                             .frame(width: settingsSize,
                                    height: settingsSize)
-                        if let cogImage = UIImage.cogImage.imageWithTintColor(.primary) {
+                        if let cogImage = UIImage.cogImage.imageWithTintColor(.accent) {
                             Image(uiImage: cogImage)
                                 .resizable()
                                 .frame(width: settingsIconSize,

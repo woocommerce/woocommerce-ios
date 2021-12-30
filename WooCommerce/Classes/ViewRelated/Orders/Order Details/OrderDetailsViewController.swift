@@ -711,6 +711,17 @@ private extension OrderDetailsViewController {
     }
 
     @objc private func collectPayment(at: IndexPath) {
+        viewModel.collectPayment(rootViewController: self, backButtonTitle: Localization.Payments.backToOrder) { [weak self] result in
+            guard let self = self else { return }
+            // Refresh date & view once payment has been collected.
+            if result.isSuccess {
+                self.syncOrderAfterPaymentCollection {
+                    self.refreshCardPresentPaymentEligibility()
+                }
+            }
+        }
+        return
+
         cardReaderAvailableSubscription = viewModel.cardReaderAvailable()
             .sink(
                 receiveCompletion: { [weak self] result in

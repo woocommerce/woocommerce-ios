@@ -7,6 +7,10 @@ import Combine
 import enum Networking.DotcomError
 
 final class OrderDetailsViewModel {
+    /// Retains the use-case so it can perform all of its async tasks.
+    ///
+    private var collectPaymentsUseCase: CollectOrderPaymentUseCase?
+
     private let paymentOrchestrator = PaymentCaptureOrchestrator()
     private let stores: StoresManager
 
@@ -531,6 +535,33 @@ extension OrderDetailsViewModel {
         }
         .switchToLatest()
         .eraseToAnyPublisher()
+    }
+
+    /// Collects payments for the current order.
+    /// Tries to connect to a reader if necesary.
+    /// Handles receipt sharing.
+    ///
+    func collectPayment(rootViewController: UIViewController, backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> Void) {
+        guard let paymentGateway = cardPresentPaymentGatewayAccounts.first else {
+            return DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
+        }
+
+        let formattedTotal: String = {
+            let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+            let currencyCode = ServiceLocator.currencySettings.currencyCode
+            let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
+            return currencyFormatter.formatAmount(order.total, with: unit) ?? ""
+        }()
+
+        collectPaymentsUseCase = CollectOrderPaymentUseCase(siteID: order.siteID,
+                                                            order: order,
+                                                            formattedAmount: formattedTotal,
+                                                            paymentGatewayAccount: paymentGateway,
+                                                            rootViewController: rootViewController)
+        collectPaymentsUseCase?.collectPayment(backButtonTitle: backButtonTitle, onCollect: onCollect, onCompleted: { [weak self] in
+            // Make sure we free all the resources
+            self?.collectPaymentsUseCase = nil
+        })
     }
 
     /// We are passing the ReceiptParameters as part of the completon block

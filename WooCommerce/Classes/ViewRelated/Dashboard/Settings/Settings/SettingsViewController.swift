@@ -105,7 +105,8 @@ private extension SettingsViewController {
         case let cell as BasicTableViewCell where row == .switchStore:
             configureSwitchStore(cell: cell)
         case let cell as BasicTableViewCell where row == .plugins:
-            configurePlugins(cell: cell)        case let cell as BasicTableViewCell where row == .inPersonPayments:
+            configurePlugins(cell: cell)
+        case let cell as BasicTableViewCell where row == .inPersonPayments:
             configureInPersonPayments(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
             configureInstallJetpack(cell: cell)

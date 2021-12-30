@@ -12,7 +12,7 @@ struct SafeAreaInsetsKey: EnvironmentKey {
             return .zero
         }
 
-        // Converts the non-directional UIEdgeInstets into direcional EdgeInsets
+        // Converts the non-directional UIEdgeInstets into directional EdgeInsets
         let safeInsets = window.safeAreaInsets
         if UIView.userInterfaceLayoutDirection(for: window.semanticContentAttribute) == .rightToLeft {
             return EdgeInsets(top: safeInsets.top, leading: safeInsets.left, bottom: safeInsets.bottom, trailing: safeInsets.right)

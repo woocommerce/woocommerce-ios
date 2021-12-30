@@ -1,7 +1,8 @@
 import UIKit
+import Experiments
 
 /// Contains a label that displays the time range - a date, date range for a week, month, or year.
-class StatsTimeRangeBarView: UIView {
+final class StatsTimeRangeBarView: UIView {
     // MARK: Subviews
     private let label = UILabel(frame: .zero)
 
@@ -29,9 +30,14 @@ private extension StatsTimeRangeBarView {
         label.setContentCompressionResistancePriority(.required, for: .vertical)
         pinSubviewToAllEdges(label, insets: Constants.labelInsets)
 
-        label.font = Constants.labelFont
-        label.textColor = Constants.labelColor
-        label.textAlignment = Constants.labelTextAlignment
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) {
+            label.font = Constants.labelFont
+            label.textColor = Constants.labelColor
+            label.textAlignment = Constants.labelTextAlignment
+        } else {
+            label.font = StyleManager.headlineSemiBold
+            label.textColor = .text
+        }
     }
 }
 

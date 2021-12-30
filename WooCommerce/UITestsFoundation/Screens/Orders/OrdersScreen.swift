@@ -37,4 +37,20 @@ public final class OrdersScreen: ScreenObject {
         searchButton.tap()
         return try OrderSearchScreen()
     }
+    
+    
+    public func verifyOrdersList(orders: [OrderData]) throws -> Self {
+        let numberVisibilityCount = try app.getTextVisibilityCount(text: orders[0].number)
+
+        XCTAssertTrue(numberVisibilityCount == 1, "Expecting order number to appear once, appeared \(nameVisibilityCount) times instead!")
+        XCTAssertEqual(orders.count, app.tables.cells.count, "Expecting \(orders.count) orders, got \(app.tables.cells.count) instead!")
+        XCTAssertTrue(try verifyProductsForOrder(id: orders[0].id, product: orders[0].product_id), "Products do not exist for order!")
+
+        return self
+    }
+    
+    public func verifyOrdersScreenLoaded() throws -> Self {
+        XCTAssertTrue(isLoaded)
+        return self
+    }
 }

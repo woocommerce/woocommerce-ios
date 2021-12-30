@@ -21,6 +21,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     var siteVisitStatsMode: SiteVisitStatsMode = .default {
         didSet {
             updateSiteVisitStats(mode: siteVisitStatsMode)
+            updateConversionStats(visitStatsMode: siteVisitStatsMode, selectedIndex: nil)
         }
     }
 
@@ -308,6 +309,7 @@ private extension StoreStatsV4PeriodViewController {
 
         // Visibility
         updateSiteVisitStats(mode: siteVisitStatsMode)
+        updateConversionStats(visitStatsMode: siteVisitStatsMode, selectedIndex: nil)
 
         // Accessibility elements
         xAxisAccessibilityView.isAccessibilityElement = true

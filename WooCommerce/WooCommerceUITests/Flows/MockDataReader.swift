@@ -55,7 +55,7 @@ class GetMocks {
         var updatedData = originalData.response.jsonBody.data
 
         for index in 0..<updatedData.count {
-            let orderId = OrderData.id
+            let orderId = updatedData[index].id
             let orderTotal = updatedData[index].total
         }
 

@@ -7,6 +7,7 @@ struct HubMenu: View {
     @ObservedObject private var viewModel: HubMenuViewModel
     @State private var showViewStore = false
     @State private var showReviews = false
+    @State private var showingCoupons = false
 
     init(siteID: Int64) {
         viewModel = HubMenuViewModel(siteID: siteID)
@@ -30,6 +31,8 @@ struct HubMenu: View {
                                     showViewStore = true
                                 case .reviews:
                                     showReviews = true
+                                case .coupons:
+                                    showingCoupons = true
                                 default:
                                     // TODO-5509: handle the remaining cases
                                     break
@@ -47,6 +50,9 @@ struct HubMenu: View {
             NavigationLink(destination:
                             ReviewsView(siteID: viewModel.siteID),
                            isActive: $showReviews) {
+                EmptyView()
+            }.hidden()
+            NavigationLink(destination: CouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
                 EmptyView()
             }.hidden()
         }

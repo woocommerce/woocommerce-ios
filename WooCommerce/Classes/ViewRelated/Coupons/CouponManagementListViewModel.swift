@@ -17,7 +17,7 @@ enum CouponListState {
     case coupons // View should display the contents of `couponViewModels`
 }
 
-final class CouponManagementListViewModel {
+final class CouponListViewModel {
     /// onListStateChange
     ///
     private var didLeaveState: (CouponListState) -> ()
@@ -141,7 +141,7 @@ final class CouponManagementListViewModel {
 
 // MARK: - SyncingCoordinatorDelegate
 //
-extension CouponManagementListViewModel: SyncingCoordinatorDelegate {
+extension CouponListViewModel: SyncingCoordinatorDelegate {
     /// Syncs the specified page of coupons from the API
     /// - Parameters:
     ///   - pageNumber: 1-indexed page number
@@ -181,7 +181,7 @@ extension CouponManagementListViewModel: SyncingCoordinatorDelegate {
 
 // MARK: - Pagination
 //
-private extension CouponManagementListViewModel {
+private extension CouponListViewModel {
     func transitionToSyncingState(pageNumber: Int) {
         if pageNumber == 1 {
             state = .loading

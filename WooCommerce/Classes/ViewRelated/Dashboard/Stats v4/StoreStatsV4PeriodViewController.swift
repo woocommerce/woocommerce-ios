@@ -294,7 +294,7 @@ private extension StoreStatsV4PeriodViewController {
         revenueTitle.text = NSLocalizedString("Revenue", comment: "Revenue stat label on dashboard.")
 
         [visitorsTitle, ordersTitle, conversionTitle, revenueTitle].forEach { label in
-            label?.applyCaption2Style()
+            label?.font = Constants.statsTitleFont
             label?.textColor = Constants.statsTextColor
         }
 
@@ -891,7 +891,6 @@ private extension StoreStatsV4PeriodViewController {
 
     func updateStatsDataToDefaultStyles() {
         [visitorsData, ordersData, conversionData].forEach { label in
-            label?.adjustsFontForContentSizeCategory = true
             label?.font = Constants.statsFont
             label?.textColor = Constants.statsTextColor
         }
@@ -910,6 +909,7 @@ private extension StoreStatsV4PeriodViewController {
         static let statsHighlightTextColor: UIColor = .accent
         static let statsFont: UIFont = .font(forStyle: .title3, weight: .semibold)
         static let revenueFont: UIFont = .font(forStyle: .largeTitle, weight: .semibold)
+        static let statsTitleFont: UIFont = .caption2
 
         static let chartAnimationDuration: TimeInterval = 0.75
         static let chartExtraRightOffset: CGFloat       = 25.0

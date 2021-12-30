@@ -13,9 +13,17 @@ final class OrdersTests: XCTestCase {
         try LoginFlow.logInWithWPcom()
     }
 
-    // TODO: Write real test, this is a placeholder for now
-    func testGotoOrdersScreen() throws {
-        try TabNavComponent().gotoOrdersScreen()
-        XCTAssert(try OrdersScreen().isLoaded)
+    func testOrdersScreenLoads() throws {
+            let orders = try GetMocks.readOrdersData()
+
+            _ = try TabNavComponent()
+                .gotoOrdersScreen()
+                .verifyOrdersScreenLoaded()
+                .verifyOrdersList(orders: number)
+                .selectOrder(byName: orders[0].id)
+                .verifyOrderOnSingleOrderScreen(order: orders[0])
+                .goBackToOrderList()
+                .verifyOrderScreenLoaded()
+        }
     }
 }

@@ -135,6 +135,7 @@ private struct MethodRow: View {
                     .frame(width: SimplePaymentsMethod.Layout.iconWidthHeight(scale: scale),
                            height: SimplePaymentsMethod.Layout.iconWidthHeight(scale: scale))
                     .foregroundColor(Color(.systemGray))
+                    .accessibility(hidden: true)
 
                 Text(title)
                     .bodyStyle()
@@ -146,6 +147,7 @@ private struct MethodRow: View {
                     .frame(width: SimplePaymentsMethod.Layout.chevronWidthHeight(scale: scale),
                            height: SimplePaymentsMethod.Layout.chevronWidthHeight(scale: scale))
                     .foregroundColor(Color(.systemGray))
+                    .accessibility(hidden: true)
             }
             .padding(.vertical, SimplePaymentsMethod.Layout.verticalPadding)
             .padding(.horizontal, insets: safeAreaInsets)

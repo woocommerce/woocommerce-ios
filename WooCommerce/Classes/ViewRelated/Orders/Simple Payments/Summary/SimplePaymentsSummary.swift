@@ -95,6 +95,7 @@ private struct CustomAmountSection: View {
                     .padding()
                     .foregroundColor(Color(.systemGray))
                     .background(Color(.listBackground))
+                    .accessibilityHidden(true)
 
                 Text(SimplePaymentsSummary.Localization.customAmount)
                     .headlineStyle()
@@ -107,6 +108,7 @@ private struct CustomAmountSection: View {
             .padding()
             .padding(.horizontal, insets: safeAreaInsets)
             .background(Color(.listForeground))
+            .accessibilityElement(children: .combine)
 
             Divider()
         }

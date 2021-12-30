@@ -29,7 +29,7 @@ public final class OrdersScreen: ScreenObject {
     @discardableResult
     public func selectOrder(atIndex index: Int) throws -> SingleOrderScreen {
         app.tables.cells.element(boundBy: index).tap()
-        return try SingleOrderScreen()
+        return SingleOrderScreen()
     }
 
     @discardableResult

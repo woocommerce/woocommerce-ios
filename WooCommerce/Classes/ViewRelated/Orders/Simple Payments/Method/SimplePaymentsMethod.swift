@@ -25,12 +25,17 @@ struct SimplePaymentsMethod: View {
     ///
     @State var sharingPaymentLink = false
 
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.noSpacing) {
 
             Text(Localization.header)
                 .subheadlineStyle()
                 .padding()
+                .padding(.horizontal, insets: safeAreaInsets)
 
             Divider()
 
@@ -65,6 +70,7 @@ struct SimplePaymentsMethod: View {
             // Pushes content to the top
             Spacer()
         }
+        .ignoresSafeArea(edges: .horizontal)
         .disabled(viewModel.disableViewActions)
         .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(viewModel.title)
@@ -116,6 +122,10 @@ private struct MethodRow: View {
     ///
     @ScaledMetric private var scale = 1
 
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
     var body: some View {
         Button(action: action) {
             HStack {
@@ -125,6 +135,7 @@ private struct MethodRow: View {
                     .frame(width: SimplePaymentsMethod.Layout.iconWidthHeight(scale: scale),
                            height: SimplePaymentsMethod.Layout.iconWidthHeight(scale: scale))
                     .foregroundColor(Color(.systemGray))
+                    .accessibility(hidden: true)
 
                 Text(title)
                     .bodyStyle()
@@ -136,8 +147,10 @@ private struct MethodRow: View {
                     .frame(width: SimplePaymentsMethod.Layout.chevronWidthHeight(scale: scale),
                            height: SimplePaymentsMethod.Layout.chevronWidthHeight(scale: scale))
                     .foregroundColor(Color(.systemGray))
+                    .accessibility(hidden: true)
             }
             .padding(.vertical, SimplePaymentsMethod.Layout.verticalPadding)
+            .padding(.horizontal, insets: safeAreaInsets)
         }
     }
 }

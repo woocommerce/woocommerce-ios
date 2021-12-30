@@ -21,7 +21,7 @@ struct SimplePaymentsSummary: View {
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             ScrollView {
                 VStack(spacing: Layout.noSpacing) {
 

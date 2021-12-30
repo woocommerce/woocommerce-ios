@@ -4483,11 +4483,8 @@
 				3FF314E026FC74450012E68E /* UITestsFoundation.h */,
 				F997173223DBCF2800592D8E /* XCTest+Extensions.swift */,
 				80C3626A27704EE1005CEAD3 /* ProductDataStructs.swift */,
-<<<<<<< Updated upstream
 				80C3627027745737005CEAD3 /* ReviewDataStructs.swift */,
-=======
 				C0115DFC277CC19E007293B8 /* OrderDataStructs.swift */,
->>>>>>> Stashed changes
 			);
 			path = UITestsFoundation;
 			sourceTree = "<group>";

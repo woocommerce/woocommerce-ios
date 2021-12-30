@@ -276,10 +276,10 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func configureView() {
-        view.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
-        containerStackView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
-        timeRangeBarView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
-        visitorsStackView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        view.backgroundColor = .systemBackground
+        containerStackView.backgroundColor = .systemBackground
+        timeRangeBarView.backgroundColor = .clear
+        visitorsStackView.backgroundColor = .clear
 
         // Visitor empty view - insert it at the second-to-last index,
         // since we need the footer view (with height = 20) as the last item in the stack view.
@@ -304,7 +304,7 @@ private extension StoreStatsV4PeriodViewController {
         // Footer
         lastUpdated.font = UIFont.footnote
         lastUpdated.textColor = .textSubtle
-        lastUpdated.backgroundColor = .listForeground
+        lastUpdated.backgroundColor = .clear
 
         // Visibility
         updateSiteVisitStats(mode: siteVisitStatsMode)
@@ -331,7 +331,7 @@ private extension StoreStatsV4PeriodViewController {
 
     func configureNoRevenueView() {
         noRevenueView.isHidden = true
-        noRevenueView.backgroundColor = .listForeground
+        noRevenueView.backgroundColor = .systemBackground
         noRevenueLabel.text = NSLocalizedString("No revenue this period",
                                                 comment: "Text displayed when no order data are available for the selected time range.")
         noRevenueLabel.font = StyleManager.subheadlineFont

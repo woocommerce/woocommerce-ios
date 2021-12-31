@@ -1,7 +1,5 @@
 import Combine
 import Yosemite
-import Combine
-import Foundation
 
 final class StoreStatsPeriodViewModel {
     // MARK: - Stats data text (public)
@@ -11,6 +9,9 @@ final class StoreStatsPeriodViewModel {
     @Published private(set) var conversionStatsText: String = Constants.placeholderText
     @Published private(set) var revenueStatsText: String = Constants.placeholderText
     @Published private(set) var summaryDateUpdatedText: String = ""
+
+    // Observed for chart updates.
+    @Published private(set) var orderStats: OrderStatsV4?
 
     // Set externally from user interactions with the chart.
     @Published var selectedIntervalIndex: Int? = nil
@@ -23,11 +24,8 @@ final class StoreStatsPeriodViewModel {
         shouldReloadChartAnimated.eraseToAnyPublisher()
     }
 
-    private(set) var orderStatsIntervals: [OrderStatsV4Interval] = []
-
     // MARK: - Stats data (private)
 
-    @Published private var orderStats: OrderStatsV4?
     @Published private var siteStats: SiteVisitStats?
 
     private let timeRangeBarViewModelSubject: PassthroughSubject<StatsTimeRangeBarViewModel, Never> = .init()
@@ -45,13 +43,11 @@ final class StoreStatsPeriodViewModel {
     // MARK: - Results controllers
 
     /// SiteVisitStats ResultsController: Loads site visit stats from the Storage Layer
-    ///
     private lazy var siteStatsResultsController: ResultsController<StorageSiteVisitStats> = {
         return updateSiteVisitStatsResultsController(currentDate: currentDate)
     }()
 
     /// OrderStats ResultsController: Loads order stats from the Storage Layer
-    ///
     private lazy var orderStatsResultsController: ResultsController<StorageOrderStatsV4> = {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "timeRange ==[c] %@", timeRange.rawValue)
@@ -60,11 +56,10 @@ final class StoreStatsPeriodViewModel {
 
     // MARK: - Configurations
 
-    let granularity: StatsGranularityV4
-
-    /// Updated when reloading data.
+    /// Updated externally when reloading data.
     var siteTimezone: TimeZone = .current
 
+    /// Updated externally when reloading data.
     var currentDate: Date {
         didSet {
             if currentDate != oldValue {
@@ -83,7 +78,6 @@ final class StoreStatsPeriodViewModel {
 
     init(timeRange: StatsTimeRangeV4, currentDate: Date, currencyFormatter: CurrencyFormatter, currencyCode: String) {
         self.timeRange = timeRange
-        self.granularity = timeRange.intervalGranularity // TODO: used?
         self.currentDate = currentDate
         self.currencyFormatter = currencyFormatter
         self.currencyCode = currencyCode
@@ -93,11 +87,6 @@ final class StoreStatsPeriodViewModel {
         observeOrderStats()
         observeSiteVisitData()
         observeConversionData()
-    }
-
-    func formattedChartMarkerPeriodString(for item: OrderStatsV4Interval) -> String {
-        let chartDateFormatter = timeRange.chartDateFormatter(siteTimezone: siteTimezone)
-        return chartDateFormatter.string(from: item.dateStart(timeZone: siteTimezone))
     }
 }
 
@@ -300,9 +289,6 @@ private extension StoreStatsPeriodViewModel {
 
     func updateOrderDataIfNeeded() {
         orderStats = orderStatsResultsController.fetchedObjects.first
-        orderStatsIntervals = orderStats?.intervals.sorted(by: { (lhs, rhs) -> Bool in
-            return lhs.dateStart(timeZone: siteTimezone) < rhs.dateStart(timeZone: siteTimezone)
-        }) ?? []
 
         // Don't animate the chart here - this helps avoid a "double animation" effect if a
         // small number of values change (the chart WILL be updated correctly however)

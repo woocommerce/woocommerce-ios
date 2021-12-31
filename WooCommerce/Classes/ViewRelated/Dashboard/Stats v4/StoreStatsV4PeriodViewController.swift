@@ -72,9 +72,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         return ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
     }
 
-    private var orderStatsIntervals: [OrderStatsV4Interval] {
-        viewModel.orderStatsIntervals
-    }
+    private var orderStatsIntervals: [OrderStatsV4Interval] = []
 
     private var revenueItems: [Double] {
         orderStatsIntervals.map({ ($0.revenueValue as NSDecimalNumber).doubleValue })
@@ -171,6 +169,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         observeTimeRangeBarViewModel()
         observeLastUpdatedText()
         observeReloadChartAnimated()
+        observeOrderStatsForIntervals()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -185,7 +184,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     }
 }
 
-// MARK: - Observations for UI updates
+// MARK: - Observations for data related updates
 private extension StoreStatsV4PeriodViewController {
     func observeStatsLabels() {
         viewModel.$orderStatsText.sink { [weak self] orderStatsLabel in
@@ -233,6 +232,15 @@ private extension StoreStatsV4PeriodViewController {
     func observeReloadChartAnimated() {
         viewModel.reloadChartAnimated.sink { [weak self] animated in
             self?.reloadChart(animateChart: animated)
+        }.store(in: &cancellables)
+    }
+
+    func observeOrderStatsForIntervals() {
+        viewModel.$orderStats.sink { [weak self] orderStats in
+            guard let self = self else { return }
+            self.orderStatsIntervals = orderStats?.intervals.sorted(by: { (lhs, rhs) -> Bool in
+                return lhs.dateStart(timeZone: self.siteTimezone) < rhs.dateStart(timeZone: self.siteTimezone)
+            }) ?? []
         }.store(in: &cancellables)
     }
 }

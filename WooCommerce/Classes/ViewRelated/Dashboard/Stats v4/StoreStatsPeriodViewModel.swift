@@ -87,8 +87,8 @@ final class StoreStatsPeriodViewModel {
         // Make sure the ResultsControllers are ready to observe changes to the data even before the view loads
         configureResultsControllers()
         observeOrderStats()
-        observeSiteVisitData()
-        observeConversionData()
+        observeDataForVisitorStatsText()
+        observeDataForConversionStats()
     }
 }
 
@@ -148,45 +148,43 @@ private extension StoreStatsPeriodViewModel {
 
     // MARK: - Site visit stats
 
-    func observeSiteVisitData() {
+    func observeDataForVisitorStatsText() {
         Publishers.CombineLatest($siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-            .sink { [weak self] siteStats, selectedIntervalIndex in
-                guard let self = self else { return }
-                self.updateVisitorStatsLabel(siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
-            }.store(in: &cancellables)
-    }
-
-    func updateVisitorStatsLabel(siteStats: SiteVisitStats?, selectedIntervalIndex: Int?) {
-        if let visitorCount = visitorCount(at: selectedIntervalIndex, siteStats: siteStats) {
-            visitorStatsText = Double(visitorCount).humanReadableString()
-        } else {
-            visitorStatsText = Constants.placeholderText
-        }
+            .map { [weak self] siteStats, selectedIntervalIndex in
+                guard let self = self else {
+                    return Constants.placeholderText
+                }
+                if let visitorCount = self.visitorCount(at: selectedIntervalIndex, siteStats: siteStats) {
+                    return Double(visitorCount).humanReadableString()
+                } else {
+                    return Constants.placeholderText
+                }
+            }
+            .assign(to: &$visitorStatsText)
     }
 
     // MARK: - Conversion stats
 
-    func observeConversionData() {
+    func observeDataForConversionStats() {
         Publishers.CombineLatest3($orderStats.eraseToAnyPublisher(), $siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-            .sink { [weak self] orderStats, siteStats, selectedIntervalIndex in
-                guard let self = self else { return }
-                self.updateConversionStatsLabel(orderStats: orderStats, siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
-            }.store(in: &cancellables)
-    }
-
-    func updateConversionStatsLabel(orderStats: OrderStatsV4?, siteStats: SiteVisitStats?, selectedIntervalIndex: Int?) {
-        let visitors = visitorCount(at: selectedIntervalIndex, siteStats: siteStats)
-        let orders = orderCount(at: selectedIntervalIndex, orderStats: orderStats, orderStatsIntervals: orderStatsIntervals(from: orderStats))
-        if let visitors = visitors, let orders = orders, visitors > 0 {
-            // Maximum conversion rate is 100%.
-            let conversionRate = min(orders/visitors, 1)
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = .percent
-            numberFormatter.minimumFractionDigits = 1
-            conversionStatsText = numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.placeholderText
-        } else {
-            conversionStatsText = Constants.placeholderText
-        }
+            .map { [weak self] orderStats, siteStats, selectedIntervalIndex in
+                guard let self = self else {
+                    return Constants.placeholderText
+                }
+                let visitors = self.visitorCount(at: selectedIntervalIndex, siteStats: siteStats)
+                let orders = self.orderCount(at: selectedIntervalIndex, orderStats: orderStats, orderStatsIntervals: self.orderStatsIntervals(from: orderStats))
+                if let visitors = visitors, let orders = orders, visitors > 0 {
+                    // Maximum conversion rate is 100%.
+                    let conversionRate = min(orders/visitors, 1)
+                    let numberFormatter = NumberFormatter()
+                    numberFormatter.numberStyle = .percent
+                    numberFormatter.minimumFractionDigits = 1
+                    return numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.placeholderText
+                } else {
+                    return Constants.placeholderText
+                }
+            }
+            .assign(to: &$conversionStatsText)
     }
 }
 

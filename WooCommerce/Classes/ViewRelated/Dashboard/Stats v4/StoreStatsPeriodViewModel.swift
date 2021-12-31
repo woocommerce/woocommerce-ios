@@ -10,16 +10,18 @@ final class StoreStatsPeriodViewModel {
     @Published private(set) var revenueStatsText: String = Constants.placeholderText
     @Published private(set) var summaryDateUpdatedText: String = ""
 
-    // Observed for chart updates.
+    /// Observed for chart updates.
     @Published private(set) var orderStats: OrderStatsV4?
 
-    // Set externally from user interactions with the chart.
+    /// Set externally from user interactions with the chart.
     @Published var selectedIntervalIndex: Int? = nil
 
+    /// Observable view model for time range bar that shows the time range for the chart.
     var timeRangeBarViewModel: AnyPublisher<StatsTimeRangeBarViewModel, Never> {
         timeRangeBarViewModelSubject.eraseToAnyPublisher()
     }
 
+    /// Observed to reload chart with a boolean that indicates whether it should be animated.
     var reloadChartAnimated: AnyPublisher<Bool, Never> {
         shouldReloadChartAnimated.eraseToAnyPublisher()
     }

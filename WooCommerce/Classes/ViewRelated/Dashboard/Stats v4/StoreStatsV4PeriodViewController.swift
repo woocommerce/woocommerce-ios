@@ -188,19 +188,19 @@ final class StoreStatsV4PeriodViewController: UIViewController {
 // MARK: - Observations for data related updates
 private extension StoreStatsV4PeriodViewController {
     func observeStatsLabels() {
-        viewModel.$orderStatsText.sink { [weak self] orderStatsLabel in
+        viewModel.orderStatsText.sink { [weak self] orderStatsLabel in
             self?.ordersData.text = orderStatsLabel
         }.store(in: &cancellables)
 
-        viewModel.$revenueStatsText.sink { [weak self] revenueStatsLabel in
+        viewModel.revenueStatsText.sink { [weak self] revenueStatsLabel in
             self?.revenueData.text = revenueStatsLabel
         }.store(in: &cancellables)
 
-        viewModel.$visitorStatsText.sink { [weak self] visitorStatsLabel in
+        viewModel.visitorStatsText.sink { [weak self] visitorStatsLabel in
             self?.visitorsData.text = visitorStatsLabel
         }.store(in: &cancellables)
 
-        viewModel.$conversionStatsText.sink { [weak self] conversionStatsLabel in
+        viewModel.conversionStatsText.sink { [weak self] conversionStatsLabel in
             self?.conversionData.text = conversionStatsLabel
         }.store(in: &cancellables)
     }
@@ -219,13 +219,13 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func observeTimeRangeBarViewModel() {
-        viewModel.$timeRangeBarViewModel.compactMap { $0 }.sink { [weak self] timeRangeBarViewModel in
+        viewModel.timeRangeBarViewModel.sink { [weak self] timeRangeBarViewModel in
             self?.timeRangeBarView.updateUI(viewModel: timeRangeBarViewModel)
         }.store(in: &cancellables)
     }
 
     func observeLastUpdatedText() {
-        viewModel.$summaryDateUpdatedText.sink { [weak self] summaryDateUpdatedText in
+        viewModel.summaryDateUpdatedText.sink { [weak self] summaryDateUpdatedText in
             self?.lastUpdated.text = summaryDateUpdatedText
         }.store(in: &cancellables)
     }

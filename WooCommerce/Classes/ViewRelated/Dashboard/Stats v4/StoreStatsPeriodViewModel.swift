@@ -1,46 +1,80 @@
 import Combine
 import Yosemite
 
+/// Provides data and observables for UI in `StoreStatsV4PeriodViewController`.
 final class StoreStatsPeriodViewModel {
-    // MARK: - Stats data (public)
+    // MARK: - Public data & observables
 
     /// Used for chart updates.
     var orderStatsIntervals: [OrderStatsV4Interval] {
         orderStatsData.intervals
     }
 
-    @Published private(set) var orderStatsText: String = Constants.placeholderText
-    @Published private(set) var visitorStatsText: String = Constants.placeholderText
-    @Published private(set) var conversionStatsText: String = Constants.placeholderText
-    @Published private(set) var revenueStatsText: String = Constants.placeholderText
-    @Published private(set) var summaryDateUpdatedText: String = ""
-
-    /// Set externally from user interactions with the chart.
+    /// Updated externally from user interactions with the chart.
     @Published var selectedIntervalIndex: Int? = nil
 
-    /// Observable view model for time range bar that shows the time range for the chart.
-    @Published private(set) var timeRangeBarViewModel: StatsTimeRangeBarViewModel?
+    /// Emits order stats text values based on order stats and selected time interval.
+    private(set) lazy var orderStatsText: AnyPublisher<String, Never> =
+    Publishers.CombineLatest($orderStatsData.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
+        .compactMap { [weak self] orderStatsData, selectedIntervalIndex in
+            return self?.createOrderStatsText(orderStatsData: orderStatsData, selectedIntervalIndex: selectedIntervalIndex)
+        }
+        .eraseToAnyPublisher()
 
-    /// Observed to reload chart with a boolean that indicates whether it should be animated.
+    /// Emits revenue stats text values based on order stats and selected time interval.
+    private(set) lazy var revenueStatsText: AnyPublisher<String, Never> =
+    Publishers.CombineLatest($orderStatsData.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
+        .compactMap { [weak self] orderStatsData, selectedIntervalIndex in
+            self?.createRevenueStats(orderStatsData: orderStatsData, selectedIntervalIndex: selectedIntervalIndex)
+        }
+        .eraseToAnyPublisher()
+
+    /// Emits visitor stats text values based on site visit stats and selected time interval.
+    private(set) lazy var visitorStatsText: AnyPublisher<String, Never> =
+    Publishers.CombineLatest($siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
+        .compactMap { [weak self] siteStats, selectedIntervalIndex in
+            self?.createVisitorStatsText(siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
+        }
+        .eraseToAnyPublisher()
+
+    /// Emits conversion stats text values based on order stats, site visit stats, and selected time interval.
+    private(set) lazy var conversionStatsText: AnyPublisher<String, Never> =
+    Publishers.CombineLatest3($orderStatsData.eraseToAnyPublisher(), $siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
+        .compactMap { [weak self] orderStatsData, siteStats, selectedIntervalIndex in
+            self?.createConversionStats(orderStatsData: orderStatsData, siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
+        }
+        .eraseToAnyPublisher()
+
+    /// Emits view models for time range bar that shows the time range for the selected time interval.
+    private(set) lazy var timeRangeBarViewModel: AnyPublisher<StatsTimeRangeBarViewModel, Never> =
+    Publishers.CombineLatest($orderStatsData.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
+        .compactMap { [weak self] orderStatsData, selectedIntervalIndex in
+            return self?.createTimeRangeBarViewModel(orderStatsData: orderStatsData, selectedIntervalIndex: selectedIntervalIndex)
+        }
+        .eraseToAnyPublisher()
+
+    /// Emits last updated summary text values based on the last time order or site visit stats are updated.
+    private(set) lazy var summaryDateUpdatedText: AnyPublisher<String, Never> = $lastUpdatedDate
+        .map { lastUpdatedDate in
+            lastUpdatedDate?.relativelyFormattedUpdateString ?? ""
+        }
+        .eraseToAnyPublisher()
+
+    /// Emits a boolean to reload chart, and the boolean indicates whether the reload should be animated.
     var reloadChartAnimated: AnyPublisher<Bool, Never> {
         shouldReloadChartAnimated.eraseToAnyPublisher()
     }
 
-    // MARK: - Stats data (private)
+    // MARK: - Private data
 
     @Published private var siteStats: SiteVisitStats?
-    @Published private var orderStatsData: (stats: OrderStatsV4?, intervals: [OrderStatsV4Interval]) = (nil, [])
+
+    typealias OrderStatsData = (stats: OrderStatsV4?, intervals: [OrderStatsV4Interval])
+    @Published private var orderStatsData: OrderStatsData = (nil, [])
+
+    @Published private var lastUpdatedDate: Date?
 
     private let shouldReloadChartAnimated: PassthroughSubject<Bool, Never> = .init()
-
-    private var lastUpdatedDate: Date? {
-        didSet {
-            guard let lastUpdatedDate = lastUpdatedDate else {
-                return summaryDateUpdatedText = ""
-            }
-            summaryDateUpdatedText = lastUpdatedDate.relativelyFormattedUpdateString
-        }
-    }
 
     // MARK: - Results controllers
 
@@ -86,108 +120,69 @@ final class StoreStatsPeriodViewModel {
 
         // Make sure the ResultsControllers are ready to observe changes to the data even before the view loads
         configureResultsControllers()
-        observeDataForTimeRangeBarViewModel()
-        observeDataForOrderStats()
-        observeDataForRevenueStats()
-        observeDataForVisitorStatsText()
-        observeDataForConversionStats()
     }
 }
 
-// MARK: Observations
+// MARK: Private helpers for public data calculation
 //
 private extension StoreStatsPeriodViewModel {
-    // MARK: - Order stats
-    func observeDataForTimeRangeBarViewModel() {
-        Publishers.CombineLatest($orderStatsData.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-            .compactMap { [weak self] orderStatsData, selectedIntervalIndex in
-                guard let self = self else { return nil }
-                let orderStatsIntervals = orderStatsData.intervals
-                guard let startDate = orderStatsIntervals.first?.dateStart(timeZone: self.siteTimezone),
-                      let endDate = orderStatsIntervals.last?.dateStart(timeZone: self.siteTimezone) else {
-                          return nil
-                      }
-                guard let selectedIndex = selectedIntervalIndex else {
-                    return StatsTimeRangeBarViewModel(startDate: startDate,
-                                                      endDate: endDate,
-                                                      timeRange: self.timeRange,
-                                                      timezone: self.siteTimezone)
-                }
-                let date = orderStatsIntervals[selectedIndex].dateStart(timeZone: self.siteTimezone)
-                return StatsTimeRangeBarViewModel(startDate: startDate,
-                                                  endDate: endDate,
-                                                  selectedDate: date,
-                                                  timeRange: self.timeRange,
-                                                  timezone: self.siteTimezone)
-            }
-            .assign(to: &$timeRangeBarViewModel)
+    func createTimeRangeBarViewModel(orderStatsData: OrderStatsData, selectedIntervalIndex: Int?) -> StatsTimeRangeBarViewModel? {
+        let orderStatsIntervals = orderStatsData.intervals
+        guard let startDate = orderStatsIntervals.first?.dateStart(timeZone: self.siteTimezone),
+              let endDate = orderStatsIntervals.last?.dateStart(timeZone: self.siteTimezone) else {
+                  return nil
+              }
+        guard let selectedIndex = selectedIntervalIndex else {
+            return StatsTimeRangeBarViewModel(startDate: startDate,
+                                              endDate: endDate,
+                                              timeRange: timeRange,
+                                              timezone: siteTimezone)
+        }
+        let date = orderStatsIntervals[selectedIndex].dateStart(timeZone: siteTimezone)
+        return StatsTimeRangeBarViewModel(startDate: startDate,
+                                          endDate: endDate,
+                                          selectedDate: date,
+                                          timeRange: timeRange,
+                                          timezone: siteTimezone)
     }
 
-    func observeDataForOrderStats() {
-        Publishers.CombineLatest($orderStatsData.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-            .compactMap { [weak self] orderStatsData, selectedIntervalIndex in
-                guard let self = self else { return nil }
-                if let count = self.orderCount(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals) {
-                    return Double(count).humanReadableString()
-                } else {
-                    return Constants.placeholderText
-                }
-            }
-            .assign(to: &$orderStatsText)
+    func createOrderStatsText(orderStatsData: OrderStatsData, selectedIntervalIndex: Int?) -> String {
+        if let count = orderCount(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals) {
+            return Double(count).humanReadableString()
+        } else {
+            return Constants.placeholderText
+        }
     }
 
-    func observeDataForRevenueStats() {
-        Publishers.CombineLatest($orderStatsData.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-            .compactMap { [weak self] orderStatsData, selectedIntervalIndex in
-                guard let self = self else { return nil }
-                if let revenue = self.revenue(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals) {
-                    return self.currencyFormatter.formatHumanReadableAmount(String("\(revenue)"), with: self.currencyCode) ?? String()
-                } else {
-                    return Constants.placeholderText
-                }
-            }
-            .assign(to: &$revenueStatsText)
+    func createRevenueStats(orderStatsData: OrderStatsData, selectedIntervalIndex: Int?) -> String {
+        if let revenue = revenue(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals) {
+            return currencyFormatter.formatHumanReadableAmount(String("\(revenue)"), with: currencyCode) ?? String()
+        } else {
+            return Constants.placeholderText
+        }
     }
 
-    // MARK: - Site visit stats
-
-    func observeDataForVisitorStatsText() {
-        Publishers.CombineLatest($siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-            .map { [weak self] siteStats, selectedIntervalIndex in
-                guard let self = self else {
-                    return Constants.placeholderText
-                }
-                if let visitorCount = self.visitorCount(at: selectedIntervalIndex, siteStats: siteStats) {
-                    return Double(visitorCount).humanReadableString()
-                } else {
-                    return Constants.placeholderText
-                }
-            }
-            .assign(to: &$visitorStatsText)
+    func createVisitorStatsText(siteStats: SiteVisitStats?, selectedIntervalIndex: Int?) -> String {
+        if let visitorCount = visitorCount(at: selectedIntervalIndex, siteStats: siteStats) {
+            return Double(visitorCount).humanReadableString()
+        } else {
+            return Constants.placeholderText
+        }
     }
 
-    // MARK: - Conversion stats
-
-    func observeDataForConversionStats() {
-        Publishers.CombineLatest3($orderStatsData.eraseToAnyPublisher(), $siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-            .map { [weak self] orderStatsData, siteStats, selectedIntervalIndex in
-                guard let self = self else {
-                    return Constants.placeholderText
-                }
-                let visitors = self.visitorCount(at: selectedIntervalIndex, siteStats: siteStats)
-                let orders = self.orderCount(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals)
-                if let visitors = visitors, let orders = orders, visitors > 0 {
-                    // Maximum conversion rate is 100%.
-                    let conversionRate = min(orders/visitors, 1)
-                    let numberFormatter = NumberFormatter()
-                    numberFormatter.numberStyle = .percent
-                    numberFormatter.minimumFractionDigits = 1
-                    return numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.placeholderText
-                } else {
-                    return Constants.placeholderText
-                }
-            }
-            .assign(to: &$conversionStatsText)
+    func createConversionStats(orderStatsData: OrderStatsData, siteStats: SiteVisitStats?, selectedIntervalIndex: Int?) -> String {
+        let visitors = visitorCount(at: selectedIntervalIndex, siteStats: siteStats)
+        let orders = orderCount(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals)
+        if let visitors = visitors, let orders = orders, visitors > 0 {
+            // Maximum conversion rate is 100%.
+            let conversionRate = min(orders/visitors, 1)
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .percent
+            numberFormatter.minimumFractionDigits = 1
+            return numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.placeholderText
+        } else {
+            return Constants.placeholderText
+        }
     }
 }
 

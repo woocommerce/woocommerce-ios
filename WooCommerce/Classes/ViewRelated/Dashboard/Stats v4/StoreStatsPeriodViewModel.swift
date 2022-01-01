@@ -2,7 +2,7 @@ import Combine
 import Yosemite
 
 final class StoreStatsPeriodViewModel {
-    // MARK: - Stats data text (public)
+    // MARK: - Stats data (public)
 
     /// Used for chart updates.
     var orderStatsIntervals: [OrderStatsV4Interval] {
@@ -309,6 +309,6 @@ private extension StoreStatsPeriodViewModel {
 
 private extension StoreStatsPeriodViewModel {
     enum Constants {
-        static let placeholderText                      = "-"
+        static let placeholderText = "-"
     }
 }

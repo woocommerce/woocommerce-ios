@@ -4,22 +4,22 @@ import Yosemite
 final class StoreStatsPeriodViewModel {
     // MARK: - Stats data text (public)
 
+    /// Used for chart updates.
+    var orderStatsIntervals: [OrderStatsV4Interval] {
+        orderStatsData.intervals
+    }
+
     @Published private(set) var orderStatsText: String = Constants.placeholderText
     @Published private(set) var visitorStatsText: String = Constants.placeholderText
     @Published private(set) var conversionStatsText: String = Constants.placeholderText
     @Published private(set) var revenueStatsText: String = Constants.placeholderText
     @Published private(set) var summaryDateUpdatedText: String = ""
 
-    /// Observed for chart updates.
-    @Published private(set) var orderStats: OrderStatsV4?
-
     /// Set externally from user interactions with the chart.
     @Published var selectedIntervalIndex: Int? = nil
 
     /// Observable view model for time range bar that shows the time range for the chart.
-    var timeRangeBarViewModel: AnyPublisher<StatsTimeRangeBarViewModel, Never> {
-        timeRangeBarViewModelSubject.eraseToAnyPublisher()
-    }
+    @Published private(set) var timeRangeBarViewModel: StatsTimeRangeBarViewModel?
 
     /// Observed to reload chart with a boolean that indicates whether it should be animated.
     var reloadChartAnimated: AnyPublisher<Bool, Never> {
@@ -29,8 +29,8 @@ final class StoreStatsPeriodViewModel {
     // MARK: - Stats data (private)
 
     @Published private var siteStats: SiteVisitStats?
+    @Published private var orderStatsData: (stats: OrderStatsV4?, intervals: [OrderStatsV4Interval]) = (nil, [])
 
-    private let timeRangeBarViewModelSubject: PassthroughSubject<StatsTimeRangeBarViewModel, Never> = .init()
     private let shouldReloadChartAnimated: PassthroughSubject<Bool, Never> = .init()
 
     private var lastUpdatedDate: Date? {
@@ -86,7 +86,9 @@ final class StoreStatsPeriodViewModel {
 
         // Make sure the ResultsControllers are ready to observe changes to the data even before the view loads
         configureResultsControllers()
-        observeOrderStats()
+        observeDataForTimeRangeBarViewModel()
+        observeDataForOrderStats()
+        observeDataForRevenueStats()
         observeDataForVisitorStatsText()
         observeDataForConversionStats()
     }
@@ -96,54 +98,55 @@ final class StoreStatsPeriodViewModel {
 //
 private extension StoreStatsPeriodViewModel {
     // MARK: - Order stats
-
-    func observeOrderStats() {
-        Publishers.CombineLatest($orderStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-            .sink { [weak self] orderStats, selectedIntervalIndex in
-                guard let self = self else { return }
-                let orderStatsIntervals = self.orderStatsIntervals(from: orderStats)
-                self.updateTimeRangeBarViewModel(orderStats: orderStats, orderStatsIntervals: orderStatsIntervals, selectedIntervalIndex: selectedIntervalIndex)
-                self.updateOrderStatsLabel(orderStats: orderStats, orderStatsIntervals: orderStatsIntervals, selectedIntervalIndex: selectedIntervalIndex)
-                self.updateRevenueStatsLabel(orderStats: orderStats, orderStatsIntervals: orderStatsIntervals, selectedIntervalIndex: selectedIntervalIndex)
-            }.store(in: &cancellables)
+    func observeDataForTimeRangeBarViewModel() {
+        Publishers.CombineLatest($orderStatsData.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
+            .compactMap { [weak self] orderStatsData, selectedIntervalIndex in
+                guard let self = self else { return nil }
+                let orderStatsIntervals = orderStatsData.intervals
+                guard let startDate = orderStatsIntervals.first?.dateStart(timeZone: self.siteTimezone),
+                      let endDate = orderStatsIntervals.last?.dateStart(timeZone: self.siteTimezone) else {
+                          return nil
+                      }
+                guard let selectedIndex = selectedIntervalIndex else {
+                    return StatsTimeRangeBarViewModel(startDate: startDate,
+                                                      endDate: endDate,
+                                                      timeRange: self.timeRange,
+                                                      timezone: self.siteTimezone)
+                }
+                let date = orderStatsIntervals[selectedIndex].dateStart(timeZone: self.siteTimezone)
+                return StatsTimeRangeBarViewModel(startDate: startDate,
+                                                  endDate: endDate,
+                                                  selectedDate: date,
+                                                  timeRange: self.timeRange,
+                                                  timezone: self.siteTimezone)
+            }
+            .assign(to: &$timeRangeBarViewModel)
     }
 
-    func updateTimeRangeBarViewModel(orderStats: OrderStatsV4?, orderStatsIntervals: [OrderStatsV4Interval], selectedIntervalIndex: Int?) {
-        guard let startDate = orderStatsIntervals.first?.dateStart(timeZone: siteTimezone),
-            let endDate = orderStatsIntervals.last?.dateStart(timeZone: siteTimezone) else {
-                return
-        }
-        guard let selectedIndex = selectedIntervalIndex else {
-            let viewMoel = StatsTimeRangeBarViewModel(startDate: startDate,
-                                                                   endDate: endDate,
-                                                                   timeRange: timeRange,
-                                                                   timezone: siteTimezone)
-            timeRangeBarViewModelSubject.send(viewMoel)
-            return
-        }
-        let date = orderStatsIntervals[selectedIndex].dateStart(timeZone: siteTimezone)
-        let viewMoel = StatsTimeRangeBarViewModel(startDate: startDate,
-                                                               endDate: endDate,
-                                                               selectedDate: date,
-                                                               timeRange: timeRange,
-                                                               timezone: siteTimezone)
-        timeRangeBarViewModelSubject.send(viewMoel)
+    func observeDataForOrderStats() {
+        Publishers.CombineLatest($orderStatsData.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
+            .compactMap { [weak self] orderStatsData, selectedIntervalIndex in
+                guard let self = self else { return nil }
+                if let count = self.orderCount(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals) {
+                    return Double(count).humanReadableString()
+                } else {
+                    return Constants.placeholderText
+                }
+            }
+            .assign(to: &$orderStatsText)
     }
 
-    func updateOrderStatsLabel(orderStats: OrderStatsV4?, orderStatsIntervals: [OrderStatsV4Interval], selectedIntervalIndex: Int?) {
-        if let count = orderCount(at: selectedIntervalIndex, orderStats: orderStats, orderStatsIntervals: orderStatsIntervals) {
-            orderStatsText = Double(count).humanReadableString()
-        } else {
-            orderStatsText = Constants.placeholderText
-        }
-    }
-
-    func updateRevenueStatsLabel(orderStats: OrderStatsV4?, orderStatsIntervals: [OrderStatsV4Interval], selectedIntervalIndex: Int?) {
-        if let revenue = revenue(at: selectedIntervalIndex, orderStats: orderStats, orderStatsIntervals: orderStatsIntervals) {
-            revenueStatsText = currencyFormatter.formatHumanReadableAmount(String("\(revenue)"), with: currencyCode) ?? String()
-        } else {
-            revenueStatsText = Constants.placeholderText
-        }
+    func observeDataForRevenueStats() {
+        Publishers.CombineLatest($orderStatsData.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
+            .compactMap { [weak self] orderStatsData, selectedIntervalIndex in
+                guard let self = self else { return nil }
+                if let revenue = self.revenue(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals) {
+                    return self.currencyFormatter.formatHumanReadableAmount(String("\(revenue)"), with: self.currencyCode) ?? String()
+                } else {
+                    return Constants.placeholderText
+                }
+            }
+            .assign(to: &$revenueStatsText)
     }
 
     // MARK: - Site visit stats
@@ -166,13 +169,13 @@ private extension StoreStatsPeriodViewModel {
     // MARK: - Conversion stats
 
     func observeDataForConversionStats() {
-        Publishers.CombineLatest3($orderStats.eraseToAnyPublisher(), $siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-            .map { [weak self] orderStats, siteStats, selectedIntervalIndex in
+        Publishers.CombineLatest3($orderStatsData.eraseToAnyPublisher(), $siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
+            .map { [weak self] orderStatsData, siteStats, selectedIntervalIndex in
                 guard let self = self else {
                     return Constants.placeholderText
                 }
                 let visitors = self.visitorCount(at: selectedIntervalIndex, siteStats: siteStats)
-                let orders = self.orderCount(at: selectedIntervalIndex, orderStats: orderStats, orderStatsIntervals: self.orderStatsIntervals(from: orderStats))
+                let orders = self.orderCount(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals)
                 if let visitors = visitors, let orders = orders, visitors > 0 {
                     // Maximum conversion rate is 100%.
                     let conversionRate = min(orders/visitors, 1)
@@ -288,7 +291,9 @@ private extension StoreStatsPeriodViewModel {
     }
 
     func updateOrderDataIfNeeded() {
-        orderStats = orderStatsResultsController.fetchedObjects.first
+        let orderStats = orderStatsResultsController.fetchedObjects.first
+        let intervals = orderStatsIntervals(from: orderStats)
+        orderStatsData = (stats: orderStats, intervals: intervals)
 
         // Don't animate the chart here - this helps avoid a "double animation" effect if a
         // small number of values change (the chart WILL be updated correctly however)

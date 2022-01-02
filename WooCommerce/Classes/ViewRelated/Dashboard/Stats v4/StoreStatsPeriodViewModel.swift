@@ -1,5 +1,7 @@
 import Combine
+import protocol Storage.StorageManagerType
 import Yosemite
+import Foundation
 
 /// Provides data and observables for UI in `StoreStatsV4PeriodViewController`.
 final class StoreStatsPeriodViewModel {
@@ -19,6 +21,7 @@ final class StoreStatsPeriodViewModel {
         .compactMap { [weak self] orderStatsData, selectedIntervalIndex in
             return self?.createOrderStatsText(orderStatsData: orderStatsData, selectedIntervalIndex: selectedIntervalIndex)
         }
+        .removeDuplicates()
         .eraseToAnyPublisher()
 
     /// Emits revenue stats text values based on order stats and selected time interval.
@@ -27,6 +30,7 @@ final class StoreStatsPeriodViewModel {
         .compactMap { [weak self] orderStatsData, selectedIntervalIndex in
             self?.createRevenueStats(orderStatsData: orderStatsData, selectedIntervalIndex: selectedIntervalIndex)
         }
+        .removeDuplicates()
         .eraseToAnyPublisher()
 
     /// Emits visitor stats text values based on site visit stats and selected time interval.
@@ -35,6 +39,7 @@ final class StoreStatsPeriodViewModel {
         .compactMap { [weak self] siteStats, selectedIntervalIndex in
             self?.createVisitorStatsText(siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
         }
+        .removeDuplicates()
         .eraseToAnyPublisher()
 
     /// Emits conversion stats text values based on order stats, site visit stats, and selected time interval.
@@ -43,6 +48,7 @@ final class StoreStatsPeriodViewModel {
         .compactMap { [weak self] orderStatsData, siteStats, selectedIntervalIndex in
             self?.createConversionStats(orderStatsData: orderStatsData, siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
         }
+        .removeDuplicates()
         .eraseToAnyPublisher()
 
     /// Emits view models for time range bar that shows the time range for the selected time interval.
@@ -58,6 +64,7 @@ final class StoreStatsPeriodViewModel {
         .map { lastUpdatedDate in
             lastUpdatedDate?.relativelyFormattedUpdateString ?? ""
         }
+        .removeDuplicates()
         .eraseToAnyPublisher()
 
     /// Emits a boolean to reload chart, and the boolean indicates whether the reload should be animated.
@@ -80,43 +87,45 @@ final class StoreStatsPeriodViewModel {
 
     /// SiteVisitStats ResultsController: Loads site visit stats from the Storage Layer
     private lazy var siteStatsResultsController: ResultsController<StorageSiteVisitStats> = {
-        return updateSiteVisitStatsResultsController(currentDate: currentDate)
+        let predicate = NSPredicate(format: "siteID = %ld AND granularity ==[c] %@ AND timeRange == %@",
+                                    siteID,
+                                    timeRange.siteVisitStatsGranularity.rawValue,
+                                    timeRange.rawValue)
+        let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
     /// OrderStats ResultsController: Loads order stats from the Storage Layer
     private lazy var orderStatsResultsController: ResultsController<StorageOrderStatsV4> = {
-        let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "timeRange ==[c] %@", timeRange.rawValue)
+        let predicate = NSPredicate(format: "siteID = %ld AND timeRange ==[c] %@", siteID, timeRange.rawValue)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
     // MARK: - Configurations
 
     /// Updated externally when reloading data.
-    var siteTimezone: TimeZone = .current
+    var siteTimezone: TimeZone
 
-    /// Updated externally when reloading data.
-    var currentDate: Date {
-        didSet {
-            if currentDate != oldValue {
-                let currentDateForSiteVisitStats = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
-                siteStatsResultsController = updateSiteVisitStatsResultsController(currentDate: currentDateForSiteVisitStats)
-                configureSiteStatsResultsController()
-            }
-        }
-    }
-
+    private let siteID: Int64
     private let timeRange: StatsTimeRangeV4
     private let currencyFormatter: CurrencyFormatter
     private let currencyCode: String
+    private let storageManager: StorageManagerType
 
     private var cancellables: Set<AnyCancellable> = []
 
-    init(timeRange: StatsTimeRangeV4, currentDate: Date, currencyFormatter: CurrencyFormatter, currencyCode: String) {
+    init(siteID: Int64,
+         timeRange: StatsTimeRangeV4,
+         siteTimezone: TimeZone,
+         currencyFormatter: CurrencyFormatter,
+         currencyCode: String,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        self.siteID = siteID
         self.timeRange = timeRange
-        self.currentDate = currentDate
+        self.siteTimezone = siteTimezone
         self.currencyFormatter = currencyFormatter
         self.currencyCode = currencyCode
+        self.storageManager = storageManager
 
         // Make sure the ResultsControllers are ready to observe changes to the data even before the view loads
         configureResultsControllers()
@@ -193,7 +202,7 @@ private extension StoreStatsPeriodViewModel {
         let siteStatsItems = siteStats?.items?.sorted(by: { (lhs, rhs) -> Bool in
             return lhs.period < rhs.period
         }) ?? []
-        if let selectedIndex = selectedIndex {
+        if let selectedIndex = selectedIndex, selectedIndex < siteStatsItems.count {
             guard selectedIndex < siteStatsItems.count else {
                 return nil
             }
@@ -206,7 +215,7 @@ private extension StoreStatsPeriodViewModel {
     }
 
     func orderCount(at selectedIndex: Int?, orderStats: OrderStatsV4?, orderStatsIntervals: [OrderStatsV4Interval]) -> Double? {
-        if let selectedIndex = selectedIndex {
+        if let selectedIndex = selectedIndex, selectedIndex < orderStatsIntervals.count {
             let orderStats = orderStatsIntervals[selectedIndex]
             return Double(orderStats.subtotals.totalOrders)
         } else if let orderStats = orderStats {
@@ -229,7 +238,7 @@ private extension StoreStatsPeriodViewModel {
 
     func orderStatsIntervals(from orderStats: OrderStatsV4?) -> [OrderStatsV4Interval] {
         return orderStats?.intervals.sorted(by: { (lhs, rhs) -> Bool in
-            return lhs.dateStart(timeZone: self.siteTimezone) < rhs.dateStart(timeZone: self.siteTimezone)
+            return lhs.dateStart(timeZone: siteTimezone) < rhs.dateStart(timeZone: siteTimezone)
         }) ?? []
     }
 }
@@ -239,8 +248,10 @@ private extension StoreStatsPeriodViewModel {
 private extension StoreStatsPeriodViewModel {
     func configureResultsControllers() {
         configureSiteStatsResultsController()
+        configureOrderStatsResultsController()
+    }
 
-        // Order Stats
+    func configureOrderStatsResultsController() {
         orderStatsResultsController.onDidChangeContent = { [weak self] in
             self?.updateOrderDataIfNeeded()
         }
@@ -258,17 +269,6 @@ private extension StoreStatsPeriodViewModel {
             self?.updateSiteVisitDataIfNeeded()
         }
         try? siteStatsResultsController.performFetch()
-    }
-
-    func updateSiteVisitStatsResultsController(currentDate: Date) -> ResultsController<StorageSiteVisitStats> {
-        let storageManager = ServiceLocator.storageManager
-        let dateFormatter = DateFormatter.Stats.statsDayFormatter
-        dateFormatter.timeZone = siteTimezone
-        let predicate = NSPredicate(format: "granularity ==[c] %@ AND timeRange == %@",
-                                    timeRange.siteVisitStatsGranularity.rawValue,
-                                    timeRange.rawValue)
-        let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
-        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
 }
 

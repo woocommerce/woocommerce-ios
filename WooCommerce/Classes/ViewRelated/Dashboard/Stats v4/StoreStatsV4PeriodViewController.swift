@@ -26,12 +26,6 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         }
     }
 
-    var currentDate: Date {
-        didSet {
-            viewModel.currentDate = currentDate
-        }
-    }
-
     /// Updated when reloading data.
     var siteTimezone: TimeZone = .current {
         didSet {
@@ -139,15 +133,15 @@ final class StoreStatsV4PeriodViewController: UIViewController {
 
     /// Designated Initializer
     ///
-    init(timeRange: StatsTimeRangeV4,
-         currentDate: Date,
+    init(siteID: Int64,
+         timeRange: StatsTimeRangeV4,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          currencyCode: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
-        self.currentDate = currentDate
-        self.viewModel = StoreStatsPeriodViewModel(timeRange: timeRange,
-                                                   currentDate: currentDate,
+        self.viewModel = StoreStatsPeriodViewModel(siteID: siteID,
+                                                   timeRange: timeRange,
+                                                   siteTimezone: siteTimezone,
                                                    currencyFormatter: currencyFormatter,
                                                    currencyCode: currencyCode)
         super.init(nibName: type(of: self).nibName, bundle: nil)

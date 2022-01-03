@@ -12,6 +12,7 @@ final class ReviewsTests: XCTestCase {
         try LoginFlow.logInWithWPcom()
 
         // Extra step needed to get products mock data to appear on Reviews screen
+        // GH Issue: https://github.com/woocommerce/woocommerce-ios/issues/1907
         try TabNavComponent()
             .goToProductsScreen()
 

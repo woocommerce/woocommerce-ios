@@ -935,6 +935,7 @@
 		800A5BC7275889ED009DE2CD /* reports_revenue_stats_month.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BC3275889EC009DE2CD /* reports_revenue_stats_month.json */; };
 		800A5BC8275889ED009DE2CD /* reports_revenue_stats_year.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BC4275889EC009DE2CD /* reports_revenue_stats_year.json */; };
 		800A5BCB2759CE4B009DE2CD /* ProductsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800A5BCA2759CE4B009DE2CD /* ProductsTests.swift */; };
+		80AD2CA22782B4EB00A63DE8 /* products_on_review.json in Resources */ = {isa = PBXBuildFile; fileRef = 80AD2CA12782B4EB00A63DE8 /* products_on_review.json */; };
 		80C3626B27704EE1005CEAD3 /* ProductDataStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C3626A27704EE1005CEAD3 /* ProductDataStructs.swift */; };
 		80C3626F277453E8005CEAD3 /* ReviewsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C3626E277453E7005CEAD3 /* ReviewsTests.swift */; };
 		80C3627127745737005CEAD3 /* ReviewDataStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C3627027745737005CEAD3 /* ReviewDataStructs.swift */; };
@@ -2473,6 +2474,7 @@
 		800A5BC3275889EC009DE2CD /* reports_revenue_stats_month.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = reports_revenue_stats_month.json; sourceTree = "<group>"; };
 		800A5BC4275889EC009DE2CD /* reports_revenue_stats_year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = reports_revenue_stats_year.json; sourceTree = "<group>"; };
 		800A5BCA2759CE4B009DE2CD /* ProductsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTests.swift; sourceTree = "<group>"; };
+		80AD2CA12782B4EB00A63DE8 /* products_on_review.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_on_review.json; sourceTree = "<group>"; };
 		80C3626A27704EE1005CEAD3 /* ProductDataStructs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDataStructs.swift; sourceTree = "<group>"; };
 		80C3626E277453E7005CEAD3 /* ReviewsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReviewsTests.swift; sourceTree = "<group>"; };
 		80C3627027745737005CEAD3 /* ReviewDataStructs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewDataStructs.swift; sourceTree = "<group>"; };
@@ -6249,6 +6251,7 @@
 				800A5BBB27586AE1009DE2CD /* products_reviews_6162.json */,
 				800A5BBD27586AEF009DE2CD /* products_reviews_6163.json */,
 				800A5BBF27586AFC009DE2CD /* products_reviews_6164.json */,
+				80AD2CA12782B4EB00A63DE8 /* products_on_review.json */,
 			);
 			path = reviews;
 			sourceTree = "<group>";
@@ -7750,6 +7753,7 @@
 				800A5BBE27586AEF009DE2CD /* products_reviews_6163.json in Resources */,
 				FE6BCDFC26A9D0E700D96FE2 /* rest_v2_sites_users_me.json in Resources */,
 				800A5BA027562EE5009DE2CD /* orders_processing.json in Resources */,
+				80AD2CA22782B4EB00A63DE8 /* products_on_review.json in Resources */,
 				800A5BC6275889ED009DE2CD /* reports_revenue_stats_hour.json in Resources */,
 				800A5BB027586898009DE2CD /* products_2132.json in Resources */,
 				800A5BA6275719E5009DE2CD /* orders_2201_refunds.json in Resources */,

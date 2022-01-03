@@ -10,21 +10,24 @@ final class ReviewsTests: XCTestCase {
         app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api", "-ui_testing"]
         app.launch()
         try LoginFlow.logInWithWPcom()
+
+        // Extra step needed to get products mock data to appear on Reviews screen
+        try TabNavComponent()
+            .goToProductsScreen()
+
+        try TabNavComponent()
+            .goToReviewsScreen()
     }
 
     func testReviewsScreenLoad() throws {
         let reviews = try GetMocks.readReviewsData()
 
-        // Extra step needed to get products mock data to appear on Reviews screen
-        try TabNavComponent()
-            .gotoProductsScreen()
-
-        try TabNavComponent().gotoReviewsScreen()
+        try ReviewsScreen()
             .verifyReviewsScreenLoaded()
-            .verifyReviewListOnReviewsScreen(reviews: reviews)
+            .verifyReviewList(reviews: reviews)
             .selectReview(byReviewer: reviews[0].reviewer)
             .verifySingleReviewScreenLoaded()
-            .verifyReviewOnSingleProductScreen(review: reviews[0])
+            .verifyReview(review: reviews[0])
             .goBackToReviewsScreen()
             .verifyReviewsScreenLoaded()
     }

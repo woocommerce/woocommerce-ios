@@ -87,7 +87,7 @@ func syncTopPerformers(onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         onCompletion?(result)
     }
 
-    ServiceLocator.storesManager.dispatch(action)
+    ServiceLocator.stores.dispatch(action)
 }
 ```
 

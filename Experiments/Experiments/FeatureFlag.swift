@@ -69,4 +69,16 @@ public enum FeatureFlag: Int {
     /// Home Screen project milestone 2: design updates to the My Store tab
     ///
     case myStoreTabUpdates
+
+    /// Allow merchants to share a payment link when creating a simple payments order.
+    ///
+    case simplePaymentsLink
+
+    /// Displays the option to manage coupons
+    ///
+    case couponManagement
+
+    /// Barcode scanner for product SKU input
+    ///
+    case productSKUInputScanner
 }

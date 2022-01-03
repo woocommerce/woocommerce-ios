@@ -139,6 +139,14 @@ public class OrdersRemote: Remote {
                             [OrderItem.CodingKeys.productID.rawValue: item.productID,
                              OrderItem.CodingKeys.quantity.rawValue: Int64(truncating: item.quantity as NSDecimalNumber)]
                         }
+                    case .billingAddress:
+                        if let billingAddress = order.billingAddress {
+                            params[Order.CodingKeys.billingAddress.rawValue] = try billingAddress.toDictionary()
+                        }
+                    case .shippingAddress:
+                        if let shippingAddress = order.shippingAddress {
+                            params[Order.CodingKeys.shippingAddress.rawValue] = try shippingAddress.toDictionary()
+                        }
                     }
                 }
             }()
@@ -261,7 +269,7 @@ public extension OrdersRemote {
         private static let commonOrderFieldValues = [
             "id", "parent_id", "number", "status", "currency", "customer_id", "customer_note", "date_created_gmt", "date_modified_gmt", "date_paid_gmt",
             "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
-            "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines"
+            "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key"
         ]
         private static let singleOrderExtraFieldValues = [
             "line_items", "shipping"
@@ -283,5 +291,7 @@ public extension OrdersRemote {
         case feeLines
         case status
         case items
+        case billingAddress
+        case shippingAddress
     }
 }

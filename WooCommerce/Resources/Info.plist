@@ -64,7 +64,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>To take photos or videos to add to your Products or support tickets.</string>
+	<string>To take photos or videos to add to your Products, scan barcode for Product SKU, or support tickets.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>To save photos from camera for Product images, or to add photos or videos to your Products or support tickets.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

@@ -22,10 +22,11 @@ public final class SingleProductScreen: ScreenObject {
         return try ProductsScreen()
     }
 
-    public func verifyProductOnSingleProductScreen(name: String, price: String, status: String) throws -> Self {
-        XCTAssertTrue(try app.getTextVisibilityCount(text: status) == 1, "Stock status does not exist!")
-        XCTAssertTrue(try app.getTextVisibilityCount(text: price) == 1, "Price does not exist!")
-        XCTAssertTrue(app.textViews[name].isFullyVisibleOnScreen(), "Product name does not exist!")
+    @discardableResult
+    public func verifyProductOnSingleProductScreen(product: ProductData) throws -> Self {
+        app.assertTextVisibilityCount(textToFind: product.stock_status)
+        app.assertTextVisibilityCount(textToFind: product.regular_price)
+        XCTAssertTrue(app.textViews[product.name].isFullyVisibleOnScreen(), "Product name is not visible on screen!")
 
         return self
     }

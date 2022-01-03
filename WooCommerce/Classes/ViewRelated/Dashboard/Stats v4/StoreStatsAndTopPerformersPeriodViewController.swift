@@ -32,11 +32,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     var onPullToRefresh: () -> Void = {}
 
     /// Updated when reloading data.
-    var currentDate: Date {
-        didSet {
-            storeStatsPeriodViewController.currentDate = currentDate
-        }
-    }
+    var currentDate: Date
 
     /// Updated when reloading data.
     var siteTimezone: TimeZone = .current {
@@ -81,7 +77,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     // MARK: Child View Controllers
 
     private lazy var storeStatsPeriodViewController: StoreStatsV4PeriodViewController = {
-        return StoreStatsV4PeriodViewController(timeRange: timeRange, currentDate: currentDate)
+        return StoreStatsV4PeriodViewController(siteID: siteID, timeRange: timeRange)
     }()
 
     private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()
@@ -265,7 +261,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         let storeStatsPeriodView = storeStatsPeriodViewController.view!
         stackView.addArrangedSubview(storeStatsPeriodView)
         NSLayoutConstraint.activate([
-            storeStatsPeriodView.heightAnchor.constraint(equalToConstant: 380),
+            storeStatsPeriodView.heightAnchor.constraint(equalToConstant: Constants.storeStatsPeriodViewHeight),
             ])
 
         // In-app Feedback Card
@@ -359,5 +355,11 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
 private extension StoreStatsAndTopPerformersPeriodViewController {
     @objc func pullToRefresh() {
         onPullToRefresh()
+    }
+}
+
+private extension StoreStatsAndTopPerformersPeriodViewController {
+    enum Constants {
+        static let storeStatsPeriodViewHeight: CGFloat = 444
     }
 }

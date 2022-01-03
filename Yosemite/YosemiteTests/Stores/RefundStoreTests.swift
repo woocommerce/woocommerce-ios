@@ -533,6 +533,7 @@ private extension RefundStoreTests {
             orderID: sampleOrderID,
             parentID: 0,
             customerID: 0,
+            orderKey: "",
             number: "",
             status: .pending,
             currency: "",

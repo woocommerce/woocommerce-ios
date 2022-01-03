@@ -98,7 +98,7 @@ final class OldStoreStatsV4PeriodViewController: UIViewController {
 
     /// Placeholder: Mockup Charts View
     ///
-    private lazy var placeholderChartsView: ChartPlaceholderView = ChartPlaceholderView.instantiateFromNib()
+    private lazy var placeholderChartsView: LegacyChartPlaceholderView = LegacyChartPlaceholderView.instantiateFromNib()
 
 
     // MARK: - Computed Properties

@@ -9,6 +9,7 @@ struct HubMenu: View {
     @State private var showingWooCommerceAdmin = false
     @State private var showingViewStore = false
     @State private var showingReviews = false
+    @State private var showingCoupons = false
 
     init(siteID: Int64, navigationController: UINavigationController? = nil) {
         viewModel = HubMenuViewModel(siteID: siteID, navigationController: navigationController)
@@ -38,10 +39,15 @@ struct HubMenu: View {
                                     showingViewStore = true
                                 case .reviews:
                                     showingReviews = true
+                                case .coupons:
+                                    showingCoupons = true
+                                default:
+                                    // TODO-5509: handle the remaining cases
+                                    break
                                 }
                             }
                     }
-                    .background(Color.white)
+                    .background(Color(.listForeground))
                     .cornerRadius(Constants.cornerRadius)
                     .padding([.bottom], Constants.padding)
                 }
@@ -53,6 +59,9 @@ struct HubMenu: View {
             NavigationLink(destination:
                             ReviewsView(siteID: viewModel.siteID),
                            isActive: $showingReviews) {
+                EmptyView()
+            }.hidden()
+            NavigationLink(destination: CouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
                 EmptyView()
             }.hidden()
         }
@@ -67,8 +76,8 @@ struct HubMenu: View {
         var switchStoreHandler: (() -> Void)?
 
         @State private var showSettings = false
-        @ScaledMetric private var settingsSize: CGFloat = 24
-        @ScaledMetric private var settingsIconSize: CGFloat = 20
+        @ScaledMetric var settingsSize: CGFloat = 28
+        @ScaledMetric var settingsIconSize: CGFloat = 20
 
         var body: some View {
             HStack(spacing: Constants.padding) {
@@ -102,10 +111,11 @@ struct HubMenu: View {
                 VStack {
                     ZStack {
                         Circle()
-                            .fill(Color.white)
+                            .fill(Color(UIColor(light: .white,
+                                                dark: .secondaryButtonBackground)))
                             .frame(width: settingsSize,
                                    height: settingsSize)
-                        if let cogImage = UIImage.cogImage.imageWithTintColor(.primary) {
+                        if let cogImage = UIImage.cogImage.imageWithTintColor(.accent) {
                             Image(uiImage: cogImage)
                                 .resizable()
                                 .frame(width: settingsIconSize,

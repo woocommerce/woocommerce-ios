@@ -39,7 +39,7 @@ public final class TabNavComponent: ScreenObject {
     @discardableResult
     func gotoMyStoreScreen() throws -> MyStoreScreen {
         // Avoid transitioning if it is already on screen
-        if !MyStoreScreen.isVisible {
+        if MyStoreScreen.isVisible == false {
             myStoreTabButton.tap()
         }
         return try MyStoreScreen()
@@ -58,7 +58,7 @@ public final class TabNavComponent: ScreenObject {
 
     @discardableResult
     public func gotoProductsScreen() throws -> ProductsScreen {
-        if !ProductsScreen.isVisible {
+        if ProductsScreen.isVisible == false {
             productsTabButton.tap()
         }
 
@@ -67,7 +67,7 @@ public final class TabNavComponent: ScreenObject {
 
     @discardableResult
     public func gotoReviewsScreen() throws -> ReviewsScreen {
-        if !ReviewsScreen.isVisible {
+        if ReviewsScreen.isVisible == false {
             reviewsTabButton.tap()
         }
 

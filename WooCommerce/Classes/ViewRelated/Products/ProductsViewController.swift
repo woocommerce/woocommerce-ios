@@ -277,7 +277,7 @@ private extension ProductsViewController {
         }()
         rightBarButtonItems.append(buttonItem)
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) && UIImagePickerController.isSourceTypeAvailable(.camera) {
             let buttonItem: UIBarButtonItem = {
                 let button = UIBarButtonItem(image: .scanImage,
                                              style: .plain,

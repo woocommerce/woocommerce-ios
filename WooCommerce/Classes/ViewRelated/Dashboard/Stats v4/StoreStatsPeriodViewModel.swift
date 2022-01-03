@@ -203,9 +203,6 @@ private extension StoreStatsPeriodViewModel {
             return lhs.period < rhs.period
         }) ?? []
         if let selectedIndex = selectedIndex, selectedIndex < siteStatsItems.count {
-            guard selectedIndex < siteStatsItems.count else {
-                return nil
-            }
             return Double(siteStatsItems[selectedIndex].visitors)
         } else if let siteStats = siteStats {
             return Double(siteStats.totalVisitors)

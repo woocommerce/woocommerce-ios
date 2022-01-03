@@ -504,7 +504,7 @@ extension OrderDetailsViewModel {
     }
 
     /// Collects payments for the current order.
-    /// Tries to connect to a reader if necesary.
+    /// Tries to connect to a reader if necessary.
     /// Handles receipt sharing.
     ///
     func collectPayment(rootViewController: UIViewController, backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> Void) {

@@ -69,8 +69,7 @@ final class HubMenuViewModel: ObservableObject {
         ServiceLocator.stores.site.sink { site in
             // This will be useful in the future for updating some info of the screen depending on the store site info
         }.store(in: &cancellables)
-
-   
+    }
 }
 
 extension HubMenuViewModel {

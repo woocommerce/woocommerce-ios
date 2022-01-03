@@ -491,6 +491,7 @@
 		26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */; };
 		26FE09E424DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E324DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift */; };
 		26FF455F24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */; };
+		300E2E2C277E3BE60008DDF4 /* AnalyticsRange+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300E2E2B277E3BE60008DDF4 /* AnalyticsRange+UI.swift */; };
 		30419930277B9A0F004A317E /* DateRangeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3041992F277B9A0F004A317E /* DateRangeModel.swift */; };
 		306F943B277A526900DC6111 /* DateRangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306F943A277A526900DC6111 /* DateRangeView.swift */; };
 		306F943E277A5C7F00DC6111 /* DateRangeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306F943D277A5C7F00DC6111 /* DateRangeSheet.swift */; };
@@ -2001,6 +2002,7 @@
 		26FE09E324DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppFeedbackCardViewControllerTests.swift; sourceTree = "<group>"; };
 		26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedStatsDashboardViewController.swift; sourceTree = "<group>"; };
 		2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		300E2E2B277E3BE60008DDF4 /* AnalyticsRange+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnalyticsRange+UI.swift"; sourceTree = "<group>"; };
 		3041992F277B9A0F004A317E /* DateRangeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateRangeModel.swift; sourceTree = "<group>"; };
 		306F943A277A526900DC6111 /* DateRangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateRangeView.swift; sourceTree = "<group>"; };
 		306F943D277A5C7F00DC6111 /* DateRangeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateRangeSheet.swift; sourceTree = "<group>"; };
@@ -5236,6 +5238,7 @@
 				306F943D277A5C7F00DC6111 /* DateRangeSheet.swift */,
 				3041992F277B9A0F004A317E /* DateRangeModel.swift */,
 				30F5C009277CB16300025EF9 /* AnalyticsViewModel.swift */,
+				300E2E2B277E3BE60008DDF4 /* AnalyticsRange+UI.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -7743,6 +7746,7 @@
 				459097F823CDE47F00DEA9E0 /* UIAlertController+Helpers.swift in Sources */,
 				025678C125773236009D7E6C /* Collection+ShippingLabel.swift in Sources */,
 				456931842653E9F2009ED69D /* ShippingLabelCarrierRow.swift in Sources */,
+				300E2E2C277E3BE60008DDF4 /* AnalyticsRange+UI.swift in Sources */,
 				CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */,
 				45BBFBC5274FDCE900213001 /* HubMenu.swift in Sources */,
 				02A9BCD62737F73C00159C79 /* JetpackBenefitItem.swift in Sources */,

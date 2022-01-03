@@ -277,10 +277,10 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func configureView() {
-        view.backgroundColor = .systemBackground
-        containerStackView.backgroundColor = .systemBackground
-        timeRangeBarView.backgroundColor = .clear
-        visitorsStackView.backgroundColor = .clear
+        view.backgroundColor = Constants.containerBackgroundColor
+        containerStackView.backgroundColor = Constants.containerBackgroundColor
+        timeRangeBarView.backgroundColor = Constants.headerComponentBackgroundColor
+        visitorsStackView.backgroundColor = Constants.headerComponentBackgroundColor
 
         // Visitor empty view - insert it at the second-to-last index,
         // since we need the footer view (with height = 20) as the last item in the stack view.
@@ -933,5 +933,8 @@ private extension StoreStatsV4PeriodViewController {
         static let chartGradientTopColor: UIColor = UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade50).withAlphaComponent(0.1),
                                                             dark: UIColor(red: 204.0/256, green: 204.0/256, blue: 204.0/256, alpha: 0.3))
         static let chartGradientBottomColor: UIColor = .clear.withAlphaComponent(0)
+
+        static let containerBackgroundColor: UIColor = .systemBackground
+        static let headerComponentBackgroundColor: UIColor = .clear
     }
 }

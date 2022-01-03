@@ -265,7 +265,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         let storeStatsPeriodView = storeStatsPeriodViewController.view!
         stackView.addArrangedSubview(storeStatsPeriodView)
         NSLayoutConstraint.activate([
-            storeStatsPeriodView.heightAnchor.constraint(equalToConstant: 444),
+            storeStatsPeriodView.heightAnchor.constraint(equalToConstant: Constants.storeStatsPeriodViewHeight),
             ])
 
         // In-app Feedback Card
@@ -359,5 +359,11 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
 private extension StoreStatsAndTopPerformersPeriodViewController {
     @objc func pullToRefresh() {
         onPullToRefresh()
+    }
+}
+
+private extension StoreStatsAndTopPerformersPeriodViewController {
+    enum Constants {
+        static let storeStatsPeriodViewHeight: CGFloat = 444
     }
 }

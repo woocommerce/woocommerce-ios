@@ -22,12 +22,10 @@ public final class SingleProductScreen: ScreenObject {
         return try ProductsScreen()
     }
 
+    @discardableResult
     public func verifyProductOnSingleProductScreen(product: ProductData) throws -> Self {
-        let stockStatusVisibilityCount = try app.getTextVisibilityCount(text: product.stock_status)
-        let priceVisibilityCount = try app.getTextVisibilityCount(text: product.regular_price)
-
-        XCTAssertTrue(stockStatusVisibilityCount == 1, "Expecting status to appear once, appeared \(stockStatusVisibilityCount) times instead!")
-        XCTAssertTrue(priceVisibilityCount == 1, "Expecting price to appear once, appeared \(priceVisibilityCount) times instead!")
+        app.assertTextVisibilityCount(textToFind: product.stock_status)
+        app.assertTextVisibilityCount(textToFind: product.regular_price)
         XCTAssertTrue(app.textViews[product.name].isFullyVisibleOnScreen(), "Product name is not visible on screen!")
 
         return self

@@ -58,6 +58,8 @@ public final class CouponStore: Store {
                                pageNumber: pageNumber,
                                pageSize: pageSize,
                                onCompletion: onCompletion)
+        case .deleteCoupon(let siteID, let couponID, let onCompletion):
+            deleteCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
         }
     }
 }
@@ -100,6 +102,18 @@ private extension CouponStore {
                                                      siteID: siteID) {
                     onCompletion(.success(hasNextPage))
                 }
+            }
+        }
+    }
+
+    func deleteCoupon(siteID: Int64, couponID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        remote.deleteCoupon(for: siteID, couponID: couponID) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success:
+                self.deleteCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
             }
         }
     }
@@ -152,5 +166,19 @@ private extension CouponStore {
         let storage = storageManager.viewStorage
         storage.deleteCoupons(siteID: siteID)
         storage.saveIfNeeded()
+    }
+
+    /// Deletes the Storage.Coupon with the specified `siteID` and `couponID` in a background thread.
+    /// Triggers `onCompletion` on the main thread when done.
+    ///
+    func deleteStoredCoupon(siteID: Int64, couponID: Int64, onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            derivedStorage.deleteCoupon(siteID: siteID, couponID: couponID)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
     }
 }

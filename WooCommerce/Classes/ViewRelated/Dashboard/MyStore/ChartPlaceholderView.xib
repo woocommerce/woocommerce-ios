@@ -146,7 +146,7 @@
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
-                <outlet property="barsStackView" destination="1eD-TF-3NS" id="odU-Rg-8kk"/>
+                <outlet property="linesStackView" destination="1eD-TF-3NS" id="odU-Rg-8kk"/>
                 <outlet property="topStackView" destination="tLL-AN-zl3" id="8UA-4q-cOu"/>
             </connections>
             <point key="canvasLocation" x="104" y="107.94602698650675"/>

@@ -10,16 +10,16 @@ final class ChartPlaceholderView: UIView {
     ///
     @IBOutlet private var topStackView: UIStackView!
 
-    /// Bars Container View
+    /// Lines Container View
     ///
-    @IBOutlet private var barsStackView: UIStackView!
+    @IBOutlet private var linesStackView: UIStackView!
 
     // MARK: - Overridden Methods
 
     override func awakeFromNib() {
         super.awakeFromNib()
         configureView()
-        configureBarsStackView()
+        configureLinesStackView()
     }
 }
 
@@ -34,9 +34,10 @@ private extension ChartPlaceholderView {
         topStackView.backgroundColor = .listForeground
     }
 
-    func configureBarsStackView() {
-        barsStackView.isGhostableDisabled = true
-        barsStackView.arrangedSubviews.forEach { chartLineView in
+    /// Chart lines always show the same color without ghost animation.
+    func configureLinesStackView() {
+        linesStackView.isGhostableDisabled = true
+        linesStackView.arrangedSubviews.forEach { chartLineView in
             chartLineView.backgroundColor = .init(light: .gray(.shade5), dark: .systemGray5)
         }
     }

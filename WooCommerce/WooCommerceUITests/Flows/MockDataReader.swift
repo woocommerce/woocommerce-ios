@@ -56,7 +56,7 @@ class GetMocks {
 
         for index in 0..<updatedData.count {
             let orderId = updatedData[index].id
-            let orderTotal = updatedData[index].total
+//            let orderTotal = updatedData[index].total
         }
 
         return updatedData

@@ -119,7 +119,14 @@ private extension CouponStore {
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))
-            case .success:
+            case .success(let coupon):
+                // This is unlikely to happen, but worth checking
+                guard coupon.siteID == siteID, coupon.couponID == couponID else {
+                    onCompletion(.failure(CouponError.unexpectedCouponDeleted))
+                    DDLogError("⛔️ Unexpected coupon: Deleted couponID \(coupon.couponID) for site \(coupon.siteID) " +
+                               "while expecting couponID \(couponID) and site \(siteID)")
+                    return
+                }
                 self.deleteStoredCoupon(siteID: siteID, couponID: couponID) {
                     onCompletion(.success(()))
                 }
@@ -190,4 +197,8 @@ private extension CouponStore {
             DispatchQueue.main.async(execute: onCompletion)
         }
     }
+}
+
+public enum CouponError: Error {
+    case unexpectedCouponDeleted
 }

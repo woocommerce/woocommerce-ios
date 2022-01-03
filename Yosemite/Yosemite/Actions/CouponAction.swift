@@ -20,7 +20,7 @@ public enum CouponAction: Action {
 
     /// Deletes a coupon for a site given its ID
     ///
-    /// - `siteID`: ID of the site that the coupon belong to.
+    /// - `siteID`: ID of the site that the coupon belongs to.
     /// - `couponID`: ID of the coupon to be deleted.
     /// - `onCompletion`: invoked when the deletion finishes.
     ///

@@ -41,9 +41,6 @@ struct HubMenu: View {
                                     showingReviews = true
                                 case .coupons:
                                     showingCoupons = true
-                                default:
-                                    // TODO-5509: handle the remaining cases
-                                    break
                                 }
                             }
                     }

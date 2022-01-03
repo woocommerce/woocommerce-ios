@@ -21,6 +21,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     var siteVisitStatsMode: SiteVisitStatsMode = .default {
         didSet {
             updateSiteVisitStats(mode: siteVisitStatsMode)
+            updateConversionStats(visitStatsMode: siteVisitStatsMode, selectedIndex: nil)
         }
     }
 
@@ -66,6 +67,9 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var visitorsData: UILabel!
     @IBOutlet private weak var ordersTitle: UILabel!
     @IBOutlet private weak var ordersData: UILabel!
+    @IBOutlet private weak var conversionStackView: UIStackView!
+    @IBOutlet private weak var conversionTitle: UILabel!
+    @IBOutlet private weak var conversionData: UILabel!
     @IBOutlet private weak var revenueTitle: UILabel!
     @IBOutlet private weak var revenueData: UILabel!
     @IBOutlet private weak var lineChartView: LineChartView!
@@ -76,7 +80,6 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var noRevenueView: UIView!
     @IBOutlet private weak var noRevenueLabel: UILabel!
     @IBOutlet private weak var timeRangeBarView: StatsTimeRangeBarView!
-    @IBOutlet private weak var timeRangeBarBottomBorderView: UIView!
 
     private var lastUpdatedDate: Date?
 
@@ -274,10 +277,10 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func configureView() {
-        view.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
-        containerStackView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
-        timeRangeBarView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
-        visitorsStackView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        view.backgroundColor = Constants.containerBackgroundColor
+        containerStackView.backgroundColor = Constants.containerBackgroundColor
+        timeRangeBarView.backgroundColor = Constants.headerComponentBackgroundColor
+        visitorsStackView.backgroundColor = Constants.headerComponentBackgroundColor
 
         // Visitor empty view - insert it at the second-to-last index,
         // since we need the footer view (with height = 20) as the last item in the stack view.
@@ -285,29 +288,28 @@ private extension StoreStatsV4PeriodViewController {
         visitorsStackView.insertArrangedSubview(visitorsEmptyView, at: emptyViewIndex)
         visitorsEmptyView.isHidden = true
 
-        // Time range bar bottom border view
-        timeRangeBarBottomBorderView.backgroundColor = .systemColor(.separator)
-
         // Titles
         visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")
-        visitorsTitle.applyFootnoteStyle()
         ordersTitle.text = NSLocalizedString("Orders", comment: "Orders stat label on dashboard - should be plural.")
-        ordersTitle.applyFootnoteStyle()
+        conversionTitle.text = NSLocalizedString("Conversion", comment: "Conversion stat label on dashboard.")
         revenueTitle.text = NSLocalizedString("Revenue", comment: "Revenue stat label on dashboard.")
-        revenueTitle.applyFootnoteStyle()
+
+        [visitorsTitle, ordersTitle, conversionTitle, revenueTitle].forEach { label in
+            label?.font = Constants.statsTitleFont
+            label?.textColor = Constants.statsTextColor
+        }
 
         // Data
-        visitorsData.applyTitleStyle()
-        ordersData.applyTitleStyle()
-        revenueData.applyTitleStyle()
+        updateStatsDataToDefaultStyles()
 
         // Footer
         lastUpdated.font = UIFont.footnote
         lastUpdated.textColor = .textSubtle
-        lastUpdated.backgroundColor = .listForeground
+        lastUpdated.backgroundColor = .clear
 
         // Visibility
         updateSiteVisitStats(mode: siteVisitStatsMode)
+        updateConversionStats(visitStatsMode: siteVisitStatsMode, selectedIndex: nil)
 
         // Accessibility elements
         xAxisAccessibilityView.isAccessibilityElement = true
@@ -331,7 +333,7 @@ private extension StoreStatsV4PeriodViewController {
 
     func configureNoRevenueView() {
         noRevenueView.isHidden = true
-        noRevenueView.backgroundColor = .listForeground
+        noRevenueView.backgroundColor = .systemBackground
         noRevenueLabel.text = NSLocalizedString("No revenue this period",
                                                 comment: "Text displayed when no order data are available for the selected time range.")
         noRevenueLabel.font = StyleManager.subheadlineFont
@@ -446,7 +448,7 @@ private extension StoreStatsV4PeriodViewController {
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateUI(selectedBarIndex selectedIndex: Int?) {
-        updateSiteVisitStats(selectedIndex: selectedIndex)
+        updateSiteVisitStatsAndConversionRate(selectedIndex: selectedIndex)
         updateOrderStats(selectedIndex: selectedIndex)
         updateTimeRangeBar(selectedIndex: selectedIndex)
     }
@@ -455,11 +457,14 @@ private extension StoreStatsV4PeriodViewController {
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateOrderStats(selectedIndex: Int?) {
+        ordersData.textColor = selectedIndex == nil ? Constants.statsTextColor: Constants.statsHighlightTextColor
+        revenueData.textColor = selectedIndex == nil ? Constants.statsTextColor: Constants.statsHighlightTextColor
+
         guard let selectedIndex = selectedIndex else {
             reloadOrderFields()
             return
         }
-        guard ordersData != nil, revenueData != nil else {
+        guard ordersData != nil, conversionData != nil, revenueData != nil else {
             return
         }
         var totalOrdersText = Constants.placeholderText
@@ -475,10 +480,10 @@ private extension StoreStatsV4PeriodViewController {
         revenueData.text = totalRevenueText
     }
 
-    /// Updates stats based on the selected bar index.
+    /// Updates visitor and conversion stats based on the selected bar index.
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
-    func updateSiteVisitStats(selectedIndex: Int?) {
+    func updateSiteVisitStatsAndConversionRate(selectedIndex: Int?) {
         let mode: SiteVisitStatsMode
 
         // Hides site visit stats for "today" when an interval bar is selected.
@@ -489,11 +494,14 @@ private extension StoreStatsV4PeriodViewController {
         }
 
         updateSiteVisitStats(mode: mode)
+        updateConversionStats(visitStatsMode: mode, selectedIndex: selectedIndex)
 
         switch siteVisitStatsMode {
         case .hidden, .redactedDueToJetpack:
             break
         case .default:
+            visitorsData.textColor = selectedIndex == nil ? Constants.statsTextColor: Constants.statsHighlightTextColor
+
             guard let selectedIndex = selectedIndex else {
                 reloadSiteFields()
                 return
@@ -509,6 +517,35 @@ private extension StoreStatsV4PeriodViewController {
             visitorsData.text = visitorsText
             visitorsData.isHidden = false
             visitorsEmptyView.isHidden = true
+        }
+    }
+
+    func updateConversionStats(visitStatsMode: SiteVisitStatsMode, selectedIndex: Int?) {
+        guard conversionData != nil else {
+            return
+        }
+
+        switch visitStatsMode {
+        case .hidden, .redactedDueToJetpack:
+            conversionStackView.isHidden = true
+        case .default:
+            conversionStackView.isHidden = false
+            conversionData.textColor = selectedIndex == nil ? Constants.statsTextColor: Constants.statsHighlightTextColor
+
+            let visitors = visitorCount(at: selectedIndex)
+            let orders = orderCount(at: selectedIndex)
+            let conversionText: String
+            if let visitors = visitors, let orders = orders, visitors > 0 {
+                // Maximum conversion rate is 100%.
+                let conversionRate = min(orders/visitors, 1)
+                let numberFormatter = NumberFormatter()
+                numberFormatter.numberStyle = .percent
+                numberFormatter.minimumFractionDigits = 1
+                conversionText = numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.placeholderText
+            } else {
+                conversionText = Constants.placeholderText
+            }
+            conversionData.text = conversionText
         }
     }
 
@@ -535,6 +572,30 @@ private extension StoreStatsV4PeriodViewController {
                                                                timeRange: timeRange,
                                                                timezone: siteTimezone)
         timeRangeBarView.updateUI(viewModel: timeRangeBarViewModel)
+    }
+
+    func visitorCount(at selectedIndex: Int?) -> Double? {
+        if let selectedIndex = selectedIndex {
+            guard selectedIndex < siteStatsItems.count else {
+                return nil
+            }
+            return Double(siteStatsItems[selectedIndex].visitors)
+        } else if let siteStats = siteStats {
+            return Double(siteStats.totalVisitors)
+        } else {
+            return nil
+        }
+    }
+
+    func orderCount(at selectedIndex: Int?) -> Double? {
+        if let selectedIndex = selectedIndex {
+            let orderStats = orderStatsIntervals[selectedIndex]
+            return Double(orderStats.subtotals.totalOrders)
+        } else if let orderStats = orderStats {
+            return Double(orderStats.totals.totalOrders)
+        } else {
+            return nil
+        }
     }
 }
 
@@ -634,6 +695,7 @@ private extension StoreStatsV4PeriodViewController {
             return lhs.period < rhs.period
         }) ?? []
         reloadSiteFields()
+        updateConversionData()
         reloadLastUpdatedField()
     }
 
@@ -656,11 +718,17 @@ private extension StoreStatsV4PeriodViewController {
             lastUpdatedDate = nil
         }
         reloadOrderFields()
+        updateConversionData()
 
         // Don't animate the chart here - this helps avoid a "double animation" effect if a
         // small number of values change (the chart WILL be updated correctly however)
         reloadChart(animateChart: false)
         reloadLastUpdatedField()
+    }
+
+    /// Called when either visitor or order stats change.
+    func updateConversionData() {
+        updateConversionStats(visitStatsMode: siteVisitStatsMode, selectedIndex: nil)
     }
 
     func trackChangedTabIfNeeded() {
@@ -674,6 +742,7 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func reloadAllFields(animateChart: Bool = true) {
+        updateStatsDataToDefaultStyles()
         reloadOrderFields()
         reloadSiteFields()
         reloadChart(animateChart: animateChart)
@@ -695,6 +764,8 @@ private extension StoreStatsV4PeriodViewController {
                                                            ordersData as Any,
                                                            revenueTitle as Any,
                                                            revenueData as Any,
+                                                           conversionTitle as Any,
+                                                           conversionData as Any,
                                                            lastUpdated as Any,
                                                            yAxisAccessibilityView as Any,
                                                            xAxisAccessibilityView as Any,
@@ -702,7 +773,7 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func reloadOrderFields() {
-        guard ordersData != nil, revenueData != nil else {
+        guard ordersData != nil, conversionData != nil, revenueData != nil else {
             return
         }
 
@@ -819,6 +890,15 @@ private extension StoreStatsV4PeriodViewController {
         let chartDateFormatter = timeRange.chartDateFormatter(siteTimezone: siteTimezone)
         return chartDateFormatter.string(from: item.dateStart(timeZone: siteTimezone))
     }
+
+    func updateStatsDataToDefaultStyles() {
+        [visitorsData, ordersData, conversionData].forEach { label in
+            label?.font = Constants.statsFont
+            label?.textColor = Constants.statsTextColor
+        }
+        revenueData.font = Constants.revenueFont
+        revenueData.textColor = Constants.statsTextColor
+    }
 }
 
 
@@ -827,6 +907,11 @@ private extension StoreStatsV4PeriodViewController {
 private extension StoreStatsV4PeriodViewController {
     enum Constants {
         static let placeholderText                      = "-"
+        static let statsTextColor: UIColor = .text
+        static let statsHighlightTextColor: UIColor = .accent
+        static let statsFont: UIFont = .font(forStyle: .title3, weight: .semibold)
+        static let revenueFont: UIFont = .font(forStyle: .largeTitle, weight: .semibold)
+        static let statsTitleFont: UIFont = .caption2
 
         static let chartAnimationDuration: TimeInterval = 0.75
         static let chartExtraRightOffset: CGFloat       = 25.0
@@ -848,5 +933,8 @@ private extension StoreStatsV4PeriodViewController {
         static let chartGradientTopColor: UIColor = UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade50).withAlphaComponent(0.1),
                                                             dark: UIColor(red: 204.0/256, green: 204.0/256, blue: 204.0/256, alpha: 0.3))
         static let chartGradientBottomColor: UIColor = .clear.withAlphaComponent(0)
+
+        static let containerBackgroundColor: UIColor = .systemBackground
+        static let headerComponentBackgroundColor: UIColor = .clear
     }
 }

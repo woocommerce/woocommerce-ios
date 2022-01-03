@@ -1,22 +1,28 @@
 import SwiftUI
+import Kingfisher
 
 /// This view will be embedded inside the `HubMenuViewController`
 /// and will be the entry point of the `Menu` Tab.
 ///
 struct HubMenu: View {
     @ObservedObject private var viewModel: HubMenuViewModel
-    @State private var showViewStore = false
-    @State private var showReviews = false
+    @State private var showingWooCommerceAdmin = false
+    @State private var showingViewStore = false
+    @State private var showingReviews = false
     @State private var showingCoupons = false
 
-    init(siteID: Int64) {
-        viewModel = HubMenuViewModel(siteID: siteID)
+    init(siteID: Int64, navigationController: UINavigationController? = nil) {
+        viewModel = HubMenuViewModel(siteID: siteID, navigationController: navigationController)
     }
 
     var body: some View {
         VStack {
-            TopBar(storeTitle: viewModel.storeTitle,
-                   storeURL: viewModel.storeURL.absoluteString)
+            TopBar(avatarURL: viewModel.avatarURL,
+                   storeTitle: viewModel.storeTitle,
+                   storeURL: viewModel.storeURL.absoluteString) {
+                viewModel.presentSwitchStore()
+            }
+                   .padding([.leading, .trailing], Constants.padding)
 
             ScrollView {
                 let gridItemLayout = [GridItem(.adaptive(minimum: Constants.itemSize), spacing: Constants.itemSpacing)]
@@ -27,10 +33,12 @@ struct HubMenu: View {
                             .frame(width: Constants.itemSize, height: Constants.itemSize)
                             .onTapGesture {
                                 switch menu {
+                                case .woocommerceAdmin:
+                                    showingWooCommerceAdmin = true
                                 case .viewStore:
-                                    showViewStore = true
+                                    showingViewStore = true
                                 case .reviews:
-                                    showReviews = true
+                                    showingReviews = true
                                 case .coupons:
                                     showingCoupons = true
                                 default:
@@ -46,10 +54,11 @@ struct HubMenu: View {
                 .padding(Constants.padding)
                 .background(Color(.listBackground))
             }
-            .safariSheet(isPresented: $showViewStore, url: viewModel.storeURL)
+            .safariSheet(isPresented: $showingWooCommerceAdmin, url: viewModel.woocommerceAdminURL)
+            .safariSheet(isPresented: $showingViewStore, url: viewModel.storeURL)
             NavigationLink(destination:
                             ReviewsView(siteID: viewModel.siteID),
-                           isActive: $showReviews) {
+                           isActive: $showingReviews) {
                 EmptyView()
             }.hidden()
             NavigationLink(destination: CouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
@@ -61,23 +70,40 @@ struct HubMenu: View {
     }
 
     private struct TopBar: View {
+        let avatarURL: URL?
         let storeTitle: String
         let storeURL: String?
+        var switchStoreHandler: (() -> Void)?
 
+        @State private var showSettings = false
         @ScaledMetric var settingsSize: CGFloat = 28
         @ScaledMetric var settingsIconSize: CGFloat = 20
 
         var body: some View {
-            HStack() {
+            HStack(spacing: Constants.padding) {
+                if let avatarURL = avatarURL {
+                    VStack {
+                        KFImage(avatarURL)
+                            .resizable()
+                            .clipShape(Circle())
+                            .frame(width: Constants.avatarSize, height: Constants.avatarSize)
+                        Spacer()
+                    }
+                    .fixedSize()
+                }
+
                 VStack(alignment: .leading,
                        spacing: Constants.topBarSpacing) {
-                    Text(storeTitle).headlineStyle()
+                    Text(storeTitle)
+                        .headlineStyle()
+                        .lineLimit(1)
                     if let storeURL = storeURL {
                         Text(storeURL)
                             .subheadlineStyle()
+                            .lineLimit(1)
                     }
                     Button(Localization.switchStore) {
-
+                        switchStoreHandler?()
                     }
                     .linkStyle()
                 }
@@ -97,13 +123,19 @@ struct HubMenu: View {
                         }
                     }
                     .onTapGesture {
-                        // TODO-5509: implement tap
+                        showSettings = true
                     }
                     Spacer()
                 }
                 .fixedSize()
             }
             .padding([.top, .leading, .trailing], Constants.padding)
+
+            NavigationLink(destination:
+                            SettingsView(),
+                           isActive: $showSettings) {
+                EmptyView()
+            }.hidden()
         }
     }
 
@@ -113,6 +145,7 @@ struct HubMenu: View {
         static let itemSize: CGFloat = 160
         static let padding: CGFloat = 16
         static let topBarSpacing: CGFloat = 2
+        static let avatarSize: CGFloat = 40
     }
 
     private enum Localization {

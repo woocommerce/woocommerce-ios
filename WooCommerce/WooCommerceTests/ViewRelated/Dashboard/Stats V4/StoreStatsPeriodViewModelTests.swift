@@ -25,6 +25,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
+        resetStatsEmittedValues()
     }
 
     override func tearDown() {
@@ -337,6 +338,44 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["2022", "2022 › January"])
     }
+
+    // MARK: - `reloadChartAnimated`
+
+    func test_reloadChartAnimated_is_emitted_once_after_order_stats_are_updated() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        var reloadChartAnimatedValues: [Bool] = []
+        viewModel.reloadChartAnimated.sink { isAnimated in
+            reloadChartAnimatedValues.append(isAnimated)
+        }.store(in: &cancellables)
+
+        XCTAssertEqual(reloadChartAnimatedValues, [])
+
+        // When
+        let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(siteID: siteID, items: [
+            .fake().copy(visitors: 10),
+        ])
+        insertSiteVisitStats(siteVisitStats, timeRange: timeRange)
+
+        // `reloadChartAnimated` is not emitted after visitor stats are updated.
+        XCTAssertEqual(reloadChartAnimatedValues, [])
+
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 62.7),
+                                      intervals: [.fake().copy(dateStart: "2022-01-03 01:00:00",
+                                                               dateEnd: "2022-01-03 01:59:59")])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        // `reloadChartAnimated` is emitted after order stats are updated.
+        XCTAssertEqual(reloadChartAnimatedValues, [false])
+
+        viewModel.selectedIntervalIndex = 0
+
+        // `reloadChartAnimated` is not emitted again after visitor stats are updated.
+        XCTAssertEqual(reloadChartAnimatedValues, [false])
+    }
 }
 
 private extension StoreStatsPeriodViewModelTests {
@@ -365,6 +404,13 @@ private extension StoreStatsPeriodViewModelTests {
         viewModel.conversionStatsText.sink { [weak self] text in
             self?.conversionStatsTextValues.append(text)
         }.store(in: &cancellables)
+    }
+
+    func resetStatsEmittedValues() {
+        orderStatsTextValues = []
+        revenueStatsTextValues = []
+        visitorStatsTextValues = []
+        conversionStatsTextValues = []
     }
 
     func insertOrderStats(_ readonlyOrderStats: Yosemite.OrderStatsV4, timeRange: StatsTimeRangeV4) {

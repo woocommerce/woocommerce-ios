@@ -1,4 +1,3 @@
-- [***] In-Person Payments: Now you can collect Simple Payments on the go. [https://github.com/woocommerce/woocommerce-ios/pull/5635]
-- [*] Products: After generating a new variation for a variable product, you are now taken directly to edit the new variation. [https://github.com/woocommerce/woocommerce-ios/pull/5649]
-- [*] Dashboard: the visitor count in the Today tab is now shown when Jetpack site stats are enabled.
+Sometimes you just need to create a quick order to take a payment from your customer for a transaction you’re doing in-person, like at a trade show. We added a new option for you to create Simple Payments! Head over to the Orders tab to make a quick order to record that transaction. We are working hard on full order creation as well – and you’ll see that later this year.
 
+We also fixed a bug with the site visitors count not showing up on the Today tab on your store’s dashboard. Thanks for letting us know! 💜

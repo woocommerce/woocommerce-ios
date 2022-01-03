@@ -52,15 +52,12 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var revenueTitle: UILabel!
     @IBOutlet private weak var revenueData: UILabel!
     @IBOutlet private weak var lineChartView: LineChartView!
-    @IBOutlet private weak var lastUpdated: UILabel!
     @IBOutlet private weak var yAxisAccessibilityView: UIView!
     @IBOutlet private weak var xAxisAccessibilityView: UIView!
     @IBOutlet private weak var chartAccessibilityView: UIView!
     @IBOutlet private weak var noRevenueView: UIView!
     @IBOutlet private weak var noRevenueLabel: UILabel!
     @IBOutlet private weak var timeRangeBarView: StatsTimeRangeBarView!
-
-    private var lastUpdatedDate: Date?
 
     private var currencyCode: String {
         return ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
@@ -86,13 +83,6 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     private var currencySymbol: String {
         let code = ServiceLocator.currencySettings.currencyCode
         return ServiceLocator.currencySettings.symbol(from: code)
-    }
-
-    private var summaryDateUpdated: String {
-        guard let lastUpdatedDate = lastUpdatedDate else {
-            return ""
-        }
-        return lastUpdatedDate.relativelyFormattedUpdateString
     }
 
     // MARK: x/y-Axis Values
@@ -163,7 +153,6 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         observeStatsLabels()
         observeSelectedBarIndex()
         observeTimeRangeBarViewModel()
-        observeLastUpdatedText()
         observeReloadChartAnimated()
     }
 
@@ -215,12 +204,6 @@ private extension StoreStatsV4PeriodViewController {
     func observeTimeRangeBarViewModel() {
         viewModel.timeRangeBarViewModel.sink { [weak self] timeRangeBarViewModel in
             self?.timeRangeBarView.updateUI(viewModel: timeRangeBarViewModel)
-        }.store(in: &cancellables)
-    }
-
-    func observeLastUpdatedText() {
-        viewModel.summaryDateUpdatedText.sink { [weak self] summaryDateUpdatedText in
-            self?.lastUpdated.text = summaryDateUpdatedText
         }.store(in: &cancellables)
     }
 
@@ -286,10 +269,10 @@ extension StoreStatsV4PeriodViewController {
 //
 private extension StoreStatsV4PeriodViewController {
     func configureView() {
-        view.backgroundColor = .systemBackground
-        containerStackView.backgroundColor = .systemBackground
-        timeRangeBarView.backgroundColor = .clear
-        visitorsStackView.backgroundColor = .clear
+        view.backgroundColor = Constants.containerBackgroundColor
+        containerStackView.backgroundColor = Constants.containerBackgroundColor
+        timeRangeBarView.backgroundColor = Constants.headerComponentBackgroundColor
+        visitorsStackView.backgroundColor = Constants.headerComponentBackgroundColor
 
         // Visitor empty view - insert it at the second-to-last index,
         // since we need the footer view (with height = 20) as the last item in the stack view.
@@ -310,11 +293,6 @@ private extension StoreStatsV4PeriodViewController {
 
         // Data
         updateStatsDataToDefaultStyles()
-
-        // Footer
-        lastUpdated.font = UIFont.footnote
-        lastUpdated.textColor = .textSubtle
-        lastUpdated.backgroundColor = .clear
 
         // Visibility
         updateSiteVisitStats(mode: siteVisitStatsMode)
@@ -623,7 +601,6 @@ private extension StoreStatsV4PeriodViewController {
                                                            revenueData as Any,
                                                            conversionTitle as Any,
                                                            conversionData as Any,
-                                                           lastUpdated as Any,
                                                            yAxisAccessibilityView as Any,
                                                            xAxisAccessibilityView as Any,
                                                            chartAccessibilityView as Any]
@@ -762,5 +739,8 @@ private extension StoreStatsV4PeriodViewController {
         static let chartGradientTopColor: UIColor = UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade50).withAlphaComponent(0.1),
                                                             dark: UIColor(red: 204.0/256, green: 204.0/256, blue: 204.0/256, alpha: 0.3))
         static let chartGradientBottomColor: UIColor = .clear.withAlphaComponent(0)
+
+        static let containerBackgroundColor: UIColor = .systemBackground
+        static let headerComponentBackgroundColor: UIColor = .clear
     }
 }

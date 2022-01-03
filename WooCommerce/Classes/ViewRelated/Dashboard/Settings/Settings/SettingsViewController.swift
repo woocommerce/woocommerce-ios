@@ -106,8 +106,6 @@ private extension SettingsViewController {
             configureSwitchStore(cell: cell)
         case let cell as BasicTableViewCell where row == .plugins:
             configurePlugins(cell: cell)
-        case let cell as BasicTableViewCell where row == .couponManagement:
-            configureCouponManagement(cell: cell)
         case let cell as BasicTableViewCell where row == .inPersonPayments:
             configureInPersonPayments(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
@@ -151,12 +149,6 @@ private extension SettingsViewController {
         cell.selectionStyle = .default
         cell.accessoryType = .disclosureIndicator
         cell.textLabel?.text = Localization.plugins
-    }
-
-    func configureCouponManagement(cell: BasicTableViewCell) {
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.textLabel?.text = Localization.couponManagement
     }
 
     func configureSupport(cell: BasicTableViewCell) {
@@ -303,24 +295,6 @@ private extension SettingsViewController {
         let viewModel = InPersonPaymentsViewModel()
         let viewController = InPersonPaymentsViewController(viewModel: viewModel)
         show(viewController, sender: self)
-    }
-
-    func couponManagementWasPressed() {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            displayCouponScreenError()
-            return
-        }
-        let viewController = CouponManagementViewController(siteID: siteID)
-        show(viewController, sender: self)
-    }
-
-    private func displayCouponScreenError() {
-        let notice = Notice(title: Localization.noSiteIDOpeningCouponsErrorMessage,
-                            feedbackType: .error,
-                            actionTitle: Localization.noSiteIDOpeningCouponsErrorActionTitle) { [weak self] in
-            self?.switchStoreWasPressed()
-        }
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     func installJetpackWasPressed() {
@@ -481,8 +455,6 @@ extension SettingsViewController: UITableViewDelegate {
             supportWasPressed()
         case .inPersonPayments:
             inPersonPaymentsWasPressed()
-        case .couponManagement:
-            couponManagementWasPressed()
         case .installJetpack:
             installJetpackWasPressed()
         case .privacy:
@@ -559,7 +531,6 @@ extension SettingsViewController {
         // Store settings
         case inPersonPayments
         case installJetpack
-        case couponManagement
 
         // Help & Feedback
         case support
@@ -595,8 +566,6 @@ extension SettingsViewController {
             case .inPersonPayments:
                 return BasicTableViewCell.self
             case .installJetpack:
-                return BasicTableViewCell.self
-            case .couponManagement:
                 return BasicTableViewCell.self
             case .logout:
                 return BasicTableViewCell.self
@@ -667,22 +636,6 @@ private extension SettingsViewController {
             "Install Jetpack",
             comment: "Navigates to Install Jetpack screen."
         )
-
-        static let couponManagement = NSLocalizedString(
-            "Manage Coupons",
-            comment: "Navigates to Coupon Management screen from Settings.")
-
-        static let noSiteIDOpeningCouponsErrorMessage = NSLocalizedString(
-            "Please select a store to manage coupons",
-            comment: "Message displayed in an error overlay when a " +
-            "user attempts to open Coupon Management without a site " +
-            "selected. Action will open the select store screen.")
-
-        static let noSiteIDOpeningCouponsErrorActionTitle = NSLocalizedString(
-            "Select store",
-            comment: "Button text for error overlay when a user attempts" +
-            "to open Coupon Management without a site selected. " +
-            "Action will open the select store screen.")
 
         static let privacySettings = NSLocalizedString(
             "Privacy Settings",

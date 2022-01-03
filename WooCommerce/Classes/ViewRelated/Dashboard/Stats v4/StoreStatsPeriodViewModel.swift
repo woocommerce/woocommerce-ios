@@ -59,14 +59,6 @@ final class StoreStatsPeriodViewModel {
         }
         .eraseToAnyPublisher()
 
-    /// Emits last updated summary text values based on the last time order or site visit stats are updated.
-    private(set) lazy var summaryDateUpdatedText: AnyPublisher<String, Never> = $lastUpdatedDate
-        .map { lastUpdatedDate in
-            lastUpdatedDate?.relativelyFormattedUpdateString ?? ""
-        }
-        .removeDuplicates()
-        .eraseToAnyPublisher()
-
     /// Emits a boolean to reload chart, and the boolean indicates whether the reload should be animated.
     var reloadChartAnimated: AnyPublisher<Bool, Never> {
         shouldReloadChartAnimated.eraseToAnyPublisher()
@@ -78,8 +70,6 @@ final class StoreStatsPeriodViewModel {
 
     typealias OrderStatsData = (stats: OrderStatsV4?, intervals: [OrderStatsV4Interval])
     @Published private var orderStatsData: OrderStatsData = (nil, [])
-
-    @Published private var lastUpdatedDate: Date?
 
     private let shouldReloadChartAnimated: PassthroughSubject<Bool, Never> = .init()
 
@@ -203,9 +193,6 @@ private extension StoreStatsPeriodViewModel {
             return lhs.period < rhs.period
         }) ?? []
         if let selectedIndex = selectedIndex, selectedIndex < siteStatsItems.count {
-            guard selectedIndex < siteStatsItems.count else {
-                return nil
-            }
             return Double(siteStatsItems[selectedIndex].visitors)
         } else if let siteStats = siteStats {
             return Double(siteStats.totalVisitors)
@@ -277,12 +264,6 @@ private extension StoreStatsPeriodViewModel {
 private extension StoreStatsPeriodViewModel {
     func updateSiteVisitDataIfNeeded() {
         siteStats = siteStatsResultsController.fetchedObjects.first
-
-        if siteStats != nil {
-            lastUpdatedDate = Date()
-        } else {
-            lastUpdatedDate = nil
-        }
     }
 
     func updateOrderDataIfNeeded() {
@@ -293,12 +274,6 @@ private extension StoreStatsPeriodViewModel {
         // Don't animate the chart here - this helps avoid a "double animation" effect if a
         // small number of values change (the chart WILL be updated correctly however)
         shouldReloadChartAnimated.send(false)
-
-        if orderStats?.intervals.isEmpty == false {
-            lastUpdatedDate = Date()
-        } else {
-            lastUpdatedDate = nil
-        }
     }
 }
 

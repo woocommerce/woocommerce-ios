@@ -1,9 +1,9 @@
 import UIKit
 import WordPressUI
 
-final class CouponManagementViewController: UIViewController {
+final class CouponListViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
-    private var viewModel: CouponManagementListViewModel!
+    private var viewModel: CouponListViewModel!
 
     /// Set when an empty state view controller is displayed.
     ///
@@ -11,7 +11,7 @@ final class CouponManagementViewController: UIViewController {
 
     init(siteID: Int64) {
         super.init(nibName: type(of: self).nibName, bundle: nil)
-        self.viewModel = CouponManagementListViewModel(siteID: siteID,
+        self.viewModel = CouponListViewModel(siteID: siteID,
                                                        didLeaveState: didLeave(state:),
                                                        didEnterState: didEnter(state:))
     }
@@ -55,7 +55,7 @@ final class CouponManagementViewController: UIViewController {
 
 // MARK: - View Configuration
 //
-private extension CouponManagementViewController {
+private extension CouponListViewController {
     func configureNavigation() {
         title = Localization.title
     }
@@ -75,7 +75,7 @@ private extension CouponManagementViewController {
 
 // MARK: - Placeholder cells
 //
-extension CouponManagementViewController {
+extension CouponListViewController {
     /// Renders the Placeholder Coupons
     ///
     func displayPlaceholderCoupons() {
@@ -96,7 +96,7 @@ extension CouponManagementViewController {
 
 // MARK: - Empty state view controller
 //
-extension CouponManagementViewController {
+extension CouponListViewController {
     /// Displays the overlay when there are no results.
     ///
     func displayNoResultsOverlay() {
@@ -141,7 +141,7 @@ extension CouponManagementViewController {
 
 // MARK: - TableView Data Source
 //
-extension CouponManagementViewController: UITableViewDataSource {
+extension CouponListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.couponViewModels.count
     }
@@ -165,7 +165,7 @@ extension CouponManagementViewController: UITableViewDataSource {
 
 // MARK: - Nested Types
 //
-private extension CouponManagementViewController {
+private extension CouponListViewController {
     enum Constants {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
@@ -175,7 +175,7 @@ private extension CouponManagementViewController {
 
 // MARK: - Localization
 //
-private extension CouponManagementViewController {
+private extension CouponListViewController {
     enum Localization {
         static let title = NSLocalizedString(
             "Coupons",

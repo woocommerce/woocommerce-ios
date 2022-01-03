@@ -157,10 +157,16 @@ extension UIImage {
         return UIImage.gridicon(.cloudOutline)
     }
 
-    /// Coooy Icon - used in `UIBarButtonItem`
+    /// Copy Icon - used in `UIBarButtonItem`
     ///
     static var copyBarButtonItemImage: UIImage {
         return UIImage(systemName: "doc.on.doc")!
+    }
+
+    /// Coupon Icon - used in hub menu
+    ///
+    static var couponImage: UIImage {
+        return UIImage(named: "icon-coupon")!
     }
 
     /// Connection Icon

@@ -1,13 +1,13 @@
-public struct MockFile: Codable {
-    public let response: ResponseData
+public struct ProductMock: Codable {
+    public let response: ProductResponseData
 }
 
-public struct ResponseData: Codable {
+public struct ProductResponseData: Codable {
     public let status: Int
-    public let jsonBody: BodyData
+    public let jsonBody: ProductBodyData
 }
 
-public struct BodyData: Codable {
+public struct ProductBodyData: Codable {
     public let data: [ProductData]
 }
 

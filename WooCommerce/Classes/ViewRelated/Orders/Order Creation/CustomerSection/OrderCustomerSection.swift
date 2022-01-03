@@ -3,7 +3,6 @@ import SwiftUI
 /// Represents the Customer section
 ///
 struct OrderCustomerSection: View {
-    let geometry: GeometryProxy
 
     /// View model to drive the view content
     let viewModel: NewOrderViewModel.CustomerDataViewModel
@@ -12,6 +11,8 @@ struct OrderCustomerSection: View {
     let addressFormViewModel: CreateOrderAddressFormViewModel
 
     @State private var showAddressForm: Bool = false
+
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     var body: some View {
         Group {
@@ -41,7 +42,7 @@ struct OrderCustomerSection: View {
                     customerDataView
                 }
             }
-            .padding(.horizontal, insets: geometry.safeAreaInsets)
+            .padding(.horizontal, insets: safeAreaInsets)
             .padding()
             .background(Color(.listForeground))
 
@@ -114,6 +115,7 @@ private extension OrderCustomerSection {
     }
 }
 
+@available(iOS 15.0, *)
 struct OrderCustomerSection_Previews: PreviewProvider {
     static var previews: some View {
         let orderAdressFormViewModel = NewOrderViewModel(siteID: 123).createOrderAddressFormViewModel()
@@ -128,11 +130,9 @@ struct OrderCustomerSection_Previews: PreviewProvider {
                                                                             """,
                                                                        shippingAddressFormatted: nil)
 
-        GeometryReader { geometry in
-            ScrollView {
-                OrderCustomerSection(geometry: geometry, viewModel: emptyViewModel, addressFormViewModel: orderAdressFormViewModel)
-                OrderCustomerSection(geometry: geometry, viewModel: addressViewModel, addressFormViewModel: orderAdressFormViewModel)
-            }
+        ScrollView {
+            OrderCustomerSection(viewModel: emptyViewModel, addressFormViewModel: orderAdressFormViewModel)
+            OrderCustomerSection(viewModel: addressViewModel, addressFormViewModel: orderAdressFormViewModel)
         }
     }
 }

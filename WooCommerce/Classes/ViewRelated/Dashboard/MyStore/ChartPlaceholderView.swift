@@ -4,7 +4,7 @@ import UIKit
 
 // ChartPlaceholderView: Charts Mockup UI!
 //
-class ChartPlaceholderView: UIView {
+final class ChartPlaceholderView: UIView {
 
     /// Top Container View
     ///
@@ -18,8 +18,8 @@ class ChartPlaceholderView: UIView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        setupView()
-        setupSubviews()
+        configureView()
+        configureBarsStackView()
     }
 }
 
@@ -29,25 +29,15 @@ class ChartPlaceholderView: UIView {
 private extension ChartPlaceholderView {
     /// Applies color to the view.
     ///
-    func setupView() {
+    func configureView() {
         backgroundColor = .listForeground
         topStackView.backgroundColor = .listForeground
     }
 
-    /// Applies Rounded Style to the upper views.
-    ///
-    func setupSubviews() {
-        let subviews = barsStackView.subviews + topStackView.subviews.compactMap { $0.subviews.first }
-        for view in subviews {
-            view.layer.cornerRadius = Settings.cornerRadius
-            view.layer.masksToBounds = true
+    func configureBarsStackView() {
+        barsStackView.isGhostableDisabled = true
+        barsStackView.arrangedSubviews.forEach { chartLineView in
+            chartLineView.backgroundColor = .init(light: .gray(.shade5), dark: .systemGray5)
         }
     }
-}
-
-
-// MARK: - Private Types
-//
-private enum Settings {
-    static let cornerRadius = CGFloat(6)
 }

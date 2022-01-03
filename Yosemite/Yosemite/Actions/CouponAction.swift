@@ -17,4 +17,14 @@ public enum CouponAction: Action {
                             pageNumber: Int,
                             pageSize: Int,
                             onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Delete a coupon for a site given its ID
+    ///
+    /// - `siteID`: ID of the site that the coupon belong to.
+    /// - `couponID`: ID of the coupon to be deleted.
+    /// - `onCompletion`: invoked when the deletion finishes.
+    ///
+    case deleteCoupon(siteID: Int64,
+                      couponID: Int64,
+                      onCompletion: (Result<Void, Error>) -> Void)
 }

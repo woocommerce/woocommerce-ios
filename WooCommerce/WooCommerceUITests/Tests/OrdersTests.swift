@@ -1,5 +1,6 @@
 import UITestsFoundation
 import XCTest
+import Networking
 
 final class OrdersTests: XCTestCase {
 
@@ -15,15 +16,16 @@ final class OrdersTests: XCTestCase {
 
     func testOrdersScreenLoads() throws {
             let orders = try GetMocks.readOrdersData()
+            print(orders) // just for human validation
 
             _ = try TabNavComponent()
                 .gotoOrdersScreen()
                 .verifyOrdersScreenLoaded()
-                .verifyOrdersList(orders: number)
-                .selectOrder(byName: orders[0].id)
-                .verifyOrderOnSingleOrderScreen(order: orders[0])
-                .goBackToOrderList()
-                .verifyOrderScreenLoaded()
+                .verifyOrdersList(orders: orders) //parameter, variable
+                .selectOrder(atIndex: 0)//orders[0].id)
+                .verifySingleOrder(order: orders[0])
+                .goBackToOrdersScreen()
+                .verifyOrdersScreenLoaded()
         }
     }
-}
+

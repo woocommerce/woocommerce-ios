@@ -18,7 +18,7 @@ struct OrderCustomerSection: View {
         Group {
             Divider()
 
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: .zero) {
                 HStack(alignment: .top) {
                     Text(Localization.customer)
                         .headlineStyle()
@@ -35,6 +35,9 @@ struct OrderCustomerSection: View {
                         .padding(.trailing, -Layout.linkButtonTrailingPadding) // remove padding to align button title to the side
                     }
                 }
+                .padding([.leading, .top, .trailing])
+
+                Spacer(minLength: Layout.verticalHeadlineSpacing)
 
                 if !viewModel.isDataAvailable {
                     createCustomerView
@@ -43,7 +46,6 @@ struct OrderCustomerSection: View {
                 }
             }
             .padding(.horizontal, insets: safeAreaInsets)
-            .padding()
             .background(Color(.listForeground))
 
             Divider()
@@ -62,6 +64,7 @@ struct OrderCustomerSection: View {
             showAddressForm.toggle()
         }
         .buttonStyle(PlusButtonStyle())
+        .padding([.leading, .bottom, .trailing])
     }
 
     private var customerDataView: some View {
@@ -76,9 +79,8 @@ struct OrderCustomerSection: View {
                         .footnoteStyle()
                 }
             }
-            if let billingAddressFormatted = viewModel.billingAddressFormatted {
-                addressDetails(title: Localization.billingTitle, formattedAddress: billingAddressFormatted)
-            }
+            .padding([.leading, .bottom, .trailing])
+            .padding(.top, -Layout.linkButtonTopPadding)
             if let shippingAddressFormatted = viewModel.shippingAddressFormatted {
                 addressDetails(title: Localization.shippingTitle, formattedAddress: shippingAddressFormatted)
             }
@@ -87,18 +89,21 @@ struct OrderCustomerSection: View {
 
     @ViewBuilder private func addressDetails(title: String, formattedAddress: String) -> some View {
         Divider()
+            .padding(.leading)
         VStack(alignment: .leading, spacing: Layout.verticalAddressSpacing) {
             Text(title)
                 .headlineStyle()
             Text(formattedAddress)
                 .bodyStyle()
         }
+        .padding()
     }
 }
 
 // MARK: Constants
 private extension OrderCustomerSection {
     enum Layout {
+        static let verticalHeadlineSpacing: CGFloat = 22.0
         static let verticalEmailSpacing: CGFloat = 4.0
         static let verticalAddressSpacing: CGFloat = 6.0
         static let linkButtonTopPadding: CGFloat = 12.0
@@ -122,13 +127,13 @@ struct OrderCustomerSection_Previews: PreviewProvider {
         let emptyViewModel = NewOrderViewModel.CustomerDataViewModel(billingAddress: nil, shippingAddress: nil)
         let addressViewModel = NewOrderViewModel.CustomerDataViewModel(fullName: "Johnny Appleseed",
                                                                        email: "scrambled@scrambled.com",
-                                                                       billingAddressFormatted: """
+                                                                       billingAddressFormatted: nil,
+                                                                       shippingAddressFormatted: """
                                                                             Johnny Appleseed
                                                                             234 70th Street
                                                                             Niagara Falls NY 14304
                                                                             US
-                                                                            """,
-                                                                       shippingAddressFormatted: nil)
+                                                                            """)
 
         ScrollView {
             OrderCustomerSection(viewModel: emptyViewModel, addressFormViewModel: orderAdressFormViewModel)

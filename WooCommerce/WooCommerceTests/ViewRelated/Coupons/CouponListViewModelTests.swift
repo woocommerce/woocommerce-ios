@@ -5,11 +5,11 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 
-final class CouponManagementListViewModelTests: XCTestCase {
+final class CouponListViewModelTests: XCTestCase {
     private var mockStorageManager: MockStorageManager!
     private var mockStoresManager: MockStoresManager!
     private var mockSyncingCoordinator: MockSyncingCoordinator!
-    private var sut: CouponManagementListViewModel!
+    private var sut: CouponListViewModel!
     private var spyLatestStateEntered: CouponListState?
     private var spyLatestStateLeft: CouponListState?
 
@@ -20,9 +20,9 @@ final class CouponManagementListViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         createMocks()
-        sut = CouponManagementListViewModel(siteID: 123,
-                                            didLeaveState: spyDidLeave(state:),
-                                            didEnterState: spyDidEnter(state:))
+        sut = CouponListViewModel(siteID: 123,
+                                  didLeaveState: spyDidLeave(state:),
+                                  didEnterState: spyDidEnter(state:))
     }
 
     private func createMocks() {
@@ -42,10 +42,10 @@ final class CouponManagementListViewModelTests: XCTestCase {
     private func setUpWithCouponFetched() {
         let coupon = Coupon.fake().copy(siteID: 123, code: "coupon")
         mockStorageManager.insertSampleCoupon(readOnlyCoupon: coupon)
-        sut = CouponManagementListViewModel(siteID: 123,
-                                            storageManager: mockStorageManager,
-                                            didLeaveState: spyDidLeave(state:),
-                                            didEnterState: spyDidEnter(state:))
+        sut = CouponListViewModel(siteID: 123,
+                                  storageManager: mockStorageManager,
+                                  didLeaveState: spyDidLeave(state:),
+                                  didEnterState: spyDidEnter(state:))
         sut.buildCouponViewModels()
     }
 
@@ -63,10 +63,10 @@ final class CouponManagementListViewModelTests: XCTestCase {
     //
     func test_viewDidLoad_calls_synchronizeFirstPage_on_syncCoordinator() {
         // Given
-        sut = CouponManagementListViewModel(siteID: 123,
-                                            syncingCoordinator: mockSyncingCoordinator,
-                                            didLeaveState: spyDidLeave(state:),
-                                            didEnterState: spyDidEnter(state:))
+        sut = CouponListViewModel(siteID: 123,
+                                  syncingCoordinator: mockSyncingCoordinator,
+                                  didLeaveState: spyDidLeave(state:),
+                                  didEnterState: spyDidEnter(state:))
 
         // When
         sut.viewDidLoad()
@@ -85,10 +85,10 @@ final class CouponManagementListViewModelTests: XCTestCase {
 
     func test_sync_sends_correct_synchronize_coupons_action_to_store() throws {
         // Given
-        sut = CouponManagementListViewModel(siteID: 123,
-                                            storesManager: mockStoresManager,
-                                            didLeaveState: spyDidLeave(state:),
-                                            didEnterState: spyDidEnter(state:))
+        sut = CouponListViewModel(siteID: 123,
+                                  storesManager: mockStoresManager,
+                                  didLeaveState: spyDidLeave(state:),
+                                  didEnterState: spyDidEnter(state:))
         // When
         sut.sync(pageNumber: 4, pageSize: 8, reason: nil, onCompletion: nil)
 

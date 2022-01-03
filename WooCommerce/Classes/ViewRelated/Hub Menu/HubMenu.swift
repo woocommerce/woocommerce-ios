@@ -7,6 +7,7 @@ struct HubMenu: View {
     @ObservedObject private var viewModel: HubMenuViewModel
     @State private var showViewStore = false
     @State private var showReviews = false
+    @State private var showingCoupons = false
 
     init(siteID: Int64) {
         viewModel = HubMenuViewModel(siteID: siteID)
@@ -30,13 +31,15 @@ struct HubMenu: View {
                                     showViewStore = true
                                 case .reviews:
                                     showReviews = true
+                                case .coupons:
+                                    showingCoupons = true
                                 default:
                                     // TODO-5509: handle the remaining cases
                                     break
                                 }
                             }
                     }
-                    .background(Color.white)
+                    .background(Color(.listForeground))
                     .cornerRadius(Constants.cornerRadius)
                     .padding([.bottom], Constants.padding)
                 }
@@ -49,6 +52,9 @@ struct HubMenu: View {
                            isActive: $showReviews) {
                 EmptyView()
             }.hidden()
+            NavigationLink(destination: CouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
+                EmptyView()
+            }.hidden()
         }
         .navigationBarHidden(true)
         .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
@@ -58,7 +64,7 @@ struct HubMenu: View {
         let storeTitle: String
         let storeURL: String?
 
-        @ScaledMetric var settingsSize: CGFloat = 24
+        @ScaledMetric var settingsSize: CGFloat = 28
         @ScaledMetric var settingsIconSize: CGFloat = 20
 
         var body: some View {
@@ -79,10 +85,11 @@ struct HubMenu: View {
                 VStack {
                     ZStack {
                         Circle()
-                            .fill(Color.white)
+                            .fill(Color(UIColor(light: .white,
+                                                dark: .secondaryButtonBackground)))
                             .frame(width: settingsSize,
                                    height: settingsSize)
-                        if let cogImage = UIImage.cogImage.imageWithTintColor(.primary) {
+                        if let cogImage = UIImage.cogImage.imageWithTintColor(.accent) {
                             Image(uiImage: cogImage)
                                 .resizable()
                                 .frame(width: settingsIconSize,

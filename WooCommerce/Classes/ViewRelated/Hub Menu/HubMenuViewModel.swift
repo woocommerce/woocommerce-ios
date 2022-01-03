@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import SwiftUI
+import Experiments
 
 /// View model for `HubMenu`.
 ///
@@ -21,9 +22,13 @@ final class HubMenuViewModel: ObservableObject {
     ///
     @Published private(set) var menuElements: [Menu] = []
 
-    init(siteID: Int64) {
+    init(siteID: Int64, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
-        menuElements = [.woocommerceAdmin, .viewStore, .reviews]
+        menuElements = [.woocommerceAdmin, .viewStore]
+        if featureFlagService.isFeatureFlagEnabled(.couponManagement) {
+            menuElements.append(.coupons)
+        }
+        menuElements.append(.reviews)
     }
 }
 
@@ -31,6 +36,7 @@ extension HubMenuViewModel {
     enum Menu: CaseIterable {
         case woocommerceAdmin
         case viewStore
+        case coupons
         case reviews
 
         var title: String {
@@ -39,6 +45,8 @@ extension HubMenuViewModel {
                 return Localization.woocommerceAdmin
             case .viewStore:
                 return Localization.viewStore
+            case .coupons:
+                return Localization.coupon
             case .reviews:
                 return Localization.reviews
             }
@@ -50,6 +58,8 @@ extension HubMenuViewModel {
                 return .wordPressLogoImage.imageWithTintColor(.blue) ?? .wordPressLogoImage
             case .viewStore:
                 return .storeImage.imageWithTintColor(.accent) ?? .storeImage
+            case .coupons:
+                return .couponImage
             case .reviews:
                 return .starImage(size: 24.0).imageWithTintColor(.primary) ?? .starImage(size: 24.0)
             }
@@ -63,6 +73,7 @@ extension HubMenuViewModel {
                                                         comment: "Title of one of the hub menu options")
         static let viewStore = NSLocalizedString("View Store",
                                                  comment: "Title of one of the hub menu options")
+        static let coupon = NSLocalizedString("Coupons", comment: "Title of the Coupons menu in the hub menu")
         static let reviews = NSLocalizedString("Reviews",
                                                comment: "Title of one of the hub menu options")
     }

@@ -84,6 +84,13 @@ struct OrderCustomerSection: View {
             if let shippingAddressFormatted = viewModel.shippingAddressFormatted {
                 addressDetails(title: Localization.shippingTitle, formattedAddress: shippingAddressFormatted)
             }
+            Divider()
+                .padding(.leading)
+            NavigationRow(content: {
+                Text(Localization.showBilling)
+                    .bodyStyle()
+            }, action: {
+            })
         }
     }
 
@@ -117,6 +124,9 @@ private extension OrderCustomerSection {
 
         static let billingTitle = NSLocalizedString("Billing Address", comment: "Title for the Billing Address section in order customer data")
         static let shippingTitle = NSLocalizedString("Shipping Address", comment: "Title for the Edit Shipping Address section in order customer data")
+
+        static let showBilling = NSLocalizedString("View Billing Information",
+                                                   comment: "Button on bottom of customer section to show the summary view")
     }
 }
 

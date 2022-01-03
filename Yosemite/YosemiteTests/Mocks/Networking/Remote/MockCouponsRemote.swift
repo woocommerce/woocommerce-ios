@@ -8,6 +8,10 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     var spyLoadAllCouponsPageNumber: Int?
     var spyLoadAllCouponsPageSize: Int?
 
+    var didCallDeleteCoupon = false
+    var spyDeleteCouponSiteID: Int64?
+    var spyDeleteCouponWithID: Int64?
+
     // MARK: - Stub responses
     var resultForLoadAllCoupons: Result<[Coupon], Error>?
 
@@ -22,5 +26,13 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
         spyLoadAllCouponsPageSize = pageSize
         guard let result = resultForLoadAllCoupons else { return }
         completion(result)
+    }
+
+    func deleteCoupon(for siteID: Int64,
+                      couponID: Int64,
+                      completion: @escaping (Result<Coupon, Error>) -> Void) {
+        didCallDeleteCoupon = true
+        spyDeleteCouponSiteID = couponID
+        spyDeleteCouponWithID = couponID
     }
 }

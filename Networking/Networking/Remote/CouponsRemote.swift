@@ -9,6 +9,10 @@ public protocol CouponsRemoteProtocol {
                         pageNumber: Int,
                         pageSize: Int,
                         completion: @escaping (Result<[Coupon], Error>) -> ())
+
+    func deleteCoupon(for siteID: Int64,
+                      couponID: Int64,
+                      completion: @escaping (Result<Coupon, Error>) -> Void)
 }
 
 

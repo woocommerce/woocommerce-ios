@@ -152,37 +152,4 @@ class ProductRowViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.quantity, 1)
     }
-
-    func test_view_models_equal_when_input_matches() {
-        // Given
-        let product = Product.fake()
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        let viewModel2 = ProductRowViewModel(product: product, canChangeQuantity: true)
-
-        // Then
-        XCTAssertEqual(viewModel, viewModel2)
-    }
-
-    func test_view_models_not_equal_when_canChangeQuantity_differs() {
-        // Given
-        let product = Product.fake()
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        let viewModel2 = ProductRowViewModel(product: product, canChangeQuantity: false)
-
-        // Then
-        XCTAssertNotEqual(viewModel, viewModel2)
-    }
-
-    func test_view_models_not_equal_after_quantity_changes() {
-        // Given
-        let product = Product.fake()
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        let viewModel2 = ProductRowViewModel(product: product, canChangeQuantity: true)
-
-        // When
-        viewModel2.incrementQuantity()
-
-        // Then
-        XCTAssertNotEqual(viewModel, viewModel2)
-    }
 }

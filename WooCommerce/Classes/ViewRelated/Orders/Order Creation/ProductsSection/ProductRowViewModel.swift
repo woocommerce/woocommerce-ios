@@ -173,15 +173,3 @@ private extension ProductRowViewModel {
         static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
     }
 }
-
-extension ProductRowViewModel: Equatable {
-    static func == (lhs: ProductRowViewModel, rhs: ProductRowViewModel) -> Bool {
-        return lhs.productID == rhs.productID &&
-        lhs.imageURL == rhs.imageURL &&
-        lhs.name == rhs.name &&
-        lhs.stockAndPriceLabel == rhs.stockAndPriceLabel &&
-        lhs.skuLabel == rhs.skuLabel &&
-        lhs.quantity == rhs.quantity &&
-        lhs.canChangeQuantity == rhs.canChangeQuantity
-    }
-}

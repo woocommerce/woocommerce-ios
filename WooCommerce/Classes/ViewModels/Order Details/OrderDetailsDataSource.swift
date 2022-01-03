@@ -702,6 +702,7 @@ private extension OrderDetailsDataSource {
                                                         hasAddOns: addOns.isNotEmpty)
 
         cell.configure(item: itemViewModel, imageService: imageService)
+        cell.accessibilityIdentifier = "single-product-cell"
         cell.onViewAddOnsTouchUp = { [weak self] in
             self?.onCellAction?(.viewAddOns(addOns: addOns), nil)
         }

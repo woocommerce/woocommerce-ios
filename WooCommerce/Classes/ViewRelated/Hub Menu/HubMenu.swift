@@ -31,6 +31,7 @@ struct HubMenu: View {
                     ForEach(viewModel.menuElements, id: \.self) { menu in
                         HubMenuElement(image: menu.icon, text: menu.title)
                             .frame(width: Constants.itemSize, height: Constants.itemSize)
+                            .contentShape(Rectangle())
                             .onTapGesture {
                                 switch menu {
                                 case .woocommerceAdmin:

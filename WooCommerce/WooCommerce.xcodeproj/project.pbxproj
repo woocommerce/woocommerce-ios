@@ -1115,8 +1115,7 @@
 		B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */; };
 		BAE4F8432734325C00871344 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE4F8422734325C00871344 /* SettingsViewModel.swift */; };
 		BAFEF51E273C2151005F94CC /* SettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAFEF51D273C2151005F94CC /* SettingsViewModelTests.swift */; };
-		C0115DFD277CC19E007293B8 /* OrderDataStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0115DFC277CC19E007293B8 /* OrderDataStructs.swift */; };
-		C0115DFE277CC19E007293B8 /* OrderDataStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0115DFC277CC19E007293B8 /* OrderDataStructs.swift */; };
+		C064EE2B2783480000D54B0D /* OrderDataStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0115DFC277CC19E007293B8 /* OrderDataStructs.swift */; };
 		CC0324A3263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0324A2263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift */; };
 		CC078531266E706300BA9AC1 /* ErrorTopBannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC078530266E706300BA9AC1 /* ErrorTopBannerFactory.swift */; };
 		CC07860526736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC07860426736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift */; };
@@ -7947,7 +7946,7 @@
 				3F0CF3022704490A00EF3D71 /* LinkOrPasswordScreen.swift in Sources */,
 				3F0CF2FF2704490A00EF3D71 /* SettingsScreen.swift in Sources */,
 				3F0CF3052704490A00EF3D71 /* LoginEpilogueScreen.swift in Sources */,
-				C0115DFE277CC19E007293B8 /* OrderDataStructs.swift in Sources */,
+				C064EE2B2783480000D54B0D /* OrderDataStructs.swift in Sources */,
 				3FF314F426FD4C4A0012E68E /* BaseScreen.swift in Sources */,
 				3F0CF3042704490A00EF3D71 /* PeriodStatsTable.swift in Sources */,
 				3F0CF3142704494A00EF3D71 /* TabNavComponent.swift in Sources */,
@@ -9181,7 +9180,6 @@
 				80E6FC79276C3FD60086CD67 /* MockDataReader.swift in Sources */,
 				CCDC49CD23FFFFF4003166BA /* LoginTests.swift in Sources */,
 				800A5B58275483D6009DE2CD /* OrdersTests.swift in Sources */,
-				C0115DFD277CC19E007293B8 /* OrderDataStructs.swift in Sources */,
 				800A5BCB2759CE4B009DE2CD /* ProductsTests.swift in Sources */,
 				800A5B9E275623FC009DE2CD /* LoginFlow.swift in Sources */,
 			);

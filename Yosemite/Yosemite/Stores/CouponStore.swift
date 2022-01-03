@@ -113,7 +113,9 @@ private extension CouponStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success:
-                self.deleteCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
+                self.deleteStoredCoupon(siteID: siteID, couponID: couponID) {
+                    onCompletion(.success(()))
+                }
             }
         }
     }

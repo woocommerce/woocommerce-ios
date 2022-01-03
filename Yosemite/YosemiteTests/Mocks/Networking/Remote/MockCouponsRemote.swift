@@ -32,7 +32,7 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
                       couponID: Int64,
                       completion: @escaping (Result<Coupon, Error>) -> Void) {
         didCallDeleteCoupon = true
-        spyDeleteCouponSiteID = couponID
+        spyDeleteCouponSiteID = siteID
         spyDeleteCouponWithID = couponID
     }
 }

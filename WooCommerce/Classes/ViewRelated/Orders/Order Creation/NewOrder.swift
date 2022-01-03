@@ -52,7 +52,7 @@ struct NewOrder: View {
             ScrollViewReader { scroll in
                 ScrollView {
                     VStack(spacing: Layout.noSpacing) {
-                        OrderStatusSection(geometry: geometry, viewModel: viewModel)
+                        OrderStatusSection(viewModel: viewModel)
 
                         Spacer(minLength: Layout.sectionSpacing)
 

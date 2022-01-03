@@ -106,6 +106,13 @@ private extension CouponStore {
         }
     }
 
+    /// Deletes a coupon from a Site with what is persisted in the storage layer.
+    /// After API request succeeds, the stored coupon should be removed from the local storage.
+    /// - Parameters:
+    ///   - siteID: The site that the deleted coupon belongs to.
+    ///   - couponID: The ID of the coupon to be deleted.
+    ///   - onCompletion: Closure to call after deletion is complete. Called on the main thread.
+    ///
     func deleteCoupon(siteID: Int64, couponID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         remote.deleteCoupon(for: siteID, couponID: couponID) { [weak self] result in
             guard let self = self else { return }

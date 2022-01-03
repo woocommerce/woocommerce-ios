@@ -121,7 +121,7 @@ public extension StorageType {
         }
     }
 
-    /// Delete the stored Coupon with the given couponID for the provided siteID.
+    /// Deletes the stored Coupon with the given couponID for the provided siteID.
     ///
     func deleteCoupon(siteID: Int64, couponID: Int64) {
         if let coupon = loadCoupon(siteID: siteID, couponID: couponID) {

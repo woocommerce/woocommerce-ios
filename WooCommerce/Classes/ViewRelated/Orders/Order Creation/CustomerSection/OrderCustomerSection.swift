@@ -11,6 +11,7 @@ struct OrderCustomerSection: View {
     let addressFormViewModel: CreateOrderAddressFormViewModel
 
     @State private var showAddressForm: Bool = false
+    @State private var showCustomerSummary: Bool = false
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
@@ -27,12 +28,17 @@ struct OrderCustomerSection: View {
 
                     if viewModel.isDataAvailable {
                         Button(Localization.editButton) {
-                            showAddressForm.toggle()
+                            showCustomerSummary.toggle()
                         }
                         .buttonStyle(LinkButtonStyle())
                         .fixedSize(horizontal: true, vertical: true)
                         .padding(.top, -Layout.linkButtonTopPadding) // remove padding to align button title to the top
                         .padding(.trailing, -Layout.linkButtonTrailingPadding) // remove padding to align button title to the side
+                        .sheet(isPresented: $showCustomerSummary) {
+                            NavigationView {
+                                OrderCustomerSummary(viewModel: viewModel)
+                            }
+                        }
                     }
                 }
                 .padding([.leading, .top, .trailing])
@@ -90,6 +96,7 @@ struct OrderCustomerSection: View {
                 Text(Localization.showBilling)
                     .bodyStyle()
             }, action: {
+                showCustomerSummary.toggle()
             })
         }
     }

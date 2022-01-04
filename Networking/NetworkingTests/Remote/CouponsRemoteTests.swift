@@ -187,4 +187,91 @@ final class CouponsRemoteTests: XCTestCase {
         }
         XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
     }
+
+    // MARK: - Update coupon tests
+
+    /// Verifies that updateCoupon properly parses the `Coupon` sample response.
+    ///
+    func test_updateCoupon_properly_returns_parsed_coupon() {
+        // Given
+        let remote = CouponsRemote(network: network)
+        let coupon = sampleCoupon()
+        network.simulateResponse(requestUrlSuffix: "coupons/\(coupon.couponID)", filename: "coupon")
+
+        // When
+        let result = waitFor { promise in
+            remote.updateCoupon(coupon) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssert(result.isSuccess)
+        guard let returnedCoupon = try? result.get() else {
+            XCTFail("Expected parsed Coupon not found in response")
+            return
+        }
+        XCTAssertEqual(returnedCoupon, coupon)
+    }
+
+    /// Verifies that updateCoupon properly relays Networking Layer errors.
+    ///
+    func test_updateCoupon_properly_relays_networking_errors() throws {
+        // Given
+        let remote = CouponsRemote(network: network)
+        let coupon = sampleCoupon()
+
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "coupons/\(coupon.couponID)", error: error)
+
+        // When
+        let result = waitFor { promise in
+            remote.updateCoupon(coupon) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        guard let resultError = result.failure as? NetworkError else {
+            XCTFail("Expected NetworkError not found")
+            return
+        }
+        XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
+    }
+}
+
+// MARK: - Private helpers
+private extension CouponsRemoteTests {
+    func sampleCoupon() -> Coupon {
+        Coupon(couponID: 720,
+               code: "free shipping",
+               amount: "10.00",
+               dateCreated: date(with: "2017-03-21T18:25:02"),
+               dateModified: date(with: "2017-03-21T18:25:02"),
+               discountType: .fixedCart,
+               description: "Coupon description",
+               dateExpires: date(with: "2017-03-31T18:25:02"),
+               usageCount: 10,
+               individualUse: true, productIds: [12893712, 12389],
+               excludedProductIds: [12213],
+               usageLimit: 1200,
+               usageLimitPerUser: 3,
+               limitUsageToXItems: 10,
+               freeShipping: true,
+               productCategories: [123, 435, 232],
+               excludedProductCategories: [908],
+               excludeSaleItems: false,
+               minimumAmount: "5.00",
+               maximumAmount: "500.00",
+               emailRestrictions: ["*@a8c.com", "someone.else@example.com"],
+               usedBy: ["someone.else@example.com", "person@a8c.com"])
+    }
+
+    func date(with dateString: String) -> Date {
+        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
+            return Date()
+        }
+        return date
+    }
 }

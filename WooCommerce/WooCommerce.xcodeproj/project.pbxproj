@@ -296,6 +296,7 @@
 		02AAD54525023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AAD54425023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift */; };
 		02AB407B27827C9100929CF3 /* ChartPlaceholderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02AB407927827C9000929CF3 /* ChartPlaceholderView.xib */; };
 		02AB407C27827C9100929CF3 /* ChartPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AB407A27827C9100929CF3 /* ChartPlaceholderView.swift */; };
+		02AB40822784297C00929CF3 /* ProductTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AB40812784297C00929CF3 /* ProductTableViewCellViewModelTests.swift */; };
 		02AB82EC27069D5D008D7334 /* Experiments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02AB82EB27069D5D008D7334 /* Experiments.framework */; };
 		02AB82ED27069D5D008D7334 /* Experiments.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 02AB82EB27069D5D008D7334 /* Experiments.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		02AC822C2498BC9700A615FB /* ProductFormViewModel+UpdatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AC822B2498BC9700A615FB /* ProductFormViewModel+UpdatesTests.swift */; };
@@ -1876,6 +1877,7 @@
 		02AAD54425023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormRemoteActionUseCase.swift; sourceTree = "<group>"; };
 		02AB407927827C9000929CF3 /* ChartPlaceholderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChartPlaceholderView.xib; sourceTree = "<group>"; };
 		02AB407A27827C9100929CF3 /* ChartPlaceholderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartPlaceholderView.swift; sourceTree = "<group>"; };
+		02AB40812784297C00929CF3 /* ProductTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
 		02AB82EB27069D5D008D7334 /* Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		02AC822B2498BC9700A615FB /* ProductFormViewModel+UpdatesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormViewModel+UpdatesTests.swift"; sourceTree = "<group>"; };
 		02ADC7CB239762E0008D4BED /* PaginatedListSelectorViewProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListSelectorViewProperties.swift; sourceTree = "<group>"; };
@@ -4068,6 +4070,7 @@
 				0257285B230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift */,
 				02404EDF2314FE5900FF1170 /* DashboardUIFactoryTests.swift */,
 				02404EE1231501E000FF1170 /* StatsVersionCoordinatorTests.swift */,
+				02AB40812784297C00929CF3 /* ProductTableViewCellViewModelTests.swift */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -8169,7 +8172,6 @@
 				DEC51A9D274F8528009F3DF4 /* JetpackInstallStepsViewModel.swift in Sources */,
 				455DC3A327393C7E00D4644C /* OrderDatesFilterViewController.swift in Sources */,
 				45B6F4EF27592A4000C18782 /* ReviewsView.swift in Sources */,
-				028BAC4222F30B05008BB4AF,
 				268FD44727580A81008FDF9B /* CollectOrderPaymentUseCase.swift in Sources */,
 				740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */,
 				45F627B6253603AE00894B86 /* Product+DownloadSettingsViewModels.swift in Sources */,
@@ -8877,6 +8879,7 @@
 				02BA128B24616B48008D8325 /* ProductFormActionsFactory+VisibilityTests.swift in Sources */,
 				FEEB2F6E268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift in Sources */,
 				31E906A326CC91A70099A985 /* CardReaderConnectionControllerTests.swift in Sources */,
+				02AB40822784297C00929CF3 /* ProductTableViewCellViewModelTests.swift in Sources */,
 				D85B8336222FCDA1002168F3 /* StatusListTableViewCellTests.swift in Sources */,
 				3198A1E82694DC7200597213 /* MockKnownReadersProvider.swift in Sources */,
 				DEC51B04276B30F6009F3DF4 /* SystemStatusReportViewModelTests.swift in Sources */,

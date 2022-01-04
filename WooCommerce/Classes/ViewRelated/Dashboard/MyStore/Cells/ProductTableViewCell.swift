@@ -3,7 +3,7 @@ import Yosemite
 import WordPressUI
 import Gridicons
 
-class ProductTableViewCell: UITableViewCell {
+final class ProductTableViewCell: UITableViewCell {
 
     // MARK: - Properties
 
@@ -75,8 +75,37 @@ class ProductTableViewCell: UITableViewCell {
 // MARK: - Public Methods
 //
 extension ProductTableViewCell {
-    func configure(_ statsItem: TopEarnerStatsItem?, isMyStoreTabUpdatesEnabled: Bool, imageService: ImageService) {
+    struct ViewModel {
+        let nameText: String?
+        let detailText: String?
+        let accessoryText: String?
+        let imageURL: String?
+    }
+
+    func configure(viewModel: ViewModel, imageService: ImageService) {
+        nameText = viewModel.nameText
+        detailText = viewModel.detailText
+        accessoryText = viewModel.accessoryText
+
+        /// Set `center` contentMode to not distort the placeholder aspect ratio.
+        /// After a successful image download set the contentMode to `scaleAspectFill`
+        productImage.contentMode = .center
+        imageService.downloadAndCacheImageForImageView(productImage,
+                                                       with: viewModel.imageURL,
+                                                       placeholder: UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon),
+                                                       progressBlock: nil) { [weak productImage] (image, _) in
+                                                        guard image != nil else {
+                                                            return
+                                                        }
+                                                        productImage?.contentMode = .scaleAspectFill
+        }
+    }
+}
+
+extension ProductTableViewCell.ViewModel {
+    init(statsItem: TopEarnerStatsItem?, isMyStoreTabUpdatesEnabled: Bool) {
         nameText = statsItem?.productName
+        imageURL = statsItem?.imageUrl
 
         if isMyStoreTabUpdatesEnabled {
             detailText = String.localizedStringWithFormat(
@@ -93,19 +122,6 @@ extension ProductTableViewCell {
             )
             accessoryText = statsItem?.formattedTotalString
         }
-
-        /// Set `center` contentMode to not distort the placeholder aspect ratio.
-        /// After a successful image download set the contentMode to `scaleAspectFill`
-        productImage.contentMode = .center
-        imageService.downloadAndCacheImageForImageView(productImage,
-                                                       with: statsItem?.imageUrl,
-                                                       placeholder: UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon),
-                                                       progressBlock: nil) { [weak productImage] (image, _) in
-                                                        guard image != nil else {
-                                                            return
-                                                        }
-                                                        productImage?.contentMode = .scaleAspectFill
-        }
     }
 }
 
@@ -117,5 +133,13 @@ private extension ProductTableViewCell {
         static let borderWidth = CGFloat(0.5)
         static let borderColor = UIColor.border
         static let backgroundColor = UIColor.listForeground
+    }
+}
+
+private extension TopEarnerStatsItem {
+    /// Returns a total string including the currency symbol
+    ///
+    var totalString: String {
+        return CurrencyFormatter(currencySettings: ServiceLocator.currencySettings).formatHumanReadableAmount(String(total), with: currency) ?? String()
     }
 }

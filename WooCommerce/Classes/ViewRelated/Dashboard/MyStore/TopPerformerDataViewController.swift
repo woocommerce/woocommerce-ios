@@ -247,8 +247,8 @@ extension TopPerformerDataViewController: UITableViewDataSource {
             return tableView.dequeueReusableCell(withIdentifier: NoPeriodDataTableViewCell.reuseIdentifier, for: indexPath)
         }
         let cell = tableView.dequeueReusableCell(ProductTableViewCell.self, for: indexPath)
-
-        cell.configure(statsItem, isMyStoreTabUpdatesEnabled: isMyStoreTabUpdatesEnabled, imageService: imageService)
+        let viewModel = ProductTableViewCell.ViewModel(statsItem: statsItem, isMyStoreTabUpdatesEnabled: isMyStoreTabUpdatesEnabled)
+        cell.configure(viewModel: viewModel, imageService: imageService)
         cell.hidesBottomBorder = tableView.lastIndexPathOfTheLastSection() == indexPath ? true : false
         return cell
     }

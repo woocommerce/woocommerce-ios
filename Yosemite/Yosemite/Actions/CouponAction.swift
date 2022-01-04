@@ -17,4 +17,22 @@ public enum CouponAction: Action {
                             pageNumber: Int,
                             pageSize: Int,
                             onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Deletes a coupon for a site given its ID
+    ///
+    /// - `siteID`: ID of the site that the coupon belongs to.
+    /// - `couponID`: ID of the coupon to be deleted.
+    /// - `onCompletion`: invoked when the deletion finishes.
+    ///
+    case deleteCoupon(siteID: Int64,
+                      couponID: Int64,
+                      onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Updates a coupon for a site given its ID and returns the updated coupon if the request succeeds.
+    ///
+    /// - `coupon`: the coupon to be updated.
+    /// - `onCompletion`: invoked when the deletion finishes.
+    ///
+    case updateCoupon(_ coupon: Coupon,
+                      onCompletion: (Result<Coupon, Error>) -> Void)
 }

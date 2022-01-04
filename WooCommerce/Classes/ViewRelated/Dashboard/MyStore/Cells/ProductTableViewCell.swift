@@ -103,15 +103,17 @@ extension ProductTableViewCell {
 }
 
 extension ProductTableViewCell.ViewModel {
-    init(statsItem: TopEarnerStatsItem?, isMyStoreTabUpdatesEnabled: Bool) {
+    init(statsItem: TopEarnerStatsItem?,
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         isMyStoreTabUpdatesEnabled: Bool) {
         nameText = statsItem?.productName
         imageURL = statsItem?.imageUrl
 
         if isMyStoreTabUpdatesEnabled {
             detailText = String.localizedStringWithFormat(
                 NSLocalizedString("Net sales: %@",
-                                  comment: "Top performers — label for the total number of products ordered"),
-                statsItem?.formattedTotalString ?? ""
+                                  comment: "Top performers — label for the total sales of a product"),
+                statsItem?.totalString(currencyFormatter: currencyFormatter) ?? ""
             )
             accessoryText = "\(statsItem?.quantity ?? 0)"
         } else {
@@ -137,9 +139,8 @@ private extension ProductTableViewCell {
 }
 
 private extension TopEarnerStatsItem {
-    /// Returns a total string including the currency symbol
-    ///
-    var totalString: String {
-        return CurrencyFormatter(currencySettings: ServiceLocator.currencySettings).formatHumanReadableAmount(String(total), with: currency) ?? String()
+    /// Returns a total string without rounding up including the currency symbol.
+    func totalString(currencyFormatter: CurrencyFormatter) -> String? {
+        return currencyFormatter.formatAmount(Decimal(total), with: currency)
     }
 }

@@ -10,11 +10,12 @@ class ProductTableViewCell: UITableViewCell {
     @IBOutlet private weak var productImage: UIImageView!
     @IBOutlet private var nameLabel: UILabel!
     @IBOutlet private var detailLabel: UILabel!
-    @IBOutlet private var priceLabel: UILabel!
+    @IBOutlet private var accessoryLabel: UILabel!
 
-    /// We use a custom view isntead of the default separator as it's width varies depending on the image size, which varies depending on the screen size.
+    /// We use a custom view instead of the default separator as it's width varies depending on the image size, which varies depending on the screen size.
     @IBOutlet private var bottomBorderView: UIView!
 
+    /// Shows the name of the product.
     var nameText: String? {
         get {
             return nameLabel.text
@@ -24,6 +25,7 @@ class ProductTableViewCell: UITableViewCell {
         }
     }
 
+    /// Text displayed under the product name.
     var detailText: String? {
         get {
             return detailLabel.text
@@ -33,15 +35,17 @@ class ProductTableViewCell: UITableViewCell {
         }
     }
 
-    var priceText: String? {
+    /// Text displayed at the trailing edge of the cell.
+    var accessoryText: String? {
         get {
-            return priceLabel.text
+            return accessoryLabel.text
         }
         set {
-            priceLabel.text = newValue
+            accessoryLabel.text = newValue
         }
     }
 
+    /// Whether to hide the bottom border.
     var hidesBottomBorder: Bool = false {
         didSet {
             bottomBorderView.isHidden = hidesBottomBorder
@@ -51,7 +55,7 @@ class ProductTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         nameLabel.applyBodyStyle()
-        priceLabel.applyBodyStyle()
+        accessoryLabel.applyBodyStyle()
         detailLabel.applyFootnoteStyle()
         applyProductImageStyle()
         backgroundColor = .listForeground
@@ -80,14 +84,14 @@ extension ProductTableViewCell {
                                   comment: "Top performers — label for the total number of products ordered"),
                 statsItem?.formattedTotalString ?? ""
             )
-            priceText = "\(statsItem?.quantity ?? 0)"
+            accessoryText = "\(statsItem?.quantity ?? 0)"
         } else {
             detailText = String.localizedStringWithFormat(
                 NSLocalizedString("Total orders: %ld",
                                   comment: "Top performers — label for the total number of products ordered"),
                 statsItem?.quantity ?? 0
             )
-            priceText = statsItem?.formattedTotalString
+            accessoryText = statsItem?.formattedTotalString
         }
 
         /// Set `center` contentMode to not distort the placeholder aspect ratio.

@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import Charts
+import Experiments
 import XLPagerTabStrip
 import WordPressUI
 import class AutomatticTracks.CrashLogging
@@ -43,6 +44,7 @@ final class TopPerformerDataViewController: UIViewController {
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
     private let imageService: ImageService = ServiceLocator.imageService
+    private let featureFlagService: FeatureFlagService
 
     // MARK: - Computed Properties
 
@@ -67,12 +69,17 @@ final class TopPerformerDataViewController: UIViewController {
 
     /// Designated Initializer
     ///
-    init(siteID: Int64, siteTimeZone: TimeZone, currentDate: Date, timeRange: StatsTimeRangeV4) {
+    init(siteID: Int64,
+         siteTimeZone: TimeZone,
+         currentDate: Date,
+         timeRange: StatsTimeRangeV4,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.siteTimeZone = siteTimeZone
         self.currentDate = currentDate
         self.granularity = timeRange.topEarnerStatsGranularity
         self.timeRange = timeRange
+        self.featureFlagService = featureFlagService
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -152,6 +159,11 @@ private extension TopPerformerDataViewController {
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.applyFooterViewForHidingExtraRowPlaceholders()
+
+        // Removes extra top padding in iOS 15+.
+        if #available(iOS 15.0, *) {
+            tableView.sectionHeaderTopPadding = 0
+        }
     }
 
     func configureResultsController() {
@@ -175,7 +187,7 @@ private extension TopPerformerDataViewController {
     }
 
     func registerTableViewHeaderFooters() {
-        let headersAndFooters = [TopPerformersHeaderView.self]
+        let headersAndFooters = featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) ? [TwoColumnSectionHeaderView.self]: [TopPerformersHeaderView.self]
 
         for kind in headersAndFooters {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
@@ -206,14 +218,28 @@ extension TopPerformerDataViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: TopPerformersHeaderView.reuseIdentifier) as? TopPerformersHeaderView else {
-            fatalError()
-        }
+        if featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) {
+            guard let cell =
+                    tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
+                        fatalError()
+                    }
 
-        cell.configure(descriptionText: Text.sectionDescription,
-                       leftText: Text.sectionLeftColumn.uppercased(),
-                       rightText: Text.sectionRightColumn.uppercased())
-        return cell
+            cell.topMarginSpacing = Constants.sectionHeaderTopSpacing
+            cell.shouldShowUppercase = false
+            cell.leftText = Text.sectionLeftColumn
+            cell.rightText = Text.sectionRightColumn
+            return cell
+        } else {
+            guard let cell =
+                    tableView.dequeueReusableHeaderFooterView(withIdentifier: TopPerformersHeaderView.reuseIdentifier) as? TopPerformersHeaderView else {
+                fatalError()
+            }
+
+            cell.configure(descriptionText: Text.sectionDescription,
+                           leftText: Text.sectionLeftColumn.uppercased(),
+                           rightText: Text.sectionRightColumn.uppercased())
+            return cell
+        }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -366,5 +392,6 @@ private extension TopPerformerDataViewController {
         static let numberOfSections             = 1
         static let emptyStateRowCount           = 1
         static let placeholderRowsPerSection    = [3]
+        static let sectionHeaderTopSpacing = CGFloat(0)
     }
 }

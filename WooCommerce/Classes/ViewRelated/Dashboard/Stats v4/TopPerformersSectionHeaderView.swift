@@ -1,4 +1,5 @@
 import UIKit
+import Experiments
 
 /// Section header view shown above the top performers data view.
 ///
@@ -7,10 +8,13 @@ class TopPerformersSectionHeaderView: UIView {
         return UILabel(frame: .zero)
     }()
 
-    init(title: String) {
+    init(title: String, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
-        configureLabel(title: title)
+
+        let isMyStoreTabUpdatesEnabled = featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates)
+        configureView(isMyStoreTabUpdatesEnabled: isMyStoreTabUpdatesEnabled)
+        configureLabel(title: title, isMyStoreTabUpdatesEnabled: isMyStoreTabUpdatesEnabled)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -19,20 +23,33 @@ class TopPerformersSectionHeaderView: UIView {
 }
 
 private extension TopPerformersSectionHeaderView {
-    func configureLabel(title: String) {
+    func configureView(isMyStoreTabUpdatesEnabled: Bool) {
+        guard isMyStoreTabUpdatesEnabled else {
+            return
+        }
+        backgroundColor = Constants.backgroundColor
+    }
+
+    func configureLabel(title: String, isMyStoreTabUpdatesEnabled: Bool) {
         addSubview(label)
 
         label.text = title
 
-        label.applyFootnoteStyle()
-        label.textColor = .listIcon
+        if isMyStoreTabUpdatesEnabled {
+            label.applyHeadlineStyle()
+            label.textColor = .systemColor(.label)
+        } else {
+            label.applyFootnoteStyle()
+            label.textColor = .listIcon
+        }
 
         label.translatesAutoresizingMaskIntoConstraints = false
+        let labelInsets = isMyStoreTabUpdatesEnabled ? Constants.labelInsets: Constants.legacyLabelInsets
         NSLayoutConstraint.activate([
             label.topAnchor.constraint(greaterThanOrEqualTo: topAnchor),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.labelInsets.left),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.labelInsets.right),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.labelInsets.bottom)
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: labelInsets.left),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -labelInsets.right),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -labelInsets.bottom)
             ])
     }
 }
@@ -41,6 +58,8 @@ private extension TopPerformersSectionHeaderView {
 //
 private extension TopPerformersSectionHeaderView {
     enum Constants {
-        static let labelInsets = UIEdgeInsets(top: 0, left: 14, bottom: 6, right: 14)
+        static let labelInsets = UIEdgeInsets(top: 0, left: 16, bottom: 8, right: 16)
+        static let legacyLabelInsets = UIEdgeInsets(top: 0, left: 14, bottom: 6, right: 14)
+        static let backgroundColor: UIColor = .systemBackground
     }
 }

@@ -196,8 +196,7 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.removeItemFromOrder(viewModel.orderDetails.items[0])
 
         // Then
-        let expectedProductRow = ProductRowViewModel(id: expectedRemainingItem.id, product: product1, canChangeQuantity: true)
-        XCTAssertEqual(viewModel.productRows, [expectedProductRow])
+        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productID == product0.productID }))
         XCTAssertEqual(viewModel.orderDetails.items, [expectedRemainingItem])
     }
 

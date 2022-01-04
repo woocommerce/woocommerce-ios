@@ -12,6 +12,9 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     var spyDeleteCouponSiteID: Int64?
     var spyDeleteCouponWithID: Int64?
 
+    var didCallUpdateCoupon = false
+    var spyUpdateCoupon: Coupon?
+
     // MARK: - Stub responses
     var resultForLoadAllCoupons: Result<[Coupon], Error>?
 
@@ -34,5 +37,10 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
         didCallDeleteCoupon = true
         spyDeleteCouponSiteID = siteID
         spyDeleteCouponWithID = couponID
+    }
+
+    func updateCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void) {
+        didCallUpdateCoupon = true
+        spyUpdateCoupon = coupon
     }
 }

@@ -28,11 +28,11 @@ public enum CouponAction: Action {
                       couponID: Int64,
                       onCompletion: (Result<Void, Error>) -> Void)
 
-    /// Updates a coupon for a site given its ID
+    /// Updates a coupon for a site given its ID and returns the updated coupon if the request succeeds.
     ///
     /// - `coupon`: the coupon to be updated.
     /// - `onCompletion`: invoked when the deletion finishes.
     ///
     case updateCoupon(_ coupon: Coupon,
-                      onCompletion: (Result<Void, Error>) -> Void)
+                      onCompletion: (Result<Coupon, Error>) -> Void)
 }

@@ -142,7 +142,7 @@ private extension CouponStore {
     ///   - coupon: The coupon to be updated
     ///   - onCompletion: Closure to call after deletion is complete. Called on the main thread.
     ///
-    func updateCoupon(_ coupon: Coupon, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func updateCoupon(_ coupon: Coupon, onCompletion: @escaping (Result<Coupon, Error>) -> Void) {
         remote.updateCoupon(coupon) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -150,7 +150,7 @@ private extension CouponStore {
                 onCompletion(.failure(error))
             case .success(let updatedCoupon):
                 self.updateStoredCoupon(readOnlyCoupon: updatedCoupon) {
-                    onCompletion(.success(()))
+                    onCompletion(.success(updatedCoupon))
                 }
             }
         }

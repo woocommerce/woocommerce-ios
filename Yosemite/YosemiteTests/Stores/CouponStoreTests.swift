@@ -310,7 +310,7 @@ final class CouponStoreTests: XCTestCase {
 
         // When
         let updatedCoupon = sampleCoupon.copy(amount: "9")
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Networking.Coupon, Error> = waitFor { promise in
             let action = CouponAction.updateCoupon(updatedCoupon) { result in
                 promise(result)
             }
@@ -335,7 +335,7 @@ final class CouponStoreTests: XCTestCase {
         // When
         // this is not really important because we'll test the parsed coupon from the json file
         let updatedCoupon = sampleCoupon.copy(amount: "10.00", discountType: .fixedCart)
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Networking.Coupon, Error> = waitFor { promise in
             let action: CouponAction
             action = .updateCoupon(updatedCoupon) { result in
                 promise(result)

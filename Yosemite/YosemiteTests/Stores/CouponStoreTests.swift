@@ -393,7 +393,7 @@ final class CouponStoreTests: XCTestCase {
         // this is not really important because we'll test the parsed coupon from the json file
         let sampleCoupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID, amount: "10.00", discountType: .percent)
 
-        network.simulateResponse(requestUrlSuffix: "coupons/\(sampleCouponID)", filename: "coupon")
+        network.simulateResponse(requestUrlSuffix: "coupons", filename: "coupon")
 
         // When
         let result: Result<Networking.Coupon, Error> = waitFor { promise in

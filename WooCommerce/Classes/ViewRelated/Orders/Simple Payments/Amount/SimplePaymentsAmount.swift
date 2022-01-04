@@ -124,11 +124,13 @@ struct SimplePaymentsAmount: View {
                 Text(viewModel.formattedAmmount)
                     .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold))
                     .foregroundColor(Color(viewModel.amountTextColor))
+                    .minimumScaleFactor(0.1)
+                    .lineLimit(1)
                     .onTapGesture {
                         focusAmountInput = true
                     }
             }
-            .fixedSize()
+            .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
 

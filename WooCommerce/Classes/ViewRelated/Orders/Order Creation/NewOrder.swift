@@ -60,6 +60,13 @@ struct NewOrder: View {
 
                         Spacer(minLength: Layout.sectionSpacing)
 
+                        Group {
+                            OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
+
+                            Spacer(minLength: Layout.sectionSpacing)
+                        }
+                        .renderedIf(viewModel.orderDetails.items.isNotEmpty)
+
                         OrderCustomerSection(geometry: geometry,
                                              viewModel: viewModel.customerDataViewModel,
                                              addressFormViewModel: viewModel.createOrderAddressFormViewModel())

@@ -230,6 +230,41 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertNotNil(customerDataViewModel.billingAddressFormatted)
         XCTAssertNil(customerDataViewModel.shippingAddressFormatted)
     }
+
+    func test_payment_data_view_model_is_initialized_with_expected_values() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let itemsTotal = "20.00"
+        let orderTotal = "30.00"
+
+        // When
+        let paymentDataViewModel = NewOrderViewModel.PaymentDataViewModel(itemsTotal: itemsTotal,
+                                                                          orderTotal: orderTotal,
+                                                                          currencyFormatter: CurrencyFormatter(currencySettings: currencySettings))
+
+        // Then
+        XCTAssertEqual(paymentDataViewModel.itemsTotal, "£20.00")
+        XCTAssertEqual(paymentDataViewModel.orderTotal, "£30.00")
+    }
+
+    func test_payment_data_is_updated_when_products_update() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, statusKey: "publish", price: "8.50")
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+
+        // When & Then
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+
+        // When & Then
+        viewModel.productRows[0].incrementQuantity()
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£17.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£17.00")
+    }
 }
 
 private extension MockStorageManager {

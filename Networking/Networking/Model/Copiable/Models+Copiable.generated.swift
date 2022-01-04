@@ -391,6 +391,87 @@ extension OrderItemRefund {
     }
 }
 
+extension OrderStatsV4 {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        granularity: CopiableProp<StatsGranularityV4> = .copy,
+        totals: CopiableProp<OrderStatsV4Totals> = .copy,
+        intervals: CopiableProp<[OrderStatsV4Interval]> = .copy
+    ) -> OrderStatsV4 {
+        let siteID = siteID ?? self.siteID
+        let granularity = granularity ?? self.granularity
+        let totals = totals ?? self.totals
+        let intervals = intervals ?? self.intervals
+
+        return OrderStatsV4(
+            siteID: siteID,
+            granularity: granularity,
+            totals: totals,
+            intervals: intervals
+        )
+    }
+}
+
+extension OrderStatsV4Interval {
+    public func copy(
+        interval: CopiableProp<String> = .copy,
+        dateStart: CopiableProp<String> = .copy,
+        dateEnd: CopiableProp<String> = .copy,
+        subtotals: CopiableProp<OrderStatsV4Totals> = .copy
+    ) -> OrderStatsV4Interval {
+        let interval = interval ?? self.interval
+        let dateStart = dateStart ?? self.dateStart
+        let dateEnd = dateEnd ?? self.dateEnd
+        let subtotals = subtotals ?? self.subtotals
+
+        return OrderStatsV4Interval(
+            interval: interval,
+            dateStart: dateStart,
+            dateEnd: dateEnd,
+            subtotals: subtotals
+        )
+    }
+}
+
+extension OrderStatsV4Totals {
+    public func copy(
+        totalOrders: CopiableProp<Int> = .copy,
+        totalItemsSold: CopiableProp<Int> = .copy,
+        grossRevenue: CopiableProp<Decimal> = .copy,
+        couponDiscount: CopiableProp<Decimal> = .copy,
+        totalCoupons: CopiableProp<Int> = .copy,
+        refunds: CopiableProp<Decimal> = .copy,
+        taxes: CopiableProp<Decimal> = .copy,
+        shipping: CopiableProp<Decimal> = .copy,
+        netRevenue: CopiableProp<Decimal> = .copy,
+        totalProducts: NullableCopiableProp<Int> = .copy
+    ) -> OrderStatsV4Totals {
+        let totalOrders = totalOrders ?? self.totalOrders
+        let totalItemsSold = totalItemsSold ?? self.totalItemsSold
+        let grossRevenue = grossRevenue ?? self.grossRevenue
+        let couponDiscount = couponDiscount ?? self.couponDiscount
+        let totalCoupons = totalCoupons ?? self.totalCoupons
+        let refunds = refunds ?? self.refunds
+        let taxes = taxes ?? self.taxes
+        let shipping = shipping ?? self.shipping
+        let netRevenue = netRevenue ?? self.netRevenue
+        let totalProducts = totalProducts ?? self.totalProducts
+
+        return OrderStatsV4Totals(
+            totalOrders: totalOrders,
+            totalItemsSold: totalItemsSold,
+            grossRevenue: grossRevenue,
+            couponDiscount: couponDiscount,
+            totalCoupons: totalCoupons,
+            refunds: refunds,
+            taxes: taxes,
+            shipping: shipping,
+            netRevenue: netRevenue,
+            totalProducts: totalProducts
+        )
+    }
+}
+
 extension PaymentGatewayAccount {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -1383,6 +1464,42 @@ extension SiteSetting {
             settingDescription: settingDescription,
             value: value,
             settingGroupKey: settingGroupKey
+        )
+    }
+}
+
+extension SiteVisitStats {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        date: CopiableProp<String> = .copy,
+        granularity: CopiableProp<StatGranularity> = .copy,
+        items: NullableCopiableProp<[SiteVisitStatsItem]> = .copy
+    ) -> SiteVisitStats {
+        let siteID = siteID ?? self.siteID
+        let date = date ?? self.date
+        let granularity = granularity ?? self.granularity
+        let items = items ?? self.items
+
+        return SiteVisitStats(
+            siteID: siteID,
+            date: date,
+            granularity: granularity,
+            items: items
+        )
+    }
+}
+
+extension SiteVisitStatsItem {
+    public func copy(
+        period: CopiableProp<String> = .copy,
+        visitors: CopiableProp<Int> = .copy
+    ) -> SiteVisitStatsItem {
+        let period = period ?? self.period
+        let visitors = visitors ?? self.visitors
+
+        return SiteVisitStatsItem(
+            period: period,
+            visitors: visitors
         )
     }
 }

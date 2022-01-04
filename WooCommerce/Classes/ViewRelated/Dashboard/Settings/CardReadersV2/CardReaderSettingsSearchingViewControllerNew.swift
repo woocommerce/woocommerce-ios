@@ -31,6 +31,12 @@ final class CardReaderSettingsSearchingViewControllerNew: UIHostingController<Ca
 
     required init?(coder: NSCoder) {
         super.init(coder: coder, rootView: CardReaderSettingsSearchingView())
+        rootView.connectClickAction = {
+            self.searchAndConnect()
+        }
+        rootView.showURL = { url in
+            WebviewHelper.launch(url, with: self)
+        }
     }
 
     override func viewDidLoad() {
@@ -101,6 +107,9 @@ private extension CardReaderSettingsSearchingViewControllerNew {
 }
 
 struct CardReaderSettingsSearchingView: View {
+    var connectClickAction: (() -> Void)? = nil
+    var showURL: ((URL) -> Void)? = nil
+
     var body: some View {
         VStack {
             Spacer()
@@ -114,9 +123,44 @@ struct CardReaderSettingsSearchingView: View {
                 .frame(height: 206)
                 .padding(.bottom, 32)
 
+            Hint(title: Localization.hintOneTitle, text: Localization.hintOne)
+            Hint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
+            Hint(title: Localization.hintThreeTitle, text: Localization.hintThree)
+
             Spacer()
-        }.multilineTextAlignment(.center)
-            .navigationTitle(Localization.title)
+
+            Button(Localization.connectButton, action: connectClickAction!)
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.bottom, 8)
+
+            InPersonPaymentsLearnMore()
+                .customOpenURL(action: {url in showURL?(url)})
+        }
+            .frame(
+                maxWidth: .infinity,
+                maxHeight: .infinity
+            )
+            .padding()
+    }
+}
+
+private struct Hint: View {
+    let title: String
+    let text: String
+
+    var body: some View {
+        HStack {
+            Text(title)
+                .font(.callout)
+                .padding(.all, 12)
+                .background(Color(UIColor.systemGray6))
+                .clipShape(Circle())
+            Text(text)
+                .font(.callout)
+                .padding(.leading, 16)
+            Spacer()
+        }
+            .padding(.horizontal, 8)
     }
 }
 
@@ -176,6 +220,6 @@ private enum Localization {
 
 struct CardReaderSettingsSearchingView_Previews: PreviewProvider {
     static var previews: some View {
-        CardReaderSettingsSearchingView()
+        CardReaderSettingsSearchingView(connectClickAction: {})
     }
 }

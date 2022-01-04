@@ -1,3 +1,4 @@
+import Experiments
 import Yosemite
 
 private extension StatsTimeRangeV4 {
@@ -67,7 +68,8 @@ struct StatsTimeRangeBarViewModel: Equatable {
     init(startDate: Date,
          endDate: Date,
          timeRange: StatsTimeRangeV4,
-         timezone: TimeZone) {
+         timezone: TimeZone,
+         isMyStoreTabUpdatesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates)) {
         timeRangeText = timeRange.timeRangeText(startDate: startDate,
                                                 endDate: endDate,
                                                 timezone: timezone)
@@ -77,7 +79,8 @@ struct StatsTimeRangeBarViewModel: Equatable {
          endDate: Date,
          selectedDate: Date,
          timeRange: StatsTimeRangeV4,
-         timezone: TimeZone) {
+         timezone: TimeZone,
+         isMyStoreTabUpdatesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates)) {
         timeRangeText = timeRange.timeRangeText(startDate: startDate,
                                                 endDate: endDate,
                                                 selectedDate: selectedDate,

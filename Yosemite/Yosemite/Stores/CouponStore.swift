@@ -60,6 +60,8 @@ public final class CouponStore: Store {
                                onCompletion: onCompletion)
         case .deleteCoupon(let siteID, let couponID, let onCompletion):
             deleteCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
+        case .updateCoupon(let coupon, let onCompletion):
+            updateCoupon(coupon, onCompletion: onCompletion)
         }
     }
 }
@@ -133,6 +135,26 @@ private extension CouponStore {
             }
         }
     }
+
+    /// Updates a coupon given its details.
+    /// After API request succeeds, the stored coupon should be updated accordingly.
+    /// - Parameters:
+    ///   - coupon: The coupon to be updated
+    ///   - onCompletion: Closure to call after deletion is complete. Called on the main thread.
+    ///
+    func updateCoupon(_ coupon: Coupon, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        remote.updateCoupon(coupon) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let updatedCoupon):
+                self.updateStoredCoupon(readOnlyCoupon: updatedCoupon) {
+                    onCompletion(.success(()))
+                }
+            }
+        }
+    }
 }
 
 
@@ -141,7 +163,7 @@ private extension CouponStore {
 private extension CouponStore {
 
     /// Updates or Inserts specified Coupon Entities in a background thread
-    /// `onCompletion` will be called on the main thred
+    /// `onCompletion` will be called on the main thread.
     ///
     func upsertStoredCouponsInBackground(readOnlyCoupons: [Networking.Coupon],
                                          siteID: Int64,
@@ -191,6 +213,23 @@ private extension CouponStore {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
             derivedStorage.deleteCoupon(siteID: siteID, couponID: couponID)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates the specified Coupon Entity in a background thread.
+    /// `onCompletion` will be called on the main thread.
+    ///
+    func updateStoredCoupon(readOnlyCoupon: Networking.Coupon, onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            if let storedCoupon = derivedStorage.loadCoupon(siteID: readOnlyCoupon.siteID,
+                                                            couponID: readOnlyCoupon.couponID) {
+                storedCoupon.update(with: readOnlyCoupon)
+            }
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {

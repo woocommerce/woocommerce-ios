@@ -97,6 +97,10 @@ struct SimplePaymentsAmount: View {
     ///
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    /// Defines if the amount input  text field should be focused. Defaults to `true`
+    ///
+    @State private var focusAmountInput: Bool = true
+
     /// ViewModel to drive the view content
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsAmountViewModel
@@ -112,15 +116,17 @@ struct SimplePaymentsAmount: View {
 
             ZStack(alignment: .center) {
                 // Hidden input text field
-                BindableTextfield("", text: $viewModel.amount)
+                BindableTextfield("", text: $viewModel.amount, focus: $focusAmountInput)
                     .keyboardType(.decimalPad)
-                    .focused()
                     .opacity(0)
 
                 // Visible & formatted label
                 Text(viewModel.formattedAmmount)
                     .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold))
                     .foregroundColor(Color(viewModel.amountTextColor))
+                    .onTapGesture {
+                        focusAmountInput = true
+                    }
             }
             .fixedSize()
 

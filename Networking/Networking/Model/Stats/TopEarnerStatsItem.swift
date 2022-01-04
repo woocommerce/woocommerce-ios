@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a single top earner stat for a specific period.
 ///
-public struct TopEarnerStatsItem: Decodable, Equatable, GeneratedFakeable {
+public struct TopEarnerStatsItem: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
 
     /// Product ID
     ///

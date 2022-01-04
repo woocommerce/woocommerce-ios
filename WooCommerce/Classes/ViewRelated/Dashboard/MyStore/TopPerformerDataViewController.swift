@@ -44,7 +44,7 @@ final class TopPerformerDataViewController: UIViewController {
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
     private let imageService: ImageService = ServiceLocator.imageService
-    private let featureFlagService: FeatureFlagService
+    private let isMyStoreTabUpdatesEnabled: Bool
 
     // MARK: - Computed Properties
 
@@ -79,7 +79,7 @@ final class TopPerformerDataViewController: UIViewController {
         self.currentDate = currentDate
         self.granularity = timeRange.topEarnerStatsGranularity
         self.timeRange = timeRange
-        self.featureFlagService = featureFlagService
+        self.isMyStoreTabUpdatesEnabled = featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates)
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -187,7 +187,7 @@ private extension TopPerformerDataViewController {
     }
 
     func registerTableViewHeaderFooters() {
-        let headersAndFooters = featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) ? [TwoColumnSectionHeaderView.self]: [TopPerformersHeaderView.self]
+        let headersAndFooters = isMyStoreTabUpdatesEnabled ? [TwoColumnSectionHeaderView.self]: [TopPerformersHeaderView.self]
 
         for kind in headersAndFooters {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
@@ -218,7 +218,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) {
+        if isMyStoreTabUpdatesEnabled {
             guard let cell =
                     tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
                         fatalError()
@@ -236,8 +236,8 @@ extension TopPerformerDataViewController: UITableViewDataSource {
             }
 
             cell.configure(descriptionText: Text.sectionDescription,
-                           leftText: Text.sectionLeftColumn.uppercased(),
-                           rightText: Text.sectionRightColumn.uppercased())
+                           leftText: Text.legacySectionLeftColumn.uppercased(),
+                           rightText: Text.legacySectionRightColumn.uppercased())
             return cell
         }
     }
@@ -248,7 +248,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
         }
         let cell = tableView.dequeueReusableCell(ProductTableViewCell.self, for: indexPath)
 
-        cell.configure(statsItem, imageService: imageService)
+        cell.configure(statsItem, isMyStoreTabUpdatesEnabled: isMyStoreTabUpdatesEnabled, imageService: imageService)
         cell.hidesBottomBorder = tableView.lastIndexPathOfTheLastSection() == indexPath ? true : false
         return cell
     }
@@ -306,11 +306,24 @@ private extension TopPerformerDataViewController {
     }
 
     func statsItem(at indexPath: IndexPath) -> TopEarnerStatsItem? {
-        guard let topEarnerStatsItem = topEarnerStats?.items?.sorted(by: >)[safe: indexPath.row] else {
-            return nil
-        }
+        if isMyStoreTabUpdatesEnabled {
+            guard let topEarnerStatsItem = topEarnerStats?.items?
+                    .sorted(by: >)[safe: indexPath.row] else {
+                return nil
+            }
 
-        return topEarnerStatsItem
+            return topEarnerStatsItem
+        } else {
+            guard let topEarnerStatsItem = topEarnerStats?.items?
+                    .sorted(by: { lhs, rhs in
+                        lhs.total < rhs.total ||
+                        (lhs.total == rhs.total && lhs.quantity < rhs.quantity)
+                    })[safe: indexPath.row] else {
+                return nil
+            }
+
+            return topEarnerStatsItem
+        }
     }
 
     func numberOfRows() -> Int {
@@ -377,8 +390,10 @@ private extension TopPerformerDataViewController {
     enum Text {
         static let sectionDescription = NSLocalizedString("Gain insights into how products are performing on your store",
                                                           comment: "Description for Top Performers section of My Store tab.")
-        static let sectionLeftColumn = NSLocalizedString("Product", comment: "Description for Top Performers left column header")
-        static let sectionRightColumn = NSLocalizedString("Total Spend", comment: "Description for Top Performers right column header")
+        static let sectionLeftColumn = NSLocalizedString("Products", comment: "Description for Top Performers left column header")
+        static let sectionRightColumn = NSLocalizedString("Items Sold", comment: "Description for Top Performers right column header")
+        static let legacySectionLeftColumn = NSLocalizedString("Product", comment: "Legacy description for Top Performers left column header")
+        static let legacySectionRightColumn = NSLocalizedString("Total Spend", comment: "Legacy description for Top Performers right column header")
     }
 
     enum TableViewStyle {

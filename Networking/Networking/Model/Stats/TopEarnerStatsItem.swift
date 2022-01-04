@@ -67,7 +67,7 @@ private extension TopEarnerStatsItem {
 //
 extension TopEarnerStatsItem: Comparable {
     public static func < (lhs: TopEarnerStatsItem, rhs: TopEarnerStatsItem) -> Bool {
-        return lhs.total < rhs.total ||
-            (lhs.total == rhs.total && lhs.quantity < rhs.quantity)
+        return lhs.quantity < rhs.quantity ||
+            (lhs.quantity == rhs.quantity && lhs.total < rhs.total)
     }
 }

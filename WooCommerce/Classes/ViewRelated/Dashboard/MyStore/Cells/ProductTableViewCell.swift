@@ -71,17 +71,27 @@ class ProductTableViewCell: UITableViewCell {
 // MARK: - Public Methods
 //
 extension ProductTableViewCell {
-    func configure(_ statsItem: TopEarnerStatsItem?, imageService: ImageService) {
+    func configure(_ statsItem: TopEarnerStatsItem?, isMyStoreTabUpdatesEnabled: Bool, imageService: ImageService) {
         nameText = statsItem?.productName
-        detailText = String.localizedStringWithFormat(
-            NSLocalizedString("Total orders: %ld",
-                              comment: "Top performers — label for the total number of products ordered"),
-            statsItem?.quantity ?? 0
-        )
-        priceText = statsItem?.formattedTotalString
+
+        if isMyStoreTabUpdatesEnabled {
+            detailText = String.localizedStringWithFormat(
+                NSLocalizedString("Net sales: %@",
+                                  comment: "Top performers — label for the total number of products ordered"),
+                statsItem?.formattedTotalString ?? ""
+            )
+            priceText = "\(statsItem?.quantity ?? 0)"
+        } else {
+            detailText = String.localizedStringWithFormat(
+                NSLocalizedString("Total orders: %ld",
+                                  comment: "Top performers — label for the total number of products ordered"),
+                statsItem?.quantity ?? 0
+            )
+            priceText = statsItem?.formattedTotalString
+        }
 
         /// Set `center` contentMode to not distort the placeholder aspect ratio.
-        /// After a sucessfull image download set the contentMode to `scaleAspectFill`
+        /// After a successful image download set the contentMode to `scaleAspectFill`
         productImage.contentMode = .center
         imageService.downloadAndCacheImageForImageView(productImage,
                                                        with: statsItem?.imageUrl,

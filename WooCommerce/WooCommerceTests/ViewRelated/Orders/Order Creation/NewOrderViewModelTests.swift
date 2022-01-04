@@ -18,6 +18,7 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .none)
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "pending")
         XCTAssertEqual(viewModel.productRows.count, 0)
+        XCTAssertFalse(viewModel.shouldShowPaymentSection)
     }
 
     func test_create_button_is_enabled_when_order_detail_changes_from_default_value() {
@@ -247,7 +248,23 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(paymentDataViewModel.orderTotal, "£30.00")
     }
 
-    func test_payment_data_is_updated_when_products_update() {
+    func test_payment_section_only_displayed_when_order_has_products() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, statusKey: "publish")
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When & Then
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        XCTAssertTrue(viewModel.shouldShowPaymentSection)
+
+        // When & Then
+        viewModel.removeItemFromOrder(viewModel.orderDetails.items[0])
+        XCTAssertFalse(viewModel.shouldShowPaymentSection)
+    }
+
+    func test_payment_section_is_updated_when_products_update() {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, statusKey: "publish", price: "8.50")

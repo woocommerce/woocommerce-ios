@@ -98,6 +98,14 @@ final class NewOrderViewModel: ObservableObject {
 
     // MARK: Payment properties
 
+    /// Indicates if the Payment section should be shown
+    ///
+    var shouldShowPaymentSection: Bool {
+        orderDetails.items.isNotEmpty
+    }
+
+    /// Representation of payment data display properties
+    ///
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
 
     init(siteID: Int64,

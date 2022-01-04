@@ -65,7 +65,7 @@ struct NewOrder: View {
 
                             Spacer(minLength: Layout.sectionSpacing)
                         }
-                        .renderedIf(viewModel.orderDetails.items.isNotEmpty)
+                        .renderedIf(viewModel.shouldShowPaymentSection)
 
                         OrderCustomerSection(geometry: geometry,
                                              viewModel: viewModel.customerDataViewModel,

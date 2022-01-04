@@ -34,7 +34,7 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
         rootView.connectClickAction = {
             self.searchAndConnect()
         }
-        rootView.showURL = { url in
+        rootView.showURL = {url in
             WebviewHelper.launch(url, with: self)
         }
     }
@@ -111,18 +111,26 @@ struct CardReaderSettingsSearchingView: View {
     var connectClickAction: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
 
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+
+    var isCompat: Bool {
+        get {
+            verticalSizeClass == .compact
+        }
+    }
+
     var body: some View {
         VStack {
             Spacer()
 
             Text(Localization.connectYourCardReaderTitle)
                 .font(.headline)
-                .padding(.bottom, 32)
+                .padding(.bottom, isCompat ? 16 : 32)
             Image(uiImage: .cardReaderConnect)
                 .resizable()
                 .scaledToFit()
-                .frame(height: 206)
-                .padding(.bottom, 32)
+                .frame(height: isCompat ? 80 : 206)
+                .padding(.bottom, isCompat ? 16 : 32)
 
             Hint(title: Localization.hintOneTitle, text: Localization.hintOne)
             Hint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
@@ -142,6 +150,11 @@ struct CardReaderSettingsSearchingView: View {
                 maxHeight: .infinity
             )
             .padding()
+            .if(isCompat) {content in
+                ScrollView(.vertical) {
+                    content
+                }
+            }
     }
 }
 

@@ -27,4 +27,12 @@ public enum CouponAction: Action {
     case deleteCoupon(siteID: Int64,
                       couponID: Int64,
                       onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Updates a coupon for a site given its ID
+    ///
+    /// - `coupon`: the coupon to be updated.
+    /// - `onCompletion`: invoked when the deletion finishes.
+    ///
+    case updateCoupon(_ coupon: Coupon,
+                      onCompletion: (Result<Void, Error>) -> Void)
 }

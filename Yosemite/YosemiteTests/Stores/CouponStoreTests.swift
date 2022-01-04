@@ -222,6 +222,66 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(storedCouponsCount, 4)
     }
+
+    func test_deleteCoupon_calls_remote_using_correct_request_parameters() {
+        setUpUsingSpyRemote()
+        // Given
+        let action = CouponAction.deleteCoupon(siteID: sampleSiteID, couponID: 10) { _ in }
+
+        // When
+        store.onAction(action)
+
+        // Then
+        XCTAssertTrue(remote.didCallDeleteCoupon)
+        XCTAssertEqual(remote.spyDeleteCouponSiteID, sampleSiteID)
+        XCTAssertEqual(remote.spyDeleteCouponWithID, 10)
+    }
+
+    func test_deleteCoupon_returns_network_error_on_failure() {
+        // Given
+        let sampleCouponID: Int64 = 720 // match with the one in the coupon.json file
+        let sampleCoupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID)
+        storeCoupon(sampleCoupon, for: sampleSiteID)
+        XCTAssertEqual(storedCouponsCount, 1)
+
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "coupons/\(sampleCouponID)", error: expectedError)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = CouponAction.deleteCoupon(siteID: self.sampleSiteID, couponID: sampleCouponID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+        XCTAssertEqual(storedCouponsCount, 1)
+    }
+
+    func test_deleteCoupon_deletes_coupon_upon_success() throws {
+        // Given
+        let sampleCouponID: Int64 = 720
+        let sampleCoupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID)
+        storeCoupon(sampleCoupon, for: sampleSiteID)
+        XCTAssertEqual(storedCouponsCount, 1)
+
+        network.simulateResponse(requestUrlSuffix: "coupons/\(sampleCouponID)", filename: "coupon")
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action: CouponAction
+            action = .deleteCoupon(siteID: self.sampleSiteID, couponID: sampleCouponID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(storedCouponsCount, 0)
+    }
 }
 
 private extension CouponStoreTests {

@@ -9,6 +9,10 @@ public protocol CouponsRemoteProtocol {
                         pageNumber: Int,
                         pageSize: Int,
                         completion: @escaping (Result<[Coupon], Error>) -> ())
+
+    func deleteCoupon(for siteID: Int64,
+                      couponID: Int64,
+                      completion: @escaping (Result<Coupon, Error>) -> Void)
 }
 
 
@@ -20,10 +24,10 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     /// Retrieves all of the `Coupon`s from the API.
     ///
     /// - Parameters:
-    ///     - siteID
-    ///     - pageNumber:
-    ///     - pageSize:
-    ///     - completion:
+    ///     - siteID: The site for which we'll fetch coupons.
+    ///     - pageNumber: The page number of the coupon list to be fetched.
+    ///     - pageSize: The maximum number of coupons to be fetched for the current page.
+    ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllCoupons(for siteID: Int64,
                                pageNumber: Int = Default.pageNumber,

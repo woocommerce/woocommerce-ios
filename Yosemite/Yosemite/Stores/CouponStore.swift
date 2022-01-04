@@ -170,9 +170,9 @@ private extension CouponStore {
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))
-            case .success(let updatedCoupon):
-                self.upsertStoredCouponsInBackground(readOnlyCoupons: [updatedCoupon], siteID: updatedCoupon.siteID) {
-                    onCompletion(.success(updatedCoupon))
+            case .success(let createdCoupon):
+                self.upsertStoredCouponsInBackground(readOnlyCoupons: [createdCoupon], siteID: createdCoupon.siteID) {
+                    onCompletion(.success(createdCoupon))
                 }
             }
         }

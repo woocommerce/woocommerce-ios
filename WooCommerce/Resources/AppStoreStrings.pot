@@ -57,13 +57,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v8.0-whats-new"
+msgctxt "v8.2-whats-new"
 msgid ""
-"Are you managing multiple stores in the app? Today is your lucky day! Our app now supports push notifications for ALL of your stores connected with the same Jetpack/WordPress.com account, not just the currently selected store.\n"
+"Sometimes you just need to create a quick order to take a payment from your customer for a transaction you’re doing in-person, like at a trade show. We added a new option for you to create Simple Payments! Head over to the Orders tab to make a quick order to record that transaction. We are working hard on full order creation as well – and you’ll see that later this year.\n"
 "\n"
-"In-person payments card readers might have firmware software updates – some are super important and are required to be installed immediately. With this release, you can defer the upgrade of the optional updates for a better time.\n"
-"\n"
-"You’ll also find you can filter the product list by category in this release.\n"
+"We also fixed a bug with the site visitors count not showing up on the Today tab on your store’s dashboard. Thanks for letting us know! 💜\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

@@ -17,8 +17,22 @@ public class SystemStatusRemote: Remote {
             ParameterKeys.fields: [ParameterValues.activePlugins, ParameterValues.inactivePlugins]
         ]
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
-        let mapper = SystemStatusMapper(siteID: siteID)
+        let mapper = SystemPluginMapper(siteID: siteID)
 
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Fetch details about system status for a given site.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site for which the system status is fetched
+    ///   - completion: Closure to be excuted upon completion
+    ///
+    public func fetchSystemStatusReport(for siteID: Int64,
+                                        completion: @escaping (Result<SystemStatus, Error>) -> Void) {
+        let path = Constants.systemStatusPath
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let mapper = SystemStatusMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

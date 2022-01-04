@@ -32,11 +32,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     var onPullToRefresh: () -> Void = {}
 
     /// Updated when reloading data.
-    var currentDate: Date {
-        didSet {
-            storeStatsPeriodViewController.currentDate = currentDate
-        }
-    }
+    var currentDate: Date
 
     /// Updated when reloading data.
     var siteTimezone: TimeZone = .current {
@@ -81,7 +77,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     // MARK: Child View Controllers
 
     private lazy var storeStatsPeriodViewController: StoreStatsV4PeriodViewController = {
-        return StoreStatsV4PeriodViewController(timeRange: timeRange, currentDate: currentDate)
+        return StoreStatsV4PeriodViewController(siteID: siteID, timeRange: timeRange)
     }()
 
     private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()
@@ -265,7 +261,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         let storeStatsPeriodView = storeStatsPeriodViewController.view!
         stackView.addArrangedSubview(storeStatsPeriodView)
         NSLayoutConstraint.activate([
-            storeStatsPeriodView.heightAnchor.constraint(equalToConstant: 380),
+            storeStatsPeriodView.heightAnchor.constraint(equalToConstant: Constants.storeStatsPeriodViewHeight),
             ])
 
         // In-app Feedback Card
@@ -274,38 +270,12 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         // Top performers header.
         let topPerformersHeaderView = TopPerformersSectionHeaderView(title:
             NSLocalizedString("Top Performers",
-                              comment: "Header label for Top Performers section of My Store tab.")
-                .uppercased())
+                              comment: "Header label for Top Performers section of My Store tab."))
         stackView.addArrangedSubview(topPerformersHeaderView)
-        let headerTopBorderView = createBorderView()
-        let headerBottomBorderView = createBorderView()
-        topPerformersHeaderView.addSubview(headerTopBorderView)
-        topPerformersHeaderView.addSubview(headerBottomBorderView)
-        NSLayoutConstraint.activate([
-            topPerformersHeaderView.heightAnchor.constraint(equalToConstant: 44),
-            // Top border view
-            headerTopBorderView.topAnchor.constraint(equalTo: topPerformersHeaderView.topAnchor),
-            headerTopBorderView.leadingAnchor.constraint(equalTo: topPerformersHeaderView.leadingAnchor),
-            headerTopBorderView.trailingAnchor.constraint(equalTo: topPerformersHeaderView.trailingAnchor),
-            // Bottom border view
-            headerBottomBorderView.bottomAnchor.constraint(equalTo: topPerformersHeaderView.bottomAnchor),
-            headerBottomBorderView.leadingAnchor.constraint(equalTo: topPerformersHeaderView.leadingAnchor),
-            headerBottomBorderView.trailingAnchor.constraint(equalTo: topPerformersHeaderView.trailingAnchor),
-            ])
 
         // Top performers.
         let topPerformersPeriodView = topPerformersPeriodViewController.view!
         stackView.addArrangedSubview(topPerformersPeriodView)
-        stackView.addArrangedSubview(createBorderView())
-
-        // Empty padding view at the bottom.
-        let emptyView = UIView(frame: .zero)
-        emptyView.translatesAutoresizingMaskIntoConstraints = false
-        emptyView.backgroundColor = .clear
-        NSLayoutConstraint.activate([
-            emptyView.heightAnchor.constraint(equalToConstant: 44),
-            ])
-        stackView.addArrangedSubview(emptyView)
 
         childViewContrllers.forEach { childViewController in
             childViewController.didMove(toParent: self)
@@ -337,16 +307,6 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         return [emptySpaceView, cardView]
     }
 
-    func createBorderView() -> UIView {
-        let view = UIView(frame: .zero)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemColor(.separator)
-        NSLayoutConstraint.activate([
-            view.heightAnchor.constraint(equalToConstant: 0.5)
-            ])
-        return view
-    }
-
     func configureInAppFeedbackViewControllerAction() {
         inAppFeedbackCardViewController.onFeedbackGiven = { [weak self] in
             self?.viewModel.onInAppFeedbackCardAction()
@@ -359,5 +319,11 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
 private extension StoreStatsAndTopPerformersPeriodViewController {
     @objc func pullToRefresh() {
         onPullToRefresh()
+    }
+}
+
+private extension StoreStatsAndTopPerformersPeriodViewController {
+    enum Constants {
+        static let storeStatsPeriodViewHeight: CGFloat = 444
     }
 }

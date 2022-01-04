@@ -9,6 +9,10 @@ struct SimplePaymentsMethod: View {
     ///
     var dismiss: (() -> Void) = {}
 
+    /// Needed because IPP capture payments using a UIViewController for providing user feedback.
+    ///
+    weak var rootViewController: UIViewController?
+
     /// ViewModel to render the view content.
     ///
     @ObservedObject var viewModel: SimplePaymentsMethodsViewModel
@@ -17,24 +21,45 @@ struct SimplePaymentsMethod: View {
     ///
     @State var showingCashAlert = false
 
+    /// Determines if the "share payment link" sheet should be shown.
+    ///
+    @State var sharingPaymentLink = false
+
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.noSpacing) {
 
             Text(Localization.header)
                 .subheadlineStyle()
                 .padding()
+                .padding(.horizontal, insets: safeAreaInsets)
 
             Divider()
 
             Group {
                 MethodRow(icon: .priceImage, title: Localization.cash) {
                     showingCashAlert = true
+                    viewModel.trackCollectByCash()
                 }
 
-                Divider()
+                if viewModel.showPayWithCardRow {
+                    Divider()
 
-                MethodRow(icon: .creditCardImage, title: Localization.card) {
-                    print("Tapped Card")
+                    MethodRow(icon: .creditCardImage, title: Localization.card) {
+                        viewModel.collectPayment(on: rootViewController, onSuccess: dismiss)
+                    }
+                }
+
+                if viewModel.showPaymentLinkRow {
+                    Divider()
+
+                    MethodRow(icon: .linkImage, title: Localization.link) {
+                        sharingPaymentLink = true
+                        // TODO: Analytics
+                    }
                 }
             }
             .padding(.horizontal)
@@ -45,6 +70,7 @@ struct SimplePaymentsMethod: View {
             // Pushes content to the top
             Spacer()
         }
+        .ignoresSafeArea(edges: .horizontal)
         .disabled(viewModel.disableViewActions)
         .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(viewModel.title)
@@ -63,6 +89,16 @@ struct SimplePaymentsMethod: View {
                     dismiss()
                 }
             }))
+        }
+        .shareSheet(isPresented: $sharingPaymentLink) {
+            // If paymentLink is available it already contains a valid URL.
+            // CompactMap is required due to Swift URL APIs.
+            ShareSheet(activityItems: [viewModel.paymentLink].compactMap { $0 } ) { _, completed, _, _ in
+                if completed {
+                    dismiss()
+                    viewModel.performLinkSharedTasks()
+                }
+            }
         }
     }
 }
@@ -86,6 +122,10 @@ private struct MethodRow: View {
     ///
     @ScaledMetric private var scale = 1
 
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
     var body: some View {
         Button(action: action) {
             HStack {
@@ -95,6 +135,7 @@ private struct MethodRow: View {
                     .frame(width: SimplePaymentsMethod.Layout.iconWidthHeight(scale: scale),
                            height: SimplePaymentsMethod.Layout.iconWidthHeight(scale: scale))
                     .foregroundColor(Color(.systemGray))
+                    .accessibility(hidden: true)
 
                 Text(title)
                     .bodyStyle()
@@ -106,8 +147,10 @@ private struct MethodRow: View {
                     .frame(width: SimplePaymentsMethod.Layout.chevronWidthHeight(scale: scale),
                            height: SimplePaymentsMethod.Layout.chevronWidthHeight(scale: scale))
                     .foregroundColor(Color(.systemGray))
+                    .accessibility(hidden: true)
             }
             .padding(.vertical, SimplePaymentsMethod.Layout.verticalPadding)
+            .padding(.horizontal, insets: safeAreaInsets)
         }
     }
 }
@@ -118,6 +161,7 @@ private extension SimplePaymentsMethod {
         static let header = NSLocalizedString("Choose your payment method", comment: "Heading text on the select payment method screen for simple payments")
         static let cash = NSLocalizedString("Cash", comment: "Cash method title on the select payment method screen for simple payments")
         static let card = NSLocalizedString("Card", comment: "Card method title on the select payment method screen for simple payments")
+        static let link = NSLocalizedString("Payment Link", comment: "Payment Link method title on the select payment method screen for simple payments")
         static let markAsPaidTitle = NSLocalizedString("Mark as Paid?", comment: "Alert title when selecting the cash payment method for simple payments")
         static let markAsPaidButton = NSLocalizedString("Mark as Paid", comment: "Alert button when selecting the cash payment method for simple payments")
     }

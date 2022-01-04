@@ -27,6 +27,8 @@ final class ProductInventorySettingsViewController: UIViewController {
     typealias Completion = (_ data: ProductInventoryEditableData) -> Void
     private let onCompletion: Completion
 
+    private var skuBarcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
+
     private var cancellable: ObservationToken?
 
     init(product: ProductFormDataModel, formType: FormType = .inventory, completion: @escaping Completion) {
@@ -282,14 +284,24 @@ private extension ProductInventorySettingsViewController {
         }
         cell.configure(viewModel: cellViewModel)
 
-        // Configures accessory view for adding SKU from barcode scanner.
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) {
+        // Configures accessory view for adding SKU from barcode scanner by fetching switch's state from app settings.
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productSKUInputScanner) && UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            return
+        }
+        let action = AppSettingsAction.loadProductSKUInputScannerFeatureSwitchState() { [weak cell, self] result in
+            guard let cell = cell else { return }
+            guard let isEnabled = try? result.get(), isEnabled else {
+                return cell.accessoryView = nil
+            }
+
             let button = UIButton(type: .detailDisclosure)
             button.applyIconButtonStyle(icon: .scanImage)
-            button.addTarget(self, action: #selector(scanSKUButtonTapped), for: .touchUpInside)
-
+            button.addAction(UIAction(handler: { [weak self] _ in
+                self?.scanSKUButtonTapped()
+            }), for: .touchUpInside)
             cell.accessoryView = button
         }
+        ServiceLocator.stores.dispatch(action)
     }
 
     func configureManageStock(cell: SwitchTableViewCell) {
@@ -335,12 +347,20 @@ private extension ProductInventorySettingsViewController {
 // MARK: - SKU Scanner
 //
 private extension ProductInventorySettingsViewController {
-    @objc func scanSKUButtonTapped() {
-        let scannerViewController = ProductSKUInputScannerViewController(onBarcodeScanned: { [weak self] barcode in
+    func scanSKUButtonTapped() {
+        guard let navigationController = navigationController else {
+            return
+        }
+
+        ServiceLocator.analytics.track(.productInventorySettingsSKUScannerButtonTapped)
+
+        let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController) { [weak self] barcode in
+            ServiceLocator.analytics.track(.productInventorySettingsSKUScanned)
             self?.onSKUBarcodeScanned(barcode: barcode)
-            self?.navigationController?.popViewController(animated: true)
-        })
-        show(scannerViewController, sender: self)
+        }
+        view.endEditing(true)
+        skuBarcodeScannerCoordinator = coordinator
+        coordinator.start()
     }
 
     func onSKUBarcodeScanned(barcode: String) {

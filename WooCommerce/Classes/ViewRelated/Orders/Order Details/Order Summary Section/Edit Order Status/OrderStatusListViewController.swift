@@ -31,7 +31,7 @@ final class OrderStatusListViewController: UIViewController {
 
     /// A closure to be  called when this VC wants its creator to change the order status to the selected status and dismiss it.
     ///
-    var didSelectApply: ((OrderStatusEnum?) -> Void)?
+    var didSelectApply: ((OrderStatusEnum) -> Void)?
 
     init(siteID: Int64, status: OrderStatusEnum) {
         self.viewModel = OrderStatusListViewModel(status: status,

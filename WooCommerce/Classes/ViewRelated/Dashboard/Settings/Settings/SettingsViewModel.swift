@@ -192,13 +192,12 @@ private extension SettingsViewModel {
 
         // Store settings
         let storeSettingsSection: Section = {
-            let rows: [Row]
+            var rows: [Row] = [.inPersonPayments]
             if stores.sessionManager.defaultSite?.isJetpackCPConnected == true,
                 featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
-                rows = [.inPersonPayments, .installJetpack]
-            } else {
-                rows = [.inPersonPayments]
+                rows.append(.installJetpack)
             }
+
             return Section(title: Localization.storeSettingsTitle,
                            rows: rows,
                            footerHeight: UITableView.automaticDimension)

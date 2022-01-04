@@ -242,42 +242,52 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
         self.remote = remote
     }
 
-    func fetchToken(completion: @escaping(Result<String, CardReaderConfigError>) -> Void) {
+    func fetchToken(completion: @escaping(Result<String, Error>) -> Void) {
         remote.loadConnectionToken(for: siteID) { result in
             switch result {
             case .success(let token):
                 completion(.success(token.token))
             case .failure(let error):
-                completion(.failure(CardReaderConfigError(error: error)))
+                if let configError = CardReaderConfigError(error: error) {
+                    completion(.failure(configError))
+                } else {
+                    completion(.failure(error))
+                }
             }
         }
     }
 
-    func fetchDefaultLocationID(completion: @escaping(Result<String, CardReaderConfigError>) -> Void) {
+    func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void) {
         remote.loadDefaultReaderLocation(for: siteID) { result in
             switch result {
             case .success(let wcpayReaderLocation):
                 let readerLocation = wcpayReaderLocation.toReaderLocation(siteID: self.siteID)
                 completion(.success(readerLocation.id))
             case .failure(let error):
-                completion(.failure(CardReaderConfigError(error: error)))
+                if let configError = CardReaderConfigError(error: error) {
+                    completion(.failure(configError))
+                } else {
+                    completion(.failure(error))
+                }
             }
         }
     }
 }
 
 private extension CardReaderConfigError {
-    init(error: Error) {
+    init?(error: Error) {
         guard let dotcomError = error as? DotcomError else {
-            self = .unknown(error: error)
-            return
+            return nil
         }
-
-        if case .unknown("store_address_is_incomplete", let message) = dotcomError {
+        switch dotcomError {
+        case .unknown("store_address_is_incomplete", let message):
             self = .incompleteStoreAddress(adminUrl: URL(string: message ?? ""))
             return
+        case .unknown("postal_code_invalid", _):
+            self = .invalidPostalCode
+            return
+        default:
+            return nil
         }
-
-        self = .unknown(error: dotcomError.toAnyError)
     }
 }

@@ -185,6 +185,7 @@ private extension OrdersUpsertUseCaseTests {
               orderID: 0,
               parentID: 0,
               customerID: 0,
+              orderKey: "",
               number: "",
               status: .custom(""),
               currency: "",

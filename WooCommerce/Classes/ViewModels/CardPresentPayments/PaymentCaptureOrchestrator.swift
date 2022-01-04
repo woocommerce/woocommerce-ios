@@ -9,6 +9,7 @@ import PassKit
 /// Steps 1 and 2 will be implemented as part of https://github.com/woocommerce/woocommerce-ios/issues/4062
 final class PaymentCaptureOrchestrator {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+    private let personNameComponentsFormatter = PersonNameComponentsFormatter()
 
     private let celebration = PaymentCaptureCelebration()
 
@@ -211,23 +212,9 @@ private extension PaymentCaptureOrchestrator {
             return nil
         }
 
-        var customerName: String?
-
-        if let firstName = order.billingAddress?.firstName {
-            customerName = firstName
-        }
-
-        if let lastName = order.billingAddress?.lastName {
-            if customerName == nil {
-                customerName = lastName
-            } else {
-                customerName? += " " + lastName
-            }
-        }
-
         let metadata = PaymentIntent.initMetadata(
             store: ServiceLocator.stores.sessionManager.defaultSite?.name,
-            customerName: customerName,
+            customerName: buildCustomerNameFromBillingAddress(order.billingAddress),
             customerEmail: order.billingAddress?.email,
             siteURL: ServiceLocator.stores.sessionManager.defaultSite?.url,
             orderID: order.orderID,
@@ -255,6 +242,13 @@ private extension PaymentCaptureOrchestrator {
 
     func celebrate() {
         celebration.celebrate()
+    }
+
+    private func buildCustomerNameFromBillingAddress(_ address: Address?) -> String {
+        var personNameComponents = PersonNameComponents()
+        personNameComponents.givenName = address?.firstName
+        personNameComponents.familyName = address?.lastName
+        return personNameComponentsFormatter.string(from: personNameComponents)
     }
 }
 

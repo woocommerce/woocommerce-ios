@@ -10,19 +10,17 @@ public final class OrdersScreen: ScreenObject {
         $0.buttons["order-search-button"]
     }
 
-    private var searchButton: XCUIElement { searchButtonGetter(app) }
-
-    // TODO: There's only one usage of this and it can be replaced with a screen instantiation
-    static var isVisible: Bool {
-        (try? OrdersScreen().isLoaded) ?? false
+    private let filterButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Filter"]
     }
 
-    init(app: XCUIApplication = XCUIApplication()) throws {
+    private var searchButton: XCUIElement { searchButtonGetter(app) }
+
+    public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
                 searchButtonGetter,
-                // swiftlint:disable:next opening_braces
-                { $0.buttons["order-filter-button"] }
+                filterButtonGetter
             ],
             app: app
         )

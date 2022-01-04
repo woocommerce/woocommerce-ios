@@ -44,17 +44,30 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
 struct NewOrder: View {
     @ObservedObject var viewModel: NewOrderViewModel
 
+    /// Fix for breaking navbar button
+    @State private var navigationButtonID = UUID()
+
     var body: some View {
         GeometryReader { geometry in
-            ScrollView {
-                VStack(spacing: Layout.noSpacing) {
-                    Spacer(minLength: Layout.sectionSpacing)
+            ScrollViewReader { scroll in
+                ScrollView {
+                    VStack(spacing: Layout.noSpacing) {
+                        OrderStatusSection(geometry: geometry, viewModel: viewModel)
 
-                    ProductsSection(geometry: geometry)
+                        Spacer(minLength: Layout.sectionSpacing)
+
+                        ProductsSection(geometry: geometry, scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
+
+                        Spacer(minLength: Layout.sectionSpacing)
+
+                        OrderCustomerSection(geometry: geometry,
+                                             viewModel: viewModel.customerDataViewModel,
+                                             addressFormViewModel: viewModel.createOrderAddressFormViewModel())
+                    }
                 }
+                .background(Color(.listBackground).ignoresSafeArea())
+                .ignoresSafeArea(.container, edges: [.horizontal])
             }
-            .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -66,7 +79,7 @@ struct NewOrder: View {
                 case .create:
                     Button(Localization.createButton) {
                         viewModel.createOrder()
-                    }
+                    }.id(navigationButtonID)
                 case .loading:
                     ProgressView()
                 }
@@ -81,10 +94,21 @@ struct NewOrder: View {
 ///
 private struct ProductsSection: View {
     let geometry: GeometryProxy
+    let scroll: ScrollViewProxy
+
+    /// View model to drive the view content
+    @ObservedObject var viewModel: NewOrderViewModel
+
+    /// Fix for breaking navbar button
+    @Binding var navigationButtonID: UUID
 
     /// Defines whether `AddProduct` modal is presented.
     ///
     @State private var showAddProduct: Bool = false
+
+    /// ID for Add Product button
+    ///
+    @Namespace var addProductButton
 
     var body: some View {
         Group {
@@ -94,16 +118,34 @@ private struct ProductsSection: View {
                 Text(NewOrder.Localization.products)
                     .headlineStyle()
 
-                // TODO: Add a product row for each product added to the order
-                ProductRow(canChangeQuantity: true)
+                ForEach(viewModel.productRows) { productRow in
+                    ProductRow(viewModel: productRow)
+                        .onTapGesture {
+                            viewModel.selectOrderItem(productRow.id)
+                        }
+                        .sheet(item: $viewModel.selectedOrderItem) { item in
+                            let productInOrderVM = ProductInOrderViewModel(product: item.product) {
+                                viewModel.removeItemFromOrder(item)
+                            }
+                            ProductInOrder(viewModel: productInOrderVM)
+                        }
+
+                    Divider()
+                }
 
                 Button(NewOrder.Localization.addProduct) {
                     showAddProduct.toggle()
                 }
+                .id(addProductButton)
                 .buttonStyle(PlusButtonStyle())
-                .sheet(isPresented: $showAddProduct) {
-                    AddProduct(isPresented: $showAddProduct)
-                }
+                .sheet(isPresented: $showAddProduct, onDismiss: {
+                    scroll.scrollTo(addProductButton)
+                }, content: {
+                    AddProductToOrder(isPresented: $showAddProduct, viewModel: viewModel.addProductViewModel)
+                        .onDisappear {
+                            navigationButtonID = UUID()
+                        }
+                })
             }
             .padding(.horizontal, insets: geometry.safeAreaInsets)
             .padding()

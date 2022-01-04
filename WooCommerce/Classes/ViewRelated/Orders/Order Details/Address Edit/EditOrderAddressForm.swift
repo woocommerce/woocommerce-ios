@@ -5,7 +5,7 @@ import UIKit
 
 /// Hosting controller that wraps an `EditOrderAddressForm`.
 ///
-final class EditOrderAddressHostingController: UIHostingController<EditOrderAddressForm> {
+final class EditOrderAddressHostingController: UIHostingController<EditOrderAddressForm<EditOrderAddressFormViewModel>> {
 
     /// References to keep the Combine subscriptions alive within the lifecycle of the object.
     ///
@@ -60,7 +60,7 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
 
                 switch notice {
                 case .success:
-                    self?.systemNoticePresenter.enqueue(notice: .init(title: EditOrderAddressForm.Localization.success, feedbackType: .error))
+                    self?.systemNoticePresenter.enqueue(notice: .init(title: Localization.success, feedbackType: .error))
 
                 case .error(let error):
                     switch error {
@@ -103,25 +103,23 @@ extension EditOrderAddressHostingController: UIAdaptivePresentationControllerDel
 
 /// Allows merchant to edit the customer provided address of an order.
 ///
-struct EditOrderAddressForm: View {
+struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
 
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
     var dismiss: (() -> Void) = {}
 
-    @ObservedObject private(set) var viewModel: EditOrderAddressFormViewModel
+    /// View Model for the view
+    ///
+    @ObservedObject private(set) var viewModel: ViewModel
 
     /// Set it to `true` to present the country selector.
     ///
-    @State var showCountrySelector: Bool = false
-
-    init(viewModel: EditOrderAddressFormViewModel) {
-        self.viewModel = viewModel
-    }
+    @State private var showCountrySelector: Bool = false
 
     /// Set it to `true` to present the state selector.
     ///
-    @State var showStateSelector = false
+    @State private var showStateSelector = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -161,7 +159,7 @@ struct EditOrderAddressForm: View {
                 .padding(.horizontal, insets: geometry.safeAreaInsets)
                 .background(Color(.systemBackground))
 
-                ListHeaderView(text: sectionTitle, alignment: .left)
+                ListHeaderView(text: viewModel.sectionTitle, alignment: .left)
                     .padding(.horizontal, insets: geometry.safeAreaInsets)
                 VStack(spacing: 0) {
                     Group {
@@ -216,18 +214,39 @@ struct EditOrderAddressForm: View {
                 .padding(.horizontal, insets: geometry.safeAreaInsets)
                 .background(Color(.systemBackground))
 
-                Group {
-                    TitleAndToggleRow(title: Localization.useAddressAs(for: viewModel.type), isOn: $viewModel.fields.useAsToggle)
+                if viewModel.showAlternativeUsageToggle {
+                    TitleAndToggleRow(title: viewModel.alternativeUsageToggleTitle, isOn: $viewModel.fields.useAsToggle)
                         .padding(.horizontal, Constants.horizontalPadding)
                         .padding(.vertical, Constants.verticalPadding)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        .background(Color(.systemBackground))
                 }
-                .padding(.horizontal, insets: geometry.safeAreaInsets)
-                .background(Color(.systemBackground))
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+
+            // Go to edit country
+            LazyNavigationLink(destination: FilterListSelector(viewModel: viewModel.createCountryViewModel()), isActive: $showCountrySelector) {
+                EmptyView()
+            }
+
+            // Go to edit state
+            LazyNavigationLink(destination: FilterListSelector(viewModel: viewModel.createStateViewModel()), isActive: $showStateSelector) {
+                EmptyView()
+            }
+
+            ///
+            /// iOS 14.5 has a bug where
+            /// Pushing a view while having "exactly two" navigation links makes the pushed view to be popped when the initial view changes its state.
+            /// EG: AddressForm -> CountrySelector -> Country is selected -> AddressForm updates country -> CountrySelector is popped automatically.
+            /// Adding an extra and useless navigation link fixes the problem but throws a warning in the console.
+            /// Ref: https://forums.swift.org/t/14-5-beta3-navigationlink-unexpected-pop/45279
+            ///
+            NavigationLink(destination: EmptyView()) {
+                EmptyView()
+            }
         }
-        .navigationTitle(viewTitle)
+        .navigationTitle(viewModel.viewTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -246,28 +265,6 @@ struct EditOrderAddressForm: View {
         .onAppear {
             viewModel.onLoadTrigger.send()
         }
-
-        // Go to edit country
-        LazyNavigationLink(destination: FilterListSelector(viewModel: viewModel.createCountryViewModel()), isActive: $showCountrySelector) {
-            EmptyView()
-        }
-
-        // Go to edit state
-        // TODO: Move `StateSelectorViewModel` creation to the VM when it exists.
-        LazyNavigationLink(destination: FilterListSelector(viewModel: viewModel.createStateViewModel()), isActive: $showStateSelector) {
-            EmptyView()
-        }
-
-        ///
-        /// iOS 14.5 has a bug where
-        /// Pushing a view while having "exactly two" navigation links makes the pushed view to be popped when the initial view changes its state.
-        /// EG: AddressForm -> CountrySelector -> Country is selected -> AddressForm updates country -> CountrySelector is popped automatically.
-        /// Adding an extra and useless navigation link fixes the problem but throws a warning in the console.
-        /// Ref: https://forums.swift.org/t/14-5-beta3-navigationlink-unexpected-pop/45279
-        ///
-        NavigationLink(destination: EmptyView()) {
-            EmptyView()
-        }
     }
 
     /// Decides if the navigation trailing item should be a done button or a loading indicator.
@@ -276,7 +273,7 @@ struct EditOrderAddressForm: View {
         switch viewModel.navigationTrailingItem {
         case .done(let enabled):
             Button(Localization.done) {
-                viewModel.updateRemoteAddress(onFinish: { success in
+                viewModel.saveAddress(onFinish: { success in
                     if success {
                         dismiss()
                     }
@@ -308,70 +305,36 @@ struct EditOrderAddressForm: View {
 }
 
 // MARK: Constants
-private extension EditOrderAddressForm {
+private enum Constants {
+    static let dividerPadding: CGFloat = 16
+    static let horizontalPadding: CGFloat = 16
+    static let verticalPadding: CGFloat = 7
+}
 
-    var viewTitle: String {
-        switch viewModel.type {
-        case .shipping:
-            return Localization.shippingTitle
-        case .billing:
-            return Localization.billingTitle
-        }
-    }
+private enum Localization {
+    static let close = NSLocalizedString("Close", comment: "Text for the close button in the Edit Address Form")
+    static let done = NSLocalizedString("Done", comment: "Text for the done button in the Edit Address Form")
 
-    var sectionTitle: String {
-        switch viewModel.type {
-        case .shipping:
-            return Localization.shippingAddressSection
-        case .billing:
-            return Localization.billingAddressSection
-        }
-    }
+    static let detailsSection = NSLocalizedString("DETAILS", comment: "Details section title in the Edit Address Form")
 
-    enum Constants {
-        static let dividerPadding: CGFloat = 16
-        static let horizontalPadding: CGFloat = 16
-        static let verticalPadding: CGFloat = 7
-    }
+    static let firstNameField = NSLocalizedString("First name", comment: "Text field name in Edit Address Form")
+    static let lastNameField = NSLocalizedString("Last name", comment: "Text field name in Edit Address Form")
+    static let emailField = NSLocalizedString("Email", comment: "Text field email in Edit Address Form")
+    static let phoneField = NSLocalizedString("Phone", comment: "Text field phone in Edit Address Form")
 
-    enum Localization {
-        static let shippingTitle = NSLocalizedString("Shipping Address", comment: "Title for the Edit Shipping Address Form")
-        static let billingTitle = NSLocalizedString("Billing Address", comment: "Title for the Edit Billing Address Form")
-        static let close = NSLocalizedString("Close", comment: "Text for the close button in the Edit Address Form")
-        static let done = NSLocalizedString("Done", comment: "Text for the done button in the Edit Address Form")
+    static let companyField = NSLocalizedString("Company", comment: "Text field company in Edit Address Form")
+    static let address1Field = NSLocalizedString("Address 1", comment: "Text field address 1 in Edit Address Form")
+    static let address2Field = NSLocalizedString("Address 2", comment: "Text field address 2 in Edit Address Form")
+    static let cityField = NSLocalizedString("City", comment: "Text field city in Edit Address Form")
+    static let postcodeField = NSLocalizedString("Postcode", comment: "Text field postcode in Edit Address Form")
+    static let countryField = NSLocalizedString("Country", comment: "Text field country in Edit Address Form")
+    static let stateField = NSLocalizedString("State", comment: "Text field state in Edit Address Form")
 
-        static let detailsSection = NSLocalizedString("DETAILS", comment: "Details section title in the Edit Address Form")
-        static let shippingAddressSection = NSLocalizedString("SHIPPING ADDRESS", comment: "Details section title in the Edit Address Form")
-        static let billingAddressSection = NSLocalizedString("BILLING ADDRESS", comment: "Details section title in the Edit Address Form")
+    static let placeholderRequired = NSLocalizedString("Required", comment: "Text field placeholder in Edit Address Form")
+    static let placeholderOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address Form")
+    static let placeholderSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address Form")
 
-        static let firstNameField = NSLocalizedString("First name", comment: "Text field name in Edit Address Form")
-        static let lastNameField = NSLocalizedString("Last name", comment: "Text field name in Edit Address Form")
-        static let emailField = NSLocalizedString("Email", comment: "Text field email in Edit Address Form")
-        static let phoneField = NSLocalizedString("Phone", comment: "Text field phone in Edit Address Form")
-
-        static let companyField = NSLocalizedString("Company", comment: "Text field company in Edit Address Form")
-        static let address1Field = NSLocalizedString("Address 1", comment: "Text field address 1 in Edit Address Form")
-        static let address2Field = NSLocalizedString("Address 2", comment: "Text field address 2 in Edit Address Form")
-        static let cityField = NSLocalizedString("City", comment: "Text field city in Edit Address Form")
-        static let postcodeField = NSLocalizedString("Postcode", comment: "Text field postcode in Edit Address Form")
-        static let countryField = NSLocalizedString("Country", comment: "Text field country in Edit Address Form")
-        static let stateField = NSLocalizedString("State", comment: "Text field state in Edit Address Form")
-
-        static let placeholderRequired = NSLocalizedString("Required", comment: "Text field placeholder in Edit Address Form")
-        static let placeholderOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address Form")
-        static let placeholderSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address Form")
-
-        static let success = NSLocalizedString("Address successfully updated.", comment: "Notice text after updating the shipping or billing address")
-
-        static func useAddressAs(for type: EditOrderAddressFormViewModel.AddressType) -> String {
-            switch type {
-            case .shipping:
-                return NSLocalizedString("Use as Billing Address", comment: "Title for the Use as Billing Address switch in the Address form")
-            case .billing:
-                return NSLocalizedString("Use as Shipping Address", comment: "Title for the Use as Shipping Address switch in the Address form")
-            }
-        }
-    }
+    static let success = NSLocalizedString("Address successfully updated.", comment: "Notice text after updating the shipping or billing address")
 }
 
 #if DEBUG
@@ -384,6 +347,7 @@ struct EditAddressForm_Previews: PreviewProvider {
                                    orderID: 456,
                                    parentID: 2,
                                    customerID: 11,
+                                   orderKey: "",
                                    number: "789",
                                    status: .processing,
                                    currency: "USD",

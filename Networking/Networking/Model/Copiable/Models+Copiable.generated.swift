@@ -1543,6 +1543,36 @@ extension SystemPlugin {
     }
 }
 
+extension TopEarnerStatsItem {
+    public func copy(
+        productID: CopiableProp<Int64> = .copy,
+        productName: NullableCopiableProp<String> = .copy,
+        quantity: CopiableProp<Int> = .copy,
+        price: CopiableProp<Double> = .copy,
+        total: CopiableProp<Double> = .copy,
+        currency: CopiableProp<String> = .copy,
+        imageUrl: NullableCopiableProp<String> = .copy
+    ) -> TopEarnerStatsItem {
+        let productID = productID ?? self.productID
+        let productName = productName ?? self.productName
+        let quantity = quantity ?? self.quantity
+        let price = price ?? self.price
+        let total = total ?? self.total
+        let currency = currency ?? self.currency
+        let imageUrl = imageUrl ?? self.imageUrl
+
+        return TopEarnerStatsItem(
+            productID: productID,
+            productName: productName,
+            quantity: quantity,
+            price: price,
+            total: total,
+            currency: currency,
+            imageUrl: imageUrl
+        )
+    }
+}
+
 extension WordPressMedia {
     public func copy(
         mediaID: CopiableProp<Int64> = .copy,

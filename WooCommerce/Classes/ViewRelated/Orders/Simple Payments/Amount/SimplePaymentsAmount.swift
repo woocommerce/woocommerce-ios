@@ -110,14 +110,19 @@ struct SimplePaymentsAmount: View {
             Text(Localization.instructions)
                 .secondaryBodyStyle()
 
-            // Amount Textfield
-            BindableTextfield(viewModel.amountPlaceholder, text: $viewModel.amount)
-                .font(.systemFont(ofSize: Layout.amountFontSize(scale: scale), weight: .bold))
-                .foregroundColor(.text)
-                .textAlignment(.center)
-                .keyboardType(.decimalPad)
-                .focused()
-                .fixedSize()
+            ZStack(alignment: .center) {
+                // Hidden input text field
+                BindableTextfield("", text: $viewModel.amount)
+                    .keyboardType(.decimalPad)
+                    .focused()
+                    .opacity(0)
+
+                // Visible & formatted label
+                Text(viewModel.formattedAmmount)
+                    .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold))
+                    .foregroundColor(Color(viewModel.amountTextColor))
+            }
+            .fixedSize()
 
             Spacer()
 

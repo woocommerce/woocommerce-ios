@@ -4,22 +4,22 @@ import UIKit
 
 // ChartPlaceholderView: Charts Mockup UI!
 //
-class ChartPlaceholderView: UIView {
+final class ChartPlaceholderView: UIView {
 
     /// Top Container View
     ///
     @IBOutlet private var topStackView: UIStackView!
 
-    /// Bars Container View
+    /// Lines Container View
     ///
-    @IBOutlet private var barsStackView: UIStackView!
+    @IBOutlet private var linesStackView: UIStackView!
 
     // MARK: - Overridden Methods
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        setupView()
-        setupSubviews()
+        configureView()
+        configureLinesStackView()
     }
 }
 
@@ -29,25 +29,16 @@ class ChartPlaceholderView: UIView {
 private extension ChartPlaceholderView {
     /// Applies color to the view.
     ///
-    func setupView() {
+    func configureView() {
         backgroundColor = .listForeground
         topStackView.backgroundColor = .listForeground
     }
 
-    /// Applies Rounded Style to the upper views.
-    ///
-    func setupSubviews() {
-        let subviews = barsStackView.subviews + topStackView.subviews.compactMap { $0.subviews.first }
-        for view in subviews {
-            view.layer.cornerRadius = Settings.cornerRadius
-            view.layer.masksToBounds = true
+    /// Chart lines always show the same color without ghost animation.
+    func configureLinesStackView() {
+        linesStackView.isGhostableDisabled = true
+        linesStackView.arrangedSubviews.forEach { chartLineView in
+            chartLineView.backgroundColor = .init(light: .gray(.shade5), dark: .systemGray5)
         }
     }
-}
-
-
-// MARK: - Private Types
-//
-private enum Settings {
-    static let cornerRadius = CGFloat(6)
 }

@@ -15,6 +15,9 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     var didCallUpdateCoupon = false
     var spyUpdateCoupon: Coupon?
 
+    var didCallCreateCoupon = false
+    var spyCreateCoupon: Coupon?
+
     // MARK: - Stub responses
     var resultForLoadAllCoupons: Result<[Coupon], Error>?
 
@@ -42,5 +45,10 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     func updateCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void) {
         didCallUpdateCoupon = true
         spyUpdateCoupon = coupon
+    }
+
+    func createCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void) {
+        didCallCreateCoupon = true
+        spyCreateCoupon = coupon
     }
 }

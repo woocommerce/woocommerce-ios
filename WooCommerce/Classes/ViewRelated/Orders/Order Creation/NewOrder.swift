@@ -60,12 +60,11 @@ struct NewOrder: View {
 
                         Spacer(minLength: Layout.sectionSpacing)
 
-                        Group {
+                        if viewModel.shouldShowPaymentSection {
                             OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
 
                             Spacer(minLength: Layout.sectionSpacing)
                         }
-                        .renderedIf(viewModel.shouldShowPaymentSection)
 
                         OrderCustomerSection(geometry: geometry,
                                              viewModel: viewModel.customerDataViewModel,

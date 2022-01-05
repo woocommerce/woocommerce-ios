@@ -13,7 +13,7 @@ struct OrderPaymentSection: View {
     var body: some View {
         Divider()
 
-        VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+        VStack(alignment: .leading, spacing: .zero) {
             Text(Localization.payment)
                 .headlineStyle()
                 .padding()
@@ -35,9 +35,6 @@ struct OrderPaymentSection: View {
 
 // MARK: Constants
 private extension OrderPaymentSection {
-    enum Layout {
-        static let verticalSpacing: CGFloat = 0.0
-    }
     enum Localization {
         static let payment = NSLocalizedString("Payment", comment: "Title text of the section that shows Payment details when creating a new order")
         static let productsTotal = NSLocalizedString("Products Total", comment: "Label for the row showing the total cost of products in the order")

@@ -55,9 +55,16 @@ class GetMocks {
         var updatedData = originalData.response.jsonBody.data
 
         for index in 0..<updatedData.count {
-            let orderId = updatedData[index].id
-//            let orderTotal = updatedData[index].total
-        }
+                    var total = updatedData[index].total
+                    print("total is: \(total)")
+                    print("total after converted: \(Double(total) ?? 0)")
+                    let numberFormatter = NumberFormatter()
+                    numberFormatter.numberStyle = .decimal
+
+                    let formattedNumber = numberFormatter.string(from: NSNumber(value: Double(total)!))
+                    print("formatted total is: \(formattedNumber)")
+                    updatedData[index].total = formattedNumber!
+                }
 
         return updatedData
 }

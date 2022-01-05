@@ -29,7 +29,6 @@ final class CouponListViewController: UIViewController {
     }
 
     private func configureViewModel() {
-        viewModel.viewDidLoad()
         viewModel.$state
             .removeDuplicates()
             .sink { [weak self] state in
@@ -48,6 +47,9 @@ final class CouponListViewController: UIViewController {
                 }
             }
             .store(in: &subscriptions)
+
+        // Call this after the state subscription for extra safety
+        viewModel.viewDidLoad()
     }
 }
 

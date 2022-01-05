@@ -203,11 +203,15 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         trackCollectIntention(method: .cash)
     }
 
+    func trackCollectByPaymentLink() {
+        trackCollectIntention(method: .paymentLink)
+    }
+
     /// Perform the necesary tasks after a link is shared.
     ///
     func performLinkSharedTasks() {
-        self.presentNoticeSubject.send(.created)
-        // TODO: Analytics
+        presentNoticeSubject.send(.created)
+        trackFlowCompleted(method: .paymentLink)
     }
 }
 

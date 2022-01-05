@@ -58,7 +58,7 @@ struct SimplePaymentsMethod: View {
 
                     MethodRow(icon: .linkImage, title: Localization.link) {
                         sharingPaymentLink = true
-                        // TODO: Analytics
+                        viewModel.trackCollectByPaymentLink()
                     }
                 }
             }

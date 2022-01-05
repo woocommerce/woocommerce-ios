@@ -5,30 +5,67 @@ import Yosemite
 
 import class AutomatticTracks.CrashLogging
 
+protocol ReviewsViewModelOutput {
+    var isEmpty: Bool { get }
 
-final class ReviewsViewModel {
+    var dataSource: UITableViewDataSource { get }
+
+    var delegate: ReviewsInteractionDelegate { get }
+
+    var hasUnreadNotifications: Bool { get }
+
+    var shouldPromptForAppReview: Bool { get }
+
+    var hasErrorLoadingData: Bool { get set }
+
+    func containsMorePages(_ highestVisibleReview: Int) -> Bool
+}
+
+protocol ReviewsViewModelActionsHandler {
+    func displayPlaceholderReviews(tableView: UITableView)
+
+    func removePlaceholderReviews(tableView: UITableView)
+
+    func configureResultsController(tableView: UITableView)
+
+    func refreshResults()
+
+    func configureTableViewCells(tableView: UITableView)
+
+    func markAllAsRead(onCompletion: @escaping (Error?) -> Void)
+
+    func synchronizeReviews(pageNumber: Int,
+                            pageSize: Int,
+                            onCompletion: (() -> Void)?)
+}
+
+final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHandler {
     private let siteID: Int64
 
     private let data: ReviewsDataSource
 
     var isEmpty: Bool {
-        return data.isEmpty
+        data.isEmpty
     }
 
     var dataSource: UITableViewDataSource {
-        return data
+        data
     }
 
     var delegate: ReviewsInteractionDelegate {
-        return data
+        data
     }
 
     var hasUnreadNotifications: Bool {
-        return unreadNotifications.count != 0
+        unreadNotifications.count != 0
     }
 
     private var unreadNotifications: [Note] {
-        return data.notifications.filter { $0.read == false }
+        data.notifications.filter { $0.read == false }
+    }
+
+    var shouldPromptForAppReview: Bool {
+        AppRatingManager.shared.shouldPromptForAppReview(section: Constants.section)
     }
 
     /// Set when sync fails, and used to display an error loading data banner
@@ -84,7 +121,7 @@ final class ReviewsViewModel {
     }
 
     func containsMorePages(_ highestVisibleReview: Int) -> Bool {
-        return highestVisibleReview > data.reviewCount
+        highestVisibleReview > data.reviewCount
     }
 }
 
@@ -93,9 +130,9 @@ final class ReviewsViewModel {
 extension ReviewsViewModel {
     /// Prepares data necessary to render the reviews tab.
     ///
-    func synchronizeReviews(pageNumber: Int = Settings.firstPage,
-                            pageSize: Int = Settings.pageSize,
-                            onCompletion: (() -> Void)? = nil) {
+    func synchronizeReviews(pageNumber: Int,
+                            pageSize: Int,
+                            onCompletion: (() -> Void)?) {
         hasErrorLoadingData = false
 
         let group = DispatchGroup()
@@ -201,5 +238,9 @@ private extension ReviewsViewModel {
         static let placeholderRowsPerSection = [3]
         static let firstPage = 1
         static let pageSize = 25
+    }
+
+    struct Constants {
+        static let section = "notifications"
     }
 }

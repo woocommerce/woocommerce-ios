@@ -21,6 +21,10 @@ struct OrderPaymentSection: View {
             TitleAndValueRow(title: Localization.productsTotal, value: .content(viewModel.itemsTotal), selectable: false) {}
 
             TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectable: false) {}
+
+            Text(Localization.taxesInfo)
+                .footnoteStyle()
+                .padding([.horizontal, .bottom])
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground))
@@ -38,6 +42,8 @@ private extension OrderPaymentSection {
         static let payment = NSLocalizedString("Payment", comment: "Title text of the section that shows Payment details when creating a new order")
         static let productsTotal = NSLocalizedString("Products Total", comment: "Label for the row showing the total cost of products in the order")
         static let orderTotal = NSLocalizedString("Order Total", comment: "Label for the the row showing the total cost of the order")
+        static let taxesInfo = NSLocalizedString("Total excluding taxes. Taxes will be automatically calculated based on your store settings.",
+                                                 comment: "Information about taxes and the order total when creating a new order")
     }
 }
 

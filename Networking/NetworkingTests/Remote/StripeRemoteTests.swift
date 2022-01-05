@@ -231,7 +231,7 @@ final class StripeRemoteTests: XCTestCase {
         XCTAssertTrue(error is DecodingError)
     }
 
-    /// Properly decodes live account in live mode wcpay-account-live-live
+    /// Properly decodes live account in live mode stripe-account-live-live
     ///
     func test_loadAccount_properly_handles_live_account_in_live_mode() throws {
         let remote = StripeRemote(network: network)
@@ -250,7 +250,7 @@ final class StripeRemoteTests: XCTestCase {
         XCTAssertEqual(account.isInTestMode, false)
     }
 
-    /// Properly decodes live account in test mode wcpay-account-live-test
+    /// Properly decodes live account in test mode stripe-account-live-test
     ///
     func test_loadAccount_properly_handles_live_account_in_test_mode() throws {
         let remote = StripeRemote(network: network)
@@ -269,7 +269,7 @@ final class StripeRemoteTests: XCTestCase {
         XCTAssertEqual(account.isInTestMode, true)
     }
 
-    /// Properly decodes developer account in test mode wcpay-account-dev-test
+    /// Properly decodes developer account in test mode stripe-account-dev-test
     ///
     func test_loadAccount_properly_handles_dev_account_in_test_mode() throws {
         let remote = StripeRemote(network: network)

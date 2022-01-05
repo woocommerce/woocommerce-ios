@@ -60,10 +60,6 @@ final class StoreStatsUsageTracksEventEmitter {
 
             reset()
             analytics.track(.usedAnalytics)
-
-            // TODO Remove :D
-            let notice = Notice(title: "You used Analytics! Good for you!", feedbackType: .success)
-            ServiceLocator.noticePresenter.enqueue(notice: notice)
         }
     }
 

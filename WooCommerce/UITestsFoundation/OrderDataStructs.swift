@@ -15,7 +15,7 @@ public struct OrderData: Codable {
     public let id: Int
     public let number: String
     public var status: String
-//    public let total: String    // doesn't work because the number isn't formatted in the mock, but is in the UI
+    public var total: String    // doesn't work because the number isn't formatted in the mock, but is in the UI
     public let line_items: [LineItems]
     public let billing: BillingInformation
 }

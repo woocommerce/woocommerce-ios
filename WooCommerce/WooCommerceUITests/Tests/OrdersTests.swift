@@ -14,8 +14,8 @@ final class OrdersTests: XCTestCase {
     }
 
     // TODO: Write real test, this is a placeholder for now
-    func testGotoOrdersScreen() throws {
-        try TabNavComponent().gotoOrdersScreen()
+    func testGoToOrdersScreen() throws {
+        try TabNavComponent().goToOrdersScreen()
         XCTAssert(try OrdersScreen().isLoaded)
     }
 }

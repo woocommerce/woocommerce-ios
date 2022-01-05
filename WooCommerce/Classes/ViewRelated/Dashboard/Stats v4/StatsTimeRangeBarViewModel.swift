@@ -61,7 +61,7 @@ private extension StatsTimeRangeV4 {
 }
 
 /// View model for `StatsTimeRangeBarView`.
-struct StatsTimeRangeBarViewModel {
+struct StatsTimeRangeBarViewModel: Equatable {
     let timeRangeText: String
 
     init(startDate: Date,

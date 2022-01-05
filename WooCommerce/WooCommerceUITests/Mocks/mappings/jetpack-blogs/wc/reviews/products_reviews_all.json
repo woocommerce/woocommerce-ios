@@ -7,7 +7,10 @@
                 "equalTo": "true"
             },
             "path": {
-                "matches": "/wc/v3/products/reviews(.*)"
+                "matches": "/wc/v3/products/reviews&_method=get"
+            },
+            "query": {
+                "matches": "(.*)\"status\":\"all\"(.*)"
             }
         }
     },

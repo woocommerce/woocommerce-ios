@@ -60,6 +60,12 @@ struct NewOrder: View {
 
                         Spacer(minLength: Layout.sectionSpacing)
 
+                        if viewModel.shouldShowPaymentSection {
+                            OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
+
+                            Spacer(minLength: Layout.sectionSpacing)
+                        }
+
                         OrderCustomerSection(viewModel: viewModel.customerDataViewModel,
                                              addressFormViewModel: viewModel.createOrderAddressFormViewModel())
                     }

@@ -3,7 +3,7 @@ import Yosemite
 
 /// View model for `ProductRow`.
 ///
-final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
+final class ProductRowViewModel: ObservableObject, Identifiable {
     private let currencyFormatter: CurrencyFormatter
 
     /// Whether the product quantity can be changed.
@@ -83,7 +83,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
         quantity <= minimumQuantity
     }
 
-    init(id: String = UUID().uuidString,
+    init(id: String? = nil,
          productID: Int64,
          name: String,
          sku: String?,
@@ -95,7 +95,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
          canChangeQuantity: Bool,
          imageURL: URL?,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
-        self.id = id
+        self.id = id ?? productID.description
         self.productID = productID
         self.name = name
         self.sku = sku
@@ -109,7 +109,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable, Equatable {
         self.currencyFormatter = currencyFormatter
     }
 
-    convenience init(id: String = UUID().uuidString,
+    convenience init(id: String? = nil,
                      product: Product,
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
@@ -171,11 +171,5 @@ private extension ProductRowViewModel {
     enum Localization {
         static let stockFormat = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown during order creation")
         static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
-    }
-}
-
-extension ProductRowViewModel {
-    static func == (lhs: ProductRowViewModel, rhs: ProductRowViewModel) -> Bool {
-        lhs.id == rhs.id
     }
 }

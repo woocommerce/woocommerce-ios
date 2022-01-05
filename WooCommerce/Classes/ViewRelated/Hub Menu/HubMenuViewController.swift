@@ -3,8 +3,8 @@ import UIKit
 
 /// Displays a grid view of all available menu in the "Menu" tab (eg. View Store, Reviews, Coupons, etc...)
 final class HubMenuViewController: UIHostingController<HubMenu> {
-    init(siteID: Int64) {
-        super.init(rootView: HubMenu(siteID: siteID))
+    init(siteID: Int64, navigationController: UINavigationController?) {
+        super.init(rootView: HubMenu(siteID: siteID, navigationController: navigationController))
         configureNavigationBar()
         configureTabBarItem()
     }

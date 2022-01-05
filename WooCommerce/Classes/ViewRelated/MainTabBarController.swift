@@ -53,12 +53,11 @@ extension WooTab {
     private static func visibleTabs(_ isHubMenuFeatureFlagOn: Bool) -> [WooTab] {
         var tabs: [WooTab] = [.myStore, .orders, .products]
 
-        if !isHubMenuFeatureFlagOn {
-            tabs.append(.reviews)
-        }
-
         if isHubMenuFeatureFlagOn {
             tabs.append(.hubMenu)
+        }
+        else {
+            tabs.append(.reviews)
         }
 
         return tabs
@@ -419,17 +418,7 @@ private extension MainTabBarController {
         let productsViewController = createProductsViewController(siteID: siteID)
         productsNavigationController.viewControllers = [productsViewController]
 
-        // Configure reviews tab coordinator once per logged in session potentially with multiple sites.
-        if !isHubMenuFeatureFlagOn {
-            if reviewsTabCoordinator == nil {
-                let reviewsTabCoordinator = createReviewsTabCoordinator()
-                self.reviewsTabCoordinator = reviewsTabCoordinator
-                reviewsTabCoordinator.start()
-            }
-            reviewsTabCoordinator?.activate(siteID: siteID)
-        }
-
-        // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.
+        // Configure hub menu tab coordinator or reviews tab coordinator once per logged in session potentially with multiple sites.
         if isHubMenuFeatureFlagOn {
             if hubMenuTabCoordinator == nil {
                 let hubTabCoordinator = createHubMenuTabCoordinator()
@@ -437,6 +426,14 @@ private extension MainTabBarController {
                 hubTabCoordinator.start()
             }
             hubMenuTabCoordinator?.activate(siteID: siteID)
+        }
+        else {
+            if reviewsTabCoordinator == nil {
+                let reviewsTabCoordinator = createReviewsTabCoordinator()
+                self.reviewsTabCoordinator = reviewsTabCoordinator
+                reviewsTabCoordinator.start()
+            }
+            reviewsTabCoordinator?.activate(siteID: siteID)
         }
 
         // Set dashboard to be the default tab.

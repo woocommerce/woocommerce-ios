@@ -64,7 +64,9 @@ private extension StatsTimeRangeV4 {
         let dateFormatter: DateFormatter
         switch self {
         case .today:
-            dateFormatter = isMyStoreTabUpdatesEnabled ? DateFormatter.Charts.chartAxisHourFormatter: DateFormatter.Charts.legacyChartAxisHourFormatter
+            dateFormatter = isMyStoreTabUpdatesEnabled ?
+            DateFormatter.Charts.chartSelectedDateHourFormatter:
+            DateFormatter.Charts.legacyChartSelectedDateHourFormatter
         case .thisWeek, .thisMonth:
             dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
         case .thisYear:

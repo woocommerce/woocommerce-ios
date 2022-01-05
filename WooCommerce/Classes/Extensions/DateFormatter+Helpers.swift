@@ -10,17 +10,25 @@ extension DateFormatter {
 
         // MARK: - Chark axis formatters
 
-        /// Date formatter used for creating the date displayed on a chart axis for **hour** granularity.
+        /// Date formatter used for creating the date for a selected date displayed on the time range bar for **hour** granularity.
         ///
-        public static let chartAxisHourFormatter: DateFormatter = {
+        public static let chartSelectedDateHourFormatter: DateFormatter = {
             let formatter = DateFormatter()
             formatter.setLocalizedDateFormatFromTemplate("EEEE, MMM d, h:mm a")
             return formatter
         }()
 
+        /// Date formatter used for creating the date for a selected date displayed on the time range bar for **hour** granularity.
+        ///
+        public static let legacyChartSelectedDateHourFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.setLocalizedDateFormatFromTemplate("ha")
+            return formatter
+        }()
+
         /// Date formatter used for creating the date displayed on a chart axis for **hour** granularity.
         ///
-        public static let legacyChartAxisHourFormatter: DateFormatter = {
+        public static let chartAxisHourFormatter: DateFormatter = {
             let formatter = DateFormatter()
             formatter.setLocalizedDateFormatFromTemplate("ha")
             return formatter

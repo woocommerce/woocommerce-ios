@@ -4,9 +4,6 @@ import Foundation
 /// the Tracks event to avoid incorrect comparisons with old events.
 final class StoreStatsUsageTracksEventEmitter {
 
-    /// TODO Replace with proper injection
-    static let shared = StoreStatsUsageTracksEventEmitter()
-
     private let analytics: Analytics
 
     /// The minimum amount of time (seconds) that the merchant have interacted with the

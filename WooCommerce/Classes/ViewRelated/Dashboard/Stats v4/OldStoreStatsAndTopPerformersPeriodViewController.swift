@@ -94,7 +94,8 @@ final class OldStoreStatsAndTopPerformersPeriodViewController: UIViewController 
         return TopPerformerDataViewController(siteID: siteID,
                                               siteTimeZone: siteTimezone,
                                               currentDate: currentDate,
-                                              timeRange: timeRange)
+                                              timeRange: timeRange,
+                                              usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
     // MARK: Internal Properties
@@ -104,6 +105,8 @@ final class OldStoreStatsAndTopPerformersPeriodViewController: UIViewController 
     }
 
     private let viewModel: StoreStatsAndTopPerformersPeriodViewModel
+
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
     private let siteID: Int64
 
@@ -119,12 +122,14 @@ final class OldStoreStatsAndTopPerformersPeriodViewController: UIViewController 
     init(siteID: Int64,
          timeRange: StatsTimeRangeV4,
          currentDate: Date,
-         canDisplayInAppFeedbackCard: Bool) {
+         canDisplayInAppFeedbackCard: Bool,
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
         self.siteID = siteID
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
         self.currentDate = currentDate
         self.viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: canDisplayInAppFeedbackCard)
+        self.usageTracksEventEmitter = usageTracksEventEmitter
 
         super.init(nibName: nil, bundle: nil)
 

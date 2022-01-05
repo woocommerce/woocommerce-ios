@@ -6,8 +6,8 @@ public final class SingleOrderScreen: ScreenObject {
 
     // TODO: Remove force `try` once `ScreenObject` migration is completed
     let tabBar = try! TabNavComponent()
-    private let ProductsSection: XCUIElement
-    let ProductsSection = "single-product-cell"
+ //   private let ProductsSection: XCUIElement
+ //   let ProductsSection = "single-product-cell"
 
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(

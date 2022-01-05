@@ -22,7 +22,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.amount = "12"
 
         // Then
-        XCTAssertEqual(viewModel.formattedAmmount, "$12")
+        XCTAssertEqual(viewModel.formattedAmount, "$12")
     }
 
     func test_view_model_formats_amount_with_custom_currency_settings() {
@@ -38,7 +38,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.amount = "12.203"
 
         // Then
-        XCTAssertEqual(viewModel.formattedAmmount, "12.203 £")
+        XCTAssertEqual(viewModel.formattedAmount, "12.203 £")
     }
 
     func test_view_model_removes_non_digit_characters() {
@@ -49,7 +49,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.amount = "hi:11.30-"
 
         // Then
-        XCTAssertEqual(viewModel.formattedAmmount, "$11.30")
+        XCTAssertEqual(viewModel.formattedAmount, "$11.30")
     }
 
     func test_view_model_trims_more_than_two_decimal_numbers() {
@@ -60,7 +60,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.amount = "$67.321432432"
 
         // Then
-        XCTAssertEqual(viewModel.formattedAmmount, "$67.32")
+        XCTAssertEqual(viewModel.formattedAmount, "$67.32")
     }
 
     func test_view_model_removes_duplicated_decimal_separators() {
@@ -71,7 +71,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.amount = "$6.7.3"
 
         // Then
-        XCTAssertEqual(viewModel.formattedAmmount, "$6.7")
+        XCTAssertEqual(viewModel.formattedAmount, "$6.7")
     }
 
     func test_view_model_removes_consecutive_decimal_separators() {
@@ -82,7 +82,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.amount = "$6..."
 
         // Then
-        XCTAssertEqual(viewModel.formattedAmmount, "$6.")
+        XCTAssertEqual(viewModel.formattedAmount, "$6.")
     }
 
     func test_view_model_disables_next_button_when_there_is_no_amount() {
@@ -138,7 +138,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.amount = "10,25"
 
         // Then
-        XCTAssertEqual(viewModel.formattedAmmount, "$10.25")
+        XCTAssertEqual(viewModel.formattedAmount, "$10.25")
     }
 
     func test_view_model_uses_the_store_currency_symbol() {
@@ -150,7 +150,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         viewModel.amount = "10.25"
 
         // Then
-        XCTAssertEqual(viewModel.formattedAmmount, "€10.25")
+        XCTAssertEqual(viewModel.formattedAmount, "€10.25")
     }
 
     func test_amount_placeholder_is_formatted_with_store_currency_settings() {
@@ -159,7 +159,7 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, locale: usLocale, storeCurrencySettings: storeSettings)
 
         // When & Then
-        XCTAssertEqual(viewModel.formattedAmmount, "€0,00")
+        XCTAssertEqual(viewModel.formattedAmount, "€0,00")
     }
 
     func test_view_model_enables_loading_state_while_performing_network_operations() {

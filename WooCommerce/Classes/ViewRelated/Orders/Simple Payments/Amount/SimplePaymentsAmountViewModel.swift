@@ -34,7 +34,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
 
     /// Formatted amount to display. When empty displays a placeholder value.
     ///
-    var formattedAmmount: String {
+    var formattedAmount: String {
         guard amount.isNotEmpty else {
             return amountPlaceholder
         }

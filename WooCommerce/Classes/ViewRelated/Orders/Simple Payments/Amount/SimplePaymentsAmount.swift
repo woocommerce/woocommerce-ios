@@ -121,7 +121,7 @@ struct SimplePaymentsAmount: View {
                     .opacity(0)
 
                 // Visible & formatted label
-                Text(viewModel.formattedAmmount)
+                Text(viewModel.formattedAmount)
                     .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold))
                     .foregroundColor(Color(viewModel.amountTextColor))
                     .onTapGesture {

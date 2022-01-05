@@ -188,7 +188,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         }, onCompleted: { [weak self] in
             // Inform success to consumer
             onSuccess()
-            
+
             // Sent notice request
             self?.presentNoticeSubject.send(.completed)
 

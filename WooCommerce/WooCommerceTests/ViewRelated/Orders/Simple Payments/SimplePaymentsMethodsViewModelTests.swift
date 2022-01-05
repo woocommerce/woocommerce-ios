@@ -340,7 +340,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.paymentLink)
     }
 
-    func test_view_model_attempts_completed_notice_after_sharing_link() {
+    func test_view_model_attempts_created_notice_after_sharing_link() {
         // Given
         let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", presentNoticeSubject: noticeSubject)
@@ -361,5 +361,54 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(receivedCompleted)
+    }
+
+    func test_view_model_attempts_completed_notice_after_collecting_payment() {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
+
+        let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", presentNoticeSubject: noticeSubject, storage: storage)
+
+        // When
+        let receivedCompleted: Bool = waitFor { promise in
+            noticeSubject.sink { intent in
+                switch intent {
+                case .error, .created:
+                    promise(false)
+                case .completed:
+                    promise(true)
+                }
+            }
+            .store(in: &self.subscriptions)
+
+            viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
+        }
+
+        // Then
+        XCTAssertTrue(receivedCompleted)
+    }
+
+    func test_view_model_calls_onSuccess_after_collecting_payment() {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
+
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", storage: storage)
+
+        // When
+        let calledOnSuccess: Bool = waitFor { promise in
+            viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {
+                promise(true)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(calledOnSuccess)
     }
 }

@@ -200,6 +200,24 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["source"] as? String, "payment_method")
     }
 
+    func test_failed_event_is_tracked_after_failing_to_collect_payment() {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
+
+        let analytics = MockAnalyticsProvider()
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .failure(NSError(domain: "Error", code: 0, userInfo: nil)))
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", storage: storage, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
+
+        // Then
+        assertEqual(analytics.receivedEvents.last, WooAnalyticsStat.simplePaymentsFlowFailed.rawValue)
+        assertEqual(analytics.receivedProperties.last?["source"] as? String, "payment_method")
+    }
+
     func test_collect_event_is_tracked_when_required() {
         // Given
         let analytics = MockAnalyticsProvider()

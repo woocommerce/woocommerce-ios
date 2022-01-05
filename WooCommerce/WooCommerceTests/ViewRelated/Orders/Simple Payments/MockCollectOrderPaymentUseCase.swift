@@ -13,6 +13,8 @@ struct MockCollectOrderPaymentUseCase: CollectOrderPaymentProtocol {
     ///
     func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
         onCollect(onCollectResult)
-        onCompleted()
+        if onCollectResult.isSuccess {
+            onCompleted()
+        }
     }
 }

@@ -51,10 +51,13 @@ extension WooTab {
 
     // Note: currently only the Dashboard tab (My Store) view controller is set up in Main.storyboard.
     private static func visibleTabs(_ isHubMenuFeatureFlagOn: Bool) -> [WooTab] {
-        var tabs: [WooTab] = [.myStore, .orders, .products, .reviews]
+        var tabs: [WooTab] = [.myStore, .orders, .products]
 
         if isHubMenuFeatureFlagOn {
             tabs.append(.hubMenu)
+        }
+        else {
+            tabs.append(.reviews)
         }
 
         return tabs
@@ -375,12 +378,13 @@ private extension MainTabBarController {
             let productsTabIndex = WooTab.products.visibleIndex(isHubMenuFeatureFlagOn)
             controllers.insert(productsNavigationController, at: productsTabIndex)
 
-            let reviewsTabIndex = WooTab.reviews.visibleIndex(isHubMenuFeatureFlagOn)
-            controllers.insert(reviewsNavigationController, at: reviewsTabIndex)
-
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
                 let hubMenuTabIndex = WooTab.hubMenu.visibleIndex(isHubMenuFeatureFlagOn)
                 controllers.insert(hubMenuNavigationController, at: hubMenuTabIndex)
+            }
+            else {
+                let reviewsTabIndex = WooTab.reviews.visibleIndex(isHubMenuFeatureFlagOn)
+                controllers.insert(reviewsNavigationController, at: reviewsTabIndex)
             }
 
             return controllers
@@ -414,15 +418,7 @@ private extension MainTabBarController {
         let productsViewController = createProductsViewController(siteID: siteID)
         productsNavigationController.viewControllers = [productsViewController]
 
-        // Configure reviews tab coordinator once per logged in session potentially with multiple sites.
-        if reviewsTabCoordinator == nil {
-            let reviewsTabCoordinator = createReviewsTabCoordinator()
-            self.reviewsTabCoordinator = reviewsTabCoordinator
-            reviewsTabCoordinator.start()
-        }
-
-        reviewsTabCoordinator?.activate(siteID: siteID)
-
+        // Configure hub menu tab coordinator or reviews tab coordinator once per logged in session potentially with multiple sites.
         if isHubMenuFeatureFlagOn {
             if hubMenuTabCoordinator == nil {
                 let hubTabCoordinator = createHubMenuTabCoordinator()
@@ -430,6 +426,14 @@ private extension MainTabBarController {
                 hubTabCoordinator.start()
             }
             hubMenuTabCoordinator?.activate(siteID: siteID)
+        }
+        else {
+            if reviewsTabCoordinator == nil {
+                let reviewsTabCoordinator = createReviewsTabCoordinator()
+                self.reviewsTabCoordinator = reviewsTabCoordinator
+                reviewsTabCoordinator.start()
+            }
+            reviewsTabCoordinator?.activate(siteID: siteID)
         }
 
         // Set dashboard to be the default tab.
@@ -490,6 +494,10 @@ private extension MainTabBarController {
     /// Displays or Hides the Dot on the Reviews tab, depending on the notification count
     ///
     func updateReviewsTabBadge(count: Int) {
+        //TODO-5509: handle reviews badge
+        guard !isHubMenuFeatureFlagOn else {
+            return
+        }
         let tab = WooTab.reviews
         let tabIndex = tab.visibleIndex(isHubMenuFeatureFlagOn)
         notificationsBadge.badgeCountWasUpdated(newValue: count, tab: tab, in: tabBar, tabIndex: tabIndex)

@@ -176,10 +176,15 @@ extension StoreStatsAndTopPerformersPeriodViewController {
         topPerformersPeriodViewController.displayGhostContent()
     }
 
-    /// Unlocks the and removes the Placeholder Content
+    /// Removes the placeholder content for store stats.
     ///
-    func removeGhostContent() {
+    func removeStoreStatsGhostContent() {
         storeStatsPeriodViewController.removeGhostContent()
+    }
+
+    /// Removes the placeholder content for top performers.
+    ///
+    func removeTopPerformersGhostContent() {
         topPerformersPeriodViewController.removeGhostContent()
     }
 

@@ -156,6 +156,11 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         observeReloadChartAnimated()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        restartGhostAnimationIfNeeded()
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         reloadAllFields()
@@ -263,6 +268,12 @@ extension StoreStatsV4PeriodViewController {
         view.pinSubviewToAllEdges(placeholderChartsView)
     }
 
+    private func restartGhostAnimationIfNeeded() {
+        guard placeholderChartsView.superview != nil else {
+            return
+        }
+        placeholderChartsView.restartGhostAnimation(style: .wooDefaultGhostStyle)
+    }
 }
 
 // MARK: - Configuration

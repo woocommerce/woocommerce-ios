@@ -7,7 +7,10 @@ import Combine
 import enum Networking.DotcomError
 
 final class OrderDetailsViewModel {
-    private let paymentOrchestrator = PaymentCaptureOrchestrator()
+    /// Retains the use-case so it can perform all of its async tasks.
+    ///
+    private var collectPaymentsUseCase: CollectOrderPaymentUseCase?
+
     private let stores: StoresManager
 
     private(set) var order: Order
@@ -85,16 +88,6 @@ final class OrderDetailsViewModel {
         }
     }
 
-    /// Name of the user we will be collecting car present payments from
-    ///
-    var collectPaymentFrom: String {
-        guard let name = order.billingAddress?.firstName else {
-            return "Collect payment"
-        }
-
-        return "Collect payment from \(name)"
-    }
-
     /// Closure to be executed when the UI needs to be reloaded.
     /// That could happen, for example, when new incoming data is detected
     ///
@@ -134,15 +127,6 @@ final class OrderDetailsViewModel {
         order.billingAddress?.email
     }
 
-    /// Subject for the email containing a receipt generated after a card present payment has been captured
-    ///
-    var paymentReceiptEmailSubject: String {
-        guard let storeName = stores.sessionManager.defaultSite?.name else {
-            return Localization.emailSubjectWithoutStoreName
-        }
-
-        return String.localizedStringWithFormat(Localization.emailSubjectWithStoreName, storeName)
-    }
 
     private var cardPresentPaymentGatewayAccounts: [PaymentGatewayAccount] {
         return dataSource.cardPresentPaymentGatewayAccounts()
@@ -519,66 +503,30 @@ extension OrderDetailsViewModel {
         stores.dispatch(deleteTrackingAction)
     }
 
-    /// Returns a publisher that emits an initial value if there is no reader connected and completes as soon as a
-    /// reader connects.
-    func cardReaderAvailable() -> AnyPublisher<[CardReader], Never> {
-        Future<AnyPublisher<[CardReader], Never>, Never> { [stores] promise in
-            let action = CardPresentPaymentAction.checkCardReaderConnected(onCompletion: { publisher in
-                promise(.success(publisher))
-            })
-
-            stores.dispatch(action)
-        }
-        .switchToLatest()
-        .eraseToAnyPublisher()
-    }
-
-    /// We are passing the ReceiptParameters as part of the completon block
-    /// We do so at this point for testing purposes.
-    /// When we implement persistance, the receipt metadata would be persisted
-    /// to Storage, associated to an order. We would not need to propagate
-    /// that object outside of Yosemite.
-    func collectPayment(onWaitingForInput: @escaping () -> Void, // i.e. waiting for buyer to swipe/insert/tap card
-                        onProcessingMessage: @escaping () -> Void, // i.e. payment is processing
-                        onDisplayMessage: @escaping (String) -> Void, // e.g. "Remove Card"
-                        onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) { // used to tell user payment completed (or not)
-        /// We don't have a concept of priority yet, so use the first paymentGatewayAccount for now
-        /// since we can't yet have multiple accounts
-        ///
-        if self.cardPresentPaymentGatewayAccounts.count != 1 {
-            DDLogWarn("Expected one card present gateway account. Got something else.")
+    /// Collects payments for the current order.
+    /// Tries to connect to a reader if necessary.
+    /// Handles receipt sharing.
+    ///
+    func collectPayment(rootViewController: UIViewController, backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> Void) {
+        guard let paymentGateway = cardPresentPaymentGatewayAccounts.first else {
+            return DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
         }
 
-        let statementDescriptor = cardPresentPaymentGatewayAccounts.first?.statementDescriptor
+        let formattedTotal: String = {
+            let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+            let currencyCode = ServiceLocator.currencySettings.currencyCode
+            let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
+            return currencyFormatter.formatAmount(order.total, with: unit) ?? ""
+        }()
 
-        paymentOrchestrator.collectPayment(for: self.order,
-                                           statementDescriptor: statementDescriptor,
-                                           onWaitingForInput: onWaitingForInput,
-                                           onProcessingMessage: onProcessingMessage,
-                                           onDisplayMessage: onDisplayMessage,
-                                           onCompletion: onCompletion)
-
-    }
-
-    func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        paymentOrchestrator.cancelPayment(onCompletion: onCompletion)
-    }
-
-    func printReceipt(params: CardPresentReceiptParameters) {
-        ReceiptActionCoordinator.printReceipt(for: order, params: params)
-    }
-
-    func emailReceipt(params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
-        ServiceLocator.analytics.track(.receiptEmailTapped)
-        paymentOrchestrator.emailReceipt(for: order, params: params, onContent: onContent)
-    }
-}
-
-private extension OrderDetailsViewModel {
-    enum Localization {
-        static let emailSubjectWithStoreName = NSLocalizedString("Your receipt from %1$@",
-                                                                 comment: "Subject of email sent with a card present payment receipt")
-        static let emailSubjectWithoutStoreName = NSLocalizedString("Your receipt",
-                                                                    comment: "Subject of email sent with a card present payment receipt")
+        collectPaymentsUseCase = CollectOrderPaymentUseCase(siteID: order.siteID,
+                                                            order: order,
+                                                            formattedAmount: formattedTotal,
+                                                            paymentGatewayAccount: paymentGateway,
+                                                            rootViewController: rootViewController)
+        collectPaymentsUseCase?.collectPayment(backButtonTitle: backButtonTitle, onCollect: onCollect, onCompleted: { [weak self] in
+            // Make sure we free all the resources
+            self?.collectPaymentsUseCase = nil
+        })
     }
 }

@@ -382,6 +382,7 @@ private extension HelpAndSupportViewController {
             self?.navigationController?.popViewController(animated: true)
         }
         navigationController?.pushViewController(controller, animated: true)
+        ServiceLocator.analytics.track(.supportSSROpened)
     }
 
     @objc func dismissWasPressed() {

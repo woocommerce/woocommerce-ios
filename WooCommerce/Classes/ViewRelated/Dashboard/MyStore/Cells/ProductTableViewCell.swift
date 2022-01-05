@@ -3,18 +3,19 @@ import Yosemite
 import WordPressUI
 import Gridicons
 
-class ProductTableViewCell: UITableViewCell {
+final class ProductTableViewCell: UITableViewCell {
 
     // MARK: - Properties
 
     @IBOutlet private weak var productImage: UIImageView!
     @IBOutlet private var nameLabel: UILabel!
     @IBOutlet private var detailLabel: UILabel!
-    @IBOutlet private var priceLabel: UILabel!
+    @IBOutlet private var accessoryLabel: UILabel!
 
-    /// We use a custom view isntead of the default separator as it's width varies depending on the image size, which varies depending on the screen size.
+    /// We use a custom view instead of the default separator as it's width varies depending on the image size, which varies depending on the screen size.
     @IBOutlet private var bottomBorderView: UIView!
 
+    /// Shows the name of the product.
     var nameText: String? {
         get {
             return nameLabel.text
@@ -24,6 +25,7 @@ class ProductTableViewCell: UITableViewCell {
         }
     }
 
+    /// Text displayed under the product name.
     var detailText: String? {
         get {
             return detailLabel.text
@@ -33,15 +35,17 @@ class ProductTableViewCell: UITableViewCell {
         }
     }
 
-    var priceText: String? {
+    /// Text displayed at the trailing edge of the cell.
+    var accessoryText: String? {
         get {
-            return priceLabel.text
+            return accessoryLabel.text
         }
         set {
-            priceLabel.text = newValue
+            accessoryLabel.text = newValue
         }
     }
 
+    /// Whether to hide the bottom border.
     var hidesBottomBorder: Bool = false {
         didSet {
             bottomBorderView.isHidden = hidesBottomBorder
@@ -51,7 +55,7 @@ class ProductTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         nameLabel.applyBodyStyle()
-        priceLabel.applyBodyStyle()
+        accessoryLabel.applyBodyStyle()
         detailLabel.applyFootnoteStyle()
         applyProductImageStyle()
         backgroundColor = .listForeground
@@ -71,26 +75,54 @@ class ProductTableViewCell: UITableViewCell {
 // MARK: - Public Methods
 //
 extension ProductTableViewCell {
-    func configure(_ statsItem: TopEarnerStatsItem?, imageService: ImageService) {
-        nameText = statsItem?.productName
-        detailText = String.localizedStringWithFormat(
-            NSLocalizedString("Total orders: %ld",
-                              comment: "Top performers — label for the total number of products ordered"),
-            statsItem?.quantity ?? 0
-        )
-        priceText = statsItem?.formattedTotalString
+    struct ViewModel {
+        let nameText: String?
+        let detailText: String?
+        let accessoryText: String?
+        let imageURL: String?
+    }
+
+    func configure(viewModel: ViewModel, imageService: ImageService) {
+        nameText = viewModel.nameText
+        detailText = viewModel.detailText
+        accessoryText = viewModel.accessoryText
 
         /// Set `center` contentMode to not distort the placeholder aspect ratio.
-        /// After a sucessfull image download set the contentMode to `scaleAspectFill`
+        /// After a successful image download set the contentMode to `scaleAspectFill`
         productImage.contentMode = .center
         imageService.downloadAndCacheImageForImageView(productImage,
-                                                       with: statsItem?.imageUrl,
+                                                       with: viewModel.imageURL,
                                                        placeholder: UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon),
                                                        progressBlock: nil) { [weak productImage] (image, _) in
                                                         guard image != nil else {
                                                             return
                                                         }
                                                         productImage?.contentMode = .scaleAspectFill
+        }
+    }
+}
+
+extension ProductTableViewCell.ViewModel {
+    init(statsItem: TopEarnerStatsItem?,
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         isMyStoreTabUpdatesEnabled: Bool) {
+        nameText = statsItem?.productName
+        imageURL = statsItem?.imageUrl
+
+        if isMyStoreTabUpdatesEnabled {
+            detailText = String.localizedStringWithFormat(
+                NSLocalizedString("Net sales: %@",
+                                  comment: "Top performers — label for the total sales of a product"),
+                statsItem?.totalString(currencyFormatter: currencyFormatter) ?? ""
+            )
+            accessoryText = "\(statsItem?.quantity ?? 0)"
+        } else {
+            detailText = String.localizedStringWithFormat(
+                NSLocalizedString("Total orders: %ld",
+                                  comment: "Top performers — label for the total number of products ordered"),
+                statsItem?.quantity ?? 0
+            )
+            accessoryText = statsItem?.formattedTotalString
         }
     }
 }
@@ -103,5 +135,12 @@ private extension ProductTableViewCell {
         static let borderWidth = CGFloat(0.5)
         static let borderColor = UIColor.border
         static let backgroundColor = UIColor.listForeground
+    }
+}
+
+private extension TopEarnerStatsItem {
+    /// Returns a total string without rounding up including the currency symbol.
+    func totalString(currencyFormatter: CurrencyFormatter) -> String? {
+        return currencyFormatter.formatAmount(Decimal(total), with: currency)
     }
 }

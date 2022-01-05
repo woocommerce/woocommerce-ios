@@ -37,16 +37,16 @@ public final class TabNavComponent: ScreenObject {
     }
 
     @discardableResult
-    func gotoMyStoreScreen() throws -> MyStoreScreen {
+    func goToMyStoreScreen() throws -> MyStoreScreen {
         // Avoid transitioning if it is already on screen
-        if !MyStoreScreen.isVisible {
+        if MyStoreScreen.isVisible == false {
             myStoreTabButton.tap()
         }
         return try MyStoreScreen()
     }
 
     @discardableResult
-    public func gotoOrdersScreen() throws -> OrdersScreen {
+    public func goToOrdersScreen() throws -> OrdersScreen {
         // Avoid transitioning if it is already on screen
         guard let orderScreen = try? OrdersScreen(), orderScreen.isLoaded else {
             ordersTabButton.tap()
@@ -57,8 +57,8 @@ public final class TabNavComponent: ScreenObject {
     }
 
     @discardableResult
-    public func gotoProductsScreen() throws -> ProductsScreen {
-        if !ProductsScreen.isVisible {
+    public func goToProductsScreen() throws -> ProductsScreen {
+        if ProductsScreen.isVisible == false {
             productsTabButton.tap()
         }
 
@@ -66,8 +66,8 @@ public final class TabNavComponent: ScreenObject {
     }
 
     @discardableResult
-    public func gotoReviewsScreen() throws -> ReviewsScreen {
-        if !ReviewsScreen.isVisible {
+    public func goToReviewsScreen() throws -> ReviewsScreen {
+        if ReviewsScreen.isVisible == false {
             reviewsTabButton.tap()
         }
 

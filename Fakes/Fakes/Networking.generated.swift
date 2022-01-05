@@ -120,6 +120,45 @@ extension Country {
         )
     }
 }
+extension Coupon {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Coupon {
+        .init(
+            siteID: .fake(),
+            couponID: .fake(),
+            code: .fake(),
+            amount: .fake(),
+            dateCreated: .fake(),
+            dateModified: .fake(),
+            discountType: .fake(),
+            description: .fake(),
+            dateExpires: .fake(),
+            usageCount: .fake(),
+            individualUse: .fake(),
+            productIds: .fake(),
+            excludedProductIds: .fake(),
+            usageLimit: .fake(),
+            usageLimitPerUser: .fake(),
+            limitUsageToXItems: .fake(),
+            freeShipping: .fake(),
+            productCategories: .fake(),
+            excludedProductCategories: .fake(),
+            excludeSaleItems: .fake(),
+            minimumAmount: .fake(),
+            maximumAmount: .fake(),
+            emailRestrictions: .fake(),
+            usedBy: .fake()
+        )
+    }
+}
+extension Coupon.DiscountType {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Coupon.DiscountType {
+        .percent
+    }
+}
 extension CreateProductVariation {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -239,6 +278,7 @@ extension Order {
             orderID: .fake(),
             parentID: .fake(),
             customerID: .fake(),
+            orderKey: .fake(),
             number: .fake(),
             status: .fake(),
             currency: .fake(),

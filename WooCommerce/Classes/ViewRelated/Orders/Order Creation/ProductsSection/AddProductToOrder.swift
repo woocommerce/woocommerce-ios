@@ -20,31 +20,15 @@ struct AddProductToOrder: View {
                         ForEach(viewModel.productRows) { rowViewModel in
                             ProductRow(viewModel: rowViewModel)
                                 .onTapGesture {
-                                    viewModel.selectProduct(rowViewModel.id)
+                                    viewModel.selectProduct(rowViewModel.productID)
                                     isPresented.toggle()
-                                }
-                                .onAppear {
-                                    if rowViewModel == viewModel.productRows.last {
-                                        viewModel.syncNextPage()
-                                    }
                                 }
                         }
 
-                        // Infinite scroll indicator
-                        if #available(iOS 15.0, *) {
-                            ProgressView()
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .listRowInsets(EdgeInsets())
-                                .listRowBackground(Color(.listBackground))
-                                .listRowSeparator(.hidden, edges: .bottom)
-                                .renderedIf(viewModel.shouldShowScrollIndicator)
-                        } else {
-                            ProgressView()
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .listRowInsets(EdgeInsets())
-                                .listRowBackground(Color(.listBackground))
-                                .renderedIf(viewModel.shouldShowScrollIndicator)
-                        }
+                        InfiniteScrollIndicator(showContent: viewModel.shouldShowScrollIndicator)
+                            .onAppear {
+                                viewModel.syncNextPage()
+                            }
                     }
                     .listStyle(PlainListStyle())
                 case .empty:
@@ -61,8 +45,8 @@ struct AddProductToOrder: View {
                     EmptyView()
                 }
             }
-            .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+            .background(Color(.listBackground).ignoresSafeArea())
+            .ignoresSafeArea(.container, edges: .horizontal)
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -77,6 +61,30 @@ struct AddProductToOrder: View {
             }
         }
         .wooNavigationBarStyle()
+    }
+}
+
+private struct InfiniteScrollIndicator: View {
+
+    let showContent: Bool
+
+    var body: some View {
+        if #available(iOS 15.0, *) {
+            createProgressView()
+                .listRowSeparator(.hidden, edges: .bottom)
+        } else {
+            createProgressView()
+        }
+    }
+
+    @ViewBuilder func createProgressView() -> some View {
+        ProgressView()
+            .frame(maxWidth: .infinity, alignment: .center)
+            .listRowInsets(EdgeInsets())
+            .listRowBackground(Color(.listBackground))
+            .if(!showContent) { progressView in
+                progressView.hidden() // Hidden but still in view hierarchy so `onAppear` will trigger sync when needed
+            }
     }
 }
 

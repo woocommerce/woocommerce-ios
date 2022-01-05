@@ -157,6 +157,18 @@ extension UIImage {
         return UIImage.gridicon(.cloudOutline)
     }
 
+    /// Copy Icon - used in `UIBarButtonItem`
+    ///
+    static var copyBarButtonItemImage: UIImage {
+        return UIImage(systemName: "doc.on.doc")!
+    }
+
+    /// Coupon Icon - used in hub menu
+    ///
+    static var couponImage: UIImage {
+        return UIImage(named: "icon-coupon")!
+    }
+
     /// Connection Icon
     ///
     static var connectionImage: UIImage {
@@ -300,6 +312,18 @@ extension UIImage {
     ///
     static var houseOutlinedImage: UIImage {
         UIImage(imageLiteralResourceName: "icon-house-outlined")
+    }
+
+    /// Store Image
+    ///
+    static var storeImage: UIImage {
+        UIImage(named: "icon-store")!
+    }
+
+    /// Cog Image
+    ///
+    static var cogImage: UIImage {
+        return UIImage.gridicon(.cog)
     }
 
     /// Login prologue curved rectangle
@@ -639,12 +663,6 @@ extension UIImage {
         return UIImage.gridicon(.pencil)
             .imageWithTintColor(tintColor)!
             .imageFlippedForRightToLeftLayoutDirection()
-    }
-
-    /// Quote Image
-    ///
-    static var quoteImage: UIImage {
-        return UIImage.gridicon(.quote)
     }
 
     /// Pages Icon

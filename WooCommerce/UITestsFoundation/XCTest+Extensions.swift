@@ -113,4 +113,41 @@ extension XCUIElement {
 
         startCoordinate.press(forDuration: 0.01, thenDragTo: destination)
     }
+
+    func getStaticTextVisibilityCount(textToFind: String) throws -> Int {
+        let predicate = NSPredicate(format: "label CONTAINS[c] %@", textToFind)
+        return XCUIApplication().staticTexts.containing(predicate).count
+    }
+
+    public func assertTextVisibilityCount(textToFind: String, expectedCount: Int) {
+        let count = try! getStaticTextVisibilityCount(textToFind: textToFind)
+        XCTAssertTrue(count == expectedCount, "Expected '\(textToFind)' to appear \(expectedCount) times, but it appeared '\(count)' times!")
+    }
+
+    // Parent element is accessibilityIdentifier, child element is staticText
+    func verifyElementOnCell(parent: String, child: String) throws -> Bool {
+        let parentPredicate = NSPredicate(format: "identifier == %@", parent)
+        let childPredicate = NSPredicate(format: "label ==[c] %@", child)
+
+        return XCUIApplication().tables.cells.matching(parentPredicate).children(matching: .staticText).element(matching: childPredicate).firstMatch.exists
+    }
+
+    public func assertElement(matching: String, existsOnCellWithIdentifier cellIdentifier: String) {
+        XCTAssertTrue(try verifyElementOnCell(parent: matching, child: cellIdentifier), "Element does not exist on cell!")
+    }
+
+    func verifyLabelContains(substring firstSubstring: String, and secondSubstring: String) throws -> Bool {
+        let firstPredicate = NSPredicate(format: "label CONTAINS[c] %@", firstSubstring)
+        let secondPredicate = NSPredicate(format: "label CONTAINS[c] %@", secondSubstring)
+        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [firstPredicate, secondPredicate])
+
+        return XCUIApplication().staticTexts.containing(predicateCompound).count == 1
+    }
+
+    public func assertLabelContains(firstSubstring: String, secondSubstring: String) {
+        XCTAssertTrue(try verifyLabelContains(substring: firstSubstring, and: secondSubstring),
+        """
+        '\(firstSubstring)' and '\(secondSubstring)' does not appear on label!
+        """)
+    }
 }

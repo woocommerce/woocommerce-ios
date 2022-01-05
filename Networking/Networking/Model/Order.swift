@@ -8,6 +8,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     public let orderID: Int64
     public let parentID: Int64
     public let customerID: Int64
+    public let orderKey: String
 
     public let number: String
     /// The Order status.
@@ -45,6 +46,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 orderID: Int64,
                 parentID: Int64,
                 customerID: Int64,
+                orderKey: String,
                 number: String,
                 status: OrderStatusEnum,
                 currency: String,
@@ -72,6 +74,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.orderID = orderID
         self.parentID = parentID
         self.customerID = customerID
+        self.orderKey = orderKey
 
         self.number = number
         self.status = status
@@ -113,6 +116,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         let orderID = try container.decode(Int64.self, forKey: .orderID)
         let parentID = try container.decode(Int64.self, forKey: .parentID)
         let customerID = try container.decode(Int64.self, forKey: .customerID)
+        let orderKey = try container.decode(String.self, forKey: .orderKey)
 
         let number = try container.decode(String.self, forKey: .number)
         let status = try container.decode(OrderStatusEnum.self, forKey: .status)
@@ -160,6 +164,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   orderID: orderID,
                   parentID: parentID,
                   customerID: customerID,
+                  orderKey: orderKey,
                   number: number,
                   status: status,
                   currency: currency,
@@ -189,6 +194,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
               orderID: 0,
               parentID: 0,
               customerID: 0,
+              orderKey: "",
               number: "",
               status: .pending,
               currency: "",
@@ -223,6 +229,7 @@ internal extension Order {
         case orderID            = "id"
         case parentID           = "parent_id"
         case customerID         = "customer_id"
+        case orderKey           = "order_key"
 
         case number             = "number"
         case status             = "status"
@@ -263,6 +270,7 @@ extension Order: Equatable {
             lhs.orderID == rhs.orderID &&
             lhs.parentID == rhs.parentID &&
             lhs.customerID == rhs.customerID &&
+            lhs.orderKey == rhs.orderKey &&
             lhs.number == rhs.number &&
             lhs.status == rhs.status &&
             lhs.dateCreated == rhs.dateCreated &&

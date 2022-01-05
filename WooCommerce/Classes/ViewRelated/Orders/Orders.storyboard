@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -46,40 +47,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Z9o-7H-pWC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2871" y="543"/>
-        </scene>
-        <!--Product List View Controller-->
-        <scene sceneID="tRI-WT-3cp">
-            <objects>
-                <viewController storyboardIdentifier="ProductListViewController" id="gjo-lx-M5d" customClass="ProductListViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="K91-GD-PbX">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="eY7-vI-1cr">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="gjo-lx-M5d" id="ABK-8R-DTb"/>
-                                    <outlet property="delegate" destination="gjo-lx-M5d" id="wOm-50-abo"/>
-                                </connections>
-                            </tableView>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="3jQ-CL-a1D"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="3jQ-CL-a1D" firstAttribute="bottom" secondItem="eY7-vI-1cr" secondAttribute="bottom" id="5eQ-Bk-PGp"/>
-                            <constraint firstItem="eY7-vI-1cr" firstAttribute="top" secondItem="3jQ-CL-a1D" secondAttribute="top" id="A9r-M9-3hU"/>
-                            <constraint firstItem="eY7-vI-1cr" firstAttribute="leading" secondItem="3jQ-CL-a1D" secondAttribute="leading" id="ReZ-l5-UwN"/>
-                            <constraint firstItem="3jQ-CL-a1D" firstAttribute="trailing" secondItem="eY7-vI-1cr" secondAttribute="trailing" id="oJy-wR-9oq"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="tableView" destination="eY7-vI-1cr" id="acx-d0-6Fq"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="S5R-n9-NaZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3780" y="543"/>
         </scene>
     </scenes>
     <resources>

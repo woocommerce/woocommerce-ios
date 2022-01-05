@@ -81,7 +81,9 @@ final class OldStoreStatsAndTopPerformersPeriodViewController: UIViewController 
     // MARK: Child View Controllers
 
     private lazy var storeStatsPeriodViewController: OldStoreStatsV4PeriodViewController = {
-        return OldStoreStatsV4PeriodViewController(timeRange: timeRange, currentDate: currentDate)
+        OldStoreStatsV4PeriodViewController(timeRange: timeRange,
+                                            currentDate: currentDate,
+                                            usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
     private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()
@@ -171,6 +173,14 @@ final class OldStoreStatsAndTopPerformersPeriodViewController: UIViewController 
 extension OldStoreStatsAndTopPerformersPeriodViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         scrollDelegate?.dashboardUIScrollViewDidScroll(scrollView)
+    }
+
+    /// We're not using scrollViewDidScroll because that gets executed even while
+    /// the app is being loaded for the first time.
+    ///
+    /// Note: This also covers pull-to-refresh
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        usageTracksEventEmitter.interacted()
     }
 }
 

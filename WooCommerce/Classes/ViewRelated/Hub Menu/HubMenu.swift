@@ -71,7 +71,7 @@ struct HubMenu: View {
         .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
     }
 
-    func pushReviewDetailsViewController(using parcel: ProductReviewFromNoteParcel) {
+    func pushReviewDetailsView(using parcel: ProductReviewFromNoteParcel) {
         viewModel.setProductReviewFromNoteParcel(parcel)
         viewModel.showingReviewDetail = true
     }

@@ -20,7 +20,7 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     /// Present the specific Review Details View from a push notification
     ///
     func pushReviewDetailsViewController(using parcel: ProductReviewFromNoteParcel) {
-        hubMenu.pushReviewDetailsViewController(using: parcel)
+        hubMenu.pushReviewDetailsView(using: parcel)
     }
 }
 

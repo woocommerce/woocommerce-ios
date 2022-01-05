@@ -1,19 +1,20 @@
+import Combine
 import UIKit
 import WordPressUI
 
 final class CouponListViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
-    private var viewModel: CouponListViewModel!
+    private let viewModel: CouponListViewModel
 
     /// Set when an empty state view controller is displayed.
     ///
     private var emptyStateViewController: UIViewController?
 
+    private var subscriptions: Set<AnyCancellable> = []
+
     init(siteID: Int64) {
+        self.viewModel = CouponListViewModel(siteID: siteID)
         super.init(nibName: type(of: self).nibName, bundle: nil)
-        self.viewModel = CouponListViewModel(siteID: siteID,
-                                                       didLeaveState: didLeave(state:),
-                                                       didEnterState: didEnter(state:))
     }
 
     required init?(coder: NSCoder) {
@@ -24,31 +25,29 @@ final class CouponListViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
+        configureViewModel()
+    }
+
+    private func configureViewModel() {
         viewModel.viewDidLoad()
-    }
-
-    private func didLeave(state: CouponListState) {
-        switch state {
-        case .empty:
-            removeNoResultsOverlay()
-        case .loading:
-            removePlaceholderCoupons()
-        default:
-            break
-        }
-    }
-
-    private func didEnter(state: CouponListState) {
-        switch state {
-        case .loading:
-            displayPlaceholderCoupons()
-        case .coupons:
-            tableView.reloadData()
-        case .empty:
-            displayNoResultsOverlay()
-        default:
-            break
-        }
+        viewModel.$state
+            .removeDuplicates()
+            .sink { [weak self] state in
+                guard let self = self else { return }
+                self.removeNoResultsOverlay()
+                self.removePlaceholderCoupons()
+                switch state {
+                case .empty:
+                    self.displayNoResultsOverlay()
+                case .loading:
+                    self.displayPlaceholderCoupons()
+                case .coupons:
+                    self.tableView.reloadData()
+                case .initialized:
+                    break
+                }
+            }
+            .store(in: &subscriptions)
     }
 }
 

@@ -1,4 +1,4 @@
-import Foundation
+import Combine
 import Yosemite
 import protocol Storage.StorageManagerType
 import class AutomatticTracks.CrashLogging
@@ -18,26 +18,10 @@ enum CouponListState {
 }
 
 final class CouponListViewModel {
-    /// onListStateChange
-    ///
-    private var didLeaveState: (CouponListState) -> ()
-
-    /// onListStateChange
-    ///
-    private var didEnterState: (CouponListState) -> ()
 
     /// Active state
     ///
-    private var state: CouponListState = .initialized {
-        didSet {
-            guard oldValue != state else {
-                return
-            }
-
-            didLeaveState(oldValue)
-            didEnterState(state)
-        }
-    }
+    @Published private(set) var state: CouponListState = .initialized
 
     /// couponViewModels: ViewModels for the cells representing Coupons
     ///
@@ -69,15 +53,11 @@ final class CouponListViewModel {
     init(siteID: Int64,
          syncingCoordinator: SyncingCoordinatorProtocol = SyncingCoordinator(),
          storesManager: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
-         didLeaveState: @escaping (CouponListState) -> (),
-         didEnterState: @escaping (CouponListState) -> ()) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.syncingCoordinator = syncingCoordinator
         self.storesManager = storesManager
         self.storageManager = storageManager
-        self.didLeaveState = didLeaveState
-        self.didEnterState = didEnterState
         self.resultsController = Self.createResultsController(siteID: siteID,
                                                               storageManager: storageManager)
         configureSyncingCoordinator()

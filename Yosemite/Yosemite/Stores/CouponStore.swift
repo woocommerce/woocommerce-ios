@@ -159,7 +159,7 @@ private extension CouponStore {
     }
 
     /// Creates a coupon given its details.
-    /// After the API request succeeds, the a new stored coupon should be inserted to the local storage.
+    /// After the API request succeeds, a new stored coupon should be inserted into the local storage.
     /// - Parameters:
     ///   - coupon: The coupon to be created
     ///   - onCompletion: Closure to call after creation is complete. Called on the main thread.

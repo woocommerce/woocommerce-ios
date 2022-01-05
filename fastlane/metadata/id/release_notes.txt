@@ -1,0 +1,3 @@
+Terkadang Anda hanya perlu membuat pesanan cepat untuk menerima pembayaran dari pelanggan, untuk transaksi yang Anda lakukan secara langsung seperti di pameran dagang. Kami menambahkan pilihan baru bagi Anda untuk membuat Pembayaran Simpel! Buka tab Pesanan untuk membuat pesanan cepat guna merekam transaksi tersebut. Kami juga bekerja keras untuk pembuatan pesanan lengkap – dan Anda akan melihatnya di akhir tahun ini.
+
+Kami juga memperbaiki bug yang membuat penghitung pengunjung situs tidak muncul di tab Hari ini pada dasbor toko Anda. Terima kasih telah memberi tahu kami! 💜

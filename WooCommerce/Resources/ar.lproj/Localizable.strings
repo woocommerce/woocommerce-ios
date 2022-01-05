@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-12-20 19:54:03+0000 */
+/* Translation-Revision-Date: 2022-01-05 15:45:12+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -4074,7 +4074,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "فشل تحديث برنامج القارئ لأن بطارية القارئ منخفضة. يرجى شحن القارئ بنسبة تزيد على 50% قبل المحاولة مرة أخرى.";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
-"Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "فشل تحديث برنامج القارئ لأن بطارية القارئ مشحونة بنسبة %%%. يرجى شحن القارئ بنسبة تزيد على 50%% قبل المحاولة مرة أخرى.";
+"Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "فشل تحديث برنامج القارئ لأن بطارية القارئ مشحونة بنسبة %.0f%%. يرجى شحن القارئ بنسبة تزيد على 50%% قبل المحاولة مرة أخرى.";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */

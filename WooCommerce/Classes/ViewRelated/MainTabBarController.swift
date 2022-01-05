@@ -215,7 +215,6 @@ private extension MainTabBarController {
     func trackTabSelected(newTab: WooTab) {
         switch newTab {
         case .myStore:
-            StoreStatsUsageTracksEventEmitter.shared.interacted()
             ServiceLocator.analytics.track(.dashboardSelected)
         case .orders:
             ServiceLocator.analytics.track(.ordersSelected)

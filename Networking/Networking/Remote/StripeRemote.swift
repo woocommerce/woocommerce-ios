@@ -31,7 +31,7 @@ public class StripeRemote: Remote {
 //
 private extension StripeRemote {
     enum Path {
-        static let accounts = "payments/accounts"
+        static let accounts = "wc_stripe/account/summary"
     }
 
     enum AccountParameterKeys {

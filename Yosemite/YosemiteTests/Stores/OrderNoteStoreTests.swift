@@ -274,6 +274,7 @@ private extension OrderNoteStoreTests {
                      orderID: sampleOrderID,
                      parentID: 0,
                      customerID: 11,
+                     orderKey: "acbd123",
                      number: "963",
                      status: .processing,
                      currency: "USD",

@@ -1086,7 +1086,8 @@ private extension ProductFormViewController {
         }
         let originalData = ProductInventoryEditableData(productModel: product)
         let hasChangedData = originalData != data
-        //TODO: Add analytics
+
+        ServiceLocator.analytics.track(.productInventorySettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
 
         guard hasChangedData else {
             return

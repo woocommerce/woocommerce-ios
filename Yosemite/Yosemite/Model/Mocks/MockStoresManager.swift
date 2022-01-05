@@ -182,4 +182,8 @@ public class MockStoresManager: StoresManager {
     public func updateDefaultRoles(_ roles: [User.Role]) {
         // No op
     }
+
+    public func updateDefaultStore(_ site: Site) {
+        sessionManager.defaultSite = site
+    }
 }

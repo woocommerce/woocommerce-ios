@@ -1,3 +1,4 @@
+import Codegen
 import Combine
 import XCTest
 import Networking
@@ -163,6 +164,80 @@ final class StoresManagerTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(siteIDValues, [nil, siteID, nil])
+    }
+
+    // MARK: `updateDefaultStore(_ site: Site)`
+
+    func test_updateDefaultStore_with_the_same_siteID_updates_site_but_does_not_emit_siteID() {
+        // Arrange
+        let mockAuthenticationManager = MockAuthenticationManager()
+        ServiceLocator.setAuthenticationManager(mockAuthenticationManager)
+        let manager = DefaultStoresManager.testingInstance
+        var siteIDValues = [Int64?]()
+        cancellable = manager.siteID.sink { siteID in
+            siteIDValues.append(siteID)
+        }
+        let siteID: Int64 = 134
+
+        // Action
+        // Default site ID needs to be set before the site can be updated.
+        manager.updateDefaultStore(storeID: siteID)
+
+        let jcpSite = Site.fake().copy(siteID: siteID, isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        manager.updateDefaultStore(jcpSite)
+        let siteIDValuesAfterUpdatingWithJCPSite = siteIDValues
+
+        let jetpackSite = Site.fake().copy(siteID: siteID, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        manager.updateDefaultStore(jetpackSite)
+        let siteIDValuesAfterUpdatingWithJetpackSite = siteIDValues
+
+        // Assert
+        XCTAssertEqual(siteIDValuesAfterUpdatingWithJCPSite, [nil, siteID])
+        XCTAssertEqual(siteIDValuesAfterUpdatingWithJetpackSite, [nil, siteID])
+        XCTAssertEqual(manager.sessionManager.defaultSite, jetpackSite)
+    }
+
+    func test_updateDefaultStore_with_site_of_a_different_siteID_does_not_update_site_nor_emit_siteID() {
+        // Arrange
+        let mockAuthenticationManager = MockAuthenticationManager()
+        ServiceLocator.setAuthenticationManager(mockAuthenticationManager)
+        let manager = DefaultStoresManager.testingInstance
+        var siteIDValues = [Int64?]()
+        cancellable = manager.siteID.sink { siteID in
+            siteIDValues.append(siteID)
+        }
+
+        // Action
+        let siteID: Int64 = 134
+        manager.updateDefaultStore(storeID: siteID)
+
+        let differentSiteID: Int64 = 256
+        let differentSite = Site.fake().copy(siteID: differentSiteID, isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        manager.updateDefaultStore(differentSite)
+
+        // Assert
+        XCTAssertEqual(siteIDValues, [nil, siteID])
+        XCTAssertNil(manager.sessionManager.defaultSite)
+    }
+
+    func test_updateDefaultStore_with_site_without_setting_previous_siteID_does_not_update_site_nor_emit_siteID() {
+        // Arrange
+        let mockAuthenticationManager = MockAuthenticationManager()
+        ServiceLocator.setAuthenticationManager(mockAuthenticationManager)
+        let manager = DefaultStoresManager.testingInstance
+        var siteIDValues = [Int64?]()
+        cancellable = manager.siteID.sink { siteID in
+            siteIDValues.append(siteID)
+        }
+
+        // Action
+        let siteID: Int64 = 134
+        let site = Site.fake().copy(siteID: siteID, isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        manager.updateDefaultStore(site)
+
+        // Assert
+        XCTAssertEqual(siteIDValues, [nil])
+        XCTAssertNil(manager.sessionManager.defaultSite)
     }
 }
 

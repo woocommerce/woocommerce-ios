@@ -6,16 +6,18 @@ class ProductRowViewModelTests: XCTestCase {
 
     func test_viewModel_is_created_with_correct_initial_values() {
         // Given
+        let rowID = "0"
         let imageURLString = "https://woo.com/woo.jpg"
         let product = Product.fake().copy(productID: 12,
                                           name: "Test Product",
                                           images: [ProductImage.fake().copy(src: imageURLString)])
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(id: rowID, product: product, canChangeQuantity: false)
 
         // Then
-        XCTAssertEqual(viewModel.id, product.productID)
+        XCTAssertEqual(viewModel.id, rowID)
+        XCTAssertEqual(viewModel.productID, product.productID)
         XCTAssertEqual(viewModel.name, product.name)
         XCTAssertEqual(viewModel.imageURL, URL(string: imageURLString))
         XCTAssertFalse(viewModel.canChangeQuantity)
@@ -119,5 +121,35 @@ class ProductRowViewModelTests: XCTestCase {
         // Then
         let expectedSKULabel = ""
         XCTAssertEqual(viewModel.skuLabel, expectedSKULabel)
+    }
+
+    func test_increment_and_decrement_quantity_have_step_value_of_one() {
+        // Given
+        let product = Product.fake()
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
+
+        // When & Then
+        viewModel.incrementQuantity()
+        XCTAssertEqual(viewModel.quantity, 2)
+
+        // When & Then
+        viewModel.decrementQuantity()
+        XCTAssertEqual(viewModel.quantity, 1)
+    }
+
+    func test_quantity_has_minimum_value_of_one() {
+        // Given
+        let product = Product.fake()
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, 1)
+        XCTAssertTrue(viewModel.shouldDisableQuantityDecrementer, "Quantity decrementer is not disabled at minimum value")
+
+        // When
+        viewModel.decrementQuantity()
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, 1)
     }
 }

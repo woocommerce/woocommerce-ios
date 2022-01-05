@@ -25,6 +25,10 @@ final class JetpackInstallStepsViewModel: ObservableObject {
     ///
     private var retryCount: Int = 0
 
+    /// Error occurred in any install step
+    ///
+    private var installError: Error?
+
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
@@ -36,6 +40,24 @@ final class JetpackInstallStepsViewModel: ObservableObject {
         checkJetpackPluginDetailsAndProceed()
     }
 
+    /// Checks Jetpack plugin details without installing the plugin.
+    /// If the plugin is active, proceed to check site connection, otherwise do nothing.
+    ///
+    func checkJetpackPluginDetails() {
+        let pluginInfoAction = SitePluginAction.getPluginDetails(siteID: siteID, pluginName: Constants.jetpackPluginName) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let plugin):
+                if plugin.status == .active {
+                    self.checkSiteConnection()
+                }
+            case .failure:
+                break
+            }
+        }
+        stores.dispatch(pluginInfoAction)
+    }
+
     /// Fetches details for Jetpack-the-plugin, and installs it if the plugin does not exist.
     /// Otherwise proceeds to activate the plugin if needed.
     /// - Parameters:
@@ -44,6 +66,7 @@ final class JetpackInstallStepsViewModel: ObservableObject {
     private func checkJetpackPluginDetailsAndProceed() {
         guard retryCount <= Constants.maxRetryCount else {
             installFailed = true
+            ServiceLocator.analytics.track(.jetpackInstallFailed, properties: nil, error: installError)
             return
         }
         let pluginInfoAction = SitePluginAction.getPluginDetails(siteID: siteID, pluginName: Constants.jetpackPluginName) { [weak self] result in
@@ -55,9 +78,10 @@ final class JetpackInstallStepsViewModel: ObservableObject {
                 } else {
                     self.activateJetpack()
                 }
-            case .failure:
+            case .failure(let error):
                 // plugin is likely to not have been installed, so proceed to install it.
                 self.installJetpackPlugin()
+                self.installError = error
             }
         }
         stores.dispatch(pluginInfoAction)
@@ -73,7 +97,8 @@ final class JetpackInstallStepsViewModel: ObservableObject {
             case .success:
                 self.retryCount = 0
                 self.activateJetpack()
-            case .failure:
+            case .failure(let error):
+                self.installError = error
                 self.retryCount += 1
                 self.checkJetpackPluginDetailsAndProceed()
             }
@@ -91,7 +116,8 @@ final class JetpackInstallStepsViewModel: ObservableObject {
             case .success:
                 self.retryCount = 0
                 self.checkSiteConnection()
-            case .failure:
+            case .failure(let error):
+                self.installError = error
                 self.retryCount += 1
                 self.checkJetpackPluginDetailsAndProceed()
             }
@@ -101,7 +127,8 @@ final class JetpackInstallStepsViewModel: ObservableObject {
 
     /// Check site to make sure connection succeeds.
     ///
-    private func checkSiteConnection() {
+    func checkSiteConnection() {
+        installFailed = false
         currentStep = .connection
         let siteFetch = AccountAction.loadAndSynchronizeSite(siteID: siteID,
                                                              forcedUpdate: true,
@@ -110,12 +137,18 @@ final class JetpackInstallStepsViewModel: ObservableObject {
             switch result {
             case .success(let site):
                 guard site.isWooCommerceActive, !site.isJetpackCPConnected else {
-                    self.installFailed = true
+                    self.retryCount += 1
+                    self.checkJetpackPluginDetailsAndProceed()
                     return
                 }
                 self.currentStep = .done
-            case .failure:
-                self.installFailed = true
+                self.retryCount = 0
+                self.stores.updateDefaultStore(site)
+                ServiceLocator.analytics.track(.jetpackInstallSucceeded)
+            case .failure(let error):
+                self.installError = error
+                self.retryCount += 1
+                self.checkJetpackPluginDetailsAndProceed()
             }
         }
         stores.dispatch(siteFetch)

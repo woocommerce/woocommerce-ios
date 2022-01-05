@@ -1,6 +1,7 @@
 import Foundation
 import XCTest
 import Combine
+import Fakes
 
 @testable import WooCommerce
 @testable import Yosemite
@@ -106,7 +107,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         let receivedCompleted: Bool = waitFor { promise in
             noticeSubject.sink { intent in
                 switch intent {
-                case .error:
+                case .error, .created:
                     promise(false)
                 case .completed:
                     promise(true)
@@ -140,7 +141,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
                 switch intent {
                 case .error:
                     promise(true)
-                case .completed:
+                case .completed, .created:
                     promise(false)
                 }
             }
@@ -257,5 +258,71 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.showPayWithCardRow)
+    }
+
+    func test_paymentLinkRow_is_hidden_if_payment_path_is_not_available() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .getPaymentsPagePath(_, onCompletion):
+                onCompletion(.failure(.paymentsPageNotFound))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, enablePaymentLink: true)
+
+        // Then
+        XCTAssertFalse(viewModel.showPaymentLinkRow)
+        XCTAssertNil(viewModel.paymentLink)
+    }
+
+    func test_paymentLinkRow_is_shown_if_payment_path_is_available() {
+        // Given
+        let session = SessionManager.testingInstance
+        session.defaultSite = .fake().copy(url: "https://www.test-store.com")
+
+        let stores = MockStoresManager(sessionManager: session)
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .getPaymentsPagePath(_, onCompletion):
+                onCompletion(.success("order-pay"))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, enablePaymentLink: true)
+
+        // Then
+        XCTAssertTrue(viewModel.showPaymentLinkRow)
+        XCTAssertNotNil(viewModel.paymentLink)
+    }
+
+    func test_view_model_attempts_completed_notice_after_sharing_link() {
+        // Given
+        let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", presentNoticeSubject: noticeSubject)
+
+        // When
+        let receivedCompleted: Bool = waitFor { promise in
+            noticeSubject.sink { intent in
+                switch intent {
+                case .error, .completed:
+                    promise(false)
+                case .created:
+                    promise(true)
+                }
+            }
+            .store(in: &self.subscriptions)
+            viewModel.performLinkSharedTasks()
+        }
+
+        // Then
+        XCTAssertTrue(receivedCompleted)
     }
 }

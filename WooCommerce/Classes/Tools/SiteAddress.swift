@@ -52,7 +52,7 @@ final class SiteAddress {
 
     private func getValueFromSiteSettings(_ settingID: String) -> String? {
         return siteSettings.first { (setting) -> Bool in
-            return setting.settingID.isEqual(to: settingID)
+            return setting.settingID == settingID
         }?.value
     }
 }

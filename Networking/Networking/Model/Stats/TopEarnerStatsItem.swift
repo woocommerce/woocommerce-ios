@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a single top earner stat for a specific period.
 ///
-public struct TopEarnerStatsItem: Decodable, Equatable, GeneratedFakeable {
+public struct TopEarnerStatsItem: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
 
     /// Product ID
     ///
@@ -67,7 +67,7 @@ private extension TopEarnerStatsItem {
 //
 extension TopEarnerStatsItem: Comparable {
     public static func < (lhs: TopEarnerStatsItem, rhs: TopEarnerStatsItem) -> Bool {
-        return lhs.total < rhs.total ||
-            (lhs.total == rhs.total && lhs.quantity < rhs.quantity)
+        return lhs.quantity < rhs.quantity ||
+            (lhs.quantity == rhs.quantity && lhs.total < rhs.total)
     }
 }

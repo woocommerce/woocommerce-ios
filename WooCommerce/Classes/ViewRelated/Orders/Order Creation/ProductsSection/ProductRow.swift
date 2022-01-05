@@ -60,20 +60,25 @@ private struct ProductStepper: View {
     @ScaledMetric private var scale: CGFloat = 1
 
     var body: some View {
-        HStack(spacing: Layout.stepperSpacing * scale) {
+        HStack {
             Button {
-                // TODO: Decrement the product quantity
+                viewModel.decrementQuantity()
             } label: {
                 Image(uiImage: .minusSmallImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: Layout.stepperButtonSize * scale)
             }
+            .disabled(viewModel.shouldDisableQuantityDecrementer)
 
-            Text("\(viewModel.quantity)")
+            Spacer()
+
+            Text(viewModel.quantity.description)
+
+            Spacer()
 
             Button {
-                // TODO: Increment the product quantity
+                viewModel.incrementQuantity()
             } label: {
                 Image(uiImage: .plusSmallImage)
                     .resizable()
@@ -81,20 +86,21 @@ private struct ProductStepper: View {
                     .frame(height: Layout.stepperButtonSize * scale)
             }
         }
-        .padding(Layout.stepperSpacing/2 * scale)
+        .padding(Layout.stepperPadding * scale)
+        .frame(width: Layout.stepperWidth * scale)
         .overlay(
             RoundedRectangle(cornerRadius: Layout.stepperBorderRadius)
                 .stroke(Color(UIColor.separator), lineWidth: Layout.stepperBorderWidth)
         )
         .accessibilityElement(children: .ignore)
         .accessibility(label: Text(Localization.quantityLabel))
-        .accessibility(value: Text("\(viewModel.quantity)"))
+        .accessibility(value: Text(viewModel.quantity.description))
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .decrement:
-                break // TODO: Decrement the product quantity
+                viewModel.decrementQuantity()
             case .increment:
-                break // TODO: Increment the product quantity
+                viewModel.incrementQuantity()
             @unknown default:
                 break
             }
@@ -108,7 +114,8 @@ private enum Layout {
     static let stepperBorderWidth: CGFloat = 1.0
     static let stepperBorderRadius: CGFloat = 4.0
     static let stepperButtonSize: CGFloat = 22.0
-    static let stepperSpacing: CGFloat = 22.0
+    static let stepperPadding: CGFloat = 11.0
+    static let stepperWidth: CGFloat = 112.0
 }
 
 private enum Localization {
@@ -117,7 +124,7 @@ private enum Localization {
 
 struct ProductRow_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ProductRowViewModel(id: 1,
+        let viewModel = ProductRowViewModel(productID: 1,
                                             name: "Love Ficus",
                                             sku: "123456",
                                             price: "20",
@@ -126,7 +133,7 @@ struct ProductRow_Previews: PreviewProvider {
                                             manageStock: true,
                                             canChangeQuantity: true,
                                             imageURL: nil)
-        let viewModelWithoutStepper = ProductRowViewModel(id: 1,
+        let viewModelWithoutStepper = ProductRowViewModel(productID: 1,
                                                           name: "Love Ficus",
                                                           sku: "123456",
                                                           price: "20",

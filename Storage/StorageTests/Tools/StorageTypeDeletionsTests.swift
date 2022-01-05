@@ -1,7 +1,7 @@
 import XCTest
 @testable import Storage
 
-class StorageTypeDeletionsTests: XCTestCase {
+final class StorageTypeDeletionsTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 98765
     private var storageManager: StorageManagerType!
@@ -19,6 +19,83 @@ class StorageTypeDeletionsTests: XCTestCase {
         storageManager.reset()
         storageManager = nil
         super.tearDown()
+    }
+
+    func test_deleteCoupon_by_siteID_deletes_all_coupons() throws {
+        // Given
+        let coupon1 = storage.insertNewObject(ofType: Coupon.self)
+        coupon1.siteID = sampleSiteID
+        coupon1.couponID = 1
+
+        let coupon2 = storage.insertNewObject(ofType: Coupon.self)
+        coupon2.siteID = sampleSiteID
+        coupon2.couponID = 2
+
+        XCTAssertEqual(storage.loadAllCoupons(siteID: sampleSiteID).count, 2)
+
+        // When
+        storage.deleteCoupons(siteID: sampleSiteID)
+
+        // Then
+        let storedCoupons = try XCTUnwrap(storage.loadAllCoupons(siteID: sampleSiteID))
+        XCTAssertEqual(storedCoupons, [])
+    }
+
+    func test_deleteCoupon_by_siteID_only_deletes_for_specified_site() throws {
+        // Given
+        let coupon = storage.insertNewObject(ofType: Coupon.self)
+        coupon.siteID = sampleSiteID
+        coupon.couponID = 1
+
+        let otherSiteCoupon = storage.insertNewObject(ofType: Coupon.self)
+        otherSiteCoupon.siteID = 12345
+        otherSiteCoupon.couponID = 2
+
+        // When
+        storage.deleteCoupons(siteID: sampleSiteID)
+
+        // Then
+        let storedCoupons = try XCTUnwrap(storage.loadAllCoupons(siteID: 12345))
+        XCTAssertEqual(storedCoupons, [otherSiteCoupon])
+    }
+
+    func test_deleteCoupon_by_siteID_and_couponID_only_deletes_coupon_with_the_given_IDs() throws {
+        // Given
+        let sampleCouponID: Int64 = 13435
+        let coupon = storage.insertNewObject(ofType: Coupon.self)
+        coupon.siteID = sampleSiteID
+        coupon.couponID = sampleCouponID
+
+        let otherCoupon = storage.insertNewObject(ofType: Coupon.self)
+        otherCoupon.siteID = sampleSiteID
+        otherCoupon.couponID = 2
+
+        // When
+        storage.deleteCoupon(siteID: sampleSiteID, couponID: sampleCouponID)
+
+        // Then
+        let storedCoupons = try XCTUnwrap(storage.loadAllCoupons(siteID: sampleSiteID))
+        XCTAssertEqual(storedCoupons, [otherCoupon])
+    }
+
+    func test_deleteCoupon_by_siteID_and_couponID_only_deletes_coupon_for_the_given_site() throws {
+        // Given
+        let sampleCouponID: Int64 = 13435
+        let coupon = storage.insertNewObject(ofType: Coupon.self)
+        coupon.siteID = sampleSiteID
+        coupon.couponID = sampleCouponID
+
+        let otherSiteID: Int64 = 333
+        let otherCoupon = storage.insertNewObject(ofType: Coupon.self)
+        otherCoupon.siteID = otherSiteID
+        otherCoupon.couponID = sampleCouponID
+
+        // When
+        storage.deleteCoupon(siteID: sampleSiteID, couponID: sampleCouponID)
+
+        // Then
+        let storedCoupons = try XCTUnwrap(storage.loadAllCoupons(siteID: otherSiteID))
+        XCTAssertEqual(storedCoupons, [otherCoupon])
     }
 
     func test_deleteStaleAddOnGroups_does_not_delete_active_addOns() throws {

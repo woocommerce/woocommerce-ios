@@ -187,8 +187,20 @@ public class AppSettingsStore: Store {
             setTelemetryLastReportedTime(siteID: siteID, time: time)
         case .getTelemetryInfo(siteID: let siteID, onCompletion: let onCompletion):
             getTelemetryInfo(siteID: siteID, onCompletion: onCompletion)
+        case let .setSimplePaymentsTaxesToggleState(siteID, isOn, onCompletion):
+            setSimplePaymentsTaxesToggleState(siteID: siteID, isOn: isOn, onCompletion: onCompletion)
+        case let .getSimplePaymentsTaxesToggleState(siteID, onCompletion):
+            getSimplePaymentsTaxesToggleState(siteID: siteID, onCompletion: onCompletion)
         case .resetGeneralStoreSettings:
             resetGeneralStoreSettings()
+        case .loadStripeInPersonPaymentsSwitchState(onCompletion: let onCompletion):
+            loadStripeInPersonPaymentsSwitchState(onCompletion: onCompletion)
+        case .setStripeInPersonPaymentsSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
+            setStripeInPersonPaymentsSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
+        case .setProductSKUInputScannerFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
+            setProductSKUInputScannerFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
+        case .loadProductSKUInputScannerFeatureSwitchState(onCompletion: let onCompletion):
+            loadProductSKUInputScannerFeatureSwitchState(onCompletion: onCompletion)
         }
     }
 }
@@ -284,6 +296,45 @@ private extension AppSettingsStore {
 
     }
 
+    /// Loads the current WooCommerce Stripe Payment Gateway extension In-Person Payments beta feature switch state from `GeneralAppSettings`
+    ///
+    func loadStripeInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        onCompletion(.success(settings.isStripeInPersonPaymentsSwitchEnabled))
+    }
+
+    /// Sets the provided WooCommerce Stripe Payment Gateway extension In-Person Payments  beta feature switch state into `GeneralAppSettings`
+    ///
+    func setStripeInPersonPaymentsSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(isStripeInPersonPaymentsSwitchEnabled: isEnabled)
+            try saveGeneralAppSettings(settings)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+
+    }
+
+    /// Sets the state for the Product SKU Input Scanner beta feature switch into `GeneralAppSettings`.
+    ///
+    func setProductSKUInputScannerFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(isProductSKUInputScannerSwitchEnabled: isEnabled)
+            try saveGeneralAppSettings(settings)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Loads the most recent state for the Product SKU Input Scanner beta feature switch from `GeneralAppSettings`.
+    ///
+    func loadProductSKUInputScannerFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        onCompletion(.success(settings.isProductSKUInputScannerSwitchEnabled))
+    }
+
     /// Loads the last persisted eligibility error information from `GeneralAppSettings`
     ///
     func loadEligibilityErrorInfo(onCompletion: (Result<EligibilityErrorInfo, Error>) -> Void) {
@@ -341,6 +392,8 @@ private extension AppSettingsStore {
                                       feedbacks: [:],
                                       isViewAddOnsSwitchEnabled: false,
                                       isOrderCreationSwitchEnabled: false,
+                                      isStripeInPersonPaymentsSwitchEnabled: false,
+                                      isProductSKUInputScannerSwitchEnabled: false,
                                       knownCardReaders: [],
                                       lastEligibilityErrorInfo: nil)
         }
@@ -803,6 +856,23 @@ private extension AppSettingsStore {
         } catch {
             DDLogError("⛔️ Deleting store settings file failed. Error: \(error)")
         }
+    }
+
+    // Simple Payments data
+
+    /// Sets the last state of the simple payments taxes toggle for a provided store.
+    ///
+    func setSimplePaymentsTaxesToggleState(siteID: Int64, isOn: Bool, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let newSettings = storeSettings.copy(areSimplePaymentTaxesEnabled: isOn)
+        setStoreSettings(settings: newSettings, for: siteID, onCompletion: onCompletion)
+    }
+
+    /// Get the last state of the simple payments taxes toggle for a provided store.
+    ///
+    func getSimplePaymentsTaxesToggleState(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(.success(storeSettings.areSimplePaymentTaxesEnabled))
     }
 }
 

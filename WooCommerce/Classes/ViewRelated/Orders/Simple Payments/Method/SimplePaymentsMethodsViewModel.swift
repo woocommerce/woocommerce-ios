@@ -99,7 +99,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
 
     /// Retains the use-case so it can perform all of its async tasks.
     ///
-    private var collectPaymentsUseCase: CollectOrderPaymentUseCase?
+    private var collectPaymentsUseCase: CollectOrderPaymentProtocol?
 
     init(siteID: Int64 = 0,
          orderID: Int64 = 0,
@@ -154,8 +154,11 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     }
 
     /// Starts the collect payment flow in the provided `rootViewController`
+    /// - parameter useCase: Assign a custom useCase object for testing purposes. If not provided `CollectOrderPaymentUseCase` will be used.
     ///
-    func collectPayment(on rootViewController: UIViewController?, onSuccess: @escaping () -> ()) {
+    func collectPayment(on rootViewController: UIViewController?,
+                        useCase: CollectOrderPaymentProtocol? = nil,
+                        onSuccess: @escaping () -> ()) {
         trackCollectIntention(method: .card)
 
         guard let rootViewController = rootViewController else {
@@ -173,11 +176,11 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
         }
 
-        collectPaymentsUseCase = CollectOrderPaymentUseCase(siteID: siteID,
-                                                            order: order,
-                                                            formattedAmount: formattedTotal,
-                                                            paymentGatewayAccount: paymentGateway,
-                                                            rootViewController: rootViewController)
+        collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase(siteID: siteID,
+                                                                       order: order,
+                                                                       formattedAmount: formattedTotal,
+                                                                       paymentGatewayAccount: paymentGateway,
+                                                                       rootViewController: rootViewController)
         collectPaymentsUseCase?.collectPayment(backButtonTitle: Localization.continueToOrders, onCollect: { [weak self] result in
             if result.isFailure {
                 self?.trackFlowFailed()

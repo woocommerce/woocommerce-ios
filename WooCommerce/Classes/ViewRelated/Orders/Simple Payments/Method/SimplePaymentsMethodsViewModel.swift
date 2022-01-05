@@ -186,6 +186,9 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
                 self?.trackFlowFailed()
             }
         }, onCompleted: { [weak self] in
+            // Inform success to consumer
+            onSuccess()
+            
             // Sent notice request
             self?.presentNoticeSubject.send(.completed)
 
@@ -194,9 +197,6 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
 
             // Tracks completion
             self?.trackFlowCompleted(method: .card)
-
-            // Inform success to consumer
-            onSuccess()
         })
     }
 

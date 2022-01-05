@@ -379,14 +379,13 @@ private extension MainTabBarController {
             let productsTabIndex = WooTab.products.visibleIndex(isHubMenuFeatureFlagOn)
             controllers.insert(productsNavigationController, at: productsTabIndex)
 
-            if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
-                let reviewsTabIndex = WooTab.reviews.visibleIndex(isHubMenuFeatureFlagOn)
-                controllers.insert(reviewsNavigationController, at: reviewsTabIndex)
-            }
-
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
                 let hubMenuTabIndex = WooTab.hubMenu.visibleIndex(isHubMenuFeatureFlagOn)
                 controllers.insert(hubMenuNavigationController, at: hubMenuTabIndex)
+            }
+            else {
+                let reviewsTabIndex = WooTab.reviews.visibleIndex(isHubMenuFeatureFlagOn)
+                controllers.insert(reviewsNavigationController, at: reviewsTabIndex)
             }
 
             return controllers

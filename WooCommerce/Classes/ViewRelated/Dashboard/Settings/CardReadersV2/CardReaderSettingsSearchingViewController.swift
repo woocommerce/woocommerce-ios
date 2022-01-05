@@ -113,7 +113,7 @@ struct CardReaderSettingsSearchingView: View {
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
 
-    var isCompat: Bool {
+    var isCompact: Bool {
         get {
             verticalSizeClass == .compact
         }
@@ -125,12 +125,12 @@ struct CardReaderSettingsSearchingView: View {
 
             Text(Localization.connectYourCardReaderTitle)
                 .font(.headline)
-                .padding(.bottom, isCompat ? 16 : 32)
+                .padding(.bottom, isCompact ? 16 : 32)
             Image(uiImage: .cardReaderConnect)
                 .resizable()
                 .scaledToFit()
-                .frame(height: isCompat ? 80 : 206)
-                .padding(.bottom, isCompat ? 16 : 32)
+                .frame(height: isCompact ? 80 : 206)
+                .padding(.bottom, isCompact ? 16 : 32)
 
             Hint(title: Localization.hintOneTitle, text: Localization.hintOne)
             Hint(title: Localization.hintTwoTitle, text: Localization.hintTwo)
@@ -150,7 +150,7 @@ struct CardReaderSettingsSearchingView: View {
                 maxHeight: .infinity
             )
             .padding()
-            .if(isCompat) {content in
+            .if(isCompact) {content in
                 ScrollView(.vertical) {
                     content
                 }

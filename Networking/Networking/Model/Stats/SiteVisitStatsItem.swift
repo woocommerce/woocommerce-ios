@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents an single site visit stat for a specific period.
 ///
-public struct SiteVisitStatsItem: Equatable, GeneratedFakeable {
+public struct SiteVisitStatsItem: Equatable, GeneratedCopiable, GeneratedFakeable {
     public let period: String
     public let visitors: Int
 

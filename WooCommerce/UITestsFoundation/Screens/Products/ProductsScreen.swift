@@ -7,7 +7,7 @@ public final class ProductsScreen: ScreenObject {
         (try? ProductsScreen().isLoaded) ?? false
     }
 
-    init(app: XCUIApplication = XCUIApplication()) throws {
+    public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
                 // swiftlint:disable next opening_brace
@@ -49,10 +49,10 @@ public final class ProductsScreen: ScreenObject {
     }
 
     @discardableResult
-    public func verifyProductListOnProductsScreen(products: [ProductData]) throws -> Self {
-        app.assertTextVisibilityCount(textToFind: products[0].name)
-        app.assertElementExistsOnCell(mainCell: products[0].name, elementToFind: products[0].stock_status)
-        app.assertCorrectCellCountDisplayed(expectedCount: products.count, actualCount: app.tables.cells.count)
+    public func verifyProductList(products: [ProductData]) throws -> Self {
+        app.assertTextVisibilityCount(textToFind: products[0].name, expectedCount: 1)
+        app.assertElement(matching: products[0].name, existsOnCellWithIdentifier: products[0].stock_status)
+        XCTAssertEqual(products.count, app.tables.cells.count, "Expecting '\(products.count)' products, got '\(app.tables.cells.count)' instead!")
 
         return self
     }

@@ -58,6 +58,12 @@ public final class CouponStore: Store {
                                pageNumber: pageNumber,
                                pageSize: pageSize,
                                onCompletion: onCompletion)
+        case .deleteCoupon(let siteID, let couponID, let onCompletion):
+            deleteCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
+        case .updateCoupon(let coupon, let onCompletion):
+            updateCoupon(coupon, onCompletion: onCompletion)
+        case .createCoupon(let coupon, let onCompletion):
+            createCoupon(coupon, onCompletion: onCompletion)
         }
     }
 }
@@ -103,6 +109,74 @@ private extension CouponStore {
             }
         }
     }
+
+    /// Deletes a coupon from a Site with what is persisted in the storage layer.
+    /// After the API request succeeds, the stored coupon should be removed from the local storage.
+    /// - Parameters:
+    ///   - siteID: The site that the deleted coupon belongs to.
+    ///   - couponID: The ID of the coupon to be deleted.
+    ///   - onCompletion: Closure to call after deletion is complete. Called on the main thread.
+    ///
+    func deleteCoupon(siteID: Int64, couponID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        remote.deleteCoupon(for: siteID, couponID: couponID) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let coupon):
+                // This is unlikely to happen, but worth checking
+                guard coupon.siteID == siteID, coupon.couponID == couponID else {
+                    onCompletion(.failure(CouponError.unexpectedCouponDeleted))
+                    DDLogError("⛔️ Unexpected coupon: Deleted couponID \(coupon.couponID) for site \(coupon.siteID) " +
+                               "while expecting couponID \(couponID) and site \(siteID)")
+                    return
+                }
+                self.deleteStoredCoupon(siteID: siteID, couponID: couponID) {
+                    onCompletion(.success(()))
+                }
+            }
+        }
+    }
+
+    /// Updates a coupon given its details.
+    /// After the API request succeeds, the stored coupon should be updated accordingly.
+    /// - Parameters:
+    ///   - coupon: The coupon to be updated
+    ///   - onCompletion: Closure to call after update is complete. Called on the main thread.
+    ///
+    func updateCoupon(_ coupon: Coupon, onCompletion: @escaping (Result<Coupon, Error>) -> Void) {
+        remote.updateCoupon(coupon) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let updatedCoupon):
+                self.upsertStoredCouponsInBackground(readOnlyCoupons: [updatedCoupon], siteID: updatedCoupon.siteID) {
+                    onCompletion(.success(updatedCoupon))
+                }
+            }
+        }
+    }
+
+    /// Creates a coupon given its details.
+    /// After the API request succeeds, a new stored coupon should be inserted into the local storage.
+    /// - Parameters:
+    ///   - coupon: The coupon to be created
+    ///   - onCompletion: Closure to call after creation is complete. Called on the main thread.
+    ///
+    func createCoupon(_ coupon: Coupon, onCompletion: @escaping (Result<Coupon, Error>) -> Void) {
+        remote.createCoupon(coupon) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let createdCoupon):
+                self.upsertStoredCouponsInBackground(readOnlyCoupons: [createdCoupon], siteID: createdCoupon.siteID) {
+                    onCompletion(.success(createdCoupon))
+                }
+            }
+        }
+    }
 }
 
 
@@ -111,7 +185,7 @@ private extension CouponStore {
 private extension CouponStore {
 
     /// Updates or Inserts specified Coupon Entities in a background thread
-    /// `onCompletion` will be called on the main thred
+    /// `onCompletion` will be called on the main thread.
     ///
     func upsertStoredCouponsInBackground(readOnlyCoupons: [Networking.Coupon],
                                          siteID: Int64,
@@ -153,4 +227,22 @@ private extension CouponStore {
         storage.deleteCoupons(siteID: siteID)
         storage.saveIfNeeded()
     }
+
+    /// Deletes the Storage.Coupon with the specified `siteID` and `couponID` in a background thread.
+    /// Triggers `onCompletion` on the main thread when done.
+    ///
+    func deleteStoredCoupon(siteID: Int64, couponID: Int64, onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            derivedStorage.deleteCoupon(siteID: siteID, couponID: couponID)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+}
+
+public enum CouponError: Error {
+    case unexpectedCouponDeleted
 }

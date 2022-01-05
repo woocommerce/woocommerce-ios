@@ -99,6 +99,8 @@ final class CouponListViewModelTests: XCTestCase {
             XCTAssertEqual(siteID, 123)
             XCTAssertEqual(pageNumber, 4)
             XCTAssertEqual(pageSize, 8)
+        default:
+            break
         }
     }
 

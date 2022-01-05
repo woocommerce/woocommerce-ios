@@ -18,6 +18,7 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .none)
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "pending")
         XCTAssertEqual(viewModel.productRows.count, 0)
+        XCTAssertFalse(viewModel.shouldShowPaymentSection)
     }
 
     func test_create_button_is_enabled_when_order_detail_changes_from_default_value() {
@@ -196,8 +197,7 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.removeItemFromOrder(viewModel.orderDetails.items[0])
 
         // Then
-        let expectedProductRow = ProductRowViewModel(id: expectedRemainingItem.id, product: product1, canChangeQuantity: true)
-        XCTAssertEqual(viewModel.productRows, [expectedProductRow])
+        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productID == product0.productID }))
         XCTAssertEqual(viewModel.orderDetails.items, [expectedRemainingItem])
     }
 
@@ -229,6 +229,57 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertNil(customerDataViewModel.email)
         XCTAssertNotNil(customerDataViewModel.billingAddressFormatted)
         XCTAssertNil(customerDataViewModel.shippingAddressFormatted)
+    }
+
+    func test_payment_data_view_model_is_initialized_with_expected_values() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let itemsTotal = "20.00"
+        let orderTotal = "30.00"
+
+        // When
+        let paymentDataViewModel = NewOrderViewModel.PaymentDataViewModel(itemsTotal: itemsTotal,
+                                                                          orderTotal: orderTotal,
+                                                                          currencyFormatter: CurrencyFormatter(currencySettings: currencySettings))
+
+        // Then
+        XCTAssertEqual(paymentDataViewModel.itemsTotal, "£20.00")
+        XCTAssertEqual(paymentDataViewModel.orderTotal, "£30.00")
+    }
+
+    func test_payment_section_only_displayed_when_order_has_products() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, statusKey: "publish")
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When & Then
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        XCTAssertTrue(viewModel.shouldShowPaymentSection)
+
+        // When & Then
+        viewModel.removeItemFromOrder(viewModel.orderDetails.items[0])
+        XCTAssertFalse(viewModel.shouldShowPaymentSection)
+    }
+
+    func test_payment_section_is_updated_when_products_update() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, statusKey: "publish", price: "8.50")
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+
+        // When & Then
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+
+        // When & Then
+        viewModel.productRows[0].incrementQuantity()
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£17.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£17.00")
     }
 }
 

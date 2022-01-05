@@ -93,8 +93,8 @@ final class StoreStatsUsageTracksEventEmitterTests: XCTestCase {
         ])
 
         // When
-        // 10 seconds after the last one
-        interacted(at: "2021-11-23T00:00:14Z")
+        // 20 seconds after the last one
+        interacted(at: "2021-11-23T00:00:24Z")
 
         // Then
         assertEmpty(analyticsProvider.receivedEvents)
@@ -107,7 +107,7 @@ final class StoreStatsUsageTracksEventEmitterTests: XCTestCase {
             "2021-11-23T00:00:01Z",
             "2021-11-23T00:00:02Z",
             "2021-11-23T00:00:04Z",
-            "2021-11-23T00:00:14Z", // idled
+            "2021-11-23T00:00:24Z", // idled
         ])
 
         assertEmpty(analyticsProvider.receivedEvents)

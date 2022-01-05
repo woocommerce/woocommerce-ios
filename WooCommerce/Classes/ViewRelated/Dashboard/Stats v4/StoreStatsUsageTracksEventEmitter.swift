@@ -27,7 +27,7 @@ final class StoreStatsUsageTracksEventEmitter {
     /// The maximum number of seconds in between interactions before we will consider the
     /// merchant to have been idle. If they were idle, the time and interactions counting
     /// will be reset.
-    private let idleTimeThreshold: TimeInterval = 10
+    private let idleTimeThreshold: TimeInterval = 20
 
     private var interactions = 0
     private var firstInteractionTime: Date? = nil

@@ -29,7 +29,7 @@ struct HubMenu: View {
                 let gridItemLayout = [GridItem(.adaptive(minimum: Constants.itemSize), spacing: Constants.itemSpacing)]
 
                 LazyVGrid(columns: gridItemLayout, spacing: Constants.itemSpacing) {
-                    ForEach(viewModel.menuElements, id: \.self) { menu in
+                    ForEach(viewModel.menuElements, id: \.id) { menu in
                         HubMenuElement(image: menu.icon, text: menu.title)
                             .frame(width: Constants.itemSize, height: Constants.itemSize)
                             .contentShape(Rectangle())

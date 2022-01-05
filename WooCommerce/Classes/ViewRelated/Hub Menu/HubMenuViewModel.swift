@@ -90,11 +90,15 @@ final class HubMenuViewModel: ObservableObject {
 }
 
 extension HubMenuViewModel {
-    enum Menu: CaseIterable {
+    enum Menu: CaseIterable, Identifiable {
         case woocommerceAdmin
         case viewStore
         case coupons
         case reviews
+
+        var id: UUID {
+            return UUID()
+        }
 
         var title: String {
             switch self {

@@ -222,6 +222,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                         .background(Color(.systemBackground))
                 }
             }
+            .disableAutocorrection(true)
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
 

@@ -31,14 +31,14 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
                                               currencyPosition: .rightSpace,
                                               thousandSeparator: ",",
                                               decimalSeparator: ".",
-                                              numberOfDecimals: 2)
+                                              numberOfDecimals: 3)
         let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, locale: usLocale, storeCurrencySettings: customSettings)
 
         // When
         viewModel.amount = "12.203"
 
         // Then
-        XCTAssertEqual(viewModel.formattedAmmount, "12.20 £")
+        XCTAssertEqual(viewModel.formattedAmmount, "12.203 £")
     }
 
     func test_view_model_removes_non_digit_characters() {

@@ -172,6 +172,7 @@ private extension SimplePaymentsAmountViewModel {
 
         let deviceDecimalSeparator = userLocale.decimalSeparator ?? "."
         let storeDecimalSeparator = storeCurrencySettings.decimalSeparator
+        let storeNumberOfDecimals = storeCurrencySettings.numberOfDecimals
 
         // Removes any unwanted character & makes sure to use the store decimal separator
         let sanitized = amount
@@ -188,7 +189,7 @@ private extension SimplePaymentsAmountViewModel {
         case 2...Int.max:
             let number = components[0]
             let decimals = components[1]
-            let trimmedDecimals = decimals.count > 2 ? "\(decimals.prefix(2))" : decimals
+            let trimmedDecimals = decimals.count > storeNumberOfDecimals ? "\(decimals.prefix(storeNumberOfDecimals))" : decimals
             return number + storeDecimalSeparator + trimmedDecimals
         default:
             fatalError("Should not happen, components can't be 0 or negative")

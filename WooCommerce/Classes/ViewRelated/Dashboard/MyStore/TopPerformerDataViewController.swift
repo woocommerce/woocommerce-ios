@@ -263,6 +263,9 @@ extension TopPerformerDataViewController: UITableViewDelegate {
         guard let statsItem = statsItem(at: indexPath) else {
             return
         }
+
+        StoreStatsUsageTracksEventEmitter.shared.interacted()
+
         presentProductDetails(statsItem: statsItem)
     }
 

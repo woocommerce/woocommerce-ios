@@ -22,6 +22,7 @@ final class StoreStatsUsageTracksEventEmitter {
     /// - Tapping on the bars in the chart
     /// - Changing the tab
     /// - Navigating to the My Store tab
+    /// - Tapping on a product in the Top Performers list
     private let interactionsThreshold = 5
 
     /// The maximum number of seconds in between interactions before we will consider the

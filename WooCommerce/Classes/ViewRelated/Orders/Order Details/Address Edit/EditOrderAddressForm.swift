@@ -146,6 +146,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                          text: $viewModel.fields.email,
                                          symbol: nil,
                                          keyboardType: .emailAddress)
+                        .autocapitalization(.none)
                         .renderedIf(viewModel.showEmailField)
                     Divider()
                         .padding(.leading, Constants.dividerPadding)

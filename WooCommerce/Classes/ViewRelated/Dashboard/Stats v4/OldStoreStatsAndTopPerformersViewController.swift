@@ -58,8 +58,6 @@ final class OldStoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripV
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         ensureGhostContentIsAnimated()
-
-        usageTracksEventEmitter.interacted()
     }
 
     // MARK: - PagerTabStripDataSource

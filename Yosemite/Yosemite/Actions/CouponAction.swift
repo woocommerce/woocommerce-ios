@@ -31,8 +31,16 @@ public enum CouponAction: Action {
     /// Updates a coupon for a site given its ID and returns the updated coupon if the request succeeds.
     ///
     /// - `coupon`: the coupon to be updated.
-    /// - `onCompletion`: invoked when the deletion finishes.
+    /// - `onCompletion`: invoked when the update finishes.
     ///
     case updateCoupon(_ coupon: Coupon,
+                      onCompletion: (Result<Coupon, Error>) -> Void)
+
+    /// Creates a coupon for a site given its ID and returns the created coupon if the request succeeds.
+    ///
+    /// - `coupon`: the coupon to be created.
+    /// - `onCompletion`: invoked when the creation finishes.
+    ///
+    case createCoupon(_ coupon: Coupon,
                       onCompletion: (Result<Coupon, Error>) -> Void)
 }

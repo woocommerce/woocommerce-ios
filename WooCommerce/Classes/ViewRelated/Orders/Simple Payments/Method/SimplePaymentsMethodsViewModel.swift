@@ -37,7 +37,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     /// Defines if the view should show a payment link payment method.
     ///
     var showPaymentLinkRow: Bool {
-        enablePaymentLink && paymentLink != nil
+        paymentLink != nil
     }
 
     /// Store's ID.
@@ -72,10 +72,6 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     private let analytics: Analytics
 
-    /// Defines if sharing a payment link should be enabled or not.
-    ///
-    private let enablePaymentLink: Bool
-
     /// Stored payment gateways accounts.
     /// We will care about the first one because only one is supported right now.
     ///
@@ -109,8 +105,7 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
          cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics,
-         enablePaymentLink: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.simplePaymentsLink)) {
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.orderID = orderID
         self.formattedTotal = formattedTotal
@@ -119,7 +114,6 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         self.stores = stores
         self.storage = storage
         self.analytics = analytics
-        self.enablePaymentLink = enablePaymentLink
         self.title = Localization.title(total: formattedTotal)
 
         bindStoreCPPState()

@@ -177,6 +177,20 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["amount"] as? String, "$12.00")
     }
 
+    func test_completed_event_is_tracked_after_sharing_a_link() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.performLinkSharedTasks()
+
+        // Then
+        assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.simplePaymentsFlowCompleted.rawValue)
+        assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "payment_link")
+        assertEqual(analytics.receivedProperties.first?["amount"] as? String, "$12.00")
+    }
+
     func test_failed_event_is_tracked_after_failing_to_mark_order_as_paid() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -200,7 +214,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["source"] as? String, "payment_method")
     }
 
-    func test_collect_event_is_tracked_when_required() {
+    func test_collect_event_is_tracked_when_paying_by_cash() {
         // Given
         let analytics = MockAnalyticsProvider()
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -212,6 +226,19 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         // Then
         assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowCollect.rawValue])
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "cash")
+    }
+
+    func test_collect_event_is_tracked_when_sharing_payment_links() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackCollectByPaymentLink()
+
+        // Then
+        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowCollect.rawValue])
+        assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "payment_link")
     }
 
     func test_collect_event_is_tracked_when_collecting_payment() {

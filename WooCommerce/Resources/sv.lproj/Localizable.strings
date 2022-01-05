@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-12-15 13:44:40+0000 */
+/* Translation-Revision-Date: 2021-12-21 11:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -32,7 +32,7 @@
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string, - which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ about accepting payments with your mobile device and ordering card readers";
+"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ om att ta emot betalningar med din mobila enhet och att beställa kortläsare";
 
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
@@ -748,10 +748,10 @@
 "Collect Payment" = "Ta emot betalning";
 
 /* Alert title when starting the collect payment flow without a user name. */
-"Collect payment" = "Collect payment";
+"Collect payment" = "Ta emot betalning";
 
 /* Alert title when starting the collect payment flow with a user name. */
-"Collect payment from %1$@" = "Collect payment from %1$@";
+"Collect payment from %1$@" = "Ta emot betalning från %1$@";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -1576,7 +1576,7 @@
 "How can we improve?" = "Hur kan vi förbättra?";
 
 /* Navigation bar title of hub menu view */
-"Hub Menu" = "Hub Menu";
+"Hub Menu" = "Hubbmeny";
 
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "Jag gillar den";
@@ -2407,10 +2407,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please charge reader" = "Ladda läsare";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
-"Please correct your store address to proceed" = "Please correct your store address to proceed";
+"Please correct your store address to proceed" = "Korrigera din butiksadress för att fortsätta";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"Please correct your store's postcode\/ZIP" = "Please correct your store's postcode\/ZIP";
+"Please correct your store's postcode\/ZIP" = "Korrigera din butiks postnummer";
 
 /* Error message for missing explanation when Content Typeis Other in Customs screen of Shipping Label flow */
 "Please describe what kind of goods this package contains" = "Beskriv vilken typ av gods detta paket innehåller";
@@ -3679,10 +3679,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "There was an error updating the order" = "Det gick inte att uppdatera beställningen";
 
 /* Text when there is an error while marking the order as paid for simple payments. */
-"There was an error while marking the order as paid." = "There was an error while marking the order as paid.";
+"There was an error while marking the order as paid." = "Det gick inte att markera beställningen som betald.";
 
 /* Text when there is an unknown error while trying to collect payments */
-"There was an error while trying to collect the payment." = "There was an error while trying to collect the payment.";
+"There was an error while trying to collect the payment." = "Det gick inte att ta emot betalningen.";
 
 /* Navigates to screen with third party software licenses
    Software Licenses (information page title) */
@@ -3750,7 +3750,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This text will be shown on the button linking to the external product." = "Denna text kommer visas på knappen som länkar till den externa produkten.";
 
 /* Alert info when selecting the cash payment method for simple payments */
-"This will mark your order as complete if you received (total) outside of WooCommerce" = "This will mark your order as complete if you received (total) outside of WooCommerce";
+"This will mark your order as complete if you received (total) outside of WooCommerce" = "Detta kommer att markera din beställning som slutförd om du har mottagit (totalbelopp) utanför WooCommerce";
 
 /* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
@@ -4388,13 +4388,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Du kan nu skapa fraktetiketter för alla fysiska beställningar direkt från din enhet med hjälp av gratistillägget WooCommerce Shipping. Tryck på Skapa fraktetikett för att prova vår betafunktion!";
 
 /* Shown in Refunds screen. Refunding fees are currently not supported. */
-"You can refund fees in your store admin" = "You can refund fees in your store admin";
+"You can refund fees in your store admin" = "Du kan återbetala avgifter i adminpanelen för din butik";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "Du kan begära en återbetalning för en fraktetikett som inte har använts för att skicka ett paket.\nDen kommer att ta minst 14 dagar att behandla.";
 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)";
+"You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "Du kan ange din butiks postnummer i WP-admin > WooCommerce > Inställningar (Allmänt)";
 
 /* Error message when WooCommerce Payments is not supported in a specific country
    Generic error message when In-Person Payments is unavailable */
@@ -4484,7 +4484,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "🎉 Order Completed" = "🎉 Beställning färdigbehandlad";
 
 /* Title for the button to cancel the simple payments screen */
-"🎉 Order completed" = "";
+"🎉 Order completed" = "🎉 Beställning färdigbehandlad";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 produkter återbetalades";

@@ -3,6 +3,7 @@ import UIKit
 import SwiftUI
 import Combine
 import Experiments
+import Yosemite
 
 /// View model for `HubMenu`.
 ///
@@ -40,6 +41,10 @@ final class HubMenuViewModel: ObservableObject {
     ///
     @Published private(set) var menuElements: [Menu] = []
 
+    @Published var showingReviewDetail = false
+
+    private var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
+
     private var storePickerCoordinator: StorePickerCoordinator?
 
     private var cancellables = Set<AnyCancellable>()
@@ -63,6 +68,18 @@ final class HubMenuViewModel: ObservableObject {
             storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
             storePickerCoordinator?.start()
         }
+    }
+
+    func setProductReviewFromNoteParcel(_ parcel: ProductReviewFromNoteParcel) {
+        productReviewFromNoteParcel = parcel
+    }
+
+    func getReviewDetailDestination() -> ReviewDetailView? {
+        guard let parcel = productReviewFromNoteParcel else {
+            return nil
+        }
+
+        return ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
     }
 
     private func observeSiteForUIUpdates() {

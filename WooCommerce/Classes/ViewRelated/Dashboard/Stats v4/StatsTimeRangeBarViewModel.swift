@@ -49,7 +49,9 @@ private extension StatsTimeRangeV4 {
         case .thisWeek:
             dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
         case .thisMonth:
-            dateFormatter = isMyStoreTabUpdatesEnabled ? DateFormatter.Charts.chartAxisFullMonthFormatter: DateFormatter.Charts.legacyChartAxisFullMonthFormatter
+            dateFormatter = isMyStoreTabUpdatesEnabled ?
+            DateFormatter.Charts.chartAxisFullMonthFormatter:
+            DateFormatter.Charts.legacyChartAxisFullMonthFormatter
         case .thisYear:
             dateFormatter = DateFormatter.Charts.chartAxisYearFormatter
         }

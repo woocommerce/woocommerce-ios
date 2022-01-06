@@ -145,4 +145,24 @@ final class CouponListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(sut.state, .coupons)
     }
+
+    func test_tableWillDisplayCellAtIndexPath_calls_ensureNextPageIsSynchronized_on_syncCoordinator() {
+        // Given
+        sut = CouponListViewModel(siteID: 123, syncingCoordinator: mockSyncingCoordinator)
+        
+        // When
+        sut.tableWillDisplayCell(at: IndexPath(row: 3, section: 0))
+
+        // Then
+        XCTAssertTrue(mockSyncingCoordinator.spyDidCallEnsureNextPageIsSynchronized)
+        XCTAssertEqual(mockSyncingCoordinator.spyEnsureNextPageIsSynchronizedLastVisibleIndex, 3)
+    }
+
+    func test_sync_updates_state_correctly_when_syncing_next_page() {
+        // When
+        sut.sync(pageNumber: 2, pageSize: 10, reason: nil, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(sut.state, .loadingNextPage)
+    }
 }

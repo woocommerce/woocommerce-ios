@@ -6,7 +6,7 @@ import SafariServices.SFSafariViewController
 //
 final class ReviewsViewController: UIViewController {
 
-    private let siteID: Int64
+    typealias ViewModel = ReviewsViewModelOutput & ReviewsViewModelActionsHandler
 
     /// Main TableView.
     ///
@@ -26,7 +26,7 @@ final class ReviewsViewController: UIViewController {
         return item
     }()
 
-    private let viewModel: ReviewsViewModel
+    private let viewModel: ViewModel
 
     /// Haptic Feedback!
     ///
@@ -111,11 +111,15 @@ final class ReviewsViewController: UIViewController {
                                               })
     }()
 
-    // MARK: - View Lifecycle
+    // MARK: - Initializers
+    //
+    convenience init(siteID: Int64) {
+        self.init(viewModel: ReviewsViewModel(siteID: siteID,
+                                              data: DefaultReviewsDataSource(siteID: siteID)))
+    }
 
-    init(siteID: Int64) {
-        self.siteID = siteID
-        self.viewModel = ReviewsViewModel(siteID: siteID, data: DefaultReviewsDataSource(siteID: siteID))
+    init(viewModel: ViewModel) {
+        self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)
 
@@ -127,6 +131,8 @@ final class ReviewsViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - View Lifecycle
+    //
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .listBackground

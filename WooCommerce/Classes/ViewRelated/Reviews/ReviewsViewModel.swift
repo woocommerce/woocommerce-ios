@@ -5,8 +5,39 @@ import Yosemite
 
 import class AutomatticTracks.CrashLogging
 
+protocol ReviewsViewModelOutput {
+    var isEmpty: Bool { get }
 
-final class ReviewsViewModel {
+    var dataSource: UITableViewDataSource { get }
+
+    var delegate: ReviewsInteractionDelegate { get }
+
+    var hasUnreadNotifications: Bool { get }
+
+    var hasErrorLoadingData: Bool { get set }
+
+    func containsMorePages(_ highestVisibleReview: Int) -> Bool
+}
+
+protocol ReviewsViewModelActionsHandler {
+    func displayPlaceholderReviews(tableView: UITableView)
+
+    func removePlaceholderReviews(tableView: UITableView)
+
+    func configureResultsController(tableView: UITableView)
+
+    func refreshResults()
+
+    func configureTableViewCells(tableView: UITableView)
+
+    func markAllAsRead(onCompletion: @escaping (Error?) -> Void)
+
+    func synchronizeReviews(pageNumber: Int,
+                            pageSize: Int,
+                            onCompletion: (() -> Void)?)
+}
+
+final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHandler {
     private let siteID: Int64
 
     private let data: ReviewsDataSource
@@ -93,9 +124,9 @@ final class ReviewsViewModel {
 extension ReviewsViewModel {
     /// Prepares data necessary to render the reviews tab.
     ///
-    func synchronizeReviews(pageNumber: Int = Settings.firstPage,
-                            pageSize: Int = Settings.pageSize,
-                            onCompletion: (() -> Void)? = nil) {
+    func synchronizeReviews(pageNumber: Int,
+                            pageSize: Int,
+                            onCompletion: (() -> Void)?) {
         hasErrorLoadingData = false
 
         let group = DispatchGroup()

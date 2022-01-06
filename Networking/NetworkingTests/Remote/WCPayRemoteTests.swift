@@ -25,6 +25,7 @@ final class WCPayRemoteTests: XCTestCase {
     /// Repeat always!
     ///
     override func setUp() {
+        super.setUp()
         network.removeAllSimulatedResponses()
     }
 

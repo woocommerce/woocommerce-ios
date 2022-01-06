@@ -157,7 +157,7 @@ final class ReviewsViewController: UIViewController {
             syncingCoordinator.resynchronize()
         }
 
-        if AppRatingManager.shared.shouldPromptForAppReview(section: Constants.section) {
+        if viewModel.shouldPromptForAppReview {
             displayRatingPrompt()
         }
 
@@ -614,10 +614,6 @@ private extension ReviewsViewController {
         case emptyUnfiltered
         case results
         case syncing(pageNumber: Int)
-    }
-
-    struct Constants {
-        static let section = "notifications"
     }
 }
 

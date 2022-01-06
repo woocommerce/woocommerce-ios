@@ -14,6 +14,8 @@ protocol ReviewsViewModelOutput {
 
     var hasUnreadNotifications: Bool { get }
 
+    var shouldPromptForAppReview: Bool { get }
+
     var hasErrorLoadingData: Bool { get set }
 
     func containsMorePages(_ highestVisibleReview: Int) -> Bool
@@ -60,6 +62,10 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
 
     private var unreadNotifications: [Note] {
         return data.notifications.filter { $0.read == false }
+    }
+
+    var shouldPromptForAppReview: Bool {
+        AppRatingManager.shared.shouldPromptForAppReview(section: Constants.section)
     }
 
     /// Set when sync fails, and used to display an error loading data banner
@@ -232,5 +238,9 @@ private extension ReviewsViewModel {
         static let placeholderRowsPerSection = [3]
         static let firstPage = 1
         static let pageSize = 25
+    }
+
+    struct Constants {
+        static let section = "notifications"
     }
 }

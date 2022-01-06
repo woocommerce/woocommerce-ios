@@ -130,9 +130,7 @@ class StoredCredentialsAuthenticator: NSObject {
             // it's being dismissed is also not trivial.  This was decided during the Unified Login & Signup
             // project in a conversation between myself (Diego Rey Mendez) and Renan Ferrari.
             break
-        case .failed, .invalidResponse, .notHandled, .unknown, .notInteractive:
-            fallthrough
-        @unknown default:
+        default:
             tracker.track(failure: authError.localizedDescription)
             DDLogError("ASAuthorizationError: \(authError.localizedDescription)")
         }

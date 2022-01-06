@@ -41,8 +41,7 @@ final class CouponListViewController: UIViewController {
             .removeDuplicates()
             .sink { [weak self] state in
                 guard let self = self else { return }
-                self.removeNoResultsOverlay()
-                self.removePlaceholderCoupons()
+                self.resetViews()
                 switch state {
                 case .empty:
                     self.displayNoResultsOverlay()
@@ -50,6 +49,8 @@ final class CouponListViewController: UIViewController {
                     self.displayPlaceholderCoupons()
                 case .coupons:
                     self.tableView.reloadData()
+                case .refreshing:
+                    self.refreshControl.beginRefreshing()
                 case .initialized:
                     break
                 }
@@ -63,8 +64,20 @@ final class CouponListViewController: UIViewController {
 
 // MARK: - Actions
 private extension CouponListViewController {
+    /// Triggers a refresh for the coupon list
+    ///
     @objc func refreshCouponList() {
         viewModel.refreshCoupons()
+    }
+
+    /// Removes overlays and loading indicators if present.
+    ///
+    func resetViews() {
+        removeNoResultsOverlay()
+        removePlaceholderCoupons()
+        if refreshControl.isRefreshing {
+            refreshControl.endRefreshing()
+        }
     }
 }
 

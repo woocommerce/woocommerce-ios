@@ -21,6 +21,41 @@ final class StripeRemoteTests: XCTestCase {
         network.removeAllSimulatedResponses()
     }
 
+    /// Verifies that loadConnectionToken properly parses the sample response.
+    ///
+    func test_loadConnectionToken_properly_returns_parsed_token() {
+        let remote = WCPayRemote(network: network)
+        let expectation = self.expectation(description: "Load card reader token from Stripe extension")
+
+        let expectedToken = "a connection token"
+
+        network.simulateResponse(requestUrlSuffix: "payments/connection_tokens", filename: "stripe-connection-token")
+        remote.loadConnectionToken(for: sampleSiteID) { result in
+            if case let .success(token) = result {
+                XCTAssertEqual(token.token, expectedToken)
+                expectation.fulfill()
+            }
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that loadConnectionToken properly relays Networking Layer errors.
+    ///
+    func test_loadConnectionToken_properly_relays_networking_errors() {
+        let remote = WCPayRemote(network: network)
+        let expectation = self.expectation(description: "Load WCPay token contains errors")
+
+        remote.loadConnectionToken(for: sampleSiteID) { result in
+            if case let .failure(error) = result {
+                XCTAssertNotNil(error)
+                expectation.fulfill()
+            }
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     /// Verifies that loadAccount properly handles the nominal response. We'll also validate the
     /// statement descriptor, currencies and country here.
     ///

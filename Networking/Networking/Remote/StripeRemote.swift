@@ -3,6 +3,19 @@ import Foundation
 /// Stripe (Extension): Remote Endpoints
 ///
 public class StripeRemote: Remote {
+    /// Loads a card reader connection token for a given site ID and parses the response
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch the connection token.
+    ///   - completion: Closure to be executed upon completion.
+    public func loadConnectionToken(for siteID: Int64,
+                                    completion: @escaping(Result<ReaderConnectionToken, Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: Path.connectionTokens)
+
+        let mapper = ReaderConnectionTokenMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Loads a Stripe account for a given site ID and parses the response
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch the Stripe account info.
@@ -31,6 +44,7 @@ public class StripeRemote: Remote {
 //
 private extension StripeRemote {
     enum Path {
+        static let connectionTokens = "wc_stripe/connection_tokens"
         static let accounts = "wc_stripe/account/summary"
     }
 

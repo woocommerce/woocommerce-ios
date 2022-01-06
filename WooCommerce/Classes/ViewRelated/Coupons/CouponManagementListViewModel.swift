@@ -116,6 +116,12 @@ final class CouponListViewModel {
     func coupon(at indexPath: IndexPath) -> Coupon? {
         return resultsController.safeObject(at: indexPath)
     }
+
+    /// Triggers a refresh of loaded coupons
+    ///
+    func refreshCoupons() {
+        syncingCoordinator.resynchronize(reason: nil, onCompletion: nil)
+    }
 }
 
 

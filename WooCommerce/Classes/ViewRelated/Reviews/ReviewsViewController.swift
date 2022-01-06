@@ -19,7 +19,7 @@ final class ReviewsViewController: UIViewController {
                                    style: .plain,
                                    target: self,
                                    action: #selector(presentActionSheet))
-        item.accessibilityIdentifier = "reviews-mark-all-as-read-button" // TODO: Change the identifier and check UI tests
+        item.accessibilityIdentifier = "reviews-open-menu-button"
         item.accessibilityTraits = .button
         item.accessibilityLabel = Localization.MenuButton.accessibilityLabel
         item.accessibilityHint = Localization.MenuButton.accessibilityHint

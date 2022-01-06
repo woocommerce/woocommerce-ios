@@ -60,7 +60,8 @@ class GetStartedViewController: LoginViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        configureSubmitButton(animating: false)
+
+        refreshEmailField()
 
         if errorMessage != nil {
             shouldChangeVoiceOverFocus = true
@@ -116,6 +117,13 @@ class GetStartedViewController: LoginViewController {
         return !animating && canSubmit()
     }
 
+    private func refreshEmailField() {
+        // It's possible that the password screen could have changed the loginFields username, for example when using
+        // autofill from a password manager. Let's ensure the loginFields matches the email field and that the
+        // continue button reflects the validity of the current email address.
+        loginFields.username = emailField?.nonNilTrimmedText() ?? loginFields.username
+        configureContinueButton(animating: false)
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -351,7 +359,6 @@ private extension GetStartedViewController {
     /// social signin does not require form validation.
     ///
     func validateForm() {
-
         loginFields.meta.socialService = nil
         displayError(message: "")
 

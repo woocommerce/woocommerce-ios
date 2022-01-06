@@ -356,7 +356,7 @@ private extension GetStartedViewController {
         displayError(message: "")
 
         guard EmailFormatValidator.validate(string: loginFields.username) else {
-            present(buildInvalidEmailAlert(), animated: true, completion: nil)
+            present(buildInvalidEmailAlertGeneric(), animated: true, completion: nil)
             return
         }
 
@@ -475,7 +475,7 @@ private extension GetStartedViewController {
 
         let email = loginFields.username
         guard email.isValidEmail() else {
-            present(buildInvalidEmailAlert(), animated: true, completion: nil)
+            present(buildInvalidEmailLinkAlert(), animated: true, completion: nil)
             return
         }
 
@@ -512,13 +512,30 @@ private extension GetStartedViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    /// Build the alert message when the email address is invalid.
+    /// Build the alert message when the email address is invalid
     ///
-    func buildInvalidEmailAlert() -> UIAlertController {
+    private func buildInvalidEmailAlertGeneric() -> UIAlertController {
+        let title = NSLocalizedString("Invalid Email Address",
+                                      comment: "Title of an alert letting the user know the email address that they've entered isn't valid")
+        let message = NSLocalizedString("Please enter a valid email address for a WordPress.com account.",
+                                        comment: "An error message.")
+
+        return buildInvalidEmailAlert(title: title, message: message)
+    }
+
+    /// Build the alert message when the email address is invalid so a link cannot be requested
+    ///
+    private func buildInvalidEmailLinkAlert() -> UIAlertController {
         let title = NSLocalizedString("Can Not Request Link",
                                       comment: "Title of an alert letting the user know")
         let message = NSLocalizedString("A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address.",
                                         comment: "An error message.")
+
+        return buildInvalidEmailAlert(title: title, message: message)
+    }
+
+    private func buildInvalidEmailAlert(title: String, message: String) -> UIAlertController {
+
         let helpActionTitle = NSLocalizedString("Need help?",
                                                 comment: "Takes the user to get help")
         let okActionTitle = NSLocalizedString("OK",

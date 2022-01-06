@@ -14,7 +14,8 @@ final class StatsTests: XCTestCase {
         try LoginFlow.logInWithWPcom()
     }
 
-    func testWordPressUnsuccessfullLogin() throws {
+    // Disabled test, added to test stats mocks. To be updated into a real test later.
+    func testStatsScreenLoad() throws {
         try TabNavComponent().goToMyStoreScreen()
         sleep(1000)
     }

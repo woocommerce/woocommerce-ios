@@ -19,7 +19,7 @@ public final class SingleOrderScreen: ScreenObject {
         app.assertTextVisibilityCount(textToFind: order.billing.first_name, expectedCount: 2) // the first name "Mira" appears twice
         try app.verifyChildElementOnParentCell(parent: "single-product-cell", child: "Mira")
         app.assertTextVisibilityCount(textToFind: order.total, expectedCount: 1)
-        XCTAssertTrue(app.textViews[order.line_items[0].name].isFullyVisibleOnScreen(), "First product name is not visible on screen!")
+     //   XCTAssertTrue(app.textViews[order.line_items[0].name].isFullyVisibleOnScreen(), "First product name is not visible on screen!")
 
         return self
     }

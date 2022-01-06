@@ -5,6 +5,7 @@
 - [***] All merchants can create Simple Payments orders. [https://github.com/woocommerce/woocommerce-ios/pull/5684]
 - [**] System status report can now be viewed and copied directly from within the app. [https://github.com/woocommerce/woocommerce-ios/pull/5702]
 - [**] Product SKU input scanner is now available as a beta feature. To try it, enable it from settings and you can scan a barcode to use as the product SKU in product inventory settings! [https://github.com/woocommerce/woocommerce-ios/pull/5695]
+- [*] Reviews screen - "Mark all as read" button on the top right is only displayed when there are unread notifications present. [https://github.com/woocommerce/woocommerce-ios/pull/5822]
 
 8.2
 -----

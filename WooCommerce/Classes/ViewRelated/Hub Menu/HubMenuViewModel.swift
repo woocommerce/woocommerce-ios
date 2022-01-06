@@ -52,7 +52,7 @@ final class HubMenuViewModel: ObservableObject {
             menuElements.append(.coupons)
         }
         menuElements.append(.reviews)
-       observeSiteForUIUpdates()
+        observeSiteForUIUpdates()
     }
 
     /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.

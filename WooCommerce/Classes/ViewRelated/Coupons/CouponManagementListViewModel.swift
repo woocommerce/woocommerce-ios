@@ -70,7 +70,7 @@ final class CouponListViewModel {
                                                 storageManager: StorageManagerType) -> ResultsController<StorageCoupon> {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
-                                          ascending: true)
+                                          ascending: false)
 
         return ResultsController<StorageCoupon>(storageManager: storageManager,
                                                 matching: predicate,

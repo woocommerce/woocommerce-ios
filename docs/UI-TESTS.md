@@ -10,44 +10,44 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
     - [x] Log in with Store Address
     - [x] Log in with email/password
     - [x] Invalid password
-    - [] Log in with magic link
-    - [] Log in with Apple
-    - [] Log in with Google
+    - [ ] Log in with magic link
+    - [ ] Log in with Apple
+    - [ ] Log in with Google
 2. [My Store]()
-    - [] Stats Today, This Week, This Month, This Year load
-    - [] Tap chart on stats
+    - [ ] Stats Today, This Week, This Month, This Year load
+    - [ ] Tap chart on stats
 3. [Orders](../WooCommerce/WooCommerceUITests/Tests/OrdersTests.swift)
-    - [] Orders list and single order screens load
-    - [] View product on single order screen
-    - [] Add customer note
-    - [] Add order note
-    - [] Update order status
-    - [] Issue refund
-    - [] Add shipping details
+    - [ ] Orders list and single order screens load
+    - [ ] View product on single order screen
+    - [ ] Add customer note
+    - [ ] Add order note
+    - [ ] Update order status
+    - [ ] Issue refund
+    - [ ] Add shipping details
 4. [Products](../WooCommerce/WooCommerceUITests/Tests/ProductsTests.swift)
     - [x] Products list and single product screens load
-    - [] Add new product - Simple physical product
-    - [] Add new product - Simple virtual product
-    - [] Add new product - Variable product
-    - [] Add new product - Grouped product
-    - [] Add new product - External product
-    - [] Search for product
-    - [] Filters for product
-    - [] Edit product
-    - [] Add media library image to existing product
-    - [] Add camera image to existing product
+    - [ ] Add new product - Simple physical product
+    - [ ] Add new product - Simple virtual product
+    - [ ] Add new product - Variable product
+    - [ ] Add new product - Grouped product
+    - [ ] Add new product - External product
+    - [ ] Search for product
+    - [ ] Filters for product
+    - [ ] Edit product
+    - [ ] Add media library image to existing product
+    - [ ] Add camera image to existing product
 5. [Reviews](../WooCommerce/WooCommerceUITests/Tests/ReviewsTests.swift)
     - [x] Reviews list and single review screens load
-    - [] Mark review as spam
-    - [] Trash review
-    - [] Approve/unapprove review
-    - [] Undo action
+    - [ ] Mark review as spam
+    - [ ] Trash review
+    - [ ] Approve/unapprove review
+    - [ ] Undo action
 6. [Push Notifications]()
-    - [] New order results in a push notification
-    - [] Orders push notification opens the correct order
-    - [] Reviews push notification opens the correct review
+    - [ ] New order results in a push notification
+    - [ ] Orders push notification opens the correct order
+    - [ ] Reviews push notification opens the correct review
 7. [Settings]()
-    - [] Contact support
+    - [ ] Contact support
 
 ## Running tests
 

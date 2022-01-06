@@ -18,6 +18,14 @@ final class CouponListViewController: UIViewController {
         return refreshControl
     }()
 
+    /// Footer "Loading More" Spinner.
+    ///
+    private lazy var footerSpinnerView = FooterSpinnerView()
+
+    /// Empty Footer Placeholder. Replaces spinner view and allows footer to collapse and be completely hidden.
+    ///
+    private lazy var footerEmptyView = UIView(frame: .zero)
+
     private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64) {

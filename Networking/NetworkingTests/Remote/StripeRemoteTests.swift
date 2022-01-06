@@ -44,24 +44,6 @@ final class StripeRemoteTests: XCTestCase {
         XCTAssertEqual(account.isCardPresentEligible, true)
     }
 
-    /// Verifies that loadAccount properly handles the no account response
-    ///
-    func test_loadAccount_properly_handles_no_account() throws {
-        let remote = StripeRemote(network: network)
-
-        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary", filename: "stripe-account-none")
-
-        let result: Result<StripeAccount, Error> = waitFor { promise in
-            remote.loadAccount(for: self.sampleSiteID) { result in
-                promise(result)
-            }
-        }
-
-        XCTAssertTrue(result.isSuccess)
-        let account = try result.get()
-        XCTAssertEqual(account.status, .noAccount)
-    }
-
     /// Verifies that loadAccount properly handles the rejected - fraud response
     ///
     func test_loadAccount_properly_handles_rejected_fraud_account() throws {

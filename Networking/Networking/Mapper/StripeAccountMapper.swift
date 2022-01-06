@@ -14,22 +14,7 @@ struct StripeAccountMapper: Mapper {
         /// can cross that bridge when we need those decoded.
         decoder.dateDecodingStrategy = .secondsSince1970
 
-        /// Detect the exceptional case where we got a response of data:[] indicating
-        /// that the plugin is active but the merchant has not on-boarded (and therefore
-        /// has no account.)
-        if let _ = try? decoder.decode(StripeNullAccountEnvelope.self, from: response) {
-            return StripeAccount.noAccount
-        }
-
         return try decoder.decode(StripeAccountEnvelope.self, from: response).account
-    }
-}
-
-private struct StripeNullAccountEnvelope: Decodable {
-    let emptyArray: [String]
-
-    private enum CodingKeys: String, CodingKey {
-        case emptyArray = "data"
     }
 }
 

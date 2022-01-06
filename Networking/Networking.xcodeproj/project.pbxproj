@@ -200,7 +200,6 @@
 		31A451D227863A2E00FE81AA /* stripe-account-restricted-pending.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451C427863A2D00FE81AA /* stripe-account-restricted-pending.json */; };
 		31A451D327863A2E00FE81AA /* stripe-account-complete.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451C527863A2D00FE81AA /* stripe-account-complete.json */; };
 		31A451D427863A2E00FE81AA /* stripe-account-rejected-listed.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451C627863A2D00FE81AA /* stripe-account-rejected-listed.json */; };
-		31A451D527863A2E00FE81AA /* stripe-account-none.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451C727863A2D00FE81AA /* stripe-account-none.json */; };
 		31A451D627863A2E00FE81AA /* stripe-account-unknown-status.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451C827863A2D00FE81AA /* stripe-account-unknown-status.json */; };
 		31A451D727863A2E00FE81AA /* stripe-account-dev-test.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451C927863A2D00FE81AA /* stripe-account-dev-test.json */; };
 		31A451D827863A2E00FE81AA /* stripe-account-restricted-overdue.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451CA27863A2D00FE81AA /* stripe-account-restricted-overdue.json */; };
@@ -828,7 +827,6 @@
 		31A451C427863A2D00FE81AA /* stripe-account-restricted-pending.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-restricted-pending.json"; sourceTree = "<group>"; };
 		31A451C527863A2D00FE81AA /* stripe-account-complete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-complete.json"; sourceTree = "<group>"; };
 		31A451C627863A2D00FE81AA /* stripe-account-rejected-listed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-rejected-listed.json"; sourceTree = "<group>"; };
-		31A451C727863A2D00FE81AA /* stripe-account-none.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-none.json"; sourceTree = "<group>"; };
 		31A451C827863A2D00FE81AA /* stripe-account-unknown-status.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-unknown-status.json"; sourceTree = "<group>"; };
 		31A451C927863A2D00FE81AA /* stripe-account-dev-test.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-dev-test.json"; sourceTree = "<group>"; };
 		31A451CA27863A2D00FE81AA /* stripe-account-restricted-overdue.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-restricted-overdue.json"; sourceTree = "<group>"; };
@@ -1709,7 +1707,6 @@
 				31A451C927863A2D00FE81AA /* stripe-account-dev-test.json */,
 				31A451C227863A2D00FE81AA /* stripe-account-live-live.json */,
 				31A451CB27863A2D00FE81AA /* stripe-account-live-test.json */,
-				31A451C727863A2D00FE81AA /* stripe-account-none.json */,
 				31A451BE27863A2C00FE81AA /* stripe-account-rejected-fraud.json */,
 				31A451C627863A2D00FE81AA /* stripe-account-rejected-listed.json */,
 				31A451C327863A2D00FE81AA /* stripe-account-rejected-other.json */,
@@ -2424,7 +2421,6 @@
 				743BF8BE21191B63008A9D87 /* site-visits.json in Resources */,
 				CE0A0F1F223998A10075ED8D /* products-load-all.json in Resources */,
 				D8A284F425FBB48D0019A84B /* product-attribute-terms.json in Resources */,
-				31A451D527863A2E00FE81AA /* stripe-account-none.json in Resources */,
 				74E30951216E8DCE00ABCE4C /* site-visits-alt.json in Resources */,
 				74ABA1C5213F17AA00FFAD30 /* top-performers-day.json in Resources */,
 				31B8D6B626583970008E3DB2 /* wcpay-account-implicitly-not-eligible.json in Resources */,

@@ -41,7 +41,7 @@ private extension StripeRemote {
     enum AccountParameterValues {
         static let fieldValues: String = """
             status,is_live,test_mode,has_pending_requirements,has_overdue_requirements,current_deadline,\
-            statement_descriptor,store_currencies,country,card_present_eligible
+            statement_descriptor,store_currencies,country
             """
     }
 }

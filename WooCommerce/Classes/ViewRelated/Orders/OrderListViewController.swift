@@ -412,7 +412,7 @@ private extension OrderListViewController {
         // let's reset the state before using it again
         ghostableTableView.removeGhostContent()
         ghostableTableView.displayGhostContent(options: options,
-                                               style: .wooDefaultGhostStyle)
+                                               style: Constants.ghostStyle)
         ghostableTableView.startGhostAnimation()
         ghostableTableView.isHidden = false
     }

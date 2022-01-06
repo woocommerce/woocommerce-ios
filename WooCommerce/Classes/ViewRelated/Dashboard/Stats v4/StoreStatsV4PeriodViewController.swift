@@ -38,6 +38,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
 
     private let viewModel: StoreStatsPeriodViewModel
 
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+
     // MARK: - Subviews
 
     @IBOutlet private weak var containerStackView: UIStackView!
@@ -126,7 +128,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     init(siteID: Int64,
          timeRange: StatsTimeRangeV4,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         currencyCode: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)) {
+         currencyCode: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
         self.viewModel = StoreStatsPeriodViewModel(siteID: siteID,
@@ -134,6 +137,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
                                                    siteTimezone: siteTimezone,
                                                    currencyFormatter: currencyFormatter,
                                                    currencyCode: currencyCode)
+        self.usageTracksEventEmitter = usageTracksEventEmitter
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -417,6 +421,7 @@ extension StoreStatsV4PeriodViewController: ChartViewDelegate {
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
         let selectedIndex = Int(entry.x)
         updateUI(selectedBarIndex: selectedIndex)
+        usageTracksEventEmitter.interacted()
     }
 }
 
@@ -573,6 +578,7 @@ private extension StoreStatsV4PeriodViewController {
             isInitialLoad = false
             return
         }
+        usageTracksEventEmitter.interacted()
         ServiceLocator.analytics.track(.dashboardMainStatsDate, withProperties: ["range": granularity.rawValue])
         isInitialLoad = false
     }

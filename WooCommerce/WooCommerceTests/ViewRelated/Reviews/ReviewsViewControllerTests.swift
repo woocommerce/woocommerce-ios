@@ -80,6 +80,7 @@ private final class MockReviewsViewModel: ReviewsViewModelOutput, ReviewsViewMod
     var shouldPromptForAppReview = false
 
     var hasErrorLoadingData = true
+
     func containsMorePages(_ highestVisibleReview: Int) -> Bool { false }
 
     // Empty methods for `ReviewsViewModelActionsHandler` conformance

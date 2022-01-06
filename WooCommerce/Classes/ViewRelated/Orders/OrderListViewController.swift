@@ -158,6 +158,8 @@ final class OrderListViewController: UIViewController {
         //
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
+
+        restartPlaceholderAnimation()
     }
 
     /// Returns a function that creates cells for `dataSource`.
@@ -423,6 +425,14 @@ private extension OrderListViewController {
         ghostableTableView.removeGhostContent()
     }
 
+    /// After returning to the screen, `restartGhostAnimation` is required to resume ghost animation.
+    func restartPlaceholderAnimation() {
+        guard ghostableTableView.isHidden == false else {
+            return
+        }
+        ghostableTableView.restartGhostAnimation(style: Constants.ghostStyle)
+    }
+
     /// Shows the EmptyStateViewController
     ///
     func displayEmptyViewController() {
@@ -674,5 +684,9 @@ private extension OrderListViewController {
         case syncing
         case results
         case empty
+    }
+
+    enum Constants {
+        static let ghostStyle: GhostStyle = .wooDefaultGhostStyle
     }
 }

@@ -155,7 +155,7 @@ private extension StoreStatsPeriodViewModel {
 
     func createRevenueStats(orderStatsData: OrderStatsData, selectedIntervalIndex: Int?) -> String {
         if let revenue = revenue(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals) {
-            return currencyFormatter.formatHumanReadableAmount(String("\(revenue)"), with: currencyCode) ?? String()
+            return currencyFormatter.formatAmount(revenue, with: currencyCode) ?? String()
         } else {
             return Constants.placeholderText
         }

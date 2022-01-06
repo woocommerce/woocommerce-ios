@@ -53,13 +53,13 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         // When
         let orderStats = OrderStatsV4(siteID: siteID,
                                       granularity: timeRange.intervalGranularity,
-                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 62.7),
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 6220.7),
                                       intervals: [.fake()])
         insertOrderStats(orderStats, timeRange: timeRange)
 
         // Then
         XCTAssertEqual(orderStatsTextValues, ["-", "3"])
-        XCTAssertEqual(revenueStatsTextValues, ["-", "$62"])
+        XCTAssertEqual(revenueStatsTextValues, ["-", "$6,220.70"])
         XCTAssertEqual(visitorStatsTextValues, ["-"])
         XCTAssertEqual(conversionStatsTextValues, ["-"])
     }
@@ -168,7 +168,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(orderStatsTextValues, ["-", "3", "1"])
-        XCTAssertEqual(revenueStatsTextValues, ["-", "$62", "$25"])
+        XCTAssertEqual(revenueStatsTextValues, ["-", "$62.70", "$25.00"])
         XCTAssertEqual(visitorStatsTextValues, ["-"])
         XCTAssertEqual(conversionStatsTextValues, ["-"])
     }

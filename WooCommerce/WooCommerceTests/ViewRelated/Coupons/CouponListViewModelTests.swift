@@ -149,7 +149,7 @@ final class CouponListViewModelTests: XCTestCase {
     func test_tableWillDisplayCellAtIndexPath_calls_ensureNextPageIsSynchronized_on_syncCoordinator() {
         // Given
         sut = CouponListViewModel(siteID: 123, syncingCoordinator: mockSyncingCoordinator)
-        
+
         // When
         sut.tableWillDisplayCell(at: IndexPath(row: 3, section: 0))
 

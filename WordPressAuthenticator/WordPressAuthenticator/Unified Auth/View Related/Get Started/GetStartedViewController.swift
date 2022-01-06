@@ -62,6 +62,9 @@ class GetStartedViewController: LoginViewController {
         super.viewWillAppear(animated)
 
         refreshEmailField()
+        
+        // Ensure the continue button matches the validity of the email field
+        configureContinueButton(animating: false)
 
         if errorMessage != nil {
             shouldChangeVoiceOverFocus = true
@@ -119,10 +122,8 @@ class GetStartedViewController: LoginViewController {
 
     private func refreshEmailField() {
         // It's possible that the password screen could have changed the loginFields username, for example when using
-        // autofill from a password manager. Let's ensure the loginFields matches the email field and that the
-        // continue button reflects the validity of the current email address.
+        // autofill from a password manager. Let's ensure the loginFields matches the email field.
         loginFields.username = emailField?.nonNilTrimmedText() ?? loginFields.username
-        configureContinueButton(animating: false)
     }
 }
 

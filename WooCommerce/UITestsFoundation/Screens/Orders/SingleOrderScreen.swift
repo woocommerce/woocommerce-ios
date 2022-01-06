@@ -1,6 +1,6 @@
 import ScreenObject
 import XCTest
-import WooCommerce
+// import WooCommerce
 
 public final class SingleOrderScreen: ScreenObject {
 
@@ -19,11 +19,10 @@ public final class SingleOrderScreen: ScreenObject {
 
     @discardableResult
     public func verifySingleOrder(order: OrderData) throws -> Self {
-        app.assertTextVisibilityCount(textToFind: order.status)
-       // app.assertTextVisibilityCount(textToFind: order.billing.first_name) // the first name "Mira" appears twice, so we'll need to not use this, or use a different function.
-        // try app.verifyChildElementOnParentCell(parent: "single-product-cell", child: "Mira")
-        app.assertElementExistsOnCell(mainCell: ProductDetailsTableViewCell[0], elementToFind: order.billing.first_name)
-        app.assertTextVisibilityCount(textToFind: order.total)
+        app.assertTextVisibilityCount(textToFind: order.status, expectedCount: 1)
+        app.assertTextVisibilityCount(textToFind: order.billing.first_name, expectedCount: 2) // the first name "Mira" appears twice
+        try app.verifyChildElementOnParentCell(parent: "single-product-cell", child: "Mira")
+        app.assertTextVisibilityCount(textToFind: order.total, expectedCount: 1)
         XCTAssertTrue(app.textViews[order.line_items[0].name].isFullyVisibleOnScreen(), "First product name is not visible on screen!")
 
 // app.tables.cells.element(boundBy: index)  or orders[0]

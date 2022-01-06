@@ -119,10 +119,10 @@ extension XCUIElement {
         return XCUIApplication().staticTexts.containing(predicate).count
     }
 
-    public func assertTextVisibilityCount(textToFind: String) {
-        let count = try! getStaticTextVisibilityCount(textToFind: textToFind)
-        XCTAssertTrue(count == 1, "Expected '\(textToFind)' to appear once, but it appeared '\(count)' times!")
-    }
+    public func assertTextVisibilityCount(textToFind: String, expectedCount: Int = 1) {
+            let count = try! getStaticTextVisibilityCount(textToFind: textToFind)
+            XCTAssertTrue(count == expectedCount, "Expected '\(textToFind)' to appear \(expectedCount) times, but it appeared '\(count)' times!")
+        }
 
     // Parent is using accessibilityIdentifier, child is using staticText
     func verifyChildElementOnParentCell(parent: String, child: String) throws -> Bool {

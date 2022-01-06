@@ -4,9 +4,6 @@ import Foundation
 /// the Tracks event to avoid incorrect comparisons with old events.
 final class StoreStatsUsageTracksEventEmitter {
 
-    /// TODO Replace with proper injection
-    static let shared = StoreStatsUsageTracksEventEmitter()
-
     private let analytics: Analytics
 
     /// The minimum amount of time (seconds) that the merchant have interacted with the
@@ -22,12 +19,13 @@ final class StoreStatsUsageTracksEventEmitter {
     /// - Tapping on the bars in the chart
     /// - Changing the tab
     /// - Navigating to the My Store tab
+    /// - Tapping on a product in the Top Performers list
     private let interactionsThreshold = 5
 
     /// The maximum number of seconds in between interactions before we will consider the
     /// merchant to have been idle. If they were idle, the time and interactions counting
     /// will be reset.
-    private let idleTimeThreshold: TimeInterval = 10
+    private let idleTimeThreshold: TimeInterval = 20
 
     private var interactions = 0
     private var firstInteractionTime: Date? = nil
@@ -60,10 +58,6 @@ final class StoreStatsUsageTracksEventEmitter {
 
             reset()
             analytics.track(.usedAnalytics)
-
-            // TODO Remove :D
-            let notice = Notice(title: "You used Analytics! Good for you!", feedbackType: .success)
-            ServiceLocator.noticePresenter.enqueue(notice: notice)
         }
     }
 

@@ -50,6 +50,8 @@ final class OldStoreStatsV4PeriodViewController: UIViewController {
     }
     private var siteStatsItems: [SiteVisitStatsItem] = []
 
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+
     // MARK: - Subviews
 
     @IBOutlet private weak var containerStackView: UIStackView!
@@ -150,10 +152,13 @@ final class OldStoreStatsV4PeriodViewController: UIViewController {
 
     /// Designated Initializer
     ///
-    init(timeRange: StatsTimeRangeV4, currentDate: Date) {
+    init(timeRange: StatsTimeRangeV4,
+         currentDate: Date,
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
         self.currentDate = currentDate
+        self.usageTracksEventEmitter = usageTracksEventEmitter
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         // Make sure the ResultsControllers are ready to observe changes to the data even before the view loads
@@ -430,6 +435,7 @@ extension OldStoreStatsV4PeriodViewController: ChartViewDelegate {
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
         let selectedIndex = Int(entry.x)
         updateUI(selectedBarIndex: selectedIndex)
+        usageTracksEventEmitter.interacted()
     }
 }
 
@@ -661,6 +667,7 @@ private extension OldStoreStatsV4PeriodViewController {
             isInitialLoad = false
             return
         }
+        usageTracksEventEmitter.interacted()
         ServiceLocator.analytics.track(.dashboardMainStatsDate, withProperties: ["range": granularity.rawValue])
         isInitialLoad = false
     }

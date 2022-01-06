@@ -62,7 +62,7 @@ class GetStartedViewController: LoginViewController {
         super.viewWillAppear(animated)
 
         refreshEmailField()
-        
+
         // Ensure the continue button matches the validity of the email field
         configureContinueButton(animating: false)
 

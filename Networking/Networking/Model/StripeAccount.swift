@@ -109,7 +109,7 @@ public extension StripeAccount {
 
 private extension StripeAccount {
     enum CodingKeys: String, CodingKey {
-        case status = "status"
+        case status
         case isLive = "is_live"
         case testMode = "test_mode"
         case hasPendingRequirements = "has_pending_requirements"

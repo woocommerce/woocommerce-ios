@@ -69,9 +69,7 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
         }
 
         if WordPressAuthenticator.shared.configuration.enableSignInWithApple {
-            if #available(iOS 13.0, *) {
-                buttonViewController.setupTertiaryButtonFor(socialService: .apple, onTap: handleAppleButtonTapped)
-            }
+            buttonViewController.setupTertiaryButtonFor(socialService: .apple, onTap: handleAppleButtonTapped)
         }
 
         buttonViewController.backgroundColor = WordPressAuthenticator.shared.style.buttonViewBackgroundColor

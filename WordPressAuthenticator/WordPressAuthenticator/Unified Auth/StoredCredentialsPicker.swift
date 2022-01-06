@@ -7,7 +7,6 @@ import AuthenticationServices
 /// This picker takes care of returning the credentials that were picked (and authorized by the iOS) through a closure.
 /// It's not within the scope of this class to take care of what happens after the credentials are picked.
 ///
-@available(iOS 13, *)
 class StoredCredentialsPicker: NSObject {
 
     typealias CompletionClosure = (Result<ASAuthorization, Error>) -> Void
@@ -37,7 +36,6 @@ class StoredCredentialsPicker: NSObject {
 
 // MARK: - ASAuthorizationControllerDelegate
 
-@available(iOS 13, *)
 extension StoredCredentialsPicker: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         onComplete(.success(authorization))
@@ -50,7 +48,6 @@ extension StoredCredentialsPicker: ASAuthorizationControllerDelegate {
 
 // MARK: - ASAuthorizationControllerPresentationContextProviding
 
-@available(iOS 13, *)
 extension StoredCredentialsPicker: ASAuthorizationControllerPresentationContextProviding {
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return window

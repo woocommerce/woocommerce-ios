@@ -465,45 +465,8 @@ import WordPressKit
         // Otherwise, the default bundle is used for resources
         return defaultBundle
     }
-
-    // MARK: - 1Password Helper
-
-    /// Request credentails from 1Password (if supported)
-    ///
-    /// - Parameter sender: A UIView. Typically the button the user tapped on.
-    ///
-    class func fetchOnePasswordCredentials(_ controller: UIViewController,
-                                           sourceView: UIView,
-                                           loginFields: LoginFields,
-                                           allowUsernameChange: Bool = true,
-                                           onePasswordFetcher: OnePasswordResultsFetcher = OnePasswordFacade(),
-                                           success: @escaping ((_ loginFields: LoginFields) -> Void)) {
-
-        let loginURL = loginFields.meta.userIsDotCom ? OnePasswordDefaults.dotcomURL : loginFields.siteAddress
-
-        onePasswordFetcher.findLogin(for: loginURL, viewController: controller, sender: sourceView, success: { (username, password, otp) in
-            if allowUsernameChange {
-                loginFields.username = username
-            }
-
-            loginFields.password = password
-            loginFields.multifactorCode = otp ?? String()
-
-            WordPressAuthenticator.track(.onePasswordLogin)
-            success(loginFields)
-
-        }, failure: { error in
-            guard error != .cancelledByUser else {
-                return
-            }
-
-            DDLogError("OnePassword Error: \(error.localizedDescription)")
-            WordPressAuthenticator.track(.onePasswordFailed)
-        })
-    }
 }
 
-@available(iOS 13.0, *)
 public extension WordPressAuthenticator {
 
     func getAppleIDCredentialState(for userID: String, completion:  @escaping (ASAuthorizationAppleIDProvider.CredentialState, Error?) -> Void) {

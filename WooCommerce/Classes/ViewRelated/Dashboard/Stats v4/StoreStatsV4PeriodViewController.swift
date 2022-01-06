@@ -1,6 +1,7 @@
 import Charts
 import Combine
 import UIKit
+import struct WordPressUI.GhostStyle
 import Yosemite
 
 /// Different display modes of site visit stats

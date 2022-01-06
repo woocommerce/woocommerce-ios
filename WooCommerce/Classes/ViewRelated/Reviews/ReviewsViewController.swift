@@ -15,12 +15,16 @@ final class ReviewsViewController: UIViewController {
     /// Mark all as read nav bar button
     ///
     private lazy var rightBarButton: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: .checkmarkImage,
+        let item = UIBarButtonItem(image: .ellipsisImage,
                                    style: .plain,
                                    target: self,
-                                   action: #selector(markAllAsRead))
-        item.accessibilityIdentifier = "reviews-mark-all-as-read-button"
-
+                                   action: #selector(presentActionSheet))
+        item.accessibilityIdentifier = "reviews-mark-all-as-read-button" // TODO: Change the identifier and check UI tests
+        item.accessibilityTraits = .button
+        item.accessibilityLabel = NSLocalizedString("Open menu",
+                                                    comment: "Accessibility label for the Menu button")
+        item.accessibilityHint = NSLocalizedString("Menu button which opens an action sheet with option to mark all reviews as read.",
+                                                   comment: "VoiceOver accessibility hint for the Menu button action")
         return item
     }()
 
@@ -132,7 +136,6 @@ final class ReviewsViewController: UIViewController {
         refreshTitle()
 
         configureSyncingCoordinator()
-        configureNavigationBarButtons()
         configureTableView()
         configureTableViewCells()
         configureResultsController()
@@ -188,16 +191,6 @@ private extension ReviewsViewController {
         tabBarItem.accessibilityIdentifier = "tab-bar-reviews-item"
     }
 
-    /// Setup: NavigationBar Buttons
-    ///
-    func configureNavigationBarButtons() {
-        rightBarButton.accessibilityTraits = .button
-        rightBarButton.accessibilityLabel = NSLocalizedString("Mark All as Read", comment: "Accessibility label for the Mark All Reviews as Read Button")
-        rightBarButton.accessibilityHint = NSLocalizedString("Marks Every Review as Read",
-                                                             comment: "VoiceOver accessibility hint for the Mark All Reviews as Read Action")
-        navigationItem.rightBarButtonItem = rightBarButton
-    }
-
     /// Setup: TableView
     ///
     func configureTableView() {
@@ -251,6 +244,18 @@ private extension ReviewsViewController {
         }
     }
 
+    @IBAction func presentActionSheet() {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addCancelActionWithTitle(Localization.ActionSheet.cancelAction)
+        actionSheet.addDefaultActionWithTitle(Localization.ActionSheet.markAsReadAction) { [weak self] _ in
+            self?.presentMarkAllAsReadConfirmationAlert()
+        }
+
+        present(actionSheet, animated: true)
+    }
+
     @IBAction func markAllAsRead() {
         ServiceLocator.analytics.track(.reviewsListReadAllTapped)
 
@@ -274,7 +279,7 @@ private extension ReviewsViewController {
                 tracks.track(.reviewsMarkAllReadSuccess)
             }
 
-            self.updateMarkAllReadButtonState()
+            self.updateMenuButtonState()
             self.tableView.reloadData()
         }
     }
@@ -483,11 +488,11 @@ private extension ReviewsViewController {
     /// - Parameter filterEnabled: If true, the filter navbar buttons is enabled; if false, it's disabled
     ///
     func updateNavBarButtonsState() {
-        updateMarkAllReadButtonState()
+        updateMenuButtonState()
     }
 
-    func updateMarkAllReadButtonState() {
-        rightBarButton.isEnabled = viewModel.hasUnreadNotifications
+    func updateMenuButtonState() {
+        navigationItem.rightBarButtonItem = viewModel.hasUnreadNotifications ? rightBarButton : nil
     }
 
     /// Displays the `Mark all as read` Notice if the number of times it was previously displayed is lower than the
@@ -502,6 +507,23 @@ private extension ReviewsViewController {
         let message = NSLocalizedString("All reviews marked as read", comment: "Mark all reviews as read notice")
         let notice = Notice(title: message, feedbackType: .success)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Presents an alert which asks the user for confirmation
+    /// before marking all reviews as read.
+    ///
+    func presentMarkAllAsReadConfirmationAlert() {
+        let alertController = UIAlertController(title: Localization.MarkAllAsReadAlert.title,
+                                                message: Localization.MarkAllAsReadAlert.message,
+                                                preferredStyle: .alert)
+        alertController.view.tintColor = .text
+
+        alertController.addActionWithTitle(Localization.MarkAllAsReadAlert.cancelButtonTitle, style: .destructive)
+        alertController.addDefaultActionWithTitle(Localization.MarkAllAsReadAlert.markAllButtonTitle) { [weak self] _ in
+            self?.markAllAsRead()
+        }
+
+        present(alertController, animated: true)
     }
 }
 
@@ -602,6 +624,28 @@ private extension ReviewsViewController {
 //
 private extension ReviewsViewController {
     enum Localization {
+        enum ActionSheet {
+            static let markAsReadAction = NSLocalizedString("Mark all reviews as read",
+                                                            comment: "Option to mark all reviews as read from the action sheet in Reviews screen.")
+
+            static let cancelAction = NSLocalizedString("Cancel",
+                                                        comment: "Cancel the more menu action sheet in Reviews screen.")
+        }
+
+        enum MarkAllAsReadAlert {
+            static let title = NSLocalizedString("Mark all as read",
+                                                 comment: "Title of Alert which asks user for confirmation before marking all reviews as read.")
+
+            static let message = NSLocalizedString("Are you sure you want to mark all reviews as read?",
+                                                   comment: "Alert message to confirm a user meant to mark all reviews as read.")
+
+            static let cancelButtonTitle = NSLocalizedString("Cancel",
+                                                             comment: "Alert button title - dismisses alert, which cancels marking all as read attempt.")
+
+            static let markAllButtonTitle = NSLocalizedString("Mark all",
+                                                              comment: "Alert button title - confirms and marks all reviews as read")
+        }
+
         static let emptyStateMessage = NSLocalizedString("Get your first reviews", comment: "Message shown in the Reviews tab if the list is empty")
         static let emptyStateDetail = NSLocalizedString("Capture high-quality product reviews for your store.",
                                                         comment: "Detailed message shown in the Reviews tab if the list is empty")

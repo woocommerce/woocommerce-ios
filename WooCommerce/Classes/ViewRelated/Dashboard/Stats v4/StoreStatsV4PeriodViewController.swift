@@ -158,6 +158,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        // After returning to the My Store tab, `restartGhostAnimation` is required to resume ghost animation.
         restartGhostAnimationIfNeeded()
     }
 
@@ -244,7 +246,7 @@ extension StoreStatsV4PeriodViewController {
     ///
     func displayGhostContent() {
         ensurePlaceholderIsVisible()
-        placeholderChartsView.startGhostAnimation(style: .wooDefaultGhostStyle)
+        placeholderChartsView.startGhostAnimation(style: Constants.ghostStyle)
     }
 
     /// Removes the Placeholder Content.
@@ -272,7 +274,7 @@ extension StoreStatsV4PeriodViewController {
         guard placeholderChartsView.superview != nil else {
             return
         }
-        placeholderChartsView.restartGhostAnimation(style: .wooDefaultGhostStyle)
+        placeholderChartsView.restartGhostAnimation(style: Constants.ghostStyle)
     }
 }
 
@@ -753,5 +755,7 @@ private extension StoreStatsV4PeriodViewController {
 
         static let containerBackgroundColor: UIColor = .systemBackground
         static let headerComponentBackgroundColor: UIColor = .clear
+
+        static let ghostStyle: GhostStyle = .wooDefaultGhostStyle
     }
 }

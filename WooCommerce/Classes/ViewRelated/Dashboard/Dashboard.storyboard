@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -189,36 +190,6 @@
             </objects>
             <point key="canvasLocation" x="4192.8000000000002" y="2236.7316341829087"/>
         </scene>
-        <!--Card Reader Settings Searching View Controller-->
-        <scene sceneID="1hM-QM-F7H">
-            <objects>
-                <viewController storyboardIdentifier="CardReaderSettingsSearchingViewController" id="QbQ-It-W6j" customClass="CardReaderSettingsSearchingViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="OI1-Kx-TMr">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="wIN-aE-q96">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            </tableView>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="H3D-HM-LVk"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="wIN-aE-q96" firstAttribute="top" secondItem="H3D-HM-LVk" secondAttribute="top" id="Jhc-e4-GIy"/>
-                            <constraint firstItem="wIN-aE-q96" firstAttribute="leading" secondItem="H3D-HM-LVk" secondAttribute="leading" id="oLF-Wz-7a3"/>
-                            <constraint firstItem="H3D-HM-LVk" firstAttribute="trailing" secondItem="wIN-aE-q96" secondAttribute="trailing" id="qD0-0x-GvW"/>
-                            <constraint firstItem="H3D-HM-LVk" firstAttribute="bottom" secondItem="wIN-aE-q96" secondAttribute="bottom" id="yfC-kN-EGt"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="tableView" destination="wIN-aE-q96" id="Cyr-Hj-o4e"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="lvw-3c-XCx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="4929" y="2237"/>
-        </scene>
         <!--Card Reader Settings Connected View Controller-->
         <scene sceneID="A3p-G9-5R7">
             <objects>
@@ -248,6 +219,14 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="feV-ex-aGN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="5658" y="2237"/>
+        </scene>
+        <!--Card Reader Settings Searching View Controller-->
+        <scene sceneID="yFf-zp-ex7">
+            <objects>
+                <hostingController storyboardIdentifier="CardReaderSettingsSearchingViewController" id="6OW-B9-dhi" customClass="CardReaderSettingsSearchingViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gkw-di-0a6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4937" y="2237"/>
         </scene>
     </scenes>
     <resources>

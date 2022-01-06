@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-12-15 11:32:07+0000 */
+/* Translation-Revision-Date: 2022-01-05 15:45:12+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -32,7 +32,7 @@
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string, - which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ about accepting payments with your mobile device and ordering card readers";
+"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ حول قبول المدفوعات باستخدام جهازك المحمول وطلب قارئ البطاقات";
 
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
@@ -748,10 +748,10 @@
 "Collect Payment" = "تحصيل المدفوعات";
 
 /* Alert title when starting the collect payment flow without a user name. */
-"Collect payment" = "Collect payment";
+"Collect payment" = "تحصيل المدفوعات";
 
 /* Alert title when starting the collect payment flow with a user name. */
-"Collect payment from %1$@" = "Collect payment from %1$@";
+"Collect payment from %1$@" = "تحصيل المدفوعات من %1$@";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -1234,7 +1234,7 @@
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "تأكَّد من **تحديث البرنامج الثابت لطابعتك**. اطلع على مستندات طابعتك للحصول على إرشادات حول التحديث.";
 
 /* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
-"Enter Address" = "Enter Address";
+"Enter Address" = "إدخال العنوان";
 
 /* Short instructions label in the simple payments screen */
 "Enter Amount" = "إدخال المبلغ";
@@ -1278,7 +1278,7 @@
 "Enter password" = "أدخل كلمة المرور";
 
 /* Sign in instructions for logging in with a URL. */
-"Enter the address of the WooCommerce store you'd like to connect." = "Enter the address of the WooCommerce store you'd like to connect.";
+"Enter the address of the WooCommerce store you'd like to connect." = "قم بإدخال عنوان مخزن WooCommerce الذي ترغب في ربطه.";
 
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
@@ -1576,7 +1576,7 @@
 "How can we improve?" = "كيف يمكننا تحسين ذلك؟";
 
 /* Navigation bar title of hub menu view */
-"Hub Menu" = "Hub Menu";
+"Hub Menu" = "قائمة المركز";
 
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "يعجبني هذا";
@@ -1961,10 +1961,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark Order Complete" = "وضع علامة مكتمل على الطلب";
 
 /* Alert button when selecting the cash payment method for simple payments */
-"Mark as Paid" = "Mark as Paid";
+"Mark as Paid" = "وضع علامة كمدفوع";
 
 /* Alert title when selecting the cash payment method for simple payments */
-"Mark as Paid?" = "Mark as Paid?";
+"Mark as Paid?" = "هل تم وضع علامة بأنه مدفوع؟";
 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "وضع علامة على هذا الطلب على أنه مكتمل وإخطار العميل";
@@ -2407,10 +2407,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please charge reader" = "يرجى شحن القارئ";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
-"Please correct your store address to proceed" = "Please correct your store address to proceed";
+"Please correct your store address to proceed" = "يرجى تصحيح عنوان مخزنك للمتابعة";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"Please correct your store's postcode\/ZIP" = "Please correct your store's postcode\/ZIP";
+"Please correct your store's postcode\/ZIP" = "يرجى تصحيح الرمز البريدي\/ZIP الخاص بمخزنك";
 
 /* Error message for missing explanation when Content Typeis Other in Customs screen of Shipping Label flow */
 "Please describe what kind of goods this package contains" = "يرجى وصف نوع البضائع التي تحتوي على";
@@ -2593,7 +2593,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Processing" = "قيد المعالجة";
 
 /* VoiceOver accessibility label. Indicates that a payment is being processed */
-"Processing payment" = "Processing payment";
+"Processing payment" = "معالجة الدفع";
 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "جارٍ معالجة الدفع...";
@@ -2861,7 +2861,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
    Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
-"Retry After Updating" = "Retry After Updating";
+"Retry After Updating" = "إعادة المحاولة بعد التحديث";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "الرجوع إلى المرسل إذا تعذر توصيل الحزمة";
@@ -3679,10 +3679,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "There was an error updating the order" = "حدث خطأ في أثناء تحديث الطلب";
 
 /* Text when there is an error while marking the order as paid for simple payments. */
-"There was an error while marking the order as paid." = "There was an error while marking the order as paid.";
+"There was an error while marking the order as paid." = "حدث خطأ في أثناء وضع علامة على الطلب بأنه مدفوع.";
 
 /* Text when there is an unknown error while trying to collect payments */
-"There was an error while trying to collect the payment." = "There was an error while trying to collect the payment.";
+"There was an error while trying to collect the payment." = "حدث خطأ في أثناء محاولة تحصيل المدفوعات.";
 
 /* Navigates to screen with third party software licenses
    Software Licenses (information page title) */
@@ -3750,7 +3750,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This text will be shown on the button linking to the external product." = "سيظهر هذا النص على الزر المرتبط بالمنتج الخارجي.";
 
 /* Alert info when selecting the cash payment method for simple payments */
-"This will mark your order as complete if you received (total) outside of WooCommerce" = "This will mark your order as complete if you received (total) outside of WooCommerce";
+"This will mark your order as complete if you received (total) outside of WooCommerce" = "سيقوم هذا بوضع علامة على طلبك بأنه مكتمل إذا تلقيته (الإجمالي) خارج WooCommerce";
 
 /* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
@@ -4071,7 +4071,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Updating software" = "تحديث البرنامج";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
-"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "فشل تحديث برنامج القارئ لأن بطارية القارئ منخفضة. يرجى شحن القارئ بنسبة تزيد على 50\uFF05 قبل المحاولة مرة أخرى.";
+"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "فشل تحديث برنامج القارئ لأن بطارية القارئ منخفضة. يرجى شحن القارئ بنسبة تزيد على 50% قبل المحاولة مرة أخرى.";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
 "Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "فشل تحديث برنامج القارئ لأن بطارية القارئ مشحونة بنسبة %.0f%%. يرجى شحن القارئ بنسبة تزيد على 50%% قبل المحاولة مرة أخرى.";
@@ -4348,7 +4348,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "WooCommerce Payments is in Test Mode" = "مدفوعات WooCommerce في وضع الاختبار";
 
 /* Navigation title of the webview which used by the merchant to update their store address */
-"WooCommerce Settings" = "WooCommerce Settings";
+"WooCommerce Settings" = "إعدادات WooCommerce";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "الشحن عبر WooCommerce";
@@ -4388,13 +4388,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "يمكنك الآن إنشاء ملصقات شحن لجميع الطلبات المادية مباشرةً من جهازك باستخدام إضافة الشحن المجانية عبر WooCommerce. اضغط على \"إنشاء ملصق شحن\" لتجربة ميزة بيتا الخاصة بنا في المستقبل!";
 
 /* Shown in Refunds screen. Refunding fees are currently not supported. */
-"You can refund fees in your store admin" = "You can refund fees in your store admin";
+"You can refund fees in your store admin" = "يمكنك استرداد الرسوم في مسؤول مخزنك";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "يمكنك طلب استرداد أموال بطاقة الشحن التي لم يتم استخدامها لشحن طرد.\nستستغرق المعالجة 14 يومًا على الأقل.";
 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)";
+"You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "يمكنك تعيين الرمز البريدي\/ZIP الخاص بمخزنك في مسؤول ووردبريس > WooCommerce > الإعدادات (عام)";
 
 /* Error message when WooCommerce Payments is not supported in a specific country
    Generic error message when In-Person Payments is unavailable */
@@ -4484,7 +4484,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "🎉 Order Completed" = "🎉 تم اكتمال الطلب";
 
 /* Title for the button to cancel the simple payments screen */
-"🎉 Order completed" = "";
+"🎉 Order completed" = "🎉 تم اكتمال الطلب";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "تم استرداد أموال 🎉 من المنتجات بنجاح";

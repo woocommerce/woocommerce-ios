@@ -21,10 +21,8 @@ final class ReviewsViewController: UIViewController {
                                    action: #selector(presentActionSheet))
         item.accessibilityIdentifier = "reviews-mark-all-as-read-button" // TODO: Change the identifier and check UI tests
         item.accessibilityTraits = .button
-        item.accessibilityLabel = NSLocalizedString("Open menu",
-                                                    comment: "Accessibility label for the Menu button")
-        item.accessibilityHint = NSLocalizedString("Menu button which opens an action sheet with option to mark all reviews as read.",
-                                                   comment: "VoiceOver accessibility hint for the Menu button action")
+        item.accessibilityLabel = Localization.MenuButton.accessibilityLabel
+        item.accessibilityHint = Localization.MenuButton.accessibilityHint
         return item
     }()
 
@@ -186,7 +184,7 @@ private extension ReviewsViewController {
     /// Setup: TabBar
     ///
     func configureTabBarItem() {
-        tabBarItem.title = NSLocalizedString("Reviews", comment: "Title of the Reviews tab — plural form of Review")
+        tabBarItem.title = Localization.tabBarItemTitle
         tabBarItem.image = .starOutlineImage()
         tabBarItem.accessibilityIdentifier = "tab-bar-reviews-item"
     }
@@ -225,10 +223,7 @@ private extension ReviewsViewController {
     }
 
     func refreshTitle() {
-        title = NSLocalizedString(
-            "Reviews",
-            comment: "Title that appears on top of the main Reviews screen (plural form of the word Review)."
-        )
+        title = Localization.title
     }
 }
 
@@ -341,11 +336,11 @@ private extension ReviewsViewController {
     ///
     func displayEmptyViewController() {
         let childController = emptyStateViewController
-        let emptyStateConfig = EmptyStateViewController.Config.withLink(message: NSAttributedString(string: Localization.emptyStateMessage),
-                                                              image: .emptyReviewsImage,
-                                                              details: Localization.emptyStateDetail,
-                                                              linkTitle: Localization.emptyStateAction,
-                                                              linkURL: WooConstants.URLs.productReviewInfo.asURL())
+        let emptyStateConfig = EmptyStateViewController.Config.withLink(message: NSAttributedString(string: Localization.EmptyState.message),
+                                                                        image: .emptyReviewsImage,
+                                                                        details: Localization.EmptyState.detail,
+                                                                        linkTitle: Localization.EmptyState.action,
+                                                                        linkURL: WooConstants.URLs.productReviewInfo.asURL())
 
         // Abort if we are already displaying this childController
         guard childController.parent == nil,
@@ -504,8 +499,8 @@ private extension ReviewsViewController {
         }
 
         markAsReadCount += 1
-        let message = NSLocalizedString("All reviews marked as read", comment: "Mark all reviews as read notice")
-        let notice = Notice(title: message, feedbackType: .success)
+        let notice = Notice(title: Localization.Notice.allReviewsMarkedAsRead,
+                            feedbackType: .success)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
@@ -624,6 +619,19 @@ private extension ReviewsViewController {
 //
 private extension ReviewsViewController {
     enum Localization {
+        static let title = NSLocalizedString("Reviews",
+                                             comment: "Title that appears on top of the main Reviews screen (plural form of the word Review).")
+
+        static let tabBarItemTitle = NSLocalizedString("Reviews",
+                                                       comment: "Title of the Reviews tab — plural form of Review")
+
+        enum MenuButton {
+            static let accessibilityLabel = NSLocalizedString("Open menu",
+                                                        comment: "Accessibility label for the Menu button")
+            static let accessibilityHint = NSLocalizedString("Menu button which opens an action sheet with option to mark all reviews as read.",
+                                                       comment: "VoiceOver accessibility hint for the Menu button action")
+        }
+
         enum ActionSheet {
             static let markAsReadAction = NSLocalizedString("Mark all reviews as read",
                                                             comment: "Option to mark all reviews as read from the action sheet in Reviews screen.")
@@ -646,9 +654,18 @@ private extension ReviewsViewController {
                                                               comment: "Alert button title - confirms and marks all reviews as read")
         }
 
-        static let emptyStateMessage = NSLocalizedString("Get your first reviews", comment: "Message shown in the Reviews tab if the list is empty")
-        static let emptyStateDetail = NSLocalizedString("Capture high-quality product reviews for your store.",
-                                                        comment: "Detailed message shown in the Reviews tab if the list is empty")
-        static let emptyStateAction = NSLocalizedString("Learn more", comment: "Title of button shown in the Reviews tab if the list is empty")
+        enum Notice {
+            static let allReviewsMarkedAsRead = NSLocalizedString("All reviews marked as read",
+                                                                  comment: "Mark all reviews as read notice")
+        }
+
+        enum EmptyState {
+            static let message = NSLocalizedString("Get your first reviews",
+                                                             comment: "Message shown in the Reviews tab if the list is empty")
+            static let detail = NSLocalizedString("Capture high-quality product reviews for your store.",
+                                                            comment: "Detailed message shown in the Reviews tab if the list is empty")
+            static let action = NSLocalizedString("Learn more",
+                                                            comment: "Title of button shown in the Reviews tab if the list is empty")
+        }
     }
 }

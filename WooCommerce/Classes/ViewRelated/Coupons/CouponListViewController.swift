@@ -87,6 +87,20 @@ private extension CouponListViewController {
             refreshControl.endRefreshing()
         }
     }
+
+    /// Starts the loading indicator in the footer, to show that another page is being fetched
+    ///
+    func startFooterLoadingIndicator() {
+        tableView?.tableFooterView = footerSpinnerView
+        footerSpinnerView.startAnimating()
+    }
+
+    /// Stops the loading indicator in the footer
+    ///
+    func stopFooterLoadingIndicator() {
+        footerSpinnerView.stopAnimating()
+        tableView?.tableFooterView = footerEmptyView
+    }
 }
 
 

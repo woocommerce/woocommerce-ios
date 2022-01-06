@@ -10,6 +10,14 @@ final class CouponListViewController: UIViewController {
     ///
     private var emptyStateViewController: UIViewController?
 
+    /// Pull To Refresh Support.
+    ///
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshCouponList), for: .valueChanged)
+        return refreshControl
+    }()
+
     private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64) {
@@ -53,6 +61,13 @@ final class CouponListViewController: UIViewController {
     }
 }
 
+// MARK: - Actions
+private extension CouponListViewController {
+    @objc func refreshCouponList() {
+        viewModel.refreshCoupons()
+    }
+}
+
 
 // MARK: - View Configuration
 //
@@ -66,6 +81,7 @@ private extension CouponListViewController {
         tableView.dataSource = self
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.addSubview(refreshControl)
     }
 
     func registerTableViewCells() {

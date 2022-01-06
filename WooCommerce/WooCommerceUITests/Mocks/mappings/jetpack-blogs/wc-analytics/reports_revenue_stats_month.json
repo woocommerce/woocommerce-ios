@@ -7,7 +7,7 @@
         "equalTo": "true"
       },
       "path": {
-        "matches": "/wc-analytics/reports/revenue/stats/(.*)"
+        "matches": "/wc-analytics/reports/revenue/stats(.*)"
       },
       "query": {
         "matches": "(.*)interval\":\"month(.*)"

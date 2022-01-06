@@ -7,10 +7,10 @@
         "equalTo": "true"
       },
       "path": {
-        "matches": "/wc-analytics/reports/revenue/stats/(.*)"
+        "matches": "/wc-analytics/reports/revenue/stats(.*)"
       },
       "query": {
-        "matches": "(.*)interval\":\"day(.*)"
+        "matches": "(.*)interval\":\"hour(.*)"
       }
     }
   },
@@ -37,12 +37,6 @@
           "segments": []
           },
           "intervals": [{
-            // Here the first interval always starts today. This means that stats for weeks and days
-            // will always start today (imagine a month starting on 19 of Oct).
-            // It's not realistic, but it ensures that the data will look the same at any time.
-            //
-            // Alternatively, we would have to calculate the closest Sunday (week start) from the past/today
-            // with a helper (that does not exist) and use it as a first day of week (and offset it for the other six days).
             "interval": "{{#assign 'customformat'}}yyyy-MM-dd{{/assign}}{{now format=customformat}}",
             "date_start": "{{now format=customformat}} 00:00:00",
             "date_start_gmt": "{{now format=customformat}} 00:00:00",

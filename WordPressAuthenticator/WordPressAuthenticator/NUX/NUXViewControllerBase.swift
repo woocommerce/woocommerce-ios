@@ -171,20 +171,14 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
         buttonItemAppearance.tintColor = buttonTextColor
         buttonItemAppearance.setTitleTextAttributes([.foregroundColor: buttonTextColor], for: .normal)
 
-        if #available(iOS 13.0, *) {
-            let appearance = UINavigationBarAppearance()
-            appearance.shadowColor = hideBottomBorder ? .clear : .separator
-            appearance.backgroundColor = backgroundColor
-            appearance.titleTextAttributes = [.foregroundColor: titleTextColor]
+        let appearance = UINavigationBarAppearance()
+        appearance.shadowColor = hideBottomBorder ? .clear : .separator
+        appearance.backgroundColor = backgroundColor
+        appearance.titleTextAttributes = [.foregroundColor: titleTextColor]
 
-            UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).standardAppearance = appearance
-            UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).compactAppearance = appearance
-            UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).scrollEdgeAppearance = appearance
-        } else {
-            let appearance = UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self])
-            appearance.barTintColor = backgroundColor
-            appearance.titleTextAttributes = [.foregroundColor: titleTextColor]
-        }
+        UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).standardAppearance = appearance
+        UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).compactAppearance = appearance
+        UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).scrollEdgeAppearance = appearance
     }
 
     /// Add/remove the nav bar app logo.

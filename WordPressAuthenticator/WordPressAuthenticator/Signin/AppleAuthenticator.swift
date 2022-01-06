@@ -19,7 +19,6 @@ class AppleAuthenticator: NSObject {
     private let loginFields = LoginFields()
     weak var delegate: AppleAuthenticatorDelegate?
 
-    @available(iOS 13.0, *)
     static let credentialRevokedNotification = ASAuthorizationAppleIDProvider.credentialRevokedNotification
 
     private var tracker: AuthenticatorAnalyticsTracker {
@@ -57,23 +56,19 @@ private extension AppleAuthenticator {
 private extension AppleAuthenticator {
 
     func requestAuthorization() {
-        if #available(iOS 13.0, *) {
-            let provider = ASAuthorizationAppleIDProvider()
-            let request = provider.createRequest()
-            request.requestedScopes = [.fullName, .email]
+        let provider = ASAuthorizationAppleIDProvider()
+        let request = provider.createRequest()
+        request.requestedScopes = [.fullName, .email]
 
-            let controller = ASAuthorizationController(authorizationRequests: [request])
-            controller.delegate = self
+        let controller = ASAuthorizationController(authorizationRequests: [request])
+        controller.delegate = self
 
-            controller.presentationContextProvider = self
-            controller.performRequests()
-
-        }
+        controller.presentationContextProvider = self
+        controller.performRequests()
     }
 
     /// Creates a WordPress.com account with the Apple ID
     ///
-    @available(iOS 13.0, *)
     func createWordPressComUser(appleCredentials: ASAuthorizationAppleIDCredential) {
         guard let identityToken = appleCredentials.identityToken,
             let token = String(data: identityToken, encoding: .utf8) else {
@@ -233,7 +228,6 @@ private extension AppleAuthenticator {
 
 }
 
-@available(iOS 13.0, *)
 extension AppleAuthenticator: ASAuthorizationControllerDelegate {
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
@@ -259,14 +253,12 @@ extension AppleAuthenticator: ASAuthorizationControllerDelegate {
     }
 }
 
-@available(iOS 13.0, *)
 extension AppleAuthenticator: ASAuthorizationControllerPresentationContextProviding {
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return showFromViewController?.view.window ?? UIWindow()
     }
 }
 
-@available(iOS 13.0, *)
 extension AppleAuthenticator {
     func getAppleIDCredentialState(for userID: String,
                                    completion: @escaping (ASAuthorizationAppleIDProvider.CredentialState, Error?) -> Void) {

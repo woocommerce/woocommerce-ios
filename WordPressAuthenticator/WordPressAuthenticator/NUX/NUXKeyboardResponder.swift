@@ -141,10 +141,7 @@ public extension NUXKeyboardResponder where Self: NUXViewController {
         }
 
         // If the safe area has a bottom height, subtract that.
-        var bottomAdjust: CGFloat = 0
-        if #available(iOS 11, *) {
-            bottomAdjust = view.safeAreaInsets.bottom
-        }
+        let bottomAdjust: CGFloat = view.safeAreaInsets.bottom
         return keyboardFrame.height - bottomAdjust
     }
 

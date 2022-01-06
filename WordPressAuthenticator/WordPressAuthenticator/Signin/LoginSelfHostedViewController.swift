@@ -11,7 +11,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
     @IBOutlet var forgotPasswordButton: WPNUXSecondaryButton!
     @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     @IBOutlet var verticalCenterConstraint: NSLayoutConstraint?
-    @objc var onePasswordButton: UIButton!
     override var sourceTag: WordPressSupportSourceTag {
         get {
             return .loginUsernamePassword
@@ -33,7 +32,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
 
         configureHeader()
         localizeControls()
-        setupOnePasswordButtonIfNeeded()
         displayLoginMessage("")
         configureForAcessibility()
     }
@@ -100,14 +98,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         }
 
         forgotPasswordButton.accessibilityTraits = .link
-    }
-
-    /// Sets up a 1Password button if 1Password is available.
-    ///
-    @objc func setupOnePasswordButtonIfNeeded() {
-        WPStyleGuide.configureOnePasswordButtonForTextfield(usernameField,
-                                                            target: self,
-                                                            selector: #selector(handleOnePasswordButtonTapped(_:)))
     }
 
     /// Configures the content of the text fields based on what is saved in `loginFields`.
@@ -225,16 +215,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
 
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
         validateForm()
-    }
-
-    @objc func handleOnePasswordButtonTapped(_ sender: UIButton) {
-        view.endEditing(true)
-
-        WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sender, loginFields: loginFields) { [unowned self] (loginFields) in
-            self.usernameField.text = loginFields.username
-            self.passwordField.text = loginFields.password
-            self.validateForm()
-        }
     }
 
     @IBAction func handleForgotPasswordButtonTapped(_ sender: UIButton) {

@@ -268,20 +268,6 @@ private extension GetStartedViewController {
             self?.configureContinueButton(animating: false)
         }
 
-        cell.onePasswordHandler = { [weak self] in
-            guard let self = self,
-            let sourceView = self.emailField else {
-                return
-            }
-
-            self.view.endEditing(true)
-
-            WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sourceView, loginFields: self.loginFields) { [weak self] (loginFields) in
-                self?.emailField?.text = loginFields.username
-                self?.validateFormAndLogin()
-            }
-        }
-
         if UIAccessibility.isVoiceOverRunning {
             // Quiet repetitive elements in VoiceOver.
             emailField?.placeholder = nil
@@ -609,9 +595,7 @@ private extension GetStartedViewController {
         buttonViewController.hideShadowView()
 
         if WordPressAuthenticator.shared.configuration.enableSignInWithApple {
-            if #available(iOS 13.0, *) {
-                buttonViewController.setupTopButtonFor(socialService: .apple, onTap: appleTapped)
-            }
+            buttonViewController.setupTopButtonFor(socialService: .apple, onTap: appleTapped)
         }
 
         buttonViewController.setupButtomButtonFor(socialService: .google, onTap: googleTapped)

@@ -1,0 +1,3 @@
+A volte hai semplicemente bisogno di creare un ordine rapido per riscuotere dal tuo cliente un pagamento relativo a una transazione che stai effettuando di persona, ad esempio presso una fiera. Abbiamo aggiunto una nuova opzione per consentirti di creare Pagamenti facili. Vai alla scheda Ordini per creare un ordine rapido volto a registrare la transazione. Stiamo lavorando sodo anche alla creazione di ordini completi: avrai modo di scoprirlo nel corso di quest'anno.
+
+Abbiamo inoltre corretto un bug riguardante la mancata visualizzazione del conteggio dei visitatori del sito sulla scheda Oggi del pannello di amministrazione del tuo negozio. Grazie per averci informato. 💜

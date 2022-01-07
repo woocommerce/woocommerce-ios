@@ -198,10 +198,6 @@ private extension SettingsViewModel {
                 rows.append(.installJetpack)
             }
 
-            if featureFlagService.isFeatureFlagEnabled(.couponManagement) {
-                rows.append(.couponManagement)
-            }
-
             return Section(title: Localization.storeSettingsTitle,
                            rows: rows,
                            footerHeight: UITableView.automaticDimension)

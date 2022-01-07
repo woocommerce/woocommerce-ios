@@ -1,4 +1,4 @@
-import Foundation
+import Combine
 import Yosemite
 import protocol Storage.StorageManagerType
 import class AutomatticTracks.CrashLogging
@@ -15,29 +15,15 @@ enum CouponListState {
     case loading // View should show ghost cells
     case empty // View should display the empty state
     case coupons // View should display the contents of `couponViewModels`
+    case refreshing // View should display the refresh control
+    case loadingNextPage // View should display a bottom loading indicator and contents of `couponViewModels`
 }
 
-final class CouponManagementListViewModel {
-    /// onListStateChange
-    ///
-    private var didLeaveState: (CouponListState) -> ()
-
-    /// onListStateChange
-    ///
-    private var didEnterState: (CouponListState) -> ()
+final class CouponListViewModel {
 
     /// Active state
     ///
-    private var state: CouponListState = .initialized {
-        didSet {
-            guard oldValue != state else {
-                return
-            }
-
-            didLeaveState(oldValue)
-            didEnterState(state)
-        }
-    }
+    @Published private(set) var state: CouponListState = .initialized
 
     /// couponViewModels: ViewModels for the cells representing Coupons
     ///
@@ -69,15 +55,11 @@ final class CouponManagementListViewModel {
     init(siteID: Int64,
          syncingCoordinator: SyncingCoordinatorProtocol = SyncingCoordinator(),
          storesManager: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
-         didLeaveState: @escaping (CouponListState) -> (),
-         didEnterState: @escaping (CouponListState) -> ()) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.syncingCoordinator = syncingCoordinator
         self.storesManager = storesManager
         self.storageManager = storageManager
-        self.didLeaveState = didLeaveState
-        self.didEnterState = didEnterState
         self.resultsController = Self.createResultsController(siteID: siteID,
                                                               storageManager: storageManager)
         configureSyncingCoordinator()
@@ -88,7 +70,7 @@ final class CouponManagementListViewModel {
                                                 storageManager: StorageManagerType) -> ResultsController<StorageCoupon> {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
-                                          ascending: true)
+                                          ascending: false)
 
         return ResultsController<StorageCoupon>(storageManager: storageManager,
                                                 matching: predicate,
@@ -136,12 +118,24 @@ final class CouponManagementListViewModel {
     func coupon(at indexPath: IndexPath) -> Coupon? {
         return resultsController.safeObject(at: indexPath)
     }
+
+    /// Triggers a refresh of loaded coupons
+    ///
+    func refreshCoupons() {
+        syncingCoordinator.resynchronize(reason: nil, onCompletion: nil)
+    }
+
+    /// The ViewController can trigger loading of the next page when the user scrolls to the bottom
+    ///
+    func tableWillDisplayCell(at indexPath: IndexPath) {
+        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: indexPath.row)
+    }
 }
 
 
 // MARK: - SyncingCoordinatorDelegate
 //
-extension CouponManagementListViewModel: SyncingCoordinatorDelegate {
+extension CouponListViewModel: SyncingCoordinatorDelegate {
     /// Syncs the specified page of coupons from the API
     /// - Parameters:
     ///   - pageNumber: 1-indexed page number
@@ -153,7 +147,7 @@ extension CouponManagementListViewModel: SyncingCoordinatorDelegate {
               pageSize: Int,
               reason: String?,
               onCompletion: ((Bool) -> Void)?) {
-        transitionToSyncingState(pageNumber: pageNumber)
+        transitionToSyncingState(pageNumber: pageNumber, hasData: couponViewModels.isNotEmpty)
         let action = CouponAction
             .synchronizeCoupons(siteID: siteID,
                                 pageNumber: pageNumber,
@@ -181,10 +175,12 @@ extension CouponManagementListViewModel: SyncingCoordinatorDelegate {
 
 // MARK: - Pagination
 //
-private extension CouponManagementListViewModel {
-    func transitionToSyncingState(pageNumber: Int) {
+private extension CouponListViewModel {
+    func transitionToSyncingState(pageNumber: Int, hasData: Bool) {
         if pageNumber == 1 {
-            state = .loading
+            state = hasData ? .refreshing : .loading
+        } else {
+            state = .loadingNextPage
         }
     }
 

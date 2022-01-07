@@ -12,7 +12,8 @@ struct HubMenuElement: View {
     var body: some View {
         VStack {
             ZStack {
-                Color(.listBackground)
+                Color(UIColor(light: .listBackground,
+                              dark: .secondaryButtonBackground))
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
@@ -22,7 +23,7 @@ struct HubMenuElement: View {
             .cornerRadius(imageSize/2)
             .padding(.bottom, Constants.paddingBetweenElements)
             Text(text)
-                .foregroundColor(.black)
+                .bodyStyle()
         }
     }
 

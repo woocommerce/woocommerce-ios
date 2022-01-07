@@ -10,9 +10,9 @@ public final class ReviewsScreen: ScreenObject {
         (try? ReviewsScreen().isLoaded) ?? false
     }
 
-    init(app: XCUIApplication = XCUIApplication()) throws {
+    public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [ { $0.buttons["reviews-mark-all-as-read-button"] } ],
+            expectedElementGetters: [ { $0.buttons["reviews-open-menu-button"] } ],
             app: app
         )
     }
@@ -38,10 +38,10 @@ public final class ReviewsScreen: ScreenObject {
     }
 
     @discardableResult
-    public func verifyReviewListOnReviewsScreen(reviews: [ReviewData]) throws -> Self {
-        app.assertTextVisibilityCount(textToFind: reviews[0].reviewer)
-        app.assertCorrectCellCountDisplayed(expectedCount: reviews.count, actualCount: app.tables.cells.count)
-        app.assertTwoTextsAppearOnSameLabel(firstSubstring: reviews[0].reviewer, secondSubstring: reviews[0].product_name!)
+    public func verifyReviewList(reviews: [ReviewData]) throws -> Self {
+        app.assertTextVisibilityCount(textToFind: reviews[0].reviewer, expectedCount: 1)
+        app.assertLabelContains(firstSubstring: reviews[0].reviewer, secondSubstring: reviews[0].product_name!)
+        XCTAssertEqual(reviews.count, app.tables.cells.count, "Expecting '\(reviews.count)' reviews, got '\(app.tables.cells.count)' instead!")
 
         return self
     }

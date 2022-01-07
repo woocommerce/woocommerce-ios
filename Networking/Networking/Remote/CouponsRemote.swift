@@ -9,6 +9,14 @@ public protocol CouponsRemoteProtocol {
                         pageNumber: Int,
                         pageSize: Int,
                         completion: @escaping (Result<[Coupon], Error>) -> ())
+
+    func deleteCoupon(for siteID: Int64,
+                      couponID: Int64,
+                      completion: @escaping (Result<Coupon, Error>) -> Void)
+
+    func updateCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void)
+
+    func createCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void)
 }
 
 
@@ -20,10 +28,10 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     /// Retrieves all of the `Coupon`s from the API.
     ///
     /// - Parameters:
-    ///     - siteID
-    ///     - pageNumber:
-    ///     - pageSize:
-    ///     - completion:
+    ///     - siteID: The site for which we'll fetch coupons.
+    ///     - pageNumber: The page number of the coupon list to be fetched.
+    ///     - pageSize: The maximum number of coupons to be fetched for the current page.
+    ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllCoupons(for siteID: Int64,
                                pageNumber: Int = Default.pageNumber,
@@ -66,6 +74,51 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
         let mapper = CouponMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    // MARK: - Update Coupon
+
+    /// Update a `Coupon`.
+    ///
+    /// - Parameters:
+    ///     - coupon: The coupon to be updated remotely.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updateCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void) {
+        do {
+            let parameters = try coupon.toDictionary()
+            let couponID = coupon.couponID
+            let siteID = coupon.siteID
+            let path = Path.coupons + "/\(couponID)"
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .put, siteID: siteID, path: path, parameters: parameters)
+            let mapper = CouponMapper(siteID: siteID)
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
+    // MARK: - Create coupon
+
+    /// Create a `Coupon`.
+    ///
+    /// - Parameters:
+    ///     - coupon: The coupon to be created remotely.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func createCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void) {
+        do {
+            let parameters = try coupon.toDictionary()
+            let siteID = coupon.siteID
+            let path = Path.coupons
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let mapper = CouponMapper(siteID: siteID)
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
     }
 }
 

@@ -16,6 +16,7 @@ enum CouponListState {
     case empty // View should display the empty state
     case coupons // View should display the contents of `couponViewModels`
     case refreshing // View should display the refresh control
+    case loadingNextPage // View should display a bottom loading indicator and contents of `couponViewModels`
 }
 
 final class CouponListViewModel {
@@ -69,7 +70,7 @@ final class CouponListViewModel {
                                                 storageManager: StorageManagerType) -> ResultsController<StorageCoupon> {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
-                                          ascending: true)
+                                          ascending: false)
 
         return ResultsController<StorageCoupon>(storageManager: storageManager,
                                                 matching: predicate,
@@ -123,6 +124,12 @@ final class CouponListViewModel {
     func refreshCoupons() {
         syncingCoordinator.resynchronize(reason: nil, onCompletion: nil)
     }
+
+    /// The ViewController can trigger loading of the next page when the user scrolls to the bottom
+    ///
+    func tableWillDisplayCell(at indexPath: IndexPath) {
+        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: indexPath.row)
+    }
 }
 
 
@@ -172,6 +179,8 @@ private extension CouponListViewModel {
     func transitionToSyncingState(pageNumber: Int, hasData: Bool) {
         if pageNumber == 1 {
             state = hasData ? .refreshing : .loading
+        } else {
+            state = .loadingNextPage
         }
     }
 

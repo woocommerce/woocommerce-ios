@@ -18,6 +18,14 @@ final class CouponListViewController: UIViewController {
         return refreshControl
     }()
 
+    /// Footer "Loading More" Spinner.
+    ///
+    private lazy var footerSpinnerView = FooterSpinnerView()
+
+    /// Empty Footer Placeholder. Replaces spinner view and allows footer to collapse and be completely hidden.
+    ///
+    private lazy var footerEmptyView = UIView(frame: .zero)
+
     private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64) {
@@ -51,6 +59,8 @@ final class CouponListViewController: UIViewController {
                     self.tableView.reloadData()
                 case .refreshing:
                     self.refreshControl.beginRefreshing()
+                case .loadingNextPage:
+                    self.startFooterLoadingIndicator()
                 case .initialized:
                     break
                 }
@@ -75,9 +85,32 @@ private extension CouponListViewController {
     func resetViews() {
         removeNoResultsOverlay()
         removePlaceholderCoupons()
+        stopFooterLoadingIndicator()
         if refreshControl.isRefreshing {
             refreshControl.endRefreshing()
         }
+    }
+
+    /// Starts the loading indicator in the footer, to show that another page is being fetched
+    ///
+    func startFooterLoadingIndicator() {
+        tableView?.tableFooterView = footerSpinnerView
+        footerSpinnerView.startAnimating()
+    }
+
+    /// Stops the loading indicator in the footer
+    ///
+    func stopFooterLoadingIndicator() {
+        footerSpinnerView.stopAnimating()
+        tableView?.tableFooterView = footerEmptyView
+    }
+}
+
+// MARK: - TableView Delegate
+//
+extension CouponListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        viewModel.tableWillDisplayCell(at: indexPath)
     }
 }
 
@@ -95,6 +128,7 @@ private extension CouponListViewController {
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.addSubview(refreshControl)
+        tableView.delegate = self
     }
 
     func registerTableViewCells() {

@@ -828,6 +828,7 @@ private extension OrderDetailsDataSource {
         )
 
         cell.configure(cellViewModel)
+        cell.accessibilityIdentifier = "summary-table-view-cell"
 
         cell.onEditTouchUp = { [weak self] in
             self?.onCellAction?(.summary, nil)

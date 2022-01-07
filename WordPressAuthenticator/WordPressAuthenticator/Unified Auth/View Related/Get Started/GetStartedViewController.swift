@@ -60,7 +60,11 @@ class GetStartedViewController: LoginViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        configureSubmitButton(animating: false)
+
+        refreshEmailField()
+
+        // Ensure the continue button matches the validity of the email field
+        configureContinueButton(animating: false)
 
         if errorMessage != nil {
             shouldChangeVoiceOverFocus = true
@@ -116,6 +120,11 @@ class GetStartedViewController: LoginViewController {
         return !animating && canSubmit()
     }
 
+    private func refreshEmailField() {
+        // It's possible that the password screen could have changed the loginFields username, for example when using
+        // autofill from a password manager. Let's ensure the loginFields matches the email field.
+        loginFields.username = emailField?.nonNilTrimmedText() ?? loginFields.username
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -337,12 +346,11 @@ private extension GetStartedViewController {
     /// social signin does not require form validation.
     ///
     func validateForm() {
-
         loginFields.meta.socialService = nil
         displayError(message: "")
 
         guard EmailFormatValidator.validate(string: loginFields.username) else {
-            present(buildInvalidEmailAlert(), animated: true, completion: nil)
+            present(buildInvalidEmailAlertGeneric(), animated: true, completion: nil)
             return
         }
 
@@ -461,7 +469,7 @@ private extension GetStartedViewController {
 
         let email = loginFields.username
         guard email.isValidEmail() else {
-            present(buildInvalidEmailAlert(), animated: true, completion: nil)
+            present(buildInvalidEmailLinkAlert(), animated: true, completion: nil)
             return
         }
 
@@ -498,13 +506,30 @@ private extension GetStartedViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    /// Build the alert message when the email address is invalid.
+    /// Build the alert message when the email address is invalid
     ///
-    func buildInvalidEmailAlert() -> UIAlertController {
+    private func buildInvalidEmailAlertGeneric() -> UIAlertController {
+        let title = NSLocalizedString("Invalid Email Address",
+                                      comment: "Title of an alert letting the user know the email address that they've entered isn't valid")
+        let message = NSLocalizedString("Please enter a valid email address for a WordPress.com account.",
+                                        comment: "An error message.")
+
+        return buildInvalidEmailAlert(title: title, message: message)
+    }
+
+    /// Build the alert message when the email address is invalid so a link cannot be requested
+    ///
+    private func buildInvalidEmailLinkAlert() -> UIAlertController {
         let title = NSLocalizedString("Can Not Request Link",
                                       comment: "Title of an alert letting the user know")
         let message = NSLocalizedString("A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address.",
                                         comment: "An error message.")
+
+        return buildInvalidEmailAlert(title: title, message: message)
+    }
+
+    private func buildInvalidEmailAlert(title: String, message: String) -> UIAlertController {
+
         let helpActionTitle = NSLocalizedString("Need help?",
                                                 comment: "Takes the user to get help")
         let okActionTitle = NSLocalizedString("OK",

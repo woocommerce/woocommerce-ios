@@ -478,14 +478,12 @@ private extension ReviewsViewController {
 //
 private extension ReviewsViewController {
 
-    /// Enables/disables the navbar buttons if needed
-    ///
-    /// - Parameter filterEnabled: If true, the filter navbar buttons is enabled; if false, it's disabled
-    ///
     func updateNavBarButtonsState() {
         updateMenuButtonState()
     }
 
+    /// Show the rightBarButtonItem only if there are unread reviews available.
+    ///
     func updateMenuButtonState() {
         navigationItem.rightBarButtonItem = viewModel.hasUnreadNotifications ? rightBarButton : nil
     }

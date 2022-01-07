@@ -152,7 +152,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         // If only the Stripe extension is active, skip to checking plugin version
         if let stripe = stripe,
             onlyStripeIsActive(wcPay: wcPay, stripe: stripe) {
-            return checkPluginVersionAndAccount(plugin: stripe)
+            return stripeGatewayOnlyOnboardingState(plugin: stripe)
         } else {
             return wcPayOnlyOnboardingState(plugin: wcPay)
         }
@@ -161,35 +161,35 @@ private extension CardPresentPaymentsOnboardingUseCase {
     func wcPayOnlyOnboardingState(plugin: SystemPlugin?) -> CardPresentPaymentOnboardingState {
         // Plugin checks
         guard let plugin = plugin else {
-            return .wcpayNotInstalled
+            return .pluginNotInstalled
         }
         guard isWCPayVersionSupported(plugin: plugin) else {
-            return .wcpayUnsupportedVersion
+            return .pluginUnsupportedVersion
         }
-        guard isWCPayActivated(plugin: plugin) else {
-            return .wcpayNotActivated
+        guard plugin.active else {
+            return .pluginNotActivated
         }
 
         // Account checks
         return accountChecks()
     }
 
-    func checkPluginVersionAndAccount(plugin: SystemPlugin) -> CardPresentPaymentOnboardingState {
+    func stripeGatewayOnlyOnboardingState(plugin: SystemPlugin) -> CardPresentPaymentOnboardingState {
         guard isStripeVersionSupported(plugin: plugin) else {
-            return .wcpayUnsupportedVersion
+            return .pluginUnsupportedVersion
         }
         return accountChecks()
     }
 
     func accountChecks() -> CardPresentPaymentOnboardingState {
-        guard let account = getWCPayAccount() else {
+        guard let account = getPaymentGatewayAccount() else {
             return .genericError
         }
-        guard isWCPaySetupCompleted(account: account) else {
-            return .wcpaySetupNotCompleted
+        guard isPaymentGatewaySetupCompleted(account: account) else {
+            return .pluginSetupNotCompleted
         }
-        guard !isWCPayInTestModeWithLiveStripeAccount(account: account) else {
-            return .wcpayInTestModeWithLiveStripeAccount
+        guard !isPluginInTestModeWithLiveStripeAccount(account: account) else {
+            return .pluginInTestModeWithLiveStripeAccount
         }
         guard !isStripeAccountUnderReview(account: account) else {
             return .stripeAccountUnderReview
@@ -271,11 +271,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
         VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: Constants.Stripe.minimumSupportedPluginVersion)
     }
 
-    func isWCPayActivated(plugin: SystemPlugin) -> Bool {
-        return plugin.active
-    }
-
-    func getWCPayAccount() -> PaymentGatewayAccount? {
+    // TODO - this looks non-deterministic and needs to get the appropriate account for the site, be that Stripe or WCPay
+    func getPaymentGatewayAccount() -> PaymentGatewayAccount? {
         guard let siteID = siteID else {
             return nil
         }
@@ -285,11 +282,11 @@ private extension CardPresentPaymentsOnboardingUseCase {
             .toReadOnly()
     }
 
-    func isWCPaySetupCompleted(account: PaymentGatewayAccount) -> Bool {
+    func isPaymentGatewaySetupCompleted(account: PaymentGatewayAccount) -> Bool {
         account.wcpayStatus != .noAccount
     }
 
-    func isWCPayInTestModeWithLiveStripeAccount(account: PaymentGatewayAccount) -> Bool {
+    func isPluginInTestModeWithLiveStripeAccount(account: PaymentGatewayAccount) -> Bool {
         account.isLive && account.isInTestMode
     }
 

@@ -65,7 +65,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .wcpayNotInstalled)
+        XCTAssertEqual(state, .pluginNotInstalled)
 
     }
 
@@ -79,7 +79,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .wcpayNotActivated)
+        XCTAssertEqual(state, .pluginNotActivated)
     }
 
     func test_onboarding_returns_wcpay_unsupported_version_when_unpatched_wcpay_outdated() {
@@ -92,7 +92,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .wcpayUnsupportedVersion)
+        XCTAssertEqual(state, .pluginUnsupportedVersion)
     }
 
     func test_onboarding_returns_wcpay_in_test_mode_with_live_stripe_account_when_live_account_in_test_mode() {
@@ -106,7 +106,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .wcpayInTestModeWithLiveStripeAccount)
+        XCTAssertEqual(state, .pluginInTestModeWithLiveStripeAccount)
     }
 
     func test_onboarding_returns_wcpay_unsupported_version_when_patched_wcpay_outdated() {
@@ -119,7 +119,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .wcpayUnsupportedVersion)
+        XCTAssertEqual(state, .pluginUnsupportedVersion)
     }
 
     func test_onboarding_returns_complete_when_plugin_version_matches_minimum_exactly() {
@@ -232,7 +232,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .wcpaySetupNotCompleted)
+        XCTAssertEqual(state, .pluginSetupNotCompleted)
     }
 
     func test_onboarding_returns_pending_requirements_when_account_is_restricted_with_pending_requirements() {

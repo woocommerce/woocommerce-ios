@@ -16,26 +16,26 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     ///
     case countryNotSupported(countryCode: String)
 
-    /// WCPay plugin is not installed on the store.
+    /// No CPP plugin is installed on the store.
     ///
-    case wcpayNotInstalled
+    case pluginNotInstalled
 
-    /// WCPay plugin is installed on the store, but the version is out-dated and doesn't contain required APIs for card present payments.
+    /// CPP plugin is installed on the store, but the version is out-dated and doesn't contain required APIs for card present payments.
     ///
-    case wcpayUnsupportedVersion
+    case pluginUnsupportedVersion
 
-    /// WCPay is installed on the store but is not activated.
+    /// CPP plugin is installed on the store but is not activated.
     ///
-    case wcpayNotActivated
+    case pluginNotActivated
 
-    /// WCPay is installed and activated but requires to be setup first.
+    /// CPP plugin is installed and activated but requires to be setup first.
     ///
-    case wcpaySetupNotCompleted
+    case pluginSetupNotCompleted
 
     /// This is a bit special case: WCPay is set to "dev mode" but the connected Stripe account is in live mode.
     /// Connecting to a reader or accepting payments is not supported in this state.
     ///
-    case wcpayInTestModeWithLiveStripeAccount
+    case pluginInTestModeWithLiveStripeAccount
 
     /// The connected Stripe account has not been reviewed by Stripe yet. This is a temporary state and the user needs to wait.
     ///
@@ -75,15 +75,15 @@ extension CardPresentPaymentOnboardingState {
             return "multiple_plugins_installed"
         case .countryNotSupported(countryCode: _):
             return "country_not_supported"
-        case .wcpayNotInstalled:
+        case .pluginNotInstalled:
             return "wcpay_not_installed"
-        case .wcpayUnsupportedVersion:
+        case .pluginUnsupportedVersion:
             return "wcpay_unsupported_version"
-        case .wcpayNotActivated:
+        case .pluginNotActivated:
             return "wcpay_not_activated"
-        case .wcpaySetupNotCompleted:
+        case .pluginSetupNotCompleted:
             return "wcpay_setup_not_completed"
-        case .wcpayInTestModeWithLiveStripeAccount:
+        case .pluginInTestModeWithLiveStripeAccount:
             return "wcpay_in_test_mode_with_live_account"
         case .stripeAccountUnderReview:
             return "account_under_review"

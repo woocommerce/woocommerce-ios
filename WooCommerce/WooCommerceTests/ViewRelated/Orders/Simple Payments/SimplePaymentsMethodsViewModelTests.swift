@@ -238,7 +238,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
 
     func test_card_row_is_not_shown_for_non_cpp_store() {
         // Given
-        let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled)
+        let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .pluginNotInstalled)
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", cppStoreStateObserver: cppStateObserver)
 
         // Then
@@ -248,7 +248,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
     func test_card_row_state_changes_when_store_state_changes() {
         // Given
         let subject = PassthroughSubject<CardPresentPaymentOnboardingState, Never>()
-        let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled, publisher: subject.eraseToAnyPublisher())
+        let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .pluginNotInstalled, publisher: subject.eraseToAnyPublisher())
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", cppStoreStateObserver: cppStateObserver)
         XCTAssertFalse(viewModel.showPayWithCardRow)
 

@@ -30,6 +30,7 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
 final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol, ObservableObject {
     let storageManager: StorageManagerType
     let stores: StoresManager
+    var stripeGatewayIPPEnabled: Bool?
 
     @Published var state: CardPresentPaymentOnboardingState = .loading
 
@@ -43,8 +44,16 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     ) {
         self.storageManager = storageManager
         self.stores = stores
-
-        updateState()
+        let action = AppSettingsAction.loadStripeInPersonPaymentsSwitchState(onCompletion: { [weak self] result in
+            switch result {
+            case .success(let stripeGatewayIPPEnabled):
+                self?.stripeGatewayIPPEnabled = stripeGatewayIPPEnabled
+            default:
+                break
+            }
+            self?.updateState()
+        })
+        stores.dispatch(action)
     }
 
     func refresh() {
@@ -129,6 +138,9 @@ private extension CardPresentPaymentsOnboardingUseCase {
         }
 
         let wcPay = getWCPayPlugin()
+        guard stripeGatewayIPPEnabled == true else {
+            return wcPayOnlyOnboardingState(plugin: wcPay)
+        }
         let stripe = getStripePlugin()
 
         // If both the Stripe plugin and WCPay are installed and activated, the user needs

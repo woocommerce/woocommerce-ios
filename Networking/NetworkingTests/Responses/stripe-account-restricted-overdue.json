@@ -1,0 +1,18 @@
+{
+    "data": {
+        "status": "restricted",
+        "store_currencies": {
+            "default": "usd",
+            "supported": [
+                "usd"
+            ]
+        },
+        "country": "US",
+        "has_pending_requirements": false,
+        "current_deadline": null,
+        "statement_descriptor": "MY.FANCY.US.STORE",
+        "has_overdue_requirements": true,
+        "is_live": true,
+        "test_mode": false
+    }
+}

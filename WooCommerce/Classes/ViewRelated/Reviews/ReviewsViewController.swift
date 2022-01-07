@@ -245,6 +245,8 @@ private extension ReviewsViewController {
         }
     }
 
+    /// Presents an action sheet on tapping the menu right bar button item.
+    ///
     @IBAction func presentActionSheet() {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
@@ -484,14 +486,12 @@ private extension ReviewsViewController {
 //
 private extension ReviewsViewController {
 
-    /// Enables/disables the navbar buttons if needed
-    ///
-    /// - Parameter filterEnabled: If true, the filter navbar buttons is enabled; if false, it's disabled
-    ///
     func updateNavBarButtonsState() {
         updateMenuButtonState()
     }
 
+    /// Show the rightBarButtonItem only if there are unread reviews available.
+    ///
     func updateMenuButtonState() {
         navigationItem.rightBarButtonItem = viewModel.hasUnreadNotifications ? rightBarButton : nil
     }

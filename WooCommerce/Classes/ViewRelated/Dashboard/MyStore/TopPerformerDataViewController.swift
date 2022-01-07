@@ -46,6 +46,8 @@ final class TopPerformerDataViewController: UIViewController {
     private let imageService: ImageService = ServiceLocator.imageService
     private let isMyStoreTabUpdatesEnabled: Bool
 
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+
     // MARK: - Computed Properties
 
     private var topEarnerStats: TopEarnerStats? {
@@ -73,13 +75,15 @@ final class TopPerformerDataViewController: UIViewController {
          siteTimeZone: TimeZone,
          currentDate: Date,
          timeRange: StatsTimeRangeV4,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
         self.siteID = siteID
         self.siteTimeZone = siteTimeZone
         self.currentDate = currentDate
         self.granularity = timeRange.topEarnerStatsGranularity
         self.timeRange = timeRange
         self.isMyStoreTabUpdatesEnabled = featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates)
+        self.usageTracksEventEmitter = usageTracksEventEmitter
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -263,6 +267,9 @@ extension TopPerformerDataViewController: UITableViewDelegate {
         guard let statsItem = statsItem(at: indexPath) else {
             return
         }
+
+        usageTracksEventEmitter.interacted()
+
         presentProductDetails(statsItem: statsItem)
     }
 

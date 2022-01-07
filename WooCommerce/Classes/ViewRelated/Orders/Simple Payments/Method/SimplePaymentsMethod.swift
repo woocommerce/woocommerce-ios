@@ -58,7 +58,7 @@ struct SimplePaymentsMethod: View {
 
                     MethodRow(icon: .linkImage, title: Localization.link) {
                         sharingPaymentLink = true
-                        // TODO: Analytics
+                        viewModel.trackCollectByPaymentLink()
                     }
                 }
             }
@@ -161,7 +161,7 @@ private extension SimplePaymentsMethod {
         static let header = NSLocalizedString("Choose your payment method", comment: "Heading text on the select payment method screen for simple payments")
         static let cash = NSLocalizedString("Cash", comment: "Cash method title on the select payment method screen for simple payments")
         static let card = NSLocalizedString("Card", comment: "Card method title on the select payment method screen for simple payments")
-        static let link = NSLocalizedString("Payment Link", comment: "Payment Link method title on the select payment method screen for simple payments")
+        static let link = NSLocalizedString("Share Payment Link", comment: "Payment Link method title on the select payment method screen for simple payments")
         static let markAsPaidTitle = NSLocalizedString("Mark as Paid?", comment: "Alert title when selecting the cash payment method for simple payments")
         static let markAsPaidButton = NSLocalizedString("Mark as Paid", comment: "Alert button when selecting the cash payment method for simple payments")
     }

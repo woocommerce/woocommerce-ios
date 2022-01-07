@@ -276,7 +276,7 @@ private extension ReviewsViewController {
                 tracks.track(.reviewsMarkAllReadSuccess)
             }
 
-            self.updateMenuButtonState()
+            self.updateRightBarButtonItem()
             self.tableView.reloadData()
         }
     }
@@ -414,7 +414,7 @@ private extension ReviewsViewController {
     /// Note: Just because this func runs does not guarantee `didEnter()` or `didLeave()` will run as well.
     ///
     func willEnter(state: State) {
-        updateNavBarButtonsState()
+        updateRightBarButtonItem()
     }
 
     /// Runs whenever the FSM enters a State.
@@ -480,13 +480,9 @@ private extension ReviewsViewController {
 //
 private extension ReviewsViewController {
 
-    func updateNavBarButtonsState() {
-        updateMenuButtonState()
-    }
-
     /// Show the rightBarButtonItem only if there are unread reviews available.
     ///
-    func updateMenuButtonState() {
+    func updateRightBarButtonItem() {
         navigationItem.rightBarButtonItem = viewModel.hasUnreadNotifications ? rightBarButton : nil
     }
 

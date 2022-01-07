@@ -15,6 +15,7 @@ enum CouponListState {
     case loading // View should show ghost cells
     case empty // View should display the empty state
     case coupons // View should display the contents of `couponViewModels`
+    case refreshing // View should display the refresh control
 }
 
 final class CouponListViewModel {
@@ -116,6 +117,12 @@ final class CouponListViewModel {
     func coupon(at indexPath: IndexPath) -> Coupon? {
         return resultsController.safeObject(at: indexPath)
     }
+
+    /// Triggers a refresh of loaded coupons
+    ///
+    func refreshCoupons() {
+        syncingCoordinator.resynchronize(reason: nil, onCompletion: nil)
+    }
 }
 
 
@@ -133,7 +140,7 @@ extension CouponListViewModel: SyncingCoordinatorDelegate {
               pageSize: Int,
               reason: String?,
               onCompletion: ((Bool) -> Void)?) {
-        transitionToSyncingState(pageNumber: pageNumber)
+        transitionToSyncingState(pageNumber: pageNumber, hasData: couponViewModels.isNotEmpty)
         let action = CouponAction
             .synchronizeCoupons(siteID: siteID,
                                 pageNumber: pageNumber,
@@ -162,9 +169,9 @@ extension CouponListViewModel: SyncingCoordinatorDelegate {
 // MARK: - Pagination
 //
 private extension CouponListViewModel {
-    func transitionToSyncingState(pageNumber: Int) {
+    func transitionToSyncingState(pageNumber: Int, hasData: Bool) {
         if pageNumber == 1 {
-            state = .loading
+            state = hasData ? .refreshing : .loading
         }
     }
 

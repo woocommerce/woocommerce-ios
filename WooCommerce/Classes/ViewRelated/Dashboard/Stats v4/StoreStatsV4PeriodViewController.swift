@@ -1,6 +1,7 @@
 import Charts
 import Combine
 import UIKit
+import struct WordPressUI.GhostStyle
 import Yosemite
 
 /// Different display modes of site visit stats
@@ -160,6 +161,13 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         observeReloadChartAnimated()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // After returning to the My Store tab, `restartGhostAnimation` is required to resume ghost animation.
+        restartGhostAnimationIfNeeded()
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         reloadAllFields()
@@ -243,7 +251,7 @@ extension StoreStatsV4PeriodViewController {
     ///
     func displayGhostContent() {
         ensurePlaceholderIsVisible()
-        placeholderChartsView.startGhostAnimation(style: .wooDefaultGhostStyle)
+        placeholderChartsView.startGhostAnimation(style: Constants.ghostStyle)
     }
 
     /// Removes the Placeholder Content.
@@ -267,6 +275,12 @@ extension StoreStatsV4PeriodViewController {
         view.pinSubviewToAllEdges(placeholderChartsView)
     }
 
+    private func restartGhostAnimationIfNeeded() {
+        guard placeholderChartsView.superview != nil else {
+            return
+        }
+        placeholderChartsView.restartGhostAnimation(style: Constants.ghostStyle)
+    }
 }
 
 // MARK: - Configuration
@@ -748,5 +762,7 @@ private extension StoreStatsV4PeriodViewController {
 
         static let containerBackgroundColor: UIColor = .systemBackground
         static let headerComponentBackgroundColor: UIColor = .clear
+
+        static let ghostStyle: GhostStyle = .wooDefaultGhostStyle
     }
 }

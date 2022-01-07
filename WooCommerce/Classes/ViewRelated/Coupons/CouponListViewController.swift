@@ -10,6 +10,14 @@ final class CouponListViewController: UIViewController {
     ///
     private var emptyStateViewController: UIViewController?
 
+    /// Pull To Refresh Support.
+    ///
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshCouponList), for: .valueChanged)
+        return refreshControl
+    }()
+
     private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64) {
@@ -33,8 +41,7 @@ final class CouponListViewController: UIViewController {
             .removeDuplicates()
             .sink { [weak self] state in
                 guard let self = self else { return }
-                self.removeNoResultsOverlay()
-                self.removePlaceholderCoupons()
+                self.resetViews()
                 switch state {
                 case .empty:
                     self.displayNoResultsOverlay()
@@ -42,6 +49,8 @@ final class CouponListViewController: UIViewController {
                     self.displayPlaceholderCoupons()
                 case .coupons:
                     self.tableView.reloadData()
+                case .refreshing:
+                    self.refreshControl.beginRefreshing()
                 case .initialized:
                     break
                 }
@@ -50,6 +59,25 @@ final class CouponListViewController: UIViewController {
 
         // Call this after the state subscription for extra safety
         viewModel.viewDidLoad()
+    }
+}
+
+// MARK: - Actions
+private extension CouponListViewController {
+    /// Triggers a refresh for the coupon list
+    ///
+    @objc func refreshCouponList() {
+        viewModel.refreshCoupons()
+    }
+
+    /// Removes overlays and loading indicators if present.
+    ///
+    func resetViews() {
+        removeNoResultsOverlay()
+        removePlaceholderCoupons()
+        if refreshControl.isRefreshing {
+            refreshControl.endRefreshing()
+        }
     }
 }
 
@@ -66,6 +94,7 @@ private extension CouponListViewController {
         tableView.dataSource = self
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.addSubview(refreshControl)
     }
 
     func registerTableViewCells() {

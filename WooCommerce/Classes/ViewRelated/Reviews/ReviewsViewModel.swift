@@ -23,6 +23,8 @@ protocol ReviewsViewModelOutput {
     func containsMorePages(_ highestVisibleReview: Int) -> Bool
 }
 
+/// Handles actions related to Reviews screen
+///
 protocol ReviewsViewModelActionsHandler {
     func displayPlaceholderReviews(tableView: UITableView)
 

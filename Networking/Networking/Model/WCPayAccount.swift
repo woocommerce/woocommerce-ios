@@ -105,7 +105,7 @@ public extension WCPayAccount {
 
 private extension WCPayAccount {
     enum CodingKeys: String, CodingKey {
-        case status = "status"
+        case status
         case isLive = "is_live"
         case testMode = "test_mode"
         case hasPendingRequirements = "has_pending_requirements"

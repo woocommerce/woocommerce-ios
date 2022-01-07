@@ -1,0 +1,3 @@
+Sometimes you just need to create a quick order to take a payment from your customer for a transaction you’re doing in-person, like at a trade show. We added a new option for you to create Simple Payments! Head over to the Orders tab to make a quick order to record that transaction. We are working hard on full order creation as well – and you’ll see that later this year.
+
+We also fixed a bug with the site visitors count not showing up on the Today tab on your store’s dashboard. Bedankt dat je het ons hebt laten weten!

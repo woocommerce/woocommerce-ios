@@ -1,4 +1,5 @@
 import UIKit
+import struct WordPressUI.GhostStyle
 import XLPagerTabStrip
 import Yosemite
 import Observables
@@ -73,6 +74,10 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         stackView.axis = .vertical
         return stackView
     }()
+
+    private lazy var topPerformersHeaderView =
+    TopPerformersSectionHeaderView(title: NSLocalizedString("Top Performers",
+                                                            comment: "Header label for Top Performers section of My Store tab."))
 
     // MARK: Child View Controllers
 
@@ -156,6 +161,9 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         // Fix any incomplete animation of the refresh control
         // when switching tabs mid-animation
         refreshControl.resetAnimation(in: scrollView)
+
+        // After returning to the My Store tab, `restartGhostAnimation` is required to resume ghost animation.
+        restartGhostAnimationIfNeeded()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -186,6 +194,7 @@ extension StoreStatsAndTopPerformersPeriodViewController {
 
     func displayGhostContent() {
         storeStatsPeriodViewController.displayGhostContent()
+        topPerformersHeaderView.startGhostAnimation(style: Constants.ghostStyle)
         topPerformersPeriodViewController.displayGhostContent()
     }
 
@@ -193,6 +202,7 @@ extension StoreStatsAndTopPerformersPeriodViewController {
     ///
     func removeStoreStatsGhostContent() {
         storeStatsPeriodViewController.removeGhostContent()
+        topPerformersHeaderView.stopGhostAnimation()
     }
 
     /// Removes the placeholder content for top performers.
@@ -205,6 +215,13 @@ extension StoreStatsAndTopPerformersPeriodViewController {
     ///
     var shouldDisplayStoreStatsGhostContent: Bool {
         return storeStatsPeriodViewController.shouldDisplayGhostContent
+    }
+
+    func restartGhostAnimationIfNeeded() {
+        guard topPerformersHeaderView.superview != nil else {
+            return
+        }
+        topPerformersHeaderView.restartGhostAnimation(style: Constants.ghostStyle)
     }
 }
 
@@ -286,9 +303,6 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         stackView.addArrangedSubviews(inAppFeedbackCardViewsForStackView)
 
         // Top performers header.
-        let topPerformersHeaderView = TopPerformersSectionHeaderView(title:
-            NSLocalizedString("Top Performers",
-                              comment: "Header label for Top Performers section of My Store tab."))
         stackView.addArrangedSubview(topPerformersHeaderView)
 
         // Top performers.
@@ -343,5 +357,6 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
 private extension StoreStatsAndTopPerformersPeriodViewController {
     enum Constants {
         static let storeStatsPeriodViewHeight: CGFloat = 444
+        static let ghostStyle: GhostStyle = .wooDefaultGhostStyle
     }
 }

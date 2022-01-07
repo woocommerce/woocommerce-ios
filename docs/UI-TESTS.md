@@ -4,10 +4,50 @@ WooCommerce for iOS has UI acceptance tests for critical user flows through the 
 
 ## Test coverage
 
-The following user flows are covered with UI tests:
+The following flows are covered/planned to be covered by UI tests. Tests that are covered will be checked.
 
-* [Login](../WooCommerce/WooCommerceUITests/Tests/LoginTests.swift):
-	* Log in with email/password and log out
+1. [Login](../WooCommerce/WooCommerceUITests/Tests/LoginTests.swift):
+    - [x] Log in with Store Address
+    - [x] Log in with email/password
+    - [x] Invalid password
+    - [ ] Log in with magic link
+    - [ ] Log in with Apple
+    - [ ] Log in with Google
+2. [My Store]()
+    - [ ] Stats Today, This Week, This Month, This Year load
+    - [ ] Tap chart on stats
+3. [Orders](../WooCommerce/WooCommerceUITests/Tests/OrdersTests.swift)
+    - [ ] Orders list and single order screens load
+    - [ ] View product on single order screen
+    - [ ] Add customer note
+    - [ ] Add order note
+    - [ ] Update order status
+    - [ ] Issue refund
+    - [ ] Add shipping details
+4. [Products](../WooCommerce/WooCommerceUITests/Tests/ProductsTests.swift)
+    - [x] Products list and single product screens load
+    - [ ] Add new product - Simple physical product
+    - [ ] Add new product - Simple virtual product
+    - [ ] Add new product - Variable product
+    - [ ] Add new product - Grouped product
+    - [ ] Add new product - External product
+    - [ ] Search for product
+    - [ ] Filters for product
+    - [ ] Edit product
+    - [ ] Add media library image to existing product
+    - [ ] Add camera image to existing product
+5. [Reviews](../WooCommerce/WooCommerceUITests/Tests/ReviewsTests.swift)
+    - [x] Reviews list and single review screens load
+    - [ ] Mark review as spam
+    - [ ] Trash review
+    - [ ] Approve/unapprove review
+    - [ ] Undo action
+6. [Push Notifications]()
+    - [ ] New order results in a push notification
+    - [ ] Orders push notification opens the correct order
+    - [ ] Reviews push notification opens the correct review
+7. [Settings]()
+    - [ ] Contact support
 
 ## Running tests
 
@@ -34,6 +74,8 @@ When adding a new UI test, consider:
 It's preferred to focus UI tests on entire user flows, and group tests with related flows or goals in the same test suite.
 
 When you add a new test, you may need to add new screens and methods. We use [screen (page) objects](https://www.martinfowler.com/bliki/PageObject.html) and method chaining for clarity in our tests. Wherever possible, use an existing `accessibilityIdentifier` (or add one to the app) instead of a string to select a UI element on the screen. This ensures tests can be run regardless of the device language.
+
+When adding a new test case, please mark the test case as done on the list above. If the test case is not on the list, please add it to the list and mark it as done.
 
 ## Adding or updating network mocks
 

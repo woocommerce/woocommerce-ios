@@ -77,7 +77,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     // MARK: Child View Controllers
 
     private lazy var storeStatsPeriodViewController: StoreStatsV4PeriodViewController = {
-        return StoreStatsV4PeriodViewController(siteID: siteID, timeRange: timeRange)
+        StoreStatsV4PeriodViewController(siteID: siteID, timeRange: timeRange, usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
     private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()
@@ -90,7 +90,8 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         return TopPerformerDataViewController(siteID: siteID,
                                               siteTimeZone: siteTimezone,
                                               currentDate: currentDate,
-                                              timeRange: timeRange)
+                                              timeRange: timeRange,
+                                              usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
     // MARK: Internal Properties
@@ -102,6 +103,8 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     private let viewModel: StoreStatsAndTopPerformersPeriodViewModel
 
     private let siteID: Int64
+
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
     /// Subscriptions that should be cancelled on `deinit`.
     private var cancellables = [ObservationToken]()
@@ -115,12 +118,14 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     init(siteID: Int64,
          timeRange: StatsTimeRangeV4,
          currentDate: Date,
-         canDisplayInAppFeedbackCard: Bool) {
+         canDisplayInAppFeedbackCard: Bool,
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
         self.siteID = siteID
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
         self.currentDate = currentDate
         self.viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: canDisplayInAppFeedbackCard)
+        self.usageTracksEventEmitter = usageTracksEventEmitter
 
         super.init(nibName: nil, bundle: nil)
 
@@ -162,6 +167,14 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 extension StoreStatsAndTopPerformersPeriodViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         scrollDelegate?.dashboardUIScrollViewDidScroll(scrollView)
+    }
+
+    /// We're not using scrollViewDidScroll because that gets executed even while
+    /// the app is being loaded for the first time.
+    ///
+    /// Note: This also covers pull-to-refresh
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        usageTracksEventEmitter.interacted()
     }
 }
 

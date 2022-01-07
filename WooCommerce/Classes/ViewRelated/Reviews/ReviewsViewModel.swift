@@ -71,6 +71,8 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
         return data.notifications.filter { $0.read == false }
     }
 
+    /// Used to check whether the user should be prompted for an app from `ReviewsViewController`
+    ///
     var shouldPromptForAppReview: Bool {
         AppRatingManager.shared.shouldPromptForAppReview(section: Constants.section)
     }

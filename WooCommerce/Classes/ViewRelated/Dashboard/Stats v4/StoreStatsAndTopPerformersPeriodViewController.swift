@@ -75,9 +75,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         return stackView
     }()
 
-    private lazy var topPerformersHeaderView =
-    TopPerformersSectionHeaderView(title: NSLocalizedString("Top Performers",
-                                                            comment: "Header label for Top Performers section of My Store tab."))
+    private lazy var topPerformersHeaderView = TopPerformersSectionHeaderView()
 
     // MARK: Child View Controllers
 

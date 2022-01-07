@@ -5,12 +5,12 @@ import Experiments
 /// This contains a vertical stack view of a title label and a two-column view of labels for top performers data (products and items sold).
 ///
 final class TopPerformersSectionHeaderView: UIView {
-    init(title: String) {
+    init() {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
 
         configureView()
-        configureStackView(title: title)
+        configureStackView()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -23,8 +23,8 @@ private extension TopPerformersSectionHeaderView {
         backgroundColor = Constants.backgroundColor
     }
 
-    func configureStackView(title: String) {
-        let titleView = createTitleLabelContainerView(title: title)
+    func configureStackView() {
+        let titleView = createTitleLabelContainerView(title: Localization.title)
         let twoColumnStackView: UIStackView = {
             let leftLabelContainer = createColumnLabelContainerView(labelText: Localization.leftColumn, columnPosition: .left)
             let rightLabelContainer = createColumnLabelContainerView(labelText: Localization.rightColumn, columnPosition: .right)
@@ -127,6 +127,8 @@ private extension TopPerformersSectionHeaderView {
 //
 private extension TopPerformersSectionHeaderView {
     enum Localization {
+        static let title = NSLocalizedString("Top Performers",
+                                             comment: "Header label for Top Performers section of My Store tab.")
         static let leftColumn = NSLocalizedString("Products", comment: "Description for Top Performers left column header")
         static let rightColumn = NSLocalizedString("Items Sold", comment: "Description for Top Performers right column header")
     }

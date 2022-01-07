@@ -264,11 +264,11 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isWCPayVersionSupported(plugin: SystemPlugin) -> Bool {
-        VersionHelpers.compare(plugin.version, Constants.WCPay.minimumSupportedWCPayVersion) != .orderedAscending
+        VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: Constants.WCPay.minimumSupportedPluginVersion)
     }
 
     func isStripeVersionSupported(plugin: SystemPlugin) -> Bool {
-        VersionHelpers.compare(plugin.version, Constants.Stripe.minimumSupportedWCPayVersion) != .orderedAscending
+        VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: Constants.Stripe.minimumSupportedPluginVersion)
     }
 
     func isWCPayActivated(plugin: SystemPlugin) -> Bool {
@@ -336,13 +336,13 @@ private extension PaymentGatewayAccount {
 private enum Constants {
     enum WCPay {
         static let pluginName = "WooCommerce Payments"
-        static let minimumSupportedWCPayVersion = "3.2.1"
+        static let minimumSupportedPluginVersion = "3.2.1"
         static let supportedCountryCodes = ["US"]
     }
 
     enum Stripe {
         static let pluginName = "WooCommerce Stripe Gateway"
-        static let minimumSupportedWCPayVersion = "5.9.0"
+        static let minimumSupportedPluginVersion = "5.9.0"
         static let supportedCountryCodes = ["US"]
     }
 }

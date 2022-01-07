@@ -5,6 +5,8 @@ import Yosemite
 
 import class AutomatticTracks.CrashLogging
 
+/// Provides data for the Reviews screen
+///
 protocol ReviewsViewModelOutput {
     var isEmpty: Bool { get }
 

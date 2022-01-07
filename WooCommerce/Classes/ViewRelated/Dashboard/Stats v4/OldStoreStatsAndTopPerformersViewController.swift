@@ -33,6 +33,8 @@ final class OldStoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripV
     private let siteID: Int64
     private var isSyncing = false
 
+    private let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
+
     // MARK: - View Lifecycle
 
     init(siteID: Int64) {
@@ -294,22 +296,30 @@ private extension OldStoreStatsAndTopPerformersViewController {
 
     func configurePeriodViewControllers() {
         let currentDate = Date()
-        let dayVC = OldStoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                   timeRange: .today,
-                                                                   currentDate: currentDate,
-                                                                   canDisplayInAppFeedbackCard: true)
-        let weekVC = OldStoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                    timeRange: .thisWeek,
-                                                                    currentDate: currentDate,
-                                                                    canDisplayInAppFeedbackCard: false)
-        let monthVC = OldStoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                     timeRange: .thisMonth,
-                                                                     currentDate: currentDate,
-                                                                     canDisplayInAppFeedbackCard: false)
-        let yearVC = OldStoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                    timeRange: .thisYear,
-                                                                    currentDate: currentDate,
-                                                                    canDisplayInAppFeedbackCard: false)
+        let dayVC = OldStoreStatsAndTopPerformersPeriodViewController(
+            siteID: siteID,
+            timeRange: .today,
+            currentDate: currentDate,
+            canDisplayInAppFeedbackCard: true,
+            usageTracksEventEmitter: usageTracksEventEmitter)
+        let weekVC = OldStoreStatsAndTopPerformersPeriodViewController(
+            siteID: siteID,
+            timeRange: .thisWeek,
+            currentDate: currentDate,
+            canDisplayInAppFeedbackCard: false,
+            usageTracksEventEmitter: usageTracksEventEmitter)
+        let monthVC = OldStoreStatsAndTopPerformersPeriodViewController(
+            siteID: siteID,
+            timeRange: .thisMonth,
+            currentDate: currentDate,
+            canDisplayInAppFeedbackCard: false,
+            usageTracksEventEmitter: usageTracksEventEmitter)
+        let yearVC = OldStoreStatsAndTopPerformersPeriodViewController(
+            siteID: siteID,
+            timeRange: .thisYear,
+            currentDate: currentDate,
+            canDisplayInAppFeedbackCard: false,
+            usageTracksEventEmitter: usageTracksEventEmitter)
 
         periodVCs.append(dayVC)
         periodVCs.append(weekVC)

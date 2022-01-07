@@ -47,12 +47,12 @@ final class HubMenuViewModel: ObservableObject {
     init(siteID: Int64, navigationController: UINavigationController? = nil, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.navigationController = navigationController
-        menuElements = [.woocommerceAdmin, .viewStore, .reviews]
+        menuElements = [.woocommerceAdmin, .viewStore]
         if featureFlagService.isFeatureFlagEnabled(.couponManagement) {
             menuElements.append(.coupons)
         }
         menuElements.append(.reviews)
-       observeSiteForUIUpdates()
+        observeSiteForUIUpdates()
     }
 
     /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.

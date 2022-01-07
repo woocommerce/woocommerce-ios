@@ -33,7 +33,7 @@ final class WCPayRemoteTests: XCTestCase {
     ///
     func test_loadConnectionToken_properly_returns_parsed_token() {
         let remote = WCPayRemote(network: network)
-        let expectation = self.expectation(description: "Load WCPay token")
+        let expectation = self.expectation(description: "Load card reader token from WCPay extension")
 
         let expectedToken = "a connection token"
 

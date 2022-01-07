@@ -3,16 +3,15 @@ import Foundation
 /// WCPay: Remote Endpoints
 ///
 public class WCPayRemote: Remote {
-
-    /// Loads a WCPay connection token for a given site ID and parses the rsponse
+    /// Loads a card reader connection token for a given site ID and parses the response
     /// - Parameters:
-    ///   - siteID: Site for which we'll fetch the WCPay Connection token.
+    ///   - siteID: Site for which we'll fetch the connection token.
     ///   - completion: Closure to be executed upon completion.
     public func loadConnectionToken(for siteID: Int64,
-                                    completion: @escaping(Result<WCPayConnectionToken, Error>) -> Void) {
+                                    completion: @escaping(Result<ReaderConnectionToken, Error>) -> Void) {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: Path.connectionTokens)
 
-        let mapper = WCPayConnectionTokenMapper()
+        let mapper = ReaderConnectionTokenMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
     }

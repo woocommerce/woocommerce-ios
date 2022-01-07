@@ -499,8 +499,7 @@ private extension ReviewsViewController {
         }
 
         markAsReadCount += 1
-        let notice = Notice(title: Localization.Notice.allReviewsMarkedAsRead,
-                            feedbackType: .success)
+        let notice = Notice(title: Localization.Notice.allReviewsMarkedAsRead, feedbackType: .success)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 

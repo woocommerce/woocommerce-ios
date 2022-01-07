@@ -111,4 +111,38 @@ final class CouponListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(sut.state, .empty)
     }
+
+    func test_refreshCoupon_updates_state_to_refreshing() {
+        // Given
+        setUpWithCouponFetched() // we need to have existing data to enter refreshing state
+
+        // When
+        sut.refreshCoupons()
+
+        // Then
+        XCTAssertEqual(sut.state, .refreshing)
+    }
+
+    func test_refreshCoupons_calls_resynchronize_on_syncCoordinator() {
+        // Given
+        sut = CouponListViewModel(siteID: 123, syncingCoordinator: mockSyncingCoordinator)
+
+        // When
+        sut.refreshCoupons()
+
+        // Then
+        XCTAssert(mockSyncingCoordinator.spyDidCallResynchronize)
+    }
+
+    func test_handleCouponSyncResult_removes_refreshing_when_refresh_completes() {
+        // Given
+        setUpWithCouponFetched()
+        sut.refreshCoupons()
+
+        // When
+        sut.handleCouponSyncResult(result: .success(false))
+
+        // Then
+        XCTAssertEqual(sut.state, .coupons)
+    }
 }

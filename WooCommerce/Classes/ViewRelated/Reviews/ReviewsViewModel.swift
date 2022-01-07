@@ -43,6 +43,9 @@ protocol ReviewsViewModelActionsHandler {
                             onCompletion: (() -> Void)?)
 }
 
+/// Provides data and handles actions of Reviews screen.
+/// Used as view model for `ReviewsViewController`
+///
 final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHandler {
     private let siteID: Int64
 

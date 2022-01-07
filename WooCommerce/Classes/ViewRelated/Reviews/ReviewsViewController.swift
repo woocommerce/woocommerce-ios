@@ -239,6 +239,8 @@ private extension ReviewsViewController {
         }
     }
 
+    /// Presents an action sheet on tapping the menu right bar button item.
+    ///
     @IBAction func presentActionSheet() {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text

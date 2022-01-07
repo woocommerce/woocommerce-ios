@@ -18,7 +18,7 @@ final class ReviewsViewController: UIViewController {
         let item = UIBarButtonItem(image: .ellipsisImage,
                                    style: .plain,
                                    target: self,
-                                   action: #selector(presentActionSheet))
+                                   action: #selector(presentMoreActions))
         item.accessibilityIdentifier = "reviews-open-menu-button"
         item.accessibilityTraits = .button
         item.accessibilityLabel = Localization.MenuButton.accessibilityLabel
@@ -247,7 +247,7 @@ private extension ReviewsViewController {
 
     /// Presents an action sheet on tapping the menu right bar button item.
     ///
-    @IBAction func presentActionSheet() {
+    @IBAction func presentMoreActions() {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
@@ -505,8 +505,7 @@ private extension ReviewsViewController {
         }
 
         markAsReadCount += 1
-        let notice = Notice(title: Localization.Notice.allReviewsMarkedAsRead,
-                            feedbackType: .success)
+        let notice = Notice(title: Localization.Notice.allReviewsMarkedAsRead, feedbackType: .success)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 

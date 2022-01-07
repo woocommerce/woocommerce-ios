@@ -149,12 +149,9 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return .selectPlugin
         }
 
-        // If only the Striep extension is active, skip to checking plugin version
-        if onlyStripeIsActive(wcPay: wcPay, stripe: stripe) {
-            guard let stripe = stripe else {
-                DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine Stripe plugin")
-                return .genericError
-            }
+        // If only the Stripe extension is active, skip to checking plugin version
+        if let stripe = stripe,
+            onlyStripeIsActive(wcPay: wcPay, stripe: stripe) {
             return checkPluginVersionAndAccount(plugin: stripe)
         } else {
             return wcPayOnlyOnboardingState(plugin: wcPay)
@@ -258,12 +255,12 @@ private extension CardPresentPaymentsOnboardingUseCase {
         return wcPay.active && stripe.active
     }
 
-    func onlyStripeIsActive(wcPay: SystemPlugin?, stripe: SystemPlugin?) -> Bool {
-        guard let wcPay = wcPay, let stripe = stripe else {
-            return false
+    func onlyStripeIsActive(wcPay: SystemPlugin?, stripe: SystemPlugin) -> Bool {
+        if let wcPay = wcPay {
+            return wcPay.active == false && stripe.active == true
+        } else {
+            return stripe.active
         }
-
-        return wcPay.active == false && stripe.active == true
     }
 
     func isWCPayVersionSupported(plugin: SystemPlugin) -> Bool {

@@ -528,6 +528,9 @@ private extension ProductFormViewController {
     }
 
     func onImageStatusesUpdated(statuses: [ProductImageStatus]) {
+        tableViewModel = DefaultProductFormTableViewModel(product: product,
+                                                          actionsFactory: viewModel.actionsFactory,
+                                                          currency: currency)
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: statuses)
     }
 

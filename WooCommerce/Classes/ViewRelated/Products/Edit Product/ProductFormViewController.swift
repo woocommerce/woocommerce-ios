@@ -511,7 +511,7 @@ private extension ProductFormViewController {
     }
 
     /// Updates table rows when the price of the underlying variations change.
-    /// Needed to show/hide the `.noPrinceWarning` row.
+    /// Needed to show/hide the `.noPriceWarning` row.
     ///
     func observeVariationsPriceChanges() {
         cancellableNewVariationsPrice = viewModel.newVariationsPrice.subscribe { [weak self] in

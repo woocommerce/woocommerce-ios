@@ -1,5 +1,3 @@
-Het bestellingentabblad is in deze versie bijgewerkt. De tabbladen zijn nu weggehaald. We hebben de optie gegeven om te filteren op status of binnen een datumbereik. We hebben dit op basis van jullie feedback van de afgelopen jaren gedaan, dus we verwachten dat deze update met open armen wordt onthaald!
+Soms moet je even een snelle bestelling plaatsen om een betaling te kunnen ontvangen van een klant tijdens een persoonlijke transactie, bijvoorbeeld op een beurs. We hebben een nieuwe optie toegevoegd om Eenvoudige betalingen te creëren! Ga naar het tabblad Bestellingen om een snelle bestelling te plaatsen om die transactie vast te leggen. We zijn ook hard aan het werk om volledige bestellingen aan te kunnen maken - dat zal je later dit jaar zien.
 
-We hebben mogelijk crashen verholpen wanneer er vanuit een pushbericht een verzendlabel wordt aangemaakt voor een bestelling. Daarnaast hebben we het aanmelden met je wachtwoordmanager verbetert. De in je wachtwoordmanager opgeslagen WordPress.com-aanmeldgegevens, staan nu bovenaan!
-
-En ga vooral door met ons feedback geven. Bedankt dat je WooCommerce gebruikt!
+We hebben ook een bug gefixt die ervoor zorgde dat je het aantal bezoekers aan je site niet kon zien op het tabblad Vandaag in het dashboard van je winkel. Bedankt dat je het ons hebt laten weten!

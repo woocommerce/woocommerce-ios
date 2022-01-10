@@ -57,13 +57,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v8.1-whats-new"
+msgctxt "v8.2-whats-new"
 msgid ""
-"The orders tab has gotten an update with this release. The tabs are now gone, and we’ve given you a filter by status or date range option. This is based upon your direct feedback over the years, and we know you’ll like the change!\n"
+"Sometimes you just need to create a quick order to take a payment from your customer for a transaction you’re doing in-person, like at a trade show. We added a new option for you to create Simple Payments! Head over to the Orders tab to make a quick order to record that transaction. We are working hard on full order creation as well – and you’ll see that later this year.\n"
 "\n"
-"We fixed a possible crash when creating a shipping label on an order from a push notification. We also improved the login experience with your password manager. Your stored username and password for WordPress.com in your manager will be at the top of the list!\n"
-"\n"
-"As always, please continue to send us your feedback. Thanks for using WooCommerce!\n"
+"We also fixed a bug with the site visitors count not showing up on the Today tab on your store’s dashboard. Thanks for letting us know! 💜\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

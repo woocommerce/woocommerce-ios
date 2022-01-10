@@ -1,5 +1,3 @@
-A guia de pedidos recebeu uma atualização nesta versão. Agora, as guias não existem mais, e você tem a opção de filtrar por status ou intervalo de datas. Essa decisão foi baseada no seu feedback direto, ao longo dos anos. Temos certeza de que você vai adorar a mudança!
+Às vezes, basta criar um pedido rápido para receber o pagamento do seu cliente referente a uma transação presencial, como em uma feira de negócios. Adicionamos uma nova opção para você criar pagamentos simples! Acesse a guia Pedidos para fazer um pedido rápido e registrar a transação. Estamos nos empenhando na criação de pedidos completos também (você verá isso mais para frente neste ano).
 
-Corrigimos uma possível falha na criação de uma etiqueta de envio de um pedido, a partir de uma notificação por push. Melhoramos também a experiência de login usando o gerenciador de senhas. Seu nome de usuário e senha do WordPress.com armazenados no gerenciador ficarão na parte superior da lista.
-
-Como de costume, continue nos enviando o seu feedback. Obrigado por utilizar o WooCommerce!
+Além disso, corrigimos um bug que fazia a contagem de visitantes do site não ser exibida na guia Hoje do painel da sua loja. Obrigado por avisar!

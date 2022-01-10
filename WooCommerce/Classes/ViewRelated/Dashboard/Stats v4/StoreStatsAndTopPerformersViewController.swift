@@ -32,6 +32,7 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     private var periodVCs = [StoreStatsAndTopPerformersPeriodViewController]()
     private let siteID: Int64
     private var isSyncing = false
+    private let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
 
     // MARK: - View Lifecycle
 
@@ -109,7 +110,6 @@ private extension StoreStatsAndTopPerformersViewController {
         defer {
             group.notify(queue: .main) { [weak self] in
                 self?.isSyncing = false
-                self?.removeGhostContent()
                 self?.showSpinner(shouldShowSpinner: false)
                 if let error = syncError {
                     DDLogError("⛔️ Error loading dashboard: \(error)")
@@ -150,8 +150,12 @@ private extension StoreStatsAndTopPerformersViewController {
             // For tasks dispatched for each time period.
             let periodGroup = DispatchGroup()
 
+            // For tasks dispatched for store stats (order and visitor stats) for each time period.
+            let periodStoreStatsGroup = DispatchGroup()
+
             group.enter()
             periodGroup.enter()
+            periodStoreStatsGroup.enter()
             self.syncStats(for: siteID,
                            siteTimezone: timezoneForSync,
                            timeRange: vc.timeRange,
@@ -165,10 +169,12 @@ private extension StoreStatsAndTopPerformersViewController {
                 }
                 group.leave()
                 periodGroup.leave()
+                periodStoreStatsGroup.leave()
             }
 
             group.enter()
             periodGroup.enter()
+            periodStoreStatsGroup.enter()
             self.syncSiteVisitStats(for: siteID,
                                     siteTimezone: timezoneForSync,
                                     timeRange: vc.timeRange,
@@ -179,6 +185,7 @@ private extension StoreStatsAndTopPerformersViewController {
                 }
                 group.leave()
                 periodGroup.leave()
+                periodStoreStatsGroup.leave()
             }
 
             group.enter()
@@ -193,6 +200,8 @@ private extension StoreStatsAndTopPerformersViewController {
                 }
                 group.leave()
                 periodGroup.leave()
+
+                vc.removeTopPerformersGhostContent()
             }
 
             periodGroup.notify(queue: .main) {
@@ -202,6 +211,10 @@ private extension StoreStatsAndTopPerformersViewController {
                 } else {
                     syncError = periodSyncError
                 }
+            }
+
+            periodStoreStatsGroup.notify(queue: .main) {
+                vc.removeStoreStatsGhostContent()
             }
         }
     }
@@ -224,27 +237,12 @@ private extension StoreStatsAndTopPerformersViewController {
     /// Displays the Ghost Placeholder whenever there is no visible data.
     ///
     func ensureGhostContentIsDisplayed() {
-        guard visibleChildViewController.shouldDisplayStoreStatsGhostContent else {
-            return
+        periodVCs.forEach { periodVC in
+            guard periodVC.shouldDisplayStoreStatsGhostContent else {
+                return
+            }
+            periodVC.displayGhostContent()
         }
-
-        displayGhostContent()
-    }
-
-    /// Locks UI Interaction and displays Ghost Placeholder animations.
-    ///
-    func displayGhostContent() {
-        view.isUserInteractionEnabled = false
-        buttonBarView.startGhostAnimation(style: .wooDefaultGhostStyle)
-        visibleChildViewController.displayGhostContent()
-    }
-
-    /// Unlocks the and removes the Placeholder Content
-    ///
-    func removeGhostContent() {
-        view.isUserInteractionEnabled = true
-        buttonBarView.stopGhostAnimation()
-        visibleChildViewController.removeGhostContent()
     }
 
     /// If the Ghost Content was previously onscreen, this method will restart the animations.
@@ -297,19 +295,23 @@ private extension StoreStatsAndTopPerformersViewController {
         let dayVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                    timeRange: .today,
                                                                    currentDate: currentDate,
-                                                                   canDisplayInAppFeedbackCard: true)
+                                                                   canDisplayInAppFeedbackCard: true,
+                                                                   usageTracksEventEmitter: usageTracksEventEmitter)
         let weekVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                     timeRange: .thisWeek,
                                                                     currentDate: currentDate,
-                                                                    canDisplayInAppFeedbackCard: false)
+                                                                    canDisplayInAppFeedbackCard: false,
+                                                                    usageTracksEventEmitter: usageTracksEventEmitter)
         let monthVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                      timeRange: .thisMonth,
                                                                      currentDate: currentDate,
-                                                                     canDisplayInAppFeedbackCard: false)
+                                                                     canDisplayInAppFeedbackCard: false,
+                                                                     usageTracksEventEmitter: usageTracksEventEmitter)
         let yearVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                     timeRange: .thisYear,
                                                                     currentDate: currentDate,
-                                                                    canDisplayInAppFeedbackCard: false)
+                                                                    canDisplayInAppFeedbackCard: false,
+                                                                    usageTracksEventEmitter: usageTracksEventEmitter)
 
         periodVCs.append(dayVC)
         periodVCs.append(weekVC)
@@ -401,6 +403,7 @@ private extension StoreStatsAndTopPerformersViewController {
                                                           timeRange: timeRange,
                                                           earliestDateToInclude: earliestDateToInclude,
                                                           latestDateToInclude: latestDateToInclude,
+                                                          quantity: Constants.topEarnerStatsLimit,
                                                           onCompletion: { result in
                                                             switch result {
                                                             case .success:
@@ -470,5 +473,9 @@ private extension StoreStatsAndTopPerformersViewController {
     enum TabStrip {
         static let buttonLeftRightMargin: CGFloat   = 14.0
         static let selectedBarHeight: CGFloat       = 3.0
+    }
+
+    enum Constants {
+        static let topEarnerStatsLimit: Int = 5
     }
 }

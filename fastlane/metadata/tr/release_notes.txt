@@ -1,5 +1,3 @@
-Siparişler sekmesi bu sürümde güncellendi. Sekmeleri kaldırdık ve duruma veya tarih aralığına göre filtreleme seçeneğini sunduk. Bu değişikliği yıllardır sizden aldığımız geri bildirimlere göre yaptık. Beğeneceğinizi biliyoruz!
+Bazen, bir ticaret fuarında olduğu gibi, şahsen yaptığınız bir işlem için müşterinizden ödeme almak üzere hızlı bir sipariş oluşturmanız gerekir. Basit Ödemeler oluşturmanız için yeni bir seçenek ekledik! Bu işlemi kaydetmek üzere hızlı bir sipariş vermek için Siparişler sekmesine gidin. Tam sipariş oluşturma konusunda da sıkı şekilde çalışıyoruz; sonucu bu yıl içinde göreceksiniz.
 
-Bir sipariş için anlık bir bildirimden kargo etiketi oluşturma sırasında meydana gelen bir kilitlenme durumunu düzelttik. Ayrıca şifre yöneticinizde oturum açma deneyimini iyileştirdik. Yöneticinizde WordPress.com için kayıtlı kullanıcı adınız ve şifrenizi listenin başında göreceksiniz!
-
-Her zaman olduğu gibi, lütfen bize geri bildiriminizi göndermeye devam edin. WooCommerce'i kullandığınız için teşekkürler!
+Ayrıca site ziyaretçi sayısının mağazanızın panosundaki Bugün sekmesinde görünmesini engelleyen bir hatayı düzelttik. Bizi bilgilendirdiğiniz için teşekkür ederiz!

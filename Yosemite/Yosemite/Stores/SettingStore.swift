@@ -38,8 +38,12 @@ public class SettingStore: Store {
             synchronizeGeneralSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .synchronizeProductSiteSettings(let siteID, let onCompletion):
             synchronizeProductSiteSettings(siteID: siteID, onCompletion: onCompletion)
+        case let .synchronizeAdvancedSiteSettings(siteID, onCompletion):
+            synchronizeAdvancedSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .retrieveSiteAPI(let siteID, let onCompletion):
             retrieveSiteAPI(siteID: siteID, onCompletion: onCompletion)
+        case let .getPaymentsPagePath(siteID, onCompletion):
+            getPaymentsPagePath(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -79,11 +83,37 @@ private extension SettingStore {
         }
     }
 
+    /// Synchronizes the advanced site settings associated with the provided Site ID (if any!).
+    ///
+    func synchronizeAdvancedSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
+        siteSettingsRemote.loadAdvancedSettings(for: siteID) { [weak self] result in
+            switch result {
+            case .success(let settings):
+                self?.upsertStoredAdvancedSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
+                    onCompletion(nil)
+                }
+            case .failure(let error):
+                onCompletion(error)
+            }
+        }
+    }
+
     /// Retrieves the site API information associated with the provided Site ID (if any!).
     /// This call does NOT persist returned data into the Storage layer.
     ///
     func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void) {
         siteAPIRemote.loadAPIInformation(for: siteID, completion: onCompletion)
+    }
+
+    /// Retrieves the store payments page path.
+    ///
+    func getPaymentsPagePath(siteID: Int64, onCompletion: @escaping (Result<String, SettingStore.SettingError>) -> Void) {
+        guard let paymentPageSettings = sharedDerivedStorage.loadSiteSetting(siteID: siteID, settingID: SettingKeys.paymentsPage),
+              let paymentPagePath = paymentPageSettings.value else {
+                  return onCompletion(.failure(SettingError.paymentsPageNotFound))
+              }
+
+        onCompletion(.success(paymentPagePath))
     }
 }
 
@@ -113,6 +143,20 @@ private extension SettingStore {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
             self.upsertSettings(readOnlySiteSettings, in: derivedStorage, siteID: siteID, settingGroup: SiteSettingGroup.product)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates (OR Inserts) the specified **advanced** ReadOnly `SiteSetting` entities **in a background thread**. `onCompletion` will be called
+    /// on the main thread!
+    ///
+    func upsertStoredAdvancedSettingsInBackground(siteID: Int64, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            self.upsertSettings(readOnlySiteSettings, in: derivedStorage, siteID: siteID, settingGroup: SiteSettingGroup.advanced)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
@@ -157,5 +201,22 @@ extension SettingStore {
     ///
     func upsertStoredProductSiteSettings(siteID: Int64, readOnlySiteSettings: [Networking.SiteSetting], in storage: StorageType) {
         upsertSettings(readOnlySiteSettings, in: storage, siteID: siteID, settingGroup: SiteSettingGroup.product)
+    }
+}
+
+// MARK: Definitions
+extension SettingStore {
+    /// Possible store errors.
+    ///
+    public enum SettingError: Swift.Error {
+        /// Payment page path was not found
+        ///
+        case paymentsPageNotFound
+    }
+
+    /// Settings keys.
+    ///
+    private enum SettingKeys {
+        static let paymentsPage = "woocommerce_checkout_pay_endpoint"
     }
 }

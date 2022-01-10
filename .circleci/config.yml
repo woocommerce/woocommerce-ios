@@ -234,7 +234,7 @@ workflows:
       - Unit Tests:
           <<: *iphone_test_device
           requires: [ "Build Tests" ]
-      # Always run UI tests on develop and release branches
+      # Always run UI tests on trunk and release branches
       - UI Tests:
           name: UI Tests (iPhone)
           <<: *iphone_test_device
@@ -243,7 +243,7 @@ workflows:
           filters:
             branches:
               only:
-                - develop
+                - trunk
                 - /^release.*/
       - UI Tests:
           name: UI Tests (iPad)
@@ -253,7 +253,7 @@ workflows:
           filters:
             branches:
               only:
-                - develop
+                - trunk
                 - /^release.*/
   #Optionally run UI tests on PRs
   Optional Tests:
@@ -267,7 +267,7 @@ workflows:
           filters:
             branches:
               ignore:
-                - develop
+                - trunk
                 - /^release.*/
       - Build Tests:
           <<: *iphone_test_device

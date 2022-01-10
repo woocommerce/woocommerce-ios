@@ -12,6 +12,7 @@ enum OrderFactory {
               orderID: 0,
               parentID: 0,
               customerID: 0,
+              orderKey: "",
               number: "",
               status: .pending,
               currency: "",

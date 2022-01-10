@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-12-08 16:54:02+0000 */
+/* Translation-Revision-Date: 2022-01-05 15:56:09+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -30,7 +30,12 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (para o cliente)";
 
-/* Label about product's inventory stock status shown on Products tab */
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string, - which should be translated separately and considered part of this sentence. */
+"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ está prestes a aceitar pagamentos com seu dispositivo móvel e solicitar leitores de cartão";
+
+/* Label about product's inventory stock status shown during order creation
+   Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ em estoque";
 
 /* Review title. Reads as {Review author} left a review */
@@ -292,7 +297,8 @@
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "Adicionar preço";
 
-/* Action to add product on the placeholder overlay when there are no products on the Products tab */
+/* Action to add product on the placeholder overlay when there are no products on the Products tab
+   Title for the screen to add a product to an order */
 "Add Product" = "Adicionar produto";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
@@ -619,7 +625,7 @@
 "Can Not Request Link" = "Não pode requisitar link";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "Cancelar";
 
 /* Display label for cancelled order status. */
@@ -731,8 +737,8 @@
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Remover todos";
 
-/* Text for the close button in the Edit Address Form
-   Title of the Close action on the Jetpack Install view */
+/* Text for the close button in the Add Product screen
+   Text for the close button in the Edit Address Form - Title of the Close action on the Jetpack Install view */
 "Close" = "Fechar";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
@@ -740,6 +746,12 @@
 
 /* Text on the button that starts collecting a card present payment. */
 "Collect Payment" = "Receber pagamento";
+
+/* Alert title when starting the collect payment flow without a user name. */
+"Collect payment" = "Receber pagamento";
+
+/* Alert title when starting the collect payment flow with a user name. */
+"Collect payment from %1$@" = "Receber pagamento de %1$@";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -973,7 +985,7 @@
 "Customer" = "Cliente";
 
 /* Customer note row title
-   Customer note section title */
+   Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
 "Customer Provided Note" = "Nota fornecida pelo cliente";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
@@ -1084,7 +1096,7 @@
 "Don't have an account? _Sign up_" = "Não tem uma conta? _Cadastre-se_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done button on the Jetpack Install Progress screen. - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Title for the button to confirm the amount in the simple payments screen */
+   Done button on the Jetpack Install Progress screen. - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
 "Done" = "Concluído";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1154,7 +1166,8 @@
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Identifique com facilidade seus produtos usando códigos exclusivos";
 
-/* Title text of the button that edits a note when creating a simple payment */
+/* Button to edit an order status on the New Order screen
+   Title text of the button that edits a note when creating a simple payment */
 "Edit" = "Editar";
 
 /* Action to edit the address in Shipping Label Suggested screen */
@@ -1163,9 +1176,6 @@
 /* Action to edit the attributes and options used for variations
    Navigation title for the Product Attributes screen */
 "Edit Attributes" = "Editar atributos";
-
-/* Title for the edit customer provided note screen */
-"Edit Note" = "Editar observação";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Editar produtos";
@@ -1223,6 +1233,9 @@
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Verifique se **o firmware da impressora está atualizado**. Consulte a documentação da sua impressora para obter instruções sobre como atualizar.";
 
+/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+"Enter Address" = "Informar endereço";
+
 /* Short instructions label in the simple payments screen */
 "Enter Amount" = "Insira o valor";
 
@@ -1264,12 +1277,12 @@
 /* Enter password placeholder in Product Visibility */
 "Enter password" = "Digite a senha";
 
+/* Sign in instructions for logging in with a URL. */
+"Enter the address of the WooCommerce store you'd like to connect." = "Insira o endereço da loja do WooCommerce que deseja vincular.";
+
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
 "Enter the address of the WordPress site you'd like to connect." = "Digite o endereço do site WordPress que você deseja conectar.";
-
-/* Sign in instructions for logging in with a URL. */
-"Enter the address of your WooCommerce store you'd like to connect." = "Insira o endereço da loja WooCommerce que deseja vincular.";
 
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "Informe a URL externa do produto.";
@@ -1562,6 +1575,9 @@
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Como podemos melhorar?";
 
+/* Navigation bar title of hub menu view */
+"Hub Menu" = "Menu central";
+
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "Curti";
 
@@ -1789,8 +1805,8 @@
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Iniciar depuração do Wormholy";
 
-/* Button title in the shipping label creation info screen
-   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. - Button title in the shipping label creation info screen - Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
 "Learn more" = "Saiba mais";
 
 /* A label prompting users to learn more about HS Tariff Number in Customs screen of Shipping Label flow */
@@ -1944,6 +1960,12 @@
    Fulfill Order Action Button */
 "Mark Order Complete" = "Marcar pedido como concluído";
 
+/* Alert button when selecting the cash payment method for simple payments */
+"Mark as Paid" = "Marcar como pago";
+
+/* Alert title when selecting the cash payment method for simple payments */
+"Mark as Paid?" = "Marcar como pago?";
+
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Marcar este pedido como concluído e notificar o cliente";
 
@@ -1952,6 +1974,9 @@
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "A mídia não tem um arquivo associado a ser enviado.";
+
+/* Title of the Menu tab */
+"Menu" = "Menu";
 
 /* Menu order label in Product Settings
    Product Menu Order navigation title */
@@ -2086,6 +2111,9 @@
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Nenhum preço definido";
+
+/* Message displayed if there are no products to display in the Add Product screen */
+"No products found" = "Nenhum produto encontrado";
 
 /* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
@@ -2222,9 +2250,6 @@
 
 /* Cell title on the beta features screen to enable creating new orders */
 "Order Creation" = "Criação do pedido";
-
-/* Title text of the row that holds the order note when creating a simple payment */
-"Order Note" = "Anotação do pedido";
 
 /* Order notes section title */
 "Order Notes" = "Observações do pedido";
@@ -2381,6 +2406,12 @@
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Carregue o leitor";
 
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
+"Please correct your store address to proceed" = "Corrija o endereço da sua loja para prosseguir";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"Please correct your store's postcode\/ZIP" = "Corrija o código postal (CEP) da sua loja";
+
 /* Error message for missing explanation when Content Typeis Other in Customs screen of Shipping Label flow */
 "Please describe what kind of goods this package contains" = "Descreva que tipo de mercadorias este pacote contém";
 
@@ -2454,7 +2485,7 @@
 "Please update your reader software to keep accepting payments" = "Atualize o software do leitor para continuar aceitando pagamentos";
 
 /* Message of in-progress modal when preparing for printing customs invoice
-   Message of in-progress modal when requesting shipping label document for printing - Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait */
+   Message of in-progress modal when requesting shipping label document for printing - Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait - VoiceOver Accessibility label for the instruction */
 "Please wait" = "Aguarde";
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
@@ -2561,6 +2592,9 @@
 /* Display label for processing order status. */
 "Processing" = "Processando";
 
+/* VoiceOver accessibility label. Indicates that a payment is being processed */
+"Processing payment" = "Processando pagamento";
+
 /* Indicates that a payment is being processed */
 "Processing payment..." = "Processando pagamento...";
 
@@ -2663,8 +2697,8 @@
 /* Quantity abbreviation for section title */
 "Qty" = "Qtd";
 
-/* The accessibility label for the quantity button when selecting an item to refund
-   Title of the cell in Product Inventory Settings > Quantity */
+/* Accessibility label for product quantity field
+   The accessibility label for the quantity button when selecting an item to refund - Title of the cell in Product Inventory Settings > Quantity */
 "Quantity" = "Quantidade";
 
 /* Navigation title on the quantity item selector screen */
@@ -2824,6 +2858,10 @@
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
    Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
 "Retry" = "Tentar novamente";
+
+/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
+   Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
+"Retry After Updating" = "Tentar novamente após atualizar";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Devolver o pacote ao remetente caso não possa ser enviado";
@@ -3373,7 +3411,8 @@
 /* Title for the simple payments screen */
 "Take Payment" = "Aceitar pagamento";
 
-/* Text of the button that creates a simple payment order. Contains the total amount to collect */
+/* Navigation bar title for the Simple Payments Methods screens
+   Text of the button that creates a simple payment order. Contains the total amount to collect */
 "Take Payment ((total))" = "Receber pagamento de ((total))";
 
 /* Menu option for taking an image or video with the device's camera. */
@@ -3639,6 +3678,12 @@
    Notice text after failing to update the order successfully */
 "There was an error updating the order" = "Ocorreu um erro ao atualizar o pedido";
 
+/* Text when there is an error while marking the order as paid for simple payments. */
+"There was an error while marking the order as paid." = "Ocorreu um erro ao marcar o pedido como pago.";
+
+/* Text when there is an unknown error while trying to collect payments */
+"There was an error while trying to collect the payment." = "Ocorreu um erro ao tentar receber o pagamento.";
+
 /* Navigates to screen with third party software licenses
    Software Licenses (information page title) */
 "Third Party Licenses" = "Licenças de terceiros";
@@ -3703,6 +3748,9 @@
 
 /* Footer text for editing external product button text */
 "This text will be shown on the button linking to the external product." = "Este texto será mostrado no botão que leva ao produto externo.";
+
+/* Alert info when selecting the cash payment method for simple payments */
+"This will mark your order as complete if you received (total) outside of WooCommerce" = "Isso marcará o seu pedido como concluído se você tiver recebido (o valor integral) fora do WooCommerce";
 
 /* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
@@ -4023,7 +4071,7 @@
 "Updating software" = "Atualizando software";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
-"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "Falha na atualização do software do leitor porque ele está com pouca bateria. Deixe o leitor chegar a mais de 50\uFF05 de carga antes de tentar novamente.";
+"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "Falha na atualização do software do leitor porque ele está com pouca bateria. Deixe o leitor chegar a mais de 50％ de carga antes de tentar novamente.";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
 "Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "Falha na atualização do software do leitor porque a bateria dele está em %.0f%%. Deixe o leitor chegar a mais de 50%% de carga antes de tentar novamente.";
@@ -4167,9 +4215,6 @@
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Estamos trabalhando para facilitar a visualização de complementos de produtos diretamente no seu dispositivo! Por enquanto, você poderá ver os complementos dos seus pedidos. É possível criar e editar esses complementos no seu painel da Web.";
 
-/* Content of the top banner to announce the simple payments feature. */
-"We are working on making it easier for you to take payments from your device! Enable Simple Payments in Settings > Experimental Features." = "Estamos trabalhando para que você possa receber pagamentos no seu dispositivo com maior facilidade! Ative a opção de pagamentos simples em Configurações > Funcionalidades experimentais.";
-
 /* Content of the banner notice in the Simple Payments view */
 "We are working on making it easier for you to take payments from your device! For now, tap on the \"+\" button and you’ll be able to create an order with the amount you want to collect" = "Estamos trabalhando para que você possa receber pagamentos no seu dispositivo com maior facilidade! Por enquanto, toque no botão \"+\" para criar um pedido com o valor que você quer receber.";
 
@@ -4302,6 +4347,9 @@
 /* Title for the error screen when WooCommerce Payments is in test mode on a live site */
 "WooCommerce Payments is in Test Mode" = "O WooCommerce Payments está em modo de teste";
 
+/* Navigation title of the webview which used by the merchant to update their store address */
+"WooCommerce Settings" = "Configurações do WooCommerce";
+
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
 
@@ -4339,8 +4387,14 @@
 /* The info of the shipping labels top banner in order details */
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Agora você pode criar etiquetas de envio para todos os pedidos físicos diretamente no seu dispositivo com o plugin gratuito do WooCommerce Shipping. Toque em Criar etiqueta de envio para experimentar nossa funcionalidade beta!";
 
+/* Shown in Refunds screen. Refunding fees are currently not supported. */
+"You can refund fees in your store admin" = "Você pode reembolsar taxas na administração da sua loja";
+
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "É possível solicitar o reembolso de uma etiqueta de envio que não tenha sido usada para enviar um pacote.\nEsse processo levará pelo menos 14 dias.";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "Você pode configurar o código postal (CEP) da sua loja em Painel WP-Admin > WooCommerce > Configurações (Geral)";
 
 /* Error message when WooCommerce Payments is not supported in a specific country
    Generic error message when In-Person Payments is unavailable */
@@ -4426,11 +4480,11 @@
 /* About View's Footer Text. The variable is the current year */
 "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. e WooCommerce Ireland Ltd.";
 
-/* Customer note, wrapped in quotes */
-"“%@”" = "“%@”";
-
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Pedido concluído";
+
+/* Title for the button to cancel the simple payments screen */
+"🎉 Order completed" = "🎉 Pedido concluído";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 produtos reembolsados com êxito";

@@ -56,31 +56,6 @@ final class OrderDetailsViewController: UIViewController {
 
     private let notices = OrderDetailsNotices()
 
-    /// Orchestrates what needs to be presented in the modal views
-    /// that provide user-facing feedback about the card present payment process.
-    private lazy var paymentAlerts: OrderDetailsPaymentAlerts = {
-        OrderDetailsPaymentAlerts(presentingController: self)
-    }()
-
-    /// Subscription that listens for connected readers while we are trying to connect to one to capture payment
-    /// We need to cancel that subscription if the process is canceled by the user or when we connect to a reader.
-    ///
-    private var cardReaderAvailableSubscription: Combine.Cancellable? = nil
-
-    /// Connection Controller (helps connect readers)
-    ///
-    private lazy var connectionController: CardReaderConnectionController? = {
-        guard let siteID = viewModel?.order.siteID else {
-            return nil
-        }
-
-        return CardReaderConnectionController(
-            forSiteID: siteID,
-            knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
-            alertsProvider: CardReaderSettingsAlerts()
-        )
-    }()
-
     // MARK: - View Lifecycle
 
     /// Create an instance of `Self` from its corresponding storyboard.
@@ -513,10 +488,10 @@ private extension OrderDetailsViewController {
         case .issueRefund:
             issueRefundWasPressed()
         case .collectPayment:
-            guard let indexPath = indexPath else {
+            guard indexPath != nil else {
                 break
             }
-            collectPayment(at: indexPath)
+            collectPayment()
         case .reprintShippingLabel(let shippingLabel):
             guard let navigationController = navigationController else {
                 assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
@@ -710,96 +685,16 @@ private extension OrderDetailsViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
-    @objc private func collectPayment(at: IndexPath) {
-        cardReaderAvailableSubscription = viewModel.cardReaderAvailable()
-            .sink(
-                receiveCompletion: { [weak self] result in
-                    self?.dismiss(animated: false, completion: {
-                        self?.collectPaymentForCurrentOrder()
-                    })
-                    self?.cardReaderAvailableSubscription = nil
-                },
-                receiveValue: { [weak self] _ in
-                    self?.connectToCardReader()
-                })
-    }
-
-    private func collectPaymentForCurrentOrder() {
-        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-        let currencyCode = ServiceLocator.currencySettings.currencyCode
-        let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
-        let value = currencyFormatter.formatAmount(viewModel.order.total, with: unit) ?? ""
-
-        paymentAlerts.readerIsReady(title: viewModel.collectPaymentFrom,
-                                    amount: value)
-
-        ServiceLocator.analytics.track(.collectPaymentTapped)
-        viewModel.collectPayment(
-            onWaitingForInput: { [weak self] in
-                self?.paymentAlerts.tapOrInsertCard(onCancel: {
-                	self?.viewModel.cancelPayment(onCompletion: { _ in
-                	    ServiceLocator.analytics.track(.collectPaymentCanceled)
-                	})
-		})
-            },
-            onProcessingMessage: { [weak self] in
-                self?.paymentAlerts.processingPayment()
-            },
-            onDisplayMessage: { [weak self] message in // display a message from the reader, e.g. "Remove Card"
-                self?.paymentAlerts.displayReaderMessage(message: message)
-            },
-            onCompletion: { [weak self] result in
-                guard let self = self else {
-                    return
-                }
-
-                switch result {
-                case .failure(let error):
-                    ServiceLocator.analytics.track(.collectPaymentFailed, withError: error)
-                    DDLogError("Failed to collect payment: \(error.localizedDescription)")
-                    self.paymentAlerts.error(error: error, tryAgain: {
-                        self.retryCollectPayment()
-                    })
-                case .success(let receiptParameters):
-                    ServiceLocator.analytics.track(.collectPaymentSuccess)
-                    self.syncOrderAfterPaymentCollection {
-                        self.refreshCardPresentPaymentEligibility()
-                    }
-
-                    self.paymentAlerts.success(printReceipt: {
-                        self.viewModel.printReceipt(params: receiptParameters)
-                    }, emailReceipt: {
-                        self.viewModel.emailReceipt(params: receiptParameters, onContent: { emailContent in
-                            self.emailReceipt(emailContent)
-                        })
-                    }, noReceiptTitle: Localization.Payments.backToOrder,
-                       noReceiptAction: {})
+    @objc private func collectPayment() {
+        viewModel.collectPayment(rootViewController: self, backButtonTitle: Localization.Payments.backToOrder) { [weak self] result in
+            guard let self = self else { return }
+            // Refresh date & view once payment has been collected.
+            if result.isSuccess {
+                self.syncOrderAfterPaymentCollection {
+                    self.refreshCardPresentPaymentEligibility()
                 }
             }
-        )
-    }
-
-    private func retryCollectPayment() {
-        viewModel.cancelPayment { [weak self] result in
-            switch result {
-            case .failure(let error):
-                self?.paymentAlerts.nonRetryableError(from: self, error: error)
-            case .success:
-                self?.collectPaymentForCurrentOrder()
-            }
         }
-    }
-
-    private func connectToCardReader() {
-        connectionController?.searchAndConnect(from: self) { _ in
-            /// No need for logic here. Once connected, the connected reader will publish
-            /// through the `cardReaderAvailableSubscription`
-        }
-    }
-
-    private func cancelObservingCardReader() {
-        cardReaderAvailableSubscription?.cancel()
-        cardReaderAvailableSubscription = nil
     }
 
     private func itemAddOnsButtonTapped(addOns: [OrderItemAttribute]) {
@@ -807,41 +702,6 @@ private extension OrderDetailsViewController {
         let addOnsController = OrderAddOnsListViewController(viewModel: addOnsViewModel)
         let navigationController = WooNavigationController(rootViewController: addOnsController)
         present(navigationController, animated: true, completion: nil)
-    }
-
-    private func emailReceipt(_ content: String) {
-        guard MFMailComposeViewController.canSendMail() else {
-            DDLogError("⛔️ Failed to submit email receipt for order: \(viewModel.order.orderID). Email is not configured")
-            return
-        }
-
-        let mail = MFMailComposeViewController()
-        mail.mailComposeDelegate = self
-
-        mail.setSubject(viewModel.paymentReceiptEmailSubject)
-        mail.setMessageBody(content, isHTML: true)
-
-        if let customerEmail = viewModel.order.billingAddress?.email {
-            mail.setToRecipients([customerEmail])
-        }
-
-        present(mail, animated: true)
-    }
-}
-
-extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        switch result {
-        case .cancelled:
-            ServiceLocator.analytics.track(.receiptEmailCanceled)
-        case .sent, .saved:
-            ServiceLocator.analytics.track(.receiptEmailSuccess)
-        case .failed:
-            ServiceLocator.analytics.track(.receiptEmailFailed, withError: error ?? UnknownEmailError())
-        @unknown default:
-            assertionFailure("MFMailComposeViewController finished with an unknown result type")
-        }
-        controller.dismiss(animated: true)
     }
 }
 
@@ -906,12 +766,6 @@ extension OrderDetailsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return viewModel.dataSource.viewForHeaderInSection(section, tableView: tableView)
-    }
-}
-
-extension OrderDetailsViewController: UIAdaptivePresentationControllerDelegate {
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        cancelObservingCardReader()
     }
 }
 

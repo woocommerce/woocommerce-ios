@@ -77,6 +77,7 @@ private extension SummaryTableViewCellViewModelTests {
                      orderID: 963,
                      parentID: 2,
                      customerID: 11,
+                     orderKey: "abc123",
                      number: "963",
                      status: .custom("automattic"),
                      currency: "USD",

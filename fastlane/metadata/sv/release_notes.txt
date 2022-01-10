@@ -1,5 +1,3 @@
-Beställningsfliken har fått en uppdatering i den här version. Flikarna är nu borta och vi har skapat ett alternativ för att filtrera efter status eller datumintervall. Denna ändring är baserad på direkt feedback från er genom åren och vi vet att du kommer att gilla den!
+Ibland kan det hända att du behöver skapa en snabb beställning för att ta emot en betalning från en kund för en transaktion som du gör personligen, exempelvis på en mässa. Vi har lagt till ett nytt alternativ som du kan använda för att skapa enkla betalningar! Gå till fliken Beställningar för att göra en snabb beställning och registrera transaktionen. Vi arbetar även hårt på möjligheten att skapa fullständiga beställningar – det kommer senare under året.
 
-Vi har åtgärdat en möjlig krasch vid skapandet av en fraktetikett för en beställning från en push-notis. Vi har också förbättrat inloggningsupplevelsen med din lösenordshanterare. Ditt användarnamn och lösenord för WordPress.com som finns lagrat i din hanterare kommer att visas högst upp i listan!
-
-Som alltid, fortsätt att skicka in feedback. Tack för att du använder WooCommerce!
+Vi har också åtgärdat ett fel som gjorde att antalet webbplatsbesökare inte visades på fliken Idag i din butiks adminpanel. Tack för att du berättar!

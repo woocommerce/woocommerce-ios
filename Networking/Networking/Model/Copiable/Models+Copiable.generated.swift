@@ -70,12 +70,94 @@ extension Address {
     }
 }
 
+extension Coupon {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        couponID: CopiableProp<Int64> = .copy,
+        code: CopiableProp<String> = .copy,
+        amount: CopiableProp<String> = .copy,
+        dateCreated: CopiableProp<Date> = .copy,
+        dateModified: CopiableProp<Date> = .copy,
+        discountType: CopiableProp<Coupon.DiscountType> = .copy,
+        description: CopiableProp<String> = .copy,
+        dateExpires: NullableCopiableProp<Date> = .copy,
+        usageCount: CopiableProp<Int64> = .copy,
+        individualUse: CopiableProp<Bool> = .copy,
+        productIds: CopiableProp<[Int64]> = .copy,
+        excludedProductIds: CopiableProp<[Int64]> = .copy,
+        usageLimit: NullableCopiableProp<Int64> = .copy,
+        usageLimitPerUser: NullableCopiableProp<Int64> = .copy,
+        limitUsageToXItems: NullableCopiableProp<Int64> = .copy,
+        freeShipping: CopiableProp<Bool> = .copy,
+        productCategories: CopiableProp<[Int64]> = .copy,
+        excludedProductCategories: CopiableProp<[Int64]> = .copy,
+        excludeSaleItems: CopiableProp<Bool> = .copy,
+        minimumAmount: CopiableProp<String> = .copy,
+        maximumAmount: CopiableProp<String> = .copy,
+        emailRestrictions: CopiableProp<[String]> = .copy,
+        usedBy: CopiableProp<[String]> = .copy
+    ) -> Coupon {
+        let siteID = siteID ?? self.siteID
+        let couponID = couponID ?? self.couponID
+        let code = code ?? self.code
+        let amount = amount ?? self.amount
+        let dateCreated = dateCreated ?? self.dateCreated
+        let dateModified = dateModified ?? self.dateModified
+        let discountType = discountType ?? self.discountType
+        let description = description ?? self.description
+        let dateExpires = dateExpires ?? self.dateExpires
+        let usageCount = usageCount ?? self.usageCount
+        let individualUse = individualUse ?? self.individualUse
+        let productIds = productIds ?? self.productIds
+        let excludedProductIds = excludedProductIds ?? self.excludedProductIds
+        let usageLimit = usageLimit ?? self.usageLimit
+        let usageLimitPerUser = usageLimitPerUser ?? self.usageLimitPerUser
+        let limitUsageToXItems = limitUsageToXItems ?? self.limitUsageToXItems
+        let freeShipping = freeShipping ?? self.freeShipping
+        let productCategories = productCategories ?? self.productCategories
+        let excludedProductCategories = excludedProductCategories ?? self.excludedProductCategories
+        let excludeSaleItems = excludeSaleItems ?? self.excludeSaleItems
+        let minimumAmount = minimumAmount ?? self.minimumAmount
+        let maximumAmount = maximumAmount ?? self.maximumAmount
+        let emailRestrictions = emailRestrictions ?? self.emailRestrictions
+        let usedBy = usedBy ?? self.usedBy
+
+        return Coupon(
+            siteID: siteID,
+            couponID: couponID,
+            code: code,
+            amount: amount,
+            dateCreated: dateCreated,
+            dateModified: dateModified,
+            discountType: discountType,
+            description: description,
+            dateExpires: dateExpires,
+            usageCount: usageCount,
+            individualUse: individualUse,
+            productIds: productIds,
+            excludedProductIds: excludedProductIds,
+            usageLimit: usageLimit,
+            usageLimitPerUser: usageLimitPerUser,
+            limitUsageToXItems: limitUsageToXItems,
+            freeShipping: freeShipping,
+            productCategories: productCategories,
+            excludedProductCategories: excludedProductCategories,
+            excludeSaleItems: excludeSaleItems,
+            minimumAmount: minimumAmount,
+            maximumAmount: maximumAmount,
+            emailRestrictions: emailRestrictions,
+            usedBy: usedBy
+        )
+    }
+}
+
 extension Order {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
         orderID: CopiableProp<Int64> = .copy,
         parentID: CopiableProp<Int64> = .copy,
         customerID: CopiableProp<Int64> = .copy,
+        orderKey: CopiableProp<String> = .copy,
         number: CopiableProp<String> = .copy,
         status: CopiableProp<OrderStatusEnum> = .copy,
         currency: CopiableProp<String> = .copy,
@@ -103,6 +185,7 @@ extension Order {
         let orderID = orderID ?? self.orderID
         let parentID = parentID ?? self.parentID
         let customerID = customerID ?? self.customerID
+        let orderKey = orderKey ?? self.orderKey
         let number = number ?? self.number
         let status = status ?? self.status
         let currency = currency ?? self.currency
@@ -131,6 +214,7 @@ extension Order {
             orderID: orderID,
             parentID: parentID,
             customerID: customerID,
+            orderKey: orderKey,
             number: number,
             status: status,
             currency: currency,
@@ -303,6 +387,87 @@ extension OrderItemRefund {
             taxes: taxes,
             total: total,
             totalTax: totalTax
+        )
+    }
+}
+
+extension OrderStatsV4 {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        granularity: CopiableProp<StatsGranularityV4> = .copy,
+        totals: CopiableProp<OrderStatsV4Totals> = .copy,
+        intervals: CopiableProp<[OrderStatsV4Interval]> = .copy
+    ) -> OrderStatsV4 {
+        let siteID = siteID ?? self.siteID
+        let granularity = granularity ?? self.granularity
+        let totals = totals ?? self.totals
+        let intervals = intervals ?? self.intervals
+
+        return OrderStatsV4(
+            siteID: siteID,
+            granularity: granularity,
+            totals: totals,
+            intervals: intervals
+        )
+    }
+}
+
+extension OrderStatsV4Interval {
+    public func copy(
+        interval: CopiableProp<String> = .copy,
+        dateStart: CopiableProp<String> = .copy,
+        dateEnd: CopiableProp<String> = .copy,
+        subtotals: CopiableProp<OrderStatsV4Totals> = .copy
+    ) -> OrderStatsV4Interval {
+        let interval = interval ?? self.interval
+        let dateStart = dateStart ?? self.dateStart
+        let dateEnd = dateEnd ?? self.dateEnd
+        let subtotals = subtotals ?? self.subtotals
+
+        return OrderStatsV4Interval(
+            interval: interval,
+            dateStart: dateStart,
+            dateEnd: dateEnd,
+            subtotals: subtotals
+        )
+    }
+}
+
+extension OrderStatsV4Totals {
+    public func copy(
+        totalOrders: CopiableProp<Int> = .copy,
+        totalItemsSold: CopiableProp<Int> = .copy,
+        grossRevenue: CopiableProp<Decimal> = .copy,
+        couponDiscount: CopiableProp<Decimal> = .copy,
+        totalCoupons: CopiableProp<Int> = .copy,
+        refunds: CopiableProp<Decimal> = .copy,
+        taxes: CopiableProp<Decimal> = .copy,
+        shipping: CopiableProp<Decimal> = .copy,
+        netRevenue: CopiableProp<Decimal> = .copy,
+        totalProducts: NullableCopiableProp<Int> = .copy
+    ) -> OrderStatsV4Totals {
+        let totalOrders = totalOrders ?? self.totalOrders
+        let totalItemsSold = totalItemsSold ?? self.totalItemsSold
+        let grossRevenue = grossRevenue ?? self.grossRevenue
+        let couponDiscount = couponDiscount ?? self.couponDiscount
+        let totalCoupons = totalCoupons ?? self.totalCoupons
+        let refunds = refunds ?? self.refunds
+        let taxes = taxes ?? self.taxes
+        let shipping = shipping ?? self.shipping
+        let netRevenue = netRevenue ?? self.netRevenue
+        let totalProducts = totalProducts ?? self.totalProducts
+
+        return OrderStatsV4Totals(
+            totalOrders: totalOrders,
+            totalItemsSold: totalItemsSold,
+            grossRevenue: grossRevenue,
+            couponDiscount: couponDiscount,
+            totalCoupons: totalCoupons,
+            refunds: refunds,
+            taxes: taxes,
+            shipping: shipping,
+            netRevenue: netRevenue,
+            totalProducts: totalProducts
         )
     }
 }
@@ -1303,6 +1468,42 @@ extension SiteSetting {
     }
 }
 
+extension SiteVisitStats {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        date: CopiableProp<String> = .copy,
+        granularity: CopiableProp<StatGranularity> = .copy,
+        items: NullableCopiableProp<[SiteVisitStatsItem]> = .copy
+    ) -> SiteVisitStats {
+        let siteID = siteID ?? self.siteID
+        let date = date ?? self.date
+        let granularity = granularity ?? self.granularity
+        let items = items ?? self.items
+
+        return SiteVisitStats(
+            siteID: siteID,
+            date: date,
+            granularity: granularity,
+            items: items
+        )
+    }
+}
+
+extension SiteVisitStatsItem {
+    public func copy(
+        period: CopiableProp<String> = .copy,
+        visitors: CopiableProp<Int> = .copy
+    ) -> SiteVisitStatsItem {
+        let period = period ?? self.period
+        let visitors = visitors ?? self.visitors
+
+        return SiteVisitStatsItem(
+            period: period,
+            visitors: visitors
+        )
+    }
+}
+
 extension SystemPlugin {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -1338,6 +1539,36 @@ extension SystemPlugin {
             authorUrl: authorUrl,
             networkActivated: networkActivated,
             active: active
+        )
+    }
+}
+
+extension TopEarnerStatsItem {
+    public func copy(
+        productID: CopiableProp<Int64> = .copy,
+        productName: NullableCopiableProp<String> = .copy,
+        quantity: CopiableProp<Int> = .copy,
+        price: CopiableProp<Double> = .copy,
+        total: CopiableProp<Double> = .copy,
+        currency: CopiableProp<String> = .copy,
+        imageUrl: NullableCopiableProp<String> = .copy
+    ) -> TopEarnerStatsItem {
+        let productID = productID ?? self.productID
+        let productName = productName ?? self.productName
+        let quantity = quantity ?? self.quantity
+        let price = price ?? self.price
+        let total = total ?? self.total
+        let currency = currency ?? self.currency
+        let imageUrl = imageUrl ?? self.imageUrl
+
+        return TopEarnerStatsItem(
+            productID: productID,
+            productName: productName,
+            quantity: quantity,
+            price: price,
+            total: total,
+            currency: currency,
+            imageUrl: imageUrl
         )
     }
 }

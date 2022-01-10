@@ -133,7 +133,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
                 switch intent {
                 case .error:
                     promise(true)
-                case .completed:
+                case .completed, .created:
                     promise(false)
                 }
             }
@@ -276,5 +276,49 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         // Then
         assertEqual(mockAnalytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowFailed.rawValue])
         assertEqual(mockAnalytics.receivedProperties.first?["source"] as? String, "summary")
+    }
+
+    func test_taxes_toggle_state_is_properly_loaded() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getSimplePaymentsTaxesToggleState(_, onCompletion):
+                onCompletion(.success(true))
+            case .setSimplePaymentsTaxesToggleState:
+                break // No op
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+
+        // Then
+        XCTAssertTrue(viewModel.enableTaxes)
+    }
+
+    func test_taxes_toggle_state_is_stored_after_toggling_taxes() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+
+        // When
+        let stateStored: Bool = waitFor { promise in
+            mockStores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+                switch action {
+                case .setSimplePaymentsTaxesToggleState:
+                    promise(true)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+
+            viewModel.enableTaxes = true
+        }
+
+        // Then
+        XCTAssertTrue(stateStored)
     }
 }

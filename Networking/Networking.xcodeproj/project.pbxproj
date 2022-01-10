@@ -76,6 +76,16 @@
 		02E7FFCB256218F600C53030 /* ShippingLabelRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E7FFCA256218F600C53030 /* ShippingLabelRemoteTests.swift */; };
 		02E7FFCF25621C7900C53030 /* shipping-label-print.json in Resources */ = {isa = PBXBuildFile; fileRef = 02E7FFCE25621C7900C53030 /* shipping-label-print.json */; };
 		02F096C22406691100C0C1D5 /* media-library.json in Resources */ = {isa = PBXBuildFile; fileRef = 02F096C12406691100C0C1D5 /* media-library.json */; };
+		03DCB72626244B9B00C8953D /* Coupon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB72526244B9B00C8953D /* Coupon.swift */; };
+		03DCB7402624AD7D00C8953D /* CouponListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB73F2624AD7D00C8953D /* CouponListMapper.swift */; };
+		03DCB7442624AD9B00C8953D /* CouponListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB7432624AD9A00C8953D /* CouponListMapperTests.swift */; };
+		03DCB7522624B3BE00C8953D /* coupons-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 03DCB7512624B3BE00C8953D /* coupons-all.json */; };
+		03DCB76C262591C400C8953D /* CouponsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB76B262591C400C8953D /* CouponsRemoteTests.swift */; };
+		03DCB772262591D900C8953D /* CouponsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB771262591D900C8953D /* CouponsRemote.swift */; };
+		03DCB77E262738E300C8953D /* coupon.json in Resources */ = {isa = PBXBuildFile; fileRef = 03DCB77D262738E200C8953D /* coupon.json */; };
+		03DCB7822627394500C8953D /* CouponMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB7812627394500C8953D /* CouponMapperTests.swift */; };
+		03DCB786262739D200C8953D /* CouponMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB785262739D200C8953D /* CouponMapper.swift */; };
+		03DCB796262741E000C8953D /* Coupon+Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB795262741E000C8953D /* Coupon+Decoder.swift */; };
 		077F39C8269F2C7E00ABEADC /* SystemPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */; };
 		077F39D426A58DE700ABEADC /* SystemStatusMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */; };
 		077F39D626A58E4500ABEADC /* SystemStatusRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */; };
@@ -112,6 +122,7 @@
 		2665032E261F4FBF0079A159 /* ProductAddOnOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2665032D261F4FBF0079A159 /* ProductAddOnOption.swift */; };
 		26650332261FFA1A0079A159 /* ProductAddOnEnvelope.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26650331261FFA1A0079A159 /* ProductAddOnEnvelope.swift */; };
 		266C7F9225AD3C88006ED243 /* attribute-term.json in Resources */ = {isa = PBXBuildFile; fileRef = 266C7F9125AD3C87006ED243 /* attribute-term.json */; };
+		267066092774BF3B008E1F68 /* settings-advanced.json in Resources */ = {isa = PBXBuildFile; fileRef = 267066082774BF3B008E1F68 /* settings-advanced.json */; };
 		2670C3FC270F4E06002FE931 /* SiteListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2670C3FB270F4E06002FE931 /* SiteListMapperTests.swift */; };
 		2670C3FE270F4E6A002FE931 /* sites-malformed.json in Resources */ = {isa = PBXBuildFile; fileRef = 2670C3FD270F4E6A002FE931 /* sites-malformed.json */; };
 		267313312559CC930026F7EF /* PaymentGateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267313302559CC930026F7EF /* PaymentGateway.swift */; };
@@ -149,6 +160,9 @@
 		31054734262E36AB00C5C02B /* wcpay-payment-intent-error.json in Resources */ = {isa = PBXBuildFile; fileRef = 31054733262E36AB00C5C02B /* wcpay-payment-intent-error.json */; };
 		31104E142630DDA700587C1E /* wcpay-account-wrong-json.json in Resources */ = {isa = PBXBuildFile; fileRef = 31104E132630DDA700587C1E /* wcpay-account-wrong-json.json */; };
 		311976E02602BD4B006AC56C /* SitePluginsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311976DF2602BD4B006AC56C /* SitePluginsMapperTests.swift */; };
+		311D412C2783BF7400052F64 /* StripeAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311D412B2783BF7400052F64 /* StripeAccount.swift */; };
+		311D412E2783C07D00052F64 /* StripeAccountMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311D412D2783C07D00052F64 /* StripeAccountMapper.swift */; };
+		311D41302783C0E200052F64 /* StripeRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311D412F2783C0E200052F64 /* StripeRemote.swift */; };
 		314703082670222500EF253A /* PaymentGatewayAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314703072670222500EF253A /* PaymentGatewayAccount.swift */; };
 		3148977027232982007A86BD /* SystemStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3148976F27232982007A86BD /* SystemStatus.swift */; };
 		3158A49F2729F3F600C3CFA8 /* wcpay-account-live-live.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158A49E2729F3F600C3CFA8 /* wcpay-account-live-live.json */; };
@@ -164,6 +178,7 @@
 		3158FE7C26129E2100E566B9 /* wcpay-account-restricted-pending.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE7B26129E2100E566B9 /* wcpay-account-restricted-pending.json */; };
 		3158FE8026129EC300E566B9 /* wcpay-account-restricted-overdue.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE7F26129EC300E566B9 /* wcpay-account-restricted-overdue.json */; };
 		3158FE8426129F3A00E566B9 /* wcpay-account-unknown-status.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE8326129F3A00E566B9 /* wcpay-account-unknown-status.json */; };
+		31723C892787A299007F1405 /* stripe-connection-token.json in Resources */ = {isa = PBXBuildFile; fileRef = 31723C882787A299007F1405 /* stripe-connection-token.json */; };
 		3178A49F2703E5CF00A8B4CA /* WCPayReaderLocationMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3178A49E2703E5CF00A8B4CA /* WCPayReaderLocationMapper.swift */; };
 		31799AF8270508C600D78179 /* WCPayReaderLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31799AF7270508C600D78179 /* WCPayReaderLocation.swift */; };
 		31799AFC2705189200D78179 /* wcpay-location.json in Resources */ = {isa = PBXBuildFile; fileRef = 31799AFB2705189200D78179 /* wcpay-location.json */; };
@@ -176,6 +191,20 @@
 		3192F21C260D32550067FEF9 /* WCPayAccountMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3192F21B260D32550067FEF9 /* WCPayAccountMapper.swift */; };
 		3192F220260D33BB0067FEF9 /* WCPayAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3192F21F260D33BB0067FEF9 /* WCPayAccount.swift */; };
 		3192F224260D34C40067FEF9 /* WCPayAccountStatusEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3192F223260D34C40067FEF9 /* WCPayAccountStatusEnum.swift */; };
+		31A451BD2786344B00FE81AA /* StripeRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A451BC2786344B00FE81AA /* StripeRemoteTests.swift */; };
+		31A451CC27863A2E00FE81AA /* stripe-account-rejected-fraud.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451BE27863A2C00FE81AA /* stripe-account-rejected-fraud.json */; };
+		31A451CD27863A2E00FE81AA /* stripe-account-restricted.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451BF27863A2C00FE81AA /* stripe-account-restricted.json */; };
+		31A451CE27863A2E00FE81AA /* stripe-account-wrong-json.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451C027863A2D00FE81AA /* stripe-account-wrong-json.json */; };
+		31A451CF27863A2E00FE81AA /* stripe-account-rejected-terms-of-service.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451C127863A2D00FE81AA /* stripe-account-rejected-terms-of-service.json */; };
+		31A451D027863A2E00FE81AA /* stripe-account-live-live.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451C227863A2D00FE81AA /* stripe-account-live-live.json */; };
+		31A451D127863A2E00FE81AA /* stripe-account-rejected-other.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451C327863A2D00FE81AA /* stripe-account-rejected-other.json */; };
+		31A451D227863A2E00FE81AA /* stripe-account-restricted-pending.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451C427863A2D00FE81AA /* stripe-account-restricted-pending.json */; };
+		31A451D327863A2E00FE81AA /* stripe-account-complete.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451C527863A2D00FE81AA /* stripe-account-complete.json */; };
+		31A451D427863A2E00FE81AA /* stripe-account-rejected-listed.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451C627863A2D00FE81AA /* stripe-account-rejected-listed.json */; };
+		31A451D627863A2E00FE81AA /* stripe-account-unknown-status.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451C827863A2D00FE81AA /* stripe-account-unknown-status.json */; };
+		31A451D727863A2E00FE81AA /* stripe-account-dev-test.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451C927863A2D00FE81AA /* stripe-account-dev-test.json */; };
+		31A451D827863A2E00FE81AA /* stripe-account-restricted-overdue.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451CA27863A2D00FE81AA /* stripe-account-restricted-overdue.json */; };
+		31A451D927863A2E00FE81AA /* stripe-account-live-test.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451CB27863A2D00FE81AA /* stripe-account-live-test.json */; };
 		31B8D6B426583662008E3DB2 /* wcpay-account-not-eligible.json in Resources */ = {isa = PBXBuildFile; fileRef = 31B8D6B326583662008E3DB2 /* wcpay-account-not-eligible.json */; };
 		31B8D6B626583970008E3DB2 /* wcpay-account-implicitly-not-eligible.json in Resources */ = {isa = PBXBuildFile; fileRef = 31B8D6B526583970008E3DB2 /* wcpay-account-implicitly-not-eligible.json */; };
 		31D27C812602889C002EDB1D /* SitePluginsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C802602889C002EDB1D /* SitePluginsRemote.swift */; };
@@ -531,8 +560,8 @@
 		D8C11A5C22DFCF8100D4A88D /* order-stats-v4-year-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = D8C11A5B22DFCF8100D4A88D /* order-stats-v4-year-alt.json */; };
 		D8C251D0230BD72700F49782 /* ProductReviewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C251CF230BD72700F49782 /* ProductReviewMapper.swift */; };
 		D8EDFE1E25EE87F1003D2213 /* WCPayRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EDFE1D25EE87F1003D2213 /* WCPayRemote.swift */; };
-		D8EDFE2225EE88C9003D2213 /* WCPayConnectionToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EDFE2125EE88C9003D2213 /* WCPayConnectionToken.swift */; };
-		D8EDFE2625EE8A60003D2213 /* WCPayConnectionTokenMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EDFE2525EE8A60003D2213 /* WCPayConnectionTokenMapper.swift */; };
+		D8EDFE2225EE88C9003D2213 /* ReaderConnectionToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EDFE2125EE88C9003D2213 /* ReaderConnectionToken.swift */; };
+		D8EDFE2625EE8A60003D2213 /* ReaderConnectionTokenMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EDFE2525EE8A60003D2213 /* ReaderConnectionTokenMapper.swift */; };
 		D8FBFF0B22D3ADB1006E3336 /* OrderStatsRemoteV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */; };
 		D8FBFF0D22D3AF4A006E3336 /* StatsGranularityV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0C22D3AF4A006E3336 /* StatsGranularityV4.swift */; };
 		D8FBFF0F22D3B25E006E3336 /* WooAPIVersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0E22D3B25E006E3336 /* WooAPIVersionTests.swift */; };
@@ -677,6 +706,16 @@
 		02E7FFCA256218F600C53030 /* ShippingLabelRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelRemoteTests.swift; sourceTree = "<group>"; };
 		02E7FFCE25621C7900C53030 /* shipping-label-print.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-print.json"; sourceTree = "<group>"; };
 		02F096C12406691100C0C1D5 /* media-library.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-library.json"; sourceTree = "<group>"; };
+		03DCB72526244B9B00C8953D /* Coupon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coupon.swift; sourceTree = "<group>"; };
+		03DCB73F2624AD7D00C8953D /* CouponListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListMapper.swift; sourceTree = "<group>"; };
+		03DCB7432624AD9A00C8953D /* CouponListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListMapperTests.swift; sourceTree = "<group>"; };
+		03DCB7512624B3BE00C8953D /* coupons-all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupons-all.json"; sourceTree = "<group>"; };
+		03DCB76B262591C400C8953D /* CouponsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouponsRemoteTests.swift; sourceTree = "<group>"; };
+		03DCB771262591D900C8953D /* CouponsRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouponsRemote.swift; sourceTree = "<group>"; };
+		03DCB77D262738E200C8953D /* coupon.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = coupon.json; sourceTree = "<group>"; };
+		03DCB7812627394500C8953D /* CouponMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponMapperTests.swift; sourceTree = "<group>"; };
+		03DCB785262739D200C8953D /* CouponMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponMapper.swift; sourceTree = "<group>"; };
+		03DCB795262741E000C8953D /* Coupon+Decoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Coupon+Decoder.swift"; sourceTree = "<group>"; };
 		077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPlugin.swift; sourceTree = "<group>"; };
 		077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusMapper.swift; sourceTree = "<group>"; };
 		077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusRemote.swift; sourceTree = "<group>"; };
@@ -705,6 +744,7 @@
 		2665032D261F4FBF0079A159 /* ProductAddOnOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOnOption.swift; sourceTree = "<group>"; };
 		26650331261FFA1A0079A159 /* ProductAddOnEnvelope.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOnEnvelope.swift; sourceTree = "<group>"; };
 		266C7F9125AD3C87006ED243 /* attribute-term.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "attribute-term.json"; sourceTree = "<group>"; };
+		267066082774BF3B008E1F68 /* settings-advanced.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "settings-advanced.json"; sourceTree = "<group>"; };
 		2670C3FB270F4E06002FE931 /* SiteListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteListMapperTests.swift; sourceTree = "<group>"; };
 		2670C3FD270F4E6A002FE931 /* sites-malformed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "sites-malformed.json"; sourceTree = "<group>"; };
 		267313302559CC930026F7EF /* PaymentGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGateway.swift; sourceTree = "<group>"; };
@@ -748,6 +788,9 @@
 		31054733262E36AB00C5C02B /* wcpay-payment-intent-error.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-payment-intent-error.json"; sourceTree = "<group>"; };
 		31104E132630DDA700587C1E /* wcpay-account-wrong-json.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-wrong-json.json"; sourceTree = "<group>"; };
 		311976DF2602BD4B006AC56C /* SitePluginsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginsMapperTests.swift; sourceTree = "<group>"; };
+		311D412B2783BF7400052F64 /* StripeAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeAccount.swift; sourceTree = "<group>"; };
+		311D412D2783C07D00052F64 /* StripeAccountMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeAccountMapper.swift; sourceTree = "<group>"; };
+		311D412F2783C0E200052F64 /* StripeRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeRemote.swift; sourceTree = "<group>"; };
 		314703072670222500EF253A /* PaymentGatewayAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayAccount.swift; sourceTree = "<group>"; };
 		3148976F27232982007A86BD /* SystemStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatus.swift; sourceTree = "<group>"; };
 		3158A49E2729F3F600C3CFA8 /* wcpay-account-live-live.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-live-live.json"; sourceTree = "<group>"; };
@@ -763,6 +806,7 @@
 		3158FE7B26129E2100E566B9 /* wcpay-account-restricted-pending.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-restricted-pending.json"; sourceTree = "<group>"; };
 		3158FE7F26129EC300E566B9 /* wcpay-account-restricted-overdue.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-restricted-overdue.json"; sourceTree = "<group>"; };
 		3158FE8326129F3A00E566B9 /* wcpay-account-unknown-status.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-unknown-status.json"; sourceTree = "<group>"; };
+		31723C882787A299007F1405 /* stripe-connection-token.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "stripe-connection-token.json"; sourceTree = "<group>"; };
 		3178A49E2703E5CF00A8B4CA /* WCPayReaderLocationMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayReaderLocationMapper.swift; sourceTree = "<group>"; };
 		31799AF7270508C600D78179 /* WCPayReaderLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayReaderLocation.swift; sourceTree = "<group>"; };
 		31799AFB2705189200D78179 /* wcpay-location.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-location.json"; sourceTree = "<group>"; };
@@ -775,6 +819,20 @@
 		3192F21B260D32550067FEF9 /* WCPayAccountMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayAccountMapper.swift; sourceTree = "<group>"; };
 		3192F21F260D33BB0067FEF9 /* WCPayAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayAccount.swift; sourceTree = "<group>"; };
 		3192F223260D34C40067FEF9 /* WCPayAccountStatusEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayAccountStatusEnum.swift; sourceTree = "<group>"; };
+		31A451BC2786344B00FE81AA /* StripeRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeRemoteTests.swift; sourceTree = "<group>"; };
+		31A451BE27863A2C00FE81AA /* stripe-account-rejected-fraud.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-rejected-fraud.json"; sourceTree = "<group>"; };
+		31A451BF27863A2C00FE81AA /* stripe-account-restricted.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-restricted.json"; sourceTree = "<group>"; };
+		31A451C027863A2D00FE81AA /* stripe-account-wrong-json.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-wrong-json.json"; sourceTree = "<group>"; };
+		31A451C127863A2D00FE81AA /* stripe-account-rejected-terms-of-service.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-rejected-terms-of-service.json"; sourceTree = "<group>"; };
+		31A451C227863A2D00FE81AA /* stripe-account-live-live.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-live-live.json"; sourceTree = "<group>"; };
+		31A451C327863A2D00FE81AA /* stripe-account-rejected-other.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-rejected-other.json"; sourceTree = "<group>"; };
+		31A451C427863A2D00FE81AA /* stripe-account-restricted-pending.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-restricted-pending.json"; sourceTree = "<group>"; };
+		31A451C527863A2D00FE81AA /* stripe-account-complete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-complete.json"; sourceTree = "<group>"; };
+		31A451C627863A2D00FE81AA /* stripe-account-rejected-listed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-rejected-listed.json"; sourceTree = "<group>"; };
+		31A451C827863A2D00FE81AA /* stripe-account-unknown-status.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-unknown-status.json"; sourceTree = "<group>"; };
+		31A451C927863A2D00FE81AA /* stripe-account-dev-test.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-dev-test.json"; sourceTree = "<group>"; };
+		31A451CA27863A2D00FE81AA /* stripe-account-restricted-overdue.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-restricted-overdue.json"; sourceTree = "<group>"; };
+		31A451CB27863A2D00FE81AA /* stripe-account-live-test.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-live-test.json"; sourceTree = "<group>"; };
 		31B8D6B326583662008E3DB2 /* wcpay-account-not-eligible.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-not-eligible.json"; sourceTree = "<group>"; };
 		31B8D6B526583970008E3DB2 /* wcpay-account-implicitly-not-eligible.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-implicitly-not-eligible.json"; sourceTree = "<group>"; };
 		31D27C802602889C002EDB1D /* SitePluginsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginsRemote.swift; sourceTree = "<group>"; };
@@ -1136,8 +1194,8 @@
 		D8C11A5B22DFCF8100D4A88D /* order-stats-v4-year-alt.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-stats-v4-year-alt.json"; sourceTree = "<group>"; };
 		D8C251CF230BD72700F49782 /* ProductReviewMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewMapper.swift; sourceTree = "<group>"; };
 		D8EDFE1D25EE87F1003D2213 /* WCPayRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayRemote.swift; sourceTree = "<group>"; };
-		D8EDFE2125EE88C9003D2213 /* WCPayConnectionToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayConnectionToken.swift; sourceTree = "<group>"; };
-		D8EDFE2525EE8A60003D2213 /* WCPayConnectionTokenMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayConnectionTokenMapper.swift; sourceTree = "<group>"; };
+		D8EDFE2125EE88C9003D2213 /* ReaderConnectionToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderConnectionToken.swift; sourceTree = "<group>"; };
+		D8EDFE2525EE8A60003D2213 /* ReaderConnectionTokenMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderConnectionTokenMapper.swift; sourceTree = "<group>"; };
 		D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsRemoteV4.swift; sourceTree = "<group>"; };
 		D8FBFF0C22D3AF4A006E3336 /* StatsGranularityV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsGranularityV4.swift; sourceTree = "<group>"; };
 		D8FBFF0E22D3B25E006E3336 /* WooAPIVersionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WooAPIVersionTests.swift; path = NetworkingTests/Requests/WooAPIVersionTests.swift; sourceTree = SOURCE_ROOT; };
@@ -1387,6 +1445,7 @@
 				93D8BC00226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift */,
 				2685C101263B6A1000D9EE97 /* AddOnGroupRemoteTests.swift */,
 				740211E021939908002248DA /* CommentRemoteTests.swift */,
+				03DCB76B262591C400C8953D /* CouponsRemoteTests.swift */,
 				45E461BD26837DB900011BF2 /* DataRemoteTests.swift */,
 				B524194821AC659500D6FC0A /* DevicesRemoteTests.swift */,
 				24F98C5F2502EF8200F49B68 /* FeatureFlagRemoteTests.swift */,
@@ -1416,6 +1475,7 @@
 				025CA2C5238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift */,
 				02E7FFCA256218F600C53030 /* ShippingLabelRemoteTests.swift */,
 				D800DA0925EFEB9C001E13CE /* WCPayRemoteTests.swift */,
+				31A451BC2786344B00FE81AA /* StripeRemoteTests.swift */,
 				FE28F6EB268436C9004465C7 /* UserRemoteTests.swift */,
 				077F39D926A58ED700ABEADC /* SystemStatusRemoteTests.swift */,
 			);
@@ -1512,6 +1572,7 @@
 				B505F6D020BEE39600BB1B69 /* AccountRemote.swift */,
 				2685C0FD263B5D8900D9EE97 /* AddOnGroupRemote.swift */,
 				740CF89821937A030023ED3A /* CommentRemote.swift */,
+				03DCB771262591D900C8953D /* CouponsRemote.swift */,
 				45E461BB26837CC500011BF2 /* DataRemote.swift */,
 				B572F69921AC475C003EEFF0 /* DevicesRemote.swift */,
 				24F98C512502E79800F49B68 /* FeatureFlagsRemote.swift */,
@@ -1540,6 +1601,7 @@
 				74ABA1D0213F22CA00FFAD30 /* TopEarnersStatsRemote.swift */,
 				020D07BB23D856BF00FD9580 /* MediaRemote.swift */,
 				029BA4EF255D7282006171FD /* ShippingLabelRemote.swift */,
+				311D412F2783C0E200052F64 /* StripeRemote.swift */,
 				D8EDFE1D25EE87F1003D2213 /* WCPayRemote.swift */,
 				FE28F6E5268429B6004465C7 /* UserRemote.swift */,
 				077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */,
@@ -1583,6 +1645,7 @@
 				B505F6CE20BEE38B00BB1B69 /* Account.swift */,
 				93D8BBFA226BBC5100AD2EB3 /* AccountSettings.swift */,
 				B5BB1D0F20A237FB00112D92 /* Address.swift */,
+				03DCB72526244B9B00C8953D /* Coupon.swift */,
 				2685C0D1263B069500D9EE97 /* AddOnGroup.swift */,
 				45150A99268340D2006922EA /* Country.swift */,
 				45150A9B2683417A006922EA /* StateOfACountry.swift */,
@@ -1622,6 +1685,7 @@
 				74046E1C217A6989007DD7BF /* SiteSetting.swift */,
 				74159624224D4045003C21CF /* SiteSettingGroup.swift */,
 				CE50345F21B5799F007573C6 /* SitePlan.swift */,
+				311D412B2783BF7400052F64 /* StripeAccount.swift */,
 				077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */,
 				3148976F27232982007A86BD /* SystemStatus.swift */,
 				DEC51AE527684717009F3DF4 /* SystemStatusDetails */,
@@ -1629,7 +1693,7 @@
 				3192F21F260D33BB0067FEF9 /* WCPayAccount.swift */,
 				31799AF7270508C600D78179 /* WCPayReaderLocation.swift */,
 				3192F223260D34C40067FEF9 /* WCPayAccountStatusEnum.swift */,
-				D8EDFE2125EE88C9003D2213 /* WCPayConnectionToken.swift */,
+				D8EDFE2125EE88C9003D2213 /* ReaderConnectionToken.swift */,
 				318E8FD426C31F9500F519D7 /* WCPayCustomer.swift */,
 				31054705262E278100C5C02B /* WCPayPaymentIntent.swift */,
 				3105470B262E27F000C5C02B /* WCPayPaymentIntentStatusEnum.swift */,
@@ -1641,6 +1705,19 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				31A451C527863A2D00FE81AA /* stripe-account-complete.json */,
+				31A451C927863A2D00FE81AA /* stripe-account-dev-test.json */,
+				31A451C227863A2D00FE81AA /* stripe-account-live-live.json */,
+				31A451CB27863A2D00FE81AA /* stripe-account-live-test.json */,
+				31A451BE27863A2C00FE81AA /* stripe-account-rejected-fraud.json */,
+				31A451C627863A2D00FE81AA /* stripe-account-rejected-listed.json */,
+				31A451C327863A2D00FE81AA /* stripe-account-rejected-other.json */,
+				31A451C127863A2D00FE81AA /* stripe-account-rejected-terms-of-service.json */,
+				31A451CA27863A2D00FE81AA /* stripe-account-restricted-overdue.json */,
+				31A451C427863A2D00FE81AA /* stripe-account-restricted-pending.json */,
+				31A451BF27863A2C00FE81AA /* stripe-account-restricted.json */,
+				31A451C827863A2D00FE81AA /* stripe-account-unknown-status.json */,
+				31A451C027863A2D00FE81AA /* stripe-account-wrong-json.json */,
 				2685C0DD263B5A4200D9EE97 /* add-on-groups.json */,
 				CECC759D23D6231900486676 /* order-560-all-refunds.json */,
 				74C8F06F20EEC3A800B6EDC9 /* broken-notes.json */,
@@ -1649,6 +1726,8 @@
 				CE20179220E3EFA7005B4C18 /* broken-orders.json */,
 				B5147875211B9227007562E5 /* broken-orders-mark-2.json */,
 				74A7B4BD217A841400E85A8B /* broken-settings-general.json */,
+				03DCB7512624B3BE00C8953D /* coupons-all.json */,
+				03DCB77D262738E200C8953D /* coupon.json */,
 				B58D10C72114D21C00107ED4 /* generic_error.json */,
 				B53EF53521813681003E146F /* generic_success.json */,
 				CCB2CAA126209A1200285CA0 /* generic_success_data.json */,
@@ -1737,6 +1816,7 @@
 				D88D5A40230BC5DA007B6E01 /* reviews-all.json */,
 				57BE08D72409B63700F6DCED /* reviews-missing-avatar-urls.json */,
 				D88D5A42230BC668007B6E01 /* reviews-single.json */,
+				267066082774BF3B008E1F68 /* settings-advanced.json */,
 				74046E20217A73D0007DD7BF /* settings-general.json */,
 				7492FAE2217FBDBC00ED2C69 /* settings-general-alt.json */,
 				74159622224D2C86003C21CF /* settings-product.json */,
@@ -1788,6 +1868,7 @@
 				7495AACE225D366D00801A89 /* variation-as-product.json */,
 				02A26F192744F5FC008E4EDB /* wc-site-settings-partial.json */,
 				D800DA0D25EFEC21001E13CE /* wcpay-connection-token.json */,
+				31723C882787A299007F1405 /* stripe-connection-token.json */,
 				318E8FD626C322EA00F519D7 /* wcpay-customer.json */,
 				318E8FD826C324D900F519D7 /* wcpay-customer-error.json */,
 				3158FE5F26129ADD00E566B9 /* wcpay-account-none.json */,
@@ -1832,6 +1913,8 @@
 				93D8BBFC226BBEE800AD2EB3 /* AccountSettingsMapper.swift */,
 				2685C0F9263B5D5300D9EE97 /* AddOnGroupMapper.swift */,
 				740211E221939C83002248DA /* CommentResultMapper.swift */,
+				03DCB73F2624AD7D00C8953D /* CouponListMapper.swift */,
+				03DCB785262739D200C8953D /* CouponMapper.swift */,
 				45150A9D26836A57006922EA /* CountryListMapper.swift */,
 				B524193E21AC5FE400D6FC0A /* DotcomDeviceMapper.swift */,
 				24F98C572502EA8800F49B68 /* FeatureFlagMapper.swift */,
@@ -1874,8 +1957,8 @@
 				31D27C8626028CE9002EDB1D /* SitePluginsMapper.swift */,
 				DEC51A94274CDA52009F3DF4 /* SitePluginMapper.swift */,
 				74046E1E217A6B70007DD7BF /* SiteSettingsMapper.swift */,
-				74A1D26C21189DFE00931DFA /* SiteVisitStatsMapper.swift */,
 				B53EF53B21814900003E146F /* SuccessResultMapper.swift */,
+				74A1D26C21189DFE00931DFA /* SiteVisitStatsMapper.swift */,
 				CCB2CA9D262091CB00285CA0 /* SuccessDataResultMapper.swift */,
 				450106902399B2C800E24722 /* TaxClassListMapper.swift */,
 				74ABA1D2213F25AE00FFAD30 /* TopEarnerStatsMapper.swift */,
@@ -1884,8 +1967,9 @@
 				451A9831260B9D2D0059D135 /* ShippingLabelPackagesMapper.swift */,
 				029BA53A255DFABD006171FD /* ShippingLabelPrintDataMapper.swift */,
 				021A84D9257DF92800BC71D1 /* ShippingLabelRefundMapper.swift */,
+				311D412D2783C07D00052F64 /* StripeAccountMapper.swift */,
 				3192F21B260D32550067FEF9 /* WCPayAccountMapper.swift */,
-				D8EDFE2525EE8A60003D2213 /* WCPayConnectionTokenMapper.swift */,
+				D8EDFE2525EE8A60003D2213 /* ReaderConnectionTokenMapper.swift */,
 				318E8FD226C31F1C00F519D7 /* WCPayCustomerMapper.swift */,
 				3178A49E2703E5CF00A8B4CA /* WCPayReaderLocationMapper.swift */,
 				31054701262E04F700C5C02B /* WCPayPaymentIntentMapper.swift */,
@@ -1933,6 +2017,7 @@
 		B5BB1D0A20A204F400112D92 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				03DCB795262741E000C8953D /* Coupon+Decoder.swift */,
 				CE6D666B2379E19D007835A1 /* Array+Woo.swift */,
 				B58E5BE920FFB3D0003C986E /* CodingUserInfoKey+Woo.swift */,
 				B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */,
@@ -1969,6 +2054,8 @@
 				DEC51AFA2769C66B009F3DF4 /* SystemStatusMapperTests.swift */,
 				2685C0D9263B551300D9EE97 /* AddOnGroupMapperTests.swift */,
 				74AB0AC921948CE4008220CD /* CommentResultMapperTests.swift */,
+				03DCB7432624AD9A00C8953D /* CouponListMapperTests.swift */,
+				03DCB7812627394500C8953D /* CouponMapperTests.swift */,
 				45150A9F26837357006922EA /* CountryListMapperTests.swift */,
 				B524194221AC622500D6FC0A /* DotcomDeviceMapperTests.swift */,
 				AED8AEBB272A997500663FCC /* IgnoringResponseMapperTests.swift */,
@@ -2199,6 +2286,7 @@
 				DEC51A97274DD962009F3DF4 /* plugin.json in Resources */,
 				45D685FA23D0C3CF005F87D0 /* product-search-sku.json in Resources */,
 				CCF48B2C2628AE160034EA83 /* shipping-label-account-settings.json in Resources */,
+				31A451D927863A2E00FE81AA /* stripe-account-live-test.json in Resources */,
 				31054734262E36AB00C5C02B /* wcpay-payment-intent-error.json in Resources */,
 				02AF07EE27493AE700B2D81E /* media-upload-to-wordpress-site.json in Resources */,
 				45ED4F12239E8C57004F1BE3 /* taxes-classes.json in Resources */,
@@ -2208,11 +2296,13 @@
 				3158FE7C26129E2100E566B9 /* wcpay-account-restricted-pending.json in Resources */,
 				D823D91422377EE600C90817 /* shipment_tracking_providers.json in Resources */,
 				4599FC5C24A6276F0056157A /* product-tags-all.json in Resources */,
+				03DCB77E262738E300C8953D /* coupon.json in Resources */,
 				74A7B4BE217A841400E85A8B /* broken-settings-general.json in Resources */,
 				026CF624237D839B009563D4 /* product-variations-load-all.json in Resources */,
 				02AF07EC27492FDD00B2D81E /* media-library-from-wordpress-site.json in Resources */,
 				CC9A253C26442C71005DE56E /* shipping-label-eligibility-success.json in Resources */,
 				B5A24179217F98F600595DEF /* notifications-load-all.json in Resources */,
+				31A451CE27863A2E00FE81AA /* stripe-account-wrong-json.json in Resources */,
 				0282DD91233A120A006A5FDB /* products-search-photo.json in Resources */,
 				45152825257A8B740076B03C /* product-attribute-update.json in Resources */,
 				3158FE6026129ADD00E566B9 /* wcpay-account-none.json in Resources */,
@@ -2222,17 +2312,23 @@
 				2685C0DE263B5A4200D9EE97 /* add-on-groups.json in Resources */,
 				DEC51A9B274E3206009F3DF4 /* plugin-inactive.json in Resources */,
 				CCF48B382628AEAE0034EA83 /* shipping-label-account-settings-no-payment-methods.json in Resources */,
+				31A451D327863A2E00FE81AA /* stripe-account-complete.json in Resources */,
 				D88D5A43230BC668007B6E01 /* reviews-single.json in Resources */,
 				02DD6492248A3EC00082523E /* product-external.json in Resources */,
+				03DCB7522624B3BE00C8953D /* coupons-all.json in Resources */,
 				45A4B85C25D2FAB500776FB4 /* shipping-label-address-validation-error.json in Resources */,
 				02A26F1C2744F5FC008E4EDB /* wp-site-settings.json in Resources */,
+				31A451D027863A2E00FE81AA /* stripe-account-live-live.json in Resources */,
 				740211DF2193985A002248DA /* comment-moderate-spam.json in Resources */,
 				B5147876211B9227007562E5 /* broken-orders-mark-2.json in Resources */,
 				3158FE6C26129D2E00E566B9 /* wcpay-account-rejected-terms-of-service.json in Resources */,
 				31054728262E2FEE00C5C02B /* wcpay-payment-intent-canceled.json in Resources */,
+				31A451CC27863A2E00FE81AA /* stripe-account-rejected-fraud.json in Resources */,
+				31A451D827863A2E00FE81AA /* stripe-account-restricted-overdue.json in Resources */,
 				24F98C622502EFF600F49B68 /* feature-flags-load-all.json in Resources */,
 				B58D10C82114D21D00107ED4 /* generic_error.json in Resources */,
 				077F39D826A58EB600ABEADC /* systemStatus.json in Resources */,
+				31A451CD27863A2E00FE81AA /* stripe-account-restricted.json in Resources */,
 				CE50346721B5DCBE007573C6 /* site-plan.json in Resources */,
 				743E84F322172D0A00FAC9D7 /* shipment_tracking_empty.json in Resources */,
 				B505F6D520BEE4E700BB1B69 /* me.json in Resources */,
@@ -2256,6 +2352,7 @@
 				3158FE6826129CE200E566B9 /* wcpay-account-rejected-fraud.json in Resources */,
 				02AAD53F250092A400BA1E26 /* product-add-or-delete.json in Resources */,
 				D823D90B22376EFE00C90817 /* shipment_tracking_delete.json in Resources */,
+				31A451D727863A2E00FE81AA /* stripe-account-dev-test.json in Resources */,
 				74C947832193A6C70024CB60 /* comment-moderate-trash.json in Resources */,
 				B58D10CA2114D22E00107ED4 /* new-order-note.json in Resources */,
 				CCB2CAA82620ABCC00285CA0 /* shipping-label-create-package-error.json in Resources */,
@@ -2265,6 +2362,7 @@
 				CC0786C7267BB10700BA9AC1 /* shipping-label-status-success.json in Resources */,
 				D88D5A41230BC5DA007B6E01 /* reviews-all.json in Resources */,
 				74C947862193A6C70024CB60 /* comment-moderate-unapproved.json in Resources */,
+				267066092774BF3B008E1F68 /* settings-advanced.json in Resources */,
 				3105472C262E303400C5C02B /* wcpay-payment-intent-unknown-status.json in Resources */,
 				B559EBAA20A0B5CD00836CD4 /* orders-load-all.json in Resources */,
 				3158A4A12729F40F00C3CFA8 /* wcpay-account-live-test.json in Resources */,
@@ -2286,6 +2384,7 @@
 				02C254D72563999300A04423 /* order-shipping-labels.json in Resources */,
 				45B204BC24890B1200FE6526 /* category.json in Resources */,
 				022902D422E2436400059692 /* stats_module_disabled_error.json in Resources */,
+				31A451D227863A2E00FE81AA /* stripe-account-restricted-pending.json in Resources */,
 				025CA2C8238F4FF400B05C81 /* product-shipping-classes-load-all.json in Resources */,
 				74046E21217A73D0007DD7BF /* settings-general.json in Resources */,
 				31054724262E2FC600C5C02B /* wcpay-payment-intent-requires-capture.json in Resources */,
@@ -2308,9 +2407,11 @@
 				D8FBFF2922D52AFB006E3336 /* order-stats-v4-year.json in Resources */,
 				AED8AEBA272A97B400663FCC /* null-data.json in Resources */,
 				02BA23CA22EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json in Resources */,
+				31A451D627863A2E00FE81AA /* stripe-account-unknown-status.json in Resources */,
 				45152819257A84A60076B03C /* product-attributes-all.json in Resources */,
 				45AB8B1324AA34CB00B5B36E /* product-tags-deleted.json in Resources */,
 				02698CFC24C1B0CE005337C4 /* product-variations-load-all-first-on-sale-empty-sale-price.json in Resources */,
+				31A451D427863A2E00FE81AA /* stripe-account-rejected-listed.json in Resources */,
 				74A1D265211898F000931DFA /* site-visits-month.json in Resources */,
 				31799AFC2705189200D78179 /* wcpay-location.json in Resources */,
 				74159623224D2C86003C21CF /* settings-product.json in Resources */,
@@ -2319,6 +2420,7 @@
 				D8FBFF1522D3BE09006E3336 /* order-stats-v4-defaults.json in Resources */,
 				7495AACF225D366D00801A89 /* variation-as-product.json in Resources */,
 				0272E3FB254AABB800436277 /* order-with-line-item-attributes-before-API-support.json in Resources */,
+				31723C892787A299007F1405 /* stripe-connection-token.json in Resources */,
 				74A1D266211898F000931DFA /* site-visits-year.json in Resources */,
 				743BF8BE21191B63008A9D87 /* site-visits.json in Resources */,
 				CE0A0F1F223998A10075ED8D /* products-load-all.json in Resources */,
@@ -2365,7 +2467,9 @@
 				45AB8B2024AB3E1F00B5B36E /* product-tags-empty.json in Resources */,
 				451274A625276C82009911FF /* product-variation.json in Resources */,
 				020D07C223D858BB00FD9580 /* media-upload.json in Resources */,
+				31A451D127863A2E00FE81AA /* stripe-account-rejected-other.json in Resources */,
 				74ABA1CA213F19FE00FFAD30 /* top-performers-year.json in Resources */,
+				31A451CF27863A2E00FE81AA /* stripe-account-rejected-terms-of-service.json in Resources */,
 				268EC45C26C169F600716F5C /* order-with-faulty-attributes.json in Resources */,
 				45AB8B0F24AA29DC00B5B36E /* product-tags-created.json in Resources */,
 				3158FE8426129F3A00E566B9 /* wcpay-account-unknown-status.json in Resources */,
@@ -2460,6 +2564,7 @@
 				025CA2C0238EB8CB00B05C81 /* ProductShippingClass.swift in Sources */,
 				02C1CEF424C6A02B00703EBA /* ProductVariationMapper.swift in Sources */,
 				3105470C262E27F000C5C02B /* WCPayPaymentIntentStatusEnum.swift in Sources */,
+				311D41302783C0E200052F64 /* StripeRemote.swift in Sources */,
 				267313312559CC930026F7EF /* PaymentGateway.swift in Sources */,
 				B58E5BEA20FFB3D0003C986E /* CodingUserInfoKey+Woo.swift in Sources */,
 				B59325D3217E4206000B0E8E /* NoteMedia.swift in Sources */,
@@ -2495,6 +2600,7 @@
 				B505F6EA20BEFC3700BB1B69 /* MockNetwork.swift in Sources */,
 				CC9A24A32641BCF2005DE56E /* ShippingLabelCreationEligibilityResponse.swift in Sources */,
 				CE0A0F17223970E80075ED8D /* ProductDefaultAttribute.swift in Sources */,
+				03DCB772262591D900C8953D /* CouponsRemote.swift in Sources */,
 				CE6BFEE52236BF05005C79FB /* Product.swift in Sources */,
 				077F39C8269F2C7E00ABEADC /* SystemPlugin.swift in Sources */,
 				5726F159248E9D88005AE9B4 /* Models+Copiable.generated.swift in Sources */,
@@ -2571,7 +2677,7 @@
 				4568E2242459D3230007E478 /* Post.swift in Sources */,
 				B557DA0320975500005962F4 /* Remote.swift in Sources */,
 				B53EF53C21814900003E146F /* SuccessResultMapper.swift in Sources */,
-				D8EDFE2625EE8A60003D2213 /* WCPayConnectionTokenMapper.swift in Sources */,
+				D8EDFE2625EE8A60003D2213 /* ReaderConnectionTokenMapper.swift in Sources */,
 				CC6A1FF5270E042200F6AF4A /* OrderMetaData.swift in Sources */,
 				DEC51B02276AFB35009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift in Sources */,
 				02C254A4256371B200A04423 /* ShippingLabelSettings.swift in Sources */,
@@ -2580,6 +2686,7 @@
 				021C7BF723863D1800A3BCBD /* Encodable+Serialization.swift in Sources */,
 				0219B03923964BB3007DCD5E /* ProductShippingClassMapper.swift in Sources */,
 				7452387321124B7700A973CD /* AnyCodable.swift in Sources */,
+				03DCB72626244B9B00C8953D /* Coupon.swift in Sources */,
 				31054706262E278100C5C02B /* WCPayPaymentIntent.swift in Sources */,
 				026CF61E237D6985009563D4 /* ProductVariationListMapper.swift in Sources */,
 				CE43066E2347CBA70073CBFF /* OrderItemTaxRefund.swift in Sources */,
@@ -2595,6 +2702,7 @@
 				261CF1B8255AE62D0090D8D3 /* PaymentGatewayRemote.swift in Sources */,
 				CE0A0F1522396BF00075ED8D /* ProductAttribute.swift in Sources */,
 				026CF620237D69D6009563D4 /* ProductVariationsRemote.swift in Sources */,
+				03DCB7402624AD7D00C8953D /* CouponListMapper.swift in Sources */,
 				077F39D626A58E4500ABEADC /* SystemStatusRemote.swift in Sources */,
 				4599FC5E24A62AA70056157A /* ProductTagsRemote.swift in Sources */,
 				DEC51AE7276848A9009F3DF4 /* SystemStatus+Environment.swift in Sources */,
@@ -2615,10 +2723,13 @@
 				31D27C8726028CE9002EDB1D /* SitePluginsMapper.swift in Sources */,
 				74D522B62113607F00042831 /* StatGranularity.swift in Sources */,
 				02C2549A25636E1500A04423 /* ShippingLabelAddress.swift in Sources */,
+				03DCB786262739D200C8953D /* CouponMapper.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,
 				B572F69A21AC475C003EEFF0 /* DevicesRemote.swift in Sources */,
 				3192F220260D33BB0067FEF9 /* WCPayAccount.swift in Sources */,
+				311D412C2783BF7400052F64 /* StripeAccount.swift in Sources */,
 				B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */,
+				311D412E2783C07D00052F64 /* StripeAccountMapper.swift in Sources */,
 				CE430676234BA7920073CBFF /* RefundListMapper.swift in Sources */,
 				45551F122523E7F1007EF104 /* UserAgent.swift in Sources */,
 				45CDAFAB2434CA9300F83C22 /* ProductCatalogVisibility.swift in Sources */,
@@ -2665,7 +2776,7 @@
 				B5BB1D1020A237FB00112D92 /* Address.swift in Sources */,
 				CE43066A23465F340073CBFF /* Refund.swift in Sources */,
 				B524194121AC60A700D6FC0A /* DotcomDevice.swift in Sources */,
-				D8EDFE2225EE88C9003D2213 /* WCPayConnectionToken.swift in Sources */,
+				D8EDFE2225EE88C9003D2213 /* ReaderConnectionToken.swift in Sources */,
 				4599FC5824A624BD0056157A /* ProductTagListMapper.swift in Sources */,
 				26B2F74B24C696C00065CCC8 /* LeaderboardRow.swift in Sources */,
 				45A4B86225D3086600776FB4 /* ShippingLabelAddressValidationError.swift in Sources */,
@@ -2686,6 +2797,7 @@
 				45E3EEBB237009CF00A826AC /* ShippingLine.swift in Sources */,
 				CE6BFEEA2236E191005C79FB /* ProductType.swift in Sources */,
 				CE6D666C2379E19D007835A1 /* Array+Woo.swift in Sources */,
+				03DCB796262741E000C8953D /* Coupon+Decoder.swift in Sources */,
 				CCF48B1E26288FEC0034EA83 /* ShippingLabelPaymentMethod.swift in Sources */,
 				DEC51AE927687AAF009F3DF4 /* SystemPluginMapper.swift in Sources */,
 				B557DA0B20975D7E005962F4 /* WooAPIVersion.swift in Sources */,
@@ -2758,6 +2870,7 @@
 				74AB5B4D21AF354E00859C12 /* SiteAPIMapperTests.swift in Sources */,
 				93D8BC01226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift in Sources */,
 				262E5AD5255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift in Sources */,
+				03DCB7442624AD9B00C8953D /* CouponListMapperTests.swift in Sources */,
 				AE2D6623272A8F6E004A2C3A /* TelemetryRemoteTests.swift in Sources */,
 				B5C151C0217EE3FB00C7BDC1 /* NoteListMapperTests.swift in Sources */,
 				026CF622237D7E61009563D4 /* ProductVariationsRemoteTests.swift in Sources */,
@@ -2808,6 +2921,9 @@
 				CC07866526790B1100BA9AC1 /* ShippingLabelPurchaseMapperTests.swift in Sources */,
 				74002D6A2118B26100A63C19 /* SiteVisitStatsMapperTests.swift in Sources */,
 				743E84FA221742E300FAC9D7 /* ShipmentsRemoteTests.swift in Sources */,
+				03DCB7822627394500C8953D /* CouponMapperTests.swift in Sources */,
+				03DCB76C262591C400C8953D /* CouponsRemoteTests.swift in Sources */,
+				31A451BD2786344B00FE81AA /* StripeRemoteTests.swift in Sources */,
 				743E84F822172E1F00FAC9D7 /* ShipmentTrackingListMapperTests.swift in Sources */,
 				45ED4F14239E8F2E004F1BE3 /* TaxClassRemoteTests.swift in Sources */,
 				D88D5A4D230BD010007B6E01 /* ProductReviewsRemoteTests.swift in Sources */,

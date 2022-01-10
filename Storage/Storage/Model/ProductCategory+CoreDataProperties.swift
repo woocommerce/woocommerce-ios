@@ -14,6 +14,7 @@ extension ProductCategory {
     @NSManaged public var name: String
     @NSManaged public var slug: String
     @NSManaged public var products: Set<Product>?
+
 }
 
 // MARK: Generated accessors for products

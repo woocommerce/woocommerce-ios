@@ -69,4 +69,12 @@ public enum FeatureFlag: Int {
     /// Home Screen project milestone 2: design updates to the My Store tab
     ///
     case myStoreTabUpdates
+
+    /// Displays the option to manage coupons
+    ///
+    case couponManagement
+
+    /// Barcode scanner for product SKU input
+    ///
+    case productSKUInputScanner
 }

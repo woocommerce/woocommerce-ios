@@ -332,6 +332,15 @@ private extension DefaultStoresManager {
         dispatch(productSettingsAction)
 
         group.enter()
+        let advancedSettingsAction = SettingAction.synchronizeAdvancedSiteSettings(siteID: siteID) { error in
+            if let error = error {
+                errors.append(error)
+            }
+            group.leave()
+        }
+        dispatch(advancedSettingsAction)
+
+        group.enter()
         let sitePlanAction = AccountAction.synchronizeSitePlan(siteID: siteID) { result in
             if case let .failure(error) = result {
                 errors.append(error)

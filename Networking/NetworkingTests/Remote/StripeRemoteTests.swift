@@ -379,7 +379,7 @@ final class StripeRemoteTests: XCTestCase {
 
         network.simulateResponse(
             requestUrlSuffix: "payments/orders/\(sampleOrderID)/create_customer",
-            filename: "wcpay-customer"
+            filename: "stripe-customer"
         )
 
         let result: Result<Customer, Error> = waitFor { promise in

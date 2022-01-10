@@ -37,7 +37,20 @@ public class StripeRemote: Remote {
 
     /// TODO fetchOrderCustomer(for siteID: Int64,...)
 
-    /// TODO loadDefaultReaderLocation(for siteID: Int64,...)
+    /// Load the store's location for use as a default location for a card reader
+    /// The backend coordinates this with Stripe to return a proper Stripe Location object ID
+    ///- Parameters:
+    ///   - siteID: Site for which we'll fetch the location.
+    ///   - completion: Closure to be run on completion.
+    ///
+    public func loadDefaultReaderLocation(for siteID: Int64,
+                                          onCompletion: @escaping (Result<WCPayReaderLocation, Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Path.locations, parameters: [:])
+
+        let mapper = WCPayReaderLocationMapper()
+
+        enqueue(request, mapper: mapper, completion: onCompletion)
+    }
 }
 
 // MARK: - Constants!
@@ -46,6 +59,7 @@ private extension StripeRemote {
     enum Path {
         static let connectionTokens = "wc_stripe/connection_tokens"
         static let accounts = "wc_stripe/account/summary"
+        static let locations = "payments/terminal/locations/store"
     }
 
     enum AccountParameterKeys {

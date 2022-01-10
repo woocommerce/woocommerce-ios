@@ -32,6 +32,20 @@ public class SiteSettingsRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Retrieves all of the advanced `SiteSetting`s for a given site.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch the advanced settings.
+    ///   - completion: Closure to be executed upon completion.
+    ///
+    public func loadAdvancedSettings(for siteID: Int64, completion: @escaping (Result<[SiteSetting], Error>) -> Void) {
+        let path = Constants.siteSettingsPath + Constants.advancedSettingsGroup
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let mapper = SiteSettingsMapper(siteID: siteID, settingsGroup: SiteSettingGroup.advanced)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 
@@ -42,5 +56,6 @@ private extension SiteSettingsRemote {
         static let siteSettingsPath: String       = "settings/"
         static let generalSettingsGroup: String   = "general"
         static let productSettingsGroup: String   = "products"
+        static let advancedSettingsGroup: String   = "advanced"
     }
 }

@@ -2,7 +2,7 @@ import Codegen
 
 /// Represents a single order stat for a specific period.
 /// v4 API
-public struct OrderStatsV4Interval: Decodable, Equatable, GeneratedFakeable {
+public struct OrderStatsV4Interval: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
     public let interval: String
     /// Interval start date string in the site time zone.
     public let dateStart: String

@@ -8,6 +8,7 @@ final class NewOrderViewModel: ObservableObject {
     let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let currencyFormatter: CurrencyFormatter
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -44,6 +45,10 @@ final class NewOrderViewModel: ObservableObject {
     /// Indicates if the order status list (selector) should be shown or not.
     ///
     @Published var shouldShowOrderStatusList: Bool = false
+
+    /// Representation of customer data display properties.
+    ///
+    @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)
 
     /// Assign this closure to be notified when a new order is created
     ///
@@ -91,14 +96,32 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var selectedOrderItem: NewOrderItem? = nil
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
+    // MARK: Payment properties
+
+    /// Indicates if the Payment section should be shown
+    ///
+    var shouldShowPaymentSection: Bool {
+        orderDetails.items.isNotEmpty
+    }
+
+    /// Representation of payment data display properties
+    ///
+    @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
+
+    init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
         configureNavigationTrailingItem()
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
+        configureCustomerDataViewModel()
+        configurePaymentDataViewModel()
     }
 
     /// Selects an order item.
@@ -114,6 +137,17 @@ final class NewOrderViewModel: ObservableObject {
     func removeItemFromOrder(_ item: NewOrderItem) {
         orderDetails.items.removeAll(where: { $0 == item })
         configureProductRowViewModels()
+    }
+
+    /// Creates a view model to be used in Address Form for customer address.
+    ///
+    func createOrderAddressFormViewModel() -> CreateOrderAddressFormViewModel {
+        CreateOrderAddressFormViewModel(siteID: siteID,
+                                        address: orderDetails.billingAddress,
+                                        onAddressUpdate: { [weak self] updatedAddress in
+            self?.orderDetails.billingAddress = updatedAddress
+            self?.orderDetails.shippingAddress = updatedAddress
+        })
     }
 
     // MARK: - API Requests
@@ -220,6 +254,47 @@ extension NewOrderViewModel {
             self.quantity = quantity
         }
     }
+
+    /// Representation of customer data display properties
+    ///
+    struct CustomerDataViewModel {
+        let isDataAvailable: Bool
+        let fullName: String?
+        let email: String?
+        let billingAddressFormatted: String?
+        let shippingAddressFormatted: String?
+
+        init(fullName: String? = nil, email: String? = nil, billingAddressFormatted: String? = nil, shippingAddressFormatted: String? = nil) {
+            self.isDataAvailable = fullName != nil || email != nil || billingAddressFormatted != nil || shippingAddressFormatted != nil
+            self.fullName = fullName
+            self.email = email
+            self.billingAddressFormatted = billingAddressFormatted
+            self.shippingAddressFormatted = shippingAddressFormatted
+        }
+
+        init(billingAddress: Address?, shippingAddress: Address?) {
+            let availableFullName = billingAddress?.fullName ?? shippingAddress?.fullName
+
+            self.init(fullName: availableFullName?.isNotEmpty == true ? availableFullName : nil,
+                      email: billingAddress?.hasEmailAddress == true ? billingAddress?.email : nil,
+                      billingAddressFormatted: billingAddress?.fullNameWithCompanyAndAddress,
+                      shippingAddressFormatted: shippingAddress?.fullNameWithCompanyAndAddress)
+        }
+    }
+
+    /// Representation of payment data display properties
+    ///
+    struct PaymentDataViewModel {
+        let itemsTotal: String
+        let orderTotal: String
+
+        init(itemsTotal: String = "",
+             orderTotal: String = "",
+             currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+            self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? ""
+            self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? ""
+        }
+    }
 }
 
 // MARK: - Helpers
@@ -278,5 +353,36 @@ private extension NewOrderViewModel {
 
             return productRowViewModel
         }
+    }
+
+    /// Updates customer data viewmodel based on order addresses.
+    ///
+    func configureCustomerDataViewModel() {
+        $orderDetails
+            .map {
+                CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
+            }
+            .assign(to: &$customerDataViewModel)
+    }
+
+    /// Updates payment section view model based on items in the order.
+    ///
+    func configurePaymentDataViewModel() {
+        $orderDetails
+            .map { [weak self] orderDetails in
+                guard let self = self else {
+                    return PaymentDataViewModel()
+                }
+
+                let itemsTotal = orderDetails.items
+                    .map { $0.orderItem.subtotal }
+                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
+                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
+                    .stringValue
+
+                // For now, the order total is the same as the items total
+                return PaymentDataViewModel(itemsTotal: itemsTotal, orderTotal: itemsTotal, currencyFormatter: self.currencyFormatter)
+            }
+            .assign(to: &$paymentDataViewModel)
     }
 }

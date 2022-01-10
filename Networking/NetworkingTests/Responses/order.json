@@ -4,6 +4,7 @@
         "parent_id": 0,
         "number": "963",
         "status": "processing",
+        "order_key": "abc123",
         "currency": "USD",
         "date_created_gmt": "2018-04-03T23:05:12",
         "date_modified_gmt": "2018-04-03T23:05:14",

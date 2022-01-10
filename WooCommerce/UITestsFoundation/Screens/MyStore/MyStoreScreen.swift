@@ -15,8 +15,7 @@ public final class MyStoreScreen: ScreenObject {
     private var settingsButton: XCUIElement { settingsButtonGetter(app) }
 
     static var isVisible: Bool {
-        guard let screen = try? MyStoreScreen() else { return false }
-        return screen.settingsButton.isHittable
+        (try? MyStoreScreen().isLoaded) ?? false
     }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {

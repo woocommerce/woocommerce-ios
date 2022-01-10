@@ -1,22 +1,17 @@
 import ScreenObject
 import XCTest
 
-private struct ElementStringIDs {
-    static let searchButton = "order-search-button"
-    static let filterButton = "Filter"
-}
-
 public final class OrdersScreen: ScreenObject {
 
     // TODO: Remove force `try` once `ScreenObject` migration is completed
     public let tabBar = try! TabNavComponent()
 
     private let searchButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons[ElementStringIDs.searchButton]
+        $0.buttons["order-search-button"]
     }
 
     private let filterButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons[ElementStringIDs.filterButton]
+        $0.buttons["Filter"]
     }
 
     private var searchButton: XCUIElement { searchButtonGetter(app) }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-12-15 11:32:07+0000 */
+/* Translation-Revision-Date: 2021-12-21 11:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -32,7 +32,7 @@
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string, - which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ about accepting payments with your mobile device and ordering card readers";
+"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ zum Empfang von Zahlungen per Mobilgerät und zur Bestellung von Kartenlesegeräten";
 
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
@@ -748,10 +748,10 @@
 "Collect Payment" = "Zahlung empfangen";
 
 /* Alert title when starting the collect payment flow without a user name. */
-"Collect payment" = "Collect payment";
+"Collect payment" = "Zahlung empfangen";
 
 /* Alert title when starting the collect payment flow with a user name. */
-"Collect payment from %1$@" = "Collect payment from %1$@";
+"Collect payment from %1$@" = "Zahlung von %1$@ empfangen";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -1234,7 +1234,7 @@
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Stelle sicher, dass die **Firmware deines Druckers auf dem aktuellen Stand ist**. Informationen zu Updates findest du in der Dokumentation zu deinem Drucker.";
 
 /* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
-"Enter Address" = "Enter Address";
+"Enter Address" = "Adresse eingeben";
 
 /* Short instructions label in the simple payments screen */
 "Enter Amount" = "Betrag eingeben";
@@ -1278,7 +1278,7 @@
 "Enter password" = "Passwort eingeben";
 
 /* Sign in instructions for logging in with a URL. */
-"Enter the address of the WooCommerce store you'd like to connect." = "Enter the address of the WooCommerce store you'd like to connect.";
+"Enter the address of the WooCommerce store you'd like to connect." = "Gib die Adresse des WooCommerce-Shops ein, den du verbinden möchtest.";
 
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
@@ -1576,7 +1576,7 @@
 "How can we improve?" = "Wie können wir uns verbessern?";
 
 /* Navigation bar title of hub menu view */
-"Hub Menu" = "Hub Menu";
+"Hub Menu" = "Hub-Menü";
 
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "Mir gefällt das";
@@ -1961,10 +1961,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark Order Complete" = "Bestellung als abgeschlossen markieren";
 
 /* Alert button when selecting the cash payment method for simple payments */
-"Mark as Paid" = "Mark as Paid";
+"Mark as Paid" = "Als bezahlt markieren";
 
 /* Alert title when selecting the cash payment method for simple payments */
-"Mark as Paid?" = "Mark as Paid?";
+"Mark as Paid?" = "Als bezahlt markieren?";
 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Markiere diese Bestellung als abgeschlossen und benachrichtige den Kunden.";
@@ -2407,10 +2407,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please charge reader" = "Lade bitte den Akku deines Lesegeräts auf";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
-"Please correct your store address to proceed" = "Please correct your store address to proceed";
+"Please correct your store address to proceed" = "Korrigiere bitte deine Shop-Adresse, um fortzufahren";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"Please correct your store's postcode\/ZIP" = "Please correct your store's postcode\/ZIP";
+"Please correct your store's postcode\/ZIP" = "Korrigiere bitte die Postleitzahl\/PLZ deines Shops";
 
 /* Error message for missing explanation when Content Typeis Other in Customs screen of Shipping Label flow */
 "Please describe what kind of goods this package contains" = "Beschreibe bitte, welche Art von Waren dieses Paket enthält.";
@@ -2593,7 +2593,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Processing" = "In Bearbeitung";
 
 /* VoiceOver accessibility label. Indicates that a payment is being processed */
-"Processing payment" = "Processing payment";
+"Processing payment" = "Zahlung wird bearbeitet";
 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "Zahlung wird bearbeitet …";
@@ -2861,7 +2861,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
    Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
-"Retry After Updating" = "Retry After Updating";
+"Retry After Updating" = "Nach dem Aktualisieren erneut versuchen";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "An Absender zurücksenden, wenn Paket nicht zugestellt werden kann";
@@ -3679,10 +3679,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "There was an error updating the order" = "Fehler beim Aktualisieren der Bestellung";
 
 /* Text when there is an error while marking the order as paid for simple payments. */
-"There was an error while marking the order as paid." = "There was an error while marking the order as paid.";
+"There was an error while marking the order as paid." = "Beim Markieren der Bestellung als bezahlt ist ein Fehler aufgetreten.";
 
 /* Text when there is an unknown error while trying to collect payments */
-"There was an error while trying to collect the payment." = "There was an error while trying to collect the payment.";
+"There was an error while trying to collect the payment." = "Beim Empfangen der Zahlung ist ein Fehler aufgetreten.";
 
 /* Navigates to screen with third party software licenses
    Software Licenses (information page title) */
@@ -3750,7 +3750,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This text will be shown on the button linking to the external product." = "Dieser Text wird auf dem Button erscheinen, der auf das externe Produkt verlinkt.";
 
 /* Alert info when selecting the cash payment method for simple payments */
-"This will mark your order as complete if you received (total) outside of WooCommerce" = "This will mark your order as complete if you received (total) outside of WooCommerce";
+"This will mark your order as complete if you received (total) outside of WooCommerce" = "Dadurch wird deine Bestellung als abgeschlossen markiert, wenn du die Gesamtsumme außerhalb von WooCommerce erhalten hast";
 
 /* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
@@ -4348,7 +4348,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "WooCommerce Payments is in Test Mode" = "WooCommerce Payments befindet sich im Testmodus";
 
 /* Navigation title of the webview which used by the merchant to update their store address */
-"WooCommerce Settings" = "WooCommerce Settings";
+"WooCommerce Settings" = "WooCommerce-Einstellungen";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Versand";
@@ -4388,13 +4388,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Mit dem kostenlosen WooCommerce Shipping-Plugin kannst du jetzt Versandetiketten für sämtliche Artikelbestellungen direkt über dein Gerät drucken. Tippe auf „Versandetikett erstellen“ und probiere unsere Beta-Version aus!";
 
 /* Shown in Refunds screen. Refunding fees are currently not supported. */
-"You can refund fees in your store admin" = "You can refund fees in your store admin";
+"You can refund fees in your store admin" = "Du kannst Gebühren in deiner Shop-Administration rückerstatten";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "Du kannst für ein Versandetikett, das noch nicht zum Versenden eines Pakets verwendet wurde, eine Rückerstattung anfordern.\nDie Bearbeitung dauert mindestens 14 Tage.";
 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)";
+"You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "Du kannst die Postleitzahl\/PLZ deines Shops in wp-admin > WooCommerce > Einstellungen (Allgemein) festlegen";
 
 /* Error message when WooCommerce Payments is not supported in a specific country
    Generic error message when In-Person Payments is unavailable */
@@ -4484,7 +4484,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "🎉 Order Completed" = "🎉 Bestellung fertiggestellt";
 
 /* Title for the button to cancel the simple payments screen */
-"🎉 Order completed" = "";
+"🎉 Order completed" = "🎉 Bestellung fertiggestellt";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 Produkte erfolgreich rückerstattet";

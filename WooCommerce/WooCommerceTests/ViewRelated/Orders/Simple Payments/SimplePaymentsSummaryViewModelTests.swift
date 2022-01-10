@@ -133,7 +133,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
                 switch intent {
                 case .error:
                     promise(true)
-                case .completed:
+                case .completed, .created:
                     promise(false)
                 }
             }

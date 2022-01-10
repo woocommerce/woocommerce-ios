@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-12-15 11:32:07+0000 */
+/* Translation-Revision-Date: 2021-12-21 14:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -32,7 +32,7 @@
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string, - which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ about accepting payments with your mobile device and ordering card readers";
+"%1$@ about accepting payments with your mobile device and ordering card readers" = "모바일 장치로 결제 수락 및 카드 리더 주문에 대한 %1$@";
 
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
@@ -748,10 +748,10 @@
 "Collect Payment" = "결제받기";
 
 /* Alert title when starting the collect payment flow without a user name. */
-"Collect payment" = "Collect payment";
+"Collect payment" = "결제받기";
 
 /* Alert title when starting the collect payment flow with a user name. */
-"Collect payment from %1$@" = "Collect payment from %1$@";
+"Collect payment from %1$@" = "%1$@에서 결제받기";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -1234,7 +1234,7 @@
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "**프린터 펌웨어가 최신 상태**인지 확인하세요. 프린터 설명서에서 업데이트에 대한 지침을 참조하세요.";
 
 /* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
-"Enter Address" = "Enter Address";
+"Enter Address" = "주소 입력";
 
 /* Short instructions label in the simple payments screen */
 "Enter Amount" = "금액 입력";
@@ -1278,7 +1278,7 @@
 "Enter password" = "비밀번호 입력";
 
 /* Sign in instructions for logging in with a URL. */
-"Enter the address of the WooCommerce store you'd like to connect." = "Enter the address of the WooCommerce store you'd like to connect.";
+"Enter the address of the WooCommerce store you'd like to connect." = "연결하려는 WooCommerce 스토어의 주소를 입력합니다.";
 
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
@@ -1576,7 +1576,7 @@
 "How can we improve?" = "어떻게 개선할 수 있을까요?";
 
 /* Navigation bar title of hub menu view */
-"Hub Menu" = "Hub Menu";
+"Hub Menu" = "허브 메뉴";
 
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "좋아요";
@@ -1961,10 +1961,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark Order Complete" = "주문을 완료로 표시";
 
 /* Alert button when selecting the cash payment method for simple payments */
-"Mark as Paid" = "Mark as Paid";
+"Mark as Paid" = "결제됨으로 표시";
 
 /* Alert title when selecting the cash payment method for simple payments */
-"Mark as Paid?" = "Mark as Paid?";
+"Mark as Paid?" = "결제됨으로 표시하나요?";
 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "이 주문을 완료로 표시하고 고객에게 알립니다.";
@@ -2407,10 +2407,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please charge reader" = "리더를 충전하세요.";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
-"Please correct your store address to proceed" = "Please correct your store address to proceed";
+"Please correct your store address to proceed" = "계속하려면 스토어 주소를 수정하세요.";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"Please correct your store's postcode\/ZIP" = "Please correct your store's postcode\/ZIP";
+"Please correct your store's postcode\/ZIP" = "스토어의 우편번호를 수정하세요.";
 
 /* Error message for missing explanation when Content Typeis Other in Customs screen of Shipping Label flow */
 "Please describe what kind of goods this package contains" = "이 패키지에 들어 있는 상품의 종류를 설명하세요.";
@@ -2593,7 +2593,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Processing" = "처리 중";
 
 /* VoiceOver accessibility label. Indicates that a payment is being processed */
-"Processing payment" = "Processing payment";
+"Processing payment" = "결제 처리 중";
 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "결제 처리 중...";
@@ -2861,7 +2861,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
    Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
-"Retry After Updating" = "Retry After Updating";
+"Retry After Updating" = "업데이트 후 다시 시도";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "패키지를 배송할 수 없는 경우 보낸 사람에게 반송";
@@ -3679,10 +3679,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "There was an error updating the order" = "주문 업데이트 중 오류가 발생했습니다.";
 
 /* Text when there is an error while marking the order as paid for simple payments. */
-"There was an error while marking the order as paid." = "There was an error while marking the order as paid.";
+"There was an error while marking the order as paid." = "주문을 결제됨으로 표시하는 동안 오류가 발생했습니다.";
 
 /* Text when there is an unknown error while trying to collect payments */
-"There was an error while trying to collect the payment." = "There was an error while trying to collect the payment.";
+"There was an error while trying to collect the payment." = "결제를 받는 동안 오류가 발생했습니다.";
 
 /* Navigates to screen with third party software licenses
    Software Licenses (information page title) */
@@ -3750,7 +3750,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This text will be shown on the button linking to the external product." = "외부 제품으로 연결되는 버튼에 표시되는 텍스트입니다.";
 
 /* Alert info when selecting the cash payment method for simple payments */
-"This will mark your order as complete if you received (total) outside of WooCommerce" = "This will mark your order as complete if you received (total) outside of WooCommerce";
+"This will mark your order as complete if you received (total) outside of WooCommerce" = "그러면 WooCommerce 외부에서 수신한 주문(전체)이 완료로 표시됩니다.";
 
 /* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
@@ -4348,7 +4348,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "WooCommerce Payments is in Test Mode" = "우커머스 결제가 테스트 모드로 되어 있습니다.";
 
 /* Navigation title of the webview which used by the merchant to update their store address */
-"WooCommerce Settings" = "WooCommerce Settings";
+"WooCommerce Settings" = "WooCommerce 설정";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce 배송";
@@ -4388,13 +4388,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "이제 무료 WooCommerce 배송 플러그인이 있는 기기에서 바로 모든 실물 주문의 배송 레이블을 만들 수 있습니다. \"배송 레이블 만들기\"를 눌러 베타 기능을 사용해 보세요!";
 
 /* Shown in Refunds screen. Refunding fees are currently not supported. */
-"You can refund fees in your store admin" = "You can refund fees in your store admin";
+"You can refund fees in your store admin" = "스토어 관리자에서 수수료를 환불할 수 있습니다.";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "패키지를 배송하는 데 사용되지 않은 배송 레이블은 환불을 요청할 수 있습니다.\n처리하는 데 14일 이상 걸립니다.";
 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
-"You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)";
+"You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "wp 관리자 > WooCommerce > 설정(일반)에서 스토어의 우편번호를 설정할 수 있습니다.";
 
 /* Error message when WooCommerce Payments is not supported in a specific country
    Generic error message when In-Person Payments is unavailable */
@@ -4484,7 +4484,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "🎉 Order Completed" = "🎉 주문 완료됨";
 
 /* Title for the button to cancel the simple payments screen */
-"🎉 Order completed" = "";
+"🎉 Order completed" = "🎉 주문 완료됨";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉개 제품이 환불되었음";

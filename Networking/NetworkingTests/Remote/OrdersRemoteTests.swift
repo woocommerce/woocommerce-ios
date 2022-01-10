@@ -321,4 +321,74 @@ final class OrdersRemoteTests: XCTestCase {
         ]
         assertEqual(received, expected)
     }
+
+    func test_create_order_properly_encodes_addresses() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let address1 = sampleAddress1
+        let address2 = sampleAddress2
+        let order = Order.fake().copy(billingAddress: address1, shippingAddress: address2)
+
+        // When
+        remote.createOrder(siteID: 123, order: order, fields: [.billingAddress, .shippingAddress]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received1 = try XCTUnwrap(request.parameters["billing"] as? [String: AnyHashable])
+        let expected1: [String: AnyHashable] = [
+            "first_name": address1.firstName,
+            "last_name": address1.lastName,
+            "address_1": address1.address1,
+            "city": address1.city,
+            "state": address1.state,
+            "postcode": address1.postcode,
+            "country": address1.country,
+            "email": address1.email ?? "",
+            "phone": address1.phone ?? ""
+        ]
+        assertEqual(received1, expected1)
+
+        let received2 = try XCTUnwrap(request.parameters["shipping"] as? [String: AnyHashable])
+        let expected2: [String: AnyHashable] = [
+            "first_name": address2.firstName,
+            "last_name": address2.lastName,
+            "company": address2.company ?? "",
+            "address_1": address2.address1,
+            "city": address2.city,
+            "state": address2.state,
+            "postcode": address2.postcode,
+            "country": address2.country
+        ]
+        assertEqual(received2, expected2)
+    }
+}
+
+private extension OrdersRemoteTests {
+    var sampleAddress1: Address {
+        Address(firstName: "Johnny",
+                lastName: "Appleseed",
+                company: nil,
+                address1: "234 70th Street",
+                address2: nil,
+                city: "Niagara Falls",
+                state: "NY",
+                postcode: "14304",
+                country: "US",
+                phone: "333-333-3333",
+                email: "scrambled@scrambled.com")
+    }
+
+    var sampleAddress2: Address {
+        Address(firstName: "Skylar",
+                lastName: "Ferry",
+                company: "Automattic Inc.",
+                address1: "60 29th Street #343",
+                address2: nil,
+                city: "New York",
+                state: "NY",
+                postcode: "94121-2303",
+                country: "US",
+                phone: nil,
+                email: nil)
+    }
 }

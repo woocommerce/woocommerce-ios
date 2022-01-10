@@ -10,18 +10,18 @@ final class ProductsTests: XCTestCase {
         app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api", "-ui_testing"]
         app.launch()
         try LoginFlow.logInWithWPcom()
+        try TabNavComponent().goToProductsScreen()
     }
 
     func testProductsScreenLoad() throws {
         let products = try GetMocks.readProductsData()
 
-        _ = try TabNavComponent()
-            .gotoProductsScreen()
-            .verifyProductScreenLoaded()
-            .verifyProductListOnProductsScreen(count: products.count, name: products[0].name, status: products[0].stock_status)
+        try ProductsScreen()
+            .verifyProductsScreenLoaded()
+            .verifyProductList(products: products)
             .selectProduct(byName: products[0].name)
-            .verifyProductOnSingleProductScreen(name: products[0].name, price: products[0].regular_price, status: products[0].stock_status)
+            .verifyProduct(product: products[0])
             .goBackToProductList()
-            .verifyProductScreenLoaded()
+            .verifyProductsScreenLoaded()
     }
 }

@@ -54,7 +54,7 @@ final class HubMenuCoordinator: Coordinator {
 
     /// Replaces `start()` because the menu tab's navigation stack could be updated multiple times when site ID changes.
     func activate(siteID: Int64) {
-        navigationController.viewControllers = [HubMenuViewController(siteID: siteID)]
+        navigationController.viewControllers = [HubMenuViewController(siteID: siteID, navigationController: navigationController)]
 
         if observationToken == nil {
             observationToken = pushNotificationsManager.inactiveNotifications.subscribe { [weak self] in

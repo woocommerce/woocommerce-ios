@@ -356,7 +356,10 @@ private extension PushNotificationsManager {
             configuration.application
                 .presentInAppNotification(title: foregroundNotification.title,
                                           subtitle: foregroundNotification.subtitle,
-                                          message: foregroundNotification.message)
+                                          message: foregroundNotification.message,
+                                          actionTitle: Localization.viewInAppNotification) { [weak self] in
+                    self?.presentDetails(for: foregroundNotification)
+                }
 
             foregroundNotificationsSubject.send(foregroundNotification)
         }
@@ -385,13 +388,7 @@ private extension PushNotificationsManager {
         let pushNotificationsForAllStoresEnabled = featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores)
         if let notification = PushNotification.from(userInfo: userInfo,
                                                     pushNotificationsForAllStoresEnabled: pushNotificationsForAllStoresEnabled) {
-
-            // Handling the product review notifications (`.comment`) has been moved to
-            // `ReviewsCoordinator`. All other push notification handling should be in a coordinator
-            // in the future too.
-            if notification.kind != .comment {
-                configuration.application.presentNotificationDetails(for: Int64(notification.noteID))
-            }
+            presentDetails(for: notification)
 
             inactiveNotificationsSubject.send(notification)
         }
@@ -418,6 +415,17 @@ private extension PushNotificationsManager {
         synchronizeNotifications(completionHandler: completionHandler)
 
         return true
+    }
+}
+
+private extension PushNotificationsManager {
+    func presentDetails(for notification: PushNotification) {
+        // Handling the product review notifications (`.comment`) has been moved to
+        // `ReviewsCoordinator`. All other push notification handling should be in a coordinator
+        // in the future too.
+        if notification.kind != .comment {
+            configuration.application.presentNotificationDetails(for: Int64(notification.noteID))
+        }
     }
 }
 
@@ -589,4 +597,10 @@ private enum AnalyticKey {
 private enum PushType {
     static let badgeReset = "badge-reset"
     static let zendesk = "zendesk"
+}
+
+private extension PushNotificationsManager {
+    enum Localization {
+        static let viewInAppNotification = NSLocalizedString("View", comment: "Action title in an in-app notification to view more details.")
+    }
 }

@@ -543,6 +543,15 @@
 		D823D91022377B4F00C90817 /* ShipmentTrackingProviderGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D823D90F22377B4F00C90817 /* ShipmentTrackingProviderGroup.swift */; };
 		D823D91222377DF300C90817 /* ShipmentTrackingProviderListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D823D91122377DF200C90817 /* ShipmentTrackingProviderListMapper.swift */; };
 		D823D91422377EE600C90817 /* shipment_tracking_providers.json in Resources */ = {isa = PBXBuildFile; fileRef = D823D91322377EE600C90817 /* shipment_tracking_providers.json */; };
+		D865CE5B278CA10B002C8520 /* stripe-payment-intent-requires-payment-method.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE5A278CA10B002C8520 /* stripe-payment-intent-requires-payment-method.json */; };
+		D865CE5D278CA159002C8520 /* stripe-payment-intent-requires-confirmation.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE5C278CA159002C8520 /* stripe-payment-intent-requires-confirmation.json */; };
+		D865CE5F278CA183002C8520 /* stripe-payment-intent-requires-action.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE5E278CA183002C8520 /* stripe-payment-intent-requires-action.json */; };
+		D865CE61278CA1AE002C8520 /* stripe-payment-intent-processing.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE60278CA1AE002C8520 /* stripe-payment-intent-processing.json */; };
+		D865CE63278CA1DA002C8520 /* stripe-payment-intent-requires-capture.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE62278CA1DA002C8520 /* stripe-payment-intent-requires-capture.json */; };
+		D865CE65278CA202002C8520 /* stripe-payment-intent-canceled.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE64278CA202002C8520 /* stripe-payment-intent-canceled.json */; };
+		D865CE67278CA225002C8520 /* stripe-payment-intent-succeeded.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE66278CA225002C8520 /* stripe-payment-intent-succeeded.json */; };
+		D865CE69278CA245002C8520 /* stripe-payment-intent-unknown-status.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE68278CA245002C8520 /* stripe-payment-intent-unknown-status.json */; };
+		D865CE6B278CA266002C8520 /* stripe-payment-intent-error.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE6A278CA266002C8520 /* stripe-payment-intent-error.json */; };
 		D87F6151226591E10031A13B /* NullNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F6150226591E10031A13B /* NullNetwork.swift */; };
 		D88D5A41230BC5DA007B6E01 /* reviews-all.json in Resources */ = {isa = PBXBuildFile; fileRef = D88D5A40230BC5DA007B6E01 /* reviews-all.json */; };
 		D88D5A43230BC668007B6E01 /* reviews-single.json in Resources */ = {isa = PBXBuildFile; fileRef = D88D5A42230BC668007B6E01 /* reviews-single.json */; };
@@ -1178,6 +1187,15 @@
 		D823D90F22377B4F00C90817 /* ShipmentTrackingProviderGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentTrackingProviderGroup.swift; sourceTree = "<group>"; };
 		D823D91122377DF200C90817 /* ShipmentTrackingProviderListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentTrackingProviderListMapper.swift; sourceTree = "<group>"; };
 		D823D91322377EE600C90817 /* shipment_tracking_providers.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shipment_tracking_providers.json; sourceTree = "<group>"; };
+		D865CE5A278CA10B002C8520 /* stripe-payment-intent-requires-payment-method.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-payment-intent-requires-payment-method.json"; sourceTree = "<group>"; };
+		D865CE5C278CA159002C8520 /* stripe-payment-intent-requires-confirmation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-payment-intent-requires-confirmation.json"; sourceTree = "<group>"; };
+		D865CE5E278CA183002C8520 /* stripe-payment-intent-requires-action.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-payment-intent-requires-action.json"; sourceTree = "<group>"; };
+		D865CE60278CA1AE002C8520 /* stripe-payment-intent-processing.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-payment-intent-processing.json"; sourceTree = "<group>"; };
+		D865CE62278CA1DA002C8520 /* stripe-payment-intent-requires-capture.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-payment-intent-requires-capture.json"; sourceTree = "<group>"; };
+		D865CE64278CA202002C8520 /* stripe-payment-intent-canceled.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-payment-intent-canceled.json"; sourceTree = "<group>"; };
+		D865CE66278CA225002C8520 /* stripe-payment-intent-succeeded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-payment-intent-succeeded.json"; sourceTree = "<group>"; };
+		D865CE68278CA245002C8520 /* stripe-payment-intent-unknown-status.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-payment-intent-unknown-status.json"; sourceTree = "<group>"; };
+		D865CE6A278CA266002C8520 /* stripe-payment-intent-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-payment-intent-error.json"; sourceTree = "<group>"; };
 		D87F6150226591E10031A13B /* NullNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullNetwork.swift; sourceTree = "<group>"; };
 		D88D5A40230BC5DA007B6E01 /* reviews-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "reviews-all.json"; sourceTree = "<group>"; };
 		D88D5A42230BC668007B6E01 /* reviews-single.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "reviews-single.json"; sourceTree = "<group>"; };
@@ -1705,6 +1723,15 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				D865CE6A278CA266002C8520 /* stripe-payment-intent-error.json */,
+				D865CE68278CA245002C8520 /* stripe-payment-intent-unknown-status.json */,
+				D865CE66278CA225002C8520 /* stripe-payment-intent-succeeded.json */,
+				D865CE64278CA202002C8520 /* stripe-payment-intent-canceled.json */,
+				D865CE62278CA1DA002C8520 /* stripe-payment-intent-requires-capture.json */,
+				D865CE60278CA1AE002C8520 /* stripe-payment-intent-processing.json */,
+				D865CE5E278CA183002C8520 /* stripe-payment-intent-requires-action.json */,
+				D865CE5C278CA159002C8520 /* stripe-payment-intent-requires-confirmation.json */,
+				D865CE5A278CA10B002C8520 /* stripe-payment-intent-requires-payment-method.json */,
 				31A451C527863A2D00FE81AA /* stripe-account-complete.json */,
 				31A451C927863A2D00FE81AA /* stripe-account-dev-test.json */,
 				31A451C227863A2D00FE81AA /* stripe-account-live-live.json */,
@@ -2285,6 +2312,7 @@
 				74C8F06C20EEBD5D00B6EDC9 /* broken-order.json in Resources */,
 				DEC51A97274DD962009F3DF4 /* plugin.json in Resources */,
 				45D685FA23D0C3CF005F87D0 /* product-search-sku.json in Resources */,
+				D865CE5F278CA183002C8520 /* stripe-payment-intent-requires-action.json in Resources */,
 				CCF48B2C2628AE160034EA83 /* shipping-label-account-settings.json in Resources */,
 				31A451D927863A2E00FE81AA /* stripe-account-live-test.json in Resources */,
 				31054734262E36AB00C5C02B /* wcpay-payment-intent-error.json in Resources */,
@@ -2325,13 +2353,16 @@
 				31054728262E2FEE00C5C02B /* wcpay-payment-intent-canceled.json in Resources */,
 				31A451CC27863A2E00FE81AA /* stripe-account-rejected-fraud.json in Resources */,
 				31A451D827863A2E00FE81AA /* stripe-account-restricted-overdue.json in Resources */,
+				D865CE69278CA245002C8520 /* stripe-payment-intent-unknown-status.json in Resources */,
 				24F98C622502EFF600F49B68 /* feature-flags-load-all.json in Resources */,
 				B58D10C82114D21D00107ED4 /* generic_error.json in Resources */,
 				077F39D826A58EB600ABEADC /* systemStatus.json in Resources */,
 				31A451CD27863A2E00FE81AA /* stripe-account-restricted.json in Resources */,
 				CE50346721B5DCBE007573C6 /* site-plan.json in Resources */,
+				D865CE5D278CA159002C8520 /* stripe-payment-intent-requires-confirmation.json in Resources */,
 				743E84F322172D0A00FAC9D7 /* shipment_tracking_empty.json in Resources */,
 				B505F6D520BEE4E700BB1B69 /* me.json in Resources */,
+				D865CE63278CA1DA002C8520 /* stripe-payment-intent-requires-capture.json in Resources */,
 				02A26F1B2744F5FC008E4EDB /* wc-site-settings-partial.json in Resources */,
 				028FA474257E110700F88A48 /* shipping-label-refund-success.json in Resources */,
 				02BA23C922EEF62C009539E7 /* order-stats-v4-wcadmin-deactivated.json in Resources */,
@@ -2347,6 +2378,7 @@
 				D8FBFF2422D52815006E3336 /* order-stats-v4-daily.json in Resources */,
 				CEC4BF91234E40B5008D9195 /* refund-single.json in Resources */,
 				2683D70E24456DB8002A1589 /* categories-empty.json in Resources */,
+				D865CE67278CA225002C8520 /* stripe-payment-intent-succeeded.json in Resources */,
 				0272E3F5254AA48F00436277 /* order-with-line-item-attributes.json in Resources */,
 				3105471C262E2F8000C5C02B /* wcpay-payment-intent-requires-action.json in Resources */,
 				3158FE6826129CE200E566B9 /* wcpay-account-rejected-fraud.json in Resources */,
@@ -2355,6 +2387,7 @@
 				31A451D727863A2E00FE81AA /* stripe-account-dev-test.json in Resources */,
 				74C947832193A6C70024CB60 /* comment-moderate-trash.json in Resources */,
 				B58D10CA2114D22E00107ED4 /* new-order-note.json in Resources */,
+				D865CE6B278CA266002C8520 /* stripe-payment-intent-error.json in Resources */,
 				CCB2CAA82620ABCC00285CA0 /* shipping-label-create-package-error.json in Resources */,
 				B57B1E6C21C94C9F0046E764 /* timeout_error.json in Resources */,
 				B5C6FCD620A3768900A4F8E4 /* order.json in Resources */,
@@ -2405,6 +2438,7 @@
 				B53EF53621813681003E146F /* generic_success.json in Resources */,
 				31054718262E2F5E00C5C02B /* wcpay-payment-intent-requires-confirmation.json in Resources */,
 				D8FBFF2922D52AFB006E3336 /* order-stats-v4-year.json in Resources */,
+				D865CE65278CA202002C8520 /* stripe-payment-intent-canceled.json in Resources */,
 				AED8AEBA272A97B400663FCC /* null-data.json in Resources */,
 				02BA23CA22EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json in Resources */,
 				31A451D627863A2E00FE81AA /* stripe-account-unknown-status.json in Resources */,
@@ -2444,6 +2478,7 @@
 				02698CFA24C188E9005337C4 /* product-variations-load-all-alternative-types.json in Resources */,
 				CC0786632678F79500BA9AC1 /* shipping-label-purchase-success.json in Resources */,
 				7497376A2141F2BE0008C490 /* top-performers-week-alt.json in Resources */,
+				D865CE61278CA1AE002C8520 /* stripe-payment-intent-processing.json in Resources */,
 				743E84F222172D0A00FAC9D7 /* shipment_tracking_plugin_not_active.json in Resources */,
 				451A97DE260B59870059D135 /* shipping-label-packages-success.json in Resources */,
 				31D27C8F2602B553002EDB1D /* plugins.json in Resources */,
@@ -2453,6 +2488,7 @@
 				74ABA1C9213F19FE00FFAD30 /* top-performers-month.json in Resources */,
 				3158FE7026129D7500E566B9 /* wcpay-account-rejected-listed.json in Resources */,
 				743E84F622172D3E00FAC9D7 /* shipment_tracking_single.json in Resources */,
+				D865CE5B278CA10B002C8520 /* stripe-payment-intent-requires-payment-method.json in Resources */,
 				CC9A254626442CA7005DE56E /* shipping-label-eligibility-failure.json in Resources */,
 				4524CD9C242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json in Resources */,
 				318E8FD726C322EA00F519D7 /* wcpay-customer.json in Resources */,

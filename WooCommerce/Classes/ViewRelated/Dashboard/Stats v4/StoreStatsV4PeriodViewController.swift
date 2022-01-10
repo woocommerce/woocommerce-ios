@@ -1,6 +1,7 @@
 import Charts
 import Combine
 import UIKit
+import struct WordPressUI.GhostStyle
 import Yosemite
 
 /// Different display modes of site visit stats
@@ -37,6 +38,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     private let timeRange: StatsTimeRangeV4
 
     private let viewModel: StoreStatsPeriodViewModel
+
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
     // MARK: - Subviews
 
@@ -126,7 +129,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     init(siteID: Int64,
          timeRange: StatsTimeRangeV4,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         currencyCode: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)) {
+         currencyCode: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
         self.viewModel = StoreStatsPeriodViewModel(siteID: siteID,
@@ -134,6 +138,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
                                                    siteTimezone: siteTimezone,
                                                    currencyFormatter: currencyFormatter,
                                                    currencyCode: currencyCode)
+        self.usageTracksEventEmitter = usageTracksEventEmitter
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -154,6 +159,13 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         observeSelectedBarIndex()
         observeTimeRangeBarViewModel()
         observeReloadChartAnimated()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // After returning to the My Store tab, `restartGhostAnimation` is required to resume ghost animation.
+        restartGhostAnimationIfNeeded()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -239,7 +251,7 @@ extension StoreStatsV4PeriodViewController {
     ///
     func displayGhostContent() {
         ensurePlaceholderIsVisible()
-        placeholderChartsView.startGhostAnimation(style: .wooDefaultGhostStyle)
+        placeholderChartsView.startGhostAnimation(style: Constants.ghostStyle)
     }
 
     /// Removes the Placeholder Content.
@@ -263,6 +275,12 @@ extension StoreStatsV4PeriodViewController {
         view.pinSubviewToAllEdges(placeholderChartsView)
     }
 
+    private func restartGhostAnimationIfNeeded() {
+        guard placeholderChartsView.superview != nil else {
+            return
+        }
+        placeholderChartsView.restartGhostAnimation(style: Constants.ghostStyle)
+    }
 }
 
 // MARK: - Configuration
@@ -417,6 +435,7 @@ extension StoreStatsV4PeriodViewController: ChartViewDelegate {
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
         let selectedIndex = Int(entry.x)
         updateUI(selectedBarIndex: selectedIndex)
+        usageTracksEventEmitter.interacted()
     }
 }
 
@@ -573,6 +592,7 @@ private extension StoreStatsV4PeriodViewController {
             isInitialLoad = false
             return
         }
+        usageTracksEventEmitter.interacted()
         ServiceLocator.analytics.track(.dashboardMainStatsDate, withProperties: ["range": granularity.rawValue])
         isInitialLoad = false
     }
@@ -742,5 +762,7 @@ private extension StoreStatsV4PeriodViewController {
 
         static let containerBackgroundColor: UIColor = .systemBackground
         static let headerComponentBackgroundColor: UIColor = .clear
+
+        static let ghostStyle: GhostStyle = .wooDefaultGhostStyle
     }
 }

@@ -1,6 +1,6 @@
-/// Represent a WCPay connection token Entity.
+/// Represent a card reader connection token Entity.
 ///
-public struct WCPayConnectionToken: Decodable {
+public struct ReaderConnectionToken: Decodable {
     public let token: String
     public let testMode: Bool
 
@@ -9,7 +9,7 @@ public struct WCPayConnectionToken: Decodable {
         self.testMode = testMode
     }
 
-    /// The public initializer for WCPay Connection Token.
+    /// Public initializer.
     ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -22,7 +22,7 @@ public struct WCPayConnectionToken: Decodable {
 }
 
 
-private extension WCPayConnectionToken {
+private extension ReaderConnectionToken {
     enum CodingKeys: String, CodingKey {
         case secret     = "secret"
         case testMode   = "test_mode"

@@ -1,4 +1,5 @@
 import UIKit
+import struct WordPressUI.GhostStyle
 import XLPagerTabStrip
 import Yosemite
 import Observables
@@ -74,10 +75,12 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         return stackView
     }()
 
+    private lazy var topPerformersHeaderView = TopPerformersSectionHeaderView()
+
     // MARK: Child View Controllers
 
     private lazy var storeStatsPeriodViewController: StoreStatsV4PeriodViewController = {
-        return StoreStatsV4PeriodViewController(siteID: siteID, timeRange: timeRange)
+        StoreStatsV4PeriodViewController(siteID: siteID, timeRange: timeRange, usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
     private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()
@@ -90,7 +93,8 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         return TopPerformerDataViewController(siteID: siteID,
                                               siteTimeZone: siteTimezone,
                                               currentDate: currentDate,
-                                              timeRange: timeRange)
+                                              timeRange: timeRange,
+                                              usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
     // MARK: Internal Properties
@@ -102,6 +106,8 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     private let viewModel: StoreStatsAndTopPerformersPeriodViewModel
 
     private let siteID: Int64
+
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
     /// Subscriptions that should be cancelled on `deinit`.
     private var cancellables = [ObservationToken]()
@@ -115,12 +121,14 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     init(siteID: Int64,
          timeRange: StatsTimeRangeV4,
          currentDate: Date,
-         canDisplayInAppFeedbackCard: Bool) {
+         canDisplayInAppFeedbackCard: Bool,
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
         self.siteID = siteID
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
         self.currentDate = currentDate
         self.viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: canDisplayInAppFeedbackCard)
+        self.usageTracksEventEmitter = usageTracksEventEmitter
 
         super.init(nibName: nil, bundle: nil)
 
@@ -151,6 +159,9 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         // Fix any incomplete animation of the refresh control
         // when switching tabs mid-animation
         refreshControl.resetAnimation(in: scrollView)
+
+        // After returning to the My Store tab, `restartGhostAnimation` is required to resume ghost animation.
+        restartGhostAnimationIfNeeded()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -163,6 +174,14 @@ extension StoreStatsAndTopPerformersPeriodViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         scrollDelegate?.dashboardUIScrollViewDidScroll(scrollView)
     }
+
+    /// We're not using scrollViewDidScroll because that gets executed even while
+    /// the app is being loaded for the first time.
+    ///
+    /// Note: This also covers pull-to-refresh
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        usageTracksEventEmitter.interacted()
+    }
 }
 
 // MARK: Public Interface
@@ -173,13 +192,20 @@ extension StoreStatsAndTopPerformersPeriodViewController {
 
     func displayGhostContent() {
         storeStatsPeriodViewController.displayGhostContent()
+        topPerformersHeaderView.startGhostAnimation(style: Constants.ghostStyle)
         topPerformersPeriodViewController.displayGhostContent()
     }
 
-    /// Unlocks the and removes the Placeholder Content
+    /// Removes the placeholder content for store stats.
     ///
-    func removeGhostContent() {
+    func removeStoreStatsGhostContent() {
         storeStatsPeriodViewController.removeGhostContent()
+        topPerformersHeaderView.stopGhostAnimation()
+    }
+
+    /// Removes the placeholder content for top performers.
+    ///
+    func removeTopPerformersGhostContent() {
         topPerformersPeriodViewController.removeGhostContent()
     }
 
@@ -187,6 +213,13 @@ extension StoreStatsAndTopPerformersPeriodViewController {
     ///
     var shouldDisplayStoreStatsGhostContent: Bool {
         return storeStatsPeriodViewController.shouldDisplayGhostContent
+    }
+
+    func restartGhostAnimationIfNeeded() {
+        guard topPerformersHeaderView.superview != nil else {
+            return
+        }
+        topPerformersHeaderView.restartGhostAnimation(style: Constants.ghostStyle)
     }
 }
 
@@ -268,9 +301,6 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         stackView.addArrangedSubviews(inAppFeedbackCardViewsForStackView)
 
         // Top performers header.
-        let topPerformersHeaderView = TopPerformersSectionHeaderView(title:
-            NSLocalizedString("Top Performers",
-                              comment: "Header label for Top Performers section of My Store tab."))
         stackView.addArrangedSubview(topPerformersHeaderView)
 
         // Top performers.
@@ -325,5 +355,6 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
 private extension StoreStatsAndTopPerformersPeriodViewController {
     enum Constants {
         static let storeStatsPeriodViewHeight: CGFloat = 444
+        static let ghostStyle: GhostStyle = .wooDefaultGhostStyle
     }
 }

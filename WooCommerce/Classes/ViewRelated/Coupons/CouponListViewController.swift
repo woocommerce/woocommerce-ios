@@ -1,19 +1,36 @@
+import Combine
 import UIKit
 import WordPressUI
 
 final class CouponListViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
-    private var viewModel: CouponListViewModel!
+    private let viewModel: CouponListViewModel
 
     /// Set when an empty state view controller is displayed.
     ///
     private var emptyStateViewController: UIViewController?
 
+    /// Pull To Refresh Support.
+    ///
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshCouponList), for: .valueChanged)
+        return refreshControl
+    }()
+
+    /// Footer "Loading More" Spinner.
+    ///
+    private lazy var footerSpinnerView = FooterSpinnerView()
+
+    /// Empty Footer Placeholder. Replaces spinner view and allows footer to collapse and be completely hidden.
+    ///
+    private lazy var footerEmptyView = UIView(frame: .zero)
+
+    private var subscriptions: Set<AnyCancellable> = []
+
     init(siteID: Int64) {
+        self.viewModel = CouponListViewModel(siteID: siteID)
         super.init(nibName: type(of: self).nibName, bundle: nil)
-        self.viewModel = CouponListViewModel(siteID: siteID,
-                                                       didLeaveState: didLeave(state:),
-                                                       didEnterState: didEnter(state:))
     }
 
     required init?(coder: NSCoder) {
@@ -24,31 +41,76 @@ final class CouponListViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
+        configureViewModel()
+    }
+
+    private func configureViewModel() {
+        viewModel.$state
+            .removeDuplicates()
+            .sink { [weak self] state in
+                guard let self = self else { return }
+                self.resetViews()
+                switch state {
+                case .empty:
+                    self.displayNoResultsOverlay()
+                case .loading:
+                    self.displayPlaceholderCoupons()
+                case .coupons:
+                    self.tableView.reloadData()
+                case .refreshing:
+                    self.refreshControl.beginRefreshing()
+                case .loadingNextPage:
+                    self.startFooterLoadingIndicator()
+                case .initialized:
+                    break
+                }
+            }
+            .store(in: &subscriptions)
+
+        // Call this after the state subscription for extra safety
         viewModel.viewDidLoad()
     }
+}
 
-    private func didLeave(state: CouponListState) {
-        switch state {
-        case .empty:
-            removeNoResultsOverlay()
-        case .loading:
-            removePlaceholderCoupons()
-        default:
-            break
+// MARK: - Actions
+private extension CouponListViewController {
+    /// Triggers a refresh for the coupon list
+    ///
+    @objc func refreshCouponList() {
+        viewModel.refreshCoupons()
+    }
+
+    /// Removes overlays and loading indicators if present.
+    ///
+    func resetViews() {
+        removeNoResultsOverlay()
+        removePlaceholderCoupons()
+        stopFooterLoadingIndicator()
+        if refreshControl.isRefreshing {
+            refreshControl.endRefreshing()
         }
     }
 
-    private func didEnter(state: CouponListState) {
-        switch state {
-        case .loading:
-            displayPlaceholderCoupons()
-        case .coupons:
-            tableView.reloadData()
-        case .empty:
-            displayNoResultsOverlay()
-        default:
-            break
-        }
+    /// Starts the loading indicator in the footer, to show that another page is being fetched
+    ///
+    func startFooterLoadingIndicator() {
+        tableView?.tableFooterView = footerSpinnerView
+        footerSpinnerView.startAnimating()
+    }
+
+    /// Stops the loading indicator in the footer
+    ///
+    func stopFooterLoadingIndicator() {
+        footerSpinnerView.stopAnimating()
+        tableView?.tableFooterView = footerEmptyView
+    }
+}
+
+// MARK: - TableView Delegate
+//
+extension CouponListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        viewModel.tableWillDisplayCell(at: indexPath)
     }
 }
 
@@ -65,6 +127,8 @@ private extension CouponListViewController {
         tableView.dataSource = self
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.addSubview(refreshControl)
+        tableView.delegate = self
     }
 
     func registerTableViewCells() {

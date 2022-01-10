@@ -239,6 +239,58 @@ final class CouponsRemoteTests: XCTestCase {
         }
         XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
     }
+
+    // MARK: - Create coupon tests
+
+    /// Verifies that createCoupon properly parses the `Coupon` sample response.
+    ///
+    func test_createCoupon_properly_returns_parsed_coupon() {
+        // Given
+        let remote = CouponsRemote(network: network)
+        let coupon = sampleCoupon()
+        network.simulateResponse(requestUrlSuffix: "coupons", filename: "coupon")
+
+        // When
+        let result = waitFor { promise in
+            remote.createCoupon(coupon) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssert(result.isSuccess)
+        guard let returnedCoupon = try? result.get() else {
+            XCTFail("Expected parsed Coupon not found in response")
+            return
+        }
+        XCTAssertEqual(returnedCoupon, coupon)
+    }
+
+    /// Verifies that createCoupon properly relays Networking Layer errors.
+    ///
+    func test_createCoupon_properly_relays_networking_errors() throws {
+        // Given
+        let remote = CouponsRemote(network: network)
+        let coupon = sampleCoupon()
+
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "coupons", error: error)
+
+        // When
+        let result = waitFor { promise in
+            remote.createCoupon(coupon) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        guard let resultError = result.failure as? NetworkError else {
+            XCTFail("Expected NetworkError not found")
+            return
+        }
+        XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
+    }
 }
 
 // MARK: - Private helpers

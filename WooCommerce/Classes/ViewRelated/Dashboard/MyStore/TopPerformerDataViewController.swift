@@ -46,6 +46,8 @@ final class TopPerformerDataViewController: UIViewController {
     private let imageService: ImageService = ServiceLocator.imageService
     private let isMyStoreTabUpdatesEnabled: Bool
 
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+
     // MARK: - Computed Properties
 
     private var topEarnerStats: TopEarnerStats? {
@@ -73,13 +75,15 @@ final class TopPerformerDataViewController: UIViewController {
          siteTimeZone: TimeZone,
          currentDate: Date,
          timeRange: StatsTimeRangeV4,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
         self.siteID = siteID
         self.siteTimeZone = siteTimeZone
         self.currentDate = currentDate
         self.granularity = timeRange.topEarnerStatsGranularity
         self.timeRange = timeRange
         self.isMyStoreTabUpdatesEnabled = featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates)
+        self.usageTracksEventEmitter = usageTracksEventEmitter
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -219,16 +223,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if isMyStoreTabUpdatesEnabled {
-            guard let cell =
-                    tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
-                        fatalError()
-                    }
-
-            cell.topMarginSpacing = Constants.sectionHeaderTopSpacing
-            cell.shouldShowUppercase = false
-            cell.leftText = Text.sectionLeftColumn
-            cell.rightText = Text.sectionRightColumn
-            return cell
+            return nil
         } else {
             guard let cell =
                     tableView.dequeueReusableHeaderFooterView(withIdentifier: TopPerformersHeaderView.reuseIdentifier) as? TopPerformersHeaderView else {
@@ -263,15 +258,18 @@ extension TopPerformerDataViewController: UITableViewDelegate {
         guard let statsItem = statsItem(at: indexPath) else {
             return
         }
+
+        usageTracksEventEmitter.interacted()
+
         presentProductDetails(statsItem: statsItem)
     }
 
     func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return Constants.estimatedSectionHeight
+        return isMyStoreTabUpdatesEnabled ? 0: Constants.estimatedSectionHeight
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
+        return isMyStoreTabUpdatesEnabled ? 0: UITableView.automaticDimension
     }
 }
 

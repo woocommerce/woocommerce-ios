@@ -66,7 +66,7 @@ final class ReviewsViewModelTests: XCTestCase {
 
         let expec = expectation(description: "Wait for synchronizeReviews to complete")
 
-        viewModel.synchronizeReviews {
+        viewModel.synchronizeReviews(pageNumber: 1, pageSize: 25) {
             let allTargetsHit = storesManager.syncReviewsIsHit && storesManager.retrieveProductsIsHit
             XCTAssertTrue(allTargetsHit)
             if allTargetsHit {
@@ -86,7 +86,7 @@ final class ReviewsViewModelTests: XCTestCase {
         ServiceLocator.setStores(storesManager)
 
         // When
-        viewModel.synchronizeReviews()
+        viewModel.synchronizeReviews(pageNumber: 1, pageSize: 25, onCompletion: nil)
 
         // Then
         XCTAssertFalse(viewModel.hasErrorLoadingData)
@@ -107,7 +107,7 @@ final class ReviewsViewModelTests: XCTestCase {
         ServiceLocator.setStores(storesManager)
 
         // When
-        viewModel.synchronizeReviews()
+        viewModel.synchronizeReviews(pageNumber: 1, pageSize: 25, onCompletion: nil)
 
         // Then
         XCTAssertTrue(viewModel.hasErrorLoadingData)

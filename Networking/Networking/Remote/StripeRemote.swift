@@ -44,7 +44,7 @@ public class StripeRemote: Remote {
     ///   - completion: Closure to be run on completion.
     public func fetchOrderCustomer(for siteID: Int64,
                                orderID: Int64,
-                               completion: @escaping (Result<WCPayCustomer, Error>) -> Void) {
+                               completion: @escaping (Result<Customer, Error>) -> Void) {
         let path = "\(Path.orders)/\(orderID)/\(Path.createCustomer)"
 
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: [:])

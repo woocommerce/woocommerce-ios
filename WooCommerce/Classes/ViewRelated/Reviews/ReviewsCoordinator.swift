@@ -17,7 +17,7 @@ final class ReviewsCoordinator: Coordinator {
     private let noticePresenter: NoticePresenter
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
 
-    private var cancellable: AnyCancellable?
+    private var inactiveNotificationsSubscription: AnyCancellable?
 
     private let willPresentReviewDetailsFromPushNotification: () -> Void
 
@@ -45,7 +45,7 @@ final class ReviewsCoordinator: Coordinator {
     }
 
     deinit {
-        cancellable?.cancel()
+        inactiveNotificationsSubscription?.cancel()
     }
 
     func start() {
@@ -56,8 +56,8 @@ final class ReviewsCoordinator: Coordinator {
     func activate(siteID: Int64) {
         navigationController.viewControllers = [ReviewsViewController(siteID: siteID)]
 
-        if cancellable == nil {
-            cancellable = pushNotificationsManager.inactiveNotifications.sink { [weak self] in
+        if inactiveNotificationsSubscription == nil {
+            inactiveNotificationsSubscription = pushNotificationsManager.inactiveNotifications.sink { [weak self] in
                 self?.handleInactiveNotification($0)
             }
         }

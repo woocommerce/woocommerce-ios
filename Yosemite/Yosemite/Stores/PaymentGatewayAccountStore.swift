@@ -54,7 +54,7 @@ public final class PaymentGatewayAccountStore: Store {
 private extension PaymentGatewayAccountStore {
     /// We support payment gateway accounts for both the WooCommerce Payments extension AND
     /// the Stripe extension. Let's attempt to load each and update view storage with the results.
-    /// Call the passed completion after both loads have been attempted. Only return an error if none succeed.
+    /// Call the passed completion after both loads have been attempted.
     func loadAccounts(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let group = DispatchGroup()
 

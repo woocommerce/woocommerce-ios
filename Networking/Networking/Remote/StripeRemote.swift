@@ -47,7 +47,7 @@ public class StripeRemote: Remote {
                                           onCompletion: @escaping (Result<RemoteReaderLocation, Error>) -> Void) {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Path.locations, parameters: [:])
 
-        let mapper = WCPayReaderLocationMapper()
+        let mapper = RemoteReaderLocationMapper()
 
         enqueue(request, mapper: mapper, completion: onCompletion)
     }

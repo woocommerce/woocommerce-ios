@@ -543,6 +543,8 @@
 		D823D91022377B4F00C90817 /* ShipmentTrackingProviderGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D823D90F22377B4F00C90817 /* ShipmentTrackingProviderGroup.swift */; };
 		D823D91222377DF300C90817 /* ShipmentTrackingProviderListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D823D91122377DF200C90817 /* ShipmentTrackingProviderListMapper.swift */; };
 		D823D91422377EE600C90817 /* shipment_tracking_providers.json in Resources */ = {isa = PBXBuildFile; fileRef = D823D91322377EE600C90817 /* shipment_tracking_providers.json */; };
+		D865CE6E278CC19A002C8520 /* stripe-location.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE6C278CC19A002C8520 /* stripe-location.json */; };
+		D865CE6F278CC19A002C8520 /* stripe-location-error.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE6D278CC19A002C8520 /* stripe-location-error.json */; };
 		D87F6151226591E10031A13B /* NullNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F6150226591E10031A13B /* NullNetwork.swift */; };
 		D88D5A41230BC5DA007B6E01 /* reviews-all.json in Resources */ = {isa = PBXBuildFile; fileRef = D88D5A40230BC5DA007B6E01 /* reviews-all.json */; };
 		D88D5A43230BC668007B6E01 /* reviews-single.json in Resources */ = {isa = PBXBuildFile; fileRef = D88D5A42230BC668007B6E01 /* reviews-single.json */; };
@@ -1178,6 +1180,8 @@
 		D823D90F22377B4F00C90817 /* ShipmentTrackingProviderGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentTrackingProviderGroup.swift; sourceTree = "<group>"; };
 		D823D91122377DF200C90817 /* ShipmentTrackingProviderListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentTrackingProviderListMapper.swift; sourceTree = "<group>"; };
 		D823D91322377EE600C90817 /* shipment_tracking_providers.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shipment_tracking_providers.json; sourceTree = "<group>"; };
+		D865CE6C278CC19A002C8520 /* stripe-location.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-location.json"; sourceTree = "<group>"; };
+		D865CE6D278CC19A002C8520 /* stripe-location-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-location-error.json"; sourceTree = "<group>"; };
 		D87F6150226591E10031A13B /* NullNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullNetwork.swift; sourceTree = "<group>"; };
 		D88D5A40230BC5DA007B6E01 /* reviews-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "reviews-all.json"; sourceTree = "<group>"; };
 		D88D5A42230BC668007B6E01 /* reviews-single.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "reviews-single.json"; sourceTree = "<group>"; };
@@ -1705,6 +1709,8 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				D865CE6D278CC19A002C8520 /* stripe-location-error.json */,
+				D865CE6C278CC19A002C8520 /* stripe-location.json */,
 				31A451C527863A2D00FE81AA /* stripe-account-complete.json */,
 				31A451C927863A2D00FE81AA /* stripe-account-dev-test.json */,
 				31A451C227863A2D00FE81AA /* stripe-account-live-live.json */,
@@ -2278,6 +2284,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D865CE6F278CC19A002C8520 /* stripe-location-error.json in Resources */,
 				31799AFE270518AD00D78179 /* wcpay-location-error.json in Resources */,
 				74C8F07020EEC3A800B6EDC9 /* broken-notes.json in Resources */,
 				2670C3FE270F4E6A002FE931 /* sites-malformed.json in Resources */,
@@ -2416,6 +2423,7 @@
 				31799AFC2705189200D78179 /* wcpay-location.json in Resources */,
 				74159623224D2C86003C21CF /* settings-product.json in Resources */,
 				266C7F9225AD3C88006ED243 /* attribute-term.json in Resources */,
+				D865CE6E278CC19A002C8520 /* stripe-location.json in Resources */,
 				CEC4BF93234E7EE0008D9195 /* refunds-all.json in Resources */,
 				D8FBFF1522D3BE09006E3336 /* order-stats-v4-defaults.json in Resources */,
 				7495AACF225D366D00801A89 /* variation-as-product.json in Resources */,

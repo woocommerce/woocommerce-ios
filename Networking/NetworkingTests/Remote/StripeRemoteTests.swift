@@ -14,6 +14,10 @@ final class StripeRemoteTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 1234
 
+    /// Dummy Order ID
+    ///
+    private let sampleOrderID: Int64 = 1467
+
     /// Repeat always!
     ///
     override func setUp() {
@@ -365,5 +369,42 @@ final class StripeRemoteTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure) as NSError
         XCTAssertEqual(expectedError, error)
+    }
+
+    func test_loadDefaultReaderLocation_properly_returns_location() throws {
+        let remote = StripeRemote(network: network)
+        let expectedLocationID = "tml_0123456789abcd"
+
+        network.simulateResponse(
+            requestUrlSuffix: "payments/terminal/locations/store",
+            filename: "stripe-location"
+        )
+
+        let result: Result<RemoteReaderLocation, Error> = waitFor { promise in
+            remote.loadDefaultReaderLocation(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let location = try result.get()
+        XCTAssertEqual(location.locationID, expectedLocationID)
+    }
+
+    func test_loadDefaultReaderLocation_properly_handles_error_response() throws {
+        let remote = StripeRemote(network: network)
+
+        network.simulateResponse(
+            requestUrlSuffix: "payments/terminal/locations/store",
+            filename: "stripe-location-error"
+        )
+
+        let result: Result<RemoteReaderLocation, Error> = waitFor { promise in
+            remote.loadDefaultReaderLocation(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isFailure)
     }
 }

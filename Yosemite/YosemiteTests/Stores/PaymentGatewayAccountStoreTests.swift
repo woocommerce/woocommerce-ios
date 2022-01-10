@@ -57,15 +57,14 @@ final class PaymentGatewayAccountStoreTests: XCTestCase {
 
     // MARK: - Tests
 
-    /// Verifies that the PaymentGatewayAccountStore hits the network when loading a WCPay Account, propagates errors and places nothing in storage.
+    /// Verifies that the PaymentGatewayAccountStore hits the network when loading a WCPay Account and places nothing in storage in case of error.
     ///
-    func test_loadAccounts_returns_error_on_failure() throws {
+    func test_loadAccounts_handles_failure() throws {
         let store = PaymentGatewayAccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Load Account error response")
         network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "generic_error")
 
         let action = PaymentGatewayAccountAction.loadAccounts(siteID: sampleSiteID, onCompletion: { result in
-            XCTAssertTrue(result.isFailure)
             expectation.fulfill()
         })
 

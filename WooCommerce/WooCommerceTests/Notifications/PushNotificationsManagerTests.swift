@@ -1,3 +1,4 @@
+import Combine
 import Experiments
 import XCTest
 import UserNotifications
@@ -33,10 +34,14 @@ final class PushNotificationsManagerTests: XCTestCase {
     ///
     private var userNotificationCenter: MockUserNotificationsCenterAdapter!
 
+    private var subscriptions = Set<AnyCancellable>()
+
     // MARK: - Overridden Methods
 
     override func setUp() {
         super.setUp()
+
+        subscriptions = []
 
         application = MockApplicationAdapter()
 
@@ -458,9 +463,9 @@ final class PushNotificationsManagerTests: XCTestCase {
         }()
 
         var emittedNotifications = [PushNotification]()
-        _ = manager.foregroundNotifications.sink { notification in
+        manager.foregroundNotifications.sink { notification in
             emittedNotifications.append(notification)
-        }
+        }.store(in: &subscriptions)
 
         let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder, featureFlagService: featureFlagService)
 
@@ -472,7 +477,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Then
         XCTAssertEqual(emittedNotifications.count, 1)
 
-        let emittedNotification = emittedNotifications.first!
+        let emittedNotification = try XCTUnwrap(emittedNotifications.first)
         XCTAssertEqual(emittedNotification.kind, .storeOrder)
         XCTAssertEqual(emittedNotification.noteID, 9_981)
         XCTAssertEqual(emittedNotification.title, Sample.defaultMessage)
@@ -496,9 +501,9 @@ final class PushNotificationsManagerTests: XCTestCase {
         }()
 
         var emittedNotifications = [PushNotification]()
-        _ = manager.foregroundNotifications.sink { notification in
+        manager.foregroundNotifications.sink { notification in
             emittedNotifications.append(notification)
-        }
+        }.store(in: &subscriptions)
 
         let userinfo = notificationPayload(noteID: 9_981,
                                            type: .storeOrder,
@@ -558,9 +563,9 @@ final class PushNotificationsManagerTests: XCTestCase {
         }()
 
         var emittedNotifications = [PushNotification]()
-        _ = manager.inactiveNotifications.sink { notification in
+        manager.inactiveNotifications.sink { notification in
             emittedNotifications.append(notification)
-        }
+        }.store(in: &subscriptions)
 
         let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder, title: Sample.defaultTitle, featureFlagService: featureFlagService)
 

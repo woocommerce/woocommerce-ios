@@ -17,7 +17,7 @@ final class HubMenuCoordinator: Coordinator {
     private let noticePresenter: NoticePresenter
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
 
-    private var observationToken: AnyCancellable?
+    private var inactiveNotificationsSubscription: AnyCancellable?
 
     private let willPresentReviewDetailsFromPushNotification: () -> Void
 
@@ -45,7 +45,7 @@ final class HubMenuCoordinator: Coordinator {
     }
 
     deinit {
-        observationToken?.cancel()
+        inactiveNotificationsSubscription?.cancel()
     }
 
     func start() {
@@ -56,8 +56,8 @@ final class HubMenuCoordinator: Coordinator {
     func activate(siteID: Int64) {
         navigationController.viewControllers = [HubMenuViewController(siteID: siteID, navigationController: navigationController)]
 
-        if observationToken == nil {
-            observationToken = pushNotificationsManager.inactiveNotifications.sink { [weak self] in
+        if inactiveNotificationsSubscription == nil {
+            inactiveNotificationsSubscription = pushNotificationsManager.inactiveNotifications.sink { [weak self] in
                 self?.handleInactiveNotification($0)
             }
         }

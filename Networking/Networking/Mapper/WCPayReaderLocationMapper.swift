@@ -6,7 +6,7 @@ struct WCPayReaderLocationMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into a location.
     ///
-    func map(response: Data) throws -> WCPayReaderLocation {
+    func map(response: Data) throws -> RemoteReaderLocation {
         let decoder = JSONDecoder()
 
         return try decoder.decode(WCPayReaderLocationEnvelope.self, from: response).location
@@ -19,7 +19,7 @@ struct WCPayReaderLocationMapper: Mapper {
 /// allows us to parse it with JSONDecoder.
 ///
 private struct WCPayReaderLocationEnvelope: Decodable {
-    let location: WCPayReaderLocation
+    let location: RemoteReaderLocation
 
     private enum CodingKeys: String, CodingKey {
         case location = "data"

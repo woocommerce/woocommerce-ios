@@ -180,7 +180,7 @@
 		3158FE8426129F3A00E566B9 /* wcpay-account-unknown-status.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE8326129F3A00E566B9 /* wcpay-account-unknown-status.json */; };
 		31723C892787A299007F1405 /* stripe-connection-token.json in Resources */ = {isa = PBXBuildFile; fileRef = 31723C882787A299007F1405 /* stripe-connection-token.json */; };
 		3178A49F2703E5CF00A8B4CA /* WCPayReaderLocationMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3178A49E2703E5CF00A8B4CA /* WCPayReaderLocationMapper.swift */; };
-		31799AF8270508C600D78179 /* WCPayReaderLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31799AF7270508C600D78179 /* WCPayReaderLocation.swift */; };
+		31799AF8270508C600D78179 /* RemoteReaderLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31799AF7270508C600D78179 /* RemoteReaderLocation.swift */; };
 		31799AFC2705189200D78179 /* wcpay-location.json in Resources */ = {isa = PBXBuildFile; fileRef = 31799AFB2705189200D78179 /* wcpay-location.json */; };
 		31799AFE270518AD00D78179 /* wcpay-location-error.json in Resources */ = {isa = PBXBuildFile; fileRef = 31799AFD270518AD00D78179 /* wcpay-location-error.json */; };
 		31884A3B2603F3C7003FE338 /* SitePluginStatusEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31884A3A2603F3C7003FE338 /* SitePluginStatusEnum.swift */; };
@@ -808,7 +808,7 @@
 		3158FE8326129F3A00E566B9 /* wcpay-account-unknown-status.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-unknown-status.json"; sourceTree = "<group>"; };
 		31723C882787A299007F1405 /* stripe-connection-token.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "stripe-connection-token.json"; sourceTree = "<group>"; };
 		3178A49E2703E5CF00A8B4CA /* WCPayReaderLocationMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayReaderLocationMapper.swift; sourceTree = "<group>"; };
-		31799AF7270508C600D78179 /* WCPayReaderLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayReaderLocation.swift; sourceTree = "<group>"; };
+		31799AF7270508C600D78179 /* RemoteReaderLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteReaderLocation.swift; sourceTree = "<group>"; };
 		31799AFB2705189200D78179 /* wcpay-location.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-location.json"; sourceTree = "<group>"; };
 		31799AFD270518AD00D78179 /* wcpay-location-error.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-location-error.json"; sourceTree = "<group>"; };
 		31884A3A2603F3C7003FE338 /* SitePluginStatusEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStatusEnum.swift; sourceTree = "<group>"; };
@@ -1691,7 +1691,7 @@
 				DEC51AE527684717009F3DF4 /* SystemStatusDetails */,
 				450106842399A7CB00E24722 /* TaxClass.swift */,
 				3192F21F260D33BB0067FEF9 /* WCPayAccount.swift */,
-				31799AF7270508C600D78179 /* WCPayReaderLocation.swift */,
+				31799AF7270508C600D78179 /* RemoteReaderLocation.swift */,
 				3192F223260D34C40067FEF9 /* WCPayAccountStatusEnum.swift */,
 				D8EDFE2125EE88C9003D2213 /* ReaderConnectionToken.swift */,
 				318E8FD426C31F9500F519D7 /* WCPayCustomer.swift */,
@@ -2666,7 +2666,7 @@
 				B557DA1D20979E7D005962F4 /* Order.swift in Sources */,
 				74159625224D4045003C21CF /* SiteSettingGroup.swift in Sources */,
 				26B2F74D24C696E70065CCC8 /* LeaderboardRowContent.swift in Sources */,
-				31799AF8270508C600D78179 /* WCPayReaderLocation.swift in Sources */,
+				31799AF8270508C600D78179 /* RemoteReaderLocation.swift in Sources */,
 				D8FBFF1122D3B3FC006E3336 /* OrderStatsV4Mapper.swift in Sources */,
 				4595827C264D5B3F000A4413 /* ShippingLabelPackageSelected.swift in Sources */,
 				D823D905223746CE00C90817 /* NewShipmentTrackingMapper.swift in Sources */,

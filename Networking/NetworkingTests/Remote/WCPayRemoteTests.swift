@@ -634,7 +634,7 @@ final class WCPayRemoteTests: XCTestCase {
             filename: "wcpay-location"
         )
 
-        let result: Result<WCPayReaderLocation, Error> = waitFor { promise in
+        let result: Result<RemoteReaderLocation, Error> = waitFor { promise in
             remote.loadDefaultReaderLocation(for: self.sampleSiteID) { result in
                 promise(result)
             }

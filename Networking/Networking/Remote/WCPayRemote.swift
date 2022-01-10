@@ -81,7 +81,7 @@ public class WCPayRemote: Remote {
     ///   - completion: Closure to be run on completion.
     ///
     public func loadDefaultReaderLocation(for siteID: Int64,
-                                          onCompletion: @escaping (Result<WCPayReaderLocation, Error>) -> Void) {
+                                          onCompletion: @escaping (Result<RemoteReaderLocation, Error>) -> Void) {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Path.locations, parameters: [:])
 
         let mapper = WCPayReaderLocationMapper()

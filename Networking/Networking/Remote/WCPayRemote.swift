@@ -69,7 +69,7 @@ public class WCPayRemote: Remote {
 
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: [:])
 
-        let mapper = WCPayCustomerMapper()
+        let mapper = CustomerMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
     }

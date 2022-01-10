@@ -25,6 +25,16 @@ final class PushNotificationsManager: PushNotesManager {
     /// Mutable reference to `foregroundNotifications`.
     private let foregroundNotificationsSubject = PassthroughSubject<PushNotification, Never>()
 
+    /// An observable that emits values when the user taps to view the in-app notification while the app is
+    /// in the foreground.
+    ///
+    var foregroundNotificationsToView: AnyPublisher<PushNotification, Never> {
+        foregroundNotificationsSubject.eraseToAnyPublisher()
+    }
+
+    /// Mutable reference to `foregroundNotificationsToView`.
+    private let foregroundNotificationsToViewSubject = PassthroughSubject<PushNotification, Never>()
+
     /// An observable that emits values when a Remote Notification is received while the app is
     /// in inactive.
     ///
@@ -188,7 +198,7 @@ extension PushNotificationsManager {
 
         deviceToken = newToken
 
-        // Register in Support's Infrasturcture
+        // Register in Support's Infrastructure
         registerSupportDevice(with: newToken)
 
         // Register in the Dotcom's Infrastructure
@@ -358,7 +368,9 @@ private extension PushNotificationsManager {
                                           subtitle: foregroundNotification.subtitle,
                                           message: foregroundNotification.message,
                                           actionTitle: Localization.viewInAppNotification) { [weak self] in
-                    self?.presentDetails(for: foregroundNotification)
+                    guard let self = self else { return }
+                    self.presentDetails(for: foregroundNotification)
+                    self.foregroundNotificationsToViewSubject.send(foregroundNotification)
                 }
 
             foregroundNotificationsSubject.send(foregroundNotification)

@@ -72,8 +72,7 @@ struct HubMenu: View {
     }
 
     func pushReviewDetailsView(using parcel: ProductReviewFromNoteParcel) {
-        viewModel.setProductReviewFromNoteParcel(parcel)
-        viewModel.showingReviewDetail = true
+        viewModel.showReviewDetails(using: parcel)
     }
 
     private struct TopBar: View {

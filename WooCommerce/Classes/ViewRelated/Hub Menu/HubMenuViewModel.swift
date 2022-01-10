@@ -69,8 +69,9 @@ final class HubMenuViewModel: ObservableObject {
         }
     }
 
-    func setProductReviewFromNoteParcel(_ parcel: ProductReviewFromNoteParcel) {
+    func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
         productReviewFromNoteParcel = parcel
+        showingReviewDetail = true
     }
 
     func getReviewDetailDestination() -> ReviewDetailView? {

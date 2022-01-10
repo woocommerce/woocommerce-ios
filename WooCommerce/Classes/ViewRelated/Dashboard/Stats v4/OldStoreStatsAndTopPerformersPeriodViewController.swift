@@ -5,7 +5,7 @@ import Observables
 
 /// Container view controller for a stats v4 time range that consists of a scrollable stack view of:
 /// - Store stats data view (managed by child view controller `OldStoreStatsV4PeriodViewController`)
-/// - Top performers header view (`TopPerformersSectionHeaderView`)
+/// - Top performers header view (`LegacyTopPerformersSectionHeaderView`)
 /// - Top performers data view (managed by child view controller `TopPerformerDataViewController`)
 ///
 final class OldStoreStatsAndTopPerformersPeriodViewController: UIViewController {
@@ -287,7 +287,7 @@ private extension OldStoreStatsAndTopPerformersPeriodViewController {
         stackView.addArrangedSubviews(inAppFeedbackCardViewsForStackView)
 
         // Top performers header.
-        let topPerformersHeaderView = TopPerformersSectionHeaderView(title:
+        let topPerformersHeaderView = LegacyTopPerformersSectionHeaderView(title:
             NSLocalizedString("Top Performers",
                               comment: "Header label for Top Performers section of My Store tab.")
                 .uppercased())

@@ -146,8 +146,8 @@
 		26B2F74B24C696C00065CCC8 /* LeaderboardRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B2F74A24C696C00065CCC8 /* LeaderboardRow.swift */; };
 		26B2F74D24C696E70065CCC8 /* LeaderboardRowContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B2F74C24C696E70065CCC8 /* LeaderboardRowContent.swift */; };
 		26FB056C25F6CB9100A40B26 /* Fakes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FB056B25F6CB9100A40B26 /* Fakes.framework */; };
-		31054702262E04F700C5C02B /* WCPayPaymentIntentMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31054701262E04F700C5C02B /* WCPayPaymentIntentMapper.swift */; };
-		31054706262E278100C5C02B /* WCPayPaymentIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31054705262E278100C5C02B /* WCPayPaymentIntent.swift */; };
+		31054702262E04F700C5C02B /* RemotePaymentIntentMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31054701262E04F700C5C02B /* RemotePaymentIntentMapper.swift */; };
+		31054706262E278100C5C02B /* RemotePaymentIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31054705262E278100C5C02B /* RemotePaymentIntent.swift */; };
 		3105470C262E27F000C5C02B /* WCPayPaymentIntentStatusEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105470B262E27F000C5C02B /* WCPayPaymentIntentStatusEnum.swift */; };
 		31054710262E2EE400C5C02B /* wcpay-payment-intent-succeeded.json in Resources */ = {isa = PBXBuildFile; fileRef = 3105470F262E2EE400C5C02B /* wcpay-payment-intent-succeeded.json */; };
 		31054714262E2F3B00C5C02B /* wcpay-payment-intent-requires-payment-method.json in Resources */ = {isa = PBXBuildFile; fileRef = 31054713262E2F3B00C5C02B /* wcpay-payment-intent-requires-payment-method.json */; };
@@ -774,8 +774,8 @@
 		26E5A08725A66AFC000DF8F6 /* ProductAttributeTermRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeTermRemote.swift; sourceTree = "<group>"; };
 		26E5A08B25A66FD3000DF8F6 /* ProductAttributeTermRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeTermRemoteTests.swift; sourceTree = "<group>"; };
 		26FB056B25F6CB9100A40B26 /* Fakes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Fakes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		31054701262E04F700C5C02B /* WCPayPaymentIntentMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayPaymentIntentMapper.swift; sourceTree = "<group>"; };
-		31054705262E278100C5C02B /* WCPayPaymentIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayPaymentIntent.swift; sourceTree = "<group>"; };
+		31054701262E04F700C5C02B /* RemotePaymentIntentMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemotePaymentIntentMapper.swift; sourceTree = "<group>"; };
+		31054705262E278100C5C02B /* RemotePaymentIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemotePaymentIntent.swift; sourceTree = "<group>"; };
 		3105470B262E27F000C5C02B /* WCPayPaymentIntentStatusEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayPaymentIntentStatusEnum.swift; sourceTree = "<group>"; };
 		3105470F262E2EE400C5C02B /* wcpay-payment-intent-succeeded.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-payment-intent-succeeded.json"; sourceTree = "<group>"; };
 		31054713262E2F3B00C5C02B /* wcpay-payment-intent-requires-payment-method.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-payment-intent-requires-payment-method.json"; sourceTree = "<group>"; };
@@ -1695,7 +1695,7 @@
 				3192F223260D34C40067FEF9 /* WCPayAccountStatusEnum.swift */,
 				D8EDFE2125EE88C9003D2213 /* ReaderConnectionToken.swift */,
 				318E8FD426C31F9500F519D7 /* WCPayCustomer.swift */,
-				31054705262E278100C5C02B /* WCPayPaymentIntent.swift */,
+				31054705262E278100C5C02B /* RemotePaymentIntent.swift */,
 				3105470B262E27F000C5C02B /* WCPayPaymentIntentStatusEnum.swift */,
 				FE28F6E126840DED004465C7 /* User.swift */,
 			);
@@ -1972,7 +1972,7 @@
 				D8EDFE2525EE8A60003D2213 /* ReaderConnectionTokenMapper.swift */,
 				318E8FD226C31F1C00F519D7 /* WCPayCustomerMapper.swift */,
 				3178A49E2703E5CF00A8B4CA /* WCPayReaderLocationMapper.swift */,
-				31054701262E04F700C5C02B /* WCPayPaymentIntentMapper.swift */,
+				31054701262E04F700C5C02B /* RemotePaymentIntentMapper.swift */,
 				45A4B84D25D2E11300776FB4 /* ShippingLabelAddressValidationSuccessMapper.swift */,
 				CCF48B272628A4EB0034EA83 /* ShippingLabelAccountSettingsMapper.swift */,
 				456930AA264EB85A009ED69D /* ShippingLabelCarriersAndRatesMapper.swift */,
@@ -2607,7 +2607,7 @@
 				456930A7264EA7CE009ED69D /* ShippingLabelCarrierRate.swift in Sources */,
 				7452387221124B7700A973CD /* AnyEncodable.swift in Sources */,
 				740CF89921937A030023ED3A /* CommentRemote.swift in Sources */,
-				31054702262E04F700C5C02B /* WCPayPaymentIntentMapper.swift in Sources */,
+				31054702262E04F700C5C02B /* RemotePaymentIntentMapper.swift in Sources */,
 				025CA2C2238EBBAA00B05C81 /* ProductShippingClassListMapper.swift in Sources */,
 				74ABA1CD213F1B6B00FFAD30 /* TopEarnerStats.swift in Sources */,
 				CCAAD10F2683974000909664 /* ShippingLabelPackagePurchase.swift in Sources */,
@@ -2687,7 +2687,7 @@
 				0219B03923964BB3007DCD5E /* ProductShippingClassMapper.swift in Sources */,
 				7452387321124B7700A973CD /* AnyCodable.swift in Sources */,
 				03DCB72626244B9B00C8953D /* Coupon.swift in Sources */,
-				31054706262E278100C5C02B /* WCPayPaymentIntent.swift in Sources */,
+				31054706262E278100C5C02B /* RemotePaymentIntent.swift in Sources */,
 				026CF61E237D6985009563D4 /* ProductVariationListMapper.swift in Sources */,
 				CE43066E2347CBA70073CBFF /* OrderItemTaxRefund.swift in Sources */,
 				26455E2125F66951008A1D32 /* ProductAttributeTerm.swift in Sources */,

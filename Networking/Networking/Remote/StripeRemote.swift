@@ -33,7 +33,29 @@ public class StripeRemote: Remote {
 
     /// TODO loadConnectionToken(for siteID: Int64,...)
 
-    /// TODO captureOrderPayment(for siteID: Int64,...)
+    /// Captures a payment for an order. See https://stripe.com/docs/terminal/payments#capture-payment
+    /// - Parameters:
+    ///   - siteID: Site for which we'll capture the payment.
+    ///   - orderID: Order for which we are capturing the payment.
+    ///   - paymentIntentID: Stripe Payment Intent ID created using the Terminal SDK.
+    ///   - completion: Closure to be run on completion.
+    public func captureOrderPayment(for siteID: Int64,
+                               orderID: Int64,
+                               paymentIntentID: String,
+                               completion: @escaping (Result<RemotePaymentIntent, Error>) -> Void) {
+        let path = "\(Path.orders)/\(orderID)/\(Path.captureTerminalPayment)"
+
+        let parameters = [
+            CaptureOrderPaymentKeys.fields: CaptureOrderPaymentValues.fieldValues,
+            CaptureOrderPaymentKeys.paymentIntentID: paymentIntentID
+        ]
+
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+
+        let mapper = RemotePaymentIntentMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 
     /// TODO fetchOrderCustomer(for siteID: Int64,...)
 
@@ -46,6 +68,8 @@ private extension StripeRemote {
     enum Path {
         static let connectionTokens = "wc_stripe/connection_tokens"
         static let accounts = "wc_stripe/account/summary"
+        static let orders = "payments/orders"
+        static let captureTerminalPayment = "capture_terminal_payment"
     }
 
     enum AccountParameterKeys {
@@ -57,5 +81,14 @@ private extension StripeRemote {
             status,is_live,test_mode,has_pending_requirements,has_overdue_requirements,current_deadline,\
             statement_descriptor,store_currencies,country
             """
+    }
+
+    enum CaptureOrderPaymentKeys {
+        static let fields: String = "_fields"
+        static let paymentIntentID: String = "payment_intent_id"
+    }
+
+    enum CaptureOrderPaymentValues {
+        static let fieldValues: String = "id,status"
     }
 }

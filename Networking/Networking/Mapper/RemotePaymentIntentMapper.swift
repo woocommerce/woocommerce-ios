@@ -2,11 +2,11 @@ import Foundation
 
 /// Mapper: WCPay Payment Intent
 ///
-struct WCPayPaymentIntentMapper: Mapper {
+struct RemotePaymentIntentMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into an payment intent.
     ///
-    func map(response: Data) throws -> WCPayPaymentIntent {
+    func map(response: Data) throws -> RemotePaymentIntent {
         let decoder = JSONDecoder()
 
         return try decoder.decode(WCPayPaymentIntentEnvelope.self, from: response).paymentIntent
@@ -19,7 +19,7 @@ struct WCPayPaymentIntentMapper: Mapper {
 /// allows us to parse it with JSONDecoder.
 ///
 private struct WCPayPaymentIntentEnvelope: Decodable {
-    let paymentIntent: WCPayPaymentIntent
+    let paymentIntent: RemotePaymentIntent
 
     private enum CodingKeys: String, CodingKey {
         case paymentIntent = "data"

@@ -10,9 +10,11 @@ public final class PaymentGatewayAccountStore: Store {
     /// In the future we'll want to allow this store to support other remotes
     ///
     private let remote: WCPayRemote
+    private let stripeRemote: StripeRemote
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = WCPayRemote(network: network)
+        self.stripeRemote = StripeRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -50,11 +52,15 @@ public final class PaymentGatewayAccountStore: Store {
 
 // MARK: Networking Methods
 private extension PaymentGatewayAccountStore {
+    /// We support payment gateway accounts for both the WooCommerce Payments extension AND
+    /// the Stripe extension. Let's attempt to load each and update view storage with the results.
+    /// Call the passed completion after both loads have been attempted. Only return an error if none succeed.
     func loadAccounts(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        /// The only plugin we support payment gateway accounts for right now is WooCommerce Payments.
-        /// And there is only one account per site for that plugin.  In the future we will need to support remotes for
-        /// other plugins and it might be possible for there to be multiple accounts for a single site then.
+        let group = DispatchGroup()
+
+        /// WooCommerce Payments
         ///
+        group.enter()
         remote.loadAccount(for: siteID) { [weak self] result in
             guard let self = self else {
                 return
@@ -64,13 +70,34 @@ private extension PaymentGatewayAccountStore {
             case .success(let wcpayAccount):
                 let account = wcpayAccount.toPaymentGatewayAccount(siteID: siteID)
                 self.upsertStoredAccountInBackground(readonlyAccount: account)
-                onCompletion(.success(()))
-                return
-            case .failure(let error):
+            case .failure(_):
+                DDLogDebug("Error fetching WCPay account - it is possible the extension is not installed or inactive")
                 self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
-                onCompletion(.failure(error))
+            }
+            group.leave()
+        }
+
+        /// Stripe
+        ///
+        group.enter()
+        stripeRemote.loadAccount(for: siteID) { [weak self] result in
+            guard let self = self else {
                 return
             }
+
+            switch result {
+            case .success(let stripeAccount):
+                let account = stripeAccount.toPaymentGatewayAccount(siteID: siteID)
+                self.upsertStoredAccountInBackground(readonlyAccount: account)
+            case .failure(_):
+                DDLogDebug("Error fetching Stripe account - it is possible the extension is not installed or inactive")
+                self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
+            }
+            group.leave()
+        }
+
+        group.notify(queue: .main) {
+            onCompletion(.success(()))
         }
     }
 

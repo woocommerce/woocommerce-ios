@@ -1,6 +1,6 @@
+import Combine
 import Foundation
 import UIKit
-import Observables
 
 import enum Yosemite.ProductReviewAction
 import enum Yosemite.NotificationAction
@@ -17,7 +17,7 @@ final class ReviewsCoordinator: Coordinator {
     private let noticePresenter: NoticePresenter
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
 
-    private var observationToken: ObservationToken?
+    private var inactiveNotificationsSubscription: AnyCancellable?
 
     private let willPresentReviewDetailsFromPushNotification: () -> Void
 
@@ -45,7 +45,7 @@ final class ReviewsCoordinator: Coordinator {
     }
 
     deinit {
-        observationToken?.cancel()
+        inactiveNotificationsSubscription?.cancel()
     }
 
     func start() {
@@ -56,8 +56,8 @@ final class ReviewsCoordinator: Coordinator {
     func activate(siteID: Int64) {
         navigationController.viewControllers = [ReviewsViewController(siteID: siteID)]
 
-        if observationToken == nil {
-            observationToken = pushNotificationsManager.inactiveNotifications.subscribe { [weak self] in
+        if inactiveNotificationsSubscription == nil {
+            inactiveNotificationsSubscription = pushNotificationsManager.inactiveNotifications.sink { [weak self] in
                 self?.handleInactiveNotification($0)
             }
         }

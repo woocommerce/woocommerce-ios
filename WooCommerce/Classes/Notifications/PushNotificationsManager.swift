@@ -1,9 +1,9 @@
+import Combine
 import Experiments
 import Foundation
 import UserNotifications
 import AutomatticTracks
 import Yosemite
-import Observables
 
 
 
@@ -18,22 +18,22 @@ final class PushNotificationsManager: PushNotesManager {
     /// An observable that emits values when the Remote Notifications are received while the app is
     /// in the foreground.
     ///
-    var foregroundNotifications: Observable<PushNotification> {
-        foregroundNotificationsSubject
+    var foregroundNotifications: AnyPublisher<PushNotification, Never> {
+        foregroundNotificationsSubject.eraseToAnyPublisher()
     }
 
     /// Mutable reference to `foregroundNotifications`.
-    private let foregroundNotificationsSubject = PublishSubject<PushNotification>()
+    private let foregroundNotificationsSubject = PassthroughSubject<PushNotification, Never>()
 
     /// An observable that emits values when a Remote Notification is received while the app is
     /// in inactive.
     ///
-    var inactiveNotifications: Observable<PushNotification> {
-        inactiveNotificationsSubject
+    var inactiveNotifications: AnyPublisher<PushNotification, Never> {
+        inactiveNotificationsSubject.eraseToAnyPublisher()
     }
 
     /// Mutable reference to `inactiveNotifications`
-    private let inactiveNotificationsSubject = PublishSubject<PushNotification>()
+    private let inactiveNotificationsSubject = PassthroughSubject<PushNotification, Never>()
 
     /// Returns the current Application's State
     ///

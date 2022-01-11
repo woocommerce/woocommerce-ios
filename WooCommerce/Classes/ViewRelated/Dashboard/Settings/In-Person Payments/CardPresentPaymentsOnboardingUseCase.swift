@@ -30,7 +30,7 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
 final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol, ObservableObject {
     let storageManager: StorageManagerType
     let stores: StoresManager
-    var stripeGatewayIPPEnabled: Bool?
+    private var stripeGatewayIPPEnabled: Bool?
 
     @Published var state: CardPresentPaymentOnboardingState = .loading
 

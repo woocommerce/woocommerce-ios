@@ -12,6 +12,12 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     private let foregroundNotificationsSubject = PassthroughSubject<PushNotification, Never>()
 
+    var foregroundNotificationsToView: AnyPublisher<PushNotification, Never> {
+        foregroundNotificationsToViewSubject.eraseToAnyPublisher()
+    }
+
+    private let foregroundNotificationsToViewSubject = PassthroughSubject<PushNotification, Never>()
+
     var inactiveNotifications: AnyPublisher<PushNotification, Never> {
         inactiveNotificationsSubject.eraseToAnyPublisher()
     }
@@ -63,6 +69,13 @@ extension MockPushNotificationsManager {
     ///
     func sendForegroundNotification(_ notification: PushNotification) {
         foregroundNotificationsSubject.send(notification)
+    }
+
+    /// Send a `PushNotification` that will be emitted by the `foregroundNotificationsToView`
+    /// observable.
+    ///
+    func sendForegroundNotificationToView(_ notification: PushNotification) {
+        foregroundNotificationsToViewSubject.send(notification)
     }
 
     /// Send a `PushNotification` that will be emitted by the `inactiveNotifications`

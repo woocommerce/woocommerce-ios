@@ -18,7 +18,7 @@ final class HubMenuCoordinator: Coordinator {
     private let noticePresenter: NoticePresenter
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
 
-    private var inactiveNotificationsSubscription: AnyCancellable?
+    private var notificationsSubscription: AnyCancellable?
 
     private let willPresentReviewDetailsFromPushNotification: () -> Void
 
@@ -46,7 +46,7 @@ final class HubMenuCoordinator: Coordinator {
     }
 
     deinit {
-        inactiveNotificationsSubscription?.cancel()
+        notificationsSubscription?.cancel()
     }
 
     func start() {
@@ -60,14 +60,16 @@ final class HubMenuCoordinator: Coordinator {
             navigationController.viewControllers = [hubMenuController]
         }
 
-        if inactiveNotificationsSubscription == nil {
-            inactiveNotificationsSubscription = pushNotificationsManager.inactiveNotifications.sink { [weak self] in
-                self?.handleInactiveNotification($0)
-            }
+        if notificationsSubscription == nil {
+            notificationsSubscription = Publishers
+                .Merge(pushNotificationsManager.inactiveNotifications, pushNotificationsManager.foregroundNotificationsToView)
+                .sink { [weak self] in
+                    self?.handleNotification($0)
+                }
         }
     }
 
-    private func handleInactiveNotification(_ notification: PushNotification) {
+    private func handleNotification(_ notification: PushNotification) {
         guard notification.kind == .comment else {
             return
         }

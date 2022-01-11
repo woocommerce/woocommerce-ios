@@ -1,0 +1,7 @@
+{
+    "code": "wcpay_missing_order",
+    "message": "Order not found.",
+    "data": {
+        "status": 404
+    }
+}

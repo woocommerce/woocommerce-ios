@@ -595,7 +595,7 @@ final class WCPayRemoteTests: XCTestCase {
             filename: "wcpay-customer"
         )
 
-        let result: Result<WCPayCustomer, Error> = waitFor { promise in
+        let result: Result<Customer, Error> = waitFor { promise in
             remote.fetchOrderCustomer(for: self.sampleSiteID, orderID: self.sampleOrderID) { result in
                 promise(result)
             }
@@ -616,7 +616,7 @@ final class WCPayRemoteTests: XCTestCase {
             filename: "wcpay-customer-error"
         )
 
-        let result: Result<WCPayCustomer, Error> = waitFor { promise in
+        let result: Result<Customer, Error> = waitFor { promise in
             remote.fetchOrderCustomer(for: self.sampleSiteID, orderID: self.sampleOrderID) { result in
                 promise(result)
             }
@@ -653,7 +653,7 @@ final class WCPayRemoteTests: XCTestCase {
             filename: "wcpay-location-error"
         )
 
-        let result: Result<WCPayCustomer, Error> = waitFor { promise in
+        let result: Result<Customer, Error> = waitFor { promise in
             remote.fetchOrderCustomer(for: self.sampleSiteID, orderID: self.sampleOrderID) { result in
                 promise(result)
             }

@@ -60,8 +60,8 @@ final class ReviewsCoordinator: Coordinator {
             notificationsSubscription = Publishers
                 .Merge(pushNotificationsManager.inactiveNotifications, pushNotificationsManager.foregroundNotificationsToView)
                 .sink { [weak self] in
-                self?.handleNotification($0)
-            }
+                    self?.handleNotification($0)
+                }
         }
     }
 

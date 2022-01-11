@@ -44,6 +44,30 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.sections.count > 0)
     }
 
+    func test_selectedStoreSection_is_hidden_if_hub_menu_feature_flag_is_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isHubMenuOn: true)
+        let viewModel = SettingsViewModel(stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.selectedStore) })
+    }
+
+    func test_selectedStoreSection_is_showed_if_hub_menu_feature_flag_is_off() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isHubMenuOn: false)
+        let viewModel = SettingsViewModel(stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(.selectedStore) })
+    }
+
     func test_sections_contain_install_jetpack_row_when_JCP_support_feature_flag_is_on_and_default_site_is_jcp() {
         // Given
         let featureFlagService = MockFeatureFlagService(isJetpackConnectionPackageSupportOn: true)

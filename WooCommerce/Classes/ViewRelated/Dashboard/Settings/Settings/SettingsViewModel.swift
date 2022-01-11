@@ -170,7 +170,7 @@ private extension SettingsViewModel {
     func configureSections() {
         // Selected Store
         let selectedStoreSection: Section? = {
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
+            if featureFlagService.isFeatureFlagEnabled(.hubMenu) {
                 return nil
             }
             else {

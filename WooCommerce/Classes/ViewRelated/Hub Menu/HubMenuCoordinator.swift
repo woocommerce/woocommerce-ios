@@ -64,12 +64,12 @@ final class HubMenuCoordinator: Coordinator {
             notificationsSubscription = Publishers
                 .Merge(pushNotificationsManager.inactiveNotifications, pushNotificationsManager.foregroundNotificationsToView)
                 .sink { [weak self] in
-                    self?.handleInactiveNotification($0)
+                    self?.handleNotification($0)
                 }
         }
     }
 
-    private func handleInactiveNotification(_ notification: PushNotification) {
+    private func handleNotification(_ notification: PushNotification) {
         guard notification.kind == .comment else {
             return
         }

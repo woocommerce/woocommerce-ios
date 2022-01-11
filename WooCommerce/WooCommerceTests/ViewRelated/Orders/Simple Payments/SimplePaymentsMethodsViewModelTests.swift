@@ -177,6 +177,25 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["amount"] as? String, "$12.00")
     }
 
+    func test_completed_event_is_tracked_after_collecting_payment_successfully() {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
+
+        let analytics = MockAnalyticsProvider()
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", storage: storage, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
+
+        // Then
+        assertEqual(analytics.receivedEvents.last, WooAnalyticsStat.simplePaymentsFlowCompleted.rawValue)
+        assertEqual(analytics.receivedProperties.last?["payment_method"] as? String, "card")
+        assertEqual(analytics.receivedProperties.last?["amount"] as? String, "$12.00")
+    }
+
     func test_completed_event_is_tracked_after_sharing_a_link() {
         // Given
         let analytics = MockAnalyticsProvider()
@@ -214,6 +233,24 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["source"] as? String, "payment_method")
     }
 
+    func test_failed_event_is_tracked_after_failing_to_collect_payment() {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
+
+        let analytics = MockAnalyticsProvider()
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .failure(NSError(domain: "Error", code: 0, userInfo: nil)))
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", storage: storage, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
+
+        // Then
+        assertEqual(analytics.receivedEvents.last, WooAnalyticsStat.simplePaymentsFlowFailed.rawValue)
+        assertEqual(analytics.receivedProperties.last?["source"] as? String, "payment_method")
+    }
+
     func test_collect_event_is_tracked_when_paying_by_cash() {
         // Given
         let analytics = MockAnalyticsProvider()
@@ -244,15 +281,16 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
     func test_collect_event_is_tracked_when_collecting_payment() {
         // Given
         let analytics = MockAnalyticsProvider()
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
-        viewModel.collectPayment(on: UIViewController(), onSuccess: {})
+        viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
 
         // Then
-        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowCollect.rawValue])
-        assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "card")
+        assertEqual(analytics.receivedEvents.last, WooAnalyticsStat.simplePaymentsFlowCollect.rawValue)
+        assertEqual(analytics.receivedProperties.last?["payment_method"] as? String, "card")
     }
 
     func test_card_row_is_shown_for_cpp_store() {
@@ -266,7 +304,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
 
     func test_card_row_is_not_shown_for_non_cpp_store() {
         // Given
-        let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled)
+        let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .pluginNotInstalled)
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", cppStoreStateObserver: cppStateObserver)
 
         // Then
@@ -276,7 +314,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
     func test_card_row_state_changes_when_store_state_changes() {
         // Given
         let subject = PassthroughSubject<CardPresentPaymentOnboardingState, Never>()
-        let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled, publisher: subject.eraseToAnyPublisher())
+        let cppStateObserver = MockCardPresentPaymentsOnboardingUseCase(initial: .pluginNotInstalled, publisher: subject.eraseToAnyPublisher())
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", cppStoreStateObserver: cppStateObserver)
         XCTAssertFalse(viewModel.showPayWithCardRow)
 
@@ -330,7 +368,7 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.paymentLink)
     }
 
-    func test_view_model_attempts_completed_notice_after_sharing_link() {
+    func test_view_model_attempts_created_notice_after_sharing_link() {
         // Given
         let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", presentNoticeSubject: noticeSubject)
@@ -351,5 +389,54 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(receivedCompleted)
+    }
+
+    func test_view_model_attempts_completed_notice_after_collecting_payment() {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
+
+        let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", presentNoticeSubject: noticeSubject, storage: storage)
+
+        // When
+        let receivedCompleted: Bool = waitFor { promise in
+            noticeSubject.sink { intent in
+                switch intent {
+                case .error, .created:
+                    promise(false)
+                case .completed:
+                    promise(true)
+                }
+            }
+            .store(in: &self.subscriptions)
+
+            viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
+        }
+
+        // Then
+        XCTAssertTrue(receivedCompleted)
+    }
+
+    func test_view_model_calls_onSuccess_after_collecting_payment() {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        storage.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake())
+
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
+        let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", storage: storage)
+
+        // When
+        let calledOnSuccess: Bool = waitFor { promise in
+            viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {
+                promise(true)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(calledOnSuccess)
     }
 }

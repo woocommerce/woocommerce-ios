@@ -29,16 +29,16 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsLoading()
             case .countryNotSupported(let countryCode):
                 InPersonPaymentsCountryNotSupported(countryCode: countryCode)
-            case .wcpayNotInstalled:
+            case .pluginNotInstalled:
                 InPersonPaymentsPluginNotInstalled(onRefresh: viewModel.refresh)
-            case .wcpayUnsupportedVersion:
+            case .pluginUnsupportedVersion:
                 InPersonPaymentsPluginNotSupportedVersion(onRefresh: viewModel.refresh)
-            case .wcpayNotActivated:
+            case .pluginNotActivated:
                 InPersonPaymentsPluginNotActivated(onRefresh: viewModel.refresh)
-            case .wcpayInTestModeWithLiveStripeAccount:
+            case .pluginInTestModeWithLiveStripeAccount:
                 InPersonPaymentsLiveSiteInTestMode(onRefresh:
                     viewModel.refresh)
-            case .wcpaySetupNotCompleted:
+            case .pluginSetupNotCompleted:
                 InPersonPaymentsWCPayNotSetup(onRefresh: viewModel.refresh)
             case .stripeAccountOverdueRequirement:
                 InPersonPaymentsStripeAccountOverdue()

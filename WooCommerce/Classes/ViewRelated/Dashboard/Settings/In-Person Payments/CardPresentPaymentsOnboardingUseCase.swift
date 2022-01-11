@@ -271,7 +271,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: Constants.Stripe.minimumSupportedPluginVersion)
     }
 
-    // TODO - this looks non-deterministic and needs to get the appropriate account for the site, be that Stripe or WCPay
+    // Note: This counts on synchronizeRequiredData having been called to get the appropriate account for the site, be that Stripe or WCPay
     func getPaymentGatewayAccount() -> PaymentGatewayAccount? {
         guard let siteID = siteID else {
             return nil

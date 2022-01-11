@@ -1,6 +1,6 @@
 import Hardware
 
-public extension StripeAccount {
+extension StripeAccount {
     /// Maps a StripeAccount into the PaymentGatewayAccount struct
     ///
     func toPaymentGatewayAccount(siteID: Int64) -> PaymentGatewayAccount {

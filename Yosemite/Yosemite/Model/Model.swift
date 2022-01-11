@@ -135,6 +135,7 @@ public typealias PaymentIntent = Hardware.PaymentIntent
 public typealias PrintingResult = Hardware.PrintingResult
 public typealias CardPresentReceiptParameters = Hardware.CardPresentReceiptParameters
 public typealias CardPresentTransactionDetails = Hardware.CardPresentTransactionDetails
+public typealias StripeAccount = Networking.StripeAccount
 public typealias WCPayAccount = Networking.WCPayAccount
 public typealias WCPayAccountStatusEnum = Networking.WCPayAccountStatusEnum
 public typealias WCPayCustomer = Networking.Customer

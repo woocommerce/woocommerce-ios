@@ -1,12 +1,12 @@
 import Hardware
 
-extension WCPayAccount {
-    /// Maps a WCPayAccount into the PaymentGatewayAccount struct
+extension StripeAccount {
+    /// Maps a StripeAccount into the PaymentGatewayAccount struct
     ///
-    func toPaymentGatewayAccount(siteID: Int64) -> PaymentGatewayAccount { // TODO can we add siteID to WCPayAccount?
+    func toPaymentGatewayAccount(siteID: Int64) -> PaymentGatewayAccount {
         return PaymentGatewayAccount(
             siteID: siteID,
-            gatewayID: WCPayAccount.gatewayID,
+            gatewayID: StripeAccount.gatewayID,
             status: status.rawValue,
             hasPendingRequirements: hasPendingRequirements,
             hasOverdueRequirements: hasOverdueRequirements,

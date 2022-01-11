@@ -8,10 +8,10 @@ struct MockPaymentGatewayAccountActionHandler: MockActionHandler {
     let storageManager: StorageManagerType
 
     func handle(action: ActionType) {
-        switch action {
-        case .loadAccounts(_, let onCompletion):
-            onCompletion(.success(()))
-        default: unimplementedAction(action: action)
-        }
+        //switch action {
+        //case .loadAccounts(_, let onCompletion):
+        //    onCompletion(.success(()))
+        //default: unimplementedAction(action: action)
+        //}
     }
 }

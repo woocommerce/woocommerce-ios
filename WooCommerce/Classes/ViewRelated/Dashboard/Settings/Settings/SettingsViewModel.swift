@@ -275,7 +275,7 @@ private extension SettingsViewModel {
 
         /// No need for a completion here. We will be notified of storage changes in `onDidChangeContent`
         ///
-        let action = PaymentGatewayAccountAction.loadAccounts(siteID: siteID) {_ in}
+        let action = CardPresentPaymentAction.loadAccounts(siteID: siteID) {_ in}
         stores.dispatch(action)
     }
 

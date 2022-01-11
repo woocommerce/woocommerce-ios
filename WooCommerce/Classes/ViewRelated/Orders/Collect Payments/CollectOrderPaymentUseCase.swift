@@ -4,11 +4,23 @@ import Yosemite
 import MessageUI
 import protocol Storage.StorageManagerType
 
+/// Protocol to abstract the `CollectOrderPaymentUseCase`.
+/// Currently only used to facilitate unit tests.
+///
+protocol CollectOrderPaymentProtocol {
+    /// Starts the collect payment flow.
+    ///
+    ///
+    /// - Parameter backButtonTitle: Title for the back button after a payment is sucessfull.
+    /// - Parameter onCollect: Closure Invoked after the collect process has finished.
+    /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed.
+    func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ())
+}
+
 /// Use case to collect payments from an order.
 /// Orchestrates reader connection, payment, UI alerts, receipt handling and analytics.
 ///
-final class CollectOrderPaymentUseCase: NSObject {
-
+final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// Store's ID.
     ///
     private let siteID: Int64

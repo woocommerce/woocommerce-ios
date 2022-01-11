@@ -22,6 +22,18 @@ class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.imageURL, URL(string: imageURLString))
         XCTAssertFalse(viewModel.canChangeQuantity)
         XCTAssertEqual(viewModel.quantity, 1)
+        XCTAssertFalse(viewModel.isSelectable)
+    }
+
+    func test_viewModel_is_created_with_correct_initial_values_from_variable_product() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "variable")
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+
+        // Then
+        XCTAssertTrue(viewModel.isSelectable)
     }
 
     func test_viewModel_is_created_with_correct_initial_values_from_product_variation() {
@@ -58,8 +70,8 @@ class ProductRowViewModelTests: XCTestCase {
         let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
         let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown during order creation")
         let expectedStockLabel = String.localizedStringWithFormat(format, localizedStockQuantity)
-        XCTAssertTrue(viewModel.stockAndPriceLabel.contains(expectedStockLabel),
-                      "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.stockAndPriceLabel)\"")
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockLabel),
+                      "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
 
     func test_view_model_creates_expected_label_for_product_with_unmanaged_stock() {
@@ -71,8 +83,8 @@ class ProductRowViewModelTests: XCTestCase {
 
         // Then
         let expectedStockLabel = NSLocalizedString("In stock", comment: "Display label for the product's inventory stock status")
-        XCTAssertTrue(viewModel.stockAndPriceLabel.contains(expectedStockLabel),
-                      "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.stockAndPriceLabel)\"")
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockLabel),
+                      "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
 
     func test_view_model_creates_expected_label_for_out_of_stock_product() {
@@ -84,8 +96,8 @@ class ProductRowViewModelTests: XCTestCase {
 
         // Then
         let expectedStockLabel = NSLocalizedString("Out of stock", comment: "Display label for the product's inventory stock status")
-        XCTAssertTrue(viewModel.stockAndPriceLabel.contains(expectedStockLabel),
-                      "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.stockAndPriceLabel)\"")
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockLabel),
+                      "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
 
     func test_view_model_creates_expected_label_for_product_with_price() {
@@ -99,8 +111,8 @@ class ProductRowViewModelTests: XCTestCase {
 
         // Then
         let expectedPriceLabel = "2.50"
-        XCTAssertTrue(viewModel.stockAndPriceLabel.contains(expectedPriceLabel),
-                      "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.stockAndPriceLabel)\"")
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedPriceLabel),
+                      "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
 
     func test_view_model_creates_expected_label_for_product_with_no_price() {
@@ -114,8 +126,20 @@ class ProductRowViewModelTests: XCTestCase {
 
         // Then
         let expectedPriceLabel = "$0.00"
-        XCTAssertTrue(viewModel.stockAndPriceLabel.contains(expectedPriceLabel),
-                      "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.stockAndPriceLabel)\"")
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedPriceLabel),
+                      "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
+    }
+
+    func test_view_model_creates_expected_product_details_label_for_variable_product() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "variable", stockStatusKey: "instock", variations: [0, 1])
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+
+        // Then
+        let expectedProductDetailsLabel = "In stock • 2 variations"
+        XCTAssertEqual(viewModel.productDetailsLabel, expectedProductDetailsLabel)
     }
 
     func test_sku_label_is_formatted_correctly_for_product_with_sku() {

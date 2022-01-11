@@ -30,7 +30,7 @@ struct ProductRow: View {
                     // Product details
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
-                        Text(viewModel.stockAndPriceLabel)
+                        Text(viewModel.productDetailsLabel)
                             .subheadlineStyle()
                         Text(viewModel.skuLabel)
                             .subheadlineStyle()
@@ -42,6 +42,12 @@ struct ProductRow: View {
 
                 ProductStepper(viewModel: viewModel)
                     .renderedIf(viewModel.canChangeQuantity)
+
+                Image(uiImage: .chevronImage)
+                    .renderedIf(viewModel.isSelectable)
+                    .flipsForRightToLeftLayoutDirection(true)
+                    .frame(width: Layout.chevronImageSize, height: Layout.chevronImageSize)
+                    .foregroundColor(Color(UIColor.gray(.shade30)))
             }
         }
     }
@@ -116,6 +122,7 @@ private enum Layout {
     static let stepperButtonSize: CGFloat = 22.0
     static let stepperPadding: CGFloat = 11.0
     static let stepperWidth: CGFloat = 112.0
+    static let chevronImageSize: CGFloat = 22.0
 }
 
 private enum Localization {
@@ -142,6 +149,17 @@ struct ProductRow_Previews: PreviewProvider {
                                                           manageStock: true,
                                                           canChangeQuantity: false,
                                                           imageURL: nil)
+        let viewModelSelectable = ProductRowViewModel(productOrVariationID: 1,
+                                                      name: "Love Ficus",
+                                                      sku: "123456",
+                                                      price: "",
+                                                      stockStatusKey: "instock",
+                                                      stockQuantity: 7,
+                                                      manageStock: true,
+                                                      canChangeQuantity: false,
+                                                      imageURL: nil,
+                                                      isSelectable: true,
+                                                      numberOfVariations: 3)
 
         ProductRow(viewModel: viewModel)
             .previewDisplayName("ProductRow with stepper")
@@ -149,6 +167,10 @@ struct ProductRow_Previews: PreviewProvider {
 
         ProductRow(viewModel: viewModelWithoutStepper)
             .previewDisplayName("ProductRow without stepper")
+            .previewLayout(.sizeThatFits)
+
+        ProductRow(viewModel: viewModelSelectable)
+            .previewDisplayName("Selectable ProductRow")
             .previewLayout(.sizeThatFits)
     }
 }

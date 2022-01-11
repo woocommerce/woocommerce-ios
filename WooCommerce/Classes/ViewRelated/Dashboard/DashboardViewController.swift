@@ -189,18 +189,20 @@ private extension DashboardViewController {
     }
 
     private func configureNavigationItem() {
-        let rightBarButton = UIBarButtonItem(image: .gearBarButtonItemImage,
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(settingsTapped))
-        rightBarButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
-        rightBarButton.accessibilityTraits = .button
-        rightBarButton.accessibilityHint = NSLocalizedString(
-            "Navigates to Settings.",
-            comment: "VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen."
-        )
-        rightBarButton.accessibilityIdentifier = "dashboard-settings-button"
-        navigationItem.setRightBarButton(rightBarButton, animated: false)
+        if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
+            let rightBarButton = UIBarButtonItem(image: .gearBarButtonItemImage,
+                                                 style: .plain,
+                                                 target: self,
+                                                 action: #selector(settingsTapped))
+            rightBarButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
+            rightBarButton.accessibilityTraits = .button
+            rightBarButton.accessibilityHint = NSLocalizedString(
+                "Navigates to Settings.",
+                comment: "VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen."
+            )
+            rightBarButton.accessibilityIdentifier = "dashboard-settings-button"
+            navigationItem.setRightBarButton(rightBarButton, animated: false)
+        }
     }
 
     func configureDashboardUIContainer() {

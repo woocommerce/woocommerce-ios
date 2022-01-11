@@ -3,6 +3,7 @@ import UIKit
 import SwiftUI
 import Combine
 import Experiments
+import Yosemite
 
 /// View model for `HubMenu`.
 ///
@@ -40,6 +41,10 @@ final class HubMenuViewModel: ObservableObject {
     ///
     @Published private(set) var menuElements: [Menu] = []
 
+    @Published var showingReviewDetail = false
+
+    private var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
+
     private var storePickerCoordinator: StorePickerCoordinator?
 
     private var cancellables = Set<AnyCancellable>()
@@ -47,11 +52,10 @@ final class HubMenuViewModel: ObservableObject {
     init(siteID: Int64, navigationController: UINavigationController? = nil, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.navigationController = navigationController
-        menuElements = [.woocommerceAdmin, .viewStore]
+        menuElements = [.woocommerceAdmin, .viewStore, .reviews]
         if featureFlagService.isFeatureFlagEnabled(.couponManagement) {
             menuElements.append(.coupons)
         }
-        menuElements.append(.reviews)
         observeSiteForUIUpdates()
     }
 
@@ -63,6 +67,19 @@ final class HubMenuViewModel: ObservableObject {
             storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
             storePickerCoordinator?.start()
         }
+    }
+
+    func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
+        productReviewFromNoteParcel = parcel
+        showingReviewDetail = true
+    }
+
+    func getReviewDetailDestination() -> ReviewDetailView? {
+        guard let parcel = productReviewFromNoteParcel else {
+            return nil
+        }
+
+        return ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
     }
 
     private func observeSiteForUIUpdates() {

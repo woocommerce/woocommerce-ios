@@ -137,7 +137,7 @@ public typealias CardPresentReceiptParameters = Hardware.CardPresentReceiptParam
 public typealias CardPresentTransactionDetails = Hardware.CardPresentTransactionDetails
 public typealias WCPayAccount = Networking.WCPayAccount
 public typealias WCPayAccountStatusEnum = Networking.WCPayAccountStatusEnum
-public typealias WCPayCustomer = Networking.WCPayCustomer
+public typealias WCPayCustomer = Networking.Customer
 
 // MARK: - Exported Storage Symbols
 

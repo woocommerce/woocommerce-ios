@@ -8,7 +8,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     ///
     case completed
 
-    /// There is one than more plugin installed and activated, The user must select
+    /// There is more than one plugin installed and activated. The user must deactivate one.
     /// 
     case selectPlugin
 

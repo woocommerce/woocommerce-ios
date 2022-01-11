@@ -4,6 +4,7 @@
 -----
 - [***] In-Person Payments: Support for Stripe M2 card reader. [https://github.com/woocommerce/woocommerce-ios/pull/5844]
 
+
 8.3
 -----
 - [***] All merchants can create Simple Payments orders. [https://github.com/woocommerce/woocommerce-ios/pull/5684]

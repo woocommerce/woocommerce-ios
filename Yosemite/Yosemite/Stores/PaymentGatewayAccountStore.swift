@@ -70,7 +70,7 @@ private extension PaymentGatewayAccountStore {
             case .success(let wcpayAccount):
                 let account = wcpayAccount.toPaymentGatewayAccount(siteID: siteID)
                 self.upsertStoredAccountInBackground(readonlyAccount: account)
-            case .failure(_):
+            case .failure:
                 DDLogDebug("Error fetching WCPay account - it is possible the extension is not installed or inactive")
                 self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
             }
@@ -89,7 +89,7 @@ private extension PaymentGatewayAccountStore {
             case .success(let stripeAccount):
                 let account = stripeAccount.toPaymentGatewayAccount(siteID: siteID)
                 self.upsertStoredAccountInBackground(readonlyAccount: account)
-            case .failure(_):
+            case .failure:
                 DDLogDebug("Error fetching Stripe account - it is possible the extension is not installed or inactive")
                 self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
             }

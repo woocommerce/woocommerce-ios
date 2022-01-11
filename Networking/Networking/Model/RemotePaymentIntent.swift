@@ -1,6 +1,6 @@
 /// Represent a WCPay Payment Intent Entity.
 ///
-public struct WCPayPaymentIntent: Decodable {
+public struct RemotePaymentIntent: Decodable {
     public let id: String // e.g. pi_123456789012345678901234
     public let status: WCPayPaymentIntentStatusEnum
 
@@ -26,7 +26,7 @@ public struct WCPayPaymentIntent: Decodable {
     }
 }
 
-private extension WCPayPaymentIntent {
+private extension RemotePaymentIntent {
     enum CodingKeys: String, CodingKey {
         case id = "id"
         case status = "status"

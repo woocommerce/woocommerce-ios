@@ -40,7 +40,7 @@ public class WCPayRemote: Remote {
     public func captureOrderPayment(for siteID: Int64,
                                orderID: Int64,
                                paymentIntentID: String,
-                               completion: @escaping (Result<WCPayPaymentIntent, Error>) -> Void) {
+                               completion: @escaping (Result<RemotePaymentIntent, Error>) -> Void) {
         let path = "\(Path.orders)/\(orderID)/\(Path.captureTerminalPayment)"
 
         let parameters = [
@@ -50,7 +50,7 @@ public class WCPayRemote: Remote {
 
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
 
-        let mapper = WCPayPaymentIntentMapper()
+        let mapper = RemotePaymentIntentMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -64,12 +64,12 @@ public class WCPayRemote: Remote {
     ///   - completion: Closure to be run on completion.
     public func fetchOrderCustomer(for siteID: Int64,
                                orderID: Int64,
-                               completion: @escaping (Result<WCPayCustomer, Error>) -> Void) {
+                               completion: @escaping (Result<Customer, Error>) -> Void) {
         let path = "\(Path.orders)/\(orderID)/\(Path.createCustomer)"
 
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: [:])
 
-        let mapper = WCPayCustomerMapper()
+        let mapper = CustomerMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
     }

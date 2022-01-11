@@ -1,5 +1,6 @@
 import SwiftUI
 import Kingfisher
+import Yosemite
 
 /// This view will be embedded inside the `HubMenuViewController`
 /// and will be the entry point of the `Menu` Tab.
@@ -62,9 +63,16 @@ struct HubMenu: View {
             NavigationLink(destination: CouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
                 EmptyView()
             }.hidden()
+            LazyNavigationLink(destination: viewModel.getReviewDetailDestination(), isActive: $viewModel.showingReviewDetail) {
+                EmptyView()
+            }
         }
         .navigationBarHidden(true)
         .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
+    }
+
+    func pushReviewDetailsView(using parcel: ProductReviewFromNoteParcel) {
+        viewModel.showReviewDetails(using: parcel)
     }
 
     private struct TopBar: View {

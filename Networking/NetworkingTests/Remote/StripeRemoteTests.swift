@@ -375,29 +375,27 @@ final class StripeRemoteTests: XCTestCase {
         XCTAssertEqual(expectedError, error)
     }
 
-    /// Verifies that fetchOrderCustomer properly parses the nominal response
-    ///
-    /// Verifies that fetchOrderCustomer properly parses the nominal response
-    ///
-    func test_fetchOrderCustomer_properly_returns_customer() throws {
-        let remote = StripeRemote(network: network)
-        let expectedCustomerID = "cus_0123456789abcd"
+  /// Verifies that fetchOrderCustomer properly parses the nominal response
+     ///
+     func test_fetchOrderCustomer_properly_returns_customer() throws {
+         let remote = StripeRemote(network: network)
+         let expectedCustomerID = "cus_0123456789abcd"
 
-        network.simulateResponse(
-            requestUrlSuffix: "payments/orders/\(sampleOrderID)/create_customer",
-            filename: "stripe-customer"
-        )
+         network.simulateResponse(
+             requestUrlSuffix: "payments/orders/\(sampleOrderID)/create_customer",
+             filename: "stripe-customer"
+         )
 
-        let result: Result<Customer, Error> = waitFor { promise in
-            remote.fetchOrderCustomer(for: self.sampleSiteID, orderID: self.sampleOrderID) { result in
-                promise(result)
-            }
-        }
+         let result: Result<Customer, Error> = waitFor { promise in
+             remote.fetchOrderCustomer(for: self.sampleSiteID, orderID: self.sampleOrderID) { result in
+                 promise(result)
+             }
+         }
 
-        XCTAssertTrue(result.isSuccess)
-        let customer = try result.get()
-        XCTAssertEqual(customer.id, expectedCustomerID)
-    }
+         XCTAssertTrue(result.isSuccess)
+         let customer = try result.get()
+         XCTAssertEqual(customer.id, expectedCustomerID)
+     }
 
     /// Verifies that fetchOrderCustomer properly handles an error response (i.e. the order does not exist)
     ///
@@ -590,4 +588,41 @@ final class StripeRemoteTests: XCTestCase {
 
         XCTAssertTrue(result.isFailure)
     }
+
+     func test_loadDefaultReaderLocation_properly_returns_location() throws {
+         let remote = StripeRemote(network: network)
+         let expectedLocationID = "tml_0123456789abcd"
+
+         network.simulateResponse(
+             requestUrlSuffix: "payments/terminal/locations/store",
+             filename: "stripe-location"
+         )
+
+         let result: Result<RemoteReaderLocation, Error> = waitFor { promise in
+             remote.loadDefaultReaderLocation(for: self.sampleSiteID) { result in
+                 promise(result)
+             }
+         }
+
+         XCTAssertTrue(result.isSuccess)
+         let location = try result.get()
+         XCTAssertEqual(location.locationID, expectedLocationID)
+     }
+
+     func test_loadDefaultReaderLocation_properly_handles_error_response() throws {
+         let remote = StripeRemote(network: network)
+
+         network.simulateResponse(
+             requestUrlSuffix: "payments/terminal/locations/store",
+             filename: "stripe-location-error"
+         )
+
+         let result: Result<RemoteReaderLocation, Error> = waitFor { promise in
+             remote.loadDefaultReaderLocation(for: self.sampleSiteID) { result in
+                 promise(result)
+             }
+         }
+
+         XCTAssertTrue(result.isFailure)
+     }
 }

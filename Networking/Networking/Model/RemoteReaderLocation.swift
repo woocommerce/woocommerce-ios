@@ -1,6 +1,6 @@
-/// Represent a WCPay Reader Location Entity.
+/// Represent a Remote Reader Location Entity.
 ///
-public struct WCPayReaderLocation: Decodable {
+public struct RemoteReaderLocation: Decodable {
     public let locationID: String
     public let city: String?
     public let country: String
@@ -60,7 +60,7 @@ public struct WCPayReaderLocation: Decodable {
     }
 }
 
-private extension WCPayReaderLocation {
+private extension RemoteReaderLocation {
     enum CodingKeys: String, CodingKey {
         case locationID = "id"
         case address = "address"

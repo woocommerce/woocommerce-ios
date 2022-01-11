@@ -281,15 +281,16 @@ final class SimplePaymentsMethodsViewModelTests: XCTestCase {
     func test_collect_event_is_tracked_when_collecting_payment() {
         // Given
         let analytics = MockAnalyticsProvider()
+        let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = SimplePaymentsMethodsViewModel(formattedTotal: "$12.00", stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
-        viewModel.collectPayment(on: UIViewController(), onSuccess: {})
+        viewModel.collectPayment(on: UIViewController(), useCase: useCase, onSuccess: {})
 
         // Then
-        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowCollect.rawValue])
-        assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "card")
+        assertEqual(analytics.receivedEvents.last, WooAnalyticsStat.simplePaymentsFlowCollect.rawValue)
+        assertEqual(analytics.receivedProperties.last?["payment_method"] as? String, "card")
     }
 
     func test_card_row_is_shown_for_cpp_store() {

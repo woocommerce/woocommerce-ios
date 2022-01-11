@@ -4,59 +4,70 @@ import SwiftUI
 ///
 struct OrderCustomerSection: View {
 
-    /// View model to drive the view content
-    let viewModel: NewOrderViewModel.CustomerDataViewModel
+    /// Parent view model to access all data
+    @ObservedObject var viewModel: NewOrderViewModel
 
-    /// View model for Address Form
-    let addressFormViewModel: CreateOrderAddressFormViewModel
+    /// View model to drive the view content
+    private var customerDataViewModel: NewOrderViewModel.CustomerDataViewModel {
+        viewModel.customerDataViewModel
+    }
 
     @State private var showAddressForm: Bool = false
 
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     var body: some View {
-        Group {
-            Divider()
-
-            VStack(alignment: .leading, spacing: .zero) {
-                HStack(alignment: .top) {
-                    Text(Localization.customer)
-                        .headlineStyle()
-
-                    Spacer()
-
-                    if viewModel.isDataAvailable {
-                        Button(Localization.editButton) {
-                            showAddressForm.toggle()
-                        }
-                        .buttonStyle(LinkButtonStyle())
-                        .fixedSize(horizontal: true, vertical: true)
-                        .padding(.top, -Layout.linkButtonTopPadding) // remove padding to align button title to the top
-                        .padding(.trailing, -Layout.linkButtonTrailingPadding) // remove padding to align button title to the side
-                    }
-                }
-                .padding([.leading, .top, .trailing])
-
-                Spacer(minLength: Layout.verticalHeadlineSpacing)
-
-                if !viewModel.isDataAvailable {
-                    createCustomerView
-                } else {
-                    customerDataView
-                }
-            }
-            .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground))
-
-            Divider()
-        }
+        OrderCustomerSectionContent(viewModel: viewModel.customerDataViewModel, showAddressForm: $showAddressForm)
         .sheet(isPresented: $showAddressForm) {
             NavigationView {
                 EditOrderAddressForm(dismiss: {
                     showAddressForm.toggle()
-                }, viewModel: addressFormViewModel)
+                }, viewModel: viewModel.createOrderAddressFormViewModel())
             }
         }
+    }
+}
+
+private struct OrderCustomerSectionContent: View {
+
+    /// View model to drive the view content
+    var viewModel: NewOrderViewModel.CustomerDataViewModel
+
+    @Binding var showAddressForm: Bool
+
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
+    var body: some View {
+        Divider()
+
+        VStack(alignment: .leading, spacing: .zero) {
+            HStack(alignment: .top) {
+                Text(Localization.customer)
+                    .headlineStyle()
+
+                Spacer()
+
+                if viewModel.isDataAvailable {
+                    Button(Localization.editButton) {
+                        showAddressForm.toggle()
+                    }
+                    .buttonStyle(LinkButtonStyle())
+                    .fixedSize(horizontal: true, vertical: true)
+                    .padding(.top, -Layout.linkButtonTopPadding) // remove padding to align button title to the top
+                    .padding(.trailing, -Layout.linkButtonTrailingPadding) // remove padding to align button title to the side
+                }
+            }
+            .padding([.leading, .top, .trailing])
+
+            if !viewModel.isDataAvailable {
+                Spacer(minLength: Layout.verticalHeadlineSpacing)
+                createCustomerView
+            } else {
+                customerDataView
+            }
+        }
+        .padding(.horizontal, insets: safeAreaInsets)
+        .background(Color(.listForeground))
+
+        Divider()
     }
 
     private var createCustomerView: some View {
@@ -69,39 +80,31 @@ struct OrderCustomerSection: View {
 
     private var customerDataView: some View {
         Group {
-            VStack(alignment: .leading, spacing: Layout.verticalEmailSpacing) {
-                if let fullName = viewModel.fullName {
-                    Text(fullName)
-                        .bodyStyle()
-                }
-                if let email = viewModel.email {
-                    Text(email)
-                        .footnoteStyle()
-                }
-            }
-            .padding([.leading, .bottom, .trailing])
-            .padding(.top, -Layout.linkButtonTopPadding)
-            if let shippingAddressFormatted = viewModel.shippingAddressFormatted {
-                addressDetails(title: Localization.shippingTitle, formattedAddress: shippingAddressFormatted)
-            }
+            addressDetails(title: Localization.shippingTitle, formattedAddress: viewModel.shippingAddressFormatted)
+            Divider()
+                .padding(.leading)
+            addressDetails(title: Localization.billingTitle, formattedAddress: viewModel.billingAddressFormatted)
         }
     }
 
-    @ViewBuilder private func addressDetails(title: String, formattedAddress: String) -> some View {
-        Divider()
-            .padding(.leading)
+    @ViewBuilder private func addressDetails(title: String, formattedAddress: String?) -> some View {
         VStack(alignment: .leading, spacing: Layout.verticalAddressSpacing) {
             Text(title)
                 .headlineStyle()
-            Text(formattedAddress)
-                .bodyStyle()
+            if let formattedAddress = formattedAddress, formattedAddress.isNotEmpty {
+                Text(formattedAddress)
+                    .bodyStyle()
+            } else {
+                Text(Localization.noAddress)
+                    .bodyStyle()
+            }
         }
         .padding()
     }
 }
 
 // MARK: Constants
-private extension OrderCustomerSection {
+private extension OrderCustomerSectionContent {
     enum Layout {
         static let verticalHeadlineSpacing: CGFloat = 22.0
         static let verticalEmailSpacing: CGFloat = 4.0
@@ -117,13 +120,14 @@ private extension OrderCustomerSection {
 
         static let billingTitle = NSLocalizedString("Billing Address", comment: "Title for the Billing Address section in order customer data")
         static let shippingTitle = NSLocalizedString("Shipping Address", comment: "Title for the Edit Shipping Address section in order customer data")
+
+        static let noAddress = NSLocalizedString("No address specified.", comment: "Placeholder for empty address in order customer data")
     }
 }
 
 @available(iOS 15.0, *)
 struct OrderCustomerSection_Previews: PreviewProvider {
     static var previews: some View {
-        let orderAdressFormViewModel = NewOrderViewModel(siteID: 123).createOrderAddressFormViewModel()
         let emptyViewModel = NewOrderViewModel.CustomerDataViewModel(billingAddress: nil, shippingAddress: nil)
         let addressViewModel = NewOrderViewModel.CustomerDataViewModel(fullName: "Johnny Appleseed",
                                                                        email: "scrambled@scrambled.com",
@@ -136,8 +140,8 @@ struct OrderCustomerSection_Previews: PreviewProvider {
                                                                             """)
 
         ScrollView {
-            OrderCustomerSection(viewModel: emptyViewModel, addressFormViewModel: orderAdressFormViewModel)
-            OrderCustomerSection(viewModel: addressViewModel, addressFormViewModel: orderAdressFormViewModel)
+            OrderCustomerSectionContent(viewModel: emptyViewModel, showAddressForm: .constant(false))
+            OrderCustomerSectionContent(viewModel: addressViewModel, showAddressForm: .constant(false))
         }
     }
 }

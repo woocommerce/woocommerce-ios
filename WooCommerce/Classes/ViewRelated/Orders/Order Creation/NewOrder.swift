@@ -66,8 +66,7 @@ struct NewOrder: View {
                             Spacer(minLength: Layout.sectionSpacing)
                         }
 
-                        OrderCustomerSection(viewModel: viewModel.customerDataViewModel,
-                                             addressFormViewModel: viewModel.createOrderAddressFormViewModel())
+                        OrderCustomerSection(viewModel: viewModel)
                     }
                 }
                 .background(Color(.listBackground).ignoresSafeArea())

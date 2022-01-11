@@ -5,6 +5,9 @@ import Networking
 ///
 public enum PaymentGatewayAccountAction: Action {
     /// Retrieves and stores payment gateway account(s) for the provided `siteID`
+    /// We support payment gateway accounts for both the WooCommerce Payments extension AND
+    /// the Stripe extension. Let's attempt to load each and update view storage with the results.
+    /// Calls the passed completion with success after both loads have been attempted.
     ///
     case loadAccounts(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
 

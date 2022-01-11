@@ -73,7 +73,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         let detailsText = viewModel.detailsAttributedString.string
 
         // Assert
-        let singularFormat = NSLocalizedString("%ld variant", comment: "Label about one product variation shown on Products tab")
+        let singularFormat = NSLocalizedString("%ld variation", comment: "Label about one product variation shown on Products tab")
         let expectedStockDetail = String.localizedStringWithFormat(singularFormat, variations.count)
         XCTAssertTrue(detailsText.contains(expectedStockDetail))
     }
@@ -88,7 +88,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         let detailsText = viewModel.detailsAttributedString.string
 
         // Assert
-        let pluralFormat = NSLocalizedString("%ld variants", comment: "Label about number of variations shown on Products tab")
+        let pluralFormat = NSLocalizedString("%ld variations", comment: "Label about number of variations shown on Products tab")
         let expectedStockDetail = String.localizedStringWithFormat(pluralFormat, variations.count)
         XCTAssertTrue(detailsText.contains(expectedStockDetail))
     }

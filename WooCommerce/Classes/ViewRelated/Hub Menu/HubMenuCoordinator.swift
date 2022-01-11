@@ -11,6 +11,7 @@ import protocol Yosemite.StoresManager
 ///
 final class HubMenuCoordinator: Coordinator {
     var navigationController: UINavigationController
+    var hubMenuController: HubMenuViewController?
 
     private let pushNotificationsManager: PushNotesManager
     private let storesManager: StoresManager
@@ -54,7 +55,10 @@ final class HubMenuCoordinator: Coordinator {
 
     /// Replaces `start()` because the menu tab's navigation stack could be updated multiple times when site ID changes.
     func activate(siteID: Int64) {
-        navigationController.viewControllers = [HubMenuViewController(siteID: siteID, navigationController: navigationController)]
+        hubMenuController = HubMenuViewController(siteID: siteID, navigationController: navigationController)
+        if let hubMenuController = hubMenuController {
+            navigationController.viewControllers = [hubMenuController]
+        }
 
         if inactiveNotificationsSubscription == nil {
             inactiveNotificationsSubscription = pushNotificationsManager.inactiveNotifications.sink { [weak self] in
@@ -104,10 +108,7 @@ final class HubMenuCoordinator: Coordinator {
     }
 
     private func pushReviewDetailsViewController(using parcel: ProductReviewFromNoteParcel) {
-        let detailsVC = ReviewDetailsViewController(productReview: parcel.review,
-                                                    product: parcel.product,
-                                                    notification: parcel.note)
-        navigationController.pushViewController(detailsVC, animated: true)
+        hubMenuController?.pushReviewDetailsViewController(using: parcel)
     }
 }
 

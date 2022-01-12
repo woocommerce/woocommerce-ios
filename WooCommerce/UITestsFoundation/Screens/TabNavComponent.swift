@@ -11,16 +11,21 @@ public final class TabNavComponent: ScreenObject {
         $0.tabBars.firstMatch.buttons["tab-bar-orders-item"]
     }
 
-    private let reviewsTabButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.tabBars.firstMatch.buttons["tab-bar-reviews-item"]
-    }
-
     private let productsTabButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.tabBars.firstMatch.buttons["tab-bar-products-item"]
     }
 
+    private let menuTabButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.tabBars.firstMatch.buttons["tab-bar-menu-item"]
+    }
+
+    private let reviewsTabButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.tabBars.firstMatch.buttons["tab-bar-reviews-item"]
+    }
+
     private var myStoreTabButton: XCUIElement { myStoreTabButtonGetter(app) }
     private var ordersTabButton: XCUIElement { ordersTabButtonGetter(app) }
+    private var menuTabButton: XCUIElement { menuTabButtonGetter(app) }
     private var reviewsTabButton: XCUIElement { reviewsTabButtonGetter(app) }
     var productsTabButton: XCUIElement { productsTabButtonGetter(app) }
 
@@ -29,7 +34,6 @@ public final class TabNavComponent: ScreenObject {
             expectedElementGetters: [
                 myStoreTabButtonGetter,
                 ordersTabButtonGetter,
-                reviewsTabButtonGetter,
                 productsTabButtonGetter
             ],
             app: app
@@ -38,39 +42,31 @@ public final class TabNavComponent: ScreenObject {
 
     @discardableResult
     func goToMyStoreScreen() throws -> MyStoreScreen {
-        // Avoid transitioning if it is already on screen
-        if MyStoreScreen.isVisible == false {
-            myStoreTabButton.tap()
-        }
+        myStoreTabButton.tap()
         return try MyStoreScreen()
     }
 
     @discardableResult
     public func goToOrdersScreen() throws -> OrdersScreen {
-        // Avoid transitioning if it is already on screen
-        guard let orderScreen = try? OrdersScreen(), orderScreen.isLoaded else {
-            ordersTabButton.tap()
-            return try OrdersScreen()
-        }
-
-        return orderScreen
+        ordersTabButton.tap()
+        return try OrdersScreen()
     }
 
     @discardableResult
     public func goToProductsScreen() throws -> ProductsScreen {
-        if ProductsScreen.isVisible == false {
-            productsTabButton.tap()
-        }
-
+        productsTabButton.tap()
         return try ProductsScreen()
     }
 
     @discardableResult
-    public func goToReviewsScreen() throws -> ReviewsScreen {
-        if ReviewsScreen.isVisible == false {
-            reviewsTabButton.tap()
-        }
+    public func goToMenuScreen() throws -> MenuScreen {
+        menuTabButton.tap()
+        return try MenuScreen()
+    }
 
+    @discardableResult
+    public func goToReviewsScreen() throws -> ReviewsScreen {
+        reviewsTabButton.tap()
         return try ReviewsScreen()
     }
 

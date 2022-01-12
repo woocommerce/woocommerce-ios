@@ -2,12 +2,6 @@ import ScreenObject
 import XCTest
 
 public final class MyStoreScreen: ScreenObject {
-
-    // TODO: Remove force `try` once `ScreenObject` migration is completed
-    public let tabBar = try! TabNavComponent()
-    // TODO: Remove force `try` once `ScreenObject` migration is completed
-    public let periodStatsTable = try! PeriodStatsTable()
-
     private let settingsButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["dashboard-settings-button"]
     }

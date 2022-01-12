@@ -17,6 +17,7 @@ final class ReviewsTests: XCTestCase {
             .goToProductsScreen()
 
         try TabNavComponent()
+            .goToMenuScreen()
             .goToReviewsScreen()
     }
 

@@ -12,7 +12,7 @@ public final class ReviewsScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [ { $0.buttons["reviews-open-menu-button"] } ],
+            expectedElementGetters: [ { $0.staticTexts["Reviews"] } ],
             app: app
         )
     }

@@ -72,7 +72,7 @@ private extension ProductInOrder {
 
 struct ProductInOrder_Previews: PreviewProvider {
     static var previews: some View {
-        let productRowVM = ProductRowViewModel(productID: 1,
+        let productRowVM = ProductRowViewModel(productOrVariationID: 1,
                                             name: "Love Ficus",
                                             sku: "123456",
                                             price: "20",

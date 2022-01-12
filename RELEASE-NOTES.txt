@@ -3,7 +3,7 @@
 8.4
 -----
 - [***] In-Person Payments: Support for Stripe M2 card reader. [https://github.com/woocommerce/woocommerce-ios/pull/5844]
-
+- [*] Add/Edit Product screen: Fix transient product name while adding images.[https://github.com/woocommerce/woocommerce-ios/pull/5840]
 
 8.3
 -----

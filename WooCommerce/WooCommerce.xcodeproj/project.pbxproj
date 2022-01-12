@@ -946,7 +946,14 @@
 		800A5BC7275889ED009DE2CD /* reports_revenue_stats_month.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BC3275889EC009DE2CD /* reports_revenue_stats_month.json */; };
 		800A5BC8275889ED009DE2CD /* reports_revenue_stats_year.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BC4275889EC009DE2CD /* reports_revenue_stats_year.json */; };
 		800A5BCB2759CE4B009DE2CD /* ProductsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800A5BCA2759CE4B009DE2CD /* ProductsTests.swift */; };
-		80AD2CA22782B4EB00A63DE8 /* products_on_review.json in Resources */ = {isa = PBXBuildFile; fileRef = 80AD2CA12782B4EB00A63DE8 /* products_on_review.json */; };
+		80AD2CA22782B4EB00A63DE8 /* products_list_1.json in Resources */ = {isa = PBXBuildFile; fileRef = 80AD2CA12782B4EB00A63DE8 /* products_list_1.json */; };
+		80AD2CA427858BAB00A63DE8 /* StatsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AD2CA327858BAB00A63DE8 /* StatsTests.swift */; };
+		80AD2CA627859B4400A63DE8 /* reports_leaderboards_stats_day.json in Resources */ = {isa = PBXBuildFile; fileRef = 80AD2CA527859B4400A63DE8 /* reports_leaderboards_stats_day.json */; };
+		80AD2CA827859B7D00A63DE8 /* reports_leaderboards_stats_week.json in Resources */ = {isa = PBXBuildFile; fileRef = 80AD2CA727859B7D00A63DE8 /* reports_leaderboards_stats_week.json */; };
+		80B8D34127859C6F00FE6E6B /* reports_leaderboards_stats_month.json in Resources */ = {isa = PBXBuildFile; fileRef = 80B8D34027859C6F00FE6E6B /* reports_leaderboards_stats_month.json */; };
+		80B8D34327859C7F00FE6E6B /* reports_leaderboards_stats_year.json in Resources */ = {isa = PBXBuildFile; fileRef = 80B8D34227859C7F00FE6E6B /* reports_leaderboards_stats_year.json */; };
+		80B8D3452785A08900FE6E6B /* products_list_2.json in Resources */ = {isa = PBXBuildFile; fileRef = 80B8D3442785A08900FE6E6B /* products_list_2.json */; };
+		80B8D3492785A0A900FE6E6B /* products_list_3.json in Resources */ = {isa = PBXBuildFile; fileRef = 80B8D3482785A0A900FE6E6B /* products_list_3.json */; };
 		80C3626B27704EE1005CEAD3 /* ProductDataStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C3626A27704EE1005CEAD3 /* ProductDataStructs.swift */; };
 		80C3626F277453E8005CEAD3 /* ReviewsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C3626E277453E7005CEAD3 /* ReviewsTests.swift */; };
 		80C3627127745737005CEAD3 /* ReviewDataStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C3627027745737005CEAD3 /* ReviewDataStructs.swift */; };
@@ -1184,18 +1191,18 @@
 		CCFC010023E9BD5500157A78 /* rest_v11_me_sites.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00D823E9BD5500157A78 /* rest_v11_me_sites.json */; };
 		CCFC010123E9BD5500157A78 /* rest_v11_notifications_note_hashes.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00DA23E9BD5500157A78 /* rest_v11_notifications_note_hashes.json */; };
 		CCFC010223E9BD5500157A78 /* rest_v11_notifications.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00DB23E9BD5500157A78 /* rest_v11_notifications.json */; };
-		CCFC010323E9BD5500157A78 /* stats_orders-week.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00DD23E9BD5500157A78 /* stats_orders-week.json */; };
-		CCFC010423E9BD5500157A78 /* stats_top_earners-week.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00DE23E9BD5500157A78 /* stats_top_earners-week.json */; };
-		CCFC010523E9BD5500157A78 /* stats_top_earners-day.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00DF23E9BD5500157A78 /* stats_top_earners-day.json */; };
-		CCFC010623E9BD5500157A78 /* stats_visits-year.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E023E9BD5500157A78 /* stats_visits-year.json */; };
-		CCFC010723E9BD5500157A78 /* stats_visits-month.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E123E9BD5500157A78 /* stats_visits-month.json */; };
-		CCFC010823E9BD5500157A78 /* stats_visits-week.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E223E9BD5500157A78 /* stats_visits-week.json */; };
-		CCFC010923E9BD5500157A78 /* stats_orders-day.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E323E9BD5500157A78 /* stats_orders-day.json */; };
-		CCFC010A23E9BD5500157A78 /* stats_orders-month.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E423E9BD5500157A78 /* stats_orders-month.json */; };
-		CCFC010B23E9BD5500157A78 /* stats_top_earners-year.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E523E9BD5500157A78 /* stats_top_earners-year.json */; };
-		CCFC010C23E9BD5500157A78 /* stats_orders-year.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E623E9BD5500157A78 /* stats_orders-year.json */; };
-		CCFC010D23E9BD5500157A78 /* stats_top_earners-month.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E723E9BD5500157A78 /* stats_top_earners-month.json */; };
-		CCFC010E23E9BD5500157A78 /* stats_visits-day.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E823E9BD5500157A78 /* stats_visits-day.json */; };
+		CCFC010323E9BD5500157A78 /* stats_orders_week.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00DD23E9BD5500157A78 /* stats_orders_week.json */; };
+		CCFC010423E9BD5500157A78 /* stats_top_earners_week.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00DE23E9BD5500157A78 /* stats_top_earners_week.json */; };
+		CCFC010523E9BD5500157A78 /* stats_top_earners_day.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00DF23E9BD5500157A78 /* stats_top_earners_day.json */; };
+		CCFC010623E9BD5500157A78 /* stats_visits_year.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E023E9BD5500157A78 /* stats_visits_year.json */; };
+		CCFC010723E9BD5500157A78 /* stats_visits_month.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E123E9BD5500157A78 /* stats_visits_month.json */; };
+		CCFC010823E9BD5500157A78 /* stats_visits_week.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E223E9BD5500157A78 /* stats_visits_week.json */; };
+		CCFC010923E9BD5500157A78 /* stats_orders_day.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E323E9BD5500157A78 /* stats_orders_day.json */; };
+		CCFC010A23E9BD5500157A78 /* stats_orders_month.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E423E9BD5500157A78 /* stats_orders_month.json */; };
+		CCFC010B23E9BD5500157A78 /* stats_top_earners_year.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E523E9BD5500157A78 /* stats_top_earners_year.json */; };
+		CCFC010C23E9BD5500157A78 /* stats_orders_year.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E623E9BD5500157A78 /* stats_orders_year.json */; };
+		CCFC010D23E9BD5500157A78 /* stats_top_earners_month.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E723E9BD5500157A78 /* stats_top_earners_month.json */; };
+		CCFC010E23E9BD5500157A78 /* stats_visits_day.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E823E9BD5500157A78 /* stats_visits_day.json */; };
 		CCFC50552743BC0D001E505F /* NewOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFC50542743BC0D001E505F /* NewOrder.swift */; };
 		CCFC50592743E021001E505F /* NewOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFC50582743E021001E505F /* NewOrderViewModel.swift */; };
 		CE0F17CF22A8105800964A63 /* ReadMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0F17CD22A8105800964A63 /* ReadMoreTableViewCell.swift */; };
@@ -2499,7 +2506,14 @@
 		800A5BC3275889EC009DE2CD /* reports_revenue_stats_month.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = reports_revenue_stats_month.json; sourceTree = "<group>"; };
 		800A5BC4275889EC009DE2CD /* reports_revenue_stats_year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = reports_revenue_stats_year.json; sourceTree = "<group>"; };
 		800A5BCA2759CE4B009DE2CD /* ProductsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTests.swift; sourceTree = "<group>"; };
-		80AD2CA12782B4EB00A63DE8 /* products_on_review.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_on_review.json; sourceTree = "<group>"; };
+		80AD2CA12782B4EB00A63DE8 /* products_list_1.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_list_1.json; sourceTree = "<group>"; };
+		80AD2CA327858BAB00A63DE8 /* StatsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTests.swift; sourceTree = "<group>"; };
+		80AD2CA527859B4400A63DE8 /* reports_leaderboards_stats_day.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = reports_leaderboards_stats_day.json; sourceTree = "<group>"; };
+		80AD2CA727859B7D00A63DE8 /* reports_leaderboards_stats_week.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = reports_leaderboards_stats_week.json; sourceTree = "<group>"; };
+		80B8D34027859C6F00FE6E6B /* reports_leaderboards_stats_month.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = reports_leaderboards_stats_month.json; sourceTree = "<group>"; };
+		80B8D34227859C7F00FE6E6B /* reports_leaderboards_stats_year.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = reports_leaderboards_stats_year.json; sourceTree = "<group>"; };
+		80B8D3442785A08900FE6E6B /* products_list_2.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_list_2.json; sourceTree = "<group>"; };
+		80B8D3482785A0A900FE6E6B /* products_list_3.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_list_3.json; sourceTree = "<group>"; };
 		80C3626A27704EE1005CEAD3 /* ProductDataStructs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDataStructs.swift; sourceTree = "<group>"; };
 		80C3626E277453E7005CEAD3 /* ReviewsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReviewsTests.swift; sourceTree = "<group>"; };
 		80C3627027745737005CEAD3 /* ReviewDataStructs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewDataStructs.swift; sourceTree = "<group>"; };
@@ -2766,18 +2780,18 @@
 		CCFC00D823E9BD5500157A78 /* rest_v11_me_sites.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = rest_v11_me_sites.json; sourceTree = "<group>"; };
 		CCFC00DA23E9BD5500157A78 /* rest_v11_notifications_note_hashes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = rest_v11_notifications_note_hashes.json; sourceTree = "<group>"; };
 		CCFC00DB23E9BD5500157A78 /* rest_v11_notifications.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = rest_v11_notifications.json; sourceTree = "<group>"; };
-		CCFC00DD23E9BD5500157A78 /* stats_orders-week.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stats_orders-week.json"; sourceTree = "<group>"; };
-		CCFC00DE23E9BD5500157A78 /* stats_top_earners-week.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stats_top_earners-week.json"; sourceTree = "<group>"; };
-		CCFC00DF23E9BD5500157A78 /* stats_top_earners-day.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stats_top_earners-day.json"; sourceTree = "<group>"; };
-		CCFC00E023E9BD5500157A78 /* stats_visits-year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stats_visits-year.json"; sourceTree = "<group>"; };
-		CCFC00E123E9BD5500157A78 /* stats_visits-month.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stats_visits-month.json"; sourceTree = "<group>"; };
-		CCFC00E223E9BD5500157A78 /* stats_visits-week.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stats_visits-week.json"; sourceTree = "<group>"; };
-		CCFC00E323E9BD5500157A78 /* stats_orders-day.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stats_orders-day.json"; sourceTree = "<group>"; };
-		CCFC00E423E9BD5500157A78 /* stats_orders-month.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stats_orders-month.json"; sourceTree = "<group>"; };
-		CCFC00E523E9BD5500157A78 /* stats_top_earners-year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stats_top_earners-year.json"; sourceTree = "<group>"; };
-		CCFC00E623E9BD5500157A78 /* stats_orders-year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stats_orders-year.json"; sourceTree = "<group>"; };
-		CCFC00E723E9BD5500157A78 /* stats_top_earners-month.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stats_top_earners-month.json"; sourceTree = "<group>"; };
-		CCFC00E823E9BD5500157A78 /* stats_visits-day.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stats_visits-day.json"; sourceTree = "<group>"; };
+		CCFC00DD23E9BD5500157A78 /* stats_orders_week.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stats_orders_week.json; sourceTree = "<group>"; };
+		CCFC00DE23E9BD5500157A78 /* stats_top_earners_week.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stats_top_earners_week.json; sourceTree = "<group>"; };
+		CCFC00DF23E9BD5500157A78 /* stats_top_earners_day.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stats_top_earners_day.json; sourceTree = "<group>"; };
+		CCFC00E023E9BD5500157A78 /* stats_visits_year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stats_visits_year.json; sourceTree = "<group>"; };
+		CCFC00E123E9BD5500157A78 /* stats_visits_month.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stats_visits_month.json; sourceTree = "<group>"; };
+		CCFC00E223E9BD5500157A78 /* stats_visits_week.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stats_visits_week.json; sourceTree = "<group>"; };
+		CCFC00E323E9BD5500157A78 /* stats_orders_day.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stats_orders_day.json; sourceTree = "<group>"; };
+		CCFC00E423E9BD5500157A78 /* stats_orders_month.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stats_orders_month.json; sourceTree = "<group>"; };
+		CCFC00E523E9BD5500157A78 /* stats_top_earners_year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stats_top_earners_year.json; sourceTree = "<group>"; };
+		CCFC00E623E9BD5500157A78 /* stats_orders_year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stats_orders_year.json; sourceTree = "<group>"; };
+		CCFC00E723E9BD5500157A78 /* stats_top_earners_month.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stats_top_earners_month.json; sourceTree = "<group>"; };
+		CCFC00E823E9BD5500157A78 /* stats_visits_day.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stats_visits_day.json; sourceTree = "<group>"; };
 		CCFC011023E9E3F400157A78 /* start.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = start.sh; sourceTree = "<group>"; };
 		CCFC011123E9E40B00157A78 /* stop.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = stop.sh; sourceTree = "<group>"; };
 		CCFC50542743BC0D001E505F /* NewOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewOrder.swift; sourceTree = "<group>"; };
@@ -6171,6 +6185,7 @@
 				800A5B57275483D6009DE2CD /* OrdersTests.swift */,
 				800A5BCA2759CE4B009DE2CD /* ProductsTests.swift */,
 				80C3626E277453E7005CEAD3 /* ReviewsTests.swift */,
+				80AD2CA327858BAB00A63DE8 /* StatsTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -6243,6 +6258,10 @@
 				800A5BC3275889EC009DE2CD /* reports_revenue_stats_month.json */,
 				800A5BC4275889EC009DE2CD /* reports_revenue_stats_year.json */,
 				CCFC00C223E9BD5500157A78 /* reports_revenue_stats.json */,
+				80AD2CA527859B4400A63DE8 /* reports_leaderboards_stats_day.json */,
+				80AD2CA727859B7D00A63DE8 /* reports_leaderboards_stats_week.json */,
+				80B8D34027859C6F00FE6E6B /* reports_leaderboards_stats_month.json */,
+				80B8D34227859C7F00FE6E6B /* reports_leaderboards_stats_year.json */,
 			);
 			path = "wc-analytics";
 			sourceTree = "<group>";
@@ -6279,6 +6298,9 @@
 				800A5BAB27586642009DE2CD /* products_2130.json */,
 				800A5BAD27586876009DE2CD /* products_2131.json */,
 				800A5BAF27586898009DE2CD /* products_2132.json */,
+				80AD2CA12782B4EB00A63DE8 /* products_list_1.json */,
+				80B8D3442785A08900FE6E6B /* products_list_2.json */,
+				80B8D3482785A0A900FE6E6B /* products_list_3.json */,
 			);
 			path = products;
 			sourceTree = "<group>";
@@ -6315,7 +6337,6 @@
 				800A5BBB27586AE1009DE2CD /* products_reviews_6162.json */,
 				800A5BBD27586AEF009DE2CD /* products_reviews_6163.json */,
 				800A5BBF27586AFC009DE2CD /* products_reviews_6164.json */,
-				80AD2CA12782B4EB00A63DE8 /* products_on_review.json */,
 			);
 			path = reviews;
 			sourceTree = "<group>";
@@ -6342,18 +6363,18 @@
 		CCFC00DC23E9BD5500157A78 /* stats */ = {
 			isa = PBXGroup;
 			children = (
-				CCFC00E323E9BD5500157A78 /* stats_orders-day.json */,
-				CCFC00DD23E9BD5500157A78 /* stats_orders-week.json */,
-				CCFC00E423E9BD5500157A78 /* stats_orders-month.json */,
-				CCFC00E623E9BD5500157A78 /* stats_orders-year.json */,
-				CCFC00DF23E9BD5500157A78 /* stats_top_earners-day.json */,
-				CCFC00DE23E9BD5500157A78 /* stats_top_earners-week.json */,
-				CCFC00E723E9BD5500157A78 /* stats_top_earners-month.json */,
-				CCFC00E523E9BD5500157A78 /* stats_top_earners-year.json */,
-				CCFC00E823E9BD5500157A78 /* stats_visits-day.json */,
-				CCFC00E223E9BD5500157A78 /* stats_visits-week.json */,
-				CCFC00E123E9BD5500157A78 /* stats_visits-month.json */,
-				CCFC00E023E9BD5500157A78 /* stats_visits-year.json */,
+				CCFC00E323E9BD5500157A78 /* stats_orders_day.json */,
+				CCFC00DD23E9BD5500157A78 /* stats_orders_week.json */,
+				CCFC00E423E9BD5500157A78 /* stats_orders_month.json */,
+				CCFC00E623E9BD5500157A78 /* stats_orders_year.json */,
+				CCFC00DF23E9BD5500157A78 /* stats_top_earners_day.json */,
+				CCFC00DE23E9BD5500157A78 /* stats_top_earners_week.json */,
+				CCFC00E723E9BD5500157A78 /* stats_top_earners_month.json */,
+				CCFC00E523E9BD5500157A78 /* stats_top_earners_year.json */,
+				CCFC00E823E9BD5500157A78 /* stats_visits_day.json */,
+				CCFC00E223E9BD5500157A78 /* stats_visits_week.json */,
+				CCFC00E123E9BD5500157A78 /* stats_visits_month.json */,
+				CCFC00E023E9BD5500157A78 /* stats_visits_year.json */,
 			);
 			path = stats;
 			sourceTree = "<group>";
@@ -7805,22 +7826,26 @@
 			buildActionMask = 2147483647;
 			files = (
 				80E6FC6D276312D50086CD67 /* products.json in Resources */,
+				80B8D3492785A0A900FE6E6B /* products_list_3.json in Resources */,
 				800A5BB827586A96009DE2CD /* products_reviews_6156.json in Resources */,
 				D8CD0605258B384E00B52D63 /* oauth2_token-error.json in Resources */,
 				800A5BAE27586876009DE2CD /* products_2131.json in Resources */,
 				800A5BAC27586642009DE2CD /* products_2130.json in Resources */,
+				80AD2CA627859B4400A63DE8 /* reports_leaderboards_stats_day.json in Resources */,
 				80C362732779A7EF005CEAD3 /* products_reviews_all.json in Resources */,
 				800A5BC7275889ED009DE2CD /* reports_revenue_stats_month.json in Resources */,
 				800A5B992755BADA009DE2CD /* accounts.json in Resources */,
 				800A5BA4275719E5009DE2CD /* orders_2201_notes.json in Resources */,
 				800A5BA5275719E5009DE2CD /* orders_2201_shipment_trackings.json in Resources */,
 				800A5BAA2758661B009DE2CD /* products_2123.json in Resources */,
+				80B8D34327859C7F00FE6E6B /* reports_leaderboards_stats_year.json in Resources */,
 				800A5B9B2755E0B9009DE2CD /* orders_any.json in Resources */,
 				800A5BB2275869DC009DE2CD /* products_reviews_6154.json in Resources */,
 				800A5BBE27586AEF009DE2CD /* products_reviews_6163.json in Resources */,
 				FE6BCDFC26A9D0E700D96FE2 /* rest_v2_sites_users_me.json in Resources */,
 				800A5BA027562EE5009DE2CD /* orders_processing.json in Resources */,
-				80AD2CA22782B4EB00A63DE8 /* products_on_review.json in Resources */,
+				80AD2CA22782B4EB00A63DE8 /* products_list_1.json in Resources */,
+				80B8D34127859C6F00FE6E6B /* reports_leaderboards_stats_month.json in Resources */,
 				800A5BC6275889ED009DE2CD /* reports_revenue_stats_hour.json in Resources */,
 				800A5BB027586898009DE2CD /* products_2132.json in Resources */,
 				800A5BA6275719E5009DE2CD /* orders_2201_refunds.json in Resources */,
@@ -7833,7 +7858,9 @@
 				800A5B6127548F53009DE2CD /* sites_posts_password.json in Resources */,
 				800A5BB427586A0E009DE2CD /* products_reviews_6155.json in Resources */,
 				800A5B5F27548F31009DE2CD /* site_info_wordpress_com.json in Resources */,
+				80B8D3452785A08900FE6E6B /* products_list_2.json in Resources */,
 				800A5BBA27586AC8009DE2CD /* products_reviews_6161.json in Resources */,
+				80AD2CA827859B7D00A63DE8 /* reports_leaderboards_stats_week.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7841,33 +7868,33 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CCFC010E23E9BD5500157A78 /* stats_visits-day.json in Resources */,
+				CCFC010E23E9BD5500157A78 /* stats_visits_day.json in Resources */,
 				CCFC010223E9BD5500157A78 /* rest_v11_notifications.json in Resources */,
 				CCFC00F323E9BD5500157A78 /* settings_products.json in Resources */,
-				CCFC010523E9BD5500157A78 /* stats_top_earners-day.json in Resources */,
-				CCFC010723E9BD5500157A78 /* stats_visits-month.json in Resources */,
-				CCFC010823E9BD5500157A78 /* stats_visits-week.json in Resources */,
+				CCFC010523E9BD5500157A78 /* stats_top_earners_day.json in Resources */,
+				CCFC010723E9BD5500157A78 /* stats_visits_month.json in Resources */,
+				CCFC010823E9BD5500157A78 /* stats_visits_week.json in Resources */,
 				CC8413E423F5C48E00EFC277 /* stop.sh in Resources */,
-				CCFC010D23E9BD5500157A78 /* stats_top_earners-month.json in Resources */,
+				CCFC010D23E9BD5500157A78 /* stats_top_earners_month.json in Resources */,
 				CC8413E523F5C49100EFC277 /* start.sh in Resources */,
-				CCFC010923E9BD5500157A78 /* stats_orders-day.json in Resources */,
+				CCFC010923E9BD5500157A78 /* stats_orders_day.json in Resources */,
 				CCFC00FE23E9BD5500157A78 /* rest_api.json in Resources */,
 				CCFC00F123E9BD5500157A78 /* reports_revenue_stats.json in Resources */,
-				CCFC010C23E9BD5500157A78 /* stats_orders-year.json in Resources */,
+				CCFC010C23E9BD5500157A78 /* stats_orders_year.json in Resources */,
 				CCFC00FC23E9BD5500157A78 /* reports_orders_totals.json in Resources */,
-				CCFC010323E9BD5500157A78 /* stats_orders-week.json in Resources */,
-				CCFC010B23E9BD5500157A78 /* stats_top_earners-year.json in Resources */,
+				CCFC010323E9BD5500157A78 /* stats_orders_week.json in Resources */,
+				CCFC010B23E9BD5500157A78 /* stats_top_earners_year.json in Resources */,
 				CCFC00F523E9BD5500157A78 /* products.json in Resources */,
 				CCFC00FB23E9BD5500157A78 /* reports_orders_totals_processing.json in Resources */,
 				CCFC00FF23E9BD5500157A78 /* rest_v11_me.json in Resources */,
 				CCFC010023E9BD5500157A78 /* rest_v11_me_sites.json in Resources */,
-				CCFC010A23E9BD5500157A78 /* stats_orders-month.json in Resources */,
-				CCFC010423E9BD5500157A78 /* stats_top_earners-week.json in Resources */,
+				CCFC010A23E9BD5500157A78 /* stats_orders_month.json in Resources */,
+				CCFC010423E9BD5500157A78 /* stats_top_earners_week.json in Resources */,
 				CCFC00F423E9BD5500157A78 /* settings_general.json in Resources */,
 				CCFC00EE23E9BD5500157A78 /* oauth2_token.json in Resources */,
 				CCFC010123E9BD5500157A78 /* rest_v11_notifications_note_hashes.json in Resources */,
 				CCFC00EF23E9BD5500157A78 /* auth_options.json in Resources */,
-				CCFC010623E9BD5500157A78 /* stats_visits-year.json in Resources */,
+				CCFC010623E9BD5500157A78 /* stats_visits_year.json in Resources */,
 				247CE8A6258340E600F9D9D1 /* ScreenshotImages.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -9248,6 +9275,7 @@
 				80E6FC79276C3FD60086CD67 /* MockDataReader.swift in Sources */,
 				CCDC49CD23FFFFF4003166BA /* LoginTests.swift in Sources */,
 				800A5B58275483D6009DE2CD /* OrdersTests.swift in Sources */,
+				80AD2CA427858BAB00A63DE8 /* StatsTests.swift in Sources */,
 				800A5BCB2759CE4B009DE2CD /* ProductsTests.swift in Sources */,
 				800A5B9E275623FC009DE2CD /* LoginFlow.swift in Sources */,
 			);

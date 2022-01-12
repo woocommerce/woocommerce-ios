@@ -1,6 +1,6 @@
+import Combine
 import Foundation
 import UIKit
-import Observables
 
 import enum Yosemite.ProductReviewAction
 import enum Yosemite.NotificationAction
@@ -11,13 +11,14 @@ import protocol Yosemite.StoresManager
 ///
 final class HubMenuCoordinator: Coordinator {
     var navigationController: UINavigationController
+    var hubMenuController: HubMenuViewController?
 
     private let pushNotificationsManager: PushNotesManager
     private let storesManager: StoresManager
     private let noticePresenter: NoticePresenter
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
 
-    private var observationToken: ObservationToken?
+    private var notificationsSubscription: AnyCancellable?
 
     private let willPresentReviewDetailsFromPushNotification: () -> Void
 
@@ -45,7 +46,7 @@ final class HubMenuCoordinator: Coordinator {
     }
 
     deinit {
-        observationToken?.cancel()
+        notificationsSubscription?.cancel()
     }
 
     func start() {
@@ -54,16 +55,21 @@ final class HubMenuCoordinator: Coordinator {
 
     /// Replaces `start()` because the menu tab's navigation stack could be updated multiple times when site ID changes.
     func activate(siteID: Int64) {
-        navigationController.viewControllers = [HubMenuViewController(siteID: siteID, navigationController: navigationController)]
+        hubMenuController = HubMenuViewController(siteID: siteID, navigationController: navigationController)
+        if let hubMenuController = hubMenuController {
+            navigationController.viewControllers = [hubMenuController]
+        }
 
-        if observationToken == nil {
-            observationToken = pushNotificationsManager.inactiveNotifications.subscribe { [weak self] in
-                self?.handleInactiveNotification($0)
-            }
+        if notificationsSubscription == nil {
+            notificationsSubscription = Publishers
+                .Merge(pushNotificationsManager.inactiveNotifications, pushNotificationsManager.foregroundNotificationsToView)
+                .sink { [weak self] in
+                    self?.handleNotification($0)
+                }
         }
     }
 
-    private func handleInactiveNotification(_ notification: PushNotification) {
+    private func handleNotification(_ notification: PushNotification) {
         guard notification.kind == .comment else {
             return
         }
@@ -104,10 +110,7 @@ final class HubMenuCoordinator: Coordinator {
     }
 
     private func pushReviewDetailsViewController(using parcel: ProductReviewFromNoteParcel) {
-        let detailsVC = ReviewDetailsViewController(productReview: parcel.review,
-                                                    product: parcel.product,
-                                                    notification: parcel.note)
-        navigationController.pushViewController(detailsVC, animated: true)
+        hubMenuController?.pushReviewDetailsViewController(using: parcel)
     }
 }
 

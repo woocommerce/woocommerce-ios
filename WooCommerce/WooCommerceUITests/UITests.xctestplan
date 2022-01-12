@@ -13,6 +13,9 @@
   },
   "testTargets" : [
     {
+      "skippedTests" : [
+        "StatsTests\/testStatsScreenLoad()"
+      ],
       "target" : {
         "containerPath" : "container:WooCommerce.xcodeproj",
         "identifier" : "CCDC49C923FFFFF4003166BA",

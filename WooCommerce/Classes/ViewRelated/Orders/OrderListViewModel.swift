@@ -2,8 +2,6 @@ import Combine
 import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
-import Observables
-import Combine
 
 /// ViewModel for `OrderListViewController`.
 ///
@@ -28,7 +26,7 @@ final class OrderListViewModel {
 
     /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.
     ///
-    private var cancellable: ObservationToken?
+    private var foregroundNotificationsSubscription: AnyCancellable?
 
     /// The block called if self requests a resynchronization of the first page. The
     /// resynchronization should only be done if the view is visible.
@@ -226,7 +224,7 @@ private extension OrderListViewModel {
     /// A refresh will be requested when receiving them.
     ///
     func observeForegroundRemoteNotifications() {
-        cancellable = pushNotificationsManager.foregroundNotifications.subscribe { [weak self] notification in
+        foregroundNotificationsSubscription = pushNotificationsManager.foregroundNotifications.sink { [weak self] notification in
             guard notification.kind == .storeOrder else {
                 return
             }
@@ -236,7 +234,7 @@ private extension OrderListViewModel {
     }
 
     func stopObservingForegroundRemoteNotifications() {
-        cancellable?.cancel()
+        foregroundNotificationsSubscription?.cancel()
     }
 }
 

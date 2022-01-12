@@ -37,7 +37,7 @@ public final class TabNavComponent: ScreenObject {
     }
 
     @discardableResult
-    func goToMyStoreScreen() throws -> MyStoreScreen {
+    public func goToMyStoreScreen() throws -> MyStoreScreen {
         // Avoid transitioning if it is already on screen
         if MyStoreScreen.isVisible == false {
             myStoreTabButton.tap()

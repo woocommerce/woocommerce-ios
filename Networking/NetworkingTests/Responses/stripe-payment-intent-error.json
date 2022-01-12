@@ -1,0 +1,8 @@
+{
+    "code": "invalid_request_error",
+    "message": "The specified order already has status completed. No payment can be made to this order.",
+    "data": {
+        "status": 400
+    }
+}
+

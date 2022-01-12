@@ -1,5 +1,4 @@
 import Yosemite
-import protocol Storage.StorageManagerType
 
 /// Represents possible statuses for syncing products
 ///

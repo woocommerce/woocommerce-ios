@@ -56,7 +56,7 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.selectedStore) })
     }
 
-    func test_selectedStoreSection_is_showed_if_hub_menu_feature_flag_is_off() {
+    func test_selectedStoreSection_is_shown_if_hub_menu_feature_flag_is_off() {
         // Given
         let featureFlagService = MockFeatureFlagService(isHubMenuOn: false)
         let viewModel = SettingsViewModel(stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)

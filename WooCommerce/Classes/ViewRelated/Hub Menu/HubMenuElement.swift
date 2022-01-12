@@ -29,11 +29,13 @@ struct HubMenuElement: View {
                 Text(text)
                     .bodyStyle()
             }
+            .frame(width: Constants.itemSize, height: Constants.itemSize)
         }
     }
 
     enum Constants {
         static let paddingBetweenElements: CGFloat = 8
+        static let itemSize: CGFloat = 160
     }
 }
 

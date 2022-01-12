@@ -46,8 +46,6 @@ struct HubMenu: View {
                                 showingCoupons = true
                             }
                         })
-                            .frame(width: Constants.itemSize, height: Constants.itemSize)
-                            .contentShape(Rectangle())
                     }
                     .background(Color(.listForeground))
                     .cornerRadius(Constants.cornerRadius)

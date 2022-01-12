@@ -111,7 +111,12 @@ private extension CardPresentPaymentStore {
 
     func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
         do {
-            try cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
+            switch usingBackend {
+            case .wcpay:
+                try cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
+            case .stripe:
+                try cardReaderService.start(StripeTokenProvider(siteID: siteID, remote: self.stripeRemote))
+            }
         } catch {
             return onError(error)
         }
@@ -298,6 +303,49 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
             switch result {
             case .success(let wcpayReaderLocation):
                 let readerLocation = wcpayReaderLocation.toReaderLocation(siteID: self.siteID)
+                completion(.success(readerLocation.id))
+            case .failure(let error):
+                if let configError = CardReaderConfigError(error: error) {
+                    completion(.failure(configError))
+                } else {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+}
+
+/// Implementation of the CardReaderNetworkingAdapter
+/// that fetches a token using StripeRemote
+private final class StripeTokenProvider: CardReaderConfigProvider {
+    private let siteID: Int64
+    private let remote: StripeRemote
+
+    init(siteID: Int64, remote: StripeRemote) {
+        self.siteID = siteID
+        self.remote = remote
+    }
+
+    func fetchToken(completion: @escaping(Result<String, Error>) -> Void) {
+        remote.loadConnectionToken(for: siteID) { result in
+            switch result {
+            case .success(let token):
+                completion(.success(token.token))
+            case .failure(let error):
+                if let configError = CardReaderConfigError(error: error) {
+                    completion(.failure(configError))
+                } else {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+
+    func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void) {
+        remote.loadDefaultReaderLocation(for: siteID) { result in
+            switch result {
+            case .success(let stripeReaderLocation):
+                let readerLocation = stripeReaderLocation.toReaderLocation(siteID: self.siteID)
                 completion(.success(readerLocation.id))
             case .failure(let error):
                 if let configError = CardReaderConfigError(error: error) {

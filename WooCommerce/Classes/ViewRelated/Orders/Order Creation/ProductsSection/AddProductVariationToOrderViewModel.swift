@@ -34,7 +34,7 @@ final class AddProductVariationToOrderViewModel: AddProductToOrderViewModelProto
 
     /// Current sync status; used to determine what list view to display.
     ///
-    @Published private(set) var syncStatus: SyncStatus?
+    @Published private(set) var syncStatus: AddProductToOrderSyncStatus?
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///

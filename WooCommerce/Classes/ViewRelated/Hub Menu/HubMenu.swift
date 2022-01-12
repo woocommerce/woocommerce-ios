@@ -36,12 +36,16 @@ struct HubMenu: View {
                             .onTapGesture {
                                 switch menu {
                                 case .woocommerceAdmin:
+                                    ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: ["option": "admin_menu"])
                                     showingWooCommerceAdmin = true
                                 case .viewStore:
+                                    ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: ["option": "view_store"])
                                     showingViewStore = true
                                 case .reviews:
+                                    ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: ["option": "reviews"])
                                     showingReviews = true
                                 case .coupons:
+                                    ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: ["option": "coupons"])
                                     showingCoupons = true
                                 }
                             }

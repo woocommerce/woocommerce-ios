@@ -26,7 +26,7 @@ protocol AddProductToOrderViewModelProtocol: ObservableObject {
 
     /// Select a product or product variation to add to the order
     ///
-    func selectProduct(_ productID: Int64)
+    func selectProductOrVariation(_ productID: Int64)
 
     /// Sync first page of products from remote if needed.
     ///

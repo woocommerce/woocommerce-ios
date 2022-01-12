@@ -20,7 +20,7 @@ struct AddProductToOrder<ViewModel: AddProductToOrderViewModelProtocol>: View {
                         ForEach(viewModel.productRows) { rowViewModel in
                             ProductRow(viewModel: rowViewModel)
                                 .onTapGesture {
-                                    viewModel.selectProduct(rowViewModel.productOrVariationID)
+                                    viewModel.selectProductOrVariation(rowViewModel.productOrVariationID)
                                     isPresented.toggle()
                                 }
                         }

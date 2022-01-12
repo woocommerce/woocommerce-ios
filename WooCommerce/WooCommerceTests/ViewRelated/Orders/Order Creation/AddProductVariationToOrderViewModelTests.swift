@@ -151,20 +151,6 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
 
 // MARK: - Utils
 private extension AddProductVariationToOrderViewModelTests {
-    /// Insert a `Product` into storage
-    func insert(_ readOnlyProduct: Yosemite.Product) {
-        let product = storage.insertNewObject(ofType: StorageProduct.self)
-        product.update(with: readOnlyProduct)
-    }
-
-    /// Insert an array of `Product`s into storage
-    func insert(_ readOnlyProducts: [Yosemite.Product]) {
-        for readOnlyProduct in readOnlyProducts {
-            let product = storage.insertNewObject(ofType: StorageProduct.self)
-            product.update(with: readOnlyProduct)
-        }
-    }
-
     /// Insert a `ProductVariation` into storage
     func insert(_ readOnlyProduct: Yosemite.ProductVariation) {
         let product = storage.insertNewObject(ofType: StorageProductVariation.self)

@@ -52,7 +52,7 @@ struct NewOrder: View {
             ScrollViewReader { scroll in
                 ScrollView {
                     VStack(spacing: Layout.noSpacing) {
-                        OrderStatusSection(geometry: geometry, viewModel: viewModel)
+                        OrderStatusSection(viewModel: viewModel)
 
                         Spacer(minLength: Layout.sectionSpacing)
 
@@ -66,9 +66,7 @@ struct NewOrder: View {
                             Spacer(minLength: Layout.sectionSpacing)
                         }
 
-                        OrderCustomerSection(geometry: geometry,
-                                             viewModel: viewModel.customerDataViewModel,
-                                             addressFormViewModel: viewModel.createOrderAddressFormViewModel())
+                        OrderCustomerSection(viewModel: viewModel)
                     }
                 }
                 .background(Color(.listBackground).ignoresSafeArea())

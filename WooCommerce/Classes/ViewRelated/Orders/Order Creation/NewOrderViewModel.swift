@@ -46,14 +46,6 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var shouldShowOrderStatusList: Bool = false
 
-    /// Representation of customer data display properties.
-    ///
-    @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)
-
-    /// Assign this closure to be notified when a new order is created
-    ///
-    var onOrderCreated: (Order) -> Void = { _ in }
-
     /// Status Results Controller.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
@@ -139,6 +131,12 @@ final class NewOrderViewModel: ObservableObject {
         configureProductRowViewModels()
     }
 
+    // MARK: Customer data properties
+
+    /// Representation of customer data display properties.
+    ///
+    @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)
+
     /// Creates a view model to be used in Address Form for customer address.
     ///
     func createOrderAddressFormViewModel() -> CreateOrderAddressFormViewModel {
@@ -170,6 +168,10 @@ final class NewOrderViewModel: ObservableObject {
         }
         stores.dispatch(action)
     }
+
+    /// Assign this closure to be notified when a new order is created
+    ///
+    var onOrderCreated: (Order) -> Void = { _ in }
 }
 
 // MARK: - Types

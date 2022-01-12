@@ -30,6 +30,7 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
 final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol, ObservableObject {
     let storageManager: StorageManagerType
     let stores: StoresManager
+    private var stripeGatewayIPPEnabled: Bool?
 
     @Published var state: CardPresentPaymentOnboardingState = .loading
 
@@ -43,8 +44,16 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     ) {
         self.storageManager = storageManager
         self.stores = stores
-
-        updateState()
+        let action = AppSettingsAction.loadStripeInPersonPaymentsSwitchState(onCompletion: { [weak self] result in
+            switch result {
+            case .success(let stripeGatewayIPPEnabled):
+                self?.stripeGatewayIPPEnabled = stripeGatewayIPPEnabled
+            default:
+                break
+            }
+            self?.updateState()
+        })
+        stores.dispatch(action)
     }
 
     func refresh() {
@@ -128,26 +137,59 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return .countryNotSupported(countryCode: countryCode)
         }
 
+        let wcPay = getWCPayPlugin()
+        guard stripeGatewayIPPEnabled == true else {
+            return wcPayOnlyOnboardingState(plugin: wcPay)
+        }
+        let stripe = getStripePlugin()
+
+        // If both the Stripe plugin and WCPay are installed and activated, the user needs
+        // to deactivate one: pdfdoF-fW-p2#comment-683
+        if bothPluginsInstalledAndActive(wcPay: wcPay, stripe: stripe) {
+            return .selectPlugin
+        }
+
+        // If only the Stripe extension is active, skip to checking plugin version
+        if let stripe = stripe,
+            onlyStripeIsActive(wcPay: wcPay, stripe: stripe) {
+            return stripeGatewayOnlyOnboardingState(plugin: stripe)
+        } else {
+            return wcPayOnlyOnboardingState(plugin: wcPay)
+        }
+    }
+
+    func wcPayOnlyOnboardingState(plugin: SystemPlugin?) -> CardPresentPaymentOnboardingState {
         // Plugin checks
-        guard let plugin = getWCPayPlugin() else {
-            return .wcpayNotInstalled
+        guard let plugin = plugin else {
+            return .pluginNotInstalled
         }
         guard isWCPayVersionSupported(plugin: plugin) else {
-            return .wcpayUnsupportedVersion
+            return .pluginUnsupportedVersion
         }
-        guard isWCPayActivated(plugin: plugin) else {
-            return .wcpayNotActivated
+        guard plugin.active else {
+            return .pluginNotActivated
         }
 
         // Account checks
-        guard let account = getWCPayAccount() else {
+        return accountChecks()
+    }
+
+    func stripeGatewayOnlyOnboardingState(plugin: SystemPlugin) -> CardPresentPaymentOnboardingState {
+        guard isStripeVersionSupported(plugin: plugin) else {
+            return .pluginUnsupportedVersion
+        }
+        return accountChecks()
+    }
+
+    func accountChecks() -> CardPresentPaymentOnboardingState {
+        guard let account = getPaymentGatewayAccount() else {
             return .genericError
         }
-        guard isWCPaySetupCompleted(account: account) else {
-            return .wcpaySetupNotCompleted
+        guard isPaymentGatewaySetupCompleted(account: account) else {
+            return .pluginSetupNotCompleted
         }
-        guard !isWCPayInTestModeWithLiveStripeAccount(account: account) else {
-            return .wcpayInTestModeWithLiveStripeAccount
+        guard !isPluginInTestModeWithLiveStripeAccount(account: account) else {
+            return .pluginInTestModeWithLiveStripeAccount
         }
         guard !isStripeAccountUnderReview(account: account) else {
             return .stripeAccountUnderReview
@@ -184,7 +226,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isCountrySupported(countryCode: String) -> Bool {
-        return Constants.supportedCountryCodes.contains(countryCode)
+        return Constants.WCPay.supportedCountryCodes.contains(countryCode)
     }
 
     func getWCPayPlugin() -> SystemPlugin? {
@@ -192,19 +234,45 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return nil
         }
         return storageManager.viewStorage
-            .loadSystemPlugin(siteID: siteID, name: Constants.pluginName)?
+            .loadSystemPlugin(siteID: siteID, name: Constants.WCPay.pluginName)?
             .toReadOnly()
     }
 
+    func getStripePlugin() -> SystemPlugin? {
+        guard let siteID = siteID else {
+            return nil
+        }
+        return storageManager.viewStorage
+            .loadSystemPlugin(siteID: siteID, name: Constants.Stripe.pluginName)?
+            .toReadOnly()
+    }
+
+    func bothPluginsInstalledAndActive(wcPay: SystemPlugin?, stripe: SystemPlugin?) -> Bool {
+        guard let wcPay = wcPay, let stripe = stripe else {
+            return false
+        }
+
+        return wcPay.active && stripe.active
+    }
+
+    func onlyStripeIsActive(wcPay: SystemPlugin?, stripe: SystemPlugin) -> Bool {
+        if let wcPay = wcPay {
+            return wcPay.active == false && stripe.active == true
+        } else {
+            return stripe.active
+        }
+    }
+
     func isWCPayVersionSupported(plugin: SystemPlugin) -> Bool {
-        VersionHelpers.compare(plugin.version, Constants.minimumSupportedWCPayVersion) != .orderedAscending
+        VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: Constants.WCPay.minimumSupportedPluginVersion)
     }
 
-    func isWCPayActivated(plugin: SystemPlugin) -> Bool {
-        return plugin.active
+    func isStripeVersionSupported(plugin: SystemPlugin) -> Bool {
+        VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: Constants.Stripe.minimumSupportedPluginVersion)
     }
 
-    func getWCPayAccount() -> PaymentGatewayAccount? {
+    // Note: This counts on synchronizeRequiredData having been called to get the appropriate account for the site, be that Stripe or WCPay
+    func getPaymentGatewayAccount() -> PaymentGatewayAccount? {
         guard let siteID = siteID else {
             return nil
         }
@@ -214,11 +282,11 @@ private extension CardPresentPaymentsOnboardingUseCase {
             .toReadOnly()
     }
 
-    func isWCPaySetupCompleted(account: PaymentGatewayAccount) -> Bool {
+    func isPaymentGatewaySetupCompleted(account: PaymentGatewayAccount) -> Bool {
         account.wcpayStatus != .noAccount
     }
 
-    func isWCPayInTestModeWithLiveStripeAccount(account: PaymentGatewayAccount) -> Bool {
+    func isPluginInTestModeWithLiveStripeAccount(account: PaymentGatewayAccount) -> Bool {
         account.isLive && account.isInTestMode
     }
 
@@ -263,7 +331,15 @@ private extension PaymentGatewayAccount {
 }
 
 private enum Constants {
-    static let pluginName = "WooCommerce Payments"
-    static let minimumSupportedWCPayVersion = "3.2.1"
-    static let supportedCountryCodes = ["US"]
+    enum WCPay {
+        static let pluginName = "WooCommerce Payments"
+        static let minimumSupportedPluginVersion = "3.2.1"
+        static let supportedCountryCodes = ["US"]
+    }
+
+    enum Stripe {
+        static let pluginName = "WooCommerce Stripe Gateway"
+        static let minimumSupportedPluginVersion = "5.9.0"
+        static let supportedCountryCodes = ["US"]
+    }
 }

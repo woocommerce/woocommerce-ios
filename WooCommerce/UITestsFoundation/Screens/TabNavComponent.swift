@@ -41,7 +41,7 @@ public final class TabNavComponent: ScreenObject {
     }
 
     @discardableResult
-    func goToMyStoreScreen() throws -> MyStoreScreen {
+    public func goToMyStoreScreen() throws -> MyStoreScreen {
         myStoreTabButton.tap()
         return try MyStoreScreen()
     }

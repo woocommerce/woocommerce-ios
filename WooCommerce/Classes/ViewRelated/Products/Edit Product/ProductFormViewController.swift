@@ -492,6 +492,13 @@ private extension ProductFormViewController {
     }
 
     /// Observe product name changes and re-render the product if the change happened outside this screen.
+    ///
+    /// This method covers the following case:
+    /// 1. User changes the product name locally
+    /// 2. User creates an attribute or a variation (This updates the whole product, overriding the unsaved product name)
+    /// 3. ViewModel detects that there was a pending name change and fires an event to the name observable
+    /// 4. View re-renders un-saved product name and updates the save button state.
+    ///
     /// The "happened outside" condition is needed to not reload the view while the user is typing a new name.
     ///
     func observeProductName() {
@@ -511,7 +518,7 @@ private extension ProductFormViewController {
     }
 
     /// Updates table rows when the price of the underlying variations change.
-    /// Needed to show/hide the `.noPrinceWarning` row.
+    /// Needed to show/hide the `.noPriceWarning` row.
     ///
     func observeVariationsPriceChanges() {
         cancellableNewVariationsPrice = viewModel.newVariationsPrice.subscribe { [weak self] in
@@ -528,6 +535,30 @@ private extension ProductFormViewController {
     }
 
     func onImageStatusesUpdated(statuses: [ProductImageStatus]) {
+        ///
+        /// Why are we recreating the `tableViewModel`?
+        ///
+        /// When the user types and changes the product name, the `product` will change.
+        /// But, we are NOT recreating `tableViewModel` and reloading the `tableView`
+        /// to avoid reloading the cell while the user is still typing.
+        ///
+        /// The above scenario results in `tableViewModel` and `product` getting out of sync.
+        /// i.e. `product` has name changed in it, but `tableViewModel` doesn’t reflect the "changed name".
+        ///
+        /// Now, if the user tries to add/edit images before saving the product name `onImageStatusesUpdated` is fired.
+        ///
+        /// If `onImageStatusesUpdated` calls `reconfigureDataSource` without recreating `tableViewModel`
+        /// we end up showing old `product` information (old name in this case) in the `tableView`.
+        ///
+        /// By recreating `tableViewModel` using the latest `product` before calling `reconfigureDataSource`,
+        /// we are making sure that we are not showing outdated `product` information in `tableView`.
+        ///
+        /// Note that the new name information isn’t lost. It lives inside `product`.
+        /// If we recreate `tableViewModel` and reload using `reconfigureDataSource` we will have the new product name displayed in `tableView`.
+        ///
+        tableViewModel = DefaultProductFormTableViewModel(product: product,
+                                                          actionsFactory: viewModel.actionsFactory,
+                                                          currency: currency)
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: statuses)
     }
 

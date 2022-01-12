@@ -562,9 +562,6 @@ private extension CardPresentPaymentStore {
     }
 }
 
-/// Models errors thrown by the PaymentGatewayAccountStore. Not to be confused with
-/// errors originating from the card readers. Those are defined in CardReaderServiceError.
-///
 public enum PaymentGatewayAccountError: Error, LocalizedError {
     case orderPaymentCaptureError(message: String?)
     case otherError(error: AnyError)

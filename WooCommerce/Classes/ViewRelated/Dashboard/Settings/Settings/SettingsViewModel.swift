@@ -266,7 +266,7 @@ private extension SettingsViewModel {
         .compactMap { $0 }
     }
 
-    /// Ask the PaymentGatewayAccountStore to loadAccounts from the network and update storage
+    /// Ask the CardPresentPaymentStore to loadAccounts from the network and update storage
     ///
     func loadPaymentGatewayAccounts() {
         guard let siteID = stores.sessionManager.defaultSite?.siteID else {

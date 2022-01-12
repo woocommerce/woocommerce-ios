@@ -113,8 +113,10 @@ private extension CardPresentPaymentStore {
         do {
             switch usingBackend {
             case .wcpay:
+                print("==== starting card reader discovery using a wcpay token provider")
                 try cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
             case .stripe:
+                print("==== starting card reader discovery using a stripe token provider")
                 try cardReaderService.start(StripeTokenProvider(siteID: siteID, remote: self.stripeRemote))
             }
         } catch {
@@ -287,8 +289,10 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
         remote.loadConnectionToken(for: siteID) { result in
             switch result {
             case .success(let token):
+                print("=== successfully fetched location from wcpay backend")
                 completion(.success(token.token))
             case .failure(let error):
+                print("=== unable to fetch location from wcpay backend")
                 if let configError = CardReaderConfigError(error: error) {
                     completion(.failure(configError))
                 } else {
@@ -302,9 +306,11 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
         remote.loadDefaultReaderLocation(for: siteID) { result in
             switch result {
             case .success(let wcpayReaderLocation):
+                print("=== successfully fetched token from wcpay backend")
                 let readerLocation = wcpayReaderLocation.toReaderLocation(siteID: self.siteID)
                 completion(.success(readerLocation.id))
             case .failure(let error):
+                print("=== unable to fetch token from wcpay backend")
                 if let configError = CardReaderConfigError(error: error) {
                     completion(.failure(configError))
                 } else {
@@ -330,8 +336,10 @@ private final class StripeTokenProvider: CardReaderConfigProvider {
         remote.loadConnectionToken(for: siteID) { result in
             switch result {
             case .success(let token):
+                print("=== successfully fetched token from stripe backend")
                 completion(.success(token.token))
             case .failure(let error):
+                print("=== unable to fetch token from stripe backend")
                 if let configError = CardReaderConfigError(error: error) {
                     completion(.failure(configError))
                 } else {
@@ -345,9 +353,11 @@ private final class StripeTokenProvider: CardReaderConfigProvider {
         remote.loadDefaultReaderLocation(for: siteID) { result in
             switch result {
             case .success(let stripeReaderLocation):
+                print("=== successfully fetched location from stripe backend")
                 let readerLocation = stripeReaderLocation.toReaderLocation(siteID: self.siteID)
                 completion(.success(readerLocation.id))
             case .failure(let error):
+                print("=== unable to fetch location from stripe backend")
                 if let configError = CardReaderConfigError(error: error) {
                     completion(.failure(configError))
                 } else {
@@ -412,8 +422,10 @@ private extension CardPresentPaymentStore {
     func loadAccounts(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         switch usingBackend {
         case .wcpay:
+            print("==== CPPS loadAccounts WCPay")
             loadWCPayAccount(siteID: siteID, onCompletion: onCompletion)
         case .stripe:
+            print("==== CPPS loadAccounts Stripe")
             loadStripeAccount(siteID: siteID, onCompletion: onCompletion)
         }
     }
@@ -431,8 +443,10 @@ private extension CardPresentPaymentStore {
             switch result {
             case .success(let wcpayAccount):
                 let account = wcpayAccount.toPaymentGatewayAccount(siteID: siteID)
+                print("==== CPPS successfully fetched WCPay account")
                 self.upsertStoredAccountInBackground(readonlyAccount: account)
             case .failure:
+                print("==== CPPS was unable to fetch WCPay account")
                 DDLogDebug("Error fetching WCPay account - it is possible the extension is not installed or inactive")
                 self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
             }
@@ -453,8 +467,10 @@ private extension CardPresentPaymentStore {
             switch result {
             case .success(let stripeAccount):
                 let account = stripeAccount.toPaymentGatewayAccount(siteID: siteID)
+                print("==== CPPS successfully fetched Stripe account")
                 self.upsertStoredAccountInBackground(readonlyAccount: account)
             case .failure:
+                print("==== CPPS was unable to fetch Stripe account")
                 self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
             }
 

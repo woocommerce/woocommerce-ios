@@ -3,6 +3,8 @@ import Hardware
 import Networking
 import Combine
 
+
+
 /// MARK: CardPresentPaymentStore
 ///
 public final class CardPresentPaymentStore: Store {
@@ -10,6 +12,9 @@ public final class CardPresentPaymentStore: Store {
     // At this point though, the ServiceLocator is part of the WooCommerce binary, so this is a good starting point.
     // If retaining the service here ended up being a problem, we would need to move this Store out of Yosemite and push it up to WooCommerce.
     private let cardReaderService: CardReaderService
+
+    /// Which backend is the store using? Default to WCPay until told otherwise
+    private var usingBackend: CardPresentPaymentStoreBackend = .wcpay
 
     private let remote: WCPayRemote
     private let stripeRemote: StripeRemote
@@ -41,6 +46,10 @@ public final class CardPresentPaymentStore: Store {
         }
 
         switch action {
+        case .useWCPay:
+            useWCPayAsBackend()
+        case .useStripe:
+            useStripeAsBackend()
         case .loadAccounts(let siteID, let onCompletion):
             loadAccounts(siteID: siteID,
                          onCompletion: onCompletion)
@@ -88,6 +97,18 @@ public final class CardPresentPaymentStore: Store {
 // MARK: - Services
 //
 private extension CardPresentPaymentStore {
+    /// Which backend is the store to use? WCPay or Stripe?
+    ///
+    enum CardPresentPaymentStoreBackend {
+        /// Use WCPay as the backend
+        ///
+        case wcpay
+
+        /// Use Stripe as the backend
+        ///
+        case stripe
+    }
+
     func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
         do {
             try cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
@@ -309,6 +330,35 @@ private extension CardReaderConfigError {
 
 // MARK: Networking Methods
 private extension CardPresentPaymentStore {
+    /// Switch the store to use WCPay as the backend.
+    /// Does nothing if the store is already using WCPay.
+    /// WCPay is the initial default for the store.
+    ///
+    func useWCPayAsBackend() {
+        guard usingBackend != .wcpay else {
+            return
+        }
+
+        reset() // Concern: asynchronicity
+
+        usingBackend = .wcpay
+        print("==== Switched CardPresentPaymentStore to use WCPay as the backend")
+    }
+
+    /// Switch the store to use Stripe as the backend.
+    /// Does nothing if the store is already using Stripe.
+    ///
+    func useStripeAsBackend() {
+        guard usingBackend != .stripe else {
+            return
+        }
+
+        reset() // Concern: asynchronicity
+
+        usingBackend = .stripe
+        print("==== Switched CardPresentPaymentStore to use Stripe as the backend")
+    }
+
     /// We support payment gateway accounts for both the WooCommerce Payments extension AND
     /// the Stripe extension. Let's attempt to load each and update view storage with the results.
     /// Calls the passed completion with success after both loads have been attempted.

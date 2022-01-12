@@ -46,13 +46,7 @@ final class AddProductVariationToOrderViewModel: AddProductToOrderViewModelProto
 
     /// Product Variations Results Controller.
     ///
-//    private lazy var productVariationsResultsController: ResultsController<StorageProductVariation> = {
-//        let predicate = NSPredicate(format: "product.siteID == %lld AND product.productID == %lld", siteID, product.productID)
-//        let descriptor = NSSortDescriptor(keyPath: \StorageProductVariation.menuOrder, ascending: true)
-//        let resultsController = ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-//        return resultsController
-//    }()
-    lazy var productVariationsResultsController: ResultsController<StorageProductVariation> = {
+    private lazy var productVariationsResultsController: ResultsController<StorageProductVariation> = {
         let predicate = NSPredicate(format: "siteID == %lld AND productID == %lld", siteID, product.productID)
         let descriptor = NSSortDescriptor(keyPath: \StorageProductVariation.menuOrder, ascending: true)
         let resultsController = ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])

@@ -1518,7 +1518,6 @@
 		E1BE703A265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BE7039265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift */; };
 		E1C47209267A1ECC00D06DA1 /* CrashLoggingStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C47208267A1ECC00D06DA1 /* CrashLoggingStack.swift */; };
 		E1C5E78226C2A971008D4C47 /* InPersonPaymentsWCPayNotSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C5E78126C2A971008D4C47 /* InPersonPaymentsWCPayNotSetup.swift */; };
-		E1C5E78426C2B8E8008D4C47 /* Site+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C5E78326C2B8E8008D4C47 /* Site+Woo.swift */; };
 		E1D4E84426776A6B00256B83 /* HeadlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D4E84326776A6A00256B83 /* HeadlineTableViewCell.swift */; };
 		E1D4E84526776AD900256B83 /* HeadlineTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1D4E84226776A6A00256B83 /* HeadlineTableViewCell.xib */; };
 		E1E125AA26EB42530068A9B0 /* CardPresentModalUpdateProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E125A926EB42530068A9B0 /* CardPresentModalUpdateProgress.swift */; };
@@ -3120,7 +3119,6 @@
 		E1BE7039265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningFailed.swift; sourceTree = "<group>"; };
 		E1C47208267A1ECC00D06DA1 /* CrashLoggingStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashLoggingStack.swift; sourceTree = "<group>"; };
 		E1C5E78126C2A971008D4C47 /* InPersonPaymentsWCPayNotSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsWCPayNotSetup.swift; sourceTree = "<group>"; };
-		E1C5E78326C2B8E8008D4C47 /* Site+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Site+Woo.swift"; sourceTree = "<group>"; };
 		E1D4E84226776A6A00256B83 /* HeadlineTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HeadlineTableViewCell.xib; sourceTree = "<group>"; };
 		E1D4E84326776A6A00256B83 /* HeadlineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadlineTableViewCell.swift; sourceTree = "<group>"; };
 		E1E125A926EB42530068A9B0 /* CardPresentModalUpdateProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalUpdateProgress.swift; sourceTree = "<group>"; };
@@ -5869,7 +5867,6 @@
 				743EDD9E214B05350039071B /* TopEarnerStatsItem+Woo.swift */,
 				D8EF1E552605121C00380EA4 /* OrderPaymentMethod.swift */,
 				FEDD70AE26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift */,
-				E1C5E78326C2B8E8008D4C47 /* Site+Woo.swift */,
 				DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */,
 				DE77889926FD7EF0008DFF44 /* ShippingLabelPackageItem.swift */,
 				DEF3300B270444060073AE29 /* ShippingLabelSelectedRate.swift */,
@@ -8511,7 +8508,6 @@
 				B5D6DC54214802740003E48A /* SyncCoordinator.swift in Sources */,
 				B57C5C9421B80E4700FF82B2 /* Data+Woo.swift in Sources */,
 				453A907925EFB6D6006EE892 /* ButtonActivityIndicator.swift in Sources */,
-				E1C5E78426C2B8E8008D4C47 /* Site+Woo.swift in Sources */,
 				4546E09A271F0942003836F3 /* FilteredOrdersHeaderBar.swift in Sources */,
 				02312797277D4F650060E180 /* StoreStatsPeriodViewModel.swift in Sources */,
 				B554E17B2152F27200F31188 /* UILabel+Appearance.swift in Sources */,

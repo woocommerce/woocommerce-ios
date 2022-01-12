@@ -359,15 +359,22 @@ private extension CardPresentPaymentStore {
         print("==== Switched CardPresentPaymentStore to use Stripe as the backend")
     }
 
-    /// We support payment gateway accounts for both the WooCommerce Payments extension AND
-    /// the Stripe extension. Let's attempt to load each and update view storage with the results.
-    /// Calls the passed completion with success after both loads have been attempted.
+    /// Loads the account corresponding to the currently selected backend. Deletes the other (if it exists).
+    ///
     func loadAccounts(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let group = DispatchGroup()
+        switch usingBackend {
+        case .wcpay:
+            loadWCPayAccount(siteID: siteID, onCompletion: onCompletion)
+        case .stripe:
+            loadStripeAccount(siteID: siteID, onCompletion: onCompletion)
+        }
+    }
 
-        /// WooCommerce Payments
-        ///
-        group.enter()
+    func loadWCPayAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        /// Delete any Stripe account present. There can be only one.
+        self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
+
+        /// Fetch the WCPay account
         remote.loadAccount(for: siteID) { [weak self] result in
             guard let self = self else {
                 return
@@ -381,12 +388,15 @@ private extension CardPresentPaymentStore {
                 DDLogDebug("Error fetching WCPay account - it is possible the extension is not installed or inactive")
                 self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
             }
-            group.leave()
-        }
 
-        /// Stripe
-        ///
-        group.enter()
+            onCompletion(.success(())) // TODO - consider bringing back Error, although callers don't currently use it
+        }
+    }
+
+    func loadStripeAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        /// Delete any WCPay account present. There can be only one.
+        self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
+
         stripeRemote.loadAccount(for: siteID) { [weak self] result in
             guard let self = self else {
                 return
@@ -397,28 +407,38 @@ private extension CardPresentPaymentStore {
                 let account = stripeAccount.toPaymentGatewayAccount(siteID: siteID)
                 self.upsertStoredAccountInBackground(readonlyAccount: account)
             case .failure:
-                DDLogDebug("Error fetching Stripe account - it is possible the extension is not installed or inactive")
                 self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
             }
-            group.leave()
-        }
 
-        group.notify(queue: .main) {
-            onCompletion(.success(()))
+            onCompletion(.success(())) // TODO - consider bringing back Error, although callers don't currently use it
         }
     }
 
     func fetchOrderCustomer(siteID: Int64, orderID: Int64, completion: @escaping (Result<WCPayCustomer, Error>) -> Void) {
-        remote.fetchOrderCustomer(for: siteID, orderID: orderID, completion: completion)
+        switch usingBackend {
+        case .wcpay:
+            remote.fetchOrderCustomer(for: siteID, orderID: orderID, completion: completion)
+        case .stripe:
+            stripeRemote.fetchOrderCustomer(for: siteID, orderID: orderID, completion: completion)
+        }
     }
 
     func captureOrderPayment(siteID: Int64,
                              orderID: Int64,
                              paymentIntentID: String,
                              onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        /// The only plugin we support capturing payments with right now is WooCommerce Payments.
-        /// In the future we will need to support remotes for other plugins.
-        ///
+        switch usingBackend {
+        case .wcpay:
+            captureOrderPaymentUsingWCPay(siteID: siteID, orderID: orderID, paymentIntentID: paymentIntentID, onCompletion: onCompletion)
+        case .stripe:
+            captureOrderPaymentUsingStripe(siteID: siteID, orderID: orderID, paymentIntentID: paymentIntentID, onCompletion: onCompletion)
+        }
+    }
+
+    func captureOrderPaymentUsingWCPay(siteID: Int64,
+                                       orderID: Int64,
+                                       paymentIntentID: String,
+                                       onCompletion: @escaping (Result<Void, Error>) -> Void) {
         remote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntentID, completion: { result in
             switch result {
             case .success(let intent):
@@ -435,7 +455,27 @@ private extension CardPresentPaymentStore {
             }
         })
     }
-}
+
+    func captureOrderPaymentUsingStripe(siteID: Int64,
+                                       orderID: Int64,
+                                       paymentIntentID: String,
+                                       onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        stripeRemote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntentID, completion: { result in
+            switch result {
+            case .success(let intent):
+                guard intent.status == .succeeded else {
+                    DDLogDebug("Unexpected payment intent status \(intent.status) after attempting capture")
+                    onCompletion(.failure(CardReaderServiceError.paymentCapture()))
+                    return
+                }
+
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(PaymentGatewayAccountError(underlyingError: error)))
+                return
+            }
+        })
+    }}
 
 // MARK: Storage Methods
 private extension CardPresentPaymentStore {

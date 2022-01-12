@@ -79,13 +79,11 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         /// If both plugins are active, don't bother initializing the backend nor fetching
         /// accounts. Fall through to updateState so the end user can fix the problem.
         guard !bothPluginsInstalledAndActive(wcPay: wcPayPlugin, stripe: stripePlugin) else {
-            print("==== in updateAccounts - both WCPay and Stripe are active - bailing")
             self.updateState()
             return
         }
 
         if wcPayPlugin?.active ?? false {
-            print("==== in updateAccounts - WCPay is active on store - informing CPPS")
             let useWCPayAction = CardPresentPaymentAction.useWCPay // TODO asynchronicity / ordering of actions?
             stores.dispatch(useWCPayAction)
         } else {
@@ -97,12 +95,10 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         }
 
         if stripePlugin?.active ?? false {
-            print("==== in updateAccounts - Stripe is active on store - informing CPPS")
             let useStripeAction = CardPresentPaymentAction.useStripe // TODO asynchronicity / ordering of actions?
             stores.dispatch(useStripeAction)
         }
 
-        print("==== in updateAccounts - asking CPPS to load account")
         let paymentGatewayAccountsAction = CardPresentPaymentAction.loadAccounts(siteID: siteID) { [weak self] result in
             self?.updateState()
         }
@@ -176,107 +172,82 @@ private extension CardPresentPaymentsOnboardingUseCase {
             DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
             return .genericError
         }
-        print("==== was able to obtain country code")
 
         guard isCountrySupported(countryCode: countryCode) else {
             return .countryNotSupported(countryCode: countryCode)
         }
-        print("==== country code is supported")
 
         let wcPay = getWCPayPlugin()
         guard stripeGatewayIPPEnabled == true else {
-            print("==== Stripe IPP experiment is NOT enabled - only considering WCPay")
             return wcPayOnlyOnboardingState(plugin: wcPay)
         }
 
-        print("==== Stripe IPP experiment IS enabled")
         let stripe = getStripePlugin()
 
         // If both the Stripe plugin and WCPay are installed and activated, the user needs
         // to deactivate one: pdfdoF-fW-p2#comment-683
         if bothPluginsInstalledAndActive(wcPay: wcPay, stripe: stripe) {
-            print("==== Both plugins are active - bailing")
             return .selectPlugin
         }
 
         // If only the Stripe extension is active, skip to checking plugin version
         if let stripe = stripe,
             onlyStripeIsActive(wcPay: wcPay, stripe: stripe) {
-            print("==== Only Stripe is active")
             return stripeGatewayOnlyOnboardingState(plugin: stripe)
         } else {
-            print("==== Only WCPay is active")
             return wcPayOnlyOnboardingState(plugin: wcPay)
         }
     }
 
     func wcPayOnlyOnboardingState(plugin: SystemPlugin?) -> CardPresentPaymentOnboardingState {
-        print("==== Checking WCPay plugin version")
         // Plugin checks
         guard let plugin = plugin else {
-            print("==== Checking WCPay plugin installation - plugin is NOT installed!")
             return .pluginNotInstalled
         }
         guard isWCPayVersionSupported(plugin: plugin) else {
-            print("==== Checking WCPay plugin version - plugin version is unsupported")
             return .pluginUnsupportedVersion
         }
         guard plugin.active else {
-            print("==== Checking WCPay plugin activation - plugin is NOT active!")
             return .pluginNotActivated
         }
 
         // Account checks
-        print("==== Checking Stripe plugin version - plugin version is good - proceeding to account check")
         return accountChecks()
     }
 
     func stripeGatewayOnlyOnboardingState(plugin: SystemPlugin) -> CardPresentPaymentOnboardingState {
-        print("==== Checking Stripe plugin version")
         guard isStripeVersionSupported(plugin: plugin) else {
-            print("==== Checking Stripe plugin version - plugin version is unsupported")
             return .pluginUnsupportedVersion
         }
-        print("==== Checking Stripe plugin version - plugin version is good - proceeding to account check")
         return accountChecks()
     }
 
     func accountChecks() -> CardPresentPaymentOnboardingState {
-        print("==== In accountChecks")
         guard let account = getPaymentGatewayAccount() else {
-            print("==== accountChecks genericError")
             return .genericError
         }
         guard isPaymentGatewaySetupCompleted(account: account) else {
-            print("==== accountChecks pluginSetupNotCompleted")
             return .pluginSetupNotCompleted
         }
         guard !isPluginInTestModeWithLiveStripeAccount(account: account) else {
-            print("==== accountChecks pluginInTestModeWithLiveStripeAccount")
             return .pluginInTestModeWithLiveStripeAccount
         }
         guard !isStripeAccountUnderReview(account: account) else {
-            print("==== accountChecks stripeAccountUnderReview")
             return .stripeAccountUnderReview
         }
         guard !isStripeAccountOverdueRequirements(account: account) else {
-            print("==== accountChecks stripeAccountOverdueRequirement")
             return .stripeAccountOverdueRequirement
         }
         guard !isStripeAccountPendingRequirements(account: account) else {
-            print("==== accountChecks stripeAccountPendingRequirement")
             return .stripeAccountPendingRequirement(deadline: account.currentDeadline)
         }
         guard !isStripeAccountRejected(account: account) else {
-            print("==== accountChecks stripeAccountRejected")
             return .stripeAccountRejected
         }
         guard !isInUndefinedState(account: account) else {
-            print("==== accountChecks genericError 2")
             return .genericError
         }
 
-        print("==== accountChecks completed")
         return .completed
     }
 }

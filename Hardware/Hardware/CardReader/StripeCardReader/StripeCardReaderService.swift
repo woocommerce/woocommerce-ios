@@ -256,10 +256,8 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func connect(_ reader: CardReader) -> AnyPublisher<CardReader, Error> {
-        print("==== in SCRS connect 1")
         guard let stripeReader = self.discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
             return Future() { promise in
-                print("==== in SCRS connect 1 - unable to find reader in cache")
                 promise(.failure(CardReaderServiceError.connection()))
             }.eraseToAnyPublisher()
         }
@@ -270,7 +268,6 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     private func getBluetoothConfiguration(_ reader: StripeTerminal.Reader) -> Future<BluetoothConnectionConfiguration, Error> {
-        print("==== in SCRS getBluetoothConfiguration")
         return Future() { [weak self] promise in
             guard let self = self else {
                 promise(.failure(CardReaderServiceError.connection()))
@@ -282,10 +279,8 @@ extension StripeCardReaderService: CardReaderService {
             self.readerLocationProvider?.fetchDefaultLocationID { result in
                 switch result {
                 case .success(let locationId):
-                    print("==== in SCRS getBluetoothConfiguration successfully fetched location ID")
                     return promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
                 case .failure(let error):
-                    print("==== in SCRS getBluetoothConfiguration unable to fetch location ID")
                     let underlyingError = UnderlyingError(with: error)
                     return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                 }
@@ -294,7 +289,6 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func connect(_ reader: StripeTerminal.Reader, configuration: BluetoothConnectionConfiguration) -> Future <CardReader, Error> {
-        print("==== in SCRS connect 2")
         // Keep a copy of the battery level in case the connection fails due to low battery
         // If that happens, the reader object won't be accessible anymore, and we want to show
         // the current charge percentage if possible
@@ -307,7 +301,6 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            print("==== in SCRS connect 2 about to call Terminal connectBluetoothReader")
             Terminal.shared.connectBluetoothReader(reader, delegate: self, connectionConfig: configuration) { [weak self] (reader, error) in
                 guard let self = self else {
                     promise(.failure(CardReaderServiceError.connection()))
@@ -317,7 +310,6 @@ extension StripeCardReaderService: CardReaderService {
                 self.discoveredStripeReadersCache.clear()
 
                 if let error = error {
-                    print("==== in SCRS connect 2 - got an error: \(error)")
                     let underlyingError = UnderlyingError(with: error)
                     // Starting with StripeTerminal 2.0, required software updates happen transparently on connection
                     // Any error related to that will be reported here, but we don't want to treat it as a connection error
@@ -328,7 +320,6 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if let reader = reader {
-                    print("==== in SCRS connect 2 - got a reader :)")
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
                     self.switchStatusToIdle()
                     promise(.success(CardReader(reader: reader)))

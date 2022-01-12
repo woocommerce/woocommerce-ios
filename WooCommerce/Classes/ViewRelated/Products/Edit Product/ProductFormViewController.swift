@@ -492,6 +492,13 @@ private extension ProductFormViewController {
     }
 
     /// Observe product name changes and re-render the product if the change happened outside this screen.
+    ///
+    /// This method covers the following case:
+    /// 1. User changes the product name locally
+    /// 2. User creates an attribute or a variation (This updates the whole product, overriding the unsaved product name)
+    /// 3. ViewModel detects that there was a pending name change and fires an event to the name observable
+    /// 4. View re-renders un-saved product name and updates the save button state.
+    ///
     /// The "happened outside" condition is needed to not reload the view while the user is typing a new name.
     ///
     func observeProductName() {

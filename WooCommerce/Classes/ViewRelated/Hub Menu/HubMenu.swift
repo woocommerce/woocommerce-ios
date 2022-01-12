@@ -129,6 +129,7 @@ struct HubMenu: View {
                         }
                     }
                     .onTapGesture {
+                        ServiceLocator.analytics.track(.hubMenuSettingsTapped)
                         showSettings = true
                     }
                     Spacer()

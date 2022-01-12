@@ -1,4 +1,5 @@
 import SwiftUI
+import Lottie
 
 /// View Modifier to show a notice in front of a view.
 ///
@@ -22,3 +23,13 @@ extension View {
     }
 }
 
+// MARK: Preview
+
+struct NoticeModifier_Previews: PreviewProvider {
+    static var previews: some View {
+        Text("")
+            .notice()
+            .environment(\.colorScheme, .light)
+            .previewDisplayName("Light Content")
+    }
+}

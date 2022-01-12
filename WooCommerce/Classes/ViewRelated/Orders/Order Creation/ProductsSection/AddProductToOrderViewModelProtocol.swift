@@ -1,8 +1,8 @@
 import Yosemite
 
-/// Represents possible statuses for syncing products
+/// Represents possible statuses for syncing a list of products or product variations
 ///
-enum SyncStatus {
+enum AddProductToOrderSyncStatus {
     case firstPageSync
     case results
     case empty
@@ -17,7 +17,7 @@ protocol AddProductToOrderViewModelProtocol: ObservableObject {
 
     /// Current sync status; used to determine what list view to display.
     ///
-    var syncStatus: SyncStatus? { get }
+    var syncStatus: AddProductToOrderSyncStatus? { get }
 
     /// Tracks if the infinite scroll indicator should be displayed
     ///

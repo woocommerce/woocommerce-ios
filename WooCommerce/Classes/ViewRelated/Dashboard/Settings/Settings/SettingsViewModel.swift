@@ -169,12 +169,17 @@ private extension SettingsViewModel {
 
     func configureSections() {
         // Selected Store
-        let selectedStoreSection: Section = {
-            let storeRows: [Row] = sites.count > 1 ?
+        let selectedStoreSection: Section? = {
+            if featureFlagService.isFeatureFlagEnabled(.hubMenu) {
+                return nil
+            }
+            else {
+                let storeRows: [Row] = sites.count > 1 ?
                 [.selectedStore, .switchStore] : [.selectedStore]
-            return Section(title: Localization.selectedStoreTitle,
-                           rows: storeRows,
-                           footerHeight: UITableView.automaticDimension)
+                return Section(title: Localization.selectedStoreTitle,
+                               rows: storeRows,
+                               footerHeight: UITableView.automaticDimension)
+            }
         }()
 
         // Plugins

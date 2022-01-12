@@ -51,11 +51,11 @@ class AddProductToOrderViewModelTests: XCTestCase {
         let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // Then
-        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productID == 1 }), "Products do not include simple product")
-        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productID == 2 }), "Products do not include grouped product")
-        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productID == 3 }), "Products do not include affiliate product")
-        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productID == 4 }), "Products include variable product")
-        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productID == 5 }), "Products do not include subscription product")
+        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == 1 }), "Products do not include simple product")
+        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == 2 }), "Products do not include grouped product")
+        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == 3 }), "Products do not include affiliate product")
+        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == 4 }), "Products include variable product")
+        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == 5 }), "Products do not include subscription product")
     }
 
     func test_product_rows_only_contain_products_with_published_and_private_statuses() {
@@ -70,10 +70,10 @@ class AddProductToOrderViewModelTests: XCTestCase {
         let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // Then
-        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productID == 1 }), "Product rows do not include published product")
-        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productID == 2 }), "Product rows include draft product")
-        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productID == 3 }), "Product rows include pending product")
-        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productID == 4 }), "Product rows do not include private product")
+        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == 1 }), "Product rows do not include published product")
+        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == 2 }), "Product rows include draft product")
+        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == 3 }), "Product rows include pending product")
+        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == 4 }), "Product rows do not include private product")
     }
 
     func test_scrolling_indicator_appears_only_during_sync() {

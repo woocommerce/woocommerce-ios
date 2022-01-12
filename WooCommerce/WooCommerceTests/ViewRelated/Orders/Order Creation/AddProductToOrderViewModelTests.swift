@@ -38,26 +38,6 @@ class AddProductToOrderViewModelTests: XCTestCase {
         XCTAssertFalse(productRow.canChangeQuantity, "Product row canChangeQuantity property should be false but is true instead")
     }
 
-    func test_products_include_all_product_types_except_variable() {
-        // Given
-        let simpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: "simple", statusKey: "publish")
-        let groupedProduct = Product.fake().copy(siteID: sampleSiteID, productID: 2, productTypeKey: "grouped", statusKey: "publish")
-        let affiliateProduct = Product.fake().copy(siteID: sampleSiteID, productID: 3, productTypeKey: "external", statusKey: "publish")
-        let variableProduct = Product.fake().copy(siteID: sampleSiteID, productID: 4, productTypeKey: "variable", statusKey: "publish")
-        let subscriptionProduct = Product.fake().copy(siteID: sampleSiteID, productID: 5, productTypeKey: "subscription", statusKey: "publish")
-        insert([simpleProduct, groupedProduct, affiliateProduct, variableProduct, subscriptionProduct])
-
-        // When
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
-
-        // Then
-        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == 1 }), "Products do not include simple product")
-        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == 2 }), "Products do not include grouped product")
-        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == 3 }), "Products do not include affiliate product")
-        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == 4 }), "Products include variable product")
-        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == 5 }), "Products do not include subscription product")
-    }
-
     func test_product_rows_only_contain_products_with_published_and_private_statuses() {
         // Given
         let publishedProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, statusKey: "publish")

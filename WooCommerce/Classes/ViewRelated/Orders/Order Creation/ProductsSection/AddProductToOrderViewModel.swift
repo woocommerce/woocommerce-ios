@@ -14,11 +14,6 @@ final class AddProductToOrderViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
-    /// Product types excluded from the product list.
-    /// For now, only non-variable product types are supported.
-    ///
-    private let excludedProductTypes: [ProductType] = [ProductType.variable]
-
     /// Product statuses included in the product list.
     /// Only published or private products can be added to an order.
     ///
@@ -28,9 +23,7 @@ final class AddProductToOrderViewModel: ObservableObject {
     ///
     private var products: [Product] {
         return productsResultsController.fetchedObjects.filter {
-            let hasValidProductType = !excludedProductTypes.contains( $0.productType )
-            let hasValidProductStatus = includedProductStatuses.contains( $0.productStatus )
-            return hasValidProductType && hasValidProductStatus
+            includedProductStatuses.contains( $0.productStatus )
         }
     }
 

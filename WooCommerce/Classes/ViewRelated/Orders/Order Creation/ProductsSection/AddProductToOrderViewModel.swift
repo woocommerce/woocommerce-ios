@@ -14,17 +14,10 @@ final class AddProductToOrderViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
-    /// Product statuses included in the product list.
-    /// Only published or private products can be added to an order.
-    ///
-    private let includedProductStatuses: [ProductStatus] = [ProductStatus.publish, ProductStatus.privateStatus]
-
     /// All products that can be added to an order.
     ///
     private var products: [Product] {
-        return productsResultsController.fetchedObjects.filter {
-            includedProductStatuses.contains( $0.productStatus )
-        }
+        productsResultsController.fetchedObjects.filter { $0.purchasable }
     }
 
     /// View models for each product row

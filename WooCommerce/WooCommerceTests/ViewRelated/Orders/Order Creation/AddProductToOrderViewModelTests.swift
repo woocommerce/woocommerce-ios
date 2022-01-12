@@ -25,7 +25,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
 
     func test_view_model_adds_product_rows_with_unchangeable_quantity() {
         // Given
-        let product = Product.fake().copy(siteID: sampleSiteID, statusKey: "publish")
+        let product = Product.fake().copy(siteID: sampleSiteID, purchasable: true)
         insert(product)
 
         // When
@@ -36,24 +36,6 @@ class AddProductToOrderViewModelTests: XCTestCase {
 
         let productRow = viewModel.productRows[0]
         XCTAssertFalse(productRow.canChangeQuantity, "Product row canChangeQuantity property should be false but is true instead")
-    }
-
-    func test_product_rows_only_contain_products_with_published_and_private_statuses() {
-        // Given
-        let publishedProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, statusKey: "publish")
-        let draftProduct = Product.fake().copy(siteID: sampleSiteID, productID: 2, statusKey: "draft")
-        let pendingProduct = Product.fake().copy(siteID: sampleSiteID, productID: 3, statusKey: "pending")
-        let privateProduct = Product.fake().copy(siteID: sampleSiteID, productID: 4, statusKey: "private")
-        insert([publishedProduct, draftProduct, pendingProduct, privateProduct])
-
-        // When
-        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
-
-        // Then
-        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == 1 }), "Product rows do not include published product")
-        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == 2 }), "Product rows include draft product")
-        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == 3 }), "Product rows include pending product")
-        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == 4 }), "Product rows do not include private product")
     }
 
     func test_scrolling_indicator_appears_only_during_sync() {
@@ -104,7 +86,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
             switch action {
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 XCTAssertEqual(viewModel.syncStatus, .firstPageSync)
-                let product = Product.fake().copy(siteID: self.sampleSiteID, statusKey: "publish")
+                let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
                 self.insert(product)
                 onCompletion(.success(true))
             default:
@@ -121,7 +103,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
 
     func test_sync_status_does_not_change_while_syncing_when_storage_contains_products() {
         // Given
-        let product = Product.fake().copy(siteID: self.sampleSiteID, statusKey: "publish")
+        let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
         insert(product)
 
         let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)

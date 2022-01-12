@@ -60,9 +60,43 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         if state != .completed {
             state = .loading
         }
-        synchronizeRequiredData { [weak self] in
+        synchronizeStoreCountryAndPlugins { [weak self] in
+            self?.updateAccounts()
+        }
+    }
+
+    /// We need to sync payment gateway accounts to see if the payment gateway is set up correctly.
+    /// But first we also need to prompt the CardPresentPaymentStore to use the right backend based on the active plugin.
+    ///
+    func updateAccounts() {
+        guard let siteID = siteID else {
+            return
+        }
+
+        let wcPayPlugin = getWCPayPlugin()
+        let stripePlugin = getStripePlugin()
+
+        /// If both plugins are active, don't bother initializing the backend nor fetching
+        /// accounts. Fall through to updateState so the end user can fix the problem.
+        guard !bothPluginsInstalledAndActive(wcPay: wcPayPlugin, stripe: stripePlugin) else {
+            self.updateState()
+            return
+        }
+
+        if wcPayPlugin != nil {
+            let useWCPayAction = CardPresentPaymentAction.useWCPay // TODO asynchronicity / ordering of actions?
+            stores.dispatch(useWCPayAction)
+        }
+
+        if stripePlugin != nil {
+            let useStripeAction = CardPresentPaymentAction.useStripe // TODO asynchronicity / ordering of actions?
+            stores.dispatch(useStripeAction)
+        }
+
+        let paymentGatewayAccountsAction = CardPresentPaymentAction.loadAccounts(siteID: siteID) { [weak self] result in
             self?.updateState()
         }
+        stores.dispatch(paymentGatewayAccountsAction)
     }
 
     func updateState() {
@@ -73,7 +107,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
 // MARK: - Internal state
 //
 private extension CardPresentPaymentsOnboardingUseCase {
-    func synchronizeRequiredData(completion: () -> Void) {
+    func synchronizeStoreCountryAndPlugins(completion: () -> Void) {
         guard let siteID = siteID else {
             completion()
             return
@@ -93,7 +127,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         group.enter()
         stores.dispatch(settingsAction)
 
-        // We need to sync plugins to check if WCPay is installed, up to date, and active
+        // We need to sync plugins to see which CPP-supporting plugins are installed, up to date, and active
         let systemPluginsAction = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
             if case let .failure(error) = result {
                 DDLogError("[CardPresentPaymentsOnboarding] Error syncing system plugins: \(error)")
@@ -104,16 +138,16 @@ private extension CardPresentPaymentsOnboardingUseCase {
         group.enter()
         stores.dispatch(systemPluginsAction)
 
-        // We need to sync payment gateway accounts to see if WCPay is set up correctly
-        let paymentGatewayAccountsAction = CardPresentPaymentAction.loadAccounts(siteID: siteID) { result in
-            if case let .failure(error) = result {
-                DDLogError("[CardPresentPaymentsOnboarding] Error syncing payment gateway accounts: \(error)")
-                errors.append(error)
-            }
-            group.leave()
-        }
-        group.enter()
-        stores.dispatch(paymentGatewayAccountsAction)
+//        // We need to sync payment gateway accounts to see if WCPay is set up correctly
+//        let paymentGatewayAccountsAction = CardPresentPaymentAction.loadAccounts(siteID: siteID) { result in
+//            if case let .failure(error) = result {
+//                DDLogError("[CardPresentPaymentsOnboarding] Error syncing payment gateway accounts: \(error)")
+//                errors.append(error)
+//            }
+//            group.leave()
+//        }
+//        group.enter()
+//        stores.dispatch(paymentGatewayAccountsAction)
 
         group.notify(queue: .main, execute: { [weak self] in
             guard let self = self else { return }
@@ -121,7 +155,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
                errors.contains(where: self.isNetworkError(_:)) {
                 self.state = .noConnectionError
             } else {
-                self.updateState()
+                self.updateAccounts()
             }
         })
     }
@@ -271,7 +305,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
         VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: Constants.Stripe.minimumSupportedPluginVersion)
     }
 
-    // Note: This counts on synchronizeRequiredData having been called to get the appropriate account for the site, be that Stripe or WCPay
+    // Note: This counts on synchronizeStoreCountryAndPlugins having been called to get
+    // the appropriate account for the site, be that Stripe or WCPay
     func getPaymentGatewayAccount() -> PaymentGatewayAccount? {
         guard let siteID = siteID else {
             return nil

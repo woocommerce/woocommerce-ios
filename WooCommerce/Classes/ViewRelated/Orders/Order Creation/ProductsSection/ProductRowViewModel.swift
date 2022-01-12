@@ -84,14 +84,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         quantity <= minimumQuantity
     }
 
-    /// Whether the product row is selectable
-    /// Used to add a disclosure indicator for variable products
-    ///
-    let isSelectable: Bool
-
     /// Number of variations in a variable product
     ///
-    private let numberOfVariations: Int
+    let numberOfVariations: Int
 
     init(id: String? = nil,
          productOrVariationID: Int64,
@@ -104,7 +99,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          quantity: Decimal = 1,
          canChangeQuantity: Bool,
          imageURL: URL?,
-         isSelectable: Bool = false,
          numberOfVariations: Int = 0,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.id = id ?? productOrVariationID.description
@@ -119,7 +113,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.currencyFormatter = currencyFormatter
-        self.isSelectable = isSelectable
         self.numberOfVariations = numberOfVariations
     }
 
@@ -149,7 +142,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   quantity: quantity,
                   canChangeQuantity: canChangeQuantity,
                   imageURL: product.imageURL,
-                  isSelectable: product.productType == .variable,
                   numberOfVariations: product.variations.count,
                   currencyFormatter: currencyFormatter)
     }

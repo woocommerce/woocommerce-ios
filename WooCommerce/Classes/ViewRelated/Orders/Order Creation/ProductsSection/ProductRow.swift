@@ -42,12 +42,6 @@ struct ProductRow: View {
 
                 ProductStepper(viewModel: viewModel)
                     .renderedIf(viewModel.canChangeQuantity)
-
-                Image(uiImage: .chevronImage)
-                    .renderedIf(viewModel.isSelectable)
-                    .flipsForRightToLeftLayoutDirection(true)
-                    .frame(width: Layout.chevronImageSize, height: Layout.chevronImageSize)
-                    .foregroundColor(Color(UIColor.gray(.shade30)))
             }
         }
     }
@@ -149,17 +143,6 @@ struct ProductRow_Previews: PreviewProvider {
                                                           manageStock: true,
                                                           canChangeQuantity: false,
                                                           imageURL: nil)
-        let viewModelSelectable = ProductRowViewModel(productOrVariationID: 1,
-                                                      name: "Love Ficus",
-                                                      sku: "123456",
-                                                      price: "",
-                                                      stockStatusKey: "instock",
-                                                      stockQuantity: 7,
-                                                      manageStock: true,
-                                                      canChangeQuantity: false,
-                                                      imageURL: nil,
-                                                      isSelectable: true,
-                                                      numberOfVariations: 3)
 
         ProductRow(viewModel: viewModel)
             .previewDisplayName("ProductRow with stepper")
@@ -167,10 +150,6 @@ struct ProductRow_Previews: PreviewProvider {
 
         ProductRow(viewModel: viewModelWithoutStepper)
             .previewDisplayName("ProductRow without stepper")
-            .previewLayout(.sizeThatFits)
-
-        ProductRow(viewModel: viewModelSelectable)
-            .previewDisplayName("Selectable ProductRow")
             .previewLayout(.sizeThatFits)
     }
 }

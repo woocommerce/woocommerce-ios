@@ -22,18 +22,18 @@ class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.imageURL, URL(string: imageURLString))
         XCTAssertFalse(viewModel.canChangeQuantity)
         XCTAssertEqual(viewModel.quantity, 1)
-        XCTAssertFalse(viewModel.isSelectable)
+        XCTAssertEqual(viewModel.numberOfVariations, 0)
     }
 
     func test_viewModel_is_created_with_correct_initial_values_from_variable_product() {
         // Given
-        let product = Product.fake().copy(productTypeKey: "variable")
+        let product = Product.fake().copy(productTypeKey: "variable", variations: [0, 1, 2])
 
         // When
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
 
         // Then
-        XCTAssertTrue(viewModel.isSelectable)
+        XCTAssertEqual(viewModel.numberOfVariations, 3)
     }
 
     func test_viewModel_is_created_with_correct_initial_values_from_product_variation() {

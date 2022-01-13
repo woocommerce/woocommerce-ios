@@ -57,7 +57,9 @@ struct AddProductToOrder: View {
     @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
         if rowViewModel.numberOfVariations > 0 {
             NavigationLink {
-                // TODO: Navigate to variation list
+                if let addVariationToOrderVM = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
+                    AddProductVariationToOrder(isPresented: $isPresented, viewModel: addVariationToOrderVM)
+                }
             } label: {
                 ProductRow(viewModel: rowViewModel)
             }

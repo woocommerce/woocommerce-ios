@@ -82,6 +82,15 @@ final class AddProductToOrderViewModel: ObservableObject {
         }
         onProductSelected?(selectedProduct)
     }
+
+    /// Get the view model for a list of product variations to add to the order
+    ///
+    func getVariationsViewModel(for productID: Int64) -> AddProductVariationToOrderViewModel? {
+        guard let variableProduct = products.first(where: { $0.productID == productID }) else {
+            return nil
+        }
+        return AddProductVariationToOrderViewModel(siteID: siteID, product: variableProduct)
+    }
 }
 
 // MARK: - SyncingCoordinatorDelegate & Sync Methods

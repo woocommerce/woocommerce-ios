@@ -39,18 +39,41 @@ struct NoticeModifier: ViewModifier {
                     // NoticeView wrapper
                     NoticeAlert(notice: notice, width: geometry.size.width)
                         .onDismiss {
-                            clearNoticeTask.perform()
-                            clearNoticeTask.cancel()
+                            print("on dismiss")
+                            performClearNoticeTask()
+                        }
+                        .onChange(of: notice) { _ in
+                            print("on change")
+                            dispatchClearNoticeTask()
                         }
                         .onAppear {
-                            clearNoticeTask = .init { $notice.wrappedValue = nil }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + onScreenNoticeTime, execute: clearNoticeTask)
+                            print("on appear")
+                            dispatchClearNoticeTask()
                         }
 
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
         }
+    }
+
+    /// Cancels any ongoing clear notice task and dispatches it again.
+    ///
+    private func dispatchClearNoticeTask() {
+        clearNoticeTask.cancel()
+        clearNoticeTask = .init {
+            $notice.wrappedValue = nil
+            print("clear was performed")
+        }
+        print("on Dispatch")
+        DispatchQueue.main.asyncAfter(deadline: .now() + onScreenNoticeTime, execute: clearNoticeTask)
+    }
+
+    /// Synchronously performs the clear notice task and cancels it to prever any future execution.
+    ///
+    private func performClearNoticeTask() {
+        clearNoticeTask.perform()
+        clearNoticeTask.cancel()
     }
 }
 
@@ -60,7 +83,7 @@ struct NoticeModifier: ViewModifier {
 ///
 private struct NoticeAlert: UIViewRepresentable {
 
-    /// Notice object render
+    /// Notice object to render.
     ///
     let notice: Notice
 
@@ -74,14 +97,14 @@ private struct NoticeAlert: UIViewRepresentable {
 
     func makeUIView(context: Context) -> NoticeWrapper {
         let noticeView = NoticeView(notice: notice)
-        noticeView.dismissHandler = onDismiss
-
         let wrapperView = NoticeWrapper(noticeView: noticeView)
         wrapperView.translatesAutoresizingMaskIntoConstraints = false
         return wrapperView
     }
 
     func updateUIView(_ uiView: NoticeWrapper, context: Context) {
+        uiView.noticeView = NoticeView(notice: notice)
+        uiView.noticeView.dismissHandler = onDismiss
         uiView.width = width
     }
 
@@ -96,12 +119,17 @@ private struct NoticeAlert: UIViewRepresentable {
 
 
 private extension NoticeAlert {
-    /// Wrapper type to force the underlying `NoticeView` to fixed width
+    /// Wrapper type to force the underlying `NoticeView` to have a fixed width.
     ///
     class NoticeWrapper: UIView {
         /// Underlying notice view
         ///
-        let noticeView: NoticeView
+        var noticeView: NoticeView {
+            didSet {
+                oldValue.removeFromSuperview()
+                setUpNoticeLayout()
+            }
+        }
 
         /// Fixed width constraint.
         ///
@@ -123,13 +151,24 @@ private extension NoticeAlert {
             self.noticeView = noticeView
             super.init(frame: .zero)
 
+            setUpNoticeLayout()
+            createWidthConstraint()
+        }
+
+        /// Set ups the notice layout.
+        ///
+        private func setUpNoticeLayout() {
             // Add notice view to edges
             noticeView.translatesAutoresizingMaskIntoConstraints = false
             addSubview(noticeView)
 
             layoutMargins = defaultInsets
             pinSubviewToAllEdgeMargins(noticeView)
+        }
 
+        /// Forces the wrapper view to have a fixed width.
+        ///
+        private func createWidthConstraint() {
             noticeViewWidthConstraint = widthAnchor.constraint(equalToConstant: width)
             noticeViewWidthConstraint.isActive = true
         }

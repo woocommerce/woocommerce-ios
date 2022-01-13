@@ -111,6 +111,7 @@ final class DashboardViewController: UIViewController {
         configureBottomJetpackBenefitsBanner()
         observeSiteForUIUpdates()
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
+        observeNavigationBarHeightForStoreNameLabelVisibility()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -294,22 +295,6 @@ private extension DashboardViewController {
 extension DashboardViewController: DashboardUIScrollDelegate {
     func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
-        showOrHideSubtitle(offset: scrollView.contentOffset.y)
-    }
-
-    private func showOrHideSubtitle(offset: CGFloat) {
-        guard shouldShowStoreNameAsSubtitle else {
-            return
-        }
-        storeNameLabel.isHidden = offset > headerStackView.frame.height
-        if offset < -headerStackView.frame.height {
-            UIView.transition(with: storeNameLabel, duration: Constants.animationDuration,
-                              options: .showHideTransitionViews,
-                              animations: { [weak self] in
-                                guard let self = self else { return }
-                                self.storeNameLabel.isHidden = false
-                          })
-        }
     }
 }
 
@@ -464,6 +449,21 @@ private extension DashboardViewController {
                 ServiceLocator.stores.dispatch(action)
             }.store(in: &cancellables)
     }
+
+    func observeNavigationBarHeightForStoreNameLabelVisibility() {
+        navigationController?.navigationBar.publisher(for: \.frame, options: [.initial, .new])
+            .map { $0.height }
+            .removeDuplicates()
+            .sink(receiveValue: { [weak self] navigationBarHeight in
+                guard let self = self else { return }
+
+                guard self.shouldShowStoreNameAsSubtitle else {
+                    return
+                }
+                self.storeNameLabel.isHidden = navigationBarHeight <= Constants.collapsedNavigationBarHeight
+            })
+            .store(in: &cancellables)
+    }
 }
 
 // MARK: Constants
@@ -476,8 +476,8 @@ private extension DashboardViewController {
     }
 
     enum Constants {
-        static let animationDuration = 0.2
         static let bannerBottomMargin = CGFloat(8)
         static let horizontalMargin = CGFloat(20)
+        static let collapsedNavigationBarHeight = CGFloat(44)
     }
 }

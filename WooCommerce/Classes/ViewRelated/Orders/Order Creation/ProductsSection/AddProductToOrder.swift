@@ -16,7 +16,8 @@ struct AddProductToOrder: View {
             Group {
                 switch viewModel.syncStatus {
                 case .results:
-                    List {
+                    InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
+                                       loadAction: viewModel.syncNextPage) {
                         ForEach(viewModel.productRows) { rowViewModel in
                             ProductRow(viewModel: rowViewModel)
                                 .onTapGesture {
@@ -24,13 +25,7 @@ struct AddProductToOrder: View {
                                     isPresented.toggle()
                                 }
                         }
-
-                        InfiniteScrollIndicator(showContent: viewModel.shouldShowScrollIndicator)
-                            .onAppear {
-                                viewModel.syncNextPage()
-                            }
                     }
-                    .listStyle(PlainListStyle())
                 case .empty:
                     EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
                         .frame(maxHeight: .infinity)
@@ -61,30 +56,6 @@ struct AddProductToOrder: View {
             }
         }
         .wooNavigationBarStyle()
-    }
-}
-
-private struct InfiniteScrollIndicator: View {
-
-    let showContent: Bool
-
-    var body: some View {
-        if #available(iOS 15.0, *) {
-            createProgressView()
-                .listRowSeparator(.hidden, edges: .bottom)
-        } else {
-            createProgressView()
-        }
-    }
-
-    @ViewBuilder func createProgressView() -> some View {
-        ProgressView()
-            .frame(maxWidth: .infinity, alignment: .center)
-            .listRowInsets(EdgeInsets())
-            .listRowBackground(Color(.listBackground))
-            .if(!showContent) { progressView in
-                progressView.hidden() // Hidden but still in view hierarchy so `onAppear` will trigger sync when needed
-            }
     }
 }
 

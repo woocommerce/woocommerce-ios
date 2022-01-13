@@ -41,7 +41,7 @@ public struct Coupon {
     /// Returns nil if other types are found.
     /// Used to filter only coupons with default types, so internal to this module only.
     ///
-    internal let mappedDiscountType: DiscountType?
+    public let mappedDiscountType: DiscountType?
 
     public let description: String
 
@@ -108,7 +108,7 @@ public struct Coupon {
                 amount: String,
                 dateCreated: Date,
                 dateModified: Date,
-                discountType: DiscountType,
+                mappedDiscountType: DiscountType?,
                 description: String,
                 dateExpires: Date?,
                 usageCount: Int64,
@@ -132,7 +132,7 @@ public struct Coupon {
         self.amount = amount
         self.dateCreated = dateCreated
         self.dateModified = dateModified
-        self.mappedDiscountType = discountType
+        self.mappedDiscountType = mappedDiscountType
         self.description = description
         self.dateExpires = dateExpires
         self.usageCount = usageCount
@@ -166,7 +166,7 @@ extension Coupon: Codable {
         case amount
         case dateCreated = "dateCreatedGmt"
         case dateModified = "dateModifiedGmt"
-        case mappedDiscountType
+        case mappedDiscountType = "discountType"
         case description
         case dateExpires = "dateExpiresGmt"
         case usageCount

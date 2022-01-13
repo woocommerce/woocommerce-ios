@@ -57,7 +57,7 @@ class GetMocks {
         var updatedData = originalData.response.jsonBody.data
 
         for index in 0..<updatedData.count {
-            var total = updatedData[index].total
+            let total = updatedData[index].total
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
 

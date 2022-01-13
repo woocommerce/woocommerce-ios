@@ -14,7 +14,7 @@ public struct OrderBodyData: Codable {
 public struct OrderData: Codable {
     public let id: Int
     public let number: String
-    public var status: String
+    public let status: String
     public var total: String
     public let line_items: [LineItems]
     public let billing: BillingInformation

@@ -1136,6 +1136,7 @@
 		BAA34C202787494300846F3C /* ReviewsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA34C1F2787494300846F3C /* ReviewsViewControllerTests.swift */; };
 		BAE4F8432734325C00871344 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE4F8422734325C00871344 /* SettingsViewModel.swift */; };
 		BAFEF51E273C2151005F94CC /* SettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAFEF51D273C2151005F94CC /* SettingsViewModelTests.swift */; };
+		C0C4A23E2790B56600326317 /* MenuScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C4A23C2790B39C00326317 /* MenuScreen.swift */; };
 		CC0324A3263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0324A2263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift */; };
 		CC078531266E706300BA9AC1 /* ErrorTopBannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC078530266E706300BA9AC1 /* ErrorTopBannerFactory.swift */; };
 		CC07860526736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC07860426736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift */; };
@@ -2727,6 +2728,7 @@
 		BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAE4F8422734325C00871344 /* SettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		BAFEF51D273C2151005F94CC /* SettingsViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModelTests.swift; sourceTree = "<group>"; };
+		C0C4A23C2790B39C00326317 /* MenuScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MenuScreen.swift; path = UITestsFoundation/Screens/MenuScreen.swift; sourceTree = SOURCE_ROOT; };
 		CC0324A2263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShippingLabelAccountSettings.swift; sourceTree = "<group>"; };
 		CC078530266E706300BA9AC1 /* ErrorTopBannerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorTopBannerFactory.swift; sourceTree = "<group>"; };
 		CC07860426736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorTopBannerFactoryTests.swift; sourceTree = "<group>"; };
@@ -7378,6 +7380,7 @@
 			isa = PBXGroup;
 			children = (
 				F997173E23DBFFEF00592D8E /* ReviewsScreen.swift */,
+				C0C4A23C2790B39C00326317 /* MenuScreen.swift */,
 				F997174123DC006F00592D8E /* SingleReviewScreen.swift */,
 			);
 			path = Reviews;
@@ -8039,6 +8042,7 @@
 				3F0CF30C2704490A00EF3D71 /* LoginPasswordScreen.swift in Sources */,
 				3F0CF30E2704490A00EF3D71 /* PasswordScreen.swift in Sources */,
 				3F0CF3092704490A00EF3D71 /* BetaFeaturesScreen.swift in Sources */,
+				C0C4A23E2790B56600326317 /* MenuScreen.swift in Sources */,
 				3F0CF3022704490A00EF3D71 /* LinkOrPasswordScreen.swift in Sources */,
 				3F0CF2FF2704490A00EF3D71 /* SettingsScreen.swift in Sources */,
 				3F0CF3052704490A00EF3D71 /* LoginEpilogueScreen.swift in Sources */,

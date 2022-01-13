@@ -19,10 +19,15 @@ public final class TabNavComponent: ScreenObject {
         $0.tabBars.firstMatch.buttons["tab-bar-products-item"]
     }
 
+    private let menuTabButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.tabBars.firstMatch.buttons["tab-bar-menu-item"]
+    }
+
     private var myStoreTabButton: XCUIElement { myStoreTabButtonGetter(app) }
     private var ordersTabButton: XCUIElement { ordersTabButtonGetter(app) }
     private var reviewsTabButton: XCUIElement { reviewsTabButtonGetter(app) }
-    var productsTabButton: XCUIElement { productsTabButtonGetter(app) }
+    var productsTabButton: XCUIElement { productsTabButtonGetter(app) } //why not private?
+    private var menuTabButton: XCUIElement { reviewsTabButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
@@ -30,7 +35,8 @@ public final class TabNavComponent: ScreenObject {
                 myStoreTabButtonGetter,
                 ordersTabButtonGetter,
                 reviewsTabButtonGetter,
-                productsTabButtonGetter
+                productsTabButtonGetter,
+                menuTabButtonGetter
             ],
             app: app
         )
@@ -72,6 +78,15 @@ public final class TabNavComponent: ScreenObject {
         }
 
         return try ReviewsScreen()
+    }
+
+    @discardableResult
+    public func goToMenuScreen() throws -> MenuScreen {
+        if MenuScreen.isVisible == false {
+            menuTabButton.tap()
+        }
+
+        return try MenuScreen()
     }
 
     static func isLoaded() -> Bool {

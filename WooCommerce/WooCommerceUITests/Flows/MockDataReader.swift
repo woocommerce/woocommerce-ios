@@ -58,13 +58,10 @@ class GetMocks {
 
         for index in 0..<updatedData.count {
                     var total = updatedData[index].total
-                    print("total is: \(total)")
-                    print("total after converted: \(Double(total) ?? 0)")
                     let numberFormatter = NumberFormatter()
                     numberFormatter.numberStyle = .decimal
 
                     let formattedNumber = numberFormatter.string(from: NSNumber(value: Double(total)!))
-                    print("formatted total is: \(formattedNumber)")
                     updatedData[index].total = formattedNumber!
                 }
 

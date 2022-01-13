@@ -16,7 +16,6 @@ final class OrdersTests: XCTestCase {
 
     func testOrdersScreenLoads() throws {
             let orders = try GetMocks.readOrdersData()
-            print(orders) // just for human validation
 
             _ = try TabNavComponent()
                 .gotoOrdersScreen()

@@ -19,6 +19,8 @@ struct ReviewsView: UIViewControllerRepresentable {
     ///
     func makeUIViewController(context: Self.Context) -> ReviewsViewController {
         let viewController = ReviewsViewController(siteID: siteID)
+        // This makes sure that the navigation item of the hosting controller
+        // is in sync with that of the wrapped controller.
         context.coordinator.parentObserver = viewController.observe(\.parent, changeHandler: { vc, _ in
             vc.parent?.navigationItem.title = vc.title
             vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems

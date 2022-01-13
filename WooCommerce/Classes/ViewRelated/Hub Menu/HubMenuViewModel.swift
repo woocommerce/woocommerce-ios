@@ -62,7 +62,7 @@ final class HubMenuViewModel: ObservableObject {
     /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.
     ///
     func presentSwitchStore() {
-        //TODO-5509: add analytics events
+        ServiceLocator.analytics.track(.hubMenuSwitchStoreTapped)
         if let navigationController = navigationController {
             storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
             storePickerCoordinator?.start()

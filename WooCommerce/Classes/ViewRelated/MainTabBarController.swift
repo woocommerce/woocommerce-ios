@@ -226,7 +226,7 @@ private extension MainTabBarController {
         case .reviews:
             ServiceLocator.analytics.track(.notificationsSelected)
         case .hubMenu:
-            //TODO-5509: implement tracking
+            ServiceLocator.analytics.track(.hubMenuTabSelected)
             break
         }
     }
@@ -244,7 +244,7 @@ private extension MainTabBarController {
         case .reviews:
             ServiceLocator.analytics.track(.notificationsReselected)
         case .hubMenu:
-            //TODO-5509: implement tracking
+            ServiceLocator.analytics.track(.hubMenuTabReselected)
             break
         }
     }

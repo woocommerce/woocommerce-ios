@@ -25,5 +25,5 @@ final class OrdersTests: XCTestCase {
                 .verifySingleOrder(order: orders[0])
                 .goBackToOrdersScreen()
                 .verifyOrdersScreenLoaded()
-        }
     }
+}

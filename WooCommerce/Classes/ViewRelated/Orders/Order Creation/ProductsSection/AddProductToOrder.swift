@@ -1,15 +1,15 @@
 import SwiftUI
 
-/// View showing a list of products or product variations to add to an order.
+/// View showing a list of products to add to an order.
 ///
-struct AddProductToOrder<ViewModel: AddProductToOrderViewModelProtocol>: View {
+struct AddProductToOrder: View {
     /// Defines whether the view is presented.
     ///
     @Binding var isPresented: Bool
 
     /// View model to drive the view.
     ///
-    @ObservedObject var viewModel: ViewModel
+    @ObservedObject var viewModel: AddProductToOrderViewModel
 
     var body: some View {
         NavigationView {
@@ -88,11 +88,13 @@ private struct InfiniteScrollIndicator: View {
     }
 }
 
-private enum Localization {
-    static let title = NSLocalizedString("Add Product", comment: "Title for the screen to add a product to an order")
-    static let close = NSLocalizedString("Close", comment: "Text for the close button in the Add Product screen")
-    static let emptyStateMessage = NSLocalizedString("No products found",
-                                                     comment: "Message displayed if there are no products to display in the Add Product screen")
+private extension AddProductToOrder {
+    enum Localization {
+        static let title = NSLocalizedString("Add Product", comment: "Title for the screen to add a product to an order")
+        static let close = NSLocalizedString("Close", comment: "Text for the close button in the Add Product screen")
+        static let emptyStateMessage = NSLocalizedString("No products found",
+                                                         comment: "Message displayed if there are no products to display in the Add Product screen")
+    }
 }
 
 struct AddProduct_Previews: PreviewProvider {

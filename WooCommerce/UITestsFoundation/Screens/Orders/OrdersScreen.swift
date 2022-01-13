@@ -42,7 +42,7 @@ public final class OrdersScreen: ScreenObject {
         XCTAssertEqual(orders.count, app.tables.cells.count, "Expecting \(orders.count) orders, got \(app.tables.cells.count) instead!")
         app.assertTextVisibilityCount(textToFind: String(orders[0].id))
         app.assertTextVisibilityCount(textToFind: String(orders[0].total))
-        app.assertTwoTextsAppearOnSameLabel(firstSubstring: String(orders[0].id), secondSubstring: orders[0].billing.first_name)
+        app.assertLabelContains(firstSubstring: String(orders[0].id), secondSubstring: orders[0].billing.first_name)
 
         return self
     }

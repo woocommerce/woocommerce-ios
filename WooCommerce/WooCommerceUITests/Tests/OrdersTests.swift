@@ -18,7 +18,7 @@ final class OrdersTests: XCTestCase {
             let orders = try GetMocks.readOrdersData()
 
             _ = try TabNavComponent()
-                .gotoOrdersScreen()
+                .goToOrdersScreen()
                 .verifyOrdersScreenLoaded()
                 .verifyOrdersList(orders: orders) //parameter, variable
                 .selectOrder(atIndex: 0)//orders[0].id)

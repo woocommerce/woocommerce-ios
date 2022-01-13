@@ -22,7 +22,8 @@ public final class SingleOrderScreen: ScreenObject {
 
         // try app.verifyChildElementOnParentCell(parent: "single-product-cell", child: "Mira")
         //this shouldn't work! "single-product-cell" doesn't include the text "Mira"
-        app.assertElementExistsOnCell(mainCell: "summary-table-view-cell", elementToFind: "\(order.billing.first_name) \(order.billing.last_name)")
+        app.assertElement(matching: "summary-table-view-cell", existsOnCellWithIdentifier: "\(order.billing.first_name) \(order.billing.last_name)")
+        //(mainCell: "summary-table-view-cell", elementToFind: "\(order.billing.first_name) \(order.billing.last_name)")
         //  "\(billing.first_name) + \(billing.last_name)"  "Mira Workman"
 
         app.assertTextVisibilityCount(textToFind: order.total, expectedCount: 1)

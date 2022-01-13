@@ -24,7 +24,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_view_model_adds_product_rows_with_unchangeable_quantity() {
+    func test_view_model_adds_product_variation_rows_with_unchangeable_quantity() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
@@ -34,13 +34,14 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager)
 
         // Then
-        XCTAssertEqual(viewModel.productRows.count, 1)
+        XCTAssertEqual(viewModel.productVariationRows.count, 1)
 
-        let productRow = viewModel.productRows[0]
-        XCTAssertFalse(productRow.canChangeQuantity, "Product row canChangeQuantity property should be false but is true instead")
+        let productVariationRow = viewModel.productVariationRows[0]
+        XCTAssertFalse(productVariationRow.canChangeQuantity,
+                       "Product variation row canChangeQuantity property should be false but is true instead")
     }
 
-    func test_product_rows_only_include_purchasable_product_variations() {
+    func test_product_variation_rows_only_include_purchasable_product_variations() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let purchasableProductVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
@@ -54,8 +55,10 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager)
 
         // Then
-        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == 1 }), "Product rows do not include purchasable product variation")
-        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == 2 }), "Product rows include non-purchasable product variation")
+        XCTAssertTrue(viewModel.productVariationRows.contains(where: { $0.productOrVariationID == 1 }),
+                      "Product variation rows do not include purchasable product variation")
+        XCTAssertFalse(viewModel.productVariationRows.contains(where: { $0.productOrVariationID == 2 }),
+                       "Product variation rows include non-purchasable product variation")
     }
 
     func test_scrolling_indicator_appears_only_during_sync() {

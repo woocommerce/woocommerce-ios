@@ -58,7 +58,8 @@ final class ProductTableViewCell: UITableViewCell {
         accessoryLabel.applyBodyStyle()
         detailLabel.applyFootnoteStyle()
         applyProductImageStyle()
-        backgroundColor = .listForeground
+        backgroundColor = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) ?
+        Constants.backgroundColor: Constants.legacyBackgroundColor
         bottomBorderView.backgroundColor = .systemColor(.separator)
         selectionStyle = .default
     }
@@ -80,12 +81,14 @@ extension ProductTableViewCell {
         let detailText: String?
         let accessoryText: String?
         let imageURL: String?
+        let backgroundColor: UIColor
     }
 
     func configure(viewModel: ViewModel, imageService: ImageService) {
         nameText = viewModel.nameText
         detailText = viewModel.detailText
         accessoryText = viewModel.accessoryText
+        backgroundColor = viewModel.backgroundColor
 
         /// Set `center` contentMode to not distort the placeholder aspect ratio.
         /// After a successful image download set the contentMode to `scaleAspectFill`
@@ -116,6 +119,7 @@ extension ProductTableViewCell.ViewModel {
                 statsItem?.totalString(currencyFormatter: currencyFormatter) ?? ""
             )
             accessoryText = "\(statsItem?.quantity ?? 0)"
+            backgroundColor = ProductTableViewCell.Constants.backgroundColor
         } else {
             detailText = String.localizedStringWithFormat(
                 NSLocalizedString("Total orders: %ld",
@@ -123,6 +127,7 @@ extension ProductTableViewCell.ViewModel {
                 statsItem?.quantity ?? 0
             )
             accessoryText = statsItem?.formattedTotalString
+            backgroundColor = ProductTableViewCell.Constants.legacyBackgroundColor
         }
     }
 }
@@ -135,6 +140,11 @@ private extension ProductTableViewCell {
         static let borderWidth = CGFloat(0.5)
         static let borderColor = UIColor.border
         static let backgroundColor = UIColor.listForeground
+    }
+
+    enum Constants {
+        static let backgroundColor: UIColor = .systemBackground
+        static let legacyBackgroundColor: UIColor = .listForeground
     }
 }
 

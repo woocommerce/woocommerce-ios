@@ -44,6 +44,14 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
     ///
     @Published private(set) var shouldShowScrollIndicator = false
 
+    /// View models of the ghost rows used during the loading process.
+    ///
+    var ghostRows: [ProductRowViewModel] {
+        return Array(0..<6).map { index in
+            ghostProductRow(id: index)
+        }
+    }
+
     /// Product Variations Results Controller.
     ///
     private lazy var productVariationsResultsController: ResultsController<StorageProductVariation> = {
@@ -164,5 +172,19 @@ extension AddProductVariationToOrderViewModel {
         case firstPageSync
         case results
         case empty
+    }
+
+    /// Used for ghost list view while syncing
+    ///
+    private func ghostProductRow(id: Int64) -> ProductRowViewModel {
+        ProductRowViewModel(productOrVariationID: id,
+                            name: "Ghost Variation",
+                            sku: nil,
+                            price: "20",
+                            stockStatusKey: ProductStockStatus.inStock.rawValue,
+                            stockQuantity: 1,
+                            manageStock: false,
+                            canChangeQuantity: false,
+                            imageURL: nil)
     }
 }

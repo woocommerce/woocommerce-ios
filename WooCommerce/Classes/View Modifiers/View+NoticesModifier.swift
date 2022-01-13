@@ -10,13 +10,9 @@ struct NoticeModifier: ViewModifier {
     let notice: Notice
 
     func body(content: Content) -> some View {
-        // Geometry reader to provide the correct view width.
-        GeometryReader { geometry in
-            ZStack {
-
-                // Main content
-                content
-
+        content.overlay(
+            // Geometry reader to provide the correct view width.
+            GeometryReader { geometry in
                 // VStack with spacer to push content to the bottom
                 VStack {
                     Spacer()
@@ -26,7 +22,7 @@ struct NoticeModifier: ViewModifier {
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
-        }
+        )
     }
 }
 
@@ -79,7 +75,7 @@ private extension NoticeAlert {
 
         /// Notice view padding.
         ///
-        let defaultInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        let defaultInsets = UIEdgeInsets(top: 16, left: 16, bottom: 28, right: 16)
 
         init(noticeView: NoticeView) {
             self.noticeView = noticeView
@@ -128,7 +124,7 @@ extension View {
 
 struct NoticeModifier_Previews: PreviewProvider {
     static var previews: some View {
-        Text("")
+        Rectangle().foregroundColor(.white)
             .notice(
                 .init(title: "API Error",
                       subtitle: "Restricted Access",

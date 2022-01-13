@@ -4,6 +4,7 @@ import SwiftUI
 ///
 struct HubMenuElement: View {
     let image: UIImage
+    let imageColor: UIColor
     let text: String
     let onTapGesture: (() -> Void)
 
@@ -19,8 +20,10 @@ struct HubMenuElement: View {
                     Color(UIColor(light: .listBackground,
                                   dark: .secondaryButtonBackground))
                     Image(uiImage: image)
+                        .renderingMode(.template)
                         .resizable()
                         .scaledToFit()
+                        .foregroundColor(Color(imageColor))
                         .frame(width: iconSize, height: iconSize)
                 }
                 .frame(width: imageSize, height: imageSize, alignment: .center)
@@ -42,7 +45,9 @@ struct HubMenuElement: View {
 struct HubMenuElement_Previews: PreviewProvider {
     static var previews: some View {
         HubMenuElement(image: .starOutlineImage(),
-                       text: "Menu", onTapGesture: { })
+                       imageColor: .blue, 
+                       text: "Menu", 
+                       onTapGesture: { })
             .previewLayout(.fixed(width: 160, height: 160))
             .previewDisplayName("Hub Menu Element")
     }

@@ -28,4 +28,3 @@ final class OrdersTests: XCTestCase {
                 .verifyOrdersScreenLoaded()
         }
     }
-

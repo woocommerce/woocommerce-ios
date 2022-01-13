@@ -33,16 +33,16 @@ struct HubMenu: View {
                         HubMenuElement(image: menu.icon, text: menu.title, onTapGesture: {
                             switch menu {
                             case .woocommerceAdmin:
-                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: ["option": "admin_menu"])
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "admin_menu"])
                                 showingWooCommerceAdmin = true
                             case .viewStore:
-                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: ["option": "view_store"])
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "view_store"])
                                 showingViewStore = true
                             case .reviews:
-                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: ["option": "reviews"])
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "reviews"])
                                 showingReviews = true
                             case .coupons:
-                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: ["option": "coupons"])
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "coupons"])
                                 showingCoupons = true
                             }
                         })
@@ -154,6 +154,7 @@ struct HubMenu: View {
         static let padding: CGFloat = 16
         static let topBarSpacing: CGFloat = 2
         static let avatarSize: CGFloat = 40
+        static let option = "option"
     }
 
     private enum Localization {

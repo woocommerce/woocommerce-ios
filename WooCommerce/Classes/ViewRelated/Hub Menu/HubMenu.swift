@@ -116,22 +116,23 @@ struct HubMenu: View {
                 }
                 Spacer()
                 VStack {
-                    ZStack {
-                        Circle()
-                            .fill(Color(UIColor(light: .white,
-                                                dark: .secondaryButtonBackground)))
-                            .frame(width: settingsSize,
-                                   height: settingsSize)
-                        if let cogImage = UIImage.cogImage.imageWithTintColor(.accent) {
-                            Image(uiImage: cogImage)
-                                .resizable()
-                                .frame(width: settingsIconSize,
-                                       height: settingsIconSize)
-                        }
-                    }
-                    .onTapGesture {
+                    Button {
                         ServiceLocator.analytics.track(.hubMenuSettingsTapped)
                         showSettings = true
+                    } label: {
+                        ZStack {
+                            Circle()
+                                .fill(Color(UIColor(light: .white,
+                                                    dark: .secondaryButtonBackground)))
+                                .frame(width: settingsSize,
+                                       height: settingsSize)
+                            if let cogImage = UIImage.cogImage.imageWithTintColor(.accent) {
+                                Image(uiImage: cogImage)
+                                    .resizable()
+                                    .frame(width: settingsIconSize,
+                                           height: settingsIconSize)
+                            }
+                        }
                     }
                     Spacer()
                 }

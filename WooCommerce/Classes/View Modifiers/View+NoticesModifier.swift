@@ -7,22 +7,26 @@ struct NoticeModifier: ViewModifier {
 
     /// Notice object to render
     ///
-    let notice: Notice
+    @Binding var notice: Notice?
 
     func body(content: Content) -> some View {
-        content.overlay(
-            // Geometry reader to provide the correct view width.
-            GeometryReader { geometry in
-                // VStack with spacer to push content to the bottom
-                VStack {
-                    Spacer()
+        if let notice = notice {
+            content.overlay(
+                // Geometry reader to provide the correct view width.
+                GeometryReader { geometry in
+                    // VStack with spacer to push content to the bottom
+                    VStack {
+                        Spacer()
 
-                    // NoticeView wrapper
-                    NoticeAlert(notice: notice, width: geometry.size.width)
-                        .fixedSize(horizontal: false, vertical: true)
+                        // NoticeView wrapper
+                        NoticeAlert(notice: notice, width: geometry.size.width)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
-            }
-        )
+            )
+        } else {
+            content
+        }
     }
 }
 
@@ -115,7 +119,7 @@ private extension NoticeAlert {
 extension View {
     /// Shows the provided notice in front of the view.
     ///
-    func notice(_ notice: Notice) -> some View {
+    func notice(_ notice: Binding<Notice?>) -> some View {
         self.modifier(NoticeModifier(notice: notice))
     }
 }
@@ -125,7 +129,7 @@ extension View {
 struct NoticeModifier_Previews: PreviewProvider {
     static var previews: some View {
         Rectangle().foregroundColor(.white)
-            .notice(
+            .notice(.constant(
                 .init(title: "API Error",
                       subtitle: "Restricted Access",
                       message: "Your photos could not be downloaded, please ask for the correct permissions!",
@@ -135,7 +139,7 @@ struct NoticeModifier_Previews: PreviewProvider {
                       actionHandler: {
                           print("Retry")
                       })
-            )
+            ))
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light Content")
     }

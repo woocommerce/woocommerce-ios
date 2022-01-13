@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import Hardware
 
 /// View Modifier that shows a notice in front of a view.
 /// NOTE: This currently does not support enqueuing multiple notices like `DefaultNoticePresenter` does.
@@ -9,6 +10,14 @@ struct NoticeModifier: ViewModifier {
     /// Notice object to render
     ///
     @Binding var notice: Notice?
+
+    /// Cancelable task that clears a notice.
+    ///
+    @State var clearNoticeTask = DispatchWorkItem(block: {})
+
+    /// Time the notice will remain on screen.
+    ///
+    private let onScreenNoticeTime = 5.0
 
     func body(content: Content) -> some View {
         content
@@ -30,13 +39,12 @@ struct NoticeModifier: ViewModifier {
                     // NoticeView wrapper
                     NoticeAlert(notice: notice, width: geometry.size.width)
                         .onDismiss {
-                            $notice.wrappedValue = nil
+                            clearNoticeTask.perform()
+                            clearNoticeTask.cancel()
                         }
                         .onAppear {
-                            // TODO: Move this to a proper state management class
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                //$notice.wrappedValue = nil
-                            }
+                            clearNoticeTask = .init { $notice.wrappedValue = nil }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + onScreenNoticeTime, execute: clearNoticeTask)
                         }
 
                         .fixedSize(horizontal: false, vertical: true)

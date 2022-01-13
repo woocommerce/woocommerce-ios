@@ -1,6 +1,5 @@
 import UITestsFoundation
 import XCTest
-import Networking
 
 final class OrdersTests: XCTestCase {
 

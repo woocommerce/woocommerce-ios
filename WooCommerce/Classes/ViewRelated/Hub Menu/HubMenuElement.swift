@@ -45,9 +45,9 @@ struct HubMenuElement: View {
 struct HubMenuElement_Previews: PreviewProvider {
     static var previews: some View {
         HubMenuElement(image: .starOutlineImage(),
-                       imageColor: .blue, 
-                       text: "Menu", 
-                       onTapGesture: { })
+                       imageColor: .blue,
+                       text: "Menu",
+                       onTapGesture: {})
             .previewLayout(.fixed(width: 160, height: 160))
             .previewDisplayName("Hub Menu Element")
     }

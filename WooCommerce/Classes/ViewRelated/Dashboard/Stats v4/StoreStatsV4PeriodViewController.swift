@@ -348,7 +348,8 @@ private extension StoreStatsV4PeriodViewController {
     func configureBarChart() {
         lineChartView.marker = StoreStatsChartCircleMarker()
         lineChartView.chartDescription?.enabled = false
-        lineChartView.dragEnabled = true
+        lineChartView.dragXEnabled = true
+        lineChartView.dragYEnabled = false
         lineChartView.setScaleEnabled(false)
         lineChartView.pinchZoomEnabled = false
         lineChartView.rightAxis.enabled = false

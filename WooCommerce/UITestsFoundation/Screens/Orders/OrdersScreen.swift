@@ -47,6 +47,7 @@ public final class OrdersScreen: ScreenObject {
         return self
     }
 
+   @discardableResult
     public func verifyOrdersScreenLoaded() throws -> Self {
         XCTAssertTrue(isLoaded)
         return self

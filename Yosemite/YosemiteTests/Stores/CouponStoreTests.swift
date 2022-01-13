@@ -287,7 +287,7 @@ final class CouponStoreTests: XCTestCase {
         setUpUsingSpyRemote()
         // Given
         let sampleCouponID: Int64 = 720
-        let coupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID, amount: "10", discountType: .percent)
+        let coupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID, amount: "10", mappedDiscountType: .percent)
         let action = CouponAction.updateCoupon(coupon) { _ in }
 
         // When
@@ -326,7 +326,7 @@ final class CouponStoreTests: XCTestCase {
     func test_updateCoupon_updates_stored_coupon_upon_success() throws {
         // Given
         let sampleCouponID: Int64 = 720
-        let sampleCoupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID, amount: "11", discountType: .percent)
+        let sampleCoupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID, amount: "11", mappedDiscountType: .percent)
         storeCoupon(sampleCoupon, for: sampleSiteID)
         XCTAssertEqual(storedCouponsCount, 1)
 
@@ -334,7 +334,7 @@ final class CouponStoreTests: XCTestCase {
 
         // When
         // this is not really important because we'll test the parsed coupon from the json file
-        let updatedCoupon = sampleCoupon.copy(amount: "10.00", discountType: .fixedCart)
+        let updatedCoupon = sampleCoupon.copy(amount: "10.00", mappedDiscountType: .fixedCart)
         let result: Result<Networking.Coupon, Error> = waitFor { promise in
             let action: CouponAction
             action = .updateCoupon(updatedCoupon) { result in
@@ -355,7 +355,7 @@ final class CouponStoreTests: XCTestCase {
         setUpUsingSpyRemote()
         // Given
         let sampleCouponID: Int64 = 720
-        let coupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID, amount: "10", discountType: .percent)
+        let coupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID, amount: "10", mappedDiscountType: .percent)
         let action = CouponAction.createCoupon(coupon) { _ in }
 
         // When
@@ -391,7 +391,7 @@ final class CouponStoreTests: XCTestCase {
         // Given
         let sampleCouponID: Int64 = 720
         // this is not really important because we'll test the parsed coupon from the json file
-        let sampleCoupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID, amount: "10.00", discountType: .percent)
+        let sampleCoupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID, amount: "10.00", mappedDiscountType: .percent)
 
         network.simulateResponse(requestUrlSuffix: "coupons", filename: "coupon")
 

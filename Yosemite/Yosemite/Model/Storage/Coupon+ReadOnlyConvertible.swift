@@ -44,7 +44,7 @@ extension Storage.Coupon: ReadOnlyConvertible {
                       amount: amount ?? "",
                       dateCreated: dateCreated ?? Date(),
                       dateModified: dateModified ?? Date(),
-                      discountType: Coupon.DiscountType(rawValue: discountType ?? "") ?? Coupon.DiscountType.fixedCart,
+                      mappedDiscountType: Coupon.DiscountType(rawValue: discountType ?? "") ?? Coupon.DiscountType.fixedCart,
                       description: fullDescription ?? "",
                       dateExpires: dateExpires,
                       usageCount: usageCount,

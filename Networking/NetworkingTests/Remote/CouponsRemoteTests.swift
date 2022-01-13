@@ -301,7 +301,7 @@ private extension CouponsRemoteTests {
                amount: "10.00",
                dateCreated: date(with: "2017-03-21T18:25:02"),
                dateModified: date(with: "2017-03-21T18:25:02"),
-               discountType: .fixedCart,
+               mappedDiscountType: .fixedCart,
                description: "Coupon description",
                dateExpires: date(with: "2017-03-31T18:25:02"),
                usageCount: 10,

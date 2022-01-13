@@ -116,7 +116,6 @@ private enum Layout {
     static let stepperButtonSize: CGFloat = 22.0
     static let stepperPadding: CGFloat = 11.0
     static let stepperWidth: CGFloat = 112.0
-    static let chevronImageSize: CGFloat = 22.0
 }
 
 private enum Localization {

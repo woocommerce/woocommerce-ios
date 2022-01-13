@@ -21,6 +21,12 @@ struct NoticeModifier: ViewModifier {
                         // NoticeView wrapper
                         NoticeAlert(notice: notice, width: geometry.size.width)
                             .fixedSize(horizontal: false, vertical: true)
+                            .onAppear {
+                                // TODO: Move this to a proper state management class
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                    $notice.wrappedValue = nil
+                                }
+                            }
                             .onTapGesture {
                                 $notice.wrappedValue = nil // TODO: Test the retry button interference
                             }

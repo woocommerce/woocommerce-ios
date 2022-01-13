@@ -20,8 +20,8 @@ final class OrdersTests: XCTestCase {
             _ = try TabNavComponent()
                 .goToOrdersScreen()
                 .verifyOrdersScreenLoaded()
-                .verifyOrdersList(orders: orders) //parameter, variable
-                .selectOrder(atIndex: 0)//orders[0].id)
+                .verifyOrdersList(orders: orders)
+                .selectOrder(atIndex: 0)
                 .verifySingleOrder(order: orders[0])
                 .goBackToOrdersScreen()
                 .verifyOrdersScreenLoaded()

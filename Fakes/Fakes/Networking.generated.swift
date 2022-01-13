@@ -131,7 +131,7 @@ extension Coupon {
             amount: .fake(),
             dateCreated: .fake(),
             dateModified: .fake(),
-            discountType: .fake(),
+            mappedDiscountType: .fake(),
             description: .fake(),
             dateExpires: .fake(),
             usageCount: .fake(),

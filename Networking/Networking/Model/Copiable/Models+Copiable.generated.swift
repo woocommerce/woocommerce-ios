@@ -78,7 +78,7 @@ extension Coupon {
         amount: CopiableProp<String> = .copy,
         dateCreated: CopiableProp<Date> = .copy,
         dateModified: CopiableProp<Date> = .copy,
-        discountType: CopiableProp<Coupon.DiscountType> = .copy,
+        mappedDiscountType: NullableCopiableProp<Coupon.DiscountType> = .copy,
         description: CopiableProp<String> = .copy,
         dateExpires: NullableCopiableProp<Date> = .copy,
         usageCount: CopiableProp<Int64> = .copy,
@@ -103,7 +103,7 @@ extension Coupon {
         let amount = amount ?? self.amount
         let dateCreated = dateCreated ?? self.dateCreated
         let dateModified = dateModified ?? self.dateModified
-        let discountType = discountType ?? self.discountType
+        let mappedDiscountType = mappedDiscountType ?? self.mappedDiscountType
         let description = description ?? self.description
         let dateExpires = dateExpires ?? self.dateExpires
         let usageCount = usageCount ?? self.usageCount
@@ -129,7 +129,7 @@ extension Coupon {
             amount: amount,
             dateCreated: dateCreated,
             dateModified: dateModified,
-            discountType: discountType,
+            mappedDiscountType: mappedDiscountType,
             description: description,
             dateExpires: dateExpires,
             usageCount: usageCount,

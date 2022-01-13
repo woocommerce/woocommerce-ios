@@ -130,7 +130,7 @@ class NewOrderViewModelTests: XCTestCase {
 
     func test_view_model_is_updated_when_product_is_added_to_order() {
         // Given
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, statusKey: "publish")
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
@@ -146,7 +146,7 @@ class NewOrderViewModelTests: XCTestCase {
 
     func test_order_details_are_updated_when_product_quantity_changes() {
         // Given
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, statusKey: "publish")
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
@@ -166,7 +166,7 @@ class NewOrderViewModelTests: XCTestCase {
 
     func test_selectOrderItem_selects_expected_order_item() {
         // Given
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, statusKey: "publish")
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
@@ -182,8 +182,8 @@ class NewOrderViewModelTests: XCTestCase {
 
     func test_view_model_is_updated_when_product_is_removed_from_order() {
         // Given
-        let product0 = Product.fake().copy(siteID: sampleSiteID, productID: 0, statusKey: "publish")
-        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, statusKey: "publish")
+        let product0 = Product.fake().copy(siteID: sampleSiteID, productID: 0, purchasable: true)
+        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertProducts([product0, product1])
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
@@ -249,7 +249,7 @@ class NewOrderViewModelTests: XCTestCase {
 
     func test_payment_section_only_displayed_when_order_has_products() {
         // Given
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, statusKey: "publish")
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
@@ -266,7 +266,7 @@ class NewOrderViewModelTests: XCTestCase {
     func test_payment_section_is_updated_when_products_update() {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, statusKey: "publish", price: "8.50")
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)

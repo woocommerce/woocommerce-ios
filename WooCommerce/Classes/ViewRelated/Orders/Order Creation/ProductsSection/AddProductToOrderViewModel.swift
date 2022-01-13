@@ -82,7 +82,7 @@ final class AddProductToOrderViewModel: AddProductToOrderViewModelProtocol {
 
     /// Select a product to add to the order
     ///
-    func selectProductOrVariation(_ productID: Int64) {
+    func selectProduct(_ productID: Int64) {
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }

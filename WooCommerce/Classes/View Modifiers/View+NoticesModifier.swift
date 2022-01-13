@@ -10,31 +10,36 @@ struct NoticeModifier: ViewModifier {
     @Binding var notice: Notice?
 
     func body(content: Content) -> some View {
-        if let notice = notice {
-            content.overlay(
-                // Geometry reader to provide the correct view width.
-                GeometryReader { geometry in
-                    // VStack with spacer to push content to the bottom
-                    VStack {
-                        Spacer()
+        content
+            .overlay(buildNoticeStack())
+            .animation(.easeInOut, value: notice)
+    }
 
-                        // NoticeView wrapper
-                        NoticeAlert(notice: notice, width: geometry.size.width)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .onAppear {
-                                // TODO: Move this to a proper state management class
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                    $notice.wrappedValue = nil
-                                }
+    /// Builds a notice view at the bottom of the screen.
+    ///
+    @ViewBuilder private func buildNoticeStack() -> some View {
+        if let notice = notice {
+            // Geometry reader to provide the correct view width.
+            GeometryReader { geometry in
+
+                // VStack with spacer to push content to the bottom
+                VStack {
+                    Spacer()
+
+                    // NoticeView wrapper
+                    NoticeAlert(notice: notice, width: geometry.size.width)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .onAppear {
+                            // TODO: Move this to a proper state management class
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                $notice.wrappedValue = nil
                             }
-                            .onTapGesture {
-                                $notice.wrappedValue = nil // TODO: Test the retry button interference
-                            }
-                    }
+                        }
+                        .onTapGesture {
+                            $notice.wrappedValue = nil // TODO: Test the retry button interference
+                        }
                 }
-            )
-        } else {
-            content
+            }
         }
     }
 }
@@ -129,7 +134,7 @@ extension View {
     /// Shows the provided notice in front of the view.
     ///
     func notice(_ notice: Binding<Notice?>) -> some View {
-        self.modifier(NoticeModifier(notice: notice))
+        modifier(NoticeModifier(notice: notice))
     }
 }
 

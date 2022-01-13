@@ -112,13 +112,27 @@ extension HubMenuViewModel {
         var icon: UIImage {
             switch self {
             case .woocommerceAdmin:
-                return .wordPressLogoImage.imageWithTintColor(.blue) ?? .wordPressLogoImage
+                return .wordPressLogoImage
             case .viewStore:
-                return .storeImage.imageWithTintColor(.accent) ?? .storeImage
+                return .storeImage
             case .coupons:
                 return .couponImage
             case .reviews:
-                return .starImage(size: 24.0).imageWithTintColor(.primary) ?? .starImage(size: 24.0)
+                return .starImage(size: 24.0)
+            }
+        }
+
+        var iconColor: UIColor {
+            switch self {
+            case .woocommerceAdmin:
+                return .blue
+            case .viewStore:
+                return .accent
+            case .coupons:
+                return UIColor(light: .withColorStudio(.green, shade: .shade30),
+                               dark: .withColorStudio(.green, shade: .shade50))
+            case .reviews:
+                return .primary
             }
         }
     }

@@ -21,6 +21,9 @@ struct NoticeModifier: ViewModifier {
                         // NoticeView wrapper
                         NoticeAlert(notice: notice, width: geometry.size.width)
                             .fixedSize(horizontal: false, vertical: true)
+                            .onTapGesture {
+                                $notice.wrappedValue = nil // TODO: Test the retry button interference
+                            }
                     }
                 }
             )

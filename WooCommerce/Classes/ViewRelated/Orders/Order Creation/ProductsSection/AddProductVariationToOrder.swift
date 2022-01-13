@@ -12,43 +12,40 @@ struct AddProductVariationToOrder: View {
     @ObservedObject var viewModel: AddProductVariationToOrderViewModel
 
     var body: some View {
-        NavigationView {
-            Group {
-                switch viewModel.syncStatus {
-                case .results:
-                    InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
-                                       loadAction: viewModel.syncNextPage) {
-                        ForEach(viewModel.productVariationRows) { rowViewModel in
-                            ProductRow(viewModel: rowViewModel)
-                                .onTapGesture {
-                                    viewModel.selectVariation(rowViewModel.productOrVariationID)
-                                    isPresented.toggle()
-                                }
-                        }
-                    }
-                case .empty:
-                    EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
-                        .frame(maxHeight: .infinity)
-                case .firstPageSync:
-                    List(viewModel.ghostRows) { rowViewModel in
+        Group {
+            switch viewModel.syncStatus {
+            case .results:
+                InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
+                                   loadAction: viewModel.syncNextPage) {
+                    ForEach(viewModel.productVariationRows) { rowViewModel in
                         ProductRow(viewModel: rowViewModel)
-                            .redacted(reason: .placeholder)
-                            .shimmering()
+                            .onTapGesture {
+                                viewModel.selectVariation(rowViewModel.productOrVariationID)
+                                isPresented.toggle()
+                            }
                     }
-                    .listStyle(PlainListStyle())
-                default:
-                    EmptyView()
                 }
-            }
-            .background(Color(.listBackground).ignoresSafeArea())
-            .ignoresSafeArea(.container, edges: .horizontal)
-            .navigationTitle(viewModel.productName)
-            .navigationBarTitleDisplayMode(.inline)
-            .onAppear {
-                viewModel.syncFirstPage()
+            case .empty:
+                EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
+                    .frame(maxHeight: .infinity)
+            case .firstPageSync:
+                List(viewModel.ghostRows) { rowViewModel in
+                    ProductRow(viewModel: rowViewModel)
+                        .redacted(reason: .placeholder)
+                        .shimmering()
+                }
+                .listStyle(PlainListStyle())
+            default:
+                EmptyView()
             }
         }
-        .wooNavigationBarStyle()
+        .background(Color(.listBackground).ignoresSafeArea())
+        .ignoresSafeArea(.container, edges: .horizontal)
+        .navigationTitle(viewModel.productName)
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            viewModel.syncFirstPage()
+        }
     }
 }
 

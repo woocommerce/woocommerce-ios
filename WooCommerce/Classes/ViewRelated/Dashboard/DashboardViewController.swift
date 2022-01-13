@@ -88,7 +88,7 @@ final class DashboardViewController: UIViewController {
         return view
     }()
 
-    private var cancellables = Set<AnyCancellable>()
+    private var subscriptions = Set<AnyCancellable>()
 
     // MARK: View Lifecycle
 
@@ -423,7 +423,7 @@ private extension DashboardViewController {
             guard let self = self else { return }
             self.updateUI(site: site)
             self.reloadData(forced: true)
-        }.store(in: &cancellables)
+        }.store(in: &subscriptions)
     }
 
     func observeBottomJetpackBenefitsBannerVisibilityUpdates() {
@@ -447,7 +447,7 @@ private extension DashboardViewController {
                     self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
                 }
                 ServiceLocator.stores.dispatch(action)
-            }.store(in: &cancellables)
+            }.store(in: &subscriptions)
     }
 
     func observeNavigationBarHeightForStoreNameLabelVisibility() {
@@ -462,7 +462,7 @@ private extension DashboardViewController {
                 }
                 self.storeNameLabel.isHidden = navigationBarHeight <= Constants.collapsedNavigationBarHeight
             })
-            .store(in: &cancellables)
+            .store(in: &subscriptions)
     }
 }
 

@@ -2,6 +2,7 @@ import SwiftUI
 import UIKit
 
 /// View Modifier that shows a notice in front of a view.
+/// NOTE: This currently does not support enqueuing multiple notices like `DefaultNoticePresenter` does.
 ///
 struct NoticeModifier: ViewModifier {
 

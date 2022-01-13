@@ -28,16 +28,17 @@ struct NoticeModifier: ViewModifier {
 
                     // NoticeView wrapper
                     NoticeAlert(notice: notice, width: geometry.size.width)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .onDismiss {
+                            $notice.wrappedValue = nil
+                        }
                         .onAppear {
                             // TODO: Move this to a proper state management class
                             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                $notice.wrappedValue = nil
+                                //$notice.wrappedValue = nil
                             }
                         }
-                        .onTapGesture {
-                            $notice.wrappedValue = nil // TODO: Test the retry button interference
-                        }
+
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
         }
@@ -58,8 +59,14 @@ private struct NoticeAlert: UIViewRepresentable {
     ///
     let width: CGFloat
 
+    /// Action to be invoked when the view is tapped.
+    ///
+    var onDismiss: (() -> Void)?
+
     func makeUIView(context: Context) -> NoticeWrapper {
         let noticeView = NoticeView(notice: notice)
+        noticeView.dismissHandler = onDismiss
+
         let wrapperView = NoticeWrapper(noticeView: noticeView)
         wrapperView.translatesAutoresizingMaskIntoConstraints = false
         return wrapperView
@@ -67,6 +74,14 @@ private struct NoticeAlert: UIViewRepresentable {
 
     func updateUIView(_ uiView: NoticeWrapper, context: Context) {
         uiView.width = width
+    }
+
+    /// Updates the notice dismiss closure.
+    ///
+    func onDismiss(_ onDismiss: @escaping (() -> Void)) -> Self {
+        var copy = self
+        copy.onDismiss = onDismiss
+        return copy
     }
 }
 

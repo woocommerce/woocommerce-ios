@@ -30,25 +30,22 @@ struct HubMenu: View {
 
                 LazyVGrid(columns: gridItemLayout, spacing: Constants.itemSpacing) {
                     ForEach(viewModel.menuElements, id: \.self) { menu in
-                        HubMenuElement(image: menu.icon, text: menu.title)
-                            .frame(width: Constants.itemSize, height: Constants.itemSize)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                switch menu {
-                                case .woocommerceAdmin:
-                                    ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: ["option": "admin_menu"])
-                                    showingWooCommerceAdmin = true
-                                case .viewStore:
-                                    ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: ["option": "view_store"])
-                                    showingViewStore = true
-                                case .reviews:
-                                    ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: ["option": "reviews"])
-                                    showingReviews = true
-                                case .coupons:
-                                    ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: ["option": "coupons"])
-                                    showingCoupons = true
-                                }
+                        HubMenuElement(image: menu.icon, text: menu.title, onTapGesture: {
+                            switch menu {
+                            case .woocommerceAdmin:
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: ["option": "admin_menu"])
+                                showingWooCommerceAdmin = true
+                            case .viewStore:
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: ["option": "view_store"])
+                                showingViewStore = true
+                            case .reviews:
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: ["option": "reviews"])
+                                showingReviews = true
+                            case .coupons:
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: ["option": "coupons"])
+                                showingCoupons = true
                             }
+                        })
                     }
                     .background(Color(.listForeground))
                     .cornerRadius(Constants.cornerRadius)

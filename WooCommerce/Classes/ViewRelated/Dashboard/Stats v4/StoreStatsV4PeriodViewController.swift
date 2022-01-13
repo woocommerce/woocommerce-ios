@@ -699,7 +699,7 @@ private extension StoreStatsV4PeriodViewController {
         if hasRevenueData && !hasNegativeRevenueOnly {
             let gradientColors = [Constants.chartGradientBottomColor.cgColor, Constants.chartGradientTopColor.cgColor] as CFArray
             let gradientColorSpace = CGColorSpaceCreateDeviceRGB()
-            let locations: [CGFloat] = hasNegativeRevenueOnly ? [1.0, 0.0]: [0.0, 1.0]
+            let locations: [CGFloat] = [0.0, 1.0]
             if let gradient = CGGradient(colorsSpace: gradientColorSpace, colors: gradientColors, locations: locations) {
                 dataSet.fill = .init(linearGradient: gradient, angle: 90.0)
                 dataSet.fillAlpha = 1.0

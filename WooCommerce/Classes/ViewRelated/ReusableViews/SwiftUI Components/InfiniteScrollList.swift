@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// A list that renders the provided list content with an infinite scroll indicator.
+///
 struct InfiniteScrollList<Content: View>: View {
     /// Content to render in the list.
     ///
@@ -13,13 +15,12 @@ struct InfiniteScrollList<Content: View>: View {
     ///
     private let loadAction: () -> Void
 
-    /// A list that renders the provided list content with an infinite scroll indicator.
+    /// Creates a list with the provided content and an infinite scroll indicator.
     ///
     /// - Parameters:
     ///   - isLoading: Whether the list is loading more content. Used to determine whether to show the infinite scroll indicator.
     ///   - loadAction: Action to load more content.
     ///   - listContent: Content to render in the list.
-    ///
     init(isLoading: Bool,
          loadAction: @escaping () -> Void,
          @ViewBuilder listContent: () -> Content) {

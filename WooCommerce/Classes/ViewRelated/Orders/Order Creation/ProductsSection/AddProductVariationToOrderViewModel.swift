@@ -1,9 +1,9 @@
 import Yosemite
 import protocol Storage.StorageManagerType
 
-/// View model for `AddProductToOrder` with a list of product variations for a product.
+/// View model for `AddProductVariationToOrder`.
 ///
-final class AddProductVariationToOrderViewModel: AddProductToOrderViewModelProtocol {
+final class AddProductVariationToOrderViewModel: ObservableObject {
     private let siteID: Int64
 
     /// Storage to fetch product variation list
@@ -24,9 +24,9 @@ final class AddProductVariationToOrderViewModel: AddProductToOrderViewModelProto
         productVariationsResultsController.fetchedObjects.filter { $0.purchasable }
     }
 
-    /// View models for each product row
+    /// View models for each product variation row
     ///
-    var productRows: [ProductRowViewModel] {
+    var productVariationRows: [ProductRowViewModel] {
         productVariations.map { .init(productVariation: $0, allAttributes: product.attributesForVariations, canChangeQuantity: false) }
     }
 
@@ -34,7 +34,7 @@ final class AddProductVariationToOrderViewModel: AddProductToOrderViewModelProto
 
     /// Current sync status; used to determine what list view to display.
     ///
-    @Published private(set) var syncStatus: AddProductToOrderSyncStatus?
+    @Published private(set) var syncStatus: SyncStatus?
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
@@ -43,6 +43,14 @@ final class AddProductVariationToOrderViewModel: AddProductToOrderViewModelProto
     /// Tracks if the infinite scroll indicator should be displayed
     ///
     @Published private(set) var shouldShowScrollIndicator = false
+
+    /// View models of the ghost rows used during the loading process.
+    ///
+    var ghostRows: [ProductRowViewModel] {
+        return Array(0..<6).map { index in
+            ghostProductRow(id: index)
+        }
+    }
 
     /// Product Variations Results Controller.
     ///
@@ -68,7 +76,7 @@ final class AddProductVariationToOrderViewModel: AddProductToOrderViewModelProto
 
     /// Select a product variation to add to the order
     ///
-    func selectProductOrVariation(_ productID: Int64) {
+    func selectVariation(_ productID: Int64) {
         // TODO: Add the selected product variation to the order
     }
 }
@@ -153,5 +161,30 @@ private extension AddProductVariationToOrderViewModel {
     ///
     func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
+    }
+}
+
+// MARK: - Utils
+extension AddProductVariationToOrderViewModel {
+    /// Represents possible statuses for syncing product variations
+    ///
+    enum SyncStatus {
+        case firstPageSync
+        case results
+        case empty
+    }
+
+    /// Used for ghost list view while syncing
+    ///
+    private func ghostProductRow(id: Int64) -> ProductRowViewModel {
+        ProductRowViewModel(productOrVariationID: id,
+                            name: "Ghost Variation",
+                            sku: nil,
+                            price: "20",
+                            stockStatusKey: ProductStockStatus.inStock.rawValue,
+                            stockQuantity: 1,
+                            manageStock: false,
+                            canChangeQuantity: false,
+                            imageURL: nil)
     }
 }

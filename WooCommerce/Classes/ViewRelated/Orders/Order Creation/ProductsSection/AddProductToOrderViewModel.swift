@@ -1,9 +1,9 @@
 import Yosemite
 import protocol Storage.StorageManagerType
 
-/// View model for `AddProductToOrder` with a list of products.
+/// View model for `AddProductToOrder`.
 ///
-final class AddProductToOrderViewModel: AddProductToOrderViewModelProtocol {
+final class AddProductToOrderViewModel: ObservableObject {
     private let siteID: Int64
 
     /// Storage to fetch product list
@@ -48,7 +48,7 @@ final class AddProductToOrderViewModel: AddProductToOrderViewModelProtocol {
 
     /// Current sync status; used to determine what list view to display.
     ///
-    @Published private(set) var syncStatus: AddProductToOrderSyncStatus?
+    @Published private(set) var syncStatus: SyncStatus?
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
@@ -57,6 +57,14 @@ final class AddProductToOrderViewModel: AddProductToOrderViewModelProtocol {
     /// Tracks if the infinite scroll indicator should be displayed
     ///
     @Published private(set) var shouldShowScrollIndicator = false
+
+    /// View models of the ghost rows used during the loading process.
+    ///
+    var ghostRows: [ProductRowViewModel] {
+        return Array(0..<6).map { index in
+            ghostProductRow(id: index)
+        }
+    }
 
     /// Products Results Controller.
     ///
@@ -82,7 +90,7 @@ final class AddProductToOrderViewModel: AddProductToOrderViewModelProtocol {
 
     /// Select a product to add to the order
     ///
-    func selectProductOrVariation(_ productID: Int64) {
+    func selectProduct(_ productID: Int64) {
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }
@@ -176,5 +184,30 @@ private extension AddProductToOrderViewModel {
     ///
     func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
+    }
+}
+
+// MARK: - Utils
+extension AddProductToOrderViewModel {
+    /// Represents possible statuses for syncing products
+    ///
+    enum SyncStatus {
+        case firstPageSync
+        case results
+        case empty
+    }
+
+    /// Used for ghost list view while syncing
+    ///
+    private func ghostProductRow(id: Int64) -> ProductRowViewModel {
+        ProductRowViewModel(productOrVariationID: id,
+                            name: "Ghost Product",
+                            sku: nil,
+                            price: "20",
+                            stockStatusKey: ProductStockStatus.inStock.rawValue,
+                            stockQuantity: 1,
+                            manageStock: false,
+                            canChangeQuantity: false,
+                            imageURL: nil)
     }
 }

@@ -59,7 +59,7 @@ final class LoginTests: XCTestCase {
             .tryProceed(password: "invalidPswd")
             .verifyLoginError()
     }
-    
+
     func skipTillSettingsFixed(file: StaticString = #file, line: UInt = #line) throws {
         try XCTSkipIf(true,
             """

@@ -14,9 +14,17 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
-    /// The product whose variations are listed
+    /// The ID of the parent variable product
     ///
-    private var product: Product
+    private let productID: Int64
+
+    /// The name of the parent variable product
+    ///
+    let productName: String
+
+    /// All attributes for variations of the parent variable product
+    ///
+    private let productAttributes: [ProductAttribute]
 
     /// All purchasable product variations for the product.
     ///
@@ -27,7 +35,7 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
     /// View models for each product variation row
     ///
     var productVariationRows: [ProductRowViewModel] {
-        productVariations.map { .init(productVariation: $0, allAttributes: product.attributesForVariations, canChangeQuantity: false) }
+        productVariations.map { .init(productVariation: $0, allAttributes: productAttributes, canChangeQuantity: false) }
     }
 
     // MARK: Sync & Storage properties
@@ -55,23 +63,39 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
     /// Product Variations Results Controller.
     ///
     private lazy var productVariationsResultsController: ResultsController<StorageProductVariation> = {
-        let predicate = NSPredicate(format: "siteID == %lld AND productID == %lld", siteID, product.productID)
+        let predicate = NSPredicate(format: "siteID == %lld AND productID == %lld", siteID, productID)
         let descriptor = NSSortDescriptor(keyPath: \StorageProductVariation.menuOrder, ascending: true)
         let resultsController = ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
         return resultsController
     }()
 
     init(siteID: Int64,
-         product: Product,
+         productID: Int64,
+         productName: String,
+         productAttributes: [ProductAttribute],
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
-        self.product = product
+        self.productID = productID
+        self.productName = productName
+        self.productAttributes = productAttributes
         self.storageManager = storageManager
         self.stores = stores
 
         configureSyncingCoordinator()
         configureProductVariationsResultsController()
+    }
+
+    convenience init(siteID: Int64,
+                     product: Product,
+                     storageManager: StorageManagerType = ServiceLocator.storageManager,
+                     stores: StoresManager = ServiceLocator.stores) {
+        self.init(siteID: siteID,
+                  productID: product.productID,
+                  productName: product.name,
+                  productAttributes: product.attributesForVariations,
+                  storageManager: storageManager,
+                  stores: stores)
     }
 
     /// Select a product variation to add to the order
@@ -88,7 +112,7 @@ extension AddProductVariationToOrderViewModel: SyncingCoordinatorDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
         transitionToSyncingState()
         let action = ProductVariationAction.synchronizeProductVariations(siteID: siteID,
-                                                                         productID: product.productID,
+                                                                         productID: productID,
                                                                          pageNumber: pageNumber,
                                                                          pageSize: pageSize) { [weak self] error in
             guard let self = self else { return }

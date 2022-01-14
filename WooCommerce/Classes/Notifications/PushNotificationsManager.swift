@@ -29,7 +29,7 @@ final class PushNotificationsManager: PushNotesManager {
     /// in the foreground.
     ///
     var foregroundNotificationsToView: AnyPublisher<PushNotification, Never> {
-        foregroundNotificationsSubject.eraseToAnyPublisher()
+        foregroundNotificationsToViewSubject.eraseToAnyPublisher()
     }
 
     /// Mutable reference to `foregroundNotificationsToView`.

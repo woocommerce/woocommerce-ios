@@ -38,6 +38,10 @@ protocol SettingsViewModelActionsHandler {
     /// Presenter (SettingsViewController in this case) is responsible for calling this method when store picker is dismissed.
     ///
     func onStorePickerDismiss()
+
+    /// Reloads settings if the site is no longer Jetpack CP.
+    ///
+    func onJetpackInstallDismiss()
 }
 
 protocol SettingsViewModelInput: AnyObject {
@@ -138,6 +142,15 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     ///
     func onStorePickerDismiss() {
         loadSites()
+        reloadSettings()
+    }
+
+    /// Reloads settings if the site is no longer Jetpack CP.
+    ///
+    func onJetpackInstallDismiss() {
+        guard stores.sessionManager.defaultSite?.isJetpackCPConnected == false else {
+            return
+        }
         reloadSettings()
     }
 }

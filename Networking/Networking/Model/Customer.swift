@@ -1,6 +1,6 @@
-/// Represent a WCPay Customer Entity.
+/// Represents a Customer Entity.
 ///
-public struct WCPayCustomer: Decodable {
+public struct Customer: Decodable {
     public let id: String
 
     public init(id: String) {
@@ -19,7 +19,7 @@ public struct WCPayCustomer: Decodable {
 }
 
 
-private extension WCPayCustomer {
+private extension Customer {
     enum CodingKeys: String, CodingKey {
         case id = "id"
     }

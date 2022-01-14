@@ -136,11 +136,11 @@ class NewOrderViewModelTests: XCTestCase {
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
-        viewModel.addProductViewModel.selectProduct(product.productID)
+        viewModel.addProductViewModel.selectProductOrVariation(product.productID)
 
         // Then
         let expectedOrderItem = product.toOrderItem(quantity: 1)
-        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productID == sampleProductID }), "Product rows do not contain expected product")
+        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == sampleProductID }), "Product rows do not contain expected product")
         XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }), "Order details do not contain expected order item")
     }
 
@@ -152,11 +152,11 @@ class NewOrderViewModelTests: XCTestCase {
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
-        viewModel.addProductViewModel.selectProduct(product.productID)
+        viewModel.addProductViewModel.selectProductOrVariation(product.productID)
         viewModel.productRows[0].incrementQuantity()
 
         // And when another product is added to the order (to confirm the first product's quantity change is retained)
-        viewModel.addProductViewModel.selectProduct(product.productID)
+        viewModel.addProductViewModel.selectProductOrVariation(product.productID)
 
         // Then
         let expectedOrderItem = product.toOrderItem(quantity: 2)
@@ -170,7 +170,7 @@ class NewOrderViewModelTests: XCTestCase {
         let storageManager = MockStorageManager()
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
-        viewModel.addProductViewModel.selectProduct(product.productID)
+        viewModel.addProductViewModel.selectProductOrVariation(product.productID)
 
         // When
         let expectedOrderItem = viewModel.orderDetails.items[0]
@@ -189,15 +189,15 @@ class NewOrderViewModelTests: XCTestCase {
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // Given products are added to order
-        viewModel.addProductViewModel.selectProduct(product0.productID)
-        viewModel.addProductViewModel.selectProduct(product1.productID)
+        viewModel.addProductViewModel.selectProductOrVariation(product0.productID)
+        viewModel.addProductViewModel.selectProductOrVariation(product1.productID)
 
         // When
         let expectedRemainingItem = viewModel.orderDetails.items[1]
         viewModel.removeItemFromOrder(viewModel.orderDetails.items[0])
 
         // Then
-        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productID == product0.productID }))
+        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == product0.productID }))
         XCTAssertEqual(viewModel.orderDetails.items, [expectedRemainingItem])
     }
 
@@ -255,7 +255,7 @@ class NewOrderViewModelTests: XCTestCase {
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When & Then
-        viewModel.addProductViewModel.selectProduct(product.productID)
+        viewModel.addProductViewModel.selectProductOrVariation(product.productID)
         XCTAssertTrue(viewModel.shouldShowPaymentSection)
 
         // When & Then
@@ -272,7 +272,7 @@ class NewOrderViewModelTests: XCTestCase {
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
 
         // When & Then
-        viewModel.addProductViewModel.selectProduct(product.productID)
+        viewModel.addProductViewModel.selectProductOrVariation(product.productID)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
 

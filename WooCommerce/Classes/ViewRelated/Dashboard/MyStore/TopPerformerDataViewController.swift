@@ -223,16 +223,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if isMyStoreTabUpdatesEnabled {
-            guard let cell =
-                    tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
-                        fatalError()
-                    }
-
-            cell.topMarginSpacing = Constants.sectionHeaderTopSpacing
-            cell.shouldShowUppercase = false
-            cell.leftText = Text.sectionLeftColumn
-            cell.rightText = Text.sectionRightColumn
-            return cell
+            return nil
         } else {
             guard let cell =
                     tableView.dequeueReusableHeaderFooterView(withIdentifier: TopPerformersHeaderView.reuseIdentifier) as? TopPerformersHeaderView else {
@@ -274,11 +265,11 @@ extension TopPerformerDataViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return Constants.estimatedSectionHeight
+        return isMyStoreTabUpdatesEnabled ? 0: Constants.estimatedSectionHeight
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
+        return isMyStoreTabUpdatesEnabled ? 0: UITableView.automaticDimension
     }
 }
 

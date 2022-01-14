@@ -37,12 +37,12 @@ struct InPersonPaymentsWCPayNotSetup: View {
     }
 
     var setupURL: URL? {
-        ServiceLocator.stores.sessionManager.defaultSite?.adminURL(path: Constants.wcpaySetupPath)
-    }
-}
+        guard let adminURL = ServiceLocator.stores.sessionManager.defaultSite?.adminURL else {
+            return nil
+        }
 
-private enum Constants {
-    static let wcpaySetupPath = "wp-admin/admin.php?page=wc-admin&path=%2Fpayments%2Fconnect"
+        return URL(string: adminURL)
+    }
 }
 
 private enum Localization {

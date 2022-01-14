@@ -5,8 +5,48 @@ import Yosemite
 
 import class AutomatticTracks.CrashLogging
 
+/// Provides data for the Reviews screen
+///
+protocol ReviewsViewModelOutput {
+    var isEmpty: Bool { get }
 
-final class ReviewsViewModel {
+    var dataSource: UITableViewDataSource { get }
+
+    var delegate: ReviewsInteractionDelegate { get }
+
+    var hasUnreadNotifications: Bool { get }
+
+    var shouldPromptForAppReview: Bool { get }
+
+    var hasErrorLoadingData: Bool { get set }
+
+    func containsMorePages(_ highestVisibleReview: Int) -> Bool
+}
+
+/// Handles actions related to Reviews screen
+///
+protocol ReviewsViewModelActionsHandler {
+    func displayPlaceholderReviews(tableView: UITableView)
+
+    func removePlaceholderReviews(tableView: UITableView)
+
+    func configureResultsController(tableView: UITableView)
+
+    func refreshResults()
+
+    func configureTableViewCells(tableView: UITableView)
+
+    func markAllAsRead(onCompletion: @escaping (Error?) -> Void)
+
+    func synchronizeReviews(pageNumber: Int,
+                            pageSize: Int,
+                            onCompletion: (() -> Void)?)
+}
+
+/// Provides data and handles actions of Reviews screen.
+/// Used as view model for `ReviewsViewController`
+///
+final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHandler {
     private let siteID: Int64
 
     private let data: ReviewsDataSource
@@ -29,6 +69,12 @@ final class ReviewsViewModel {
 
     private var unreadNotifications: [Note] {
         return data.notifications.filter { $0.read == false }
+    }
+
+    /// Used to check whether the user should be prompted for an app from `ReviewsViewController`
+    ///
+    var shouldPromptForAppReview: Bool {
+        AppRatingManager.shared.shouldPromptForAppReview(section: Constants.section)
     }
 
     /// Set when sync fails, and used to display an error loading data banner
@@ -93,9 +139,9 @@ final class ReviewsViewModel {
 extension ReviewsViewModel {
     /// Prepares data necessary to render the reviews tab.
     ///
-    func synchronizeReviews(pageNumber: Int = Settings.firstPage,
-                            pageSize: Int = Settings.pageSize,
-                            onCompletion: (() -> Void)? = nil) {
+    func synchronizeReviews(pageNumber: Int,
+                            pageSize: Int,
+                            onCompletion: (() -> Void)?) {
         hasErrorLoadingData = false
 
         let group = DispatchGroup()
@@ -201,5 +247,9 @@ private extension ReviewsViewModel {
         static let placeholderRowsPerSection = [3]
         static let firstPage = 1
         static let pageSize = 25
+    }
+
+    struct Constants {
+        static let section = "notifications"
     }
 }

@@ -146,6 +146,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                          text: $viewModel.fields.email,
                                          symbol: nil,
                                          keyboardType: .emailAddress)
+                        .autocapitalization(.none)
                         .renderedIf(viewModel.showEmailField)
                     Divider()
                         .padding(.leading, Constants.dividerPadding)
@@ -222,6 +223,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                         .background(Color(.systemBackground))
                 }
             }
+            .disableAutocorrection(true)
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
 

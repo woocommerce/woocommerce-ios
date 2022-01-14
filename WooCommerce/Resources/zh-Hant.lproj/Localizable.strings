@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-12-21 11:54:02+0000 */
+/* Translation-Revision-Date: 2022-01-05 16:13:12+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -32,7 +32,7 @@
 
 /* A label prompting users to learn more about card readers"
 %1$@ is a placeholder that always replaced with \"Learn more\" string, - which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ about accepting payments with your mobile device and ordering card readers";
+"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@有關使用行動裝置接受付款及訂購讀卡機的資訊";
 
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */

@@ -17,9 +17,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     // MARK: Product properties
 
-    /// Product ID
+    /// ID for the `Product` or `ProductVariation`
     ///
-    let productID: Int64
+    let productOrVariationID: Int64
 
     /// The first available product image
     ///
@@ -84,7 +84,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     }
 
     init(id: String? = nil,
-         productID: Int64,
+         productOrVariationID: Int64,
          name: String,
          sku: String?,
          price: String,
@@ -95,8 +95,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          canChangeQuantity: Bool,
          imageURL: URL?,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
-        self.id = id ?? productID.description
-        self.productID = productID
+        self.id = id ?? productOrVariationID.description
+        self.productOrVariationID = productOrVariationID
         self.name = name
         self.sku = sku
         self.price = price
@@ -109,13 +109,15 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.currencyFormatter = currencyFormatter
     }
 
+    /// Initialize `ProductRowViewModel` with a `Product`
+    ///
     convenience init(id: String? = nil,
                      product: Product,
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.init(id: id,
-                  productID: product.productID,
+                  productOrVariationID: product.productID,
                   name: product.name,
                   sku: product.sku,
                   price: product.price,
@@ -125,6 +127,43 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   quantity: quantity,
                   canChangeQuantity: canChangeQuantity,
                   imageURL: product.imageURL,
+                  currencyFormatter: currencyFormatter)
+    }
+
+    /// Initialize `ProductRowViewModel` with a `ProductVariation`
+    ///
+    convenience init(id: String? = nil,
+                     productVariation: ProductVariation,
+                     allAttributes: [ProductAttribute],
+                     quantity: Decimal = 1,
+                     canChangeQuantity: Bool,
+                     currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+        let variationAttributes = allAttributes.map { attribute -> VariationAttributeViewModel in
+            guard let variationAttribute = productVariation.attributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name }) else {
+                return VariationAttributeViewModel(name: attribute.name)
+            }
+            return VariationAttributeViewModel(productVariationAttribute: variationAttribute)
+        }
+        let name = variationAttributes.map { $0.nameOrValue }.joined(separator: " - ")
+
+        let imageURL: URL?
+        if let encodedImageURLString = productVariation.image?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+            imageURL = URL(string: encodedImageURLString)
+        } else {
+            imageURL = nil
+        }
+
+        self.init(id: id,
+                  productOrVariationID: productVariation.productVariationID,
+                  name: name,
+                  sku: productVariation.sku,
+                  price: productVariation.price,
+                  stockStatusKey: productVariation.stockStatus.rawValue,
+                  stockQuantity: productVariation.stockQuantity,
+                  manageStock: productVariation.manageStock,
+                  quantity: quantity,
+                  canChangeQuantity: canChangeQuantity,
+                  imageURL: imageURL,
                   currencyFormatter: currencyFormatter)
     }
 

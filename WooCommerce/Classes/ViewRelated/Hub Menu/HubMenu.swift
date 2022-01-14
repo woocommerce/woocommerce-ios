@@ -1,5 +1,6 @@
 import SwiftUI
 import Kingfisher
+import Yosemite
 
 /// This view will be embedded inside the `HubMenuViewController`
 /// and will be the entry point of the `Menu` Tab.
@@ -29,21 +30,22 @@ struct HubMenu: View {
 
                 LazyVGrid(columns: gridItemLayout, spacing: Constants.itemSpacing) {
                     ForEach(viewModel.menuElements, id: \.self) { menu in
-                        HubMenuElement(image: menu.icon, text: menu.title)
-                            .frame(width: Constants.itemSize, height: Constants.itemSize)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                switch menu {
-                                case .woocommerceAdmin:
-                                    showingWooCommerceAdmin = true
-                                case .viewStore:
-                                    showingViewStore = true
-                                case .reviews:
-                                    showingReviews = true
-                                case .coupons:
-                                    showingCoupons = true
-                                }
+                        HubMenuElement(image: menu.icon, text: menu.title, onTapGesture: {
+                            switch menu {
+                            case .woocommerceAdmin:
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "admin_menu"])
+                                showingWooCommerceAdmin = true
+                            case .viewStore:
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "view_store"])
+                                showingViewStore = true
+                            case .reviews:
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "reviews"])
+                                showingReviews = true
+                            case .coupons:
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "coupons"])
+                                showingCoupons = true
                             }
+                        })
                     }
                     .background(Color(.listForeground))
                     .cornerRadius(Constants.cornerRadius)
@@ -62,9 +64,16 @@ struct HubMenu: View {
             NavigationLink(destination: CouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
                 EmptyView()
             }.hidden()
+            LazyNavigationLink(destination: viewModel.getReviewDetailDestination(), isActive: $viewModel.showingReviewDetail) {
+                EmptyView()
+            }
         }
         .navigationBarHidden(true)
         .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
+    }
+
+    func pushReviewDetailsView(using parcel: ProductReviewFromNoteParcel) {
+        viewModel.showReviewDetails(using: parcel)
     }
 
     private struct TopBar: View {
@@ -121,6 +130,7 @@ struct HubMenu: View {
                         }
                     }
                     .onTapGesture {
+                        ServiceLocator.analytics.track(.hubMenuSettingsTapped)
                         showSettings = true
                     }
                     Spacer()
@@ -144,6 +154,7 @@ struct HubMenu: View {
         static let padding: CGFloat = 16
         static let topBarSpacing: CGFloat = 2
         static let avatarSize: CGFloat = 40
+        static let option = "option"
     }
 
     private enum Localization {

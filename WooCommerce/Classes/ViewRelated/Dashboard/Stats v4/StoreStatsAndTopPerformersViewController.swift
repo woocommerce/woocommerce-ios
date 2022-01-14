@@ -276,7 +276,7 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 
     func configureView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = Constants.backgroundColor
         configureButtonBarBottomBorder()
 
         // Disables any content inset adjustment since `XLPagerTabStrip` doesn't seem to support safe area insets.
@@ -477,5 +477,6 @@ private extension StoreStatsAndTopPerformersViewController {
 
     enum Constants {
         static let topEarnerStatsLimit: Int = 5
+        static let backgroundColor: UIColor = .systemBackground
     }
 }

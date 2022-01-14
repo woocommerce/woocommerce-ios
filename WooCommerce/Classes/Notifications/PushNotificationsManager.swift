@@ -1,9 +1,9 @@
+import Combine
 import Experiments
 import Foundation
 import UserNotifications
 import AutomatticTracks
 import Yosemite
-import Observables
 
 
 
@@ -18,22 +18,32 @@ final class PushNotificationsManager: PushNotesManager {
     /// An observable that emits values when the Remote Notifications are received while the app is
     /// in the foreground.
     ///
-    var foregroundNotifications: Observable<PushNotification> {
-        foregroundNotificationsSubject
+    var foregroundNotifications: AnyPublisher<PushNotification, Never> {
+        foregroundNotificationsSubject.eraseToAnyPublisher()
     }
 
     /// Mutable reference to `foregroundNotifications`.
-    private let foregroundNotificationsSubject = PublishSubject<PushNotification>()
+    private let foregroundNotificationsSubject = PassthroughSubject<PushNotification, Never>()
+
+    /// An observable that emits values when the user taps to view the in-app notification while the app is
+    /// in the foreground.
+    ///
+    var foregroundNotificationsToView: AnyPublisher<PushNotification, Never> {
+        foregroundNotificationsSubject.eraseToAnyPublisher()
+    }
+
+    /// Mutable reference to `foregroundNotificationsToView`.
+    private let foregroundNotificationsToViewSubject = PassthroughSubject<PushNotification, Never>()
 
     /// An observable that emits values when a Remote Notification is received while the app is
     /// in inactive.
     ///
-    var inactiveNotifications: Observable<PushNotification> {
-        inactiveNotificationsSubject
+    var inactiveNotifications: AnyPublisher<PushNotification, Never> {
+        inactiveNotificationsSubject.eraseToAnyPublisher()
     }
 
     /// Mutable reference to `inactiveNotifications`
-    private let inactiveNotificationsSubject = PublishSubject<PushNotification>()
+    private let inactiveNotificationsSubject = PassthroughSubject<PushNotification, Never>()
 
     /// Returns the current Application's State
     ///
@@ -188,7 +198,7 @@ extension PushNotificationsManager {
 
         deviceToken = newToken
 
-        // Register in Support's Infrasturcture
+        // Register in Support's Infrastructure
         registerSupportDevice(with: newToken)
 
         // Register in the Dotcom's Infrastructure
@@ -356,7 +366,12 @@ private extension PushNotificationsManager {
             configuration.application
                 .presentInAppNotification(title: foregroundNotification.title,
                                           subtitle: foregroundNotification.subtitle,
-                                          message: foregroundNotification.message)
+                                          message: foregroundNotification.message,
+                                          actionTitle: Localization.viewInAppNotification) { [weak self] in
+                    guard let self = self else { return }
+                    self.presentDetails(for: foregroundNotification)
+                    self.foregroundNotificationsToViewSubject.send(foregroundNotification)
+                }
 
             foregroundNotificationsSubject.send(foregroundNotification)
         }
@@ -385,13 +400,7 @@ private extension PushNotificationsManager {
         let pushNotificationsForAllStoresEnabled = featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores)
         if let notification = PushNotification.from(userInfo: userInfo,
                                                     pushNotificationsForAllStoresEnabled: pushNotificationsForAllStoresEnabled) {
-
-            // Handling the product review notifications (`.comment`) has been moved to
-            // `ReviewsCoordinator`. All other push notification handling should be in a coordinator
-            // in the future too.
-            if notification.kind != .comment {
-                configuration.application.presentNotificationDetails(for: Int64(notification.noteID))
-            }
+            presentDetails(for: notification)
 
             inactiveNotificationsSubject.send(notification)
         }
@@ -418,6 +427,17 @@ private extension PushNotificationsManager {
         synchronizeNotifications(completionHandler: completionHandler)
 
         return true
+    }
+}
+
+private extension PushNotificationsManager {
+    func presentDetails(for notification: PushNotification) {
+        // Handling the product review notifications (`.comment`) has been moved to
+        // `ReviewsCoordinator`. All other push notification handling should be in a coordinator
+        // in the future too.
+        if notification.kind != .comment {
+            configuration.application.presentNotificationDetails(for: Int64(notification.noteID))
+        }
     }
 }
 
@@ -589,4 +609,10 @@ private enum AnalyticKey {
 private enum PushType {
     static let badgeReset = "badge-reset"
     static let zendesk = "zendesk"
+}
+
+private extension PushNotificationsManager {
+    enum Localization {
+        static let viewInAppNotification = NSLocalizedString("View", comment: "Action title in an in-app notification to view more details.")
+    }
 }

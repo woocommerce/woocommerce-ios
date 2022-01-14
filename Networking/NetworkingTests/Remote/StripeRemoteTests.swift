@@ -14,11 +14,54 @@ final class StripeRemoteTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 1234
 
+    /// Dummy Order ID
+    ///
+    private let sampleOrderID: Int64 = 1467
+
+    /// Dummy Payment Intent ID
+    ///
+    private let samplePaymentIntentID: String = "pi_123456789012345678901234"
+
     /// Repeat always!
     ///
     override func setUp() {
         super.setUp()
         network.removeAllSimulatedResponses()
+    }
+
+    /// Verifies that loadConnectionToken properly parses the sample response.
+    ///
+    func test_loadConnectionToken_properly_returns_parsed_token() {
+        let remote = WCPayRemote(network: network)
+        let expectation = self.expectation(description: "Load card reader token from Stripe extension")
+
+        let expectedToken = "a connection token"
+
+        network.simulateResponse(requestUrlSuffix: "payments/connection_tokens", filename: "stripe-connection-token")
+        remote.loadConnectionToken(for: sampleSiteID) { result in
+            if case let .success(token) = result {
+                XCTAssertEqual(token.token, expectedToken)
+                expectation.fulfill()
+            }
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that loadConnectionToken properly relays Networking Layer errors.
+    ///
+    func test_loadConnectionToken_properly_relays_networking_errors() {
+        let remote = WCPayRemote(network: network)
+        let expectation = self.expectation(description: "Load WCPay token contains errors")
+
+        remote.loadConnectionToken(for: sampleSiteID) { result in
+            if case let .failure(error) = result {
+                XCTAssertNotNil(error)
+                expectation.fulfill()
+            }
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that loadAccount properly handles the nominal response. We'll also validate the
@@ -331,4 +374,255 @@ final class StripeRemoteTests: XCTestCase {
         let error = try XCTUnwrap(result.failure) as NSError
         XCTAssertEqual(expectedError, error)
     }
+
+  /// Verifies that fetchOrderCustomer properly parses the nominal response
+     ///
+     func test_fetchOrderCustomer_properly_returns_customer() throws {
+         let remote = StripeRemote(network: network)
+         let expectedCustomerID = "cus_0123456789abcd"
+
+         network.simulateResponse(
+             requestUrlSuffix: "payments/orders/\(sampleOrderID)/create_customer",
+             filename: "stripe-customer"
+         )
+
+         let result: Result<Customer, Error> = waitFor { promise in
+             remote.fetchOrderCustomer(for: self.sampleSiteID, orderID: self.sampleOrderID) { result in
+                 promise(result)
+             }
+         }
+
+         XCTAssertTrue(result.isSuccess)
+         let customer = try result.get()
+         XCTAssertEqual(customer.id, expectedCustomerID)
+     }
+
+    /// Verifies that fetchOrderCustomer properly handles an error response (i.e. the order does not exist)
+    ///
+    func test_fetchOrderCustomer_properly_handles_error_response() throws {
+        let remote = WCPayRemote(network: network)
+
+        network.simulateResponse(
+            requestUrlSuffix: "payments/orders/\(sampleOrderID)/create_customer",
+            filename: "stripe-customer-error"
+        )
+
+        let result: Result<Customer, Error> = waitFor { promise in
+            remote.fetchOrderCustomer(for: self.sampleSiteID, orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isFailure)
+    }
+
+    /// Verifies that captureOrderPayment properly handles a payment intent requires confirmation response
+    ///
+    func test_captureOrderPayment_properly_handles_requires_confirmation_response() throws {
+        let remote = StripeRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+                                 filename: "stripe-payment-intent-requires-confirmation")
+
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
+            remote.captureOrderPayment(for: self.sampleSiteID,
+                                          orderID: self.sampleOrderID,
+                                          paymentIntentID: self.samplePaymentIntentID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let paymentIntent = try result.get()
+        XCTAssertEqual(paymentIntent.status, .requiresConfirmation)
+        XCTAssertEqual(paymentIntent.id, self.samplePaymentIntentID)
+    }
+
+    /// Verifies that captureOrderPayment properly handles a payment intent requires action response
+    ///
+    func test_captureOrderPayment_properly_handles_requires_action_response() throws {
+        let remote = StripeRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+                                 filename: "stripe-payment-intent-requires-action")
+
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
+            remote.captureOrderPayment(for: self.sampleSiteID,
+                                          orderID: self.sampleOrderID,
+                                          paymentIntentID: self.samplePaymentIntentID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let paymentIntent = try result.get()
+        XCTAssertEqual(paymentIntent.status, .requiresAction)
+        XCTAssertEqual(paymentIntent.id, self.samplePaymentIntentID)
+    }
+
+    /// Verifies that captureOrderPayment properly handles a payment intent processing response
+    ///
+    func test_captureOrderPayment_properly_handles_processing_response() throws {
+        let remote = StripeRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+                                 filename: "stripe-payment-intent-processing")
+
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
+            remote.captureOrderPayment(for: self.sampleSiteID,
+                                          orderID: self.sampleOrderID,
+                                          paymentIntentID: self.samplePaymentIntentID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let paymentIntent = try result.get()
+        XCTAssertEqual(paymentIntent.status, .processing)
+        XCTAssertEqual(paymentIntent.id, self.samplePaymentIntentID)
+    }
+
+    /// Verifies that captureOrderPayment properly handles a payment intent requires capture response
+    ///
+    func test_captureOrderPayment_properly_handles_requires_capture_response() throws {
+        let remote = StripeRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+                                 filename: "stripe-payment-intent-requires-capture")
+
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
+            remote.captureOrderPayment(for: self.sampleSiteID,
+                                          orderID: self.sampleOrderID,
+                                          paymentIntentID: self.samplePaymentIntentID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let paymentIntent = try result.get()
+        XCTAssertEqual(paymentIntent.status, .requiresCapture)
+        XCTAssertEqual(paymentIntent.id, self.samplePaymentIntentID)
+    }
+
+    /// Verifies that captureOrderPayment properly handles a payment intent canceled response
+    ///
+    func test_captureOrderPayment_properly_handles_canceled_response() throws {
+        let remote = StripeRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+                                 filename: "stripe-payment-intent-canceled")
+
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
+            remote.captureOrderPayment(for: self.sampleSiteID,
+                                          orderID: self.sampleOrderID,
+                                          paymentIntentID: self.samplePaymentIntentID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let paymentIntent = try result.get()
+        XCTAssertEqual(paymentIntent.status, .canceled)
+        XCTAssertEqual(paymentIntent.id, self.samplePaymentIntentID)
+    }
+
+    /// Verifies that captureOrderPayment properly handles a payment intent succeeded response
+    ///
+    func test_captureOrderPayment_properly_handles_succeeded_response() throws {
+        let remote = StripeRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+                                 filename: "stripe-payment-intent-succeeded")
+
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
+            remote.captureOrderPayment(for: self.sampleSiteID,
+                                          orderID: self.sampleOrderID,
+                                          paymentIntentID: self.samplePaymentIntentID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let paymentIntent = try result.get()
+        XCTAssertEqual(paymentIntent.status, .succeeded)
+        XCTAssertEqual(paymentIntent.id, self.samplePaymentIntentID)
+    }
+
+    /// Verifies that captureOrderPayment properly handles an unrecognized payment intent status response
+    ///
+    func test_captureOrderPayment_properly_handles_unrecognized_status_response() throws {
+        let remote = StripeRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+                                 filename: "stripe-payment-intent-unknown-status")
+
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
+            remote.captureOrderPayment(for: self.sampleSiteID,
+                                          orderID: self.sampleOrderID,
+                                          paymentIntentID: self.samplePaymentIntentID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let paymentIntent = try result.get()
+        XCTAssertEqual(paymentIntent.status, .unknown)
+        XCTAssertEqual(paymentIntent.id, self.samplePaymentIntentID)
+    }
+
+    /// Verifies that captureOrderPayment properly handles an error response
+    ///
+    func test_captureOrderPayment_properly_handles_error_response() throws {
+        let remote = StripeRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+                                 filename: "stripe-payment-intent-error")
+
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
+            remote.captureOrderPayment(for: self.sampleSiteID,
+                                          orderID: self.sampleOrderID,
+                                          paymentIntentID: self.samplePaymentIntentID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isFailure)
+    }
+
+     func test_loadDefaultReaderLocation_properly_returns_location() throws {
+         let remote = StripeRemote(network: network)
+         let expectedLocationID = "tml_0123456789abcd"
+
+         network.simulateResponse(
+             requestUrlSuffix: "payments/terminal/locations/store",
+             filename: "stripe-location"
+         )
+
+         let result: Result<RemoteReaderLocation, Error> = waitFor { promise in
+             remote.loadDefaultReaderLocation(for: self.sampleSiteID) { result in
+                 promise(result)
+             }
+         }
+
+         XCTAssertTrue(result.isSuccess)
+         let location = try result.get()
+         XCTAssertEqual(location.locationID, expectedLocationID)
+     }
+
+     func test_loadDefaultReaderLocation_properly_handles_error_response() throws {
+         let remote = StripeRemote(network: network)
+
+         network.simulateResponse(
+             requestUrlSuffix: "payments/terminal/locations/store",
+             filename: "stripe-location-error"
+         )
+
+         let result: Result<RemoteReaderLocation, Error> = waitFor { promise in
+             remote.loadDefaultReaderLocation(for: self.sampleSiteID) { result in
+                 promise(result)
+             }
+         }
+
+         XCTAssertTrue(result.isFailure)
+     }
 }

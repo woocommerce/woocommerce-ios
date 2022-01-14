@@ -26,22 +26,7 @@ public struct Coupon {
     public let dateModified: Date
 
     /// Determines the type of discount that will be applied. Options: `.percent` `.fixedCart` and `.fixedProduct`
-    public var discountType: DiscountType {
-        if let type = mappedDiscountType {
-            return type
-        } else {
-            // Returns default value for fallback case to avoid working with optionals.
-            // Since `CouponListMapper` filters out nil `mappedDiscountType`,
-            // this case is unlikely to happen.
-            return .fixedCart
-        }
-    }
-
-    /// Discount type if matched with any of the ones supported by Core.
-    /// Returns nil if other types are found.
-    /// Used to filter only coupons with default types, so internal to this module only.
-    ///
-    internal let mappedDiscountType: DiscountType?
+    public let discountType: DiscountType
 
     public let description: String
 
@@ -97,9 +82,10 @@ public struct Coupon {
     /// There are other types supported by other plugins, but those are not supported for now.
     ///
     public enum DiscountType: String {
-        case percent = "percent"
+        case percent
         case fixedCart = "fixed_cart"
         case fixedProduct = "fixed_product"
+        case other
     }
 
     public init(siteID: Int64 = 0,
@@ -132,7 +118,7 @@ public struct Coupon {
         self.amount = amount
         self.dateCreated = dateCreated
         self.dateModified = dateModified
-        self.mappedDiscountType = discountType
+        self.discountType = discountType
         self.description = description
         self.dateExpires = dateExpires
         self.usageCount = usageCount
@@ -166,7 +152,7 @@ extension Coupon: Codable {
         case amount
         case dateCreated = "dateCreatedGmt"
         case dateModified = "dateModifiedGmt"
-        case mappedDiscountType
+        case discountType
         case description
         case dateExpires = "dateExpiresGmt"
         case usageCount
@@ -187,7 +173,12 @@ extension Coupon: Codable {
     }
 }
 
-extension Coupon.DiscountType: Codable {}
+extension Coupon.DiscountType: Codable {
+    public init(from decoder: Decoder) throws {
+        let rawValue = try decoder.singleValueContainer().decode(String.self)
+        self = Coupon.DiscountType(rawValue: rawValue) ?? .other
+    }
+}
 
 
 // MARK: - Other Conformances

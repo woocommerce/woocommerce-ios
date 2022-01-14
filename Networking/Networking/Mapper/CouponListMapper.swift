@@ -14,7 +14,7 @@ struct CouponListMapper: Mapper {
         let coupons = try Coupon.decoder.decode(CouponListEnvelope.self, from: response).coupons
         return coupons
             .map { $0.copy(siteID: siteID) }
-            .filter { $0.mappedDiscountType != nil }
+            .filter { $0.discountType != .other }
     }
 }
 

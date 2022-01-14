@@ -144,17 +144,6 @@ private extension CardPresentPaymentsOnboardingUseCase {
         group.enter()
         stores.dispatch(systemPluginsAction)
 
-//        // We need to sync payment gateway accounts to see if WCPay is set up correctly
-//        let paymentGatewayAccountsAction = CardPresentPaymentAction.loadAccounts(siteID: siteID) { result in
-//            if case let .failure(error) = result {
-//                DDLogError("[CardPresentPaymentsOnboarding] Error syncing payment gateway accounts: \(error)")
-//                errors.append(error)
-//            }
-//            group.leave()
-//        }
-//        group.enter()
-//        stores.dispatch(paymentGatewayAccountsAction)
-
         group.notify(queue: .main, execute: { [weak self] in
             guard let self = self else { return }
             if errors.isNotEmpty,

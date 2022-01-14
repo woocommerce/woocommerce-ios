@@ -273,6 +273,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
 
     func configureSubviews() {
         view.addSubview(scrollView)
+        view.backgroundColor = Constants.backgroundColor
         view.pinSubviewToSafeArea(scrollView)
 
         scrollView.refreshControl = refreshControl
@@ -356,5 +357,6 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
     enum Constants {
         static let storeStatsPeriodViewHeight: CGFloat = 444
         static let ghostStyle: GhostStyle = .wooDefaultGhostStyle
+        static let backgroundColor: UIColor = .systemBackground
     }
 }

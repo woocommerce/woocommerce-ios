@@ -136,7 +136,8 @@ final class DashboardViewController: UIViewController {
 private extension DashboardViewController {
 
     func configureView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) ?
+        Constants.backgroundColor: Constants.legacyBackgroundColor
     }
 
     func configureNavigation() {
@@ -478,6 +479,8 @@ private extension DashboardViewController {
     enum Constants {
         static let bannerBottomMargin = CGFloat(8)
         static let horizontalMargin = CGFloat(20)
+        static let backgroundColor: UIColor = .systemBackground
+        static let legacyBackgroundColor: UIColor = .listBackground
         static let collapsedNavigationBarHeight = CGFloat(44)
     }
 }

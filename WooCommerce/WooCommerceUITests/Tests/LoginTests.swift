@@ -22,6 +22,8 @@ final class LoginTests: XCTestCase {
             .continueWithSelectedSite()
 
             // Log out
+        try TabNavComponent()
+            .goToMenuScreen()
             .openSettingsPane()
             .verifySelectedStoreDisplays(storeName: TestCredentials.storeName, siteUrl: TestCredentials.siteUrl)
             .logOut()
@@ -38,6 +40,8 @@ final class LoginTests: XCTestCase {
             .continueWithSelectedSite()
 
             // Log out
+        try TabNavComponent()
+            .goToMenuScreen()
             .openSettingsPane()
             .verifySelectedStoreDisplays(storeName: TestCredentials.storeName, siteUrl: TestCredentials.siteUrl)
             .logOut()

@@ -113,10 +113,8 @@ private extension CardPresentPaymentStore {
         do {
             switch usingBackend {
             case .wcpay:
-                print("==== starting card reader discovery using a wcpay token provider")
                 try cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
             case .stripe:
-                print("==== starting card reader discovery using a stripe token provider")
                 try cardReaderService.start(StripeTokenProvider(siteID: siteID, remote: self.stripeRemote))
             }
         } catch {
@@ -400,7 +398,6 @@ private extension CardPresentPaymentStore {
         reset() // Concern: asynchronicity
 
         usingBackend = .wcpay
-        print("==== Switched CardPresentPaymentStore to use WCPay as the backend")
     }
 
     /// Switch the store to use Stripe as the backend.
@@ -414,7 +411,6 @@ private extension CardPresentPaymentStore {
         reset() // Concern: asynchronicity
 
         usingBackend = .stripe
-        print("==== Switched CardPresentPaymentStore to use Stripe as the backend")
     }
 
     /// Loads the account corresponding to the currently selected backend. Deletes the other (if it exists).
@@ -422,10 +418,8 @@ private extension CardPresentPaymentStore {
     func loadAccounts(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         switch usingBackend {
         case .wcpay:
-            print("==== CPPS loadAccounts WCPay")
             loadWCPayAccount(siteID: siteID, onCompletion: onCompletion)
         case .stripe:
-            print("==== CPPS loadAccounts Stripe")
             loadStripeAccount(siteID: siteID, onCompletion: onCompletion)
         }
     }

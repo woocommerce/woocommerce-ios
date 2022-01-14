@@ -3,7 +3,9 @@ import UIKit
 import Hardware
 
 /// View Modifier that shows a notice in front of a view.
-/// NOTE: This currently does not support enqueuing multiple notices like `DefaultNoticePresenter` does.
+/// NOTE: This currently does not support.
+/// - Enqueuing multiple notices like `DefaultNoticePresenter` does.
+/// - Presenting foreground system notifications.
 ///
 struct NoticeModifier: ViewModifier {
 

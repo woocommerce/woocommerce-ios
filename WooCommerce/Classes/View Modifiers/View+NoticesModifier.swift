@@ -1,6 +1,5 @@
 import SwiftUI
 import UIKit
-import Hardware
 
 /// View Modifier that shows a notice in front of a view.
 /// NOTE: This currently does not support.
@@ -15,11 +14,15 @@ struct NoticeModifier: ViewModifier {
 
     /// Cancelable task that clears a notice.
     ///
-    @State var clearNoticeTask = DispatchWorkItem(block: {})
+    @State private var clearNoticeTask = DispatchWorkItem(block: {})
 
     /// Time the notice will remain on screen.
     ///
     private let onScreenNoticeTime = 5.0
+
+    /// Feedback generator.
+    ///
+    private let feedbackGenerator = UINotificationFeedbackGenerator()
 
     func body(content: Content) -> some View {
         content
@@ -44,9 +47,11 @@ struct NoticeModifier: ViewModifier {
                             performClearNoticeTask()
                         }
                         .onChange(of: notice) { _ in
+                            provideHapticFeedbackIfNecessary(notice.feedbackType)
                             dispatchClearNoticeTask()
                         }
                         .onAppear {
+                            provideHapticFeedbackIfNecessary(notice.feedbackType)
                             dispatchClearNoticeTask()
                         }
 
@@ -71,6 +76,14 @@ struct NoticeModifier: ViewModifier {
     private func performClearNoticeTask() {
         clearNoticeTask.perform()
         clearNoticeTask.cancel()
+    }
+
+    /// Sends haptic feedback if required.
+    ///
+    private func provideHapticFeedbackIfNecessary(_ feedbackType: UINotificationFeedbackGenerator.FeedbackType?) {
+        if let feedbackType = feedbackType {
+            feedbackGenerator.notificationOccurred(feedbackType)
+        }
     }
 }
 

@@ -17,14 +17,14 @@ final class OrdersTests: XCTestCase {
     }
 
     func testOrdersScreenLoads() throws {
-            let orders = try GetMocks.readOrdersData()
+        let orders = try GetMocks.readOrdersData()
 
-            try OrdersScreen()
-                .verifyOrdersScreenLoaded()
-                .verifyOrdersList(orders: orders)
-                .selectOrder(byOrderNumber: orders[0].number)
-                .verifySingleOrder(order: orders[0])
-                .goBackToOrdersScreen()
-                .verifyOrdersScreenLoaded()
+        try OrdersScreen()
+            .verifyOrdersScreenLoaded()
+            .verifyOrdersList(orders: orders)
+            .selectOrder(byOrderNumber: orders[0].number)
+            .verifySingleOrder(order: orders[0])
+            .goBackToOrdersScreen()
+            .verifyOrdersScreenLoaded()
     }
 }

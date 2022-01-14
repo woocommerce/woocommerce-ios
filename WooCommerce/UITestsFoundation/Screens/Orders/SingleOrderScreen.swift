@@ -32,8 +32,8 @@ public final class SingleOrderScreen: ScreenObject {
         app.assertElement(matching: "summary-table-view-cell", existsOnCellWithIdentifier: "\(order.billing.first_name) \(order.billing.last_name)")
 
         // Loops through all products on the order
-        for i in 0...order.line_items.count - 1 {
-            XCTAssertTrue(app.staticTexts[order.line_items[i].name].isFullyVisibleOnScreen(), "'\(order.line_items[i].name)' is missing!")
+        for index in 0..<order.line_items.count {
+            XCTAssertTrue(app.staticTexts[order.line_items[index].name].isFullyVisibleOnScreen(), "'\(order.line_items[index].name)' is missing!")
         }
 
         return self

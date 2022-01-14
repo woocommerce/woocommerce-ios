@@ -11,6 +11,10 @@ public final class TabNavComponent: ScreenObject {
         $0.tabBars.firstMatch.buttons["tab-bar-orders-item"]
     }
 
+    private let menuTabButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.tabBars.firstMatch.buttons["tab-bar-menu-item"]
+    }
+
     private let reviewsTabButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.tabBars.firstMatch.buttons["tab-bar-reviews-item"]
     }
@@ -21,6 +25,7 @@ public final class TabNavComponent: ScreenObject {
 
     private var myStoreTabButton: XCUIElement { myStoreTabButtonGetter(app) }
     private var ordersTabButton: XCUIElement { ordersTabButtonGetter(app) }
+    private var menuTabButton: XCUIElement { menuTabButtonGetter(app) }
     private var reviewsTabButton: XCUIElement { reviewsTabButtonGetter(app) }
     var productsTabButton: XCUIElement { productsTabButtonGetter(app) }
 
@@ -29,7 +34,6 @@ public final class TabNavComponent: ScreenObject {
             expectedElementGetters: [
                 myStoreTabButtonGetter,
                 ordersTabButtonGetter,
-                reviewsTabButtonGetter,
                 productsTabButtonGetter
             ],
             app: app
@@ -37,7 +41,7 @@ public final class TabNavComponent: ScreenObject {
     }
 
     @discardableResult
-    func goToMyStoreScreen() throws -> MyStoreScreen {
+    public func goToMyStoreScreen() throws -> MyStoreScreen {
         // Avoid transitioning if it is already on screen
         if MyStoreScreen.isVisible == false {
             myStoreTabButton.tap()
@@ -61,8 +65,13 @@ public final class TabNavComponent: ScreenObject {
         if ProductsScreen.isVisible == false {
             productsTabButton.tap()
         }
-
         return try ProductsScreen()
+    }
+
+    @discardableResult
+    public func goToMenuScreen() throws -> MenuScreen {
+        menuTabButton.tap()
+        return try MenuScreen()
     }
 
     @discardableResult

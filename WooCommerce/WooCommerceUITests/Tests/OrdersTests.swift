@@ -11,16 +11,18 @@ final class OrdersTests: XCTestCase {
         app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api", "-ui_testing"]
         app.launch()
         try LoginFlow.logInWithWPcom()
+
+        try TabNavComponent()
+            .goToOrdersScreen()
     }
 
     func testOrdersScreenLoads() throws {
             let orders = try GetMocks.readOrdersData()
 
-            try TabNavComponent()
-                .goToOrdersScreen()
+            try OrdersScreen()
                 .verifyOrdersScreenLoaded()
                 .verifyOrdersList(orders: orders)
-                .selectOrder(atIndex: 0)
+                .selectOrder(byOrderNumber: orders[0].number)
                 .verifySingleOrder(order: orders[0])
                 .goBackToOrdersScreen()
                 .verifyOrdersScreenLoaded()

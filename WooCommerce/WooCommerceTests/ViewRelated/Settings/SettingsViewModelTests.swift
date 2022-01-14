@@ -151,6 +151,28 @@ final class SettingsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(presenter.refreshViewContentCalled)
     }
+
+    func test_onJetpackInstallDismiss_updates_sections_correctly() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isJetpackConnectionPackageSupportOn: true)
+        let site = Site.fake().copy(isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        sessionManager.defaultSite = site
+        let viewModel = SettingsViewModel(
+            stores: stores,
+            storageManager: storageManager,
+            featureFlagService: featureFlagService)
+
+        viewModel.onViewDidLoad()
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
+
+        // When
+        let updatedSite = site.copy(isJetpackThePluginInstalled: true, isJetpackConnected: false)
+        sessionManager.defaultSite = updatedSite
+        viewModel.onJetpackInstallDismiss()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
+    }
 }
 
 private final class MockSettingsPresenter: SettingsViewPresenter {

@@ -13,6 +13,13 @@ public final class CardPresentPaymentStore: Store {
     // If retaining the service here ended up being a problem, we would need to move this Store out of Yosemite and push it up to WooCommerce.
     private let cardReaderService: CardReaderService
 
+    /// Instead of adding a reference to the feature flag service (in the WooCommerce layer),
+    /// and since feature flag values don't mutate, let's just have a private bool passed into this service
+    /// to allow (or not) Stripe IPP.
+    /// TODO: Remove this feature flag when no longer needed.
+    ///
+    private var allowStripeIPP: Bool
+
     /// Which backend is the store using? Default to WCPay until told otherwise
     private var usingBackend: CardPresentPaymentStoreBackend = .wcpay
 
@@ -24,10 +31,17 @@ public final class CardPresentPaymentStore: Store {
     /// We need to be able to cancel the process of collecting a payment.
     private var paymentCancellable: AnyCancellable? = nil
 
-    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, cardReaderService: CardReaderService) {
+    public init(
+        dispatcher: Dispatcher,
+        storageManager: StorageManagerType,
+        network: Network,
+        cardReaderService: CardReaderService,
+        allowStripeIPP: Bool
+    ) {
         self.cardReaderService = cardReaderService
         self.remote = WCPayRemote(network: network)
         self.stripeRemote = StripeRemote(network: network)
+        self.allowStripeIPP = allowStripeIPP
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -404,6 +418,11 @@ private extension CardPresentPaymentStore {
     /// Does nothing if the store is already using Stripe.
     ///
     func useStripeAsBackend() {
+        guard allowStripeIPP else {
+            DDLogError("useStripeAsBackend called when stripeExtensionInPersonPayments disabled")
+            return
+        }
+
         guard usingBackend != .stripe else {
             return
         }

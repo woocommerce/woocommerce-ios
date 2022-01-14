@@ -7,7 +7,7 @@ class CouponListMapperTests: XCTestCase {
     ///
     private let dummySiteID: Int64 = 12983476
 
-    /// Verifies that the whole list is parsed.
+    /// Verifies that the whole list is parsed, minus the items with non-default discount type.
     ///
     func test_CouponsList_map_parses_all_coupons_in_response() throws {
         let coupons = try mapLoadAllCouponsResponse()
@@ -73,7 +73,7 @@ class CouponListMapperTests: XCTestCase {
             amount: "0.00",
             dateCreated: dateFormatter.date(from: "2021-04-13T08:26:25")!,
             dateModified: dateFormatter.date(from: "2021-04-13T08:26:25")!,
-            discountType: .fixedCart,
+            discountType: .percent,
             description: "",
             dateExpires: nil,
             usageCount: 0,

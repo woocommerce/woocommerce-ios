@@ -301,10 +301,8 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
         remote.loadConnectionToken(for: siteID) { result in
             switch result {
             case .success(let token):
-                print("=== successfully fetched token from wcpay backend")
                 completion(.success(token.token))
             case .failure(let error):
-                print("=== unable to fetch token from wcpay backend")
                 if let configError = CardReaderConfigError(error: error) {
                     completion(.failure(configError))
                 } else {
@@ -318,11 +316,9 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
         remote.loadDefaultReaderLocation(for: siteID) { result in
             switch result {
             case .success(let wcpayReaderLocation):
-                print("=== successfully fetched location from wcpay backend")
                 let readerLocation = wcpayReaderLocation.toReaderLocation(siteID: self.siteID)
                 completion(.success(readerLocation.id))
             case .failure(let error):
-                print("=== unable to fetch location from wcpay backend")
                 if let configError = CardReaderConfigError(error: error) {
                     completion(.failure(configError))
                 } else {
@@ -348,10 +344,8 @@ private final class StripeTokenProvider: CardReaderConfigProvider {
         remote.loadConnectionToken(for: siteID) { result in
             switch result {
             case .success(let token):
-                print("=== successfully fetched token from stripe backend")
                 completion(.success(token.token))
             case .failure(let error):
-                print("=== unable to fetch token from stripe backend")
                 if let configError = CardReaderConfigError(error: error) {
                     completion(.failure(configError))
                 } else {
@@ -365,11 +359,9 @@ private final class StripeTokenProvider: CardReaderConfigProvider {
         remote.loadDefaultReaderLocation(for: siteID) { result in
             switch result {
             case .success(let stripeReaderLocation):
-                print("=== successfully fetched location from stripe backend")
                 let readerLocation = stripeReaderLocation.toReaderLocation(siteID: self.siteID)
                 completion(.success(readerLocation.id))
             case .failure(let error):
-                print("=== unable to fetch location from stripe backend")
                 if let configError = CardReaderConfigError(error: error) {
                     completion(.failure(configError))
                 } else {
@@ -409,8 +401,6 @@ private extension CardPresentPaymentStore {
             return
         }
 
-        reset() // Concern: asynchronicity
-
         usingBackend = .wcpay
     }
 
@@ -426,8 +416,6 @@ private extension CardPresentPaymentStore {
         guard usingBackend != .stripe else {
             return
         }
-
-        reset() // Concern: asynchronicity
 
         usingBackend = .stripe
     }

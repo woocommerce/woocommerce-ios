@@ -123,7 +123,7 @@ final class MainTabBarController: UITabBarController {
         configureTabViewControllers()
         observeSiteIDForViewControllers()
 
-        loadReviewsTabNotificationCountAndUpdateBadge()
+        loadHubMenuTabNotificationCountAndUpdateBadge()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -133,7 +133,7 @@ final class MainTabBarController: UITabBarController {
         /// We hook up KVO in this spot... because at the point in which `viewDidLoad` fires, we haven't really fully
         /// loaded the childViewControllers, and the tabBar isn't fully initialized.
         ///
-        startListeningToReviewsTabBadgeUpdates()
+        startListeningToHubMenuTabBadgeUpdates()
         startListeningToOrdersBadge()
     }
 
@@ -467,38 +467,37 @@ private extension MainTabBarController {
     }
 }
 
-// MARK: - Reviews Tab Badge Updates
+// MARK: - Hub Menu Tab Badge Updates
 //
 private extension MainTabBarController {
 
     /// Setup: KVO Hooks.
     ///
-    func startListeningToReviewsTabBadgeUpdates() {
+    func startListeningToHubMenuTabBadgeUpdates() {
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(loadReviewsTabNotificationCountAndUpdateBadge),
+                                               selector: #selector(loadHubMenuTabNotificationCountAndUpdateBadge),
                                                name: .reviewsBadgeReloadRequired,
                                                object: nil)
     }
 
-    @objc func loadReviewsTabNotificationCountAndUpdateBadge() {
+    @objc func loadHubMenuTabNotificationCountAndUpdateBadge() {
         guard let siteID = stores.sessionManager.defaultStoreID else {
             return
         }
 
         let action = NotificationCountAction.load(siteID: siteID, type: .kind(.comment)) { [weak self] count in
-            self?.updateReviewsTabBadge(count: count)
+            self?.updateHubMenuTabBadge(count: count)
         }
         stores.dispatch(action)
     }
 
-    /// Displays or Hides the Dot on the Reviews tab, depending on the notification count
+    /// Displays or Hides the Dot on the Hub Menu tab, depending on the notification count
     ///
-    func updateReviewsTabBadge(count: Int) {
-        //TODO-5509: handle reviews badge
-        guard !isHubMenuFeatureFlagOn else {
+    func updateHubMenuTabBadge(count: Int) {
+        guard isHubMenuFeatureFlagOn else {
             return
         }
-        let tab = WooTab.reviews
+        let tab = WooTab.hubMenu
         let tabIndex = tab.visibleIndex(isHubMenuFeatureFlagOn)
         notificationsBadge.badgeCountWasUpdated(newValue: count, tab: tab, in: tabBar, tabIndex: tabIndex)
     }

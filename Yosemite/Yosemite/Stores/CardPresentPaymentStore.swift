@@ -443,15 +443,12 @@ private extension CardPresentPaymentStore {
             switch result {
             case .success(let wcpayAccount):
                 let account = wcpayAccount.toPaymentGatewayAccount(siteID: siteID)
-                print("==== CPPS successfully fetched WCPay account")
                 self.upsertStoredAccountInBackground(readonlyAccount: account)
-            case .failure:
-                print("==== CPPS was unable to fetch WCPay account")
-                DDLogDebug("Error fetching WCPay account - it is possible the extension is not installed or inactive")
+                onCompletion(.success(()))
+            case .failure(let error):
                 self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
+                onCompletion(.failure(error))
             }
-
-            onCompletion(.success(())) // TODO - consider bringing back Error, although callers don't currently use it
         }
     }
 
@@ -467,14 +464,12 @@ private extension CardPresentPaymentStore {
             switch result {
             case .success(let stripeAccount):
                 let account = stripeAccount.toPaymentGatewayAccount(siteID: siteID)
-                print("==== CPPS successfully fetched Stripe account")
                 self.upsertStoredAccountInBackground(readonlyAccount: account)
-            case .failure:
-                print("==== CPPS was unable to fetch Stripe account")
+                onCompletion(.success(()))
+            case .failure(let error):
                 self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
+                onCompletion(.failure(error))
             }
-
-            onCompletion(.success(())) // TODO - consider bringing back Error, although callers don't currently use it
         }
     }
 

@@ -255,6 +255,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "generic_error")
 
         let action = CardPresentPaymentAction.loadAccounts(siteID: sampleSiteID, onCompletion: { result in
+            XCTAssertTrue(result.isFailure)
             expectation.fulfill()
         })
 

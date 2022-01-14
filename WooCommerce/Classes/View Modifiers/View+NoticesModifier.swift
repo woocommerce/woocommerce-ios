@@ -2,13 +2,13 @@ import SwiftUI
 import UIKit
 
 /// View Modifier that shows a notice in front of a view.
-/// NOTE: This currently does not support.
+///
+/// NOTE: This currently does not support:
 /// - Enqueuing multiple notices like `DefaultNoticePresenter` does.
 /// - Presenting foreground system notifications.
 ///
 struct NoticeModifier: ViewModifier {
-
-    /// Notice object to render
+    /// Notice object to render.
     ///
     @Binding var notice: Notice?
 
@@ -23,6 +23,10 @@ struct NoticeModifier: ViewModifier {
     /// Feedback generator.
     ///
     private let feedbackGenerator = UINotificationFeedbackGenerator()
+
+    /// Current horizontal size class.
+    ///
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     func body(content: Content) -> some View {
         content
@@ -42,7 +46,7 @@ struct NoticeModifier: ViewModifier {
                     Spacer()
 
                     // NoticeView wrapper
-                    NoticeAlert(notice: notice, width: geometry.size.width)
+                    NoticeAlert(notice: notice, width: preferredSizeClassWidth(geometry))
                         .onDismiss {
                             performClearNoticeTask()
                         }
@@ -54,9 +58,9 @@ struct NoticeModifier: ViewModifier {
                             provideHapticFeedbackIfNecessary(notice.feedbackType)
                             dispatchClearNoticeTask()
                         }
-
-                        .fixedSize(horizontal: false, vertical: true)
+                        .fixedSize()
                 }
+                .frame(width: geometry.size.width) // Force a full container width so the notice is always centered.
             }
         }
     }
@@ -71,7 +75,7 @@ struct NoticeModifier: ViewModifier {
         DispatchQueue.main.asyncAfter(deadline: .now() + onScreenNoticeTime, execute: clearNoticeTask)
     }
 
-    /// Synchronously performs the clear notice task and cancels it to prever any future execution.
+    /// Synchronously performs the clear notice task and cancels it to prevent any future execution.
     ///
     private func performClearNoticeTask() {
         clearNoticeTask.perform()
@@ -84,6 +88,13 @@ struct NoticeModifier: ViewModifier {
         if let feedbackType = feedbackType {
             feedbackGenerator.notificationOccurred(feedbackType)
         }
+    }
+
+    /// Returns a scaled width for a regular horizontal size class.
+    ///
+    private func preferredSizeClassWidth(_ geometry: GeometryProxy) -> CGFloat {
+        let multiplier = horizontalSizeClass == .regular ? 0.5 : 1.0
+        return geometry.size.width * multiplier
     }
 }
 
@@ -155,7 +166,7 @@ private extension NoticeAlert {
 
         /// Notice view padding.
         ///
-        let defaultInsets = UIEdgeInsets(top: 16, left: 16, bottom: 28, right: 16)
+        let defaultInsets = UIEdgeInsets(top: 16, left: 16, bottom: 32, right: 16)
 
         init(noticeView: NoticeView) {
             self.noticeView = noticeView
@@ -186,7 +197,7 @@ private extension NoticeAlert {
         /// Returns the preferred size of the view using the fixed width.
         ///
         override var intrinsicContentSize: CGSize {
-            let targetSize =  CGSize(width: width - defaultInsets.left - defaultInsets.right, height: 0)
+            let targetSize = CGSize(width: width - defaultInsets.left - defaultInsets.right, height: 0)
             let noticeHeight = noticeView.systemLayoutSizeFitting(
                 targetSize,
                 withHorizontalFittingPriority: .required,

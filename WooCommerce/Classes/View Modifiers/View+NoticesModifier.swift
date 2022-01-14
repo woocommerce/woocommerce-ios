@@ -39,15 +39,12 @@ struct NoticeModifier: ViewModifier {
                     // NoticeView wrapper
                     NoticeAlert(notice: notice, width: geometry.size.width)
                         .onDismiss {
-                            print("on dismiss")
                             performClearNoticeTask()
                         }
                         .onChange(of: notice) { _ in
-                            print("on change")
                             dispatchClearNoticeTask()
                         }
                         .onAppear {
-                            print("on appear")
                             dispatchClearNoticeTask()
                         }
 
@@ -63,9 +60,7 @@ struct NoticeModifier: ViewModifier {
         clearNoticeTask.cancel()
         clearNoticeTask = .init {
             $notice.wrappedValue = nil
-            print("clear was performed")
         }
-        print("on Dispatch")
         DispatchQueue.main.asyncAfter(deadline: .now() + onScreenNoticeTime, execute: clearNoticeTask)
     }
 

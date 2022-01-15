@@ -1,7 +1,5 @@
-- [***] All merchants can create Simple Payments orders. [https://github.com/woocommerce/woocommerce-ios/pull/5684]
-- [**] System status report can now be viewed and copied directly from within the app. [https://github.com/woocommerce/woocommerce-ios/pull/5702]
-- [**] Product SKU input scanner is now available as a beta feature. To try it, enable it from settings and you can scan a barcode to use as the product SKU in product inventory settings! [https://github.com/woocommerce/woocommerce-ios/pull/5695]
-- [**] Now you chan share a payment link when creating a Simple Payments order [https://github.com/woocommerce/woocommerce-ios/pull/5819]
-- [*] Reviews: "Mark all as read" checkmark bar button item button replaced with menu button which launches an action sheet. Menu button is displayed only if there are unread reviews available.[https://github.com/woocommerce/woocommerce-ios/pull/5833]
-- [internal] Refactored ReviewsViewController to add tests. [https://github.com/woocommerce/woocommerce-ios/pull/5834]
+Merchants have been asking us for a quick way to record a transaction in the app with minimal information – like with only a charge amount. Maybe you’re at a farmer’s market and simply want to charge a customer’s credit card and don’t need to manage inventory. This release includes a new “Simple Payments” feature on the orders tab. If you’re a WooCommerce Payments customer, you’ll find this works great with the In-Person Payments credit card reader! Don’t have a credit card reader yet? Alternatively, you easily send a payment link to your customer to pay with their device through your site.
 
+Also included in this release is the ability to refund fees on an order. We also snuck in an experimental SKU input barcode reader when editing a product which can be enabled in Settings.
+
+We’re working on several exciting features coming in the next few months. Keep sending us your feedback!

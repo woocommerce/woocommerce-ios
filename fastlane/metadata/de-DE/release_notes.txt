@@ -1,3 +1,0 @@
-Manchmal musst du schnell eine Quick Order erstellen, damit du eine Zahlung von einem Kunden persönlich annehmen kannst, etwa auf einer Messe. Wir haben eine neue Option zum Erstellen von Bestellungen für einfaches Bezahlen hinzugefügt! Im Tab „Bestellungen“ kannst du jetzt ganz einfach eine Bestellung erstellen, um die Transaktion zu erfassen. Wir arbeiten auch an einer umfassenden Funktion zum Erstellen von Bestellungen – diese kommt später in diesem Jahr.
-
-Außerdem haben wir einen Bug behoben, der dazu führte, dass die Anzahl der Website-Besucher nicht im Tab „Heute“ deines Store-Dashboards angezeigt wurde. Danke für die Info! 

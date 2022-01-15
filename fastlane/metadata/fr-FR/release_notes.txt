@@ -1,3 +1,0 @@
-Parfois, tout ce dont vous avez besoin, c’est de créer une commande rapide afin d’accepter un paiement de votre client pour une transaction réalisée en personne, par exemple lors d’un salon. Nous avons ajouté une nouvelle option pour vous permettre de créer des paiements simplifiés ! Accédez à l’onglet Commandes pour créer une commande rapide afin d’enregistrer cette transaction. Nous consacrons également beaucoup d’efforts à la création de commandes complètes, dont la disponibilité est prévue plus tard dans l’année.
-
-Nous avons également corrigé un bogue empêchant l’affichage du nombe de visiteurs sur le site dans l’onglet Aujourd’hui du tableau de bord de votre boutique. Merci de nous faire part de vos impressions!

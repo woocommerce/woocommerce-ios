@@ -1,3 +1,0 @@
-Soms moet je even een snelle bestelling plaatsen om een betaling te kunnen ontvangen van een klant tijdens een persoonlijke transactie, bijvoorbeeld op een beurs. We hebben een nieuwe optie toegevoegd om Eenvoudige betalingen te creëren! Ga naar het tabblad Bestellingen om een snelle bestelling te plaatsen om die transactie vast te leggen. We zijn ook hard aan het werk om volledige bestellingen aan te kunnen maken - dat zal je later dit jaar zien.
-
-We hebben ook een bug gefixt die ervoor zorgde dat je het aantal bezoekers aan je site niet kon zien op het tabblad Vandaag in het dashboard van je winkel. Bedankt dat je het ons hebt laten weten!

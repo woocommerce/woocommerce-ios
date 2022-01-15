@@ -1,3 +1,0 @@
-Ibland kan det hända att du behöver skapa en snabb beställning för att ta emot en betalning från en kund för en transaktion som du gör personligen, exempelvis på en mässa. Vi har lagt till ett nytt alternativ som du kan använda för att skapa enkla betalningar! Gå till fliken Beställningar för att göra en snabb beställning och registrera transaktionen. Vi arbetar även hårt på möjligheten att skapa fullständiga beställningar – det kommer senare under året.
-
-Vi har också åtgärdat ett fel som gjorde att antalet webbplatsbesökare inte visades på fliken Idag i din butiks adminpanel. Tack för att du berättar!

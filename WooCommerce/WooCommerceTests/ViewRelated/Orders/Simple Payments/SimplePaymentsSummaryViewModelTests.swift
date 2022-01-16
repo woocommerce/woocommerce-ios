@@ -293,7 +293,8 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
             WooAnalyticsStat.simplePaymentsFlowTaxesToggled.rawValue   // Taxes disabled
         ])
 
-        assertEqual(mockAnalytics.receivedProperties[0]["state"] as? String, "off")  // Taxes disabled when view model loads the toggle state during initialization
+        assertEqual(mockAnalytics.receivedProperties[0]["state"] as? String,
+                    "off")  // Taxes disabled when view model loads the toggle state during initialization
         assertEqual(mockAnalytics.receivedProperties[1]["state"] as? String, "on")  // Taxes enabled due to setting `enableTaxes` as true
         assertEqual(mockAnalytics.receivedProperties[2]["state"] as? String, "off") // Taxes disabled due to setting `enableTaxes` as false
     }

@@ -40,8 +40,24 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
     func test_provided_amount_gets_properly_formatted() {
         // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getSimplePaymentsTaxesToggleState(_, onCompletion):
+                onCompletion(.success(false)) // Keep the taxes toggle turned off
+            case .setSimplePaymentsTaxesToggleState:
+                break // No op
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US.
-        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100", totalWithTaxes: "104.30", taxAmount: "$4.3", currencyFormatter: currencyFormatter)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100",
+                                                       totalWithTaxes: "104.30",
+                                                       taxAmount: "$4.3",
+                                                       currencyFormatter: currencyFormatter,
+                                                       stores: mockStores)
 
         // When & Then
         XCTAssertEqual(viewModel.providedAmount, "$100.00")
@@ -235,6 +251,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
                                                        totalWithTaxes: "1.0",
                                                        taxAmount: "0.0",
+                                                       stores: mockStores,
                                                        analytics: WooAnalytics(analyticsProvider: mockAnalytics))
 
         // When

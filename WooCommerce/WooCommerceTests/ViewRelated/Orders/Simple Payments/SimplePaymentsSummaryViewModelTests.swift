@@ -263,6 +263,18 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
     func test_taxesToggled_event_is_tracked_after_switching_taxes_toggle() {
         // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getSimplePaymentsTaxesToggleState(_, onCompletion):
+                onCompletion(.success(false))
+            case .setSimplePaymentsTaxesToggleState:
+                break // No op
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
         let mockAnalytics = MockAnalyticsProvider()
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
                                                        totalWithTaxes: "1.0",
@@ -276,12 +288,14 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
         // Then
         assertEqual(mockAnalytics.receivedEvents, [
+            WooAnalyticsStat.simplePaymentsFlowTaxesToggled.rawValue,  // Event triggered when view model loads the toggle state during initialization
             WooAnalyticsStat.simplePaymentsFlowTaxesToggled.rawValue,  // Taxes enabled
             WooAnalyticsStat.simplePaymentsFlowTaxesToggled.rawValue   // Taxes disabled
         ])
 
-        assertEqual(mockAnalytics.receivedProperties[0]["state"] as? String, "on")  // Taxes enabled
-        assertEqual(mockAnalytics.receivedProperties[1]["state"] as? String, "off") // Taxes disabled
+        assertEqual(mockAnalytics.receivedProperties[0]["state"] as? String, "off")  // Taxes disabled when view model loads the toggle state during initialization
+        assertEqual(mockAnalytics.receivedProperties[1]["state"] as? String, "on")  // Taxes enabled due to setting `enableTaxes` as true
+        assertEqual(mockAnalytics.receivedProperties[2]["state"] as? String, "off") // Taxes disabled due to setting `enableTaxes` as false
     }
 
     func test_failing_event_is_tracked_when_order_fails_to_update() {

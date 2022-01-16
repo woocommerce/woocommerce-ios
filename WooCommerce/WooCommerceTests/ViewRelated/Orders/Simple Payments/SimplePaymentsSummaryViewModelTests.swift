@@ -231,10 +231,23 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
     func test_noteAdded_event_is_tracked_after_editing_note() {
         // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getSimplePaymentsTaxesToggleState(_, onCompletion):
+                onCompletion(.success(true))
+            case .setSimplePaymentsTaxesToggleState:
+                break // No op
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
         let mockAnalytics = MockAnalyticsProvider()
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
                                                        totalWithTaxes: "1.0",
                                                        taxAmount: "0.0",
+                                                       stores: mockStores,
                                                        analytics: WooAnalytics(analyticsProvider: mockAnalytics))
 
         // When
@@ -242,7 +255,10 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         viewModel.noteViewModel.updateNote(onFinish: { _ in })
 
         // Then
-        assertEqual(mockAnalytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowNoteAdded.rawValue])
+        assertEqual(mockAnalytics.receivedEvents, [
+            WooAnalyticsStat.simplePaymentsFlowTaxesToggled.rawValue, // Event triggered when view model loads the toggle state during initialization
+            WooAnalyticsStat.simplePaymentsFlowNoteAdded.rawValue
+        ])
     }
 
     func test_taxesToggled_event_is_tracked_after_switching_taxes_toggle() {

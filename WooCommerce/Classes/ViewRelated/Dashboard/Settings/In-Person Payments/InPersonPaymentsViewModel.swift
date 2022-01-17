@@ -33,7 +33,16 @@ final class InPersonPaymentsViewModel: ObservableObject {
     }
 
     func updateGateway(useStripe: Bool) {
-        useCase.refresh()
+        let storesManager = ServiceLocator.stores
+        guard let siteID = storesManager.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let saveStripeActivationStatus = AppSettingsAction.setStripeExtensionAvailability(siteID: siteID, isAvailable: useStripe) { [weak self] result in
+            self?.useCase.refresh()
+        }
+
+        storesManager.dispatch(saveStripeActivationStatus)
     }
 }
 

@@ -16,7 +16,7 @@ final class PaymentCaptureOrchestrator {
     private var walletSuppressionRequestToken: PKSuppressionRequestToken?
 
     func collectPayment(for order: Order,
-                        statementDescriptor: String?,
+                        paymentGatewayAccount: PaymentGatewayAccount,
                         onWaitingForInput: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
@@ -28,6 +28,13 @@ final class PaymentCaptureOrchestrator {
             onCompletion(.failure(minimumAmountError(order: order, minimumAmount: Constants.minimumAmount)))
             return
         }
+
+        /// Set state of CardPresentPaymentStore
+        ///
+        let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
+
+        ServiceLocator.stores.dispatch(setAccount)
+
         /// First ask the backend to create/assign a Stripe customer for the order
         ///
         var customerID: String?
@@ -42,7 +49,7 @@ final class PaymentCaptureOrchestrator {
 
             guard let parameters = paymentParameters(
                     order: order,
-                    statementDescriptor: statementDescriptor,
+                    statementDescriptor: paymentGatewayAccount.statementDescriptor,
                     customerID: customerID
             ) else {
                 DDLogError("Error: failed to create payment parameters for an order")

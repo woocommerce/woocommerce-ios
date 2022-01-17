@@ -4,6 +4,31 @@
 import Combine
 
 public enum CardPresentPaymentAction: Action {
+    /// Switches the store to use WCPay as the backend. This is also the default.
+    ///
+    case useWCPay
+
+    /// Switches the store to use Stripe as the backend
+    ///
+    case useStripe
+
+    /// Retrieves and stores payment gateway account(s) for the provided `siteID`
+    /// We support payment gateway accounts for both the WooCommerce Payments extension AND
+    /// the Stripe extension. Let's attempt to load each and update view storage with the results.
+    /// Calls the passed completion with success after both loads have been attempted.
+    ///
+    case loadAccounts(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Get a Stripe Customer for an order.
+    ///
+    case fetchOrderCustomer(siteID: Int64, orderID: Int64, onCompletion: (Result<WCPayCustomer, Error>) -> Void)
+
+    /// Captures a payment intent ID, associated to an order and site
+    case captureOrderPayment(siteID: Int64,
+                             orderID: Int64,
+                             paymentIntentID: String,
+                             completion: (Result<Void, Error>) -> Void)
+
     /// Start the Card Reader discovery process.
     ///
     case startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: ([CardReader]) -> Void, onError: (Error) -> Void)

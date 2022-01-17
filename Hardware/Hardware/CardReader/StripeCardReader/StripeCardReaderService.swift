@@ -306,7 +306,6 @@ extension StripeCardReaderService: CardReaderService {
                     promise(.failure(CardReaderServiceError.connection()))
                     return
                 }
-
                 // Clear cached readers, as per Stripe's documentation.
                 self.discoveredStripeReadersCache.clear()
 

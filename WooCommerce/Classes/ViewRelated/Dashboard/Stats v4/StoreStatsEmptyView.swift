@@ -39,17 +39,31 @@ final class StoreStatsEmptyView: UIView {
         addSubview(emptyView)
         addSubview(jetpackImageView)
 
-        NSLayoutConstraint.activate([
-            self.widthAnchor.constraint(equalToConstant: 48),
-            emptyView.widthAnchor.constraint(equalToConstant: 32),
-            emptyView.heightAnchor.constraint(equalToConstant: 10),
-            emptyView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            emptyView.topAnchor.constraint(equalTo: jetpackImageView.bottomAnchor),
-            jetpackImageView.widthAnchor.constraint(equalToConstant: 14),
-            jetpackImageView.heightAnchor.constraint(equalToConstant: 14),
-            jetpackImageView.leadingAnchor.constraint(equalTo: emptyView.trailingAnchor),
-            jetpackImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 4)
-        ])
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) {
+            NSLayoutConstraint.activate([
+                emptyView.widthAnchor.constraint(equalToConstant: 32),
+                emptyView.heightAnchor.constraint(equalToConstant: 10),
+                emptyView.centerXAnchor.constraint(equalTo: centerXAnchor),
+                emptyView.centerYAnchor.constraint(equalTo: centerYAnchor),
+                jetpackImageView.widthAnchor.constraint(equalToConstant: 14),
+                jetpackImageView.heightAnchor.constraint(equalToConstant: 14),
+                jetpackImageView.leadingAnchor.constraint(equalTo: emptyView.trailingAnchor, constant: 2),
+                jetpackImageView.bottomAnchor.constraint(equalTo: emptyView.topAnchor),
+                jetpackImageView.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: 0)
+            ])
+        } else {
+            NSLayoutConstraint.activate([
+                widthAnchor.constraint(equalToConstant: 48),
+                emptyView.widthAnchor.constraint(equalToConstant: 32),
+                emptyView.heightAnchor.constraint(equalToConstant: 10),
+                emptyView.centerXAnchor.constraint(equalTo: centerXAnchor),
+                emptyView.topAnchor.constraint(equalTo: jetpackImageView.bottomAnchor),
+                jetpackImageView.widthAnchor.constraint(equalToConstant: 14),
+                jetpackImageView.heightAnchor.constraint(equalToConstant: 14),
+                jetpackImageView.leadingAnchor.constraint(equalTo: emptyView.trailingAnchor),
+                jetpackImageView.topAnchor.constraint(equalTo: topAnchor, constant: 4)
+            ])
+        }
     }
 }
 

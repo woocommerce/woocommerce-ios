@@ -138,7 +138,7 @@ public enum AppSettingsAction: Action {
 
     /// Loads a boolean flag indicating whether the Stripe extension is selected for a given store.
     ///
-    case loadStripeExtensionAvailability(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
+    case loadStripeExtensionAvailability(siteID: Int64, onCompletion: (Bool) -> Void)
 
     /// Sets a boolean flag indicating whether the Stripe extension is selected for a given store.
     ///

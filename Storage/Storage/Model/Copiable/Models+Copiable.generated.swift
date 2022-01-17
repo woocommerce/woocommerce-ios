@@ -11,7 +11,6 @@ extension GeneralAppSettings {
         isViewAddOnsSwitchEnabled: CopiableProp<Bool> = .copy,
         isOrderCreationSwitchEnabled: CopiableProp<Bool> = .copy,
         isStripeInPersonPaymentsSwitchEnabled: CopiableProp<Bool> = .copy,
-        isStripeExtensionSelected: CopiableProp<Bool> = .copy,
         isProductSKUInputScannerSwitchEnabled: CopiableProp<Bool> = .copy,
         knownCardReaders: CopiableProp<[String]> = .copy,
         lastEligibilityErrorInfo: NullableCopiableProp<EligibilityErrorInfo> = .copy,
@@ -22,7 +21,6 @@ extension GeneralAppSettings {
         let isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled ?? self.isViewAddOnsSwitchEnabled
         let isOrderCreationSwitchEnabled = isOrderCreationSwitchEnabled ?? self.isOrderCreationSwitchEnabled
         let isStripeInPersonPaymentsSwitchEnabled = isStripeInPersonPaymentsSwitchEnabled ?? self.isStripeInPersonPaymentsSwitchEnabled
-        let isStripeExtensionSelected = isStripeExtensionSelected ?? self.isStripeExtensionSelected
         let isProductSKUInputScannerSwitchEnabled = isProductSKUInputScannerSwitchEnabled ?? self.isProductSKUInputScannerSwitchEnabled
         let knownCardReaders = knownCardReaders ?? self.knownCardReaders
         let lastEligibilityErrorInfo = lastEligibilityErrorInfo ?? self.lastEligibilityErrorInfo
@@ -34,7 +32,6 @@ extension GeneralAppSettings {
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
             isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
             isStripeInPersonPaymentsSwitchEnabled: isStripeInPersonPaymentsSwitchEnabled,
-            isStripeExtensionSelected: isStripeExtensionSelected,
             isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
@@ -47,11 +44,13 @@ extension GeneralStoreSettings {
     public func copy(
         isTelemetryAvailable: CopiableProp<Bool> = .copy,
         telemetryLastReportedTime: NullableCopiableProp<Date> = .copy,
-        areSimplePaymentTaxesEnabled: CopiableProp<Bool> = .copy
+        areSimplePaymentTaxesEnabled: CopiableProp<Bool> = .copy,
+        isStripeExtensionSelected: CopiableProp<Bool> = .copy
     ) -> GeneralStoreSettings {
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
         let telemetryLastReportedTime = telemetryLastReportedTime ?? self.telemetryLastReportedTime
         let areSimplePaymentTaxesEnabled = areSimplePaymentTaxesEnabled ?? self.areSimplePaymentTaxesEnabled
+        let isStripeExtensionSelected = isStripeExtensionSelected ?? self.isStripeExtensionSelected
 
         return GeneralStoreSettings(
             isTelemetryAvailable: isTelemetryAvailable,

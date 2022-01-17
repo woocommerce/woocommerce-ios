@@ -30,7 +30,8 @@ struct HubMenu: View {
 
                 LazyVGrid(columns: gridItemLayout, spacing: Constants.itemSpacing) {
                     ForEach(viewModel.menuElements, id: \.self) { menu in
-                        HubMenuElement(image: menu.icon, imageColor: menu.iconColor, text: menu.title, onTapGesture: {
+                        let badgeCount = menu == .reviews ? viewModel.reviewsNotificationBadgeCount : 0
+                        HubMenuElement(image: menu.icon, imageColor: menu.iconColor, text: menu.title, badge: badgeCount, onTapGesture: {
                             switch menu {
                             case .woocommerceAdmin:
                                 ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "admin_menu"])

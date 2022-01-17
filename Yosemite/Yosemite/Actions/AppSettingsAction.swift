@@ -142,7 +142,7 @@ public enum AppSettingsAction: Action {
 
     /// Sets a boolean flag indicating whether the Stripe extension is selected for a given store.
     ///
-    case setStripeExtensionAvailability(siteID: Int64, isAvailable: Bool)
+    case setStripeExtensionAvailability(siteID: Int64, isAvailable: Bool, onCompletion: (Result<Void, Error>) -> Void)
 
     /// Sets the state for the Product SKU Input Scanner beta feature switch.
     ///

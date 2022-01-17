@@ -197,10 +197,10 @@ public class AppSettingsStore: Store {
             loadStripeInPersonPaymentsSwitchState(onCompletion: onCompletion)
         case .setStripeInPersonPaymentsSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
             setStripeInPersonPaymentsSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
-        case .loadStripeExtensionAvailability(siteID: let siteID, onCompletion: let onCompletion)
+        case .loadStripeExtensionAvailability(siteID: let siteID, onCompletion: let onCompletion):
             loadStripeExtensionAvailability(siteID: siteID, onCompletion: onCompletion)
-        case .setStripeExtensionAvailability(siteID: let siteID, isAvailable: let isAvailable)
-            setStripeExtensionAvailability(siteID: siteID, isAvailable: isAvailable)
+        case .setStripeExtensionAvailability(siteID: let siteID, isAvailable: let isAvailable, onCompletion: let onCompletion):
+            setStripeExtensionAvailability(siteID: siteID, isAvailable: isAvailable, onCompletion: onCompletion)
         case .setProductSKUInputScannerFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
             setProductSKUInputScannerFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadProductSKUInputScannerFeatureSwitchState(onCompletion: let onCompletion):
@@ -317,15 +317,21 @@ private extension AppSettingsStore {
         } catch {
             onCompletion(.failure(error))
         }
-
     }
 
     func loadStripeExtensionAvailability(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void) {
-
+        let settings = loadOrCreateGeneralAppSettings()
+        onCompletion(.success(settings.isStripeExtensionSelected))
     }
 
-    func setStripeExtensionAvailability(siteID: Int64, isAvailable: Bool) {
-
+    func setStripeExtensionAvailability(siteID: Int64, isAvailable: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(isStripeExtensionSelected: isAvailable)
+            try saveGeneralAppSettings(settings)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
     }
 
     /// Sets the state for the Product SKU Input Scanner beta feature switch into `GeneralAppSettings`.
@@ -405,6 +411,7 @@ private extension AppSettingsStore {
                                       isViewAddOnsSwitchEnabled: false,
                                       isOrderCreationSwitchEnabled: false,
                                       isStripeInPersonPaymentsSwitchEnabled: false,
+                                      isStripeExtensionSelected: false,
                                       isProductSKUInputScannerSwitchEnabled: false,
                                       knownCardReaders: [],
                                       lastEligibilityErrorInfo: nil)

@@ -28,9 +28,13 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let isOrderCreationSwitchEnabled: Bool
 
-    /// Thes state for the Stripe Gateway Extension IPP feature switch
+    /// The state for the Stripe Gateway Extension IPP feature switch
     ///
     public let isStripeInPersonPaymentsSwitchEnabled: Bool
+
+    /// Indicates whether the merchant wants to use the Stripe Extension to process payments
+    ///
+    public let isStripeExtensionSelected: Bool
 
     /// The state(`true` or `false`) for the Product SKU Input Scanner feature switch.
     ///
@@ -53,6 +57,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 isViewAddOnsSwitchEnabled: Bool,
                 isOrderCreationSwitchEnabled: Bool,
                 isStripeInPersonPaymentsSwitchEnabled: Bool,
+                isStripeExtensionSelected: Bool,
                 isProductSKUInputScannerSwitchEnabled: Bool,
                 knownCardReaders: [String],
                 lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
@@ -62,6 +67,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
         self.isOrderCreationSwitchEnabled = isOrderCreationSwitchEnabled
         self.isStripeInPersonPaymentsSwitchEnabled = isStripeInPersonPaymentsSwitchEnabled
+        self.isStripeExtensionSelected = isStripeExtensionSelected
         self.isProductSKUInputScannerSwitchEnabled = isProductSKUInputScannerSwitchEnabled
         self.knownCardReaders = knownCardReaders
         self.lastEligibilityErrorInfo = lastEligibilityErrorInfo
@@ -91,6 +97,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
             isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
             isStripeInPersonPaymentsSwitchEnabled: isStripeInPersonPaymentsSwitchEnabled,
+            isStripeExtensionSelected: isStripeExtensionSelected,
             isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo
@@ -110,6 +117,7 @@ extension GeneralAppSettings {
         self.isViewAddOnsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isViewAddOnsSwitchEnabled) ?? false
         self.isOrderCreationSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isOrderCreationSwitchEnabled) ?? false
         self.isStripeInPersonPaymentsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isStripeInPersonPaymentsSwitchEnabled) ?? false
+        self.isStripeExtensionSelected = try container.decodeIfPresent(Bool.self, forKey: .isStripeExtensionSelected) ?? false
         self.isProductSKUInputScannerSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isProductSKUInputScannerSwitchEnabled) ?? false
         self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []
         self.lastEligibilityErrorInfo = try container.decodeIfPresent(EligibilityErrorInfo.self, forKey: .lastEligibilityErrorInfo)

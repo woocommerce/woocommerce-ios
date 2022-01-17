@@ -19,15 +19,10 @@ public final class TabNavComponent: ScreenObject {
         $0.tabBars.firstMatch.buttons["tab-bar-menu-item"]
     }
 
-    private let reviewsTabButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.tabBars.firstMatch.buttons["tab-bar-reviews-item"]
-    }
-
     private var myStoreTabButton: XCUIElement { myStoreTabButtonGetter(app) }
     private var ordersTabButton: XCUIElement { ordersTabButtonGetter(app) }
     private var menuTabButton: XCUIElement { menuTabButtonGetter(app) }
-    private var reviewsTabButton: XCUIElement { reviewsTabButtonGetter(app) }
-    var productsTabButton: XCUIElement { productsTabButtonGetter(app) }
+    private var productsTabButton: XCUIElement { productsTabButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
@@ -62,12 +57,6 @@ public final class TabNavComponent: ScreenObject {
     public func goToMenuScreen() throws -> MenuScreen {
         menuTabButton.tap()
         return try MenuScreen()
-    }
-
-    @discardableResult
-    public func goToReviewsScreen() throws -> ReviewsScreen {
-        reviewsTabButton.tap()
-        return try ReviewsScreen()
     }
 
     static func isLoaded() -> Bool {

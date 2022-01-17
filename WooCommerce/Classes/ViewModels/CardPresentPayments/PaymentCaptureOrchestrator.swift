@@ -31,7 +31,7 @@ final class PaymentCaptureOrchestrator {
         /// First ask the backend to create/assign a Stripe customer for the order
         ///
         var customerID: String?
-        let customerAction = PaymentGatewayAccountAction.fetchOrderCustomer(siteID: order.siteID, orderID: order.orderID) { [self] result in
+        let customerAction = CardPresentPaymentAction.fetchOrderCustomer(siteID: order.siteID, orderID: order.orderID) { [self] result in
             switch result {
             case .success(let customer):
                 customerID = customer.id
@@ -176,7 +176,7 @@ private extension PaymentCaptureOrchestrator {
                              order: Order,
                              paymentIntent: PaymentIntent,
                              onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-        let action = PaymentGatewayAccountAction.captureOrderPayment(siteID: siteID,
+        let action = CardPresentPaymentAction.captureOrderPayment(siteID: siteID,
                                                                      orderID: order.orderID,
                                                                      paymentIntentID: paymentIntent.id) { [weak self] result in
             guard let self = self else {

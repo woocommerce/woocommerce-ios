@@ -60,10 +60,8 @@ public final class CardPresentPaymentStore: Store {
         }
 
         switch action {
-        case .useWCPay:
-            useWCPayAsBackend()
-        case .useStripe:
-            useStripeAsBackend()
+        case .use(let account):
+            use(paymentGatewayAccount: account)
         case .loadAccounts(let siteID, let onCompletion):
             loadAccounts(siteID: siteID,
                          onCompletion: onCompletion)
@@ -392,32 +390,20 @@ private extension CardReaderConfigError {
 
 // MARK: Networking Methods
 private extension CardPresentPaymentStore {
-    /// Switch the store to use WCPay as the backend.
-    /// Does nothing if the store is already using WCPay.
-    /// WCPay is the initial default for the store.
+    /// Sets the store to use a given payment gateway
     ///
-    func useWCPayAsBackend() {
-        guard usingBackend != .wcpay else {
-            return
-        }
-
-        usingBackend = .wcpay
-    }
-
-    /// Switch the store to use Stripe as the backend.
-    /// Does nothing if the store is already using Stripe.
-    ///
-    func useStripeAsBackend() {
+    func use(paymentGatewayAccount: PaymentGatewayAccount) {
         guard allowStripeIPP else {
             DDLogError("useStripeAsBackend called when stripeExtensionInPersonPayments disabled")
             return
         }
 
-        guard usingBackend != .stripe else {
+        guard paymentGatewayAccount.isWCPay else {
+            usingBackend = .stripe
             return
         }
 
-        usingBackend = .stripe
+        usingBackend = .wcpay
     }
 
     /// Loads the account corresponding to the currently selected backend. Deletes the other (if it exists).
@@ -596,5 +582,12 @@ public enum PaymentGatewayAccountError: Error, LocalizedError {
             "An unexpected error occurred with the store's payment gateway when capturing payment for the order",
             comment: "Message presented when an unexpected error occurs with the store's payment gateway."
         )
+    }
+}
+
+
+private extension PaymentGatewayAccount {
+    var isWCPay: Bool {
+        self.gatewayID == WCPayAccount.gatewayID
     }
 }

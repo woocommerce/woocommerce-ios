@@ -30,8 +30,12 @@ struct HubMenu: View {
 
                 LazyVGrid(columns: gridItemLayout, spacing: Constants.itemSpacing) {
                     ForEach(viewModel.menuElements, id: \.self) { menu in
-                        let badgeCount = menu == .reviews ? viewModel.reviewsNotificationBadgeCount : 0
-                        HubMenuElement(image: menu.icon, imageColor: menu.iconColor, text: menu.title, badge: badgeCount, onTapGesture: {
+                        // Currently the badge is always zero, because we are not handling push notifications count
+                        // correctly due to the first behavior described here p91TBi-66O:
+                        // AppDelegate’s `application(_:didReceiveRemoteNotification:fetchCompletionHandler:)`
+                        // can be called twice for the same push notification when receiving it
+                        // and tapping on it to open the app. This means that some push notifications are incrementing the badge number by 2, and some by 1.
+                        HubMenuElement(image: menu.icon, imageColor: menu.iconColor, text: menu.title, badge: 0, onTapGesture: {
                             switch menu {
                             case .woocommerceAdmin:
                                 ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "admin_menu"])

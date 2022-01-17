@@ -100,6 +100,7 @@
     "date_created_gmt" : "2021-08-04T19:28:01",
     "date_modified_gmt" : "2021-08-04T19:28:01",
     "coupon_lines" : [],
-    "discount_tax" : "0.00"
+    "discount_tax" : "0.00",
+    "tax_lines": [],
   }
 }

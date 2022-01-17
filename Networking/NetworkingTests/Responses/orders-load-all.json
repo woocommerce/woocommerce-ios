@@ -86,6 +86,19 @@
                      "meta_data": []
                  }
              ],
+             "tax_lines": [
+                 {
+                     "id": 1330,
+                     "rate_code": "US-NY-STATE-2",
+                     "rate_id": 6,
+                     "label": "State",
+                     "compound": true,
+                     "tax_total": "7.71",
+                     "shipping_tax_total": "0.00",
+                     "rate_percent": 4.5,
+                     "meta_data": []
+                 }
+             ],
              "payment_method": "stripe",
              "payment_method_title": "Credit Card (Stripe)",
              "date_paid_gmt": "2018-04-03T23:05:14",
@@ -254,7 +267,8 @@
                             }
                             ],
              "coupon_lines": [],
-             "fee_lines": []
+             "fee_lines": [],
+             "tax_lines": []
              },
              {
              "id": 960,
@@ -327,7 +341,8 @@
                             }
                             ],
              "coupon_lines": [],
-             "fee_lines": []
+             "fee_lines": [],
+             "tax_lines": []
              },
              {
                  "id": 560,
@@ -1272,6 +1287,7 @@
                      }
                  ],
                  "fee_lines": [],
+                 "tax_lines": [],
                  "coupon_lines": [],                 
                  "refunds": [
                      {

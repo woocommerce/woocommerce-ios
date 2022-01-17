@@ -80,6 +80,11 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
             return
         }
 
+        guard !bypassPluginSelection else {
+            self.updateState()
+            return
+        }
+
         let wcPayPlugin = getWCPayPlugin()
         let stripePlugin = getStripePlugin()
 
@@ -182,7 +187,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
         // If both the Stripe plugin and WCPay are installed and activated, the user needs
         // to deactivate one: pdfdoF-fW-p2#comment-683
-        if bothPluginsInstalledAndActive(wcPay: wcPay, stripe: stripe) {
+        if bothPluginsInstalledAndActive(wcPay: wcPay, stripe: stripe) && bypassPluginSelection == false {
             return .selectPlugin
         }
 

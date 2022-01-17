@@ -423,17 +423,13 @@ private extension CardPresentPaymentStore {
     /// Loads the account corresponding to the currently selected backend. Deletes the other (if it exists).
     ///
     func loadAccounts(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        switch usingBackend {
-        case .wcpay:
-            loadWCPayAccount(siteID: siteID, onCompletion: onCompletion)
-        case .stripe:
-            loadStripeAccount(siteID: siteID, onCompletion: onCompletion)
-        }
+        loadWCPayAccount(siteID: siteID, onCompletion: onCompletion)
+        loadStripeAccount(siteID: siteID, onCompletion: onCompletion)
     }
 
     func loadWCPayAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        /// Delete any Stripe account present. There can be only one.
-        self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
+        /// Delete any WCPay account present. There can be only one.
+        self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
 
         /// Fetch the WCPay account
         remote.loadAccount(for: siteID) { [weak self] result in
@@ -454,8 +450,8 @@ private extension CardPresentPaymentStore {
     }
 
     func loadStripeAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        /// Delete any WCPay account present. There can be only one.
-        self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
+        /// Delete any Stripe account present. There can be only one.
+        self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
 
         stripeRemote.loadAccount(for: siteID) { [weak self] result in
             guard let self = self else {
@@ -540,6 +536,7 @@ private extension CardPresentPaymentStore {
 // MARK: Storage Methods
 private extension CardPresentPaymentStore {
     func upsertStoredAccountInBackground(readonlyAccount: PaymentGatewayAccount) {
+        print("==== upserting ", readonlyAccount.gatewayID)
         let storage = storageManager.viewStorage
         let storageAccount = storage.loadPaymentGatewayAccount(siteID: readonlyAccount.siteID, gatewayID: readonlyAccount.gatewayID) ??
             storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self)

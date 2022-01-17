@@ -1515,7 +1515,13 @@ private extension OrderDetailsDataSource {
     }
 
     func hasCardPresentEligiblePaymentGatewayAccount() -> Bool {
-        resultsControllers.paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
+        let accounts = resultsControllers.paymentGatewayAccounts
+
+        guard accounts.count <= 1 else {
+            return false
+        }
+
+        return resultsControllers.paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
     }
 
     func orderContainsAnySubscription() -> Bool {

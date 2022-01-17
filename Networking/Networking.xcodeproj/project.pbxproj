@@ -467,6 +467,7 @@
 		B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6FCD320A373BA00A4F8E4 /* OrderMapper.swift */; };
 		B5C6FCD620A3768900A4F8E4 /* order.json in Resources */ = {isa = PBXBuildFile; fileRef = B5C6FCD520A3768900A4F8E4 /* order.json */; };
 		B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */; };
+		BAB373722795A1FB00837B4A /* OrderTaxLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB373712795A1FB00837B4A /* OrderTaxLine.swift */; };
 		CC07865F267799EE00BA9AC1 /* ShippingLabelPurchase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC07865E267799EE00BA9AC1 /* ShippingLabelPurchase.swift */; };
 		CC0786612677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0786602677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift */; };
 		CC0786632678F79500BA9AC1 /* shipping-label-purchase-success.json in Resources */ = {isa = PBXBuildFile; fileRef = CC0786622678F79500BA9AC1 /* shipping-label-purchase-success.json */; };
@@ -543,8 +544,6 @@
 		D823D91022377B4F00C90817 /* ShipmentTrackingProviderGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D823D90F22377B4F00C90817 /* ShipmentTrackingProviderGroup.swift */; };
 		D823D91222377DF300C90817 /* ShipmentTrackingProviderListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D823D91122377DF200C90817 /* ShipmentTrackingProviderListMapper.swift */; };
 		D823D91422377EE600C90817 /* shipment_tracking_providers.json in Resources */ = {isa = PBXBuildFile; fileRef = D823D91322377EE600C90817 /* shipment_tracking_providers.json */; };
-		D865CE6E278CC19A002C8520 /* stripe-location.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE6C278CC19A002C8520 /* stripe-location.json */; };
-		D865CE6F278CC19A002C8520 /* stripe-location-error.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE6D278CC19A002C8520 /* stripe-location-error.json */; };
 		D865CE5B278CA10B002C8520 /* stripe-payment-intent-requires-payment-method.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE5A278CA10B002C8520 /* stripe-payment-intent-requires-payment-method.json */; };
 		D865CE5D278CA159002C8520 /* stripe-payment-intent-requires-confirmation.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE5C278CA159002C8520 /* stripe-payment-intent-requires-confirmation.json */; };
 		D865CE5F278CA183002C8520 /* stripe-payment-intent-requires-action.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE5E278CA183002C8520 /* stripe-payment-intent-requires-action.json */; };
@@ -554,6 +553,8 @@
 		D865CE67278CA225002C8520 /* stripe-payment-intent-succeeded.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE66278CA225002C8520 /* stripe-payment-intent-succeeded.json */; };
 		D865CE69278CA245002C8520 /* stripe-payment-intent-unknown-status.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE68278CA245002C8520 /* stripe-payment-intent-unknown-status.json */; };
 		D865CE6B278CA266002C8520 /* stripe-payment-intent-error.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE6A278CA266002C8520 /* stripe-payment-intent-error.json */; };
+		D865CE6E278CC19A002C8520 /* stripe-location.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE6C278CC19A002C8520 /* stripe-location.json */; };
+		D865CE6F278CC19A002C8520 /* stripe-location-error.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE6D278CC19A002C8520 /* stripe-location-error.json */; };
 		D865CE72278CC215002C8520 /* stripe-customer.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE70278CC215002C8520 /* stripe-customer.json */; };
 		D865CE73278CC215002C8520 /* stripe-customer-error.json in Resources */ = {isa = PBXBuildFile; fileRef = D865CE71278CC215002C8520 /* stripe-customer-error.json */; };
 		D87F6151226591E10031A13B /* NullNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F6150226591E10031A13B /* NullNetwork.swift */; };
@@ -1112,6 +1113,7 @@
 		B5C6FCD320A373BA00A4F8E4 /* OrderMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderMapper.swift; sourceTree = "<group>"; };
 		B5C6FCD520A3768900A4F8E4 /* order.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = order.json; sourceTree = "<group>"; };
 		B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsRemote.swift; sourceTree = "<group>"; };
+		BAB373712795A1FB00837B4A /* OrderTaxLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderTaxLine.swift; sourceTree = "<group>"; };
 		BD9439D9B8F2C1ED2EADAA51 /* Pods-NetworkingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C8F9A8CC6F90A8C9B5EF2EE2 /* Pods-Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release.xcconfig"; sourceTree = "<group>"; };
 		CC07865E267799EE00BA9AC1 /* ShippingLabelPurchase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPurchase.swift; sourceTree = "<group>"; };
@@ -1191,8 +1193,6 @@
 		D823D90F22377B4F00C90817 /* ShipmentTrackingProviderGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentTrackingProviderGroup.swift; sourceTree = "<group>"; };
 		D823D91122377DF200C90817 /* ShipmentTrackingProviderListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentTrackingProviderListMapper.swift; sourceTree = "<group>"; };
 		D823D91322377EE600C90817 /* shipment_tracking_providers.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shipment_tracking_providers.json; sourceTree = "<group>"; };
-		D865CE6C278CC19A002C8520 /* stripe-location.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-location.json"; sourceTree = "<group>"; };
-		D865CE6D278CC19A002C8520 /* stripe-location-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-location-error.json"; sourceTree = "<group>"; };
 		D865CE5A278CA10B002C8520 /* stripe-payment-intent-requires-payment-method.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-payment-intent-requires-payment-method.json"; sourceTree = "<group>"; };
 		D865CE5C278CA159002C8520 /* stripe-payment-intent-requires-confirmation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-payment-intent-requires-confirmation.json"; sourceTree = "<group>"; };
 		D865CE5E278CA183002C8520 /* stripe-payment-intent-requires-action.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-payment-intent-requires-action.json"; sourceTree = "<group>"; };
@@ -1202,6 +1202,8 @@
 		D865CE66278CA225002C8520 /* stripe-payment-intent-succeeded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-payment-intent-succeeded.json"; sourceTree = "<group>"; };
 		D865CE68278CA245002C8520 /* stripe-payment-intent-unknown-status.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-payment-intent-unknown-status.json"; sourceTree = "<group>"; };
 		D865CE6A278CA266002C8520 /* stripe-payment-intent-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-payment-intent-error.json"; sourceTree = "<group>"; };
+		D865CE6C278CC19A002C8520 /* stripe-location.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-location.json"; sourceTree = "<group>"; };
+		D865CE6D278CC19A002C8520 /* stripe-location-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-location-error.json"; sourceTree = "<group>"; };
 		D865CE70278CC215002C8520 /* stripe-customer.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-customer.json"; sourceTree = "<group>"; };
 		D865CE71278CC215002C8520 /* stripe-customer-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-customer-error.json"; sourceTree = "<group>"; };
 		D87F6150226591E10031A13B /* NullNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullNetwork.swift; sourceTree = "<group>"; };
@@ -1695,6 +1697,7 @@
 				CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */,
 				CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */,
 				B5BB1D1120A255EC00112D92 /* OrderStatusEnum.swift */,
+				BAB373712795A1FB00837B4A /* OrderTaxLine.swift */,
 				267313302559CC930026F7EF /* PaymentGateway.swift */,
 				314703072670222500EF253A /* PaymentGatewayAccount.swift */,
 				D89A01D326D3F8D8008195BE /* ReaderLocation.swift */,
@@ -1720,10 +1723,8 @@
 				31799AF7270508C600D78179 /* RemoteReaderLocation.swift */,
 				3192F223260D34C40067FEF9 /* WCPayAccountStatusEnum.swift */,
 				D8EDFE2125EE88C9003D2213 /* ReaderConnectionToken.swift */,
-				318E8FD426C31F9500F519D7 /* WCPayCustomer.swift */,
-				31054705262E278100C5C02B /* RemotePaymentIntent.swift */,
 				318E8FD426C31F9500F519D7 /* Customer.swift */,
-				31054705262E278100C5C02B /* WCPayPaymentIntent.swift */,
+				31054705262E278100C5C02B /* RemotePaymentIntent.swift */,
 				3105470B262E27F000C5C02B /* WCPayPaymentIntentStatusEnum.swift */,
 				FE28F6E126840DED004465C7 /* User.swift */,
 			);
@@ -2011,11 +2012,8 @@
 				311D412D2783C07D00052F64 /* StripeAccountMapper.swift */,
 				3192F21B260D32550067FEF9 /* WCPayAccountMapper.swift */,
 				D8EDFE2525EE8A60003D2213 /* ReaderConnectionTokenMapper.swift */,
-				318E8FD226C31F1C00F519D7 /* WCPayCustomerMapper.swift */,
-				3178A49E2703E5CF00A8B4CA /* RemoteReaderLocationMapper.swift */,
-				31054701262E04F700C5C02B /* WCPayPaymentIntentMapper.swift */,
 				318E8FD226C31F1C00F519D7 /* CustomerMapper.swift */,
-				3178A49E2703E5CF00A8B4CA /* WCPayReaderLocationMapper.swift */,
+				3178A49E2703E5CF00A8B4CA /* RemoteReaderLocationMapper.swift */,
 				31054701262E04F700C5C02B /* RemotePaymentIntentMapper.swift */,
 				45A4B84D25D2E11300776FB4 /* ShippingLabelAddressValidationSuccessMapper.swift */,
 				CCF48B272628A4EB0034EA83 /* ShippingLabelAccountSettingsMapper.swift */,
@@ -2645,6 +2643,7 @@
 				B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */,
 				743E84EE2217244C00FAC9D7 /* ShipmentTrackingListMapper.swift in Sources */,
 				451A97E5260B631E0059D135 /* ShippingLabelPredefinedPackage.swift in Sources */,
+				BAB373722795A1FB00837B4A /* OrderTaxLine.swift in Sources */,
 				B567AF2520A0CCA300AB6C62 /* AuthenticatedRequest.swift in Sources */,
 				453305E92459DF2100264E50 /* PostMapper.swift in Sources */,
 				E12552C526385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift in Sources */,

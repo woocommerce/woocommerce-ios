@@ -31,7 +31,6 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     let storageManager: StorageManagerType
     let stores: StoresManager
     private var stripeGatewayIPPEnabled: Bool?
-    private var bypassPluginSelection: Bool = false
 
     @Published var state: CardPresentPaymentOnboardingState = .loading
 
@@ -66,22 +65,11 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         }
     }
 
-    func refreshBypassingPluginSelection() {
-        bypassPluginSelection = true
-
-        refresh()
-    }
-
     /// We need to sync payment gateway accounts to see if the payment gateway is set up correctly.
     /// But first we also need to prompt the CardPresentPaymentStore to use the right backend based on the active plugin.
     ///
     func updateAccounts() {
         guard let siteID = siteID else {
-            return
-        }
-
-        guard !bypassPluginSelection else {
-            self.updateState()
             return
         }
 
@@ -187,7 +175,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
         // If both the Stripe plugin and WCPay are installed and activated, the user needs
         // to deactivate one: pdfdoF-fW-p2#comment-683
-        if bothPluginsInstalledAndActive(wcPay: wcPay, stripe: stripe) && bypassPluginSelection == false {
+        if bothPluginsInstalledAndActive(wcPay: wcPay, stripe: stripe) {
             return .selectPlugin
         }
 

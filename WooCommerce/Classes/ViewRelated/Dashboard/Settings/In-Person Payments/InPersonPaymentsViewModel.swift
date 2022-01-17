@@ -31,19 +31,6 @@ final class InPersonPaymentsViewModel: ObservableObject {
     func refresh() {
         useCase.refresh()
     }
-
-    func updateGateway(useStripe: Bool) {
-        let storesManager = ServiceLocator.stores
-        guard let siteID = storesManager.sessionManager.defaultStoreID else {
-            return
-        }
-
-        let saveStripeActivationStatus = AppSettingsAction.setStripeExtensionAvailability(siteID: siteID, isAvailable: useStripe) { [weak self] result in
-            self?.useCase.refreshBypassingPluginSelection()
-        }
-
-        storesManager.dispatch(saveStripeActivationStatus)
-    }
 }
 
 private func trackState(_ state: CardPresentPaymentOnboardingState) {

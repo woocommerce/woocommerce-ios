@@ -1,50 +1,52 @@
 import SwiftUI
 
 struct InPersonPaymentsSelectPlugin: View {
-    let onRefresh: (Bool) -> Void
-
-    @State private var activateWCPay = true
-    @State private var activateStripe = true
+    let onRefresh: () -> Void
+    @State var presentedSetupURL: URL? = nil
 
     var body: some View {
-        VStack {
-            InPersonPaymentsOnboardingError(
-                title: Localization.unavailable,
+        ScrollableVStack {
+            Spacer()
+
+            InPersonPaymentsOnboardingError.MainContent(
+                title: Localization.title,
                 message: Localization.message,
                 image: InPersonPaymentsOnboardingError.ImageInfo(
-                    image: .paymentErrorImage,
-                    height: 180.0
+                    image: .paymentsPlugin,
+                    height: 108.0
                 ),
-                supportLink: false,
-                learnMore: false,
-                button: InPersonPaymentsOnboardingError.ButtonInfo(
-                    text: Localization.primaryButton,
-                    action: {
-                        onRefresh(activateStripe)
-                    }
-                )
+                supportLink: false
             )
 
-            VStack {
-                // Switch to activate WooCommercePayments
-                Toggle(Localization.wcPay, isOn: $activateWCPay)
-                    .onChange(of: activateWCPay, perform: { value in
-                        activateStripe = !value
-                    })
+            Spacer()
 
-                // Switch to activate Stripe extension
-                Toggle(Localization.stripeExtension, isOn: $activateStripe)
-                    .onChange(of: activateStripe, perform: { value in
-                        activateWCPay = !value
-                    })
+            Button {
+                presentedSetupURL = setupURL
+            } label: {
+                HStack {
+                    Text(Localization.primaryButton)
+                    Image(uiImage: .externalImage)
+                }
             }
-            .padding([.leading, .trailing, .bottom])
+            .buttonStyle(PrimaryButtonStyle())
+            .padding(.bottom, 24.0)
+
+            InPersonPaymentsLearnMore()
         }
+        .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
+    }
+
+    var setupURL: URL? {
+        guard let adminURL = ServiceLocator.stores.sessionManager.defaultSite?.adminURL else {
+            return nil
+        }
+
+        return URL(string: adminURL)
     }
 }
 
 private enum Localization {
-    static let unavailable = NSLocalizedString(
+    static let title = NSLocalizedString(
         "Please select an extension",
         comment: "Title for the error screen when there is more than one extension active."
     )
@@ -54,24 +56,14 @@ private enum Localization {
         comment: "Message requesting merchants to select between available payments processors"
     )
 
-    static let stripeExtension = NSLocalizedString(
-        "Stripe Extension",
-        comment: "Message asking merchants whether the Stripe Extension should be active"
-    )
-
-    static let wcPay = NSLocalizedString(
-        "WooCommerce Payments",
-        comment: "Message asking merchants whether the WooCommerce Payments should be active"
-    )
-
     static let primaryButton = NSLocalizedString(
-        "Refresh",
-        comment: "Button to reload plugin data after selecting a payment plugin"
+        "Select extension in Store Admin",
+        comment: "Button to set up the WooCommerce Payments plugin after installing it"
     )
 }
 
 struct InPersonPaymentsSelectPlugin_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsSelectPlugin(onRefresh: {_ in })
+        InPersonPaymentsSelectPlugin(onRefresh: {})
     }
 }

@@ -302,6 +302,24 @@ final class OrderMapperTests: XCTestCase {
         let expectedAttributes = [OrderItemAttribute(metaID: 3665, name: "Required Weight (kg)", value: "2.3")]
         assertEqual(attributes, expectedAttributes)
     }
+
+    func test_order_tax_lines_are_parsed_successfully() throws {
+        let order = try XCTUnwrap(mapLoadOrderResponse())
+
+        XCTAssertNotNil(order.tax)
+        XCTAssertEqual(order.tax.count, 1)
+
+        let tax = try XCTUnwrap(order.tax.first)
+        XCTAssertEqual(tax.taxID, 1330)
+        XCTAssertEqual(tax.rateCode, "US-NY-STATE-2")
+        XCTAssertEqual(tax.rateID, 6)
+        XCTAssertEqual(tax.label, "State")
+        XCTAssertEqual(tax.isCompoundTaxRate, true)
+        XCTAssertEqual(tax.totalTax, "7.71")
+        XCTAssertEqual(tax.totalShippingTax, "0.00")
+        XCTAssertEqual(tax.ratePercent, 4.5)
+        XCTAssertEqual(tax.attributes, [])
+    }
 }
 
 

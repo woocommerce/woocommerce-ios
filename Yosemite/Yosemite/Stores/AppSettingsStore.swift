@@ -197,6 +197,10 @@ public class AppSettingsStore: Store {
             loadStripeInPersonPaymentsSwitchState(onCompletion: onCompletion)
         case .setStripeInPersonPaymentsSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
             setStripeInPersonPaymentsSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
+        case .loadStripeExtensionAvailability(siteID: let siteID, onCompletion: let onCompletion)
+            loadStripeExtensionAvailability(siteID: siteID, onCompletion: onCompletion)
+        case .setStripeExtensionAvailability(siteID: let siteID, isAvailable: let isAvailable)
+            setStripeExtensionAvailability(siteID: siteID, isAvailable: isAvailable)
         case .setProductSKUInputScannerFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
             setProductSKUInputScannerFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadProductSKUInputScannerFeatureSwitchState(onCompletion: let onCompletion):
@@ -313,6 +317,14 @@ private extension AppSettingsStore {
         } catch {
             onCompletion(.failure(error))
         }
+
+    }
+
+    func loadStripeExtensionAvailability(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void) {
+
+    }
+
+    func setStripeExtensionAvailability(siteID: Int64, isAvailable: Bool) {
 
     }
 

@@ -136,6 +136,14 @@ public enum AppSettingsAction: Action {
     ///
     case setStripeInPersonPaymentsSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
 
+    /// Loads a boolean flag indicating whether the Stripe extension is selected for a given store.
+    ///
+    case loadStripeExtensionAvailability(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Sets a boolean flag indicating whether the Stripe extension is selected for a given store.
+    ///
+    case setStripeExtensionAvailability(siteID: Int64, isAvailable: Bool)
+
     /// Sets the state for the Product SKU Input Scanner beta feature switch.
     ///
     case setProductSKUInputScannerFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)

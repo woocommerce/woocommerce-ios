@@ -31,6 +31,10 @@ final class InPersonPaymentsViewModel: ObservableObject {
     func refresh() {
         useCase.refresh()
     }
+
+    func updateGateway(useStripe: Bool) {
+        useCase.refresh()
+    }
 }
 
 private func trackState(_ state: CardPresentPaymentOnboardingState) {

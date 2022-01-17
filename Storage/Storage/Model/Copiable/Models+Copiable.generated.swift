@@ -55,6 +55,7 @@ extension GeneralStoreSettings {
         return GeneralStoreSettings(
             isTelemetryAvailable: isTelemetryAvailable,
             telemetryLastReportedTime: telemetryLastReportedTime,
+            isStripeExtensionSelected: isStripeExtensionSelected,
             areSimplePaymentTaxesEnabled: areSimplePaymentTaxesEnabled
         )
     }

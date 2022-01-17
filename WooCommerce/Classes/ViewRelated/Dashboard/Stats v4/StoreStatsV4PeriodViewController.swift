@@ -23,7 +23,6 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     var siteVisitStatsMode: SiteVisitStatsMode = .default {
         didSet {
             updateSiteVisitStats(mode: siteVisitStatsMode)
-            updateConversionStatsVisibility(visitStatsMode: siteVisitStatsMode)
         }
     }
 
@@ -48,9 +47,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var visitorsDataOrRedactedView: StoreStatsDataOrRedactedView!
     @IBOutlet private weak var ordersTitle: UILabel!
     @IBOutlet private weak var ordersData: UILabel!
-    @IBOutlet private weak var conversionStackView: UIStackView!
     @IBOutlet private weak var conversionTitle: UILabel!
-    @IBOutlet private weak var conversionData: UILabel!
+    @IBOutlet private weak var conversionDataOrRedactedView: StoreStatsDataOrRedactedView!
     @IBOutlet private weak var revenueTitle: UILabel!
     @IBOutlet private weak var revenueData: UILabel!
     @IBOutlet private weak var lineChartView: LineChartView!
@@ -193,18 +191,22 @@ private extension StoreStatsV4PeriodViewController {
         }.store(in: &cancellables)
 
         viewModel.conversionStatsText.sink { [weak self] conversionStatsLabel in
-            self?.conversionData.text = conversionStatsLabel
+            guard let self = self else { return }
+            self.conversionDataOrRedactedView.state = conversionStatsLabel == nil ? .redacted: .data
+            print("~~~\(self.conversionDataOrRedactedView.state)")
+            self.conversionDataOrRedactedView.data = conversionStatsLabel
         }.store(in: &cancellables)
     }
 
     func observeSelectedBarIndex() {
         viewModel.$selectedIntervalIndex.sink { [weak self] selectedIndex in
             guard let self = self else { return }
-            let textColor = selectedIndex == nil ? Constants.statsTextColor: Constants.statsHighlightTextColor
+            let isHighlighted = selectedIndex != nil
+            let textColor = isHighlighted ? Constants.statsHighlightTextColor: Constants.statsTextColor
             self.ordersData.textColor = textColor
-            self.visitorsDataOrRedactedView.isHighlighted = selectedIndex != nil
+            self.visitorsDataOrRedactedView.isHighlighted = isHighlighted
+            self.conversionDataOrRedactedView.isHighlighted = isHighlighted
             self.revenueData.textColor = textColor
-            self.conversionData.textColor = textColor
 
             self.updateSiteVisitStatsAndConversionRate(selectedIndex: selectedIndex)
         }.store(in: &cancellables)
@@ -304,7 +306,6 @@ private extension StoreStatsV4PeriodViewController {
 
         // Visibility
         updateSiteVisitStats(mode: siteVisitStatsMode)
-        updateConversionStatsVisibility(visitStatsMode: siteVisitStatsMode)
 
         // Accessibility elements
         xAxisAccessibilityView.isAccessibilityElement = true
@@ -407,7 +408,6 @@ private extension StoreStatsV4PeriodViewController {
 private extension StoreStatsV4PeriodViewController {
     func updateSiteVisitStats(mode: SiteVisitStatsMode) {
         reloadSiteVisitUI()
-        updateConversionStatsVisibility(visitStatsMode: mode)
     }
 }
 
@@ -451,7 +451,6 @@ private extension StoreStatsV4PeriodViewController {
         }
 
         updateSiteVisitStats(mode: mode)
-        updateConversionStatsVisibility(visitStatsMode: mode)
 
         switch siteVisitStatsMode {
         case .hidden, .redactedDueToJetpack:
@@ -465,19 +464,6 @@ private extension StoreStatsV4PeriodViewController {
                 return
             }
             visitorsDataOrRedactedView.state = .data
-        }
-    }
-
-    func updateConversionStatsVisibility(visitStatsMode: SiteVisitStatsMode) {
-        guard conversionData != nil else {
-            return
-        }
-
-        switch visitStatsMode {
-        case .hidden, .redactedDueToJetpack:
-            conversionStackView.isHidden = true
-        case .default:
-            conversionStackView.isHidden = false
         }
     }
 }
@@ -589,7 +575,6 @@ private extension StoreStatsV4PeriodViewController {
     func reloadAllFields(animateChart: Bool = true) {
         viewModel.selectedIntervalIndex = nil
         reloadSiteVisitUI()
-        updateConversionStatsVisibility(visitStatsMode: siteVisitStatsMode)
         reloadChart(animateChart: animateChart)
 
         view.accessibilityElements = [ordersTitle as Any,
@@ -599,7 +584,7 @@ private extension StoreStatsV4PeriodViewController {
                                       revenueTitle as Any,
                                       revenueData as Any,
                                       conversionTitle as Any,
-                                      conversionData as Any,
+                                      conversionDataOrRedactedView as Any,
                                       yAxisAccessibilityView as Any,
                                       xAxisAccessibilityView as Any,
                                       chartAccessibilityView as Any]
@@ -697,7 +682,7 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func updateStatsDataToDefaultStyles() {
-        [ordersData, conversionData].forEach { label in
+        [ordersData].forEach { label in
             label?.font = Constants.statsFont
             label?.textColor = Constants.statsTextColor
         }

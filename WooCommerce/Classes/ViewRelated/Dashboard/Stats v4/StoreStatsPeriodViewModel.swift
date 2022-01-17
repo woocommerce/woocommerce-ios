@@ -43,7 +43,7 @@ final class StoreStatsPeriodViewModel {
         .eraseToAnyPublisher()
 
     /// Emits conversion stats text values based on order stats, site visit stats, and selected time interval.
-    private(set) lazy var conversionStatsText: AnyPublisher<String, Never> =
+    private(set) lazy var conversionStatsText: AnyPublisher<String?, Never> =
     Publishers.CombineLatest3($orderStatsData.eraseToAnyPublisher(), $siteStats.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
         .compactMap { [weak self] orderStatsData, siteStats, selectedIntervalIndex in
             self?.createConversionStats(orderStatsData: orderStatsData, siteStats: siteStats, selectedIntervalIndex: selectedIntervalIndex)
@@ -169,7 +169,7 @@ private extension StoreStatsPeriodViewModel {
         }
     }
 
-    func createConversionStats(orderStatsData: OrderStatsData, siteStats: SiteVisitStats?, selectedIntervalIndex: Int?) -> String {
+    func createConversionStats(orderStatsData: OrderStatsData, siteStats: SiteVisitStats?, selectedIntervalIndex: Int?) -> String? {
         let visitors = visitorCount(at: selectedIntervalIndex, siteStats: siteStats)
         let orders = orderCount(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals)
         if let visitors = visitors, let orders = orders, visitors > 0 {
@@ -180,7 +180,7 @@ private extension StoreStatsPeriodViewModel {
             numberFormatter.minimumFractionDigits = 1
             return numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.placeholderText
         } else {
-            return Constants.placeholderText
+            return nil
         }
     }
 }

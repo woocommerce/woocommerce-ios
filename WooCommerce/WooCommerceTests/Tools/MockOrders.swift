@@ -191,7 +191,8 @@ final class MockOrders {
                      shippingLines: brokenShippingLines(), // empty shipping
                      coupons: [],
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     tax: [])
     }
 
     /// An order with broken elements that hasn't been paid, inspired by `broken-order.json`
@@ -223,7 +224,8 @@ final class MockOrders {
                      shippingLines: brokenShippingLines(), // empty shipping
                      coupons: [],
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     tax: [])
     }
 
     /// An address that may or may not be broken, that came from `broken-order.json`

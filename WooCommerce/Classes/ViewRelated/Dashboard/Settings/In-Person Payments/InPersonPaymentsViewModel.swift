@@ -33,13 +33,14 @@ final class InPersonPaymentsViewModel: ObservableObject {
     }
 
     func updateGateway(useStripe: Bool) {
+        // Pass another flag to refresh(*) indicating if the check for both extensions canbe pbypassed
         let storesManager = ServiceLocator.stores
         guard let siteID = storesManager.sessionManager.defaultStoreID else {
             return
         }
 
         let saveStripeActivationStatus = AppSettingsAction.setStripeExtensionAvailability(siteID: siteID, isAvailable: useStripe) { [weak self] result in
-            self?.useCase.refresh()
+            self?.useCase.refreshBypassingPluginSelection()
         }
 
         storesManager.dispatch(saveStripeActivationStatus)

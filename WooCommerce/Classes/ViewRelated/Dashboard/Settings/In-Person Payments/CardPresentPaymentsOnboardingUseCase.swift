@@ -31,6 +31,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     let storageManager: StorageManagerType
     let stores: StoresManager
     private var stripeGatewayIPPEnabled: Bool?
+    private var bypassPluginSelection: Bool = false
 
     @Published var state: CardPresentPaymentOnboardingState = .loading
 
@@ -63,6 +64,12 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         synchronizeStoreCountryAndPlugins { [weak self] in
             self?.updateAccounts()
         }
+    }
+
+    func refreshBypassingPluginSelection() {
+        bypassPluginSelection = true
+
+        refresh()
     }
 
     /// We need to sync payment gateway accounts to see if the payment gateway is set up correctly.

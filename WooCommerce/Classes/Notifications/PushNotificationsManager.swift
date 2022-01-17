@@ -371,7 +371,7 @@ private extension PushNotificationsManager {
                     guard let self = self else { return }
                     self.presentDetails(for: foregroundNotification)
                     self.foregroundNotificationsToViewSubject.send(foregroundNotification)
-                    ServiceLocator.analytics.track(.viewInAppPushNotificationPressed)
+                    ServiceLocator.analytics.track(.viewInAppPushNotificationPressed, withProperties: [AnalyticKey.type: foregroundNotification.kind.rawValue])
                 }
 
             foregroundNotificationsSubject.send(foregroundNotification)

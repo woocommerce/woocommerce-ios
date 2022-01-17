@@ -94,7 +94,7 @@ private extension SummaryTableViewCellTests {
                      coupons: [],
                      refunds: [],
                      fees: [],
-                     tax: [])
+                     taxes: [])
     }
 }
 

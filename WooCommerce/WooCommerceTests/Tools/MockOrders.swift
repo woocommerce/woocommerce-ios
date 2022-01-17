@@ -34,7 +34,7 @@ final class MockOrders {
             coupons: [],
             refunds: [],
             fees: [],
-            tax: []
+            taxes: []
         )
     }
 
@@ -70,7 +70,7 @@ final class MockOrders {
                      coupons: [],
                      refunds: refunds,
                      fees: fees,
-                     tax: [] // TODO: 5809 - Add sampleOrderTaxLines method
+                     taxes: [] // TODO: 5809 - Add sampleOrderTaxLines method
         )
     }
 
@@ -118,7 +118,7 @@ final class MockOrders {
                      coupons: [],
                      refunds: [],
                      fees: [],
-                     tax: [] // TODO: 5809 - Add sampleOrderTaxLines method
+                     taxes: [] // TODO: 5809 - Add sampleOrderTaxLines method
         )
     }
 
@@ -192,7 +192,7 @@ final class MockOrders {
                      coupons: [],
                      refunds: [],
                      fees: [],
-                     tax: [])
+                     taxes: [])
     }
 
     /// An order with broken elements that hasn't been paid, inspired by `broken-order.json`
@@ -225,7 +225,7 @@ final class MockOrders {
                      coupons: [],
                      refunds: [],
                      fees: [],
-                     tax: [])
+                     taxes: [])
     }
 
     /// An address that may or may not be broken, that came from `broken-order.json`

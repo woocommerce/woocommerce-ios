@@ -35,7 +35,7 @@ enum OrderFactory {
               coupons: [],
               refunds: [],
               fees: [simplePaymentFee(feeID: 0, amount: amount, taxable: taxable)],
-              tax: [])
+              taxes: [])
     }
 
     /// Creates a fee line suitable to be used within a simple payments order.

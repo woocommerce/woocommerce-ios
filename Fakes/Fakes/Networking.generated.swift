@@ -301,7 +301,7 @@ extension Order {
             coupons: .fake(),
             refunds: .fake(),
             fees: .fake(),
-            tax: .fake()
+            taxes: .fake()
         )
     }
 }

@@ -39,7 +39,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     public let coupons: [OrderCouponLine]
     public let refunds: [OrderRefundCondensed]
     public let fees: [OrderFeeLine]
-    public let tax: [OrderTaxLine]
+    public let taxes: [OrderTaxLine]
 
     /// Order struct initializer.
     ///
@@ -70,7 +70,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 coupons: [OrderCouponLine],
                 refunds: [OrderRefundCondensed],
                 fees: [OrderFeeLine],
-                tax: [OrderTaxLine]) {
+                taxes: [OrderTaxLine]) {
 
         self.siteID = siteID
         self.orderID = orderID
@@ -103,7 +103,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.coupons = coupons
         self.refunds = refunds
         self.fees = fees
-        self.tax = tax
+        self.taxes = taxes
     }
 
 
@@ -192,7 +192,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   coupons: coupons,
                   refunds: refunds,
                   fees: fees,
-                  tax: tax)
+                  taxes: tax)
     }
 
     public static var empty: Order {
@@ -223,7 +223,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
               coupons: [],
               refunds: [],
               fees: [],
-              tax: [])
+              taxes: [])
     }
 }
 

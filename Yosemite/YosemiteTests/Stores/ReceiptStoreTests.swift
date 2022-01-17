@@ -434,7 +434,7 @@ private extension ReceiptStoreTests {
               coupons: coupons,
               refunds: [],
               fees: fees,
-              tax: []) // TODO: 5809 - Add makeOrderTaxLine method
+              taxes: []) // TODO: 5809 - Add makeOrderTaxLine method
     }
 
     func expectedDiscountLineDescription() -> String {

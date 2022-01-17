@@ -306,10 +306,10 @@ final class OrderMapperTests: XCTestCase {
     func test_order_tax_lines_are_parsed_successfully() throws {
         let order = try XCTUnwrap(mapLoadOrderResponse())
 
-        XCTAssertNotNil(order.tax)
-        XCTAssertEqual(order.tax.count, 1)
+        XCTAssertNotNil(order.taxes)
+        XCTAssertEqual(order.taxes.count, 1)
 
-        let tax = try XCTUnwrap(order.tax.first)
+        let tax = try XCTUnwrap(order.taxes.first)
         XCTAssertEqual(tax.taxID, 1330)
         XCTAssertEqual(tax.rateCode, "US-NY-STATE-2")
         XCTAssertEqual(tax.rateID, 6)

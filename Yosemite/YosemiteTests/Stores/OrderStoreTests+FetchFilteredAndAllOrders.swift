@@ -194,6 +194,6 @@ private enum Fixtures {
         coupons: [],
         refunds: [],
         fees: [],
-        tax: []
+        taxes: []
     )
 }

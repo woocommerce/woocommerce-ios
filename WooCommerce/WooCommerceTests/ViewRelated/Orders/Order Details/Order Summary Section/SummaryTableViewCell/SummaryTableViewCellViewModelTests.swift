@@ -100,6 +100,6 @@ private extension SummaryTableViewCellViewModelTests {
                      coupons: [],
                      refunds: [],
                      fees: [],
-                     tax: [])
+                     taxes: [])
     }
 }

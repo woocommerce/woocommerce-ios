@@ -208,7 +208,7 @@ private extension OrdersUpsertUseCaseTests {
               coupons: [],
               refunds: [],
               fees: [],
-              tax: [])
+              taxes: [])
     }
 
     func makeOrderItem(itemID: Int64 = 76, attributes: [Networking.OrderItemAttribute] = []) -> Networking.OrderItem {

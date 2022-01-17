@@ -237,7 +237,7 @@ extension MockObjectGraph {
             coupons: [],
             refunds: [],
             fees: [],
-            tax: []
+            taxes: []
         )
     }
 }

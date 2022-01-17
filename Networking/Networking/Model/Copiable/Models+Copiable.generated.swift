@@ -180,7 +180,7 @@ extension Order {
         coupons: CopiableProp<[OrderCouponLine]> = .copy,
         refunds: CopiableProp<[OrderRefundCondensed]> = .copy,
         fees: CopiableProp<[OrderFeeLine]> = .copy,
-        tax: CopiableProp<[OrderTaxLine]> = .copy
+        taxes: CopiableProp<[OrderTaxLine]> = .copy
     ) -> Order {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -209,7 +209,7 @@ extension Order {
         let coupons = coupons ?? self.coupons
         let refunds = refunds ?? self.refunds
         let fees = fees ?? self.fees
-        let tax = tax ?? self.tax
+        let taxes = taxes ?? self.taxes
 
         return Order(
             siteID: siteID,
@@ -239,7 +239,7 @@ extension Order {
             coupons: coupons,
             refunds: refunds,
             fees: fees,
-            tax: tax
+            taxes: taxes
         )
     }
 }

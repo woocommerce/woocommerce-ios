@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct InPersonPaymentsSelectPlugin: View {
-    let onRefresh: () -> Void
+    let onRefresh: (Bool) -> Void
 
     @State private var activateWCPay = true
     @State private var activateStripe = true
@@ -16,7 +16,13 @@ struct InPersonPaymentsSelectPlugin: View {
                     height: 180.0
                 ),
                 supportLink: false,
-                learnMore: false
+                learnMore: false,
+                button: InPersonPaymentsOnboardingError.ButtonInfo(
+                    text: Localization.primaryButton,
+                    action: {
+                        onRefresh(activateStripe)
+                    }
+                )
             )
 
             VStack {
@@ -57,10 +63,15 @@ private enum Localization {
         "WooCommerce Payments",
         comment: "Message asking merchants whether the WooCommerce Payments should be active"
     )
+
+    static let primaryButton = NSLocalizedString(
+        "Refresh",
+        comment: "Button to reload plugin data after selecting a payment plugin"
+    )
 }
 
 struct InPersonPaymentsSelectPlugin_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsSelectPlugin(onRefresh: {})
+        InPersonPaymentsSelectPlugin(onRefresh: {_ in })
     }
 }

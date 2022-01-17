@@ -536,7 +536,6 @@ private extension CardPresentPaymentStore {
 // MARK: Storage Methods
 private extension CardPresentPaymentStore {
     func upsertStoredAccountInBackground(readonlyAccount: PaymentGatewayAccount) {
-        print("==== upserting ", readonlyAccount.gatewayID)
         let storage = storageManager.viewStorage
         let storageAccount = storage.loadPaymentGatewayAccount(siteID: readonlyAccount.siteID, gatewayID: readonlyAccount.gatewayID) ??
             storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self)

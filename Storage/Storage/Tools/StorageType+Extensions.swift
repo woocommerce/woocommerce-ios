@@ -104,6 +104,13 @@ public extension StorageType {
         return firstObject(ofType: OrderNote.self, matching: predicate)
     }
 
+    /// Retrieves the Stored Order Tax Lines.
+    ///
+    func loadOrderTaxLine(siteID: Int64, taxID: Int64) -> OrderTaxLine? {
+        let predicate = \OrderTaxLine.order.siteID == siteID && \OrderTaxLine.taxID == taxID
+        return firstObject(ofType: OrderTaxLine.self, matching: predicate)
+    }
+
     // MARK: - Stats
 
     /// Retrieves the Stored TopEarnerStats.

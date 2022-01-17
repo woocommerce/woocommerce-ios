@@ -46,7 +46,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var visitorsTitle: UILabel!
     @IBOutlet private weak var visitorsDataOrRedactedView: StoreStatsDataOrRedactedView!
     @IBOutlet private weak var ordersTitle: UILabel!
-    @IBOutlet private weak var ordersData: UILabel!
+    @IBOutlet private weak var ordersDataOrRedactedView: StoreStatsDataOrRedactedView!
     @IBOutlet private weak var conversionTitle: UILabel!
     @IBOutlet private weak var conversionDataOrRedactedView: StoreStatsDataOrRedactedView!
     @IBOutlet private weak var revenueTitle: UILabel!
@@ -179,7 +179,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
 private extension StoreStatsV4PeriodViewController {
     func observeStatsLabels() {
         viewModel.orderStatsText.sink { [weak self] orderStatsLabel in
-            self?.ordersData.text = orderStatsLabel
+            self?.ordersDataOrRedactedView.data = orderStatsLabel
         }.store(in: &cancellables)
 
         viewModel.revenueStatsText.sink { [weak self] revenueStatsLabel in
@@ -203,7 +203,7 @@ private extension StoreStatsV4PeriodViewController {
             guard let self = self else { return }
             let isHighlighted = selectedIndex != nil
             let textColor = isHighlighted ? Constants.statsHighlightTextColor: Constants.statsTextColor
-            self.ordersData.textColor = textColor
+            self.ordersDataOrRedactedView.isHighlighted = isHighlighted
             self.visitorsDataOrRedactedView.isHighlighted = isHighlighted
             self.conversionDataOrRedactedView.isHighlighted = isHighlighted
             self.revenueData.textColor = textColor
@@ -578,7 +578,7 @@ private extension StoreStatsV4PeriodViewController {
         reloadChart(animateChart: animateChart)
 
         view.accessibilityElements = [ordersTitle as Any,
-                                      ordersData as Any,
+                                      ordersDataOrRedactedView as Any,
                                       visitorsTitle as Any,
                                       visitorsDataOrRedactedView as Any,
                                       revenueTitle as Any,
@@ -682,10 +682,6 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func updateStatsDataToDefaultStyles() {
-        [ordersData].forEach { label in
-            label?.font = Constants.statsFont
-            label?.textColor = Constants.statsTextColor
-        }
         revenueData.font = Constants.revenueFont
         revenueData.textColor = Constants.statsTextColor
     }

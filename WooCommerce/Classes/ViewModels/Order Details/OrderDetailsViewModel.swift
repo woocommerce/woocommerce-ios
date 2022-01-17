@@ -458,7 +458,7 @@ extension OrderDetailsViewModel {
         /// No need for a completion here. The VC will be notified of changes to the stored paymentGatewayAccounts
         /// by the viewModel (after passing up through the dataSource and originating in the resultsControllers)
         ///
-        let action = PaymentGatewayAccountAction.loadAccounts(siteID: order.siteID) {_ in}
+        let action = CardPresentPaymentAction.loadAccounts(siteID: order.siteID) {_ in}
         ServiceLocator.stores.dispatch(action)
     }
 

@@ -284,7 +284,7 @@ private extension SettingsViewModel {
         .compactMap { $0 }
     }
 
-    /// Ask the PaymentGatewayAccountStore to loadAccounts from the network and update storage
+    /// Ask the CardPresentPaymentStore to loadAccounts from the network and update storage
     ///
     func loadPaymentGatewayAccounts() {
         guard let siteID = stores.sessionManager.defaultSite?.siteID else {
@@ -293,7 +293,7 @@ private extension SettingsViewModel {
 
         /// No need for a completion here. We will be notified of storage changes in `onDidChangeContent`
         ///
-        let action = PaymentGatewayAccountAction.loadAccounts(siteID: siteID) {_ in}
+        let action = CardPresentPaymentAction.loadAccounts(siteID: siteID) {_ in}
         stores.dispatch(action)
     }
 

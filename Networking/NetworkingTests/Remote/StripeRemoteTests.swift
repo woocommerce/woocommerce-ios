@@ -594,7 +594,7 @@ final class StripeRemoteTests: XCTestCase {
          let expectedLocationID = "tml_0123456789abcd"
 
          network.simulateResponse(
-             requestUrlSuffix: "payments/terminal/locations/store",
+             requestUrlSuffix: "wc_stripe/terminal/locations/store",
              filename: "stripe-location"
          )
 
@@ -613,7 +613,7 @@ final class StripeRemoteTests: XCTestCase {
          let remote = StripeRemote(network: network)
 
          network.simulateResponse(
-             requestUrlSuffix: "payments/terminal/locations/store",
+             requestUrlSuffix: "wc_stripe/terminal/locations/store",
              filename: "stripe-location-error"
          )
 

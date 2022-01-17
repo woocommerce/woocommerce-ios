@@ -61,7 +61,7 @@ protocol PushNotesManager {
     ///
     func registerDeviceToken(with tokenData: Data, defaultStoreID: Int64)
 
-    /// Handles a Remote Push Notifican Payload. On completion the `completionHandler` will be executed.
+    /// Handles a Remote Push Notification Payload. On completion the `completionHandler` will be executed.
     ///
     func handleNotification(_ userInfo: [AnyHashable: Any],
                             onBadgeUpdateCompletion: @escaping () -> Void,

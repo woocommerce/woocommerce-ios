@@ -44,9 +44,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     // MARK: - Subviews
 
     @IBOutlet private weak var containerStackView: UIStackView!
-    @IBOutlet private weak var visitorsStackView: UIStackView!
     @IBOutlet private weak var visitorsTitle: UILabel!
-    @IBOutlet private weak var visitorsData: UILabel!
+    @IBOutlet private weak var visitorsDataOrRedactedView: StoreStatsDataOrRedactedView!
     @IBOutlet private weak var ordersTitle: UILabel!
     @IBOutlet private weak var ordersData: UILabel!
     @IBOutlet private weak var conversionStackView: UIStackView!
@@ -117,8 +116,6 @@ final class StoreStatsV4PeriodViewController: UIViewController {
                                                              with: currencyCode,
                                                              roundSmallNumbers: false) ?? String()
     }
-
-    private lazy var visitorsEmptyView = StoreStatsSiteVisitEmptyView()
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -192,7 +189,7 @@ private extension StoreStatsV4PeriodViewController {
         }.store(in: &cancellables)
 
         viewModel.visitorStatsText.sink { [weak self] visitorStatsLabel in
-            self?.visitorsData.text = visitorStatsLabel
+            self?.visitorsDataOrRedactedView.data = visitorStatsLabel
         }.store(in: &cancellables)
 
         viewModel.conversionStatsText.sink { [weak self] conversionStatsLabel in
@@ -205,7 +202,7 @@ private extension StoreStatsV4PeriodViewController {
             guard let self = self else { return }
             let textColor = selectedIndex == nil ? Constants.statsTextColor: Constants.statsHighlightTextColor
             self.ordersData.textColor = textColor
-            self.visitorsData.textColor = textColor
+            self.visitorsDataOrRedactedView.isHighlighted = selectedIndex != nil
             self.revenueData.textColor = textColor
             self.conversionData.textColor = textColor
 
@@ -290,13 +287,6 @@ private extension StoreStatsV4PeriodViewController {
         view.backgroundColor = Constants.containerBackgroundColor
         containerStackView.backgroundColor = Constants.containerBackgroundColor
         timeRangeBarView.backgroundColor = Constants.headerComponentBackgroundColor
-        visitorsStackView.backgroundColor = Constants.headerComponentBackgroundColor
-
-        // Visitor empty view - insert it at the second-to-last index,
-        // since we need the footer view (with height = 20) as the last item in the stack view.
-        let emptyViewIndex = max(0, visitorsStackView.arrangedSubviews.count - 2)
-        visitorsStackView.insertArrangedSubview(visitorsEmptyView, at: emptyViewIndex)
-        visitorsEmptyView.isHidden = true
 
         // Titles
         visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")
@@ -416,7 +406,6 @@ private extension StoreStatsV4PeriodViewController {
 //
 private extension StoreStatsV4PeriodViewController {
     func updateSiteVisitStats(mode: SiteVisitStatsMode) {
-        visitorsStackView.isHidden = mode == .hidden
         reloadSiteVisitUI()
         updateConversionStatsVisibility(visitStatsMode: mode)
     }
@@ -472,11 +461,10 @@ private extension StoreStatsV4PeriodViewController {
                 reloadSiteVisitUI()
                 return
             }
-            guard visitorsData != nil else {
+            guard visitorsDataOrRedactedView != nil else {
                 return
             }
-            visitorsData.isHidden = false
-            visitorsEmptyView.isHidden = true
+            visitorsDataOrRedactedView.state = .data
         }
     }
 
@@ -603,43 +591,32 @@ private extension StoreStatsV4PeriodViewController {
         reloadSiteVisitUI()
         updateConversionStatsVisibility(visitStatsMode: siteVisitStatsMode)
         reloadChart(animateChart: animateChart)
-        let visitStatsElements: [Any] = {
-            switch siteVisitStatsMode {
-            case .default:
-                return [visitorsTitle as Any,
-                        visitorsData as Any]
-            case .redactedDueToJetpack:
-                return [visitorsTitle as Any,
-                        visitorsEmptyView as Any]
-            case .hidden:
-                return []
-            }
-        }()
 
-        view.accessibilityElements = visitStatsElements + [ordersTitle as Any,
-                                                           ordersData as Any,
-                                                           revenueTitle as Any,
-                                                           revenueData as Any,
-                                                           conversionTitle as Any,
-                                                           conversionData as Any,
-                                                           yAxisAccessibilityView as Any,
-                                                           xAxisAccessibilityView as Any,
-                                                           chartAccessibilityView as Any]
+        view.accessibilityElements = [ordersTitle as Any,
+                                      ordersData as Any,
+                                      visitorsTitle as Any,
+                                      visitorsDataOrRedactedView as Any,
+                                      revenueTitle as Any,
+                                      revenueData as Any,
+                                      conversionTitle as Any,
+                                      conversionData as Any,
+                                      yAxisAccessibilityView as Any,
+                                      xAxisAccessibilityView as Any,
+                                      chartAccessibilityView as Any]
     }
 
     func reloadSiteVisitUI() {
+        guard visitorsDataOrRedactedView != nil else {
+            return
+        }
+
         switch siteVisitStatsMode {
         case .hidden:
-            break
+            visitorsDataOrRedactedView.state = .redacted
         case .redactedDueToJetpack:
-            visitorsData.isHidden = true
-            visitorsEmptyView.isHidden = false
+            visitorsDataOrRedactedView.state = .redactedDueToJetpack
         case .default:
-            guard visitorsData != nil else {
-                return
-            }
-            visitorsData.isHidden = false
-            visitorsEmptyView.isHidden = true
+            visitorsDataOrRedactedView.state = .data
         }
     }
 
@@ -720,7 +697,7 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func updateStatsDataToDefaultStyles() {
-        [visitorsData, ordersData, conversionData].forEach { label in
+        [ordersData, conversionData].forEach { label in
             label?.font = Constants.statsFont
             label?.textColor = Constants.statsTextColor
         }

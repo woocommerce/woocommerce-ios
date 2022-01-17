@@ -1,6 +1,15 @@
 import UIKit
 
-final class StoreStatsSiteVisitEmptyView: UIView {
+final class StoreStatsEmptyView: UIView {
+    /// Whether the Jetpack image is shown to indicate the data are unavailable due to Jetpack-the-plugin.
+    var showJetpackImage: Bool = false {
+        didSet {
+            updateJetpackImageVisibility()
+        }
+    }
+
+    private lazy var jetpackImageView = UIImageView(image: .jetpackLogoImage.withRenderingMode(.alwaysTemplate))
+
     convenience init() {
         self.init(frame: .zero)
     }
@@ -22,10 +31,10 @@ final class StoreStatsSiteVisitEmptyView: UIView {
         emptyView.layer.cornerRadius = 2.0
         emptyView.translatesAutoresizingMaskIntoConstraints = false
 
-        let jetpackImageView = UIImageView(image: .jetpackLogoImage.withRenderingMode(.alwaysTemplate))
         jetpackImageView.contentMode = .scaleAspectFit
         jetpackImageView.tintColor = .jetpackGreen
         jetpackImageView.translatesAutoresizingMaskIntoConstraints = false
+        updateJetpackImageVisibility()
 
         addSubview(emptyView)
         addSubview(jetpackImageView)
@@ -41,5 +50,11 @@ final class StoreStatsSiteVisitEmptyView: UIView {
             jetpackImageView.leadingAnchor.constraint(equalTo: emptyView.trailingAnchor),
             jetpackImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 4)
         ])
+    }
+}
+
+private extension StoreStatsEmptyView {
+    func updateJetpackImageVisibility() {
+        jetpackImageView.isHidden = showJetpackImage == false
     }
 }

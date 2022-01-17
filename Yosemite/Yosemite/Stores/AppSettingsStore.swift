@@ -197,10 +197,6 @@ public class AppSettingsStore: Store {
             loadStripeInPersonPaymentsSwitchState(onCompletion: onCompletion)
         case .setStripeInPersonPaymentsSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
             setStripeInPersonPaymentsSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
-        case .loadStripeExtensionAvailability(siteID: let siteID, onCompletion: let onCompletion):
-            loadStripeExtensionAvailability(siteID: siteID, onCompletion: onCompletion)
-        case .setStripeExtensionAvailability(siteID: let siteID, isAvailable: let isAvailable, onCompletion: let onCompletion):
-            setStripeExtensionAvailability(siteID: siteID, isAvailable: isAvailable, onCompletion: onCompletion)
         case .setProductSKUInputScannerFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
             setProductSKUInputScannerFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadProductSKUInputScannerFeatureSwitchState(onCompletion: let onCompletion):
@@ -317,17 +313,6 @@ private extension AppSettingsStore {
         } catch {
             onCompletion(.failure(error))
         }
-    }
-
-    func loadStripeExtensionAvailability(siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
-        let storeSettings = getStoreSettings(for: siteID)
-        onCompletion(storeSettings.isStripeExtensionSelected)
-    }
-
-    func setStripeExtensionAvailability(siteID: Int64, isAvailable: Bool, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let storeSettings = getStoreSettings(for: siteID)
-        let updatedSettings = storeSettings.copy(isStripeExtensionSelected: isAvailable)
-        setStoreSettings(settings: updatedSettings, for: siteID, onCompletion: onCompletion)
     }
 
     /// Sets the state for the Product SKU Input Scanner beta feature switch into `GeneralAppSettings`.

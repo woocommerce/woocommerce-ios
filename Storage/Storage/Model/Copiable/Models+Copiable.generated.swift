@@ -44,18 +44,15 @@ extension GeneralStoreSettings {
     public func copy(
         isTelemetryAvailable: CopiableProp<Bool> = .copy,
         telemetryLastReportedTime: NullableCopiableProp<Date> = .copy,
-        areSimplePaymentTaxesEnabled: CopiableProp<Bool> = .copy,
-        isStripeExtensionSelected: CopiableProp<Bool> = .copy
+        areSimplePaymentTaxesEnabled: CopiableProp<Bool> = .copy
     ) -> GeneralStoreSettings {
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
         let telemetryLastReportedTime = telemetryLastReportedTime ?? self.telemetryLastReportedTime
         let areSimplePaymentTaxesEnabled = areSimplePaymentTaxesEnabled ?? self.areSimplePaymentTaxesEnabled
-        let isStripeExtensionSelected = isStripeExtensionSelected ?? self.isStripeExtensionSelected
 
         return GeneralStoreSettings(
             isTelemetryAvailable: isTelemetryAvailable,
             telemetryLastReportedTime: telemetryLastReportedTime,
-            isStripeExtensionSelected: isStripeExtensionSelected,
             areSimplePaymentTaxesEnabled: areSimplePaymentTaxesEnabled
         )
     }

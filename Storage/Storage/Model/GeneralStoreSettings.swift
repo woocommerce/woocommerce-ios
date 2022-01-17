@@ -29,18 +29,11 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let areSimplePaymentTaxesEnabled: Bool
 
-    /// Indicates whether the merchant wants to use the Stripe Extension to process payments
-    ///
-    public let isStripeExtensionSelected: Bool
-
-
     public init(isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
-                isStripeExtensionSelected: Bool = false,
                 areSimplePaymentTaxesEnabled: Bool = false) {
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
-        self.isStripeExtensionSelected = isStripeExtensionSelected
         self.areSimplePaymentTaxesEnabled = areSimplePaymentTaxesEnabled
     }
 }
@@ -53,7 +46,6 @@ extension GeneralStoreSettings {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         self.isTelemetryAvailable = try container.decodeIfPresent(Bool.self, forKey: .isTelemetryAvailable) ?? false
-        self.isStripeExtensionSelected = try container.decodeIfPresent(Bool.self, forKey: .isStripeExtensionSelected) ?? false
         self.telemetryLastReportedTime = try container.decodeIfPresent(Date.self, forKey: .telemetryLastReportedTime)
         self.areSimplePaymentTaxesEnabled = try container.decodeIfPresent(Bool.self, forKey: .areSimplePaymentTaxesEnabled) ?? false
 

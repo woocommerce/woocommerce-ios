@@ -300,7 +300,8 @@ extension Order {
             shippingLines: .fake(),
             coupons: .fake(),
             refunds: .fake(),
-            fees: .fake()
+            fees: .fake(),
+            tax: .fake()
         )
     }
 }
@@ -498,6 +499,23 @@ extension OrderStatusEnum {
     ///
     public static func fake() -> OrderStatusEnum {
         .pending
+    }
+}
+extension OrderTaxLine {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> OrderTaxLine {
+        .init(
+            taxID: .fake(),
+            rateCode: .fake(),
+            rateID: .fake(),
+            label: .fake(),
+            isCompoundTaxRate: .fake(),
+            totalTax: .fake(),
+            totalShippingTax: .fake(),
+            ratePercent: .fake(),
+            attributes: .fake()
+        )
     }
 }
 extension PaymentGateway {

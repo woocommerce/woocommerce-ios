@@ -33,7 +33,8 @@ final class MockOrders {
             shippingLines: [],
             coupons: [],
             refunds: [],
-            fees: []
+            fees: [],
+            tax: []
         )
     }
 
@@ -68,7 +69,9 @@ final class MockOrders {
                      shippingLines: shippingLines,
                      coupons: [],
                      refunds: refunds,
-                     fees: fees)
+                     fees: fees,
+                     tax: [] // TODO: 5809 - Add sampleOrderTaxLines method
+        )
     }
 
     func sampleOrder() -> Order {
@@ -114,7 +117,9 @@ final class MockOrders {
                      shippingLines: Self.sampleShippingLines(),
                      coupons: [],
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     tax: [] // TODO: 5809 - Add sampleOrderTaxLines method
+        )
     }
 
     static func sampleShippingLines(cost: String = "133.00", tax: String = "0.00") -> [ShippingLine] {

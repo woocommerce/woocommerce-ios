@@ -97,7 +97,9 @@ extension Storage.Order: ReadOnlyConvertible {
                      shippingLines: orderShippingLines,
                      coupons: orderCoupons,
                      refunds: orderRefunds,
-                     fees: orderFeeLines)
+                     fees: orderFeeLines,
+                     tax: []) // TODO: 5809 - Handle OrderTaxLine
+
     }
 
 

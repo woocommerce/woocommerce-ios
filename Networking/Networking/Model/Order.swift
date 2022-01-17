@@ -39,6 +39,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     public let coupons: [OrderCouponLine]
     public let refunds: [OrderRefundCondensed]
     public let fees: [OrderFeeLine]
+    public let tax: [OrderTaxLine]
 
     /// Order struct initializer.
     ///
@@ -68,7 +69,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 shippingLines: [ShippingLine],
                 coupons: [OrderCouponLine],
                 refunds: [OrderRefundCondensed],
-                fees: [OrderFeeLine]) {
+                fees: [OrderFeeLine],
+                tax: [OrderTaxLine]) {
 
         self.siteID = siteID
         self.orderID = orderID
@@ -101,6 +103,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.coupons = coupons
         self.refunds = refunds
         self.fees = fees
+        self.tax = tax
     }
 
 
@@ -160,6 +163,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
 
         let fees = try container.decode([OrderFeeLine].self, forKey: .feeLines)
 
+        let tax = try container.decode([OrderTaxLine].self, forKey: .taxLines)
+
         self.init(siteID: siteID,
                   orderID: orderID,
                   parentID: parentID,
@@ -186,7 +191,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   shippingLines: shippingLines,
                   coupons: coupons,
                   refunds: refunds,
-                  fees: fees)
+                  fees: fees,
+                  tax: tax)
     }
 
     public static var empty: Order {
@@ -216,7 +222,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
               shippingLines: [],
               coupons: [],
               refunds: [],
-              fees: [])
+              fees: [],
+              tax: [])
     }
 }
 
@@ -256,6 +263,7 @@ internal extension Order {
         case couponLines        = "coupon_lines"
         case refunds            = "refunds"
         case feeLines           = "fee_lines"
+        case taxLines           = "tax_lines"
         case metadata           = "meta_data"
     }
 }

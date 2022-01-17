@@ -43,6 +43,8 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published var showingReviewDetail = false
 
+    @Published var reviewsNotificationBadgeCount = 0
+
     private var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
     private var storePickerCoordinator: StorePickerCoordinator?
@@ -57,6 +59,8 @@ final class HubMenuViewModel: ObservableObject {
             menuElements.append(.coupons)
         }
         observeSiteForUIUpdates()
+        startListeningToReviewsBadgeUpdates()
+        loadReviewsNotificationCountAndUpdateBadge()
     }
 
     /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.
@@ -83,9 +87,35 @@ final class HubMenuViewModel: ObservableObject {
     }
 
     private func observeSiteForUIUpdates() {
-        ServiceLocator.stores.site.sink { site in
-            // This will be useful in the future for updating some info of the screen depending on the store site info
+        ServiceLocator.stores.site.sink { [weak self] site in
+            self?.loadReviewsNotificationCountAndUpdateBadge()
         }.store(in: &cancellables)
+    }
+}
+
+// MARK: - Hub Menu Badges Updates
+//
+private extension HubMenuViewModel {
+
+    /// Setup: KVO Hooks.
+    ///
+    func startListeningToReviewsBadgeUpdates() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(loadReviewsNotificationCountAndUpdateBadge),
+                                               name: .reviewsBadgeReloadRequired,
+                                               object: nil)
+    }
+
+    @objc func loadReviewsNotificationCountAndUpdateBadge() {
+        let stores: StoresManager = ServiceLocator.stores
+        guard let siteID = stores.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let action = NotificationCountAction.load(siteID: siteID, type: .kind(.comment)) { [weak self] count in
+            self?.reviewsNotificationBadgeCount = count
+        }
+        stores.dispatch(action)
     }
 }
 

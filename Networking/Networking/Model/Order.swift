@@ -163,7 +163,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
 
         let fees = try container.decode([OrderFeeLine].self, forKey: .feeLines)
 
-        let tax = try container.decode([OrderTaxLine].self, forKey: .taxLines)
+        let taxes = try container.decode([OrderTaxLine].self, forKey: .taxLines)
 
         self.init(siteID: siteID,
                   orderID: orderID,
@@ -192,7 +192,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   coupons: coupons,
                   refunds: refunds,
                   fees: fees,
-                  taxes: tax)
+                  taxes: taxes)
     }
 
     public static var empty: Order {

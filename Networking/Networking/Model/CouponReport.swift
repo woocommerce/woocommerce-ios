@@ -2,11 +2,6 @@ import Codegen
 import Foundation
 
 public struct CouponReport {
-    /// ID of the site that the coupon belongs to.
-    /// Using a default here gives us the benefit of synthesized codable conformance.
-    /// `private(set) public var` is required so that `siteID` will still be on the synthesized`init` which `copy()` uses.
-    private(set) public var siteID: Int64 = 0
-
     /// ID of the coupon
     public let couponID: Int64
 
@@ -16,11 +11,9 @@ public struct CouponReport {
     /// Total number of orders that used the coupon
     public let ordersCount: Int64
 
-    public init(siteID: Int64 = 0,
-                couponID: Int64,
+    public init(couponID: Int64,
                 amount: Double,
                 ordersCount: Int64) {
-        self.siteID = siteID
         self.couponID = couponID
         self.amount = amount
         self.ordersCount = ordersCount
@@ -41,3 +34,13 @@ extension CouponReport: Decodable {
 // MARK: - Other Conformance
 //
 extension CouponReport: GeneratedCopiable, GeneratedFakeable, Equatable {}
+
+extension CouponReport {
+    /// JSON decoder appropriate for `CouponReport` responses.
+    ///
+    static let decoder: JSONDecoder = {
+        let couponDecoder = JSONDecoder()
+        couponDecoder.keyDecodingStrategy = .convertFromSnakeCase
+        return couponDecoder
+    }()
+}

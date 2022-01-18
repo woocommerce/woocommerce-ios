@@ -795,7 +795,8 @@ private extension OrderStoreTests {
                      shippingLines: sampleShippingLines(),
                      coupons: sampleCoupons(),
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: []) // TODO: 5809 - Add sampleOrderTaxLines method and update tests
     }
 
     func sampleOrderMutated() -> Networking.Order {
@@ -825,7 +826,8 @@ private extension OrderStoreTests {
                      shippingLines: sampleShippingLines(),
                      coupons: sampleCouponsMutated(),
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: []) // TODO: 5809 - Add sampleOrderTaxLinesMutated method and update tests
     }
 
     func sampleOrderMutated2() -> Networking.Order {
@@ -855,7 +857,8 @@ private extension OrderStoreTests {
                      shippingLines: sampleShippingLines(),
                      coupons: [],
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: []) // TODO: 5809 - Add sampleOrderTaxLinesMutated2 method and update tests
     }
 
     func sampleAddress() -> Networking.Address {

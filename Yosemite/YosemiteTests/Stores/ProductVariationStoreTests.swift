@@ -823,7 +823,8 @@ private extension ProductVariationStoreTests {
               shippingLines: [],
               coupons: [],
               refunds: [],
-              fees: [])
+              fees: [],
+              taxes: [])
     }
 
     func sampleOrderItem(productID: Int64, variationID: Int64) -> Yosemite.OrderItem {

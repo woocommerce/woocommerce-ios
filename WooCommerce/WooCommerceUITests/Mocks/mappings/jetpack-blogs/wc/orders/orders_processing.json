@@ -95,6 +95,7 @@
                 "shipping_lines": [],
                 "coupon_lines": [],
                 "fee_lines": [],
+                "tax_lines": [],
                 "refunds": []
             }, {
                 "id": 2143,
@@ -159,6 +160,7 @@
                 "shipping_lines": [],
                 "coupon_lines": [],
                 "fee_lines": [],
+                "tax_lines": [],
                 "refunds": []
             }]
         },

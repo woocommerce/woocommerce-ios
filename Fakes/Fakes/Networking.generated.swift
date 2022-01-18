@@ -164,7 +164,7 @@ extension CouponReport {
     ///
     public static func fake() -> CouponReport {
         .init(
-            couponId: .fake(),
+            couponID: .fake(),
             amount: .fake(),
             ordersCount: .fake()
         )

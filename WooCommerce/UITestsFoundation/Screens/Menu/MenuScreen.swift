@@ -23,4 +23,10 @@ public final class MenuScreen: ScreenObject {
         app.staticTexts["Reviews"].tap()
         return try ReviewsScreen()
     }
+    
+    @discardableResult
+    public func openSettingsPane() throws -> SettingsScreen {
+        app.buttons["dashboard-settings-button"].tap()
+        return try SettingsScreen()
+    }
 }

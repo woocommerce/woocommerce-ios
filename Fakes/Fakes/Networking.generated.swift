@@ -159,6 +159,17 @@ extension Coupon.DiscountType {
         .percent
     }
 }
+extension CouponReport {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> CouponReport {
+        .init(
+            couponId: .fake(),
+            amount: .fake(),
+            ordersCount: .fake()
+        )
+    }
+}
 extension CreateProductVariation {
     /// Returns a "ready to use" type filled with fake values.
     ///

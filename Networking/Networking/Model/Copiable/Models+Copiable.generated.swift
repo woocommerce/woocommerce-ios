@@ -151,6 +151,24 @@ extension Coupon {
     }
 }
 
+extension CouponReport {
+    public func copy(
+        couponId: CopiableProp<Int64> = .copy,
+        amount: CopiableProp<Double> = .copy,
+        ordersCount: CopiableProp<Int64> = .copy
+    ) -> CouponReport {
+        let couponId = couponId ?? self.couponId
+        let amount = amount ?? self.amount
+        let ordersCount = ordersCount ?? self.ordersCount
+
+        return CouponReport(
+            couponId: couponId,
+            amount: amount,
+            ordersCount: ordersCount
+        )
+    }
+}
+
 extension Order {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

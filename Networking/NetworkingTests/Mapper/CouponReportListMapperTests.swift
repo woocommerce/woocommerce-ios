@@ -6,18 +6,22 @@ final class CouponReportListMapperTests: XCTestCase {
     /// Verifies that the whole list is parsed.
     ///
     func test_mapper_parses_all_reports_in_response() throws {
+        // Given
         let reports = try mapLoadAllCouponReportsResponse()
+
+        // Then
         XCTAssertEqual(reports.count, 1)
     }
 
     /// Verifies that the fields are all parsed correctly
     ///
     func test_mapper_parses_all_fields_in_result() throws {
+        // Given
         let reports = try mapLoadAllCouponReportsResponse()
         let report = reports[0]
+        let expectedReport = CouponReport(couponID: 571, amount: 12, ordersCount: 1)
 
-        let expectedReport = CouponReport(couponId: 571, amount: 12, ordersCount: 1)
-
+        // Then
         XCTAssertEqual(report, expectedReport)
     }
 }

@@ -40,10 +40,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // Then
         XCTAssert(result.isSuccess)
-        guard let coupons = try? result.get() else {
-            XCTFail("Expected parsed Coupons not found in response")
-            return
-        }
+        let coupons = try XCTUnwrap(result.get())
         XCTAssertEqual(coupons.count, 3)
     }
 
@@ -57,10 +54,7 @@ final class CouponsRemoteTests: XCTestCase {
         remote.loadAllCoupons(for: sampleSiteID, pageNumber: 2, pageSize: 17) { _ in }
 
         // Then
-        guard let request = network.requestsForResponseData.first as? JetpackRequest else {
-            XCTFail("Expected request not enqueued")
-            return
-        }
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
         guard let page = request.parameters["page"] as? String,
               let pageSize = request.parameters["per_page"] as? String else {
             XCTFail("Pagination parameters not found")
@@ -72,7 +66,7 @@ final class CouponsRemoteTests: XCTestCase {
 
     /// Verifies that loadAllCoupons uses the SiteID passed in for the request.
     ///
-    func test_loadAllCoupons_uses_passed_siteID_for_request() {
+    func test_loadAllCoupons_uses_passed_siteID_for_request() throws {
         // Given
         let remote = CouponsRemote(network: network)
 
@@ -80,10 +74,7 @@ final class CouponsRemoteTests: XCTestCase {
         remote.loadAllCoupons(for: sampleSiteID) { _ in }
 
         // Then
-        guard let request = network.requestsForResponseData.first as? JetpackRequest else {
-            XCTFail("Expected request not enqueued")
-            return
-        }
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
         XCTAssertEqual(request.siteID, sampleSiteID)
     }
 
@@ -126,10 +117,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        guard let resultError = result.failure as? NetworkError else {
-            XCTFail("Expected NetworkError not found")
-            return
-        }
+        let resultError = try XCTUnwrap(result.failure as? NetworkError)
         XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 403))
     }
 
@@ -153,10 +141,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // Then
         XCTAssert(result.isSuccess)
-        guard let coupon = try? result.get() else {
-            XCTFail("Expected parsed Coupon not found in response")
-            return
-        }
+        let coupon = try XCTUnwrap(result.get())
         XCTAssertEqual(coupon.couponID, sampleCouponID)
     }
 
@@ -181,10 +166,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        guard let resultError = result.failure as? NetworkError else {
-            XCTFail("Expected NetworkError not found")
-            return
-        }
+        let resultError = try XCTUnwrap(result.failure as? NetworkError)
         XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
     }
 
@@ -192,7 +174,7 @@ final class CouponsRemoteTests: XCTestCase {
 
     /// Verifies that updateCoupon properly parses the `Coupon` sample response.
     ///
-    func test_updateCoupon_properly_returns_parsed_coupon() {
+    func test_updateCoupon_properly_returns_parsed_coupon() throws {
         // Given
         let remote = CouponsRemote(network: network)
         let coupon = sampleCoupon()
@@ -207,10 +189,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // Then
         XCTAssert(result.isSuccess)
-        guard let returnedCoupon = try? result.get() else {
-            XCTFail("Expected parsed Coupon not found in response")
-            return
-        }
+        let returnedCoupon = try XCTUnwrap(result.get())
         XCTAssertEqual(returnedCoupon, coupon)
     }
 
@@ -233,10 +212,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        guard let resultError = result.failure as? NetworkError else {
-            XCTFail("Expected NetworkError not found")
-            return
-        }
+        let resultError = try XCTUnwrap(result.failure as? NetworkError)
         XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
     }
 
@@ -244,7 +220,7 @@ final class CouponsRemoteTests: XCTestCase {
 
     /// Verifies that createCoupon properly parses the `Coupon` sample response.
     ///
-    func test_createCoupon_properly_returns_parsed_coupon() {
+    func test_createCoupon_properly_returns_parsed_coupon() throws {
         // Given
         let remote = CouponsRemote(network: network)
         let coupon = sampleCoupon()
@@ -259,10 +235,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // Then
         XCTAssert(result.isSuccess)
-        guard let returnedCoupon = try? result.get() else {
-            XCTFail("Expected parsed Coupon not found in response")
-            return
-        }
+        let returnedCoupon = try XCTUnwrap(result.get())
         XCTAssertEqual(returnedCoupon, coupon)
     }
 
@@ -285,10 +258,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        guard let resultError = result.failure as? NetworkError else {
-            XCTFail("Expected NetworkError not found")
-            return
-        }
+        let resultError = try XCTUnwrap(result.failure as? NetworkError)
         XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
     }
 
@@ -296,7 +266,7 @@ final class CouponsRemoteTests: XCTestCase {
 
     /// Verifies that loadCouponReport properly parses the `CouponReport` sample response.
     ///
-    func test_loadCouponReport_properly_returns_parsed_report() {
+    func test_loadCouponReport_properly_returns_parsed_report() throws {
         // Given
         let remote = CouponsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "reports/coupons", filename: "coupon-reports")
@@ -310,11 +280,8 @@ final class CouponsRemoteTests: XCTestCase {
 
         // Then
         XCTAssert(result.isSuccess)
-        guard let returnedReport = try? result.get() else {
-            XCTFail("Expected parsed CouponReport not found in response")
-            return
-        }
-        let expectedReport = CouponReport(couponId: 571, amount: 12, ordersCount: 1)
+        let returnedReport = try XCTUnwrap(result.get())
+        let expectedReport = CouponReport(couponID: 571, amount: 12, ordersCount: 1)
         XCTAssertEqual(returnedReport, expectedReport)
     }
 
@@ -336,10 +303,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        guard let resultError = result.failure as? NetworkError else {
-            XCTFail("Expected NetworkError not found")
-            return
-        }
+        let resultError = try XCTUnwrap(result.failure as? NetworkError)
         XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
     }
 }

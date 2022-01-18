@@ -556,7 +556,7 @@ private extension RefundStoreTests {
             coupons: [],
             refunds: [],
             fees: [],
-            taxes: [] // TODO: 5809 - Add sampleOrderTaxLines method
+            taxes: []
         )
     }
 

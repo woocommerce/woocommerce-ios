@@ -13,7 +13,7 @@ struct InPersonPaymentsSelectPlugin: View {
                 message: Localization.message,
                 image: InPersonPaymentsOnboardingError.ImageInfo(
                     image: .paymentsPlugin,
-                    height: 108.0
+                    height: Constants.height
                 ),
                 supportLink: false
             )
@@ -29,7 +29,7 @@ struct InPersonPaymentsSelectPlugin: View {
                 }
             }
             .buttonStyle(PrimaryButtonStyle())
-            .padding(.bottom, 24.0)
+            .padding(.bottom, Constants.padding)
 
             InPersonPaymentsLearnMore()
         }
@@ -52,14 +52,19 @@ private enum Localization {
     )
 
     static let message = NSLocalizedString(
-        "Choose between WooCommerce Payments and Stripe Extension",
+        "You must disable either the WooCommerce Payments or the WooCommerce Stripe Gateway extension.",
         comment: "Message requesting merchants to select between available payments processors"
     )
 
     static let primaryButton = NSLocalizedString(
         "Select extension in Store Admin",
-        comment: "Button to set up the WooCommerce Payments plugin after installing it"
+        comment: "Button to select the active payment processor plugin"
     )
+}
+
+private enum Constants {
+    static let height: CGFloat = 108.0
+    static let padding: CGFloat = 24.0
 }
 
 struct InPersonPaymentsSelectPlugin_Previews: PreviewProvider {

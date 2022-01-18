@@ -29,7 +29,7 @@ final class PushNotificationsManager: PushNotesManager {
     /// in the foreground.
     ///
     var foregroundNotificationsToView: AnyPublisher<PushNotification, Never> {
-        foregroundNotificationsSubject.eraseToAnyPublisher()
+        foregroundNotificationsToViewSubject.eraseToAnyPublisher()
     }
 
     /// Mutable reference to `foregroundNotificationsToView`.
@@ -371,6 +371,7 @@ private extension PushNotificationsManager {
                     guard let self = self else { return }
                     self.presentDetails(for: foregroundNotification)
                     self.foregroundNotificationsToViewSubject.send(foregroundNotification)
+                    ServiceLocator.analytics.track(.viewInAppPushNotificationPressed, withProperties: [AnalyticKey.type: foregroundNotification.kind.rawValue])
                 }
 
             foregroundNotificationsSubject.send(foregroundNotification)
@@ -523,8 +524,13 @@ private extension PushNotificationsManager {
             properties[AnalyticKey.fromSelectedSite] = siteID == notificationSiteID
         }
 
-        let event: WooAnalyticsStat = (applicationState == .background) ? .pushNotificationReceived : .pushNotificationAlertPressed
-        ServiceLocator.analytics.track(event, withProperties: properties)
+        switch applicationState {
+        case .inactive:
+            ServiceLocator.analytics.track(.pushNotificationAlertPressed, withProperties: properties)
+        default:
+            properties[AnalyticKey.appState] = applicationState.rawValue
+            ServiceLocator.analytics.track(.pushNotificationReceived, withProperties: properties)
+        }
     }
 }
 
@@ -604,6 +610,7 @@ private enum AnalyticKey {
     static let type = "push_notification_type"
     static let token = "push_notification_token"
     static let fromSelectedSite = "is_from_selected_site"
+    static let appState = "app_state"
 }
 
 private enum PushType {

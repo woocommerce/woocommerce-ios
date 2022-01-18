@@ -467,7 +467,8 @@ extension ShippingLabelPackagesFormViewModel {
                      shippingLines: sampleShippingLines(),
                      coupons: sampleCoupons(),
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: [])
     }
 
     static func sampleAddress() -> Address {

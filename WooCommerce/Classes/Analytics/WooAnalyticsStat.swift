@@ -288,6 +288,7 @@ public enum WooAnalyticsStat: String {
     case pushNotificationOSAlertAllowed = "push_notification_os_alert_allowed"
     case pushNotificationOSAlertDenied = "push_notification_os_alert_denied"
     case pushNotificationOSAlertShown = "push_notification_os_alert_shown"
+    case viewInAppPushNotificationPressed = "view_in_app_push_notification_pressed"
 
     // MARK: Notification View Events
     //

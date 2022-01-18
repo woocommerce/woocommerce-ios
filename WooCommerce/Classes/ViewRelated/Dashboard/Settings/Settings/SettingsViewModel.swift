@@ -38,6 +38,10 @@ protocol SettingsViewModelActionsHandler {
     /// Presenter (SettingsViewController in this case) is responsible for calling this method when store picker is dismissed.
     ///
     func onStorePickerDismiss()
+
+    /// Reloads settings if the site is no longer Jetpack CP.
+    ///
+    func onJetpackInstallDismiss()
 }
 
 protocol SettingsViewModelInput: AnyObject {
@@ -138,6 +142,15 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     ///
     func onStorePickerDismiss() {
         loadSites()
+        reloadSettings()
+    }
+
+    /// Reloads settings if the site is no longer Jetpack CP.
+    ///
+    func onJetpackInstallDismiss() {
+        guard stores.sessionManager.defaultSite?.isJetpackCPConnected == false else {
+            return
+        }
         reloadSettings()
     }
 }
@@ -271,7 +284,7 @@ private extension SettingsViewModel {
         .compactMap { $0 }
     }
 
-    /// Ask the PaymentGatewayAccountStore to loadAccounts from the network and update storage
+    /// Ask the CardPresentPaymentStore to loadAccounts from the network and update storage
     ///
     func loadPaymentGatewayAccounts() {
         guard let siteID = stores.sessionManager.defaultSite?.siteID else {
@@ -280,7 +293,7 @@ private extension SettingsViewModel {
 
         /// No need for a completion here. We will be notified of storage changes in `onDidChangeContent`
         ///
-        let action = PaymentGatewayAccountAction.loadAccounts(siteID: siteID) {_ in}
+        let action = CardPresentPaymentAction.loadAccounts(siteID: siteID) {_ in}
         stores.dispatch(action)
     }
 

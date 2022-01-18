@@ -1,9 +1,9 @@
 import Yosemite
 import protocol Storage.StorageManagerType
 
-/// View model for `AddProductToOrder` with a list of product variations for a product.
+/// View model for `AddProductVariationToOrder`.
 ///
-final class AddProductVariationToOrderViewModel: AddProductToOrderViewModelProtocol {
+final class AddProductVariationToOrderViewModel: ObservableObject {
     private let siteID: Int64
 
     /// Storage to fetch product variation list
@@ -14,9 +14,17 @@ final class AddProductVariationToOrderViewModel: AddProductToOrderViewModelProto
     ///
     private let stores: StoresManager
 
-    /// The product whose variations are listed
+    /// The ID of the parent variable product
     ///
-    private var product: Product
+    private let productID: Int64
+
+    /// The name of the parent variable product
+    ///
+    let productName: String
+
+    /// All attributes for variations of the parent variable product
+    ///
+    private let productAttributes: [ProductAttribute]
 
     /// All purchasable product variations for the product.
     ///
@@ -24,17 +32,17 @@ final class AddProductVariationToOrderViewModel: AddProductToOrderViewModelProto
         productVariationsResultsController.fetchedObjects.filter { $0.purchasable }
     }
 
-    /// View models for each product row
+    /// View models for each product variation row
     ///
-    var productRows: [ProductRowViewModel] {
-        productVariations.map { .init(productVariation: $0, allAttributes: product.attributesForVariations, canChangeQuantity: false) }
+    var productVariationRows: [ProductRowViewModel] {
+        productVariations.map { .init(productVariation: $0, allAttributes: productAttributes, canChangeQuantity: false) }
     }
 
     // MARK: Sync & Storage properties
 
     /// Current sync status; used to determine what list view to display.
     ///
-    @Published private(set) var syncStatus: AddProductToOrderSyncStatus?
+    @Published private(set) var syncStatus: SyncStatus?
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
@@ -44,21 +52,33 @@ final class AddProductVariationToOrderViewModel: AddProductToOrderViewModelProto
     ///
     @Published private(set) var shouldShowScrollIndicator = false
 
+    /// View models of the ghost rows used during the loading process.
+    ///
+    var ghostRows: [ProductRowViewModel] {
+        return Array(0..<6).map { index in
+            ghostProductRow(id: index)
+        }
+    }
+
     /// Product Variations Results Controller.
     ///
     private lazy var productVariationsResultsController: ResultsController<StorageProductVariation> = {
-        let predicate = NSPredicate(format: "siteID == %lld AND productID == %lld", siteID, product.productID)
+        let predicate = NSPredicate(format: "siteID == %lld AND productID == %lld", siteID, productID)
         let descriptor = NSSortDescriptor(keyPath: \StorageProductVariation.menuOrder, ascending: true)
         let resultsController = ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
         return resultsController
     }()
 
     init(siteID: Int64,
-         product: Product,
+         productID: Int64,
+         productName: String,
+         productAttributes: [ProductAttribute],
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
-        self.product = product
+        self.productID = productID
+        self.productName = productName
+        self.productAttributes = productAttributes
         self.storageManager = storageManager
         self.stores = stores
 
@@ -66,9 +86,21 @@ final class AddProductVariationToOrderViewModel: AddProductToOrderViewModelProto
         configureProductVariationsResultsController()
     }
 
+    convenience init(siteID: Int64,
+                     product: Product,
+                     storageManager: StorageManagerType = ServiceLocator.storageManager,
+                     stores: StoresManager = ServiceLocator.stores) {
+        self.init(siteID: siteID,
+                  productID: product.productID,
+                  productName: product.name,
+                  productAttributes: product.attributesForVariations,
+                  storageManager: storageManager,
+                  stores: stores)
+    }
+
     /// Select a product variation to add to the order
     ///
-    func selectProductOrVariation(_ productID: Int64) {
+    func selectVariation(_ productID: Int64) {
         // TODO: Add the selected product variation to the order
     }
 }
@@ -80,7 +112,7 @@ extension AddProductVariationToOrderViewModel: SyncingCoordinatorDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
         transitionToSyncingState()
         let action = ProductVariationAction.synchronizeProductVariations(siteID: siteID,
-                                                                         productID: product.productID,
+                                                                         productID: productID,
                                                                          pageNumber: pageNumber,
                                                                          pageSize: pageSize) { [weak self] error in
             guard let self = self else { return }
@@ -153,5 +185,30 @@ private extension AddProductVariationToOrderViewModel {
     ///
     func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
+    }
+}
+
+// MARK: - Utils
+extension AddProductVariationToOrderViewModel {
+    /// Represents possible statuses for syncing product variations
+    ///
+    enum SyncStatus {
+        case firstPageSync
+        case results
+        case empty
+    }
+
+    /// Used for ghost list view while syncing
+    ///
+    private func ghostProductRow(id: Int64) -> ProductRowViewModel {
+        ProductRowViewModel(productOrVariationID: id,
+                            name: "Ghost Variation",
+                            sku: nil,
+                            price: "20",
+                            stockStatusKey: ProductStockStatus.inStock.rawValue,
+                            stockQuantity: 1,
+                            manageStock: false,
+                            canChangeQuantity: false,
+                            imageURL: nil)
     }
 }

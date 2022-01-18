@@ -1,0 +1,17 @@
+{
+    "data": [
+        {
+            "coupon_id": 571,
+            "amount": 12,
+            "orders_count": 1,
+            "extended_info": {},
+            "_links": {
+                "coupon": [
+                    {
+                        "href": "https://huongdotests1.blog/wp-json/wc-analytics/coupons/571"
+                    }
+                ]
+            }
+        }
+    ]
+}

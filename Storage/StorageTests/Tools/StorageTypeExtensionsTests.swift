@@ -197,6 +197,23 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(shippingLine, storedShippingLine)
     }
 
+    func test_loadOrderTaxLine_by_siteID_taxID() throws {
+        // Given
+        let taxID: Int64 = 123
+        let taxLine = storage.insertNewObject(ofType: OrderTaxLine.self)
+        taxLine.taxID = taxID
+
+        let order = storage.insertNewObject(ofType: Order.self)
+        order.siteID = sampleSiteID
+        order.addToTaxes(taxLine)
+
+        // When
+        let storedTaxLine = try XCTUnwrap(storage.loadOrderTaxLine(siteID: sampleSiteID, taxID: taxID))
+
+        // Then
+        XCTAssertEqual(taxLine, storedTaxLine)
+    }
+
     func test_loadOrderNote_by_noteID() throws {
         // Given
         let noteID: Int64 = 123

@@ -494,12 +494,16 @@ private extension MainTabBarController {
     /// Displays or Hides the Dot on the Hub Menu tab, depending on the notification count
     ///
     func updateHubMenuTabBadge(count: Int) {
-        guard isHubMenuFeatureFlagOn else {
-            return
+        if isHubMenuFeatureFlagOn {
+            let tab = WooTab.hubMenu
+            let tabIndex = tab.visibleIndex(isHubMenuFeatureFlagOn)
+            notificationsBadge.badgeCountWasUpdated(newValue: count, tab: tab, in: tabBar, tabIndex: tabIndex)
         }
-        let tab = WooTab.hubMenu
-        let tabIndex = tab.visibleIndex(isHubMenuFeatureFlagOn)
-        notificationsBadge.badgeCountWasUpdated(newValue: count, tab: tab, in: tabBar, tabIndex: tabIndex)
+        else {
+            let tab = WooTab.reviews
+            let tabIndex = tab.visibleIndex(isHubMenuFeatureFlagOn)
+            notificationsBadge.badgeCountWasUpdated(newValue: count, tab: tab, in: tabBar, tabIndex: tabIndex)
+        }
     }
 }
 

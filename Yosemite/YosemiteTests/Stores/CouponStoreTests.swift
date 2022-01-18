@@ -449,7 +449,7 @@ final class CouponStoreTests: XCTestCase {
     func test_loadCouponReport_returns_expected_details_upon_success() throws {
         // Given
         let sampleCouponID: Int64 = 571
-        let expectedReport = CouponReport(couponId: sampleCouponID, amount: 12, ordersCount: 1)
+        let expectedReport = CouponReport(couponID: sampleCouponID, amount: 12, ordersCount: 1)
         network.simulateResponse(requestUrlSuffix: "reports/coupons", filename: "coupon-reports")
 
         // When

@@ -130,11 +130,9 @@ private extension CardPresentPaymentStore {
         do {
             switch usingBackend {
             case .wcpay:
-                print("==== switching context to siteID \(siteID) with wcpay")
                 commonReaderConfigProvider.setContext(siteID: siteID, remote: self.remote)
                 try cardReaderService.start(commonReaderConfigProvider)
             case .stripe:
-                print("==== switching context to siteID \(siteID) with stripe")
                 commonReaderConfigProvider.setContext(siteID: siteID, remote: self.stripeRemote)
                 try cardReaderService.start(commonReaderConfigProvider)
             }
@@ -306,11 +304,9 @@ private extension CardPresentPaymentStore {
                 return
             }
 
-            print("==== fetching token for siteID \(siteID)")
             readerConfigRemote?.loadConnectionToken(for: siteID) { result in
                 switch result {
                 case .success(let token):
-                    print("==== fetched token \(token)")
                     completion(.success(token.token))
                 case .failure(let error):
                     if let configError = CardReaderConfigError(error: error) {
@@ -327,12 +323,10 @@ private extension CardPresentPaymentStore {
                 return
             }
 
-            print("==== fetching location for siteID \(siteID)")
             readerConfigRemote?.loadDefaultReaderLocation(for: siteID) { result in
                 switch result {
                 case .success(let location):
                     let readerLocation = location.toReaderLocation(siteID: siteID)
-                    print("==== fetched location \(readerLocation.id)")
                     completion(.success(readerLocation.id))
                 case .failure(let error):
                     if let configError = CardReaderConfigError(error: error) {

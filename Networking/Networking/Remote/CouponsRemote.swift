@@ -136,13 +136,40 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     public func loadCouponReport(for siteID: Int64,
                                  couponID: Int64,
                                  completion: @escaping (Result<CouponReport, Error>) -> Void) {
-        // TODO
+        let parameters = [
+            ParameterKey.coupons: [couponID]
+        ]
+
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.couponReports,
+                                     parameters: parameters)
+
+        let mapper = CouponReportListMapper()
+
+        enqueue(request, mapper: mapper, completion: { result in
+            switch result {
+            case .success(let couponReports):
+                if let report = couponReports.first {
+                    completion(.success(report))
+                } else {
+                    completion(.failure(CouponsRemoteError.noAnalyticsReportsFound))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        })
     }
 }
 
 // MARK: - Constants
 //
 public extension CouponsRemote {
+    enum CouponsRemoteError: Error {
+        case noAnalyticsReportsFound
+    }
+
     enum Default {
         public static let pageSize = 25
         public static let pageNumber = 1
@@ -157,5 +184,6 @@ public extension CouponsRemote {
         static let page = "page"
         static let perPage = "per_page"
         static let force = "force"
+        static let coupons = "coupons"
     }
 }

@@ -19,7 +19,7 @@ final class CouponReportListMapperTests: XCTestCase {
         // Given
         let reports = try mapLoadAllCouponReportsResponse()
         let report = reports[0]
-        let expectedReport = CouponReport(couponId: 571, amount: 12, ordersCount: 1)
+        let expectedReport = CouponReport(couponID: 571, amount: 12, ordersCount: 1)
 
         // Then
         XCTAssertEqual(report, expectedReport)

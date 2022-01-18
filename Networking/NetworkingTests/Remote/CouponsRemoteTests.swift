@@ -281,7 +281,7 @@ final class CouponsRemoteTests: XCTestCase {
         // Then
         XCTAssert(result.isSuccess)
         let returnedReport = try XCTUnwrap(result.get())
-        let expectedReport = CouponReport(couponId: 571, amount: 12, ordersCount: 1)
+        let expectedReport = CouponReport(couponID: 571, amount: 12, ordersCount: 1)
         XCTAssertEqual(returnedReport, expectedReport)
     }
 

@@ -340,12 +340,14 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 1)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
         let storageOrder1 = viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderMutated().orderID)
@@ -354,6 +356,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 3)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 3)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 2)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2(), in: viewStorage)
         let storageOrder2 = viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderMutated2().orderID)
@@ -362,6 +365,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 4)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
     }
 
     /// Verifies that `upsertStoredOrder` effectively inserts a new Order, with the specified payload.
@@ -571,12 +575,14 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 1)
 
         let expectation = self.expectation(description: "Stored Orders Reset")
         let action = OrderAction.resetStoredOrders {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderItem.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
 
             expectation.fulfill()
         }
@@ -796,7 +802,7 @@ private extension OrderStoreTests {
                      coupons: sampleCoupons(),
                      refunds: [],
                      fees: [],
-                     taxes: []) // TODO: 5809 - Add sampleOrderTaxLines method and update tests
+                     taxes: sampleOrderTaxLines())
     }
 
     func sampleOrderMutated() -> Networking.Order {
@@ -827,7 +833,7 @@ private extension OrderStoreTests {
                      coupons: sampleCouponsMutated(),
                      refunds: [],
                      fees: [],
-                     taxes: []) // TODO: 5809 - Add sampleOrderTaxLinesMutated method and update tests
+                     taxes: sampleOrderTaxLinesMutated())
     }
 
     func sampleOrderMutated2() -> Networking.Order {
@@ -858,7 +864,7 @@ private extension OrderStoreTests {
                      coupons: [],
                      refunds: [],
                      fees: [],
-                     taxes: []) // TODO: 5809 - Add sampleOrderTaxLinesMutated2 method and update tests
+                     taxes: [])
     }
 
     func sampleAddress() -> Networking.Address {
@@ -904,6 +910,41 @@ private extension OrderStoreTests {
                                       discountTax: "0.66")
 
         return [coupon1, coupon2]
+    }
+
+    func sampleOrderTaxLines() -> [Networking.OrderTaxLine] {
+        let tax = OrderTaxLine(taxID: 1330,
+                               rateCode: "US-NY-STATE-2",
+                               rateID: 6,
+                               label: "State",
+                               isCompoundTaxRate: true,
+                               totalTax: "7.71",
+                               totalShippingTax: "0.00",
+                               ratePercent: 4.5,
+                               attributes: [])
+        return [tax]
+    }
+
+    func sampleOrderTaxLinesMutated() -> [Networking.OrderTaxLine] {
+        let tax1 = OrderTaxLine(taxID: 1330,
+                               rateCode: "US-NY-STATE-2",
+                               rateID: 6,
+                               label: "State",
+                               isCompoundTaxRate: true,
+                               totalTax: "55",
+                               totalShippingTax: "0.00",
+                               ratePercent: 5.5,
+                               attributes: [])
+        let tax2 = OrderTaxLine(taxID: 124,
+                                rateCode: "",
+                                rateID: 2,
+                                label: "Central",
+                                isCompoundTaxRate: true,
+                                totalTax: "2.5",
+                                totalShippingTax: "3",
+                                ratePercent: 2.5,
+                                attributes: [])
+        return [tax1, tax2]
     }
 
     func sampleItems() -> [Networking.OrderItem] {

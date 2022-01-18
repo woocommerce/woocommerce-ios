@@ -31,6 +31,8 @@ public final class CardPresentPaymentStore: Store {
     /// We need to be able to cancel the process of collecting a payment.
     private var paymentCancellable: AnyCancellable? = nil
 
+    private var cardReaderConfigProvider: CardReaderConfigProvider? = nil
+
     public init(
         dispatcher: Dispatcher,
         storageManager: StorageManagerType,
@@ -122,10 +124,15 @@ private extension CardPresentPaymentStore {
     }
 
     func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
+        if cardReaderConfigProvider == nil {
+            cardReaderConfigProvider = WCPayTokenProvider(siteID: siteID, remote: self.remote)
+        }
+
+        cardReaderConfigProvider?.setSiteId(siteID)
         do {
             switch usingBackend {
             case .wcpay:
-                try cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
+                try cardReaderService.start(cardReaderConfigProvider!)
             case .stripe:
                 try cardReaderService.start(StripeTokenProvider(siteID: siteID, remote: self.stripeRemote))
             }
@@ -287,15 +294,21 @@ private extension CardPresentPaymentStore {
 /// Implementation of the CardReaderNetworkingAdapter
 /// that fetches a token using WCPayRemote
 private final class WCPayTokenProvider: CardReaderConfigProvider {
-    private let siteID: Int64
+    private var siteID: Int64
     private let remote: WCPayRemote
 
     init(siteID: Int64, remote: WCPayRemote) {
+        print("===== initializing WCPayTokenProvider for site ID", siteID)
         self.siteID = siteID
         self.remote = remote
     }
 
+    func setSiteId(_ newSiteID: Int64) {
+        siteID = newSiteID
+    }
+
     func fetchToken(completion: @escaping(Result<String, Error>) -> Void) {
+        print("==== fetching token using wcpay remote for site \(siteID)")
         remote.loadConnectionToken(for: siteID) { result in
             switch result {
             case .success(let token):
@@ -311,6 +324,7 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
     }
 
     func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void) {
+        print("==== fetching default location ID for using wcpay remote for site \(siteID)")
         remote.loadDefaultReaderLocation(for: siteID) { result in
             switch result {
             case .success(let wcpayReaderLocation):
@@ -330,7 +344,7 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
 /// Implementation of the CardReaderNetworkingAdapter
 /// that fetches a token using StripeRemote
 private final class StripeTokenProvider: CardReaderConfigProvider {
-    private let siteID: Int64
+    private var siteID: Int64
     private let remote: StripeRemote
 
     init(siteID: Int64, remote: StripeRemote) {
@@ -367,6 +381,10 @@ private final class StripeTokenProvider: CardReaderConfigProvider {
                 }
             }
         }
+    }
+
+    func setSiteId(_ newSiteID: Int64) {
+        siteID = newSiteID
     }
 }
 

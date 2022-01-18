@@ -13,6 +13,7 @@ public protocol ReaderLocationProvider {
 public protocol CardReaderConfigProvider: ReaderLocationProvider, ReaderTokenProvider {
     func fetchToken(completion: @escaping(Result<String, Error>) -> Void)
     func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void)
+    func setSiteId(_ newSiteID: Int64)
 }
 
 /// An error that occurs while configuring a reader

@@ -409,8 +409,40 @@ private extension CardPresentPaymentStore {
     /// Loads the account corresponding to the currently selected backend. Deletes the other (if it exists).
     ///
     func loadAccounts(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        loadWCPayAccount(siteID: siteID, onCompletion: onCompletion)
-        loadStripeAccount(siteID: siteID, onCompletion: onCompletion)
+        var error: Error? = nil
+
+        let group = DispatchGroup()
+        group.enter()
+        loadWCPayAccount(siteID: siteID, onCompletion: { result in
+            switch result {
+            case .failure(let loadError):
+                DDLogError("⛔️ Error synchronizing WCPay Account: \(loadError)")
+                error = loadError
+            case .success():
+                break
+            }
+            group.leave()
+        })
+
+        group.enter()
+        loadStripeAccount(siteID: siteID, onCompletion: {result in
+            switch result {
+            case .failure(let loadError):
+                DDLogError("⛔️ Error synchronizing Stripe Account: \(loadError)")
+                error = loadError
+            case .success():
+                break
+            }
+            group.leave()
+        })
+
+        group.notify(queue: .main) {
+            guard let error = error else {
+                onCompletion(.success(()))
+                return
+            }
+            onCompletion(.failure(error))
+        }
     }
 
     func loadWCPayAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {

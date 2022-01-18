@@ -262,8 +262,10 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                             cardReaderService: mockCardReaderService,
                                             allowStripeIPP: false)
         let expectation = self.expectation(description: "Load Account error response")
-        network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "generic_error")
-        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary", filename: "generic_error")
+        network.simulateResponse(requestUrlSuffix: "payments/accounts",
+                                 filename: "generic_error")
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary",
+                                 filename: "generic_error")
 
         let action = CardPresentPaymentAction.loadAccounts(siteID: sampleSiteID, onCompletion: { result in
             XCTAssertTrue(result.isFailure)
@@ -285,8 +287,10 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                             cardReaderService: mockCardReaderService,
                                             allowStripeIPP: false)
         let expectation = self.expectation(description: "Load Account fetch response")
-        network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "wcpay-account-complete")
-        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary", filename: "stripe-account-complete")
+        network.simulateResponse(requestUrlSuffix: "payments/accounts",
+                                 filename: "wcpay-account-complete")
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary",
+                                 filename: "stripe-account-complete")
         let action = CardPresentPaymentAction.loadAccounts(siteID: sampleSiteID, onCompletion: { result in
             XCTAssertTrue(result.isSuccess)
             expectation.fulfill()

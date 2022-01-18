@@ -58,7 +58,7 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     }
 
     func loadCouponReport(for siteID: Int64, couponID: Int64, completion: @escaping (Result<CouponReport, Error>) -> Void) {
-        didCallLoadAllCoupons = true
+        didCallLoadCouponReport = true
         spyLoadCouponReportSiteID = siteID
         spyLoadCouponReportCouponID = couponID
     }

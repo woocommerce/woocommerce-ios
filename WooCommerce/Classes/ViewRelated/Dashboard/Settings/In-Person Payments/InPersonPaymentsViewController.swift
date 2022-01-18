@@ -27,6 +27,8 @@ struct InPersonPaymentsView: View {
             switch viewModel.state {
             case .loading:
                 InPersonPaymentsLoading()
+            case .selectPlugin:
+                InPersonPaymentsSelectPlugin(onRefresh: viewModel.refresh)
             case .countryNotSupported(let countryCode):
                 InPersonPaymentsCountryNotSupported(countryCode: countryCode)
             case .pluginNotInstalled:

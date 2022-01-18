@@ -199,7 +199,7 @@ extension Order {
 
 }
 
-// MARK: Generated accessors for tax
+// MARK: Generated accessors for taxes
 extension Order {
 
     @objc(addTaxesObject:)

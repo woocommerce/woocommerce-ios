@@ -95,6 +95,7 @@
                 "shipping_lines": [],
                 "coupon_lines": [],
                 "fee_lines": [],
+                "tax_lines": [],
                 "refunds": []
             }, {
                 "id": 2192,
@@ -174,6 +175,7 @@
                 "shipping_lines": [],
                 "coupon_lines": [],
                 "fee_lines": [],
+                "tax_lines": [],
                 "refunds": []
             }, {
                 "id": 2171,
@@ -238,6 +240,7 @@
                 "shipping_lines": [],
                 "coupon_lines": [],
                 "fee_lines": [],
+                "tax_lines": [],
                 "refunds": []
             }, {
                 "id": 2143,
@@ -302,6 +305,7 @@
                 "shipping_lines": [],
                 "coupon_lines": [],
                 "fee_lines": [],
+                "tax_lines": [],
                 "refunds": []
             }, {
                 "id": 2168,
@@ -381,6 +385,7 @@
                 "shipping_lines": [],
                 "coupon_lines": [],
                 "fee_lines": [],
+                "tax_lines": [],
                 "refunds": []
             }]
         },

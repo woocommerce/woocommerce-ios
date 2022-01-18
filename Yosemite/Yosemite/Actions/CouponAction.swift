@@ -1,4 +1,5 @@
 import Foundation
+import Networking
 
 /// Defines the `actions` supported by the `CouponStore`.
 ///
@@ -43,4 +44,14 @@ public enum CouponAction: Action {
     ///
     case createCoupon(_ coupon: Coupon,
                       onCompletion: (Result<Coupon, Error>) -> Void)
+
+    /// Loads analytics report for a coupon with the specified coupon ID and site ID.
+    ///
+    /// - `siteID`: ID of the site that the coupon belongs to.
+    /// - `couponID`: ID of the coupon to load analytics report for.
+    /// - `onCompletion`: invoked when the creation finishes.
+    ///
+    case loadCouponReport(siteID: Int64,
+                          couponID: Int64,
+                          onCompletion: (Result<CouponReport, Error>) -> Void)
 }

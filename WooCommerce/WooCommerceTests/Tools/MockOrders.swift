@@ -70,7 +70,7 @@ final class MockOrders {
                      coupons: [],
                      refunds: refunds,
                      fees: fees,
-                     taxes: [] // TODO: 5809 - Add sampleOrderTaxLines method
+                     taxes: sampleOrderTaxLines()
         )
     }
 
@@ -118,7 +118,7 @@ final class MockOrders {
                      coupons: [],
                      refunds: [],
                      fees: [],
-                     taxes: [] // TODO: 5809 - Add sampleOrderTaxLines method
+                     taxes: sampleOrderTaxLines()
         )
     }
 
@@ -129,6 +129,19 @@ final class MockOrders {
         total: cost,
         totalTax: tax,
         taxes: [])]
+    }
+
+    func sampleOrderTaxLines() -> [OrderTaxLine] {
+        let tax = OrderTaxLine(taxID: 123,
+                               rateCode: "",
+                               rateID: 1,
+                               label: "State",
+                               isCompoundTaxRate: false,
+                               totalTax: "5.5",
+                               totalShippingTax: "3",
+                               ratePercent: 5.5,
+                               attributes: [])
+        return [tax]
     }
 
     func sampleFeeLines() -> [OrderFeeLine] {

@@ -291,6 +291,57 @@ final class CouponsRemoteTests: XCTestCase {
         }
         XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
     }
+
+    // MARK: - Load coupon report
+
+    /// Verifies that loadCouponReport properly parses the `CouponReport` sample response.
+    ///
+    func test_loadCouponReport_properly_returns_parsed_report() {
+        // Given
+        let remote = CouponsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/coupons", filename: "coupon-reports")
+
+        // When
+        let result = waitFor { promise in
+            remote.loadCouponReport(for: self.sampleSiteID, couponID: 571) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssert(result.isSuccess)
+        guard let returnedReport = try? result.get() else {
+            XCTFail("Expected parsed CouponReport not found in response")
+            return
+        }
+        let expectedReport = CouponReport(couponId: 571, amount: 12, ordersCount: 1)
+        XCTAssertEqual(returnedReport, expectedReport)
+    }
+
+    /// Verifies that loadCouponReport properly relays Networking Layer errors.
+    ///
+    func test_loadCouponReport_properly_relays_networking_errors() throws {
+        // Given
+        let remote = CouponsRemote(network: network)
+
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "reports/coupons", error: error)
+
+        // When
+        let result = waitFor { promise in
+            remote.loadCouponReport(for: self.sampleSiteID, couponID: 571) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        guard let resultError = result.failure as? NetworkError else {
+            XCTFail("Expected NetworkError not found")
+            return
+        }
+        XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
+    }
 }
 
 // MARK: - Private helpers

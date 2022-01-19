@@ -83,22 +83,6 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
             return
         }
 
-        if wcPayPlugin?.active ?? false {
-            let useWCPayAction = CardPresentPaymentAction.useWCPay // TODO asynchronicity / ordering of actions?
-            stores.dispatch(useWCPayAction)
-        } else {
-            // If the WCPayPlugin is not active and the Stripe IPP experiment is not enabled bail now.
-            guard stripeGatewayIPPEnabled == true else {
-                self.updateState()
-                return
-            }
-        }
-
-        if stripePlugin?.active ?? false {
-            let useStripeAction = CardPresentPaymentAction.useStripe // TODO asynchronicity / ordering of actions?
-            stores.dispatch(useStripeAction)
-        }
-
         let paymentGatewayAccountsAction = CardPresentPaymentAction.loadAccounts(siteID: siteID) { [weak self] result in
             self?.updateState()
         }

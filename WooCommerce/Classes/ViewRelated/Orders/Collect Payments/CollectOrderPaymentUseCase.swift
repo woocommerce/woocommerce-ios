@@ -163,29 +163,29 @@ private extension CollectOrderPaymentUseCase {
         // Start collect payment process
         paymentOrchestrator.collectPayment(
             for: order,
-            statementDescriptor: paymentGatewayAccount.statementDescriptor,
-            onWaitingForInput: { [weak self] in
-                // Request card input
-                self?.alerts.tapOrInsertCard(onCancel: {
-                    self?.cancelPayment()
-                })
+               paymentGatewayAccount: paymentGatewayAccount,
+               onWaitingForInput: { [weak self] in
+                   // Request card input
+                   self?.alerts.tapOrInsertCard(onCancel: {
+                       self?.cancelPayment()
+                   })
 
-            }, onProcessingMessage: { [weak self] in
-                // Waiting message
-                self?.alerts.processingPayment()
+               }, onProcessingMessage: { [weak self] in
+                   // Waiting message
+                   self?.alerts.processingPayment()
 
-            }, onDisplayMessage: { [weak self] message in
-                // Reader messages. EG: Remove Card
-                self?.alerts.displayReaderMessage(message: message)
+               }, onDisplayMessage: { [weak self] message in
+                   // Reader messages. EG: Remove Card
+                   self?.alerts.displayReaderMessage(message: message)
 
-            }, onCompletion: { [weak self] result in
-                switch result {
-                case .success(let receiptParameters):
-                    self?.handleSuccessfulPayment(receipt: receiptParameters, onCompletion: onCompletion)
-                case .failure(let error):
-                    self?.handlePaymentFailureAndRetryPayment(error, onCompletion: onCompletion)
-                }
-            }
+               }, onCompletion: { [weak self] result in
+                   switch result {
+                   case .success(let receiptParameters):
+                       self?.handleSuccessfulPayment(receipt: receiptParameters, onCompletion: onCompletion)
+                   case .failure(let error):
+                       self?.handlePaymentFailureAndRetryPayment(error, onCompletion: onCompletion)
+                   }
+               }
         )
     }
 

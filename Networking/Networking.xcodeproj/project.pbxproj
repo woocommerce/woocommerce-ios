@@ -207,7 +207,6 @@
 		31A451D927863A2E00FE81AA /* stripe-account-live-test.json in Resources */ = {isa = PBXBuildFile; fileRef = 31A451CB27863A2D00FE81AA /* stripe-account-live-test.json */; };
 		31B8D6B426583662008E3DB2 /* wcpay-account-not-eligible.json in Resources */ = {isa = PBXBuildFile; fileRef = 31B8D6B326583662008E3DB2 /* wcpay-account-not-eligible.json */; };
 		31B8D6B626583970008E3DB2 /* wcpay-account-implicitly-not-eligible.json in Resources */ = {isa = PBXBuildFile; fileRef = 31B8D6B526583970008E3DB2 /* wcpay-account-implicitly-not-eligible.json */; };
-		31C600E92797670F001AF5AD /* CardReaderCapableRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C600E82797670F001AF5AD /* CardReaderCapableRemote.swift */; };
 		31D27C812602889C002EDB1D /* SitePluginsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C802602889C002EDB1D /* SitePluginsRemote.swift */; };
 		31D27C8726028CE9002EDB1D /* SitePluginsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C8626028CE9002EDB1D /* SitePluginsMapper.swift */; };
 		31D27C8B26028D96002EDB1D /* SitePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C8A26028D96002EDB1D /* SitePlugin.swift */; };
@@ -850,7 +849,6 @@
 		31A451CB27863A2D00FE81AA /* stripe-account-live-test.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stripe-account-live-test.json"; sourceTree = "<group>"; };
 		31B8D6B326583662008E3DB2 /* wcpay-account-not-eligible.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-not-eligible.json"; sourceTree = "<group>"; };
 		31B8D6B526583970008E3DB2 /* wcpay-account-implicitly-not-eligible.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-implicitly-not-eligible.json"; sourceTree = "<group>"; };
-		31C600E82797670F001AF5AD /* CardReaderCapableRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderCapableRemote.swift; sourceTree = "<group>"; };
 		31D27C802602889C002EDB1D /* SitePluginsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginsRemote.swift; sourceTree = "<group>"; };
 		31D27C8626028CE9002EDB1D /* SitePluginsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginsMapper.swift; sourceTree = "<group>"; };
 		31D27C8A26028D96002EDB1D /* SitePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlugin.swift; sourceTree = "<group>"; };
@@ -1631,7 +1629,6 @@
 				74ABA1D0213F22CA00FFAD30 /* TopEarnersStatsRemote.swift */,
 				020D07BB23D856BF00FD9580 /* MediaRemote.swift */,
 				029BA4EF255D7282006171FD /* ShippingLabelRemote.swift */,
-				31C600E82797670F001AF5AD /* CardReaderCapableRemote.swift */,
 				311D412F2783C0E200052F64 /* StripeRemote.swift */,
 				D8EDFE1D25EE87F1003D2213 /* WCPayRemote.swift */,
 				FE28F6E5268429B6004465C7 /* UserRemote.swift */,
@@ -2770,7 +2767,6 @@
 				D87F6151226591E10031A13B /* NullNetwork.swift in Sources */,
 				CE43A8F9229F463000A4FF29 /* ProductDownload.swift in Sources */,
 				B53EF5322180F21C003E146F /* Dictionary+Woo.swift in Sources */,
-				31C600E92797670F001AF5AD /* CardReaderCapableRemote.swift in Sources */,
 				24F98C522502E79800F49B68 /* FeatureFlagsRemote.swift in Sources */,
 				74A1D26D21189DFF00931DFA /* SiteVisitStatsMapper.swift in Sources */,
 				45152809257A7C6E0076B03C /* ProductAttributesRemote.swift in Sources */,

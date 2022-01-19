@@ -62,7 +62,9 @@ public class WCPayRemote: Remote {
     }
 }
 
-extension WCPayRemote: CardReaderCapableRemote {
+// MARK: - CardReaderCapableRemote
+//
+extension WCPayRemote {
     /// Loads a card reader connection token for a given site ID and parses the response
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch the connection token.

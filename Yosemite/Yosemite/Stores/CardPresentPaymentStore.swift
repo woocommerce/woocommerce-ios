@@ -587,9 +587,20 @@ public enum PaymentGatewayAccountError: Error, LocalizedError {
     }
 }
 
-
 private extension PaymentGatewayAccount {
     var isWCPay: Bool {
         self.gatewayID == WCPayAccount.gatewayID
     }
 }
+
+// MARK: - CardReaderCapableRemote
+//
+public protocol CardReaderCapableRemote {
+    func loadConnectionToken(for siteID: Int64,
+                             completion: @escaping(Result<ReaderConnectionToken, Error>) -> Void)
+    func loadDefaultReaderLocation(for siteID: Int64,
+                                   onCompletion: @escaping (Result<RemoteReaderLocation, Error>) -> Void)
+}
+
+extension WCPayRemote: CardReaderCapableRemote {}
+extension StripeRemote: CardReaderCapableRemote {}

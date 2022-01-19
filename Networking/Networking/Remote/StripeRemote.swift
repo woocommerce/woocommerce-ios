@@ -64,7 +64,9 @@ public class StripeRemote: Remote {
     }
 }
 
-extension StripeRemote: CardReaderCapableRemote {
+// MARK: - CardReaderCapableRemote
+//
+extension StripeRemote {
     /// Loads a card reader connection token for a given site ID and parses the response
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch the connection token.

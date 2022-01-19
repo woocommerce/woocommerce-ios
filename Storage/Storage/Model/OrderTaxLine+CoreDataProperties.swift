@@ -37,7 +37,3 @@ extension OrderTaxLine {
     @NSManaged public func removeFromAttributes(_ values: NSSet)
 
 }
-
-extension OrderTaxLine: Identifiable {
-
-}

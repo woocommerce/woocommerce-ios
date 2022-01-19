@@ -434,7 +434,7 @@ private extension ReceiptStoreTests {
               coupons: coupons,
               refunds: [],
               fees: fees,
-              taxes: [makeOrderTaxLine(totalTax: totalTax)])
+              taxes: [makeOrderTaxLine(totalShippingTax: shippingTax, totalTax: totalTax)])
     }
 
     func expectedDiscountLineDescription() -> String {
@@ -475,14 +475,15 @@ private extension ReceiptStoreTests {
                            attributes: [])
     }
 
-    func makeOrderTaxLine(totalTax: String) -> Yosemite.OrderTaxLine {
+    func makeOrderTaxLine(totalShippingTax: String,
+                          totalTax: String) -> Yosemite.OrderTaxLine {
         .init(taxID: 123,
               rateCode: "",
               rateID: 1,
               label: "State",
               isCompoundTaxRate: false,
               totalTax: totalTax,
-              totalShippingTax: "3",
+              totalShippingTax: totalShippingTax,
               ratePercent: 5.5,
               attributes: [])
     }

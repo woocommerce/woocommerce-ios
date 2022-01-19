@@ -892,6 +892,47 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 1)
         XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: Coupon.self)), coupon)
     }
+
+    func test_migrating_from_60_to_61_adds_tax_lines_as_a_property_to_order() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 60")
+        let sourceContext = sourceContainer.viewContext
+
+        let order = insertOrder(to: sourceContext)
+        try sourceContext.save()
+
+        // `taxes` should not be present before migration
+        XCTAssertNil(order.entity.relationshipsByName["taxes"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 61")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        // Confidence-check
+        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "OrderTaxLine"), 0)
+
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+
+        // `taxes` should be present in `migratedOrder`
+        XCTAssertNotNil(migratedOrder.entity.relationshipsByName["taxes"])
+
+        // Test adding tax to a migrated `Order`.
+        let tax = insertOrderTaxLine(to: targetContext)
+        migratedOrder.mutableSetValue(forKey: "taxes").add(tax)
+
+        XCTAssertNoThrow(try targetContext.save())
+
+        // Confidence-check
+        XCTAssertEqual(try targetContext.count(entityName: "OrderTaxLine"), 1)
+
+        // The relationship between Order and OrderTaxLine should be updated.
+        XCTAssertEqual(migratedOrder.value(forKey: "taxes") as? Set<NSManagedObject>, [tax])
+
+        // The OrderTaxLine.order inverse relationship should be updated.
+        XCTAssertEqual(tax.value(forKey: "order") as? NSManagedObject, migratedOrder)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1060,6 +1101,15 @@ private extension MigrationTests {
             "feeID": 134,
             "name": "Woo",
             "total": "125.0"
+        ])
+    }
+
+    @discardableResult
+    func insertOrderTaxLine(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderTaxLine", properties: [
+            "taxID": 134,
+            "label": "State",
+            "ratePercent": 5.0
         ])
     }
 

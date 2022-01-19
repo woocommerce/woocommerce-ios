@@ -60,6 +60,7 @@ extension Order {
     @NSManaged public var refunds: Set<OrderRefundCondensed>?
     @NSManaged public var shippingLabels: Set<ShippingLabel>?
     @NSManaged public var shippingLabelSettings: ShippingLabelSettings?
+    @NSManaged public var taxes: Set<OrderTaxLine>?
 
 }
 
@@ -195,5 +196,22 @@ extension Order {
 
     @objc(removeFees:)
     @NSManaged public func removeFromFees(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for taxes
+extension Order {
+
+    @objc(addTaxesObject:)
+    @NSManaged public func addToTaxes(_ value: OrderTaxLine)
+
+    @objc(removeTaxesObject:)
+    @NSManaged public func removeFromTaxes(_ value: OrderTaxLine)
+
+    @objc(addTaxes:)
+    @NSManaged public func addToTaxes(_ values: NSSet)
+
+    @objc(removeTaxes:)
+    @NSManaged public func removeFromTaxes(_ values: NSSet)
 
 }

@@ -262,7 +262,10 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                             cardReaderService: mockCardReaderService,
                                             allowStripeIPP: false)
         let expectation = self.expectation(description: "Load Account error response")
-        network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "generic_error")
+        network.simulateResponse(requestUrlSuffix: "payments/accounts",
+                                 filename: "generic_error")
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary",
+                                 filename: "generic_error")
 
         let action = CardPresentPaymentAction.loadAccounts(siteID: sampleSiteID, onCompletion: { result in
             XCTAssertTrue(result.isFailure)
@@ -284,7 +287,10 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                             cardReaderService: mockCardReaderService,
                                             allowStripeIPP: false)
         let expectation = self.expectation(description: "Load Account fetch response")
-        network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "wcpay-account-complete")
+        network.simulateResponse(requestUrlSuffix: "payments/accounts",
+                                 filename: "wcpay-account-complete")
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary",
+                                 filename: "stripe-account-complete")
         let action = CardPresentPaymentAction.loadAccounts(siteID: sampleSiteID, onCompletion: { result in
             XCTAssertTrue(result.isSuccess)
             expectation.fulfill()
@@ -293,7 +299,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         store.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
 
-        XCTAssert(viewStorage.countObjects(ofType: Storage.PaymentGatewayAccount.self, matching: nil) == 1)
+        XCTAssert(viewStorage.countObjects(ofType: Storage.PaymentGatewayAccount.self, matching: nil) == 2)
 
         let storageAccount = viewStorage.loadPaymentGatewayAccount(
             siteID: sampleSiteID,

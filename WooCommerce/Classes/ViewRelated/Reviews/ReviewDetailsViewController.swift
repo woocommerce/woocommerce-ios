@@ -75,6 +75,7 @@ final class ReviewDetailsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         markAsReadIfNeeded(notification)
+        resetApplicationBadge()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -126,6 +127,12 @@ private extension ReviewDetailsViewController {
 
     func reloadRows() {
         rows = [.header, .content]
+    }
+
+    /// Nukes the BadgeCount
+    ///
+    func resetApplicationBadge() {
+        ServiceLocator.pushNotesManager.resetBadgeCount(type: .comment)
     }
 }
 

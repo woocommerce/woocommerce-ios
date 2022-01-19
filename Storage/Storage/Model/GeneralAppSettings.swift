@@ -28,7 +28,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let isOrderCreationSwitchEnabled: Bool
 
-    /// Thes state for the Stripe Gateway Extension IPP feature switch
+    /// The state for the Stripe Gateway Extension IPP feature switch
     ///
     public let isStripeInPersonPaymentsSwitchEnabled: Bool
 

@@ -43,6 +43,7 @@ final class MockOrders {
                    shippingLines: [ShippingLine] = sampleShippingLines(),
                    refunds: [OrderRefundCondensed] = [],
                    fees: [OrderFeeLine] = []) -> Order {
+        let totalTax = "1.20"
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: 0,
@@ -60,7 +61,7 @@ final class MockOrders {
                      shippingTotal: "0.00",
                      shippingTax: "0.00",
                      total: "31.20",
-                     totalTax: "1.20",
+                     totalTax: totalTax,
                      paymentMethodID: "stripe",
                      paymentMethodTitle: "Credit Card (Stripe)",
                      items: items,
@@ -70,7 +71,7 @@ final class MockOrders {
                      coupons: [],
                      refunds: refunds,
                      fees: fees,
-                     taxes: sampleOrderTaxLines()
+                     taxes: [makeOrderTaxLine(totalTax: totalTax)]
         )
     }
 
@@ -91,6 +92,7 @@ final class MockOrders {
     }
 
     func sampleOrderCreatedInCurrentYear() -> Order {
+        let totalTax = "1.20"
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: 0,
@@ -108,7 +110,7 @@ final class MockOrders {
                      shippingTotal: "0.00",
                      shippingTax: "0.00",
                      total: "31.20",
-                     totalTax: "1.20",
+                     totalTax: totalTax,
                      paymentMethodID: "stripe",
                      paymentMethodTitle: "Credit Card (Stripe)",
                      items: [],
@@ -118,7 +120,7 @@ final class MockOrders {
                      coupons: [],
                      refunds: [],
                      fees: [],
-                     taxes: sampleOrderTaxLines()
+                     taxes: [makeOrderTaxLine(totalTax: totalTax)]
         )
     }
 
@@ -131,17 +133,16 @@ final class MockOrders {
         taxes: [])]
     }
 
-    func sampleOrderTaxLines() -> [OrderTaxLine] {
-        let tax = OrderTaxLine(taxID: 123,
-                               rateCode: "",
-                               rateID: 1,
-                               label: "State",
-                               isCompoundTaxRate: false,
-                               totalTax: "5.5",
-                               totalShippingTax: "3",
-                               ratePercent: 5.5,
-                               attributes: [])
-        return [tax]
+    func makeOrderTaxLine(totalTax: String) -> OrderTaxLine {
+        .init(taxID: 123,
+              rateCode: "",
+              rateID: 1,
+              label: "State",
+              isCompoundTaxRate: false,
+              totalTax: totalTax,
+              totalShippingTax: "3",
+              ratePercent: 5.5,
+              attributes: [])
     }
 
     func sampleFeeLines() -> [OrderFeeLine] {

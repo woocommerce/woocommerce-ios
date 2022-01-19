@@ -3,7 +3,7 @@
 8.4
 -----
 - [***] In-Person Payments: Support for Stripe M2 card reader. [https://github.com/woocommerce/woocommerce-ios/pull/5844]
-- [***] We introduced a new tab called "Menu", a tab in the main navigation where you can browser different sub-sections of the app: Switch Store, Settings, WooCommerce Admin, View Store and Reviews.
+- [***] We introduced a new tab called "Menu", a tab in the main navigation where you can browser different sub-sections of the app: Switch Store, Settings, WooCommerce Admin, View Store and Reviews. [https://github.com/woocommerce/woocommerce-ios/pull/5926]
 - [*] Add/Edit Product screen: Fix transient product name while adding images.[https://github.com/woocommerce/woocommerce-ios/pull/5840]
 
 8.3

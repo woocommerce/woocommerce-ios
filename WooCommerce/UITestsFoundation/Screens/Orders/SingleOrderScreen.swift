@@ -18,22 +18,15 @@ public final class SingleOrderScreen: ScreenObject {
         app.assertTextVisibilityCount(textToFind: order.status, expectedCount: 1)
         app.assertTextVisibilityCount(textToFind: order.total, expectedCount: 1)
 
-        // Adding # to textToFind to eliminate the case where number matches product price
         // Expects 2 instances of order.number - one in Header and one in Summary
         app.assertTextVisibilityCount(textToFind: "#\(order.number)", expectedCount: 2)
 
-        // Temporary excluding until GH Issue is fixed: https://github.com/woocommerce/woocommerce-ios/issues/5894
-        let issueFixed = false
-        if issueFixed == true {
-            // Expects 2 instances of first_name - one in Summary and one in Shipping details
-            app.assertTextVisibilityCount(textToFind: order.billing.first_name, expectedCount: 2)
-        }
-
+        app.assertTextVisibilityCount(textToFind: order.billing.first_name, expectedCount: 2)
         app.assertElement(matching: "summary-table-view-cell", existsOnCellWithIdentifier: "\(order.billing.first_name) \(order.billing.last_name)")
 
         // Loops through all products on the order
-        for index in 0..<order.line_items.count {
-            XCTAssertTrue(app.staticTexts[order.line_items[index].name].isFullyVisibleOnScreen(), "'\(order.line_items[index].name)' is missing!")
+        for product in order.line_items {
+            XCTAssertTrue(app.staticTexts[product.name].isFullyVisibleOnScreen(), "'\(product.name)' is missing!")
         }
 
         return self

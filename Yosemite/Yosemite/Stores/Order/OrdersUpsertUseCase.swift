@@ -260,10 +260,10 @@ struct OrdersUpsertUseCase {
         }
     }
 
-    /// Updates, inserts, or prunes the provided StorageOrder's taxes using the provided read-only Order's taxes
+    /// Updates, inserts, or prunes the provided `storageOrder`'s taxes using the provided `readOnlyOrder`'s taxes
     ///
     private func handleOrderTaxes(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
-        // Upsert the taxes from the read-only order
+        // Upsert the `taxes` from the `readOnlyOrder`
         readOnlyOrder.taxes.forEach { readOnlyTax in
             if let existingStorageTax = storage.loadOrderTaxLine(siteID: readOnlyOrder.siteID, taxID: readOnlyTax.taxID) {
                 existingStorageTax.update(with: readOnlyTax)
@@ -274,7 +274,7 @@ struct OrdersUpsertUseCase {
             }
         }
 
-        // Now, remove any objects that exist in storageOrder.taxes but not in readOnlyOrder.taxes
+        // Now, remove any objects that exist in `storageOrder.taxes` but not in `readOnlyOrder.taxes`
         storageOrder.taxes?.forEach { storageFee in
             if readOnlyOrder.taxes.first(where: { $0.taxID == storageFee.taxID } ) == nil {
                 storageOrder.removeFromTaxes(storageFee)

@@ -15,13 +15,12 @@ final class StatsTests: XCTestCase {
         try LoginFlow.logInWithWPcom()
     }
 
-    // Disabled test, added to test stats mocks. To be updated into a real test later.
     func testStatsScreenLoad() throws {
         try skipTillImplemented()
         try TabNavComponent().goToMyStoreScreen()
     }
-    
-    
+
+
     func skipTillImplemented(file: StaticString = #file, line: UInt = #line) throws {
         try XCTSkipIf(true,
             "Skipping until test is properly implemented", file: file, line: line)

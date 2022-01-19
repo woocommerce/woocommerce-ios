@@ -259,7 +259,7 @@
         <attribute name="label" optional="YES" attributeType="String"/>
         <attribute name="rateCode" optional="YES" attributeType="String"/>
         <attribute name="rateID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="ratePercent" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="ratePercent" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="taxID" attributeType="Integer 64" defaultValueString="0.0" usesScalarValueType="NO"/>
         <attribute name="totalShippingTax" optional="YES" attributeType="String"/>
         <attribute name="totalTax" optional="YES" attributeType="String"/>
@@ -742,6 +742,7 @@
         <element name="OrderStatsV4Interval" positionX="-675" positionY="54" width="128" height="120"/>
         <element name="OrderStatsV4Totals" positionX="-519.01171875" positionY="96.5546875" width="128" height="225"/>
         <element name="OrderStatus" positionX="-675" positionY="27" width="128" height="103"/>
+        <element name="OrderTaxLine" positionX="-684" positionY="54" width="128" height="179"/>
         <element name="PaymentGateway" positionX="-693" positionY="36" width="128" height="133"/>
         <element name="PaymentGatewayAccount" positionX="-693" positionY="45" width="128" height="224"/>
         <element name="Product" positionX="-692.92578125" positionY="1193.70703125" width="128" height="1004"/>
@@ -781,6 +782,5 @@
         <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="88"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="118"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="OrderTaxLine" positionX="-684" positionY="54" width="128" height="179"/>
     </elements>
 </model>

@@ -1407,6 +1407,7 @@
 		D89CFF3A25B43BBB000E4683 /* WrongAccountErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89CFF3925B43BBB000E4683 /* WrongAccountErrorViewModel.swift */; };
 		D89CFFDD25B44468000E4683 /* ULAccountMismatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89CFFDB25B44468000E4683 /* ULAccountMismatchViewController.swift */; };
 		D89CFFDE25B44468000E4683 /* ULAccountMismatchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D89CFFDC25B44468000E4683 /* ULAccountMismatchViewController.xib */; };
+		D89FAF4E2795BDFF00D8DA66 /* InPersonPaymentsSelectPluginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89FAF4D2795BDFF00D8DA66 /* InPersonPaymentsSelectPluginView.swift */; };
 		D8A8C4F32268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A8C4F22268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift */; };
 		D8AB131E225DC25F002BB5D1 /* MockOrders.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB131D225DC25F002BB5D1 /* MockOrders.swift */; };
 		D8B4D5EE26C2C26C00F34E94 /* InPersonPaymentsStripeAcountReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B4D5ED26C2C26C00F34E94 /* InPersonPaymentsStripeAcountReviewView.swift */; };
@@ -3008,6 +3009,7 @@
 		D89CFF3925B43BBB000E4683 /* WrongAccountErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrongAccountErrorViewModel.swift; sourceTree = "<group>"; };
 		D89CFFDB25B44468000E4683 /* ULAccountMismatchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ULAccountMismatchViewController.swift; sourceTree = "<group>"; };
 		D89CFFDC25B44468000E4683 /* ULAccountMismatchViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ULAccountMismatchViewController.xib; sourceTree = "<group>"; };
+		D89FAF4D2795BDFF00D8DA66 /* InPersonPaymentsSelectPluginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsSelectPluginView.swift; sourceTree = "<group>"; };
 		D8A8C4F22268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddManualCustomTrackingViewModelTests.swift; path = WooCommerceTests/Model/AddManualCustomTrackingViewModelTests.swift; sourceTree = SOURCE_ROOT; };
 		D8AB131D225DC25F002BB5D1 /* MockOrders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOrders.swift; sourceTree = "<group>"; };
 		D8B4D5ED26C2C26C00F34E94 /* InPersonPaymentsStripeAcountReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsStripeAcountReviewView.swift; sourceTree = "<group>"; };
@@ -7289,6 +7291,7 @@
 				E15F163026C5117300D3059B /* InPersonPaymentsNoConnectionView.swift */,
 				310D1B472734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift */,
 				ABC35055F8AC8C8EB649F421 /* InPersonPaymentsUnavailableView.swift */,
+				D89FAF4D2795BDFF00D8DA66 /* InPersonPaymentsSelectPluginView.swift */,
 				ABC35A4B736A0B2D8348DD08 /* InPersonPaymentsOnboardingError.swift */,
 			);
 			path = "Onboarding Errors";
@@ -8133,6 +8136,7 @@
 				AEE2610F26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift in Sources */,
 				025C00BA25514A7100FAC222 /* BarcodeScannerFrameScaler.swift in Sources */,
 				02913E9723A774E600707A0C /* DecimalInputFormatter.swift in Sources */,
+				D89FAF4E2795BDFF00D8DA66 /* InPersonPaymentsSelectPluginView.swift in Sources */,
 				E15F163126C5117300D3059B /* InPersonPaymentsNoConnectionView.swift in Sources */,
 				456CB50D2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift in Sources */,
 				D802541F2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift in Sources */,

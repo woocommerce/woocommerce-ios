@@ -450,21 +450,7 @@ private extension StoreStatsV4PeriodViewController {
             mode = siteVisitStatsMode
         }
 
-        updateSiteVisitStats(mode: mode)
-
-        switch siteVisitStatsMode {
-        case .hidden, .redactedDueToJetpack:
-            break
-        case .default:
-            guard selectedIndex != nil else {
-                reloadSiteVisitUI()
-                return
-            }
-            guard visitorsDataOrRedactedView != nil else {
-                return
-            }
-            visitorsDataOrRedactedView.state = .data
-        }
+        siteVisitStatsMode = mode
     }
 }
 

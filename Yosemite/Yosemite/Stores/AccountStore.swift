@@ -140,12 +140,12 @@ private extension AccountStore {
                                 .map {
                                     (site, isWooCommerceActiveResult, wpSiteSettingsResult) -> Site in
                                     var site = site
-                                    if case let .success(isWooCommerceActive) = isWooCommerceActiveResult {
-                                        site = site.copy(isWooCommerceActive: isWooCommerceActive)
-                                    }
-                                    if case let .success(wpSiteSettings) = wpSiteSettingsResult {
-                                        site = site.copy(name: wpSiteSettings.name, description: wpSiteSettings.description, url: wpSiteSettings.url)
-                                    }
+                                    guard case let .success(isWooCommerceActive) = isWooCommerceActiveResult,
+                                          case let .success(wpSiteSettings) = wpSiteSettingsResult else {
+                                              return site
+                                          }
+                                    site = site.copy(isWooCommerceActive: isWooCommerceActive)
+                                    site = site.copy(name: wpSiteSettings.name, description: wpSiteSettings.description, url: wpSiteSettings.url)
                                     return site
                                 }.eraseToAnyPublisher()
                         } else {

@@ -898,8 +898,11 @@ final class MigrationTests: XCTestCase {
         let sourceContainer = try startPersistentContainer("Model 60")
         let sourceContext = sourceContainer.viewContext
 
-        insertOrder(to: sourceContext)
+        let order = insertOrder(to: sourceContext)
         try sourceContext.save()
+
+        // `taxes` should not be present before migration
+        XCTAssertNil(order.entity.relationshipsByName["taxes"])
 
         // When
         let targetContainer = try migrate(sourceContainer, to: "Model 61")
@@ -910,8 +913,12 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
         XCTAssertEqual(try targetContext.count(entityName: "OrderTaxLine"), 0)
 
-        // Test adding tax to a migrated `Order`.
         let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+
+        // `taxes` should be present in `migratedOrder`
+        XCTAssertNotNil(migratedOrder.entity.relationshipsByName["taxes"])
+
+        // Test adding tax to a migrated `Order`.
         let tax = insertOrderTaxLine(to: targetContext)
         migratedOrder.mutableSetValue(forKey: "taxes").add(tax)
 

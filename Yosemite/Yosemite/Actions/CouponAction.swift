@@ -1,5 +1,4 @@
 import Foundation
-import Networking
 
 /// Defines the `actions` supported by the `CouponStore`.
 ///

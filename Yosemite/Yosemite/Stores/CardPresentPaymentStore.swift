@@ -13,6 +13,10 @@ public final class CardPresentPaymentStore: Store {
     // If retaining the service here ended up being a problem, we would need to move this Store out of Yosemite and push it up to WooCommerce.
     private let cardReaderService: CardReaderService
 
+    /// Card reader config provider
+    ///
+    private let commonReaderConfigProvider: CommonReaderConfigProvider
+
     /// Instead of adding a reference to the feature flag service (in the WooCommerce layer),
     /// and since feature flag values don't mutate, let's just have a private bool passed into this service
     /// to allow (or not) Stripe IPP.
@@ -39,6 +43,7 @@ public final class CardPresentPaymentStore: Store {
         allowStripeIPP: Bool
     ) {
         self.cardReaderService = cardReaderService
+        self.commonReaderConfigProvider = CommonReaderConfigProvider()
         self.remote = WCPayRemote(network: network)
         self.stripeRemote = StripeRemote(network: network)
         self.allowStripeIPP = allowStripeIPP
@@ -125,9 +130,11 @@ private extension CardPresentPaymentStore {
         do {
             switch usingBackend {
             case .wcpay:
-                try cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
+                commonReaderConfigProvider.setContext(siteID: siteID, remote: self.remote)
+                try cardReaderService.start(commonReaderConfigProvider)
             case .stripe:
-                try cardReaderService.start(StripeTokenProvider(siteID: siteID, remote: self.stripeRemote))
+                commonReaderConfigProvider.setContext(siteID: siteID, remote: self.stripeRemote)
+                try cardReaderService.start(commonReaderConfigProvider)
             }
         } catch {
             return onError(error)
@@ -282,88 +289,51 @@ private extension CardPresentPaymentStore {
         onCompletion(publisher)
     }
 }
+private extension CardPresentPaymentStore {
+    final class CommonReaderConfigProvider: CardReaderConfigProvider {
+        var siteID: Int64?
+        var readerConfigRemote: CardReaderCapableRemote?
 
+        public func setContext(siteID: Int64, remote: CardReaderCapableRemote) {
+            self.siteID = siteID
+            self.readerConfigRemote = remote
+        }
 
-/// Implementation of the CardReaderNetworkingAdapter
-/// that fetches a token using WCPayRemote
-private final class WCPayTokenProvider: CardReaderConfigProvider {
-    private let siteID: Int64
-    private let remote: WCPayRemote
+        public func fetchToken(completion: @escaping(Result<String, Error>) -> Void) {
+            guard let siteID = self.siteID else {
+                return
+            }
 
-    init(siteID: Int64, remote: WCPayRemote) {
-        self.siteID = siteID
-        self.remote = remote
-    }
-
-    func fetchToken(completion: @escaping(Result<String, Error>) -> Void) {
-        remote.loadConnectionToken(for: siteID) { result in
-            switch result {
-            case .success(let token):
-                completion(.success(token.token))
-            case .failure(let error):
-                if let configError = CardReaderConfigError(error: error) {
-                    completion(.failure(configError))
-                } else {
-                    completion(.failure(error))
+            readerConfigRemote?.loadConnectionToken(for: siteID) { result in
+                switch result {
+                case .success(let token):
+                    completion(.success(token.token))
+                case .failure(let error):
+                    if let configError = CardReaderConfigError(error: error) {
+                        completion(.failure(configError))
+                    } else {
+                        completion(.failure(error))
+                    }
                 }
             }
         }
-    }
 
-    func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void) {
-        remote.loadDefaultReaderLocation(for: siteID) { result in
-            switch result {
-            case .success(let wcpayReaderLocation):
-                let readerLocation = wcpayReaderLocation.toReaderLocation(siteID: self.siteID)
-                completion(.success(readerLocation.id))
-            case .failure(let error):
-                if let configError = CardReaderConfigError(error: error) {
-                    completion(.failure(configError))
-                } else {
-                    completion(.failure(error))
-                }
+        public func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void) {
+            guard let siteID = self.siteID else {
+                return
             }
-        }
-    }
-}
 
-/// Implementation of the CardReaderNetworkingAdapter
-/// that fetches a token using StripeRemote
-private final class StripeTokenProvider: CardReaderConfigProvider {
-    private let siteID: Int64
-    private let remote: StripeRemote
-
-    init(siteID: Int64, remote: StripeRemote) {
-        self.siteID = siteID
-        self.remote = remote
-    }
-
-    func fetchToken(completion: @escaping(Result<String, Error>) -> Void) {
-        remote.loadConnectionToken(for: siteID) { result in
-            switch result {
-            case .success(let token):
-                completion(.success(token.token))
-            case .failure(let error):
-                if let configError = CardReaderConfigError(error: error) {
-                    completion(.failure(configError))
-                } else {
-                    completion(.failure(error))
-                }
-            }
-        }
-    }
-
-    func fetchDefaultLocationID(completion: @escaping(Result<String, Error>) -> Void) {
-        remote.loadDefaultReaderLocation(for: siteID) { result in
-            switch result {
-            case .success(let stripeReaderLocation):
-                let readerLocation = stripeReaderLocation.toReaderLocation(siteID: self.siteID)
-                completion(.success(readerLocation.id))
-            case .failure(let error):
-                if let configError = CardReaderConfigError(error: error) {
-                    completion(.failure(configError))
-                } else {
-                    completion(.failure(error))
+            readerConfigRemote?.loadDefaultReaderLocation(for: siteID) { result in
+                switch result {
+                case .success(let location):
+                    let readerLocation = location.toReaderLocation(siteID: siteID)
+                    completion(.success(readerLocation.id))
+                case .failure(let error):
+                    if let configError = CardReaderConfigError(error: error) {
+                        completion(.failure(configError))
+                    } else {
+                        completion(.failure(error))
+                    }
                 }
             }
         }
@@ -617,9 +587,20 @@ public enum PaymentGatewayAccountError: Error, LocalizedError {
     }
 }
 
-
 private extension PaymentGatewayAccount {
     var isWCPay: Bool {
         self.gatewayID == WCPayAccount.gatewayID
     }
 }
+
+// MARK: - CardReaderCapableRemote
+//
+public protocol CardReaderCapableRemote {
+    func loadConnectionToken(for siteID: Int64,
+                             completion: @escaping(Result<ReaderConnectionToken, Error>) -> Void)
+    func loadDefaultReaderLocation(for siteID: Int64,
+                                   onCompletion: @escaping (Result<RemoteReaderLocation, Error>) -> Void)
+}
+
+extension WCPayRemote: CardReaderCapableRemote {}
+extension StripeRemote: CardReaderCapableRemote {}

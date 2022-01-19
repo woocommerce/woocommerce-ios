@@ -77,4 +77,8 @@ public enum FeatureFlag: Int {
     /// Barcode scanner for product SKU input
     ///
     case productSKUInputScanner
+
+    /// Displays the tax lines breakup in simple payments summary screen
+    ///
+    case taxLinesInSimplePayments
 }

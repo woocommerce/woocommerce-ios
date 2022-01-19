@@ -4,8 +4,6 @@ import XCTest
 final class ReviewsTests: XCTestCase {
 
     override func setUpWithError() throws {
-        try skipTillReviewMenuFixed()
-
         continueAfterFailure = false
 
         let app = XCUIApplication()
@@ -17,18 +15,13 @@ final class ReviewsTests: XCTestCase {
         // GH Issue: https://github.com/woocommerce/woocommerce-ios/issues/1907
         try TabNavComponent()
             .goToProductsScreen()
-
-        try TabNavComponent()
-            .goToMenuScreen()
-            .goToReviewsScreen()
     }
 
     func testReviewsScreenLoad() throws {
-        try skipTillReviewMenuFixed()
-
         let reviews = try GetMocks.readReviewsData()
 
-        try ReviewsScreen()
+        try TabNavComponent().goToMenuScreen()
+            .goToReviewsScreen()
             .verifyReviewsScreenLoaded()
             .verifyReviewList(reviews: reviews)
             .selectReview(byReviewer: reviews[0].reviewer)
@@ -36,12 +29,5 @@ final class ReviewsTests: XCTestCase {
             .verifyReview(review: reviews[0])
             .goBackToReviewsScreen()
             .verifyReviewsScreenLoaded()
-    }
-
-    func skipTillReviewMenuFixed(file: StaticString = #file, line: UInt = #line) throws {
-        try XCTSkipIf(true,
-            """
-            Skipping test because of the reviews menu does not appear on first load. See: https://github.com/woocommerce/woocommerce-ios/issues/5872
-            """, file: file, line: line)
     }
 }

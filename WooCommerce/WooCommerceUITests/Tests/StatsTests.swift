@@ -4,6 +4,7 @@ import XCTest
 final class StatsTests: XCTestCase {
 
     override func setUpWithError() throws {
+        try skipTillImplemented()
         continueAfterFailure = false
 
         // UI tests must launch the application that they test.
@@ -16,7 +17,13 @@ final class StatsTests: XCTestCase {
 
     // Disabled test, added to test stats mocks. To be updated into a real test later.
     func testStatsScreenLoad() throws {
+        try skipTillImplemented()
         try TabNavComponent().goToMyStoreScreen()
-        sleep(1000)
+    }
+    
+    
+    func skipTillImplemented(file: StaticString = #file, line: UInt = #line) throws {
+        try XCTSkipIf(true,
+            "Skipping until test is properly implemented", file: file, line: line)
     }
 }

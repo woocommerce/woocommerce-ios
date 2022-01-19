@@ -64,6 +64,8 @@ public final class CouponStore: Store {
             updateCoupon(coupon, onCompletion: onCompletion)
         case .createCoupon(let coupon, let onCompletion):
             createCoupon(coupon, onCompletion: onCompletion)
+        case .loadCouponReport(let siteID, let couponID, let onCompletion):
+            loadCouponReport(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
         }
     }
 }
@@ -176,6 +178,17 @@ private extension CouponStore {
                 }
             }
         }
+    }
+
+    /// Loads analytics report for a coupon with the specified coupon ID and site ID.
+    ///
+    /// - Parameters:
+    ///     - siteID: ID of the site that the coupon belongs to.
+    ///     - couponID: ID of the coupon to load analytics report for.
+    ///     - onCompletion: invoked when the creation finishes.
+    ///
+    func loadCouponReport(siteID: Int64, couponID: Int64, onCompletion: @escaping (Result<CouponReport, Error>) -> Void) {
+        remote.loadCouponReport(for: siteID, couponID: couponID, completion: onCompletion)
     }
 }
 

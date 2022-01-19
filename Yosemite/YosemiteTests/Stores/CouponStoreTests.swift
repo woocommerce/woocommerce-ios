@@ -411,6 +411,59 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(storedCoupon?.amount, "10.00")
         XCTAssertEqual(storedCoupon?.discountType, Coupon.DiscountType.fixedCart.rawValue)
     }
+
+    func test_loadCouponReport_calls_remote_using_correct_request_parameters() {
+        setUpUsingSpyRemote()
+        // Given
+        let sampleCouponID: Int64 = 571
+        let action = CouponAction.loadCouponReport(siteID: sampleSiteID, couponID: sampleCouponID) { _ in }
+
+        // When
+        store.onAction(action)
+
+        // Then
+        XCTAssertTrue(remote.didCallLoadCouponReport)
+        XCTAssertEqual(remote.spyLoadCouponReportSiteID, sampleSiteID)
+        XCTAssertEqual(remote.spyLoadCouponReportCouponID, sampleCouponID)
+    }
+
+    func test_loadCouponReport_returns_network_error_on_failure() {
+        // Given
+        let sampleCouponID: Int64 = 571
+
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "coupons", error: expectedError)
+
+        // When
+        let result: Result<Networking.CouponReport, Error> = waitFor { promise in
+            let action = CouponAction.loadCouponReport(siteID: self.sampleSiteID, couponID: sampleCouponID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+    }
+
+    func test_loadCouponReport_returns_expected_details_upon_success() throws {
+        // Given
+        let sampleCouponID: Int64 = 571
+        let expectedReport = CouponReport(couponID: sampleCouponID, amount: 12, ordersCount: 1)
+        network.simulateResponse(requestUrlSuffix: "reports/coupons", filename: "coupon-reports")
+
+        // When
+        let result: Result<Networking.CouponReport, Error> = waitFor { promise in
+            let action = CouponAction.loadCouponReport(siteID: self.sampleSiteID, couponID: sampleCouponID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(try result.get(), expectedReport)
+    }
 }
 
 private extension CouponStoreTests {

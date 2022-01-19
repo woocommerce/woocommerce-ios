@@ -2,6 +2,7 @@ import Foundation
 import Networking
 
 final class MockCouponsRemote: CouponsRemoteProtocol {
+
     // MARK: - Spy properties
     var didCallLoadAllCoupons = false
     var spyLoadAllCouponsSiteID: Int64?
@@ -17,6 +18,10 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
 
     var didCallCreateCoupon = false
     var spyCreateCoupon: Coupon?
+
+    var didCallLoadCouponReport = false
+    var spyLoadCouponReportSiteID: Int64?
+    var spyLoadCouponReportCouponID: Int64?
 
     // MARK: - Stub responses
     var resultForLoadAllCoupons: Result<[Coupon], Error>?
@@ -50,5 +55,11 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     func createCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void) {
         didCallCreateCoupon = true
         spyCreateCoupon = coupon
+    }
+
+    func loadCouponReport(for siteID: Int64, couponID: Int64, completion: @escaping (Result<CouponReport, Error>) -> Void) {
+        didCallLoadCouponReport = true
+        spyLoadCouponReportSiteID = siteID
+        spyLoadCouponReportCouponID = couponID
     }
 }

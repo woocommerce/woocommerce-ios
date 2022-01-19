@@ -255,7 +255,7 @@
         <attribute name="total" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <entity name="OrderTaxLine" representedClassName="OrderTaxLine" syncable="YES">
-        <attribute name="isCompoundTaxRate" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isCompoundTaxRate" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="label" optional="YES" attributeType="String"/>
         <attribute name="rateCode" optional="YES" attributeType="String"/>
         <attribute name="rateID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

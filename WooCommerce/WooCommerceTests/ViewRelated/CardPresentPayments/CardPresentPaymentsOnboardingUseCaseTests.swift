@@ -100,7 +100,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .pluginUnsupportedVersion)
+        XCTAssertEqual(state, .pluginUnsupportedVersion(plugin: .wcPay))
     }
 
     func test_onboarding_returns_wcpay_in_test_mode_with_live_stripe_account_when_live_account_in_test_mode() {
@@ -127,7 +127,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .pluginUnsupportedVersion)
+        XCTAssertEqual(state, .pluginUnsupportedVersion(plugin: .wcPay))
     }
 
     func test_onboarding_returns_complete_when_plugin_version_matches_minimum_exactly() {

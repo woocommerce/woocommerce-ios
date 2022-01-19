@@ -585,9 +585,15 @@ extension UIImage {
         return UIImage(named: "woo-payments-loading")!
     }
 
-    /// Payments plugin
+    /// WooCommerce Stripe Gateway plugin
     ///
-    static var paymentsPlugin: UIImage {
+    static var stripePlugin: UIImage {
+        return UIImage(named: "stripe-payments-plugin")!
+    }
+
+    /// WooCommerce Payments plugin
+    ///
+    static var wcPayPlugin: UIImage {
         return UIImage(named: "woo-payments-plugin")!
     }
 

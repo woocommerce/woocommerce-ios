@@ -5,7 +5,9 @@ import Storage
 //
 extension Storage.OrderTaxLine: ReadOnlyConvertible {
 
-    /// Updates the Storage.OrderTaxLine with the ReadOnly.
+    /// Updates the `Storage.OrderTaxLine` using the ReadOnly representation (`Networking.OrderTaxLine`)
+    ///
+    /// - Parameter taxLine: ReadOnly representation of OrderTaxLine
     ///
     public func update(with taxLine: Yosemite.OrderTaxLine) {
         taxID = taxLine.taxID
@@ -18,7 +20,7 @@ extension Storage.OrderTaxLine: ReadOnlyConvertible {
         ratePercent = taxLine.ratePercent
     }
 
-    /// Returns a ReadOnly version of the receiver.
+    /// Returns a ReadOnly (`Networking.OrderTaxLine`) version of the `Storage.OrderTaxLine`
     ///
     public func toReadOnly() -> Yosemite.OrderTaxLine {
         let taxAttributes = attributes?.map { $0.toReadOnly() } ?? [Yosemite.OrderItemAttribute]()

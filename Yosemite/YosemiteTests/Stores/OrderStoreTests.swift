@@ -927,25 +927,26 @@ private extension OrderStoreTests {
     }
 
     func sampleOrderTaxLinesMutated() -> [Networking.OrderTaxLine] {
-        let tax1 = OrderTaxLine(taxID: 1330,
-                               rateCode: "US-NY-STATE-2",
-                               rateID: 6,
-                               label: "State",
-                               isCompoundTaxRate: true,
-                               totalTax: "55",
-                               totalShippingTax: "0.00",
-                               ratePercent: 5.5,
-                               attributes: [])
-        let tax2 = OrderTaxLine(taxID: 124,
-                                rateCode: "",
-                                rateID: 2,
-                                label: "Central",
-                                isCompoundTaxRate: true,
-                                totalTax: "2.5",
-                                totalShippingTax: "3",
-                                ratePercent: 2.5,
-                                attributes: [])
-        return [tax1, tax2]
+        [
+            .init(taxID: 1330,
+                  rateCode: "US-NY-STATE-2",
+                  rateID: 6,
+                  label: "State",
+                  isCompoundTaxRate: true,
+                  totalTax: "55",
+                  totalShippingTax: "0.00",
+                  ratePercent: 5.5,
+                  attributes: []),
+            .init(taxID: 124,
+                  rateCode: "",
+                  rateID: 2,
+                  label: "Central",
+                  isCompoundTaxRate: true,
+                  totalTax: "2.5",
+                  totalShippingTax: "3",
+                  ratePercent: 2.5,
+                  attributes: [])
+        ]
     }
 
     func sampleItems() -> [Networking.OrderItem] {

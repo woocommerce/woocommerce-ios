@@ -20,7 +20,6 @@ final class StatsTests: XCTestCase {
         try TabNavComponent().goToMyStoreScreen()
     }
 
-
     func skipTillImplemented(file: StaticString = #file, line: UInt = #line) throws {
         try XCTSkipIf(true,
             "Skipping until test is properly implemented", file: file, line: line)

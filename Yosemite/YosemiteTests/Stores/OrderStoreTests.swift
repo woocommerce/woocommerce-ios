@@ -913,16 +913,17 @@ private extension OrderStoreTests {
     }
 
     func sampleOrderTaxLines() -> [Networking.OrderTaxLine] {
-        let tax = OrderTaxLine(taxID: 1330,
-                               rateCode: "US-NY-STATE-2",
-                               rateID: 6,
-                               label: "State",
-                               isCompoundTaxRate: true,
-                               totalTax: "7.71",
-                               totalShippingTax: "0.00",
-                               ratePercent: 4.5,
-                               attributes: [])
-        return [tax]
+        [
+            .init(taxID: 1330,
+                  rateCode: "US-NY-STATE-2",
+                  rateID: 6,
+                  label: "State",
+                  isCompoundTaxRate: true,
+                  totalTax: "7.71",
+                  totalShippingTax: "0.00",
+                  ratePercent: 4.5,
+                  attributes: [])
+        ]
     }
 
     func sampleOrderTaxLinesMutated() -> [Networking.OrderTaxLine] {

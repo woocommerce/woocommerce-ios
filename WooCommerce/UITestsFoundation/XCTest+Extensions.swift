@@ -119,7 +119,7 @@ extension XCUIElement {
         return XCUIApplication().staticTexts.containing(predicate).count
     }
 
-    public func assertTextVisibilityCount(textToFind: String, expectedCount: Int) {
+    public func assertTextVisibilityCount(textToFind: String, expectedCount: Int = 1) {
         let count = try! getStaticTextVisibilityCount(textToFind: textToFind)
         XCTAssertTrue(count == expectedCount, "Expected '\(textToFind)' to appear \(expectedCount) times, but it appeared '\(count)' times!")
     }

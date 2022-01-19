@@ -51,4 +51,20 @@ class GetMocks {
 
         return updatedData
     }
+
+    static func readOrdersData() throws -> [OrderData] {
+        let originalData = try JSONDecoder().decode(OrderMock.self, from: self.getMockData(test: OrdersTests.self, filename: "orders_any"))
+        var updatedData = originalData.response.jsonBody.data
+
+        for index in 0..<updatedData.count {
+            let total = updatedData[index].total
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+
+            let formattedNumber = numberFormatter.string(from: NSNumber(value: Double(total)!))
+            updatedData[index].total = formattedNumber!
+        }
+
+        return updatedData
+}
 }

@@ -33,8 +33,32 @@ public final class OrdersScreen: ScreenObject {
     }
 
     @discardableResult
+    public func selectOrder(byOrderNumber orderNumber: String) throws -> SingleOrderScreen {
+        let orderNumberPredicate = NSPredicate(format: "label CONTAINS[c] %@", orderNumber)
+        app.staticTexts.containing(orderNumberPredicate).firstMatch.tap()
+
+        return try SingleOrderScreen()
+    }
+
+    @discardableResult
     public func openSearchPane() throws -> OrderSearchScreen {
         searchButton.tap()
         return try OrderSearchScreen()
+    }
+
+    @discardableResult
+    public func verifyOrdersList(orders: [OrderData]) throws -> Self {
+        XCTAssertEqual(orders.count, app.tables.cells.count, "Expecting '\(orders.count)' orders, got '\(app.tables.cells.count)' instead!")
+        app.assertTextVisibilityCount(textToFind: String(orders[0].id))
+        app.assertTextVisibilityCount(textToFind: String(orders[0].total))
+        app.assertLabelContains(firstSubstring: String(orders[0].id), secondSubstring: orders[0].billing.first_name)
+
+        return self
+    }
+
+   @discardableResult
+    public func verifyOrdersScreenLoaded() throws -> Self {
+        XCTAssertTrue(isLoaded)
+        return self
     }
 }

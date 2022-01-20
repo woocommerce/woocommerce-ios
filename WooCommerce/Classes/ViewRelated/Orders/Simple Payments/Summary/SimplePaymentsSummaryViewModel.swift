@@ -11,6 +11,8 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     /// `Identifiable` conformance added for SwiftUI purpose
     ///
     struct TaxLine: Identifiable {
+        /// `taxID` of `OrderTaxLine`
+        ///
         let id: Int64
 
         /// Tax label appended with tax percentage

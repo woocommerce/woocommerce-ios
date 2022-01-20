@@ -64,7 +64,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     // MARK: - Plugin checks
 
-    func test_onboarding_returns_wcpay_not_installed_without_wcpay_plugin() {
+    func test_onboarding_returns_wcpay_not_installed_when_wcpay_plugin_not_installed() {
         // Given
         setupCountry(country: .us)
 
@@ -77,23 +77,50 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     }
 
-    func test_onboarding_returns_wcpay_not_activated_when_wcpay_installed_but_not_active() {
+    func test_onboarding_returns_wcpay_plugin_not_activated_when_wcpay_installed_but_not_active() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .inactive, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .inactive, version: .minimumSupportedVersion)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .pluginNotActivated)
+        XCTAssertEqual(state, .pluginNotActivated(plugin: .wcPay))
     }
 
-    func test_onboarding_returns_wcpay_unsupported_version_when_unpatched_wcpay_outdated() {
+    func test_onboarding_returns_stripe_plugin_not_activated_when_stripe_installed_but_not_active() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .unsupportedVersionWithoutPatch)
+        setupStripePlugin(status: .inactive, version: .minimumSupportedVersion)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .pluginNotActivated(plugin: .wcPay))
+    }
+
+    func test_onboarding_returns_select_plugin_when_both_stripe_and_wcpay_plugins_are_active() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .selectPlugin)
+    }
+
+    func test_onboarding_returns_wcpay_plugin_unsupported_version_when_unpatched_wcpay_outdated() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: .unsupportedVersionWithoutPatch)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -106,7 +133,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     func test_onboarding_returns_wcpay_in_test_mode_with_live_stripe_account_when_live_account_in_test_mode() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .complete, isLive: true, isInTestMode: true)
 
         // When
@@ -117,10 +144,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .pluginInTestModeWithLiveStripeAccount)
     }
 
-    func test_onboarding_returns_wcpay_unsupported_version_when_patched_wcpay_outdated() {
+    func test_onboarding_returns_wcpay_unsupported_version_when_patched_wcpay_plugin_outdated() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .unsupportedVersionWithPatch)
+        setupWCPayPlugin(status: .active, version: .unsupportedVersionWithPatch)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -130,10 +157,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .pluginUnsupportedVersion(plugin: .wcPay))
     }
 
-    func test_onboarding_returns_complete_when_plugin_version_matches_minimum_exactly() {
+    func test_onboarding_returns_complete_when_wcpay_plugin_version_matches_minimum_exactly() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .networkActive, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .networkActive, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .complete)
 
         // When
@@ -144,10 +171,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed)
     }
 
-    func test_onboarding_returns_complete_when_plugin_version_has_newer_patch_release() {
+    func test_onboarding_returns_complete_when_wcpay_plugin_version_has_newer_patch_release() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .networkActive, version: .supportedVersionWithPatch)
+        setupWCPayPlugin(status: .networkActive, version: .supportedVersionWithPatch)
         setupPaymentGatewayAccount(status: .complete)
 
         // When
@@ -158,10 +185,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed)
     }
 
-    func test_onboarding_returns_complete_when_plugin_version_has_newer_unpatched_release() {
+    func test_onboarding_returns_complete_when_wcpay_plugin_version_has_newer_unpatched_release() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .networkActive, version: .supportedVersionWithoutPatch)
+        setupWCPayPlugin(status: .networkActive, version: .supportedVersionWithoutPatch)
         setupPaymentGatewayAccount(status: .complete)
 
         // When
@@ -172,10 +199,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed)
     }
 
-    func test_onboarding_returns_complete_when_active() {
+    func test_onboarding_returns_complete_when_wcpay_plugin_active() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .complete)
 
         // When
@@ -186,10 +213,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed)
     }
 
-    func test_onboarding_returns_complete_when_network_active() {
+    func test_onboarding_returns_complete_when_wcpay_plugin_is_network_active() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .networkActive, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .networkActive, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .complete)
 
         // When
@@ -202,10 +229,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     // MARK: - Payment Account checks
 
-    func test_onboarding_returns_generic_error_with_no_account() {
+    func test_onboarding_returns_generic_error_with_no_account_for_wcplay_plugin() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -215,10 +242,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .genericError)
     }
 
-    func test_onboarding_returns_generic_error_when_account_is_not_eligible() {
+    func test_onboarding_returns_generic_error_when_account_is_not_eligible_for_wcplay_plugin() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .complete, isCardPresentEligible: false)
 
         // When
@@ -229,10 +256,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .genericError)
     }
 
-    func test_onboarding_returns_not_completed_when_account_is_not_connected() {
+    func test_onboarding_returns_not_completed_when_account_is_not_connected_for_wcplay_plugin() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .noAccount)
 
         // When
@@ -243,10 +270,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .pluginSetupNotCompleted)
     }
 
-    func test_onboarding_returns_pending_requirements_when_account_is_restricted_with_pending_requirements() {
+    func test_onboarding_returns_pending_requirements_when_account_is_restricted_with_pending_requirements_for_wcplay_plugin() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .restricted, hasPendingRequirements: true)
 
         // When
@@ -257,10 +284,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .stripeAccountPendingRequirement(deadline: nil))
     }
 
-    func test_onboarding_returns_pending_requirements_when_account_is_restricted_soon_with_pending_requirements() {
+    func test_onboarding_returns_pending_requirements_when_account_is_restricted_soon_with_pending_requirements_for_wcplay_plugin() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .restrictedSoon, hasPendingRequirements: true)
 
         // When
@@ -271,10 +298,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .stripeAccountPendingRequirement(deadline: nil))
     }
 
-    func test_onboarding_returns_overdue_requirements_when_account_is_restricted_with_overdue_requirements() {
+    func test_onboarding_returns_overdue_requirements_when_account_is_restricted_with_overdue_requirements_for_wcplay_plugin() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .restricted, hasOverdueRequirements: true)
 
         // When
@@ -285,10 +312,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .stripeAccountOverdueRequirement)
     }
 
-    func test_onboarding_returns_overdue_requirements_when_account_is_restricted_with_overdue_and_pending_requirements() {
+    func test_onboarding_returns_overdue_requirements_when_account_is_restricted_with_overdue_and_pending_requirements_for_wcplay_plugin() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .restricted, hasPendingRequirements: true, hasOverdueRequirements: true)
 
         // When
@@ -299,10 +326,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .stripeAccountOverdueRequirement)
     }
 
-    func test_onboarding_returns_review_when_account_is_restricted_with_no_requirements() {
+    func test_onboarding_returns_review_when_account_is_restricted_with_no_requirements_for_wcplay_plugin() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .restricted)
 
         // When
@@ -314,10 +341,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     }
 
 
-    func test_onboarding_returns_rejected_when_account_is_rejected_for_fraud() {
+    func test_onboarding_returns_rejected_when_account_is_rejected_for_fraud_for_wcplay_plugin() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .rejectedFraud)
 
         // When
@@ -328,10 +355,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .stripeAccountRejected)
     }
 
-    func test_onboarding_returns_rejected_when_account_is_rejected_for_tos() {
+    func test_onboarding_returns_rejected_when_account_is_rejected_for_tos_for_wcplay_plugin() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .rejectedTermsOfService)
 
         // When
@@ -342,10 +369,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .stripeAccountRejected)
     }
 
-    func test_onboarding_returns_rejected_when_account_is_listed() {
+    func test_onboarding_returns_rejected_when_account_is_listed_for_wcplay_plugin() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .rejectedListed)
 
         // When
@@ -356,10 +383,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .stripeAccountRejected)
     }
 
-    func test_onboarding_returns_rejected_when_account_is_rejected_for_other_reasons() {
+    func test_onboarding_returns_rejected_when_account_is_rejected_for_other_reasons_for_wcplay_plugin() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .rejectedOther)
 
         // When
@@ -370,10 +397,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .stripeAccountRejected)
     }
 
-    func test_onboarding_returns_generic_error_when_account_status_unknown() {
+    func test_onboarding_returns_generic_error_when_account_status_unknown_for_wcplay_plugin() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .unknown)
 
         // When
@@ -384,10 +411,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .genericError)
     }
 
-    func test_onboarding_returns_complete_when_account_is_setup_successfully() {
+    func test_onboarding_returns_complete_when_account_is_setup_successfully_for_wcplay_plugin() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .complete)
 
         // When
@@ -420,7 +447,7 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
 
 // MARK: - Plugin helpers
 private extension CardPresentPaymentsOnboardingUseCaseTests {
-    func setupPlugin(status: SitePluginStatusEnum, version: PluginVersion) {
+    func setupWCPayPlugin(status: SitePluginStatusEnum, version: PluginVersion) {
         let active = status == .active || status == .networkActive
         let networkActivated = status == .networkActive
         let plugin = SystemPlugin
@@ -436,6 +463,21 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
     }
 
+    func setupStripePlugin(status: SitePluginStatusEnum, version: PluginVersion) {
+        let active = status == .active || status == .networkActive
+        let networkActivated = status == .networkActive
+        let plugin = SystemPlugin
+            .fake()
+            .copy(
+                siteID: sampleSiteID,
+                plugin: "woocommerce-gateway-stripe",
+                name: "WooCommerce Stripe Gateway",
+                version: version.rawValue,
+                networkActivated: networkActivated,
+                active: active
+            )
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
+    }
     enum PluginVersion: String {
         case unsupportedVersionWithPatch = "2.4.2"
         case unsupportedVersionWithoutPatch = "3.2"

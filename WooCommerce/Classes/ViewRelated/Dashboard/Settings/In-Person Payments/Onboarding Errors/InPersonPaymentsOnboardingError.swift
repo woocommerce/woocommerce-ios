@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 struct InPersonPaymentsOnboardingError: View {
     let title: String
@@ -74,6 +75,17 @@ struct InPersonPaymentsOnboardingError: View {
                 }
             }.multilineTextAlignment(.center)
             .frame(maxWidth: 500)
+        }
+    }
+}
+
+extension CardPresentPaymentsPlugins {
+    public var image: UIImage {
+        switch self {
+        case .wcPay:
+            return .wcPayPlugin
+        case .stripe:
+            return .stripePlugin
         }
     }
 }

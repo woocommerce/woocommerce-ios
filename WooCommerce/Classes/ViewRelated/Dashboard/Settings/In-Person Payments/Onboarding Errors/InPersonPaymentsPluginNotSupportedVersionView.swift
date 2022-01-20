@@ -10,7 +10,7 @@ struct InPersonPaymentsPluginNotSupportedVersion: View {
             title: String(format: Localization.title, plugin.pluginName),
             message: String(format: Localization.message, plugin.pluginName),
             image: InPersonPaymentsOnboardingError.ImageInfo(
-                image: image,
+                image: plugin.image,
                 height: 108.0
             ),
             supportLink: false,
@@ -20,15 +20,6 @@ struct InPersonPaymentsPluginNotSupportedVersion: View {
                 action: onRefresh
             )
         )
-    }
-
-    var image: UIImage {
-        switch plugin {
-        case .wcPay:
-            return .wcPayPlugin
-        case .stripe:
-            return .stripePlugin
-        }
     }
 }
 

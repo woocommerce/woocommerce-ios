@@ -26,7 +26,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// CPP plugin is installed on the store but is not activated.
     ///
-    case pluginNotActivated
+    case pluginNotActivated(plugin: CardPresentPaymentsPlugins)
 
     /// CPP plugin is installed and activated but requires to be setup first.
     ///

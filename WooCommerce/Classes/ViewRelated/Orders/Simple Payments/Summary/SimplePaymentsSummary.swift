@@ -339,25 +339,34 @@ private extension SimplePaymentsSummary {
 // MARK: Previews
 struct SimplePaymentsSummary_Preview: PreviewProvider {
     static var previews: some View {
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "40.0", totalWithTaxes: "$42.3", taxAmount: "$2.3"))
+        SimplePaymentsSummary(viewModel: viewModel())
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light")
-
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(
-            providedAmount: "$40.0",
-            totalWithTaxes: "$42.3",
-            taxAmount: "$2.3",
-            noteContent: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard."
-        ))
+        
+        SimplePaymentsSummary(viewModel: viewModel(noteContent: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard."))
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light Content")
-
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0", totalWithTaxes: "$42.3", taxAmount: "$2.3"))
+        
+        SimplePaymentsSummary(viewModel: viewModel())
             .environment(\.colorScheme, .dark)
             .previewDisplayName("Dark")
-
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0", totalWithTaxes: "$42.3", taxAmount: "$2.3"))
+        
+        SimplePaymentsSummary(viewModel: viewModel())
             .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
             .previewDisplayName("Accessibility")
+    }
+
+    static private func viewModel(noteContent: String? = nil) -> SimplePaymentsSummaryViewModel {
+        .init(providedAmount: "40.0",
+              totalWithTaxes: "$42.3",
+              taxAmount: "$2.3",
+              taxLines: [taxLine(taxAmount: "$2.3")],
+              noteContent: noteContent)
+    }
+
+    static private func taxLine(taxAmount: String) -> SimplePaymentsSummaryViewModel.TaxLine {
+        .init(id: Int64.random(in: 0 ..< Int64.max),
+              title: "State Tax (5.55%)",
+              value: taxAmount)
     }
 }

@@ -406,7 +406,8 @@ private extension ReceiptStoreTests {
                    totalTax: String = "",
                    items: [Yosemite.OrderItem] = [],
                    coupons: [OrderCouponLine] = [],
-                   fees: [Yosemite.OrderFeeLine] = []) -> Networking.Order {
+                   fees: [Yosemite.OrderFeeLine] = [],
+                   taxes: [Yosemite.OrderTaxLine] = []) -> Networking.Order {
         Order(siteID: 1234,
               orderID: 0,
               parentID: 0,
@@ -434,7 +435,7 @@ private extension ReceiptStoreTests {
               coupons: coupons,
               refunds: [],
               fees: fees,
-              taxes: []) // TODO: 5809 - Add makeOrderTaxLine method
+              taxes: taxes)
     }
 
     func expectedDiscountLineDescription() -> String {

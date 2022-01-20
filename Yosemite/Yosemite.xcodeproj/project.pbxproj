@@ -294,6 +294,7 @@
 		B5EED1A820F4F3CF00652449 /* Account+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */; };
 		B5F2AE9520EBAD6000FEDC59 /* ResultsControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */; };
 		B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */; };
+		BAB3737927964A9500837B4A /* OrderTaxLine+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB3737827964A9500837B4A /* OrderTaxLine+ReadOnlyConvertible.swift */; };
 		CC2C036C262F316600928C9C /* ShippingLabelAccountSettings+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C036B262F316600928C9C /* ShippingLabelAccountSettings+ReadOnlyConvertible.swift */; };
 		CC2C0372262F32D800928C9C /* ShippingLabelPaymentMethod+ReadonlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0371262F32D800928C9C /* ShippingLabelPaymentMethod+ReadonlyConvertible.swift */; };
 		CC7D89F62767A9FB00046E8D /* Product+OrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7D89F52767A9FB00046E8D /* Product+OrderItem.swift */; };
@@ -686,6 +687,7 @@
 		B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsControllerTests.swift; sourceTree = "<group>"; };
 		B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchedResultsControllerDelegateWrapper.swift; sourceTree = "<group>"; };
+		BAB3737827964A9500837B4A /* OrderTaxLine+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderTaxLine+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC2C036B262F316600928C9C /* ShippingLabelAccountSettings+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAccountSettings+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CC2C0371262F32D800928C9C /* ShippingLabelPaymentMethod+ReadonlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelPaymentMethod+ReadonlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1203,6 +1205,7 @@
 				02C255012563C76A00A04423 /* ShippingLabel+ReadOnlyConvertible.swift */,
 				DEFD6D962644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift */,
 				077F39E126A5AFCA00ABEADC /* SystemPlugin+ReadOnlyConvertible.swift */,
+				BAB3737827964A9500837B4A /* OrderTaxLine+ReadOnlyConvertible.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -1793,6 +1796,7 @@
 				B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */,
 				247CE8402582F39900F9D9D1 /* MockActionHandler.swift in Sources */,
 				247CE7C82582DF5500F9D9D1 /* MockStoresManager.swift in Sources */,
+				BAB3737927964A9500837B4A /* OrderTaxLine+ReadOnlyConvertible.swift in Sources */,
 				D83B093525DECFCC00B21F45 /* CardPresentPaymentAction.swift in Sources */,
 				B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */,
 				4591A6B0274BB23000F51DCD /* OrderDateRangeFilter.swift in Sources */,

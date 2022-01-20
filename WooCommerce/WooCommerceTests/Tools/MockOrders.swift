@@ -42,7 +42,8 @@ final class MockOrders {
                    items: [OrderItem] = [],
                    shippingLines: [ShippingLine] = sampleShippingLines(),
                    refunds: [OrderRefundCondensed] = [],
-                   fees: [OrderFeeLine] = []) -> Order {
+                   fees: [OrderFeeLine] = [],
+                   taxes: [OrderTaxLine] = []) -> Order {
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: 0,
@@ -70,8 +71,7 @@ final class MockOrders {
                      coupons: [],
                      refunds: refunds,
                      fees: fees,
-                     taxes: [] // TODO: 5809 - Add sampleOrderTaxLines method
-        )
+                     taxes: taxes)
     }
 
     func sampleOrder() -> Order {
@@ -118,8 +118,7 @@ final class MockOrders {
                      coupons: [],
                      refunds: [],
                      fees: [],
-                     taxes: [] // TODO: 5809 - Add sampleOrderTaxLines method
-        )
+                     taxes: [])
     }
 
     static func sampleShippingLines(cost: String = "133.00", tax: String = "0.00") -> [ShippingLine] {

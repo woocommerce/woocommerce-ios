@@ -253,7 +253,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         viewModel.selectedIntervalIndex = 0
 
         // Then
-        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Monday, Jan 3", "Monday, Jan 3 › 1 AM"])
+        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Monday, Jan 3", "Monday, Jan 3, 1:00 AM"])
     }
 
     func test_timeRangeBarViewModel_for_thisWeek_is_emitted_twice_after_order_and_visitor_stats_updated_and_selecting_interval() {
@@ -277,12 +277,12 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
                                                                dateEnd: "2022-01-05 23:59:59")])
         insertOrderStats(orderStats, timeRange: timeRange)
 
-        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Jan 3-Jan 5"])
+        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Jan 3 - Jan 5"])
 
         viewModel.selectedIntervalIndex = 1
 
         // Then
-        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Jan 3-Jan 5", "Jan 5"])
+        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Jan 3 - Jan 5", "Jan 5"])
     }
 
     func test_timeRangeBarViewModel_for_thisMonth_is_emitted_twice_after_order_and_visitor_stats_updated_and_selecting_interval() {
@@ -304,12 +304,12 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
                                                                dateEnd: "2022-01-03 23:59:59")])
         insertOrderStats(orderStats, timeRange: timeRange)
 
-        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["January"])
+        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["January 2022"])
 
         viewModel.selectedIntervalIndex = 0
 
         // Then
-        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["January", "Jan 3"])
+        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["January 2022", "Jan 3"])
     }
 
     func test_timeRangeBarViewModel_for_thisYear_is_emitted_twice_after_order_and_visitor_stats_updated_and_selecting_interval() {
@@ -336,7 +336,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         viewModel.selectedIntervalIndex = 0
 
         // Then
-        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["2022", "2022 › January"])
+        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["2022", "January 2022"])
     }
 
     // MARK: - `reloadChartAnimated`

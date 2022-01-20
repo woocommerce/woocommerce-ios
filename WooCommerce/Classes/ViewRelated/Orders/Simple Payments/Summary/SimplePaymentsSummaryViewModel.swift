@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Combine
+import Experiments
 
 /// `ViewModel` to drive the content of the `SimplePaymentsSummary` view.
 ///
@@ -79,6 +80,12 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         return showLoadingIndicator
     }
 
+    /// Show tax break up using `tax_lines` in summary
+    ///
+    var shouldShowTaxBreakup: Bool {
+        featureFlagService.isFeatureFlagEnabled(.taxLinesInSimplePayments)
+    }
+
     /// Total to charge with taxes.
     ///
     private let totalWithTaxes: String
@@ -119,6 +126,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     lazy private(set) var noteViewModel = { SimplePaymentsNoteViewModel(analytics: analytics) }()
 
+    /// FeatureFlagService to check `tax_lines` related flag (`taxLinesInSimplePayments`)
+    ///
+    private let featureFlagService: FeatureFlagService
+
     init(providedAmount: String,
          totalWithTaxes: String,
          taxAmount: String,
@@ -131,7 +142,8 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.orderID = orderID
         self.orderKey = orderKey
@@ -140,6 +152,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         self.currencyFormatter = currencyFormatter
         self.stores = stores
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.providedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
         self.totalWithTaxes = currencyFormatter.formatAmount(totalWithTaxes) ?? totalWithTaxes
         self.taxAmount = currencyFormatter.formatAmount(taxAmount) ?? taxAmount

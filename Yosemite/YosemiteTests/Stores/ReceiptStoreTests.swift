@@ -406,7 +406,8 @@ private extension ReceiptStoreTests {
                    totalTax: String = "",
                    items: [Yosemite.OrderItem] = [],
                    coupons: [OrderCouponLine] = [],
-                   fees: [Yosemite.OrderFeeLine] = []) -> Networking.Order {
+                   fees: [Yosemite.OrderFeeLine] = [],
+                   taxes: [Yosemite.OrderTaxLine] = []) -> Networking.Order {
         Order(siteID: 1234,
               orderID: 0,
               parentID: 0,
@@ -434,7 +435,7 @@ private extension ReceiptStoreTests {
               coupons: coupons,
               refunds: [],
               fees: fees,
-              taxes: [makeOrderTaxLine(totalShippingTax: shippingTax, totalTax: totalTax)])
+              taxes: taxes)
     }
 
     func expectedDiscountLineDescription() -> String {
@@ -473,18 +474,5 @@ private extension ReceiptStoreTests {
                            total: total,
                            totalTax: "",
                            attributes: [])
-    }
-
-    func makeOrderTaxLine(totalShippingTax: String,
-                          totalTax: String) -> Yosemite.OrderTaxLine {
-        .init(taxID: 123,
-              rateCode: "",
-              rateID: 1,
-              label: "State",
-              isCompoundTaxRate: false,
-              totalTax: totalTax,
-              totalShippingTax: totalShippingTax,
-              ratePercent: 5.5,
-              attributes: [])
     }
 }

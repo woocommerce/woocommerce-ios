@@ -132,7 +132,7 @@ private extension CouponListViewController {
     }
 
     func registerTableViewCells() {
-        tableView.registerNib(for: TitleBodyTableViewCell.self)
+        TitleAndSubtitleTableViewCell.register(for: tableView)
     }
 }
 
@@ -144,7 +144,7 @@ extension CouponListViewController {
     ///
     func displayPlaceholderCoupons() {
         let options = GhostOptions(displaysSectionHeader: false,
-                                   reuseIdentifier: TitleBodyTableViewCell.reuseIdentifier,
+                                   reuseIdentifier: TitleAndSubtitleTableViewCell.reuseIdentifier,
                                    rowsPerSection: Constants.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options,
                                        style: .wooDefaultGhostStyle)
@@ -211,18 +211,19 @@ extension CouponListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: TitleBodyTableViewCell.reuseIdentifier, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: TitleAndSubtitleTableViewCell.reuseIdentifier, for: indexPath)
         if let cellViewModel = viewModel.couponViewModels[safe: indexPath.row] {
-            configure(cell as? TitleBodyTableViewCell, with: cellViewModel)
+            configure(cell as? TitleAndSubtitleTableViewCell, with: cellViewModel)
         }
 
         return cell
     }
 
-    func configure(_ cell: TitleBodyTableViewCell?, with cellViewModel: CouponListCellViewModel) {
+    func configure(_ cell: TitleAndSubtitleTableViewCell?, with cellViewModel: CouponListCellViewModel) {
         cell?.titleLabel.text = cellViewModel.title
-        cell?.bodyLabel.text = cellViewModel.subtitle
+        cell?.subtitleLabel.text = cellViewModel.subtitle
         cell?.accessibilityLabel = cellViewModel.accessibilityLabel
+        cell?.statusContainerView.isHidden = true
     }
 }
 

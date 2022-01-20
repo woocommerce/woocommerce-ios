@@ -156,14 +156,16 @@ private extension StoreStatsPeriodViewModel {
             return StatsTimeRangeBarViewModel(startDate: startDate,
                                               endDate: endDate,
                                               timeRange: timeRange,
-                                              timezone: siteTimezone)
+                                              timezone: siteTimezone,
+                                              isMyStoreTabUpdatesEnabled: true)
         }
         let date = orderStatsIntervals[selectedIndex].dateStart(timeZone: siteTimezone)
         return StatsTimeRangeBarViewModel(startDate: startDate,
                                           endDate: endDate,
                                           selectedDate: date,
                                           timeRange: timeRange,
-                                          timezone: siteTimezone)
+                                          timezone: siteTimezone,
+                                          isMyStoreTabUpdatesEnabled: true)
     }
 
     func createOrderStatsText(orderStatsData: OrderStatsData, selectedIntervalIndex: Int?) -> String {

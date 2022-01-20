@@ -22,7 +22,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// CPP plugin is installed on the store, but the version is out-dated and doesn't contain required APIs for card present payments.
     ///
-    case pluginUnsupportedVersion
+    case pluginUnsupportedVersion(plugin: CardPresentPaymentsPlugins)
 
     /// CPP plugin is installed on the store but is not activated.
     ///
@@ -97,6 +97,38 @@ extension CardPresentPaymentOnboardingState {
             return "generic_error"
         case .noConnectionError:
             return "no_connection_error"
+        }
+    }
+}
+
+public enum CardPresentPaymentsPlugins: Equatable {
+    case wcPay
+    case stripe
+
+    public var pluginName: String {
+        switch self {
+        case .wcPay:
+            return "WooCommerce Payments"
+        case .stripe:
+            return "WooCommerce Stripe Gateway"
+        }
+    }
+
+    public var minimumSupportedPluginVersion: String {
+        switch self {
+        case .wcPay:
+            return "3.2.1"
+        case .stripe:
+            return "5.9.0"
+        }
+    }
+
+    public var supportedCountryCodes: [String] {
+        switch self {
+        case .wcPay:
+            return ["US"]
+        case .stripe:
+            return ["US"]
         }
     }
 }

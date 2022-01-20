@@ -12,7 +12,7 @@ struct InPersonPaymentsSelectPlugin: View {
                 title: Localization.title,
                 message: Localization.message,
                 image: InPersonPaymentsOnboardingError.ImageInfo(
-                    image: .paymentsPlugin,
+                    image: .wcPayPlugin,
                     height: Constants.height
                 ),
                 supportLink: false

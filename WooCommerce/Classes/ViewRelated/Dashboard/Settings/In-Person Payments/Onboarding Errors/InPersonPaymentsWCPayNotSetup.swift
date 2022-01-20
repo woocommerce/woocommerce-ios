@@ -12,7 +12,7 @@ struct InPersonPaymentsWCPayNotSetup: View {
                 title: Localization.title,
                 message: Localization.message,
                 image: InPersonPaymentsOnboardingError.ImageInfo(
-                    image: .paymentsPlugin,
+                    image: .wcPayPlugin,
                     height: 108.0
                 ),
                 supportLink: false

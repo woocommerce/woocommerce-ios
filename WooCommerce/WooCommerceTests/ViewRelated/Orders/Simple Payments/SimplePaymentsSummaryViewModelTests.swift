@@ -14,7 +14,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "$100.00",
                                                        totalWithTaxes: "$104.30",
                                                        taxAmount: "$4.3",
-                                                       taxLines: [taxLine(taxAmount: "$4.3")])
+                                                       taxLines: [])
 
         // When
         viewModel.noteViewModel.newNote = "Updated note"
@@ -28,7 +28,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "$100.00",
                                                        totalWithTaxes: "$104.30",
                                                        taxAmount: "$4.3",
-                                                       taxLines: [taxLine(taxAmount: "$4.3")])
+                                                       taxLines: [])
         // When
         let triggeredUpdate: Bool = waitFor { promise in
             viewModel.objectWillChange.sink {
@@ -61,7 +61,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100",
                                                        totalWithTaxes: "104.30",
                                                        taxAmount: "$4.3",
-                                                       taxLines: [taxLine(taxAmount: "$4.3")],
+                                                       taxLines: [],
                                                        currencyFormatter: currencyFormatter,
                                                        stores: mockStores)
 
@@ -76,7 +76,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100",
                                                        totalWithTaxes: "104.30",
                                                        taxAmount: "$4.3",
-                                                       taxLines: [taxLine(taxAmount: "$4.3")],
+                                                       taxLines: [],
                                                        currencyFormatter: currencyFormatter)
 
         // When
@@ -93,7 +93,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100",
                                                        totalWithTaxes: "104.30",
                                                        taxAmount: "4.3",
-                                                       taxLines: [taxLine(taxAmount: "$4.3")],
+                                                       taxLines: [],
                                                        currencyFormatter: currencyFormatter)
 
         // When & Then
@@ -106,7 +106,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100",
                                                        totalWithTaxes: "104.30",
                                                        taxAmount: "$4.3",
-                                                       taxLines: [taxLine(taxAmount: "$4.3")],
+                                                       taxLines: [],
                                                        currencyFormatter: currencyFormatter)
 
         // When & Then
@@ -124,7 +124,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.shouldShowTaxBreakup)
     }
-    
+
     func test_shouldShowTaxBreakup_is_true_if_taxLinesInSimplePayments_feature_flag_is_on() {
         // Given
         let featureFlagService = MockFeatureFlagService(isTaxLinesInSimplePaymentsOn: true)
@@ -438,15 +438,5 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(stateStored)
-    }
-}
-
-// MARK: Private helpers
-//
-private extension SimplePaymentsSummaryViewModelTests {
-    func taxLine(taxAmount: String) -> SimplePaymentsSummaryViewModel.TaxLine {
-        .init(id: Int64.random(in: 0 ..< Int64.max),
-              title: "State Tax (5.55%)",
-              value: taxAmount)
     }
 }

@@ -42,12 +42,8 @@ final class MockOrders {
                    items: [OrderItem] = [],
                    shippingLines: [ShippingLine] = sampleShippingLines(),
                    refunds: [OrderRefundCondensed] = [],
-                   fees: [OrderFeeLine] = []) -> Order {
-        let shippingTax = "0.00"
-        let totalTax = "1.20"
-        let tax = makeOrderTaxLine(totalShippingTax: shippingTax,
-                                   totalTax: totalTax)
-
+                   fees: [OrderFeeLine] = [],
+                   taxes: [OrderTaxLine] = []) -> Order {
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: 0,
@@ -63,9 +59,9 @@ final class MockOrders {
                      discountTotal: "30.00",
                      discountTax: "1.20",
                      shippingTotal: "0.00",
-                     shippingTax: shippingTax,
+                     shippingTax: "0.00",
                      total: "31.20",
-                     totalTax: totalTax,
+                     totalTax: "1.20",
                      paymentMethodID: "stripe",
                      paymentMethodTitle: "Credit Card (Stripe)",
                      items: items,
@@ -75,8 +71,7 @@ final class MockOrders {
                      coupons: [],
                      refunds: refunds,
                      fees: fees,
-                     taxes: [tax]
-        )
+                     taxes: taxes)
     }
 
     func sampleOrder() -> Order {
@@ -96,11 +91,6 @@ final class MockOrders {
     }
 
     func sampleOrderCreatedInCurrentYear() -> Order {
-        let shippingTax = "0.00"
-        let totalTax = "1.20"
-        let tax = makeOrderTaxLine(totalShippingTax: shippingTax,
-                                   totalTax: totalTax)
-
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: 0,
@@ -116,9 +106,9 @@ final class MockOrders {
                      discountTotal: "30.00",
                      discountTax: "1.20",
                      shippingTotal: "0.00",
-                     shippingTax: shippingTax,
+                     shippingTax: "0.00",
                      total: "31.20",
-                     totalTax: totalTax,
+                     totalTax: "1.20",
                      paymentMethodID: "stripe",
                      paymentMethodTitle: "Credit Card (Stripe)",
                      items: [],
@@ -128,8 +118,7 @@ final class MockOrders {
                      coupons: [],
                      refunds: [],
                      fees: [],
-                     taxes: [tax]
-        )
+                     taxes: [])
     }
 
     static func sampleShippingLines(cost: String = "133.00", tax: String = "0.00") -> [ShippingLine] {
@@ -139,19 +128,6 @@ final class MockOrders {
         total: cost,
         totalTax: tax,
         taxes: [])]
-    }
-
-    func makeOrderTaxLine(totalShippingTax: String,
-                          totalTax: String) -> OrderTaxLine {
-        .init(taxID: 123,
-              rateCode: "",
-              rateID: 1,
-              label: "State",
-              isCompoundTaxRate: false,
-              totalTax: totalTax,
-              totalShippingTax: totalShippingTax,
-              ratePercent: 5.5,
-              attributes: [])
     }
 
     func sampleFeeLines() -> [OrderFeeLine] {

@@ -912,40 +912,23 @@ private extension OrderStoreTests {
         return [coupon1, coupon2]
     }
 
+    func sampleOrderTaxLine() -> Networking.OrderTaxLine {
+        OrderTaxLine.fake().copy(taxID: 1330,
+                                 rateCode: "US-NY-STATE-2",
+                                 rateID: 6,
+                                 label: "State",
+                                 totalTax: "7.71",
+                                 ratePercent: 4.5)
+    }
+
     func sampleOrderTaxLines() -> [Networking.OrderTaxLine] {
-        [
-            .init(taxID: 1330,
-                  rateCode: "US-NY-STATE-2",
-                  rateID: 6,
-                  label: "State",
-                  isCompoundTaxRate: true,
-                  totalTax: "7.71",
-                  totalShippingTax: "0.00",
-                  ratePercent: 4.5,
-                  attributes: [])
-        ]
+        [sampleOrderTaxLine()]
     }
 
     func sampleOrderTaxLinesMutated() -> [Networking.OrderTaxLine] {
         [
-            .init(taxID: 1330,
-                  rateCode: "US-NY-STATE-2",
-                  rateID: 6,
-                  label: "State",
-                  isCompoundTaxRate: true,
-                  totalTax: "55",
-                  totalShippingTax: "0.00",
-                  ratePercent: 5.5,
-                  attributes: []),
-            .init(taxID: 124,
-                  rateCode: "",
-                  rateID: 2,
-                  label: "Central",
-                  isCompoundTaxRate: true,
-                  totalTax: "2.5",
-                  totalShippingTax: "3",
-                  ratePercent: 2.5,
-                  attributes: [])
+            sampleOrderTaxLine().copy(totalTax: "55", ratePercent: 5.5),
+            OrderTaxLine.fake()
         ]
     }
 

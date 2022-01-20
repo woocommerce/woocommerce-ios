@@ -23,7 +23,6 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     var siteVisitStatsMode: SiteVisitStatsMode = .default {
         didSet {
             updateSiteVisitStats(mode: siteVisitStatsMode)
-            updateConversionStatsVisibility(visitStatsMode: siteVisitStatsMode)
         }
     }
 
@@ -304,7 +303,6 @@ private extension StoreStatsV4PeriodViewController {
 
         // Visibility
         updateSiteVisitStats(mode: siteVisitStatsMode)
-        updateConversionStatsVisibility(visitStatsMode: siteVisitStatsMode)
 
         // Accessibility elements
         xAxisAccessibilityView.isAccessibilityElement = true
@@ -407,7 +405,6 @@ private extension StoreStatsV4PeriodViewController {
 private extension StoreStatsV4PeriodViewController {
     func updateSiteVisitStats(mode: SiteVisitStatsMode) {
         reloadSiteVisitUI()
-        updateConversionStatsVisibility(visitStatsMode: mode)
     }
 }
 
@@ -451,7 +448,6 @@ private extension StoreStatsV4PeriodViewController {
         }
 
         updateSiteVisitStats(mode: mode)
-        updateConversionStatsVisibility(visitStatsMode: mode)
 
         switch siteVisitStatsMode {
         case .hidden, .redactedDueToJetpack:
@@ -465,19 +461,6 @@ private extension StoreStatsV4PeriodViewController {
                 return
             }
             visitorsDataOrRedactedView.state = .data
-        }
-    }
-
-    func updateConversionStatsVisibility(visitStatsMode: SiteVisitStatsMode) {
-        guard conversionDataOrRedactedView != nil else {
-            return
-        }
-
-        switch visitStatsMode {
-        case .hidden, .redactedDueToJetpack:
-            conversionDataOrRedactedView.isHidden = true
-        case .default:
-            conversionDataOrRedactedView.isHidden = false
         }
     }
 }
@@ -589,7 +572,6 @@ private extension StoreStatsV4PeriodViewController {
     func reloadAllFields(animateChart: Bool = true) {
         viewModel.selectedIntervalIndex = nil
         reloadSiteVisitUI()
-        updateConversionStatsVisibility(visitStatsMode: siteVisitStatsMode)
         reloadChart(animateChart: animateChart)
 
         view.accessibilityElements = [ordersTitle as Any,

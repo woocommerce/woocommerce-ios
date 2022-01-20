@@ -3,7 +3,6 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import class AutomatticTracks.CrashLogging
 
-
 struct CouponListCellViewModel {
     var title: String
     var subtitle: String

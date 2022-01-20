@@ -21,10 +21,10 @@ public final class SingleOrderScreen: ScreenObject {
         // Expects 2 instances of order.number - one in Header and one in Summary
         app.assertTextVisibilityCount(textToFind: "#\(order.number)", expectedCount: 2)
 
+        // Expects 2 instances of first_name - one in Summary and one in Shipping details
         app.assertTextVisibilityCount(textToFind: order.billing.first_name, expectedCount: 2)
         app.assertElement(matching: "summary-table-view-cell", existsOnCellWithIdentifier: "\(order.billing.first_name) \(order.billing.last_name)")
 
-        // Loops through all products on the order
         for product in order.line_items {
             XCTAssertTrue(app.staticTexts[product.name].isFullyVisibleOnScreen(), "'\(product.name)' is missing!")
         }

@@ -16,8 +16,7 @@ final class OrdersTests: XCTestCase {
     func testOrdersScreenLoads() throws {
         let orders = try GetMocks.readOrdersData()
 
-        try TabNavComponent()
-            .goToOrdersScreen()
+        try TabNavComponent().goToOrdersScreen()
             .verifyOrdersScreenLoaded()
             .verifyOrdersList(orders: orders)
             .selectOrder(byOrderNumber: orders[0].number)

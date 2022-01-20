@@ -121,6 +121,36 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(tax2.toReadOnly(), taxes[1])
     }
 
+    func test_it_persists_order_tax_line_in_storage() throws {
+        // Given
+        let taxLine = OrderTaxLine.fake().copy(taxID: 1)
+        let order = makeOrder().copy(siteID: 3, taxes: [taxLine])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+
+        // When
+        useCase.upsert([order])
+
+        // Then
+        let storageTaxLine = try XCTUnwrap(viewStorage.loadOrderTaxLine(siteID: 3, taxID: 1))
+        XCTAssertEqual(storageTaxLine.toReadOnly(), taxLine)
+    }
+
+    func test_it_replaces_existing_order_tax_line_in_storage() throws {
+        // Given
+        let originalTaxLine = OrderTaxLine.fake().copy(taxID: 1, ratePercent: 0.0)
+        let order = makeOrder().copy(siteID: 3, taxes: [originalTaxLine])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([order])
+
+        // When
+        let taxLine = OrderTaxLine.fake().copy(taxID: 1, ratePercent: 5.0)
+        useCase.upsert([order.copy(taxes: [taxLine])])
+
+        // Then
+        let storageTaxLine = try XCTUnwrap(viewStorage.loadOrderTaxLine(siteID: 3, taxID: 1))
+        XCTAssertEqual(storageTaxLine.toReadOnly(), taxLine)
+    }
+
     func test_it_persists_order_item_attributes_in_storage() throws {
         // Given
         let attributes = [

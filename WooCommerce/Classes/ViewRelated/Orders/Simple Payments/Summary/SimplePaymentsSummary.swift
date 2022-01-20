@@ -342,15 +342,15 @@ struct SimplePaymentsSummary_Preview: PreviewProvider {
         SimplePaymentsSummary(viewModel: viewModel())
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light")
-        
+
         SimplePaymentsSummary(viewModel: viewModel(noteContent: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard."))
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light Content")
-        
+
         SimplePaymentsSummary(viewModel: viewModel())
             .environment(\.colorScheme, .dark)
             .previewDisplayName("Dark")
-        
+
         SimplePaymentsSummary(viewModel: viewModel())
             .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
             .previewDisplayName("Accessibility")

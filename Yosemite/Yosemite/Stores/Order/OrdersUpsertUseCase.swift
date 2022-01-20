@@ -275,10 +275,10 @@ struct OrdersUpsertUseCase {
         }
 
         // Now, remove any objects that exist in `storageOrder.taxes` but not in `readOnlyOrder.taxes`
-        storageOrder.taxes?.forEach { storageFee in
-            if readOnlyOrder.taxes.first(where: { $0.taxID == storageFee.taxID } ) == nil {
-                storageOrder.removeFromTaxes(storageFee)
-                storage.deleteObject(storageFee)
+        storageOrder.taxes?.forEach { storageTax in
+            if readOnlyOrder.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
+                storageOrder.removeFromTaxes(storageTax)
+                storage.deleteObject(storageTax)
             }
         }
     }

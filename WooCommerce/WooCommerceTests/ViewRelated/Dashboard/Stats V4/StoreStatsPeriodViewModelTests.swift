@@ -135,7 +135,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         insertOrderStats(orderStats, timeRange: timeRange)
 
         // Then
-        XCTAssertEqual(conversionStatsTextValues, ["-"])
+        XCTAssertEqual(conversionStatsTextValues, ["-", "0.0%"])
     }
 
     // MARK: - Stats text values while selecting a time interval
@@ -375,6 +375,232 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
 
         // `reloadChartAnimated` is not emitted again after visitor stats are updated.
         XCTAssertEqual(reloadChartAnimatedValues, [false])
+    }
+
+    // MARK: - `visitorStatsViewState`
+
+    func test_visitorStatsViewState_for_today_is_redacted_when_selecting_interval() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        var viewStates: [StoreStatsDataOrRedactedView.State] = []
+        viewModel.visitorStatsViewState.sink { viewState in
+            viewStates.append(viewState)
+        }.store(in: &cancellables)
+
+        XCTAssertEqual(viewStates, [.data])
+
+        // When
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 62.7),
+                                      intervals: [.fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59")])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        XCTAssertEqual(viewStates, [.data])
+
+        viewModel.selectedIntervalIndex = 0
+
+        // Then
+        XCTAssertEqual(viewStates, [.data, .redacted])
+    }
+
+    func test_visitorStatsViewState_for_thisWeek_is_not_redacted_when_selecting_interval() {
+        let timeRange: StatsTimeRangeV4 = .thisWeek
+        let viewModel = createViewModel(timeRange: timeRange)
+        var viewStates: [StoreStatsDataOrRedactedView.State] = []
+        viewModel.visitorStatsViewState.sink { viewState in
+            viewStates.append(viewState)
+        }.store(in: &cancellables)
+
+        XCTAssertEqual(viewStates, [.data])
+
+        // When
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 62.7),
+                                      intervals: [.fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59")])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        XCTAssertEqual(viewStates, [.data])
+
+        viewModel.selectedIntervalIndex = 0
+
+        // Then
+        XCTAssertEqual(viewStates, [.data])
+    }
+
+    func test_visitorStatsViewState_is_redactedDueToJetpack_when_siteVisitStatsMode_is_redactedDueToJetpack() {
+        let timeRange: StatsTimeRangeV4 = .thisWeek
+        let viewModel = createViewModel(timeRange: timeRange)
+        var viewStates: [StoreStatsDataOrRedactedView.State] = []
+        viewModel.visitorStatsViewState.sink { viewState in
+            viewStates.append(viewState)
+        }.store(in: &cancellables)
+
+        XCTAssertEqual(viewStates, [.data])
+
+        // When
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 62.7),
+                                      intervals: [.fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59")])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        XCTAssertEqual(viewStates, [.data])
+
+        viewModel.siteVisitStatsMode = .redactedDueToJetpack
+
+        // Then
+        XCTAssertEqual(viewStates, [.data, .redactedDueToJetpack])
+
+        viewModel.selectedIntervalIndex = 0
+        XCTAssertEqual(viewStates, [.data, .redactedDueToJetpack])
+    }
+
+    func test_visitorStatsViewState_is_redacted_when_siteVisitStatsMode_is_hidden() {
+        let timeRange: StatsTimeRangeV4 = .thisWeek
+        let viewModel = createViewModel(timeRange: timeRange)
+        var viewStates: [StoreStatsDataOrRedactedView.State] = []
+        viewModel.visitorStatsViewState.sink { viewState in
+            viewStates.append(viewState)
+        }.store(in: &cancellables)
+
+        XCTAssertEqual(viewStates, [.data])
+
+        // When
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 62.7),
+                                      intervals: [.fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59")])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        XCTAssertEqual(viewStates, [.data])
+
+        viewModel.siteVisitStatsMode = .hidden
+
+        // Then
+        XCTAssertEqual(viewStates, [.data, .redacted])
+
+        viewModel.selectedIntervalIndex = 0
+        XCTAssertEqual(viewStates, [.data, .redacted])
+    }
+
+    // MARK: - `conversionStatsViewState`
+
+    func test_conversionStatsViewState_for_today_is_redacted_when_selecting_interval() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        var viewStates: [StoreStatsDataOrRedactedView.State] = []
+        viewModel.conversionStatsViewState.sink { viewState in
+            viewStates.append(viewState)
+        }.store(in: &cancellables)
+
+        XCTAssertEqual(viewStates, [.data])
+
+        // When
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 62.7),
+                                      intervals: [.fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59")])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        XCTAssertEqual(viewStates, [.data])
+
+        viewModel.selectedIntervalIndex = 0
+
+        // Then
+        XCTAssertEqual(viewStates, [.data, .redacted])
+    }
+
+    func test_conversionStatsViewState_for_thisWeek_is_not_redacted_when_selecting_interval() {
+        let timeRange: StatsTimeRangeV4 = .thisWeek
+        let viewModel = createViewModel(timeRange: timeRange)
+        var viewStates: [StoreStatsDataOrRedactedView.State] = []
+        viewModel.conversionStatsViewState.sink { viewState in
+            viewStates.append(viewState)
+        }.store(in: &cancellables)
+
+        XCTAssertEqual(viewStates, [.data])
+
+        // When
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 62.7),
+                                      intervals: [.fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59")])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        XCTAssertEqual(viewStates, [.data])
+
+        viewModel.selectedIntervalIndex = 0
+
+        // Then
+        XCTAssertEqual(viewStates, [.data])
+    }
+
+    func test_conversionStatsViewState_is_redacted_when_siteVisitStatsMode_is_redactedDueToJetpack() {
+        let timeRange: StatsTimeRangeV4 = .thisWeek
+        let viewModel = createViewModel(timeRange: timeRange)
+        var viewStates: [StoreStatsDataOrRedactedView.State] = []
+        viewModel.conversionStatsViewState.sink { viewState in
+            viewStates.append(viewState)
+        }.store(in: &cancellables)
+
+        XCTAssertEqual(viewStates, [.data])
+
+        // When
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 62.7),
+                                      intervals: [.fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59")])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        XCTAssertEqual(viewStates, [.data])
+
+        viewModel.siteVisitStatsMode = .redactedDueToJetpack
+
+        // Then
+        XCTAssertEqual(viewStates, [.data, .redacted])
+
+        viewModel.selectedIntervalIndex = 0
+        XCTAssertEqual(viewStates, [.data, .redacted])
+    }
+
+    func test_conversionStatsViewState_is_redacted_when_siteVisitStatsMode_is_hidden() {
+        let timeRange: StatsTimeRangeV4 = .thisWeek
+        let viewModel = createViewModel(timeRange: timeRange)
+        var viewStates: [StoreStatsDataOrRedactedView.State] = []
+        viewModel.conversionStatsViewState.sink { viewState in
+            viewStates.append(viewState)
+        }.store(in: &cancellables)
+
+        XCTAssertEqual(viewStates, [.data])
+
+        // When
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 62.7),
+                                      intervals: [.fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59")])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        XCTAssertEqual(viewStates, [.data])
+
+        viewModel.siteVisitStatsMode = .hidden
+
+        // Then
+        XCTAssertEqual(viewStates, [.data, .redacted])
+
+        viewModel.selectedIntervalIndex = 0
+        XCTAssertEqual(viewStates, [.data, .redacted])
     }
 }
 

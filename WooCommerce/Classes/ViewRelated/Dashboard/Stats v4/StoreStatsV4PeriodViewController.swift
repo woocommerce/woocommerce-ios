@@ -22,7 +22,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
 
     var siteVisitStatsMode: SiteVisitStatsMode = .default {
         didSet {
-            updateSiteVisitStats(mode: siteVisitStatsMode)
+            viewModel.siteVisitStatsMode = siteVisitStatsMode
         }
     }
 
@@ -154,6 +154,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         observeSelectedBarIndex()
         observeTimeRangeBarViewModel()
         observeReloadChartAnimated()
+        observeVisitorStatsViewState()
+        observeConversionStatsViewState()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -192,8 +194,6 @@ private extension StoreStatsV4PeriodViewController {
 
         viewModel.conversionStatsText.sink { [weak self] conversionStatsLabel in
             guard let self = self else { return }
-            self.conversionDataOrRedactedView.state = conversionStatsLabel == nil ? .redacted: .data
-            print("~~~\(self.conversionDataOrRedactedView.state)")
             self.conversionDataOrRedactedView.data = conversionStatsLabel
         }.store(in: &cancellables)
     }
@@ -207,8 +207,6 @@ private extension StoreStatsV4PeriodViewController {
             self.visitorsDataOrRedactedView.isHighlighted = isHighlighted
             self.conversionDataOrRedactedView.isHighlighted = isHighlighted
             self.revenueData.textColor = textColor
-
-            self.updateSiteVisitStatsAndConversionRate(selectedIndex: selectedIndex)
         }.store(in: &cancellables)
     }
 
@@ -221,6 +219,22 @@ private extension StoreStatsV4PeriodViewController {
     func observeReloadChartAnimated() {
         viewModel.reloadChartAnimated.sink { [weak self] animated in
             self?.reloadChart(animateChart: animated)
+        }.store(in: &cancellables)
+    }
+
+    func observeVisitorStatsViewState() {
+        viewModel.visitorStatsViewState
+            .sink { [weak self] viewState in
+                guard let self = self, self.visitorsDataOrRedactedView != nil else { return }
+                self.visitorsDataOrRedactedView.state = viewState
+        }.store(in: &cancellables)
+    }
+
+    func observeConversionStatsViewState() {
+        viewModel.conversionStatsViewState
+            .sink { [weak self] viewState in
+                guard let self = self, self.conversionDataOrRedactedView != nil else { return }
+                self.conversionDataOrRedactedView.state = viewState
         }.store(in: &cancellables)
     }
 }
@@ -303,9 +317,6 @@ private extension StoreStatsV4PeriodViewController {
 
         // Data
         updateStatsDataToDefaultStyles()
-
-        // Visibility
-        updateSiteVisitStats(mode: siteVisitStatsMode)
 
         // Accessibility elements
         xAxisAccessibilityView.isAccessibilityElement = true
@@ -403,14 +414,6 @@ private extension StoreStatsV4PeriodViewController {
     }
 }
 
-// MARK: - UI Updates
-//
-private extension StoreStatsV4PeriodViewController {
-    func updateSiteVisitStats(mode: SiteVisitStatsMode) {
-        reloadSiteVisitUI()
-    }
-}
-
 // MARK: - ChartViewDelegate Conformance (Charts)
 //
 extension StoreStatsV4PeriodViewController: ChartViewDelegate {
@@ -435,22 +438,6 @@ private extension StoreStatsV4PeriodViewController {
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateUI(selectedBarIndex selectedIndex: Int?) {
         viewModel.selectedIntervalIndex = selectedIndex
-    }
-
-    /// Updates visitor and conversion stats based on the selected bar index.
-    ///
-    /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
-    func updateSiteVisitStatsAndConversionRate(selectedIndex: Int?) {
-        let mode: SiteVisitStatsMode
-
-        // Hides site visit stats for "today" when an interval bar is selected.
-        if timeRange == .today, selectedIndex != nil {
-            mode = .hidden
-        } else {
-            mode = siteVisitStatsMode
-        }
-
-        siteVisitStatsMode = mode
     }
 }
 
@@ -560,7 +547,6 @@ private extension StoreStatsV4PeriodViewController {
 
     func reloadAllFields(animateChart: Bool = true) {
         viewModel.selectedIntervalIndex = nil
-        reloadSiteVisitUI()
         reloadChart(animateChart: animateChart)
 
         view.accessibilityElements = [ordersTitle as Any,
@@ -574,21 +560,6 @@ private extension StoreStatsV4PeriodViewController {
                                       yAxisAccessibilityView as Any,
                                       xAxisAccessibilityView as Any,
                                       chartAccessibilityView as Any]
-    }
-
-    func reloadSiteVisitUI() {
-        guard visitorsDataOrRedactedView != nil else {
-            return
-        }
-
-        switch siteVisitStatsMode {
-        case .hidden:
-            visitorsDataOrRedactedView.state = .redacted
-        case .redactedDueToJetpack:
-            visitorsDataOrRedactedView.state = .redactedDueToJetpack
-        case .default:
-            visitorsDataOrRedactedView.state = .data
-        }
     }
 
     func reloadChart(animateChart: Bool = true) {

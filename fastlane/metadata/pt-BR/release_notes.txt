@@ -1,0 +1,5 @@
+Os comerciantes têm pedido uma maneira rápida de registrar uma transação no aplicativo com o mínimo de informações possível, como apenas com um valor de cobrança. Talvez você esteja numa feira e só queira passar o cartão de crédito de um cliente, sem precisar gerenciar o estoque. Esta versão inclui uma nova funcionalidade de “Pagamentos simples” na guia de pedidos. Se você já é um cliente do WooCommerce Payments, verá que isso funciona muito bem com o leitor de cartão de crédito para pagamento presencial. Ainda não tem um leitor de cartão de crédito? Como alternativa, você pode facilmente enviar um link de pagamento ao seu cliente para ele pagar pelo seu site.
+
+Nesta versão, também está incluída a possibilidade de reembolso das taxas do pedido. Também introduzimos um leitor de código de barras de entrada de SKU experimental para quando você for editar um produto. Esse leitor pode ser ativado nas Configurações.
+
+Estamos trabalhando em várias funcionalidades interessantes que serão lançadas nos próximos meses. Continue nos enviando o seu feedback!

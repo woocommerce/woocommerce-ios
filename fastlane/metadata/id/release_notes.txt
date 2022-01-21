@@ -1,0 +1,5 @@
+Para penjual meminta kemi menyediakan cara cepat mencatat transaksi di aplikasi dengan informasi minimal – misalnya, hanya informasi jumlah tagihan. Mungkin Anda sedang di pasar petani dan hanya ingin menagih pelanggan melalui kartu kredit dan tidak perlu mengelola inventaris. Rilis ini menyertakan fitur "Pembayaran Simpel" baru di tab pesanan. Jika Anda pelanggan WooCommerce Payment, Anda akan melihat bahwa fitur ini berfungsi lancar dengan pembaca kartu kredit Pembayaran Langsung! Belum punya pembaca kartu kredit? Sebagai alternatif, Anda bisa dengan mudah mengirimkan tautan pembayaran ke pelanggan untuk melakukan pembayaran menggunakan perangkat mereka melalui situs Anda.
+
+Rilis ini juga menyertakan fitur pengembalian dana atas pesanan. Kami juga menyelipkan pembaca barcode input SKU percobaan untuk digunakan saat mengedit produk. Pembaca barcode ini dapat diaktifkan di Pengaturan.
+
+Kami sedang mengerjakan beberapa fitur menarik yang akan dirilis beberapa bulan lagi. Terus kirimkan feedback Anda pada kami!

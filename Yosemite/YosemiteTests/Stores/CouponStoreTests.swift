@@ -174,7 +174,7 @@ final class CouponStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(storedCouponsCount, 3)
+        XCTAssertEqual(storedCouponsCount, 4)
     }
 
     func test_synchronizeCoupons_deletes_coupons_when_first_page_recieved_from_API() {
@@ -197,7 +197,7 @@ final class CouponStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(storedCouponsCount, 3)
+        XCTAssertEqual(storedCouponsCount, 4)
     }
 
     func test_synchronizeCoupons_does_not_delete_coupons_when_subsequent_pages_recieved_from_API() {
@@ -220,7 +220,7 @@ final class CouponStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(storedCouponsCount, 4)
+        XCTAssertEqual(storedCouponsCount, 5)
     }
 
     func test_deleteCoupon_calls_remote_using_correct_request_parameters() {

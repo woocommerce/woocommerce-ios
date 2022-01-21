@@ -41,7 +41,7 @@ final class CouponsRemoteTests: XCTestCase {
         // Then
         XCTAssert(result.isSuccess)
         let coupons = try XCTUnwrap(result.get())
-        XCTAssertEqual(coupons.count, 3)
+        XCTAssertEqual(coupons.count, 4)
     }
 
     /// Verifies that loadAllCoupons uses the passed in parameters to specify the page of results wanted.

@@ -16,7 +16,7 @@ final class PaymentCaptureOrchestrator {
     private var walletSuppressionRequestToken: PKSuppressionRequestToken?
 
     func collectPayment(for order: Order,
-                        statementDescriptor: String?,
+                        paymentGatewayAccount: PaymentGatewayAccount,
                         onWaitingForInput: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
@@ -28,10 +28,17 @@ final class PaymentCaptureOrchestrator {
             onCompletion(.failure(minimumAmountError(order: order, minimumAmount: Constants.minimumAmount)))
             return
         }
+
+        /// Set state of CardPresentPaymentStore
+        ///
+        let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
+
+        ServiceLocator.stores.dispatch(setAccount)
+
         /// First ask the backend to create/assign a Stripe customer for the order
         ///
         var customerID: String?
-        let customerAction = PaymentGatewayAccountAction.fetchOrderCustomer(siteID: order.siteID, orderID: order.orderID) { [self] result in
+        let customerAction = CardPresentPaymentAction.fetchOrderCustomer(siteID: order.siteID, orderID: order.orderID) { [self] result in
             switch result {
             case .success(let customer):
                 customerID = customer.id
@@ -42,7 +49,7 @@ final class PaymentCaptureOrchestrator {
 
             guard let parameters = paymentParameters(
                     order: order,
-                    statementDescriptor: statementDescriptor,
+                    statementDescriptor: paymentGatewayAccount.statementDescriptor,
                     customerID: customerID
             ) else {
                 DDLogError("Error: failed to create payment parameters for an order")
@@ -176,7 +183,7 @@ private extension PaymentCaptureOrchestrator {
                              order: Order,
                              paymentIntent: PaymentIntent,
                              onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-        let action = PaymentGatewayAccountAction.captureOrderPayment(siteID: siteID,
+        let action = CardPresentPaymentAction.captureOrderPayment(siteID: siteID,
                                                                      orderID: order.orderID,
                                                                      paymentIntentID: paymentIntent.id) { [weak self] result in
             guard let self = self else {

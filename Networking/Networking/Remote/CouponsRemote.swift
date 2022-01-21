@@ -17,6 +17,10 @@ public protocol CouponsRemoteProtocol {
     func updateCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void)
 
     func createCoupon(_ coupon: Coupon, completion: @escaping (Result<Coupon, Error>) -> Void)
+
+    func loadCouponReport(for siteID: Int64,
+                          couponID: Int64,
+                          completion: @escaping (Result<CouponReport, Error>) -> Void)
 }
 
 
@@ -55,7 +59,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
 
     // MARK: - Delete Coupon
 
-    /// Delete a `Coupon`.
+    /// Deletes a `Coupon`.
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll delete the product attribute.
@@ -78,7 +82,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
 
     // MARK: - Update Coupon
 
-    /// Update a `Coupon`.
+    /// Updates a `Coupon`.
     ///
     /// - Parameters:
     ///     - coupon: The coupon to be updated remotely.
@@ -101,7 +105,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
 
     // MARK: - Create coupon
 
-    /// Create a `Coupon`.
+    /// Creates a `Coupon`.
     ///
     /// - Parameters:
     ///     - coupon: The coupon to be created remotely.
@@ -120,11 +124,52 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
             completion(.failure(error))
         }
     }
+
+    // MARK: - Load coupon report
+    /// Loads the analytics report for a specific coupon from a given site.
+    ///
+    /// - Parameters:
+    ///     - siteID: The site from which we'll fetch the analytics report.
+    ///     - couponID: The coupon for which we'll fetch the analytics report.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func loadCouponReport(for siteID: Int64,
+                                 couponID: Int64,
+                                 completion: @escaping (Result<CouponReport, Error>) -> Void) {
+        let parameters = [
+            ParameterKey.coupons: [couponID]
+        ]
+
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.couponReports,
+                                     parameters: parameters)
+
+        let mapper = CouponReportListMapper()
+
+        enqueue(request, mapper: mapper, completion: { result in
+            switch result {
+            case .success(let couponReports):
+                if let report = couponReports.first {
+                    completion(.success(report))
+                } else {
+                    completion(.failure(CouponsRemoteError.noAnalyticsReportsFound))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        })
+    }
 }
 
 // MARK: - Constants
 //
 public extension CouponsRemote {
+    enum CouponsRemoteError: Error {
+        case noAnalyticsReportsFound
+    }
+
     enum Default {
         public static let pageSize = 25
         public static let pageNumber = 1
@@ -132,11 +177,13 @@ public extension CouponsRemote {
 
     private enum Path {
         static let coupons = "coupons"
+        static let couponReports = "reports/coupons"
     }
 
     private enum ParameterKey {
         static let page = "page"
         static let perPage = "per_page"
         static let force = "force"
+        static let coupons = "coupons"
     }
 }

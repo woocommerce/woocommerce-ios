@@ -93,7 +93,8 @@ private extension SummaryTableViewCellTests {
                      shippingLines: [],
                      coupons: [],
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: [])
     }
 }
 

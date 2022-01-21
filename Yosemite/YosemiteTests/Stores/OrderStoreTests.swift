@@ -340,12 +340,14 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 1)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
         let storageOrder1 = viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderMutated().orderID)
@@ -354,6 +356,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 3)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 3)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 2)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2(), in: viewStorage)
         let storageOrder2 = viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderMutated2().orderID)
@@ -362,6 +365,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 4)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
     }
 
     /// Verifies that `upsertStoredOrder` effectively inserts a new Order, with the specified payload.
@@ -571,12 +575,14 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 1)
 
         let expectation = self.expectation(description: "Stored Orders Reset")
         let action = OrderAction.resetStoredOrders {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderItem.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
 
             expectation.fulfill()
         }
@@ -795,7 +801,8 @@ private extension OrderStoreTests {
                      shippingLines: sampleShippingLines(),
                      coupons: sampleCoupons(),
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: sampleOrderTaxLines())
     }
 
     func sampleOrderMutated() -> Networking.Order {
@@ -825,7 +832,8 @@ private extension OrderStoreTests {
                      shippingLines: sampleShippingLines(),
                      coupons: sampleCouponsMutated(),
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: sampleOrderTaxLinesMutated())
     }
 
     func sampleOrderMutated2() -> Networking.Order {
@@ -855,7 +863,8 @@ private extension OrderStoreTests {
                      shippingLines: sampleShippingLines(),
                      coupons: [],
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: [])
     }
 
     func sampleAddress() -> Networking.Address {
@@ -901,6 +910,26 @@ private extension OrderStoreTests {
                                       discountTax: "0.66")
 
         return [coupon1, coupon2]
+    }
+
+    func sampleOrderTaxLine() -> Networking.OrderTaxLine {
+        OrderTaxLine.fake().copy(taxID: 1330,
+                                 rateCode: "US-NY-STATE-2",
+                                 rateID: 6,
+                                 label: "State",
+                                 totalTax: "7.71",
+                                 ratePercent: 4.5)
+    }
+
+    func sampleOrderTaxLines() -> [Networking.OrderTaxLine] {
+        [sampleOrderTaxLine()]
+    }
+
+    func sampleOrderTaxLinesMutated() -> [Networking.OrderTaxLine] {
+        [
+            sampleOrderTaxLine().copy(totalTax: "55", ratePercent: 5.5),
+            OrderTaxLine.fake()
+        ]
     }
 
     func sampleItems() -> [Networking.OrderItem] {

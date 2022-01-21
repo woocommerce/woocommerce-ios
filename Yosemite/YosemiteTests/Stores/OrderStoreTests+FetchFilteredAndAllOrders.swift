@@ -193,6 +193,7 @@ private enum Fixtures {
         shippingLines: [],
         coupons: [],
         refunds: [],
-        fees: []
+        fees: [],
+        taxes: []
     )
 }

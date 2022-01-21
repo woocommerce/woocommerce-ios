@@ -702,6 +702,7 @@ private extension OrderDetailsDataSource {
                                                         hasAddOns: addOns.isNotEmpty)
 
         cell.configure(item: itemViewModel, imageService: imageService)
+        cell.accessibilityIdentifier = "single-product-cell"
         cell.onViewAddOnsTouchUp = { [weak self] in
             self?.onCellAction?(.viewAddOns(addOns: addOns), nil)
         }
@@ -827,6 +828,7 @@ private extension OrderDetailsDataSource {
         )
 
         cell.configure(cellViewModel)
+        cell.accessibilityIdentifier = "summary-table-view-cell"
 
         cell.onEditTouchUp = { [weak self] in
             self?.onCellAction?(.summary, nil)
@@ -1515,7 +1517,13 @@ private extension OrderDetailsDataSource {
     }
 
     func hasCardPresentEligiblePaymentGatewayAccount() -> Bool {
-        resultsControllers.paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
+        let accounts = resultsControllers.paymentGatewayAccounts
+
+        guard accounts.count <= 1 else {
+            return false
+        }
+
+        return resultsControllers.paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
     }
 
     func orderContainsAnySubscription() -> Bool {

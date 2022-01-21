@@ -33,7 +33,8 @@ final class MockOrders {
             shippingLines: [],
             coupons: [],
             refunds: [],
-            fees: []
+            fees: [],
+            taxes: []
         )
     }
 
@@ -41,7 +42,8 @@ final class MockOrders {
                    items: [OrderItem] = [],
                    shippingLines: [ShippingLine] = sampleShippingLines(),
                    refunds: [OrderRefundCondensed] = [],
-                   fees: [OrderFeeLine] = []) -> Order {
+                   fees: [OrderFeeLine] = [],
+                   taxes: [OrderTaxLine] = []) -> Order {
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: 0,
@@ -68,7 +70,8 @@ final class MockOrders {
                      shippingLines: shippingLines,
                      coupons: [],
                      refunds: refunds,
-                     fees: fees)
+                     fees: fees,
+                     taxes: taxes)
     }
 
     func sampleOrder() -> Order {
@@ -114,7 +117,8 @@ final class MockOrders {
                      shippingLines: Self.sampleShippingLines(),
                      coupons: [],
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: [])
     }
 
     static func sampleShippingLines(cost: String = "133.00", tax: String = "0.00") -> [ShippingLine] {
@@ -186,7 +190,8 @@ final class MockOrders {
                      shippingLines: brokenShippingLines(), // empty shipping
                      coupons: [],
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: [])
     }
 
     /// An order with broken elements that hasn't been paid, inspired by `broken-order.json`
@@ -218,7 +223,8 @@ final class MockOrders {
                      shippingLines: brokenShippingLines(), // empty shipping
                      coupons: [],
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: [])
     }
 
     /// An address that may or may not be broken, that came from `broken-order.json`

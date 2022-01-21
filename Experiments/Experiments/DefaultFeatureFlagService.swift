@@ -24,11 +24,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .orderListFilters:
             return true
         case .jetpackConnectionPackageSupport:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .orderCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .hubMenu:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .systemStatusReport:
             return true
         case .stripeExtensionInPersonPayments:
@@ -39,6 +39,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .productSKUInputScanner:
             return true
+        case .taxLinesInSimplePayments:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

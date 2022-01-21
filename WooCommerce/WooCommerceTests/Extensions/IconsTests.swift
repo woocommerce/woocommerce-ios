@@ -314,8 +314,12 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.paymentsLoading)
     }
 
-    func test_payments_plugin_not_nil() {
-        XCTAssertNotNil(UIImage.paymentsPlugin)
+    func test_stripe_plugin_not_nil() {
+        XCTAssertNotNil(UIImage.stripePlugin)
+    }
+
+    func test_wcpay_plugin_not_nil() {
+        XCTAssertNotNil(UIImage.wcPayPlugin)
     }
 
     func test_print_icon_in_not_nil() {

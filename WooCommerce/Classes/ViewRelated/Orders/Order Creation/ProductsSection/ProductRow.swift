@@ -1,7 +1,7 @@
 import SwiftUI
 import Kingfisher
 
-/// Represent a single product row in the Product section of a New Order
+/// Represent a single product or variation row in the Product section of a New Order
 ///
 struct ProductRow: View {
     /// View model to drive the view.
@@ -124,7 +124,7 @@ private enum Localization {
 
 struct ProductRow_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ProductRowViewModel(productID: 1,
+        let viewModel = ProductRowViewModel(productOrVariationID: 1,
                                             name: "Love Ficus",
                                             sku: "123456",
                                             price: "20",
@@ -133,7 +133,7 @@ struct ProductRow_Previews: PreviewProvider {
                                             manageStock: true,
                                             canChangeQuantity: true,
                                             imageURL: nil)
-        let viewModelWithoutStepper = ProductRowViewModel(productID: 1,
+        let viewModelWithoutStepper = ProductRowViewModel(productOrVariationID: 1,
                                                           name: "Love Ficus",
                                                           sku: "123456",
                                                           price: "20",

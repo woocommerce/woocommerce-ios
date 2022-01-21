@@ -49,7 +49,7 @@
             "date_created_gmt": "2017-03-21T18:23:00",
             "date_modified": "2017-03-21T15:23:00",
             "date_modified_gmt": "2017-03-21T18:23:00",
-            "discount_type": "percent",
+            "discount_type": "fixed_cart",
             "description": "",
             "date_expires": null,
             "date_expires_gmt": null,
@@ -90,7 +90,7 @@
             "date_created_gmt": "2021-04-13T08:26:25",
             "date_modified": "2021-04-13T08:26:25",
             "date_modified_gmt": "2021-04-13T08:26:25",
-            "discount_type": "fixed_cart",
+            "discount_type": "percent",
             "description": "",
             "date_expires": null,
             "date_expires_gmt": null,
@@ -119,6 +119,47 @@
                 "collection": [
                     {
                         "href": "https://example.com/wp-json/wc/v3/coupons"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 581,
+            "code": "usrufb6q",
+            "amount": "30.00",
+            "date_created": "2022-01-07T10:59:47",
+            "date_created_gmt": "2022-01-07T03:59:47",
+            "date_modified": "2022-01-07T10:59:56",
+            "date_modified_gmt": "2022-01-07T03:59:56",
+            "discount_type": "sign_up_fee_percent",
+            "description": "",
+            "date_expires": null,
+            "date_expires_gmt": null,
+            "usage_count": 0,
+            "individual_use": false,
+            "product_ids": [],
+            "excluded_product_ids": [],
+            "usage_limit": null,
+            "usage_limit_per_user": null,
+            "limit_usage_to_x_items": null,
+            "free_shipping": false,
+            "product_categories": [],
+            "excluded_product_categories": [],
+            "exclude_sale_items": false,
+            "minimum_amount": "0.00",
+            "maximum_amount": "0.00",
+            "email_restrictions": [],
+            "used_by": [],
+            "meta_data": [],
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://huongdotests1.blog/wp-json/wc/v3/coupons/581"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://huongdotests1.blog/wp-json/wc/v3/coupons"
                     }
                 ]
             }

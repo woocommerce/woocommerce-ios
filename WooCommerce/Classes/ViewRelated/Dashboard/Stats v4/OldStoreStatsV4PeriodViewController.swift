@@ -147,7 +147,11 @@ final class OldStoreStatsV4PeriodViewController: UIViewController {
                                                              roundSmallNumbers: false) ?? String()
     }
 
-    private lazy var visitorsEmptyView = StoreStatsSiteVisitEmptyView()
+    private lazy var visitorsEmptyView: StoreStatsEmptyView = {
+        let emptyView = StoreStatsEmptyView()
+        emptyView.showJetpackImage = true
+        return emptyView
+    }()
     // MARK: - Initialization
 
     /// Designated Initializer

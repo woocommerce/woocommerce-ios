@@ -159,6 +159,17 @@ extension Coupon.DiscountType {
         .percent
     }
 }
+extension CouponReport {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> CouponReport {
+        .init(
+            couponID: .fake(),
+            amount: .fake(),
+            ordersCount: .fake()
+        )
+    }
+}
 extension CreateProductVariation {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -300,7 +311,8 @@ extension Order {
             shippingLines: .fake(),
             coupons: .fake(),
             refunds: .fake(),
-            fees: .fake()
+            fees: .fake(),
+            taxes: .fake()
         )
     }
 }
@@ -498,6 +510,23 @@ extension OrderStatusEnum {
     ///
     public static func fake() -> OrderStatusEnum {
         .pending
+    }
+}
+extension OrderTaxLine {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> OrderTaxLine {
+        .init(
+            taxID: .fake(),
+            rateCode: .fake(),
+            rateID: .fake(),
+            label: .fake(),
+            isCompoundTaxRate: .fake(),
+            totalTax: .fake(),
+            totalShippingTax: .fake(),
+            ratePercent: .fake(),
+            attributes: .fake()
+        )
     }
 }
 extension PaymentGateway {

@@ -30,21 +30,27 @@ struct HubMenu: View {
 
                 LazyVGrid(columns: gridItemLayout, spacing: Constants.itemSpacing) {
                     ForEach(viewModel.menuElements, id: \.self) { menu in
-                        HubMenuElement(image: menu.icon, text: menu.title)
-                            .frame(width: Constants.itemSize, height: Constants.itemSize)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                switch menu {
-                                case .woocommerceAdmin:
-                                    showingWooCommerceAdmin = true
-                                case .viewStore:
-                                    showingViewStore = true
-                                case .reviews:
-                                    showingReviews = true
-                                case .coupons:
-                                    showingCoupons = true
-                                }
+                        // Currently the badge is always zero, because we are not handling push notifications count
+                        // correctly due to the first behavior described here p91TBi-66O:
+                        // AppDelegate’s `application(_:didReceiveRemoteNotification:fetchCompletionHandler:)`
+                        // can be called twice for the same push notification when receiving it
+                        // and tapping on it to open the app. This means that some push notifications are incrementing the badge number by 2, and some by 1.
+                        HubMenuElement(image: menu.icon, imageColor: menu.iconColor, text: menu.title, badge: 0, onTapGesture: {
+                            switch menu {
+                            case .woocommerceAdmin:
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "admin_menu"])
+                                showingWooCommerceAdmin = true
+                            case .viewStore:
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "view_store"])
+                                showingViewStore = true
+                            case .reviews:
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "reviews"])
+                                showingReviews = true
+                            case .coupons:
+                                ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "coupons"])
+                                showingCoupons = true
                             }
+                        })
                     }
                     .background(Color(.listForeground))
                     .cornerRadius(Constants.cornerRadius)
@@ -115,21 +121,23 @@ struct HubMenu: View {
                 }
                 Spacer()
                 VStack {
-                    ZStack {
-                        Circle()
-                            .fill(Color(UIColor(light: .white,
-                                                dark: .secondaryButtonBackground)))
-                            .frame(width: settingsSize,
-                                   height: settingsSize)
-                        if let cogImage = UIImage.cogImage.imageWithTintColor(.accent) {
-                            Image(uiImage: cogImage)
-                                .resizable()
-                                .frame(width: settingsIconSize,
-                                       height: settingsIconSize)
-                        }
-                    }
-                    .onTapGesture {
+                    Button {
+                        ServiceLocator.analytics.track(.hubMenuSettingsTapped)
                         showSettings = true
+                    } label: {
+                        ZStack {
+                            Circle()
+                                .fill(Color(UIColor(light: .white,
+                                                    dark: .secondaryButtonBackground)))
+                                .frame(width: settingsSize,
+                                       height: settingsSize)
+                            if let cogImage = UIImage.cogImage.imageWithTintColor(.accent) {
+                                Image(uiImage: cogImage)
+                                    .resizable()
+                                    .frame(width: settingsIconSize,
+                                           height: settingsIconSize)
+                            }
+                        }
                     }
                     Spacer()
                 }
@@ -152,6 +160,7 @@ struct HubMenu: View {
         static let padding: CGFloat = 16
         static let topBarSpacing: CGFloat = 2
         static let avatarSize: CGFloat = 40
+        static let option = "option"
     }
 
     private enum Localization {

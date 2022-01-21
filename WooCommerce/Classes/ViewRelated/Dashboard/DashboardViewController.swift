@@ -88,7 +88,7 @@ final class DashboardViewController: UIViewController {
         return view
     }()
 
-    private var cancellables = Set<AnyCancellable>()
+    private var subscriptions = Set<AnyCancellable>()
 
     // MARK: View Lifecycle
 
@@ -111,6 +111,7 @@ final class DashboardViewController: UIViewController {
         configureBottomJetpackBenefitsBanner()
         observeSiteForUIUpdates()
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
+        observeNavigationBarHeightForStoreNameLabelVisibility()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -135,7 +136,8 @@ final class DashboardViewController: UIViewController {
 private extension DashboardViewController {
 
     func configureView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) ?
+        Constants.backgroundColor: Constants.legacyBackgroundColor
     }
 
     func configureNavigation() {
@@ -189,18 +191,20 @@ private extension DashboardViewController {
     }
 
     private func configureNavigationItem() {
-        let rightBarButton = UIBarButtonItem(image: .gearBarButtonItemImage,
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(settingsTapped))
-        rightBarButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
-        rightBarButton.accessibilityTraits = .button
-        rightBarButton.accessibilityHint = NSLocalizedString(
-            "Navigates to Settings.",
-            comment: "VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen."
-        )
-        rightBarButton.accessibilityIdentifier = "dashboard-settings-button"
-        navigationItem.setRightBarButton(rightBarButton, animated: false)
+        if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.hubMenu) {
+            let rightBarButton = UIBarButtonItem(image: .gearBarButtonItemImage,
+                                                 style: .plain,
+                                                 target: self,
+                                                 action: #selector(settingsTapped))
+            rightBarButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
+            rightBarButton.accessibilityTraits = .button
+            rightBarButton.accessibilityHint = NSLocalizedString(
+                "Navigates to Settings.",
+                comment: "VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen."
+            )
+            rightBarButton.accessibilityIdentifier = "dashboard-settings-button"
+            navigationItem.setRightBarButton(rightBarButton, animated: false)
+        }
     }
 
     func configureDashboardUIContainer() {
@@ -292,22 +296,6 @@ private extension DashboardViewController {
 extension DashboardViewController: DashboardUIScrollDelegate {
     func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
-        showOrHideSubtitle(offset: scrollView.contentOffset.y)
-    }
-
-    private func showOrHideSubtitle(offset: CGFloat) {
-        guard shouldShowStoreNameAsSubtitle else {
-            return
-        }
-        storeNameLabel.isHidden = offset > headerStackView.frame.height
-        if offset < -headerStackView.frame.height {
-            UIView.transition(with: storeNameLabel, duration: Constants.animationDuration,
-                              options: .showHideTransitionViews,
-                              animations: { [weak self] in
-                                guard let self = self else { return }
-                                self.storeNameLabel.isHidden = false
-                          })
-        }
     }
 }
 
@@ -436,7 +424,7 @@ private extension DashboardViewController {
             guard let self = self else { return }
             self.updateUI(site: site)
             self.reloadData(forced: true)
-        }.store(in: &cancellables)
+        }.store(in: &subscriptions)
     }
 
     func observeBottomJetpackBenefitsBannerVisibilityUpdates() {
@@ -460,7 +448,22 @@ private extension DashboardViewController {
                     self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
                 }
                 ServiceLocator.stores.dispatch(action)
-            }.store(in: &cancellables)
+            }.store(in: &subscriptions)
+    }
+
+    func observeNavigationBarHeightForStoreNameLabelVisibility() {
+        navigationController?.navigationBar.publisher(for: \.frame, options: [.initial, .new])
+            .map { $0.height }
+            .removeDuplicates()
+            .sink(receiveValue: { [weak self] navigationBarHeight in
+                guard let self = self else { return }
+
+                guard self.shouldShowStoreNameAsSubtitle else {
+                    return
+                }
+                self.storeNameLabel.isHidden = navigationBarHeight <= Constants.collapsedNavigationBarHeight
+            })
+            .store(in: &subscriptions)
     }
 }
 
@@ -474,8 +477,10 @@ private extension DashboardViewController {
     }
 
     enum Constants {
-        static let animationDuration = 0.2
         static let bannerBottomMargin = CGFloat(8)
         static let horizontalMargin = CGFloat(20)
+        static let backgroundColor: UIColor = .systemBackground
+        static let legacyBackgroundColor: UIColor = .listBackground
+        static let collapsedNavigationBarHeight = CGFloat(44)
     }
 }

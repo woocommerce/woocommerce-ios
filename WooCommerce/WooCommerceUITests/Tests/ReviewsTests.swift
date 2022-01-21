@@ -15,15 +15,13 @@ final class ReviewsTests: XCTestCase {
         // GH Issue: https://github.com/woocommerce/woocommerce-ios/issues/1907
         try TabNavComponent()
             .goToProductsScreen()
-
-        try TabNavComponent()
-            .goToReviewsScreen()
     }
 
     func testReviewsScreenLoad() throws {
         let reviews = try GetMocks.readReviewsData()
 
-        try ReviewsScreen()
+        try TabNavComponent().goToMenuScreen()
+            .goToReviewsScreen()
             .verifyReviewsScreenLoaded()
             .verifyReviewList(reviews: reviews)
             .selectReview(byReviewer: reviews[0].reviewer)

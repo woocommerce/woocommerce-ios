@@ -288,6 +288,7 @@ public enum WooAnalyticsStat: String {
     case pushNotificationOSAlertAllowed = "push_notification_os_alert_allowed"
     case pushNotificationOSAlertDenied = "push_notification_os_alert_denied"
     case pushNotificationOSAlertShown = "push_notification_os_alert_shown"
+    case viewInAppPushNotificationPressed = "view_in_app_push_notification_pressed"
 
     // MARK: Notification View Events
     //
@@ -550,6 +551,14 @@ public enum WooAnalyticsStat: String {
     case jetpackInstallFailed = "jetpack_install_failed"
     case jetpackInstallInWPAdminButtonTapped = "jetpack_install_in_wpadmin_button_tapped"
     case jetpackInstallContactSupportButtonTapped = "jetpack_install_contact_support_button_tapped"
+
+    // MARK: Hub Menu
+    //
+    case hubMenuTabSelected = "hub_menu_tab_selected"
+    case hubMenuTabReselected = "hub_menu_tab_reselected"
+    case hubMenuSwitchStoreTapped = "hub_menu_switch_store_tapped"
+    case hubMenuOptionTapped = "hub_menu_option_tapped"
+    case hubMenuSettingsTapped = "hub_menu_settings_tapped"
 }
 
 public extension WooAnalyticsStat {

@@ -313,7 +313,6 @@ private extension AppSettingsStore {
         } catch {
             onCompletion(.failure(error))
         }
-
     }
 
     /// Sets the state for the Product SKU Input Scanner beta feature switch into `GeneralAppSettings`.

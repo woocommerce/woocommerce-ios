@@ -151,6 +151,24 @@ extension Coupon {
     }
 }
 
+extension CouponReport {
+    public func copy(
+        couponID: CopiableProp<Int64> = .copy,
+        amount: CopiableProp<Double> = .copy,
+        ordersCount: CopiableProp<Int64> = .copy
+    ) -> CouponReport {
+        let couponID = couponID ?? self.couponID
+        let amount = amount ?? self.amount
+        let ordersCount = ordersCount ?? self.ordersCount
+
+        return CouponReport(
+            couponID: couponID,
+            amount: amount,
+            ordersCount: ordersCount
+        )
+    }
+}
+
 extension Order {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -179,7 +197,8 @@ extension Order {
         shippingLines: CopiableProp<[ShippingLine]> = .copy,
         coupons: CopiableProp<[OrderCouponLine]> = .copy,
         refunds: CopiableProp<[OrderRefundCondensed]> = .copy,
-        fees: CopiableProp<[OrderFeeLine]> = .copy
+        fees: CopiableProp<[OrderFeeLine]> = .copy,
+        taxes: CopiableProp<[OrderTaxLine]> = .copy
     ) -> Order {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -208,6 +227,7 @@ extension Order {
         let coupons = coupons ?? self.coupons
         let refunds = refunds ?? self.refunds
         let fees = fees ?? self.fees
+        let taxes = taxes ?? self.taxes
 
         return Order(
             siteID: siteID,
@@ -236,7 +256,8 @@ extension Order {
             shippingLines: shippingLines,
             coupons: coupons,
             refunds: refunds,
-            fees: fees
+            fees: fees,
+            taxes: taxes
         )
     }
 }
@@ -468,6 +489,42 @@ extension OrderStatsV4Totals {
             shipping: shipping,
             netRevenue: netRevenue,
             totalProducts: totalProducts
+        )
+    }
+}
+
+extension OrderTaxLine {
+    public func copy(
+        taxID: CopiableProp<Int64> = .copy,
+        rateCode: CopiableProp<String> = .copy,
+        rateID: CopiableProp<Int64> = .copy,
+        label: CopiableProp<String> = .copy,
+        isCompoundTaxRate: CopiableProp<Bool> = .copy,
+        totalTax: CopiableProp<String> = .copy,
+        totalShippingTax: CopiableProp<String> = .copy,
+        ratePercent: CopiableProp<Double> = .copy,
+        attributes: CopiableProp<[OrderItemAttribute]> = .copy
+    ) -> OrderTaxLine {
+        let taxID = taxID ?? self.taxID
+        let rateCode = rateCode ?? self.rateCode
+        let rateID = rateID ?? self.rateID
+        let label = label ?? self.label
+        let isCompoundTaxRate = isCompoundTaxRate ?? self.isCompoundTaxRate
+        let totalTax = totalTax ?? self.totalTax
+        let totalShippingTax = totalShippingTax ?? self.totalShippingTax
+        let ratePercent = ratePercent ?? self.ratePercent
+        let attributes = attributes ?? self.attributes
+
+        return OrderTaxLine(
+            taxID: taxID,
+            rateCode: rateCode,
+            rateID: rateID,
+            label: label,
+            isCompoundTaxRate: isCompoundTaxRate,
+            totalTax: totalTax,
+            totalShippingTax: totalShippingTax,
+            ratePercent: ratePercent,
+            attributes: attributes
         )
     }
 }

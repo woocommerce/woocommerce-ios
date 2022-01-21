@@ -7,7 +7,6 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
 
     init(siteID: Int64, navigationController: UINavigationController?) {
         super.init(rootView: HubMenu(siteID: siteID, navigationController: navigationController))
-        configureNavigationBar()
         configureTabBarItem()
     }
 
@@ -23,10 +22,6 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
 }
 
 private extension HubMenuViewController {
-    func configureNavigationBar() {
-        navigationItem.title = Localization.navigationBarTitle
-    }
-
     func configureTabBarItem() {
         tabBarItem.title = Localization.tabTitle
         tabBarItem.image = .hubMenu
@@ -37,8 +32,5 @@ private extension HubMenuViewController {
 private extension HubMenuViewController {
     enum Localization {
         static let tabTitle = NSLocalizedString("Menu", comment: "Title of the Menu tab")
-        static let navigationBarTitle =
-            NSLocalizedString("Hub Menu",
-                              comment: "Navigation bar title of hub menu view")
     }
 }

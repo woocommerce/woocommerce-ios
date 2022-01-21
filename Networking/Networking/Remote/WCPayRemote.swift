@@ -3,19 +3,6 @@ import Foundation
 /// WCPay: Remote Endpoints
 ///
 public class WCPayRemote: Remote {
-    /// Loads a card reader connection token for a given site ID and parses the response
-    /// - Parameters:
-    ///   - siteID: Site for which we'll fetch the connection token.
-    ///   - completion: Closure to be executed upon completion.
-    public func loadConnectionToken(for siteID: Int64,
-                                    completion: @escaping(Result<ReaderConnectionToken, Error>) -> Void) {
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: Path.connectionTokens)
-
-        let mapper = ReaderConnectionTokenMapper()
-
-        enqueue(request, mapper: mapper, completion: completion)
-    }
-
     /// Loads a WCPay account for a given site ID and parses the response
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch the WCPay account info.
@@ -40,7 +27,7 @@ public class WCPayRemote: Remote {
     public func captureOrderPayment(for siteID: Int64,
                                orderID: Int64,
                                paymentIntentID: String,
-                               completion: @escaping (Result<WCPayPaymentIntent, Error>) -> Void) {
+                               completion: @escaping (Result<RemotePaymentIntent, Error>) -> Void) {
         let path = "\(Path.orders)/\(orderID)/\(Path.captureTerminalPayment)"
 
         let parameters = [
@@ -50,7 +37,7 @@ public class WCPayRemote: Remote {
 
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
 
-        let mapper = WCPayPaymentIntentMapper()
+        let mapper = RemotePaymentIntentMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -64,12 +51,29 @@ public class WCPayRemote: Remote {
     ///   - completion: Closure to be run on completion.
     public func fetchOrderCustomer(for siteID: Int64,
                                orderID: Int64,
-                               completion: @escaping (Result<WCPayCustomer, Error>) -> Void) {
+                               completion: @escaping (Result<Customer, Error>) -> Void) {
         let path = "\(Path.orders)/\(orderID)/\(Path.createCustomer)"
 
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: [:])
 
-        let mapper = WCPayCustomerMapper()
+        let mapper = CustomerMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+}
+
+// MARK: - CardReaderCapableRemote
+//
+extension WCPayRemote {
+    /// Loads a card reader connection token for a given site ID and parses the response
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch the connection token.
+    ///   - completion: Closure to be executed upon completion.
+    public func loadConnectionToken(for siteID: Int64,
+                                    completion: @escaping(Result<ReaderConnectionToken, Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: Path.connectionTokens)
+
+        let mapper = ReaderConnectionTokenMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -81,10 +85,10 @@ public class WCPayRemote: Remote {
     ///   - completion: Closure to be run on completion.
     ///
     public func loadDefaultReaderLocation(for siteID: Int64,
-                                          onCompletion: @escaping (Result<WCPayReaderLocation, Error>) -> Void) {
+                                          onCompletion: @escaping (Result<RemoteReaderLocation, Error>) -> Void) {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Path.locations, parameters: [:])
 
-        let mapper = WCPayReaderLocationMapper()
+        let mapper = RemoteReaderLocationMapper()
 
         enqueue(request, mapper: mapper, completion: onCompletion)
     }

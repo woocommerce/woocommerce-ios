@@ -49,7 +49,8 @@ class WooCommerceScreenshots: XCTestCase {
             .cancel()
 
             // Reviews
-            .tabBar.goToReviewsScreen()
+            .tabBar.goToMenuScreen()
+            .goToReviewsScreen()
             .thenTakeScreenshot(named: "review-list")
             .selectReview(atIndex: 3)
             .thenTakeScreenshot(named: "review-details")

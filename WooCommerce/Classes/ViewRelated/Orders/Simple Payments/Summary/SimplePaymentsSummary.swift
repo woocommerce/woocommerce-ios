@@ -178,9 +178,17 @@ private struct PaymentsSection: View {
                         .padding(.horizontal)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    TitleAndValueRow(title: SimplePaymentsSummary.Localization.taxRate(viewModel.taxRate),
-                                     value: .content(viewModel.taxAmount),
-                                     selectable: false) {}
+                    if viewModel.showTaxBreakup {
+                        ForEach(viewModel.taxLines) { taxLine in
+                            TitleAndValueRow(title: taxLine.title,
+                                             value: .content(taxLine.value),
+                                             selectable: false) {}
+                        }
+                    } else {
+                        TitleAndValueRow(title: SimplePaymentsSummary.Localization.taxRate(viewModel.taxRate),
+                                         value: .content(viewModel.taxAmount),
+                                         selectable: false) {}
+                    }
                 }
                 .renderedIf(viewModel.enableTaxes)
 

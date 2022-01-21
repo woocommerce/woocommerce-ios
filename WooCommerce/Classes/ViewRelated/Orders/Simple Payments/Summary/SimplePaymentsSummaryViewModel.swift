@@ -82,14 +82,14 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     /// Show tax break up using `tax_lines` in summary
     ///
-    var shouldShowTaxBreakup: Bool {
+    var showTaxBreakup: Bool {
         featureFlagService.isFeatureFlagEnabled(.taxLinesInSimplePayments)
     }
 
     /// Show "Charge Taxes" toggle
     ///
-    var shouldShowChargeTaxesToggle: Bool {
-        guard shouldShowTaxBreakup else {
+    var showChargeTaxesToggle: Bool {
+        guard showTaxBreakup else {
             return true // If `taxLinesInSimplePayments` feature flag is turned off
         }
 

@@ -33,8 +33,8 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsCountryNotSupported(countryCode: countryCode)
             case .pluginNotInstalled:
                 InPersonPaymentsPluginNotInstalled(onRefresh: viewModel.refresh)
-            case .pluginUnsupportedVersion:
-                InPersonPaymentsPluginNotSupportedVersion(onRefresh: viewModel.refresh)
+            case .pluginUnsupportedVersion(let plugin):
+                InPersonPaymentsPluginNotSupportedVersion(plugin: plugin, onRefresh: viewModel.refresh)
             case .pluginNotActivated:
                 InPersonPaymentsPluginNotActivated(onRefresh: viewModel.refresh)
             case .pluginInTestModeWithLiveStripeAccount:

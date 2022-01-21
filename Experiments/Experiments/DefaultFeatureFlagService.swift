@@ -28,7 +28,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .orderCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .hubMenu:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .systemStatusReport:
             return true
         case .stripeExtensionInPersonPayments:

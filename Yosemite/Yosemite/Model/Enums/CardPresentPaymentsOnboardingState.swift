@@ -114,6 +114,8 @@ public enum CardPresentPaymentsPlugins: Equatable {
         }
     }
 
+    /// Changing values here? You'll need to also update `CardPresentPaymentsOnboardingUseCaseTests`
+    ///
     public var minimumSupportedPluginVersion: String {
         switch self {
         case .wcPay:

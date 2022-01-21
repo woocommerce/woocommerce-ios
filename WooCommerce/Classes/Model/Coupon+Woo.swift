@@ -30,7 +30,7 @@ extension Coupon.DiscountType {
 extension Coupon {
     /// Expiry status for Coupons.
     ///
-    var expiryStatus: ExpiryStatus {
+    func expiryStatus(now: Date = Date()) -> ExpiryStatus {
         guard let expiryDate = dateExpires else {
             return .active
         }
@@ -38,16 +38,12 @@ extension Coupon {
         guard let gmtTimeZone = TimeZone(identifier: "GMT") else {
             return .expired
         }
-        let now = Date()
 
         var calender = Calendar.current
         calender.timeZone = gmtTimeZone
 
         let result = calender.compare(expiryDate, to: now, toGranularity: .day)
-        if result == .orderedDescending {
-            return .active
-        }
-        return .expired
+        return result == .orderedDescending ? .active : .expired
     }
 
     enum ExpiryStatus {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-01-11 11:32:12+0000 */
+/* Translation-Revision-Date: 2022-01-20 22:03:41+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -161,10 +161,10 @@
 "%ld upsell products" = "%ld upsell-producten";
 
 /* Label about one product variation shown on Products tab */
-"%ld variation" = "%ld variation";
+"%ld variation" = "%ld variatie";
 
 /* Label about number of variations shown on Products tab */
-"%ld variations" = "%ld variations";
+"%ld variations" = "%ld variaties";
 
 /* Product title in Products list when there is no title */
 "(No Title)" = "(Geen titel)";
@@ -251,7 +251,7 @@
 "About the App" = "Over de app";
 
 /* Action button to activate Jetpack on WP-Admin instead of on app */
-"Activate Jetpack in WP-Admin" = "Activate Jetpack in WP-Admin";
+"Activate Jetpack in WP-Admin" = "Activeer Jetpack in WP-Admin";
 
 /* Title for the error screen when WooCommerce Payments is installed but not activated */
 "Activate WooCommerce Payments" = "WooCommerce Payments activeren";
@@ -356,7 +356,7 @@
 "Add credit card" = "Creditcard toevoegen";
 
 /* Title text of the button that adds a customer when creating a new order */
-"Add customer" = "Add customer";
+"Add customer" = "Klant toevoegen";
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "Voeg elke optie toe en druk op Enter";
@@ -445,7 +445,7 @@
 "Allow" = "Toestaan";
 
 /* Title of alert that links to settings for camera access. */
-"Allow camera access" = "Allow camera access";
+"Allow camera access" = "Camera-toegang toestaan";
 
 /* Subtitle of user profiles as part of Jetpack benefits. */
 "Allow multiple users to access WooCommerce Mobile." = "Toestaan dat meerdere gebruikers gebruik kunnen maken van WooCommerce Mobile.";
@@ -529,7 +529,7 @@
 "Are you sure you want to log out of the account %@?" = "Weet je zeker dat je wilt uitloggen bij het account %@?";
 
 /* Alert message to confirm a user meant to mark all reviews as read. */
-"Are you sure you want to mark all reviews as read?" = "Are you sure you want to mark all reviews as read?";
+"Are you sure you want to mark all reviews as read?" = "Weet je zeker dat je alle beoordelingen wilt markeren als gelezen?";
 
 /* Confirmation text before removing an attribute from a variation. */
 "Are you sure you want to remove this attribute?" = "Weet je zeker dat je deze eigenschap wilt verwijderen?";
@@ -859,7 +859,7 @@
 "Continue" = "Doorgaan";
 
 /* Button to dismiss modal overlay and go back to the orders list after a sucessful payment */
-"Continue To Orders" = "Continue To Orders";
+"Continue To Orders" = "Doorgaan naar Bestellingen";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "Doorgaan met WordPress.com";
@@ -877,7 +877,7 @@
 "Continuing with Apple" = "Doorgaan met Apple";
 
 /* Conversion stat label on dashboard. */
-"Conversion" = "Conversion";
+"Conversion" = "Conversie";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Kopiëren";
@@ -1344,7 +1344,7 @@
 "Envelope" = "Envelop";
 
 /* Title for the error alert when fetching system status report fails */
-"Error fetching report" = "Error fetching report";
+"Error fetching report" = "Fout bij ophalen rapport";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Er is een fout opgetreden bij het vinden van het adres op Apple Maps";
@@ -1390,7 +1390,7 @@
 "Fees" = "Toeslagen";
 
 /* Title on the refund screen that lists the fees total cost */
-"Fees Refund" = "Fees Refund";
+"Fees Refund" = "Terugbetaling bedrag";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -1613,7 +1613,7 @@
 "I Like It" = "Ik vind dit leuk";
 
 /* Cell title on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"IPP with Stripe extension" = "IPP with Stripe extension";
+"IPP with Stripe extension" = "IPP met Stripe-extensie";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "ARTIKELEN OM TE VOLTOOIEN";
@@ -1713,7 +1713,7 @@
 "Install Jetpack" = "Installeer Jetpack";
 
 /* Action button to install Jetpack on WP-Admin instead of on app */
-"Install Jetpack in WP-Admin" = "Install Jetpack in WP-Admin";
+"Install Jetpack in WP-Admin" = "Jetpack installeren vanuit WP-Admin";
 
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "WooCommerce Payments installeren";
@@ -1804,7 +1804,7 @@
 "Item weight must be larger than 0" = "Gewicht artikel moet meer zijn dan 0";
 
 /* Description for Top Performers right column header */
-"Items Sold" = "Items Sold";
+"Items Sold" = "Verkochte artikelen";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack is een gratis WordPress-plugin die aan je winkel wordt gekoppeld en tools voor de beste mobiele ervaring biedt, waaronder pushmeldingen en statistieken";
@@ -1998,13 +1998,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark Order Complete" = "Bestelling markeren als voltooid";
 
 /* Alert button title - confirms and marks all reviews as read */
-"Mark all" = "Mark all";
+"Mark all" = "Alle markeren";
 
 /* Title of Alert which asks user for confirmation before marking all reviews as read. */
 "Mark all as read" = "Alle als gelezen markeren";
 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
-"Mark all reviews as read" = "Mark all reviews as read";
+"Mark all reviews as read" = "Alle beoordelingen als gelezen markeren";
 
 /* Alert button when selecting the cash payment method for simple payments */
 "Mark as Paid" = "Markeren als betaald";
@@ -2016,7 +2016,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark this order as complete and notify the customer" = "Markeer deze bestelling als voltooid en informeer de klant";
 
 /* The details on the placeholder overlay when there are no coupons on the coupon management list */
-"Market your products by adding a coupon to offer your customers a discount." = "Market your products by adding a coupon to offer your customers a discount.";
+"Market your products by adding a coupon to offer your customers a discount." = "Promoot je producten door een coupon toe te voegen om je klanten korting te bieden.";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Media heeft geen geassocieerd bestand om te uploaden.";
@@ -2029,7 +2029,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Menu Order" = "Menuvolgorde";
 
 /* VoiceOver accessibility hint for the Menu button action */
-"Menu button which opens an action sheet with option to mark all reviews as read." = "Menu button which opens an action sheet with option to mark all reviews as read.";
+"Menu button which opens an action sheet with option to mark all reviews as read." = "Menuknop waarmee een actieblad wordt geopend met een optie om alle beoordelingen als gelezen te markeren.";
 
 /* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
 "Menu order" = "Menuvolgorde";
@@ -2076,7 +2076,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Moves the comment to Trash" = "Verplaatst de reactie naar de prullenbak";
 
 /* Title of the hub menu view in case there is no title for the store */
-"My Store" = "My Store";
+"My Store" = "Mijn winkel";
 
 /* My Tickets title */
 "My Tickets" = "Mijn tickets";
@@ -2115,7 +2115,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Net Payment" = "Netto betaling";
 
 /* Top performers — label for the total sales of a product */
-"Net sales: %@" = "Net sales: %@";
+"Net sales: %@" = "Netto verkoop: %@";
 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Netwerk actieve plug-ins";
@@ -2124,7 +2124,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "New Attribute Name" = "Nieuwe naam van eigenschap";
 
 /* Title for the Shipping Address Form for New Customer */
-"New Customer" = "New Customer";
+"New Customer" = "Nieuwe klant";
 
 /* Title for the order creation screen */
 "New Order" = "Nieuwe bestelling";
@@ -2150,7 +2150,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No connection" = "Geen verbinding";
 
 /* The text on the placeholder overlay when there are no coupons on the coupon management list */
-"No coupons yet" = "No coupons yet";
+"No coupons yet" = "Nog geen coupons";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Geen gegevens beschikbaar";
@@ -2281,7 +2281,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Open in a new Window\/Tab" = "Openen in een nieuw venster\/tabblad";
 
 /* Accessibility label for the Menu button */
-"Open menu" = "Open menu";
+"Open menu" = "Menu openen";
 
 /* Accessibility hint for 1 password button */
 "Opens One Password manager" = "Opent 1Password-manager";
@@ -2471,7 +2471,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Placing your product in the trash..." = "Je product wordt naar de prullenbak verplaatst ...";
 
 /* Message of alert that links to settings for camera access. */
-"Please change your camera permissions in device settings." = "Please change your camera permissions in device settings.";
+"Please change your camera permissions in device settings." = "Wijzig je toestemming voor de camera in de apparaatinstellingen.";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Laad de lezer op";
@@ -2546,7 +2546,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Probeer het later opnieuw of neem contact met ons op zodat wij je kunnen helpen.";
 
 /* Error message when Jetpack connection fails */
-"Please try again or contact us for support." = "Please try again or contact us for support.";
+"Please try again or contact us for support." = "Probeer het nog eens of neem contact met ons op voor ondersteuning.";
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Probeer het opnieuw of neem contact met ons op zodat wij je kunnen helpen.";
@@ -2555,10 +2555,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again." = "Probeer het nog eens.";
 
 /* Error message when Jetpack activation fails */
-"Please try again. Alternatively, you can activate Jetpack through your WP-Admin." = "Please try again. Alternatively, you can activate Jetpack through your WP-Admin.";
+"Please try again. Alternatively, you can activate Jetpack through your WP-Admin." = "Probeer het nog eens. Of je kunt Jetpack activeren in WP-Admin.";
 
 /* Error message when Jetpack install fails */
-"Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "Please try again. Alternatively, you can install Jetpack through your WP-Admin.";
+"Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "Probeer het nog eens. Of je kunt Jetpack installeren via je WP-Admin.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Please update your reader software to keep accepting payments" = "Werk de software van je lezer bij zodat je betalingen kunt blijven aannemen";
@@ -2695,7 +2695,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Product Review" = "Productbeoordeling";
 
 /* Cell title on beta features screen to enable product SKU input scanner in inventory settings. */
-"Product SKU Scanner" = "Product SKU Scanner";
+"Product SKU Scanner" = "Scanner product-SKU";
 
 /* Button title Product Settings in Edit Product More Options Action Sheet
    Product Settings navigation title */
@@ -2731,7 +2731,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Products Refund" = "Productvergoeding";
 
 /* Label for the row showing the total cost of products in the order */
-"Products Total" = "Products Total";
+"Products Total" = "Totaalaantal producten";
 
 /* Cell description for Cross-sells products in Linked Products Settings screen */
 "Products promoted in the cart when current product is selected" = "Gepromote producten in de winkelwagen als het huidige product is geselecteerd";
@@ -2846,7 +2846,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refund Details" = "Restitutiedetails";
 
 /* Title of the switch in the IssueRefund screen to refund fees */
-"Refund Fees" = "Refund Fees";
+"Refund Fees" = "Bedragen terugbetalen";
 
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
 "Refund Label (%1$@)" = "Terugbetalingslabel (%1$@)";
@@ -2900,7 +2900,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Remove product" = "Product verwijderen";
 
 /* Text for the button to remove a product from the order during order creation */
-"Remove product from order" = "Remove product from order";
+"Remove product from order" = "Product verwijderen uit bestelling";
 
 /* Title of the alert when a user is deleting a variation */
 "Remove variation" = "Variatie verwijderen";
@@ -2955,7 +2955,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retry After Updating" = "Opnieuw proberen na bijwerken";
 
 /* Action button to check site's connection again. */
-"Retry Connection" = "Retry Connection";
+"Retry Connection" = "Opnieuw verbinding maken";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Terugsturen naar afzender als het pakket niet kan worden geleverd";
@@ -3170,7 +3170,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Share" = "Delen";
 
 /* Payment Link method title on the select payment method screen for simple payments */
-"Share Payment Link" = "Share Payment Link";
+"Share Payment Link" = "Betaallink delen";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Deel informatie met onze analysetool over hoe je services gebruikt terwijl je bent ingelogd op je WordPress.com-account.";
@@ -3312,7 +3312,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Simple" = "Simpel";
 
 /* Action sheet option when the user wants to create Simple Payments order */
-"Simple payment" = "Simple payment";
+"Simple payment" = "Eenvoudige betaling";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
 "Simple physical product" = "Eenvoudig fysiek product";
@@ -3363,7 +3363,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sorry, site addresses must have letters too!" = "Sorry, site adressen moeten ook letters bevatten!";
 
 /* Error title when Jetpack install fails */
-"Sorry, something went wrong during install" = "Sorry, something went wrong during install";
+"Sorry, something went wrong during install" = "Er is iets fout gegaan bij het installeren";
 
 /* Error message displayed when the entered email is not available. */
 "Sorry, that email address is already being used!" = "Sorry, dat e-mailadres is al in gebruik!";
@@ -3477,7 +3477,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Switch Store" = "Winkel wijzigen";
 
 /* Switch store option in the hub menu */
-"Switch store" = "Switch store";
+"Switch store" = "Winkel wijzigen";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
 "Switched to %1$@." = "Overgeschakeld naar %1$@.";
@@ -3508,10 +3508,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title of system status report screen
    View system status report cell title on Help screen */
-"System Status Report" = "System Status Report";
+"System Status Report" = "Systeemstatusrapport";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
-"System status report copied to clipboard" = "System status report copied to clipboard";
+"System status report copied to clipboard" = "Systeemstatusrapport gekopieerd naar klembord";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
@@ -3639,13 +3639,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Terms of Service" = "Servicevoorwaarden";
 
 /* Cell description on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"Test out In-Person Payments with the Stripe Payment Gateway extension" = "Test out In-Person Payments with the Stripe Payment Gateway extension";
+"Test out In-Person Payments with the Stripe Payment Gateway extension" = "Test fysieke betalingen met de Stripe betaalgateway-extensie";
 
 /* Cell description on the beta features screen to enable creating new orders */
 "Test out creating new manual orders as we get ready to launch" = "Probeer eens wat nieuwe handmatige bestellingen aan te maken terwijl wij ons voorbereiden op het uitbrengen van de versie";
 
 /* Cell description on beta features screen to enable product SKU input scanner in inventory settings. */
-"Test out scanning a barcode for a product SKU in the product inventory settings" = "Test out scanning a barcode for a product SKU in the product inventory settings";
+"Test out scanning a barcode for a product SKU in the product inventory settings" = "Probeer een barcode te scannen voor een product-SKU in de instellingen voor productvoorraad";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "Test onze Add-ons bestelling bekijken terwijl we ons voorbereiden op de lancering";
@@ -3760,7 +3760,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The stock quantity for this product. Editable." = "De voorraad van dit product. Bewerkbaar.";
 
 /* Message for the error alert when fetching system status report fails */
-"The system status report for your site cannot be fetched at the moment. Please try again." = "The system status report for your site cannot be fetched at the moment. Please try again.";
+"The system status report for your site cannot be fetched at the moment. Please try again." = "Het systeemstatusrapport voor je site kan momenteel niet opgehaald worden. Probeer het nog eens.";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "De variatie kon niet worden gegenereerd .";
@@ -3927,7 +3927,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Total Spend" = "Totaal uitgegeven";
 
 /* Information about taxes and the order total when creating a new order */
-"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "Total excluding taxes. Taxes will be automatically calculated based on your store settings.";
+"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "Totaal exclusief btw. Btw wordt automatisch berekend op basis van je winkelinstellingen.";
 
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "Totaalaantal bestellingen: %ld";
@@ -4246,7 +4246,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Variations Attributes" = "Eigenschappen variaties";
 
 /* Description of the system status report on Help screen */
-"Various system information about your site" = "Various system information about your site";
+"Various system information about your site" = "Verschillende systeemgegevens over je site";
 
 /* two factor code placeholder */
 "Verification code" = "Verificatiecode";
@@ -4279,7 +4279,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "View Shipment Details" = "Verzendingsgegevens bekijken";
 
 /* Title of one of the hub menu options */
-"View Store" = "View Store";
+"View Store" = "Winkel bekijken";
 
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "Bekijk extra opties vanaf je apparaat!";
@@ -4614,7 +4614,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "🎉 Order completed" = "Bestelling voltooid";
 
 /* Notice text after creating a simple payment order */
-"🎉 Order created" = "";
+"🎉 Order created" = "🎉Bestelling aangemaakt";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 Producten zijn terugbetaald";

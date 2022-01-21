@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-01-11 11:32:12+0000 */
+/* Translation-Revision-Date: 2022-01-19 10:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -161,10 +161,10 @@
 "%ld upsell products" = "%ld ventas dirigidas de productos";
 
 /* Label about one product variation shown on Products tab */
-"%ld variation" = "%ld variation";
+"%ld variation" = "%ld variación";
 
 /* Label about number of variations shown on Products tab */
-"%ld variations" = "%ld variations";
+"%ld variations" = "%ld variaciones";
 
 /* Product title in Products list when there is no title */
 "(No Title)" = "(sin título)";
@@ -251,7 +251,7 @@
 "About the App" = "Acerca de la aplicación";
 
 /* Action button to activate Jetpack on WP-Admin instead of on app */
-"Activate Jetpack in WP-Admin" = "Activate Jetpack in WP-Admin";
+"Activate Jetpack in WP-Admin" = "Activar Jetpack en WP-Admin";
 
 /* Title for the error screen when WooCommerce Payments is installed but not activated */
 "Activate WooCommerce Payments" = "Activar WooCommerce Payments";
@@ -356,7 +356,7 @@
 "Add credit card" = "Añadir tarjeta de crédito";
 
 /* Title text of the button that adds a customer when creating a new order */
-"Add customer" = "Add customer";
+"Add customer" = "Añadir cliente";
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "Añade cada opción y pulsa Intro";
@@ -445,7 +445,7 @@
 "Allow" = "Permitir";
 
 /* Title of alert that links to settings for camera access. */
-"Allow camera access" = "Allow camera access";
+"Allow camera access" = "Permitir el acceso a la cámara";
 
 /* Subtitle of user profiles as part of Jetpack benefits. */
 "Allow multiple users to access WooCommerce Mobile." = "Permite que varios usuarios accedan a la aplicación móvil de WooCommerce.";
@@ -529,7 +529,7 @@
 "Are you sure you want to log out of the account %@?" = "¿Estás seguro que quieres salir de la cuenta %@?";
 
 /* Alert message to confirm a user meant to mark all reviews as read. */
-"Are you sure you want to mark all reviews as read?" = "Are you sure you want to mark all reviews as read?";
+"Are you sure you want to mark all reviews as read?" = "¿Seguro que quieres marcar todas las reseñas como leídas?";
 
 /* Confirmation text before removing an attribute from a variation. */
 "Are you sure you want to remove this attribute?" = "¿Seguro que quieres eliminar este atributo?";
@@ -859,7 +859,7 @@
 "Continue" = "Continuar";
 
 /* Button to dismiss modal overlay and go back to the orders list after a sucessful payment */
-"Continue To Orders" = "Continue To Orders";
+"Continue To Orders" = "Continuar a Pedidos";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "Acceder a WordPress.com";
@@ -877,7 +877,7 @@
 "Continuing with Apple" = "Seguir con Apple";
 
 /* Conversion stat label on dashboard. */
-"Conversion" = "Conversion";
+"Conversion" = "Conversión";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Copiar";
@@ -930,7 +930,7 @@
 
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
-"Coupons" = "Coupons";
+"Coupons" = "Cupones";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Menú de depuración de fallos";
@@ -1344,7 +1344,7 @@
 "Envelope" = "Envoltorio";
 
 /* Title for the error alert when fetching system status report fails */
-"Error fetching report" = "Error fetching report";
+"Error fetching report" = "Se ha producido un error al obtener el informe.";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Error al encontrar la dirección en los Mapas de Apple";
@@ -1390,7 +1390,7 @@
 "Fees" = "Comisiones";
 
 /* Title on the refund screen that lists the fees total cost */
-"Fees Refund" = "Fees Refund";
+"Fees Refund" = "Reembolso de los cargos";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -1613,7 +1613,7 @@
 "I Like It" = "Me gusta";
 
 /* Cell title on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"IPP with Stripe extension" = "IPP with Stripe extension";
+"IPP with Stripe extension" = "IPP con la extensión Stripe";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "ARTÍCULOS PARA COMPLETAR EL PEDIDO";
@@ -1713,7 +1713,7 @@
 "Install Jetpack" = "Instala Jetpack";
 
 /* Action button to install Jetpack on WP-Admin instead of on app */
-"Install Jetpack in WP-Admin" = "Install Jetpack in WP-Admin";
+"Install Jetpack in WP-Admin" = "Instalar Jetpack en WP-Admin";
 
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "Instalar WooCommerce Payments";
@@ -1804,7 +1804,7 @@
 "Item weight must be larger than 0" = "El peso del artículo debe ser mayor que 0";
 
 /* Description for Top Performers right column header */
-"Items Sold" = "Items Sold";
+"Items Sold" = "Artículos vendidos";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack es un plugin gratuito de WordPress que conecta tu tienda con las herramientas necesarias para ofrecer la mejor experiencia para móviles, como notificaciones push y estadísticas";
@@ -1998,13 +1998,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark Order Complete" = "Marcar el pedido como completado";
 
 /* Alert button title - confirms and marks all reviews as read */
-"Mark all" = "Mark all";
+"Mark all" = "Marcar todo";
 
 /* Title of Alert which asks user for confirmation before marking all reviews as read. */
 "Mark all as read" = "Marcar todo como leído";
 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
-"Mark all reviews as read" = "Mark all reviews as read";
+"Mark all reviews as read" = "Marcar todas las reseñas como leídas";
 
 /* Alert button when selecting the cash payment method for simple payments */
 "Mark as Paid" = "Marcar como pagado";
@@ -2016,7 +2016,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark this order as complete and notify the customer" = "Marcar este pedido como completado y avisar al cliente";
 
 /* The details on the placeholder overlay when there are no coupons on the coupon management list */
-"Market your products by adding a coupon to offer your customers a discount." = "Market your products by adding a coupon to offer your customers a discount.";
+"Market your products by adding a coupon to offer your customers a discount." = "Vende tus productos con un cupón y ofrece a tus clientes un descuento.";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Los medios no están asociados a un archivo a subir.";
@@ -2029,7 +2029,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Menu Order" = "Orden del menú";
 
 /* VoiceOver accessibility hint for the Menu button action */
-"Menu button which opens an action sheet with option to mark all reviews as read." = "Menu button which opens an action sheet with option to mark all reviews as read.";
+"Menu button which opens an action sheet with option to mark all reviews as read." = "El botón del menú que abre una hoja de acción con la opción de marcar todas las reseñas como leídas.";
 
 /* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
 "Menu order" = "Orden del menú";
@@ -2076,7 +2076,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Moves the comment to Trash" = "Traslada el comentario a la papelera";
 
 /* Title of the hub menu view in case there is no title for the store */
-"My Store" = "My Store";
+"My Store" = "Mi tienda";
 
 /* My Tickets title */
 "My Tickets" = "Mis tickets";
@@ -2115,7 +2115,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Net Payment" = "Pago neto";
 
 /* Top performers — label for the total sales of a product */
-"Net sales: %@" = "Net sales: %@";
+"Net sales: %@" = "Ventas netas: %@";
 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Plugins de red activos";
@@ -2124,7 +2124,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "New Attribute Name" = "Nombre del nuevo atributo";
 
 /* Title for the Shipping Address Form for New Customer */
-"New Customer" = "New Customer";
+"New Customer" = "Nuevo cliente";
 
 /* Title for the order creation screen */
 "New Order" = "Nuevo pedido";
@@ -2150,7 +2150,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No connection" = "Sin conexión";
 
 /* The text on the placeholder overlay when there are no coupons on the coupon management list */
-"No coupons yet" = "No coupons yet";
+"No coupons yet" = "No hay cupones todavía";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "No hay datos disponibles.";
@@ -2281,7 +2281,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Open in a new Window\/Tab" = "Abrir en una nueva ventana\/pestaña";
 
 /* Accessibility label for the Menu button */
-"Open menu" = "Open menu";
+"Open menu" = "Abrir el menú";
 
 /* Accessibility hint for 1 password button */
 "Opens One Password manager" = "Se abre el gestor 1Password";
@@ -2471,7 +2471,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Placing your product in the trash..." = "Colocando el producto en la papelera...";
 
 /* Message of alert that links to settings for camera access. */
-"Please change your camera permissions in device settings." = "Please change your camera permissions in device settings.";
+"Please change your camera permissions in device settings." = "Cambia los permisos de la cámara en los ajustes del dispositivo.";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Carga el lector";
@@ -2546,7 +2546,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Inténtalo de nuevo más tarde o ponte en contacto con nosotros y estaremos encantados de ayudarte.";
 
 /* Error message when Jetpack connection fails */
-"Please try again or contact us for support." = "Please try again or contact us for support.";
+"Please try again or contact us for support." = "Inténtalo de nuevo o ponte en contacto con nuestro servicio de soporte.";
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Inténtalo de nuevo o ponte en contacto con nosotros y estaremos encantados de ayudarte.";
@@ -2555,10 +2555,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again." = "Inténtalo de nuevo.";
 
 /* Error message when Jetpack activation fails */
-"Please try again. Alternatively, you can activate Jetpack through your WP-Admin." = "Please try again. Alternatively, you can activate Jetpack through your WP-Admin.";
+"Please try again. Alternatively, you can activate Jetpack through your WP-Admin." = "Inténtalo de nuevo. Si lo prefieres, puedes activar Jetpack a través de tu WP-Admin.";
 
 /* Error message when Jetpack install fails */
-"Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "Please try again. Alternatively, you can install Jetpack through your WP-Admin.";
+"Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "Inténtalo de nuevo. Si lo prefieres, puedes instalar Jetpack a través de tu WP-Admin.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Please update your reader software to keep accepting payments" = "Actualiza el software del lector para seguir aceptando pagos";
@@ -2695,7 +2695,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Product Review" = "Reseña de producto";
 
 /* Cell title on beta features screen to enable product SKU input scanner in inventory settings. */
-"Product SKU Scanner" = "Product SKU Scanner";
+"Product SKU Scanner" = "Escáner de la SKU del producto";
 
 /* Button title Product Settings in Edit Product More Options Action Sheet
    Product Settings navigation title */
@@ -2731,7 +2731,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Products Refund" = "Reembolso de productos";
 
 /* Label for the row showing the total cost of products in the order */
-"Products Total" = "Products Total";
+"Products Total" = "Total de productos";
 
 /* Cell description for Cross-sells products in Linked Products Settings screen */
 "Products promoted in the cart when current product is selected" = "Productos promocionados en el carrito cuando se selecciona el producto actual";
@@ -2846,7 +2846,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refund Details" = "Información del reembolso";
 
 /* Title of the switch in the IssueRefund screen to refund fees */
-"Refund Fees" = "Refund Fees";
+"Refund Fees" = "Reembolsar cargos";
 
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
 "Refund Label (%1$@)" = "Etiqueta de reembolso (%1$@)";
@@ -2900,7 +2900,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Remove product" = "Eliminar producto";
 
 /* Text for the button to remove a product from the order during order creation */
-"Remove product from order" = "Remove product from order";
+"Remove product from order" = "Eliminar producto del pedido";
 
 /* Title of the alert when a user is deleting a variation */
 "Remove variation" = "Eliminar variación";
@@ -2955,7 +2955,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retry After Updating" = "Inténtalo de nuevo después de actualizar.";
 
 /* Action button to check site's connection again. */
-"Retry Connection" = "Retry Connection";
+"Retry Connection" = "Volver a intentar la conexión";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Devolver el paquete al remitente si no se puede entregar";
@@ -3170,7 +3170,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Share" = "Compartir";
 
 /* Payment Link method title on the select payment method screen for simple payments */
-"Share Payment Link" = "Share Payment Link";
+"Share Payment Link" = "Comparte el enlace para realizar el pago";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Comparte información con nuestra herramienta de análisis acerca del uso que haces de los servicios mientras estás conectado a tu cuenta de WordPress.com.";
@@ -3312,7 +3312,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Simple" = "Sencillo";
 
 /* Action sheet option when the user wants to create Simple Payments order */
-"Simple payment" = "Simple payment";
+"Simple payment" = "Pago simple";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
 "Simple physical product" = "Producto físico simple";
@@ -3363,7 +3363,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sorry, site addresses must have letters too!" = "La dirección del sitio debe contener letras.";
 
 /* Error title when Jetpack install fails */
-"Sorry, something went wrong during install" = "Sorry, something went wrong during install";
+"Sorry, something went wrong during install" = "Lo sentimos, se ha producido un error durante la instalación.";
 
 /* Error message displayed when the entered email is not available. */
 "Sorry, that email address is already being used!" = "El email ya se ha usado.";
@@ -3477,7 +3477,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Switch Store" = "Cambiar de tienda";
 
 /* Switch store option in the hub menu */
-"Switch store" = "Switch store";
+"Switch store" = "Cambiar de tienda";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
 "Switched to %1$@." = "Se ha cambiado a %1$@.";
@@ -3508,10 +3508,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title of system status report screen
    View system status report cell title on Help screen */
-"System Status Report" = "System Status Report";
+"System Status Report" = "Informe de estado del sistema";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
-"System status report copied to clipboard" = "System status report copied to clipboard";
+"System status report copied to clipboard" = "Se ha copiado el informe de estado del sistema en el portapapeles.";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
@@ -3639,13 +3639,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Terms of Service" = "Condiciones del servicio";
 
 /* Cell description on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"Test out In-Person Payments with the Stripe Payment Gateway extension" = "Test out In-Person Payments with the Stripe Payment Gateway extension";
+"Test out In-Person Payments with the Stripe Payment Gateway extension" = "Prueba los pagos en persona con la extensión Stripe Payment Gateway.";
 
 /* Cell description on the beta features screen to enable creating new orders */
 "Test out creating new manual orders as we get ready to launch" = "Prueba a crear nuevos pedidos manuales mientras nos preparamos para la publicación.";
 
 /* Cell description on beta features screen to enable product SKU input scanner in inventory settings. */
-"Test out scanning a barcode for a product SKU in the product inventory settings" = "Test out scanning a barcode for a product SKU in the product inventory settings";
+"Test out scanning a barcode for a product SKU in the product inventory settings" = "Prueba a escanear un código de barras de la SKU de un producto en los ajustes del inventario.";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "Prueba la visualización de Complementos del pedido mientras preparamos la publicación";
@@ -3760,7 +3760,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The stock quantity for this product. Editable." = "La cantidad en inventario de este producto. Editable.";
 
 /* Message for the error alert when fetching system status report fails */
-"The system status report for your site cannot be fetched at the moment. Please try again." = "The system status report for your site cannot be fetched at the moment. Please try again.";
+"The system status report for your site cannot be fetched at the moment. Please try again." = "En este momento, no puedes obtener el informe de estado del sistema para tu sitio. Inténtalo de nuevo.";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "No se ha podido crear la variación.";
@@ -3927,7 +3927,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Total Spend" = "Gasto total";
 
 /* Information about taxes and the order total when creating a new order */
-"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "Total excluding taxes. Taxes will be automatically calculated based on your store settings.";
+"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "Total, sin incluir impuestos. Los impuestos se calcularán automáticamente en función de los ajustes de tu tienda.";
 
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "Total de pedidos: %ld";
@@ -4246,7 +4246,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Variations Attributes" = "Atributos de variaciones";
 
 /* Description of the system status report on Help screen */
-"Various system information about your site" = "Various system information about your site";
+"Various system information about your site" = "Información diversa sobre el sistema de tu sitio";
 
 /* two factor code placeholder */
 "Verification code" = "Código de verificación";
@@ -4279,7 +4279,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "View Shipment Details" = "Ver los detalles del envío";
 
 /* Title of one of the hub menu options */
-"View Store" = "View Store";
+"View Store" = "Ver tienda";
 
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "Puedes ver los complementos con tu dispositivo.";
@@ -4614,7 +4614,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "🎉 Order completed" = "🎉 Pedido completado";
 
 /* Notice text after creating a simple payment order */
-"🎉 Order created" = "";
+"🎉 Order created" = "🎉 Pedido creado";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "Se han reembolsado correctamente 🎉 productos";

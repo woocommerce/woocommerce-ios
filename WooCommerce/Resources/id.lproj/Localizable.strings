@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-01-11 11:32:12+0000 */
+/* Translation-Revision-Date: 2022-01-18 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -161,10 +161,10 @@
 "%ld upsell products" = "%ld produk upsell";
 
 /* Label about one product variation shown on Products tab */
-"%ld variation" = "%ld variation";
+"%ld variation" = "%ld variasi";
 
 /* Label about number of variations shown on Products tab */
-"%ld variations" = "%ld variations";
+"%ld variations" = "%ld variasi";
 
 /* Product title in Products list when there is no title */
 "(No Title)" = "(tanpa judul)";
@@ -251,7 +251,7 @@
 "About the App" = "Tentang aplikasi";
 
 /* Action button to activate Jetpack on WP-Admin instead of on app */
-"Activate Jetpack in WP-Admin" = "Activate Jetpack in WP-Admin";
+"Activate Jetpack in WP-Admin" = "Aktifkan Jetpack di WP-Admin";
 
 /* Title for the error screen when WooCommerce Payments is installed but not activated */
 "Activate WooCommerce Payments" = "Aktifkan WooCommerce Payments";
@@ -356,7 +356,7 @@
 "Add credit card" = "Tambah kartu kredit";
 
 /* Title text of the button that adds a customer when creating a new order */
-"Add customer" = "Add customer";
+"Add customer" = "Tambahkan pelanggan";
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "Tambahkan tiap opsi lalu tekan enter";
@@ -445,7 +445,7 @@
 "Allow" = "Izinkan";
 
 /* Title of alert that links to settings for camera access. */
-"Allow camera access" = "Allow camera access";
+"Allow camera access" = "Izinkan akses kamera";
 
 /* Subtitle of user profiles as part of Jetpack benefits. */
 "Allow multiple users to access WooCommerce Mobile." = "Izinkan banyak pengguna untuk mengakses WooCommerce Mobile.";
@@ -529,7 +529,7 @@
 "Are you sure you want to log out of the account %@?" = "Apakah Anda yakin ingin logout dari akun %@?";
 
 /* Alert message to confirm a user meant to mark all reviews as read. */
-"Are you sure you want to mark all reviews as read?" = "Are you sure you want to mark all reviews as read?";
+"Are you sure you want to mark all reviews as read?" = "Anda yakin ingin menandai semua ulasan sebagai sudah dibaca?";
 
 /* Confirmation text before removing an attribute from a variation. */
 "Are you sure you want to remove this attribute?" = "Apakah Anda yakin ingin menghapus atribut ini?";
@@ -859,7 +859,7 @@
 "Continue" = "Lanjutkan";
 
 /* Button to dismiss modal overlay and go back to the orders list after a sucessful payment */
-"Continue To Orders" = "Continue To Orders";
+"Continue To Orders" = "Lanjutkan Ke Pesanan";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "Lanjutkan Dengan WordPress.com";
@@ -877,7 +877,7 @@
 "Continuing with Apple" = "Melanjutkan dengan Apple";
 
 /* Conversion stat label on dashboard. */
-"Conversion" = "Conversion";
+"Conversion" = "Konversi";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Salin";
@@ -930,7 +930,7 @@
 
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
-"Coupons" = "Coupons";
+"Coupons" = "Kupon";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Crash Menu Debug";
@@ -1344,7 +1344,7 @@
 "Envelope" = "Amplop";
 
 /* Title for the error alert when fetching system status report fails */
-"Error fetching report" = "Error fetching report";
+"Error fetching report" = "Terjadi error saat memuat laporan";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Terjadi error saat mencari alamat di Apple Maps";
@@ -1390,7 +1390,7 @@
 "Fees" = "Biaya";
 
 /* Title on the refund screen that lists the fees total cost */
-"Fees Refund" = "Fees Refund";
+"Fees Refund" = "Pengembalian Biaya";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -1613,7 +1613,7 @@
 "I Like It" = "Saya Menyukainya";
 
 /* Cell title on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"IPP with Stripe extension" = "IPP with Stripe extension";
+"IPP with Stripe extension" = "IPP dengan ekstensi Stripe";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "ITEM YANG PERLU DIISI";
@@ -1713,7 +1713,7 @@
 "Install Jetpack" = "Instal Jetpack";
 
 /* Action button to install Jetpack on WP-Admin instead of on app */
-"Install Jetpack in WP-Admin" = "Install Jetpack in WP-Admin";
+"Install Jetpack in WP-Admin" = "Instal Jetpack di WP-Admin";
 
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "Instal WooCommerce Payments";
@@ -1804,7 +1804,7 @@
 "Item weight must be larger than 0" = "Berat item harus lebih besar dari 0";
 
 /* Description for Top Performers right column header */
-"Items Sold" = "Items Sold";
+"Items Sold" = "Item Terjual";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack adalah plugin WordPress gratis yang menghubungkan toko Anda dengan peralatan yang diperlukan agar dapat memberikan pengalaman seluler terbaik, termasuk pemberitahuan push dan statistik";
@@ -1998,13 +1998,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark Order Complete" = "Tandai Pesanan Selesai";
 
 /* Alert button title - confirms and marks all reviews as read */
-"Mark all" = "Mark all";
+"Mark all" = "Tandai semua";
 
 /* Title of Alert which asks user for confirmation before marking all reviews as read. */
 "Mark all as read" = "Tandai Semua sebagai Sudah Dibaca";
 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
-"Mark all reviews as read" = "Mark all reviews as read";
+"Mark all reviews as read" = "Tandai semua ulasan sebagai sudah dibaca.";
 
 /* Alert button when selecting the cash payment method for simple payments */
 "Mark as Paid" = "Tandai sebagai Dibayar";
@@ -2016,7 +2016,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark this order as complete and notify the customer" = "Tandai pesanan ini selesai dan kirim pemberitahuan ke pelanggan";
 
 /* The details on the placeholder overlay when there are no coupons on the coupon management list */
-"Market your products by adding a coupon to offer your customers a discount." = "Market your products by adding a coupon to offer your customers a discount.";
+"Market your products by adding a coupon to offer your customers a discount." = "Pasarkan produk Anda dengan menambahkan kupon untuk menawarkan diskon bagi pelanggan.";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Media tidak memiliki file yang dikaitkan untuk diunggah.";
@@ -2029,7 +2029,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Menu Order" = "Urutan Menu";
 
 /* VoiceOver accessibility hint for the Menu button action */
-"Menu button which opens an action sheet with option to mark all reviews as read." = "Menu button which opens an action sheet with option to mark all reviews as read.";
+"Menu button which opens an action sheet with option to mark all reviews as read." = "Tombol Menu yang membuka lembar tindakan dengan pilihan untuk menandai semua ulasan sebagai sudah dibaca.";
 
 /* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
 "Menu order" = "Urutan menu";
@@ -2076,7 +2076,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Moves the comment to Trash" = "Pindahkan komentar ke Tempat Sampah";
 
 /* Title of the hub menu view in case there is no title for the store */
-"My Store" = "My Store";
+"My Store" = "Toko Saya";
 
 /* My Tickets title */
 "My Tickets" = "Tiket Saya";
@@ -2115,7 +2115,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Net Payment" = "Pembayaran Bersih";
 
 /* Top performers — label for the total sales of a product */
-"Net sales: %@" = "Net sales: %@";
+"Net sales: %@" = "Penjualan bersih: %@";
 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Plugin Aktif Jaringan";
@@ -2124,7 +2124,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "New Attribute Name" = "Nama Atribut Baru";
 
 /* Title for the Shipping Address Form for New Customer */
-"New Customer" = "New Customer";
+"New Customer" = "Pelanggan Baru";
 
 /* Title for the order creation screen */
 "New Order" = "Pesanan Baru";
@@ -2150,7 +2150,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No connection" = "Tak ada koneksi";
 
 /* The text on the placeholder overlay when there are no coupons on the coupon management list */
-"No coupons yet" = "No coupons yet";
+"No coupons yet" = "Belum ada kupon";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Tidak ada data yang tersedia";
@@ -2281,7 +2281,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Open in a new Window\/Tab" = "Buka di Jendela\/Tab baru";
 
 /* Accessibility label for the Menu button */
-"Open menu" = "Open menu";
+"Open menu" = "Buka menu";
 
 /* Accessibility hint for 1 password button */
 "Opens One Password manager" = "Buka pengelola 1Password";
@@ -2471,7 +2471,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Placing your product in the trash..." = "Memindahkan produk Anda ke tempat sampah...";
 
 /* Message of alert that links to settings for camera access. */
-"Please change your camera permissions in device settings." = "Please change your camera permissions in device settings.";
+"Please change your camera permissions in device settings." = "Harap ubah izin penggunaan kamera Anda di pengaturan perangkat.";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Isi daya pembaca";
@@ -2546,7 +2546,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Coba lagi nanti atau hubungi kami dan dengan senang hati kami akan membantu Anda!";
 
 /* Error message when Jetpack connection fails */
-"Please try again or contact us for support." = "Please try again or contact us for support.";
+"Please try again or contact us for support." = "Harap coba lagi atau hubungi kami untuk bantuan.";
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Coba lagi atau hubungi kami dan dengan senang hati kami akan membantu Anda!";
@@ -2555,10 +2555,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again." = "Harap coba lagi.";
 
 /* Error message when Jetpack activation fails */
-"Please try again. Alternatively, you can activate Jetpack through your WP-Admin." = "Please try again. Alternatively, you can activate Jetpack through your WP-Admin.";
+"Please try again. Alternatively, you can activate Jetpack through your WP-Admin." = "Harap coba lagi. Atau, Anda dapat mengaktifkan Jetpack melalui WP-Admin.";
 
 /* Error message when Jetpack install fails */
-"Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "Please try again. Alternatively, you can install Jetpack through your WP-Admin.";
+"Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "Harap coba lagi. Atau, Anda dapat menginstal Jetpack melalui WP-Admin.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Please update your reader software to keep accepting payments" = "Harap perbarui perangkat lunak pembaca Anda untuk dapat terus menerima pembayaran";
@@ -2695,7 +2695,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Product Review" = "Ulasan Produk";
 
 /* Cell title on beta features screen to enable product SKU input scanner in inventory settings. */
-"Product SKU Scanner" = "Product SKU Scanner";
+"Product SKU Scanner" = "Pemindai SKU Produk";
 
 /* Button title Product Settings in Edit Product More Options Action Sheet
    Product Settings navigation title */
@@ -2731,7 +2731,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Products Refund" = "Pengembalian Dana Produk";
 
 /* Label for the row showing the total cost of products in the order */
-"Products Total" = "Products Total";
+"Products Total" = "Total Produk";
 
 /* Cell description for Cross-sells products in Linked Products Settings screen */
 "Products promoted in the cart when current product is selected" = "Produk dipromosikan dalam keranjang saat produk tersebut dipilih";
@@ -2846,7 +2846,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refund Details" = "Rincian Pengembalian Dana";
 
 /* Title of the switch in the IssueRefund screen to refund fees */
-"Refund Fees" = "Refund Fees";
+"Refund Fees" = "Pengembalian biaya";
 
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
 "Refund Label (%1$@)" = "Kembalikan Dana Label (%1$@)";
@@ -2900,7 +2900,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Remove product" = "Hapus produk";
 
 /* Text for the button to remove a product from the order during order creation */
-"Remove product from order" = "Remove product from order";
+"Remove product from order" = "Hapus produk dari pesanan";
 
 /* Title of the alert when a user is deleting a variation */
 "Remove variation" = "Hapus variasi";
@@ -2955,7 +2955,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retry After Updating" = "Coba Lagi Setelah Memperbarui";
 
 /* Action button to check site's connection again. */
-"Retry Connection" = "Retry Connection";
+"Retry Connection" = "Coba Sambungkan Lagi";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Kembalikan ke pengirim jika paket tidak dapat dikirimkan";
@@ -3170,7 +3170,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Share" = "Bagikan";
 
 /* Payment Link method title on the select payment method screen for simple payments */
-"Share Payment Link" = "Share Payment Link";
+"Share Payment Link" = "Bagikan Tautan Pembayaran";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Berbagi informasi dengan alat analitik kami tentang penggunaan layanan Anda saat sudah login ke akun WordPress.com Anda.";
@@ -3363,7 +3363,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sorry, site addresses must have letters too!" = "Maaf, alamat situs harus mengandung huruf juga!";
 
 /* Error title when Jetpack install fails */
-"Sorry, something went wrong during install" = "Sorry, something went wrong during install";
+"Sorry, something went wrong during install" = "Maaf, terjadi kesalahan selama instalasi";
 
 /* Error message displayed when the entered email is not available. */
 "Sorry, that email address is already being used!" = "Maaf, alamat surel tersebut sudah terpakai!";
@@ -3477,7 +3477,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Switch Store" = "Beralih Toko";
 
 /* Switch store option in the hub menu */
-"Switch store" = "Switch store";
+"Switch store" = "Beralih toko";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
 "Switched to %1$@." = "Dialihkan ke %1$@.";
@@ -3508,10 +3508,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title of system status report screen
    View system status report cell title on Help screen */
-"System Status Report" = "System Status Report";
+"System Status Report" = "Laporan Status Sistem";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
-"System status report copied to clipboard" = "System status report copied to clipboard";
+"System status report copied to clipboard" = "Laporan status sistem disalin ke clipboard";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
@@ -3639,13 +3639,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Terms of Service" = "Ketentuan Layanan";
 
 /* Cell description on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"Test out In-Person Payments with the Stripe Payment Gateway extension" = "Test out In-Person Payments with the Stripe Payment Gateway extension";
+"Test out In-Person Payments with the Stripe Payment Gateway extension" = "Cobalah Pembayaran Langsung dengan ekstensi Stripe Payment Gateway";
 
 /* Cell description on the beta features screen to enable creating new orders */
 "Test out creating new manual orders as we get ready to launch" = "Coba buat pesanan manual baru sembari kami bersiap untuk meluncurkan";
 
 /* Cell description on beta features screen to enable product SKU input scanner in inventory settings. */
-"Test out scanning a barcode for a product SKU in the product inventory settings" = "Test out scanning a barcode for a product SKU in the product inventory settings";
+"Test out scanning a barcode for a product SKU in the product inventory settings" = "Cobalah memindai barcode untuk SKU produk di pengaturan inventaris produk";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "Uji coba fitur melihat Add-on Pesanan menjelang peluncuran";
@@ -3760,7 +3760,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The stock quantity for this product. Editable." = "Kuantitas stok untuk produk ini. Dapat disunting.";
 
 /* Message for the error alert when fetching system status report fails */
-"The system status report for your site cannot be fetched at the moment. Please try again." = "The system status report for your site cannot be fetched at the moment. Please try again.";
+"The system status report for your site cannot be fetched at the moment. Please try again." = "Saat ini, laporan status sistem untuk situs Anda tidak dapat dimuat.  Harap coba lagi.";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "Variasi tidak dapat dibuat.";
@@ -3927,7 +3927,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Total Spend" = "Total Pengeluaran";
 
 /* Information about taxes and the order total when creating a new order */
-"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "Total excluding taxes. Taxes will be automatically calculated based on your store settings.";
+"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "Total belum termasuk pajak. Pajak akan dihitung otomatis berdasarkan pengaturan toko Anda.";
 
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "Total pesanan: %ld";
@@ -4246,7 +4246,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Variations Attributes" = "Atribut Variasi";
 
 /* Description of the system status report on Help screen */
-"Various system information about your site" = "Various system information about your site";
+"Various system information about your site" = "Berbagai informasi sistem terkait situs Anda";
 
 /* two factor code placeholder */
 "Verification code" = "Kode verifikasi";
@@ -4279,7 +4279,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "View Shipment Details" = "Lihat Detail Pengiriman";
 
 /* Title of one of the hub menu options */
-"View Store" = "View Store";
+"View Store" = "Lihat Toko";
 
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "Lihat add-on dari perangkat Anda!";
@@ -4466,7 +4466,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "WooCommerce" = "WooCommerce";
 
 /* Title of one of the hub menu options */
-"WooCommerce Admin" = "WooCommerce Admin";
+"WooCommerce Admin" = "Admin WooCommerce";
 
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "Diskon WooCommerce";
@@ -4614,7 +4614,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "🎉 Order completed" = "🎉 Pesanan selesai";
 
 /* Notice text after creating a simple payment order */
-"🎉 Order created" = "";
+"🎉 Order created" = "🎉 Pesanan dibuat";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 Pengembalian dana produk berhasil";

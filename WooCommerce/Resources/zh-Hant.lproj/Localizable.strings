@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-01-11 11:32:11+0000 */
+/* Translation-Revision-Date: 2022-01-19 08:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -161,10 +161,10 @@
 "%ld upsell products" = "%ld 個追加銷售產品";
 
 /* Label about one product variation shown on Products tab */
-"%ld variation" = "%ld variation";
+"%ld variation" = "%ld 種款式";
 
 /* Label about number of variations shown on Products tab */
-"%ld variations" = "%ld variations";
+"%ld variations" = "%ld 種款式";
 
 /* Product title in Products list when there is no title */
 "(No Title)" = "（沒有標題）";
@@ -251,7 +251,7 @@
 "About the App" = "關於此應用程式";
 
 /* Action button to activate Jetpack on WP-Admin instead of on app */
-"Activate Jetpack in WP-Admin" = "Activate Jetpack in WP-Admin";
+"Activate Jetpack in WP-Admin" = "在 WP 管理員中啟用 Jetpack";
 
 /* Title for the error screen when WooCommerce Payments is installed but not activated */
 "Activate WooCommerce Payments" = "啟用 WooCommerce Payments";
@@ -356,7 +356,7 @@
 "Add credit card" = "新增信用卡";
 
 /* Title text of the button that adds a customer when creating a new order */
-"Add customer" = "Add customer";
+"Add customer" = "新增顧客";
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "在新增每個選項後按下 Enter 鍵";
@@ -445,7 +445,7 @@
 "Allow" = "允許";
 
 /* Title of alert that links to settings for camera access. */
-"Allow camera access" = "Allow camera access";
+"Allow camera access" = "允許存取相機";
 
 /* Subtitle of user profiles as part of Jetpack benefits. */
 "Allow multiple users to access WooCommerce Mobile." = "允許多位使用者存取 WooCommerce Mobile。";
@@ -529,7 +529,7 @@
 "Are you sure you want to log out of the account %@?" = "你確定要登出帳號 %@ 嗎？";
 
 /* Alert message to confirm a user meant to mark all reviews as read. */
-"Are you sure you want to mark all reviews as read?" = "Are you sure you want to mark all reviews as read?";
+"Are you sure you want to mark all reviews as read?" = "確定要將所有評論標為已讀嗎？";
 
 /* Confirmation text before removing an attribute from a variation. */
 "Are you sure you want to remove this attribute?" = "你確定要移除此屬性嗎？";
@@ -859,7 +859,7 @@
 "Continue" = "繼續";
 
 /* Button to dismiss modal overlay and go back to the orders list after a sucessful payment */
-"Continue To Orders" = "Continue To Orders";
+"Continue To Orders" = "繼續前往訂單";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "繼續使用 WordPress.com";
@@ -877,7 +877,7 @@
 "Continuing with Apple" = "繼續使用 Apple";
 
 /* Conversion stat label on dashboard. */
-"Conversion" = "Conversion";
+"Conversion" = "轉換";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "複製";
@@ -930,7 +930,7 @@
 
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
-"Coupons" = "Coupons";
+"Coupons" = "優惠券";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "當機偵錯選單";
@@ -1344,7 +1344,7 @@
 "Envelope" = "信封";
 
 /* Title for the error alert when fetching system status report fails */
-"Error fetching report" = "Error fetching report";
+"Error fetching report" = "擷取報告時發生錯誤";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "在 Apple 地圖中尋找位址時的錯誤";
@@ -1390,7 +1390,7 @@
 "Fees" = "費用";
 
 /* Title on the refund screen that lists the fees total cost */
-"Fees Refund" = "Fees Refund";
+"Fees Refund" = "費用退款";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -1613,7 +1613,7 @@
 "I Like It" = "我喜歡";
 
 /* Cell title on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"IPP with Stripe extension" = "IPP with Stripe extension";
+"IPP with Stripe extension" = "IPP 與 Stripe 擴充功能";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "需履行的項目";
@@ -1713,7 +1713,7 @@
 "Install Jetpack" = "安裝 Jetpack";
 
 /* Action button to install Jetpack on WP-Admin instead of on app */
-"Install Jetpack in WP-Admin" = "Install Jetpack in WP-Admin";
+"Install Jetpack in WP-Admin" = "在 WP 管理員中安裝 Jetpack";
 
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "安裝 WooCommerce Payments";
@@ -1804,7 +1804,7 @@
 "Item weight must be larger than 0" = "商品目重量必須大於 0";
 
 /* Description for Top Performers right column header */
-"Items Sold" = "Items Sold";
+"Items Sold" = "售出的項目";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack 是一款免費的 WordPress 外掛程式，能夠透過所需工具連結你的商店，為你提供最佳行動裝置體驗，包含推播通知和統計資料";
@@ -1998,13 +1998,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark Order Complete" = "將訂單標示為完成";
 
 /* Alert button title - confirms and marks all reviews as read */
-"Mark all" = "Mark all";
+"Mark all" = "全部標記";
 
 /* Title of Alert which asks user for confirmation before marking all reviews as read. */
 "Mark all as read" = "將全部標示為已讀";
 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
-"Mark all reviews as read" = "Mark all reviews as read";
+"Mark all reviews as read" = "將所有評論標為已讀";
 
 /* Alert button when selecting the cash payment method for simple payments */
 "Mark as Paid" = "標示為已付款";
@@ -2016,7 +2016,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark this order as complete and notify the customer" = "將此訂單標示為完成並通知客戶";
 
 /* The details on the placeholder overlay when there are no coupons on the coupon management list */
-"Market your products by adding a coupon to offer your customers a discount." = "Market your products by adding a coupon to offer your customers a discount.";
+"Market your products by adding a coupon to offer your customers a discount." = "新增優惠券為你的顧客提供折扣，藉此行銷你的商品。";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "媒體沒有可上傳的相關檔案。";
@@ -2029,7 +2029,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Menu Order" = "選單順序";
 
 /* VoiceOver accessibility hint for the Menu button action */
-"Menu button which opens an action sheet with option to mark all reviews as read." = "Menu button which opens an action sheet with option to mark all reviews as read.";
+"Menu button which opens an action sheet with option to mark all reviews as read." = "選單按鈕會開啟操作列表，其中包含將所有評論標為已讀的選項。";
 
 /* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
 "Menu order" = "選單順序";
@@ -2076,7 +2076,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Moves the comment to Trash" = "將這則留言移到垃圾桶";
 
 /* Title of the hub menu view in case there is no title for the store */
-"My Store" = "My Store";
+"My Store" = "我的商店";
 
 /* My Tickets title */
 "My Tickets" = "我的票證";
@@ -2115,7 +2115,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Net Payment" = "付款淨額";
 
 /* Top performers — label for the total sales of a product */
-"Net sales: %@" = "Net sales: %@";
+"Net sales: %@" = "淨銷售額：%@";
 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "網路啟用中的外掛程式";
@@ -2124,7 +2124,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "New Attribute Name" = "新屬性名稱";
 
 /* Title for the Shipping Address Form for New Customer */
-"New Customer" = "New Customer";
+"New Customer" = "新顧客";
 
 /* Title for the order creation screen */
 "New Order" = "新訂單";
@@ -2150,7 +2150,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No connection" = "沒有連線";
 
 /* The text on the placeholder overlay when there are no coupons on the coupon management list */
-"No coupons yet" = "No coupons yet";
+"No coupons yet" = "尚未擁有優惠券";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "目前沒有資料";
@@ -2281,7 +2281,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Open in a new Window\/Tab" = "在新視窗\/分頁中開啟";
 
 /* Accessibility label for the Menu button */
-"Open menu" = "Open menu";
+"Open menu" = "開啟選單";
 
 /* Accessibility hint for 1 password button */
 "Opens One Password manager" = "開啟 One Password 管理器";
@@ -2471,7 +2471,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Placing your product in the trash..." = "正在將你的商品放入垃圾桶…";
 
 /* Message of alert that links to settings for camera access. */
-"Please change your camera permissions in device settings." = "Please change your camera permissions in device settings.";
+"Please change your camera permissions in device settings." = "請在裝置設定中變更你的相機權限。";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "請為讀卡機充電";
@@ -2546,7 +2546,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again later or reach out to us and we'll be happy to assist you!" = "請稍後再試或與我們聯絡，我們將很樂意提供協助！";
 
 /* Error message when Jetpack connection fails */
-"Please try again or contact us for support." = "Please try again or contact us for support.";
+"Please try again or contact us for support." = "請再試一次，或聯絡支援團隊。";
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "請再試一次或與我們聯絡，我們將很樂意提供協助！";
@@ -2555,10 +2555,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again." = "請再試一次。";
 
 /* Error message when Jetpack activation fails */
-"Please try again. Alternatively, you can activate Jetpack through your WP-Admin." = "Please try again. Alternatively, you can activate Jetpack through your WP-Admin.";
+"Please try again. Alternatively, you can activate Jetpack through your WP-Admin." = "請再試一次。 或者，你可以透過 WP 管理員啟用 Jetpack。";
 
 /* Error message when Jetpack install fails */
-"Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "Please try again. Alternatively, you can install Jetpack through your WP-Admin.";
+"Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "請再試一次。 或者，你可以透過 WP 管理員安裝 Jetpack。";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Please update your reader software to keep accepting payments" = "請更新你的讀卡機軟體以接受付款";
@@ -2695,7 +2695,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Product Review" = "產品評論";
 
 /* Cell title on beta features screen to enable product SKU input scanner in inventory settings. */
-"Product SKU Scanner" = "Product SKU Scanner";
+"Product SKU Scanner" = "商品貨號掃瞄器";
 
 /* Button title Product Settings in Edit Product More Options Action Sheet
    Product Settings navigation title */
@@ -2731,7 +2731,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Products Refund" = "商品退款";
 
 /* Label for the row showing the total cost of products in the order */
-"Products Total" = "Products Total";
+"Products Total" = "商品總額";
 
 /* Cell description for Cross-sells products in Linked Products Settings screen */
 "Products promoted in the cart when current product is selected" = "客戶選購目前商品時於購物車推銷其他商品";
@@ -2846,7 +2846,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refund Details" = "退款詳細資料";
 
 /* Title of the switch in the IssueRefund screen to refund fees */
-"Refund Fees" = "Refund Fees";
+"Refund Fees" = "退還費用";
 
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
 "Refund Label (%1$@)" = "退款標籤 (%1$@)";
@@ -2900,7 +2900,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Remove product" = "移除商品";
 
 /* Text for the button to remove a product from the order during order creation */
-"Remove product from order" = "Remove product from order";
+"Remove product from order" = "從訂單中移除商品";
 
 /* Title of the alert when a user is deleting a variation */
 "Remove variation" = "移除款式";
@@ -2955,7 +2955,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retry After Updating" = "更新後重試";
 
 /* Action button to check site's connection again. */
-"Retry Connection" = "Retry Connection";
+"Retry Connection" = "重試連線";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "包裹無法投遞時退還寄件者";
@@ -3170,7 +3170,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Share" = "分享";
 
 /* Payment Link method title on the select payment method screen for simple payments */
-"Share Payment Link" = "Share Payment Link";
+"Share Payment Link" = "分享付款連結";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "在登入你的 WordPress.com 帳號時，請將你的服務使用情況相關資訊與我們的分析工具分享。";
@@ -3312,7 +3312,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Simple" = "簡單";
 
 /* Action sheet option when the user wants to create Simple Payments order */
-"Simple payment" = "Simple payment";
+"Simple payment" = "輕鬆付款";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
 "Simple physical product" = "簡單的實體產品";
@@ -3363,7 +3363,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sorry, site addresses must have letters too!" = "很抱歉，網站位址也必須包含字母！";
 
 /* Error title when Jetpack install fails */
-"Sorry, something went wrong during install" = "Sorry, something went wrong during install";
+"Sorry, something went wrong during install" = "不好意思，安裝時發生錯誤";
 
 /* Error message displayed when the entered email is not available. */
 "Sorry, that email address is already being used!" = "很抱歉，已有人使用該電子郵件地址！";
@@ -3477,7 +3477,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Switch Store" = "切換商店";
 
 /* Switch store option in the hub menu */
-"Switch store" = "Switch store";
+"Switch store" = "切換商店";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
 "Switched to %1$@." = "已切換為「%1$@」。";
@@ -3508,10 +3508,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title of system status report screen
    View system status report cell title on Help screen */
-"System Status Report" = "System Status Report";
+"System Status Report" = "系統狀態報告";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
-"System status report copied to clipboard" = "System status report copied to clipboard";
+"System status report copied to clipboard" = "複製到剪貼簿的系統狀態報告";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
@@ -3639,13 +3639,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Terms of Service" = "服務條款";
 
 /* Cell description on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"Test out In-Person Payments with the Stripe Payment Gateway extension" = "Test out In-Person Payments with the Stripe Payment Gateway extension";
+"Test out In-Person Payments with the Stripe Payment Gateway extension" = "透過 Stripe Payment Gateway 擴充功能，測試「親自收款」功能";
 
 /* Cell description on the beta features screen to enable creating new orders */
 "Test out creating new manual orders as we get ready to launch" = "測試即將推出的「建立全新手動訂單」功能";
 
 /* Cell description on beta features screen to enable product SKU input scanner in inventory settings. */
-"Test out scanning a barcode for a product SKU in the product inventory settings" = "Test out scanning a barcode for a product SKU in the product inventory settings";
+"Test out scanning a barcode for a product SKU in the product inventory settings" = "在商品庫存設定中測試掃瞄商品貨號的條碼";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "搶先試用訂單附加元件檢視功能";
@@ -3760,7 +3760,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The stock quantity for this product. Editable." = "此產品的存貨數量。可編輯。";
 
 /* Message for the error alert when fetching system status report fails */
-"The system status report for your site cannot be fetched at the moment. Please try again." = "The system status report for your site cannot be fetched at the moment. Please try again.";
+"The system status report for your site cannot be fetched at the moment. Please try again." = "目前無法擷取你的網站系統狀態報告。 請再試一次。";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "無法產生該款式。";
@@ -3927,7 +3927,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Total Spend" = "消費總額";
 
 /* Information about taxes and the order total when creating a new order */
-"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "Total excluding taxes. Taxes will be automatically calculated based on your store settings.";
+"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "總計 (不含稅)。 稅金會根據你的商店設定自動計算。";
 
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "訂單總數：%ld";
@@ -4246,7 +4246,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Variations Attributes" = "款式屬性";
 
 /* Description of the system status report on Help screen */
-"Various system information about your site" = "Various system information about your site";
+"Various system information about your site" = "關於你網站的各項系統資訊";
 
 /* two factor code placeholder */
 "Verification code" = "驗證碼";
@@ -4279,7 +4279,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "View Shipment Details" = "檢視貨件詳細資訊";
 
 /* Title of one of the hub menu options */
-"View Store" = "View Store";
+"View Store" = "查看商店";
 
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "查看裝置的附加元件！";
@@ -4614,7 +4614,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "🎉 Order completed" = "🎉已完成訂單";
 
 /* Notice text after creating a simple payment order */
-"🎉 Order created" = "";
+"🎉 Order created" = "🎉 已建立訂單";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 已成功退還商品款項";

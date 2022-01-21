@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-01-11 22:07:54+0000 */
+/* Translation-Revision-Date: 2022-01-19 14:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -877,7 +877,7 @@
 "Continuing with Apple" = "Fortsätter med Apple";
 
 /* Conversion stat label on dashboard. */
-"Conversion" = "Conversion";
+"Conversion" = "Konvertering";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Kopiera";
@@ -1344,7 +1344,7 @@
 "Envelope" = "Kuvert";
 
 /* Title for the error alert when fetching system status report fails */
-"Error fetching report" = "Error fetching report";
+"Error fetching report" = "Det gick inte att hämta rapporten";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Det gick inte att hitta adressen i Apple Maps";
@@ -1390,7 +1390,7 @@
 "Fees" = "Avgifter";
 
 /* Title on the refund screen that lists the fees total cost */
-"Fees Refund" = "Fees Refund";
+"Fees Refund" = "Avgiftsåterbetalning";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -2016,7 +2016,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark this order as complete and notify the customer" = "Markera denna beställning som slutförd och avisera kunden";
 
 /* The details on the placeholder overlay when there are no coupons on the coupon management list */
-"Market your products by adding a coupon to offer your customers a discount." = "Market your products by adding a coupon to offer your customers a discount.";
+"Market your products by adding a coupon to offer your customers a discount." = "Marknadsför dina produkter genom att lägga till en kupong som ger dina kunder rabatt.";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Valt media har ingen tillhörande fil som kan laddas upp.";
@@ -2029,7 +2029,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Menu Order" = "Menysortering";
 
 /* VoiceOver accessibility hint for the Menu button action */
-"Menu button which opens an action sheet with option to mark all reviews as read." = "Menu button which opens an action sheet with option to mark all reviews as read.";
+"Menu button which opens an action sheet with option to mark all reviews as read." = "Menyknapp som öppnar ett åtgärdsblad med möjlighet att markera alla recensioner som lästa.";
 
 /* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
 "Menu order" = "Menysortering";
@@ -2115,7 +2115,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Net Payment" = "Nettobetalning";
 
 /* Top performers — label for the total sales of a product */
-"Net sales: %@" = "Net sales: %@";
+"Net sales: %@" = "Nettoförsäljning: %@";
 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Nätverksaktiva tillägg";
@@ -2555,10 +2555,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again." = "Försök igen.";
 
 /* Error message when Jetpack activation fails */
-"Please try again. Alternatively, you can activate Jetpack through your WP-Admin." = "Please try again. Alternatively, you can activate Jetpack through your WP-Admin.";
+"Please try again. Alternatively, you can activate Jetpack through your WP-Admin." = "Försök igen. Alternativt kan du aktivera Jetpack från WP-admin.";
 
 /* Error message when Jetpack install fails */
-"Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "Please try again. Alternatively, you can install Jetpack through your WP-Admin.";
+"Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "Försök igen. Alternativt kan du installera Jetpack från WP-admin.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Please update your reader software to keep accepting payments" = "Uppdatera din läsares programvara för att fortsätta ta emot betalningar";
@@ -2695,7 +2695,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Product Review" = "Produktrecension";
 
 /* Cell title on beta features screen to enable product SKU input scanner in inventory settings. */
-"Product SKU Scanner" = "Product SKU Scanner";
+"Product SKU Scanner" = "Skanner för produkt-SKU";
 
 /* Button title Product Settings in Edit Product More Options Action Sheet
    Product Settings navigation title */
@@ -2731,7 +2731,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Products Refund" = "Produktåterbetalning";
 
 /* Label for the row showing the total cost of products in the order */
-"Products Total" = "Products Total";
+"Products Total" = "Produktbelopp";
 
 /* Cell description for Cross-sells products in Linked Products Settings screen */
 "Products promoted in the cart when current product is selected" = "Produkter som marknadsförs i kundvagnen när den nuvarande produkten är vald";
@@ -2846,7 +2846,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refund Details" = "Återbetalningsinformation";
 
 /* Title of the switch in the IssueRefund screen to refund fees */
-"Refund Fees" = "Refund Fees";
+"Refund Fees" = "Återbetala avgifter";
 
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
 "Refund Label (%1$@)" = "Återbetala etikett (%1$@)";
@@ -2955,7 +2955,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retry After Updating" = "Försök igen efter uppdatering";
 
 /* Action button to check site's connection again. */
-"Retry Connection" = "Retry Connection";
+"Retry Connection" = "Försök ansluta igen";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Returnera till avsändare om paketet inte kan levereras";
@@ -3639,13 +3639,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Terms of Service" = "Användarvillkor";
 
 /* Cell description on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"Test out In-Person Payments with the Stripe Payment Gateway extension" = "Test out In-Person Payments with the Stripe Payment Gateway extension";
+"Test out In-Person Payments with the Stripe Payment Gateway extension" = "Testa personliga betalningar med utökningen Stripe Payment Gateway";
 
 /* Cell description on the beta features screen to enable creating new orders */
 "Test out creating new manual orders as we get ready to launch" = "Testa att skapa nya manuella beställningar medan vi gör oss redo för lansering";
 
 /* Cell description on beta features screen to enable product SKU input scanner in inventory settings. */
-"Test out scanning a barcode for a product SKU in the product inventory settings" = "Test out scanning a barcode for a product SKU in the product inventory settings";
+"Test out scanning a barcode for a product SKU in the product inventory settings" = "Testa att skanna en streckkod för en produkt-SKU i produktlagerinställningarna";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "Testa att visa Beställningstillägg när vi gör oss redo att lansera";
@@ -3760,7 +3760,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The stock quantity for this product. Editable." = "Lagermängden för den här produkten. Redigerbar.";
 
 /* Message for the error alert when fetching system status report fails */
-"The system status report for your site cannot be fetched at the moment. Please try again." = "The system status report for your site cannot be fetched at the moment. Please try again.";
+"The system status report for your site cannot be fetched at the moment. Please try again." = "Systemstatusrapporten för din webbplats kan inte hämtas för tillfället. Försök igen.";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "Variationen kunde inte genereras.";
@@ -3927,7 +3927,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Total Spend" = "Spenderat totalt";
 
 /* Information about taxes and the order total when creating a new order */
-"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "Total excluding taxes. Taxes will be automatically calculated based on your store settings.";
+"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "Totalbelopp exklusive moms. Moms beräknas automatiskt baserat på dina butiksinställningar.";
 
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "Totalt antal ordrar: %ld";

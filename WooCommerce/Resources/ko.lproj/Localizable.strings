@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-01-11 11:32:12+0000 */
+/* Translation-Revision-Date: 2022-01-19 16:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -161,10 +161,10 @@
 "%ld upsell products" = " 상향 판매 제품 %ld개";
 
 /* Label about one product variation shown on Products tab */
-"%ld variation" = "%ld variation";
+"%ld variation" = "%ld개 변형";
 
 /* Label about number of variations shown on Products tab */
-"%ld variations" = "%ld variations";
+"%ld variations" = "%ld개 변형";
 
 /* Product title in Products list when there is no title */
 "(No Title)" = "(제목 없음)";
@@ -251,7 +251,7 @@
 "About the App" = "앱 정보";
 
 /* Action button to activate Jetpack on WP-Admin instead of on app */
-"Activate Jetpack in WP-Admin" = "Activate Jetpack in WP-Admin";
+"Activate Jetpack in WP-Admin" = "WP 관리자에서 젯팩 활성화";
 
 /* Title for the error screen when WooCommerce Payments is installed but not activated */
 "Activate WooCommerce Payments" = "WooCommerce 결제 활성화";
@@ -356,7 +356,7 @@
 "Add credit card" = "신용카드 추가";
 
 /* Title text of the button that adds a customer when creating a new order */
-"Add customer" = "Add customer";
+"Add customer" = "고객 추가";
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "각 옵션 추가 및 Enter 키 누르기";
@@ -445,7 +445,7 @@
 "Allow" = "허용";
 
 /* Title of alert that links to settings for camera access. */
-"Allow camera access" = "Allow camera access";
+"Allow camera access" = "카메라 접근 허용";
 
 /* Subtitle of user profiles as part of Jetpack benefits. */
 "Allow multiple users to access WooCommerce Mobile." = "여러 사용자에게 우커머스 모바일 접근을 허용하세요.";
@@ -529,7 +529,7 @@
 "Are you sure you want to log out of the account %@?" = "%@ 계정에서 로그아웃하시겠어요?";
 
 /* Alert message to confirm a user meant to mark all reviews as read. */
-"Are you sure you want to mark all reviews as read?" = "Are you sure you want to mark all reviews as read?";
+"Are you sure you want to mark all reviews as read?" = "모든 리뷰를 읽음으로 표시하시겠어요?";
 
 /* Confirmation text before removing an attribute from a variation. */
 "Are you sure you want to remove this attribute?" = "이 속성을 제거하시겠어요?";
@@ -859,7 +859,7 @@
 "Continue" = "계속";
 
 /* Button to dismiss modal overlay and go back to the orders list after a sucessful payment */
-"Continue To Orders" = "Continue To Orders";
+"Continue To Orders" = "주문 계속";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "워드프레스닷컴 계속";
@@ -877,7 +877,7 @@
 "Continuing with Apple" = "Apple로 계속하기";
 
 /* Conversion stat label on dashboard. */
-"Conversion" = "Conversion";
+"Conversion" = "전환";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "복사";
@@ -930,7 +930,7 @@
 
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
-"Coupons" = "Coupons";
+"Coupons" = "쿠폰";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "충돌 디버그 메뉴";
@@ -1344,7 +1344,7 @@
 "Envelope" = "봉투";
 
 /* Title for the error alert when fetching system status report fails */
-"Error fetching report" = "Error fetching report";
+"Error fetching report" = "보고서 가져오기 오류";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Apple Maps에서 주소를 찾는 중 오류 발생";
@@ -1390,7 +1390,7 @@
 "Fees" = "수수료";
 
 /* Title on the refund screen that lists the fees total cost */
-"Fees Refund" = "Fees Refund";
+"Fees Refund" = "수수료 환불";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -1613,7 +1613,7 @@
 "I Like It" = "좋아요";
 
 /* Cell title on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"IPP with Stripe extension" = "IPP with Stripe extension";
+"IPP with Stripe extension" = "Stripe 확장 기능 포함 IPP";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "주문을 처리할 아이템";
@@ -1713,7 +1713,7 @@
 "Install Jetpack" = "젯팩 설치";
 
 /* Action button to install Jetpack on WP-Admin instead of on app */
-"Install Jetpack in WP-Admin" = "Install Jetpack in WP-Admin";
+"Install Jetpack in WP-Admin" = "WP 관리자에서 젯팩 설치";
 
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "WooCommerce 결제 설치";
@@ -1804,7 +1804,7 @@
 "Item weight must be larger than 0" = "아이템 무게는 0 이상이어야 합니다.";
 
 /* Description for Top Performers right column header */
-"Items Sold" = "Items Sold";
+"Items Sold" = "판매된 아이템";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack은 스토어를 최고의 모바일 환경을 제공하는 데 필요한 푸시 알림, 통계 등의 도구와 연결하는 무료 워드프레스 플러그인입니다.";
@@ -1998,13 +1998,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark Order Complete" = "주문을 완료로 표시";
 
 /* Alert button title - confirms and marks all reviews as read */
-"Mark all" = "Mark all";
+"Mark all" = "모두 표시";
 
 /* Title of Alert which asks user for confirmation before marking all reviews as read. */
 "Mark all as read" = "모두 읽음으로 표시";
 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
-"Mark all reviews as read" = "Mark all reviews as read";
+"Mark all reviews as read" = "모든 리뷰를 읽음으로 표시";
 
 /* Alert button when selecting the cash payment method for simple payments */
 "Mark as Paid" = "결제됨으로 표시";
@@ -2016,7 +2016,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark this order as complete and notify the customer" = "이 주문을 완료로 표시하고 고객에게 알립니다.";
 
 /* The details on the placeholder overlay when there are no coupons on the coupon management list */
-"Market your products by adding a coupon to offer your customers a discount." = "Market your products by adding a coupon to offer your customers a discount.";
+"Market your products by adding a coupon to offer your customers a discount." = "고객에게 할인을 제공하는 쿠폰을 추가하여 상품을 마케팅하세요.";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "미디어에 업로드할 관련 파일이 없습니다.";
@@ -2029,7 +2029,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Menu Order" = "메뉴 순서";
 
 /* VoiceOver accessibility hint for the Menu button action */
-"Menu button which opens an action sheet with option to mark all reviews as read." = "Menu button which opens an action sheet with option to mark all reviews as read.";
+"Menu button which opens an action sheet with option to mark all reviews as read." = "모든 리뷰를 읽음으로 표시하는 옵션이 있는 작업 시트를 여는 메뉴 버튼.";
 
 /* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
 "Menu order" = "메뉴 순서";
@@ -2076,7 +2076,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Moves the comment to Trash" = "댓글을 휴지통으로 이동";
 
 /* Title of the hub menu view in case there is no title for the store */
-"My Store" = "My Store";
+"My Store" = "내 스토어";
 
 /* My Tickets title */
 "My Tickets" = "내 티켓";
@@ -2115,7 +2115,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Net Payment" = "순 결제";
 
 /* Top performers — label for the total sales of a product */
-"Net sales: %@" = "Net sales: %@";
+"Net sales: %@" = "순매출액: %@";
 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "네트워크 활성화 플러그인";
@@ -2124,7 +2124,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "New Attribute Name" = "새 속성 이름";
 
 /* Title for the Shipping Address Form for New Customer */
-"New Customer" = "New Customer";
+"New Customer" = "신규 고객";
 
 /* Title for the order creation screen */
 "New Order" = "새 주문";
@@ -2150,7 +2150,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No connection" = "연결 없음";
 
 /* The text on the placeholder overlay when there are no coupons on the coupon management list */
-"No coupons yet" = "No coupons yet";
+"No coupons yet" = "아직 쿠폰 없음";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "사용 가능한 데이터 없음";
@@ -2281,7 +2281,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Open in a new Window\/Tab" = "새 창\/탭에서 열기";
 
 /* Accessibility label for the Menu button */
-"Open menu" = "Open menu";
+"Open menu" = "메뉴 열기";
 
 /* Accessibility hint for 1 password button */
 "Opens One Password manager" = "One 비밀번호 관리자를 엽니다.";
@@ -2471,7 +2471,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Placing your product in the trash..." = "제품을 휴지통에 버리는 중";
 
 /* Message of alert that links to settings for camera access. */
-"Please change your camera permissions in device settings." = "Please change your camera permissions in device settings.";
+"Please change your camera permissions in device settings." = "기기 설정에서 카메라 권한을 변경해 주세요.";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "리더를 충전하세요.";
@@ -2546,7 +2546,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again later or reach out to us and we'll be happy to assist you!" = "나중에 다시 시도해 보세요. 또는 당사에 연락하면 기꺼이 도와드리겠습니다!";
 
 /* Error message when Jetpack connection fails */
-"Please try again or contact us for support." = "Please try again or contact us for support.";
+"Please try again or contact us for support." = "다시 시도하거나 지원팀에 문의해 주세요.";
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "다시 시도해 보세요. 또는 당사에 연락하면 기꺼이 도와드리겠습니다!";
@@ -2555,10 +2555,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again." = "다시 시도하세요.";
 
 /* Error message when Jetpack activation fails */
-"Please try again. Alternatively, you can activate Jetpack through your WP-Admin." = "Please try again. Alternatively, you can activate Jetpack through your WP-Admin.";
+"Please try again. Alternatively, you can activate Jetpack through your WP-Admin." = "다시 시도해 보세요. WP 관리자를 통해 젯팩을 활성화할 수도 있습니다.";
 
 /* Error message when Jetpack install fails */
-"Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "Please try again. Alternatively, you can install Jetpack through your WP-Admin.";
+"Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "다시 시도해 보세요. WP 관리자를 통해 젯팩을 설치할 수도 있습니다.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Please update your reader software to keep accepting payments" = "결제를 계속 수락하려면 리더 소프트웨어를 업데이트하세요.";
@@ -2695,7 +2695,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Product Review" = "제품 검토";
 
 /* Cell title on beta features screen to enable product SKU input scanner in inventory settings. */
-"Product SKU Scanner" = "Product SKU Scanner";
+"Product SKU Scanner" = "상품 SKU 스캐너";
 
 /* Button title Product Settings in Edit Product More Options Action Sheet
    Product Settings navigation title */
@@ -2731,7 +2731,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Products Refund" = "제품 환불";
 
 /* Label for the row showing the total cost of products in the order */
-"Products Total" = "Products Total";
+"Products Total" = "상품 합계";
 
 /* Cell description for Cross-sells products in Linked Products Settings screen */
 "Products promoted in the cart when current product is selected" = "현재 제품이 선택될 때 장바구니에서 홍보되는 제품";
@@ -2846,7 +2846,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refund Details" = "환불 정보";
 
 /* Title of the switch in the IssueRefund screen to refund fees */
-"Refund Fees" = "Refund Fees";
+"Refund Fees" = "수수료 환불";
 
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
 "Refund Label (%1$@)" = "환불 레이블(%1$@)";
@@ -2900,7 +2900,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Remove product" = "제품 제거";
 
 /* Text for the button to remove a product from the order during order creation */
-"Remove product from order" = "Remove product from order";
+"Remove product from order" = "주문에서 상품 제거";
 
 /* Title of the alert when a user is deleting a variation */
 "Remove variation" = "변형 제거";
@@ -2955,7 +2955,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retry After Updating" = "업데이트 후 다시 시도";
 
 /* Action button to check site's connection again. */
-"Retry Connection" = "Retry Connection";
+"Retry Connection" = "연결 재시도";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "패키지를 배송할 수 없는 경우 보낸 사람에게 반송";
@@ -3170,7 +3170,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Share" = "공유";
 
 /* Payment Link method title on the select payment method screen for simple payments */
-"Share Payment Link" = "Share Payment Link";
+"Share Payment Link" = "결제 링크 공유";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "워드프레스닷컴 계정에 로그인되어 있는 동안 이용하는 서비스에 대한 정보를 워드프레스의 분석 도구와 공유합니다.";
@@ -3312,7 +3312,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Simple" = "심플";
 
 /* Action sheet option when the user wants to create Simple Payments order */
-"Simple payment" = "Simple payment";
+"Simple payment" = "간편한 결제";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
 "Simple physical product" = "단순한 실제 제품";
@@ -3363,7 +3363,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sorry, site addresses must have letters too!" = "죄송합니다. 사이트 주소는 글자도 포함돼야 합니다!";
 
 /* Error title when Jetpack install fails */
-"Sorry, something went wrong during install" = "Sorry, something went wrong during install";
+"Sorry, something went wrong during install" = "죄송합니다. 설치 중 문제가 발생했습니다";
 
 /* Error message displayed when the entered email is not available. */
 "Sorry, that email address is already being used!" = "죄송합니다. 해당 이메일 주소는 이미 사용되고 있습니다!";
@@ -3477,7 +3477,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Switch Store" = "스토어 전환";
 
 /* Switch store option in the hub menu */
-"Switch store" = "Switch store";
+"Switch store" = "스토어 전환";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
 "Switched to %1$@." = "%1$@(으)로 전환되었습니다.";
@@ -3508,10 +3508,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title of system status report screen
    View system status report cell title on Help screen */
-"System Status Report" = "System Status Report";
+"System Status Report" = "시스템 상태 보고서";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
-"System status report copied to clipboard" = "System status report copied to clipboard";
+"System status report copied to clipboard" = "클립보드에 시스템 상태 보고서 복사됨";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
@@ -3639,13 +3639,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Terms of Service" = "서비스 약관";
 
 /* Cell description on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"Test out In-Person Payments with the Stripe Payment Gateway extension" = "Test out In-Person Payments with the Stripe Payment Gateway extension";
+"Test out In-Person Payments with the Stripe Payment Gateway extension" = "Stripe 결제 게이트웨이 확장 기능으로 대면 결제 테스트하기";
 
 /* Cell description on the beta features screen to enable creating new orders */
 "Test out creating new manual orders as we get ready to launch" = "출시 준비가 되면 전체 수동 주문 생성해 보기";
 
 /* Cell description on beta features screen to enable product SKU input scanner in inventory settings. */
-"Test out scanning a barcode for a product SKU in the product inventory settings" = "Test out scanning a barcode for a product SKU in the product inventory settings";
+"Test out scanning a barcode for a product SKU in the product inventory settings" = "상품 재고 설정에서 상품 SKU의 바코드 스캔 테스트하기";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "출시 준비가 끝나면 주문 애드온 테스트해 보기";
@@ -3760,7 +3760,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The stock quantity for this product. Editable." = "이 제품의 재고 수량입니다. 편집 가능합니다.";
 
 /* Message for the error alert when fetching system status report fails */
-"The system status report for your site cannot be fetched at the moment. Please try again." = "The system status report for your site cannot be fetched at the moment. Please try again.";
+"The system status report for your site cannot be fetched at the moment. Please try again." = "지금은 사이트에 대한 시스템 상태 보고서를 가져올 수 없습니다. 다시 시도해 보세요.";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "변형을 생성할 수 없습니다.";
@@ -3927,7 +3927,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Total Spend" = "총 지출";
 
 /* Information about taxes and the order total when creating a new order */
-"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "Total excluding taxes. Taxes will be automatically calculated based on your store settings.";
+"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "제외되는 세금 합계. 세금이 스토어 설정을 기반으로 자동으로 계산됩니다.";
 
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "총 주문 수: %ld";
@@ -4246,7 +4246,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Variations Attributes" = "변형 속성";
 
 /* Description of the system status report on Help screen */
-"Various system information about your site" = "Various system information about your site";
+"Various system information about your site" = "사이트에 대한 다양한 시스템 정보";
 
 /* two factor code placeholder */
 "Verification code" = "확인 코드";
@@ -4279,7 +4279,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "View Shipment Details" = "배송 상세 정보 보기";
 
 /* Title of one of the hub menu options */
-"View Store" = "View Store";
+"View Store" = "스토어 보기";
 
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "기기에서 애드온을 보세요!";
@@ -4466,7 +4466,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "WooCommerce" = "WooCommerce";
 
 /* Title of one of the hub menu options */
-"WooCommerce Admin" = "WooCommerce Admin";
+"WooCommerce Admin" = "WooCommerce 관리자";
 
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "WooCommerce 할인";
@@ -4614,7 +4614,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "🎉 Order completed" = "🎉 주문 완료됨";
 
 /* Notice text after creating a simple payment order */
-"🎉 Order created" = "";
+"🎉 Order created" = "🎉 주문 생성됨";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉개 제품이 환불되었음";

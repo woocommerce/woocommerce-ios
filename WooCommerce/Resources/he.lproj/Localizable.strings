@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-01-11 11:32:12+0000 */
+/* Translation-Revision-Date: 2022-01-19 14:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -161,10 +161,10 @@
 "%ld upsell products" = "%ld מוצרים של שדרוגי מכירות";
 
 /* Label about one product variation shown on Products tab */
-"%ld variation" = "%ld variation";
+"%ld variation" = "סוג %ld";
 
 /* Label about number of variations shown on Products tab */
-"%ld variations" = "%ld variations";
+"%ld variations" = "%ld סוגים";
 
 /* Product title in Products list when there is no title */
 "(No Title)" = "(חסרה כותרת)";
@@ -251,7 +251,7 @@
 "About the App" = "מידע על האפליקציה";
 
 /* Action button to activate Jetpack on WP-Admin instead of on app */
-"Activate Jetpack in WP-Admin" = "Activate Jetpack in WP-Admin";
+"Activate Jetpack in WP-Admin" = "להפעיל את Jetpack בניהול WP";
 
 /* Title for the error screen when WooCommerce Payments is installed but not activated */
 "Activate WooCommerce Payments" = "להפעיל את WooCommerce Payments";
@@ -356,7 +356,7 @@
 "Add credit card" = "להוסיף כרטיס אשראי";
 
 /* Title text of the button that adds a customer when creating a new order */
-"Add customer" = "Add customer";
+"Add customer" = "להוסיף לקוח";
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "יש להוסיף כל אפשרות בנפרד ולהקיש Enter";
@@ -445,7 +445,7 @@
 "Allow" = "לאפשר";
 
 /* Title of alert that links to settings for camera access. */
-"Allow camera access" = "Allow camera access";
+"Allow camera access" = "לאפשר גישה למצלמה";
 
 /* Subtitle of user profiles as part of Jetpack benefits. */
 "Allow multiple users to access WooCommerce Mobile." = "לאפשר למספר משתמשים לגשת אל WooCommerce Mobile.";
@@ -529,7 +529,7 @@
 "Are you sure you want to log out of the account %@?" = "האם ברצונך להתנתק מהחשבון %@?";
 
 /* Alert message to confirm a user meant to mark all reviews as read. */
-"Are you sure you want to mark all reviews as read?" = "Are you sure you want to mark all reviews as read?";
+"Are you sure you want to mark all reviews as read?" = "האם ברצונך לסמן את כל הביקורות כ'נקרא'?";
 
 /* Confirmation text before removing an attribute from a variation. */
 "Are you sure you want to remove this attribute?" = "האם ברצונך להסיר את המאפיין הזה?";
@@ -859,7 +859,7 @@
 "Continue" = "המשך";
 
 /* Button to dismiss modal overlay and go back to the orders list after a sucessful payment */
-"Continue To Orders" = "Continue To Orders";
+"Continue To Orders" = "המשך להזמנות";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "להמשיך עם WordPress.com";
@@ -877,7 +877,7 @@
 "Continuing with Apple" = "להמשיך עם Apple";
 
 /* Conversion stat label on dashboard. */
-"Conversion" = "Conversion";
+"Conversion" = "המרה";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "העתק";
@@ -930,7 +930,7 @@
 
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
-"Coupons" = "Coupons";
+"Coupons" = "קופונים";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "תפריט לאיתור באגים של קריסה";
@@ -1344,7 +1344,7 @@
 "Envelope" = "מעטפה";
 
 /* Title for the error alert when fetching system status report fails */
-"Error fetching report" = "Error fetching report";
+"Error fetching report" = "שגיאה בהבאת הדוח";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "שגיאה באיתור הכתובת ב-Apple Maps";
@@ -1390,7 +1390,7 @@
 "Fees" = "עמלות";
 
 /* Title on the refund screen that lists the fees total cost */
-"Fees Refund" = "Fees Refund";
+"Fees Refund" = "החזר כספי על עמלות";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -1613,7 +1613,7 @@
 "I Like It" = "אהבתי את זה";
 
 /* Cell title on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"IPP with Stripe extension" = "IPP with Stripe extension";
+"IPP with Stripe extension" = "הרחבה של IPP עם Stripe";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "פריטים להשלמה";
@@ -1713,7 +1713,7 @@
 "Install Jetpack" = "התקנת Jetpack";
 
 /* Action button to install Jetpack on WP-Admin instead of on app */
-"Install Jetpack in WP-Admin" = "Install Jetpack in WP-Admin";
+"Install Jetpack in WP-Admin" = "להתקין את Jetpack בניהול WP";
 
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "להתקין את WooCommerce Payments";
@@ -1804,7 +1804,7 @@
 "Item weight must be larger than 0" = "משקל הפריט חייב להיות מעל 0";
 
 /* Description for Top Performers right column header */
-"Items Sold" = "Items Sold";
+"Items Sold" = "פריטים שנמכרו";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack הוא תוסף חינמי של WordPress שמחבר לחנות שלך כלים שיספקו לך את חוויית השימוש הטובה ביותר במכשיר הנייד, כולל הודעות דחיפה ונתונים סטטיסטיים";
@@ -1998,13 +1998,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark Order Complete" = "סימון הזמנה כ'הושלמה'";
 
 /* Alert button title - confirms and marks all reviews as read */
-"Mark all" = "Mark all";
+"Mark all" = "לסמן הכול";
 
 /* Title of Alert which asks user for confirmation before marking all reviews as read. */
 "Mark all as read" = "סימון כל הפריטים כ'נקרא'";
 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
-"Mark all reviews as read" = "Mark all reviews as read";
+"Mark all reviews as read" = "לסמן את כל הביקורות כ'נקרא'";
 
 /* Alert button when selecting the cash payment method for simple payments */
 "Mark as Paid" = "לסמן כ'שולמה'";
@@ -2016,7 +2016,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark this order as complete and notify the customer" = "לסמן את ההזמנה כ'הושלמה' ולהודיע ללקוח";
 
 /* The details on the placeholder overlay when there are no coupons on the coupon management list */
-"Market your products by adding a coupon to offer your customers a discount." = "Market your products by adding a coupon to offer your customers a discount.";
+"Market your products by adding a coupon to offer your customers a discount." = "אפשר לשווק את המוצרים שלך בעזרת קופון ולהציע ללקוחות הנחה.";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "לפריט המדיה חסר קובץ מקושר להעלאה.";
@@ -2029,7 +2029,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Menu Order" = "הסדר בתפריט";
 
 /* VoiceOver accessibility hint for the Menu button action */
-"Menu button which opens an action sheet with option to mark all reviews as read." = "Menu button which opens an action sheet with option to mark all reviews as read.";
+"Menu button which opens an action sheet with option to mark all reviews as read." = "כפתור התפריט שנפתח אשר פותח גיליון פעולות עם אפשרות לסמן את כל הביקורות כ'נקרא'.";
 
 /* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
 "Menu order" = "הסדר בתפריט";
@@ -2076,7 +2076,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Moves the comment to Trash" = "העברת התגובות לפח";
 
 /* Title of the hub menu view in case there is no title for the store */
-"My Store" = "My Store";
+"My Store" = "החנות שלי";
 
 /* My Tickets title */
 "My Tickets" = "הפנייה שלי";
@@ -2115,7 +2115,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Net Payment" = "תשלום נטו";
 
 /* Top performers — label for the total sales of a product */
-"Net sales: %@" = "Net sales: %@";
+"Net sales: %@" = "סכום מכירות נטו: %@";
 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "תוספים פעילים ברשת";
@@ -2124,7 +2124,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "New Attribute Name" = "שם המאפיין החדש";
 
 /* Title for the Shipping Address Form for New Customer */
-"New Customer" = "New Customer";
+"New Customer" = "לקוח חדש";
 
 /* Title for the order creation screen */
 "New Order" = "הזמנה חדשה";
@@ -2150,7 +2150,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No connection" = "אין חיבור";
 
 /* The text on the placeholder overlay when there are no coupons on the coupon management list */
-"No coupons yet" = "No coupons yet";
+"No coupons yet" = "עדיין אין קופונים";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "אין נתונים זמינים";
@@ -2281,7 +2281,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Open in a new Window\/Tab" = "לפתוח בחלון חדש \/ בלשונית חדשה";
 
 /* Accessibility label for the Menu button */
-"Open menu" = "Open menu";
+"Open menu" = "לפתוח תפריט";
 
 /* Accessibility hint for 1 password button */
 "Opens One Password manager" = "הפעולה פותחת את המנהל של One Password";
@@ -2471,7 +2471,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Placing your product in the trash..." = "מעביר את המוצר שלך לפח...";
 
 /* Message of alert that links to settings for camera access. */
-"Please change your camera permissions in device settings." = "Please change your camera permissions in device settings.";
+"Please change your camera permissions in device settings." = "עליך לשנות את הרשאות המצלמה במכשיר שלך.";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "יש להטעין את הקורא";
@@ -2546,7 +2546,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again later or reach out to us and we'll be happy to assist you!" = "יש לנסות שוב מאוחר יותר או לפנות אלינו בכל עת ואנחנו נשמח לעזור!";
 
 /* Error message when Jetpack connection fails */
-"Please try again or contact us for support." = "Please try again or contact us for support.";
+"Please try again or contact us for support." = "יש לנסות שוב או לפנות אלינו לתמיכה.";
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "יש לנסות שוב או לפנות אלינו בכל עת ואנחנו נשמח לעזור!";
@@ -2555,10 +2555,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please try again." = "יש לנסות שוב.";
 
 /* Error message when Jetpack activation fails */
-"Please try again. Alternatively, you can activate Jetpack through your WP-Admin." = "Please try again. Alternatively, you can activate Jetpack through your WP-Admin.";
+"Please try again. Alternatively, you can activate Jetpack through your WP-Admin." = "יש לנסות שוב. לחלופין, אפשר להפעיל את Jetpack דרך מנהל WP.";
 
 /* Error message when Jetpack install fails */
-"Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "Please try again. Alternatively, you can install Jetpack through your WP-Admin.";
+"Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "יש לנסות שוב. לחלופין, אפשר להתקין את Jetpack דרך מנהל WP.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Please update your reader software to keep accepting payments" = "עליך לעדכן את התוכנה של הקורא כדי להמשיך לקבל תשלומים";
@@ -2695,7 +2695,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Product Review" = "חוות דעת על מוצר";
 
 /* Cell title on beta features screen to enable product SKU input scanner in inventory settings. */
-"Product SKU Scanner" = "Product SKU Scanner";
+"Product SKU Scanner" = "סורק SKU של מוצר";
 
 /* Button title Product Settings in Edit Product More Options Action Sheet
    Product Settings navigation title */
@@ -2731,7 +2731,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Products Refund" = "החזר כספי על מוצרים";
 
 /* Label for the row showing the total cost of products in the order */
-"Products Total" = "Products Total";
+"Products Total" = "סך כל המוצרים";
 
 /* Cell description for Cross-sells products in Linked Products Settings screen */
 "Products promoted in the cart when current product is selected" = "מוצרים שמקודמים בעגלת הקניות כשהמוצרים הנוכחיים נבחרים";
@@ -2846,7 +2846,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refund Details" = "פרטי ההחזר";
 
 /* Title of the switch in the IssueRefund screen to refund fees */
-"Refund Fees" = "Refund Fees";
+"Refund Fees" = "להנפיק החזר כספי על עמלות";
 
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
 "Refund Label (%1$@)" = "החזר כספי עבור תווית (%1$@)";
@@ -2900,7 +2900,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Remove product" = "להסיר מוצר";
 
 /* Text for the button to remove a product from the order during order creation */
-"Remove product from order" = "Remove product from order";
+"Remove product from order" = "להסיר את המוצר מההזמנה";
 
 /* Title of the alert when a user is deleting a variation */
 "Remove variation" = "להסיר את הסוג";
@@ -2955,7 +2955,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retry After Updating" = "יש לנסות שוב לאחר העדכון";
 
 /* Action button to check site's connection again. */
-"Retry Connection" = "Retry Connection";
+"Retry Connection" = "לנסות שוב את החיבור";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "להחזיר לשולח אם לא ניתן לשלוח את החבילה";
@@ -3170,7 +3170,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Share" = "שיתוף";
 
 /* Payment Link method title on the select payment method screen for simple payments */
-"Share Payment Link" = "Share Payment Link";
+"Share Payment Link" = "לשתף קישור לתשלום";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "שיתוף של פרטי השימוש שלך בשירותים השונים עם כלי הניתוח שלנו לאחר ההתחברות לחשבון שלך ב-WordPress.com.";
@@ -3312,7 +3312,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Simple" = "פשוט";
 
 /* Action sheet option when the user wants to create Simple Payments order */
-"Simple payment" = "Simple payment";
+"Simple payment" = "תשלום פשוט";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
 "Simple physical product" = "מוצר פיזי פשוט";
@@ -3363,7 +3363,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Sorry, site addresses must have letters too!" = "כתובת האתר חייבת להכיל גם אותיות!";
 
 /* Error title when Jetpack install fails */
-"Sorry, something went wrong during install" = "Sorry, something went wrong during install";
+"Sorry, something went wrong during install" = "מצטערים, משהו השתבש במהלך ההתקנה";
 
 /* Error message displayed when the entered email is not available. */
 "Sorry, that email address is already being used!" = "כתובת המייל כבר נמצאת בשימוש!";
@@ -3477,7 +3477,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Switch Store" = "החלפת חנות";
 
 /* Switch store option in the hub menu */
-"Switch store" = "Switch store";
+"Switch store" = "להחליף חנות";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
 "Switched to %1$@." = "הוחלף אל %1$@.";
@@ -3508,10 +3508,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title of system status report screen
    View system status report cell title on Help screen */
-"System Status Report" = "System Status Report";
+"System Status Report" = "דוח מצב המערכת";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
-"System status report copied to clipboard" = "System status report copied to clipboard";
+"System status report copied to clipboard" = "דוח מצב המערכת הועתק ללוח";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
@@ -3639,13 +3639,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Terms of Service" = "תנאי השירות";
 
 /* Cell description on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"Test out In-Person Payments with the Stripe Payment Gateway extension" = "Test out In-Person Payments with the Stripe Payment Gateway extension";
+"Test out In-Person Payments with the Stripe Payment Gateway extension" = "אפשר לנסות תשלומים באופן אישי עם ההרחבה Stripe Payment Gateway";
 
 /* Cell description on the beta features screen to enable creating new orders */
 "Test out creating new manual orders as we get ready to launch" = "כדאי לבדוק את האפשרות ליצור הזמנות ידניות בזמן שאנחנו מתכוננים להשקה";
 
 /* Cell description on beta features screen to enable product SKU input scanner in inventory settings. */
-"Test out scanning a barcode for a product SKU in the product inventory settings" = "Test out scanning a barcode for a product SKU in the product inventory settings";
+"Test out scanning a barcode for a product SKU in the product inventory settings" = "אפשר לנסות את האפשרות לסריקת ברקוד ל-SKU של מוצר בהגדרות המלאי";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "כדאי לבדוק את האפשרות להציג הרחבות בהזמנה בזמן שאנחנו מתכוננים להשקה";
@@ -3760,7 +3760,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The stock quantity for this product. Editable." = "כמות המלאי של המוצר. ניתן לעריכה.";
 
 /* Message for the error alert when fetching system status report fails */
-"The system status report for your site cannot be fetched at the moment. Please try again." = "The system status report for your site cannot be fetched at the moment. Please try again.";
+"The system status report for your site cannot be fetched at the moment. Please try again." = "אין אפשרות להביא את דוח מצב המערכת לאתר שלך כרגע. יש לנסות שוב.";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "לא ניתן היה ליצור את הסוג.";
@@ -3927,7 +3927,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Total Spend" = "הוצאה כוללת";
 
 /* Information about taxes and the order total when creating a new order */
-"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "Total excluding taxes. Taxes will be automatically calculated based on your store settings.";
+"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "הסכום הכולל ללא מיסים. המיסים יחושבו באופן אוטומטי בהתאם להגדרות של החנות שלך.";
 
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "סה\"כ הזמנות: %ld";
@@ -4246,7 +4246,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Variations Attributes" = "מאפייני סוגים";
 
 /* Description of the system status report on Help screen */
-"Various system information about your site" = "Various system information about your site";
+"Various system information about your site" = "פרטי מערכת שונים לגבי האתר שלך";
 
 /* two factor code placeholder */
 "Verification code" = "קוד אימות";
@@ -4279,7 +4279,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "View Shipment Details" = "להציג את פרטי המשלוח";
 
 /* Title of one of the hub menu options */
-"View Store" = "View Store";
+"View Store" = "להציג את החנות";
 
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "להציג את ההרחבות מהמכשיר שלך!";
@@ -4466,7 +4466,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "WooCommerce" = "WooCommerce";
 
 /* Title of one of the hub menu options */
-"WooCommerce Admin" = "WooCommerce Admin";
+"WooCommerce Admin" = "מנהל המערכת של WooCommerce";
 
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "הנחה על רכישת WooCommerce";
@@ -4614,7 +4614,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "🎉 Order completed" = "🎉 ההזמנה הושלמה";
 
 /* Notice text after creating a simple payment order */
-"🎉 Order created" = "";
+"🎉 Order created" = "🎉 ההזמנה נוצרה";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "החזר כספי עבור 🎉 מוצרים בוצע בהצלחה";

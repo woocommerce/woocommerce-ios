@@ -215,7 +215,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
             granularity: .yearly,
             intervals: thisYearVisitStats.items!.enumerated().map {
                 Self.createInterval(
-                    periodDate: Date().yearStart.addingMonths($0.offset),
+                    date: Date().yearStart.addingMonths($0.offset),
                     orderCount: Int(Double($0.element.visitors) * Double.random(in: orderProbabilityRange)),
                     revenue: Decimal($0.element.visitors) * Decimal.random(in: orderValueRange)
                 )

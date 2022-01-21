@@ -273,14 +273,14 @@ extension MockObjectGraph {
 extension MockObjectGraph {
 
     static func createInterval(
-        periodDate: Date,
+        date: Date,
         orderCount: Int,
         revenue: Decimal
     ) -> OrderStatsV4Interval {
         OrderStatsV4Interval(
-            interval: String(periodDate.month),
-            dateStart: periodDate.asOrderStatsString,
-            dateEnd: periodDate.monthEnd.asOrderStatsString,
+            interval: String(date.month),
+            dateStart: date.asOrderStatsString,
+            dateEnd: date.monthEnd.asOrderStatsString,
             subtotals: createTotal(orderCount: orderCount, revenue: revenue)
         )
     }

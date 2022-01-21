@@ -129,8 +129,8 @@ public class MockStoresManager: StoresManager {
             receiptActionHandler.handle(action: action)
         case _ as CardPresentPaymentAction:
             break
-            default:
-                fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")
+        default:
+            fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")
         }
     }
 

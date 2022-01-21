@@ -86,6 +86,16 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         featureFlagService.isFeatureFlagEnabled(.taxLinesInSimplePayments)
     }
 
+    /// Show "Charge Taxes" toggle
+    ///
+    var shouldShowChargeTaxesToggle: Bool {
+        guard shouldShowTaxBreakup else {
+            return true // If `taxLinesInSimplePayments` feature flag is turned off
+        }
+
+        return taxLines.count > 0
+    }
+
     /// Total to charge with taxes.
     ///
     private let totalWithTaxes: String

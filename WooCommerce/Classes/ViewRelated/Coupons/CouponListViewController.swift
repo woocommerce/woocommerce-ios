@@ -223,7 +223,8 @@ extension CouponListViewController: UITableViewDataSource {
         cell?.titleLabel.text = cellViewModel.title
         cell?.subtitleLabel.text = cellViewModel.subtitle
         cell?.accessibilityLabel = cellViewModel.accessibilityLabel
-        cell?.statusContainerView.isHidden = true
+        cell?.statusLabel.text = cellViewModel.status
+        cell?.statusLabel.backgroundColor = cellViewModel.statusBackgroundColor
     }
 }
 

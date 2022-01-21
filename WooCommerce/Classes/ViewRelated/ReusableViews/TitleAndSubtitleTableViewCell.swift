@@ -20,7 +20,7 @@ final class TitleAndSubtitleTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
-    
+
 }
 
 // MARK: - Setup
@@ -39,5 +39,8 @@ private extension TitleAndSubtitleTableViewCell {
         titleLabel.applyBodyStyle()
         statusLabel.applyFootnoteStyle()
         statusLabel.numberOfLines = 0
+        statusLabel.textColor = .black // constant because there will always background color on the label
+        statusLabel.layer.cornerRadius = 2.0
+        statusLabel.layer.masksToBounds = true
     }
 }

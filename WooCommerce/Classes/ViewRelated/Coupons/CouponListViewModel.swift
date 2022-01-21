@@ -2,11 +2,14 @@ import Combine
 import Yosemite
 import protocol Storage.StorageManagerType
 import class AutomatticTracks.CrashLogging
+import UIKit
 
 struct CouponListCellViewModel {
     var title: String
     var subtitle: String
     var accessibilityLabel: String
+    var status: String
+    var statusBackgroundColor: UIColor
 }
 
 enum CouponListState {
@@ -98,8 +101,10 @@ final class CouponListViewModel {
     func buildCouponViewModels() {
         couponViewModels = resultsController.fetchedObjects.map({ coupon in
             return CouponListCellViewModel(title: coupon.code,
-                                           subtitle: coupon.description,
-                                           accessibilityLabel: coupon.description)
+                                           subtitle: coupon.discountType.localizedName, // to be updated after UI is finalized
+                                           accessibilityLabel: coupon.description.isEmpty ? coupon.description : coupon.code,
+                                           status: coupon.expiryStatus.localizedName,
+                                           statusBackgroundColor: coupon.expiryStatus.statusBackgroundColor)
         })
     }
 

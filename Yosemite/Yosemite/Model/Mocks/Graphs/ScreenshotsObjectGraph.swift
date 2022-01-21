@@ -186,13 +186,13 @@ struct ScreenshotObjectGraph: MockObjectGraph {
     let thisYearVisitStats: SiteVisitStats = createVisitStats(
         siteID: 1,
         granularity: .year,
-        items: [
+        items: [Int](0..<12).map { monthIndex in
             createVisitStatsItem(
-                granularity: .year,
-                ago: 0,
+                granularity: .month,
+                periodDate: Date().yearStart.addingMonths(monthIndex),
                 visitors: Int.random(in: 100 ... 1000)
             )
-        ]
+        }
     )
 
     var thisYearTopProducts: TopEarnerStats = createStats(siteID: 1, granularity: .year, items: [
@@ -215,7 +215,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
             granularity: .yearly,
             intervals: thisYearVisitStats.items!.enumerated().map {
                 Self.createInterval(
-                    monthsAgo: $0.offset,
+                    periodDate: Date().yearStart.addingMonths($0.offset),
                     orderCount: Int(Double($0.element.visitors) * Double.random(in: orderProbabilityRange)),
                     revenue: Decimal($0.element.visitors) * Decimal.random(in: orderValueRange)
                 )

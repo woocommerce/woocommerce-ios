@@ -167,7 +167,7 @@ extension CouponListViewController {
         let emptyStateViewController = EmptyStateViewController(style: .list)
         let config = EmptyStateViewController.Config.withButton(
             message: .init(string: Localization.emptyStateMessage),
-            image: .errorImage,
+            image: .emptyCouponsImage,
             details: Localization.emptyStateDetails,
             buttonTitle: Localization.addCouponButton) { _ in }
 

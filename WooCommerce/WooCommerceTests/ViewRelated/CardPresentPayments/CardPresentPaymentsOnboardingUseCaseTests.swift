@@ -141,7 +141,21 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .pluginInTestModeWithLiveStripeAccount)
+        XCTAssertEqual(state, .pluginInTestModeWithLiveStripeAccount(plugin: .wcPay))
+    }
+
+    func test_onboarding_returns_stripe_in_test_mode_with_live_stripe_account_when_live_account_in_test_mode() {
+        // Given
+        setupCountry(country: .us)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(status: .complete, isLive: true, isInTestMode: true)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .pluginInTestModeWithLiveStripeAccount(plugin: .stripe))
     }
 
     func test_onboarding_returns_wcpay_unsupported_version_when_patched_wcpay_plugin_outdated() {

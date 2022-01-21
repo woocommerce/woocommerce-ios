@@ -190,7 +190,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
                                                        providedAmount: "100")
 
         // Then
-        let title = order.taxes[0].label + " " + NSLocalizedString("Tax", comment: "") + " " + "(" + String(order.taxes[0].ratePercent) + "%)"
+        let title = order.taxes[0].label + " " + "(" + String(order.taxes[0].ratePercent) + "%)"
         XCTAssertEqual(viewModel.taxLines[0].title, title)
     }
 

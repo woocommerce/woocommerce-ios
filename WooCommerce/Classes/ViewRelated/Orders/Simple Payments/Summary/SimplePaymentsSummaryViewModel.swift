@@ -190,7 +190,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         // Generate `TaxLine`s to represent `taxes` inside `View`.
         let taxLines = order.taxes.map({
             TaxLine(id: $0.taxID,
-                    title: $0.label + " " + Localization.tax + " " + "(" + String($0.ratePercent) + "%)",
+                    title: $0.label + " " + "(" + String($0.ratePercent) + "%)",
                     value: currencyFormatter.formatAmount($0.totalTax) ?? $0.totalTax)
         })
 
@@ -285,8 +285,5 @@ private extension SimplePaymentsSummaryViewModel {
     enum Localization {
         static let updateError = NSLocalizedString("There was an error updating the order",
                                                    comment: "Notice text after failing to update a simple payments order.")
-
-        static let tax = NSLocalizedString("Tax",
-                                           comment: "Appended to the tax's `label` (State, City, Federal, etc) configured by the merchant.")
     }
 }

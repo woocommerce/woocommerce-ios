@@ -95,7 +95,7 @@ private extension StoreStatsDataOrRedactedView {
     }
 }
 
-#if canImport(SwiftUI) && DEBUG
+#if DEBUG
 
 import SwiftUI
 

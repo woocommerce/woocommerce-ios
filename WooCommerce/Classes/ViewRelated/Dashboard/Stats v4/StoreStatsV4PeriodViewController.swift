@@ -588,10 +588,6 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func reloadSiteVisitUI() {
-        guard visitorsDataOrRedactedView != nil else {
-            return
-        }
-
         switch siteVisitStatsMode {
         case .hidden:
             visitorsDataOrRedactedView.state = .redacted

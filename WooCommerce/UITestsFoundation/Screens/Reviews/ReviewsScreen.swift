@@ -12,9 +12,7 @@ public final class ReviewsScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            // TODO: the following line results in time out error.
-            // "reviews-open-menu-button" button isn't shown when there are no unread reviews, but we cannot pass an empty array here
-            expectedElementGetters: [ { $0.buttons["reviews-open-menu-button"] } ],
+            expectedElementGetters: [ { $0.tables["reviews-table"] } ],
             app: app
         )
     }

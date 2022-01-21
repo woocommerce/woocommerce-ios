@@ -25,12 +25,12 @@ struct InPersonPaymentsPluginNotActivated: View {
 
 private enum Localization {
     static let title = NSLocalizedString(
-        "Activate %@",
+        "Activate %1$@",
         comment: "Title for the error screen when a Card Present Payments extension is installed but not activated"
     )
 
     static let message = NSLocalizedString(
-        "The %@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments",
+        "The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments",
         comment: "Error message when a Card Present Payments extension is not activated"
     )
 

@@ -25,12 +25,12 @@ struct InPersonPaymentsPluginNotSupportedVersion: View {
 
 private enum Localization {
     static let title = NSLocalizedString(
-        "Unsupported %@ version",
+        "Unsupported %1$@ version",
         comment: "Title for the error screen when the installed version of a Card Present Payments extension is unsupported"
     )
 
     static let message = NSLocalizedString(
-        "The %@ extension is installed on your store, but needs to be updated for In-Person Payments. "
+        "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. "
             + "Please update it to the most recent version.",
         comment: "Error message when a Card Present Payments extension is installed but the version is not supported"
     )

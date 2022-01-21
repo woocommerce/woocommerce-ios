@@ -127,6 +127,8 @@ public class MockStoresManager: StoresManager {
                 announcementsActionHandler.handle(action: action)
             case let action as ReceiptAction:
                 receiptActionHandler.handle(action: action)
+        case _ as CardPresentPaymentAction:
+            break
             default:
                 fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")
         }

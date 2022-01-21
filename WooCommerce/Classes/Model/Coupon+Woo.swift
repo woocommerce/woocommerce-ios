@@ -31,8 +31,11 @@ extension Coupon {
     /// Expiry status for Coupons.
     ///
     var expiryStatus: ExpiryStatus {
-        guard let expiryDate = dateExpires,
-            let gmtTimeZone = TimeZone(identifier: "GMT") else {
+        guard let expiryDate = dateExpires else {
+            return .active
+        }
+
+        guard let gmtTimeZone = TimeZone(identifier: "GMT") else {
             return .expired
         }
         let now = Date()

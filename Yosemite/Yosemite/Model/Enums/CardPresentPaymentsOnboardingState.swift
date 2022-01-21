@@ -121,7 +121,7 @@ public enum CardPresentPaymentsPlugins: Equatable {
         case .wcPay:
             return "3.2.1"
         case .stripe:
-            return "5.9.0"
+            return "6.1.0"
         }
     }
 

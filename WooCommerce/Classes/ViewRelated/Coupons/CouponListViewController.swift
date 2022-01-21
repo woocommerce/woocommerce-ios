@@ -132,7 +132,7 @@ private extension CouponListViewController {
     }
 
     func registerTableViewCells() {
-        TitleAndSubtitleTableViewCell.register(for: tableView)
+        TitleAndSubtitleAndStatusTableViewCell.register(for: tableView)
     }
 }
 
@@ -144,7 +144,7 @@ extension CouponListViewController {
     ///
     func displayPlaceholderCoupons() {
         let options = GhostOptions(displaysSectionHeader: false,
-                                   reuseIdentifier: TitleAndSubtitleTableViewCell.reuseIdentifier,
+                                   reuseIdentifier: TitleAndSubtitleAndStatusTableViewCell.reuseIdentifier,
                                    rowsPerSection: Constants.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options,
                                        style: .wooDefaultGhostStyle)
@@ -211,15 +211,15 @@ extension CouponListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: TitleAndSubtitleTableViewCell.reuseIdentifier, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: TitleAndSubtitleAndStatusTableViewCell.reuseIdentifier, for: indexPath)
         if let cellViewModel = viewModel.couponViewModels[safe: indexPath.row] {
-            configure(cell as? TitleAndSubtitleTableViewCell, with: cellViewModel)
+            configure(cell as? TitleAndSubtitleAndStatusTableViewCell, with: cellViewModel)
         }
 
         return cell
     }
 
-    func configure(_ cell: TitleAndSubtitleTableViewCell?, with cellViewModel: CouponListCellViewModel) {
+    func configure(_ cell: TitleAndSubtitleAndStatusTableViewCell?, with cellViewModel: CouponListCellViewModel) {
         cell?.titleLabel.text = cellViewModel.title
         cell?.subtitleLabel.text = cellViewModel.subtitle
         cell?.accessibilityLabel = cellViewModel.accessibilityLabel

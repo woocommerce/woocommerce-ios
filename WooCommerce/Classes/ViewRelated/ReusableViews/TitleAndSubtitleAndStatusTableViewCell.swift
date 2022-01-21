@@ -1,6 +1,6 @@
 import UIKit
 
-final class TitleAndSubtitleTableViewCell: UITableViewCell {
+final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell {
 
     @IBOutlet var subtitleLabel: UILabel!
     @IBOutlet var titleLabel: UILabel!
@@ -25,7 +25,7 @@ final class TitleAndSubtitleTableViewCell: UITableViewCell {
 
 // MARK: - Setup
 
-private extension TitleAndSubtitleTableViewCell {
+private extension TitleAndSubtitleAndStatusTableViewCell {
     func configureBackground() {
         backgroundColor = .listForeground
         selectedBackgroundView = UIView()

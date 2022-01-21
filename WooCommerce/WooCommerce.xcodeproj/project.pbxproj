@@ -1492,7 +1492,7 @@
 		DEC6C51C27477890006832D3 /* JetpackInstallStepsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC6C51B27477890006832D3 /* JetpackInstallStepsView.swift */; };
 		DEC6C51E27479280006832D3 /* JetpackInstallSteps.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC6C51D27479280006832D3 /* JetpackInstallSteps.swift */; };
 		DECE13FB27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECE13F927993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift */; };
-		DECE13FC27993F6500816ECD /* TitleAndSubtitleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DECE13FA27993F6500816ECD /* TitleAndSubtitleTableViewCell.xib */; };
+		DECE13FC27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DECE13FA27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib */; };
 		DECE1400279A595200816ECD /* Coupon+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECE13FF279A595200816ECD /* Coupon+Woo.swift */; };
 		DEDB886B26E8531E00981595 /* ShippingLabelPackageAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */; };
 		DEE6437626D87C4100888A75 /* PrintCustomsFormsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */; };
@@ -3102,7 +3102,7 @@
 		DEC6C51B27477890006832D3 /* JetpackInstallStepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallStepsView.swift; sourceTree = "<group>"; };
 		DEC6C51D27479280006832D3 /* JetpackInstallSteps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallSteps.swift; sourceTree = "<group>"; };
 		DECE13F927993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndSubtitleAndStatusTableViewCell.swift; sourceTree = "<group>"; };
-		DECE13FA27993F6500816ECD /* TitleAndSubtitleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleAndSubtitleTableViewCell.xib; sourceTree = "<group>"; };
+		DECE13FA27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleAndSubtitleAndStatusTableViewCell.xib; sourceTree = "<group>"; };
 		DECE13FF279A595200816ECD /* Coupon+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coupon+Woo.swift"; sourceTree = "<group>"; };
 		DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageAttributes.swift; sourceTree = "<group>"; };
 		DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintCustomsFormsView.swift; sourceTree = "<group>"; };
@@ -6903,7 +6903,7 @@
 				DE68B81E26F86B1700C86CFB /* OfflineBannerView.swift */,
 				E1E125B126EB8EE80068A9B0 /* UpdateProgressImage.swift */,
 				DECE13F927993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift */,
-				DECE13FA27993F6500816ECD /* TitleAndSubtitleTableViewCell.xib */,
+				DECE13FA27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -7765,7 +7765,7 @@
 				CE1EC8F020B8A408009762BF /* OrderNoteTableViewCell.xib in Resources */,
 				265BCA0E2430E771004E53EE /* ProductCategoryTableViewCell.xib in Resources */,
 				4515262F2577D56C0076B03C /* AddAttributeViewController.xib in Resources */,
-				DECE13FC27993F6500816ECD /* TitleAndSubtitleTableViewCell.xib in Resources */,
+				DECE13FC27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib in Resources */,
 				B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */,
 				020BE74E23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.xib in Resources */,
 				4580BA7523F192D400B5F764 /* ProductSettingsViewController.xib in Resources */,

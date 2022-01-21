@@ -212,19 +212,12 @@ extension CouponListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: TitleAndSubtitleAndStatusTableViewCell.reuseIdentifier, for: indexPath)
-        if let cellViewModel = viewModel.couponViewModels[safe: indexPath.row] {
-            configure(cell as? TitleAndSubtitleAndStatusTableViewCell, with: cellViewModel)
+        if let cellViewModel = viewModel.couponViewModels[safe: indexPath.row],
+            let cell = cell as? TitleAndSubtitleAndStatusTableViewCell {
+            cell.configureCell(viewModel: cellViewModel)
         }
 
         return cell
-    }
-
-    func configure(_ cell: TitleAndSubtitleAndStatusTableViewCell?, with cellViewModel: CouponListCellViewModel) {
-        cell?.titleLabel.text = cellViewModel.title
-        cell?.subtitleLabel.text = cellViewModel.subtitle
-        cell?.accessibilityLabel = cellViewModel.accessibilityLabel
-        cell?.statusLabel.text = cellViewModel.status
-        cell?.statusLabel.backgroundColor = cellViewModel.statusBackgroundColor
     }
 }
 

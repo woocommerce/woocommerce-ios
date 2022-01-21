@@ -2,10 +2,10 @@ import UIKit
 
 final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell {
 
-    @IBOutlet var subtitleLabel: UILabel!
-    @IBOutlet var titleLabel: UILabel!
-    @IBOutlet var statusContainerView: UIView!
-    @IBOutlet var statusLabel: PaddedLabel!
+    @IBOutlet private var subtitleLabel: UILabel!
+    @IBOutlet private var titleLabel: UILabel!
+    @IBOutlet private var statusContainerView: UIView!
+    @IBOutlet private var statusLabel: PaddedLabel!
 
     static func register(for tableView: UITableView) {
         tableView.registerNib(for: self)
@@ -17,14 +17,30 @@ final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell {
         configureLabels()
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+    func configureCell(viewModel: CellViewModel) {
+        titleLabel.text = viewModel.title
+        subtitleLabel.text = viewModel.subtitle
+        accessibilityLabel = viewModel.accessibilityLabel
+        statusLabel.text = viewModel.status
+        statusLabel.backgroundColor = viewModel.statusBackgroundColor
     }
 
 }
 
-// MARK: - Setup
+// MARK: - CellViewModel subtype
+//
+extension TitleAndSubtitleAndStatusTableViewCell {
+    struct CellViewModel {
+        var title: String
+        var subtitle: String
+        var accessibilityLabel: String
+        var status: String
+        var statusBackgroundColor: UIColor
+    }
+}
 
+// MARK: - Setup
+//
 private extension TitleAndSubtitleAndStatusTableViewCell {
     func configureBackground() {
         backgroundColor = .listForeground

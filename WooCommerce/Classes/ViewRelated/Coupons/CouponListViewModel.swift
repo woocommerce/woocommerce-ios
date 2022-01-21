@@ -4,14 +4,6 @@ import protocol Storage.StorageManagerType
 import class AutomatticTracks.CrashLogging
 import UIKit
 
-struct CouponListCellViewModel {
-    var title: String
-    var subtitle: String
-    var accessibilityLabel: String
-    var status: String
-    var statusBackgroundColor: UIColor
-}
-
 enum CouponListState {
     case initialized // ViewModel ready to recieve actions
     case loading // View should show ghost cells
@@ -22,6 +14,8 @@ enum CouponListState {
 }
 
 final class CouponListViewModel {
+
+    typealias CouponListCellViewModel = TitleAndSubtitleAndStatusTableViewCell.CellViewModel
 
     /// Active state
     ///

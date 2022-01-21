@@ -170,6 +170,7 @@ private struct PaymentsSection: View {
 
                 TitleAndToggleRow(title: SimplePaymentsSummary.Localization.chargeTaxes, isOn: $viewModel.enableTaxes)
                     .padding(.horizontal)
+                    .renderedIf(viewModel.showChargeTaxesToggle)
 
                 Group {
                     Text(SimplePaymentsSummary.Localization.taxesDisclaimer)

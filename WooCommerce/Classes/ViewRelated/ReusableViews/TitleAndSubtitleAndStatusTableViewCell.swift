@@ -56,7 +56,7 @@ private extension TitleAndSubtitleAndStatusTableViewCell {
         statusLabel.applyFootnoteStyle()
         statusLabel.numberOfLines = 0
         statusLabel.textColor = .black // constant because there will always background color on the label
-        statusLabel.layer.cornerRadius = 2.0
+        statusLabel.layer.cornerRadius = CGFloat(4.0)
         statusLabel.layer.masksToBounds = true
     }
 }

@@ -366,16 +366,14 @@ struct SimplePaymentsSummary_Preview: PreviewProvider {
     }
 
     static private func viewModel(noteContent: String? = nil) -> SimplePaymentsSummaryViewModel {
-        .init(providedAmount: "40.0",
-              totalWithTaxes: "$42.3",
-              taxAmount: "$2.3",
-              taxLines: [taxLine(taxAmount: "$2.3")],
-              noteContent: noteContent)
-    }
-
-    static private func taxLine(taxAmount: String) -> SimplePaymentsSummaryViewModel.TaxLine {
-        .init(id: Int64.random(in: 0 ..< Int64.max),
-              title: "State Tax (5.55%)",
-              value: taxAmount)
+        let taxAmount = "$2.3"
+        let taxLine: SimplePaymentsSummaryViewModel.TaxLine = .init(id: Int64.random(in: 0 ..< Int64.max),
+                                                                    title: "State Tax (5.55%)",
+                                                                    value: taxAmount)
+        return .init(providedAmount: "40.0",
+                     totalWithTaxes: "$42.3",
+                     taxAmount: taxAmount,
+                     taxLines: [taxLine],
+                     noteContent: noteContent)
     }
 }

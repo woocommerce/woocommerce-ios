@@ -200,7 +200,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         // Generate `TaxLine`s to represent `taxes` inside `View`.
         let taxLines = order.taxes.map({
             TaxLine(id: $0.taxID,
-                    title: $0.label + " " + "(" + String($0.ratePercent) + "%)",
+                    title: "\($0.label) (\($0.ratePercent)%)",
                     value: currencyFormatter.formatAmount($0.totalTax) ?? $0.totalTax)
         })
 

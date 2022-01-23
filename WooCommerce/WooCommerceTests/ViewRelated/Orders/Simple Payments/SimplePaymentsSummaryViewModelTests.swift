@@ -223,6 +223,8 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.taxLines.count, order.taxes.count)
     }
 
+    /// Test that generated `taxLines` are in the same order as `Order`'s `taxes`
+    ///
     func test_taxLines_order_matches_taxes_order() {
         // Given
         let order = Order.fake().copy(taxes: [OrderTaxLine.fake().copy(taxID: 1),

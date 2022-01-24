@@ -26,7 +26,7 @@ struct InPersonPaymentsLiveSiteInTestMode: View {
 private enum Localization {
     static let title = NSLocalizedString(
         "%1$@ is in Test Mode",
-        comment: "Title for the error screen when a card present payments plugin is in test mode on a live site"
+        comment: "Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name, e.g. WooCommerce Stripe Gateway"
     )
 
     static let message = NSLocalizedString(

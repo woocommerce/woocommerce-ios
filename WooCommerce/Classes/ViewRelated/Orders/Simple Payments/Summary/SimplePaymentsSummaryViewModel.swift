@@ -23,6 +23,23 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         /// Tax amount
         ///
         let value: String
+
+        init(id: Int64,
+             title: String,
+             value: String) {
+            self.id = id
+            self.title = title
+            self.value = value
+        }
+
+        /// For initializing TaxLine from `OrderTaxLine`
+        ///
+        init(orderTaxLine: OrderTaxLine,
+             currencyFormatter: CurrencyFormatter) {
+            id = orderTaxLine.taxID
+            title = "\(orderTaxLine.label) (\(orderTaxLine.ratePercent)%)"
+            value = currencyFormatter.formatAmount(orderTaxLine.totalTax) ?? orderTaxLine.totalTax
+        }
     }
 
     /// Initial amount to charge. Without taxes.
@@ -199,9 +216,8 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
         // Generate `TaxLine`s to represent `taxes` inside `View`.
         let taxLines = order.taxes.map({
-            TaxLine(id: $0.taxID,
-                    title: "\($0.label) (\($0.ratePercent)%)",
-                    value: currencyFormatter.formatAmount($0.totalTax) ?? $0.totalTax)
+            TaxLine(orderTaxLine: $0,
+                    currencyFormatter: currencyFormatter)
         })
 
         self.init(providedAmount: providedAmount,

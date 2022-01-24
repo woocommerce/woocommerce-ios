@@ -121,11 +121,13 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     ///
     @State private var showStateSelector = false
 
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
     var body: some View {
-        GeometryReader { geometry in
+        Group {
             ScrollView {
                 ListHeaderView(text: Localization.detailsSection, alignment: .left)
-                    .padding(.horizontal, insets: geometry.safeAreaInsets)
+                    .padding(.horizontal, insets: safeAreaInsets)
                 VStack(spacing: 0) {
                     TitleAndTextFieldRow(title: Localization.firstNameField,
                                          placeholder: "",
@@ -157,11 +159,11 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                          symbol: nil,
                                          keyboardType: .phonePad)
                 }
-                .padding(.horizontal, insets: geometry.safeAreaInsets)
+                .padding(.horizontal, insets: safeAreaInsets)
                 .background(Color(.systemBackground))
 
                 ListHeaderView(text: viewModel.sectionTitle, alignment: .left)
-                    .padding(.horizontal, insets: geometry.safeAreaInsets)
+                    .padding(.horizontal, insets: safeAreaInsets)
                 VStack(spacing: 0) {
                     Group {
                         TitleAndTextFieldRow(title: Localization.companyField,
@@ -212,14 +214,14 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                         stateRow()
                     }
                 }
-                .padding(.horizontal, insets: geometry.safeAreaInsets)
+                .padding(.horizontal, insets: safeAreaInsets)
                 .background(Color(.systemBackground))
 
                 if viewModel.showAlternativeUsageToggle, let alternativeUsageToggleTitle = viewModel.alternativeUsageToggleTitle {
                     TitleAndToggleRow(title: alternativeUsageToggleTitle, isOn: $viewModel.fields.useAsToggle)
                         .padding(.horizontal, Constants.horizontalPadding)
                         .padding(.vertical, Constants.verticalPadding)
-                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.systemBackground))
                 }
 
@@ -227,7 +229,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                     TitleAndToggleRow(title: differentAddressToggleTitle, isOn: $viewModel.showDifferentAddressForm)
                         .padding(.horizontal, Constants.horizontalPadding)
                         .padding(.vertical, Constants.verticalPadding)
-                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.systemBackground))
                 }
             }

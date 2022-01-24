@@ -135,7 +135,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         insertOrderStats(orderStats, timeRange: timeRange)
 
         // Then
-        XCTAssertEqual(conversionStatsTextValues, ["-", "0.0%"])
+        XCTAssertEqual(conversionStatsTextValues, ["-", "0%"])
     }
 
     func test_conversionStatsText_shows_one_decimal_point_when_percentage_value_has_two_decimal_points() {

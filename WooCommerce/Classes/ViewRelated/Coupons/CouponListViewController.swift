@@ -132,7 +132,7 @@ private extension CouponListViewController {
     }
 
     func registerTableViewCells() {
-        tableView.registerNib(for: TitleBodyTableViewCell.self)
+        TitleAndSubtitleAndStatusTableViewCell.register(for: tableView)
     }
 }
 
@@ -144,7 +144,7 @@ extension CouponListViewController {
     ///
     func displayPlaceholderCoupons() {
         let options = GhostOptions(displaysSectionHeader: false,
-                                   reuseIdentifier: TitleBodyTableViewCell.reuseIdentifier,
+                                   reuseIdentifier: TitleAndSubtitleAndStatusTableViewCell.reuseIdentifier,
                                    rowsPerSection: Constants.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options,
                                        style: .wooDefaultGhostStyle)
@@ -167,9 +167,9 @@ extension CouponListViewController {
         let emptyStateViewController = EmptyStateViewController(style: .list)
         let config = EmptyStateViewController.Config.withButton(
             message: .init(string: Localization.emptyStateMessage),
-            image: .errorImage,
+            image: .emptyCouponsImage,
             details: Localization.emptyStateDetails,
-            buttonTitle: "") { _ in }
+            buttonTitle: Localization.addCouponButton) { _ in }
 
         displayEmptyStateViewController(emptyStateViewController)
         emptyStateViewController.configure(config)
@@ -211,18 +211,13 @@ extension CouponListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: TitleBodyTableViewCell.reuseIdentifier, for: indexPath)
-        if let cellViewModel = viewModel.couponViewModels[safe: indexPath.row] {
-            configure(cell as? TitleBodyTableViewCell, with: cellViewModel)
+        let cell = tableView.dequeueReusableCell(withIdentifier: TitleAndSubtitleAndStatusTableViewCell.reuseIdentifier, for: indexPath)
+        if let cellViewModel = viewModel.couponViewModels[safe: indexPath.row],
+            let cell = cell as? TitleAndSubtitleAndStatusTableViewCell {
+            cell.configureCell(viewModel: cellViewModel)
         }
 
         return cell
-    }
-
-    func configure(_ cell: TitleBodyTableViewCell?, with cellViewModel: CouponListCellViewModel) {
-        cell?.titleLabel.text = cellViewModel.title
-        cell?.bodyLabel.text = cellViewModel.subtitle
-        cell?.accessibilityLabel = cellViewModel.accessibilityLabel
     }
 }
 
@@ -246,11 +241,13 @@ private extension CouponListViewController {
             comment: "Coupon management coupon list screen title")
 
         static let emptyStateMessage = NSLocalizedString(
-            "No coupons yet",
-            comment: "The text on the placeholder overlay when there are no coupons on the coupon management list")
+            "Everyone loves a deal",
+            comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen.")
 
         static let emptyStateDetails = NSLocalizedString(
-            "Market your products by adding a coupon to offer your customers a discount.",
-            comment: "The details on the placeholder overlay when there are no coupons on the coupon management list")
+            "Boost your business by sending customers special offers and discounts.",
+            comment: "The description on the placeholder overlay when there are no coupons on the coupon list screen.")
+
+        static let addCouponButton = NSLocalizedString("Add Coupon", comment: "Title for the action button to add coupon on the coupon list screen.")
     }
 }

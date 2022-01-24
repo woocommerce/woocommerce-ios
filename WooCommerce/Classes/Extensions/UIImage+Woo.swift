@@ -222,6 +222,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Empty Coupons Icon
+    ///
+    static var emptyCouponsImage: UIImage {
+        return UIImage(named: "woo-empty-coupons")!
+    }
+
     /// Empty Products Icon
     ///
     static var emptyProductsImage: UIImage {

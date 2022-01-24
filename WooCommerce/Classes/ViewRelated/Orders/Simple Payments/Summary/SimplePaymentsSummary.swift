@@ -177,7 +177,6 @@ private struct PaymentsSection: View {
                         .footnoteStyle()
                         .padding(.horizontal)
                         .fixedSize(horizontal: false, vertical: true)
-                        .renderedIf(viewModel.showChargeTaxesToggle)
 
                     if viewModel.showTaxBreakup {
                         ForEach(viewModel.taxLines) { taxLine in
@@ -191,7 +190,7 @@ private struct PaymentsSection: View {
                                          selectable: false) {}
                     }
                 }
-                .renderedIf(viewModel.enableTaxes)
+                .renderedIf(viewModel.showTaxesSection)
 
                 TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content(viewModel.total), bold: true, selectable: false) {}
             }

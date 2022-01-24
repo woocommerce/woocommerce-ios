@@ -113,6 +113,16 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         return taxLines.isNotEmpty
     }
 
+    /// Show taxes disclaimer text and tax line rows
+    ///
+    var showTaxesSection: Bool {
+        guard showTaxBreakup else {
+            return enableTaxes // If `taxLinesInSimplePayments` feature flag is turned off
+        }
+
+        return enableTaxes && showChargeTaxesToggle
+    }
+
     /// Total to charge with taxes.
     ///
     private let totalWithTaxes: String

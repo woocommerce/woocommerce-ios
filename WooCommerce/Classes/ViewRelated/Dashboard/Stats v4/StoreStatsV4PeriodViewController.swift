@@ -148,7 +148,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
-        configureBarChart()
+        configureChart()
         configureNoRevenueView()
         observeStatsLabels()
         observeSelectedBarIndex()
@@ -346,7 +346,7 @@ private extension StoreStatsV4PeriodViewController {
         noRevenueLabel.textColor = .text
     }
 
-    func configureBarChart() {
+    func configureChart() {
         lineChartView.marker = StoreStatsChartCircleMarker()
         lineChartView.chartDescription?.enabled = false
         lineChartView.dragXEnabled = true

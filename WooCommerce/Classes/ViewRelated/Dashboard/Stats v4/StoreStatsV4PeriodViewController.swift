@@ -667,7 +667,7 @@ private extension StoreStatsV4PeriodViewController {
         static let chartXAxisGranularity: Double        = 1.0
 
         static var chartLineColor: UIColor {
-            UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
+            UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade50),
                     dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
         }
         static let chartHighlightLineColor: UIColor = .accent

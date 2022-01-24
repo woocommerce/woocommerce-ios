@@ -364,6 +364,7 @@ private extension StoreStatsV4PeriodViewController {
 
         let xAxis = lineChartView.xAxis
         xAxis.labelPosition = .bottom
+        xAxis.yOffset = 8
         xAxis.labelFont = StyleManager.chartLabelFont
         xAxis.labelTextColor = .textSubtle
         xAxis.axisLineColor = .systemColor(.separator)
@@ -454,6 +455,9 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
             if value == 0.0 {
                 // Do not show the "0" label on the Y axis
                 return ""
+            } else if hasRevenue() == false {
+                // Extra spaces are necessary so that the first x-axis label is not truncated.
+                return "   "
             } else {
                 return CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
                                     .formatCurrency(using: value.humanReadableString(),

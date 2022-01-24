@@ -201,10 +201,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
     func accountChecks(plugin: CardPresentPaymentsPlugins) -> CardPresentPaymentOnboardingState {
         guard let account = getPaymentGatewayAccount() else {
-            return .genericError
-        }
-        guard isPaymentGatewaySetupCompleted(account: account) else {
-            return .pluginSetupNotCompleted
+            /// Active plugin but unable to fetch an account? Prompt the merchant to finish setting it up.
+            return .pluginSetupNotCompleted(plugin: plugin)
         }
         guard !isPluginInTestModeWithLiveStripeAccount(account: account) else {
             return .pluginInTestModeWithLiveStripeAccount(plugin: plugin)

@@ -149,7 +149,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.showChargeTaxesToggle)
     }
 
-    func test_when_taxLines_is_not_empty_and_taxLinesInSimplePayments_feature_flag_is_off_then_showChargeTaxesToggle_is_true() {
+    func test_showChargeTaxesToggle_is_true_when_taxLines_is_not_empty_and_taxLinesInSimplePayments_feature_flag_is_off() {
         // Given
         let featureFlagService = MockFeatureFlagService(isTaxLinesInSimplePaymentsOn: false)
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100",
@@ -165,7 +165,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.showChargeTaxesToggle)
     }
 
-    func test_when_taxLines_is_empty_and_taxLinesInSimplePayments_feature_flag_is_on_then_showChargeTaxesToggle_is_false() {
+    func test_showChargeTaxesToggle_is_false_when_taxLines_is_empty_and_taxLinesInSimplePayments_feature_flag_is_on() {
         // Given
         let featureFlagService = MockFeatureFlagService(isTaxLinesInSimplePaymentsOn: true)
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100",
@@ -177,7 +177,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showChargeTaxesToggle)
     }
 
-    func test_when_taxLines_is_not_empty_and_taxLinesInSimplePayments_feature_flag_is_on_then_showChargeTaxesToggle_is_true() {
+    func test_showChargeTaxesToggle_is_true_when_taxLines_is_not_empty_and_taxLinesInSimplePayments_feature_flag_is_on() {
         // Given
         let featureFlagService = MockFeatureFlagService(isTaxLinesInSimplePaymentsOn: true)
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100",

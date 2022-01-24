@@ -215,8 +215,16 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                 .padding(.horizontal, insets: geometry.safeAreaInsets)
                 .background(Color(.systemBackground))
 
-                if viewModel.showAlternativeUsageToggle {
-                    TitleAndToggleRow(title: viewModel.alternativeUsageToggleTitle, isOn: $viewModel.fields.useAsToggle)
+                if viewModel.showAlternativeUsageToggle, let alternativeUsageToggleTitle = viewModel.alternativeUsageToggleTitle {
+                    TitleAndToggleRow(title: alternativeUsageToggleTitle, isOn: $viewModel.fields.useAsToggle)
+                        .padding(.horizontal, Constants.horizontalPadding)
+                        .padding(.vertical, Constants.verticalPadding)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        .background(Color(.systemBackground))
+                }
+
+                if viewModel.showDifferentAddressToggle, let differentAddressToggleTitle = viewModel.differentAddressToggleTitle {
+                    TitleAndToggleRow(title: differentAddressToggleTitle, isOn: $viewModel.showDifferentAddressForm)
                         .padding(.horizontal, Constants.horizontalPadding)
                         .padding(.vertical, Constants.verticalPadding)
                         .padding(.horizontal, insets: geometry.safeAreaInsets)

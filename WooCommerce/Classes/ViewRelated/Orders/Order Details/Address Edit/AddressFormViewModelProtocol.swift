@@ -10,6 +10,10 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     ///
     var fields: AddressFormFields { get set }
 
+    /// Define if address form should be expanded (show second set of fields for different address)
+    ///
+    var showDifferentAddressForm: Bool { get set }
+
     /// Active navigation bar trailing item.
     /// Defaults to a disabled done button.
     ///
@@ -45,7 +49,15 @@ protocol AddressFormViewModelProtocol: ObservableObject {
 
     /// Defines "use as billing/shipping" toggle title
     ///
-    var alternativeUsageToggleTitle: String { get }
+    var alternativeUsageToggleTitle: String? { get }
+
+    /// Defines if "add different address" toggle should be displayed.
+    ///
+    var showDifferentAddressToggle: Bool { get }
+
+    /// Defines "add different address" toggle title
+    ///
+    var differentAddressToggleTitle: String? { get }
 
     /// Save the address and invoke a completion block when finished
     ///
@@ -208,6 +220,10 @@ open class AddressFormViewModel: ObservableObject {
     /// Address form fields
     ///
     @Published var fields = AddressFormFields()
+
+    /// Define if address form should be expanded (show second set of fields for different address)
+    ///
+    @Published var showDifferentAddressForm: Bool = false
 
     /// Trigger to perform any one time setups.
     ///

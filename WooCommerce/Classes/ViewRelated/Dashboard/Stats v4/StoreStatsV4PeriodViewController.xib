@@ -196,10 +196,10 @@
                                             </accessibility>
                                         </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fg2-ey-bVn" userLabel="Empty data view">
-                                            <rect key="frame" x="153" y="177" width="41.5" height="38.5"/>
+                                            <rect key="frame" x="145" y="177" width="57.5" height="38.5"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5uh-zy-gDZ">
-                                                    <rect key="frame" x="0.0" y="9" width="41.5" height="20.5"/>
+                                                    <rect key="frame" x="8" y="9" width="41.5" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -207,10 +207,10 @@
                                             </subviews>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="5uh-zy-gDZ" secondAttribute="trailing" id="kKN-cg-YhY"/>
+                                                <constraint firstAttribute="trailing" secondItem="5uh-zy-gDZ" secondAttribute="trailing" constant="8" id="kKN-cg-YhY"/>
                                                 <constraint firstItem="5uh-zy-gDZ" firstAttribute="top" secondItem="fg2-ey-bVn" secondAttribute="top" constant="9" id="od2-Oi-xwq"/>
                                                 <constraint firstAttribute="bottom" secondItem="5uh-zy-gDZ" secondAttribute="bottom" constant="9" id="uQ7-1p-B6d"/>
-                                                <constraint firstItem="5uh-zy-gDZ" firstAttribute="leading" secondItem="fg2-ey-bVn" secondAttribute="leading" id="ylg-AY-x2q"/>
+                                                <constraint firstItem="5uh-zy-gDZ" firstAttribute="leading" secondItem="fg2-ey-bVn" secondAttribute="leading" constant="8" id="ylg-AY-x2q"/>
                                             </constraints>
                                         </view>
                                     </subviews>

@@ -30,7 +30,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// CPP plugin is installed and activated but requires to be setup first.
     ///
-    case pluginSetupNotCompleted
+    case pluginSetupNotCompleted(plugin: CardPresentPaymentsPlugins)
 
     /// This is a bit special case: WCPay is set to "dev mode" but the connected Stripe account is in live mode.
     /// Connecting to a reader or accepting payments is not supported in this state.

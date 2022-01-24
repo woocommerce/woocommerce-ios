@@ -40,8 +40,8 @@ struct InPersonPaymentsView: View {
             case .pluginInTestModeWithLiveStripeAccount:
                 InPersonPaymentsLiveSiteInTestMode(onRefresh:
                     viewModel.refresh)
-            case .pluginSetupNotCompleted:
-                InPersonPaymentsWCPayNotSetup(onRefresh: viewModel.refresh)
+            case .pluginSetupNotCompleted(let plugin):
+                InPersonPaymentsWCPayNotSetup(plugin: plugin, onRefresh: viewModel.refresh)
             case .stripeAccountOverdueRequirement:
                 InPersonPaymentsStripeAccountOverdue()
             case .stripeAccountPendingRequirement(let deadline):

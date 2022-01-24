@@ -32,7 +32,7 @@ private enum Localization {
     static let message = NSLocalizedString(
         "The %1$@ extension cannot be in test mode for In-Person Payments. "
             + "Please disable test mode.",
-        comment: "Error message when a card present payments plugin is in test mode on a live site"
+        comment: "Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name, e.g. WooCommerce Stripe Gateway"
     )
 
     static let primaryButton = NSLocalizedString(

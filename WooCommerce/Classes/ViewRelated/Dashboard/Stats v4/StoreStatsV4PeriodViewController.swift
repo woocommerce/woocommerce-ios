@@ -388,7 +388,7 @@ private extension StoreStatsV4PeriodViewController {
         yAxis.drawAxisLineEnabled = false
         yAxis.drawZeroLineEnabled = true
         yAxis.valueFormatter = self
-        yAxis.setLabelCount(3, force: true)
+        yAxis.setLabelCount(3, force: false)
     }
 }
 

@@ -87,7 +87,7 @@ private extension TopPerformersSectionHeaderView {
         let label: UILabel = {
             let label = UILabel(frame: .zero)
             label.text = labelText
-            label.applyFootnoteStyle()
+            label.applyCalloutStyle()
             label.numberOfLines = 0
             label.textColor = .listIcon
             return label

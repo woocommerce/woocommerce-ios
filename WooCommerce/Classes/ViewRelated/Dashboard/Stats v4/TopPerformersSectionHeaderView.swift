@@ -134,7 +134,7 @@ private extension TopPerformersSectionHeaderView {
     }
 
     enum Constants {
-        static let labelInsets = UIEdgeInsets(top: 0, left: 16, bottom: 8, right: 16)
+        static let labelInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
         static let backgroundColor: UIColor = .systemBackground
         static let columnHorizontalSpacing: CGFloat = 30
         static let titleAndColumnSpacing: CGFloat = 16

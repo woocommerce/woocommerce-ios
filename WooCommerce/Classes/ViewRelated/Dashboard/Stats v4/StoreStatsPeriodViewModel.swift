@@ -15,6 +15,9 @@ final class StoreStatsPeriodViewModel {
     /// Updated externally from user interactions with the chart.
     @Published var selectedIntervalIndex: Int? = nil
 
+    /// Updated externally from visitor stats availability.
+    @Published var siteVisitStatsMode: SiteVisitStatsMode = .default
+
     /// Emits order stats text values based on order stats and selected time interval.
     private(set) lazy var orderStatsText: AnyPublisher<String, Never> =
     Publishers.CombineLatest($orderStatsData.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
@@ -63,6 +66,24 @@ final class StoreStatsPeriodViewModel {
     var reloadChartAnimated: AnyPublisher<Bool, Never> {
         shouldReloadChartAnimated.eraseToAnyPublisher()
     }
+
+    /// Emits the view state for visitor stats based on the visitor stats mode and the selected time interval.
+    private(set) lazy var visitorStatsViewState: AnyPublisher<StoreStatsDataOrRedactedView.State, Never> =
+    Publishers.CombineLatest($siteVisitStatsMode.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
+        .compactMap { [weak self] siteVisitStatsMode, selectedIntervalIndex in
+            return self?.visitorStatsViewState(siteVisitStatsMode: siteVisitStatsMode, selectedIntervalIndex: selectedIntervalIndex)
+        }
+        .removeDuplicates()
+        .eraseToAnyPublisher()
+
+    /// Emits the view state for conversion stats based on the visitor stats view state.
+    private(set) lazy var conversionStatsViewState: AnyPublisher<StoreStatsDataOrRedactedView.State, Never> =
+    visitorStatsViewState
+        .compactMap { [weak self] visitorStatsViewState in
+            return self?.conversionStatsViewState(visitorStatsViewState: visitorStatsViewState)
+        }
+        .removeDuplicates()
+        .eraseToAnyPublisher()
 
     // MARK: - Private data
 
@@ -135,14 +156,16 @@ private extension StoreStatsPeriodViewModel {
             return StatsTimeRangeBarViewModel(startDate: startDate,
                                               endDate: endDate,
                                               timeRange: timeRange,
-                                              timezone: siteTimezone)
+                                              timezone: siteTimezone,
+                                              isMyStoreTabUpdatesEnabled: true)
         }
         let date = orderStatsIntervals[selectedIndex].dateStart(timeZone: siteTimezone)
         return StatsTimeRangeBarViewModel(startDate: startDate,
                                           endDate: endDate,
                                           selectedDate: date,
                                           timeRange: timeRange,
-                                          timezone: siteTimezone)
+                                          timezone: siteTimezone,
+                                          isMyStoreTabUpdatesEnabled: true)
     }
 
     func createOrderStatsText(orderStatsData: OrderStatsData, selectedIntervalIndex: Int?) -> String {
@@ -172,15 +195,39 @@ private extension StoreStatsPeriodViewModel {
     func createConversionStats(orderStatsData: OrderStatsData, siteStats: SiteVisitStats?, selectedIntervalIndex: Int?) -> String {
         let visitors = visitorCount(at: selectedIntervalIndex, siteStats: siteStats)
         let orders = orderCount(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals)
-        if let visitors = visitors, let orders = orders, visitors > 0 {
+
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .percent
+        numberFormatter.minimumFractionDigits = 1
+
+        if let visitors = visitors, let orders = orders {
             // Maximum conversion rate is 100%.
-            let conversionRate = min(orders/visitors, 1)
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = .percent
-            numberFormatter.minimumFractionDigits = 1
+            let conversionRate = visitors > 0 ? min(orders/visitors, 1): 0
             return numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.placeholderText
         } else {
             return Constants.placeholderText
+        }
+    }
+
+    func visitorStatsViewState(siteVisitStatsMode: SiteVisitStatsMode, selectedIntervalIndex: Int?) -> StoreStatsDataOrRedactedView.State {
+        switch siteVisitStatsMode {
+        case .default:
+            return timeRange == .today && selectedIntervalIndex != nil ? .redacted: .data
+        case .redactedDueToJetpack:
+            return .redactedDueToJetpack
+        case .hidden:
+            return .redacted
+        }
+    }
+
+    func conversionStatsViewState(visitorStatsViewState: StoreStatsDataOrRedactedView.State) -> StoreStatsDataOrRedactedView.State {
+        switch visitorStatsViewState {
+        case .data:
+            return .data
+        case .redactedDueToJetpack:
+            return .redacted
+        case .redacted:
+            return .redacted
         }
     }
 }

@@ -203,6 +203,8 @@ private extension StoreStatsPeriodViewModel {
         if let visitors = visitors, let orders = orders {
             // Maximum conversion rate is 100%.
             let conversionRate = visitors > 0 ? min(orders/visitors, 1): 0
+            let minimumFractionDigits = floor(conversionRate * 100.0) == conversionRate * 100.0 ? 0: 1
+            numberFormatter.minimumFractionDigits = minimumFractionDigits
             return numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.placeholderText
         } else {
             return Constants.placeholderText

@@ -18,12 +18,12 @@ struct InPersonPaymentsStripeAcountReview: View {
 private enum Localization {
     static let title = NSLocalizedString(
         "In-Person Payments is currently unavailable",
-        comment: "Title for the error screen when the Stripe account is restricted because it's under reviw"
+        comment: "Title for the error screen when the merchant's payment account is restricted because it's under reviw"
     )
 
     static let message = NSLocalizedString(
         "You'll be able to accept In-Person Payments as soon as we finish reviewing your account.",
-        comment: "Error message when WooCommerce Payments is not supported because the Stripe account is under review"
+        comment: "Error message when the merchant's payment is under review"
     )
 }
 

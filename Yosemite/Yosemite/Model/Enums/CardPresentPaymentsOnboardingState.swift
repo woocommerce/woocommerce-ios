@@ -32,10 +32,10 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     ///
     case pluginSetupNotCompleted(plugin: CardPresentPaymentsPlugins)
 
-    /// This is a bit special case: WCPay is set to "dev mode" but the connected Stripe account is in live mode.
+    /// This is a bit special case: The plugin is set to test mode but the connected Stripe account is a real (live) account.
     /// Connecting to a reader or accepting payments is not supported in this state.
     ///
-    case pluginInTestModeWithLiveStripeAccount
+    case pluginInTestModeWithLiveStripeAccount(plugin: CardPresentPaymentsPlugins)
 
     /// The connected Stripe account has not been reviewed by Stripe yet. This is a temporary state and the user needs to wait.
     ///

@@ -343,7 +343,7 @@ PLATFORMS
 
 DEPENDENCIES
   cocoapods (~> 1.10)
-  cocoapods-catalyst-support
+  cocoapods-catalyst-support (~> 0.1)
   dotenv
   fastlane (~> 2)
   fastlane-plugin-appcenter (~> 1.6)

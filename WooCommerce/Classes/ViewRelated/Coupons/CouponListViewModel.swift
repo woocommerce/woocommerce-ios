@@ -15,7 +15,7 @@ enum CouponListState {
 
 final class CouponListViewModel {
 
-    typealias CouponListCellViewModel = TitleAndSubtitleAndStatusTableViewCell.CellViewModel
+    typealias CouponListCellViewModel = TitleAndSubtitleAndStatusTableViewCell.ViewModel
 
     /// Active state
     ///

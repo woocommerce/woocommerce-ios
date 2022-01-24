@@ -17,7 +17,7 @@ final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell {
         configureLabels()
     }
 
-    func configureCell(viewModel: CellViewModel) {
+    func configureCell(viewModel: ViewModel) {
         titleLabel.text = viewModel.title
         subtitleLabel.text = viewModel.subtitle
         accessibilityLabel = viewModel.accessibilityLabel
@@ -30,12 +30,12 @@ final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell {
 // MARK: - CellViewModel subtype
 //
 extension TitleAndSubtitleAndStatusTableViewCell {
-    struct CellViewModel {
-        var title: String
-        var subtitle: String
-        var accessibilityLabel: String
-        var status: String
-        var statusBackgroundColor: UIColor
+    struct ViewModel {
+        let title: String
+        let subtitle: String
+        let accessibilityLabel: String
+        let status: String
+        let statusBackgroundColor: UIColor
     }
 }
 

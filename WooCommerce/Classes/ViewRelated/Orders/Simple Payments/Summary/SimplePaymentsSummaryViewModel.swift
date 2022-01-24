@@ -93,7 +93,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
             return true // If `taxLinesInSimplePayments` feature flag is turned off
         }
 
-        return taxLines.count > 0
+        return taxLines.isNotEmpty
     }
 
     /// Total to charge with taxes.

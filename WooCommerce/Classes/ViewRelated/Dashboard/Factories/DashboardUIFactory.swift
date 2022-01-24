@@ -1,6 +1,7 @@
 import Storage
 import UIKit
 import Yosemite
+import Experiments
 
 /// Contains all UI content to show on Dashboard
 ///
@@ -33,10 +34,12 @@ final class DashboardUIFactory {
 
     private var lastStatsV4DashboardUI: DashboardUI?
     private lazy var deprecatedStatsViewController = DeprecatedDashboardStatsViewController()
+    private let featureFlagService: FeatureFlagService
 
-    init(siteID: Int64, currentDateProvider: @escaping () -> Date = Date.init) {
+    init(siteID: Int64, currentDateProvider: @escaping () -> Date = Date.init, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.statsVersionCoordinator = StatsVersionCoordinator(siteID: siteID)
+        self.featureFlagService = featureFlagService
     }
 
     func reloadDashboardUI(onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
@@ -52,7 +55,12 @@ final class DashboardUIFactory {
         if let lastStatsV4DashboardUI = lastStatsV4DashboardUI {
             return lastStatsV4DashboardUI
         }
-        let dashboardUI = StoreStatsAndTopPerformersViewController(siteID: siteID)
+        let dashboardUI: DashboardUI
+        if featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) {
+            dashboardUI = StoreStatsAndTopPerformersViewController(siteID: siteID)
+        } else {
+            dashboardUI = OldStoreStatsAndTopPerformersViewController(siteID: siteID)
+        }
         lastStatsV4DashboardUI = dashboardUI
         return dashboardUI
     }

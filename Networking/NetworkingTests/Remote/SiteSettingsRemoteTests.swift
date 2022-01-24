@@ -1,7 +1,6 @@
 import XCTest
 @testable import Networking
 
-
 /// SiteSettingsRemote Unit Tests
 ///
 class SiteSettingsRemoteTests: XCTestCase {
@@ -86,5 +85,24 @@ class SiteSettingsRemoteTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    // MARK: - Load advanced settings tests
+
+    func test_load_advanced_settings_properly_returns_parsed_settings() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "settings/advanced", filename: "settings-advanced")
+        let remote = SiteSettingsRemote(network: network)
+
+        // When
+        let result: Result<[Networking.SiteSetting], Error> = waitFor { promise in
+            remote.loadAdvancedSettings(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let settings = try result.get()
+        XCTAssertEqual(settings.count, 2)
     }
 }

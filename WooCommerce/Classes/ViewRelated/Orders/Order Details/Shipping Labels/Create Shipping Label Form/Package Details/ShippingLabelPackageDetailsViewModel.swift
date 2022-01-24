@@ -361,6 +361,7 @@ extension ShippingLabelPackageDetailsViewModel {
                      orderID: 963,
                      parentID: 0,
                      customerID: 11,
+                     orderKey: "",
                      number: "963",
                      status: .processing,
                      currency: "USD",
@@ -382,7 +383,8 @@ extension ShippingLabelPackageDetailsViewModel {
                      shippingLines: sampleShippingLines(),
                      coupons: sampleCoupons(),
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: [])
     }
 
     static func sampleAddress() -> Address {

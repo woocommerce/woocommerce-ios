@@ -382,6 +382,7 @@ extension WooAnalyticsEvent {
         enum PaymentMethod: String {
             case card
             case cash
+            case paymentLink = "payment_link"
         }
 
         /// Possible view sources

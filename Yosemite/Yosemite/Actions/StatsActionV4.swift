@@ -29,8 +29,9 @@ public enum StatsActionV4: Action {
     /// Synchronizes `TopEarnerStats` for the provided siteID, time range, and date.
     ///
     case retrieveTopEarnerStats(siteID: Int64,
-        timeRange: StatsTimeRangeV4,
-        earliestDateToInclude: Date,
-        latestDateToInclude: Date,
-        onCompletion: (Result<Void, Error>) -> Void)
+                                timeRange: StatsTimeRangeV4,
+                                earliestDateToInclude: Date,
+                                latestDateToInclude: Date,
+                                quantity: Int,
+                                onCompletion: (Result<Void, Error>) -> Void)
 }

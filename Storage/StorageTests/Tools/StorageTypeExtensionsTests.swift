@@ -129,7 +129,7 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(orderItemTax, storedItemTax)
     }
 
-    func test_loadOrderCoupon_by_siteID_couponID() throws {
+    func test_loadOrderCoupon_by_siteID_and_couponID() throws {
         // Given
         let couponID: Int64 = 123
         let coupon = storage.insertNewObject(ofType: OrderCoupon.self)
@@ -195,6 +195,23 @@ class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(shippingLine, storedShippingLine)
+    }
+
+    func test_loadOrderTaxLine_by_siteID_taxID() throws {
+        // Given
+        let taxID: Int64 = 123
+        let taxLine = storage.insertNewObject(ofType: OrderTaxLine.self)
+        taxLine.taxID = taxID
+
+        let order = storage.insertNewObject(ofType: Order.self)
+        order.siteID = sampleSiteID
+        order.addToTaxes(taxLine)
+
+        // When
+        let storedTaxLine = try XCTUnwrap(storage.loadOrderTaxLine(siteID: sampleSiteID, taxID: taxID))
+
+        // Then
+        XCTAssertEqual(taxLine, storedTaxLine)
     }
 
     func test_loadOrderNote_by_noteID() throws {
@@ -962,6 +979,38 @@ class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(labelSettings, storedLabelSettings)
+    }
+
+    func test_loadCoupon_by_siteID_couponID() throws {
+        // Given
+        let couponID: Int64 = 5289
+        let coupon = storage.insertNewObject(ofType: Coupon.self)
+        coupon.siteID = sampleSiteID
+        coupon.couponID = couponID
+
+        // When
+        let storedCoupon = try XCTUnwrap(storage.loadCoupon(siteID: sampleSiteID,
+                                                            couponID: couponID))
+
+        // Then
+        XCTAssertEqual(coupon, storedCoupon)
+    }
+
+    func test_loadCoupons_by_siteID() throws {
+        // Given
+        let coupon1 = storage.insertNewObject(ofType: Coupon.self)
+        coupon1.siteID = sampleSiteID
+        coupon1.couponID = 1
+
+        let coupon2 = storage.insertNewObject(ofType: Coupon.self)
+        coupon2.siteID = sampleSiteID
+        coupon2.couponID = 2
+
+        // When
+        let storedCoupons = try XCTUnwrap(storage.loadAllCoupons(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual(Set([coupon1, coupon2]), Set(storedCoupons))
     }
 
     func test_loadShippingLabelAccountSettings_by_siteID() throws {

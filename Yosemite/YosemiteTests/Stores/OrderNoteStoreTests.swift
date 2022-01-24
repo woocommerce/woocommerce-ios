@@ -274,6 +274,7 @@ private extension OrderNoteStoreTests {
                      orderID: sampleOrderID,
                      parentID: 0,
                      customerID: 11,
+                     orderKey: "acbd123",
                      number: "963",
                      status: .processing,
                      currency: "USD",
@@ -295,7 +296,8 @@ private extension OrderNoteStoreTests {
                      shippingLines: sampleShippingLines(),
                      coupons: [],
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: [])
     }
 
     func sampleShippingLines() -> [Networking.ShippingLine] {

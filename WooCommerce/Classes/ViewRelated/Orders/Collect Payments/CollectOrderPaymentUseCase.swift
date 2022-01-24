@@ -4,11 +4,23 @@ import Yosemite
 import MessageUI
 import protocol Storage.StorageManagerType
 
+/// Protocol to abstract the `CollectOrderPaymentUseCase`.
+/// Currently only used to facilitate unit tests.
+///
+protocol CollectOrderPaymentProtocol {
+    /// Starts the collect payment flow.
+    ///
+    ///
+    /// - Parameter backButtonTitle: Title for the back button after a payment is sucessfull.
+    /// - Parameter onCollect: Closure Invoked after the collect process has finished.
+    /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed.
+    func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ())
+}
+
 /// Use case to collect payments from an order.
 /// Orchestrates reader connection, payment, UI alerts, receipt handling and analytics.
 ///
-final class CollectOrderPaymentUseCase: NSObject {
-
+final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// Store's ID.
     ///
     private let siteID: Int64
@@ -84,10 +96,10 @@ final class CollectOrderPaymentUseCase: NSObject {
     /// 4. If failure: Allows retry
     ///
     ///
+    /// - Parameter backButtonTitle: Title for the back button after a payment is sucessfull.
     /// - Parameter onCollect: Closure Invoked after the collect process has finished.
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed, Currently after merchant has handled the receipt.
-    // TODO: Remember to check why the amount is provided in order details view model
-    func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
+    func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
         connectReader { [weak self] in
             self?.attemptPayment(onCompletion: { [weak self] result in
                 // Inform about the collect payment state
@@ -97,7 +109,7 @@ final class CollectOrderPaymentUseCase: NSObject {
                 guard let receiptParameters = try? result.get() else {
                     return
                 }
-                self?.presentReceiptAlert(receiptParameters: receiptParameters, onCompleted: onCompleted)
+                self?.presentReceiptAlert(receiptParameters: receiptParameters, backButtonTitle: backButtonTitle, onCompleted: onCompleted)
             })
         }
     }
@@ -151,29 +163,29 @@ private extension CollectOrderPaymentUseCase {
         // Start collect payment process
         paymentOrchestrator.collectPayment(
             for: order,
-            statementDescriptor: paymentGatewayAccount.statementDescriptor,
-            onWaitingForInput: { [weak self] in
-                // Request card input
-                self?.alerts.tapOrInsertCard(onCancel: {
-                    self?.cancelPayment()
-                })
+               paymentGatewayAccount: paymentGatewayAccount,
+               onWaitingForInput: { [weak self] in
+                   // Request card input
+                   self?.alerts.tapOrInsertCard(onCancel: {
+                       self?.cancelPayment()
+                   })
 
-            }, onProcessingMessage: { [weak self] in
-                // Waiting message
-                self?.alerts.processingPayment()
+               }, onProcessingMessage: { [weak self] in
+                   // Waiting message
+                   self?.alerts.processingPayment()
 
-            }, onDisplayMessage: { [weak self] message in
-                // Reader messages. EG: Remove Card
-                self?.alerts.displayReaderMessage(message: message)
+               }, onDisplayMessage: { [weak self] message in
+                   // Reader messages. EG: Remove Card
+                   self?.alerts.displayReaderMessage(message: message)
 
-            }, onCompletion: { [weak self] result in
-                switch result {
-                case .success(let receiptParameters):
-                    self?.handleSuccessfulPayment(receipt: receiptParameters, onCompletion: onCompletion)
-                case .failure(let error):
-                    self?.handlePaymentFailureAndRetryPayment(error, onCompletion: onCompletion)
-                }
-            }
+               }, onCompletion: { [weak self] result in
+                   switch result {
+                   case .success(let receiptParameters):
+                       self?.handleSuccessfulPayment(receipt: receiptParameters, onCompletion: onCompletion)
+                   case .failure(let error):
+                       self?.handlePaymentFailureAndRetryPayment(error, onCompletion: onCompletion)
+                   }
+               }
         )
     }
 
@@ -225,7 +237,7 @@ private extension CollectOrderPaymentUseCase {
 
     /// Allow merchants to print or email the payment receipt.
     ///
-    func presentReceiptAlert(receiptParameters: CardPresentReceiptParameters, onCompleted: @escaping () -> ()) {
+    func presentReceiptAlert(receiptParameters: CardPresentReceiptParameters, backButtonTitle: String, onCompleted: @escaping () -> ()) {
         // Present receipt alert
         alerts.success(printReceipt: { [order] in
             // Inform about flow completion.
@@ -243,8 +255,8 @@ private extension CollectOrderPaymentUseCase {
                 self?.onCompleted = onCompleted // Saved to be able to reference from the `MailComposer` delegate.
                 self?.presentEmailForm(content: emailContent)
             }
-
-        }, noReceiptAction: {
+        }, noReceiptTitle: backButtonTitle,
+           noReceiptAction: {
             // Inform about flow completion.
             onCompleted()
         })

@@ -171,6 +171,7 @@ private enum Fixtures {
         orderID: 8_963,
         parentID: 0,
         customerID: 11,
+        orderKey: "",
         number: "8963",
         status: .processing,
         currency: "USD",
@@ -192,6 +193,7 @@ private enum Fixtures {
         shippingLines: [],
         coupons: [],
         refunds: [],
-        fees: []
+        fees: [],
+        taxes: []
     )
 }

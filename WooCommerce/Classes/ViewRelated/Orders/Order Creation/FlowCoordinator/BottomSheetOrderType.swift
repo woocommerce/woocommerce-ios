@@ -9,7 +9,7 @@ public enum BottomSheetOrderType: Hashable {
     var actionSheetTitle: String {
         switch self {
         case .simple:
-            return NSLocalizedString("Simple Payments",
+            return NSLocalizedString("Simple payment",
                                      comment: "Action sheet option when the user wants to create Simple Payments order")
         case .full:
             return NSLocalizedString("Create order",
@@ -64,6 +64,7 @@ final class OrderTypeBottomSheetListSelectorCommand: BottomSheetListSelectorComm
                                                                     text: model.actionSheetDescription,
                                                                     image: model.actionSheetImage,
                                                                     imageTintColor: .gray(.shade20),
+                                                                    numberOfLinesForTitle: 0,
                                                                     numberOfLinesForText: 0,
                                                                     isActionable: false)
         cell.updateUI(viewModel: viewModel)

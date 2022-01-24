@@ -19,11 +19,7 @@ struct AddProductToOrder: View {
                     InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
                                        loadAction: viewModel.syncNextPage) {
                         ForEach(viewModel.productRows) { rowViewModel in
-                            ProductRow(viewModel: rowViewModel)
-                                .onTapGesture {
-                                    viewModel.selectProduct(rowViewModel.productOrVariationID)
-                                    isPresented.toggle()
-                                }
+                            createProductRow(rowViewModel: rowViewModel)
                         }
                     }
                 case .empty:
@@ -56,6 +52,23 @@ struct AddProductToOrder: View {
             }
         }
         .wooNavigationBarStyle()
+    }
+
+    /// Creates the `ProductRow` for a product, depending on whether the product is variable.
+    ///
+    @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
+        if rowViewModel.numberOfVariations > 0,
+           let addVariationToOrderVM = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
+            LazyNavigationLink(destination: AddProductVariationToOrder(isPresented: $isPresented, viewModel: addVariationToOrderVM)) {
+                ProductRow(viewModel: rowViewModel)
+            }
+        } else {
+            ProductRow(viewModel: rowViewModel)
+                .onTapGesture {
+                    viewModel.selectProduct(rowViewModel.productOrVariationID)
+                    isPresented.toggle()
+                }
+        }
     }
 }
 

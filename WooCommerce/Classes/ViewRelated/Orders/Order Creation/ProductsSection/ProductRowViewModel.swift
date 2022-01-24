@@ -35,7 +35,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Product price
     ///
-    private let price: String
+    private let price: String?
 
     /// Product stock status
     ///
@@ -49,13 +49,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private let manageStock: Bool
 
-    /// Label showing product stock status and price.
+    /// Label showing product details: stock status, price, and variations (if any).
     ///
-    lazy var stockAndPriceLabel: String = {
+    lazy var productDetailsLabel: String = {
         let stockLabel = createStockText()
         let priceLabel = createPriceText()
+        let variationsLabel = createVariationsText()
 
-        return [stockLabel, priceLabel]
+        return [stockLabel, priceLabel, variationsLabel]
             .compactMap({ $0 })
             .joined(separator: " • ")
     }()
@@ -83,17 +84,22 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         quantity <= minimumQuantity
     }
 
+    /// Number of variations in a variable product
+    ///
+    let numberOfVariations: Int
+
     init(id: String? = nil,
          productOrVariationID: Int64,
          name: String,
          sku: String?,
-         price: String,
+         price: String?,
          stockStatusKey: String,
          stockQuantity: Decimal?,
          manageStock: Bool,
          quantity: Decimal = 1,
          canChangeQuantity: Bool,
          imageURL: URL?,
+         numberOfVariations: Int = 0,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.id = id ?? productOrVariationID.description
         self.productOrVariationID = productOrVariationID
@@ -107,6 +113,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.currencyFormatter = currencyFormatter
+        self.numberOfVariations = numberOfVariations
     }
 
     /// Initialize `ProductRowViewModel` with a `Product`
@@ -116,17 +123,26 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+        // Don't show any price for variable products; price will be shown for each product variation.
+        let price: String?
+        if product.productType == .variable {
+            price = nil
+        } else {
+            price = product.price
+        }
+
         self.init(id: id,
                   productOrVariationID: product.productID,
                   name: product.name,
                   sku: product.sku,
-                  price: product.price,
+                  price: price,
                   stockStatusKey: product.stockStatusKey,
                   stockQuantity: product.stockQuantity,
                   manageStock: product.manageStock,
                   quantity: quantity,
                   canChangeQuantity: canChangeQuantity,
                   imageURL: product.imageURL,
+                  numberOfVariations: product.variations.count,
                   currencyFormatter: currencyFormatter)
     }
 
@@ -186,8 +202,21 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Create the price text based on a product's price.
     ///
     private func createPriceText() -> String? {
+        guard let price = price else {
+            return nil
+        }
         let unformattedPrice = price.isNotEmpty ? price : "0"
         return currencyFormatter.formatAmount(unformattedPrice)
+    }
+
+    /// Create the variations text for a variable product.
+    ///
+    private func createVariationsText() -> String? {
+        guard numberOfVariations > 0 else {
+            return nil
+        }
+        let format = String.pluralize(numberOfVariations, singular: Localization.singleVariation, plural: Localization.pluralVariations)
+        return String.localizedStringWithFormat(format, numberOfVariations)
     }
 
     /// Increment the product quantity.
@@ -210,5 +239,9 @@ private extension ProductRowViewModel {
     enum Localization {
         static let stockFormat = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown during order creation")
         static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
+        static let singleVariation = NSLocalizedString("%ld variation",
+                                                       comment: "Label for one product variation when showing details about a variable product")
+        static let pluralVariations = NSLocalizedString("%ld variations",
+                                                        comment: "Label for multiple product variations when showing details about a variable product")
     }
 }

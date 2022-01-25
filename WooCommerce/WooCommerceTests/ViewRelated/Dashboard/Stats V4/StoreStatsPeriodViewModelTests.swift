@@ -216,9 +216,47 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(orderStatsTextValues, ["-", "3", "1"])
-        XCTAssertEqual(revenueStatsTextValues, ["-", "$62.70", "$25.00"])
+        XCTAssertEqual(revenueStatsTextValues, ["-", "$62.70", "$25"])
         XCTAssertEqual(visitorStatsTextValues, ["-"])
         XCTAssertEqual(conversionStatsTextValues, ["-"])
+    }
+
+    func test_revenueStatsText_does_not_show_decimal_points_for_integer_value() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        observeStatsEmittedValues(viewModel: viewModel)
+
+        XCTAssertEqual(revenueStatsTextValues, ["-"])
+
+        // When
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 62),
+                                      intervals: [])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        // Then
+        XCTAssertEqual(revenueStatsTextValues, ["-", "$62"])
+    }
+
+    func test_revenueStatsText_show_decimal_points_from_currency_settings_for_noninteger_value() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        observeStatsEmittedValues(viewModel: viewModel)
+
+        XCTAssertEqual(revenueStatsTextValues, ["-"])
+
+        // When
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 62.856),
+                                      intervals: [])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        // Then
+        XCTAssertEqual(revenueStatsTextValues, ["-", "$62.86"])
     }
 
     func test_visitorStatsText_is_emitted_after_visitor_stats_updated_with_selected_interval() {

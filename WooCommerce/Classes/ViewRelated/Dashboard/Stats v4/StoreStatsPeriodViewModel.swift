@@ -178,7 +178,9 @@ private extension StoreStatsPeriodViewModel {
 
     func createRevenueStats(orderStatsData: OrderStatsData, selectedIntervalIndex: Int?) -> String {
         if let revenue = revenue(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals) {
-            return currencyFormatter.formatAmount(revenue, with: currencyCode) ?? String()
+            // If revenue is an integer, no decimal points are shown.
+            let numberOfDecimals: Int? = revenue.isInteger ? 0: nil
+            return currencyFormatter.formatAmount(revenue, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
         } else {
             return Constants.placeholderText
         }

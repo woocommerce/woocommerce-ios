@@ -240,6 +240,32 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed)
     }
 
+    func test_onboarding_sends_use_wcpay_account_action_when_wcpay_plugin_is_used_with_an_account_meeting_requirements() throws {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .networkActive, version: WCPayPluginVersion.minimumSupportedVersion)
+        let paymentGatewayAccount = setupPaymentGatewayAccount(accountType: WCPayAccount.self,
+                                                               status: .complete,
+                                                               hasPendingRequirements: false,
+                                                               hasOverdueRequirements: false,
+                                                               isLive: true,
+                                                               isInTestMode: false)
+
+        // When
+        _ = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+
+        // Then
+        XCTAssertEqual(stores.receivedActions.count, 2)
+        let action = try XCTUnwrap(stores.receivedActions.last as? CardPresentPaymentAction)
+
+        switch action {
+        case .use(let account):
+            XCTAssertEqual(account, paymentGatewayAccount)
+        default:
+            XCTFail("Completing onboarding did not send use account CardPresentPaymentAction")
+        }
+    }
+
     func test_onboarding_returns_complete_when_stripe_plugin_is_used_with_an_account_meeting_requirements() {
         // Given
         setupCountry(country: .us)
@@ -258,6 +284,32 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertEqual(state, .completed)
+    }
+
+    func test_onboarding_sends_use_stripe_account_action_when_stripe_plugin_is_used_with_an_account_meeting_requirements() throws {
+        // Given
+        setupCountry(country: .us)
+        setupStripePlugin(status: .networkActive, version: StripePluginVersion.minimumSupportedVersion)
+        let paymentGatewayAccount = setupPaymentGatewayAccount(accountType: StripeAccount.self,
+                                                               status: .complete,
+                                                               hasPendingRequirements: false,
+                                                               hasOverdueRequirements: false,
+                                                               isLive: true,
+                                                               isInTestMode: false)
+
+        // When
+        _ = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+
+        // Then
+        XCTAssertEqual(stores.receivedActions.count, 2)
+        let action = try XCTUnwrap(stores.receivedActions.last as? CardPresentPaymentAction)
+
+        switch action {
+        case .use(let account):
+            XCTAssertEqual(account, paymentGatewayAccount)
+        default:
+            XCTFail("Completing onboarding did not send use account CardPresentPaymentAction")
+        }
     }
 
     // MARK: - Payment Account checks
@@ -542,6 +594,7 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
 
 // MARK: - Account helpers
 private extension CardPresentPaymentsOnboardingUseCaseTests {
+    @discardableResult
     func setupPaymentGatewayAccount(
         accountType: GatewayAccountProtocol.Type,
         status: WCPayAccountStatusEnum,
@@ -550,7 +603,7 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
         isLive: Bool = false,
         isInTestMode: Bool = false,
         isCardPresentEligible: Bool = true
-    ) {
+    ) -> PaymentGatewayAccount {
         let paymentGatewayAccount = PaymentGatewayAccount
             .fake()
             .copy(
@@ -564,6 +617,7 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
                 isInTestMode: isInTestMode
             )
         storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+        return paymentGatewayAccount
     }
 }
 

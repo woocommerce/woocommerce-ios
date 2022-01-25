@@ -227,7 +227,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
         // If we've gotten this far, tell the Card Present Payment Store which backend to use
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: account)
-        ServiceLocator.stores.dispatch(setAccount)
+        stores.dispatch(setAccount)
 
         return .completed
     }

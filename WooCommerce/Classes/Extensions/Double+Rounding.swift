@@ -2,9 +2,9 @@ import Foundation
 
 extension Double {
     /// Returns a rounded value that has the next higher multitude of the same power of 10.
-    /// Examples: 62 --> 70, 134 --> 200, 1450 --> 2000, -579 --> -600
-    /// - Parameter shouldRoundUp: Whether to round up or down.
-    /// - Returns: <#description#>
+    /// Examples when rounding up: 62 --> 70, 134 --> 200, 1450 --> 2000, -579 --> -500
+    /// Examples when rounding down: 62 --> 60, 134 --> 100, 1450 --> 1000, -579 --> -600
+    /// - Parameter shouldRoundUp: Whether to round the value up or down.
     func roundedToTheNextSamePowerOfTen(shouldRoundUp: Bool) -> Double {
         guard self != 0 else {
             return 0

@@ -1,7 +1,7 @@
-import Foundation
 import Combine
 import SwiftUI
 import UIKit
+import Yosemite
 
 /// Hosting controller that wraps an `EditOrderAddressForm`.
 ///
@@ -113,109 +113,17 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     ///
     @ObservedObject private(set) var viewModel: ViewModel
 
-    /// Set it to `true` to present the country selector.
-    ///
-    @State private var showCountrySelector: Bool = false
-
-    /// Set it to `true` to present the state selector.
-    ///
-    @State private var showStateSelector = false
-
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     var body: some View {
         Group {
             ScrollView {
-                ListHeaderView(text: Localization.detailsSection, alignment: .left)
-                    .padding(.horizontal, insets: safeAreaInsets)
-                VStack(spacing: 0) {
-                    TitleAndTextFieldRow(title: Localization.firstNameField,
-                                         placeholder: "",
-                                         text: $viewModel.fields.firstName,
-                                         symbol: nil,
-                                         keyboardType: .default)
-                    Divider()
-                        .padding(.leading, Constants.dividerPadding)
-                    TitleAndTextFieldRow(title: Localization.lastNameField,
-                                         placeholder: "",
-                                         text: $viewModel.fields.lastName,
-                                         symbol: nil,
-                                         keyboardType: .default)
-                    Divider()
-                        .padding(.leading, Constants.dividerPadding)
-                    TitleAndTextFieldRow(title: Localization.emailField,
-                                         placeholder: "",
-                                         text: $viewModel.fields.email,
-                                         symbol: nil,
-                                         keyboardType: .emailAddress)
-                        .autocapitalization(.none)
-                        .renderedIf(viewModel.showEmailField)
-                    Divider()
-                        .padding(.leading, Constants.dividerPadding)
-                        .renderedIf(viewModel.showEmailField)
-                    TitleAndTextFieldRow(title: Localization.phoneField,
-                                         placeholder: "",
-                                         text: $viewModel.fields.phone,
-                                         symbol: nil,
-                                         keyboardType: .phonePad)
-                }
-                .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(.systemBackground))
-
-                ListHeaderView(text: viewModel.sectionTitle, alignment: .left)
-                    .padding(.horizontal, insets: safeAreaInsets)
-                VStack(spacing: 0) {
-                    Group {
-                        TitleAndTextFieldRow(title: Localization.companyField,
-                                             placeholder: Localization.placeholderOptional,
-                                             text: $viewModel.fields.company,
-                                             symbol: nil,
-                                             keyboardType: .default)
-                        Divider()
-                            .padding(.leading, Constants.dividerPadding)
-                        TitleAndTextFieldRow(title: Localization.address1Field,
-                                             placeholder: "",
-                                             text: $viewModel.fields.address1,
-                                             symbol: nil,
-                                             keyboardType: .default)
-                        Divider()
-                            .padding(.leading, Constants.dividerPadding)
-                        TitleAndTextFieldRow(title: Localization.address2Field,
-                                             placeholder: "Optional",
-                                             text: $viewModel.fields.address2,
-                                             symbol: nil,
-                                             keyboardType: .default)
-                        Divider()
-                            .padding(.leading, Constants.dividerPadding)
-                        TitleAndTextFieldRow(title: Localization.cityField,
-                                             placeholder: "",
-                                             text: $viewModel.fields.city,
-                                             symbol: nil,
-                                             keyboardType: .default)
-                        Divider()
-                            .padding(.leading, Constants.dividerPadding)
-                        TitleAndTextFieldRow(title: Localization.postcodeField,
-                                             placeholder: "",
-                                             text: $viewModel.fields.postcode,
-                                             symbol: nil,
-                                             keyboardType: .default)
-                        Divider()
-                            .padding(.leading, Constants.dividerPadding)
-                    }
-
-                    Group {
-                        TitleAndValueRow(title: Localization.countryField,
-                                         value: .init(placeHolder: Localization.placeholderSelectOption, content: viewModel.fields.country),
-                                         selectable: true) {
-                            showCountrySelector = true
-                        }
-                        Divider()
-                            .padding(.leading, Constants.dividerPadding)
-                        stateRow()
-                    }
-                }
-                .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(.systemBackground))
+                SingleAddressForm(fields: $viewModel.fields,
+                                  countryViewModelClosure: viewModel.createCountryViewModel,
+                                  stateViewModelClosure: viewModel.createStateViewModel,
+                                  sectionTitle: viewModel.sectionTitle,
+                                  showEmailField: viewModel.showEmailField,
+                                  showStateFieldAsSelector: viewModel.showStateFieldAsSelector)
 
                 if viewModel.showAlternativeUsageToggle, let alternativeUsageToggleTitle = viewModel.alternativeUsageToggleTitle {
                     TitleAndToggleRow(title: alternativeUsageToggleTitle, isOn: $viewModel.fields.useAsToggle)
@@ -233,25 +141,13 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                         .background(Color(.systemBackground))
                 }
 
-                // Go to edit country
-                LazyNavigationLink(destination: FilterListSelector(viewModel: viewModel.createCountryViewModel()), isActive: $showCountrySelector) {
-                    EmptyView()
-                }
-
-                // Go to edit state
-                LazyNavigationLink(destination: FilterListSelector(viewModel: viewModel.createStateViewModel()), isActive: $showStateSelector) {
-                    EmptyView()
-                }
-
-                ///
-                /// iOS 14.5 has a bug where
-                /// Pushing a view while having "exactly two" navigation links makes the pushed view to be popped when the initial view changes its state.
-                /// EG: AddressForm -> CountrySelector -> Country is selected -> AddressForm updates country -> CountrySelector is popped automatically.
-                /// Adding an extra and useless navigation link fixes the problem but throws a warning in the console.
-                /// Ref: https://forums.swift.org/t/14-5-beta3-navigationlink-unexpected-pop/45279
-                ///
-                NavigationLink(destination: EmptyView()) {
-                    EmptyView()
+                if viewModel.showDifferentAddressForm {
+                    SingleAddressForm(fields: $viewModel.fields,
+                                      countryViewModelClosure: viewModel.createCountryViewModel,
+                                      stateViewModelClosure: viewModel.createStateViewModel,
+                                      sectionTitle: viewModel.sectionTitle,
+                                      showEmailField: false,
+                                      showStateFieldAsSelector: viewModel.showStateFieldAsSelector)
                 }
             }
             .disableAutocorrection(true)
@@ -281,7 +177,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
 
     /// Decides if the navigation trailing item should be a done button or a loading indicator.
     ///
-    @ViewBuilder private func navigationBarTrailingItem() -> some View {
+    @ViewBuilder func navigationBarTrailingItem() -> some View {
         switch viewModel.navigationTrailingItem {
         case .done(let enabled):
             Button(Localization.done) {
@@ -296,20 +192,148 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
             ProgressView()
         }
     }
+}
+
+struct SingleAddressForm: View {
+
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
+    @Binding var fields: AddressFormFields
+
+    let countryViewModelClosure: () -> CountrySelectorViewModel
+    let stateViewModelClosure: () -> StateSelectorViewModel
+
+    let sectionTitle: String
+    let showEmailField: Bool
+    let showStateFieldAsSelector: Bool
+
+    /// Set it to `true` to present the country selector.
+    ///
+    @State private var showCountrySelector = false
+
+    /// Set it to `true` to present the state selector.
+    ///
+    @State private var showStateSelector = false
+
+    var body: some View {
+        ListHeaderView(text: Localization.detailsSection, alignment: .left)
+            .padding(.horizontal, insets: safeAreaInsets)
+        VStack(spacing: 0) {
+            TitleAndTextFieldRow(title: Localization.firstNameField,
+                                 placeholder: "",
+                                 text: $fields.firstName,
+                                 symbol: nil,
+                                 keyboardType: .default)
+            Divider()
+                .padding(.leading, Constants.dividerPadding)
+            TitleAndTextFieldRow(title: Localization.lastNameField,
+                                 placeholder: "",
+                                 text: $fields.lastName,
+                                 symbol: nil,
+                                 keyboardType: .default)
+            Divider()
+                .padding(.leading, Constants.dividerPadding)
+
+            if showEmailField {
+                TitleAndTextFieldRow(title: Localization.emailField,
+                                     placeholder: "",
+                                     text: $fields.email,
+                                     symbol: nil,
+                                     keyboardType: .emailAddress)
+                    .autocapitalization(.none)
+                Divider()
+                    .padding(.leading, Constants.dividerPadding)
+
+            }
+
+            TitleAndTextFieldRow(title: Localization.phoneField,
+                                 placeholder: "",
+                                 text: $fields.phone,
+                                 symbol: nil,
+                                 keyboardType: .phonePad)
+        }
+        .padding(.horizontal, insets: safeAreaInsets)
+        .background(Color(.systemBackground))
+
+        ListHeaderView(text: sectionTitle, alignment: .left)
+            .padding(.horizontal, insets: safeAreaInsets)
+        VStack(spacing: 0) {
+            Group {
+                TitleAndTextFieldRow(title: Localization.companyField,
+                                     placeholder: Localization.placeholderOptional,
+                                     text: $fields.company,
+                                     symbol: nil,
+                                     keyboardType: .default)
+                Divider()
+                    .padding(.leading, Constants.dividerPadding)
+                TitleAndTextFieldRow(title: Localization.address1Field,
+                                     placeholder: "",
+                                     text: $fields.address1,
+                                     symbol: nil,
+                                     keyboardType: .default)
+                Divider()
+                    .padding(.leading, Constants.dividerPadding)
+                TitleAndTextFieldRow(title: Localization.address2Field,
+                                     placeholder: Localization.placeholderOptional,
+                                     text: $fields.address2,
+                                     symbol: nil,
+                                     keyboardType: .default)
+                Divider()
+                    .padding(.leading, Constants.dividerPadding)
+                TitleAndTextFieldRow(title: Localization.cityField,
+                                     placeholder: "",
+                                     text: $fields.city,
+                                     symbol: nil,
+                                     keyboardType: .default)
+                Divider()
+                    .padding(.leading, Constants.dividerPadding)
+                TitleAndTextFieldRow(title: Localization.postcodeField,
+                                     placeholder: "",
+                                     text: $fields.postcode,
+                                     symbol: nil,
+                                     keyboardType: .default)
+                Divider()
+                    .padding(.leading, Constants.dividerPadding)
+            }
+
+            Group {
+                // Go to edit country
+                LazyNavigationLink(destination: FilterListSelector(viewModel: countryViewModelClosure()), isActive: $showCountrySelector) {
+                    EmptyView()
+                }
+
+                // Go to edit state
+                LazyNavigationLink(destination: FilterListSelector(viewModel: stateViewModelClosure()), isActive: $showStateSelector) {
+                    EmptyView()
+                }
+
+                TitleAndValueRow(title: Localization.countryField,
+                                 value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.country),
+                                 selectable: true) {
+                    showCountrySelector = true
+                }
+                Divider()
+                    .padding(.leading, Constants.dividerPadding)
+                stateRow()
+            }
+        }
+        .padding(.horizontal, insets: safeAreaInsets)
+        .background(Color(.systemBackground))
+    }
 
     /// Decides if the state row should be rendered as a list selector field or as a text input field.
     ///
     @ViewBuilder private func stateRow() -> some View {
-        if viewModel.showStateFieldAsSelector {
+        if showStateFieldAsSelector {
             TitleAndValueRow(title: Localization.stateField,
-                             value: .init(placeHolder: Localization.placeholderSelectOption, content: viewModel.fields.state),
+                             value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.state),
                              selectable: true) {
                 showStateSelector = true
             }
         } else {
             TitleAndTextFieldRow(title: Localization.stateField,
                                  placeholder: "",
-                                 text: $viewModel.fields.state,
+                                 text: $fields.state,
                                  symbol: nil,
                                  keyboardType: .default)
         }

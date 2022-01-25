@@ -6,6 +6,41 @@ import Combine
 ///
 final class SimplePaymentsSummaryViewModel: ObservableObject {
 
+    /// Wraps the `Order`'s tax breakup (`tax_lines`) information
+    ///
+    /// `Identifiable` conformance added for SwiftUI purpose
+    ///
+    struct TaxLine: Identifiable {
+        /// `taxID` of `OrderTaxLine`
+        ///
+        let id: Int64
+
+        /// Tax label appended with tax percentage
+        ///
+        let title: String
+
+        /// Tax amount
+        ///
+        let value: String
+
+        init(id: Int64,
+             title: String,
+             value: String) {
+            self.id = id
+            self.title = title
+            self.value = value
+        }
+
+        /// For initializing TaxLine from `OrderTaxLine`
+        ///
+        init(orderTaxLine: OrderTaxLine,
+             currencyFormatter: CurrencyFormatter) {
+            id = orderTaxLine.taxID
+            title = "\(orderTaxLine.label) (\(orderTaxLine.ratePercent)%)"
+            value = currencyFormatter.formatAmount(orderTaxLine.totalTax) ?? orderTaxLine.totalTax
+        }
+    }
+
     /// Initial amount to charge. Without taxes.
     ///
     let providedAmount: String

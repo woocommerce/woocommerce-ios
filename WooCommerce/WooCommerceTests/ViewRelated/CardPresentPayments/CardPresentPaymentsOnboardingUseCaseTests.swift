@@ -64,7 +64,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     // MARK: - Plugin checks
 
-    func test_onboarding_returns_wcpay_not_installed_when_wcpay_plugin_not_installed() {
+    func test_onboarding_returns_plugin_not_installed_when_neither_wcpay_nor_stripe_plugin_installed() {
         // Given
         setupCountry(country: .us)
 

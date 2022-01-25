@@ -103,7 +103,10 @@ struct TitleAndValueRow_Previews: PreviewProvider {
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("Row Not Selectable")
 
-        TitleAndValueRow(title: "This is a really long title which will take multiple lines", value: .placeholder("This is a really long value which will take multiple lines"), selectable: false, action: { })
+        TitleAndValueRow(title: "This is a really long title which will take multiple lines",
+                         value: .placeholder("This is a really long value which will take multiple lines"),
+                         selectable: false,
+                         action: { })
             .previewLayout(.fixed(width: 375, height: 150))
             .previewDisplayName("Long title and value")
 

@@ -11,8 +11,10 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
     func test_updating_noteViewModel_updates_noteContent_property() {
         // Given
-        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "$100.00", totalWithTaxes: "$104.30", taxAmount: "$4.3")
-
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "$100.00",
+                                                       totalWithTaxes: "$104.30",
+                                                       taxAmount: "$4.3",
+                                                       taxLines: [])
         // When
         viewModel.noteViewModel.newNote = "Updated note"
 
@@ -22,8 +24,10 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
     func test_calling_reloadContent_triggers_viewModel_update() {
         // Given
-        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "$100.00", totalWithTaxes: "$104.30", taxAmount: "$4.3")
-
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "$100.00",
+                                                       totalWithTaxes: "$104.30",
+                                                       taxAmount: "$4.3",
+                                                       taxLines: [])
         // When
         let triggeredUpdate: Bool = waitFor { promise in
             viewModel.objectWillChange.sink {
@@ -56,6 +60,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100",
                                                        totalWithTaxes: "104.30",
                                                        taxAmount: "$4.3",
+                                                       taxLines: [],
                                                        currencyFormatter: currencyFormatter,
                                                        stores: mockStores)
 
@@ -67,8 +72,11 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
     func test_provided_amount_with_taxes_gets_properly_formatted() {
         // Given
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US.
-        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100", totalWithTaxes: "104.30", taxAmount: "$4.3", currencyFormatter: currencyFormatter)
-
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100",
+                                                       totalWithTaxes: "104.30",
+                                                       taxAmount: "$4.3",
+                                                       taxLines: [],
+                                                       currencyFormatter: currencyFormatter)
         // When
         viewModel.enableTaxes = true
 
@@ -80,8 +88,11 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
     func test_tax_amount_is_properly_formatted() {
         // Given
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US.
-        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100", totalWithTaxes: "104.30", taxAmount: "4.3", currencyFormatter: currencyFormatter)
-
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100",
+                                                       totalWithTaxes: "104.30",
+                                                       taxAmount: "4.3",
+                                                       taxLines: [],
+                                                       currencyFormatter: currencyFormatter)
         // When & Then
         XCTAssertEqual(viewModel.taxAmount, "$4.30")
     }
@@ -89,8 +100,11 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
     func test_tax_rate_is_calculated_properly() {
         // Given
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US.
-        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100", totalWithTaxes: "104.30", taxAmount: "$4.3", currencyFormatter: currencyFormatter)
-
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100",
+                                                       totalWithTaxes: "104.30",
+                                                       taxAmount: "$4.3",
+                                                       taxLines: [],
+                                                       currencyFormatter: currencyFormatter)
         // When & Then
         XCTAssertEqual(viewModel.taxRate, "4.30")
     }
@@ -98,7 +112,11 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
     func test_when_order_is_updated_loading_indicator_is_toggled() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
+                                                       totalWithTaxes: "1.0",
+                                                       taxAmount: "0.0",
+                                                       taxLines: [],
+                                                       stores: mockStores)
         mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, onCompletion):
@@ -132,6 +150,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
                                                        totalWithTaxes: "1.0",
                                                        taxAmount: "0.0",
+                                                       taxLines: [],
                                                        presentNoticeSubject: noticeSubject,
                                                        stores: mockStores)
         mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -164,7 +183,11 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
     func test_when_order_is_updated_navigation_to_payments_method_is_triggered() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
+                                                       totalWithTaxes: "1.0",
+                                                       taxAmount: "0.0",
+                                                       taxLines: [],
+                                                       stores: mockStores)
         mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, onCompletion):
@@ -185,7 +208,11 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
     func test_when_order_is_updated_email_is_trimmed() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
+                                                       totalWithTaxes: "1.0",
+                                                       taxAmount: "0.0",
+                                                       taxLines: [],
+                                                       stores: mockStores)
         viewModel.email = " some@email.com "
 
         // When
@@ -209,7 +236,11 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
     func test_empty_emails_are_send_as_nil_when_updating_orders() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
+                                                       totalWithTaxes: "1.0",
+                                                       taxAmount: "0.0",
+                                                       taxLines: [],
+                                                       stores: mockStores)
         viewModel.email = ""
 
         // When
@@ -247,6 +278,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
                                                        totalWithTaxes: "1.0",
                                                        taxAmount: "0.0",
+                                                       taxLines: [],
                                                        stores: mockStores,
                                                        analytics: WooAnalytics(analyticsProvider: mockAnalytics))
 
@@ -279,6 +311,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
                                                        totalWithTaxes: "1.0",
                                                        taxAmount: "0.0",
+                                                       taxLines: [],
                                                        stores: mockStores,
                                                        analytics: WooAnalytics(analyticsProvider: mockAnalytics))
 
@@ -315,6 +348,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
                                                        totalWithTaxes: "1.0",
                                                        taxAmount: "0.0",
+                                                       taxLines: [],
                                                        stores: mockStores,
                                                        analytics: WooAnalytics(analyticsProvider: mockAnalytics))
 
@@ -341,7 +375,11 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
+                                                       totalWithTaxes: "1.0",
+                                                       taxAmount: "0.0",
+                                                       taxLines: [],
+                                                       stores: mockStores)
 
         // Then
         XCTAssertTrue(viewModel.enableTaxes)
@@ -350,8 +388,11 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
     func test_taxes_toggle_state_is_stored_after_toggling_taxes() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
-
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
+                                                       totalWithTaxes: "1.0",
+                                                       taxAmount: "0.0",
+                                                       taxLines: [],
+                                                       stores: mockStores)
         // When
         let stateStored: Bool = waitFor { promise in
             mockStores.whenReceivingAction(ofType: AppSettingsAction.self) { action in

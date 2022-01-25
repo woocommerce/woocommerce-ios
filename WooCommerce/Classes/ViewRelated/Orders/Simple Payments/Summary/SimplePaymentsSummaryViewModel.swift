@@ -49,6 +49,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     let taxRate: String
 
+    /// Store tax lines.
+    ///
+    let taxLines: [TaxLine]
+
     /// Tax amount to charge.
     ///
     let taxAmount: String
@@ -135,6 +139,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     init(providedAmount: String,
          totalWithTaxes: String,
          taxAmount: String,
+         taxLines: [TaxLine],
          noteContent: String? = nil,
          siteID: Int64 = 0,
          orderID: Int64 = 0,
@@ -155,6 +160,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         self.providedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
         self.totalWithTaxes = currencyFormatter.formatAmount(totalWithTaxes) ?? totalWithTaxes
         self.taxAmount = currencyFormatter.formatAmount(taxAmount) ?? taxAmount
+        self.taxLines = taxLines
 
         // rate_percentage = taxAmount / providedAmount * 100
         self.taxRate = {
@@ -194,6 +200,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         self.init(providedAmount: providedAmount,
                   totalWithTaxes: order.total,
                   taxAmount: order.totalTax,
+                  taxLines: taxLines,
                   siteID: order.siteID,
                   orderID: order.orderID,
                   orderKey: order.orderKey,

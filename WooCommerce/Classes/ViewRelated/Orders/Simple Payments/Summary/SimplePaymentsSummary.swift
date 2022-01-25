@@ -339,25 +339,32 @@ private extension SimplePaymentsSummary {
 // MARK: Previews
 struct SimplePaymentsSummary_Preview: PreviewProvider {
     static var previews: some View {
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "40.0", totalWithTaxes: "$42.3", taxAmount: "$2.3"))
+        SimplePaymentsSummary(viewModel: createSampleViewModel())
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light")
 
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(
-            providedAmount: "$40.0",
-            totalWithTaxes: "$42.3",
-            taxAmount: "$2.3",
-            noteContent: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard."
-        ))
+        SimplePaymentsSummary(viewModel: createSampleViewModel(noteContent: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard."))
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light Content")
 
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0", totalWithTaxes: "$42.3", taxAmount: "$2.3"))
+        SimplePaymentsSummary(viewModel: createSampleViewModel())
             .environment(\.colorScheme, .dark)
             .previewDisplayName("Dark")
 
-        SimplePaymentsSummary(viewModel: SimplePaymentsSummaryViewModel(providedAmount: "$40.0", totalWithTaxes: "$42.3", taxAmount: "$2.3"))
+        SimplePaymentsSummary(viewModel: createSampleViewModel())
             .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
             .previewDisplayName("Accessibility")
+    }
+
+    static private func createSampleViewModel(noteContent: String? = nil) -> SimplePaymentsSummaryViewModel {
+        let taxAmount = "$2.3"
+        let taxLine: SimplePaymentsSummaryViewModel.TaxLine = .init(id: Int64.random(in: 0 ..< Int64.max),
+                                                                    title: "State Tax (5.55%)",
+                                                                    value: taxAmount)
+        return .init(providedAmount: "40.0",
+                     totalWithTaxes: "$42.3",
+                     taxAmount: taxAmount,
+                     taxLines: [taxLine],
+                     noteContent: noteContent)
     }
 }

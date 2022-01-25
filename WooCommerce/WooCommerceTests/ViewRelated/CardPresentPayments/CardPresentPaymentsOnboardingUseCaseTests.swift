@@ -255,6 +255,19 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .genericError)
     }
 
+    func test_onboarding_returns_generic_error_with_no_account_for_stripe_plugin() {
+        // Given
+        setupCountry(country: .us)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .genericError)
+    }
+
     func test_onboarding_returns_generic_error_when_account_is_not_eligible_for_wcplay_plugin() {
         // Given
         setupCountry(country: .us)

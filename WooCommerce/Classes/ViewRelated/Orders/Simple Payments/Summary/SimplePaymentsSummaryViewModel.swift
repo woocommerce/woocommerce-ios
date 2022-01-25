@@ -184,6 +184,13 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                      presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      stores: StoresManager = ServiceLocator.stores) {
+
+        // Generate `TaxLine`s to represent `taxes` inside `View`.
+        let taxLines = order.taxes.map({
+            TaxLine(orderTaxLine: $0,
+                    currencyFormatter: currencyFormatter)
+        })
+
         self.init(providedAmount: providedAmount,
                   totalWithTaxes: order.total,
                   taxAmount: order.totalTax,

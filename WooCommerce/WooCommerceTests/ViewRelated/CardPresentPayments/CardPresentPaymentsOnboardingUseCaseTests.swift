@@ -130,6 +130,19 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .pluginUnsupportedVersion(plugin: .wcPay))
     }
 
+    func test_onboarding_returns_stripe_plugin_unsupported_version_when_stripe_outdated() {
+        // Given
+        setupCountry(country: .us)
+        setupStripePlugin(status: .active, version: StripePluginVersion.unsupportedVersion)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .pluginUnsupportedVersion(plugin: .stripe))
+    }
+
     func test_onboarding_returns_wcpay_in_test_mode_with_live_stripe_account_when_live_account_in_test_mode() {
         // Given
         setupCountry(country: .us)
@@ -489,6 +502,7 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
 
     enum StripePluginVersion: String {
         case minimumSupportedVersion = "5.9.0" // Should match `CardPresentPaymentsOnboardingState` `minimumSupportedPluginVersion`
+        case unsupportedVersion = "5.8.1"
     }
 
 }

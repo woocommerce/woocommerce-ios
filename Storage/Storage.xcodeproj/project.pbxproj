@@ -199,6 +199,8 @@
 		D8FBFF5822D66A06006E3336 /* OrderStatsV4Totals+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF5222D66A06006E3336 /* OrderStatsV4Totals+CoreDataProperties.swift */; };
 		D8FBFF5922D66A06006E3336 /* OrderStatsV4+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF5322D66A06006E3336 /* OrderStatsV4+CoreDataClass.swift */; };
 		D8FBFF5A22D66A06006E3336 /* OrderStatsV4+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF5422D66A06006E3336 /* OrderStatsV4+CoreDataProperties.swift */; };
+		DE00132E279FDC2200EB0350 /* CouponSearchResults+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE00132B279FDC2200EB0350 /* CouponSearchResults+CoreDataClass.swift */; };
+		DE001330279FDC2200EB0350 /* CouponSearchResults+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE00132C279FDC2200EB0350 /* CouponSearchResults+CoreDataProperties.swift */; };
 		DE26B5262775C5F000A2EA0A /* Coupon+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE26B5242775C5F000A2EA0A /* Coupon+CoreDataClass.swift */; };
 		DE26B5272775C5F000A2EA0A /* Coupon+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE26B5252775C5F000A2EA0A /* Coupon+CoreDataProperties.swift */; };
 		DEC51AE0275B41BE009F3DF4 /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */; };
@@ -431,6 +433,8 @@
 		D8FBFF5322D66A06006E3336 /* OrderStatsV4+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D8FBFF5422D66A06006E3336 /* OrderStatsV4+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DE001324279FD7D900EB0350 /* Model 62.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 62.xcdatamodel"; sourceTree = "<group>"; };
+		DE00132B279FDC2200EB0350 /* CouponSearchResults+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CouponSearchResults+CoreDataClass.swift"; path = "/Users/huongdo/Developer/GitHub/woocommerce-ios/Storage/Storage/Model/CouponSearchResults+CoreDataClass.swift"; sourceTree = "<absolute>"; };
+		DE00132C279FDC2200EB0350 /* CouponSearchResults+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CouponSearchResults+CoreDataProperties.swift"; path = "/Users/huongdo/Developer/GitHub/woocommerce-ios/Storage/Storage/Model/CouponSearchResults+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		DE26B5242775C5F000A2EA0A /* Coupon+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Coupon+CoreDataClass.swift"; sourceTree = "<group>"; };
 		DE26B5252775C5F000A2EA0A /* Coupon+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Coupon+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DE26B52A2775C8DC00A2EA0A /* Model 60.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 60.xcdatamodel"; sourceTree = "<group>"; };
@@ -809,6 +813,8 @@
 				45E462052684BCEE00011BF2 /* Country+CoreDataProperties.swift */,
 				DE26B5242775C5F000A2EA0A /* Coupon+CoreDataClass.swift */,
 				DE26B5252775C5F000A2EA0A /* Coupon+CoreDataProperties.swift */,
+				DE00132B279FDC2200EB0350 /* CouponSearchResults+CoreDataClass.swift */,
+				DE00132C279FDC2200EB0350 /* CouponSearchResults+CoreDataProperties.swift */,
 				45E462042684BCEE00011BF2 /* StateOfACountry+CoreDataClass.swift */,
 				45E462032684BCEE00011BF2 /* StateOfACountry+CoreDataProperties.swift */,
 				74F009BE2183B99B002B4566 /* Note+CoreDataClass.swift */,
@@ -1172,6 +1178,7 @@
 				B54CA5BD20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift in Sources */,
 				455C0C9125DD6D93007B6F38 /* AccountSettings+CoreDataProperties.swift in Sources */,
 				933A27302222344D00C2143A /* Logging.swift in Sources */,
+				DE001330279FDC2200EB0350 /* CouponSearchResults+CoreDataProperties.swift in Sources */,
 				747453A52242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataClass.swift in Sources */,
 				5772841F25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift in Sources */,
 				02EAB6D72480A86D00FD873C /* CrashLogger.swift in Sources */,
@@ -1261,6 +1268,7 @@
 				CC2C030B262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataClass.swift in Sources */,
 				7499FA44221C7A60004EC0B4 /* ShipmentTracking+CoreDataClass.swift in Sources */,
 				D87F61532265AA230031A13B /* FileStorage.swift in Sources */,
+				DE00132E279FDC2200EB0350 /* CouponSearchResults+CoreDataClass.swift in Sources */,
 				CE4FD4482350EB7600A16B31 /* OrderItemRefund+CoreDataProperties.swift in Sources */,
 				D8FBFF5622D66A06006E3336 /* OrderStatsV4Interval+CoreDataProperties.swift in Sources */,
 				261CF1C4255B291F0090D8D3 /* PaymentGateway+CoreDataClass.swift in Sources */,

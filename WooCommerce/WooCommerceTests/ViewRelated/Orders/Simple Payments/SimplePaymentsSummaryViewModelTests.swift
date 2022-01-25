@@ -133,6 +133,84 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.showTaxBreakup)
     }
 
+    func test_taxLines_has_a_zero_TaxLine_value_when_Order_does_not_have_taxes() {
+        // Given
+        let order = Order.fake().copy(taxes: [])
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US.
+        let viewModel = SimplePaymentsSummaryViewModel(order: order,
+                                                       providedAmount: "100",
+                                                       currencyFormatter: currencyFormatter)
+
+        // Then
+        XCTAssertTrue(viewModel.taxLines.count == 1)
+
+        let title = "\(NSLocalizedString("Tax", comment: "")) (0.00%)"
+        XCTAssertEqual(viewModel.taxLines[0].title, title)
+
+        XCTAssertEqual(viewModel.taxLines[0].value, "$0.00")
+    }
+
+    func test_taxLines_is_not_empty_when_Order_has_taxes() {
+        // Given
+        let order = Order.fake().copy(taxes: [OrderTaxLine.fake()])
+        let viewModel = SimplePaymentsSummaryViewModel(order: order,
+                                                       providedAmount: "100")
+
+        // Then
+        XCTAssertFalse(viewModel.taxLines.isEmpty)
+    }
+
+    func test_taxLines_count_matches_taxes_count() {
+        // Given
+        let order = Order.fake().copy(taxes: [OrderTaxLine.fake(), OrderTaxLine.fake()])
+        let viewModel = SimplePaymentsSummaryViewModel(order: order,
+                                                       providedAmount: "100")
+
+        // Then
+        XCTAssertEqual(viewModel.taxLines.count, order.taxes.count)
+    }
+
+    /// Test that generated `taxLines` are in the same order as `Order`'s `taxes`
+    ///
+    func test_taxLines_order_matches_taxes_order() {
+        // Given
+        let order = Order.fake().copy(taxes: [OrderTaxLine.fake().copy(taxID: 1),
+                                              OrderTaxLine.fake().copy(taxID: 2),
+                                              OrderTaxLine.fake().copy(taxID: 3)])
+        let viewModel = SimplePaymentsSummaryViewModel(order: order,
+                                                       providedAmount: "100")
+
+        // Then
+        XCTAssertEqual(viewModel.taxLines[0].id, order.taxes[0].taxID)
+        XCTAssertEqual(viewModel.taxLines[1].id, order.taxes[1].taxID)
+        XCTAssertEqual(viewModel.taxLines[2].id, order.taxes[2].taxID)
+    }
+
+    func test_taxLine_title_matches_values_of_tax() {
+        // Given
+        let order = Order.fake().copy(taxes: [OrderTaxLine.fake().copy(taxID: 1,
+                                                                       label: "State",
+                                                                       ratePercent: 4.5)])
+        let viewModel = SimplePaymentsSummaryViewModel(order: order,
+                                                       providedAmount: "100")
+
+        // Then
+        let title = "\(order.taxes[0].label) (\(order.taxes[0].ratePercent)%)"
+        XCTAssertEqual(viewModel.taxLines[0].title, title)
+    }
+
+    func test_taxLine_value_matches_totalTax_of_tax() {
+        // Given
+        let order = Order.fake().copy(taxes: [OrderTaxLine.fake().copy(totalTax: "4.30")])
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US.
+        let viewModel = SimplePaymentsSummaryViewModel(order: order,
+                                                       providedAmount: "100",
+                                                       currencyFormatter: currencyFormatter)
+
+        // Then
+        XCTAssertEqual(viewModel.taxLines[0].value, "$4.30")
+    }
+
     func test_when_order_is_updated_loading_indicator_is_toggled() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)

@@ -35,6 +35,18 @@ extension Coupon {
 
 }
 
-extension Coupon: Identifiable {
+extension Coupon {
+
+    @objc(addSearchResultsObject:)
+    @NSManaged public func addToSearchResults(_ value: CouponSearchResults)
+
+    @objc(removeSearchResultsObject:)
+    @NSManaged public func removeFromSearchResults(_ value: CouponSearchResults)
+
+    @objc(addSearchResults:)
+    @NSManaged public func addToSearchResults(_ values: NSSet)
+
+    @objc(removeSearchResults:)
+    @NSManaged public func removeFromSearchResults(_ values: NSSet)
 
 }

@@ -173,7 +173,15 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         self.providedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
         self.totalWithTaxes = currencyFormatter.formatAmount(totalWithTaxes) ?? totalWithTaxes
         self.taxAmount = currencyFormatter.formatAmount(taxAmount) ?? taxAmount
-        self.taxLines = taxLines
+
+        if taxLines.isNotEmpty {
+            self.taxLines = taxLines
+        } else {
+            // Create a `TaxLine` with zero values to represent that there are no taxes configured in `wp-admin`.
+            self.taxLines = [TaxLine(id: 0,
+                                     title: "\(Localization.tax) (0.00%)",
+                                     value: currencyFormatter.formatAmount(Decimal.zero) ?? "\(Decimal.zero)")]
+        }
 
         // rate_percentage = taxAmount / providedAmount * 100
         self.taxRate = {
@@ -301,5 +309,8 @@ private extension SimplePaymentsSummaryViewModel {
     enum Localization {
         static let updateError = NSLocalizedString("There was an error updating the order",
                                                    comment: "Notice text after failing to update a simple payments order.")
+        static let tax = NSLocalizedString("Tax",
+                                             comment: "Tax label for the tax detail row.")
+
     }
 }

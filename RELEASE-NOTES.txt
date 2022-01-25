@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+8.5
+-----
+
+
 8.4
 -----
 - [***] In-Person Payments: Support for Stripe M2 card reader. [https://github.com/woocommerce/woocommerce-ios/pull/5844]

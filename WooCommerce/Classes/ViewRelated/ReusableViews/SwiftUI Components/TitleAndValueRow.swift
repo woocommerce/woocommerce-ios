@@ -18,8 +18,11 @@ struct TitleAndValueRow: View {
                 AdaptiveStack(horizontalAlignment: .leading) {
                     Text(title)
                         .style(bold: bold)
+                        .multilineTextAlignment(.leading)
+
                     Text(value.text)
                         .style(for: value, bold: bold)
+                        .multilineTextAlignment(.trailing)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .padding(.vertical, Constants.verticalPadding)
                 }

@@ -109,6 +109,30 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.taxRate, "4.30")
     }
 
+    func test_showTaxBreakup_is_false_if_taxLinesInSimplePayments_feature_flag_is_off() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isTaxLinesInSimplePaymentsOn: false)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100",
+                                                       totalWithTaxes: "104.30",
+                                                       taxAmount: "$4.3",
+                                                       taxLines: [],
+                                                       featureFlagService: featureFlagService)
+        // Then
+        XCTAssertFalse(viewModel.showTaxBreakup)
+    }
+
+    func test_showTaxBreakup_is_true_if_taxLinesInSimplePayments_feature_flag_is_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isTaxLinesInSimplePaymentsOn: true)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100",
+                                                       totalWithTaxes: "104.30",
+                                                       taxAmount: "$4.3",
+                                                       taxLines: [],
+                                                       featureFlagService: featureFlagService)
+        // Then
+        XCTAssertTrue(viewModel.showTaxBreakup)
+    }
+
     func test_when_order_is_updated_loading_indicator_is_toggled() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)

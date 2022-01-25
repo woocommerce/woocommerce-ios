@@ -256,7 +256,7 @@ private extension StoreStatsPeriodViewModel {
         guard revenueItems.contains(where: { $0 != 0 }) else {
             return Constants.yAxisMaximumValueWithoutRevenue
         }
-        let hasNegativeRevenueOnly = orderStatsData.intervals.map { $0.revenueValue }.contains(where: { $0 > 0 }) == false
+        let hasNegativeRevenueOnly = revenueItems.contains(where: { $0 > 0 }) == false
         guard hasNegativeRevenueOnly == false else {
             return 0
         }

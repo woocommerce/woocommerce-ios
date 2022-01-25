@@ -1,5 +1,5 @@
-Merchants have been asking us for a quick way to record a transaction in the app with minimal information – like with only a charge amount. Maybe you’re at a farmer’s market and simply want to charge a customer’s credit card and don’t need to manage inventory. This release includes a new “Simple Payments” feature on the orders tab. If you’re a WooCommerce Payments customer, you’ll find this works great with the In-Person Payments credit card reader! Don’t have a credit card reader yet? Alternatively, you easily send a payment link to your customer to pay with their device through your site.
+- [***] In-Person Payments: Support for Stripe M2 card reader. [https://github.com/woocommerce/woocommerce-ios/pull/5844]
+- [***] We introduced a new tab called "Menu", a tab in the main navigation where you can browser different sub-sections of the app: Switch Store, Settings, WooCommerce Admin, View Store and Reviews. [https://github.com/woocommerce/woocommerce-ios/pull/5926]
+- [***] Store admins can now access sites with plugins that have Jetpack Connection Package (e.g. WooCommerce Payments, Jetpack Backup) in the app. These sites do not require Jetpack-the-plugin to connect anymore. Store admins can still install Jetpack-the-plugin from the app through settings or a Jetpack banner. [https://github.com/woocommerce/woocommerce-ios/pull/5924]
+- [*] Add/Edit Product screen: Fix transient product name while adding images.[https://github.com/woocommerce/woocommerce-ios/pull/5840]
 
-Also included in this release is the ability to refund fees on an order. We also snuck in an experimental SKU input barcode reader when editing a product which can be enabled in Settings.
-
-We’re working on several exciting features coming in the next few months. Keep sending us your feedback!

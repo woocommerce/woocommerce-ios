@@ -240,6 +240,25 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed)
     }
 
+    func test_onboarding_returns_complete_when_stripe_plugin_is_used_with_an_account_meeting_requirements() {
+        // Given
+        setupCountry(country: .us)
+        setupStripePlugin(status: .networkActive, version: StripePluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(status: .complete,
+                                   hasPendingRequirements: false,
+                                   hasOverdueRequirements: false,
+                                   isLive: true,
+                                   isInTestMode: false)
+
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .completed)
+    }
+
     // MARK: - Payment Account checks
 
     func test_onboarding_returns_generic_error_with_no_account_for_wcplay_plugin() {

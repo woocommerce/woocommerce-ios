@@ -148,7 +148,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
-        configureBarChart()
+        configureChart()
         configureNoRevenueView()
         observeStatsLabels()
         observeSelectedBarIndex()
@@ -346,7 +346,7 @@ private extension StoreStatsV4PeriodViewController {
         noRevenueLabel.textColor = .text
     }
 
-    func configureBarChart() {
+    func configureChart() {
         lineChartView.marker = StoreStatsChartCircleMarker()
         lineChartView.chartDescription?.enabled = false
         lineChartView.dragXEnabled = true
@@ -364,6 +364,7 @@ private extension StoreStatsV4PeriodViewController {
 
         let xAxis = lineChartView.xAxis
         xAxis.labelPosition = .bottom
+        xAxis.yOffset = 8
         xAxis.labelFont = StyleManager.chartLabelFont
         xAxis.labelTextColor = .textSubtle
         xAxis.axisLineColor = .systemColor(.separator)
@@ -387,7 +388,7 @@ private extension StoreStatsV4PeriodViewController {
         yAxis.drawAxisLineEnabled = false
         yAxis.drawZeroLineEnabled = true
         yAxis.valueFormatter = self
-        yAxis.setLabelCount(3, force: true)
+        yAxis.setLabelCount(3, force: false)
     }
 }
 
@@ -454,6 +455,9 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
             if value == 0.0 {
                 // Do not show the "0" label on the Y axis
                 return ""
+            } else if hasRevenue() == false {
+                // Extra spaces are necessary so that the first x-axis label is not truncated.
+                return "   "
             } else {
                 return CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
                                     .formatCurrency(using: value.humanReadableString(),
@@ -667,7 +671,7 @@ private extension StoreStatsV4PeriodViewController {
         static let chartXAxisGranularity: Double        = 1.0
 
         static var chartLineColor: UIColor {
-            UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
+            UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade50),
                     dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
         }
         static let chartHighlightLineColor: UIColor = .accent

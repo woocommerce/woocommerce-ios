@@ -111,7 +111,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         insertOrderStats(orderStats, timeRange: timeRange)
 
         // Then
-        XCTAssertEqual(conversionStatsTextValues, ["-", "20.0%"]) // order count: 3, visitor count: 15 => 0.2 (20%)
+        XCTAssertEqual(conversionStatsTextValues, ["-", "20%"]) // order count: 3, visitor count: 15 => 0.2 (20%)
     }
 
     func test_placeholder_conversionStatsText_is_emitted_when_visitor_count_is_zero() {
@@ -135,7 +135,55 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         insertOrderStats(orderStats, timeRange: timeRange)
 
         // Then
-        XCTAssertEqual(conversionStatsTextValues, ["-", "0.0%"])
+        XCTAssertEqual(conversionStatsTextValues, ["-", "0%"])
+    }
+
+    func test_conversionStatsText_shows_one_decimal_point_when_percentage_value_has_two_decimal_points() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        observeStatsEmittedValues(viewModel: viewModel)
+
+        // When
+        let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(siteID: siteID, items: [
+            .fake().copy(visitors: 10000)
+        ])
+        insertSiteVisitStats(siteVisitStats, timeRange: timeRange)
+
+        XCTAssertEqual(conversionStatsTextValues, ["-"])
+
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3557, grossRevenue: 62.7),
+                                      intervals: [.fake()])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        // Then
+        XCTAssertEqual(conversionStatsTextValues, ["-", "35.6%"]) // order count: 3557, visitor count: 10000 => 0.3557 (35.57%)
+    }
+
+    func test_conversionStatsText_shows_no_decimal_point_when_percentage_value_is_integer() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        observeStatsEmittedValues(viewModel: viewModel)
+
+        // When
+        let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(siteID: siteID, items: [
+            .fake().copy(visitors: 10)
+        ])
+        insertSiteVisitStats(siteVisitStats, timeRange: timeRange)
+
+        XCTAssertEqual(conversionStatsTextValues, ["-"])
+
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 62.7),
+                                      intervals: [.fake()])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        // Then
+        XCTAssertEqual(conversionStatsTextValues, ["-", "30%"]) // order count: 3, visitor count: 10 => 0.3 (30%)
     }
 
     // MARK: - Stats text values while selecting a time interval
@@ -224,7 +272,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         viewModel.selectedIntervalIndex = 0
 
         // Then
-        XCTAssertEqual(conversionStatsTextValues, ["-", "20.0%", "10.0%"])
+        XCTAssertEqual(conversionStatsTextValues, ["-", "20%", "10%"])
     }
 
     // MARK: `StatsTimeRangeBarViewModel`

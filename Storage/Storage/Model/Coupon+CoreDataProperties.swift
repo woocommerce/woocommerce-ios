@@ -38,10 +38,10 @@ extension Coupon {
 extension Coupon {
 
     @objc(addSearchResultsObject:)
-    @NSManaged public func addToSearchResults(_ value: CouponSearchResults)
+    @NSManaged public func addToSearchResults(_ value: CouponSearchResult)
 
     @objc(removeSearchResultsObject:)
-    @NSManaged public func removeFromSearchResults(_ value: CouponSearchResults)
+    @NSManaged public func removeFromSearchResults(_ value: CouponSearchResult)
 
     @objc(addSearchResults:)
     @NSManaged public func addToSearchResults(_ values: NSSet)

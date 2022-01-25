@@ -50,9 +50,9 @@
         <attribute name="usageLimit" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="usageLimitPerUser" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="usedBy" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
-        <relationship name="searchResults" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CouponSearchResults" inverseName="coupon" inverseEntity="CouponSearchResults"/>
+        <relationship name="searchResults" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CouponSearchResult" inverseName="coupon" inverseEntity="CouponSearchResult"/>
     </entity>
-    <entity name="CouponSearchResults" representedClassName="CouponSearchResults" syncable="YES">
+    <entity name="CouponSearchResult" representedClassName="CouponSearchResult" syncable="YES">
         <attribute name="keyword" optional="YES" attributeType="String"/>
         <relationship name="coupon" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Coupon" inverseName="searchResults" inverseEntity="Coupon"/>
     </entity>
@@ -730,6 +730,7 @@
         <element name="AddOnGroup" positionX="-684" positionY="54" width="128" height="104"/>
         <element name="Country" positionX="-702" positionY="36" width="128" height="74"/>
         <element name="Coupon" positionX="-693" positionY="45" width="128" height="404"/>
+        <element name="CouponSearchResult" positionX="-675" positionY="63" width="128" height="59"/>
         <element name="GenericAttribute" positionX="-684" positionY="45" width="128" height="89"/>
         <element name="Note" positionX="-369.61328125" positionY="-95.85546875" width="128" height="283"/>
         <element name="Order" positionX="-41.5859375" positionY="23.53125" width="128" height="824"/>
@@ -787,6 +788,5 @@
         <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="88"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="118"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="CouponSearchResults" positionX="-675" positionY="63" width="128" height="59"/>
     </elements>
 </model>

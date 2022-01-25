@@ -6,12 +6,12 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
 
     /// Address update callback
     ///
-    private let onAddressUpdate: ((Address) -> Void)?
+    private let onAddressUpdate: ((Address, Address) -> Void)?
 
     init(siteID: Int64,
-         onAddressUpdate: ((Address) -> Void)?,
          address1: Address?,
          address2: Address?,
+         onAddressUpdate: ((Address, Address) -> Void)?,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -59,7 +59,7 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
     }
 
     func saveAddress(onFinish: @escaping (Bool) -> Void) {
-        onAddressUpdate?(updatedAddress)
+        onAddressUpdate?(updatedAddress, updatedAddress)
         onFinish(true)
     }
 

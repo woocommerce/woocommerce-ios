@@ -9,15 +9,16 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
     private let onAddressUpdate: ((Address) -> Void)?
 
     init(siteID: Int64,
-         address: Address?,
          onAddressUpdate: ((Address) -> Void)?,
+         address1: Address?,
+         address2: Address?,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.onAddressUpdate = onAddressUpdate
 
         super.init(siteID: siteID,
-                   address: address ?? .empty,
+                   address: address1 ?? .empty,
                    storageManager: storageManager,
                    stores: stores,
                    analytics: analytics)

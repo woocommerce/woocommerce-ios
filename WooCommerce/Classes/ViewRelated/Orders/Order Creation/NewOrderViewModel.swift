@@ -141,8 +141,9 @@ final class NewOrderViewModel: ObservableObject {
     ///
     func createOrderAddressFormViewModel() -> CreateOrderAddressFormViewModel {
         CreateOrderAddressFormViewModel(siteID: siteID,
-                                        address: orderDetails.billingAddress,
                                         onAddressUpdate: { [weak self] updatedAddress in
+                                        address1: orderDetails.billingAddress,
+                                        address2: orderDetails.shippingAddress,
             self?.orderDetails.billingAddress = updatedAddress
             self?.orderDetails.shippingAddress = updatedAddress
         })

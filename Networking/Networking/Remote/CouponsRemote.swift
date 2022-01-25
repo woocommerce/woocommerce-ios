@@ -10,6 +10,12 @@ public protocol CouponsRemoteProtocol {
                         pageSize: Int,
                         completion: @escaping (Result<[Coupon], Error>) -> ())
 
+    func searchCoupons(for siteID: Int64,
+                       keyword: String,
+                       pageNumber: Int,
+                       pageSize: Int,
+                       completion: @escaping (Result<[Coupon], Error>) -> ())
+
     func deleteCoupon(for siteID: Int64,
                       couponID: Int64,
                       completion: @escaping (Result<Coupon, Error>) -> Void)
@@ -57,6 +63,27 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    public func searchCoupons(for siteID: Int64,
+                              keyword: String,
+                              pageNumber: Int,
+                              pageSize: Int,
+                              completion: @escaping (Result<[Coupon], Error>) -> ()) {
+        let parameters = [
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize),
+            ParameterKey.keyword: String(keyword)
+        ]
+
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.coupons,
+                                     parameters: parameters)
+
+        let mapper = CouponListMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
     // MARK: - Delete Coupon
 
     /// Deletes a `Coupon`.
@@ -185,5 +212,6 @@ public extension CouponsRemote {
         static let perPage = "per_page"
         static let force = "force"
         static let coupons = "coupons"
+        static let keyword = "search"
     }
 }

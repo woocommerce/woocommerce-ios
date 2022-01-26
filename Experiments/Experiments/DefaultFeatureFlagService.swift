@@ -41,6 +41,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .taxLinesInSimplePayments:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .inbox:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

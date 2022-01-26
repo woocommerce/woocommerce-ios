@@ -2,7 +2,7 @@ import XCTest
 
 @testable import Storage
 
-class StorageTypeExtensionsTests: XCTestCase {
+final class StorageTypeExtensionsTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 98765
 
@@ -1011,6 +1011,19 @@ class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(Set([coupon1, coupon2]), Set(storedCoupons))
+    }
+
+    func test_loadCouponSearchResult_by_keyword() throws {
+        // Given
+        let keyword = "test"
+        let searchResult = storage.insertNewObject(ofType: CouponSearchResult.self)
+        searchResult.keyword = keyword
+
+        // When
+        let storedSearchResult = try XCTUnwrap(storage.loadCouponSearchResult(keyword: keyword))
+
+        // Then
+        XCTAssertEqual(searchResult, storedSearchResult)
     }
 
     func test_loadShippingLabelAccountSettings_by_siteID() throws {

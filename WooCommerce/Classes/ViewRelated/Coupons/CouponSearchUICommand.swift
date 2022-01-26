@@ -36,7 +36,7 @@ final class CouponSearchUICommand: SearchUICommand {
         let action = CouponAction.searchCoupons(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize) { result in
 
             if case .failure(let error) = result {
-                DDLogError("☠️ Order Search Failure! \(error)")
+                DDLogError("☠️ Coupon Search Failure! \(error)")
             }
 
             onCompletion?(result.isSuccess)

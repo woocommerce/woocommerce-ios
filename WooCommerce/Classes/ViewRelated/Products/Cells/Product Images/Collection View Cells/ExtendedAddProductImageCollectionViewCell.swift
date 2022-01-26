@@ -32,6 +32,10 @@ private extension ExtendedAddProductImageCollectionViewCell {
         title.textAlignment = .center
         title.text = NSLocalizedString("Add a product image", comment: "Cell text in Add / Edit product when there are no images.")
     }
+
+    func configureForVariations() {
+        title.text = NSLocalizedString("Add a variation image", comment: "Cell text in Add / Edit variation when there are no images.")
+    }
 }
 
 /// Constants

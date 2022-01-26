@@ -1,3 +1,4 @@
+import Experiments
 import Foundation
 import Yosemite
 import Combine
@@ -13,16 +14,30 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     ///
     let title: String
 
+    /// Defines if the view should show a card payment method.
+    ///
+    @Published private(set) var showPayWithCardRow = false
+
     /// Defines if the view should show a loading indicator.
     /// Currently set while marking the order as complete
     ///
     @Published private(set) var showLoadingIndicator = false
+
+    /// Stores the payment link for the order.
+    ///
+    @Published private(set) var paymentLink: URL?
 
     /// Defines if the view should be disabled to prevent any further action.
     /// Useful to prevent any double tap while a network operation is being performed.
     ///
     var disableViewActions: Bool {
         showLoadingIndicator
+    }
+
+    /// Defines if the view should show a payment link payment method.
+    ///
+    var showPaymentLinkRow: Bool {
+        paymentLink != nil
     }
 
     /// Store's ID.
@@ -40,6 +55,10 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     /// Transmits notice presentation intents.
     ///
     private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
+
+    /// Observes the store's current CPP state.
+    ///
+    private let cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol
 
     /// Store manager to update order.
     ///
@@ -76,12 +95,14 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
 
     /// Retains the use-case so it can perform all of its async tasks.
     ///
-    private var collectPaymentsUseCase: CollectOrderPaymentUseCase?
+    private var collectPaymentsUseCase: CollectOrderPaymentProtocol?
 
     init(siteID: Int64 = 0,
          orderID: Int64 = 0,
+         orderKey: String = "",
          formattedTotal: String,
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
+         cppStoreStateObserver: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -89,10 +110,14 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
         self.orderID = orderID
         self.formattedTotal = formattedTotal
         self.presentNoticeSubject = presentNoticeSubject
+        self.cppStoreStateObserver = cppStoreStateObserver
         self.stores = stores
         self.storage = storage
         self.analytics = analytics
         self.title = Localization.title(total: formattedTotal)
+
+        bindStoreCPPState()
+        fetchPaymentLink(orderKey: orderKey)
     }
 
     /// Creates the info text when the merchant selects the cash payment method.
@@ -123,8 +148,11 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     }
 
     /// Starts the collect payment flow in the provided `rootViewController`
+    /// - parameter useCase: Assign a custom useCase object for testing purposes. If not provided `CollectOrderPaymentUseCase` will be used.
     ///
-    func collectPayment(on rootViewController: UIViewController?, onSuccess: @escaping () -> ()) {
+    func collectPayment(on rootViewController: UIViewController?,
+                        useCase: CollectOrderPaymentProtocol? = nil,
+                        onSuccess: @escaping () -> ()) {
         trackCollectIntention(method: .card)
 
         guard let rootViewController = rootViewController else {
@@ -142,12 +170,12 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
         }
 
-        collectPaymentsUseCase = CollectOrderPaymentUseCase(siteID: siteID,
-                                                            order: order,
-                                                            formattedAmount: formattedTotal,
-                                                            paymentGatewayAccount: paymentGateway,
-                                                            rootViewController: rootViewController)
-        collectPaymentsUseCase?.collectPayment(onCollect: { [weak self] result in
+        collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase(siteID: siteID,
+                                                                       order: order,
+                                                                       formattedAmount: formattedTotal,
+                                                                       paymentGatewayAccount: paymentGateway,
+                                                                       rootViewController: rootViewController)
+        collectPaymentsUseCase?.collectPayment(backButtonTitle: Localization.continueToOrders, onCollect: { [weak self] result in
             if result.isFailure {
                 self?.trackFlowFailed()
             }
@@ -171,10 +199,56 @@ final class SimplePaymentsMethodsViewModel: ObservableObject {
     func trackCollectByCash() {
         trackCollectIntention(method: .cash)
     }
+
+    func trackCollectByPaymentLink() {
+        trackCollectIntention(method: .paymentLink)
+    }
+
+    /// Perform the necesary tasks after a link is shared.
+    ///
+    func performLinkSharedTasks() {
+        presentNoticeSubject.send(.created)
+        trackFlowCompleted(method: .paymentLink)
+    }
 }
 
 // MARK: Helpers
 private extension SimplePaymentsMethodsViewModel {
+
+    /// Observes the store CPP state and update publish variables accordingly.
+    ///
+    func bindStoreCPPState() {
+        cppStoreStateObserver
+            .statePublisher
+            .map { $0 == .completed }
+            .removeDuplicates()
+            .assign(to: &$showPayWithCardRow)
+        cppStoreStateObserver.refresh()
+    }
+
+
+    /// Fetches and builds the order payment link based on the store settings.
+    ///
+    func fetchPaymentLink(orderKey: String) {
+        guard let storeURL = stores.sessionManager.defaultSite?.url else {
+            return DDLogError("⛔️ Couldn't find a valid store URL")
+        }
+
+        let action = SettingAction.getPaymentsPagePath(siteID: siteID) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success(let paymentPagePath):
+                let linkBuilder = PaymentLinkBuilder(host: storeURL, orderID: self.orderID, orderKey: orderKey, paymentPagePath: paymentPagePath)
+                self.paymentLink = URL(string: linkBuilder.build())
+
+            case .failure(let error):
+                DDLogError("⛔️ Error retrieving the payments page path: \(error.localizedDescription)")
+            }
+        }
+        stores.dispatch(action)
+    }
+
     /// Tracks the `simplePaymentsFlowCompleted` event.
     ///
     func trackFlowCompleted(method: WooAnalyticsEvent.SimplePayments.PaymentMethod) {
@@ -200,6 +274,8 @@ private extension SimplePaymentsMethodsViewModel {
                                                        comment: "Text when there is an error while marking the order as paid for simple payments.")
         static let genericCollectError = NSLocalizedString("There was an error while trying to collect the payment.",
                                                        comment: "Text when there is an unknown error while trying to collect payments")
+        static let continueToOrders = NSLocalizedString("Continue To Orders",
+                                                        comment: "Button to dismiss modal overlay and go back to the orders list after a sucessful payment")
 
         static func title(total: String) -> String {
             NSLocalizedString("Take Payment (\(total))", comment: "Navigation bar title for the Simple Payments Methods screens")

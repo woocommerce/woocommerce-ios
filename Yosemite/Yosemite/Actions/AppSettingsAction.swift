@@ -128,6 +128,22 @@ public enum AppSettingsAction: Action {
     ///
     case setOrderCreationFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
 
+    /// Loads the most recent state for the WooCommerce Stripe Payment Gateway extension In-Person Payments beta feature switch
+    ///
+    case loadStripeInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Sets the state for the WooCommerce Stripe Payment Gateway extension In-Person Payments beta feature switch
+    ///
+    case setStripeInPersonPaymentsSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Sets the state for the Product SKU Input Scanner beta feature switch.
+    ///
+    case setProductSKUInputScannerFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Loads the most recent state for the Product SKU Input Scanner beta feature switch
+    ///
+    case loadProductSKUInputScannerFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+
     /// Remember the given card reader (to support automatic reconnection)
     /// where `cardReaderID` is a String e.g. "CHB204909005931"
     ///
@@ -178,6 +194,14 @@ public enum AppSettingsAction: Action {
     /// Loads telemetry information - availability status and last reported time.
     ///
     case getTelemetryInfo(siteID: Int64, onCompletion: (Bool, Date?) -> Void)
+
+    /// Sets the last state of the simple payments taxes toggle for a provided store.
+    ///
+    case setSimplePaymentsTaxesToggleState(siteID: Int64, isOn: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Get the last state of the simple payments taxes toggle for a provided store.
+    ///
+    case getSimplePaymentsTaxesToggleState(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Clears all the products settings
     ///

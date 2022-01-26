@@ -37,6 +37,11 @@ public protocol StoresManager {
     ///
     func updateDefaultStore(storeID: Int64)
 
+    /// Updates the default site only in cases where a site's properties are updated (e.g. after installing & activating Jetpack-the-plugin).
+    /// The given site's site ID should match the default site ID, otherwise nothing is updated.
+    ///
+    func updateDefaultStore(_ site: Site)
+
     /// Indicates if the StoresManager is currently authenticated, or not.
     ///
     var isAuthenticated: Bool { get }

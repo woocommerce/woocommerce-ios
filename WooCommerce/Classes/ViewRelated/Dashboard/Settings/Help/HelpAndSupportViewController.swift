@@ -145,20 +145,18 @@ private extension HelpAndSupportViewController {
     }
 
     private func calculateRows() -> [Row] {
-        guard isPaymentsAvailable else {
-            return [.helpCenter,
-                    .contactSupport,
-                    .myTickets,
-                    .contactEmail,
-                    .applicationLog]
+        var rows: [Row] = [.helpCenter, .contactSupport]
+        if isPaymentsAvailable {
+            rows.append(.contactWCPaySupport)
         }
 
-        return [.helpCenter,
-                .contactSupport,
-                .contactWCPaySupport,
-                .myTickets,
-                .contactEmail,
-                .applicationLog]
+        rows.append(contentsOf: [.myTickets,
+                                 .contactEmail,
+                                 .applicationLog])
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.systemStatusReport) {
+            rows.append(.systemStatusReport)
+        }
+        return rows
     }
 
     /// Register table cells.
@@ -202,6 +200,8 @@ private extension HelpAndSupportViewController {
             configureMyContactEmail(cell: cell)
         case let cell as ValueOneTableViewCell where row == .applicationLog:
             configureApplicationLog(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .systemStatusReport:
+            configureSystemStatusReport(cell: cell)
         default:
             fatalError()
         }
@@ -267,6 +267,18 @@ private extension HelpAndSupportViewController {
         cell.detailTextLabel?.text = NSLocalizedString(
             "Advanced tool to review the app status",
             comment: "Cell subtitle explaining why you might want to navigate to view the application log."
+        )
+    }
+
+    /// System Status Report cell
+    ///
+    func configureSystemStatusReport(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("System Status Report", comment: "View system status report cell title on Help screen")
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "Various system information about your site",
+            comment: "Description of the system status report on Help screen"
         )
     }
 
@@ -361,6 +373,21 @@ private extension HelpAndSupportViewController {
         navigationController?.pushViewController(applicationLogVC, animated: true)
     }
 
+    /// System status report action
+    ///
+    func systemStatusReportWasPressed() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+        let controller = SystemStatusReportHostingController(siteID: siteID)
+        controller.hidesBottomBarWhenPushed = true
+        controller.setDismissAction { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
+        navigationController?.pushViewController(controller, animated: true)
+        ServiceLocator.analytics.track(.supportSSROpened)
+    }
+
     @objc func dismissWasPressed() {
         dismiss(animated: true, completion: nil)
     }
@@ -415,6 +442,8 @@ extension HelpAndSupportViewController: UITableViewDelegate {
             contactEmailWasPressed()
         case .applicationLog:
             applicationLogWasPressed()
+        case .systemStatusReport:
+            systemStatusReportWasPressed()
         }
     }
 }
@@ -439,6 +468,7 @@ private enum Row: CaseIterable {
     case myTickets
     case contactEmail
     case applicationLog
+    case systemStatusReport
 
     var type: UITableViewCell.Type {
         switch self {
@@ -453,6 +483,8 @@ private enum Row: CaseIterable {
         case .contactEmail:
             return ValueOneTableViewCell.self
         case .applicationLog:
+            return ValueOneTableViewCell.self
+        case .systemStatusReport:
             return ValueOneTableViewCell.self
         }
     }

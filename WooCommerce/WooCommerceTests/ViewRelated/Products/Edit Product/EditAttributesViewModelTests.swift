@@ -6,7 +6,7 @@ final class EditAttributesViewModelTests: XCTestCase {
 
     func test_done_button_is_visible_when_allowing_variation_creation() {
         // Given, Then
-        let viewModel = EditAttributesViewModel(product: .init(), allowVariationCreation: true)
+        let viewModel = EditAttributesViewModel(product: .fake(), allowVariationCreation: true)
 
         // Then
         XCTAssertTrue(viewModel.showDoneButton)
@@ -14,7 +14,7 @@ final class EditAttributesViewModelTests: XCTestCase {
 
     func test_done_button_is_not_visible_when_not_allowing_variation_creation() {
         // Given, Then
-        let viewModel = EditAttributesViewModel(product: .init(), allowVariationCreation: false)
+        let viewModel = EditAttributesViewModel(product: .fake(), allowVariationCreation: false)
 
         // Then
         XCTAssertFalse(viewModel.showDoneButton)
@@ -24,7 +24,7 @@ final class EditAttributesViewModelTests: XCTestCase {
         // Given
         let attribute = sampleAttribute(name: "attr", options: ["Option 1", "Option 2"])
         let attribute2 = sampleNonVariationAttribute(name: "attr-extra", options: ["Option X", "Option Y"])
-        let product = Product().copy(attributes: [attribute, attribute2])
+        let product = Product.fake().copy(attributes: [attribute, attribute2])
 
         // When
         let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: false)
@@ -42,8 +42,8 @@ final class EditAttributesViewModelTests: XCTestCase {
         let attribute = sampleAttribute(name: "attr", options: ["Option 1", "Option 2"])
         let attribute2 = sampleAttribute(name: "attr-2", options: ["Option 3", "Option 4"])
         let attribute3 = sampleNonVariationAttribute(name: "attr-extra", options: ["Option X", "Option Y"])
-        let product = Product().copy(attributes: [attribute])
-        let product2 = product.copy(attributes: [attribute, attribute2, attribute3])
+        let product = Product.fake().copy(attributes: [attribute])
+        let product2 = Product.fake().copy(attributes: [attribute, attribute2, attribute3])
 
         // When
         let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: false)
@@ -66,7 +66,7 @@ final class EditAttributesViewModelTests: XCTestCase {
         let attribute = sampleAttribute(name: "attr", options: ["Option 1", "Option 2"])
         let attribute2 = sampleAttribute(name: "attr-2", options: ["Option 3", "Option 4"])
         let attribute3 = sampleNonVariationAttribute(name: "attr-extra", options: ["Option X", "Option Y"])
-        let product = Product().copy(attributes: [attribute, attribute2, attribute3])
+        let product = Product.fake().copy(attributes: [attribute, attribute2, attribute3])
 
         // When
         let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: false)

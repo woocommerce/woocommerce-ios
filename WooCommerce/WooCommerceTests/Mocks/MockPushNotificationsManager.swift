@@ -1,23 +1,28 @@
-
+import Combine
 import Foundation
 import UIKit
 @testable import WooCommerce
 import Yosemite
-import Observables
 
 final class MockPushNotificationsManager: PushNotesManager {
 
-    var foregroundNotifications: Observable<PushNotification> {
-        foregroundNotificationsSubject
+    var foregroundNotifications: AnyPublisher<PushNotification, Never> {
+        foregroundNotificationsSubject.eraseToAnyPublisher()
     }
 
-    private let foregroundNotificationsSubject = PublishSubject<PushNotification>()
+    private let foregroundNotificationsSubject = PassthroughSubject<PushNotification, Never>()
 
-    var inactiveNotifications: Observable<PushNotification> {
-        inactiveNotificationsSubject
+    var foregroundNotificationsToView: AnyPublisher<PushNotification, Never> {
+        foregroundNotificationsToViewSubject.eraseToAnyPublisher()
     }
 
-    private let inactiveNotificationsSubject = PublishSubject<PushNotification>()
+    private let foregroundNotificationsToViewSubject = PassthroughSubject<PushNotification, Never>()
+
+    var inactiveNotifications: AnyPublisher<PushNotification, Never> {
+        inactiveNotificationsSubject.eraseToAnyPublisher()
+    }
+
+    private let inactiveNotificationsSubject = PassthroughSubject<PushNotification, Never>()
 
     func resetBadgeCount(type: Note.Kind) {
 
@@ -64,6 +69,13 @@ extension MockPushNotificationsManager {
     ///
     func sendForegroundNotification(_ notification: PushNotification) {
         foregroundNotificationsSubject.send(notification)
+    }
+
+    /// Send a `PushNotification` that will be emitted by the `foregroundNotificationsToView`
+    /// observable.
+    ///
+    func sendForegroundNotificationToView(_ notification: PushNotification) {
+        foregroundNotificationsToViewSubject.send(notification)
     }
 
     /// Send a `PushNotification` that will be emitted by the `inactiveNotifications`

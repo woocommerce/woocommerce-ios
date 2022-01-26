@@ -2,6 +2,15 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 61 (Release 8.4.0.0)
+- @selanthiraiyan 2022-01-13
+    - Added `OrderTaxLine` entity.
+    - Added `taxes` relationship from `Order` to `OrderTaxLine`.
+
+## Model 60 (Release 8.3.0.0)
+- @ecarrion 2021-12-22
+    - Added `OrderKey` attribute to `Order` entity.
+
 ## Model 59 (Release 8.2.0.0)
 - @jaclync 2021-11-30
     - Added `jetpackConnectionActivePlugins` attribute to `Site` entity.

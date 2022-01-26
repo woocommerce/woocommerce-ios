@@ -110,6 +110,25 @@ public extension StorageType {
         }
     }
 
+    // MARK: - Coupons
+
+    /// Deletes all of the stored Coupons for the provided siteID.
+    ///
+    func deleteCoupons(siteID: Int64) {
+        let coupons = loadAllCoupons(siteID: siteID)
+        for coupon in coupons {
+            deleteObject(coupon)
+        }
+    }
+
+    /// Deletes the stored Coupon with the given couponID for the provided siteID.
+    ///
+    func deleteCoupon(siteID: Int64, couponID: Int64) {
+        if let coupon = loadCoupon(siteID: siteID, couponID: couponID) {
+            deleteObject(coupon)
+        }
+    }
+
     /// Deletes all of the stored `AddOnGroups` for a `siteID` that are not included in the provided `activeGroupIDs` array.
     ///
     func deleteStaleAddOnGroups(siteID: Int64, activeGroupIDs: [Int64]) {

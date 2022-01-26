@@ -52,7 +52,7 @@ final class CardPresentModalFoundReader: CardPresentPaymentsModalViewModel {
 private extension CardPresentModalFoundReader {
     enum Localization {
         static let title = NSLocalizedString(
-            "Do you want to connect to reader %@?",
+            "Do you want to connect to reader %1$@?",
             comment: "Dialog title that displays the name of a found card reader"
         )
 

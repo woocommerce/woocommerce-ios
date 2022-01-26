@@ -11,7 +11,7 @@ public class LeaderboardsRemote: Remote {
     ///   - unit: Defines the granularity of the stats we are fetching (one of 'hour', 'day', 'week', 'month', or 'year')
     ///   - earliestDateToInclude: The earliest date to include in the results. This string is ISO8601 compliant
     ///   - latestDateToInclude: The latest date to include in the results. This string is ISO8601 compliant
-    ///   - quantity: Number of resutls to fetch
+    ///   - quantity: Number of results to fetch
     ///   - completion: Closure to be executed upon completion.
     ///
     public func loadLeaderboards(for siteID: Int64,

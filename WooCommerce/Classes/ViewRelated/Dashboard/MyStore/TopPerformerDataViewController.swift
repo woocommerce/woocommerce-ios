@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import Charts
+import Experiments
 import XLPagerTabStrip
 import WordPressUI
 import class AutomatticTracks.CrashLogging
@@ -43,6 +44,9 @@ final class TopPerformerDataViewController: UIViewController {
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
     private let imageService: ImageService = ServiceLocator.imageService
+    private let isMyStoreTabUpdatesEnabled: Bool
+
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
     // MARK: - Computed Properties
 
@@ -67,12 +71,19 @@ final class TopPerformerDataViewController: UIViewController {
 
     /// Designated Initializer
     ///
-    init(siteID: Int64, siteTimeZone: TimeZone, currentDate: Date, timeRange: StatsTimeRangeV4) {
+    init(siteID: Int64,
+         siteTimeZone: TimeZone,
+         currentDate: Date,
+         timeRange: StatsTimeRangeV4,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
         self.siteID = siteID
         self.siteTimeZone = siteTimeZone
         self.currentDate = currentDate
         self.granularity = timeRange.topEarnerStatsGranularity
         self.timeRange = timeRange
+        self.isMyStoreTabUpdatesEnabled = featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates)
+        self.usageTracksEventEmitter = usageTracksEventEmitter
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -152,6 +163,11 @@ private extension TopPerformerDataViewController {
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.applyFooterViewForHidingExtraRowPlaceholders()
+
+        // Removes extra top padding in iOS 15+.
+        if #available(iOS 15.0, *) {
+            tableView.sectionHeaderTopPadding = 0
+        }
     }
 
     func configureResultsController() {
@@ -175,7 +191,7 @@ private extension TopPerformerDataViewController {
     }
 
     func registerTableViewHeaderFooters() {
-        let headersAndFooters = [TopPerformersHeaderView.self]
+        let headersAndFooters = isMyStoreTabUpdatesEnabled ? [TwoColumnSectionHeaderView.self]: [TopPerformersHeaderView.self]
 
         for kind in headersAndFooters {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
@@ -206,14 +222,19 @@ extension TopPerformerDataViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: TopPerformersHeaderView.reuseIdentifier) as? TopPerformersHeaderView else {
-            fatalError()
-        }
+        if isMyStoreTabUpdatesEnabled {
+            return nil
+        } else {
+            guard let cell =
+                    tableView.dequeueReusableHeaderFooterView(withIdentifier: TopPerformersHeaderView.reuseIdentifier) as? TopPerformersHeaderView else {
+                fatalError()
+            }
 
-        cell.configure(descriptionText: Text.sectionDescription,
-                       leftText: Text.sectionLeftColumn.uppercased(),
-                       rightText: Text.sectionRightColumn.uppercased())
-        return cell
+            cell.configure(descriptionText: Text.sectionDescription,
+                           leftText: Text.legacySectionLeftColumn.uppercased(),
+                           rightText: Text.legacySectionRightColumn.uppercased())
+            return cell
+        }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -221,8 +242,8 @@ extension TopPerformerDataViewController: UITableViewDataSource {
             return tableView.dequeueReusableCell(withIdentifier: NoPeriodDataTableViewCell.reuseIdentifier, for: indexPath)
         }
         let cell = tableView.dequeueReusableCell(ProductTableViewCell.self, for: indexPath)
-
-        cell.configure(statsItem, imageService: imageService)
+        let viewModel = ProductTableViewCell.ViewModel(statsItem: statsItem, isMyStoreTabUpdatesEnabled: isMyStoreTabUpdatesEnabled)
+        cell.configure(viewModel: viewModel, imageService: imageService)
         cell.hidesBottomBorder = tableView.lastIndexPathOfTheLastSection() == indexPath ? true : false
         return cell
     }
@@ -237,15 +258,18 @@ extension TopPerformerDataViewController: UITableViewDelegate {
         guard let statsItem = statsItem(at: indexPath) else {
             return
         }
+
+        usageTracksEventEmitter.interacted()
+
         presentProductDetails(statsItem: statsItem)
     }
 
     func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return Constants.estimatedSectionHeight
+        return isMyStoreTabUpdatesEnabled ? 0: Constants.estimatedSectionHeight
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
+        return isMyStoreTabUpdatesEnabled ? 0: UITableView.automaticDimension
     }
 }
 
@@ -280,11 +304,24 @@ private extension TopPerformerDataViewController {
     }
 
     func statsItem(at indexPath: IndexPath) -> TopEarnerStatsItem? {
-        guard let topEarnerStatsItem = topEarnerStats?.items?.sorted(by: >)[safe: indexPath.row] else {
-            return nil
-        }
+        if isMyStoreTabUpdatesEnabled {
+            guard let topEarnerStatsItem = topEarnerStats?.items?
+                    .sorted(by: >)[safe: indexPath.row] else {
+                return nil
+            }
 
-        return topEarnerStatsItem
+            return topEarnerStatsItem
+        } else {
+            guard let topEarnerStatsItem = topEarnerStats?.items?
+                    .sorted(by: { lhs, rhs in
+                        lhs.total < rhs.total ||
+                        (lhs.total == rhs.total && lhs.quantity < rhs.quantity)
+                    })[safe: indexPath.row] else {
+                return nil
+            }
+
+            return topEarnerStatsItem
+        }
     }
 
     func numberOfRows() -> Int {
@@ -351,8 +388,10 @@ private extension TopPerformerDataViewController {
     enum Text {
         static let sectionDescription = NSLocalizedString("Gain insights into how products are performing on your store",
                                                           comment: "Description for Top Performers section of My Store tab.")
-        static let sectionLeftColumn = NSLocalizedString("Product", comment: "Description for Top Performers left column header")
-        static let sectionRightColumn = NSLocalizedString("Total Spend", comment: "Description for Top Performers right column header")
+        static let sectionLeftColumn = NSLocalizedString("Products", comment: "Description for Top Performers left column header")
+        static let sectionRightColumn = NSLocalizedString("Items Sold", comment: "Description for Top Performers right column header")
+        static let legacySectionLeftColumn = NSLocalizedString("Product", comment: "Legacy description for Top Performers left column header")
+        static let legacySectionRightColumn = NSLocalizedString("Total Spend", comment: "Legacy description for Top Performers right column header")
     }
 
     enum TableViewStyle {
@@ -366,5 +405,6 @@ private extension TopPerformerDataViewController {
         static let numberOfSections             = 1
         static let emptyStateRowCount           = 1
         static let placeholderRowsPerSection    = [3]
+        static let sectionHeaderTopSpacing = CGFloat(0)
     }
 }

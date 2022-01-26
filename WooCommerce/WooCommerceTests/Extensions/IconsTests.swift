@@ -124,6 +124,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.ellipsisImage)
     }
 
+    func test_empty_coupon_image_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.emptyCouponsImage)
+    }
+
     func testEmptyProductsImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.emptyProductsImage)
     }
@@ -174,6 +178,14 @@ final class IconsTests: XCTestCase {
 
     func testHouseOutlinedImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.houseOutlinedImage)
+    }
+
+    func testStoreImageIsNotNil() {
+        XCTAssertNotNil(UIImage.storeImage)
+    }
+
+    func testCotImageIsNotNil() {
+        XCTAssertNotNil(UIImage.cogImage)
     }
 
     func testIconImageIsNotNil() {
@@ -306,8 +318,12 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.paymentsLoading)
     }
 
-    func test_payments_plugin_not_nil() {
-        XCTAssertNotNil(UIImage.paymentsPlugin)
+    func test_stripe_plugin_not_nil() {
+        XCTAssertNotNil(UIImage.stripePlugin)
+    }
+
+    func test_wcpay_plugin_not_nil() {
+        XCTAssertNotNil(UIImage.wcPayPlugin)
     }
 
     func test_print_icon_in_not_nil() {
@@ -362,10 +378,6 @@ final class IconsTests: XCTestCase {
 
     func testPencilImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.pencilImage)
-    }
-
-    func testQuoteImageIconIsNotNil() {
-        XCTAssertNotNil(UIImage.quoteImage)
     }
 
     func testPagesImageIconIsNotNil() {
@@ -503,6 +515,14 @@ final class IconsTests: XCTestCase {
 
     func testCloudImageIsNotNil() {
         XCTAssertNotNil(UIImage.cloudImage)
+    }
+
+    func test_copy_bar_button_item_image_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.copyBarButtonItemImage)
+    }
+
+    func test_coupon_image_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.couponImage)
     }
 
     func testHubMenuIconIsNotNil() {

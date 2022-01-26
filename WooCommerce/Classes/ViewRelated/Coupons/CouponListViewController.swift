@@ -161,7 +161,8 @@ private extension CouponListViewController {
             storeID: siteID,
             command: CouponSearchUICommand(),
             cellType: TitleAndSubtitleAndStatusTableViewCell.self,
-            cellSeparator: .singleLine)
+            cellSeparator: .singleLine
+        )
         let navigationController = WooNavigationController(rootViewController: searchViewController)
         present(navigationController, animated: true, completion: nil)
     }

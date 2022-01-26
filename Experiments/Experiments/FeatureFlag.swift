@@ -81,4 +81,8 @@ public enum FeatureFlag: Int {
     /// Displays the tax lines breakup in simple payments summary screen
     ///
     case taxLinesInSimplePayments
+
+    /// Displays the Inbox option under the Hub Menu.
+    ///
+    case inbox
 }

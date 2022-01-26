@@ -35,6 +35,12 @@ final class CouponStoreTests: XCTestCase {
         return viewStorage.countObjects(ofType: StorageCoupon.self)
     }
 
+    /// Convenience: returns the number of stored search results
+    ///
+    private var storedSearchResultsCount: Int {
+        return viewStorage.countObjects(ofType: StorageCouponSearchResult.self)
+    }
+
     /// Store
     ///
     private var store: CouponStore!
@@ -463,6 +469,69 @@ final class CouponStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(try result.get(), expectedReport)
+    }
+
+    func test_searchCoupons_calls_remote_using_correct_request_parameters() {
+        setUpUsingSpyRemote()
+        // Given
+        let expectedKeyword = "Test keyword"
+        let expectedPageNumber = 1
+        let expectedPageSize = 20
+        let action = CouponAction.searchCoupons(siteID: sampleSiteID,
+                                                keyword: expectedKeyword,
+                                                pageNumber: expectedPageNumber,
+                                                pageSize: expectedPageSize) { _ in }
+
+        // When
+        store.onAction(action)
+
+        // Then
+        XCTAssertTrue(remote.didCallSearchCoupons)
+        XCTAssertEqual(remote.spySearchCouponsSiteID, sampleSiteID)
+        XCTAssertEqual(remote.spySearchCouponsKeyword, expectedKeyword)
+        XCTAssertEqual(remote.spySearchCouponsPageNumber, expectedPageNumber)
+        XCTAssertEqual(remote.spySearchCouponsPageSize, expectedPageSize)
+    }
+
+    func test_searchCoupons_returns_network_error_on_failure() {
+        // Given
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "coupons", error: expectedError)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = CouponAction.searchCoupons(siteID: self.sampleSiteID, keyword: "test keyword", pageNumber: 1, pageSize: 20) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+    }
+
+    func test_searchCoupons_upserts_coupons_and_search_results_upon_successful_search() throws {
+        // Given
+        let sampleCouponID: Int64 = 720
+        let sampleCoupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID, amount: "12.00")
+        storeCoupon(sampleCoupon, for: sampleSiteID)
+        network.simulateResponse(requestUrlSuffix: "coupons", filename: "coupons-all")
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = CouponAction.searchCoupons(siteID: self.sampleSiteID, keyword: "test keyword", pageNumber: 1, pageSize: 20) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(storedCouponsCount, 3)
+        XCTAssertEqual(storedSearchResultsCount, 3)
+        let storedCoupon = viewStorage.loadCoupon(siteID: sampleSiteID, couponID: sampleCouponID)
+        XCTAssertNotNil(storedCoupon)
+        XCTAssertEqual(storedCoupon?.amount, "10.00") // Updated amount reflecting the response.
     }
 }
 

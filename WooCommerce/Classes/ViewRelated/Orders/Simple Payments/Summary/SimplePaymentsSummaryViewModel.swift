@@ -40,6 +40,14 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
             title = "\(orderTaxLine.label) (\(orderTaxLine.ratePercent)%)"
             value = currencyFormatter.formatAmount(orderTaxLine.totalTax) ?? orderTaxLine.totalTax
         }
+
+        /// Creates a `TaxLine` with zero tax percentage and tax amount
+        ///
+        static func createZeroValueTaxLine(currencyFormatter: CurrencyFormatter) -> TaxLine {
+            TaxLine(id: 0,
+                    title: "\(Localization.tax) (0.00%)",
+                    value: currencyFormatter.formatAmount(Decimal.zero) ?? "\(Decimal.zero)")
+        }
     }
 
     /// Initial amount to charge. Without taxes.
@@ -177,10 +185,8 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         if taxLines.isNotEmpty {
             self.taxLines = taxLines
         } else {
-            // Create a `TaxLine` with zero values to represent that there are no taxes configured in `wp-admin`.
-            self.taxLines = [TaxLine(id: 0,
-                                     title: "\(Localization.tax) (0.00%)",
-                                     value: currencyFormatter.formatAmount(Decimal.zero) ?? "\(Decimal.zero)")]
+            // Assigning `taxLines` with a zero value `TaxLine` to represent that there are no taxes configured in `wp-admin`.
+            self.taxLines = [TaxLine.createZeroValueTaxLine(currencyFormatter: currencyFormatter)]
         }
 
         // rate_percentage = taxAmount / providedAmount * 100

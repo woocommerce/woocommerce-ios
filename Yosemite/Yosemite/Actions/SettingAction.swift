@@ -14,7 +14,15 @@ public enum SettingAction: Action {
     ///
     case synchronizeProductSiteSettings(siteID: Int64, onCompletion: (Error?) -> Void)
 
+    /// Synchronizes the site's advanced settings
+    ///
+    case synchronizeAdvancedSiteSettings(siteID: Int64, onCompletion: (Error?) -> Void)
+
     /// Retrieves the site API details (used to determine the WC version)
     ///
     case retrieveSiteAPI(siteID: Int64, onCompletion: (Result<SiteAPI, Error>) -> Void)
+
+    /// Retrieves the store payments page path.
+    ///
+    case getPaymentsPagePath(siteID: Int64, onCompletion: (Result<String, SettingStore.SettingError>) -> Void)
 }

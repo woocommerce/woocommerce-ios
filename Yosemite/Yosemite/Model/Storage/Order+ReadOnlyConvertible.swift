@@ -13,6 +13,7 @@ extension Storage.Order: ReadOnlyConvertible {
         orderID = order.orderID
         parentID = order.parentID
         customerID = order.customerID
+        orderKey = order.orderKey
         number = order.number
         statusKey = order.status.rawValue
         currency = order.currency
@@ -69,11 +70,13 @@ extension Storage.Order: ReadOnlyConvertible {
         let orderRefunds = refunds?.map { $0.toReadOnly() } ?? [Yosemite.OrderRefundCondensed]()
         let orderShippingLines = shippingLines?.map { $0.toReadOnly() } ?? [Yosemite.ShippingLine]()
         let orderFeeLines = fees?.map { $0.toReadOnly() } ?? [Yosemite.OrderFeeLine]()
+        let orderTaxLines = taxes?.map { $0.toReadOnly() } ?? [Yosemite.OrderTaxLine]()
 
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: parentID,
                      customerID: customerID,
+                     orderKey: orderKey,
                      number: number ?? "",
                      status: OrderStatusEnum(rawValue: statusKey),
                      currency: currency ?? "",
@@ -95,7 +98,9 @@ extension Storage.Order: ReadOnlyConvertible {
                      shippingLines: orderShippingLines,
                      coupons: orderCoupons,
                      refunds: orderRefunds,
-                     fees: orderFeeLines)
+                     fees: orderFeeLines,
+                     taxes: orderTaxLines)
+
     }
 
 

@@ -71,9 +71,9 @@ PODS:
   - WordPressShared (1.16.1):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (~> 1.8)
-  - WordPressUI (1.12.3-beta.1)
+  - WordPressUI (1.12.3)
   - Wormholy (1.6.5)
-  - WPMediaPicker (1.7.3)
+  - WPMediaPicker (1.8.1)
   - wpxmlrpc (0.9.0)
   - XLPagerTabStrip (9.0.0)
   - ZendeskCommonUISDK (6.1.1)
@@ -105,9 +105,9 @@ DEPENDENCIES:
   - WordPressAuthenticator (~> 1.42.0)
   - WordPressKit (~> 4.40.0)
   - WordPressShared (~> 1.15)
-  - WordPressUI (from `https://github.com/wordpress-mobile/WordPressUI-iOS.git`, branch `issue/105-use-correct-bundle-under-mac-catalyst`)
+  - WordPressUI (~> 1.12.3)
   - Wormholy (~> 1.6.5)
-  - WPMediaPicker (~> 1.7.3)
+  - WPMediaPicker (~> 1.8.1)
   - XLPagerTabStrip (~> 9.0)
   - ZendeskSupportSDK (~> 5.0)
 
@@ -142,6 +142,7 @@ SPEC REPOS:
     - WordPress-Editor-iOS
     - WordPressKit
     - WordPressShared
+    - WordPressUI
     - Wormholy
     - WPMediaPicker
     - wpxmlrpc
@@ -153,16 +154,6 @@ SPEC REPOS:
     - ZendeskSDKConfigurationsSDK
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
-
-EXTERNAL SOURCES:
-  WordPressUI:
-    :branch: issue/105-use-correct-bundle-under-mac-catalyst
-    :git: https://github.com/wordpress-mobile/WordPressUI-iOS.git
-
-CHECKOUT OPTIONS:
-  WordPressUI:
-    :commit: 6575095d553f7d4d3c7e2472e3a8092ef81c8c02
-    :git: https://github.com/wordpress-mobile/WordPressUI-iOS.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
@@ -193,9 +184,9 @@ SPEC CHECKSUMS:
   WordPressAuthenticator: 06278534519c741ecea346f504ad8d08082bfb0d
   WordPressKit: 062e4f57ce871e2217b632a1f3cb0bbd54b5df6d
   WordPressShared: 5477f179c7fe03b5d574f91adda66f67d131827e
-  WordPressUI: 78622c997e411bd4db8b0bc651dbb94a1af6bc7d
+  WordPressUI: 45591178e843ecb82e65e868ec766148befe9f9f
   Wormholy: 3252bc3e55a1847ef9a0976c1377bd77bf3635fa
-  WPMediaPicker: 4af3fdfba06541ada2613178f8c01175671c38a8
+  WPMediaPicker: 9011a0ec1f468c039af7485c244576b4c9889a0f
   wpxmlrpc: bf55a43a7e710bd2a4fb8c02dfe83b1246f14f13
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskCommonUISDK: 5808802951ad2bb424f0bed4259dc3c0ce9b52ec
@@ -206,6 +197,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 6982c121e030b3f2026708fcf1b002537c577c7a
+PODFILE CHECKSUM: 931cf863ff5f21a59798553a38d7ac5a3bcfaed9
 
 COCOAPODS: 1.11.2

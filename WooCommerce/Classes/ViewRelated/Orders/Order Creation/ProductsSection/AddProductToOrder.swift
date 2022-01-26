@@ -14,18 +14,30 @@ struct AddProductToOrder: View {
     var body: some View {
         NavigationView {
             Group {
-                List(viewModel.productRows) { viewModel in
-                    ProductRow(viewModel: viewModel)
+                switch viewModel.syncStatus {
+                case .results:
+                    InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
+                                       loadAction: viewModel.syncNextPage) {
+                        ForEach(viewModel.productRows) { rowViewModel in
+                            createProductRow(rowViewModel: rowViewModel)
+                        }
+                    }
+                case .empty:
+                    EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
+                        .frame(maxHeight: .infinity)
+                case .firstPageSync:
+                    List(viewModel.ghostRows) { rowViewModel in
+                        ProductRow(viewModel: rowViewModel)
+                            .redacted(reason: .placeholder)
+                            .shimmering()
+                    }
+                    .listStyle(PlainListStyle())
+                default:
+                    EmptyView()
                 }
-                .listStyle(PlainListStyle())
-                .renderedIf(viewModel.productRows.isNotEmpty)
-
-                EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
-                .frame(maxHeight: .infinity)
-                .renderedIf(viewModel.productRows.isEmpty)
             }
-            .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+            .background(Color(.listBackground).ignoresSafeArea())
+            .ignoresSafeArea(.container, edges: .horizontal)
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -35,8 +47,28 @@ struct AddProductToOrder: View {
                     }
                 }
             }
+            .onAppear {
+                viewModel.syncFirstPage()
+            }
         }
         .wooNavigationBarStyle()
+    }
+
+    /// Creates the `ProductRow` for a product, depending on whether the product is variable.
+    ///
+    @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
+        if rowViewModel.numberOfVariations > 0,
+           let addVariationToOrderVM = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
+            LazyNavigationLink(destination: AddProductVariationToOrder(isPresented: $isPresented, viewModel: addVariationToOrderVM)) {
+                ProductRow(viewModel: rowViewModel)
+            }
+        } else {
+            ProductRow(viewModel: rowViewModel)
+                .onTapGesture {
+                    viewModel.selectProduct(rowViewModel.productOrVariationID)
+                    isPresented.toggle()
+                }
+        }
     }
 }
 

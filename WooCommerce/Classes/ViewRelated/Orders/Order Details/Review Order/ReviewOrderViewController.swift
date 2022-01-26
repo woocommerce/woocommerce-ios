@@ -295,11 +295,7 @@ private extension ReviewOrderViewController {
         }
 
         cell.headline = Localization.customerNoteTitle
-        let localizedBody = String.localizedStringWithFormat(
-            NSLocalizedString("“%@”",
-                              comment: "Customer note, wrapped in quotes"),
-            note)
-        cell.body = localizedBody
+        cell.body = note.quoted
         cell.selectionStyle = .none
     }
 

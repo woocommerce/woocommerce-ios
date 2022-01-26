@@ -1,19 +1,24 @@
+import Combine
 import Foundation
 import UIKit
 import Yosemite
-import Observables
 
 protocol PushNotesManager {
 
     /// An observable that emits values when the Remote Notifications are received while the app is
     /// in the foreground.
     ///
-    var foregroundNotifications: Observable<PushNotification> { get }
+    var foregroundNotifications: AnyPublisher<PushNotification, Never> { get }
+
+    /// An observable that emits values when the user taps to view the in-app notification while the app is
+    /// in the foreground.
+    ///
+    var foregroundNotificationsToView: AnyPublisher<PushNotification, Never> { get }
 
     /// An observable that emits values when a Remote Notification is received while the app is
     /// in inactive.
     ///
-    var inactiveNotifications: Observable<PushNotification> { get }
+    var inactiveNotifications: AnyPublisher<PushNotification, Never> { get }
 
     /// Resets the Badge Count.
     ///
@@ -56,7 +61,7 @@ protocol PushNotesManager {
     ///
     func registerDeviceToken(with tokenData: Data, defaultStoreID: Int64)
 
-    /// Handles a Remote Push Notifican Payload. On completion the `completionHandler` will be executed.
+    /// Handles a Remote Push Notification Payload. On completion the `completionHandler` will be executed.
     ///
     func handleNotification(_ userInfo: [AnyHashable: Any],
                             onBadgeUpdateCompletion: @escaping () -> Void,

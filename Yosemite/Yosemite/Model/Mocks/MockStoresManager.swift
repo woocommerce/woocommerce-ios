@@ -25,7 +25,6 @@ public class MockStoresManager: StoresManager {
     private let orderActionHandler: MockOrderActionHandler
     private let orderStatusActionHandler: MockOrderStatusActionHandler
     private let orderNoteActionHandler: MockOrderNoteActionHandler
-    private let paymentGatewayAccountActionHandler: MockPaymentGatewayAccountActionHandler
     private let productActionHandler: MockProductActionHandler
     private let productReviewActionHandler: MockProductReviewActionHandler
     private let productVariationActionHandler: MockProductVariationActionHandler
@@ -51,7 +50,6 @@ public class MockStoresManager: StoresManager {
         settingActionHandler = MockSettingActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         orderStatusActionHandler = MockOrderStatusActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         orderNoteActionHandler = MockOrderNoteActionHandler(objectGraph: objectGraph, storageManager: storageManager)
-        paymentGatewayAccountActionHandler = MockPaymentGatewayAccountActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         productActionHandler = MockProductActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         productVariationActionHandler = MockProductVariationActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         receiptActionHandler = MockReceiptActionHandler(objectGraph: objectGraph, storageManager: storageManager)
@@ -127,8 +125,6 @@ public class MockStoresManager: StoresManager {
                 userActionHandler.handle(action: action)
             case let action as AnnouncementsAction:
                 announcementsActionHandler.handle(action: action)
-            case let action as PaymentGatewayAccountAction:
-                paymentGatewayAccountActionHandler.handle(action: action)
             case let action as ReceiptAction:
                 receiptActionHandler.handle(action: action)
             default:
@@ -181,5 +177,9 @@ public class MockStoresManager: StoresManager {
 
     public func updateDefaultRoles(_ roles: [User.Role]) {
         // No op
+    }
+
+    public func updateDefaultStore(_ site: Site) {
+        sessionManager.defaultSite = site
     }
 }

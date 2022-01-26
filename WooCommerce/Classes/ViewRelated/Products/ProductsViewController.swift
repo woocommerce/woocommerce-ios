@@ -272,11 +272,12 @@ private extension ProductsViewController {
                                          action: #selector(addProduct(_:)))
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Add a product", comment: "The action to add a product")
+            button.accessibilityIdentifier = "product-add-button"
             return button
         }()
         rightBarButtonItems.append(buttonItem)
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) && UIImagePickerController.isSourceTypeAvailable(.camera) {
             let buttonItem: UIBarButtonItem = {
                 let button = UIBarButtonItem(image: .scanImage,
                                              style: .plain,
@@ -288,6 +289,7 @@ private extension ProductsViewController {
                     "Scans barcodes that are associated with a product SKU for stock management.",
                     comment: "VoiceOver accessibility hint, informing the user the button can be used to scan products."
                 )
+                button.accessibilityIdentifier = "product-scan-button"
 
                 return button
             }()

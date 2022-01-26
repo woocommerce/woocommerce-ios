@@ -29,7 +29,8 @@ private extension InPersonPaymentsMenuViewController {
         rows = [
             .orderCardReader,
             .manageCardReader,
-            .bbposChipper2XBTManual
+            .bbposChipper2XBTManual,
+            .stripeM2Manual
         ]
     }
 
@@ -55,7 +56,9 @@ private extension InPersonPaymentsMenuViewController {
         case let cell as LeftImageTableViewCell where row == .manageCardReader:
             configureManageCardReader(cell: cell)
         case let cell as LeftImageTableViewCell where row == .bbposChipper2XBTManual:
-            configureBBPOSChipper2XBTManual(cell: cell)
+            configureChipper2XManual(cell: cell)
+        case let cell as LeftImageTableViewCell where row == .stripeM2Manual:
+            configureStripeM2Manual(cell: cell)
         default:
             fatalError()
         }
@@ -75,11 +78,18 @@ private extension InPersonPaymentsMenuViewController {
         cell.configure(image: .creditCardIcon, text: Localization.manageCardReader)
     }
 
-    func configureBBPOSChipper2XBTManual(cell: LeftImageTableViewCell) {
+    func configureChipper2XManual(cell: LeftImageTableViewCell) {
         cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.configure(image: .cardReaderManualIcon, text: Localization.cardReaderManual)
+        cell.configure(image: .cardReaderManualIcon, text: Localization.chipperCardReaderManual)
+    }
+
+    func configureStripeM2Manual(cell: LeftImageTableViewCell) {
+        cell.imageView?.tintColor = .text
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.configure(image: .cardReaderManualIcon, text: Localization.stripeM2CardReaderManual)
     }
 }
 
@@ -110,7 +120,11 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func bbposChipper2XBTManualWasPressed() {
-        WebviewHelper.launch(Constants.bbposChipper2XBTManualURL, with: self)
+            WebviewHelper.launch(Constants.bbposChipper2XBTManualURL, with: self)
+    }
+
+    func stripeM2ManualWasPressed() {
+        WebviewHelper.launch(Constants.stripeM2ManualURL, with: self)
     }
 }
 
@@ -147,6 +161,8 @@ extension InPersonPaymentsMenuViewController {
             manageCardReaderWasPressed()
         case .bbposChipper2XBTManual:
             bbposChipper2XBTManualWasPressed()
+        case .stripeM2Manual:
+            stripeM2ManualWasPressed()
         }
     }
 }
@@ -165,9 +181,14 @@ private extension InPersonPaymentsMenuViewController {
             comment: "Navigates to Card Reader management screen"
         )
 
-        static let cardReaderManual = NSLocalizedString(
-            "Card reader manual",
-            comment: "Navigates to Card Reader manual"
+        static let chipperCardReaderManual = NSLocalizedString(
+            "Chipper 2X card reader manual",
+            comment: "Navigates to Chipper Card Reader manual"
+        )
+
+        static let stripeM2CardReaderManual = NSLocalizedString(
+            "Stripe M2 card reader manual",
+            comment: "Navigates to Stripe M2 Card Reader manual"
         )
     }
 }
@@ -176,16 +197,10 @@ private enum Row: CaseIterable {
     case orderCardReader
     case manageCardReader
     case bbposChipper2XBTManual
+    case stripeM2Manual
 
     var type: UITableViewCell.Type {
-        switch self {
-        case .orderCardReader:
-            return LeftImageTableViewCell.self
-        case .manageCardReader:
-            return LeftImageTableViewCell.self
-        case .bbposChipper2XBTManual:
-            return LeftImageTableViewCell.self
-        }
+        LeftImageTableViewCell.self
     }
 
     var reuseIdentifier: String {
@@ -194,8 +209,9 @@ private enum Row: CaseIterable {
 }
 
 private enum Constants {
-    static let woocommercePurchaseCardReaderURL = URL(string: "https://woocommerce.com/in-person-payments/")!
+    static let woocommercePurchaseCardReaderURL = URL(string: "https://woocommerce.com/products/m2-card-reader/")!
     static let bbposChipper2XBTManualURL = URL(string: "https://developer.bbpos.com/quick_start_guide/Chipper%202X%20BT%20Quick%20Start%20Guide.pdf")!
+    static let stripeM2ManualURL = URL(string: "https://stripe.com/files/docs/terminal/m2_product_sheet.pdf")!
 }
 
 // MARK: - SwiftUI compatibility

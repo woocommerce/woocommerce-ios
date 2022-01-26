@@ -2,7 +2,7 @@ import Codegen
 
 /// Represents the data associated with order stats over a specific period.
 /// v4
-public struct OrderStatsV4Totals: Decodable, Equatable, GeneratedFakeable {
+public struct OrderStatsV4Totals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
     public let totalOrders: Int
     public let totalItemsSold: Int
     public let grossRevenue: Decimal

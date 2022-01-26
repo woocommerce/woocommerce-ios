@@ -57,6 +57,7 @@ struct OrdersUpsertUseCase {
         handleOrderFees(readOnlyOrder, storageOrder, storage)
         handleOrderShippingLines(readOnlyOrder, storageOrder, storage)
         handleOrderRefundsCondensed(readOnlyOrder, storageOrder, storage)
+        handleOrderTaxes(readOnlyOrder, storageOrder, storage)
 
         return storageOrder
     }
@@ -254,6 +255,29 @@ struct OrdersUpsertUseCase {
         storageItem.taxes?.forEach { storageTax in
             if readOnlyItem.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
                 storageItem.removeFromTaxes(storageTax)
+                storage.deleteObject(storageTax)
+            }
+        }
+    }
+
+    /// Updates, inserts, or prunes the provided `storageOrder`'s taxes using the provided `readOnlyOrder`'s taxes
+    ///
+    private func handleOrderTaxes(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        // Upsert the `taxes` from the `readOnlyOrder`
+        readOnlyOrder.taxes.forEach { readOnlyTax in
+            if let existingStorageTax = storage.loadOrderTaxLine(siteID: readOnlyOrder.siteID, taxID: readOnlyTax.taxID) {
+                existingStorageTax.update(with: readOnlyTax)
+            } else {
+                let newStorageTax = storage.insertNewObject(ofType: Storage.OrderTaxLine.self)
+                newStorageTax.update(with: readOnlyTax)
+                storageOrder.addToTaxes(newStorageTax)
+            }
+        }
+
+        // Now, remove any objects that exist in `storageOrder.taxes` but not in `readOnlyOrder.taxes`
+        storageOrder.taxes?.forEach { storageTax in
+            if readOnlyOrder.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
+                storageOrder.removeFromTaxes(storageTax)
                 storage.deleteObject(storageTax)
             }
         }

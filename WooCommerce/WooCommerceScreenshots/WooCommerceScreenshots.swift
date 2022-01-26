@@ -38,7 +38,7 @@ class WooCommerceScreenshots: XCTestCase {
             .thenTakeScreenshot(named: "order-dashboard")
 
             // Orders
-            .tabBar.gotoOrdersScreen()
+            .tabBar.goToOrdersScreen()
             .thenTakeScreenshot(named: "order-list")
             .selectOrder(atIndex: 0)
             .thenTakeScreenshot(named: "order-detail")
@@ -49,14 +49,15 @@ class WooCommerceScreenshots: XCTestCase {
             .cancel()
 
             // Reviews
-            .tabBar.gotoReviewsScreen()
+            .tabBar.goToMenuScreen()
+            .goToReviewsScreen()
             .thenTakeScreenshot(named: "review-list")
             .selectReview(atIndex: 3)
             .thenTakeScreenshot(named: "review-details")
             .goBackToReviewsScreen()
 
             // Products
-            .tabBar.gotoProductsScreen()
+            .tabBar.goToProductsScreen()
             .collapseTopBannerIfNeeded()
             .thenTakeScreenshot(named: "product-list")
             .selectProduct(atIndex: 1)

@@ -8,20 +8,13 @@ public final class MyStoreScreen: ScreenObject {
     // TODO: Remove force `try` once `ScreenObject` migration is completed
     public let periodStatsTable = try! PeriodStatsTable()
 
-    private let settingsButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["dashboard-settings-button"]
-    }
-
-    private var settingsButton: XCUIElement { settingsButtonGetter(app) }
-
     static var isVisible: Bool {
-        guard let screen = try? MyStoreScreen() else { return false }
-        return screen.settingsButton.isHittable
+        (try? MyStoreScreen().isLoaded) ?? false
     }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [settingsButtonGetter],
+            expectedElementGetters: [ { $0.staticTexts["Your WooCommerce Store"] }],
             app: app
         )
     }
@@ -33,11 +26,5 @@ public final class MyStoreScreen: ScreenObject {
 
         topBannerCloseButton.tap()
         return self
-    }
-
-    @discardableResult
-    public func openSettingsPane() throws -> SettingsScreen {
-        settingsButton.tap()
-        return try SettingsScreen()
     }
 }

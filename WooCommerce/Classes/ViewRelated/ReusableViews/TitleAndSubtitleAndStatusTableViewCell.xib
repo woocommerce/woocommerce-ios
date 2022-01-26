@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="TitleAndSubtitleAndStatusTableViewCell" rowHeight="90" id="KGk-i7-Jjw" customClass="TitleAndSubtitleAndStatusTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="351" height="90"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="321.5" height="90"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="top" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="zx0-L0-tSe">
+                        <rect key="frame" x="16" y="8" width="288" height="74"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="240" verticalHuggingPriority="260" text="Fixed product discount " textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kxr-JD-qZr" userLabel="Date Label">
+                                <rect key="frame" x="0.0" y="0.0" width="133.5" height="14.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="240" verticalHuggingPriority="260" text="Jan2022Sale" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j1w-V3-ltS">
+                                <rect key="frame" x="0.0" y="20.5" width="99.5" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="y5e-MD-t6e">
+                                <rect key="frame" x="0.0" y="47" width="229" height="27"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="260" verticalHuggingPriority="240" verticalCompressionResistancePriority="749" text="Active" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VXC-Oy-j48" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="47.5" height="27"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="VXC-Oy-j48" secondAttribute="bottom" id="4RM-1O-ANI"/>
+                                    <constraint firstItem="VXC-Oy-j48" firstAttribute="leading" secondItem="y5e-MD-t6e" secondAttribute="leading" id="Gq8-Ua-6Y2"/>
+                                    <constraint firstItem="VXC-Oy-j48" firstAttribute="top" secondItem="y5e-MD-t6e" secondAttribute="top" id="PZ0-hh-rII"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                    </stackView>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="zx0-L0-tSe" secondAttribute="trailing" constant="16" id="BTB-Ao-unH"/>
+                    <constraint firstItem="zx0-L0-tSe" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="Dp8-IQ-gtb"/>
+                    <constraint firstAttribute="bottom" secondItem="zx0-L0-tSe" secondAttribute="bottom" constant="8" id="MOE-Q0-T7x"/>
+                    <constraint firstItem="zx0-L0-tSe" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="Vsm-y7-zbr"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="statusContainerView" destination="y5e-MD-t6e" id="jLw-8w-mDZ"/>
+                <outlet property="statusLabel" destination="VXC-Oy-j48" id="ihu-Fx-m1e"/>
+                <outlet property="subtitleLabel" destination="Kxr-JD-qZr" id="Dqc-XN-M1M"/>
+                <outlet property="titleLabel" destination="j1w-V3-ltS" id="9i7-hQ-oZV"/>
+            </connections>
+            <point key="canvasLocation" x="157" y="117"/>
+        </tableViewCell>
+    </objects>
+</document>

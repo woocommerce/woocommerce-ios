@@ -11,6 +11,7 @@ final class MockOrders {
             orderID: 0,
             parentID: 0,
             customerID: 0,
+            orderKey: "",
             number: "",
             status: .pending,
             currency: "",
@@ -32,7 +33,8 @@ final class MockOrders {
             shippingLines: [],
             coupons: [],
             refunds: [],
-            fees: []
+            fees: [],
+            taxes: []
         )
     }
 
@@ -40,11 +42,13 @@ final class MockOrders {
                    items: [OrderItem] = [],
                    shippingLines: [ShippingLine] = sampleShippingLines(),
                    refunds: [OrderRefundCondensed] = [],
-                   fees: [OrderFeeLine] = []) -> Order {
+                   fees: [OrderFeeLine] = [],
+                   taxes: [OrderTaxLine] = []) -> Order {
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: 0,
                      customerID: 11,
+                     orderKey: "abc123",
                      number: "963",
                      status: status,
                      currency: "USD",
@@ -66,7 +70,8 @@ final class MockOrders {
                      shippingLines: shippingLines,
                      coupons: [],
                      refunds: refunds,
-                     fees: fees)
+                     fees: fees,
+                     taxes: taxes)
     }
 
     func sampleOrder() -> Order {
@@ -90,6 +95,7 @@ final class MockOrders {
                      orderID: orderID,
                      parentID: 0,
                      customerID: 11,
+                     orderKey: "abc123",
                      number: "963",
                      status: .processing,
                      currency: "USD",
@@ -111,7 +117,8 @@ final class MockOrders {
                      shippingLines: Self.sampleShippingLines(),
                      coupons: [],
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: [])
     }
 
     static func sampleShippingLines(cost: String = "133.00", tax: String = "0.00") -> [ShippingLine] {
@@ -161,6 +168,7 @@ final class MockOrders {
                      orderID: 85,
                      parentID: 0,
                      customerID: 0,
+                     orderKey: "abc123",
                      number: "85",
                      status: .custom("draft"),
                      currency: "GBP",
@@ -182,7 +190,8 @@ final class MockOrders {
                      shippingLines: brokenShippingLines(), // empty shipping
                      coupons: [],
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: [])
     }
 
     /// An order with broken elements that hasn't been paid, inspired by `broken-order.json`
@@ -192,6 +201,7 @@ final class MockOrders {
                      orderID: 85,
                      parentID: 0,
                      customerID: 0,
+                     orderKey: "abc123",
                      number: "85",
                      status: .custom("draft"),
                      currency: "GBP",
@@ -213,7 +223,8 @@ final class MockOrders {
                      shippingLines: brokenShippingLines(), // empty shipping
                      coupons: [],
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: [])
     }
 
     /// An address that may or may not be broken, that came from `broken-order.json`

@@ -47,12 +47,12 @@ target 'WooCommerce' do
 
   pod 'WordPressShared', '~> 1.15'
 
-  # pod 'WordPressUI', '~> 1.12.1'
-  pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => 'issue/105-use-correct-bundle-under-mac-catalyst'
+  pod 'WordPressUI', '~> 1.12.3'
+  # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
 
   aztec
 
-  pod 'WPMediaPicker', '~> 1.7.3'
+  pod 'WPMediaPicker', '~> 1.8.1'
 
   # External Libraries
   # ==================
@@ -248,35 +248,35 @@ pre_install do |installer|
     end
     static << pod
     def pod.static_framework?
-      true
-    end
+    true
   end
+end
 
-  puts "Installing #{static.count} pods as static frameworks"
-  puts "Installing #{dynamic.count} pods as dynamic frameworks"
+puts "Installing #{static.count} pods as static frameworks"
+puts "Installing #{dynamic.count} pods as dynamic frameworks"
 
-  # Force CocoaLumberjack Swift version
-  installer.analysis_result.specifications.each do |s|
-    s.swift_version = '5.0' if s.name == 'CocoaLumberjack'
-  end
+# Force CocoaLumberjack Swift version
+installer.analysis_result.specifications.each do |s|
+  s.swift_version = '5.0' if s.name == 'CocoaLumberjack'
+end
 end
 
 
 # Configure your macCatalyst dependencies
 catalyst_configuration do
-	# Uncomment the next line for a verbose output
-	# verbose!
+  # Uncomment the next line for a verbose output
+  # verbose!
 
-	# ios '<pod_name>' # This dependency will only be available for iOS
+  # ios '<pod_name>' # This dependency will only be available for iOS
   ios 'StripeTerminal'
   ios 'ZendeskSupportSDK'
-	# macos '<pod_name>' # This dependency will only be available for macOS
+  # macos '<pod_name>' # This dependency will only be available for macOS
 end
 
 
 post_install do |installer|
 
-	installer.configure_catalyst
+  installer.configure_catalyst
   # Workaround: Drop 32 Bit Architectures
   # =====================================
   #

@@ -40,8 +40,24 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
     func test_provided_amount_gets_properly_formatted() {
         // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getSimplePaymentsTaxesToggleState(_, onCompletion):
+                onCompletion(.success(false)) // Keep the taxes toggle turned off
+            case .setSimplePaymentsTaxesToggleState:
+                break // No op
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US.
-        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100", totalWithTaxes: "104.30", taxAmount: "$4.3", currencyFormatter: currencyFormatter)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "100",
+                                                       totalWithTaxes: "104.30",
+                                                       taxAmount: "$4.3",
+                                                       currencyFormatter: currencyFormatter,
+                                                       stores: mockStores)
 
         // When & Then
         XCTAssertEqual(viewModel.providedAmount, "$100.00")
@@ -133,7 +149,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
                 switch intent {
                 case .error:
                     promise(true)
-                case .completed:
+                case .completed, .created:
                     promise(false)
                 }
             }
@@ -166,6 +182,30 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.navigateToPaymentMethods)
     }
 
+    func test_when_order_is_updated_email_is_trimmed() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+        viewModel.email = " some@email.com "
+
+        // When
+        let trimmedEmail: String? = waitFor { promise in
+            mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateSimplePaymentsOrder(_, _, _, _, _, _, email, _):
+                    promise(email)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            viewModel.updateOrder()
+        }
+
+        // Then
+        XCTAssertEqual(trimmedEmail, "some@email.com")
+        XCTAssertEqual(trimmedEmail, viewModel.email)
+    }
+
     func test_empty_emails_are_send_as_nil_when_updating_orders() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -191,10 +231,23 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
     func test_noteAdded_event_is_tracked_after_editing_note() {
         // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getSimplePaymentsTaxesToggleState(_, onCompletion):
+                onCompletion(.success(true))
+            case .setSimplePaymentsTaxesToggleState:
+                break // No op
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
         let mockAnalytics = MockAnalyticsProvider()
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
                                                        totalWithTaxes: "1.0",
                                                        taxAmount: "0.0",
+                                                       stores: mockStores,
                                                        analytics: WooAnalytics(analyticsProvider: mockAnalytics))
 
         // When
@@ -202,15 +255,31 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         viewModel.noteViewModel.updateNote(onFinish: { _ in })
 
         // Then
-        assertEqual(mockAnalytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowNoteAdded.rawValue])
+        assertEqual(mockAnalytics.receivedEvents, [
+            WooAnalyticsStat.simplePaymentsFlowTaxesToggled.rawValue, // Event triggered when view model loads the toggle state during initialization
+            WooAnalyticsStat.simplePaymentsFlowNoteAdded.rawValue
+        ])
     }
 
     func test_taxesToggled_event_is_tracked_after_switching_taxes_toggle() {
         // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getSimplePaymentsTaxesToggleState(_, onCompletion):
+                onCompletion(.success(false))
+            case .setSimplePaymentsTaxesToggleState:
+                break // No op
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
         let mockAnalytics = MockAnalyticsProvider()
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
                                                        totalWithTaxes: "1.0",
                                                        taxAmount: "0.0",
+                                                       stores: mockStores,
                                                        analytics: WooAnalytics(analyticsProvider: mockAnalytics))
 
         // When
@@ -219,12 +288,15 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
         // Then
         assertEqual(mockAnalytics.receivedEvents, [
+            WooAnalyticsStat.simplePaymentsFlowTaxesToggled.rawValue,  // Event triggered when view model loads the toggle state during initialization
             WooAnalyticsStat.simplePaymentsFlowTaxesToggled.rawValue,  // Taxes enabled
             WooAnalyticsStat.simplePaymentsFlowTaxesToggled.rawValue   // Taxes disabled
         ])
 
-        assertEqual(mockAnalytics.receivedProperties[0]["state"] as? String, "on")  // Taxes enabled
-        assertEqual(mockAnalytics.receivedProperties[1]["state"] as? String, "off") // Taxes disabled
+        assertEqual(mockAnalytics.receivedProperties[0]["state"] as? String,
+                    "off")  // Taxes disabled when view model loads the toggle state during initialization
+        assertEqual(mockAnalytics.receivedProperties[1]["state"] as? String, "on")  // Taxes enabled due to setting `enableTaxes` as true
+        assertEqual(mockAnalytics.receivedProperties[2]["state"] as? String, "off") // Taxes disabled due to setting `enableTaxes` as false
     }
 
     func test_failing_event_is_tracked_when_order_fails_to_update() {
@@ -252,5 +324,49 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         // Then
         assertEqual(mockAnalytics.receivedEvents, [WooAnalyticsStat.simplePaymentsFlowFailed.rawValue])
         assertEqual(mockAnalytics.receivedProperties.first?["source"] as? String, "summary")
+    }
+
+    func test_taxes_toggle_state_is_properly_loaded() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getSimplePaymentsTaxesToggleState(_, onCompletion):
+                onCompletion(.success(true))
+            case .setSimplePaymentsTaxesToggleState:
+                break // No op
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+
+        // Then
+        XCTAssertTrue(viewModel.enableTaxes)
+    }
+
+    func test_taxes_toggle_state_is_stored_after_toggling_taxes() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0", totalWithTaxes: "1.0", taxAmount: "0.0", stores: mockStores)
+
+        // When
+        let stateStored: Bool = waitFor { promise in
+            mockStores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+                switch action {
+                case .setSimplePaymentsTaxesToggleState:
+                    promise(true)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+
+            viewModel.enableTaxes = true
+        }
+
+        // Then
+        XCTAssertTrue(stateStored)
     }
 }

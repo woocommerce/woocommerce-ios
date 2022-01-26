@@ -93,6 +93,14 @@ struct WooNavigationBarStyle: ViewModifier {
     }
 }
 
+struct LinkStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.body)
+            .foregroundColor(Color(.accent))
+    }
+}
+
 // MARK: View extensions
 extension View {
     /// - Parameters:
@@ -130,5 +138,9 @@ extension View {
 
     func wooNavigationBarStyle() -> some View {
         self.modifier(WooNavigationBarStyle())
+    }
+
+    func linkStyle() -> some View {
+        self.modifier(LinkStyle())
     }
 }

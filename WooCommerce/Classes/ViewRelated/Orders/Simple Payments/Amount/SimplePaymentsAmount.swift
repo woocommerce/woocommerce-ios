@@ -39,6 +39,8 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
             .sink { [weak self] notice in
 
                 switch notice {
+                case .created:
+                    self?.systemNoticePresenter.enqueue(notice: .init(title: SimplePaymentsAmount.Localization.created, feedbackType: .success))
                 case .completed:
                     self?.systemNoticePresenter.enqueue(notice: .init(title: SimplePaymentsAmount.Localization.completed, feedbackType: .success))
                 case .error(let description):
@@ -95,6 +97,10 @@ struct SimplePaymentsAmount: View {
     ///
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    /// Defines if the amount input  text field should be focused. Defaults to `true`
+    ///
+    @State private var focusAmountInput: Bool = true
+
     /// ViewModel to drive the view content
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsAmountViewModel
@@ -108,14 +114,23 @@ struct SimplePaymentsAmount: View {
             Text(Localization.instructions)
                 .secondaryBodyStyle()
 
-            // Amount Textfield
-            BindableTextfield(viewModel.amountPlaceholder, text: $viewModel.amount)
-                .font(.systemFont(ofSize: Layout.amountFontSize(scale: scale), weight: .bold))
-                .foregroundColor(.text)
-                .textAlignment(.center)
-                .keyboardType(.decimalPad)
-                .focused()
-                .fixedSize()
+            ZStack(alignment: .center) {
+                // Hidden input text field
+                BindableTextfield("", text: $viewModel.amount, focus: $focusAmountInput)
+                    .keyboardType(.decimalPad)
+                    .opacity(0)
+
+                // Visible & formatted label
+                Text(viewModel.formattedAmount)
+                    .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold))
+                    .foregroundColor(Color(viewModel.amountTextColor))
+                    .minimumScaleFactor(0.1)
+                    .lineLimit(1)
+                    .onTapGesture {
+                        focusAmountInput = true
+                    }
+            }
+            .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
 
@@ -163,7 +178,8 @@ private extension SimplePaymentsAmount {
         static let title = NSLocalizedString("Take Payment", comment: "Title for the simple payments screen")
         static let instructions = NSLocalizedString("Enter Amount", comment: "Short instructions label in the simple payments screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the simple payments screen")
-        static let completed = NSLocalizedString("🎉 Order completed", comment: "Title for the button to cancel the simple payments screen")
+        static let created = NSLocalizedString("🎉 Order created", comment: "Notice text after creating a simple payment order")
+        static let completed = NSLocalizedString("🎉 Order completed", comment: "Notice text after completing a simple payment order")
         static let buttonTitle = NSLocalizedString("Next", comment: "Title for the button to confirm the amount in the simple payments screen")
     }
 
@@ -178,6 +194,7 @@ private extension SimplePaymentsAmount {
 /// Representation of possible notices that can be displayed
 ///
 enum SimplePaymentsNotice: Equatable {
+    case created
     case completed
     case error(String)
 }

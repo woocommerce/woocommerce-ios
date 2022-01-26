@@ -1,0 +1,3 @@
+Às vezes, basta criar um pedido rápido para receber o pagamento do seu cliente referente a uma transação presencial, como em uma feira de negócios. Adicionamos uma nova opção para você criar pagamentos simples! Acesse a guia Pedidos para fazer um pedido rápido e registrar a transação. Estamos nos empenhando na criação de pedidos completos também (você verá isso mais para frente neste ano).
+
+Além disso, corrigimos um bug que fazia a contagem de visitantes do site não ser exibida na guia Hoje do painel da sua loja. Obrigado por avisar!

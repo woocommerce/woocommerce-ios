@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-12-01 11:32:05+0000 */
+/* Translation-Revision-Date: 2021-12-22 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -30,7 +30,12 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (顧客向け)";
 
-/* Label about product's inventory stock status shown on Products tab */
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string, - which should be translated separately and considered part of this sentence. */
+"%1$@ about accepting payments with your mobile device and ordering card readers" = "モバイルデバイスや注文用カードリーダーでの支払いの受領方法について%1$@";
+
+/* Label about product's inventory stock status shown during order creation
+   Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ の在庫あり";
 
 /* Review title. Reads as {Review author} left a review */
@@ -240,7 +245,7 @@
 "Activate WooCommerce Payments" = "WooCommerce Payments を有効化する";
 
 /* Name of the activation Jetpack plugin step */
-"Activating" = "Activating";
+"Activating" = "有効化中";
 
 /* Application's Active State */
 "Active" = "有効";
@@ -292,7 +297,8 @@
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "価格を追加";
 
-/* Action to add product on the placeholder overlay when there are no products on the Products tab */
+/* Action to add product on the placeholder overlay when there are no products on the Products tab
+   Title for the screen to add a product to an order */
 "Add Product" = "商品を追加";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
@@ -313,7 +319,7 @@
 "Add a new credit card" = "新しいクレジットカードを追加";
 
 /* Navigates to a screen to create a full manual order */
-"Add a new order" = "Add a new order";
+"Add a new order" = "新しい注文を追加";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -354,7 +360,7 @@
 "Add price to your variations to make them visible on your store" = "バリエーションの価格を追加してストアで表示します";
 
 /* Title text of the button that adds a product when creating a new order */
-"Add product" = "Add product";
+"Add product" = "商品を追加";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "商品へのリンクを追加";
@@ -418,7 +424,7 @@
 "All available packages have been activated" = "利用可能なすべての荷物が有効化されました";
 
 /* Name of final step in Install Jetpack flow. */
-"All done" = "All done";
+"All done" = "すべて完了";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "すべての既読レビュー";
@@ -619,7 +625,7 @@
 "Can Not Request Link" = "リンクをリクエストできません";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "キャンセル";
 
 /* Display label for cancelled order status. */
@@ -647,7 +653,7 @@
 "Capture high-quality product reviews for your store." = "ストアに対する高品質な製品レビューを取得しましょう。";
 
 /* Card method title on the select payment method screen for simple payments */
-"Card" = "Card";
+"Card" = "カード";
 
 /* Navigates to Card Reader manual */
 "Card reader manual" = "カードリーダーマニュアル";
@@ -659,7 +665,7 @@
 "Carrier name" = "配送業者名";
 
 /* Cash method title on the select payment method screen for simple payments */
-"Cash" = "Cash";
+"Cash" = "現金";
 
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
@@ -712,10 +718,10 @@
 "Choose from device" = "デバイスから選択";
 
 /* Opens action sheet to choose a type of a new order */
-"Choose new order type" = "Choose new order type";
+"Choose new order type" = "新しい注文タイプを選択";
 
 /* Heading text on the select payment method screen for simple payments */
-"Choose your payment method" = "Choose your payment method";
+"Choose your payment method" = "支払い方法を選択";
 
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
@@ -731,8 +737,8 @@
 /* Button title for clearing all filters for the list. */
 "Clear all" = "すべてクリア";
 
-/* Text for the close button in the Edit Address Form
-   Title of the Close action on the Jetpack Install view */
+/* Text for the close button in the Add Product screen
+   Text for the close button in the Edit Address Form - Title of the Close action on the Jetpack Install view */
 "Close" = "閉じる";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
@@ -740,6 +746,12 @@
 
 /* Text on the button that starts collecting a card present payment. */
 "Collect Payment" = "支払いを受け取る";
+
+/* Alert title when starting the collect payment flow without a user name. */
+"Collect payment" = "支払いを受け取る";
+
+/* Alert title when starting the collect payment flow with a user name. */
+"Collect payment from %1$@" = "%1$@ から支払いを受け取る";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -794,7 +806,7 @@
 "Connecting to your account" = "アカウントへの接続";
 
 /* Name of the step to connect the store to Jetpack */
-"Connecting your store" = "Connecting your store";
+"Connecting your store" = "ストアを接続しています";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "顧客に連絡";
@@ -909,16 +921,16 @@
 "Create Shipping Label" = "配送ラベルを作成";
 
 /* Description of the Action sheet option when the user wants to create full manual order */
-"Create a new manual order" = "Create a new manual order";
+"Create a new manual order" = "手動で新しい注文を作成します";
 
 /* Description of the Action sheet option when the user wants to create Simple Payments order */
-"Create an order with minimal information" = "Create an order with minimal information";
+"Create an order with minimal information" = "最小限の情報で注文を作成します";
 
 /* Button to create a new package in Shipping Label Package screen */
 "Create new package" = "新しい荷物を作成する";
 
 /* Action sheet option when the user wants to create full manual order */
-"Create order" = "Create order";
+"Create order" = "注文を作成";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "スマートフォンを使って配送ラベルを作成 !";
@@ -973,7 +985,7 @@
 "Customer" = "顧客";
 
 /* Customer note row title
-   Customer note section title */
+   Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
 "Customer Provided Note" = "顧客提供メモ";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
@@ -1084,7 +1096,7 @@
 "Don't have an account? _Sign up_" = "アカウントをお持ちでない場合は_登録_してください。";
 
 /* Action title to select products to add to a grouped product from search results
-   Done button on the Jetpack Install Progress screen. - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Title for the button to confirm the amount in the simple payments screen */
+   Done button on the Jetpack Install Progress screen. - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
 "Done" = "完了";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1154,7 +1166,8 @@
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "一意のコードで商品を簡単に特定";
 
-/* Title text of the button that edits a note when creating a simple payment */
+/* Button to edit an order status on the New Order screen
+   Title text of the button that edits a note when creating a simple payment */
 "Edit" = "編集";
 
 /* Action to edit the address in Shipping Label Suggested screen */
@@ -1163,9 +1176,6 @@
 /* Action to edit the attributes and options used for variations
    Navigation title for the Product Attributes screen */
 "Edit Attributes" = "属性を編集";
-
-/* Title for the edit customer provided note screen */
-"Edit Note" = "メモを編集";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "商品を編集";
@@ -1223,6 +1233,9 @@
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "**プリンターのファームウェアが最新である** ことを確認してください。 更新の手順については、プリンターのドキュメントを確認してください。";
 
+/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+"Enter Address" = "住所を入力";
+
 /* Short instructions label in the simple payments screen */
 "Enter Amount" = "金額を入力";
 
@@ -1264,12 +1277,12 @@
 /* Enter password placeholder in Product Visibility */
 "Enter password" = "パスワードを入力";
 
+/* Sign in instructions for logging in with a URL. */
+"Enter the address of the WooCommerce store you'd like to connect." = "連携させる WooCommerce ストアのアドレスを入力してください。";
+
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
 "Enter the address of the WordPress site you'd like to connect." = "連携する WordPress サイトのアドレスを入力してください。";
-
-/* Sign in instructions for logging in with a URL. */
-"Enter the address of your WooCommerce store you'd like to connect." = "連携させる WooCommerce ストアのアドレスを入力してください。";
 
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "商品の外部 URL を入力してください。";
@@ -1562,6 +1575,9 @@
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "改善すべき点をお聞かせください";
 
+/* Navigation bar title of hub menu view */
+"Hub Menu" = "ハブメニュー";
+
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "満足している";
 
@@ -1666,7 +1682,7 @@
 "Install WooCommerce Payments" = "WooCommerce Payments をインストールする";
 
 /* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
-"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "Install the free Jetpack plugin to %1$@ and experience the best mobile experience.";
+"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "無料の Jetpack プラグインを %1$@ にインストールすると、最高のモバイル環境をご利用いただけます。";
 
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "無料の Jetpack プラグインをインストールすると、最高のモバイル環境をご利用いただけます。";
@@ -1789,8 +1805,8 @@
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Wormholy デバッグを起動";
 
-/* Button title in the shipping label creation info screen
-   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. - Button title in the shipping label creation info screen - Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
 "Learn more" = "さらに詳しく";
 
 /* A label prompting users to learn more about HS Tariff Number in Customs screen of Shipping Label flow */
@@ -1944,6 +1960,12 @@
    Fulfill Order Action Button */
 "Mark Order Complete" = "注文を完了としてマーク";
 
+/* Alert button when selecting the cash payment method for simple payments */
+"Mark as Paid" = "支払い済みとしてマーク";
+
+/* Alert title when selecting the cash payment method for simple payments */
+"Mark as Paid?" = "支払い済みとしてマークしますか ?";
+
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "この注文に完了のマークを付けてお客様に通知";
 
@@ -1952,6 +1974,9 @@
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "メディアにはアップロードする関連したファイルはありません。";
+
+/* Title of the Menu tab */
+"Menu" = "メニュー";
 
 /* Menu order label in Product Settings
    Product Menu Order navigation title */
@@ -2044,7 +2069,7 @@
 "New Attribute Name" = "新規属性名";
 
 /* Title for the order creation screen */
-"New Order" = "New Order";
+"New Order" = "新しい注文";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "新しいアナリティクスビューでは、訪問者やレポートなどを確認できます。";
@@ -2086,6 +2111,9 @@
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "価格未設定";
+
+/* Message displayed if there are no products to display in the Add Product screen */
+"No products found" = "商品が見つかりません";
 
 /* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
@@ -2221,10 +2249,7 @@
 "Order #%1$@" = "注文番号 %1$@ を注文";
 
 /* Cell title on the beta features screen to enable creating new orders */
-"Order Creation" = "Order Creation";
-
-/* Title text of the row that holds the order note when creating a simple payment */
-"Order Note" = "注文メモ";
+"Order Creation" = "注文の作成";
 
 /* Order notes section title */
 "Order Notes" = "注文メモ";
@@ -2381,6 +2406,12 @@
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "リーダーを充電してください";
 
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
+"Please correct your store address to proceed" = "続行するにはストアの住所を修正してください";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"Please correct your store's postcode\/ZIP" = "ストアの郵便番号を修正してください";
+
 /* Error message for missing explanation when Content Typeis Other in Customs screen of Shipping Label flow */
 "Please describe what kind of goods this package contains" = "この荷物に含まれている商品の種類について説明してください";
 
@@ -2454,11 +2485,11 @@
 "Please update your reader software to keep accepting payments" = "引き続き支払いを受け入れるには、Reader のソフトウェアを更新してください";
 
 /* Message of in-progress modal when preparing for printing customs invoice
-   Message of in-progress modal when requesting shipping label document for printing - Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait */
+   Message of in-progress modal when requesting shipping label document for printing - Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait - VoiceOver Accessibility label for the instruction */
 "Please wait" = "しばらくお待ちください";
 
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
-"Please wait while we connect your site %1$@ with Jetpack." = "Please wait while we connect your site %1$@ with Jetpack.";
+"Please wait while we connect your site %1$@ with Jetpack." = "サイト %1$@ を Jetpack に接続する間、しばらくお待ちください";
 
 /* Instructions for the progress screen while generating a variation */
 "Please wait while we create the new variation" = "新しいバリエーションが作成されるまでしばらくお待ちください";
@@ -2470,7 +2501,7 @@
 "Please wait while we save this product to your store" = "ストアにこの商品を保存しています。しばらくお待ちください";
 
 /* Message of the in-progress UI while saving a Variation remotely */
-"Please wait while we save your latest changes" = "Please wait while we save your latest changes";
+"Please wait while we save your latest changes" = "最新の変更を保存する間、しばらくお待ちください";
 
 /* Message of the in-progress UI while deleting the Product remotely
    Message of the in-progress UI while deleting the Variation remotely */
@@ -2560,6 +2591,9 @@
 
 /* Display label for processing order status. */
 "Processing" = "処理中";
+
+/* VoiceOver accessibility label. Indicates that a payment is being processed */
+"Processing payment" = "支払いを処理しています";
 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "支払いを処理しています...";
@@ -2663,8 +2697,8 @@
 /* Quantity abbreviation for section title */
 "Qty" = "数量";
 
-/* The accessibility label for the quantity button when selecting an item to refund
-   Title of the cell in Product Inventory Settings > Quantity */
+/* Accessibility label for product quantity field
+   The accessibility label for the quantity button when selecting an item to refund - Title of the cell in Product Inventory Settings > Quantity */
 "Quantity" = "数量";
 
 /* Navigation title on the quantity item selector screen */
@@ -2825,6 +2859,10 @@
    Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
 "Retry" = "再度試す";
 
+/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
+   Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
+"Retry After Updating" = "更新後に再試行";
+
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "荷物を配達できなかった場合、荷送人に差し戻す";
 
@@ -2907,7 +2945,7 @@
 "Saving your product..." = "商品を保存しています...";
 
 /* Title of the in-progress UI while saving a Variation remotely */
-"Saving your variation..." = "Saving your variation...";
+"Saving your variation..." = "バリエーションを保存しています...";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "バーコードをスキャンして SKU を更新";
@@ -3373,7 +3411,8 @@
 /* Title for the simple payments screen */
 "Take Payment" = "支払いを受け取る";
 
-/* Text of the button that creates a simple payment order. Contains the total amount to collect */
+/* Navigation bar title for the Simple Payments Methods screens
+   Text of the button that creates a simple payment order. Contains the total amount to collect */
 "Take Payment ((total))" = "お支払い ((合計))";
 
 /* Menu option for taking an image or video with the device's camera. */
@@ -3457,7 +3496,7 @@
 "Tax" = "税";
 
 /* Tax percentage to be applied to the simple payments order */
-"Tax ((rate)%)" = "Tax ((rate)%)";
+"Tax ((rate)%)" = "税率 ((rate)%)";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "税設定";
@@ -3482,7 +3521,7 @@
 "Taxes" = "税";
 
 /* Disclaimer in the simple payments summary screen about taxes. */
-"Taxes are automatically calculated based on your store address." = "Taxes are automatically calculated based on your store address.";
+"Taxes are automatically calculated based on your store address." = "税金は店舗の住所に基づいて自動的に計算されます。";
 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "%1$@ についてもう少しお聞かせください...";
@@ -3491,7 +3530,7 @@
 "Terms of Service" = "利用規約";
 
 /* Cell description on the beta features screen to enable creating new orders */
-"Test out creating new manual orders as we get ready to launch" = "Test out creating new manual orders as we get ready to launch";
+"Test out creating new manual orders as we get ready to launch" = "リリースの準備ができ次第、手動で新しい注文の作成をテストしてください";
 
 /* Cell description on the beta features screen to enable the Simple Payments feature */
 "Test out creating orders with minimal information as we get ready to launch" = "リリースの準備ができ次第、最小限の情報で注文の作成をテストしてください";
@@ -3639,9 +3678,15 @@
    Notice text after failing to update the order successfully */
 "There was an error updating the order" = "注文の更新中にエラーが発生しました";
 
+/* Text when there is an error while marking the order as paid for simple payments. */
+"There was an error while marking the order as paid." = "注文を支払い済みとしてマークする際にエラーが発生しました。";
+
+/* Text when there is an unknown error while trying to collect payments */
+"There was an error while trying to collect the payment." = "支払いの受け取り中にエラーが発生しました。";
+
 /* Navigates to screen with third party software licenses
    Software Licenses (information page title) */
-"Third Party Licenses" = "Third Party Licenses";
+"Third Party Licenses" = "サードパーティのライセンス";
 
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
@@ -3704,6 +3749,9 @@
 /* Footer text for editing external product button text */
 "This text will be shown on the button linking to the external product." = "このテキストは外部商品のリンクボタンに表示されます";
 
+/* Alert info when selecting the cash payment method for simple payments */
+"This will mark your order as complete if you received (total) outside of WooCommerce" = "WooCommerce 外部で (合計) を受け取った場合は、注文が完了済みとしてマークされます";
+
 /* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "タイトル";
@@ -3739,7 +3787,7 @@
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "この Google アカウントで先に進むには、最初に WordPress.com パスワードを使用してログインしてください。これは一度しか尋ねられません。";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"To turn on your card reader, briefly press its power button." = "To turn on your card reader, briefly press its power button.";
+"To turn on your card reader, briefly press its power button." = "カードリーダーをオンにするには、電源ボタンを1回押します。";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "﻿%@ にこのアプリを使用するには、Jetpack プラグインをインストールし、ストアと連携する必要があります。";
@@ -3855,7 +3903,7 @@
 "Unable to change status of order #%1$d" = "注文番号%1$dのステータスを変更できません";
 
 /* Notice displayed when order creation fails */
-"Unable to create new order" = "Unable to create new order";
+"Unable to create new order" = "新しい注文を作成できません";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "注文番号%1$dの追跡を削除できません";
@@ -4067,7 +4115,7 @@
 "Variable product" = "バリエーションのある商品";
 
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
-"Variation #%1$@" = "Variation #%1$@";
+"Variation #%1$@" = "バリエーション #%1$@";
 
 /* Text for the notice after creating the first variation. */
 "Variation created" = "バリエーションが作成されました";
@@ -4167,9 +4215,6 @@
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "お使いの端末から Product Add-ons をより簡単に確認できるように取り組んでいます。 当面は、注文のアドオンを表示できるようにする予定です。 ウェブダッシュボードでこれらのアドオンを作成および編集できます。";
 
-/* Content of the top banner to announce the simple payments feature. */
-"We are working on making it easier for you to take payments from your device! Enable Simple Payments in Settings > Experimental Features." = "お使いの端末からより簡単に支払いを受けることができるように取り組んでいます。 「設定」>「試験用の機能」でシンプルペイメントを有効にします。";
-
 /* Content of the banner notice in the Simple Payments view */
 "We are working on making it easier for you to take payments from your device! For now, tap on the \"+\" button and you’ll be able to create an order with the amount you want to collect" = "お使いの端末からより簡単に支払いを受けることができるように取り組んでいます。 現在は、「+」ボタンをタップすると、希望の金額で注文を作成できます。";
 
@@ -4231,7 +4276,7 @@
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "その URL の Jetpack サイトと連携することはできません。サポートにご連絡ください。";
 
 /* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
-"We're sorry, we couldn't find any order that match %@" = "We're sorry, we couldn't find any order that match %@";
+"We're sorry, we couldn't find any order that match %@" = "「%@」に一致する注文が見つかりませんでした。";
 
 /* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
@@ -4302,6 +4347,9 @@
 /* Title for the error screen when WooCommerce Payments is in test mode on a live site */
 "WooCommerce Payments is in Test Mode" = "WooCommerce Payments はテストモードです";
 
+/* Navigation title of the webview which used by the merchant to update their store address */
+"WooCommerce Settings" = "WooCommerce 設定";
+
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce の送料";
 
@@ -4339,8 +4387,14 @@
 /* The info of the shipping labels top banner in order details */
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "無料の WooCommerce Shipping プラグインを使用して、お使いの端末から直接、すべての物理的な注文の配送ラベルを作成できるようになりました。 「配送ラベルを作成」をタップしてベータ機能をお試しください !";
 
+/* Shown in Refunds screen. Refunding fees are currently not supported. */
+"You can refund fees in your store admin" = "ストア管理で料金の払い戻しを受けられます";
+
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "荷物の配送に使用されていない配送ラベルの返金をリクエストできます。\n処理には少なくとも14日かかります。";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "ストアの郵便番号は「wp-admin」>「WooCommerce」>「設定 (一般)」で設定できます";
 
 /* Error message when WooCommerce Payments is not supported in a specific country
    Generic error message when In-Person Payments is unavailable */
@@ -4426,11 +4480,11 @@
 /* About View's Footer Text. The variable is the current year */
 "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd.";
 
-/* Customer note, wrapped in quotes */
-"“%@”" = "“%@”";
-
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 注文完了";
+
+/* Title for the button to cancel the simple payments screen */
+"🎉 Order completed" = "注文完了";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 商品は正常に返金されました";

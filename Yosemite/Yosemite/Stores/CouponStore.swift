@@ -293,6 +293,35 @@ private extension CouponStore {
             DispatchQueue.main.async(execute: onCompletion)
         }
     }
+
+    /// Upserts the Coupons, and associates them to the SearchResults Entity (in Background)
+    ///
+    func upsertSearchResultsInBackground(siteID: Int64, keyword: String, readOnlyCoupons: [Networking.Coupon], onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform { [weak self] in
+            self?.upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons, in: derivedStorage, siteID: siteID)
+            self?.upsertStoredResults(siteID: siteID, keyword: keyword, readOnlyCoupons: readOnlyCoupons, in: derivedStorage)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Upserts the Coupons, and associates them to the Search Results Entity (in the specified Storage)
+    ///
+    func upsertStoredResults(siteID: Int64, keyword: String, readOnlyCoupons: [Networking.Coupon], in storage: StorageType) {
+        let searchResult = storage.loadCouponSearchResult(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.CouponSearchResult.self)
+        searchResult.keyword = keyword
+
+        for coupon in readOnlyCoupons {
+            guard let storedCoupon = storage.loadCoupon(siteID: siteID, couponID: coupon.couponID) else {
+                continue
+            }
+
+            storedCoupon.addToSearchResults(searchResult)
+        }
+    }
 }
 
 public enum CouponError: Error {

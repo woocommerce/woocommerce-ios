@@ -215,17 +215,20 @@ private extension CouponStore {
                        pageSize: Int,
                        onCompletion: @escaping (_ result: Result<Bool, Error>) -> Void) {
         remote.searchCoupons(for: siteID,
-                                keyword: keyword,
-                                pageNumber: pageNumber,
-                                pageSize: pageSize) { [weak self] result in
+                             keyword: keyword,
+                             pageNumber: pageNumber,
+                             pageSize: pageSize) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))
-                
             case .success(let coupons):
-                // TODO
-                break
+                let hasNextPage = coupons.count == pageSize
+                self.upsertSearchResultsInBackground(siteID: siteID,
+                                                     keyword: keyword,
+                                                     readOnlyCoupons: coupons) {
+                    onCompletion(.success(hasNextPage))
+                }
             }
         }
     }

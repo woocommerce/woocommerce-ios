@@ -1,6 +1,6 @@
+import Combine
 import Photos
 import Yosemite
-import Observables
 
 /// Encapsulates the implementation of Product images actions from the UI.
 ///
@@ -56,7 +56,7 @@ final class ProductImageActionHandler {
     ///               if `observer` is not nil.
     @discardableResult
     func addUpdateObserver<T: AnyObject>(_ observer: T,
-                                         onUpdate: @escaping OnAllStatusesUpdate) -> ObservationToken {
+                                         onUpdate: @escaping OnAllStatusesUpdate) -> AnyCancellable {
         let id = UUID()
 
         queue.async { [weak self] in
@@ -83,7 +83,7 @@ final class ProductImageActionHandler {
             onUpdate(self.allStatuses)
         }
 
-        return ObservationToken { [weak self] in
+        return AnyCancellable { [weak self] in
             self?.queue.async { [weak self] in
                 self?.observations.allStatusesUpdated.removeValue(forKey: id)
             }
@@ -97,7 +97,7 @@ final class ProductImageActionHandler {
     ///   - onAssetUpload: called when an asset has been uploaded, if `observer` is not nil.
     @discardableResult
     func addAssetUploadObserver<T: AnyObject>(_ observer: T,
-                                              onAssetUpload: @escaping OnAssetUpload) -> ObservationToken {
+                                              onAssetUpload: @escaping OnAssetUpload) -> AnyCancellable {
         let id = UUID()
 
         queue.async { [weak self] in
@@ -117,7 +117,7 @@ final class ProductImageActionHandler {
             }
         }
 
-        return ObservationToken { [weak self] in
+        return AnyCancellable { [weak self] in
             self?.queue.async { [weak self] in
                 self?.observations.assetUploaded.removeValue(forKey: id)
             }

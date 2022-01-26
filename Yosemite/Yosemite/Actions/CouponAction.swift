@@ -61,12 +61,10 @@ public enum CouponAction: Action {
     /// - `pageNumber`: page of results based on the `pageSize` provided. 1-indexed.
     /// - `pageSize`: number of results per page.
     /// - `onCompletion`: invoked when the search finishes.
-    ///     - `result.success(Bool)`: value indicates whether there are further pages to retrieve.
-    ///     - `result.failure(Error)`: error indicates issues searching the coupons.
     ///
     case searchCoupons(siteID: Int64,
                        keyword: String,
                        pageNumber: Int,
                        pageSize: Int,
-                       onCompletion: (Result<Bool, Error>) -> Void)
+                       onCompletion: (Result<Void, Error>) -> Void)
 }

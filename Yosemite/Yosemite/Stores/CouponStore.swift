@@ -207,13 +207,12 @@ private extension CouponStore {
     ///   - pageNumber: Page number of coupons to fetch from the API
     ///   - pageSize: Number of coupons per page to fetch from the API
     ///   - onCompletion: Closure to call after the search is complete. Called on the main thread.
-    ///   - result: `.success(hasNextPage: Bool)` or `.failure(error: Error)`
     ///
     func searchCoupons(siteID: Int64,
                        keyword: String,
                        pageNumber: Int,
                        pageSize: Int,
-                       onCompletion: @escaping (_ result: Result<Bool, Error>) -> Void) {
+                       onCompletion: @escaping (_ result: Result<Void, Error>) -> Void) {
         remote.searchCoupons(for: siteID,
                              keyword: keyword,
                              pageNumber: pageNumber,
@@ -223,11 +222,10 @@ private extension CouponStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let coupons):
-                let hasNextPage = coupons.count == pageSize
                 self.upsertSearchResultsInBackground(siteID: siteID,
                                                      keyword: keyword,
                                                      readOnlyCoupons: coupons) {
-                    onCompletion(.success(hasNextPage))
+                    onCompletion(.success(()))
                 }
             }
         }

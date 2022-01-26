@@ -527,8 +527,8 @@ final class CouponStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(storedCouponsCount, 3)
-        XCTAssertEqual(storedSearchResultsCount, 3)
+        XCTAssertEqual(storedCouponsCount, 4)
+        XCTAssertEqual(storedSearchResultsCount, 1)
         let storedCoupon = viewStorage.loadCoupon(siteID: sampleSiteID, couponID: sampleCouponID)
         XCTAssertNotNil(storedCoupon)
         XCTAssertEqual(storedCoupon?.amount, "10.00") // Updated amount reflecting the response.

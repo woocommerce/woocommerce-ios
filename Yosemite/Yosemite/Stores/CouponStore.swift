@@ -66,6 +66,12 @@ public final class CouponStore: Store {
             createCoupon(coupon, onCompletion: onCompletion)
         case .loadCouponReport(let siteID, let couponID, let onCompletion):
             loadCouponReport(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
+        case .searchCoupons(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
+            searchCoupons(siteID: siteID,
+                          keyword: keyword,
+                          pageNumber: pageNumber,
+                          pageSize: pageSize,
+                          onCompletion: onCompletion)
         }
     }
 }
@@ -190,6 +196,40 @@ private extension CouponStore {
     func loadCouponReport(siteID: Int64, couponID: Int64, onCompletion: @escaping (Result<CouponReport, Error>) -> Void) {
         remote.loadCouponReport(for: siteID, couponID: couponID, completion: onCompletion)
     }
+
+    /// Search coupons from a Site that match a specified keyword.
+    /// Search results are persisted in the local storage to ensure
+    /// good performance for future search of the same keyword.
+    ///
+    /// - Parameters:
+    ///   - siteId: The site to search coupons for.
+    ///   - keyword: The string to match the results with.
+    ///   - pageNumber: Page number of coupons to fetch from the API
+    ///   - pageSize: Number of coupons per page to fetch from the API
+    ///   - onCompletion: Closure to call after the search is complete. Called on the main thread.
+    ///
+    func searchCoupons(siteID: Int64,
+                       keyword: String,
+                       pageNumber: Int,
+                       pageSize: Int,
+                       onCompletion: @escaping (_ result: Result<Void, Error>) -> Void) {
+        remote.searchCoupons(for: siteID,
+                             keyword: keyword,
+                             pageNumber: pageNumber,
+                             pageSize: pageSize) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let coupons):
+                self.upsertSearchResultsInBackground(siteID: siteID,
+                                                     keyword: keyword,
+                                                     readOnlyCoupons: coupons) {
+                    onCompletion(.success(()))
+                }
+            }
+        }
+    }
 }
 
 
@@ -252,6 +292,35 @@ private extension CouponStore {
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
             DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Upserts the Coupons, and associates them to the SearchResults Entity (in Background)
+    ///
+    func upsertSearchResultsInBackground(siteID: Int64, keyword: String, readOnlyCoupons: [Networking.Coupon], onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform { [weak self] in
+            self?.upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons, in: derivedStorage, siteID: siteID)
+            self?.upsertStoredResults(siteID: siteID, keyword: keyword, readOnlyCoupons: readOnlyCoupons, in: derivedStorage)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Upserts the Coupons, and associates them to the Search Results Entity (in the specified Storage)
+    ///
+    func upsertStoredResults(siteID: Int64, keyword: String, readOnlyCoupons: [Networking.Coupon], in storage: StorageType) {
+        let searchResult = storage.loadCouponSearchResult(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.CouponSearchResult.self)
+        searchResult.keyword = keyword
+
+        for coupon in readOnlyCoupons {
+            guard let storedCoupon = storage.loadCoupon(siteID: siteID, couponID: coupon.couponID) else {
+                continue
+            }
+
+            storedCoupon.addToSearchResults(searchResult)
         }
     }
 }

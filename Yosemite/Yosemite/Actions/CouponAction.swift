@@ -53,4 +53,18 @@ public enum CouponAction: Action {
     case loadCouponReport(siteID: Int64,
                           couponID: Int64,
                           onCompletion: (Result<CouponReport, Error>) -> Void)
+
+    /// Search Coupons matching a given keyword for a site
+    ///
+    /// - `siteID`: the site for which coupons should be fetched.
+    /// - `keyword`: the keyword to match the results with.
+    /// - `pageNumber`: page of results based on the `pageSize` provided. 1-indexed.
+    /// - `pageSize`: number of results per page.
+    /// - `onCompletion`: invoked when the search finishes.
+    ///
+    case searchCoupons(siteID: Int64,
+                       keyword: String,
+                       pageNumber: Int,
+                       pageSize: Int,
+                       onCompletion: (Result<Void, Error>) -> Void)
 }

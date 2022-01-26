@@ -8,7 +8,7 @@ final class CouponSearchUICommand: SearchUICommand {
     typealias CellViewModel = TitleAndSubtitleAndStatusTableViewCell.ViewModel
     typealias ResultsControllerModel = StorageCoupon
 
-    let searchBarPlaceholder = NSLocalizedString("Search all coupons", comment: "Coupons Search Placeholder")
+    let searchBarPlaceholder = Localization.searchBarPlaceholder
 
     let searchBarAccessibilityIdentifier = "coupon-search-screen-search-field"
 
@@ -55,11 +55,21 @@ final class CouponSearchUICommand: SearchUICommand {
         let boldSearchKeyword = NSAttributedString(string: searchKeyword,
                                                    attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
 
-        let format = NSLocalizedString("We're sorry, we couldn't find results for “%@”",
-                                       comment: "Message for empty Coupons search results. The %@ is a placeholder for the text entered by the user.")
+        let format = Localization.emptyResultMessage
         let message = NSMutableAttributedString(string: format)
         message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
 
         viewController.configure(.simple(message: message, image: .emptySearchResultsImage))
+    }
+}
+
+// MARK: - Subtypes
+//
+private extension CouponSearchUICommand {
+    enum Localization {
+        static let searchBarPlaceholder = NSLocalizedString("Search all coupons", comment: "Coupons Search Placeholder")
+        static let emptyResultMessage = NSLocalizedString("We're sorry, we couldn't find results for “%@”",
+                                                          comment: "Message for empty Coupons search results. The %@ is a " +
+                                                          "placeholder for the text entered by the user.")
     }
 }

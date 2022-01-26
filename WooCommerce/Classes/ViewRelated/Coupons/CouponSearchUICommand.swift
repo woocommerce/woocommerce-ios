@@ -49,4 +49,17 @@ final class CouponSearchUICommand: SearchUICommand {
     func didSelectSearchResult(model: Coupon, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
         // TODO: Show coupon details screen
     }
+
+    func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewController,
+                                                        searchKeyword: String) {
+        let boldSearchKeyword = NSAttributedString(string: searchKeyword,
+                                                   attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
+
+        let format = NSLocalizedString("We're sorry, we couldn't find results for “%@”",
+                                       comment: "Message for empty Coupons search results. The %@ is a placeholder for the text entered by the user.")
+        let message = NSMutableAttributedString(string: format)
+        message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
+
+        viewController.configure(.simple(message: message, image: .emptySearchResultsImage))
+    }
 }

@@ -161,7 +161,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         // Given
         setupCountry(country: .us)
         setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
-        setupPaymentGatewayAccount(status: .complete, isLive: true, isInTestMode: true)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete, isLive: true, isInTestMode: true)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)

@@ -53,6 +53,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var cancellableProductName: AnyCancellable?
     private var cancellableUpdateEnabled: AnyCancellable?
     private var cancellableNewVariationsPrice: AnyCancellable?
+    private var productImageStatusesSubscription: AnyCancellable?
 
     init(viewModel: ViewModel,
          eventLogger: ProductFormEventLoggerProtocol,
@@ -111,7 +112,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeUpdateCTAVisibility()
         observeVariationsPriceChanges()
 
-        productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
                 return
             }

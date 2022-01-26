@@ -38,6 +38,10 @@ protocol SettingsViewModelActionsHandler {
     /// Presenter (SettingsViewController in this case) is responsible for calling this method when store picker is dismissed.
     ///
     func onStorePickerDismiss()
+
+    /// Reloads settings if the site is no longer Jetpack CP.
+    ///
+    func onJetpackInstallDismiss()
 }
 
 protocol SettingsViewModelInput: AnyObject {
@@ -140,6 +144,15 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         loadSites()
         reloadSettings()
     }
+
+    /// Reloads settings if the site is no longer Jetpack CP.
+    ///
+    func onJetpackInstallDismiss() {
+        guard stores.sessionManager.defaultSite?.isJetpackCPConnected == false else {
+            return
+        }
+        reloadSettings()
+    }
 }
 
 private extension SettingsViewModel {
@@ -169,12 +182,17 @@ private extension SettingsViewModel {
 
     func configureSections() {
         // Selected Store
-        let selectedStoreSection: Section = {
-            let storeRows: [Row] = sites.count > 1 ?
+        let selectedStoreSection: Section? = {
+            if featureFlagService.isFeatureFlagEnabled(.hubMenu) {
+                return nil
+            }
+            else {
+                let storeRows: [Row] = sites.count > 1 ?
                 [.selectedStore, .switchStore] : [.selectedStore]
-            return Section(title: Localization.selectedStoreTitle,
-                           rows: storeRows,
-                           footerHeight: UITableView.automaticDimension)
+                return Section(title: Localization.selectedStoreTitle,
+                               rows: storeRows,
+                               footerHeight: UITableView.automaticDimension)
+            }
         }()
 
         // Plugins
@@ -192,13 +210,12 @@ private extension SettingsViewModel {
 
         // Store settings
         let storeSettingsSection: Section = {
-            let rows: [Row]
+            var rows: [Row] = [.inPersonPayments]
             if stores.sessionManager.defaultSite?.isJetpackCPConnected == true,
                 featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport) {
-                rows = [.inPersonPayments, .installJetpack]
-            } else {
-                rows = [.inPersonPayments]
+                rows.append(.installJetpack)
             }
+
             return Section(title: Localization.storeSettingsTitle,
                            rows: rows,
                            footerHeight: UITableView.automaticDimension)
@@ -267,7 +284,7 @@ private extension SettingsViewModel {
         .compactMap { $0 }
     }
 
-    /// Ask the PaymentGatewayAccountStore to loadAccounts from the network and update storage
+    /// Ask the CardPresentPaymentStore to loadAccounts from the network and update storage
     ///
     func loadPaymentGatewayAccounts() {
         guard let siteID = stores.sessionManager.defaultSite?.siteID else {
@@ -276,7 +293,7 @@ private extension SettingsViewModel {
 
         /// No need for a completion here. We will be notified of storage changes in `onDidChangeContent`
         ///
-        let action = PaymentGatewayAccountAction.loadAccounts(siteID: siteID) {_ in}
+        let action = CardPresentPaymentAction.loadAccounts(siteID: siteID) {_ in}
         stores.dispatch(action)
     }
 

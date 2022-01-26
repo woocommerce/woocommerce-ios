@@ -27,18 +27,20 @@ struct InPersonPaymentsView: View {
             switch viewModel.state {
             case .loading:
                 InPersonPaymentsLoading()
+            case .selectPlugin:
+                InPersonPaymentsSelectPlugin(onRefresh: viewModel.refresh)
             case .countryNotSupported(let countryCode):
                 InPersonPaymentsCountryNotSupported(countryCode: countryCode)
-            case .wcpayNotInstalled:
+            case .pluginNotInstalled:
                 InPersonPaymentsPluginNotInstalled(onRefresh: viewModel.refresh)
-            case .wcpayUnsupportedVersion:
-                InPersonPaymentsPluginNotSupportedVersion(onRefresh: viewModel.refresh)
-            case .wcpayNotActivated:
-                InPersonPaymentsPluginNotActivated(onRefresh: viewModel.refresh)
-            case .wcpayInTestModeWithLiveStripeAccount:
+            case .pluginUnsupportedVersion(let plugin):
+                InPersonPaymentsPluginNotSupportedVersion(plugin: plugin, onRefresh: viewModel.refresh)
+            case .pluginNotActivated(let plugin):
+                InPersonPaymentsPluginNotActivated(plugin: plugin, onRefresh: viewModel.refresh)
+            case .pluginInTestModeWithLiveStripeAccount:
                 InPersonPaymentsLiveSiteInTestMode(onRefresh:
                     viewModel.refresh)
-            case .wcpaySetupNotCompleted:
+            case .pluginSetupNotCompleted:
                 InPersonPaymentsWCPayNotSetup(onRefresh: viewModel.refresh)
             case .stripeAccountOverdueRequirement:
                 InPersonPaymentsStripeAccountOverdue()

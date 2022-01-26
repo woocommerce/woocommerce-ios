@@ -32,8 +32,7 @@ final class AddOrderCoordinatorTests: XCTestCase {
 
     func test_it_presents_bottom_sheet_when_all_types_are_available() throws {
         // Given
-        let coordinator = makeAddProductCoordinator(isOrderCreationEnabled: true,
-                                                    shouldShowSimplePaymentsButton: true)
+        let coordinator = makeAddProductCoordinator(isOrderCreationEnabled: true)
 
         // When
         coordinator.start()
@@ -45,22 +44,9 @@ final class AddOrderCoordinatorTests: XCTestCase {
         assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: BottomSheetViewController.self)
     }
 
-    func test_it_does_nothing_when_all_types_are_unavailable() throws {
-        // Given
-        let coordinator = makeAddProductCoordinator(isOrderCreationEnabled: false,
-                                                    shouldShowSimplePaymentsButton: false)
-
-        // When
-        coordinator.start()
-
-        // Then
-        XCTAssertNil(coordinator.navigationController.presentedViewController)
-    }
-
     func test_it_opens_simple_payments_when_its_only_available_type() throws {
         // Given
-        let coordinator = makeAddProductCoordinator(isOrderCreationEnabled: false,
-                                                    shouldShowSimplePaymentsButton: true)
+        let coordinator = makeAddProductCoordinator(isOrderCreationEnabled: false)
 
         // When
         coordinator.start()
@@ -70,26 +56,13 @@ final class AddOrderCoordinatorTests: XCTestCase {
         assertThat(presentedNC, isAnInstanceOf: WooNavigationController.self)
         assertThat(presentedNC?.topViewController, isAnInstanceOf: SimplePaymentsAmountHostingController.self)
     }
-
-    func test_it_opens_order_creation_when_its_only_available_type() throws {
-        // Given
-        let coordinator = makeAddProductCoordinator(isOrderCreationEnabled: true,
-                                                    shouldShowSimplePaymentsButton: false)
-
-        // When
-        coordinator.start()
-
-        // Then
-        assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: NewOrderHostingController.self)
-    }
 }
 
 private extension AddOrderCoordinatorTests {
-    func makeAddProductCoordinator(isOrderCreationEnabled: Bool, shouldShowSimplePaymentsButton: Bool) -> AddOrderCoordinator {
+    func makeAddProductCoordinator(isOrderCreationEnabled: Bool) -> AddOrderCoordinator {
         let sourceBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
         return AddOrderCoordinator(siteID: 100,
                                    isOrderCreationEnabled: isOrderCreationEnabled,
-                                   shouldShowSimplePaymentsButton: shouldShowSimplePaymentsButton,
                                    sourceBarButtonItem: sourceBarButtonItem,
                                    sourceNavigationController: navigationController)
     }

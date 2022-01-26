@@ -68,4 +68,20 @@ extension String {
     var isNotEmpty: Bool {
         return !isEmpty
     }
+
+    /// Get quotation marks from Locale
+    static var quotes: (String, String) {
+        guard
+            let bQuote = Locale.current.quotationBeginDelimiter,
+            let eQuote = Locale.current.quotationEndDelimiter
+        else { return ("\"", "\"") }
+
+        return (bQuote, eQuote)
+    }
+
+    /// Puts quotation marks at the beginning and the end of the string
+    var quoted: String {
+        let (bQuote, eQuote) = String.quotes
+        return bQuote + self + eQuote
+    }
 }

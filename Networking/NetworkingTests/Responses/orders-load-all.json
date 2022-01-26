@@ -5,6 +5,7 @@
              "parent_id": 0,
              "number": "963",
              "status": "processing",
+             "order_key": "abc123",
              "currency": "USD",
              "date_created_gmt": "2018-04-03T23:05:12",
              "date_modified_gmt": "2018-04-03T23:05:14",
@@ -82,6 +83,19 @@
                      "total": "125.50",
                      "total_tax": "0.00",
                      "taxes": [],
+                     "meta_data": []
+                 }
+             ],
+             "tax_lines": [
+                 {
+                     "id": 1330,
+                     "rate_code": "US-NY-STATE-2",
+                     "rate_id": 6,
+                     "label": "State",
+                     "compound": true,
+                     "tax_total": "7.71",
+                     "shipping_tax_total": "0.00",
+                     "rate_percent": 4.5,
                      "meta_data": []
                  }
              ],
@@ -193,6 +207,7 @@
              "parent_id": 0,
              "number": "961",
              "status": "processing",
+             "order_key": "abc123",
              "currency": "USD",
              "date_created_gmt": "2018-04-03T20:54:21",
              "date_modified_gmt": "2018-04-03T20:54:23",
@@ -252,13 +267,15 @@
                             }
                             ],
              "coupon_lines": [],
-             "fee_lines": []
+             "fee_lines": [],
+             "tax_lines": []
              },
              {
              "id": 960,
              "parent_id": 0,
              "number": "960",
              "status": "processing",
+             "order_key": "abc123",
              "currency": "USD",
              "date_created_gmt": "2018-04-03T20:52:38",
              "date_modified_gmt": "2018-04-03T20:52:41",
@@ -324,7 +341,8 @@
                             }
                             ],
              "coupon_lines": [],
-             "fee_lines": []
+             "fee_lines": [],
+             "tax_lines": []
              },
              {
                  "id": 560,
@@ -1269,6 +1287,7 @@
                      }
                  ],
                  "fee_lines": [],
+                 "tax_lines": [],
                  "coupon_lines": [],                 
                  "refunds": [
                      {

@@ -8,7 +8,7 @@ final class GenerateVariationUseCaseTests: XCTestCase {
         let attribute = sampleAttribute(attributeID: 0, name: "attr", options: ["Option 1", "Option 2"])
         let attribute2 = sampleAttribute(attributeID: 1, name: "attr-2", options: ["Option 3", "Option 4"])
         let attribute3 = sampleNonVariationAttribute(name: "attr-extra", options: ["Option X", "Option Y"])
-        let product = Product().copy(attributes: [attribute, attribute2, attribute3])
+        let product = Product.fake().copy(attributes: [attribute, attribute2, attribute3])
 
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
         let useCase = GenerateVariationUseCase(product: product, stores: mockStores)
@@ -36,11 +36,11 @@ final class GenerateVariationUseCaseTests: XCTestCase {
         XCTAssertEqual(expectedVariation, variationSubmitted)
     }
 
-    func test_create_variations_updates_the_product_variations_array() throws {
+    func test_create_variations_returns_variation_and_updated_product_variations_array() throws {
         // Given
         let attribute = sampleAttribute(attributeID: 0, name: "attr", options: ["Option 1", "Option 2"])
         let attribute2 = sampleAttribute(attributeID: 1, name: "attr-2", options: ["Option 3", "Option 4"])
-        let product = Product().copy(attributes: [attribute, attribute2])
+        let product = Product.fake().copy(attributes: [attribute, attribute2])
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
         mockStores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
@@ -54,16 +54,17 @@ final class GenerateVariationUseCaseTests: XCTestCase {
         let useCase = GenerateVariationUseCase(product: product, stores: mockStores)
 
         // When
-        let result: Result<Product, Error> = waitFor { promise in
+        let result: Result<(Product, ProductVariation), Error> = waitFor { promise in
             useCase.generateVariation { result in
                 promise(result)
             }
         }
 
         // Then
-        let updatedProduct = try XCTUnwrap(result.get())
-        let expectedVariations = [MockProductVariation().productVariation().productVariationID]
-        XCTAssertEqual(updatedProduct.variations, expectedVariations)
+        let (updatedProduct, newVariation) = try XCTUnwrap(result.get())
+        let expectedVariationID = MockProductVariation().productVariation().productVariationID
+        XCTAssertEqual(updatedProduct.variations, [expectedVariationID])
+        XCTAssertEqual(newVariation.productVariationID, expectedVariationID)
     }
 }
 

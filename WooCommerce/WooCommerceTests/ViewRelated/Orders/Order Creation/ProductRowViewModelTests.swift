@@ -4,16 +4,56 @@ import Yosemite
 
 class ProductRowViewModelTests: XCTestCase {
 
-    func test_viewModel_is_created_with_correct_initial_values() {
+    func test_viewModel_is_created_with_correct_initial_values_from_product() {
         // Given
-        let product = Product.fake().copy(productID: 12, name: "Test Product")
+        let rowID = "0"
+        let imageURLString = "https://woo.com/woo.jpg"
+        let product = Product.fake().copy(productID: 12,
+                                          name: "Test Product",
+                                          images: [ProductImage.fake().copy(src: imageURLString)])
+
+        // When
+        let viewModel = ProductRowViewModel(id: rowID, product: product, canChangeQuantity: false)
+
+        // Then
+        XCTAssertEqual(viewModel.id, rowID)
+        XCTAssertEqual(viewModel.productOrVariationID, product.productID)
+        XCTAssertEqual(viewModel.name, product.name)
+        XCTAssertEqual(viewModel.imageURL, URL(string: imageURLString))
+        XCTAssertFalse(viewModel.canChangeQuantity)
+        XCTAssertEqual(viewModel.quantity, 1)
+        XCTAssertEqual(viewModel.numberOfVariations, 0)
+    }
+
+    func test_viewModel_is_created_with_correct_initial_values_from_variable_product() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "variable", variations: [0, 1, 2])
 
         // When
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
 
         // Then
-        XCTAssertEqual(viewModel.id, product.productID)
-        XCTAssertEqual(viewModel.name, product.name)
+        XCTAssertEqual(viewModel.numberOfVariations, 3)
+    }
+
+    func test_viewModel_is_created_with_correct_initial_values_from_product_variation() {
+        // Given
+        let rowID = "0"
+        let imageURLString = "https://woo.com/woo.jpg"
+        let allAttributes = [ProductAttribute.fake().copy(attributeID: 1, name: "Color"),
+                             ProductAttribute.fake().copy(attributeID: 2, name: "Size")]
+        let productVariation = ProductVariation.fake().copy(productVariationID: 12,
+                                                            attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")],
+                                                            image: ProductImage.fake().copy(src: imageURLString))
+
+        // When
+        let viewModel = ProductRowViewModel(id: rowID, productVariation: productVariation, allAttributes: allAttributes, canChangeQuantity: false)
+
+        // Then
+        XCTAssertEqual(viewModel.id, rowID)
+        XCTAssertEqual(viewModel.productOrVariationID, productVariation.productVariationID)
+        XCTAssertEqual(viewModel.name, "Blue - Any Size")
+        XCTAssertEqual(viewModel.imageURL, URL(string: imageURLString))
         XCTAssertFalse(viewModel.canChangeQuantity)
         XCTAssertEqual(viewModel.quantity, 1)
     }
@@ -30,8 +70,8 @@ class ProductRowViewModelTests: XCTestCase {
         let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
         let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown during order creation")
         let expectedStockLabel = String.localizedStringWithFormat(format, localizedStockQuantity)
-        XCTAssertTrue(viewModel.stockAndPriceLabel.contains(expectedStockLabel),
-                      "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.stockAndPriceLabel)\"")
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockLabel),
+                      "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
 
     func test_view_model_creates_expected_label_for_product_with_unmanaged_stock() {
@@ -43,8 +83,8 @@ class ProductRowViewModelTests: XCTestCase {
 
         // Then
         let expectedStockLabel = NSLocalizedString("In stock", comment: "Display label for the product's inventory stock status")
-        XCTAssertTrue(viewModel.stockAndPriceLabel.contains(expectedStockLabel),
-                      "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.stockAndPriceLabel)\"")
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockLabel),
+                      "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
 
     func test_view_model_creates_expected_label_for_out_of_stock_product() {
@@ -56,8 +96,8 @@ class ProductRowViewModelTests: XCTestCase {
 
         // Then
         let expectedStockLabel = NSLocalizedString("Out of stock", comment: "Display label for the product's inventory stock status")
-        XCTAssertTrue(viewModel.stockAndPriceLabel.contains(expectedStockLabel),
-                      "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.stockAndPriceLabel)\"")
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockLabel),
+                      "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
 
     func test_view_model_creates_expected_label_for_product_with_price() {
@@ -71,8 +111,8 @@ class ProductRowViewModelTests: XCTestCase {
 
         // Then
         let expectedPriceLabel = "2.50"
-        XCTAssertTrue(viewModel.stockAndPriceLabel.contains(expectedPriceLabel),
-                      "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.stockAndPriceLabel)\"")
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedPriceLabel),
+                      "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
 
     func test_view_model_creates_expected_label_for_product_with_no_price() {
@@ -86,8 +126,20 @@ class ProductRowViewModelTests: XCTestCase {
 
         // Then
         let expectedPriceLabel = "$0.00"
-        XCTAssertTrue(viewModel.stockAndPriceLabel.contains(expectedPriceLabel),
-                      "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.stockAndPriceLabel)\"")
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedPriceLabel),
+                      "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
+    }
+
+    func test_view_model_creates_expected_product_details_label_for_variable_product() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "variable", stockStatusKey: "instock", variations: [0, 1])
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+
+        // Then
+        let expectedProductDetailsLabel = "In stock • 2 variations"
+        XCTAssertEqual(viewModel.productDetailsLabel, expectedProductDetailsLabel)
     }
 
     func test_sku_label_is_formatted_correctly_for_product_with_sku() {
@@ -115,5 +167,35 @@ class ProductRowViewModelTests: XCTestCase {
         // Then
         let expectedSKULabel = ""
         XCTAssertEqual(viewModel.skuLabel, expectedSKULabel)
+    }
+
+    func test_increment_and_decrement_quantity_have_step_value_of_one() {
+        // Given
+        let product = Product.fake()
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
+
+        // When & Then
+        viewModel.incrementQuantity()
+        XCTAssertEqual(viewModel.quantity, 2)
+
+        // When & Then
+        viewModel.decrementQuantity()
+        XCTAssertEqual(viewModel.quantity, 1)
+    }
+
+    func test_quantity_has_minimum_value_of_one() {
+        // Given
+        let product = Product.fake()
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, 1)
+        XCTAssertTrue(viewModel.shouldDisableQuantityDecrementer, "Quantity decrementer is not disabled at minimum value")
+
+        // When
+        viewModel.decrementQuantity()
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, 1)
     }
 }

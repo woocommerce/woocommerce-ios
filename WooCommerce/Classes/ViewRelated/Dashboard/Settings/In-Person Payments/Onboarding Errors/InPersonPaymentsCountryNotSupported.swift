@@ -27,7 +27,7 @@ struct InPersonPaymentsCountryNotSupported: View {
 
 private enum Localization {
     static let title = NSLocalizedString(
-        "We don’t support In-Person Payments in %@",
+        "We don’t support In-Person Payments in %1$@",
         comment: "Title for the error screen when WooCommerce Payments is not supported in a specific country"
     )
 

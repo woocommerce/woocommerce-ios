@@ -1,0 +1,68 @@
+{
+    "data": {
+        "active_plugins":[
+            {
+                "plugin":"woocommerce\/woocommerce.php",
+                "name":"WooCommerce",
+                "version":"5.8.0",
+                "version_latest":"5.8.0",
+                "url":"https:\/\/woocommerce.com\/",
+                "author_name":"Automattic",
+                "author_url":"https:\/\/woocommerce.com",
+                "network_activated":false
+            },
+            {
+                "plugin":"woocommerce-payments\/woocommerce-payments.php",
+                "name":"WooCommerce Payments",
+                "version":"3.1.0",
+                "version_latest":"3.1.0",
+                "url":"https:\/\/woocommerce.com\/payments\/",
+                "author_name":"Automattic",
+                "author_url":"https:\/\/woocommerce.com\/",
+                "network_activated":false
+            },
+            {
+                "plugin":"woocommerce-subscriptions\/woocommerce-subscriptions",
+                "name":"WooCommerce Subscriptions",
+                "version":"3.1.6",
+                "version_latest":"3.1.6",
+                "url":"https:\/\/www.woocommerce.com\/products\/woocommerce-subscriptions\/",
+                "author_name":"Automattic",
+                "author_url":"https:\/\/woocommerce.com\/",
+                "network_activated":false
+            },
+            {
+                "plugin":"jetpack\/jetpack.php",
+                "name":"Jetpack",
+                "version":"10.2",
+                "version_latest":"10.2.1",
+                "url":"https:\/\/jetpack.com",
+                "author_name":"Automattic",
+                "author_url":"https:\/\/jetpack.com",
+                "network_activated":false
+            }
+        ],
+        "inactive_plugins":[
+            {
+                "plugin":"akismet\/akismet.php",
+                "name":"Akismet Anti-Spam",
+                "version":"4.2.1",
+                "version_latest":"4.2.1",
+                "url":"https:\/\/akismet.com\/",
+                "author_name":"Automattic",
+                "author_url":"https:\/\/automattic.com\/wordpress-plugins\/",
+                "network_activated":false
+            },
+            {
+                "plugin":"hello.php",
+                "name":"Hello Dolly",
+                "version":"1.7.2",
+                "version_latest":"1.7.2",
+                "url":"http:\/\/wordpress.org\/plugins\/hello-dolly\/",
+                "author_name":"Matt Mullenweg",
+                "author_url":"http:\/\/ma.tt\/",
+                "network_activated":false
+            }
+        ]
+    }
+}

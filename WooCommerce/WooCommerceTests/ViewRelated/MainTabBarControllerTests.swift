@@ -21,13 +21,15 @@ final class MainTabBarControllerTests: XCTestCase {
     }
 
     func test_tab_view_controllers_are_not_empty_after_updating_default_site() {
+
+        // Arrange
+        // Sets mock `FeatureFlagService` before `MainTabBarController` is initialized so that the feature flags are set correctly.
+        let isHubMenuFeatureFlagOn = false
+        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn))
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController else {
             return
         }
-        let isHubMenuFeatureFlagOn = false
-        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn))
 
-        // Arrange
         // Trigger `viewDidLoad`
         XCTAssertNotNil(tabBarController.view)
 
@@ -65,26 +67,24 @@ final class MainTabBarControllerTests: XCTestCase {
         stores.updateDefaultStore(storeID: siteID)
 
         // Assert
-        XCTAssertEqual(tabBarController.viewControllers?.count, 5)
+        XCTAssertEqual(tabBarController.viewControllers?.count, 4)
         assertThat(tabBarController.tabNavigationController(tab: .myStore, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
                    isAnInstanceOf: DashboardViewController.self)
         assertThat(tabBarController.tabNavigationController(tab: .orders, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
                    isAnInstanceOf: OrdersRootViewController.self)
         assertThat(tabBarController.tabNavigationController(tab: .products, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
                    isAnInstanceOf: ProductsViewController.self)
-        assertThat(tabBarController.tabNavigationController(tab: .reviews, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
-                   isAnInstanceOf: ReviewsViewController.self)
         assertThat(tabBarController.tabNavigationController(tab: .hubMenu, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
     func test_tab_root_viewControllers_are_replaced_after_updating_to_a_different_site() throws {
         // Arrange
+        let isHubMenuFeatureFlagOn = false
+        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn))
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController else {
             return
         }
-        let isHubMenuFeatureFlagOn = false
-        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn))
 
         // Trigger `viewDidLoad`
         XCTAssertNotNil(tabBarController.view)
@@ -129,11 +129,11 @@ final class MainTabBarControllerTests: XCTestCase {
 
     func test_selected_tab_is_dashboard_after_navigating_to_products_tab_then_updating_to_a_different_site() throws {
         // Arrange
+        let isHubMenuFeatureFlagOn = false
+        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn))
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController else {
             return
         }
-        let isHubMenuFeatureFlagOn = false
-        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isHubMenuOn: isHubMenuFeatureFlagOn))
 
         // Trigger `viewDidLoad`
         XCTAssertNotNil(tabBarController.view)

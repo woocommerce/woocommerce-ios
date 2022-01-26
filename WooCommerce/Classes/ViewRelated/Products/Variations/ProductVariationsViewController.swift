@@ -402,34 +402,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
         ServiceLocator.analytics.track(.productVariationListVariationTapped)
 
         let productVariation = resultsController.object(at: indexPath)
-        let model = EditableProductVariationModel(productVariation: productVariation,
-                                                  allAttributes: allAttributes,
-                                                  parentProductSKU: parentProductSKU)
-
-        let currencyCode = ServiceLocator.currencySettings.currencyCode
-        let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
-        let productImageActionHandler = ProductImageActionHandler(siteID: productVariation.siteID,
-                                                                  product: model)
-
-        let viewModel = ProductVariationFormViewModel(productVariation: model,
-                                                      allAttributes: allAttributes,
-                                                      parentProductSKU: parentProductSKU,
-                                                      formType: self.viewModel.formType,
-                                                      productImageActionHandler: productImageActionHandler)
-        viewModel.onVariationDeletion = { [weak self] variation in
-            guard let self = self else { return }
-
-            // Remove deleted variation from variations array
-            let variationsUpdated = self.product.variations.filter { $0 != variation.productVariationID }
-            let updatedProduct = self.product.copy(variations: variationsUpdated)
-            self.product = updatedProduct
-        }
-        let viewController = ProductFormViewController(viewModel: viewModel,
-                                                       eventLogger: ProductVariationFormEventLogger(),
-                                                       productImageActionHandler: productImageActionHandler,
-                                                       currency: currency,
-                                                       presentationStyle: .navigationStack)
-        navigationController?.pushViewController(viewController, animated: true)
+        navigateToVariationDetail(for: productVariation)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -479,7 +452,7 @@ private extension ProductVariationsViewController {
 
         let editAttributesViewModel = EditAttributesViewModel(product: product, allowVariationCreation: allowVariationCreation)
         let editAttributeViewController = EditAttributesViewController(viewModel: editAttributesViewModel)
-        editAttributeViewController.onVariationCreation = { [weak self] updatedProduct in
+        editAttributeViewController.onVariationCreation = { [weak self] (updatedProduct, _) in
             self?.product = updatedProduct
             self?.onFirstVariationCreated()
         }
@@ -519,6 +492,37 @@ private extension ProductVariationsViewController {
             return
         }
         navigationController?.popToViewController(initialViewController, animated: true)
+    }
+
+    private func navigateToVariationDetail(for productVariation: ProductVariation) {
+        let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  allAttributes: allAttributes,
+                                                  parentProductSKU: parentProductSKU)
+
+        let currencyCode = ServiceLocator.currencySettings.currencyCode
+        let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
+        let productImageActionHandler = ProductImageActionHandler(siteID: productVariation.siteID,
+                                                                  product: model)
+
+        let viewModel = ProductVariationFormViewModel(productVariation: model,
+                                                      allAttributes: allAttributes,
+                                                      parentProductSKU: parentProductSKU,
+                                                      formType: self.viewModel.formType,
+                                                      productImageActionHandler: productImageActionHandler)
+        viewModel.onVariationDeletion = { [weak self] variation in
+            guard let self = self else { return }
+
+            // Remove deleted variation from variations array
+            let variationsUpdated = self.product.variations.filter { $0 != variation.productVariationID }
+            let updatedProduct = self.product.copy(variations: variationsUpdated)
+            self.product = updatedProduct
+        }
+        let viewController = ProductFormViewController(viewModel: viewModel,
+                                                       eventLogger: ProductVariationFormEventLogger(),
+                                                       productImageActionHandler: productImageActionHandler,
+                                                       currency: currency,
+                                                       presentationStyle: .navigationStack)
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 
@@ -616,9 +620,10 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
 
             guard let self = self else { return }
             switch result {
-            case .success(let updatedProduct):
+            case .success(let (updatedProduct, newVariation)):
                 self.noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))
                 self.product = updatedProduct
+                self.navigateToVariationDetail(for: newVariation)
             case .failure(let error):
                 self.noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
                 DDLogError("⛔️ Error generating variation: \(error)")

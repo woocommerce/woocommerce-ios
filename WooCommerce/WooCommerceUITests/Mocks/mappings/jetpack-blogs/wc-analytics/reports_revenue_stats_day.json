@@ -7,7 +7,7 @@
         "equalTo": "true"
       },
       "path": {
-        "matches": "/wc-analytics/reports/revenue/stats/(.*)"
+        "matches": "/wc-analytics/reports/revenue/stats(.*)"
       },
       "query": {
         "matches": "(.*)interval\":\"day(.*)"
@@ -59,11 +59,11 @@
               "segments": []
             }
           }, {
-            "interval": "{{fnow offset='1 days' format=customformat}}",
-            "date_start": "{{fnow offset='1 days' format=customformat}} 00:00:00",
-            "date_start_gmt": "{{fnow offset='1 days' format=customformat}} 00:00:00",
-            "date_end": "{{fnow offset='1 days' format=customformat}} 23:59:59",
-            "date_end_gmt": "{{fnow offset='1 days' format=customformat}} 23:59:59",
+            "interval": "{{now offset='1 days' format=customformat}}",
+            "date_start": "{{now offset='1 days' format=customformat}} 00:00:00",
+            "date_start_gmt": "{{now offset='1 days' format=customformat}} 00:00:00",
+            "date_end": "{{now offset='1 days' format=customformat}} 23:59:59",
+            "date_end_gmt": "{{now offset='1 days' format=customformat}} 23:59:59",
             "subtotals": {
               "orders_count": 2,
               "num_items_sold": 0,
@@ -81,11 +81,11 @@
               "segments": []
             }
           }, {
-            "interval": "{{fnow offset='2 days' format=customformat}}",
-            "date_start": "{{fnow offset='2 days' format=customformat}} 00:00:00",
-            "date_start_gmt": "{{fnow offset='2 days' format=customformat}} 00:00:00",
-            "date_end": "{{fnow offset='2 days' format=customformat}} 23:59:59",
-            "date_end_gmt": "{{fnow offset='2 days' format=customformat}} 23:59:59",
+            "interval": "{{now offset='2 days' format=customformat}}",
+            "date_start": "{{now offset='2 days' format=customformat}} 00:00:00",
+            "date_start_gmt": "{{now offset='2 days' format=customformat}} 00:00:00",
+            "date_end": "{{now offset='2 days' format=customformat}} 23:59:59",
+            "date_end_gmt": "{{now offset='2 days' format=customformat}} 23:59:59",
             "subtotals": {
               "orders_count": 4,
               "num_items_sold": 0,
@@ -103,11 +103,11 @@
               "segments": []
             }
           }, {
-            "interval": "{{fnow offset='3 days' format=customformat}}",
-            "date_start": "{{fnow offset='3 days' format=customformat}} 00:00:00",
-            "date_start_gmt": "{{fnow offset='3 days' format=customformat}} 00:00:00",
-            "date_end": "{{fnow offset='3 days' format=customformat}} 23:59:59",
-            "date_end_gmt": "{{fnow offset='3 days' format=customformat}} 23:59:59",
+            "interval": "{{now offset='3 days' format=customformat}}",
+            "date_start": "{{now offset='3 days' format=customformat}} 00:00:00",
+            "date_start_gmt": "{{now offset='3 days' format=customformat}} 00:00:00",
+            "date_end": "{{now offset='3 days' format=customformat}} 23:59:59",
+            "date_end_gmt": "{{now offset='3 days' format=customformat}} 23:59:59",
             "subtotals": {
               "orders_count": 1,
               "num_items_sold": 0,
@@ -125,11 +125,11 @@
               "segments": []
             }
           }, {
-            "interval": "{{fnow offset='4 days' format=customformat}}",
-            "date_start": "{{fnow offset='4 days' format=customformat}} 00:00:00",
-            "date_start_gmt": "{{fnow offset='4 days' format=customformat}} 00:00:00",
-            "date_end": "{{fnow offset='4 days' format=customformat}} 23:59:59",
-            "date_end_gmt": "{{fnow offset='4 days' format=customformat}} 23:59:59",
+            "interval": "{{now offset='4 days' format=customformat}}",
+            "date_start": "{{now offset='4 days' format=customformat}} 00:00:00",
+            "date_start_gmt": "{{now offset='4 days' format=customformat}} 00:00:00",
+            "date_end": "{{now offset='4 days' format=customformat}} 23:59:59",
+            "date_end_gmt": "{{now offset='4 days' format=customformat}} 23:59:59",
             "subtotals": {
               "orders_count": 4,
               "num_items_sold": 0,
@@ -147,11 +147,11 @@
               "segments": []
             }
           }, {
-            "interval": "{{fnow offset='5 days' format=customformat}}",
-            "date_start": "{{fnow offset='5 days' format=customformat}} 00:00:00",
-            "date_start_gmt": "{{fnow offset='5 days' format=customformat}} 00:00:00",
-            "date_end": "{{fnow offset='5 days' format=customformat}} 23:59:59",
-            "date_end_gmt": "{{fnow offset='5 days' format=customformat}} 23:59:59",
+            "interval": "{{now offset='5 days' format=customformat}}",
+            "date_start": "{{now offset='5 days' format=customformat}} 00:00:00",
+            "date_start_gmt": "{{now offset='5 days' format=customformat}} 00:00:00",
+            "date_end": "{{now offset='5 days' format=customformat}} 23:59:59",
+            "date_end_gmt": "{{now offset='5 days' format=customformat}} 23:59:59",
             "subtotals": {
               "orders_count": 0,
               "num_items_sold": 0,
@@ -169,11 +169,11 @@
               "segments": []
             }
           }, {
-            "interval": "{{fnow offset='6 days' format=customformat}}",
-            "date_start": "{{fnow offset='6 days' format=customformat}} 00:00:00",
-            "date_start_gmt": "{{fnow offset='6 days' format=customformat}} 00:00:00",
-            "date_end": "{{fnow offset='6 days' format=customformat}} 23:59:59",
-            "date_end_gmt": "{{fnow offset='6 days' format=customformat}} 23:59:59",
+            "interval": "{{now offset='6 days' format=customformat}}",
+            "date_start": "{{now offset='6 days' format=customformat}} 00:00:00",
+            "date_start_gmt": "{{now offset='6 days' format=customformat}} 00:00:00",
+            "date_end": "{{now offset='6 days' format=customformat}} 23:59:59",
+            "date_end_gmt": "{{now offset='6 days' format=customformat}} 23:59:59",
             "subtotals": {
               "orders_count": 0,
               "num_items_sold": 0,

@@ -21,7 +21,7 @@ struct SimplePaymentsSummary: View {
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             ScrollView {
                 VStack(spacing: Layout.noSpacing) {
 
@@ -40,6 +40,7 @@ struct SimplePaymentsSummary: View {
                     NoteSection(viewModel: viewModel, showEditNote: $showEditNote)
                 }
             }
+            .ignoresSafeArea(edges: .horizontal)
 
             TakePaymentSection(viewModel: viewModel)
 
@@ -53,12 +54,21 @@ struct SimplePaymentsSummary: View {
         }
         .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(Localization.title)
-        .sheet(isPresented: $showEditNote) {
-            EditCustomerNote(dismiss: {
-                showEditNote.toggle()
+        .sheet(
+            isPresented: $showEditNote,
+            onDismiss: { // Interactive drag dismiss
+                viewModel.noteViewModel.userDidCancelFlow()
                 viewModel.reloadContent()
-                }, viewModel: viewModel.noteViewModel)
-        }
+            },
+            content: {
+                EditCustomerNote(
+                    dismiss: { // Cancel button dismiss
+                        showEditNote.toggle()
+                        viewModel.reloadContent()
+                    },
+                    viewModel: viewModel.noteViewModel
+                )
+            })
         .disabled(viewModel.disableViewActions)
     }
 }
@@ -71,6 +81,11 @@ private struct CustomAmountSection: View {
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
+
     var body: some View {
         Group {
             Divider()
@@ -80,6 +95,7 @@ private struct CustomAmountSection: View {
                     .padding()
                     .foregroundColor(Color(.systemGray))
                     .background(Color(.listBackground))
+                    .accessibilityHidden(true)
 
                 Text(SimplePaymentsSummary.Localization.customAmount)
                     .headlineStyle()
@@ -90,7 +106,9 @@ private struct CustomAmountSection: View {
             }
             .bodyStyle()
             .padding()
+            .padding(.horizontal, insets: safeAreaInsets)
             .background(Color(.listForeground))
+            .accessibilityElement(children: .combine)
 
             Divider()
         }
@@ -105,6 +123,10 @@ private struct EmailSection: View {
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
     var body: some View {
         Group {
             Divider()
@@ -114,6 +136,7 @@ private struct EmailSection: View {
                                  text: $viewModel.email,
                                  keyboardType: .emailAddress)
                 .autocapitalization(.none)
+                .padding(.horizontal, insets: safeAreaInsets)
                 .background(Color(.listForeground))
 
             Divider()
@@ -128,6 +151,10 @@ private struct PaymentsSection: View {
     /// ViewModel to drive the view content.
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
+
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     var body: some View {
         Group {
@@ -158,6 +185,7 @@ private struct PaymentsSection: View {
 
                 TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content(viewModel.total), bold: true, selectable: false) {}
             }
+            .padding(.horizontal, insets: safeAreaInsets)
             .background(Color(.listForeground))
 
             Divider()
@@ -172,6 +200,10 @@ private struct NoteSection: View {
     /// ViewModel to drive the view content.
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
+
+    ///   Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     /// Defines if the order note screen should be shown or not.
     ///
@@ -200,6 +232,7 @@ private struct NoteSection: View {
 
             }
             .padding()
+            .padding(.horizontal, insets: safeAreaInsets)
             .background(Color(.listForeground))
 
             Divider()
@@ -244,6 +277,7 @@ private struct TakePaymentSection: View {
     var body: some View {
         VStack {
             Divider()
+                .ignoresSafeArea()
 
             Button(SimplePaymentsSummary.Localization.takePayment(total: viewModel.total), action: {
                 viewModel.updateOrder()

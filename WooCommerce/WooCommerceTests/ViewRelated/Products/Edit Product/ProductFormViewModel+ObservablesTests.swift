@@ -1,7 +1,7 @@
+import Combine
 import Photos
 import XCTest
 import Fakes
-import Observables
 
 @testable import WooCommerce
 @testable import Storage
@@ -10,10 +10,10 @@ import Yosemite
 /// Unit tests for observables (`observableProduct`, `productName`, `isUpdateEnabled`)
 final class ProductFormViewModel_ObservablesTests: XCTestCase {
     private let defaultSiteID: Int64 = 134
-    private var cancellableProduct: ObservationToken?
-    private var cancellableProductName: ObservationToken?
-    private var cancellableUpdateEnabled: ObservationToken?
-    private var cancellableVariationPrice: ObservationToken?
+    private var cancellableProduct: AnyCancellable?
+    private var cancellableProductName: AnyCancellable?
+    private var cancellableUpdateEnabled: AnyCancellable?
+    private var cancellableVariationPrice: AnyCancellable?
 
 
     override func tearDown() {
@@ -37,15 +37,15 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler)
         let taxClass = TaxClass(siteID: product.siteID, name: "standard", slug: product.taxClass ?? "standard")
-        cancellableProduct = viewModel.observableProduct.subscribe { _ in
+        cancellableProduct = viewModel.observableProduct.sink { _ in
             // Assert
             XCTFail("Should not be triggered from edit actions of the same data")
         }
-        cancellableProductName = viewModel.productName?.subscribe { _ in
+        cancellableProductName = viewModel.productName?.sink { _ in
             // Assert
             XCTFail("Should not be triggered from edit actions of the same data")
         }
-        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { _ in
+        cancellableUpdateEnabled = viewModel.isUpdateEnabled.sink { _ in
             // Assert
             XCTFail("Should not be triggered from edit actions of the same data")
         }
@@ -88,14 +88,14 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler)
         var isProductUpdated: Bool?
-        cancellableProduct = viewModel.observableProduct.subscribe { product in
+        cancellableProduct = viewModel.observableProduct.sink { product in
             isProductUpdated = true
         }
 
         var updatedProductName: String?
         let expectationForProductName = self.expectation(description: "Product name updates")
         expectationForProductName.expectedFulfillmentCount = 1
-        cancellableProductName = viewModel.productName?.subscribe { productName in
+        cancellableProductName = viewModel.productName?.sink { productName in
             updatedProductName = productName
             expectationForProductName.fulfill()
         }
@@ -103,7 +103,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         var updatedUpdateEnabled: Bool?
         let expectationForUpdateEnabled = self.expectation(description: "Update enabled updates")
         expectationForUpdateEnabled.expectedFulfillmentCount = 1
-        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { isUpdateEnabled in
+        cancellableUpdateEnabled = viewModel.isUpdateEnabled.sink { isUpdateEnabled in
             updatedUpdateEnabled = isUpdateEnabled
             expectationForUpdateEnabled.fulfill()
         }
@@ -129,19 +129,19 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler)
         var isProductUpdated: Bool?
-        cancellableProduct = viewModel.observableProduct.subscribe { product in
+        cancellableProduct = viewModel.observableProduct.sink { product in
             isProductUpdated = true
         }
 
         var updatedProductName: String?
-        cancellableProductName = viewModel.productName?.subscribe { productName in
+        cancellableProductName = viewModel.productName?.sink { productName in
             updatedProductName = productName
         }
 
         var updatedUpdateEnabled: Bool?
         let expectationForUpdateEnabled = self.expectation(description: "Update enabled updates")
         expectationForUpdateEnabled.expectedFulfillmentCount = 1
-        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { isUpdateEnabled in
+        cancellableUpdateEnabled = viewModel.isUpdateEnabled.sink { isUpdateEnabled in
             updatedUpdateEnabled = isUpdateEnabled
             expectationForUpdateEnabled.fulfill()
         }
@@ -169,12 +169,12 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         viewModel.resetPassword("134")
 
         var isProductUpdated: Bool?
-        cancellableProduct = viewModel.observableProduct.subscribe { product in
+        cancellableProduct = viewModel.observableProduct.sink { product in
             isProductUpdated = true
         }
 
         var updatedProductName: String?
-        cancellableProductName = viewModel.productName?.subscribe { productName in
+        cancellableProductName = viewModel.productName?.sink { productName in
             updatedProductName = productName
         }
 
@@ -183,7 +183,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         expectationForUpdateEnabled.expectedFulfillmentCount = 2
         // The update enabled boolean should be set to true from the password change, and then back to false after resetting with
         // the same password after remote update.
-        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { isUpdateEnabled in
+        cancellableUpdateEnabled = viewModel.isUpdateEnabled.sink { isUpdateEnabled in
             updatedUpdateEnabled = isUpdateEnabled
             expectationForUpdateEnabled.fulfill()
         }
@@ -210,19 +210,19 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler)
         var isProductUpdated: Bool?
-        cancellableProduct = viewModel.observableProduct.subscribe { product in
+        cancellableProduct = viewModel.observableProduct.sink { product in
             isProductUpdated = true
         }
 
         var updatedProductName: String?
-        cancellableProductName = viewModel.productName?.subscribe { productName in
+        cancellableProductName = viewModel.productName?.sink { productName in
             updatedProductName = productName
         }
 
         var updatedUpdateEnabled: Bool?
         let expectationForUpdateEnabled = self.expectation(description: "Update enabled updates")
         expectationForUpdateEnabled.expectedFulfillmentCount = 1
-        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { isUpdateEnabled in
+        cancellableUpdateEnabled = viewModel.isUpdateEnabled.sink { isUpdateEnabled in
             updatedUpdateEnabled = isUpdateEnabled
             expectationForUpdateEnabled.fulfill()
         }
@@ -251,7 +251,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
 
         // When
         let priceUpdated: Bool = waitFor { promise in
-            self.cancellableVariationPrice = viewModel.newVariationsPrice.subscribe { promise(true) }
+            self.cancellableVariationPrice = viewModel.newVariationsPrice.sink { promise(true) }
 
             let newVariation = ProductVariation.fake().copy(siteID: self.defaultSiteID, productID: productID,
                                                             productVariationID: variationID,
@@ -281,7 +281,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
 
         // When
         let priceUpdated: Bool = waitFor { promise in
-            self.cancellableVariationPrice = viewModel.newVariationsPrice.subscribe { promise(true) }
+            self.cancellableVariationPrice = viewModel.newVariationsPrice.sink { promise(true) }
 
             let newVariation = variation.copy(regularPrice: "")
             mockStorage.insertSampleProductVariation(readOnlyProductVariation: newVariation, on: product)

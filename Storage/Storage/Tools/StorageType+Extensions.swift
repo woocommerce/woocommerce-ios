@@ -104,6 +104,13 @@ public extension StorageType {
         return firstObject(ofType: OrderNote.self, matching: predicate)
     }
 
+    /// Retrieves the Stored Order Tax Lines.
+    ///
+    func loadOrderTaxLine(siteID: Int64, taxID: Int64) -> OrderTaxLine? {
+        let predicate = \OrderTaxLine.order.siteID == siteID && \OrderTaxLine.taxID == taxID
+        return firstObject(ofType: OrderTaxLine.self, matching: predicate)
+    }
+
     // MARK: - Stats
 
     /// Retrieves the Stored TopEarnerStats.
@@ -499,6 +506,23 @@ public extension StorageType {
     func loadShippingLabelSettings(siteID: Int64, orderID: Int64) -> ShippingLabelSettings? {
         let predicate = \ShippingLabelSettings.siteID == siteID && \ShippingLabelSettings.orderID == orderID
         return firstObject(ofType: ShippingLabelSettings.self, matching: predicate)
+    }
+
+
+    // MARK: - Coupons
+
+    /// Returns a single Coupon given a `siteID` and `CouponID`
+    ///
+    func loadCoupon(siteID: Int64, couponID: Int64) -> Coupon? {
+        let predicate = \Coupon.siteID == siteID && \Coupon.couponID == couponID
+        return firstObject(ofType: Coupon.self, matching: predicate)
+    }
+
+    /// Returns all stored coupons for a site
+    ///
+    func loadAllCoupons(siteID: Int64) -> [Coupon] {
+        let predicate = \Coupon.siteID == siteID
+        return allObjects(ofType: Coupon.self, matching: predicate, sortedBy: nil)
     }
 
     /// Returns all stored shipping label account settings for a site.

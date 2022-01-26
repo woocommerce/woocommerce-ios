@@ -356,9 +356,9 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(jetpackSite.siteID, siteIDOfJetpackSite)
     }
 
-    /// Verifies that `synchronizeSites` effectively persists a Jetpack Connection Package site with original metadata when WP site settings request fails.
+    /// Verifies that `synchronizeSites` effectively persists a Jetpack Connection Package site without any changes when WP site settings request fails.
     ///
-    func test_synchronizeSites_persists_a_jetpack_cp_site_with_existing_metadata_when_wp_settings_request_fails() throws {
+    func test_synchronizeSites_persists_a_jetpack_cp_site_without_any_changes_when_wp_settings_request_fails() throws {
         // Given
         let siteID = Int64(255)
         let remote = MockAccountRemote()
@@ -368,7 +368,8 @@ final class AccountStoreTests: XCTestCase {
                              description: "old description",
                              url: "oldurl",
                              isJetpackThePluginInstalled: false,
-                             isJetpackConnected: true)
+                             isJetpackConnected: true,
+                             isWooCommerceActive: false)
         ])
         remote.whenFetchingWordPressSiteSettings(siteID: siteID, thenReturn: .failure(NetworkError.timeout))
         remote.whenCheckingIfWooCommerceIsActive(siteID: siteID, thenReturn: .success(true))
@@ -396,17 +397,23 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(jcpSite.name, "old name")
         XCTAssertEqual(jcpSite.tagline, "old description")
         XCTAssertEqual(jcpSite.url, "oldurl")
-        XCTAssertTrue(jcpSite.isWooCommerceActive?.boolValue == true)
+        XCTAssertTrue(jcpSite.isWooCommerceActive?.boolValue == false)
     }
 
-    /// Verifies that `synchronizeSites` persists a Jetpack Connection Package site with original isWooCommerceActive when WC site settings request fails.
+    /// Verifies that `synchronizeSites` persists a Jetpack Connection Package site without any changes when WC site settings request fails.
     ///
-    func test_synchronizeSites_persists_a_jetpack_cp_site_without_isWooCommerceActive_change_when_wc_settings_request_fails() throws {
+    func test_synchronizeSites_persists_a_jetpack_cp_site_without_any_changes_when_wc_settings_request_fails() throws {
         // Given
         let siteID = Int64(255)
         let remote = MockAccountRemote()
         remote.loadSitesResult = .success([
-            Site.fake().copy(siteID: siteID, isJetpackThePluginInstalled: false, isJetpackConnected: true, isWooCommerceActive: false)
+            Site.fake().copy(siteID: siteID,
+                             name: "old name",
+                             description: "old description",
+                             url: "oldurl",
+                             isJetpackThePluginInstalled: false,
+                             isJetpackConnected: true,
+                             isWooCommerceActive: false)
         ])
         remote.whenFetchingWordPressSiteSettings(siteID: siteID, thenReturn: .success(.init(name: "new name",
                                                                                                      description: "new description",
@@ -431,6 +438,9 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self, matching: jcpSitePredicate), 1)
         let jcpSite = try XCTUnwrap(viewStorage.firstObject(ofType: Storage.Site.self, matching: jcpSitePredicate))
         XCTAssertEqual(jcpSite.siteID, siteID)
+        XCTAssertEqual(jcpSite.name, "old name")
+        XCTAssertEqual(jcpSite.tagline, "old description")
+        XCTAssertEqual(jcpSite.url, "oldurl")
         XCTAssertTrue(jcpSite.isWooCommerceActive?.boolValue == false)
         XCTAssertFalse(jcpSite.isJetpackThePluginInstalled)
         XCTAssertTrue(jcpSite.isJetpackConnected)

@@ -801,6 +801,7 @@ private extension ProductVariationStoreTests {
               orderID: 963,
               parentID: 0,
               customerID: 11,
+              orderKey: "abc123",
               number: "963",
               status: .processing,
               currency: "USD",
@@ -822,7 +823,8 @@ private extension ProductVariationStoreTests {
               shippingLines: [],
               coupons: [],
               refunds: [],
-              fees: [])
+              fees: [],
+              taxes: [])
     }
 
     func sampleOrderItem(productID: Int64, variationID: Int64) -> Yosemite.OrderItem {

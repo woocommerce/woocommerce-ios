@@ -8,23 +8,24 @@ final class WCPayRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockNetwork()
+    private let network = MockNetwork()
 
     /// Dummy Site ID
     ///
-    let sampleSiteID: Int64 = 1234
+    private let sampleSiteID: Int64 = 1234
 
     /// Dummy Order ID
     ///
-    let sampleOrderID: Int64 = 1467
+    private let sampleOrderID: Int64 = 1467
 
     /// Dummy Payment Intent ID
     ///
-    let samplePaymentIntentID: String = "pi_123456789012345678901234"
+    private let samplePaymentIntentID: String = "pi_123456789012345678901234"
 
     /// Repeat always!
     ///
     override func setUp() {
+        super.setUp()
         network.removeAllSimulatedResponses()
     }
 
@@ -32,7 +33,7 @@ final class WCPayRemoteTests: XCTestCase {
     ///
     func test_loadConnectionToken_properly_returns_parsed_token() {
         let remote = WCPayRemote(network: network)
-        let expectation = self.expectation(description: "Load WCPay token")
+        let expectation = self.expectation(description: "Load card reader token from WCPay extension")
 
         let expectedToken = "a connection token"
 
@@ -396,7 +397,7 @@ final class WCPayRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-requires-payment-method")
 
-        let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                        orderID: self.sampleOrderID,
                                        paymentIntentID: self.samplePaymentIntentID) { result in
@@ -418,7 +419,7 @@ final class WCPayRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-requires-confirmation")
 
-        let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                        orderID: self.sampleOrderID,
                                        paymentIntentID: self.samplePaymentIntentID) { result in
@@ -440,7 +441,7 @@ final class WCPayRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-requires-action")
 
-        let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                        orderID: self.sampleOrderID,
                                        paymentIntentID: self.samplePaymentIntentID) { result in
@@ -462,7 +463,7 @@ final class WCPayRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-processing")
 
-        let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                        orderID: self.sampleOrderID,
                                        paymentIntentID: self.samplePaymentIntentID) { result in
@@ -484,7 +485,7 @@ final class WCPayRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-requires-capture")
 
-        let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                        orderID: self.sampleOrderID,
                                        paymentIntentID: self.samplePaymentIntentID) { result in
@@ -506,7 +507,7 @@ final class WCPayRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-canceled")
 
-        let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                        orderID: self.sampleOrderID,
                                        paymentIntentID: self.samplePaymentIntentID) { result in
@@ -528,7 +529,7 @@ final class WCPayRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-succeeded")
 
-        let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                        orderID: self.sampleOrderID,
                                        paymentIntentID: self.samplePaymentIntentID) { result in
@@ -550,7 +551,7 @@ final class WCPayRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-unknown-status")
 
-        let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                        orderID: self.sampleOrderID,
                                        paymentIntentID: self.samplePaymentIntentID) { result in
@@ -572,7 +573,7 @@ final class WCPayRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-error")
 
-        let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
             remote.captureOrderPayment(for: self.sampleSiteID,
                                        orderID: self.sampleOrderID,
                                        paymentIntentID: self.samplePaymentIntentID) { result in
@@ -594,7 +595,7 @@ final class WCPayRemoteTests: XCTestCase {
             filename: "wcpay-customer"
         )
 
-        let result: Result<WCPayCustomer, Error> = waitFor { promise in
+        let result: Result<Customer, Error> = waitFor { promise in
             remote.fetchOrderCustomer(for: self.sampleSiteID, orderID: self.sampleOrderID) { result in
                 promise(result)
             }
@@ -615,7 +616,7 @@ final class WCPayRemoteTests: XCTestCase {
             filename: "wcpay-customer-error"
         )
 
-        let result: Result<WCPayCustomer, Error> = waitFor { promise in
+        let result: Result<Customer, Error> = waitFor { promise in
             remote.fetchOrderCustomer(for: self.sampleSiteID, orderID: self.sampleOrderID) { result in
                 promise(result)
             }
@@ -633,7 +634,7 @@ final class WCPayRemoteTests: XCTestCase {
             filename: "wcpay-location"
         )
 
-        let result: Result<WCPayReaderLocation, Error> = waitFor { promise in
+        let result: Result<RemoteReaderLocation, Error> = waitFor { promise in
             remote.loadDefaultReaderLocation(for: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -652,7 +653,7 @@ final class WCPayRemoteTests: XCTestCase {
             filename: "wcpay-location-error"
         )
 
-        let result: Result<WCPayCustomer, Error> = waitFor { promise in
+        let result: Result<Customer, Error> = waitFor { promise in
             remote.fetchOrderCustomer(for: self.sampleSiteID, orderID: self.sampleOrderID) { result in
                 promise(result)
             }

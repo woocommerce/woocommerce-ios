@@ -26,12 +26,16 @@ class AuthenticatedState: StoresManagerState {
         let storageManager = ServiceLocator.storageManager
         let network = AlamofireNetwork(credentials: credentials)
 
+        /// TODO - remove this feature flag related logic when no longer needed
+        let allowStripeIPP = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.stripeExtensionInPersonPayments)
+
         services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
             AddOnGroupStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             AvailabilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            CouponStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             DataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -40,7 +44,6 @@ class AuthenticatedState: StoresManagerState {
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             PaymentGatewayStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            PaymentGatewayAccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductAttributeStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductAttributeTermStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -63,7 +66,8 @@ class AuthenticatedState: StoresManagerState {
             CardPresentPaymentStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
-                                    cardReaderService: ServiceLocator.cardReaderService),
+                                    cardReaderService: ServiceLocator.cardReaderService,
+                                    allowStripeIPP: allowStripeIPP),
             ReceiptStore(dispatcher: dispatcher,
                          storageManager: storageManager,
                          network: network,

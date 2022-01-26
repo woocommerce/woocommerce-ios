@@ -196,7 +196,6 @@ private extension RefundDetailsDataSource {
         cell.update(with: .imageAndTitleOnly(fontStyle: .body),
                     data: .init(title: refundReason ?? "",
                                 textTintColor: .text,
-                                image: .quoteImage,
                                 imageTintColor: .text,
                                 numberOfLinesForTitle: 0,
                                 isActionable: false))

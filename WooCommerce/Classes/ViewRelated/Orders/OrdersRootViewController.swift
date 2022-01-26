@@ -29,10 +29,6 @@ final class OrdersRootViewController: UIViewController {
 
     private let analytics = ServiceLocator.analytics
 
-    /// Lets us know if the store is ready to receive in person payments
-    ///
-    private let inPersonPaymentsUseCase = CardPresentPaymentsOnboardingUseCase()
-
     /// Stores any active observation.
     ///
     private var subscriptions = Set<AnyCancellable>()
@@ -59,10 +55,6 @@ final class OrdersRootViewController: UIViewController {
     ///
     private var isOrderCreationEnabled: Bool = false
 
-    /// Stores status for Simple Payments availability.
-    ///
-    private var shouldShowSimplePaymentsButton: Bool = false
-
     // MARK: View Lifecycle
 
     init(siteID: Int64) {
@@ -83,7 +75,6 @@ final class OrdersRootViewController: UIViewController {
         configureView()
         configureFiltersBar()
         configureChildViewController()
-        observeInPersonPaymentsStoreState()
 
         /// We sync the local order settings for configuring local statuses and date range filters.
         /// If there are some info stored when this screen is loaded, the data will be updated using the stored filters.
@@ -92,8 +83,12 @@ final class OrdersRootViewController: UIViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
         // Needed in ViewWillAppear because this View Controller is never recreated.
         fetchExperimentalTogglesAndConfigureNavigationButtons()
+
+        ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -162,15 +157,14 @@ private extension OrdersRootViewController {
 
     /// Sets navigation buttons.
     /// Search: Is always present.
-    /// Simple Payments: Depends  on the store inPersonPayments state.
+    /// Add: Always present.
     ///
     func configureNavigationButtons(isOrderCreationExperimentalToggleEnabled: Bool) {
-        let shouldShowSimplePaymentsButton = inPersonPaymentsUseCase.state == .completed
-        let buttons: [UIBarButtonItem?] = [
+        let buttons: [UIBarButtonItem] = [
             createSearchBarButtonItem(),
-            createAddOrderItem(isOrderCreationEnabled: isOrderCreationExperimentalToggleEnabled, shouldShowSimplePaymentsButton: shouldShowSimplePaymentsButton)
+            createAddOrderItem(isOrderCreationEnabled: isOrderCreationExperimentalToggleEnabled)
         ]
-        navigationItem.rightBarButtonItems = buttons.compactMap { $0 }
+        navigationItem.rightBarButtonItems = buttons
     }
 
     func configureFiltersBar() {
@@ -202,18 +196,6 @@ private extension OrdersRootViewController {
         addChild(ordersViewController)
         stackView.addArrangedSubview(contentView)
         ordersViewController.didMove(toParent: self)
-    }
-
-    /// Observes the store `InPersonPayments` state and reconfigure navigation buttons appropriately.
-    ///
-    func observeInPersonPaymentsStoreState() {
-        inPersonPaymentsUseCase.$state
-            .removeDuplicates()
-            .sink { [weak self] _ in
-                self?.fetchExperimentalTogglesAndConfigureNavigationButtons()
-            }
-            .store(in: &subscriptions)
-        inPersonPaymentsUseCase.refresh()
     }
 
     /// Fetches the latest values of order-related experimental feature toggles and re configures navigation buttons.
@@ -300,9 +282,8 @@ private extension OrdersRootViewController {
 
     /// Create a `UIBarButtonItem` to be used as a way to create a new order.
     ///
-    func createAddOrderItem(isOrderCreationEnabled: Bool, shouldShowSimplePaymentsButton: Bool) -> UIBarButtonItem? {
+    func createAddOrderItem(isOrderCreationEnabled: Bool) -> UIBarButtonItem {
         self.isOrderCreationEnabled = isOrderCreationEnabled
-        self.shouldShowSimplePaymentsButton = shouldShowSimplePaymentsButton
 
         let button = UIBarButtonItem(image: .plusBarButtonItemImage,
                                      style: .plain,
@@ -310,16 +291,10 @@ private extension OrdersRootViewController {
                                      action: #selector(presentOrderCreationFlow(sender:)))
         button.accessibilityTraits = .button
 
-        switch (isOrderCreationEnabled, shouldShowSimplePaymentsButton) {
-        case (false, false):
-            return nil
-        case (true, true):
+        if isOrderCreationEnabled {
             button.accessibilityLabel = NSLocalizedString("Choose new order type", comment: "Opens action sheet to choose a type of a new order")
             button.accessibilityIdentifier = "new-order-type-sheet-button"
-        case (true, false):
-            button.accessibilityLabel = NSLocalizedString("Add a new order", comment: "Navigates to a screen to create a full manual order")
-            button.accessibilityIdentifier = "full-order-add-button"
-        case (false, true):
+        } else {
             button.accessibilityLabel = NSLocalizedString("Add simple payments order", comment: "Navigates to a screen to create a simple payments order")
             button.accessibilityIdentifier = "simple-payments-add-button"
         }
@@ -335,7 +310,6 @@ private extension OrdersRootViewController {
 
         let coordinatingController = AddOrderCoordinator(siteID: siteID,
                                                          isOrderCreationEnabled: isOrderCreationEnabled,
-                                                         shouldShowSimplePaymentsButton: shouldShowSimplePaymentsButton,
                                                          sourceBarButtonItem: sender,
                                                          sourceNavigationController: navigationController)
         coordinatingController.onOrderCreated = { [weak self] order in

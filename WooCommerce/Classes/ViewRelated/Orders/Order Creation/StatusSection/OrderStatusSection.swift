@@ -4,8 +4,9 @@ import Yosemite
 /// Represents the Status section with date label, status badge and edit button.
 ///
 struct OrderStatusSection: View {
-    let geometry: GeometryProxy
     @ObservedObject var viewModel: NewOrderViewModel
+
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     var body: some View {
         Divider()
@@ -38,7 +39,7 @@ struct OrderStatusSection: View {
                 }
             }
         }
-        .padding(.horizontal, insets: geometry.safeAreaInsets)
+        .padding(.horizontal, insets: safeAreaInsets)
         .padding([.leading, .trailing, .top])
         .background(Color(.listForeground))
 
@@ -66,10 +67,8 @@ struct OrderStatusSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = NewOrderViewModel(siteID: 123)
 
-        GeometryReader { geometry in
-            ScrollView {
-                OrderStatusSection(geometry: geometry, viewModel: viewModel)
-            }
+        ScrollView {
+            OrderStatusSection(viewModel: viewModel)
         }
     }
 }

@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 struct InPersonPaymentsOnboardingError: View {
     let title: String
@@ -50,7 +51,7 @@ struct InPersonPaymentsOnboardingError: View {
 
         @Environment(\.verticalSizeClass) var verticalSizeClass
 
-        var isCompat: Bool {
+        var isCompact: Bool {
             get {
                 verticalSizeClass == .compact
             }
@@ -60,20 +61,31 @@ struct InPersonPaymentsOnboardingError: View {
             VStack(alignment: .center) {
                 Text(title)
                     .font(.headline)
-                    .padding(.bottom, isCompat ? 16 : 32)
+                    .padding(.bottom, isCompact ? 16 : 32)
                 Image(uiImage: image.image)
                     .resizable()
                     .scaledToFit()
-                    .frame(height: isCompat ? image.height / 3 : image.height)
-                    .padding(.bottom, isCompat ? 16 : 32)
+                    .frame(height: isCompact ? image.height / 3 : image.height)
+                    .padding(.bottom, isCompact ? 16 : 32)
                 Text(message)
                     .font(.callout)
-                    .padding(.bottom, isCompat ? 12 : 24)
+                    .padding(.bottom, isCompact ? 12 : 24)
                 if supportLink {
                     InPersonPaymentsSupportLink()
                 }
             }.multilineTextAlignment(.center)
             .frame(maxWidth: 500)
+        }
+    }
+}
+
+extension CardPresentPaymentsPlugins {
+    public var image: UIImage {
+        switch self {
+        case .wcPay:
+            return .wcPayPlugin
+        case .stripe:
+            return .stripePlugin
         }
     }
 }

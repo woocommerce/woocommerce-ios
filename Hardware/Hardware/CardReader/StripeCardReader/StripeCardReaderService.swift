@@ -307,7 +307,6 @@ extension StripeCardReaderService: CardReaderService {
                     promise(.failure(CardReaderServiceError.connection()))
                     return
                 }
-
                 // Clear cached readers, as per Stripe's documentation.
                 self.discoveredStripeReadersCache.clear()
 
@@ -341,12 +340,11 @@ private extension StripeCardReaderService {
     /// Returns the id of the connected reader, if any
     ///
     func readerIDForIntent() -> String? {
-        let connectedReaders = connectedReadersSubject.value
-        guard connectedReaders.count == 1 else {
-            return nil
-        }
+        connectedReadersSubject.value.first?.id
+    }
 
-        return connectedReaders.first?.id
+    func readerModelForIntent() -> String? {
+        connectedReadersSubject.value.first?.readerType.model
     }
 
     func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<StripeTerminal.PaymentIntent, Error> {
@@ -360,6 +358,7 @@ private extension StripeCardReaderService {
             /// Add the reader_ID to the request metadata so we can attribute this intent to the connected reader
             ///
             parameters.metadata?[Constants.readerIDMetadataKey] = self?.readerIDForIntent()
+            parameters.metadata?[Constants.readerModelMetadataKey] = self?.readerModelForIntent()
 
             Terminal.shared.createPaymentIntent(parameters) { (intent, error) in
                 if let error = error {
@@ -622,6 +621,7 @@ private extension StripeCardReaderService {
         /// by the Android app.
         ///
         static let readerIDMetadataKey = "reader_ID"
+        static let readerModelMetadataKey = "reader_model"
     }
 }
 

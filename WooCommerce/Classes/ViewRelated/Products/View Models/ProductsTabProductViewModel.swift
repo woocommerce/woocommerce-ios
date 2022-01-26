@@ -92,18 +92,34 @@ private extension EditableProductModel {
             return nil
         }
         let numberOfVariations = product.variations.count
-        let singularFormat = NSLocalizedString("%ld variant", comment: "Label about one product variation shown on Products tab")
-        let pluralFormat = NSLocalizedString("%ld variants", comment: "Label about number of variations shown on Products tab")
-        let format = String.pluralize(numberOfVariations, singular: singularFormat, plural: pluralFormat)
+        let format = String.pluralize(numberOfVariations,
+                                      singular: Localization.VariationCount.singular,
+                                      plural: Localization.VariationCount.plural)
         return String.localizedStringWithFormat(format, numberOfVariations)
+    }
+}
+
+// MARK: Localization
+//
+private extension EditableProductModel {
+    enum Localization {
+        enum VariationCount {
+            static let singular = NSLocalizedString("%1$ld variation",
+                                                    comment: "Label about one product variation shown on Products tab. Reads, `1 variation`")
+            static let plural = NSLocalizedString("%1$ld variations",
+                                                  comment: "Label about number of variations shown on Products tab. Reads, `2 variations`")
+        }
     }
 }
 
 private extension ProductsTabProductViewModel {
     enum Localization {
-        static let noTitle = NSLocalizedString("(No Title)", comment: "Product title in Products list when there is no title")
+        static let noTitle = NSLocalizedString("(No Title)",
+                                               comment: "Product title in Products list when there is no title")
+
         static func variationID(variationID: String) -> String {
-            let titleFormat = NSLocalizedString("#%1$@", comment: "Variation ID. Parameters: %1$@ - Product variation ID")
+            let titleFormat = NSLocalizedString("#%1$@",
+                                                comment: "Variation ID. Parameters: %1$@ - Product variation ID")
             return String.localizedStringWithFormat(titleFormat, variationID)
         }
     }

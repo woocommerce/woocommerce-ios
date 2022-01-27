@@ -2,7 +2,7 @@
 
 8.5
 -----
-
+- [*] In-Person Payments: Inform the user when a card reader battery is so low that it needs to be charged before the reader can be connected. [https://github.com/woocommerce/woocommerce-ios/pull/5998]
 
 8.4
 -----

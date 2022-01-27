@@ -267,6 +267,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
         .onAppear {
             viewModel.onLoadTrigger.send()
         }
+        .notice($viewModel.notice)
     }
 
     /// Decides if the navigation trailing item should be a done button or a loading indicator.

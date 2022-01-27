@@ -47,6 +47,10 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     ///
     var alternativeUsageToggleTitle: String { get }
 
+    /// Defines the active notice to show.
+    ///
+    var notice: Notice? { get set }
+
     /// Save the address and invoke a completion block when finished
     ///
     func saveAddress(onFinish: @escaping (Bool) -> Void)
@@ -229,7 +233,7 @@ open class AddressFormViewModel: ObservableObject {
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
     ///
-    @Published var presentNotice: Notice?
+    @Published var notice: Notice?
 
     /// Defines if the state field should be defined as a list selector.
     ///
@@ -268,12 +272,6 @@ open class AddressFormViewModel: ObservableObject {
 }
 
 extension AddressFormViewModel {
-
-    /// Representation of possible notices that can be displayed
-    enum Notice: Equatable {
-        case success
-        case error(EditAddressError)
-    }
 
     /// Representation of possible errors that can happen
     enum EditAddressError: LocalizedError {
@@ -388,7 +386,7 @@ private extension AddressFormViewModel {
         let syncCountries = makeSyncCountriesFuture()
             .catch { [weak self] error -> AnyPublisher<Void, Never> in
                 DDLogError("⛔️ Failed to load countries with: \(error)")
-                self?.presentNotice = .error(error)
+                self?.notice = Self.createErrorNotice(from: error)
                 return Just(()).eraseToAnyPublisher()
             }
 
@@ -422,5 +420,11 @@ private extension AddressFormViewModel {
             self.stores.dispatch(action)
         }
         .eraseToAnyPublisher()
+    }
+
+    /// Creates an error notice based on the provided edit address error.
+    ///
+    static func createErrorNotice(from error: EditAddressError) -> Notice {
+        Notice(title: error.errorDescription ?? "", message: error.recoverySuggestion, feedbackType: .error)
     }
 }

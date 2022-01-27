@@ -170,7 +170,11 @@ final class NewOrderViewModel: ObservableObject {
         }
 
         if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
-            return ProductRowViewModel(id: item.id, productVariation: variation, name: product.name, canChangeQuantity: canChangeQuantity)
+            return ProductRowViewModel(id: item.id,
+                                       productVariation: variation,
+                                       name: product.name,
+                                       quantity: item.quantity,
+                                       canChangeQuantity: canChangeQuantity)
         } else {
             return ProductRowViewModel(id: item.id, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
         }

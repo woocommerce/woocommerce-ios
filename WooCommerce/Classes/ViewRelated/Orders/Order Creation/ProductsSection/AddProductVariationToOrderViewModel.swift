@@ -38,6 +38,10 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
         productVariations.map { .init(productVariation: $0, allAttributes: productAttributes, canChangeQuantity: false) }
     }
 
+    /// Closure to be invoked when a product variation is selected
+    ///
+    let onVariationSelected: ((ProductVariation) -> Void)?
+
     // MARK: Sync & Storage properties
 
     /// Current sync status; used to determine what list view to display.
@@ -74,13 +78,15 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
          productName: String,
          productAttributes: [ProductAttribute],
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         onVariationSelected: ((ProductVariation) -> Void)? = nil) {
         self.siteID = siteID
         self.productID = productID
         self.productName = productName
         self.productAttributes = productAttributes
         self.storageManager = storageManager
         self.stores = stores
+        self.onVariationSelected = onVariationSelected
 
         configureSyncingCoordinator()
         configureProductVariationsResultsController()
@@ -89,19 +95,24 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
     convenience init(siteID: Int64,
                      product: Product,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
-                     stores: StoresManager = ServiceLocator.stores) {
+                     stores: StoresManager = ServiceLocator.stores,
+                     onVariationSelected: ((ProductVariation) -> Void)? = nil) {
         self.init(siteID: siteID,
                   productID: product.productID,
                   productName: product.name,
                   productAttributes: product.attributesForVariations,
                   storageManager: storageManager,
-                  stores: stores)
+                  stores: stores,
+                  onVariationSelected: onVariationSelected)
     }
 
     /// Select a product variation to add to the order
     ///
-    func selectVariation(_ productID: Int64) {
-        // TODO: Add the selected product variation to the order
+    func selectVariation(_ variationID: Int64) {
+        guard let selectedVariation = productVariations.first(where: { $0.productVariationID == variationID }) else {
+            return
+        }
+        onVariationSelected?(selectedVariation)
     }
 }
 

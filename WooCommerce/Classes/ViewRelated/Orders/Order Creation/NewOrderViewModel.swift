@@ -90,6 +90,9 @@ final class NewOrderViewModel: ObservableObject {
         AddProductToOrderViewModel(siteID: siteID, storageManager: storageManager, stores: stores) { [weak self] product in
             guard let self = self else { return }
             self.addProductToOrder(product)
+        } onVariationSelected: { [weak self] variation in
+            guard let self = self else { return }
+            self.addProductVariationToOrder(variation)
         }
     }()
 
@@ -299,6 +302,14 @@ extension NewOrderViewModel {
             self.quantity = quantity
             self.price = NSDecimalNumber(string: product.price)
         }
+
+        init(variation: ProductVariation, quantity: Decimal) {
+            self.id = UUID().uuidString
+            self.productID = variation.productID
+            self.variationID = variation.productVariationID
+            self.quantity = quantity
+            self.price = NSDecimalNumber(string: variation.price)
+        }
     }
 
     /// Representation of customer data display properties
@@ -380,6 +391,14 @@ private extension NewOrderViewModel {
     ///
     func addProductToOrder(_ product: Product) {
         let newOrderItem = NewOrderItem(product: product, quantity: 1)
+        orderDetails.items.append(newOrderItem)
+        configureProductRowViewModels()
+    }
+
+    /// Adds a selected product variation (from the product list) to the order.
+    ///
+    func addProductVariationToOrder(_ variation: ProductVariation) {
+        let newOrderItem = NewOrderItem(variation: variation, quantity: 1)
         orderDetails.items.append(newOrderItem)
         configureProductRowViewModels()
     }

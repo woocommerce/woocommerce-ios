@@ -296,6 +296,9 @@ extension StripeCardReaderService: CardReaderService {
 
         return Future { [weak self] promise in
 
+            promise(.failure(CardReaderServiceError.connection(underlyingError: .bluetoothConnectionFailedBatteryCriticallyLow)))
+            return
+
             guard let self = self else {
                 promise(.failure(CardReaderServiceError.connection()))
                 return

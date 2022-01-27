@@ -70,6 +70,10 @@ final class CardReaderServiceErrorTests: XCTestCase {
         XCTAssertEqual(.readerSoftwareUpdateFailedInterrupted, domainError(stripeCode: 2660))
     }
 
+    func test_stripe_unable_to_connect_to_reader_the_reader_has_a_critically_low_battery() {
+        XCTAssertEqual(.bluetoothConnectionFailedBatteryCriticallyLow, domainError(stripeCode: 2680))
+    }
+
     func test_stripe_software_update_failed_maps_to_expected_error() {
         XCTAssertEqual(.readerSoftwareUpdateFailed, domainError(stripeCode: 3800))
     }

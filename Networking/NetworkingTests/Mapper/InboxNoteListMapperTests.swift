@@ -11,7 +11,7 @@ class InboxNoteListMapperTests: XCTestCase {
     ///
     func test_InboxNoteListMapper_parses_all_InboxNotes_in_response() throws {
         let inboxNotes = try mapLoadInboxNoteListResponse()
-        XCTAssertEqual(inboxNotes.count, 4)
+        XCTAssertEqual(inboxNotes.count, 24)
     }
 
     /// Verifies that the `siteID` is added in the mapper, to all results, because it's not provided by the API endpoint.

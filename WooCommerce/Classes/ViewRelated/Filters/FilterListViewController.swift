@@ -1,5 +1,5 @@
+import Combine
 import UIKit
-import Observables
 import Yosemite
 
 /// The view model protocol for filtering a list of models with generic filters.
@@ -98,8 +98,8 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
 
     private var clearAllBarButtonItem: UIBarButtonItem?
 
-    private var cancellableSelectedFilterType: ObservationToken?
-    private var cancellableSelectedFilterValue: ObservationToken?
+    private var selectedFilterTypeSubscription: AnyCancellable?
+    private var selectedFilterValueSubscription: AnyCancellable?
 
     private let onFilterAction: (ViewModel.Criteria) -> Void
     private let onClearAction: () -> Void
@@ -132,11 +132,6 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    deinit {
-        cancellableSelectedFilterType?.cancel()
-        cancellableSelectedFilterValue?.cancel()
     }
 
     override func viewDidLoad() {
@@ -206,8 +201,8 @@ private extension FilterListViewController {
     }
 
     func observeListSelectorCommandItemSelection() {
-        cancellableSelectedFilterType?.cancel()
-        cancellableSelectedFilterType = listSelectorCommand.onItemSelected.subscribe { [weak self] selected in
+        selectedFilterTypeSubscription?.cancel()
+        selectedFilterTypeSubscription = listSelectorCommand.onItemSelected.sink { [weak self] selected in
             guard let self = self else {
                 return
             }
@@ -225,11 +220,11 @@ private extension FilterListViewController {
 
             switch selected.listSelectorConfig {
             case .staticOptions(let options):
-                self.cancellableSelectedFilterValue?.cancel()
+                self.selectedFilterValueSubscription?.cancel()
                 let command = StaticListSelectorCommand(navigationBarTitle: selected.title,
                                                         data: options,
                                                         selected: selected.selectedValue)
-                self.cancellableSelectedFilterValue = command.onItemSelected.subscribe (selectedValueAction)
+                self.selectedFilterValueSubscription = command.onItemSelected.sink { selectedValueAction($0) }
                 let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
             case let .productCategories(siteID):
@@ -319,9 +314,9 @@ private extension FilterListViewController {
 
         fileprivate(set) var data: [FilterTypeViewModel]
 
-        private let onItemSelectedSubject = PublishSubject<FilterTypeViewModel>()
-        var onItemSelected: Observable<FilterTypeViewModel> {
-            onItemSelectedSubject
+        private let onItemSelectedSubject = PassthroughSubject<FilterTypeViewModel, Never>()
+        var onItemSelected: AnyPublisher<FilterTypeViewModel, Never> {
+            onItemSelectedSubject.eraseToAnyPublisher()
         }
 
         init(data: [FilterTypeViewModel]) {
@@ -355,9 +350,9 @@ private extension FilterListViewController {
 
         let data: [FilterType]
 
-        private let onItemSelectedSubject = PublishSubject<FilterType>()
-        var onItemSelected: Observable<FilterType> {
-            onItemSelectedSubject
+        private let onItemSelectedSubject = PassthroughSubject<FilterType, Never>()
+        var onItemSelected: AnyPublisher<FilterType, Never> {
+            onItemSelectedSubject.eraseToAnyPublisher()
         }
 
         init(navigationBarTitle: String, data: [FilterType], selected: FilterType) {

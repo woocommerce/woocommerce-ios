@@ -103,7 +103,7 @@ private extension StripeRemote {
         static let connectionTokens = "wc_stripe/connection_tokens"
         static let accounts = "wc_stripe/account/summary"
         static let locations = "wc_stripe/terminal/locations/store"
-        static let orders = "payments/orders"
+        static let orders = "wc_stripe/orders"
         static let captureTerminalPayment = "capture_terminal_payment"
         static let createCustomer = "create_customer"
     }

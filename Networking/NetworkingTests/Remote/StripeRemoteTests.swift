@@ -382,7 +382,7 @@ final class StripeRemoteTests: XCTestCase {
          let expectedCustomerID = "cus_0123456789abcd"
 
          network.simulateResponse(
-             requestUrlSuffix: "payments/orders/\(sampleOrderID)/create_customer",
+             requestUrlSuffix: "wc_stripe/orders/\(sampleOrderID)/create_customer",
              filename: "stripe-customer"
          )
 
@@ -421,7 +421,7 @@ final class StripeRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_requires_confirmation_response() throws {
         let remote = StripeRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "stripe-payment-intent-requires-confirmation")
 
         let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
@@ -443,7 +443,7 @@ final class StripeRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_requires_action_response() throws {
         let remote = StripeRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "stripe-payment-intent-requires-action")
 
         let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
@@ -465,7 +465,7 @@ final class StripeRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_processing_response() throws {
         let remote = StripeRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "stripe-payment-intent-processing")
 
         let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
@@ -487,7 +487,7 @@ final class StripeRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_requires_capture_response() throws {
         let remote = StripeRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "stripe-payment-intent-requires-capture")
 
         let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
@@ -509,7 +509,7 @@ final class StripeRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_canceled_response() throws {
         let remote = StripeRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "stripe-payment-intent-canceled")
 
         let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
@@ -531,7 +531,7 @@ final class StripeRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_succeeded_response() throws {
         let remote = StripeRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "stripe-payment-intent-succeeded")
 
         let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
@@ -553,7 +553,7 @@ final class StripeRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_unrecognized_status_response() throws {
         let remote = StripeRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "stripe-payment-intent-unknown-status")
 
         let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
@@ -575,7 +575,7 @@ final class StripeRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_error_response() throws {
         let remote = StripeRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "stripe-payment-intent-error")
 
         let result: Result<RemotePaymentIntent, Error> = waitFor { promise in

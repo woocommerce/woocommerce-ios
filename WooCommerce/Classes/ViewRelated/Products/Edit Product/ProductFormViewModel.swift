@@ -48,7 +48,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let productSubject: PassthroughSubject<EditableProductModel, Never> = PassthroughSubject<EditableProductModel, Never>()
     private let productNameSubject: PassthroughSubject<String, Never> = PassthroughSubject<String, Never>()
-    private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never>
+    private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never> = PassthroughSubject<Bool, Never>()
     private let newVariationsPriceSubject = PassthroughSubject<Void, Never>()
 
     private lazy var variationsResultsController = createVariationsResultsController()
@@ -168,7 +168,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.originalProduct = product
         self.product = product
         self.actionsFactory = ProductFormActionsFactory(product: product, formType: formType)
-        self.isUpdateEnabledSubject = PassthroughSubject<Bool, Never>()
         self.stores = stores
         self.storageManager = storageManager
 

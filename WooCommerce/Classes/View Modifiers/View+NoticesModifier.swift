@@ -8,6 +8,11 @@ import UIKit
 /// - Presenting foreground system notifications.
 ///
 struct NoticeModifier: ViewModifier {
+
+    /// Tracks the current presentation mode.
+    ///
+    @Environment(\.presentationMode) private var presentationMode
+
     /// Notice object to render.
     ///
     @Binding var notice: Notice?
@@ -34,10 +39,10 @@ struct NoticeModifier: ViewModifier {
             .animation(.easeInOut, value: notice)
     }
 
-    /// Builds a notice view at the bottom of the screen.
+    /// Builds a notice view at the bottom of the screen while the view is being presented.
     ///
     @ViewBuilder private func buildNoticeStack() -> some View {
-        if let notice = notice {
+        if let notice = notice, presentationMode.wrappedValue.isPresented {
             // Geometry reader to provide the correct view width.
             GeometryReader { geometry in
 

@@ -16,19 +16,10 @@ final class TitleAndEditableValueTableViewCellViewModel {
     /// If `true`, the keyboard will be dismissed on tapping return. Defaults to `false`.
     let hidesKeyboardOnReturn: Bool
 
-    private let valueSubject: CurrentValueSubject<String?, Never>
-
     /// Emits values whenever the text field changes.
     ///
     /// This is connected with the view's text field through the `update(value:)`.
-    var value: AnyPublisher<String?, Never> {
-        valueSubject.eraseToAnyPublisher()
-    }
-
-    /// The last value of the text field.
-    var currentValue: String? {
-        valueSubject.value
-    }
+    @Published private(set) var value: String?
 
     init(title: String?, placeholder: String? = nil, initialValue: String? = nil, allowsEditing: Bool = true, hidesKeyboardOnReturn: Bool = false) {
         self.title = title
@@ -36,13 +27,13 @@ final class TitleAndEditableValueTableViewCellViewModel {
         self.allowsEditing = allowsEditing
         self.hidesKeyboardOnReturn = hidesKeyboardOnReturn
 
-        valueSubject = CurrentValueSubject(initialValue)
+        value = initialValue
     }
 
-    /// Updates the value of the `self.value` `Observable`.
+    /// Updates the value of the `self.value` observable.
     ///
     /// This is generally used by the view represented by this `ViewModel`.
     func update(value: String?) {
-        valueSubject.send(value)
+        self.value = value
     }
 }

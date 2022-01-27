@@ -13,7 +13,7 @@ final class TitleAndEditableValueTableViewCellViewModelTests: XCTestCase {
         let viewModel = TitleAndEditableValueTableViewCellViewModel(title: nil)
 
         var emittedValues = [String?]()
-        valueSubscription = viewModel.value.sink {
+        valueSubscription = viewModel.$value.sink {
             emittedValues.append($0)
         }
 
@@ -32,13 +32,13 @@ final class TitleAndEditableValueTableViewCellViewModelTests: XCTestCase {
         // Given
         let viewModel = TitleAndEditableValueTableViewCellViewModel(title: nil)
 
-        XCTAssertNil(viewModel.currentValue)
+        XCTAssertNil(viewModel.value)
 
         // When
         viewModel.update(value: "aut")
         viewModel.update(value: "laudantium")
 
         // Then
-        XCTAssertEqual(viewModel.currentValue, "laudantium")
+        XCTAssertEqual(viewModel.value, "laudantium")
     }
 }

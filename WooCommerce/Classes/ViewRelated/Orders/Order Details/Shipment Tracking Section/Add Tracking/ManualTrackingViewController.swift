@@ -241,7 +241,7 @@ extension ManualTrackingViewController: UITableViewDataSource {
         cell.update(viewModel: cellViewModel)
         cell.accessoryType = .none
 
-        cellViewModel.value.sink { [weak self] in
+        cellViewModel.$value.sink { [weak self] in
             self?.didChangeProviderName(value: $0)
         }.store(in: &valueSubscriptions)
     }
@@ -256,7 +256,7 @@ extension ManualTrackingViewController: UITableViewDataSource {
         cell.update(viewModel: cellViewModel)
         cell.accessoryType = .none
 
-        cellViewModel.value.sink { [weak self] in
+        cellViewModel.$value.sink { [weak self] in
             self?.didChangeTrackingNumber(value: $0)
         }.store(in: &valueSubscriptions)
     }
@@ -270,7 +270,7 @@ extension ManualTrackingViewController: UITableViewDataSource {
         cell.update(viewModel: cellViewModel)
         cell.accessoryType = .none
 
-        cellViewModel.value.sink { [weak self] in
+        cellViewModel.$value.sink { [weak self] in
             self?.didChangeTrackingLink(value: $0)
         }.store(in: &valueSubscriptions)
     }
@@ -441,7 +441,7 @@ private extension ManualTrackingViewController {
 
 // MARK: - Navigation bar management
 //
-/// Activates the action button (Add/Edit) if there is anough data to add or edit a shipment tracking
+/// Activates the action button (Add/Edit) if there is enough data to add or edit a shipment tracking
 private extension ManualTrackingViewController {
     private func activateActionButtonIfNecessary() {
         navigationItem.rightBarButtonItem?.isEnabled = viewModel.canCommit

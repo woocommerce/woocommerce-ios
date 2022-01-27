@@ -4,20 +4,25 @@ import protocol Storage.StorageManagerType
 
 final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormViewModelProtocol {
 
+    struct NewOrderAddressData {
+        let billingAddress: Address?
+        let shippingAddress: Address?
+    }
+
     /// Address update callback
     ///
-    private let onAddressUpdate: ((Address) -> Void)?
+    private let onAddressUpdate: ((NewOrderAddressData) -> Void)?
 
     init(siteID: Int64,
-         address: Address?,
-         onAddressUpdate: ((Address) -> Void)?,
+         addressData: NewOrderAddressData,
+         onAddressUpdate: ((NewOrderAddressData) -> Void)?,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.onAddressUpdate = onAddressUpdate
 
         super.init(siteID: siteID,
-                   address: address ?? .empty,
+                   address: addressData.billingAddress ?? .empty,
                    storageManager: storageManager,
                    stores: stores,
                    analytics: analytics)
@@ -34,19 +39,32 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
     }
 
     var sectionTitle: String {
-        Localization.addressSection
+        if showDifferentAddressForm {
+            return Localization.billingAddressSection
+        } else {
+            return Localization.addressSection
+        }
     }
 
     var showAlternativeUsageToggle: Bool {
         false
     }
 
-    var alternativeUsageToggleTitle: String {
-        ""
+    var alternativeUsageToggleTitle: String? {
+        nil
+    }
+
+    var showDifferentAddressToggle: Bool {
+        true
+    }
+
+    var differentAddressToggleTitle: String? {
+        Localization.differentAddressToggleTitle
     }
 
     func saveAddress(onFinish: @escaping (Bool) -> Void) {
-        onAddressUpdate?(updatedAddress)
+        onAddressUpdate?(.init(billingAddress: updatedAddress,
+                               shippingAddress: updatedAddress))
         onFinish(true)
     }
 
@@ -68,5 +86,8 @@ private extension CreateOrderAddressFormViewModel {
 
         static let shippingAddressSection = NSLocalizedString("SHIPPING ADDRESS", comment: "Details section title in the Edit Address Form")
         static let billingAddressSection = NSLocalizedString("BILLING ADDRESS", comment: "Details section title in the Edit Address Form")
+
+        static let differentAddressToggleTitle = NSLocalizedString("Add a different shipping address",
+                                                                   comment: "Title for the Add a Different Address switch in the Address form")
     }
 }

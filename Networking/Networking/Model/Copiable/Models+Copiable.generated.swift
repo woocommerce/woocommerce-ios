@@ -169,6 +169,72 @@ extension CouponReport {
     }
 }
 
+extension InboxAction {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        label: CopiableProp<String> = .copy,
+        status: CopiableProp<String> = .copy,
+        actionedText: CopiableProp<String> = .copy,
+        url: CopiableProp<String> = .copy
+    ) -> InboxAction {
+        let id = id ?? self.id
+        let name = name ?? self.name
+        let label = label ?? self.label
+        let status = status ?? self.status
+        let actionedText = actionedText ?? self.actionedText
+        let url = url ?? self.url
+
+        return InboxAction(
+            id: id,
+            name: name,
+            label: label,
+            status: status,
+            actionedText: actionedText,
+            url: url
+        )
+    }
+}
+
+extension InboxNote {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        id: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        type: CopiableProp<String> = .copy,
+        status: CopiableProp<String> = .copy,
+        actions: CopiableProp<[String]> = .copy,
+        title: CopiableProp<String> = .copy,
+        content: CopiableProp<String> = .copy,
+        isDeleted: CopiableProp<String> = .copy,
+        dateCreated: CopiableProp<Date> = .copy
+    ) -> InboxNote {
+        let siteID = siteID ?? self.siteID
+        let id = id ?? self.id
+        let name = name ?? self.name
+        let type = type ?? self.type
+        let status = status ?? self.status
+        let actions = actions ?? self.actions
+        let title = title ?? self.title
+        let content = content ?? self.content
+        let isDeleted = isDeleted ?? self.isDeleted
+        let dateCreated = dateCreated ?? self.dateCreated
+
+        return InboxNote(
+            siteID: siteID,
+            id: id,
+            name: name,
+            type: type,
+            status: status,
+            actions: actions,
+            title: title,
+            content: content,
+            isDeleted: isDeleted,
+            dateCreated: dateCreated
+        )
+    }
+}
+
 extension Order {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

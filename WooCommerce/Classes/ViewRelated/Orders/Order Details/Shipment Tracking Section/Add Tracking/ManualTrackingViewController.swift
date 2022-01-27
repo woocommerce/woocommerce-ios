@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import Yosemite
 import Storage
@@ -30,6 +31,8 @@ final class ManualTrackingViewController: UIViewController {
         }
         return keyboardFrameObserver
     }()
+
+    private var valueSubscriptions: Set<AnyCancellable> = []
 
     init(viewModel: ManualTrackingViewModel) {
         self.viewModel = viewModel
@@ -238,9 +241,9 @@ extension ManualTrackingViewController: UITableViewDataSource {
         cell.update(viewModel: cellViewModel)
         cell.accessoryType = .none
 
-        _ = cellViewModel.value.subscribe { [weak self] in
+        cellViewModel.value.sink { [weak self] in
             self?.didChangeProviderName(value: $0)
-        }
+        }.store(in: &valueSubscriptions)
     }
 
     private func configureTrackingNumber(cell: TitleAndEditableValueTableViewCell) {
@@ -253,9 +256,9 @@ extension ManualTrackingViewController: UITableViewDataSource {
         cell.update(viewModel: cellViewModel)
         cell.accessoryType = .none
 
-        _ = cellViewModel.value.subscribe { [weak self] in
+        cellViewModel.value.sink { [weak self] in
             self?.didChangeTrackingNumber(value: $0)
-        }
+        }.store(in: &valueSubscriptions)
     }
 
     private func configureTrackingLink(cell: TitleAndEditableValueTableViewCell) {
@@ -267,9 +270,9 @@ extension ManualTrackingViewController: UITableViewDataSource {
         cell.update(viewModel: cellViewModel)
         cell.accessoryType = .none
 
-        _ = cellViewModel.value.subscribe { [weak self] in
+        cellViewModel.value.sink { [weak self] in
             self?.didChangeTrackingLink(value: $0)
-        }
+        }.store(in: &valueSubscriptions)
     }
 
     private func configureDateShipped(cell: TitleAndEditableValueTableViewCell) {

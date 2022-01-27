@@ -1,3 +1,4 @@
+import Combine
 import XCTest
 
 @testable import WooCommerce
@@ -5,13 +6,14 @@ import XCTest
 /// Test cases for `TitleAndEditableValueTableViewCellViewModel`.
 ///
 final class TitleAndEditableValueTableViewCellViewModelTests: XCTestCase {
+    private var valueSubscription: AnyCancellable?
 
     func test_value_Observable_emits_new_values_when_update_is_called() {
         // Given
         let viewModel = TitleAndEditableValueTableViewCellViewModel(title: nil)
 
         var emittedValues = [String?]()
-        _ = viewModel.value.subscribe {
+        valueSubscription = viewModel.value.sink {
             emittedValues.append($0)
         }
 

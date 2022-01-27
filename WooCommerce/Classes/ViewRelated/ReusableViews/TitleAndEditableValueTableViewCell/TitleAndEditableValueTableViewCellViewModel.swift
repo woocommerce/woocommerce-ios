@@ -1,5 +1,5 @@
+import Combine
 import Foundation
-import Observables
 
 /// Observable ViewModel for `TitleAndEditableValueTableViewCell`.
 ///
@@ -16,13 +16,13 @@ final class TitleAndEditableValueTableViewCellViewModel {
     /// If `true`, the keyboard will be dismissed on tapping return. Defaults to `false`.
     let hidesKeyboardOnReturn: Bool
 
-    private let valueSubject: BehaviorSubject<String?>
+    private let valueSubject: CurrentValueSubject<String?, Never>
 
     /// Emits values whenever the text field changes.
     ///
     /// This is connected with the view's text field through the `update(value:)`.
-    var value: Observable<String?> {
-        valueSubject
+    var value: AnyPublisher<String?, Never> {
+        valueSubject.eraseToAnyPublisher()
     }
 
     /// The last value of the text field.
@@ -36,7 +36,7 @@ final class TitleAndEditableValueTableViewCellViewModel {
         self.allowsEditing = allowsEditing
         self.hidesKeyboardOnReturn = hidesKeyboardOnReturn
 
-        valueSubject = BehaviorSubject(initialValue)
+        valueSubject = CurrentValueSubject(initialValue)
     }
 
     /// Updates the value of the `self.value` `Observable`.

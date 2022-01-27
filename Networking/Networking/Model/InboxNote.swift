@@ -29,7 +29,7 @@ public struct InboxNote: GeneratedCopiable, GeneratedFakeable, Equatable {
     /// When the user takes any actions on the notification (other than dismissing it),
     /// we make an API request to update the notification’s status as “actioned.”
     ///
-    public let actions: [String]
+    public let actions: [InboxAction]
 
     /// Title of the note.
     ///

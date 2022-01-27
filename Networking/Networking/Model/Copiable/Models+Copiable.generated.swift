@@ -203,7 +203,7 @@ extension InboxNote {
         name: CopiableProp<String> = .copy,
         type: CopiableProp<String> = .copy,
         status: CopiableProp<String> = .copy,
-        actions: CopiableProp<[String]> = .copy,
+        actions: CopiableProp<[InboxAction]> = .copy,
         title: CopiableProp<String> = .copy,
         content: CopiableProp<String> = .copy,
         isDeleted: CopiableProp<String> = .copy,

@@ -278,6 +278,7 @@
 		45B204BC24890B1200FE6526 /* category.json in Resources */ = {isa = PBXBuildFile; fileRef = 45B204BB24890B1200FE6526 /* category.json */; };
 		45CCFCE227A2C9BF0012E8CB /* InboxNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CCFCE127A2C9BF0012E8CB /* InboxNote.swift */; };
 		45CCFCE427A2DC270012E8CB /* InboxAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CCFCE327A2DC270012E8CB /* InboxAction.swift */; };
+		45CCFCE627A2E3710012E8CB /* InboxNoteListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CCFCE527A2E3710012E8CB /* InboxNoteListMapper.swift */; };
 		45CDAFAB2434CA9300F83C22 /* ProductCatalogVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CDAFAA2434CA9300F83C22 /* ProductCatalogVisibility.swift */; };
 		45D1CF4923BACA6500945A36 /* ProductTaxStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D1CF4823BACA6500945A36 /* ProductTaxStatus.swift */; };
 		45D685F823D0BC78005F87D0 /* ProductSkuMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D685F723D0BC78005F87D0 /* ProductSkuMapper.swift */; };
@@ -926,6 +927,7 @@
 		45B204BB24890B1200FE6526 /* category.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = category.json; sourceTree = "<group>"; };
 		45CCFCE127A2C9BF0012E8CB /* InboxNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxNote.swift; sourceTree = "<group>"; };
 		45CCFCE327A2DC270012E8CB /* InboxAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxAction.swift; sourceTree = "<group>"; };
+		45CCFCE527A2E3710012E8CB /* InboxNoteListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxNoteListMapper.swift; sourceTree = "<group>"; };
 		45CDAFAA2434CA9300F83C22 /* ProductCatalogVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCatalogVisibility.swift; sourceTree = "<group>"; };
 		45D1CF4823BACA6500945A36 /* ProductTaxStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxStatus.swift; sourceTree = "<group>"; };
 		45D685F723D0BC78005F87D0 /* ProductSkuMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSkuMapper.swift; sourceTree = "<group>"; };
@@ -1978,6 +1980,7 @@
 				B524193E21AC5FE400D6FC0A /* DotcomDeviceMapper.swift */,
 				24F98C572502EA8800F49B68 /* FeatureFlagMapper.swift */,
 				AEF9458A27297FF6001DCCFB /* IgnoringResponseMapper.swift */,
+				45CCFCE527A2E3710012E8CB /* InboxNoteListMapper.swift */,
 				26B2F74424C5573F0065CCC8 /* LeaderboardListMapper.swift */,
 				020D07BD23D8570800FD9580 /* MediaListMapper.swift */,
 				D823D904223746CE00C90817 /* NewShipmentTrackingMapper.swift */,
@@ -2891,6 +2894,7 @@
 				02BDB83523EA98C800BCC63E /* String+HTML.swift in Sources */,
 				B505F6CF20BEE38B00BB1B69 /* Account.swift in Sources */,
 				743E84EA22171C5800FAC9D7 /* ShipmentsRemote.swift in Sources */,
+				45CCFCE627A2E3710012E8CB /* InboxNoteListMapper.swift in Sources */,
 				B59325D5217E4206000B0E8E /* NoteRange.swift in Sources */,
 				26B2F74324C545D50065CCC8 /* Leaderboard.swift in Sources */,
 				458C6DE425AC72A1009B300D /* StoredProductSettings.swift in Sources */,

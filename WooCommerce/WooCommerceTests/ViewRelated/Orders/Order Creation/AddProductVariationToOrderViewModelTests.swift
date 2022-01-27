@@ -24,14 +24,19 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_view_model_adds_product_variation_rows_with_unchangeable_quantity() {
+    func test_view_model_adds_product_variation_rows_with_expected_values() {
         // Given
-        let product = Product.fake().copy(productID: sampleProductID)
-        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        let product = Product.fake().copy(productID: sampleProductID,
+                                          attributes: [ProductAttribute.fake().copy(siteID: sampleSiteID, attributeID: 1, name: "Color", variation: true),
+                                                       ProductAttribute.fake().copy(siteID: sampleSiteID, attributeID: 2, name: "Size", variation: true)])
+        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")],
+                                                            purchasable: true)
         insert(productVariation)
 
         // When
-        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager)
+        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
 
         // Then
         XCTAssertEqual(viewModel.productVariationRows.count, 1)
@@ -39,6 +44,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         let productVariationRow = viewModel.productVariationRows[0]
         XCTAssertFalse(productVariationRow.canChangeQuantity,
                        "Product variation row canChangeQuantity property should be false but is true instead")
+        XCTAssertEqual(productVariationRow.name, "Blue - Any Size")
     }
 
     func test_product_variation_rows_only_include_purchasable_product_variations() {
@@ -155,16 +161,25 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
 // MARK: - Utils
 private extension AddProductVariationToOrderViewModelTests {
     /// Insert a `ProductVariation` into storage
-    func insert(_ readOnlyProduct: Yosemite.ProductVariation) {
-        let product = storage.insertNewObject(ofType: StorageProductVariation.self)
-        product.update(with: readOnlyProduct)
+    func insert(_ readOnlyProductVariation: Yosemite.ProductVariation) {
+        let variation = storage.insertNewObject(ofType: StorageProductVariation.self)
+        variation.update(with: readOnlyProductVariation)
+
+        // Store any product variation attributes
+        var storageAttributes: [StorageAttribute] = []
+        for attribute in readOnlyProductVariation.attributes {
+            let storageAttribute = storage.insertNewObject(ofType: GenericAttribute.self)
+            storageAttribute.update(with: attribute)
+            storageAttributes.append(storageAttribute)
+        }
+        variation.attributes = NSOrderedSet(array: storageAttributes)
     }
 
     /// Insert an array of `ProductVariation`s into storage
-    func insert(_ readOnlyProducts: [Yosemite.ProductVariation]) {
-        for readOnlyProduct in readOnlyProducts {
-            let product = storage.insertNewObject(ofType: StorageProductVariation.self)
-            product.update(with: readOnlyProduct)
+    func insert(_ readOnlyProductVariations: [Yosemite.ProductVariation]) {
+        for readOnlyProductVariation in readOnlyProductVariations {
+            let variation = storage.insertNewObject(ofType: StorageProductVariation.self)
+            variation.update(with: readOnlyProductVariation)
         }
     }
 }

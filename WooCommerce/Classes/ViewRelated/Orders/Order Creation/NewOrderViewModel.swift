@@ -84,6 +84,20 @@ final class NewOrderViewModel: ObservableObject {
         productsResultsController.fetchedObjects
     }
 
+    /// Product Variations Results Controller.
+    ///
+    private lazy var productVariationsResultsController: ResultsController<StorageProductVariation> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let resultsController = ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [])
+        return resultsController
+    }()
+
+    /// Product Variations list
+    ///
+    private var allProductVariations: [ProductVariation] {
+        productVariationsResultsController.fetchedObjects
+    }
+
     /// View model for the product list
     ///
     lazy var addProductViewModel = {
@@ -155,7 +169,11 @@ final class NewOrderViewModel: ObservableObject {
             return nil
         }
 
-        return ProductRowViewModel(id: item.id, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
+        if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+            return ProductRowViewModel(id: item.id, productVariation: variation, name: product.name, canChangeQuantity: canChangeQuantity)
+        } else {
+            return ProductRowViewModel(id: item.id, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
+        }
     }
 
     // MARK: Customer data properties
@@ -407,6 +425,7 @@ private extension NewOrderViewModel {
     ///
     func configureProductRowViewModels() {
         updateProductsResultsController()
+        updateProductVariationsResultsController()
         productRows = orderDetails.items.enumerated().compactMap { index, item in
             guard let productRowViewModel = createProductRowViewModel(for: item, canChangeQuantity: true) else {
                 return nil
@@ -463,6 +482,16 @@ private extension NewOrderViewModel {
             try productsResultsController.performFetch()
         } catch {
             DDLogError("⛔️ Error fetching products for new order: \(error)")
+        }
+    }
+
+    /// Fetches product variations from storage.
+    ///
+    func updateProductVariationsResultsController() {
+        do {
+            try productVariationsResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching product variations for new order: \(error)")
         }
     }
 }

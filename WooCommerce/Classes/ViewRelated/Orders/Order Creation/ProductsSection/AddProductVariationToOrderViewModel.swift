@@ -35,7 +35,17 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
     /// View models for each product variation row
     ///
     var productVariationRows: [ProductRowViewModel] {
-        productVariations.map { .init(productVariation: $0, allAttributes: productAttributes, canChangeQuantity: false) }
+        productVariations.map { variation in
+            let variationAttributes = productAttributes.map { attribute -> VariationAttributeViewModel in
+                guard let variationAttribute = variation.attributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name }) else {
+                    return VariationAttributeViewModel(name: attribute.name)
+                }
+                return VariationAttributeViewModel(productVariationAttribute: variationAttribute)
+            }
+            let variationName = variationAttributes.map { $0.nameOrValue }.joined(separator: " - ")
+
+            return ProductRowViewModel(productVariation: variation, name: variationName, canChangeQuantity: false)
+        }
     }
 
     /// Closure to be invoked when a product variation is selected

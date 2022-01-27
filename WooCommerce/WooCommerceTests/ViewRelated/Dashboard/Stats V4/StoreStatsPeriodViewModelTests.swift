@@ -688,6 +688,139 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         viewModel.selectedIntervalIndex = 0
         XCTAssertEqual(viewStates, [.data, .redacted])
     }
+
+    // MARK: - `yAxisMaximum` and `yAxisMinimum`
+
+    func test_yAxisMaximum_and_yAxisMaximum_are_1_and_minus_1_when_there_is_no_revenue() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        var yAxisMaximumValues: [Double] = []
+        viewModel.yAxisMaximum.sink { yAxisMaximum in
+            yAxisMaximumValues.append(yAxisMaximum)
+        }.store(in: &cancellables)
+
+        var yAxisMinimumValues: [Double] = []
+        viewModel.yAxisMinimum.sink { yAxisMinimum in
+            yAxisMinimumValues.append(yAxisMinimum)
+        }.store(in: &cancellables)
+
+        XCTAssertEqual(yAxisMaximumValues, [1])
+        XCTAssertEqual(yAxisMinimumValues, [-1])
+
+        // When
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 0),
+                                      intervals: [.fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59",
+                                                               subtotals: .fake().copy(grossRevenue: 0))])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        // Then
+        XCTAssertEqual(yAxisMaximumValues, [1])
+        XCTAssertEqual(yAxisMinimumValues, [-1])
+    }
+
+    func test_yAxisMaximum_is_the_next_higher_power_of_ten_when_max_revenue_is_in_the_10s() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        var yAxisMaximumValues: [Double] = []
+        viewModel.yAxisMaximum.dropFirst().sink { yAxisMaximum in
+            yAxisMaximumValues.append(yAxisMaximum)
+        }.store(in: &cancellables)
+
+        // When
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 0),
+                                      intervals: [.fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59",
+                                                               subtotals: .fake().copy(grossRevenue: 68)),
+                                                  .fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59",
+                                                               subtotals: .fake().copy(grossRevenue: 25))])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        // Then
+        XCTAssertEqual(yAxisMaximumValues, [70])
+    }
+
+    func test_yAxisMaximum_is_0_when_revenue_is_all_negative() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        var yAxisMaximumValues: [Double] = []
+        viewModel.yAxisMaximum.dropFirst().sink { yAxisMaximum in
+            yAxisMaximumValues.append(yAxisMaximum)
+        }.store(in: &cancellables)
+
+        // When
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 0),
+                                      intervals: [.fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59",
+                                                               subtotals: .fake().copy(grossRevenue: -2)),
+                                                  .fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59",
+                                                               subtotals: .fake().copy(grossRevenue: -61))])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        // Then
+        XCTAssertEqual(yAxisMaximumValues, [0])
+    }
+
+    func test_yAxisMinimum_is_0_when_min_revenue_is_positive() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        var yAxisMinimumValues: [Double] = []
+        viewModel.yAxisMinimum.dropFirst().sink { yAxisMinimum in
+            yAxisMinimumValues.append(yAxisMinimum)
+        }.store(in: &cancellables)
+
+        // When
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 0),
+                                      intervals: [.fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59",
+                                                               subtotals: .fake().copy(grossRevenue: 68)),
+                                                  .fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59",
+                                                               subtotals: .fake().copy(grossRevenue: 2))])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        // Then
+        XCTAssertEqual(yAxisMinimumValues, [0])
+    }
+
+    func test_yAxisMinimum_is_the_next_lower_power_of_ten_when_min_revenue_is_in_the_negative_10s() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        var yAxisMinimumValues: [Double] = []
+        viewModel.yAxisMinimum.dropFirst().sink { yAxisMinimum in
+            yAxisMinimumValues.append(yAxisMinimum)
+        }.store(in: &cancellables)
+
+        // When
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 0),
+                                      intervals: [.fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59",
+                                                               subtotals: .fake().copy(grossRevenue: 68)),
+                                                  .fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                               dateEnd: "2022-01-03 23:59:59",
+                                                               subtotals: .fake().copy(grossRevenue: -61))])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        // Then
+        XCTAssertEqual(yAxisMinimumValues, [-70])
+    }
 }
 
 private extension StoreStatsPeriodViewModelTests {

@@ -85,6 +85,24 @@ final class StoreStatsPeriodViewModel {
         .removeDuplicates()
         .eraseToAnyPublisher()
 
+    /// Emits the maximum value for the y-axis in the chart based on the order stats data.
+    private(set) lazy var yAxisMaximum: AnyPublisher<Double, Never> =
+    $orderStatsData.eraseToAnyPublisher()
+        .compactMap { [weak self] orderStatsData in
+            return self?.createYAxisMaximum(orderStatsData: orderStatsData)
+        }
+        .removeDuplicates()
+        .eraseToAnyPublisher()
+
+    /// Emits the minimum value for the y-axis in the chart based on the order stats data.
+    private(set) lazy var yAxisMinimum: AnyPublisher<Double, Never> =
+    $orderStatsData.eraseToAnyPublisher()
+        .compactMap { [weak self] orderStatsData in
+            return self?.createYAxisMinimum(orderStatsData: orderStatsData)
+        }
+        .removeDuplicates()
+        .eraseToAnyPublisher()
+
     // MARK: - Private data
 
     @Published private var siteStats: SiteVisitStats?
@@ -234,6 +252,34 @@ private extension StoreStatsPeriodViewModel {
             return .redacted
         }
     }
+
+    func createYAxisMaximum(orderStatsData: OrderStatsData) -> Double {
+        let revenueItems = orderStatsData.intervals.map({ ($0.revenueValue as NSDecimalNumber).doubleValue })
+        guard revenueItems.contains(where: { $0 != 0 }) else {
+            return Constants.yAxisMaximumValueWithoutRevenue
+        }
+        let hasNegativeRevenueOnly = revenueItems.contains(where: { $0 > 0 }) == false
+        guard hasNegativeRevenueOnly == false else {
+            return 0
+        }
+
+        let max = revenueItems.max() ?? 0
+        return max.roundedToTheNextSamePowerOfTen(shouldRoundUp: true)
+    }
+
+    func createYAxisMinimum(orderStatsData: OrderStatsData) -> Double {
+        let revenueItems = orderStatsData.intervals.map({ ($0.revenueValue as NSDecimalNumber).doubleValue })
+        guard revenueItems.contains(where: { $0 != 0 }) else {
+            return Constants.yAxisMinimumValueWithoutRevenue
+        }
+
+        let min = revenueItems.min() ?? 0
+        if min < 0 {
+            return min.roundedToTheNextSamePowerOfTen(shouldRoundUp: false)
+        } else {
+            return 0
+        }
+    }
 }
 
 // MARK: - Private data helpers
@@ -331,5 +377,7 @@ private extension StoreStatsPeriodViewModel {
 private extension StoreStatsPeriodViewModel {
     enum Constants {
         static let placeholderText = "-"
+        static let yAxisMaximumValueWithoutRevenue: Double = 1
+        static let yAxisMinimumValueWithoutRevenue: Double = -1
     }
 }

@@ -70,6 +70,21 @@ final class NewOrderViewModel: ObservableObject {
 
     // MARK: Products properties
 
+    /// Products Results Controller.
+    ///
+    private lazy var productsResultsController: ResultsController<StorageProduct> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        return resultsController
+    }()
+
+    /// Products list
+    ///
+    private var allProducts: [Product] {
+        productsResultsController.fetchedObjects
+    }
+
     /// View model for the product list
     ///
     lazy var addProductViewModel = {
@@ -129,6 +144,16 @@ final class NewOrderViewModel: ObservableObject {
     func removeItemFromOrder(_ item: NewOrderItem) {
         orderDetails.items.removeAll(where: { $0 == item })
         configureProductRowViewModels()
+    }
+
+    /// Creates a view model for the `ProductRow` corresponding to an order item.
+    ///
+    func createProductRowViewModel(for item: NewOrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
+        guard let product = allProducts.first(where: { $0.productID == item.productID }) else {
+            return nil
+        }
+
+        return ProductRowViewModel(id: item.id, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
     }
 
     // MARK: Customer data properties
@@ -242,18 +267,43 @@ extension NewOrderViewModel {
     /// Representation of new items in an order.
     ///
     struct NewOrderItem: Equatable, Identifiable {
-        var id: String
-        let product: Product
+        let id: String
+        let productID: Int64
+        let variationID: Int64
+        let name: String
         var quantity: Decimal
+        let price: NSDecimalNumber
+        var subtotal: String {
+            String(describing: quantity * price.decimalValue)
+        }
+        var total: String {
+            String(describing: quantity * price.decimalValue)
+        }
 
         var orderItem: OrderItem {
-            product.toOrderItem(quantity: quantity)
+            OrderItem(itemID: 0,
+                      name: name,
+                      productID: productID,
+                      variationID: variationID,
+                      quantity: quantity,
+                      price: price,
+                      sku: nil,
+                      subtotal: subtotal,
+                      subtotalTax: "",
+                      taxClass: "",
+                      taxes: [],
+                      total: total,
+                      totalTax: "",
+                      attributes: [])
         }
 
         init(product: Product, quantity: Decimal) {
             self.id = UUID().uuidString
-            self.product = product
+            self.productID = product.productID
+            self.variationID = 0
+            self.name = product.name
             self.quantity = quantity
+            self.price = NSDecimalNumber(string: product.price)
         }
     }
 
@@ -343,8 +393,11 @@ private extension NewOrderViewModel {
     /// Configures product row view models for each item in `orderDetails`.
     ///
     func configureProductRowViewModels() {
-        productRows = orderDetails.items.enumerated().map { index, item in
-            let productRowViewModel = ProductRowViewModel(id: item.id, product: item.product, quantity: item.quantity, canChangeQuantity: true)
+        updateProductsResultsController()
+        productRows = orderDetails.items.enumerated().compactMap { index, item in
+            guard let productRowViewModel = createProductRowViewModel(for: item, canChangeQuantity: true) else {
+                return nil
+            }
 
             // Observe changes to the product quantity
             productRowViewModel.$quantity
@@ -386,5 +439,17 @@ private extension NewOrderViewModel {
                 return PaymentDataViewModel(itemsTotal: itemsTotal, orderTotal: itemsTotal, currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)
+    }
+}
+
+private extension NewOrderViewModel {
+    /// Fetches products from storage.
+    ///
+    func updateProductsResultsController() {
+        do {
+            try productsResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching products for new order: \(error)")
+        }
     }
 }

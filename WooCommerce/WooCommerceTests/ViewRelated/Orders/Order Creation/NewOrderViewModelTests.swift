@@ -139,7 +139,7 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product.productID)
 
         // Then
-        let expectedOrderItem = product.toOrderItem(quantity: 1)
+        let expectedOrderItem = NewOrderViewModel.NewOrderItem(product: product, quantity: 1).orderItem
         XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == sampleProductID }), "Product rows do not contain expected product")
         XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }), "Order details do not contain expected order item")
     }
@@ -159,7 +159,7 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product.productID)
 
         // Then
-        let expectedOrderItem = product.toOrderItem(quantity: 2)
+        let expectedOrderItem = NewOrderViewModel.NewOrderItem(product: product, quantity: 2).orderItem
         XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }),
                       "Order details do not contain order item with updated quantity")
     }

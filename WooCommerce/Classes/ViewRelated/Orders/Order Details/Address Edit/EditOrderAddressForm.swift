@@ -31,9 +31,6 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
         rootView.dismiss = { [weak self] in
             self?.dismiss(animated: true, completion: nil)
         }
-
-        // Set up notices
-        bindNoticeIntent()
     }
 
     override func viewDidLoad() {
@@ -51,35 +48,7 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
         fatalError("init(coder:) has not been implemented")
     }
 
-    /// Observe the present notice intent and set it back after presented.
-    ///
-    private func bindNoticeIntent() {
-        rootView.viewModel.$presentNotice
-            .compactMap { $0 }
-            .sink { [weak self] notice in
-
-                switch notice {
-                case .success:
-                    self?.systemNoticePresenter.enqueue(notice: .init(title: Localization.success, feedbackType: .error))
-
-                case .error(let error):
-                    switch error {
-                    case .unableToLoadCountries:
-                        self?.systemNoticePresenter.enqueue(notice: .init(title: error.errorDescription ?? "", feedbackType: .error))
-                        self?.dismiss(animated: true) // Dismiss VC because we need country information to continue.
-
-                    case .unableToUpdateAddress:
-                        self?.modalNoticePresenter.enqueue(notice: .init(title: error.errorDescription ?? "",
-                                                                         message: error.recoverySuggestion,
-                                                                         feedbackType: .error))
-                    }
-                }
-
-                // Nullify the presentation intent.
-                self?.rootView.viewModel.presentNotice = nil
-            }
-            .store(in: &subscriptions)
-    }
+    // TODO: Test success
 }
 
 /// Intercepts to the dismiss drag gesture.
@@ -336,8 +305,6 @@ private enum Localization {
     static let placeholderRequired = NSLocalizedString("Required", comment: "Text field placeholder in Edit Address Form")
     static let placeholderOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address Form")
     static let placeholderSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address Form")
-
-    static let success = NSLocalizedString("Address successfully updated.", comment: "Notice text after updating the shipping or billing address")
 }
 
 #if DEBUG

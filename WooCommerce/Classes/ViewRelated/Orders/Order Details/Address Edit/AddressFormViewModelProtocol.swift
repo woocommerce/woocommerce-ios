@@ -299,6 +299,12 @@ extension AddressFormViewModel {
             }
         }
     }
+
+    /// Creates an error notice based on the provided edit address error.
+    ///
+    static func createErrorNotice(from error: EditAddressError) -> Notice {
+        Notice(title: error.errorDescription ?? "", message: error.recoverySuggestion, feedbackType: .error)
+    }
 }
 
 private extension AddressFormViewModel {
@@ -420,11 +426,5 @@ private extension AddressFormViewModel {
             self.stores.dispatch(action)
         }
         .eraseToAnyPublisher()
-    }
-
-    /// Creates an error notice based on the provided edit address error.
-    ///
-    static func createErrorNotice(from error: EditAddressError) -> Notice {
-        Notice(title: error.errorDescription ?? "", message: error.recoverySuggestion, feedbackType: .error)
     }
 }

@@ -124,7 +124,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
             switch result {
             case .success(let updatedOrder):
                 self.onOrderUpdate?(updatedOrder)
-                self.presentNotice = .success
+                self.notice = .init(title: Localization.success, feedbackType: .success)
                 self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: self.analyticsFlowType()))
 
             case .failure(let error):
@@ -132,7 +132,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
                 if self.type == .billing, self.updatedAddress.hasEmailAddress == false {
                     DDLogError("⛔️ Email is nil in address. It won't work in WC < 5.9.0 (https://git.io/J68Gl)")
                 }
-                self.presentNotice = .error(.unableToUpdateAddress)
+                self.notice = Self.createErrorNotice(from: .unableToUpdateAddress)
                 self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: self.analyticsFlowType()))
             }
             onFinish(result.isSuccess)
@@ -176,6 +176,8 @@ private extension EditOrderAddressFormViewModel {
                                                           comment: "Title for the Use as Billing Address switch in the Address form")
         static let useAsShippingToggle = NSLocalizedString("Use as Shipping Address",
                                                            comment: "Title for the Use as Shipping Address switch in the Address form")
+
+        static let success = NSLocalizedString("Address successfully updated.", comment: "Notice text after updating the shipping or billing address")
     }
 }
 

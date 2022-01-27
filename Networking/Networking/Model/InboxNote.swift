@@ -41,7 +41,11 @@ public struct InboxNote: GeneratedCopiable, GeneratedFakeable, Equatable {
 
     /// Registers whether the note is deleted or not.
     ///
-    public let isDeleted: String
+    public let isDeleted: Bool
+
+    /// Registers whether the note is read or not.
+    ///
+    public let isRead: Bool
 
     /// Date the note was created (GMT).
     ///
@@ -54,7 +58,6 @@ public struct InboxNote: GeneratedCopiable, GeneratedFakeable, Equatable {
 /// Defines all of the InboxNote CodingKeys
 extension InboxNote: Codable {
     enum CodingKeys: String, CodingKey {
-        case siteID
         case id
         case name
         case type
@@ -63,6 +66,7 @@ extension InboxNote: Codable {
         case title
         case content
         case isDeleted = "is_deleted"
+        case isRead = "is_read"
         case dateCreated = "date_created_gmt"
     }
 }

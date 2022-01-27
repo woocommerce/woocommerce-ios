@@ -206,7 +206,8 @@ extension InboxNote {
         actions: CopiableProp<[InboxAction]> = .copy,
         title: CopiableProp<String> = .copy,
         content: CopiableProp<String> = .copy,
-        isDeleted: CopiableProp<String> = .copy,
+        isDeleted: CopiableProp<Bool> = .copy,
+        isRead: CopiableProp<Bool> = .copy,
         dateCreated: CopiableProp<Date> = .copy
     ) -> InboxNote {
         let siteID = siteID ?? self.siteID
@@ -218,6 +219,7 @@ extension InboxNote {
         let title = title ?? self.title
         let content = content ?? self.content
         let isDeleted = isDeleted ?? self.isDeleted
+        let isRead = isRead ?? self.isRead
         let dateCreated = dateCreated ?? self.dateCreated
 
         return InboxNote(
@@ -230,6 +232,7 @@ extension InboxNote {
             title: title,
             content: content,
             isDeleted: isDeleted,
+            isRead: isRead,
             dateCreated: dateCreated
         )
     }

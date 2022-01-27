@@ -74,8 +74,7 @@ final class NewOrderViewModel: ObservableObject {
     ///
     private lazy var productsResultsController: ResultsController<StorageProduct> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
-        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [])
         return resultsController
     }()
 
@@ -270,19 +269,15 @@ extension NewOrderViewModel {
         let id: String
         let productID: Int64
         let variationID: Int64
-        let name: String
         var quantity: Decimal
         let price: NSDecimalNumber
         var subtotal: String {
             String(describing: quantity * price.decimalValue)
         }
-        var total: String {
-            String(describing: quantity * price.decimalValue)
-        }
 
         var orderItem: OrderItem {
             OrderItem(itemID: 0,
-                      name: name,
+                      name: "",
                       productID: productID,
                       variationID: variationID,
                       quantity: quantity,
@@ -292,7 +287,7 @@ extension NewOrderViewModel {
                       subtotalTax: "",
                       taxClass: "",
                       taxes: [],
-                      total: total,
+                      total: "",
                       totalTax: "",
                       attributes: [])
         }
@@ -301,7 +296,6 @@ extension NewOrderViewModel {
             self.id = UUID().uuidString
             self.productID = product.productID
             self.variationID = 0
-            self.name = product.name
             self.quantity = quantity
             self.price = NSDecimalNumber(string: product.price)
         }

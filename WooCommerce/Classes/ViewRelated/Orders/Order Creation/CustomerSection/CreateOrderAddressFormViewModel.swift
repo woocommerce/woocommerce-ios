@@ -4,21 +4,25 @@ import protocol Storage.StorageManagerType
 
 final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormViewModelProtocol {
 
+    struct NewOrderAddressData {
+        let billingAddress: Address?
+        let shippingAddress: Address?
+    }
+
     /// Address update callback
     ///
-    private let onAddressUpdate: ((Address, Address) -> Void)?
+    private let onAddressUpdate: ((NewOrderAddressData) -> Void)?
 
     init(siteID: Int64,
-         address1: Address?,
-         address2: Address?,
-         onAddressUpdate: ((Address, Address) -> Void)?,
+         addressData: NewOrderAddressData,
+         onAddressUpdate: ((NewOrderAddressData) -> Void)?,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.onAddressUpdate = onAddressUpdate
 
         super.init(siteID: siteID,
-                   address: address1 ?? .empty,
+                   address: addressData.billingAddress ?? .empty,
                    storageManager: storageManager,
                    stores: stores,
                    analytics: analytics)
@@ -59,7 +63,8 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
     }
 
     func saveAddress(onFinish: @escaping (Bool) -> Void) {
-        onAddressUpdate?(updatedAddress, updatedAddress)
+        onAddressUpdate?(.init(billingAddress: updatedAddress,
+                               shippingAddress: updatedAddress))
         onFinish(true)
     }
 

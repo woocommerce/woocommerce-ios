@@ -23,7 +23,7 @@ final class CouponDetailsViewModel: ObservableObject {
     /// Expiry date of the coupon
     ///
     @Published private(set) var expiryDate: String = ""
-    
+
     /// The current coupon
     ///
     private let coupon: Coupon

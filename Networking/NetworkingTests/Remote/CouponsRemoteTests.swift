@@ -401,7 +401,8 @@ final class CouponsRemoteTests: XCTestCase {
 // MARK: - Private helpers
 private extension CouponsRemoteTests {
     func sampleCoupon() -> Coupon {
-        Coupon(couponID: 720,
+        Coupon(siteID: sampleSiteID,
+               couponID: 720,
                code: "free shipping",
                amount: "10.00",
                dateCreated: date(with: "2017-03-21T18:25:02"),

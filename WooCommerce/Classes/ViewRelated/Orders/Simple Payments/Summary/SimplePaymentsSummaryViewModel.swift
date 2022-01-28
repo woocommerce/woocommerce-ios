@@ -1,10 +1,54 @@
 import Foundation
 import Yosemite
 import Combine
+import Experiments
 
 /// `ViewModel` to drive the content of the `SimplePaymentsSummary` view.
 ///
 final class SimplePaymentsSummaryViewModel: ObservableObject {
+
+    /// Wraps the `Order`'s tax breakup (`tax_lines`) information
+    ///
+    /// `Identifiable` conformance added for SwiftUI purpose
+    ///
+    struct TaxLine: Identifiable {
+        /// `taxID` of `OrderTaxLine`
+        ///
+        let id: Int64
+
+        /// Tax label appended with tax percentage
+        ///
+        let title: String
+
+        /// Tax amount
+        ///
+        let value: String
+
+        init(id: Int64,
+             title: String,
+             value: String) {
+            self.id = id
+            self.title = title
+            self.value = value
+        }
+
+        /// For initializing TaxLine from `OrderTaxLine`
+        ///
+        init(orderTaxLine: OrderTaxLine,
+             currencyFormatter: CurrencyFormatter) {
+            id = orderTaxLine.taxID
+            title = "\(orderTaxLine.label) (\(orderTaxLine.ratePercent)%)"
+            value = currencyFormatter.formatAmount(orderTaxLine.totalTax) ?? orderTaxLine.totalTax
+        }
+
+        /// Creates a `TaxLine` with zero tax percentage and tax amount
+        ///
+        static func createZeroValueTaxLine(currencyFormatter: CurrencyFormatter) -> TaxLine {
+            TaxLine(id: 0,
+                    title: "\(Localization.tax) (0.00%)",
+                    value: currencyFormatter.formatAmount(Decimal.zero) ?? "\(Decimal.zero)")
+        }
+    }
 
     /// Initial amount to charge. Without taxes.
     ///
@@ -13,6 +57,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     /// Store tax percentage rate.
     ///
     let taxRate: String
+
+    /// Store tax lines.
+    ///
+    let taxLines: [TaxLine]
 
     /// Tax amount to charge.
     ///
@@ -57,6 +105,12 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         return showLoadingIndicator
     }
 
+    /// Show tax break up using `tax_lines` in summary
+    ///
+    var showTaxBreakup: Bool {
+        featureFlagService.isFeatureFlagEnabled(.taxLinesInSimplePayments)
+    }
+
     /// Total to charge with taxes.
     ///
     private let totalWithTaxes: String
@@ -97,9 +151,14 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     lazy private(set) var noteViewModel = { SimplePaymentsNoteViewModel(analytics: analytics) }()
 
+    /// FeatureFlagService to check `tax_lines` related flag (`taxLinesInSimplePayments`)
+    ///
+    private let featureFlagService: FeatureFlagService
+
     init(providedAmount: String,
          totalWithTaxes: String,
          taxAmount: String,
+         taxLines: [TaxLine],
          noteContent: String? = nil,
          siteID: Int64 = 0,
          orderID: Int64 = 0,
@@ -108,7 +167,8 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.orderID = orderID
         self.orderKey = orderKey
@@ -117,9 +177,17 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         self.currencyFormatter = currencyFormatter
         self.stores = stores
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.providedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
         self.totalWithTaxes = currencyFormatter.formatAmount(totalWithTaxes) ?? totalWithTaxes
         self.taxAmount = currencyFormatter.formatAmount(taxAmount) ?? taxAmount
+
+        if taxLines.isNotEmpty {
+            self.taxLines = taxLines
+        } else {
+            // Assigning `taxLines` with a zero value `TaxLine` to represent that there are no taxes configured in `wp-admin`.
+            self.taxLines = [TaxLine.createZeroValueTaxLine(currencyFormatter: currencyFormatter)]
+        }
 
         // rate_percentage = taxAmount / providedAmount * 100
         self.taxRate = {
@@ -149,9 +217,17 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                      presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      stores: StoresManager = ServiceLocator.stores) {
+
+        // Generate `TaxLine`s to represent `taxes` inside `View`.
+        let taxLines = order.taxes.map({
+            TaxLine(orderTaxLine: $0,
+                    currencyFormatter: currencyFormatter)
+        })
+
         self.init(providedAmount: providedAmount,
                   totalWithTaxes: order.total,
                   taxAmount: order.totalTax,
+                  taxLines: taxLines,
                   siteID: order.siteID,
                   orderID: order.orderID,
                   orderKey: order.orderKey,
@@ -239,5 +315,8 @@ private extension SimplePaymentsSummaryViewModel {
     enum Localization {
         static let updateError = NSLocalizedString("There was an error updating the order",
                                                    comment: "Notice text after failing to update a simple payments order.")
+        static let tax = NSLocalizedString("Tax",
+                                             comment: "Tax label for the tax detail row.")
+
     }
 }

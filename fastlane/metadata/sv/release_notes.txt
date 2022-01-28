@@ -1,3 +1,5 @@
-Ibland kan det hända att du behöver skapa en snabb beställning för att ta emot en betalning från en kund för en transaktion som du gör personligen, exempelvis på en mässa. Vi har lagt till ett nytt alternativ som du kan använda för att skapa enkla betalningar! Gå till fliken Beställningar för att göra en snabb beställning och registrera transaktionen. Vi arbetar även hårt på möjligheten att skapa fullständiga beställningar – det kommer senare under året.
+Handlare har bett oss om ett snabbt sätt att registrera en transaktion i appen med minimal information – exempelvis bara ett debiteringsbelopp. Kanske är du på en marknad och vill bara debitera en kunds kreditkort utan någon lagerhantering. Detta inkluderar den nya funktionen "Enkla betalningar" på fliken Beställningar. Om du är WooCommerce Payments-kund kommer du att märka att denna funktion fungerar utmärkt med kreditkortsläsaren för personliga betalningar! Har du inte någon kortläsare än? Alternativt kan du enkelt skicka en betalningslänk till din kund, så att kunden kan betala med sin enhet via din webbplats.
 
-Vi har också åtgärdat ett fel som gjorde att antalet webbplatsbesökare inte visades på fliken Idag i din butiks adminpanel. Tack för att du berättar!
+Den här versionen gör det även möjligt att återbetala avgifter för en beställning. Vi har dessutom smugit en experimentell streckkodsläsare för SKU-inmatning vid redigering av den produkt. Denna kan aktiveras i Inställningar.
+
+Vi jobbar på flera spännande funktioner som dyker upp under de kommande månaderna. Fortsätt skicka feedback!

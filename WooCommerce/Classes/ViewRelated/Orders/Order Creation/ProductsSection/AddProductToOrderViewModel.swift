@@ -14,24 +14,10 @@ final class AddProductToOrderViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
-    /// Product types excluded from the product list.
-    /// For now, only non-variable product types are supported.
-    ///
-    private let excludedProductTypes: [ProductType] = [ProductType.variable]
-
-    /// Product statuses included in the product list.
-    /// Only published or private products can be added to an order.
-    ///
-    private let includedProductStatuses: [ProductStatus] = [ProductStatus.publish, ProductStatus.privateStatus]
-
     /// All products that can be added to an order.
     ///
     private var products: [Product] {
-        return productsResultsController.fetchedObjects.filter {
-            let hasValidProductType = !excludedProductTypes.contains( $0.productType )
-            let hasValidProductStatus = includedProductStatuses.contains( $0.productStatus )
-            return hasValidProductType && hasValidProductStatus
-        }
+        productsResultsController.fetchedObjects.filter { $0.purchasable }
     }
 
     /// View models for each product row
@@ -43,6 +29,10 @@ final class AddProductToOrderViewModel: ObservableObject {
     /// Closure to be invoked when a product is selected
     ///
     let onProductSelected: ((Product) -> Void)?
+
+    /// Closure to be invoked when a product variation is selected
+    ///
+    let onVariationSelected: ((ProductVariation) -> Void)?
 
     // MARK: Sync & Storage properties
 
@@ -78,11 +68,13 @@ final class AddProductToOrderViewModel: ObservableObject {
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         onProductSelected: ((Product) -> Void)? = nil) {
+         onProductSelected: ((Product) -> Void)? = nil,
+         onVariationSelected: ((ProductVariation) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
         self.onProductSelected = onProductSelected
+        self.onVariationSelected = onVariationSelected
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -95,6 +87,15 @@ final class AddProductToOrderViewModel: ObservableObject {
             return
         }
         onProductSelected?(selectedProduct)
+    }
+
+    /// Get the view model for a list of product variations to add to the order
+    ///
+    func getVariationsViewModel(for productID: Int64) -> AddProductVariationToOrderViewModel? {
+        guard let variableProduct = products.first(where: { $0.productID == productID }) else {
+            return nil
+        }
+        return AddProductVariationToOrderViewModel(siteID: siteID, product: variableProduct, onVariationSelected: onVariationSelected)
     }
 }
 

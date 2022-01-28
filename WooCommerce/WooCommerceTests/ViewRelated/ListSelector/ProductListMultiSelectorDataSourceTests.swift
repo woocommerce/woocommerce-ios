@@ -1,5 +1,5 @@
+import Combine
 import XCTest
-import Observables
 
 @testable import Storage
 @testable import WooCommerce
@@ -14,12 +14,12 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         storageManager.viewStorage
     }
 
-    private var cancellable: ObservationToken?
+    private var productIDsSubscription: AnyCancellable?
 
     override func setUp() {
         super.setUp()
 
-        cancellable = nil
+        productIDsSubscription = nil
     }
 
     func test_dataSource_creates_ResultsController_excluding_specified_product_ids() throws {
@@ -51,7 +51,7 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         let siteID: Int64 = 1
         let dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: [])
         var productsSequence = [[Int64]]()
-        cancellable = dataSource.productIDs.subscribe { productIDs in
+        productIDsSubscription = dataSource.productIDs.sink { productIDs in
             productsSequence.append(productIDs)
         }
 
@@ -92,7 +92,7 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         let siteID: Int64 = 1
         let dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: [])
         var productsSequence = [[Int64]]()
-        cancellable = dataSource.productIDs.subscribe { productIDs in
+        productIDsSubscription = dataSource.productIDs.sink { productIDs in
             productsSequence.append(productIDs)
         }
 

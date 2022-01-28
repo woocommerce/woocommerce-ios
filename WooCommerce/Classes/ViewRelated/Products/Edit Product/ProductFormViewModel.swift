@@ -1,5 +1,5 @@
+import Combine
 import Yosemite
-import Observables
 
 import protocol Storage.StorageManagerType
 
@@ -11,23 +11,23 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     var productionVariationID: Int64? = nil
 
     /// Emits product on change, except when the product name is the only change (`productName` is emitted for this case).
-    var observableProduct: Observable<EditableProductModel> {
-        productSubject
+    var observableProduct: AnyPublisher<EditableProductModel, Never> {
+        productSubject.eraseToAnyPublisher()
     }
 
     /// Emits product name on change.
-    var productName: Observable<String>? {
-        productNameSubject
+    var productName: AnyPublisher<String, Never>? {
+        productNameSubject.eraseToAnyPublisher()
     }
 
     /// Emits a boolean of whether the product has unsaved changes for remote update.
-    var isUpdateEnabled: Observable<Bool> {
-        isUpdateEnabledSubject
+    var isUpdateEnabled: AnyPublisher<Bool, Never> {
+        isUpdateEnabledSubject.eraseToAnyPublisher()
     }
 
     /// Emits a void value informing when there is a new variation price state available
-    var newVariationsPrice: Observable<Void> {
-        newVariationsPriceSubject
+    var newVariationsPrice: AnyPublisher<Void, Never> {
+        newVariationsPriceSubject.eraseToAnyPublisher()
     }
 
     /// The latest product value.
@@ -46,10 +46,10 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     /// Creates actions available on the bottom sheet.
     private(set) var actionsFactory: ProductFormActionsFactoryProtocol
 
-    private let productSubject: PublishSubject<EditableProductModel> = PublishSubject<EditableProductModel>()
-    private let productNameSubject: PublishSubject<String> = PublishSubject<String>()
-    private let isUpdateEnabledSubject: PublishSubject<Bool>
-    private let newVariationsPriceSubject = PublishSubject<Void>()
+    private let productSubject: PassthroughSubject<EditableProductModel, Never> = PassthroughSubject<EditableProductModel, Never>()
+    private let productNameSubject: PassthroughSubject<String, Never> = PassthroughSubject<String, Never>()
+    private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never> = PassthroughSubject<Bool, Never>()
+    private let newVariationsPriceSubject = PassthroughSubject<Void, Never>()
 
     private lazy var variationsResultsController = createVariationsResultsController()
 
@@ -152,7 +152,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let productImageActionHandler: ProductImageActionHandler
 
-    private var cancellable: ObservationToken?
+    private var cancellable: AnyCancellable?
 
     private let stores: StoresManager
 
@@ -168,7 +168,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.originalProduct = product
         self.product = product
         self.actionsFactory = ProductFormActionsFactory(product: product, formType: formType)
-        self.isUpdateEnabledSubject = PublishSubject<Bool>()
         self.stores = stores
         self.storageManager = storageManager
 

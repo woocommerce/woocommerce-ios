@@ -1,6 +1,6 @@
+import Combine
 import Photos
 import XCTest
-import Observables
 
 @testable import WooCommerce
 import Yosemite
@@ -8,9 +8,9 @@ import Yosemite
 /// Unit tests for observables (`observableProduct`, `productName`, `isUpdateEnabled`)
 final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
     private let defaultSiteID: Int64 = 134
-    private var cancellableProduct: ObservationToken?
-    private var cancellableProductName: ObservationToken?
-    private var cancellableUpdateEnabled: ObservationToken?
+    private var cancellableProduct: AnyCancellable?
+    private var cancellableProductName: AnyCancellable?
+    private var cancellableUpdateEnabled: AnyCancellable?
 
     override func tearDown() {
         [cancellableProduct, cancellableProductName, cancellableUpdateEnabled].forEach { cancellable in
@@ -42,11 +42,11 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
         let model = EditableProductVariationModel(productVariation: productVariation)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
-        cancellableProduct = viewModel.observableProduct.subscribe { _ in
+        cancellableProduct = viewModel.observableProduct.sink { _ in
             // Assert
             XCTFail("Should not be triggered from edit actions of the same data")
         }
-        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { _ in
+        cancellableUpdateEnabled = viewModel.isUpdateEnabled.sink { _ in
             // Assert
             XCTFail("Should not be triggered from edit actions of the same data")
         }
@@ -76,14 +76,14 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
         var isProductUpdated: Bool?
-        cancellableProduct = viewModel.observableProduct.subscribe { product in
+        cancellableProduct = viewModel.observableProduct.sink { product in
             isProductUpdated = true
         }
 
         // Action
         var updatedUpdateEnabled: Bool?
         waitForExpectation { expectation in
-            cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { isUpdateEnabled in
+            cancellableUpdateEnabled = viewModel.isUpdateEnabled.sink { isUpdateEnabled in
                 updatedUpdateEnabled = isUpdateEnabled
                 expectation.fulfill()
             }
@@ -109,12 +109,12 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
                                                       storesManager: mockStoresManager)
 
         var isProductUpdated: Bool?
-        cancellableProduct = viewModel.observableProduct.subscribe { product in
+        cancellableProduct = viewModel.observableProduct.sink { product in
             isProductUpdated = true
         }
 
         var updatedUpdateEnabled: Bool?
-        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { isUpdateEnabled in
+        cancellableUpdateEnabled = viewModel.isUpdateEnabled.sink { isUpdateEnabled in
             updatedUpdateEnabled = isUpdateEnabled
         }
 
@@ -146,12 +146,12 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
                                                       storesManager: mockStoresManager)
 
         var isProductUpdated: Bool?
-        cancellableProduct = viewModel.observableProduct.subscribe { product in
+        cancellableProduct = viewModel.observableProduct.sink { product in
             isProductUpdated = true
         }
 
         var updatedUpdateEnabled: Bool?
-        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { isUpdateEnabled in
+        cancellableUpdateEnabled = viewModel.isUpdateEnabled.sink { isUpdateEnabled in
             updatedUpdateEnabled = isUpdateEnabled
         }
 

@@ -1,8 +1,8 @@
+import Combine
 import Photos
 import UIKit
 import WordPressUI
 import Yosemite
-import Observables
 
 /// The entry UI for adding/editing a Product.
 final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: UIViewController, UITableViewDelegate {
@@ -45,14 +45,15 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }()
 
     private let presentationStyle: ProductFormPresentationStyle
-    private let navigationRightBarButtonItemsSubject = PublishSubject<[UIBarButtonItem]>()
-    private var navigationRightBarButtonItems: Observable<[UIBarButtonItem]> {
-        navigationRightBarButtonItemsSubject
+    private let navigationRightBarButtonItemsSubject = PassthroughSubject<[UIBarButtonItem], Never>()
+    private var navigationRightBarButtonItems: AnyPublisher<[UIBarButtonItem], Never> {
+        navigationRightBarButtonItemsSubject.eraseToAnyPublisher()
     }
-    private var cancellableProduct: ObservationToken?
-    private var cancellableProductName: ObservationToken?
-    private var cancellableUpdateEnabled: ObservationToken?
-    private var cancellableNewVariationsPrice: ObservationToken?
+    private var productSubscription: AnyCancellable?
+    private var productNameSubscription: AnyCancellable?
+    private var updateEnabledSubscription: AnyCancellable?
+    private var newVariationsPriceSubscription: AnyCancellable?
+    private var productImageStatusesSubscription: AnyCancellable?
 
     init(viewModel: ViewModel,
          eventLogger: ProductFormEventLoggerProtocol,
@@ -88,10 +89,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
     deinit {
-        cancellableProduct?.cancel()
-        cancellableProductName?.cancel()
-        cancellableUpdateEnabled?.cancel()
-        cancellableNewVariationsPrice?.cancel()
+        productSubscription?.cancel()
+        productNameSubscription?.cancel()
+        updateEnabledSubscription?.cancel()
+        newVariationsPriceSubscription?.cancel()
     }
 
     override func viewDidLoad() {
@@ -111,7 +112,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeUpdateCTAVisibility()
         observeVariationsPriceChanges()
 
-        productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
                 return
             }
@@ -486,7 +487,7 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func observeProduct() {
-        cancellableProduct = viewModel.observableProduct.subscribe { [weak self] product in
+        productSubscription = viewModel.observableProduct.sink { [weak self] product in
             self?.onProductUpdated(product: product)
         }
     }
@@ -502,7 +503,7 @@ private extension ProductFormViewController {
     /// The "happened outside" condition is needed to not reload the view while the user is typing a new name.
     ///
     func observeProductName() {
-        cancellableProductName = viewModel.productName?.subscribe { [weak self] _ in
+        productNameSubscription = viewModel.productName?.sink { [weak self] _ in
             guard let self = self else { return }
             self.updateBackButtonTitle()
             if self.view.window == nil { // If window is nil, this screen isn't the active screen.
@@ -512,7 +513,7 @@ private extension ProductFormViewController {
     }
 
     func observeUpdateCTAVisibility() {
-        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { [weak self] _ in
+        updateEnabledSubscription = viewModel.isUpdateEnabled.sink { [weak self] _ in
             self?.updateNavigationBar()
         }
     }
@@ -521,7 +522,7 @@ private extension ProductFormViewController {
     /// Needed to show/hide the `.noPriceWarning` row.
     ///
     func observeVariationsPriceChanges() {
-        cancellableNewVariationsPrice = viewModel.newVariationsPrice.subscribe { [weak self] in
+        newVariationsPriceSubscription = viewModel.newVariationsPrice.sink { [weak self] in
             self?.onVariationsPriceChanged()
         }
     }

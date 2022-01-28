@@ -3,6 +3,8 @@ import SwiftUI
 /// View showing a list of product variations to add to an order.
 ///
 struct AddProductVariationToOrder: View {
+    @Environment(\.presentationMode) private var presentation
+
     /// Defines whether the view is presented.
     ///
     @Binding var isPresented: Bool
@@ -43,6 +45,17 @@ struct AddProductVariationToOrder: View {
         .ignoresSafeArea(.container, edges: .horizontal)
         .navigationTitle(viewModel.productName)
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            // Minimal back button
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    presentation.wrappedValue.dismiss()
+                } label: {
+                    Image(uiImage: .chevronLeftImage.imageFlippedForRightToLeftLayoutDirection())
+                }
+            }
+        }
         .onAppear {
             viewModel.syncFirstPage()
         }

@@ -185,7 +185,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         }
 
         // Account checks
-        return accountChecks()
+        return accountChecks(plugin: .wcPay)
     }
 
     func stripeGatewayOnlyOnboardingState(plugin: SystemPlugin) -> CardPresentPaymentOnboardingState {
@@ -196,10 +196,10 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return .pluginNotActivated(plugin: .stripe)
         }
 
-        return accountChecks()
+        return accountChecks(plugin: .stripe)
     }
 
-    func accountChecks() -> CardPresentPaymentOnboardingState {
+    func accountChecks(plugin: CardPresentPaymentsPlugins) -> CardPresentPaymentOnboardingState {
         guard let account = getPaymentGatewayAccount() else {
             return .genericError
         }
@@ -207,7 +207,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return .pluginSetupNotCompleted
         }
         guard !isPluginInTestModeWithLiveStripeAccount(account: account) else {
-            return .pluginInTestModeWithLiveStripeAccount
+            return .pluginInTestModeWithLiveStripeAccount(plugin: plugin)
         }
         guard !isStripeAccountUnderReview(account: account) else {
             return .stripeAccountUnderReview
@@ -227,7 +227,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
         // If we've gotten this far, tell the Card Present Payment Store which backend to use
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: account)
-        ServiceLocator.stores.dispatch(setAccount)
+        stores.dispatch(setAccount)
 
         return .completed
     }

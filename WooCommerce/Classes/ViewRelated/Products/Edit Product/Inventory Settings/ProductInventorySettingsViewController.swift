@@ -1,6 +1,6 @@
+import Combine
 import UIKit
 import Yosemite
-import Observables
 
 final class ProductInventorySettingsViewController: UIViewController {
 
@@ -29,7 +29,7 @@ final class ProductInventorySettingsViewController: UIViewController {
 
     private var skuBarcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
 
-    private var cancellable: ObservationToken?
+    private var sectionsSubscription: AnyCancellable?
 
     init(product: ProductFormDataModel, formType: FormType = .inventory, completion: @escaping Completion) {
         self.viewModel = ProductInventorySettingsViewModel(formType: formType, productModel: product)
@@ -131,7 +131,7 @@ private extension ProductInventorySettingsViewController {
     }
 
     func observeSections() {
-        cancellable = viewModel.sections.subscribe { [weak self] sections in
+        sectionsSubscription = viewModel.sections.sink { [weak self] sections in
             self?.sections = sections
             self?.tableView.reloadData()
         }

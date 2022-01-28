@@ -22,7 +22,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
 
     var siteVisitStatsMode: SiteVisitStatsMode = .default {
         didSet {
-            updateSiteVisitStats(mode: siteVisitStatsMode)
+            viewModel.siteVisitStatsMode = siteVisitStatsMode
         }
     }
 
@@ -148,12 +148,16 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
-        configureBarChart()
+        configureChart()
         configureNoRevenueView()
         observeStatsLabels()
         observeSelectedBarIndex()
         observeTimeRangeBarViewModel()
         observeReloadChartAnimated()
+        observeVisitorStatsViewState()
+        observeConversionStatsViewState()
+        observeYAxisMaximum()
+        observeYAxisMinimum()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -204,8 +208,6 @@ private extension StoreStatsV4PeriodViewController {
             self.visitorsDataOrRedactedView.isHighlighted = isHighlighted
             self.conversionDataOrRedactedView.isHighlighted = isHighlighted
             self.revenueData.textColor = textColor
-
-            self.updateSiteVisitStatsAndConversionRate(selectedIndex: selectedIndex)
         }.store(in: &cancellables)
     }
 
@@ -218,6 +220,34 @@ private extension StoreStatsV4PeriodViewController {
     func observeReloadChartAnimated() {
         viewModel.reloadChartAnimated.sink { [weak self] animated in
             self?.reloadChart(animateChart: animated)
+        }.store(in: &cancellables)
+    }
+
+    func observeVisitorStatsViewState() {
+        viewModel.visitorStatsViewState
+            .sink { [weak self] viewState in
+                guard let self = self, self.visitorsDataOrRedactedView != nil else { return }
+                self.visitorsDataOrRedactedView.state = viewState
+        }.store(in: &cancellables)
+    }
+
+    func observeConversionStatsViewState() {
+        viewModel.conversionStatsViewState
+            .sink { [weak self] viewState in
+                guard let self = self, self.conversionDataOrRedactedView != nil else { return }
+                self.conversionDataOrRedactedView.state = viewState
+        }.store(in: &cancellables)
+    }
+
+    func observeYAxisMaximum() {
+        viewModel.yAxisMaximum.sink { [weak self] yAxisMaximum in
+            self?.lineChartView.leftAxis.axisMaximum = yAxisMaximum
+        }.store(in: &cancellables)
+    }
+
+    func observeYAxisMinimum() {
+        viewModel.yAxisMinimum.sink { [weak self] yAxisMinimum in
+            self?.lineChartView.leftAxis.axisMinimum = yAxisMinimum
         }.store(in: &cancellables)
     }
 }
@@ -301,9 +331,6 @@ private extension StoreStatsV4PeriodViewController {
         // Data
         updateStatsDataToDefaultStyles()
 
-        // Visibility
-        updateSiteVisitStats(mode: siteVisitStatsMode)
-
         // Accessibility elements
         xAxisAccessibilityView.isAccessibilityElement = true
         xAxisAccessibilityView.accessibilityTraits = .staticText
@@ -333,7 +360,7 @@ private extension StoreStatsV4PeriodViewController {
         noRevenueLabel.textColor = .text
     }
 
-    func configureBarChart() {
+    func configureChart() {
         lineChartView.marker = StoreStatsChartCircleMarker()
         lineChartView.chartDescription?.enabled = false
         lineChartView.dragXEnabled = true
@@ -351,6 +378,7 @@ private extension StoreStatsV4PeriodViewController {
 
         let xAxis = lineChartView.xAxis
         xAxis.labelPosition = .bottom
+        xAxis.yOffset = 8
         xAxis.labelFont = StyleManager.chartLabelFont
         xAxis.labelTextColor = .textSubtle
         xAxis.axisLineColor = .systemColor(.separator)
@@ -400,14 +428,6 @@ private extension StoreStatsV4PeriodViewController {
     }
 }
 
-// MARK: - UI Updates
-//
-private extension StoreStatsV4PeriodViewController {
-    func updateSiteVisitStats(mode: SiteVisitStatsMode) {
-        reloadSiteVisitUI()
-    }
-}
-
 // MARK: - ChartViewDelegate Conformance (Charts)
 //
 extension StoreStatsV4PeriodViewController: ChartViewDelegate {
@@ -433,36 +453,6 @@ private extension StoreStatsV4PeriodViewController {
     func updateUI(selectedBarIndex selectedIndex: Int?) {
         viewModel.selectedIntervalIndex = selectedIndex
     }
-
-    /// Updates visitor and conversion stats based on the selected bar index.
-    ///
-    /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
-    func updateSiteVisitStatsAndConversionRate(selectedIndex: Int?) {
-        let mode: SiteVisitStatsMode
-
-        // Hides site visit stats for "today" when an interval bar is selected.
-        if timeRange == .today, selectedIndex != nil {
-            mode = .hidden
-        } else {
-            mode = siteVisitStatsMode
-        }
-
-        updateSiteVisitStats(mode: mode)
-
-        switch siteVisitStatsMode {
-        case .hidden, .redactedDueToJetpack:
-            break
-        case .default:
-            guard selectedIndex != nil else {
-                reloadSiteVisitUI()
-                return
-            }
-            guard visitorsDataOrRedactedView != nil else {
-                return
-            }
-            visitorsDataOrRedactedView.state = .data
-        }
-    }
 }
 
 // MARK: - IAxisValueFormatter Conformance (Charts)
@@ -479,9 +469,12 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
             if value == 0.0 {
                 // Do not show the "0" label on the Y axis
                 return ""
+            } else if hasRevenue() == false {
+                // Extra spaces are necessary so that the first x-axis label is not truncated.
+                return "   "
             } else {
                 return CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-                                    .formatCurrency(using: value.humanReadableString(),
+                    .formatCurrency(using: value.humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true),
                                     at: ServiceLocator.currencySettings.currencyPosition,
                                     with: currencySymbol,
                                     isNegative: value.sign == .minus)
@@ -571,7 +564,6 @@ private extension StoreStatsV4PeriodViewController {
 
     func reloadAllFields(animateChart: Bool = true) {
         viewModel.selectedIntervalIndex = nil
-        reloadSiteVisitUI()
         reloadChart(animateChart: animateChart)
 
         view.accessibilityElements = [ordersTitle as Any,
@@ -585,17 +577,6 @@ private extension StoreStatsV4PeriodViewController {
                                       yAxisAccessibilityView as Any,
                                       xAxisAccessibilityView as Any,
                                       chartAccessibilityView as Any]
-    }
-
-    func reloadSiteVisitUI() {
-        switch siteVisitStatsMode {
-        case .hidden:
-            visitorsDataOrRedactedView.state = .redacted
-        case .redactedDueToJetpack:
-            visitorsDataOrRedactedView.state = .redactedDueToJetpack
-        case .default:
-            visitorsDataOrRedactedView.state = .data
-        }
     }
 
     func reloadChart(animateChart: Bool = true) {
@@ -704,7 +685,7 @@ private extension StoreStatsV4PeriodViewController {
         static let chartXAxisGranularity: Double        = 1.0
 
         static var chartLineColor: UIColor {
-            UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
+            UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade50),
                     dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
         }
         static let chartHighlightLineColor: UIColor = .accent

@@ -2,13 +2,7 @@ import Combine
 import Yosemite
 import protocol Storage.StorageManagerType
 import class AutomatticTracks.CrashLogging
-
-
-struct CouponListCellViewModel {
-    var title: String
-    var subtitle: String
-    var accessibilityLabel: String
-}
+import UIKit
 
 enum CouponListState {
     case initialized // ViewModel ready to recieve actions
@@ -20,6 +14,8 @@ enum CouponListState {
 }
 
 final class CouponListViewModel {
+
+    typealias CouponListCellViewModel = TitleAndSubtitleAndStatusTableViewCell.ViewModel
 
     /// Active state
     ///
@@ -97,11 +93,13 @@ final class CouponListViewModel {
     }
 
     func buildCouponViewModels() {
-        couponViewModels = resultsController.fetchedObjects.map({ coupon in
-            return CouponListCellViewModel(title: coupon.code,
-                                           subtitle: coupon.description,
-                                           accessibilityLabel: coupon.description)
-        })
+        couponViewModels = resultsController.fetchedObjects.map { coupon in
+            CouponListCellViewModel(title: coupon.code,
+                                    subtitle: coupon.discountType.localizedName, // to be updated after UI is finalized
+                                    accessibilityLabel: coupon.description.isEmpty ? coupon.description : coupon.code,
+                                    status: coupon.expiryStatus().localizedName,
+                                    statusBackgroundColor: coupon.expiryStatus().statusBackgroundColor)
+        }
     }
 
 

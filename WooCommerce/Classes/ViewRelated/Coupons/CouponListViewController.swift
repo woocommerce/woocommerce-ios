@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import WordPressUI
+import SwiftUI
 
 final class CouponListViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
@@ -128,6 +129,17 @@ private extension CouponListViewController {
 extension CouponListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         viewModel.tableWillDisplayCell(at: indexPath)
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        guard let coupon = viewModel.coupon(at: indexPath) else {
+            return
+        }
+        let detailsViewModel = CouponDetailsViewModel(couponID: coupon.couponID, siteID: coupon.siteID)
+        let couponDetails = CouponDetails(viewModel: detailsViewModel)
+        let hostingController = UIHostingController(rootView: couponDetails)
+        navigationController?.pushViewController(hostingController, animated: true)
     }
 }
 

@@ -29,7 +29,8 @@ extension Double {
     ///
     /// Note: This helper function does work with negative values as well.
     ///
-    /// - Parameter shouldHideDecimalsForIntegerAbbreviatedValue: Whether decimal digits should be hidden when the abbreviated value is an integer. If `false`, a decimal digit is always shown.
+    /// - Parameter shouldHideDecimalsForIntegerAbbreviatedValue: Whether decimal digits should be hidden when the abbreviated value is an integer.
+    ///                                                           If `false`, a decimal digit is always shown.
     func humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: Bool = false) -> String {
         let num = Double(self)
 

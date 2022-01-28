@@ -1,6 +1,6 @@
+import Combine
 import UIKit
 import Yosemite
-import Observables
 
 /// Displays a paginated list of products where the user can select.
 final class ProductListSelectorViewController: UIViewController {
@@ -15,7 +15,7 @@ final class ProductListSelectorViewController: UIViewController {
     }
 
     private let siteID: Int64
-    private var cancellable: ObservationToken?
+    private var selectedProductIDsSubscription: AnyCancellable?
 
     private lazy var dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: excludedProductIDs)
 
@@ -159,8 +159,8 @@ private extension ProductListSelectorViewController {
         view.pinSubviewToAllEdges(paginatedListSelector.view)
     }
 
-    func observeSelectedProductIDs(observableProductIDs: Observable<[Int64]>) {
-        cancellable = observableProductIDs.subscribe { [weak self] selectedProductIDs in
+    func observeSelectedProductIDs(observableProductIDs: AnyPublisher<[Int64], Never>) {
+        selectedProductIDsSubscription = observableProductIDs.sink { [weak self] selectedProductIDs in
             self?.productIDs = selectedProductIDs
         }
     }

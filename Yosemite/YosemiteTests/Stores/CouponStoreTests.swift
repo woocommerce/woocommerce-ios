@@ -533,6 +533,61 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertNotNil(storedCoupon)
         XCTAssertEqual(storedCoupon?.amount, "10.00") // Updated amount reflecting the response.
     }
+
+    func test_retrieveCoupon_calls_remote_using_correct_request_parameters() {
+        setUpUsingSpyRemote()
+        // Given
+        let sampleCouponID: Int64 = 134
+        let action = CouponAction.retrieveCoupon(siteID: sampleSiteID, couponID: sampleCouponID) { _ in }
+
+        // When
+        store.onAction(action)
+
+        // Then
+        XCTAssertTrue(remote.didCallRetrieveCoupon)
+        XCTAssertEqual(remote.spyRetrieveSiteID, sampleSiteID)
+        XCTAssertEqual(remote.spyRetrieveCouponID, sampleCouponID)
+    }
+
+    func test_retrieveCoupon_returns_network_error_on_failure() {
+        // Given
+        let sampleCouponID: Int64 = 720
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "coupons/\(sampleCouponID)", error: expectedError)
+
+        // When
+        let result: Result<Networking.Coupon, Error> = waitFor { promise in
+            let action = CouponAction.retrieveCoupon(siteID: self.sampleSiteID, couponID: sampleCouponID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+    }
+
+    func test_retrieveCoupon_upserts_the_returned_coupon() throws {
+        // Given
+        let sampleCouponID: Int64 = 720
+        let sampleCoupon = Coupon.fake().copy(siteID: sampleSiteID, couponID: sampleCouponID, amount: "12.00")
+        storeCoupon(sampleCoupon, for: sampleSiteID)
+        network.simulateResponse(requestUrlSuffix: "coupons/\(sampleCouponID)", filename: "coupon")
+
+        // When
+        let result: Result<Networking.Coupon, Error> = waitFor { promise in
+            let action = CouponAction.retrieveCoupon(siteID: self.sampleSiteID, couponID: sampleCouponID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let storedCoupon = viewStorage.loadCoupon(siteID: sampleSiteID, couponID: sampleCouponID)
+        XCTAssertNotNil(storedCoupon)
+        XCTAssertEqual(storedCoupon?.amount, "10.00") // Updated amount reflecting the response.
+    }
 }
 
 private extension CouponStoreTests {

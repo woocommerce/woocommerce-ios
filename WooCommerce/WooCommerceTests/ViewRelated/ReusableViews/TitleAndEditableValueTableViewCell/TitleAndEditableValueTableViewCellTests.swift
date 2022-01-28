@@ -50,14 +50,14 @@ final class TitleAndEditableValueTableViewCellTests: XCTestCase {
 
         cell.update(viewModel: viewModel)
 
-        XCTAssertNil(viewModel.currentValue)
+        XCTAssertNil(viewModel.value)
 
         // When
         mirror.value.text = "Ut ullam itaque"
         mirror.value.sendActions(for: .editingChanged)
 
         // Then
-        XCTAssertEqual(viewModel.currentValue, "Ut ullam itaque")
+        XCTAssertEqual(viewModel.value, "Ut ullam itaque")
     }
 }
 

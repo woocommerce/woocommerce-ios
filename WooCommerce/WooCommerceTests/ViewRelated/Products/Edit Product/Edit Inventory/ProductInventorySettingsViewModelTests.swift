@@ -1,12 +1,12 @@
+import Combine
 import XCTest
-import Observables
 @testable import WooCommerce
 @testable import Yosemite
 
 final class ProductInventorySettingsViewModelTests: XCTestCase {
     typealias Section = ProductInventorySettingsViewController.Section
 
-    private var cancellable: ObservationToken?
+    private var cancellable: AnyCancellable?
 
     override func tearDown() {
         cancellable = nil
@@ -25,7 +25,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         // Act
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
         var sections: [Section] = []
-        cancellable = viewModel.sections.subscribe { sectionsValue in
+        cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
         }
 
@@ -54,7 +54,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         // Act
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
         var sections: [Section] = []
-        cancellable = viewModel.sections.subscribe { sectionsValue in
+        cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
         }
 
@@ -80,7 +80,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         // Act
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
         var sections: [Section] = []
-        cancellable = viewModel.sections.subscribe { sectionsValue in
+        cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
         }
 
@@ -101,7 +101,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         // Act
         let viewModel = ProductInventorySettingsViewModel(formType: .sku, productModel: model)
         var sections: [Section] = []
-        cancellable = viewModel.sections.subscribe { sectionsValue in
+        cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
         }
 
@@ -123,7 +123,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let stores = MockProductSKUValidationStoresManager(existingSKUs: [sku])
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, stores: stores)
         var sections: [Section] = []
-        cancellable = viewModel.sections.subscribe { sectionsValue in
+        cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
         }
 
@@ -158,7 +158,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let stores = MockProductSKUValidationStoresManager(existingSKUs: [sku])
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, stores: stores)
         var sections: [Section] = []
-        cancellable = viewModel.sections.subscribe { sectionsValue in
+        cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
         }
 
@@ -195,7 +195,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
         var sections: [Section] = []
-        cancellable = viewModel.sections.subscribe { sectionsValue in
+        cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
         }
 
@@ -219,7 +219,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
         var sections: [Section] = []
-        cancellable = viewModel.sections.subscribe { sectionsValue in
+        cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
         }
 

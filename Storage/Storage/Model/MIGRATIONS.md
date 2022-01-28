@@ -2,6 +2,11 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 62 (Release 8.5.0.0)
+- @itsmeichigo 2022-01-25
+    - Added `CouponSearchResult` entity.
+    - Added `searchResults` relationship from `Coupon` to `CouponSearchResult`.
+
 ## Model 61 (Release 8.4.0.0)
 - @selanthiraiyan 2022-01-13
     - Added `OrderTaxLine` entity.

@@ -1,6 +1,7 @@
 import UIKit
 
-final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell {
+final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell, SearchResultCell {
+    typealias SearchModel = ViewModel
 
     @IBOutlet private var subtitleLabel: UILabel!
     @IBOutlet private var titleLabel: UILabel!
@@ -15,6 +16,10 @@ final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell {
         super.awakeFromNib()
         configureBackground()
         configureLabels()
+    }
+
+    func configureCell(searchModel: ViewModel) {
+        configureCell(viewModel: searchModel)
     }
 
     func configureCell(viewModel: ViewModel) {

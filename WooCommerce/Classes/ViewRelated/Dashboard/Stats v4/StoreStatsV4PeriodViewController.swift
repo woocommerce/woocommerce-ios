@@ -148,7 +148,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
-        configureBarChart()
+        configureChart()
         configureNoRevenueView()
         observeStatsLabels()
         observeSelectedBarIndex()
@@ -156,6 +156,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         observeReloadChartAnimated()
         observeVisitorStatsViewState()
         observeConversionStatsViewState()
+        observeYAxisMaximum()
+        observeYAxisMinimum()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -234,6 +236,18 @@ private extension StoreStatsV4PeriodViewController {
             .sink { [weak self] viewState in
                 guard let self = self, self.conversionDataOrRedactedView != nil else { return }
                 self.conversionDataOrRedactedView.state = viewState
+        }.store(in: &cancellables)
+    }
+
+    func observeYAxisMaximum() {
+        viewModel.yAxisMaximum.sink { [weak self] yAxisMaximum in
+            self?.lineChartView.leftAxis.axisMaximum = yAxisMaximum
+        }.store(in: &cancellables)
+    }
+
+    func observeYAxisMinimum() {
+        viewModel.yAxisMinimum.sink { [weak self] yAxisMinimum in
+            self?.lineChartView.leftAxis.axisMinimum = yAxisMinimum
         }.store(in: &cancellables)
     }
 }
@@ -346,7 +360,7 @@ private extension StoreStatsV4PeriodViewController {
         noRevenueLabel.textColor = .text
     }
 
-    func configureBarChart() {
+    func configureChart() {
         lineChartView.marker = StoreStatsChartCircleMarker()
         lineChartView.chartDescription?.enabled = false
         lineChartView.dragXEnabled = true
@@ -364,6 +378,7 @@ private extension StoreStatsV4PeriodViewController {
 
         let xAxis = lineChartView.xAxis
         xAxis.labelPosition = .bottom
+        xAxis.yOffset = 8
         xAxis.labelFont = StyleManager.chartLabelFont
         xAxis.labelTextColor = .textSubtle
         xAxis.axisLineColor = .systemColor(.separator)
@@ -454,9 +469,12 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
             if value == 0.0 {
                 // Do not show the "0" label on the Y axis
                 return ""
+            } else if hasRevenue() == false {
+                // Extra spaces are necessary so that the first x-axis label is not truncated.
+                return "   "
             } else {
                 return CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-                                    .formatCurrency(using: value.humanReadableString(),
+                    .formatCurrency(using: value.humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true),
                                     at: ServiceLocator.currencySettings.currencyPosition,
                                     with: currencySymbol,
                                     isNegative: value.sign == .minus)
@@ -667,7 +685,7 @@ private extension StoreStatsV4PeriodViewController {
         static let chartXAxisGranularity: Double        = 1.0
 
         static var chartLineColor: UIColor {
-            UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
+            UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade50),
                     dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
         }
         static let chartHighlightLineColor: UIColor = .accent

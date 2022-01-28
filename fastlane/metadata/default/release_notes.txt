@@ -1,3 +1,5 @@
-Sometimes you just need to create a quick order to take a payment from your customer for a transaction you’re doing in-person, like at a trade show. We added a new option for you to create Simple Payments! Head over to the Orders tab to make a quick order to record that transaction. We are working hard on full order creation as well – and you’ll see that later this year.
+Merchants have been asking us for a quick way to record a transaction in the app with minimal information – like with only a charge amount. Maybe you’re at a farmer’s market and simply want to charge a customer’s credit card and don’t need to manage inventory. This release includes a new “Simple Payments” feature on the orders tab. If you’re a WooCommerce Payments customer, you’ll find this works great with the In-Person Payments credit card reader! Don’t have a credit card reader yet? Alternatively, you easily send a payment link to your customer to pay with their device through your site.
 
-We also fixed a bug with the site visitors count not showing up on the Today tab on your store’s dashboard. Thanks for letting us know!
+Also included in this release is the ability to refund fees on an order. We also snuck in an experimental SKU input barcode reader when editing a product which can be enabled in Settings.
+
+We’re working on several exciting features coming in the next few months. Keep sending us your feedback!

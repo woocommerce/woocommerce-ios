@@ -1,3 +1,4 @@
+import Combine
 import Photos
 import XCTest
 import Fakes
@@ -8,6 +9,7 @@ import Yosemite
 /// Unit tests for unsaved changes (`hasUnsavedChanges`)
 final class ProductFormViewModel_ChangesTests: XCTestCase {
     private let defaultSiteID: Int64 = 134
+    private var productImageStatusesSubscription: AnyCancellable?
 
     func testProductHasNoChangesFromEditActionsOfTheSameData() {
         // Arrange
@@ -89,7 +91,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler)
         let expectation = self.expectation(description: "Wait for image upload")
-        productImageActionHandler.addUpdateObserver(self) { statuses in
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { statuses in
             if statuses.productImageStatuses.isNotEmpty {
                 expectation.fulfill()
             }

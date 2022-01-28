@@ -1,3 +1,4 @@
+import Combine
 import XCTest
 import TestKit
 
@@ -11,6 +12,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
     private var storesManager: MockStoresManager!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
+    private var subscription: AnyCancellable?
 
     override func setUp() {
         super.setUp()
@@ -31,7 +33,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
         let viewModel = makeViewModel()
 
         var emittedValues = [Bool]()
-        _ = viewModel.isInAppFeedbackCardVisible.subscribe { value in
+        subscription = viewModel.$isInAppFeedbackCardVisible.sink { value in
             emittedValues.append(value)
         }
 
@@ -45,7 +47,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
         let viewModel = makeViewModel(canDisplayInAppFeedbackCard: false)
 
         var emittedValues = [Bool]()
-        _ = viewModel.isInAppFeedbackCardVisible.subscribe { value in
+        subscription = viewModel.$isInAppFeedbackCardVisible.sink { value in
             emittedValues.append(value)
         }
 
@@ -68,7 +70,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
         }
 
         var emittedValues = [Bool]()
-        _ = viewModel.isInAppFeedbackCardVisible.subscribe { value in
+        subscription = viewModel.$isInAppFeedbackCardVisible.sink { value in
             emittedValues.append(value)
         }
 
@@ -113,7 +115,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
         }
 
         var emittedValues = [Bool]()
-        _ = viewModel.isInAppFeedbackCardVisible.subscribe { value in
+        subscription = viewModel.$isInAppFeedbackCardVisible.sink { value in
             emittedValues.append(value)
         }
 
@@ -136,7 +138,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
         }
 
         var emittedValues = [Bool]()
-        _ = viewModel.isInAppFeedbackCardVisible.subscribe { value in
+        subscription = viewModel.$isInAppFeedbackCardVisible.sink { value in
             emittedValues.append(value)
         }
 
@@ -159,7 +161,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
         }
 
         var emittedValues = [Bool]()
-        _ = viewModel.isInAppFeedbackCardVisible.subscribe { value in
+        subscription = viewModel.$isInAppFeedbackCardVisible.sink { value in
             emittedValues.append(value)
         }
 
@@ -173,7 +175,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
         XCTAssertEqual([false, true, true], emittedValues)
     }
 
-    func test_isInAppFedbackCardVisible_is_false_after_tapping_on_card_CTAs() {
+    func test_isInAppFeedbackCardVisible_is_false_after_tapping_on_card_CTAs() {
         // Given
         let viewModel = makeViewModel()
 
@@ -192,7 +194,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 
         // When
         var emittedValues = [Bool]()
-        _ = viewModel.isInAppFeedbackCardVisible.subscribe { value in
+        subscription = viewModel.$isInAppFeedbackCardVisible.sink { value in
             emittedValues.append(value)
         }
 

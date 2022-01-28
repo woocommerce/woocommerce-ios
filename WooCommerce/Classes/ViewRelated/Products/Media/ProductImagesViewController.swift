@@ -1,7 +1,7 @@
+import Combine
 import Photos
 import UIKit
 import Yosemite
-import Observables
 
 /// Displays Product images with edit functionality.
 ///
@@ -33,7 +33,7 @@ final class ProductImagesViewController: UIViewController {
             }
         }
     }
-    private var productImageStatusesObservationToken: ObservationToken?
+    private var productImageStatusesObservationToken: AnyCancellable?
 
     private var allowsMultipleImages: Bool {
         product.allowsMultipleImages()

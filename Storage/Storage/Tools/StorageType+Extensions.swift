@@ -525,6 +525,13 @@ public extension StorageType {
         return allObjects(ofType: Coupon.self, matching: predicate, sortedBy: nil)
     }
 
+    /// Retrieves the Stored CouponSearchResult Lookup.
+    ///
+    func loadCouponSearchResult(keyword: String) -> CouponSearchResult? {
+        let predicate = \CouponSearchResult.keyword == keyword
+        return firstObject(ofType: CouponSearchResult.self, matching: predicate)
+    }
+
     /// Returns all stored shipping label account settings for a site.
     ///
     func loadShippingLabelAccountSettings(siteID: Int64) -> ShippingLabelAccountSettings? {

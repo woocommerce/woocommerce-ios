@@ -1,5 +1,5 @@
+import Combine
 import Yosemite
-import Observables
 
 /// The type of product form: adding a new one or editing an existing one.
 enum ProductFormType {
@@ -29,19 +29,19 @@ protocol ProductFormViewModelProtocol {
     associatedtype ProductModel: ProductFormDataModel & TaxClassRequestable
 
     /// Emits product on change, except when the product name is the only change (`productName` is emitted for this case).
-    var observableProduct: Observable<ProductModel> { get }
+    var observableProduct: AnyPublisher<ProductModel, Never> { get }
 
     /// The type of form: adding a new product or editing an existing product.
     var formType: ProductFormType { get }
 
     /// Emits product name on change. If the name is not editable (e.g. when the product model is `ProductVariation`), `nil` is returned.
-    var productName: Observable<String>? { get }
+    var productName: AnyPublisher<String, Never>? { get }
 
     /// Emits a boolean of whether the product has unsaved changes for remote update.
-    var isUpdateEnabled: Observable<Bool> { get }
+    var isUpdateEnabled: AnyPublisher<Bool, Never> { get }
 
     /// Emits a void value informing when there is a new variation price state available
-    var newVariationsPrice: Observable<Void> { get }
+    var newVariationsPrice: AnyPublisher<Void, Never> { get }
 
     /// Creates actions available on the bottom sheet.
     var actionsFactory: ProductFormActionsFactoryProtocol { get }

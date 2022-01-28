@@ -39,10 +39,10 @@ extension Coupon {
             return .expired
         }
 
-        var calender = Calendar.current
-        calender.timeZone = gmtTimeZone
+        var calendar = Calendar.current
+        calendar.timeZone = gmtTimeZone
 
-        let result = calender.compare(expiryDate, to: now, toGranularity: .day)
+        let result = calendar.compare(expiryDate, to: now, toGranularity: .day)
         return result == .orderedDescending ? .active : .expired
     }
 

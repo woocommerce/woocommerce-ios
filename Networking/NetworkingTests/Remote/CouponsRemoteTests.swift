@@ -382,7 +382,7 @@ final class CouponsRemoteTests: XCTestCase {
         let sampleCouponID: Int64 = 720
         let remote = CouponsRemote(network: network)
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
-        network.simulateError(requestUrlSuffix: "coupons", error: error)
+        network.simulateError(requestUrlSuffix: "coupons/\(sampleCouponID)", error: error)
 
         // When
         let result = waitFor { promise in

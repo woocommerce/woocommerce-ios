@@ -52,7 +52,7 @@ private extension Double {
 
     func abbreviatedString(for number: Double) -> String {
         let absNumber = fabs(number)
-        let abbreviation: Abbrevation = {
+        let abbreviation: Abbreviation = {
             var prevAbbreviation = Constants.abbreviations[0]
             for tmpAbbreviation in Constants.abbreviations {
                 if absNumber < tmpAbbreviation.threshold {
@@ -78,13 +78,13 @@ private extension Double {
 //
 private extension Double {
 
-    typealias Abbrevation = (threshold: Double, divisor: Double, suffix: String)
+    typealias Abbreviation = (threshold: Double, divisor: Double, suffix: String)
 
     enum Constants {
         static let negativeZeroString = "-0"
         static let zeroString         = "0"
 
-        static let abbreviations: [Abbrevation] = [(0, 1, ""),
+        static let abbreviations: [Abbreviation] = [(0, 1, ""),
                                                    (999.0, 1_000.0, "k"),
                                                    (999_999.0, 1_000_000.0, "m"),
                                                    (999_999_999.0, 1_000_000_000.0, "b"),

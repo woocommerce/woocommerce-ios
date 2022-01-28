@@ -43,7 +43,6 @@ final class InboxNoteListMapperTests: XCTestCase {
                                                                 name: "learn-more",
                                                                 label: "Learn more",
                                                                 status: "actioned",
-                                                                actionedText: "",
                                                                 url: url)],
                                           title: "Ready to launch your store?",
                                           content: content,

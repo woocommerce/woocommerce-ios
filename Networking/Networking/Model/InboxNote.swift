@@ -5,10 +5,10 @@ import Codegen
 /// Doc: p91TBi-6o2
 ///
 public struct InboxNote: GeneratedCopiable, GeneratedFakeable, Equatable {
-    /// `siteID` should be set on a copy in the Mapper as it's not returned by the API.
-    /// Using a default here gives us the benefit of synthesised codable conformance.
-    /// `private(set) public var` is required so that `siteID` will still be on the synthesised`init` which `copy()` uses
-    private(set) public var siteID: Int64 = 0
+
+    /// Site Identifier.
+    ///
+    public let siteID: Int64
 
     /// Note ID in WP database.
     ///
@@ -57,6 +57,37 @@ public struct InboxNote: GeneratedCopiable, GeneratedFakeable, Equatable {
 
 /// Defines all of the InboxNote CodingKeys
 extension InboxNote: Codable {
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
+            throw InboxNoteDecodingError.missingSiteID
+        }
+        let id = try container.decode(Int64.self, forKey: .id)
+        let name = try container.decode(String.self, forKey: .name)
+        let type = try container.decode(String.self, forKey: .type)
+        let status = try container.decode(String.self, forKey: .status)
+        let actions = try container.decode([InboxAction].self, forKey: .actions)
+        let title = try container.decode(String.self, forKey: .title)
+        let content = try container.decode(String.self, forKey: .content)
+        let isDeleted = try container.decode(Bool.self, forKey: .isDeleted)
+        let isRead = try container.decode(Bool.self, forKey: .isRead)
+        let dateCreated = try container.decode(Date.self, forKey: .dateCreated)
+
+        self.init(siteID: siteID,
+                  id: id,
+                  name: name,
+                  type: type,
+                  status: status,
+                  actions: actions,
+                  title: title,
+                  content: content,
+                  isDeleted: isDeleted,
+                  isRead: isRead,
+                  dateCreated: dateCreated)
+    }
+
     enum CodingKeys: String, CodingKey {
         case id
         case name
@@ -69,4 +100,10 @@ extension InboxNote: Codable {
         case isRead = "is_read"
         case dateCreated = "date_created_gmt"
     }
+}
+
+// MARK: - Decoding Errors
+//
+enum InboxNoteDecodingError: Error {
+    case missingSiteID
 }

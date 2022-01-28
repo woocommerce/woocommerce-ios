@@ -14,7 +14,9 @@ struct InboxNoteListMapper: Mapper {
     func map(response: Data) throws -> [InboxNote] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
-        let inboxNotes = try decoder.decode([InboxNote].self, from: response)
-        return inboxNotes.map { $0.copy(siteID: siteID) }
+        decoder.userInfo = [
+            .siteID: siteID
+        ]
+        return try decoder.decode([InboxNote].self, from: response)
     }
 }

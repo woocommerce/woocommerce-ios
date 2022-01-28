@@ -1,7 +1,7 @@
 import Combine
 import UIKit
 import WordPressUI
-import SwiftUI
+import class SwiftUI.UIHostingController
 
 final class CouponListViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!

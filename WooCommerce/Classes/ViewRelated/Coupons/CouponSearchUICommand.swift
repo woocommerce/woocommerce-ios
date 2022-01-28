@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import class SwiftUI.UIHostingController
 
 /// Implementation of `SearchUICommand` for Coupon search.
 final class CouponSearchUICommand: SearchUICommand {
@@ -47,7 +48,10 @@ final class CouponSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Coupon, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
-        // TODO: Show coupon details screen
+        let detailsViewModel = CouponDetailsViewModel(couponID: model.couponID, siteID: model.siteID)
+        let couponDetails = CouponDetails(viewModel: detailsViewModel)
+        let hostingController = UIHostingController(rootView: couponDetails)
+        viewController.navigationController?.pushViewController(hostingController, animated: true)
     }
 
     func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewController,

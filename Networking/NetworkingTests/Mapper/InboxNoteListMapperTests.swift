@@ -1,7 +1,7 @@
 import XCTest
 @testable import Networking
 
-class InboxNoteListMapperTests: XCTestCase {
+final class InboxNoteListMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///

@@ -6,10 +6,10 @@ import Yosemite
 
 /// Unit tests for public properties/functions in `LinkedProductListSelectorDataSource`.
 final class LinkedProductListSelectorDataSourceTests: XCTestCase {
-    private var cancellable: AnyCancellable?
+    private var productIDsSubscription: AnyCancellable?
 
     override func tearDown() {
-        cancellable = nil
+        productIDsSubscription = nil
         super.tearDown()
     }
 
@@ -23,7 +23,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
                                                              linkedProductIDs: preselectedProductIDs,
                                                              trackingContext: "test_context")
         var updatedProductIDs: [Int64]?
-        cancellable = dataSource.productIDs.sink { ids in
+        productIDsSubscription = dataSource.productIDs.sink { ids in
             updatedProductIDs = ids
         }
 
@@ -44,7 +44,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
                                                              linkedProductIDs: preselectedProductIDs,
                                                              trackingContext: "test_context")
         var updatedProductIDs: [Int64]?
-        cancellable = dataSource.productIDs.sink { ids in
+        productIDsSubscription = dataSource.productIDs.sink { ids in
             updatedProductIDs = ids
         }
 
@@ -69,7 +69,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
                                                              linkedProductIDs: preselectedProductIDs,
                                                              trackingContext: "test_context")
         var updatedProductIDs: [Int64]?
-        cancellable = dataSource.productIDs.sink { ids in
+        productIDsSubscription = dataSource.productIDs.sink { ids in
             updatedProductIDs = ids
         }
 
@@ -92,7 +92,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
                                                              linkedProductIDs: preselectedProductIDs,
                                                              trackingContext: "test_context")
         var updatedProductIDs: [Int64]?
-        cancellable = dataSource.productIDs.sink { ids in
+        productIDsSubscription = dataSource.productIDs.sink { ids in
             updatedProductIDs = ids
         }
 
@@ -116,7 +116,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
                                                              linkedProductIDs: preselectedProductIDs,
                                                              trackingContext: "test_context")
         var updatedProductIDs: [Int64]?
-        cancellable = dataSource.productIDs.sink { ids in
+        productIDsSubscription = dataSource.productIDs.sink { ids in
             updatedProductIDs = ids
         }
 
@@ -138,7 +138,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
                                                              linkedProductIDs: preselectedProductIDs,
                                                              trackingContext: "test_context")
         var updatedProductIDs: [Int64]?
-        cancellable = dataSource.productIDs.sink { ids in
+        productIDsSubscription = dataSource.productIDs.sink { ids in
             updatedProductIDs = ids
         }
 

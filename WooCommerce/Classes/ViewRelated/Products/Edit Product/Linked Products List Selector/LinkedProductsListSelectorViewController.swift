@@ -29,7 +29,7 @@ final class LinkedProductsListSelectorViewController: UIViewController {
             return PaginatedListSelectorViewController(viewProperties: viewProperties, dataSource: dataSource, onDismiss: { _ in })
     }()
 
-    private var cancellable: AnyCancellable?
+    private var productIDsSubscription: AnyCancellable?
 
     // Completion callback
     //
@@ -168,7 +168,7 @@ private extension LinkedProductsListSelectorViewController {
     }
 
     func observeLinkedProductIDs() {
-        cancellable = dataSource.productIDs.sink { [weak self] productIDs in
+        productIDsSubscription = dataSource.productIDs.sink { [weak self] productIDs in
             self?.paginatedListSelector.updateResultsController()
             self?.updateNavigationRightBarButtonItem()
         }

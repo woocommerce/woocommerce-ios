@@ -15,7 +15,7 @@ final class ProductListSelectorViewController: UIViewController {
     }
 
     private let siteID: Int64
-    private var cancellable: AnyCancellable?
+    private var selectedProductIDsSubscription: AnyCancellable?
 
     private lazy var dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: excludedProductIDs)
 
@@ -160,7 +160,7 @@ private extension ProductListSelectorViewController {
     }
 
     func observeSelectedProductIDs(observableProductIDs: AnyPublisher<[Int64], Never>) {
-        cancellable = observableProductIDs.sink { [weak self] selectedProductIDs in
+        selectedProductIDsSubscription = observableProductIDs.sink { [weak self] selectedProductIDs in
             self?.productIDs = selectedProductIDs
         }
     }

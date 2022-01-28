@@ -18,7 +18,7 @@ final class CouponDetailsViewModel: ObservableObject {
 
     /// Product limit for the coupon to be applied to
     ///
-    @Published private(set) var applyTo: String = ""
+    @Published private(set) var productsAppliedTo: String = ""
 
     /// Expiry date of the coupon
     ///
@@ -64,7 +64,7 @@ private extension CouponDetailsViewModel {
         }
 
         // TODO: match product IDs to names
-        applyTo = coupon.productIds.isEmpty ? Localization.allProducts : "Some Products"
+        productsAppliedTo = coupon.productIds.isEmpty ? Localization.allProducts : "Some Products"
         expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none) ?? ""
     }
 }

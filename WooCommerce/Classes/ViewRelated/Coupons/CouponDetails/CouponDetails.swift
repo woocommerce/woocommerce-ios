@@ -13,7 +13,7 @@ struct CouponDetails: View {
             .init(title: Localization.couponCode, content: viewModel.couponCode, action: {}),
             .init(title: Localization.description, content: viewModel.description, action: {}),
             .init(title: Localization.discount, content: viewModel.amount, action: {}),
-            .init(title: Localization.applyTo, content: viewModel.applyTo, action: {}),
+            .init(title: Localization.applyTo, content: viewModel.productsAppliedTo, action: {}),
             .init(title: Localization.expiryDate, content: viewModel.expiryDate, action: {})
         ]
     }

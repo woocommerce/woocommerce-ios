@@ -20,7 +20,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.couponCode, "AGK32FD")
         XCTAssertEqual(viewModel.amount, "$10.00")
         XCTAssertEqual(viewModel.description, "Coupon description")
-        XCTAssertEqual(viewModel.applyTo, "All Products")
+        XCTAssertEqual(viewModel.productsAppliedTo, "All Products")
         XCTAssertEqual(viewModel.expiryDate, "January 21, 2022")
     }
 
@@ -40,7 +40,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.couponCode, "AGK32FD")
         XCTAssertEqual(viewModel.amount, "10%")
         XCTAssertEqual(viewModel.description, "Coupon description")
-        XCTAssertEqual(viewModel.applyTo, "All Products")
+        XCTAssertEqual(viewModel.productsAppliedTo, "All Products")
         XCTAssertEqual(viewModel.expiryDate, "January 21, 2022")
     }
 

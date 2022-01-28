@@ -128,7 +128,7 @@ public enum CardPresentPaymentsPlugins: Equatable {
     public var supportedCountryCodes: [String] {
         switch self {
         case .wcPay:
-            return ["US"]
+            return ["US", "CA"]
         case .stripe:
             return ["US"]
         }

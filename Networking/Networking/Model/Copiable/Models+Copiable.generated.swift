@@ -175,14 +175,12 @@ extension InboxAction {
         name: CopiableProp<String> = .copy,
         label: CopiableProp<String> = .copy,
         status: CopiableProp<String> = .copy,
-        actionedText: CopiableProp<String> = .copy,
         url: CopiableProp<String> = .copy
     ) -> InboxAction {
         let id = id ?? self.id
         let name = name ?? self.name
         let label = label ?? self.label
         let status = status ?? self.status
-        let actionedText = actionedText ?? self.actionedText
         let url = url ?? self.url
 
         return InboxAction(
@@ -190,7 +188,6 @@ extension InboxAction {
             name: name,
             label: label,
             status: status,
-            actionedText: actionedText,
             url: url
         )
     }

@@ -22,10 +22,6 @@ public struct InboxAction: GeneratedCopiable, GeneratedFakeable, Equatable {
     ///
     public let status: String
 
-    /// Text of the action.
-    ///
-    public let actionedText: String
-
     /// URL where the action points.
     ///
     public let url: String
@@ -41,7 +37,6 @@ extension InboxAction: Codable {
         case name
         case label
         case status
-        case actionedText = "actioned_text"
         case url
     }
 }

@@ -142,12 +142,12 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                 }
 
                 if viewModel.showDifferentAddressForm {
-                    SingleAddressForm(fields: $viewModel.fields,
-                                      countryViewModelClosure: viewModel.createCountryViewModel,
-                                      stateViewModelClosure: viewModel.createStateViewModel,
+                    SingleAddressForm(fields: $viewModel.secondaryFields,
+                                      countryViewModelClosure: viewModel.createSecondaryCountryViewModel,
+                                      stateViewModelClosure: viewModel.createSecondaryStateViewModel,
                                       sectionTitle: viewModel.sectionTitle,
                                       showEmailField: false,
-                                      showStateFieldAsSelector: viewModel.showStateFieldAsSelector)
+                                      showStateFieldAsSelector: viewModel.showSecondaryStateFieldAsSelector)
                 }
             }
             .disableAutocorrection(true)
@@ -308,7 +308,7 @@ struct SingleAddressForm: View {
                 }
 
                 TitleAndValueRow(title: Localization.countryField,
-                                 value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.countryName),
+                                 value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.country),
                                  selectable: true) {
                     showCountrySelector = true
                 }
@@ -326,14 +326,14 @@ struct SingleAddressForm: View {
     @ViewBuilder private func stateRow() -> some View {
         if showStateFieldAsSelector {
             TitleAndValueRow(title: Localization.stateField,
-                             value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.stateName),
+                             value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.state),
                              selectable: true) {
                 showStateSelector = true
             }
         } else {
             TitleAndTextFieldRow(title: Localization.stateField,
                                  placeholder: "",
-                                 text: $fields.stateName,
+                                 text: $fields.state,
                                  symbol: nil,
                                  keyboardType: .default)
         }

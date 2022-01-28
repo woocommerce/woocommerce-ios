@@ -105,6 +105,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
     /// Update the address remotely and invoke a completion block when finished
     ///
     func saveAddress(onFinish: @escaping (Bool) -> Void) {
+        let updatedAddress = fields.toAddress()
         let orderFields: [OrderUpdateField]
 
         let modifiedOrder: Yosemite.Order
@@ -137,7 +138,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
 
             case .failure(let error):
                 DDLogError("⛔️ Error updating order: \(error)")
-                if self.type == .billing, self.updatedAddress.hasEmailAddress == false {
+                if self.type == .billing, updatedAddress.hasEmailAddress == false {
                     DDLogError("⛔️ Email is nil in address. It won't work in WC < 5.9.0 (https://git.io/J68Gl)")
                 }
                 self.presentNotice = .error(.unableToUpdateAddress)

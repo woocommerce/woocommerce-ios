@@ -1,6 +1,6 @@
+import Combine
 import Yosemite
 import class AutomatticTracks.CrashLogging
-import Observables
 
 /// ViewModel for `StoreStatsAndTopPerformersPeriodViewController`.
 ///
@@ -15,10 +15,7 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
     let canDisplayInAppFeedbackCard: Bool
 
     /// An Observable that informs the UI whether the in-app feedback card should be displayed or not.
-    var isInAppFeedbackCardVisible: Observable<Bool> {
-        isInAppFeedbackCardVisibleSubject
-    }
-    private let isInAppFeedbackCardVisibleSubject = BehaviorSubject(false)
+    @Published private(set) var isInAppFeedbackCardVisible: Bool = false
 
     private let storesManager: StoresManager
     private let analytics: Analytics
@@ -47,7 +44,7 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
         refreshIsInAppFeedbackCardVisibleValue()
     }
 
-    /// Updates the card visibility state stored in `isInAppFeedbackCardVisibleSubject` by updating the app last feedback date.
+    /// Updates the card visibility state stored in `isInAppFeedbackCardVisible` by updating the app last feedback date.
     ///
     func onInAppFeedbackCardAction() {
         let action = AppSettingsAction.updateFeedbackStatus(type: .general, status: .given(Date())) { [weak self] result in
@@ -64,7 +61,7 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
         storesManager.dispatch(action)
     }
 
-    /// Calculates and updates the value of `isInAppFeedbackCardVisibleSubject`.
+    /// Calculates and updates the value of `isInAppFeedbackCardVisible`.
     private func refreshIsInAppFeedbackCardVisibleValue() {
         // Abort right away if we don't need to calculate the real value.
         guard canDisplayInAppFeedbackCard else {
@@ -88,12 +85,12 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
         storesManager.dispatch(action)
     }
 
-    /// Updates the value of `isInAppFeedbackCardVisibileSubject` and tracks a "shown" event
+    /// Updates the value of `isInAppFeedbackCardVisible` and tracks a "shown" event
     /// if the value changed from `false` to `true`.
     private func sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(_ newValue: Bool) {
-        let trackEvent = isInAppFeedbackCardVisibleSubject.value == false && newValue == true
+        let trackEvent = isInAppFeedbackCardVisible == false && newValue == true
 
-        isInAppFeedbackCardVisibleSubject.send(newValue)
+        isInAppFeedbackCardVisible = newValue
         if trackEvent {
             analytics.track(event: .appFeedbackPrompt(action: .shown))
         }

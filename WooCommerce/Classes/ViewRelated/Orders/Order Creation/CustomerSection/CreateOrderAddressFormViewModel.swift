@@ -27,6 +27,10 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
                    storageManager: storageManager,
                    stores: stores,
                    analytics: analytics)
+
+        if addressData.billingAddress != addressData.shippingAddress {
+            showDifferentAddressForm = true
+        }
     }
 
     // MARK: - Protocol conformance

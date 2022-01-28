@@ -320,7 +320,7 @@ extension NewOrderViewModel {
         init(product: Product, quantity: Decimal) {
             self.id = UUID().uuidString
             self.productID = product.productID
-            self.variationID = 0
+            self.variationID = 0 // Products in an order are represented in Core with a variation ID of 0
             self.quantity = quantity
             self.price = NSDecimalNumber(string: product.price)
         }

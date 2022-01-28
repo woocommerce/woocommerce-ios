@@ -5,7 +5,7 @@ struct MediaListMapper: Mapper {
     ///
     func map(response: Data) throws -> [Media] {
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.iso8601WithoutTimeZone)
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.iso8601)
         return try decoder.decode(MediaListEnvelope.self, from: response).mediaList
     }
 }

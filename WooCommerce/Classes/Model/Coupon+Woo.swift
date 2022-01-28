@@ -80,6 +80,7 @@ extension Coupon {
 }
 
 // MARK: - Sample Data
+#if DEBUG
 extension Coupon {
     static let sampleCoupon = Coupon(couponID: 720,
                                      code: "AGK32FD",
@@ -105,3 +106,4 @@ extension Coupon {
                                      emailRestrictions: ["*@a8c.com", "someone.else@example.com"],
                                      usedBy: ["someone.else@example.com", "person@a8c.com"])
 }
+#endif

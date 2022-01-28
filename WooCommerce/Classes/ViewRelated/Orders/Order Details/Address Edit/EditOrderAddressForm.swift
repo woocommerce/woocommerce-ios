@@ -149,6 +149,8 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                       showEmailField: false,
                                       showStateFieldAsSelector: viewModel.showSecondaryStateFieldAsSelector)
                 }
+
+                Spacer(minLength: safeAreaInsets.bottom)
             }
             .disableAutocorrection(true)
             .background(Color(.listBackground))

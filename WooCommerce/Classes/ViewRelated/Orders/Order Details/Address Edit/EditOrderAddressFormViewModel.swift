@@ -124,7 +124,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
             switch result {
             case .success(let updatedOrder):
                 self.onOrderUpdate?(updatedOrder)
-                self.notice = .init(title: Localization.success, feedbackType: .success)
+                self.notice = NoticeFactory.createSuccessNotice()
                 self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: self.analyticsFlowType()))
 
             case .failure(let error):
@@ -132,7 +132,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
                 if self.type == .billing, self.updatedAddress.hasEmailAddress == false {
                     DDLogError("⛔️ Email is nil in address. It won't work in WC < 5.9.0 (https://git.io/J68Gl)")
                 }
-                self.notice = Self.createErrorNotice(from: .unableToUpdateAddress)
+                self.notice = AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToUpdateAddress)
                 self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: self.analyticsFlowType()))
             }
             onFinish(result.isSuccess)
@@ -148,6 +148,18 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
 
     func userDidCancelFlow() {
         analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: self.analyticsFlowType()))
+    }
+}
+
+extension EditOrderAddressFormViewModel {
+    /// Creates edit address form notices.
+    ///
+    enum NoticeFactory {
+        /// Creates a success notice for editing an address.
+        ///
+        static func createSuccessNotice() -> Notice {
+            .init(title: Localization.success, feedbackType: .success)
+        }
     }
 }
 

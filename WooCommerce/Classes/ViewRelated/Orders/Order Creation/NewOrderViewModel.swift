@@ -162,7 +162,7 @@ final class NewOrderViewModel: ObservableObject {
             case .success(let newOrder):
                 self.onOrderCreated(newOrder)
             case .failure(let error):
-                self.notice = self.createOrderCreationErrorNotice()
+                self.notice = NoticeFactory.createOrderCreationErrorNotice()
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
@@ -381,15 +381,22 @@ private extension NewOrderViewModel {
             }
             .assign(to: &$paymentDataViewModel)
     }
-
-    /// Returns a default order creation error notice.
-    ///
-    func createOrderCreationErrorNotice() -> Notice {
-        Notice(title: Localization.errorMessage, feedbackType: .error)
-    }
 }
 
 // MARK: Constants
+
+extension NewOrderViewModel {
+    /// New Order notices
+    ///
+    enum NoticeFactory {
+        /// Returns a default order creation error notice.
+        ///
+        static func createOrderCreationErrorNotice() -> Notice {
+            Notice(title: Localization.errorMessage, feedbackType: .error)
+        }
+    }
+}
+
 private extension NewOrderViewModel {
     enum Localization {
         static let errorMessage = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")

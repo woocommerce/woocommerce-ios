@@ -92,7 +92,7 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.createOrder()
 
         // Then
-        XCTAssertEqual(viewModel.presentNotice, .error)
+        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.createOrderCreationErrorNotice())
     }
 
     func test_view_model_loads_synced_pending_order_status() {

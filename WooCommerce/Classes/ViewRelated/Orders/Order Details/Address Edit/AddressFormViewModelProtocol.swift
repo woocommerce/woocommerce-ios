@@ -233,11 +233,7 @@ open class AddressFormViewModel: ObservableObject {
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
     ///
-    @Published var notice: Notice? {
-        didSet {
-            print("notice set")
-        }
-    }
+    @Published var notice: Notice?
 
     /// Defines if the state field should be defined as a list selector.
     ///
@@ -304,10 +300,14 @@ extension AddressFormViewModel {
         }
     }
 
-    /// Creates an error notice based on the provided edit address error.
+    /// Creates address form general notices.
     ///
-    static func createErrorNotice(from error: EditAddressError) -> Notice {
-        Notice(title: error.errorDescription ?? "", message: error.recoverySuggestion, feedbackType: .error)
+    enum NoticeFactory {
+        /// Creates an error notice based on the provided edit address error.
+        ///
+        static func createErrorNotice(from error: EditAddressError) -> Notice {
+            Notice(title: error.errorDescription ?? "", message: error.recoverySuggestion, feedbackType: .error)
+        }
     }
 }
 
@@ -396,7 +396,7 @@ private extension AddressFormViewModel {
         let syncCountries = makeSyncCountriesFuture()
             .catch { [weak self] error -> AnyPublisher<Void, Never> in
                 DDLogError("⛔️ Failed to load countries with: \(error)")
-                self?.notice = Self.createErrorNotice(from: error)
+                self?.notice = NoticeFactory.createErrorNotice(from: error)
                 return Just(()).eraseToAnyPublisher()
             }
 

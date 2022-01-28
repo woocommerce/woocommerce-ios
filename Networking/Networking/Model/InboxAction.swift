@@ -25,6 +25,19 @@ public struct InboxAction: GeneratedCopiable, GeneratedFakeable, Equatable {
     /// URL where the action points.
     ///
     public let url: String
+
+
+    public init(id: Int64,
+                name: String,
+                label: String,
+                status: String,
+                url: String) {
+        self.id = id
+        self.name = name
+        self.label = label
+        self.status = status
+        self.url = url
+    }
 }
 
 

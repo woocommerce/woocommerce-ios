@@ -44,10 +44,25 @@ private extension CouponDetailsViewModel {
     func populateDetails() {
         couponCode = coupon.code
         description = coupon.description
-        amount = coupon.amount
+
+        switch coupon.discountType {
+        case .percent:
+            let percentFormatter = NumberFormatter()
+            percentFormatter.numberStyle = .percent
+            if let amountDouble = Double(coupon.amount) {
+                let amountNumber = NSNumber(value: amountDouble / 100)
+                amount = percentFormatter.string(from: amountNumber) ?? ""
+            }
+        case .fixedCart, .fixedProduct:
+            let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+            amount = currencyFormatter.formatAmount(coupon.amount) ?? ""
+        case .other: // TODO: confirm this case
+            amount = coupon.amount
+        }
+
         // TODO: match product IDs to names
         applyTo = coupon.productIds.isEmpty ? Localization.allProducts : "Some Products"
-        expiryDate = coupon.dateExpires?.toString(dateStyle: .medium, timeStyle: .none) ?? ""
+        expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none) ?? ""
     }
 }
 

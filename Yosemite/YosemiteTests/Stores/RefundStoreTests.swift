@@ -528,35 +528,11 @@ private extension RefundStoreTests {
 
     /// Returns an `Order` with empty values. Use `copy()` to modify them.
     func sampleOrder() -> Networking.Order {
-        Order(
+        Order.fake().copy(
             siteID: sampleSiteID,
             orderID: sampleOrderID,
-            parentID: 0,
-            customerID: 0,
-            orderKey: "",
-            number: "",
             status: .pending,
-            currency: "",
-            customerNote: nil,
-            dateCreated: Date(),
-            dateModified: Date(),
-            datePaid: nil,
-            discountTotal: "",
-            discountTax: "",
-            shippingTotal: "",
-            shippingTax: "",
-            total: "",
-            totalTax: "",
-            paymentMethodID: "",
-            paymentMethodTitle: "",
-            items: [],
-            billingAddress: nil,
-            shippingAddress: nil,
-            shippingLines: [],
-            coupons: [],
-            refunds: [],
-            fees: [],
-            taxes: []
+            items: []
         )
     }
 

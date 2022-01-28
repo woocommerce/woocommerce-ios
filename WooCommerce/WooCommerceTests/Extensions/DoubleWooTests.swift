@@ -4,7 +4,7 @@ import XCTest
 
 /// Double+Woo: Unit Tests
 ///
-class DoubleWooTests: XCTestCase {
+final class DoubleWooTests: XCTestCase {
 
     func testHumanReadableStringWorksWithZeroValue() {
         XCTAssertEqual(Double(0).humanReadableString(), "0")
@@ -99,5 +99,15 @@ class DoubleWooTests: XCTestCase {
         XCTAssertEqual(Double(-999_999_999_999).humanReadableString(), "-1.0t") // "-1.0t"
         XCTAssertEqual(Double(-999_000_000_000_000.00001).humanReadableString(), "-999.0t") // "-999.0t"
         XCTAssertEqual(Double(-9_000_000_000_000_000.00001).humanReadableString(), "-9000.0t") // "-9000.0t"
+    }
+
+    func test_humanReadableString_that_shouldHideDecimalsForIntegerAbbreviatedValue_does_not_show_decimal_digits_for_abbreviated_integer_values() {
+        XCTAssertEqual(Double(198.44).humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true), "198")
+        XCTAssertEqual(Double(1000).humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true), "1k")
+        XCTAssertEqual(Double(1099.9).humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true), "1.1k")
+        XCTAssertEqual(Double(-9_999).humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true), "-10k")
+        XCTAssertEqual(Double(-99_899_999_999).humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true), "-99.9b")
+        XCTAssertEqual(Double(-999_000_000_000_000.00001).humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true), "-999t")
+        XCTAssertEqual(Double(-9_000_000_000_000_000.00001).humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true), "-9000t")
     }
 }

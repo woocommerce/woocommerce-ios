@@ -2,6 +2,7 @@
 
 8.5
 -----
+- [***] The My store tab is having a new look with new conversion stats and shows up to 5 top performing products now (used to be 3). [https://github.com/woocommerce/woocommerce-ios/pull/5991]
 
 
 8.4

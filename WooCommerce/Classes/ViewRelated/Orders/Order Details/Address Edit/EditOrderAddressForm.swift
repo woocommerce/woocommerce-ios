@@ -145,7 +145,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                     SingleAddressForm(fields: $viewModel.secondaryFields,
                                       countryViewModelClosure: viewModel.createSecondaryCountryViewModel,
                                       stateViewModelClosure: viewModel.createSecondaryStateViewModel,
-                                      sectionTitle: viewModel.sectionTitle,
+                                      sectionTitle: viewModel.secondarySectionTitle,
                                       showEmailField: false,
                                       showStateFieldAsSelector: viewModel.showSecondaryStateFieldAsSelector)
                 }

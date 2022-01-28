@@ -81,6 +81,10 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
         }
     }
 
+    var secondarySectionTitle: String {
+        ""
+    }
+
     var showAlternativeUsageToggle: Bool {
         true
     }

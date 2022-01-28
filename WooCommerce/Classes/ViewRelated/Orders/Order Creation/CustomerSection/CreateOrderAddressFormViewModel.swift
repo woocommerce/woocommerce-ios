@@ -47,6 +47,10 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
         }
     }
 
+    var secondarySectionTitle: String {
+        Localization.shippingAddressSection
+    }
+
     var showAlternativeUsageToggle: Bool {
         false
     }

@@ -51,6 +51,10 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     ///
     var sectionTitle: String { get }
 
+    /// Defines address section title for second set of fields
+    ///
+    var secondarySectionTitle: String { get }
+
     /// Defines if "use as billing/shipping" toggle should be displayed.
     ///
     var showAlternativeUsageToggle: Bool { get }

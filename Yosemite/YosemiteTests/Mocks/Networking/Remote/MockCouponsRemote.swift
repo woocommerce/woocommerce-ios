@@ -16,7 +16,7 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     var spySearchCouponsKeyword: String?
 
     var didCallRetrieveCoupon = false
-    var spyRetrieveCouponSiteID: Int64?
+    var spyRetrieveSiteID: Int64?
     var spyRetrieveCouponID: Int64?
 
     var didCallDeleteCoupon = false
@@ -87,7 +87,7 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
 
     func retrieveCoupon(for siteID: Int64, couponID: Int64, completion: @escaping (Result<Coupon, Error>) -> Void) {
         didCallRetrieveCoupon = true
-        spyRetrieveCouponSiteID = siteID
+        spyRetrieveSiteID = siteID
         spyRetrieveCouponID = couponID
     }
 }

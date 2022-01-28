@@ -361,3 +361,20 @@ private extension PaymentGatewayAccount {
         .init(rawValue: status)
     }
 }
+
+private extension CardPresentPaymentsPlugins {
+    // This was moved from Yosemite so it can check the feature flag
+    // In a future iteration, we might want to store all the configuration in the WooCommerce layer
+    var supportedCountryCodes: [String] {
+        switch self {
+        case .wcPay:
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.canadaInPersonPayments) {
+                return ["US", "CA"]
+            } else {
+                return ["US"]
+            }
+        case .stripe:
+            return ["US"]
+        }
+    }
+}

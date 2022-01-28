@@ -28,9 +28,11 @@ final class InboxNoteListMapperTests: XCTestCase {
     /// Verifies that the fields are all parsed correctly.
     ///
     func test_InboxNoteListMapper_parses_all_fields_in_result() throws {
+        // Given
         let inboxNotes = try mapLoadInboxNoteListResponse()
         let inboxNote = inboxNotes[0]
 
+        // When
         let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
         let url = "https://woocommerce.com/posts/pre-launch-checklist-the-essentials/?utm_source=inbox&utm_medium=product"
         let content = "To make sure you never get that sinking \"what did I forget\" feeling, we've put together the essential pre-launch checklist."
@@ -50,6 +52,7 @@ final class InboxNoteListMapperTests: XCTestCase {
                                           isRead: false,
                                           dateCreated: dateFormatter.date(from: "2022-01-26T14:32:08")!)
 
+        // Then
         XCTAssertEqual(inboxNote, expectedInboxNote)
     }
 }

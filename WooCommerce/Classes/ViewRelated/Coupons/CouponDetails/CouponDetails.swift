@@ -9,20 +9,26 @@ struct CouponDetails: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                Text(Localization.detailSectionTitle)
-                    .bold()
-                    .padding(Constants.margin)
-                Divider()
-                    .padding(.leading, Constants.margin)
-                TitleAndValueRow(title: Localization.couponCode,
-                                 value: .content(viewModel.couponCode),
-                                 selectable: true) {}
+        GeometryReader { geometry in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(Localization.detailSectionTitle)
+                        .bold()
+                        .padding(Constants.margin)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+                    Divider()
+                        .padding(.leading, Constants.margin)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+                    TitleAndValueRow(title: Localization.couponCode,
+                                     value: .content(viewModel.couponCode),
+                                     selectable: true) {}
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+                }
+                .background(Color(.listForeground))
             }
-            .background(Color(.listForeground))
+            .background(Color(.listBackground))
+            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
-        .background(Color(.listBackground))
         .navigationTitle(Localization.navigationTitle)
     }
 }

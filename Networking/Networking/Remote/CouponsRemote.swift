@@ -102,8 +102,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
                                      siteID: siteID,
-                                     path: Path.coupons + "/\(couponID)",
-                                     parameters: [ParameterKey.force: true])
+                                     path: Path.coupons + "/\(couponID)")
 
         let mapper = CouponMapper(siteID: siteID)
 

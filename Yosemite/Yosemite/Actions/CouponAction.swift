@@ -67,4 +67,14 @@ public enum CouponAction: Action {
                        pageNumber: Int,
                        pageSize: Int,
                        onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Retrieve a Coupon for a site given the coupon ID
+    ///
+    /// - `siteID`: the site for which coupons should be fetched.
+    /// - `couponID`: ID of the coupon to be retrieve
+    /// - `onCompletion`: invoked upon completion.
+    ///
+    case retrieveCoupon(siteID: Int64,
+                        couponID: Int64,
+                        onCompletion: (Result<Coupon, Error>) -> Void)
 }

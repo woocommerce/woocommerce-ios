@@ -140,16 +140,6 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func checkOnboardingState() -> CardPresentPaymentOnboardingState {
-        // Country checks
-        guard let countryCode = storeCountryCode else {
-            DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
-            return .genericError
-        }
-
-        guard isCountrySupported(countryCode: countryCode) else {
-            return .countryNotSupported(countryCode: countryCode)
-        }
-
         let wcPay = getWCPayPlugin()
         guard stripeGatewayIPPEnabled == true else {
             return wcPayOnlyOnboardingState(plugin: wcPay)
@@ -173,6 +163,15 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func wcPayOnlyOnboardingState(plugin: SystemPlugin?) -> CardPresentPaymentOnboardingState {
+        // Country checks
+        guard let countryCode = storeCountryCode else {
+            DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
+            return .genericError
+        }
+        guard isCountrySupported(plugin: .wcPay, countryCode: countryCode) else {
+            return .countryNotSupported(countryCode: countryCode)
+        }
+
         // Plugin checks
         guard let plugin = plugin else {
             return .pluginNotInstalled
@@ -189,6 +188,15 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func stripeGatewayOnlyOnboardingState(plugin: SystemPlugin) -> CardPresentPaymentOnboardingState {
+        // Country checks
+        guard let countryCode = storeCountryCode else {
+            DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
+            return .genericError
+        }
+        guard isCountrySupported(plugin: .stripe, countryCode: countryCode) else {
+            return .countryNotSupported(countryCode: countryCode)
+        }
+
         guard isStripeVersionSupported(plugin: plugin) else {
             return .pluginUnsupportedVersion(plugin: .stripe)
         }
@@ -247,8 +255,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
         return storeCountryCode.nonEmptyString()
     }
 
-    func isCountrySupported(countryCode: String) -> Bool {
-        return CardPresentPaymentsPlugins.wcPay.supportedCountryCodes.contains(countryCode)
+    func isCountrySupported(plugin: CardPresentPaymentsPlugins, countryCode: String) -> Bool {
+        return plugin.supportedCountryCodes.contains(countryCode)
     }
 
     func getWCPayPlugin() -> SystemPlugin? {

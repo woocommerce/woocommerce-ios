@@ -62,9 +62,23 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .countryNotSupported(countryCode: "ES"))
     }
 
-    func test_onboarding_does_not_return_country_unsupported_with_canada() {
+    func test_onboarding_does_not_return_country_unsupported_with_canada_for_wcpay() {
         // Given
         setupCountry(country: .es)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertNotEqual(state, .countryNotSupported(countryCode: "CA"))
+    }
+
+    func test_onboarding_returns_country_unsupported_with_canada_for_stripe() {
+        // Given
+        setupCountry(country: .es)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)

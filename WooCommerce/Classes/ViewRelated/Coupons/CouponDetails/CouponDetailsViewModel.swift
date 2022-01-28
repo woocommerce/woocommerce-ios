@@ -29,11 +29,14 @@ final class CouponDetailsViewModel: ObservableObject {
     private let coupon: Coupon
 
     private let stores: StoresManager
+    private let currencySettings: CurrencySettings
 
     init(coupon: Coupon,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.coupon = coupon
         self.stores = stores
+        self.currencySettings = currencySettings
         populateDetails()
     }
 }
@@ -54,7 +57,7 @@ private extension CouponDetailsViewModel {
                 amount = percentFormatter.string(from: amountNumber) ?? ""
             }
         case .fixedCart, .fixedProduct:
-            let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+            let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
             amount = currencyFormatter.formatAmount(coupon.amount) ?? ""
         case .other: // TODO: confirm this case
             amount = coupon.amount

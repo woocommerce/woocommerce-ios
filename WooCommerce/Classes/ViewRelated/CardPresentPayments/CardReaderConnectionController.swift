@@ -597,6 +597,8 @@ private extension CardReaderConnectionController {
                                                      cancelSearch: cancelSearch)
         case .invalidPostalCode:
             alerts.connectingFailedInvalidPostalCode(from: from, retrySearch: retrySearch, cancelSearch: cancelSearch)
+        case .bluetoothConnectionFailedBatteryCriticallyLow:
+            alerts.connectingFailedCriticallyLowBattery(from: from, retrySearch: retrySearch, cancelSearch: cancelSearch)
         default:
             alerts.connectingFailed(from: from, continueSearch: continueSearch, cancelSearch: cancelSearch)
         }

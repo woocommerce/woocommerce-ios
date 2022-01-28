@@ -8,7 +8,6 @@ import UIKit
 /// - Presenting foreground system notifications.
 ///
 struct NoticeModifier: ViewModifier {
-
     /// Notice object to render.
     ///
     @Binding var notice: Notice?
@@ -16,13 +15,6 @@ struct NoticeModifier: ViewModifier {
     /// Cancelable task that clears a notice.
     ///
     @State private var clearNoticeTask = DispatchWorkItem(block: {})
-
-    /// Tracks if the view is currently visible.
-    ///
-    /// Ideally we would use `isPresented` environment key but it does not works correctly when the view is inside
-    /// a Hosting View Controller
-    ///
-    @State private var isViewVisible: Bool = false
 
     /// Time the notice will remain on screen.
     ///
@@ -40,18 +32,12 @@ struct NoticeModifier: ViewModifier {
         content
             .overlay(buildNoticeStack())
             .animation(.easeInOut, value: notice)
-            .onAppear {
-                isViewVisible = true
-            }
-            .onDisappear {
-                isViewVisible = false
-            }
     }
 
-    /// Builds a notice view at the bottom of the screen while the view is being presented.
+    /// Builds a notice view at the bottom of the screen.
     ///
     @ViewBuilder private func buildNoticeStack() -> some View {
-        if let notice = notice, isViewVisible {
+        if let notice = notice {
             // Geometry reader to provide the correct view width.
             GeometryReader { geometry in
 
@@ -233,6 +219,23 @@ extension View {
     ///
     func notice(_ notice: Binding<Notice?>) -> some View {
         modifier(NoticeModifier(notice: notice))
+    }
+}
+
+extension UIHostingController {
+    /// Enqueues a notice into the provided `noticePresenter` when the receiver is being removed.
+    /// Uses `ServiceLocator.noticePresenter` if not presenter is provided.
+    ///
+    func enqueuePendingNotice(_ notice: Notice?, using noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+        let isBeingRemoved: Bool = {
+            isMovingFromParent ||               // when navigating out of a navigation stack
+            isBeingDismissed ||                 // when being dismissed as modal
+            parent?.isBeingDismissed ?? false   // when it's parent is being dismissed as modal (EG: inside a navigation controller)
+        }()
+
+        if let notice = notice, isBeingRemoved {
+            noticePresenter.enqueue(notice: notice)
+        }
     }
 }
 

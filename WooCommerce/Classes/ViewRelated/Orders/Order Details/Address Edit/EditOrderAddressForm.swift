@@ -48,7 +48,12 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
         fatalError("init(coder:) has not been implemented")
     }
 
-    // TODO: Test success
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        // Show any notice that should have been presented before the underlying disappears.
+        enqueuePendingNotice(rootView.viewModel.notice, using: systemNoticePresenter)
+    }
 }
 
 /// Intercepts to the dismiss drag gesture.

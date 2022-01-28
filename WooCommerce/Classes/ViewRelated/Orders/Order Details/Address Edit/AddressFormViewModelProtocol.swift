@@ -233,7 +233,11 @@ open class AddressFormViewModel: ObservableObject {
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
     ///
-    @Published var notice: Notice?
+    @Published var notice: Notice? {
+        didSet {
+            print("notice set")
+        }
+    }
 
     /// Defines if the state field should be defined as a list selector.
     ///

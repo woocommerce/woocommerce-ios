@@ -9,10 +9,6 @@ import UIKit
 ///
 struct NoticeModifier: ViewModifier {
 
-    /// Tracks the current presentation mode.
-    ///
-    @Environment(\.presentationMode) private var presentationMode
-
     /// Notice object to render.
     ///
     @Binding var notice: Notice?
@@ -20,6 +16,13 @@ struct NoticeModifier: ViewModifier {
     /// Cancelable task that clears a notice.
     ///
     @State private var clearNoticeTask = DispatchWorkItem(block: {})
+
+    /// Tracks if the view is currently visible.
+    ///
+    /// Ideally we would use `isPresented` environment key but it does not works correctly when the view is inside
+    /// a Hosting View Controller
+    ///
+    @State private var isViewVisible: Bool = false
 
     /// Time the notice will remain on screen.
     ///
@@ -37,12 +40,18 @@ struct NoticeModifier: ViewModifier {
         content
             .overlay(buildNoticeStack())
             .animation(.easeInOut, value: notice)
+            .onAppear {
+                isViewVisible = true
+            }
+            .onDisappear {
+                isViewVisible = false
+            }
     }
 
     /// Builds a notice view at the bottom of the screen while the view is being presented.
     ///
     @ViewBuilder private func buildNoticeStack() -> some View {
-        if let notice = notice, presentationMode.wrappedValue.isPresented {
+        if let notice = notice, isViewVisible {
             // Geometry reader to provide the correct view width.
             GeometryReader { geometry in
 

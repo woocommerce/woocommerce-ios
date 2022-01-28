@@ -1,15 +1,15 @@
+import Combine
 import Yosemite
-import Observables
 
 /// Enables the user to select multiple products from a paginated list.
 final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource {
     typealias StorageModel = StorageProduct
 
     // Observable list of the latest product IDs
-    var productIDs: Observable<[Int64]> {
-        productIDsSubject
+    var productIDs: AnyPublisher<[Int64], Never> {
+        productIDsSubject.eraseToAnyPublisher()
     }
-    private let productIDsSubject: PublishSubject<[Int64]> = PublishSubject<[Int64]>()
+    private let productIDsSubject: PassthroughSubject<[Int64], Never> = PassthroughSubject<[Int64], Never>()
 
     // Not used: since multiple products can be selected in this use case, the single selected product is not used.
     var selected: Product?

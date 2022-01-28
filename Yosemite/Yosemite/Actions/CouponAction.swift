@@ -71,7 +71,7 @@ public enum CouponAction: Action {
     /// Retrieve a Coupon for a site given the coupon ID
     ///
     /// - `siteID`: the site for which coupons should be fetched.
-    /// - `couponID`: ID of the coupon to be retrieve
+    /// - `couponID`: ID of the coupon to be retrieved.
     /// - `onCompletion`: invoked upon completion.
     ///
     case retrieveCoupon(siteID: Int64,

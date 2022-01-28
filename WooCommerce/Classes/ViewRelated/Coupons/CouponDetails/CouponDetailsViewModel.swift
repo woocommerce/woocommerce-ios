@@ -4,21 +4,15 @@ import Yosemite
 /// View model for `CouponDetails` view
 ///
 final class CouponDetailsViewModel: ObservableObject {
-    /// ID of the coupon
+    /// The current coupon
     ///
-    private let couponID: Int64
-
-    /// ID of the site that the coupon belongs to
-    ///
-    private let siteID: Int64
+    private let coupon: Coupon
 
     private let stores: StoresManager
 
-    init(couponID: Int64,
-         siteID: Int64,
+    init(coupon: Coupon,
          stores: StoresManager = ServiceLocator.stores) {
-        self.couponID = couponID
-        self.siteID = siteID
+        self.coupon = coupon
         self.stores = stores
     }
 }

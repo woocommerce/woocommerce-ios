@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 struct CouponDetails: View {
     @ObservedObject private var viewModel: CouponDetailsViewModel
@@ -13,9 +14,7 @@ struct CouponDetails: View {
 }
 
 struct CouponDetails_Previews: PreviewProvider {
-    static let sampleViewModel: CouponDetailsViewModel = .init(couponID: 123, siteID: 456)
-
     static var previews: some View {
-        CouponDetails(viewModel: sampleViewModel)
+        CouponDetails(viewModel: CouponDetailsViewModel(coupon: Coupon.sampleCoupon))
     }
 }

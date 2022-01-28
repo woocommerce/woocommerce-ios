@@ -48,7 +48,7 @@ final class CouponSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Coupon, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
-        let detailsViewModel = CouponDetailsViewModel(couponID: model.couponID, siteID: model.siteID)
+        let detailsViewModel = CouponDetailsViewModel(coupon: model)
         let couponDetails = CouponDetails(viewModel: detailsViewModel)
         let hostingController = UIHostingController(rootView: couponDetails)
         viewController.navigationController?.pushViewController(hostingController, animated: true)

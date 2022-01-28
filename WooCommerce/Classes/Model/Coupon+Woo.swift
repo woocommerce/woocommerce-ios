@@ -78,3 +78,29 @@ extension Coupon {
         }
     }
 }
+
+// MARK: - Sample Data
+extension Coupon {
+    static let sampleCoupon = Coupon(couponID: 720,
+                                     code: "free shipping",
+                                     amount: "10.00",
+                                     dateCreated: Date(timeIntervalSinceNow: -1000),
+                                     dateModified: Date(timeIntervalSinceNow: -1000),
+                                     discountType: .fixedCart,
+                                     description: "Coupon description",
+                                     dateExpires: Date(timeIntervalSinceNow: 1000),
+                                     usageCount: 10,
+                                     individualUse: true, productIds: [12893712, 12389],
+                                     excludedProductIds: [12213],
+                                     usageLimit: 1200,
+                                     usageLimitPerUser: 3,
+                                     limitUsageToXItems: 10,
+                                     freeShipping: true,
+                                     productCategories: [123, 435, 232],
+                                     excludedProductCategories: [908],
+                                     excludeSaleItems: false,
+                                     minimumAmount: "5.00",
+                                     maximumAmount: "500.00",
+                                     emailRestrictions: ["*@a8c.com", "someone.else@example.com"],
+                                     usedBy: ["someone.else@example.com", "person@a8c.com"])
+}

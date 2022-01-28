@@ -136,7 +136,7 @@ extension CouponListViewController: UITableViewDelegate {
         guard let coupon = viewModel.coupon(at: indexPath) else {
             return
         }
-        let detailsViewModel = CouponDetailsViewModel(couponID: coupon.couponID, siteID: coupon.siteID)
+        let detailsViewModel = CouponDetailsViewModel(coupon: coupon)
         let couponDetails = CouponDetails(viewModel: detailsViewModel)
         let hostingController = UIHostingController(rootView: couponDetails)
         navigationController?.pushViewController(hostingController, animated: true)

@@ -131,6 +131,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                         .padding(.vertical, Constants.verticalPadding)
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.systemBackground))
+                        .addingTopAndBottomDividers()
                 }
 
                 if viewModel.showDifferentAddressToggle, let differentAddressToggleTitle = viewModel.differentAddressToggleTitle {
@@ -139,6 +140,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                         .padding(.vertical, Constants.verticalPadding)
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.systemBackground))
+                        .addingTopAndBottomDividers()
                 }
 
                 if viewModel.showDifferentAddressForm {
@@ -256,6 +258,7 @@ struct SingleAddressForm: View {
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.systemBackground))
+        .addingTopAndBottomDividers()
 
         ListHeaderView(text: sectionTitle, alignment: .left)
             .padding(.horizontal, insets: safeAreaInsets)
@@ -321,6 +324,7 @@ struct SingleAddressForm: View {
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.systemBackground))
+        .addingTopAndBottomDividers()
     }
 
     /// Decides if the state row should be rendered as a list selector field or as a text input field.

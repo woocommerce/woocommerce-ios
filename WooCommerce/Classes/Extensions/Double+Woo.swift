@@ -29,7 +29,8 @@ extension Double {
     ///
     /// Note: This helper function does work with negative values as well.
     ///
-    func humanReadableString() -> String {
+    /// - Parameter shouldHideDecimalsForIntegerAbbreviatedValue: Whether decimal digits should be hidden when the abbreviated value is an integer. If `false`, a decimal digit is always shown.
+    func humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: Bool = false) -> String {
         let num = Double(self)
 
         // If the starting value is between -1000 and 1000, return the rounded Int version
@@ -41,7 +42,7 @@ extension Double {
             return returnString == Constants.negativeZeroString ? Constants.zeroString : returnString
         }
 
-        return abbreviatedString(for: num)
+        return abbreviatedString(for: num, shouldHideDecimalsForIntegerAbbreviatedValue: shouldHideDecimalsForIntegerAbbreviatedValue)
     }
 }
 
@@ -50,7 +51,7 @@ extension Double {
 //
 private extension Double {
 
-    func abbreviatedString(for number: Double) -> String {
+    func abbreviatedString(for number: Double, shouldHideDecimalsForIntegerAbbreviatedValue: Bool) -> String {
         let absNumber = fabs(number)
         let abbreviation: Abbreviation = {
             var prevAbbreviation = Constants.abbreviations[0]
@@ -67,6 +68,10 @@ private extension Double {
         let numFormatter = Formatters.largeNumberFormatter
         numFormatter.positiveSuffix = abbreviation.suffix
         numFormatter.negativeSuffix = abbreviation.suffix
+
+        if shouldHideDecimalsForIntegerAbbreviatedValue {
+            numFormatter.minimumFractionDigits = 0
+        }
 
         let finalValue = NSNumber(value: value)
         return numFormatter.string(from: finalValue) ?? Constants.zeroString
@@ -95,7 +100,7 @@ private extension Double {
 
         /// Formatter used for numbers between -1000 and 1000 (exclusive)
         ///
-        public static let smallNumberFormatter: NumberFormatter = {
+        static let smallNumberFormatter: NumberFormatter = {
             let numFormatter = NumberFormatter()
             numFormatter.allowsFloats = true
             numFormatter.minimumIntegerDigits = 1
@@ -106,7 +111,7 @@ private extension Double {
 
         /// Formatter used for numbers greater than -1000 and greater that 1000 (inclusive)
         ///
-        public static var largeNumberFormatter: NumberFormatter {
+        static var largeNumberFormatter: NumberFormatter {
             let numFormatter = NumberFormatter()
             numFormatter.allowsFloats = true
             numFormatter.minimumIntegerDigits = 1

@@ -40,19 +40,18 @@ class ProductRowViewModelTests: XCTestCase {
         // Given
         let rowID = "0"
         let imageURLString = "https://woo.com/woo.jpg"
-        let allAttributes = [ProductAttribute.fake().copy(attributeID: 1, name: "Color"),
-                             ProductAttribute.fake().copy(attributeID: 2, name: "Size")]
+        let name = "Blue - Any Size"
         let productVariation = ProductVariation.fake().copy(productVariationID: 12,
                                                             attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")],
                                                             image: ProductImage.fake().copy(src: imageURLString))
 
         // When
-        let viewModel = ProductRowViewModel(id: rowID, productVariation: productVariation, allAttributes: allAttributes, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(id: rowID, productVariation: productVariation, name: name, canChangeQuantity: false)
 
         // Then
         XCTAssertEqual(viewModel.id, rowID)
         XCTAssertEqual(viewModel.productOrVariationID, productVariation.productVariationID)
-        XCTAssertEqual(viewModel.name, "Blue - Any Size")
+        XCTAssertEqual(viewModel.name, name)
         XCTAssertEqual(viewModel.imageURL, URL(string: imageURLString))
         XCTAssertFalse(viewModel.canChangeQuantity)
         XCTAssertEqual(viewModel.quantity, 1)

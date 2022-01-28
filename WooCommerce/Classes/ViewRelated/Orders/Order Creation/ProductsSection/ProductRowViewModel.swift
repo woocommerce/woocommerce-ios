@@ -150,18 +150,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     convenience init(id: String? = nil,
                      productVariation: ProductVariation,
-                     allAttributes: [ProductAttribute],
+                     name: String,
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
-        let variationAttributes = allAttributes.map { attribute -> VariationAttributeViewModel in
-            guard let variationAttribute = productVariation.attributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name }) else {
-                return VariationAttributeViewModel(name: attribute.name)
-            }
-            return VariationAttributeViewModel(productVariationAttribute: variationAttribute)
-        }
-        let name = variationAttributes.map { $0.nameOrValue }.joined(separator: " - ")
-
         let imageURL: URL?
         if let encodedImageURLString = productVariation.image?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
             imageURL = URL(string: encodedImageURLString)

@@ -128,10 +128,7 @@ private struct ProductsSection: View {
                             viewModel.selectOrderItem(productRow.id)
                         }
                         .sheet(item: $viewModel.selectedOrderItem) { item in
-                            let productInOrderVM = ProductInOrderViewModel(product: item.product) {
-                                viewModel.removeItemFromOrder(item)
-                            }
-                            ProductInOrder(viewModel: productInOrderVM)
+                            createProductInOrderView(for: item)
                         }
 
                     Divider()
@@ -157,6 +154,16 @@ private struct ProductsSection: View {
 
             Divider()
         }
+    }
+
+    @ViewBuilder private func createProductInOrderView(for item: NewOrderViewModel.NewOrderItem) -> some View {
+        if let productRowViewModel = viewModel.createProductRowViewModel(for: item, canChangeQuantity: false) {
+            let productInOrderViewModel = ProductInOrderViewModel(productRowViewModel: productRowViewModel) {
+                viewModel.removeItemFromOrder(item)
+            }
+            ProductInOrder(viewModel: productInOrderViewModel)
+        }
+        EmptyView()
     }
 }
 

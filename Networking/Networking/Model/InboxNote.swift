@@ -50,6 +50,31 @@ public struct InboxNote: GeneratedCopiable, GeneratedFakeable, Equatable {
     /// Date the note was created (GMT).
     ///
     public let dateCreated: Date
+
+
+    public init(siteID: Int64,
+                id: Int64,
+                name: String,
+                type: String,
+                status: String,
+                actions: [InboxAction],
+                title: String,
+                content: String,
+                isDeleted: Bool,
+                isRead: Bool,
+                dateCreated: Date) {
+        self.siteID = siteID
+        self.id = id
+        self.name = name
+        self.type = type
+        self.status = status
+        self.actions = actions
+        self.title = title
+        self.content = content
+        self.isDeleted = isDeleted
+        self.isRead = isRead
+        self.dateCreated = dateCreated
+    }
 }
 
 

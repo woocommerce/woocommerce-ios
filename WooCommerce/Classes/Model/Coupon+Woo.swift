@@ -82,7 +82,7 @@ extension Coupon {
 // MARK: - Sample Data
 extension Coupon {
     static let sampleCoupon = Coupon(couponID: 720,
-                                     code: "free shipping",
+                                     code: "AGK32FD",
                                      amount: "10.00",
                                      dateCreated: Date(timeIntervalSinceNow: -1000),
                                      dateModified: Date(timeIntervalSinceNow: -1000),
@@ -90,7 +90,8 @@ extension Coupon {
                                      description: "Coupon description",
                                      dateExpires: Date(timeIntervalSinceNow: 1000),
                                      usageCount: 10,
-                                     individualUse: true, productIds: [12893712, 12389],
+                                     individualUse: true,
+                                     productIds: [],
                                      excludedProductIds: [12213],
                                      usageLimit: 1200,
                                      usageLimitPerUser: 3,

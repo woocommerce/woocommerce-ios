@@ -72,6 +72,8 @@ public final class CouponStore: Store {
                           pageNumber: pageNumber,
                           pageSize: pageSize,
                           onCompletion: onCompletion)
+        case .retrieveCoupon(let siteID, let couponID, let onCompletion):
+            retrieveCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
         }
     }
 }
@@ -226,6 +228,31 @@ private extension CouponStore {
                                                      keyword: keyword,
                                                      readOnlyCoupons: coupons) {
                     onCompletion(.success(()))
+                }
+            }
+        }
+    }
+
+    /// Retrieve a coupon from a Site given.
+    /// The fetched coupon is persisted to the local storage.
+    ///
+    /// - Parameters:
+    ///   - siteID: The site to retrieve the coupon for.
+    ///   - couponID: ID of the coupon to be retrieved.
+    ///   - onCompletion: Closure to call upon completion. Called on the main thread.
+    ///
+    func retrieveCoupon(siteID: Int64,
+                        couponID: Int64,
+                        onCompletion: @escaping (_ result: Result<Coupon, Error>) -> Void) {
+        remote.retrieveCoupon(for: siteID,
+                              couponID: couponID) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let coupon):
+                self.upsertStoredCouponsInBackground(readOnlyCoupons: [coupon], siteID: siteID) {
+                    onCompletion(.success(coupon))
                 }
             }
         }

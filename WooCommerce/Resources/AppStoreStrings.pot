@@ -57,13 +57,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v8.3-whats-new"
+msgctxt "v8.4-whats-new"
 msgid ""
-"Merchants have been asking us for a quick way to record a transaction in the app with minimal information – like with only a charge amount. Maybe you’re at a farmer’s market and simply want to charge a customer’s credit card and don’t need to manage inventory. This release includes a new “Simple Payments” feature on the orders tab. If you’re a WooCommerce Payments customer, you’ll find this works great with the In-Person Payments credit card reader! Don’t have a credit card reader yet? Alternatively, you easily send a payment link to your customer to pay with their device through your site.\n"
+"You’ll notice a new tab called “Menu” in this release. We’ve moved store settings, switching between different stores, and viewing WooCommerce Admin to that screen. More functionality will appear there over the next couple of months!\n"
 "\n"
-"Also included in this release is the ability to refund fees on an order. We also snuck in an experimental SKU input barcode reader when editing a product which can be enabled in Settings.\n"
-"\n"
-"We’re working on several exciting features coming in the next few months. Keep sending us your feedback!\n"
+"This release also includes a fix for the product screen where the product’s name would revert back to the previous one if you uploaded an image. Thank you for reporting bugs – we are listening!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

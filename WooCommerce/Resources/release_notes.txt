@@ -1,5 +1,3 @@
-- [***] In-Person Payments: Support for Stripe M2 card reader. [https://github.com/woocommerce/woocommerce-ios/pull/5844]
-- [***] We introduced a new tab called "Menu", a tab in the main navigation where you can browser different sub-sections of the app: Switch Store, Settings, WooCommerce Admin, View Store and Reviews. [https://github.com/woocommerce/woocommerce-ios/pull/5926]
-- [***] Store admins can now access sites with plugins that have Jetpack Connection Package (e.g. WooCommerce Payments, Jetpack Backup) in the app. These sites do not require Jetpack-the-plugin to connect anymore. Store admins can still install Jetpack-the-plugin from the app through settings or a Jetpack banner. [https://github.com/woocommerce/woocommerce-ios/pull/5924]
-- [*] Add/Edit Product screen: Fix transient product name while adding images.[https://github.com/woocommerce/woocommerce-ios/pull/5840]
+You’ll notice a new tab called “Menu” in this release. We’ve moved store settings, switching between different stores, and viewing WooCommerce Admin to that screen. More functionality will appear there over the next couple of months!
 
+This release also includes a fix for the product screen where the product’s name would revert back to the previous one if you uploaded an image. Thank you for reporting bugs – we are listening!

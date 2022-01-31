@@ -45,8 +45,8 @@ target 'WooCommerce' do
 
   pod 'WordPressShared', '~> 1.15'
 
-  pod 'WordPressUI', '~> 1.12.1'
-  # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
+  # pod 'WordPressUI', '~> 1.12.1'
+  pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => 'issue/disable-ghost-cells-selection'
 
   aztec
 

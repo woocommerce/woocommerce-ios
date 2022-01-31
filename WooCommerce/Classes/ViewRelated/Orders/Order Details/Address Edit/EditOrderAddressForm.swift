@@ -312,6 +312,17 @@ struct SingleAddressForm: View {
                     EmptyView()
                 }
 
+                ///
+                /// iOS 14.5 has a bug where
+                /// Pushing a view while having "exactly two" navigation links makes the pushed view to be popped when the initial view changes its state.
+                /// EG: AddressForm -> CountrySelector -> Country is selected -> AddressForm updates country -> CountrySelector is popped automatically.
+                /// Adding an extra and useless navigation link fixes the problem but throws a warning in the console.
+                /// Ref: https://forums.swift.org/t/14-5-beta3-navigationlink-unexpected-pop/45279
+                ///
+                NavigationLink(destination: EmptyView()) {
+                    EmptyView()
+                }
+
                 TitleAndValueRow(title: Localization.countryField,
                                  value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.country),
                                  selectable: true) {

@@ -24,7 +24,7 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
     /// Retrieves all of the `InboxNote`s from the API.
     ///
     /// - Parameters:
-    ///     - siteID: The site for which we'll fetch coupons.
+    ///     - siteID: The site for which we'll fetch InboxNotes.
     ///     - pageNumber: The page number of the Inbox Notes list to be fetched.
     ///     - pageSize: The maximum number of Inbox Notes to be fetched for the current page.
     ///     - orderBy: The type of sorting that the Inbox Notes list will follow.

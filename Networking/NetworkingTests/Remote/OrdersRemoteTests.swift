@@ -132,11 +132,7 @@ final class OrdersRemoteTests: XCTestCase {
         let remote = OrdersRemote(network: network)
 
         // When
-        _ = waitFor { promise in
-            remote.loadOrder(for: self.sampleSiteID, orderID: self.sampleOrderID) { _, _ in
-                promise(true)
-            }
-        }
+        remote.loadOrder(for: sampleSiteID, orderID: sampleOrderID) { _, _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)

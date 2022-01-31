@@ -139,7 +139,8 @@ extension DateRangeFilterViewController: UITableViewDelegate {
     }
 
     /// If we do not have a endDate then preselect the current (or startDate) day
-    /// to be in synch with the datapicker element that starts with a preselect date
+    /// to be in synch with the datepicker element that starts with a preselect date
+    ///
     private func preselectedEndDateIfNeeded() {
         guard endDateExpanded, endDate == nil else { return }
 

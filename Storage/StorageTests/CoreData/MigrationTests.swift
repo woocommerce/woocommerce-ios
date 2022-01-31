@@ -965,6 +965,34 @@ final class MigrationTests: XCTestCase {
         // The CouponSearchResult.coupons inverse relationship should be updated.
         XCTAssertEqual(searchResult.value(forKey: "coupons") as? Set<NSManagedObject>, [migratedCoupon])
     }
+
+    func test_migrating_from_62_to_63_adds_new_attribute_chargeID_to_order() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 62")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertOrder(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["chargeID"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 63")
+        let targetContext = targetContainer.viewContext
+
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+        let defaultChargeID = migratedOrder.value(forKey: "chargeID")
+
+        let orderValue = "ch_3KMtak2EdyGr1FMV02G9Qqq1"
+        migratedOrder.setValue(orderValue, forKey: "chargeID")
+
+        // Then
+        // Default value is nil
+        XCTAssertNil(defaultChargeID)
+
+        let newOrderKey = try XCTUnwrap(migratedOrder.value(forKey: "chargeID") as? String)
+        XCTAssertEqual(newOrderKey, orderValue)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

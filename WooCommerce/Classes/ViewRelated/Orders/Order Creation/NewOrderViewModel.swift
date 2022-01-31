@@ -28,7 +28,7 @@ final class NewOrderViewModel: ObservableObject {
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
     ///
-    @Published var presentNotice: NewOrderNotice?
+    @Published var notice: Notice?
 
     // MARK: Status properties
 
@@ -212,7 +212,7 @@ final class NewOrderViewModel: ObservableObject {
             case .success(let newOrder):
                 self.onOrderCreated(newOrder)
             case .failure(let error):
-                self.presentNotice = .error
+                self.notice = NoticeFactory.createOrderCreationErrorNotice()
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
@@ -253,12 +253,6 @@ extension NewOrderViewModel {
                             billingAddress: billingAddress,
                             shippingAddress: shippingAddress)
         }
-    }
-
-    /// Representation of possible notices that can be displayed
-    ///
-    enum NewOrderNotice {
-        case error
     }
 
     /// Representation of order status display properties
@@ -498,5 +492,25 @@ private extension NewOrderViewModel {
         } catch {
             DDLogError("⛔️ Error fetching product variations for new order: \(error)")
         }
+    }
+}
+
+// MARK: Constants
+
+extension NewOrderViewModel {
+    /// New Order notices
+    ///
+    enum NoticeFactory {
+        /// Returns a default order creation error notice.
+        ///
+        static func createOrderCreationErrorNotice() -> Notice {
+            Notice(title: Localization.errorMessage, feedbackType: .error)
+        }
+    }
+}
+
+private extension NewOrderViewModel {
+    enum Localization {
+        static let errorMessage = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
     }
 }

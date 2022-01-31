@@ -59,6 +59,10 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     ///
     var differentAddressToggleTitle: String? { get }
 
+    /// Defines the active notice to show.
+    ///
+    var notice: Notice? { get set }
+
     /// Save the address and invoke a completion block when finished
     ///
     func saveAddress(onFinish: @escaping (Bool) -> Void)
@@ -247,7 +251,7 @@ open class AddressFormViewModel: ObservableObject {
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
     ///
-    @Published var presentNotice: Notice?
+    @Published var notice: Notice?
 
     /// Defines if the state field should be defined as a list selector.
     ///
@@ -303,12 +307,6 @@ open class AddressFormViewModel: ObservableObject {
 
 extension AddressFormViewModel {
 
-    /// Representation of possible notices that can be displayed
-    enum Notice: Equatable {
-        case success
-        case error(EditAddressError)
-    }
-
     /// Representation of possible errors that can happen
     enum EditAddressError: LocalizedError {
         case unableToLoadCountries
@@ -333,6 +331,16 @@ extension AddressFormViewModel {
                 return NSLocalizedString("Please make sure you are running the latest version of WooCommerce and try again later.",
                                          comment: "Error notice recovery suggestion when we fail to update an address in the edit address screen.")
             }
+        }
+    }
+
+    /// Creates address form general notices.
+    ///
+    enum NoticeFactory {
+        /// Creates an error notice based on the provided edit address error.
+        ///
+        static func createErrorNotice(from error: EditAddressError) -> Notice {
+            Notice(title: error.errorDescription ?? "", message: error.recoverySuggestion, feedbackType: .error)
         }
     }
 }
@@ -401,7 +409,7 @@ private extension AddressFormViewModel {
         let syncCountries = makeSyncCountriesFuture()
             .catch { [weak self] error -> AnyPublisher<Void, Never> in
                 DDLogError("⛔️ Failed to load countries with: \(error)")
-                self?.presentNotice = .error(error)
+                self?.notice = NoticeFactory.createErrorNotice(from: error)
                 return Just(()).eraseToAnyPublisher()
             }
 

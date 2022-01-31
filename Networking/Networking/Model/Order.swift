@@ -143,6 +143,11 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         let paymentMethodID = try container.decode(String.self, forKey: .paymentMethodID)
         let paymentMethodTitle = try container.decode(String.self, forKey: .paymentMethodTitle)
 
+        var chargeID: String? = nil
+        if let allOrderMetaData = try? container.decode([OrderMetaData].self, forKey: .metadata) {
+            chargeID = allOrderMetaData.first(where: { $0.key == "_charge_id" })?.value
+        }
+
         let items = try? container.decodeIfPresent([OrderItem].self, forKey: .items) ?? []
 
         var shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
@@ -188,7 +193,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   totalTax: totalTax,
                   paymentMethodID: paymentMethodID,
                   paymentMethodTitle: paymentMethodTitle,
-                  chargeID: nil,
+                  chargeID: chargeID,
                   items: items,
                   billingAddress: billingAddress,
                   shippingAddress: shippingAddress,

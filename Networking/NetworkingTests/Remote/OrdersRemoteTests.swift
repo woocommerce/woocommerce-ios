@@ -125,6 +125,25 @@ final class OrdersRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that loadOrder fetches metadata
+    ///
+    func testLoadSingleOrderFetchesMetaData() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+
+        // When
+        _ = waitFor { promise in
+            remote.loadOrder(for: self.sampleSiteID, orderID: self.sampleOrderID) { _, _ in
+                promise(true)
+            }
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["_fields"] as? String)
+        XCTAssertTrue(received.contains("meta_data"))
+    }
+
 
     // MARK: - Search Orders
 

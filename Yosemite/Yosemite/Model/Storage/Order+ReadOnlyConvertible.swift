@@ -71,7 +71,7 @@ extension Storage.Order: ReadOnlyConvertible {
         let orderShippingLines = shippingLines?.map { $0.toReadOnly() } ?? [Yosemite.ShippingLine]()
         let orderFeeLines = fees?.map { $0.toReadOnly() } ?? [Yosemite.OrderFeeLine]()
         let orderTaxLines = taxes?.map { $0.toReadOnly() } ?? [Yosemite.OrderTaxLine]()
-        #warning("ChargeID needs to be set here")
+
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: parentID,
@@ -92,7 +92,7 @@ extension Storage.Order: ReadOnlyConvertible {
                      totalTax: totalTax ?? "",
                      paymentMethodID: paymentMethodID ?? "",
                      paymentMethodTitle: paymentMethodTitle ?? "",
-                     chargeID: "",
+                     chargeID: chargeID,
                      items: orderItems,
                      billingAddress: createReadOnlyBillingAddress(),
                      shippingAddress: createReadOnlyShippingAddress(),

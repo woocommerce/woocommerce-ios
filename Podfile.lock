@@ -27,7 +27,7 @@ PODS:
     - AppAuth (~> 1.4)
     - GTMAppAuth (~> 1.0)
     - GTMSessionFetcher/Core (~> 1.1)
-  - Gridicons (1.0)
+  - Gridicons (1.2.0)
   - GTMAppAuth (1.2.2):
     - AppAuth/Core (~> 1.4)
     - GTMSessionFetcher/Core (~> 1.5)
@@ -96,7 +96,7 @@ DEPENDENCIES:
   - Charts (~> 3.6.0)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
-  - Gridicons (~> 1.0)
+  - Gridicons (~> 1.2.0)
   - KeychainAccess (~> 3.2)
   - Kingfisher (~> 6.0.0)
   - Sourcery (~> 1.0.3)
@@ -164,7 +164,7 @@ SPEC CHECKSUMS:
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 184db51bf120b633693a73624a4cede89ec51a41
   GoogleSignIn: fd381840dbe7c1137aa6dc30849a5c3e070c034a
-  Gridicons: f032dbc3350f8648e0fabe3e531b72cf97d428a9
+  Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
   GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
   GTMSessionFetcher: 36689134877faeb055b27dfa4ccc9ceaa42e029e
   KeychainAccess: d5470352939ced6d6f7fb51cb2e67aae51fc294f
@@ -197,6 +197,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 16b1ff41117e33746b502037c890c8799fc18c21
+PODFILE CHECKSUM: b5364cc82ccfcea6d4ee524c9a7b817bdc327562
 
 COCOAPODS: 1.11.2

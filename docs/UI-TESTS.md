@@ -67,7 +67,7 @@ We also run the UI tests on CircleCI on every commit to the `trunk` or `release/
 When adding a new UI test, consider:
 
 * Whether you need to test a user flow (to accomplish a task or goal) or a specific feature (e.g. boundary testing).
-* What screens are being tested (defined as screen objects in the [Screens](../WooCommerce/WooCommerceUITests/Screens) directory).
+* What screens are being tested (defined as screen objects in the [Screens](../WooCommerce/UITestsFoundation/Screens) directory).
 * Whether there are actions or flows that could be shared across tests (defined in the [Utils](../WooCommerce/WooCommerceUITests/Utils) directory).
 * What network requests are made during the test (defined in the [Mocks](../WooCommerce/WooCommerceUITests/Mocks) directory).
 

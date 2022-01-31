@@ -165,7 +165,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
         // If only the Stripe extension is installed, skip to checking Stripe activation and version
         if let stripe = stripe,
-            onlyStripeIsInstalled(wcPay: wcPay, stripe: stripe) {
+            onlyStripeIsInstalledAndActive(wcPay: wcPay, stripe: stripe) {
             return stripeGatewayOnlyOnboardingState(plugin: stripe)
         } else {
             return wcPayOnlyOnboardingState(plugin: wcPay)
@@ -277,13 +277,13 @@ private extension CardPresentPaymentsOnboardingUseCase {
         return wcPay.active && stripe.active
     }
 
-    func onlyStripeIsInstalled(wcPay: SystemPlugin?, stripe: SystemPlugin) -> Bool {
+    func onlyStripeIsInstalledAndActive(wcPay: SystemPlugin?, stripe: SystemPlugin) -> Bool {
         // If the WCPay plugin is installed, immediately return false
-        guard wcPay == nil else {
-            return false
+        guard let wcPay = wcPay else {
+            return true
         }
 
-        return true
+        return wcPay.active == false
     }
 
     func isWCPayVersionSupported(plugin: SystemPlugin) -> Bool {

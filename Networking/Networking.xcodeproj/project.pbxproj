@@ -216,6 +216,7 @@
 		4501068F2399B19500E24722 /* TaxClassRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068E2399B19500E24722 /* TaxClassRemote.swift */; };
 		450106912399B2C800E24722 /* TaxClassListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106902399B2C800E24722 /* TaxClassListMapper.swift */; };
 		451274A625276C82009911FF /* product-variation.json in Resources */ = {isa = PBXBuildFile; fileRef = 451274A525276C82009911FF /* product-variation.json */; };
+		4513382027A8227F00AE5E78 /* InboxNotesRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4513381F27A8227F00AE5E78 /* InboxNotesRemote.swift */; };
 		45150A9A268340D2006922EA /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45150A99268340D2006922EA /* Country.swift */; };
 		45150A9C2683417A006922EA /* StateOfACountry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45150A9B2683417A006922EA /* StateOfACountry.swift */; };
 		45150A9E26836A57006922EA /* CountryListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45150A9D26836A57006922EA /* CountryListMapper.swift */; };
@@ -867,6 +868,7 @@
 		4501068E2399B19500E24722 /* TaxClassRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassRemote.swift; sourceTree = "<group>"; };
 		450106902399B2C800E24722 /* TaxClassListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassListMapper.swift; sourceTree = "<group>"; };
 		451274A525276C82009911FF /* product-variation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variation.json"; sourceTree = "<group>"; };
+		4513381F27A8227F00AE5E78 /* InboxNotesRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxNotesRemote.swift; sourceTree = "<group>"; };
 		45150A99268340D2006922EA /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
 		45150A9B2683417A006922EA /* StateOfACountry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateOfACountry.swift; sourceTree = "<group>"; };
 		45150A9D26836A57006922EA /* CountryListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryListMapper.swift; sourceTree = "<group>"; };
@@ -1622,6 +1624,7 @@
 				45E461BB26837CC500011BF2 /* DataRemote.swift */,
 				B572F69921AC475C003EEFF0 /* DevicesRemote.swift */,
 				24F98C512502E79800F49B68 /* FeatureFlagsRemote.swift */,
+				4513381F27A8227F00AE5E78 /* InboxNotesRemote.swift */,
 				26B2F74024C1F2C10065CCC8 /* LeaderboardsRemote.swift */,
 				B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */,
 				B557DA0120975500005962F4 /* OrdersRemote.swift */,
@@ -2797,6 +2800,7 @@
 				7426CA0F21AF2C90004E9FFC /* SiteAPI.swift in Sources */,
 				D87F6151226591E10031A13B /* NullNetwork.swift in Sources */,
 				CE43A8F9229F463000A4FF29 /* ProductDownload.swift in Sources */,
+				4513382027A8227F00AE5E78 /* InboxNotesRemote.swift in Sources */,
 				B53EF5322180F21C003E146F /* Dictionary+Woo.swift in Sources */,
 				24F98C522502E79800F49B68 /* FeatureFlagsRemote.swift in Sources */,
 				74A1D26D21189DFF00931DFA /* SiteVisitStatsMapper.swift in Sources */,

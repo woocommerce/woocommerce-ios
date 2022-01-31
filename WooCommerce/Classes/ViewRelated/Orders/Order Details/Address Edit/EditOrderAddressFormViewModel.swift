@@ -85,13 +85,21 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
         true
     }
 
-    var alternativeUsageToggleTitle: String {
+    var alternativeUsageToggleTitle: String? {
         switch type {
         case .shipping:
             return Localization.useAsBillingToggle
         case .billing:
             return Localization.useAsShippingToggle
         }
+    }
+
+    var showDifferentAddressToggle: Bool {
+        false
+    }
+
+    var differentAddressToggleTitle: String? {
+        nil
     }
 
     /// Update the address remotely and invoke a completion block when finished

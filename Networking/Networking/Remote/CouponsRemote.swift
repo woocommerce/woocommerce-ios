@@ -16,6 +16,10 @@ public protocol CouponsRemoteProtocol {
                        pageSize: Int,
                        completion: @escaping (Result<[Coupon], Error>) -> ())
 
+    func retrieveCoupon(for siteID: Int64,
+                        couponID: Int64,
+                        completion: @escaping (Result<Coupon, Error>) -> Void)
+
     func deleteCoupon(for siteID: Int64,
                       couponID: Int64,
                       completion: @escaping (Result<Coupon, Error>) -> Void)
@@ -84,12 +88,33 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Retrieves a `Coupon`.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll fetch the coupon.
+    ///     - couponID: ID of the Coupon that will be retrieved.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func retrieveCoupon(for siteID: Int64,
+                               couponID: Int64,
+                               completion: @escaping (Result<Coupon, Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.coupons + "/\(couponID)")
+
+        let mapper = CouponMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     // MARK: - Delete Coupon
 
     /// Deletes a `Coupon`.
     ///
     /// - Parameters:
-    ///     - siteID: Site for which we'll delete the product attribute.
+    ///     - siteID: Site for which we'll delete the coupon.
     ///     - couponID: ID of the Coupon that will be deleted.
     ///     - completion: Closure to be executed upon completion.
     ///

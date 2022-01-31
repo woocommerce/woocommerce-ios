@@ -45,8 +45,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fields.postcode, address.postcode)
 
         let country = Self.sampleCountries.first { $0.code == address.country }
-        XCTAssertEqual(viewModel.fields.country, country?.name)
-        XCTAssertEqual(viewModel.fields.state, country?.states.first?.name) // Only one state supported in tests
+        XCTAssertEqual(viewModel.fields.countryName, country?.name)
+        XCTAssertEqual(viewModel.fields.stateName, country?.states.first?.name) // Only one state supported in tests
 
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }
@@ -246,7 +246,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         countryViewModel.command.handleSelectedChange(selected: newCountry, viewController: viewController)
 
         // Then
-        XCTAssertEqual(viewModel.fields.country, newCountry.name)
+        XCTAssertEqual(viewModel.fields.countryName, newCountry.name)
     }
 
     func test_view_model_only_updates_shipping_address_field() {
@@ -337,7 +337,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         stateViewModel.command.handleSelectedChange(selected: newState, viewController: viewController)
 
         // Then
-        XCTAssertEqual(viewModel.fields.state, newState.name)
+        XCTAssertEqual(viewModel.fields.stateName, newState.name)
     }
 
     func test_view_model_updates_billing_and_shipping_address_fields_when_use_as_toggle_is_on() {

@@ -30,6 +30,10 @@ final class AddProductToOrderViewModel: ObservableObject {
     ///
     let onProductSelected: ((Product) -> Void)?
 
+    /// Closure to be invoked when a product variation is selected
+    ///
+    let onVariationSelected: ((ProductVariation) -> Void)?
+
     // MARK: Sync & Storage properties
 
     /// Current sync status; used to determine what list view to display.
@@ -64,11 +68,13 @@ final class AddProductToOrderViewModel: ObservableObject {
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         onProductSelected: ((Product) -> Void)? = nil) {
+         onProductSelected: ((Product) -> Void)? = nil,
+         onVariationSelected: ((ProductVariation) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
         self.onProductSelected = onProductSelected
+        self.onVariationSelected = onVariationSelected
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -89,7 +95,7 @@ final class AddProductToOrderViewModel: ObservableObject {
         guard let variableProduct = products.first(where: { $0.productID == productID }) else {
             return nil
         }
-        return AddProductVariationToOrderViewModel(siteID: siteID, product: variableProduct)
+        return AddProductVariationToOrderViewModel(siteID: siteID, product: variableProduct, onVariationSelected: onVariationSelected)
     }
 }
 

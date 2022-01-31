@@ -70,12 +70,43 @@ final class NewOrderViewModel: ObservableObject {
 
     // MARK: Products properties
 
+    /// Products Results Controller.
+    ///
+    private lazy var productsResultsController: ResultsController<StorageProduct> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [])
+        return resultsController
+    }()
+
+    /// Products list
+    ///
+    private var allProducts: [Product] {
+        productsResultsController.fetchedObjects
+    }
+
+    /// Product Variations Results Controller.
+    ///
+    private lazy var productVariationsResultsController: ResultsController<StorageProductVariation> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let resultsController = ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [])
+        return resultsController
+    }()
+
+    /// Product Variations list
+    ///
+    private var allProductVariations: [ProductVariation] {
+        productVariationsResultsController.fetchedObjects
+    }
+
     /// View model for the product list
     ///
     lazy var addProductViewModel = {
         AddProductToOrderViewModel(siteID: siteID, storageManager: storageManager, stores: stores) { [weak self] product in
             guard let self = self else { return }
             self.addProductToOrder(product)
+        } onVariationSelected: { [weak self] variation in
+            guard let self = self else { return }
+            self.addProductVariationToOrder(variation)
         }
     }()
 
@@ -131,6 +162,24 @@ final class NewOrderViewModel: ObservableObject {
         configureProductRowViewModels()
     }
 
+    /// Creates a view model for the `ProductRow` corresponding to an order item.
+    ///
+    func createProductRowViewModel(for item: NewOrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
+        guard let product = allProducts.first(where: { $0.productID == item.productID }) else {
+            return nil
+        }
+
+        if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+            return ProductRowViewModel(id: item.id,
+                                       productVariation: variation,
+                                       name: product.name,
+                                       quantity: item.quantity,
+                                       canChangeQuantity: canChangeQuantity)
+        } else {
+            return ProductRowViewModel(id: item.id, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
+        }
+    }
+
     // MARK: Customer data properties
 
     /// Representation of customer data display properties.
@@ -141,10 +190,11 @@ final class NewOrderViewModel: ObservableObject {
     ///
     func createOrderAddressFormViewModel() -> CreateOrderAddressFormViewModel {
         CreateOrderAddressFormViewModel(siteID: siteID,
-                                        address: orderDetails.billingAddress,
-                                        onAddressUpdate: { [weak self] updatedAddress in
-            self?.orderDetails.billingAddress = updatedAddress
-            self?.orderDetails.shippingAddress = updatedAddress
+                                        addressData: .init(billingAddress: orderDetails.billingAddress,
+                                                           shippingAddress: orderDetails.shippingAddress),
+                                        onAddressUpdate: { [weak self] updatedAddressData in
+            self?.orderDetails.billingAddress = updatedAddressData.billingAddress
+            self?.orderDetails.shippingAddress = updatedAddressData.shippingAddress
         })
     }
 
@@ -236,18 +286,46 @@ extension NewOrderViewModel {
     /// Representation of new items in an order.
     ///
     struct NewOrderItem: Equatable, Identifiable {
-        var id: String
-        let product: Product
+        let id: String
+        let productID: Int64
+        let variationID: Int64
         var quantity: Decimal
+        let price: NSDecimalNumber
+        var subtotal: String {
+            String(describing: quantity * price.decimalValue)
+        }
 
         var orderItem: OrderItem {
-            product.toOrderItem(quantity: quantity)
+            OrderItem(itemID: 0,
+                      name: "",
+                      productID: productID,
+                      variationID: variationID,
+                      quantity: quantity,
+                      price: price,
+                      sku: nil,
+                      subtotal: subtotal,
+                      subtotalTax: "",
+                      taxClass: "",
+                      taxes: [],
+                      total: "",
+                      totalTax: "",
+                      attributes: [])
         }
 
         init(product: Product, quantity: Decimal) {
             self.id = UUID().uuidString
-            self.product = product
+            self.productID = product.productID
+            self.variationID = 0 // Products in an order are represented in Core with a variation ID of 0
             self.quantity = quantity
+            self.price = NSDecimalNumber(string: product.price)
+        }
+
+        init(variation: ProductVariation, quantity: Decimal) {
+            self.id = UUID().uuidString
+            self.productID = variation.productID
+            self.variationID = variation.productVariationID
+            self.quantity = quantity
+            self.price = NSDecimalNumber(string: variation.price)
         }
     }
 
@@ -334,11 +412,23 @@ private extension NewOrderViewModel {
         configureProductRowViewModels()
     }
 
+    /// Adds a selected product variation (from the product list) to the order.
+    ///
+    func addProductVariationToOrder(_ variation: ProductVariation) {
+        let newOrderItem = NewOrderItem(variation: variation, quantity: 1)
+        orderDetails.items.append(newOrderItem)
+        configureProductRowViewModels()
+    }
+
     /// Configures product row view models for each item in `orderDetails`.
     ///
     func configureProductRowViewModels() {
-        productRows = orderDetails.items.enumerated().map { index, item in
-            let productRowViewModel = ProductRowViewModel(id: item.id, product: item.product, quantity: item.quantity, canChangeQuantity: true)
+        updateProductsResultsController()
+        updateProductVariationsResultsController()
+        productRows = orderDetails.items.enumerated().compactMap { index, item in
+            guard let productRowViewModel = createProductRowViewModel(for: item, canChangeQuantity: true) else {
+                return nil
+            }
 
             // Observe changes to the product quantity
             productRowViewModel.$quantity
@@ -380,6 +470,28 @@ private extension NewOrderViewModel {
                 return PaymentDataViewModel(itemsTotal: itemsTotal, orderTotal: itemsTotal, currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)
+    }
+}
+
+private extension NewOrderViewModel {
+    /// Fetches products from storage.
+    ///
+    func updateProductsResultsController() {
+        do {
+            try productsResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching products for new order: \(error)")
+        }
+    }
+
+    /// Fetches product variations from storage.
+    ///
+    func updateProductVariationsResultsController() {
+        do {
+            try productVariationsResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching product variations for new order: \(error)")
+        }
     }
 }
 

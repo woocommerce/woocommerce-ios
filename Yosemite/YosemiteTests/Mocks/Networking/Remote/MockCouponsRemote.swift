@@ -15,6 +15,10 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     var spySearchCouponsPageSize: Int?
     var spySearchCouponsKeyword: String?
 
+    var didCallRetrieveCoupon = false
+    var spyRetrieveSiteID: Int64?
+    var spyRetrieveCouponID: Int64?
+
     var didCallDeleteCoupon = false
     var spyDeleteCouponSiteID: Int64?
     var spyDeleteCouponWithID: Int64?
@@ -79,5 +83,11 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
         didCallLoadCouponReport = true
         spyLoadCouponReportSiteID = siteID
         spyLoadCouponReportCouponID = couponID
+    }
+
+    func retrieveCoupon(for siteID: Int64, couponID: Int64, completion: @escaping (Result<Coupon, Error>) -> Void) {
+        didCallRetrieveCoupon = true
+        spyRetrieveSiteID = siteID
+        spyRetrieveCouponID = couponID
     }
 }

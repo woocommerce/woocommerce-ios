@@ -35,7 +35,7 @@ target 'WooCommerce' do
   #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'add/build-configuration'
   pod 'Automattic-Tracks-iOS', '~> 0.9.1'
 
-  pod 'Gridicons', '~> 1.0'
+  pod 'Gridicons', '~> 1.2.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   pod 'WordPressAuthenticator', '~> 1.42.0'

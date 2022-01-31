@@ -150,7 +150,7 @@ extension DateRangeFilterViewController: UITableViewDelegate {
         } else {
             endDate = today
         }
-        self.onCompletion(self.startDate, self.endDate)
+        onCompletion(self.startDate, self.endDate)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

@@ -61,6 +61,13 @@ protocol CardReaderSettingsAlertsProvider {
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void)
 
+    /// Defines an alert indicating connecting failed because the reader battery is critically low.
+    /// The user may try searching again (i.e. for a different reader) or cancel
+    ///
+    func connectingFailedCriticallyLowBattery(from: UIViewController,
+                                           retrySearch: @escaping () -> Void,
+                                           cancelSearch: @escaping () -> Void)
+
     /// Defines an alert indicating an update couldn't be installed because the reader is low on battery.
     ///
     func updatingFailedLowBattery(from: UIViewController,

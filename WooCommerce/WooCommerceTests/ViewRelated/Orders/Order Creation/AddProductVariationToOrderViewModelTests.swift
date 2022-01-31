@@ -61,6 +61,20 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
                        "Product variation rows include non-purchasable product variation")
     }
 
+    func test_createVariationName_creates_expected_name_for_product_variation_rows() {
+        // Given
+        let product = Product.fake().copy(attributes: [ProductAttribute.fake().copy(siteID: sampleSiteID, attributeID: 1, name: "Color", variation: true),
+                                                       ProductAttribute.fake().copy(siteID: sampleSiteID, attributeID: 2, name: "Size", variation: true)])
+        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: product)
+        let productVariation = ProductVariation.fake().copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")])
+
+        // When
+        let variationName = viewModel.createVariationName(for: productVariation)
+
+        // Then
+        XCTAssertEqual(variationName, "Blue - Any Size")
+    }
+
     func test_scrolling_indicator_appears_only_during_sync() {
         // Given
         let product = Product.fake()

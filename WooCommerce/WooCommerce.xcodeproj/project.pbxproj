@@ -548,6 +548,7 @@
 		318109E225E5B55C00EE0BE7 /* ImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 318109E125E5B55C00EE0BE7 /* ImageTableViewCell.xib */; };
 		318109E825E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318109E725E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift */; };
 		318109EE25E5B8FF00EE0BE7 /* NumberedListItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 318109ED25E5B8FF00EE0BE7 /* NumberedListItemTableViewCell.xib */; };
+		318477E527A33C650058C7E9 /* CardPresentModalConnectingFailedChargeReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318477E427A33C650058C7E9 /* CardPresentModalConnectingFailedChargeReader.swift */; };
 		318853362639FC9C00F66A9C /* CardReaderSettingsPresentingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318853352639FC9C00F66A9C /* CardReaderSettingsPresentingViewController.swift */; };
 		3188533C2639FE5800F66A9C /* CardReaderSettingsPresentedViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3188533B2639FE5800F66A9C /* CardReaderSettingsPresentedViewViewModel.swift */; };
 		3190D61B26D6D82900EF364D /* CardPresentRetryableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3190D61A26D6D82900EF364D /* CardPresentRetryableError.swift */; };
@@ -2158,6 +2159,7 @@
 		318109E125E5B55C00EE0BE7 /* ImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageTableViewCell.xib; sourceTree = "<group>"; };
 		318109E725E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberedListItemTableViewCell.swift; sourceTree = "<group>"; };
 		318109ED25E5B8FF00EE0BE7 /* NumberedListItemTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NumberedListItemTableViewCell.xib; sourceTree = "<group>"; };
+		318477E427A33C650058C7E9 /* CardPresentModalConnectingFailedChargeReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectingFailedChargeReader.swift; sourceTree = "<group>"; };
 		318853352639FC9C00F66A9C /* CardReaderSettingsPresentingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsPresentingViewController.swift; sourceTree = "<group>"; };
 		3188533B2639FE5800F66A9C /* CardReaderSettingsPresentedViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsPresentedViewViewModel.swift; sourceTree = "<group>"; };
 		3190D61A26D6D82900EF364D /* CardPresentRetryableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentRetryableError.swift; sourceTree = "<group>"; };
@@ -7123,6 +7125,7 @@
 				31B05522264B3C8900134D87 /* CardPresentModalConnectingToReader.swift */,
 				31AD0B1026E9575F000B6391 /* CardPresentModalConnectingFailed.swift */,
 				035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */,
+				318477E427A33C650058C7E9 /* CardPresentModalConnectingFailedChargeReader.swift */,
 				031B10E2274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift */,
 				D8EE9697264D3CCB0033B2F9 /* ReceiptViewModel.swift */,
 				D8752EF6265E60F4008ACC80 /* PaymentCaptureCelebration.swift */,
@@ -8300,6 +8303,7 @@
 				028BAC4722F3B550008BB4AF /* StatsTimeRangeV4+UI.swift in Sources */,
 				024DF32123744798006658FE /* AztecFormatBarCommandCoordinator.swift in Sources */,
 				B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */,
+				318477E527A33C650058C7E9 /* CardPresentModalConnectingFailedChargeReader.swift in Sources */,
 				DE46133926B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift in Sources */,
 				0211259F2578DE310075AD2A /* ShippingLabelPrintingStepView.swift in Sources */,
 				B58B4AB22108F01700076FDD /* NoticeView.swift in Sources */,

@@ -39,6 +39,10 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         setViewModelAndPresent(from: from, viewModel: connectingFailedUpdatePostalCode(retrySearch: retrySearch, cancelSearch: cancelSearch))
     }
 
+    func connectingFailedCriticallyLowBattery(from: UIViewController, retrySearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+        setViewModelAndPresent(from: from, viewModel: connectingFailedCriticallyLowBattery(retrySearch: retrySearch, cancelSearch: cancelSearch))
+    }
+
     func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) {
         setViewModelAndPresent(from: from, viewModel: updatingFailedLowBattery(from: from, batteryLevel: batteryLevel, close: close))
     }
@@ -180,6 +184,11 @@ private extension CardReaderSettingsAlerts {
         return CardPresentModalConnectingFailedUpdateAddress(openWCSettings: openWCSettings,
                                                              retrySearch: retrySearch,
                                                              cancelSearch: cancelSearch)
+    }
+
+    func connectingFailedCriticallyLowBattery(retrySearch: @escaping () -> Void,
+                                          cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        return CardPresentModalConnectingFailedChargeReader(retrySearch: retrySearch, cancelSearch: cancelSearch)
     }
 
     func connectingFailedUpdatePostalCode(retrySearch: @escaping () -> Void,

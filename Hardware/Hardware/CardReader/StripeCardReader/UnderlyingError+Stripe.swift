@@ -36,6 +36,8 @@ extension UnderlyingError {
             self = .bluetoothScanTimedOut
         case ErrorCode.Code.bluetoothLowEnergyUnsupported.rawValue:
             self = .bluetoothLowEnergyUnsupported
+        case ErrorCode.Code.bluetoothConnectionFailedBatteryCriticallyLow.rawValue:
+            self = .bluetoothConnectionFailedBatteryCriticallyLow
         case ErrorCode.Code.readerSoftwareUpdateFailedBatteryLow.rawValue:
             self = .readerSoftwareUpdateFailedBatteryLow
         case ErrorCode.Code.readerSoftwareUpdateFailedInterrupted.rawValue:

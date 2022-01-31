@@ -62,9 +62,21 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .countryNotSupported(countryCode: "ES"))
     }
 
+    func test_onboarding_does_not_return_country_unsupported_with_canada_when_neither_wcpay_nor_stripe_plugin_installed() {
+        // Given
+        setupCountry(country: .ca)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertNotEqual(state, .countryNotSupported(countryCode: "CA"))
+    }
+
     func test_onboarding_does_not_return_country_unsupported_with_canada_for_wcpay() {
         // Given
-        setupCountry(country: .es)
+        setupCountry(country: .ca)
         setupWCPayPlugin(status: .active, version: .minimumSupportedVersion)
 
         // When
@@ -580,6 +592,7 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
 
     enum Country: String {
         case us = "US:CA"
+        case ca = "CA:NS"
         case es = "ES"
     }
 }

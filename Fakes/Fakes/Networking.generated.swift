@@ -337,6 +337,7 @@ extension Order {
             totalTax: .fake(),
             paymentMethodID: .fake(),
             paymentMethodTitle: .fake(),
+            chargeID: .fake(),
             items: .fake(),
             billingAddress: .fake(),
             shippingAddress: .fake(),

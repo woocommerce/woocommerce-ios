@@ -135,7 +135,7 @@ extension DateRangeFilterViewController: UITableViewDelegate {
         } else {
             startDate = today
         }
-        self.onCompletion(self.startDate, self.endDate)
+       onCompletion(self.startDate, self.endDate)
     }
 
     /// If we do not have a endDate then preselect the current (or startDate) day

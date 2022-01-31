@@ -74,7 +74,7 @@ final class OrdersRemoteTests: XCTestCase {
 
     /// Verifies that loadAllOrders properly relays Networking Layer errors.
     ///
-    func testLoadAllOrdersProperlyRelaysNetwokingErrors() throws {
+    func testLoadAllOrdersProperlyRelaysNetworkingErrors() throws {
         // Given
         let remote = OrdersRemote(network: network)
 
@@ -112,7 +112,7 @@ final class OrdersRemoteTests: XCTestCase {
 
     /// Verifies that loadOrder properly relays any Networking Layer errors.
     ///
-    func testLoadSingleOrderProperlyRelaysNetwokingErrors() {
+    func testLoadSingleOrderProperlyRelaysNetworkingErrors() {
         let remote = OrdersRemote(network: network)
         let expectation = self.expectation(description: "Update Order")
 
@@ -148,7 +148,7 @@ final class OrdersRemoteTests: XCTestCase {
 
     /// Verifies that searchOrders properly relays Networking Layer errors.
     ///
-    func testSearchOrdersProperlyRelaysNetwokingErrors() {
+    func testSearchOrdersProperlyRelaysNetworkingErrors() {
         let remote = OrdersRemote(network: network)
         let expectation = self.expectation(description: "Load All Orders")
 
@@ -183,7 +183,7 @@ final class OrdersRemoteTests: XCTestCase {
 
     /// Verifies that updateOrder properly relays any Networking Layer errors.
     ///
-    func testUpdateOrderProperlyRelaysNetwokingErrors() {
+    func testUpdateOrderProperlyRelaysNetworkingErrors() {
         let remote = OrdersRemote(network: network)
         let expectation = self.expectation(description: "Update Order")
 
@@ -219,7 +219,7 @@ final class OrdersRemoteTests: XCTestCase {
 
     /// Verifies that loadOrderNotes properly relays any Networking Layer errors.
     ///
-    func testLoadOrderNotesProperlyRelaysNetwokingErrors() {
+    func testLoadOrderNotesProperlyRelaysNetworkingErrors() {
         let remote = OrdersRemote(network: network)
         let expectation = self.expectation(description: "Load Order Notes")
 

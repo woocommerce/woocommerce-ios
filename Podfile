@@ -269,6 +269,7 @@ catalyst_configuration do
 
   # ios '<pod_name>' # This dependency will only be available for iOS
   ios 'StripeTerminal'
+  ios 'ZendeskSupportSDK'
   # macos '<pod_name>' # This dependency will only be available for macOS
 end
 

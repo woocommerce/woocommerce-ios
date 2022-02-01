@@ -18,7 +18,7 @@ class HelpAndSupportViewController: UIViewController {
     ///
     private var accountEmail: String {
         // A stored Zendesk email address is preferred
-        if let zendeskEmail = ZendeskManager.shared.userSupportEmail() {
+        if let zendeskEmail = ZendeskProvider.shared.userSupportEmail() {
             return zendeskEmail
         }
 
@@ -130,8 +130,8 @@ private extension HelpAndSupportViewController {
     ///
     func configureSections() {
         let helpAndSupportTitle = NSLocalizedString("HOW CAN WE HELP?", comment: "My Store > Settings > Help & Support section title")
-
-        guard ZendeskManager.shared.zendeskEnabled == true else {
+        #if !targetEnvironment(macCatalyst)
+        guard ZendeskProvider.shared.zendeskEnabled == true else {
             sections = [Section(title: helpAndSupportTitle, rows: [.helpCenter])]
             return
         }
@@ -139,6 +139,9 @@ private extension HelpAndSupportViewController {
         sections = [
             Section(title: helpAndSupportTitle, rows: calculateRows())
         ]
+        #else
+        sections = [Section(title: helpAndSupportTitle, rows: [.helpCenter])]
+        #endif
     }
 
     private func calculateRows() -> [Row] {
@@ -302,7 +305,7 @@ private extension HelpAndSupportViewController {
     /// Help Center action
     ///
     func helpCenterWasPressed() {
-        ZendeskManager.shared.showHelpCenter(from: self)
+        ZendeskProvider.shared.showHelpCenter(from: self)
     }
 
     /// Contact Support action
@@ -312,7 +315,7 @@ private extension HelpAndSupportViewController {
             return
         }
 
-        ZendeskManager.shared.showNewRequestIfPossible(from: navController)
+        ZendeskProvider.shared.showNewRequestIfPossible(from: navController)
     }
 
     /// Contact WCPay Support action
@@ -322,7 +325,7 @@ private extension HelpAndSupportViewController {
             return
         }
 
-        ZendeskManager.shared.showNewWCPayRequestIfPossible(from: navController)
+        ZendeskProvider.shared.showNewWCPayRequestIfPossible(from: navController)
     }
 
     /// My Tickets action
@@ -332,7 +335,7 @@ private extension HelpAndSupportViewController {
             return
         }
 
-        ZendeskManager.shared.showTicketListIfPossible(from: navController)
+        ZendeskProvider.shared.showTicketListIfPossible(from: navController)
     }
 
     /// User's contact email action
@@ -342,7 +345,7 @@ private extension HelpAndSupportViewController {
             return
         }
 
-        ZendeskManager.shared.showSupportEmailPrompt(from: navController) { [weak self] (success, email) in
+        ZendeskProvider.shared.showSupportEmailPrompt(from: navController) { [weak self] (success, email) in
             guard success else {
                 return
             }

@@ -105,7 +105,7 @@ DEPENDENCIES:
   - WordPressAuthenticator (~> 1.42.0)
   - WordPressKit (~> 4.40.0)
   - WordPressShared (~> 1.15)
-  - WordPressUI (from `https://github.com/wordpress-mobile/WordPressUI-iOS.git`, branch `issue/disable-ghost-cells-selection`)
+  - WordPressUI (~> 1.12.4-beta)
   - Wormholy (~> 1.6.5)
   - WPMediaPicker (~> 1.8.1)
   - XLPagerTabStrip (~> 9.0)
@@ -114,6 +114,7 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/wordpress-mobile/cocoapods-specs.git:
     - WordPressAuthenticator
+    - WordPressUI
   trunk:
     - 1PasswordExtension
     - Alamofire
@@ -154,16 +155,6 @@ SPEC REPOS:
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
 
-EXTERNAL SOURCES:
-  WordPressUI:
-    :branch: issue/disable-ghost-cells-selection
-    :git: https://github.com/wordpress-mobile/WordPressUI-iOS.git
-
-CHECKOUT OPTIONS:
-  WordPressUI:
-    :commit: 4224f4459336826db035484660b98a7aed8768fb
-    :git: https://github.com/wordpress-mobile/WordPressUI-iOS.git
-
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
@@ -193,7 +184,7 @@ SPEC CHECKSUMS:
   WordPressAuthenticator: 06278534519c741ecea346f504ad8d08082bfb0d
   WordPressKit: 062e4f57ce871e2217b632a1f3cb0bbd54b5df6d
   WordPressShared: 5477f179c7fe03b5d574f91adda66f67d131827e
-  WordPressUI: ccfa31bdd46676ffd8b71ff235e8059ed0832d61
+  WordPressUI: 6856561f5738b7d12442cc244a473f3ba32d772c
   Wormholy: 3252bc3e55a1847ef9a0976c1377bd77bf3635fa
   WPMediaPicker: 9011a0ec1f468c039af7485c244576b4c9889a0f
   wpxmlrpc: bf55a43a7e710bd2a4fb8c02dfe83b1246f14f13
@@ -206,6 +197,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 6524acefaf6f8562665c93192a0c25efba32cfb8
+PODFILE CHECKSUM: 73f01b615e31f8ca977971d85696c387416e02db
 
 COCOAPODS: 1.11.2

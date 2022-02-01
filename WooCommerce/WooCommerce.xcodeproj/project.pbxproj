@@ -1535,7 +1535,7 @@
 		E1BAAEA026BBECEF00F2C037 /* ButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BAAE9F26BBECEF00F2C037 /* ButtonStyles.swift */; };
 		E1BE703A265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BE7039265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift */; };
 		E1C47209267A1ECC00D06DA1 /* CrashLoggingStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C47208267A1ECC00D06DA1 /* CrashLoggingStack.swift */; };
-		E1C5E78226C2A971008D4C47 /* InPersonPaymentsWCPayNotSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C5E78126C2A971008D4C47 /* InPersonPaymentsWCPayNotSetup.swift */; };
+		E1C5E78226C2A971008D4C47 /* InPersonPaymentsPluginNotSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C5E78126C2A971008D4C47 /* InPersonPaymentsPluginNotSetup.swift */; };
 		E1D4E84426776A6B00256B83 /* HeadlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D4E84326776A6A00256B83 /* HeadlineTableViewCell.swift */; };
 		E1D4E84526776AD900256B83 /* HeadlineTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1D4E84226776A6A00256B83 /* HeadlineTableViewCell.xib */; };
 		E1E125AA26EB42530068A9B0 /* CardPresentModalUpdateProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E125A926EB42530068A9B0 /* CardPresentModalUpdateProgress.swift */; };
@@ -3154,7 +3154,7 @@
 		E1BAAE9F26BBECEF00F2C037 /* ButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyles.swift; sourceTree = "<group>"; };
 		E1BE7039265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningFailed.swift; sourceTree = "<group>"; };
 		E1C47208267A1ECC00D06DA1 /* CrashLoggingStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashLoggingStack.swift; sourceTree = "<group>"; };
-		E1C5E78126C2A971008D4C47 /* InPersonPaymentsWCPayNotSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsWCPayNotSetup.swift; sourceTree = "<group>"; };
+		E1C5E78126C2A971008D4C47 /* InPersonPaymentsPluginNotSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsPluginNotSetup.swift; sourceTree = "<group>"; };
 		E1D4E84226776A6A00256B83 /* HeadlineTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HeadlineTableViewCell.xib; sourceTree = "<group>"; };
 		E1D4E84326776A6A00256B83 /* HeadlineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadlineTableViewCell.swift; sourceTree = "<group>"; };
 		E1E125A926EB42530068A9B0 /* CardPresentModalUpdateProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalUpdateProgress.swift; sourceTree = "<group>"; };
@@ -7333,7 +7333,7 @@
 				D85A3C4F26C153A500C0E026 /* InPersonPaymentsPluginNotActivatedView.swift */,
 				D8B4D5F126C2CF5B00F34E94 /* InPersonPaymentsStripeAccountOverdueView.swift */,
 				D8B4D5EF26C2C7EC00F34E94 /* InPersonPaymentsStripeAccountPendingView.swift */,
-				E1C5E78126C2A971008D4C47 /* InPersonPaymentsWCPayNotSetup.swift */,
+				E1C5E78126C2A971008D4C47 /* InPersonPaymentsPluginNotSetup.swift */,
 				D8B4D5ED26C2C26C00F34E94 /* InPersonPaymentsStripeAcountReviewView.swift */,
 				D8B4D5F326C30E7C00F34E94 /* InPersonPaymentsStripeRejectedView.swift */,
 				E15F163026C5117300D3059B /* InPersonPaymentsNoConnectionView.swift */,
@@ -8833,7 +8833,7 @@
 				260C31602524ECA900157BC2 /* IssueRefundViewController.swift in Sources */,
 				2667BFEB2535FF09008099D4 /* RefundShippingCalculationUseCase.swift in Sources */,
 				E1E125AA26EB42530068A9B0 /* CardPresentModalUpdateProgress.swift in Sources */,
-				E1C5E78226C2A971008D4C47 /* InPersonPaymentsWCPayNotSetup.swift in Sources */,
+				E1C5E78226C2A971008D4C47 /* InPersonPaymentsPluginNotSetup.swift in Sources */,
 				022F941E257F8E820011CD94 /* BoldableTextParser.swift in Sources */,
 				26FE09DD24D9F3F600B9BDF5 /* LoadingView.swift in Sources */,
 				457151AB243B6E8000EB2DFA /* ProductSlugViewController.swift in Sources */,

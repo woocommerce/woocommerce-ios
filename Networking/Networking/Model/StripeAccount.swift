@@ -91,22 +91,6 @@ public struct StripeAccount: Decodable {
     }
 }
 
-public extension StripeAccount {
-    static let noAccount = StripeAccount(
-        status: .noAccount,
-        isLiveAccount: false,
-        isInTestMode: false,
-        hasPendingRequirements: false,
-        hasOverdueRequirements: false,
-        currentDeadline: nil,
-        statementDescriptor: "",
-        defaultCurrency: "",
-        supportedCurrencies: [],
-        country: "",
-        isCardPresentEligible: false
-    )
-}
-
 private extension StripeAccount {
     enum CodingKeys: String, CodingKey {
         case status

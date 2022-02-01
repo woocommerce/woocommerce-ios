@@ -382,58 +382,62 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     // MARK: - Payment Account checks
 
-    func test_onboarding_returns_generic_error_with_no_account_for_wcplay_plugin() {
+    func test_onboarding_returns_plugin_setup_not_completed_with_nil_account_for_wcplay_plugin() {
         // Given
         setupCountry(country: .us)
         setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
 
         // When
+        // i.e. getPaymentGatewayAccount returns nil account
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .genericError)
+        XCTAssertEqual(state, .pluginSetupNotCompleted(plugin: .wcPay))
     }
 
-    func test_onboarding_returns_generic_error_with_no_account_for_stripe_plugin() {
+    func test_onboarding_returns_plugin_setup_not_completed_with_no_account_for_wcplay_plugin() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .noAccount, hasPendingRequirements: false)
+
+        // When
+        // i.e. getPaymentGatewayAccount returns status.noAccount
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .pluginSetupNotCompleted(plugin: .wcPay))
+    }
+
+    func test_onboarding_returns_plugin_setup_not_completed_with_nil_account_for_stripe_plugin() {
         // Given
         setupCountry(country: .us)
         setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
 
         // When
+        // i.e. getPaymentGatewayAccount returns nil account
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .genericError)
+        XCTAssertEqual(state, .pluginSetupNotCompleted(plugin: .stripe))
     }
 
-    func test_onboarding_returns_generic_error_when_account_is_not_eligible_for_wcplay_plugin() {
+    func test_onboarding_returns_plugin_setup_not_completed_with_no_account_for_stripe_plugin() {
         // Given
         setupCountry(country: .us)
-        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
-        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete, isCardPresentEligible: false)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .noAccount, hasPendingRequirements: false)
 
         // When
+        // i.e. getPaymentGatewayAccount returns status.noAccount
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .genericError)
-    }
-
-    func test_onboarding_returns_not_completed_when_account_is_not_connected_for_wcplay_plugin() {
-        // Given
-        setupCountry(country: .us)
-        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
-        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .noAccount)
-
-        // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.state
-
-        // Then
-        XCTAssertEqual(state, .pluginSetupNotCompleted)
+        XCTAssertEqual(state, .pluginSetupNotCompleted(plugin: .stripe))
     }
 
     func test_onboarding_returns_pending_requirements_when_account_is_restricted_with_pending_requirements_for_wcplay_plugin() {

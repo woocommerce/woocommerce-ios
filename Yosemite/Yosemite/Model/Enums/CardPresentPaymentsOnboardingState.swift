@@ -124,13 +124,4 @@ public enum CardPresentPaymentsPlugins: Equatable {
             return "5.9.0"
         }
     }
-
-    public var supportedCountryCodes: [String] {
-        switch self {
-        case .wcPay:
-            return ["US"]
-        case .stripe:
-            return ["US"]
-        }
-    }
 }

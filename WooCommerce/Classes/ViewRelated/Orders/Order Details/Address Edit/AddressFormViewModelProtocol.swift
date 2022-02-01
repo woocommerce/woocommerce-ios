@@ -164,7 +164,7 @@ struct AddressFormFields {
             // When a country is selected, check if the new country has a state list.
             // If it has, clear the selected state and its name in fields.
             // If it doesn't only clear the selected state.
-            if selectedCountry?.states.isEmpty == false, selectedState != nil {
+            if selectedCountry?.states.isEmpty == false {
                 self.state = ""
             }
             self.selectedState = nil
@@ -189,8 +189,9 @@ struct AddressFormFields {
             return
         }
 
+        let initialStateValue = state // storing initial state value because it will be cleared by selectedCountry setter
         selectedCountry = allCountries.first { $0.code == country }
-        selectedState = selectedCountry?.states.first { $0.code == state }
+        selectedState = selectedCountry?.states.first { $0.code == initialStateValue }
     }
 }
 

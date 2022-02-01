@@ -204,6 +204,9 @@ private extension CardPresentPaymentsOnboardingUseCase {
             /// Active plugin but unable to fetch an account? Prompt the merchant to finish setting it up.
             return .pluginSetupNotCompleted(plugin: plugin)
         }
+        guard isPaymentGatewaySetupCompleted(account: account) else {
+            return .pluginSetupNotCompleted(plugin: plugin)
+        }
         guard !isPluginInTestModeWithLiveStripeAccount(account: account) else {
             return .pluginInTestModeWithLiveStripeAccount(plugin: plugin)
         }

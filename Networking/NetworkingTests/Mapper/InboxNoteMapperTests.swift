@@ -29,23 +29,23 @@ final class InboxNoteMapperTests: XCTestCase {
 
         // When
         let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-        let url = "https://woocommerce.com/posts/pre-launch-checklist-the-essentials/?utm_source=inbox&utm_medium=product"
-        let content = "To make sure you never get that sinking \"what did I forget\" feeling, we've put together the essential pre-launch checklist."
+        let url = "https://woocommerce.com/products/woocommerce-bookings/"
+        let content = "Your subscription expired on October 22nd. Get a new subscription to continue receiving updates and access to support."
         let expectedInboxNote = InboxNote(siteID: dummySiteID,
-                                          id: 291,
-                                          name: "wc-admin-launch-checklist",
-                                          type: "info",
+                                          id: 296,
+                                          name: "wc-admin-wc-helper-subscription",
+                                          type: "warning",
                                           status: "unactioned",
-                                          actions: [InboxAction(id: 13225,
-                                                                name: "learn-more",
-                                                                label: "Learn more",
+                                          actions: [InboxAction(id: 13329,
+                                                                name: "renew-subscription",
+                                                                label: "Renew Subscription",
                                                                 status: "actioned",
                                                                 url: url)],
-                                          title: "Ready to launch your store?",
+                                          title: "WooCommerce Bookings subscription expired",
                                           content: content,
-                                          isDeleted: false,
+                                          isDeleted: true,
                                           isRead: false,
-                                          dateCreated: dateFormatter.date(from: "2022-01-26T14:32:08")!)
+                                          dateCreated: dateFormatter.date(from: "2022-01-31T14:25:32")!)
 
         // Then
         XCTAssertEqual(inboxNote, expectedInboxNote)

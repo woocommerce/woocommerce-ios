@@ -985,6 +985,7 @@
 		ABC35F18E744C5576B986CB3 /* InPersonPaymentsUnavailableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC35055F8AC8C8EB649F421 /* InPersonPaymentsUnavailableView.swift */; };
 		AE457813275644590092F687 /* OrderStatusSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE457812275644590092F687 /* OrderStatusSection.swift */; };
 		AE6DBE3B2732CAAD00957E7A /* AdaptiveStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6DBE3A2732CAAD00957E7A /* AdaptiveStack.swift */; };
+		AE77EA5027A47C99006A21BD /* View+AddingDividers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE77EA4F27A47C99006A21BD /* View+AddingDividers.swift */; };
 		AE9E04752776213E003FA09E /* OrderCustomerSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9E04742776213E003FA09E /* OrderCustomerSection.swift */; };
 		AEA622B2274669D3002A9B57 /* AddOrderCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B1274669D3002A9B57 /* AddOrderCoordinator.swift */; };
 		AEA622B427466B78002A9B57 /* BottomSheetOrderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */; };
@@ -2571,6 +2572,7 @@
 		ABC35A4B736A0B2D8348DD08 /* InPersonPaymentsOnboardingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsOnboardingError.swift; sourceTree = "<group>"; };
 		AE457812275644590092F687 /* OrderStatusSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusSection.swift; sourceTree = "<group>"; };
 		AE6DBE3A2732CAAD00957E7A /* AdaptiveStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveStack.swift; sourceTree = "<group>"; };
+		AE77EA4F27A47C99006A21BD /* View+AddingDividers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+AddingDividers.swift"; sourceTree = "<group>"; };
 		AE9E04742776213E003FA09E /* OrderCustomerSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomerSection.swift; sourceTree = "<group>"; };
 		AEA622B1274669D3002A9B57 /* AddOrderCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderCoordinator.swift; sourceTree = "<group>"; };
 		AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetOrderType.swift; sourceTree = "<group>"; };
@@ -4262,6 +4264,7 @@
 				DE4B3B5526A68DD000EEF2D8 /* View+InsetPaddings.swift */,
 				581D5051274AA2480089B6AD /* View+AutofocusTextModifier.swift */,
 				26281775278F0B0100C836D3 /* View+NoticesModifier.swift */,
+				AE77EA4F27A47C99006A21BD /* View+AddingDividers.swift */,
 			);
 			path = "View Modifiers";
 			sourceTree = "<group>";
@@ -8855,6 +8858,7 @@
 				021AEF9E2407F55C00029D28 /* PHAssetImageLoader.swift in Sources */,
 				DECE13FB27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift in Sources */,
 				26E0AE1926335AA900A5EB3B /* Survey.swift in Sources */,
+				AE77EA5027A47C99006A21BD /* View+AddingDividers.swift in Sources */,
 				0298430C259351F100979CAE /* ShippingLabelsTopBannerFactory.swift in Sources */,
 				020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */,
 				023D692E2588BF0900F7DA72 /* ShippingLabelPaperSizeListSelectorCommand.swift in Sources */,

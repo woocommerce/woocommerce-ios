@@ -23,9 +23,14 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
 
         super.init(siteID: siteID,
                    address: addressData.billingAddress ?? .empty,
+                   secondaryAddress: addressData.shippingAddress ?? .empty,
                    storageManager: storageManager,
                    stores: stores,
                    analytics: analytics)
+
+        if addressData.billingAddress != addressData.shippingAddress {
+            showDifferentAddressForm = true
+        }
     }
 
     // MARK: - Protocol conformance
@@ -46,6 +51,10 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
         }
     }
 
+    var secondarySectionTitle: String {
+        Localization.shippingAddressSection
+    }
+
     var showAlternativeUsageToggle: Bool {
         false
     }
@@ -63,8 +72,13 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
     }
 
     func saveAddress(onFinish: @escaping (Bool) -> Void) {
-        onAddressUpdate?(.init(billingAddress: updatedAddress,
-                               shippingAddress: updatedAddress))
+        if showDifferentAddressForm {
+            onAddressUpdate?(.init(billingAddress: fields.toAddress(),
+                                   shippingAddress: secondaryFields.toAddress()))
+        } else {
+            onAddressUpdate?(.init(billingAddress: fields.toAddress(),
+                                   shippingAddress: fields.toAddress()))
+        }
         onFinish(true)
     }
 

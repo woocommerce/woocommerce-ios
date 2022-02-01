@@ -10,6 +10,10 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     ///
     var fields: AddressFormFields { get set }
 
+    /// Secondary address form fields
+    ///
+    var secondaryFields: AddressFormFields { get set }
+
     /// Define if address form should be expanded (show second set of fields for different address)
     ///
     var showDifferentAddressForm: Bool { get set }
@@ -31,6 +35,10 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     ///
     var showStateFieldAsSelector: Bool { get }
 
+    /// Defines if secondary state field should be defined as a list selector.
+    ///
+    var showSecondaryStateFieldAsSelector: Bool { get }
+
     /// Defines if the email field should be shown
     ///
     var showEmailField: Bool { get }
@@ -42,6 +50,10 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     /// Defines address section title
     ///
     var sectionTitle: String { get }
+
+    /// Defines address section title for second set of fields
+    ///
+    var secondarySectionTitle: String { get }
 
     /// Defines if "use as billing/shipping" toggle should be displayed.
     ///
@@ -71,13 +83,21 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     ///
     func userDidCancelFlow()
 
-    /// Creates a view model to be used when selecting a country
+    /// Creates a view model to be used when selecting a country for primary fields
     ///
     func createCountryViewModel() -> CountrySelectorViewModel
 
-    /// Creates a view model to be used when selecting a state
+    /// Creates a view model to be used when selecting a state for primary fields
     ///
     func createStateViewModel() -> StateSelectorViewModel
+
+    /// Creates a view model to be used when selecting a country for secondary fields
+    ///
+    func createSecondaryCountryViewModel() -> CountrySelectorViewModel
+
+    /// Creates a view model to be used when selecting a state for secondary fields
+    ///
+    func createSecondaryStateViewModel() -> StateSelectorViewModel
 }
 
 /// Type to hold values from all the form fields
@@ -96,10 +116,8 @@ struct AddressFormFields {
     var city: String = ""
     var postcode: String = ""
 
-    var countryName: String = ""
-    var countryCode: String = ""
-    var stateName: String = ""
-    var stateCode: String = ""
+    var country: String = ""
+    var state: String = ""
 
     var useAsToggle: Bool = false
 
@@ -117,8 +135,8 @@ struct AddressFormFields {
         city = address.city
         postcode = address.postcode
 
-        countryCode = address.country
-        stateCode = address.state
+        country = address.country
+        state = address.state
     }
 
     func toAddress() -> Yosemite.Address {
@@ -128,11 +146,51 @@ struct AddressFormFields {
                 address1: address1,
                 address2: address2,
                 city: city,
-                state: stateCode.isNotEmpty ? stateCode : stateName, // stateCode can be empty when name entered manually
+                state: selectedState?.code ?? state,
                 postcode: postcode,
-                country: countryCode,
+                country: selectedCountry?.code ?? country,
                 phone: phone,
                 email: email)
+    }
+
+    // MARK: Country & state
+
+    /// Current selected country.
+    ///
+    var selectedCountry: Yosemite.Country? {
+        didSet {
+            self.country = selectedCountry?.name ?? ""
+
+            // When a country is selected, check if the new country has a state list.
+            // If it has, clear the selected state and its name in fields.
+            // If it doesn't only clear the selected state.
+            if selectedCountry?.states.isEmpty == false, selectedState != nil {
+                self.state = ""
+            }
+            self.selectedState = nil
+        }
+    }
+
+    /// Current selected state.
+    ///
+    var selectedState: Yosemite.StateOfACountry? {
+        didSet {
+            if let selectedState = selectedState {
+                self.state = selectedState.name
+            }
+        }
+    }
+
+    /// Set initial values from Address using the stored countries to compute the current selected country & state.
+    ///
+    mutating func refreshCountryAndStateObjects(with allCountries: [Country]) {
+        // Do not overwrite any prefilled/selected items
+        guard selectedCountry == nil, selectedState == nil else {
+            return
+        }
+
+        selectedCountry = allCountries.first { $0.code == country }
+        selectedState = selectedCountry?.states.first { $0.code == state }
     }
 }
 
@@ -153,6 +211,12 @@ open class AddressFormViewModel: ObservableObject {
         let countriesDescriptor = NSSortDescriptor(key: "name", ascending: true)
         return ResultsController<StorageCountry>(storageManager: storageManager, sortedBy: [countriesDescriptor])
     }()
+
+    /// Array for all stored countries.
+    ///
+    private var allCountries: [Country] {
+        countriesResultsController.fetchedObjects
+    }
 
     /// Trigger to sync countries.
     ///
@@ -176,11 +240,17 @@ open class AddressFormViewModel: ObservableObject {
 
     init(siteID: Int64,
          address: Address,
+         secondaryAddress: Address? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
+
         self.originalAddress = address
+        self.fields = .init(with: originalAddress)
+
+        self.secondaryOriginalAddress = secondaryAddress ?? .empty
+        self.secondaryFields = .init(with: secondaryOriginalAddress)
 
         self.storageManager = storageManager
         self.stores = stores
@@ -193,7 +263,7 @@ open class AddressFormViewModel: ObservableObject {
             self.bindNavigationTrailingItemPublisher()
 
             self.fetchStoredCountriesAndTriggerSyncIfNeeded()
-            self.setFieldsInitialValues()
+            self.refreshCountryAndStateObjects()
 
             self.trackOnLoad()
         }.store(in: &subscriptions)
@@ -205,27 +275,17 @@ open class AddressFormViewModel: ObservableObject {
     ///
     private let originalAddress: Address
 
-    /// Updated `Address`, constructed from `fields`,  `selectedCountry`, `selectedState`.
+    /// Secondary original `Address` model.
     ///
-    var updatedAddress: Address {
-        fields.toAddress()
-    }
-
-    /// Current selected country.
-    ///
-    private var selectedCountry: Yosemite.Country? {
-        countriesResultsController.fetchedObjects.first { $0.code == fields.countryCode }
-    }
-
-    /// Current selected state.
-    ///
-    private var selectedState: Yosemite.StateOfACountry? {
-        selectedCountry?.states.first { $0.code == fields.stateCode }
-    }
+    private let secondaryOriginalAddress: Address
 
     /// Address form fields
     ///
-    @Published var fields = AddressFormFields()
+    @Published var fields: AddressFormFields
+
+    /// Secondary address form fields
+    ///
+    @Published var secondaryFields: AddressFormFields = .init()
 
     /// Define if address form should be expanded (show second set of fields for different address)
     ///
@@ -256,45 +316,58 @@ open class AddressFormViewModel: ObservableObject {
     /// Defines if the state field should be defined as a list selector.
     ///
     var showStateFieldAsSelector: Bool {
-        selectedCountry?.states.isNotEmpty ?? false
+        fields.selectedCountry?.states.isNotEmpty ?? false
     }
 
-    /// Creates a view model to be used when selecting a country
+    /// Defines if the state field should be defined as a list selector.
+    ///
+    var showSecondaryStateFieldAsSelector: Bool {
+        secondaryFields.selectedCountry?.states.isNotEmpty ?? false
+    }
+
+    /// Creates a view model to be used when selecting a country for primary fields
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {
         let selectedCountryBinding = Binding(
-            get: { self.selectedCountry },
-            set: {
-                self.fields.countryCode = $0?.code ?? ""
-                self.fields.countryName = $0?.name ?? ""
-
-                // When a country is selected, check if the new country has a state list.
-                // If it has, clear the selected state name and code.
-                // If it doesn't only clear the selected state code.
-                if $0?.states.isEmpty == false {
-                    self.fields.stateCode = ""
-                    self.fields.stateName = ""
-                } else {
-                    self.fields.stateCode = ""
-                }
-            }
+            get: { self.fields.selectedCountry },
+            set: { self.fields.selectedCountry = $0 }
         )
-        return CountrySelectorViewModel(countries: countriesResultsController.fetchedObjects, selected: selectedCountryBinding)
+        return CountrySelectorViewModel(countries: allCountries, selected: selectedCountryBinding)
     }
 
-    /// Creates a view model to be used when selecting a state
+    /// Creates a view model to be used when selecting a state for primary fields
     ///
     func createStateViewModel() -> StateSelectorViewModel {
         let selectedStateBinding = Binding(
-            get: { self.selectedState },
-            set: {
-                self.fields.stateCode = $0?.code ?? ""
-                self.fields.stateName = $0?.name ?? ""
-            }
+            get: { self.fields.selectedState },
+            set: { self.fields.selectedState = $0 }
         )
 
         // Sort states from the selected country
-        let states = selectedCountry?.states.sorted { $0.name < $1.name } ?? []
+        let states = fields.selectedCountry?.states.sorted { $0.name < $1.name } ?? []
+        return StateSelectorViewModel(states: states, selected: selectedStateBinding)
+    }
+
+    /// Creates a view model to be used when selecting a country for secondary fields
+    ///
+    func createSecondaryCountryViewModel() -> CountrySelectorViewModel {
+        let selectedCountryBinding = Binding(
+            get: { self.secondaryFields.selectedCountry },
+            set: { self.secondaryFields.selectedCountry = $0 }
+        )
+        return CountrySelectorViewModel(countries: allCountries, selected: selectedCountryBinding)
+    }
+
+    /// Creates a view model to be used when selecting a state for secondary fields
+    ///
+    func createSecondaryStateViewModel() -> StateSelectorViewModel {
+        let selectedStateBinding = Binding(
+            get: { self.secondaryFields.selectedState },
+            set: { self.secondaryFields.selectedState = $0 }
+        )
+
+        // Sort states from the selected country
+        let states = secondaryFields.selectedCountry?.states.sorted { $0.name < $1.name } ?? []
         return StateSelectorViewModel(states: states, selected: selectedStateBinding)
     }
 
@@ -346,31 +419,19 @@ extension AddressFormViewModel {
 }
 
 private extension AddressFormViewModel {
-    /// Set initial values from `originalAddress` using the stored countries to compute the current selected country & state.
-    ///
-    func setFieldsInitialValues() {
-        fields = .init(with: originalAddress)
-        updateCountryStateNamesFromCodes()
-    }
 
-    func updateCountryStateNamesFromCodes() {
-        if let selectedCountry = selectedCountry {
-            fields.countryName = selectedCountry.name
-        } else {
-            fields.countryName = fields.countryCode
-        }
-        if let selectedState = selectedState {
-            fields.stateName = selectedState.name
-        } else {
-            fields.stateName = fields.stateCode
-        }
+    /// Set initial values from Address using the stored countries to compute the current selected country & state.
+    ///
+    func refreshCountryAndStateObjects() {
+        fields.refreshCountryAndStateObjects(with: allCountries)
+        secondaryFields.refreshCountryAndStateObjects(with: allCountries)
     }
 
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func bindNavigationTrailingItemPublisher() {
-        Publishers.CombineLatest($fields, performingNetworkRequest)
-            .map { [originalAddress] fields, performingNetworkRequest -> AddressFormNavigationItem in
+        Publishers.CombineLatest3($fields, $secondaryFields, performingNetworkRequest)
+            .map { [originalAddress, secondaryOriginalAddress] fields, secondaryFields, performingNetworkRequest -> AddressFormNavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
@@ -379,7 +440,7 @@ private extension AddressFormViewModel {
                     return .done(enabled: true)
                 }
 
-                return .done(enabled: originalAddress != fields.toAddress())
+                return .done(enabled: originalAddress != fields.toAddress() || secondaryOriginalAddress != secondaryFields.toAddress())
             }
             .assign(to: &$navigationTrailingItem)
     }
@@ -392,7 +453,9 @@ private extension AddressFormViewModel {
 
         // Updates the initial fields when/if the data store changes(after sync).
         countriesResultsController.onDidChangeContent = { [weak self] in
-            self?.updateCountryStateNamesFromCodes()
+            guard let self = self else { return }
+
+            self.refreshCountryAndStateObjects()
         }
 
         // Trigger a sync request if there are no countries.

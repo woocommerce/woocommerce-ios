@@ -23,7 +23,7 @@ private enum Localization {
 
     static let message = NSLocalizedString(
         "You'll be able to accept In-Person Payments as soon as we finish reviewing your account.",
-        comment: "Error message when the merchant's payment is under review"
+        comment: "Error message when the merchant's payment account is under review"
     )
 }
 

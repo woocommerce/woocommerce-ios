@@ -430,8 +430,9 @@ private extension AddressFormViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func bindNavigationTrailingItemPublisher() {
-        Publishers.CombineLatest3($fields, $secondaryFields, performingNetworkRequest)
-            .map { [originalAddress, secondaryOriginalAddress] fields, secondaryFields, performingNetworkRequest -> AddressFormNavigationItem in
+        Publishers.CombineLatest4($fields, $secondaryFields, $showDifferentAddressForm, performingNetworkRequest)
+            .map { [originalAddress, secondaryOriginalAddress]
+                fields, secondaryFields, showDifferentAddressForm, performingNetworkRequest -> AddressFormNavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
@@ -440,7 +441,13 @@ private extension AddressFormViewModel {
                     return .done(enabled: true)
                 }
 
-                return .done(enabled: originalAddress != fields.toAddress() || secondaryOriginalAddress != secondaryFields.toAddress())
+                let addressesAreDifferentButSecondAddressSwitchIsDisabled = secondaryOriginalAddress != .empty &&
+                originalAddress != secondaryOriginalAddress &&
+                !showDifferentAddressForm
+
+                return .done(enabled: addressesAreDifferentButSecondAddressSwitchIsDisabled ||
+                             originalAddress != fields.toAddress() ||
+                             secondaryOriginalAddress != secondaryFields.toAddress())
             }
             .assign(to: &$navigationTrailingItem)
     }

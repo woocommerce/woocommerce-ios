@@ -1,7 +1,7 @@
 import SwiftUI
 import Yosemite
 
-struct InPersonPaymentsWCPayNotSetup: View {
+struct InPersonPaymentsPluginNotSetup: View {
     let plugin: CardPresentPaymentsPlugins
     let onRefresh: () -> Void
     @State var presentedSetupURL: URL? = nil
@@ -63,8 +63,8 @@ private enum Localization {
         comment: "Button to set up an in-person payments plugin after activating it"
     )
 }
-struct InPersonPaymentsWCPayNotSetup_Previews: PreviewProvider {
+struct InPersonPaymentsPluginNotSetup_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsWCPayNotSetup(plugin: .wcPay, onRefresh: {})
+        InPersonPaymentsPluginNotSetup(plugin: .wcPay, onRefresh: {})
     }
 }

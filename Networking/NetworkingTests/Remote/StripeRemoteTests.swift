@@ -305,8 +305,8 @@ final class StripeRemoteTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         let account = try result.get()
-        XCTAssertEqual(account.isLiveAccount, false)
-        XCTAssertEqual(account.isInTestMode, true)
+        XCTAssertEqual(account.isLiveAccount, true)
+        XCTAssertEqual(account.isInTestMode, false)
     }
 
     /// Properly decodes live account in test mode stripe-account-live-test
@@ -327,7 +327,7 @@ final class StripeRemoteTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         let account = try result.get()
-        XCTAssertEqual(account.isLiveAccount, false)
+        XCTAssertEqual(account.isLiveAccount, true)
         XCTAssertEqual(account.isInTestMode, true)
     }
 

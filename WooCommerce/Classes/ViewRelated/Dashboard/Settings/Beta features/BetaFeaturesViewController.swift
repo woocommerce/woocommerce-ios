@@ -410,7 +410,8 @@ private enum Row: CaseIterable {
         switch self {
         case .orderAddOns, .orderCreation, .stripeExtensionInPersonPayments, .canadaInPersonPayments, .productSKUInputScanner:
             return SwitchTableViewCell.self
-        case .orderAddOnsDescription, .orderCreationDescription, .stripeExtensionInPersonPaymentsDescription, .canadaInPersonPaymentsDescription, .productSKUInputScannerDescription:
+        case .orderAddOnsDescription, .orderCreationDescription, .stripeExtensionInPersonPaymentsDescription, .canadaInPersonPaymentsDescription,
+                .productSKUInputScannerDescription:
             return BasicTableViewCell.self
         }
     }

@@ -87,7 +87,7 @@ private extension TopPerformersSectionHeaderView {
         let label: UILabel = {
             let label = UILabel(frame: .zero)
             label.text = labelText
-            label.applyFootnoteStyle()
+            label.applyCalloutStyle()
             label.numberOfLines = 0
             label.textColor = .listIcon
             return label
@@ -134,7 +134,7 @@ private extension TopPerformersSectionHeaderView {
     }
 
     enum Constants {
-        static let labelInsets = UIEdgeInsets(top: 0, left: 16, bottom: 8, right: 16)
+        static let labelInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
         static let backgroundColor: UIColor = .systemBackground
         static let columnHorizontalSpacing: CGFloat = 30
         static let titleAndColumnSpacing: CGFloat = 16

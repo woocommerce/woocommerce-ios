@@ -296,7 +296,6 @@ extension StripeCardReaderService: CardReaderService {
         let batteryLevel = reader.batteryLevel?.doubleValue
 
         return Future { [weak self] promise in
-
             guard let self = self else {
                 promise(.failure(CardReaderServiceError.connection()))
                 return

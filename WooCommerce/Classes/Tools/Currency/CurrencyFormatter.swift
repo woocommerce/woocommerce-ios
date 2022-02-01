@@ -228,15 +228,16 @@ public class CurrencyFormatter {
     ///     - amount: a NSDecimalNumber representation of the amount, from the API, with no formatting applied. e.g. "19.87"
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
     ///     - locale: the locale that is used to format the currency amount string.
+    ///     - numberOfDecimals: optional number of decimal points to show for the amount. If nil, the currency settings value is used.
     ///
-    func formatAmount(_ amount: NSDecimalNumber, with currency: String? = nil, locale: Locale = .current) -> String? {
+    func formatAmount(_ amount: NSDecimalNumber, with currency: String? = nil, locale: Locale = .current, numberOfDecimals: Int? = nil) -> String? {
         let currency = currency ?? currencySettings.currencyCode.rawValue
         // Get the currency code
         let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? currencySettings.currencyCode
         // Grab the read-only currency options. These are set by the user in Site > Settings.
         let symbol = currencySettings.symbol(from: code)
         let separator = currencySettings.decimalSeparator
-        let numberOfDecimals = currencySettings.numberOfDecimals
+        let numberOfDecimals = numberOfDecimals ?? currencySettings.numberOfDecimals
         let position = currencySettings.currencyPosition
         let thousandSeparator = currencySettings.thousandSeparator
 
@@ -267,8 +268,8 @@ public class CurrencyFormatter {
     ///     - amount: a Decimal representation of the amount, from the API, with no formatting applied. e.g. "19.87"
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
     ///     - locale: the locale that is used to format the currency amount string.
-    ///
-    func formatAmount(_ amount: Decimal, with currency: String? = nil, locale: Locale = .current) -> String? {
-        formatAmount(amount as NSDecimalNumber, with: currency, locale: locale)
+    ///     - numberOfDecimals: optional number of decimal points to show for the amount. If nil, the currency settings value is used.
+    func formatAmount(_ amount: Decimal, with currency: String? = nil, locale: Locale = .current, numberOfDecimals: Int? = nil) -> String? {
+        formatAmount(amount as NSDecimalNumber, with: currency, locale: locale, numberOfDecimals: numberOfDecimals)
     }
 }

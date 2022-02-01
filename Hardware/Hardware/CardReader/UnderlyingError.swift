@@ -48,6 +48,9 @@ public enum UnderlyingError: Error, Equatable {
     /// Bluetooth Low Energy is unsupported on this iOS device. Use a different iOS device that supports BLE (also known as Bluetooth 4.0)
     case bluetoothLowEnergyUnsupported
 
+    /// The reader has a critically low battery and cannot connect to the iOS device. Charge the reader before trying again.
+    case bluetoothConnectionFailedBatteryCriticallyLow
+
     /// Updating the reader software failed because the reader’s battery is too low. Charge the reader before trying again.
     case readerSoftwareUpdateFailedBatteryLow
 
@@ -228,6 +231,9 @@ extension UnderlyingError: LocalizedError {
         case .bluetoothLowEnergyUnsupported:
             return NSLocalizedString("Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device",
                                      comment: "Error message when Bluetooth Low Energy is not supported on the user device.")
+        case .bluetoothConnectionFailedBatteryCriticallyLow:
+            return NSLocalizedString("Unable to connect to reader - the reader has a critically low battery - charge the reader and try again.",
+                                     comment: "Error message the card reader battery level is too low to connect to the phone or tablet.")
         case .readerSoftwareUpdateFailedBatteryLow:
             return NSLocalizedString("Unable to update card reader software - the reader battery is too low",
                                      comment: "Error message when the card reader battery level is too low to safely perform a software update.")

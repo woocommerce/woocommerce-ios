@@ -92,7 +92,7 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.createOrder()
 
         // Then
-        XCTAssertEqual(viewModel.presentNotice, .error)
+        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.createOrderCreationErrorNotice())
     }
 
     func test_view_model_loads_synced_pending_order_status() {
@@ -139,7 +139,7 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product.productID)
 
         // Then
-        let expectedOrderItem = product.toOrderItem(quantity: 1)
+        let expectedOrderItem = NewOrderViewModel.NewOrderItem(product: product, quantity: 1).orderItem
         XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == sampleProductID }), "Product rows do not contain expected product")
         XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }), "Order details do not contain expected order item")
     }
@@ -159,7 +159,7 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product.productID)
 
         // Then
-        let expectedOrderItem = product.toOrderItem(quantity: 2)
+        let expectedOrderItem = NewOrderViewModel.NewOrderItem(product: product, quantity: 2).orderItem
         XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }),
                       "Order details do not contain order item with updated quantity")
     }
@@ -199,6 +199,48 @@ class NewOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == product0.productID }))
         XCTAssertEqual(viewModel.orderDetails.items, [expectedRemainingItem])
+    }
+
+    func test_createProductRowViewModel_creates_expected_row_for_product() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        let newOrderItem = NewOrderViewModel.NewOrderItem(product: product, quantity: 1)
+        let productRow = viewModel.createProductRowViewModel(for: newOrderItem, canChangeQuantity: true)
+
+        // Then
+        let expectedProductRow = ProductRowViewModel(product: product, canChangeQuantity: true)
+        XCTAssertEqual(productRow?.name, expectedProductRow.name)
+        XCTAssertEqual(productRow?.quantity, expectedProductRow.quantity)
+        XCTAssertEqual(productRow?.canChangeQuantity, expectedProductRow.canChangeQuantity)
+    }
+
+    func test_createProductRowViewModel_creates_expected_row_for_product_variation() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, productTypeKey: "variable", variations: [33])
+        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            productVariationID: 33,
+                                                            sku: "product-variation")
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation, on: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        let newOrderItem = NewOrderViewModel.NewOrderItem(variation: productVariation, quantity: 2)
+        let productRow = viewModel.createProductRowViewModel(for: newOrderItem, canChangeQuantity: false)
+
+        // Then
+        let expectedProductRow = ProductRowViewModel(productVariation: productVariation, name: product.name, quantity: 2, canChangeQuantity: false)
+        XCTAssertEqual(productRow?.name, expectedProductRow.name)
+        XCTAssertEqual(productRow?.skuLabel, expectedProductRow.skuLabel)
+        XCTAssertEqual(productRow?.quantity, expectedProductRow.quantity)
+        XCTAssertEqual(productRow?.canChangeQuantity, expectedProductRow.canChangeQuantity)
     }
 
     func test_view_model_is_updated_when_address_updated() {

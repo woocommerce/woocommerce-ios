@@ -230,6 +230,7 @@ extension MockObjectGraph {
             totalTax: "0",
             paymentMethodID: "0",
             paymentMethodTitle: "MasterCard",
+            chargeID: nil,
             items: items,
             billingAddress: customer.billingAddress,
             shippingAddress: customer.billingAddress,

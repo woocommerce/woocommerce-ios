@@ -187,6 +187,38 @@ extension DotcomError {
         .empty
     }
 }
+extension InboxAction {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> InboxAction {
+        .init(
+            id: .fake(),
+            name: .fake(),
+            label: .fake(),
+            status: .fake(),
+            url: .fake()
+        )
+    }
+}
+extension InboxNote {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> InboxNote {
+        .init(
+            siteID: .fake(),
+            id: .fake(),
+            name: .fake(),
+            type: .fake(),
+            status: .fake(),
+            actions: .fake(),
+            title: .fake(),
+            content: .fake(),
+            isDeleted: .fake(),
+            isRead: .fake(),
+            dateCreated: .fake()
+        )
+    }
+}
 extension Leaderboard {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -305,6 +337,7 @@ extension Order {
             totalTax: .fake(),
             paymentMethodID: .fake(),
             paymentMethodTitle: .fake(),
+            chargeID: .fake(),
             items: .fake(),
             billingAddress: .fake(),
             shippingAddress: .fake(),

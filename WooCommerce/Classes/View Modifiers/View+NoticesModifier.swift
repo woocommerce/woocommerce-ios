@@ -222,6 +222,23 @@ extension View {
     }
 }
 
+extension UIHostingController {
+    /// Enqueues a notice into the provided `noticePresenter` when the receiver is being removed.
+    /// Uses `ServiceLocator.noticePresenter` if not presenter is provided.
+    ///
+    func enqueuePendingNotice(_ notice: Notice?, using noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+        let isBeingRemoved: Bool = {
+            isMovingFromParent ||               // when navigating out of a navigation stack
+            isBeingDismissed ||                 // when being dismissed as modal
+            parent?.isBeingDismissed ?? false   // when it's parent is being dismissed as modal (EG: inside a navigation controller)
+        }()
+
+        if let notice = notice, isBeingRemoved {
+            noticePresenter.enqueue(notice: notice)
+        }
+    }
+}
+
 // MARK: Preview
 
 struct NoticeModifier_Previews: PreviewProvider {

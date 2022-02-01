@@ -1,7 +1,7 @@
+import Combine
 import UIKit
 import Yosemite
 import Photos
-import Observables
 
 final class ProductDownloadListViewController: UIViewController {
     private let product: ProductFormDataModel
@@ -25,7 +25,7 @@ final class ProductDownloadListViewController: UIViewController {
     private var onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion?
     private var onWPMediaPickerCompletion: WordPressMediaLibraryImagePickerViewController.Completion?
     private let productImageActionHandler: ProductImageActionHandler?
-    private var cancellable: ObservationToken?
+    private var cancellable: AnyCancellable?
 
     /// Loading view displayed while an user is uploading a new image
     ///

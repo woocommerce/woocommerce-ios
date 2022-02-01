@@ -100,4 +100,51 @@ final class InboxNotesRemoteTests: XCTestCase {
         let resultError = try XCTUnwrap(result.failure as? NetworkError)
         XCTAssertNotNil(resultError)
     }
+
+    // MARK: - Dismiss an Inbox Note tests
+
+    /// Verifies that dismissInboxNote properly parses the `InboxNote` sample response.
+    ///
+    func test_dismissInboxNote_properly_returns_parsed_InboxNote() throws {
+        // Given
+        let remote = InboxNotesRemote(network: network)
+        let sampleInboxNoteID: Int64 = 296
+
+        network.simulateResponse(requestUrlSuffix: "admin/notes/\(sampleInboxNoteID)", filename: "inbox-note")
+
+        // When
+        let result = waitFor { promise in
+            remote.dismissInboxNote(for: self.sampleSiteID, noteID: sampleInboxNoteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssert(result.isSuccess)
+        let inboxNote = try XCTUnwrap(result.get())
+        XCTAssertEqual(inboxNote.id, sampleInboxNoteID)
+    }
+
+    /// Verifies that dismissInboxNote properly relays Networking Layer errors.
+    ///
+    func test_dismissInboxNote_properly_relays_networking_errors() throws {
+        // Given
+        let remote = InboxNotesRemote(network: network)
+        let sampleInboxNoteID: Int64 = 296
+
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "admin/notes/\(sampleInboxNoteID)", error: error)
+
+        // When
+        let result = waitFor { promise in
+            remote.dismissInboxNote(for: self.sampleSiteID, noteID: sampleInboxNoteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let resultError = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
+    }
 }

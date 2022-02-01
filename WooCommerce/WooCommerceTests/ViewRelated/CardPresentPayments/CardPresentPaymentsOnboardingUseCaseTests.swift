@@ -226,6 +226,21 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed)
     }
 
+    func test_onboarding_returns_complete_when_stripe_active_and_wcpay_plugin_installed_but_not_active() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .inactive, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .completed)
+    }
+
     func test_onboarding_returns_complete_when_wcpay_plugin_active() {
         // Given
         setupCountry(country: .us)

@@ -201,6 +201,7 @@ final class NewOrderViewModel: ObservableObject {
                                         onAddressUpdate: { [weak self] updatedAddressData in
             self?.orderDetails.billingAddress = updatedAddressData.billingAddress
             self?.orderDetails.shippingAddress = updatedAddressData.shippingAddress
+            self?.trackCustomerDetailsAdded()
         })
     }
 
@@ -480,6 +481,18 @@ private extension NewOrderViewModel {
                 return PaymentDataViewModel(itemsTotal: itemsTotal, orderTotal: itemsTotal, currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)
+    }
+
+    /// Tracks when customer details have been added
+    ///
+    func trackCustomerDetailsAdded() {
+        let areAddressesDifferent: Bool = {
+            guard let billingAddress = orderDetails.billingAddress, let shippingAddress = orderDetails.shippingAddress else {
+                return false
+            }
+            return billingAddress != shippingAddress
+        }()
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerAdd(flow: .creation, hasDifferentShippingDetails: areAddressesDifferent))
     }
 }
 

@@ -272,7 +272,7 @@ public extension OrdersRemote {
             "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines"
         ]
         private static let singleOrderExtraFieldValues = [
-            "line_items", "shipping"
+            "line_items", "shipping", "meta_data"
         ]
     }
 

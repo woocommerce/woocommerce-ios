@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 63 (Release 8.5.0.0)
+- @joshheald 2022-01-31
+    - Added `chargeID` attribute to `Order` entity.
+
 ## Model 62 (Release 8.5.0.0)
 - @itsmeichigo 2022-01-25
     - Added `CouponSearchResult` entity.

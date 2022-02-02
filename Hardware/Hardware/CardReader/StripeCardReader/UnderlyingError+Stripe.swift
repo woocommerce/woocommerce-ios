@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 /// Maps Stripe SDK specific errors to domain errors:
 /// the mapping is done according to the error codes documented here:
@@ -93,3 +94,4 @@ extension UnderlyingError {
         }
     }
 }
+#endif

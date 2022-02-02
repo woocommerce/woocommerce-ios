@@ -150,7 +150,7 @@ class DefaultStoresManager: StoresManager {
     ///
     func removeDefaultStore() {
         ServiceLocator.analytics.refreshUserData()
-        ZendeskManager.shared.reset()
+        ZendeskProvider.shared.reset()
         ServiceLocator.pushNotesManager.unregisterForRemoteNotifications()
     }
 
@@ -165,7 +165,7 @@ class DefaultStoresManager: StoresManager {
 
         sessionManager.reset()
         ServiceLocator.analytics.refreshUserData()
-        ZendeskManager.shared.reset()
+        ZendeskProvider.shared.reset()
         ServiceLocator.storageManager.reset()
 
         NotificationCenter.default.post(name: .logOutEventReceived, object: nil)

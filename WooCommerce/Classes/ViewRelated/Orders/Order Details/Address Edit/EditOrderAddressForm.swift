@@ -105,6 +105,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                         .padding(.vertical, Constants.verticalPadding)
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.systemBackground))
+                        .addingTopAndBottomDividers()
                 }
 
                 if viewModel.showDifferentAddressToggle, let differentAddressToggleTitle = viewModel.differentAddressToggleTitle {
@@ -113,16 +114,19 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                         .padding(.vertical, Constants.verticalPadding)
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.systemBackground))
+                        .addingTopAndBottomDividers()
                 }
 
                 if viewModel.showDifferentAddressForm {
-                    SingleAddressForm(fields: $viewModel.fields,
-                                      countryViewModelClosure: viewModel.createCountryViewModel,
-                                      stateViewModelClosure: viewModel.createStateViewModel,
-                                      sectionTitle: viewModel.sectionTitle,
+                    SingleAddressForm(fields: $viewModel.secondaryFields,
+                                      countryViewModelClosure: viewModel.createSecondaryCountryViewModel,
+                                      stateViewModelClosure: viewModel.createSecondaryStateViewModel,
+                                      sectionTitle: viewModel.secondarySectionTitle,
                                       showEmailField: false,
-                                      showStateFieldAsSelector: viewModel.showStateFieldAsSelector)
+                                      showStateFieldAsSelector: viewModel.showSecondaryStateFieldAsSelector)
                 }
+
+                Spacer(minLength: safeAreaInsets.bottom)
             }
             .disableAutocorrection(true)
             .background(Color(.listBackground))
@@ -229,6 +233,7 @@ struct SingleAddressForm: View {
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.systemBackground))
+        .addingTopAndBottomDividers()
 
         ListHeaderView(text: sectionTitle, alignment: .left)
             .padding(.horizontal, insets: safeAreaInsets)
@@ -282,8 +287,19 @@ struct SingleAddressForm: View {
                     EmptyView()
                 }
 
+                ///
+                /// iOS 14.5 has a bug where
+                /// Pushing a view while having "exactly two" navigation links makes the pushed view to be popped when the initial view changes its state.
+                /// EG: AddressForm -> CountrySelector -> Country is selected -> AddressForm updates country -> CountrySelector is popped automatically.
+                /// Adding an extra and useless navigation link fixes the problem but throws a warning in the console.
+                /// Ref: https://forums.swift.org/t/14-5-beta3-navigationlink-unexpected-pop/45279
+                ///
+                NavigationLink(destination: EmptyView()) {
+                    EmptyView()
+                }
+
                 TitleAndValueRow(title: Localization.countryField,
-                                 value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.countryName),
+                                 value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.country),
                                  selectable: true) {
                     showCountrySelector = true
                 }
@@ -294,6 +310,7 @@ struct SingleAddressForm: View {
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.systemBackground))
+        .addingTopAndBottomDividers()
     }
 
     /// Decides if the state row should be rendered as a list selector field or as a text input field.
@@ -301,14 +318,14 @@ struct SingleAddressForm: View {
     @ViewBuilder private func stateRow() -> some View {
         if showStateFieldAsSelector {
             TitleAndValueRow(title: Localization.stateField,
-                             value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.stateName),
+                             value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.state),
                              selectable: true) {
                 showStateSelector = true
             }
         } else {
             TitleAndTextFieldRow(title: Localization.stateField,
                                  placeholder: "",
-                                 text: $fields.stateName,
+                                 text: $fields.state,
                                  symbol: nil,
                                  keyboardType: .default)
         }
@@ -372,6 +389,7 @@ struct EditAddressForm_Previews: PreviewProvider {
                                    totalTax: "1.20",
                                    paymentMethodID: "stripe",
                                    paymentMethodTitle: "Credit Card (Stripe)",
+                                   chargeID: nil,
                                    items: [],
                                    billingAddress: sampleAddress,
                                    shippingAddress: sampleAddress,

@@ -377,6 +377,7 @@ extension ShippingLabelPackageDetailsViewModel {
                      totalTax: "1.20",
                      paymentMethodID: "stripe",
                      paymentMethodTitle: "Credit Card (Stripe)",
+                     chargeID: nil,
                      items: sampleItems(),
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),

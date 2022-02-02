@@ -211,34 +211,7 @@ private extension OrdersUpsertUseCaseTests {
     }
 
     func makeOrder() -> Networking.Order {
-        Order(siteID: defaultSiteID,
-              orderID: 0,
-              parentID: 0,
-              customerID: 0,
-              orderKey: "",
-              number: "",
-              status: .custom(""),
-              currency: "",
-              customerNote: nil,
-              dateCreated: Date(),
-              dateModified: Date(),
-              datePaid: nil,
-              discountTotal: "",
-              discountTax: "",
-              shippingTotal: "",
-              shippingTax: "",
-              total: "",
-              totalTax: "",
-              paymentMethodID: "",
-              paymentMethodTitle: "",
-              items: [],
-              billingAddress: nil,
-              shippingAddress: nil,
-              shippingLines: [],
-              coupons: [],
-              refunds: [],
-              fees: [],
-              taxes: [])
+        Order.fake().copy(siteID: defaultSiteID, items: [])
     }
 
     func makeOrderItem(itemID: Int64 = 76, attributes: [Networking.OrderItemAttribute] = []) -> Networking.OrderItem {

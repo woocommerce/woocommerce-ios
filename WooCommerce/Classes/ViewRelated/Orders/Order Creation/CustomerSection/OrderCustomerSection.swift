@@ -36,8 +36,6 @@ private struct OrderCustomerSectionContent: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     var body: some View {
-        Divider()
-
         VStack(alignment: .leading, spacing: .zero) {
             HStack(alignment: .top) {
                 Text(Localization.customer)
@@ -66,8 +64,7 @@ private struct OrderCustomerSectionContent: View {
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground))
-
-        Divider()
+        .addingTopAndBottomDividers()
     }
 
     private var createCustomerView: some View {

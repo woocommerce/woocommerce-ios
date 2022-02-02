@@ -62,9 +62,8 @@ public struct StripeAccount: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let status = try container.decode(WCPayAccountStatusEnum.self, forKey: .status)
-        // TODO. Rollback these two hardcoded values
-        let isLiveAccount = false
-        let isInTestMode = true
+        let isLiveAccount = try container.decode(Bool.self, forKey: .isLive)
+        let isInTestMode = try container.decode(Bool.self, forKey: .testMode)
         let hasPendingRequirements = try container.decode(Bool.self, forKey: .hasPendingRequirements)
         let hasOverdueRequirements = try container.decode(Bool.self, forKey: .hasOverdueRequirements)
         let currentDeadline = try container.decodeIfPresent(Date.self, forKey: .currentDeadline)
@@ -90,22 +89,6 @@ public struct StripeAccount: Decodable {
             isCardPresentEligible: true
         )
     }
-}
-
-public extension StripeAccount {
-    static let noAccount = StripeAccount(
-        status: .noAccount,
-        isLiveAccount: false,
-        isInTestMode: false,
-        hasPendingRequirements: false,
-        hasOverdueRequirements: false,
-        currentDeadline: nil,
-        statementDescriptor: "",
-        defaultCurrency: "",
-        supportedCurrencies: [],
-        country: "",
-        isCardPresentEligible: false
-    )
 }
 
 private extension StripeAccount {

@@ -62,7 +62,7 @@ final class InboxNoteListMapperTests: XCTestCase {
 ///
 private extension InboxNoteListMapperTests {
 
-    /// Returns the CouponListMapper output upon receiving `filename` (Data Encoded)
+    /// Returns the InboxNoteListMapper output upon receiving `filename` (Data Encoded)
     ///
     func mapInboxNoteList(from filename: String) throws -> [InboxNote] {
         guard let response = Loader.contentsOf(filename) else {

@@ -136,6 +136,14 @@ public enum AppSettingsAction: Action {
     ///
     case setStripeInPersonPaymentsSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
 
+    /// Loads the most recent state for the In-Person Payments in Canada beta feature switch
+    ///
+    case loadCanadaInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Sets the state for the In-Person Payments in Canada beta feature switch
+    ///
+    case setCanadaInPersonPaymentsSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
     /// Sets the state for the Product SKU Input Scanner beta feature switch.
     ///
     case setProductSKUInputScannerFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)

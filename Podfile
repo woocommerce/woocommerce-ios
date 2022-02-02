@@ -1,3 +1,5 @@
+require 'cocoapods-catalyst-support'
+
 # For security reasons, please always keep the wordpress-mobile source first and the CDN second.
 # For more info, see https://github.com/wordpress-mobile/cocoapods-specs#source-order-and-security-considerations
 install! 'cocoapods', warn_for_multiple_pod_sources: false
@@ -16,7 +18,7 @@ platform :ios, app_ios_deployment_target.version
 workspace 'WooCommerce.xcworkspace'
 
 ## Pods shared between all the targets
-## ===================================
+## =====================================
 ##
 def aztec
   pod 'WordPress-Editor-iOS', '~> 1.11.0'
@@ -246,20 +248,35 @@ pre_install do |installer|
     end
     static << pod
     def pod.static_framework?
-      true
-    end
-  end
-
-  puts "Installing #{static.count} pods as static frameworks"
-  puts "Installing #{dynamic.count} pods as dynamic frameworks"
-
-  # Force CocoaLumberjack Swift version
-  installer.analysis_result.specifications.each do |s|
-    s.swift_version = '5.0' if s.name == 'CocoaLumberjack'
+    true
   end
 end
 
+puts "Installing #{static.count} pods as static frameworks"
+puts "Installing #{dynamic.count} pods as dynamic frameworks"
+
+# Force CocoaLumberjack Swift version
+installer.analysis_result.specifications.each do |s|
+  s.swift_version = '5.0' if s.name == 'CocoaLumberjack'
+end
+end
+
+
+# Configure your macCatalyst dependencies
+catalyst_configuration do
+  # Uncomment the next line for a verbose output
+  # verbose!
+
+  # ios '<pod_name>' # This dependency will only be available for iOS
+  ios 'StripeTerminal'
+  ios 'ZendeskSupportSDK'
+  # macos '<pod_name>' # This dependency will only be available for macOS
+end
+
+
 post_install do |installer|
+
+  installer.configure_catalyst
   # Workaround: Drop 32 Bit Architectures
   # =====================================
   #
@@ -272,6 +289,12 @@ post_install do |installer|
   # =====================================
   #
   installer.pods_project.targets.each do |target|
+    # Fix bundle targets' 'Signing Certificate' to 'Sign to Run Locally'
+    if target.respond_to?(:product_type) and target.product_type == "com.apple.product-type.bundle"
+      target.build_configurations.each do |config|
+        config.build_settings['CODE_SIGN_IDENTITY[sdk=macosx*]'] = '-'
+      end
+    end
     target.build_configurations.each do |configuration|
       pod_ios_deployment_target = Gem::Version.new(configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'])
       if pod_ios_deployment_target <= app_ios_deployment_target

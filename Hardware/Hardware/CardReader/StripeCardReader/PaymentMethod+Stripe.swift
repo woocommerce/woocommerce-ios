@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 extension PaymentMethod {
@@ -24,3 +25,4 @@ extension PaymentMethod {
         }
     }
 }
+#endif

@@ -19,7 +19,7 @@ final class SurveyCoordinatingController: WooNavigationController {
     private let survey: SurveyViewController.Source
 
     init(survey: SurveyViewController.Source,
-         zendeskManager: ZendeskManagerProtocol = ZendeskManager.shared,
+         zendeskManager: ZendeskManagerProtocol = ZendeskProvider.shared,
          viewControllersFactory: SurveyViewControllersFactoryProtocol = SurveyViewControllersFactory(),
          analytics: Analytics = ServiceLocator.analytics) {
         self.survey = survey

@@ -168,11 +168,11 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
     func test_onLoadTrigger_triggers_initial_product_variation_sync() {
         // Given
         let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: Product.fake(), storageManager: storageManager, stores: stores)
-        var isSyncTriggered = false
+        var timesSynced = 0
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
             case .synchronizeProductVariations:
-                isSyncTriggered = true
+                timesSynced += 1
             default:
                 XCTFail("Unsupported Action")
             }
@@ -180,9 +180,10 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
 
         // When
         viewModel.onLoadTrigger.send()
+        viewModel.onLoadTrigger.send()
 
         // Then
-        XCTAssertTrue(isSyncTriggered)
+        XCTAssertEqual(timesSynced, 1)
     }
 }
 

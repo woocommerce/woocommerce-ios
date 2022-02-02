@@ -127,11 +127,11 @@ class AddProductToOrderViewModelTests: XCTestCase {
     func test_onLoadTrigger_triggers_initial_product_sync() {
         // Given
         let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
-        var isSyncTriggered = false
+        var timesSynced = 0
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case .synchronizeProducts:
-                isSyncTriggered = true
+                timesSynced += 1
             default:
                 XCTFail("Unsupported Action")
             }
@@ -139,9 +139,10 @@ class AddProductToOrderViewModelTests: XCTestCase {
 
         // When
         viewModel.onLoadTrigger.send()
+        viewModel.onLoadTrigger.send()
 
         // Then
-        XCTAssertTrue(isSyncTriggered)
+        XCTAssertEqual(timesSynced, 1)
     }
 }
 

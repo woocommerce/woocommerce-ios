@@ -131,14 +131,20 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
 
+    /// Analytics engine.
+    ///
+    private let analytics: Analytics
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.analytics = analytics
 
         configureNavigationTrailingItem()
         configureStatusBadgeViewModel()
@@ -410,6 +416,8 @@ private extension NewOrderViewModel {
         let newOrderItem = NewOrderItem(product: product, quantity: 1)
         orderDetails.items.append(newOrderItem)
         configureProductRowViewModels()
+
+        analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
     }
 
     /// Adds a selected product variation (from the product list) to the order.
@@ -418,6 +426,8 @@ private extension NewOrderViewModel {
         let newOrderItem = NewOrderItem(variation: variation, quantity: 1)
         orderDetails.items.append(newOrderItem)
         configureProductRowViewModels()
+
+        analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
     }
 
     /// Configures product row view models for each item in `orderDetails`.

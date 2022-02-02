@@ -16,6 +16,11 @@ public protocol InboxNotesRemoteProtocol {
     func dismissInboxNote(for siteID: Int64,
                           noteID: Int64,
                           completion: @escaping (Result<InboxNote, Error>) -> ())
+
+    func markInboxNoteAsActioned(for siteID: Int64,
+                                 noteID: Int64,
+                                 actionID: Int64,
+                                 completion: @escaping (Result<InboxNote, Error>) -> ())
 }
 
 

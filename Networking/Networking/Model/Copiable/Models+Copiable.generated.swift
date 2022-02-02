@@ -1699,6 +1699,87 @@ extension TopEarnerStatsItem {
     }
 }
 
+extension WCPayCardPaymentDetails {
+    public func copy(
+    ) -> WCPayCardPaymentDetails {
+
+        return WCPayCardPaymentDetails(
+        )
+    }
+}
+
+extension WCPayCardPresentPaymentDetails {
+    public func copy(
+    ) -> WCPayCardPresentPaymentDetails {
+
+        return WCPayCardPresentPaymentDetails(
+        )
+    }
+}
+
+extension WCPayCardPresentReceiptDetails {
+    public func copy(
+    ) -> WCPayCardPresentReceiptDetails {
+
+        return WCPayCardPresentReceiptDetails(
+        )
+    }
+}
+
+extension WCPayCharge {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        id: CopiableProp<String> = .copy,
+        amount: CopiableProp<Int64> = .copy,
+        amountCaptured: CopiableProp<Int64> = .copy,
+        amountRefunded: CopiableProp<Int64> = .copy,
+        authorizationCode: CopiableProp<String> = .copy,
+        captured: CopiableProp<Bool> = .copy,
+        created: CopiableProp<Date> = .copy,
+        currency: CopiableProp<String> = .copy,
+        paid: CopiableProp<Bool> = .copy,
+        paymentIntentID: NullableCopiableProp<String> = .copy,
+        paymentMethodID: CopiableProp<String> = .copy,
+        paymentMethodDetails: CopiableProp<WCPayPaymentMethodDetails> = .copy,
+        refunded: CopiableProp<Bool> = .copy,
+        status: CopiableProp<WCPayChargeStatus> = .copy
+    ) -> WCPayCharge {
+        let siteID = siteID ?? self.siteID
+        let id = id ?? self.id
+        let amount = amount ?? self.amount
+        let amountCaptured = amountCaptured ?? self.amountCaptured
+        let amountRefunded = amountRefunded ?? self.amountRefunded
+        let authorizationCode = authorizationCode ?? self.authorizationCode
+        let captured = captured ?? self.captured
+        let created = created ?? self.created
+        let currency = currency ?? self.currency
+        let paid = paid ?? self.paid
+        let paymentIntentID = paymentIntentID ?? self.paymentIntentID
+        let paymentMethodID = paymentMethodID ?? self.paymentMethodID
+        let paymentMethodDetails = paymentMethodDetails ?? self.paymentMethodDetails
+        let refunded = refunded ?? self.refunded
+        let status = status ?? self.status
+
+        return WCPayCharge(
+            siteID: siteID,
+            id: id,
+            amount: amount,
+            amountCaptured: amountCaptured,
+            amountRefunded: amountRefunded,
+            authorizationCode: authorizationCode,
+            captured: captured,
+            created: created,
+            currency: currency,
+            paid: paid,
+            paymentIntentID: paymentIntentID,
+            paymentMethodID: paymentMethodID,
+            paymentMethodDetails: paymentMethodDetails,
+            refunded: refunded,
+            status: status
+        )
+    }
+}
+
 extension WordPressMedia {
     public func copy(
         mediaID: CopiableProp<Int64> = .copy,

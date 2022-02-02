@@ -1644,11 +1644,103 @@ extension WCPayAccountStatusEnum {
         .complete
     }
 }
+extension WCPayCardBrand {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCPayCardBrand {
+        .amex
+    }
+}
+extension WCPayCardFunding {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCPayCardFunding {
+        .credit
+    }
+}
+extension WCPayCardPaymentDetails {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCPayCardPaymentDetails {
+        .init(
+            brand: .fake(),
+            last4: .fake(),
+            funding: .fake()
+        )
+    }
+}
+extension WCPayCardPresentPaymentDetails {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCPayCardPresentPaymentDetails {
+        .init(
+            brand: .fake(),
+            last4: .fake(),
+            funding: .fake(),
+            receipt: .fake()
+        )
+    }
+}
+extension WCPayCardPresentReceiptDetails {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCPayCardPresentReceiptDetails {
+        .init(
+            accountType: .fake(),
+            applicationPreferredName: .fake(),
+            dedicatedFileName: .fake()
+        )
+    }
+}
+extension WCPayCharge {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCPayCharge {
+        .init(
+            siteID: .fake(),
+            id: .fake(),
+            amount: .fake(),
+            amountCaptured: .fake(),
+            amountRefunded: .fake(),
+            authorizationCode: .fake(),
+            captured: .fake(),
+            created: .fake(),
+            currency: .fake(),
+            paid: .fake(),
+            paymentIntentID: .fake(),
+            paymentMethodID: .fake(),
+            paymentMethodDetails: .fake(),
+            refunded: .fake(),
+            status: .fake()
+        )
+    }
+}
+extension WCPayChargeStatus {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCPayChargeStatus {
+        .succeeded
+    }
+}
 extension WCPayPaymentIntentStatusEnum {
     /// Returns a "ready to use" type filled with fake values.
     ///
     public static func fake() -> WCPayPaymentIntentStatusEnum {
         .requiresPaymentMethod
+    }
+}
+extension WCPayPaymentMethodDetails {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCPayPaymentMethodDetails {
+        .card
+    }
+}
+extension WCPayPaymentMethodType {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCPayPaymentMethodType {
+        .card
     }
 }
 extension WordPressMedia {

@@ -5,7 +5,7 @@ extension Hardware.PaymentIntentParameters {
     /// Hardware.PaymentIntentParameters
     func toStripe() -> StripeTerminal.PaymentIntentParameters? {
         // Shortcircuit if we do not have a valid currency code
-        guard !self.currency.isEmpty else {
+        guard !currency.isEmpty else {
             return nil
         }
 
@@ -15,20 +15,20 @@ extension Hardware.PaymentIntentParameters {
 
         let amountForStripe = NSDecimalNumber(decimal: amountInSmallestUnit).uintValue
 
-        let returnValue = StripeTerminal.PaymentIntentParameters(amount: amountForStripe, currency: self.currency)
-        returnValue.stripeDescription = self.receiptDescription
+        let returnValue = StripeTerminal.PaymentIntentParameters(amount: amountForStripe, currency: currency)
+        returnValue.stripeDescription = receiptDescription
 
         /// Stripe allows the credit card statement descriptor to be nil, but not an empty string
         /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPPaymentIntentParameters.html#/c:objc(cs)SCPPaymentIntentParameters(py)statementDescriptor
         returnValue.statementDescriptor = nil
-        let descriptor = self.statementDescription ?? ""
+        let descriptor = statementDescription ?? ""
         if !descriptor.isEmpty {
             returnValue.statementDescriptor = descriptor
         }
 
-        returnValue.receiptEmail = self.receiptEmail
-        returnValue.customer = self.customerID
-        returnValue.metadata = self.metadata
+        returnValue.receiptEmail = receiptEmail
+        returnValue.customer = customerID
+        returnValue.metadata = metadata
 
         return returnValue
     }

@@ -75,6 +75,14 @@ final class PaymentIntentParametersTests: XCTestCase {
         XCTAssertNil(stripeParameters?.statementDescriptor)
     }
 
+    func test_statementDescription_is_passed_as_nil_when_nil() throws {
+        let params = PaymentIntentParameters(amount: 100, currency: "usd", statementDescription: nil)
+
+        let stripeParameters = params.toStripe()
+
+        XCTAssertNil(stripeParameters?.statementDescriptor)
+    }
+
     func test_customer_id_is_passed_to_stripe() {
         let customerID = "customer_id"
         let params = PaymentIntentParameters(amount: 100, currency: "usd", statementDescription: "A DESCRIPTION", customerID: customerID)

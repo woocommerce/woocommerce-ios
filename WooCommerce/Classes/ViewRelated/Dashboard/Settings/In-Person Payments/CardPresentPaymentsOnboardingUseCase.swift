@@ -31,6 +31,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     let storageManager: StorageManagerType
     let stores: StoresManager
     private var stripeGatewayIPPEnabled: Bool?
+    private var canadaIPPEnabled: Bool?
 
     @Published var state: CardPresentPaymentOnboardingState = .loading
 
@@ -44,16 +45,31 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     ) {
         self.storageManager = storageManager
         self.stores = stores
-        let action = AppSettingsAction.loadStripeInPersonPaymentsSwitchState(onCompletion: { [weak self] result in
+
+        let stripeAction = AppSettingsAction.loadStripeInPersonPaymentsSwitchState(onCompletion: { [weak self] result in
             switch result {
             case .success(let stripeGatewayIPPEnabled):
                 self?.stripeGatewayIPPEnabled = stripeGatewayIPPEnabled
             default:
                 break
             }
-            self?.updateState()
         })
-        stores.dispatch(action)
+        stores.dispatch(stripeAction)
+
+        let canadaAction = AppSettingsAction.loadCanadaInPersonPaymentsSwitchState(onCompletion: { [weak self]  result in
+            switch result {
+            case .success(let canadaIPPEnabled):
+                self?.canadaIPPEnabled = canadaIPPEnabled
+            default:
+                break
+            }
+        })
+        stores.dispatch(canadaAction)
+
+        // At the time of writing, actions are dispatched and processed synchronously, so the completion blocks for
+        // loadStripeInPersonPaymentsSwitchState and loadCanadaInPersonPaymentsSwitchState should have been called already.
+        // We defer updating the state until all settings are read to prevent unnecessary checks.
+        updateState()
     }
 
     func refresh() {
@@ -257,7 +273,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isCountrySupported(plugin: CardPresentPaymentsPlugins, countryCode: String) -> Bool {
-        return plugin.supportedCountryCodes.contains(countryCode)
+        return supportedCountryCodes(plugin: plugin).contains(countryCode)
     }
 
     func getWCPayPlugin() -> SystemPlugin? {
@@ -363,13 +379,13 @@ private extension PaymentGatewayAccount {
     }
 }
 
-private extension CardPresentPaymentsPlugins {
+private extension CardPresentPaymentsOnboardingUseCase {
     // This was moved from Yosemite so it can check the feature flag
-    // In a future iteration, we might want to store all the configuration in the WooCommerce layer
-    var supportedCountryCodes: [String] {
-        switch self {
+    // In a future iteration, we might want to store all the configuration in a better place
+    func supportedCountryCodes(plugin: CardPresentPaymentsPlugins) -> [String] {
+        switch plugin {
         case .wcPay:
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.canadaInPersonPayments) {
+            if canadaIPPEnabled == true {
                 return ["US", "CA"]
             } else {
                 return ["US"]

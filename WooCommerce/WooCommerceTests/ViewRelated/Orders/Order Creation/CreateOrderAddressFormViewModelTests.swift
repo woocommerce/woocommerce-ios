@@ -35,6 +35,20 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showDifferentAddressForm)
     }
 
+    func test_input_of_identical_addresses_does_not_prefill_second_set_of_fields() {
+        // Given
+        let viewModel = CreateOrderAddressFormViewModel(siteID: sampleSiteID,
+                                                        addressData: .init(billingAddress: sampleAddress(), shippingAddress: sampleAddress()),
+                                                        onAddressUpdate: nil,
+                                                        storageManager: testingStorage)
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then
+        assertEqual(viewModel.secondaryFields.toAddress(), .empty)
+    }
+
     func test_input_of_different_addresses_enables_different_address_toggle() {
         // Given
         let address1 = sampleAddress()
@@ -59,7 +73,6 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         viewModel.onLoadTrigger.send()
-
 
         // Then
         XCTAssertEqual(viewModel.secondaryFields.firstName, address2.firstName)

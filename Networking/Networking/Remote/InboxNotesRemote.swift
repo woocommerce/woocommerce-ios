@@ -62,14 +62,7 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
 
         let mapper = InboxNoteListMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: { result in
-            switch result {
-            case .success(let inboxNotes):
-                completion(.success(inboxNotes))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        })
+        enqueue(request, mapper: mapper, completion: completion)
     }
 }
 

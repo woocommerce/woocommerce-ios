@@ -12,6 +12,10 @@ public protocol InboxNotesRemoteProtocol {
                            type: [InboxNotesRemote.NoteType]?,
                            status: [InboxNotesRemote.Status]?,
                            completion: @escaping (Result<[InboxNote], Error>) -> ())
+
+    func dismissInboxNote(for siteID: Int64,
+                          noteID: Int64,
+                          completion: @escaping (Result<InboxNote, Error>) -> ())
 }
 
 
@@ -61,6 +65,31 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
                                      parameters: parameters)
 
         let mapper = InboxNoteListMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    // MARK: - DISMISS Inbox Note
+
+    /// Dismiss one `InboxNote`.
+    /// This internally marks a notification’s is_deleted field to true and such notifications do not show in the results anymore.
+    ///
+    /// - Parameters:
+    ///     - siteID: The site for which we'll fetch InboxNotes.
+    ///     - noteID: The ID of the note that should be marked as dismissed.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func dismissInboxNote(for siteID: Int64,
+                                 noteID: Int64,
+                                 completion: @escaping (Result<InboxNote, Error>) -> ()) {
+
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .delete,
+                                     siteID: siteID,
+                                     path: Path.notes + "/\(noteID)",
+                                     parameters: nil)
+
+        let mapper = InboxNoteMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

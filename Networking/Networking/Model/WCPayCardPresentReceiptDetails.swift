@@ -11,13 +11,13 @@ import Codegen
 ///
 public struct WCPayCardPresentReceiptDetails: Codable, GeneratedCopiable, GeneratedFakeable, Equatable {
     /// The funding method for the account used to pay, e.g. `credit`, `debit`, `prepaid`, `unknown`
-    let accountType: WCPayCardFunding
+    public let accountType: WCPayCardFunding
 
     /// The EMV Application Identifier (AID)
-    let applicationPreferredName: String
+    public let applicationPreferredName: String
 
     /// The EMV Dedicated File (DF) Name
-    let dedicatedFileName: String
+    public let dedicatedFileName: String
 
     public init(accountType: WCPayCardFunding,
                 applicationPreferredName: String,

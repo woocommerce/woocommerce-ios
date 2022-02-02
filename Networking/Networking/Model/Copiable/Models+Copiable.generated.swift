@@ -1701,27 +1701,57 @@ extension TopEarnerStatsItem {
 
 extension WCPayCardPaymentDetails {
     public func copy(
+        brand: CopiableProp<WCPayCardBrand> = .copy,
+        last4: CopiableProp<String> = .copy,
+        funding: CopiableProp<WCPayCardFunding> = .copy
     ) -> WCPayCardPaymentDetails {
+        let brand = brand ?? self.brand
+        let last4 = last4 ?? self.last4
+        let funding = funding ?? self.funding
 
         return WCPayCardPaymentDetails(
+            brand: brand,
+            last4: last4,
+            funding: funding
         )
     }
 }
 
 extension WCPayCardPresentPaymentDetails {
     public func copy(
+        brand: CopiableProp<WCPayCardBrand> = .copy,
+        last4: CopiableProp<String> = .copy,
+        funding: CopiableProp<WCPayCardFunding> = .copy,
+        receipt: CopiableProp<WCPayCardPresentReceiptDetails> = .copy
     ) -> WCPayCardPresentPaymentDetails {
+        let brand = brand ?? self.brand
+        let last4 = last4 ?? self.last4
+        let funding = funding ?? self.funding
+        let receipt = receipt ?? self.receipt
 
         return WCPayCardPresentPaymentDetails(
+            brand: brand,
+            last4: last4,
+            funding: funding,
+            receipt: receipt
         )
     }
 }
 
 extension WCPayCardPresentReceiptDetails {
     public func copy(
+        accountType: CopiableProp<WCPayCardFunding> = .copy,
+        applicationPreferredName: CopiableProp<String> = .copy,
+        dedicatedFileName: CopiableProp<String> = .copy
     ) -> WCPayCardPresentReceiptDetails {
+        let accountType = accountType ?? self.accountType
+        let applicationPreferredName = applicationPreferredName ?? self.applicationPreferredName
+        let dedicatedFileName = dedicatedFileName ?? self.dedicatedFileName
 
         return WCPayCardPresentReceiptDetails(
+            accountType: accountType,
+            applicationPreferredName: applicationPreferredName,
+            dedicatedFileName: dedicatedFileName
         )
     }
 }

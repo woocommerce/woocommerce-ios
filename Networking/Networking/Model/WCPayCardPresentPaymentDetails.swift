@@ -9,16 +9,16 @@ import Codegen
 ///
 public struct WCPayCardPresentPaymentDetails: Codable, GeneratedCopiable, GeneratedFakeable, Equatable {
     /// The brand of the card, e.g. `amex`, `mastercard`, `visa`, etc
-    let brand: WCPayCardBrand
-    
+    public let brand: WCPayCardBrand
+
     /// The last 4 digits of the card number
-    let last4: String
+    public let last4: String
 
     /// The way the card is funded, e.g. `credit`, `debit`, `prepaid`
-    let funding: WCPayCardFunding
+    public let funding: WCPayCardFunding
 
     /// Required receipt details (some mandatory for EMV receipts)
-    let receipt: WCPayCardPresentReceiptDetails
+    public let receipt: WCPayCardPresentReceiptDetails
 
     public init(brand: WCPayCardBrand,
                 last4: String,

@@ -224,6 +224,7 @@ final class NewOrderViewModel: ObservableObject {
             }
         }
         stores.dispatch(action)
+        trackCreateButtonTapped()
     }
 
     /// Assign this closure to be notified when a new order is created
@@ -493,6 +494,18 @@ private extension NewOrderViewModel {
             return billingAddress != shippingAddress
         }()
         analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerAdd(flow: .creation, hasDifferentShippingDetails: areAddressesDifferent))
+    }
+
+    /// Tracks when the create order button is tapped.
+    ///
+    /// Warning: This methods assume that `orderDetails.items.count` is equal to the product count,
+    /// We probably should update this property to something like `itemsCount` or include  better way to get the product count as the module evolves.
+    ///
+    func trackCreateButtonTapped() {
+        let hasCustomerDetails = orderDetails.billingAddress != nil || orderDetails.shippingAddress != nil
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderDetails.status,
+                                                                                productCount: orderDetails.items.count,
+                                                                                hasCustomerDetails: hasCustomerDetails))
     }
 }
 

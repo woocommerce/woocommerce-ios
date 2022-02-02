@@ -361,19 +361,19 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderStatusChange(flow: Flow, from oldStatus: OrderStatus, to newStatus: OrderStatus) -> WooAnalyticsEvent {
+        static func orderStatusChange(flow: Flow, from oldStatus: OrderStatusEnum, to newStatus: OrderStatusEnum) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderStatusChange, properties: [
                 Keys.flow: flow.rawValue,
-                Keys.from: oldStatus.slug,
-                Keys.to: newStatus.slug
+                Keys.from: oldStatus.rawValue,
+                Keys.to: newStatus.rawValue
             ])
         }
 
-        static func orderCreateButtonTapped(status: OrderStatus,
+        static func orderCreateButtonTapped(status: OrderStatusEnum,
                                             productCount: Int,
                                             hasCustomerDetails: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreateButtonTapped, properties: [
-                Keys.orderStatus: status.slug,
+                Keys.orderStatus: status.rawValue,
                 Keys.productCount: Int64(productCount),
                 Keys.hasCustomerDetails: hasCustomerDetails
             ])

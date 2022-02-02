@@ -326,10 +326,6 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // Then
 
-        // AppSettingsAction.loadStripeInPersonPaymentsSwitchState
-        // + AppSettingsAction.loadCanadaInPersonPaymentsSwitchState
-        // + CardPresentPaymentAction.use
-        XCTAssertEqual(stores.receivedActions.count, 3)
         let action = try XCTUnwrap(stores.receivedActions.last as? CardPresentPaymentAction)
 
         switch action {
@@ -376,10 +372,6 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // Then
 
-        // AppSettingsAction.loadStripeInPersonPaymentsSwitchState
-        // + AppSettingsAction.loadCanadaInPersonPaymentsSwitchState
-        // + CardPresentPaymentAction.use
-        XCTAssertEqual(stores.receivedActions.count, 3)
         let action = try XCTUnwrap(stores.receivedActions.last as? CardPresentPaymentAction)
 
         switch action {

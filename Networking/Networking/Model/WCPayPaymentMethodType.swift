@@ -9,13 +9,6 @@ import Codegen
 ///
 public enum WCPayPaymentMethodType: String, Codable, GeneratedCopiable, GeneratedFakeable, Equatable {
     case card
-    case cardPresent
+    case cardPresent = "card_present"
     case unknown
-}
-
-internal extension WCPayPaymentMethodType {
-    enum CodingKeys: String, CodingKey {
-        case card
-        case cardPresent = "card_present"
-    }
 }

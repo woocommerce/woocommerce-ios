@@ -88,7 +88,8 @@
 		0359EA1B27AAC7CC0048DE2D /* WCPayCardPresentReceiptDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0359EA1A27AAC7CC0048DE2D /* WCPayCardPresentReceiptDetails.swift */; };
 		0359EA1D27AADE000048DE2D /* WCPayChargeMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0359EA1C27AADE000048DE2D /* WCPayChargeMapper.swift */; };
 		0359EA1F27AAE4680048DE2D /* WCPayChargeMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0359EA1E27AAE4680048DE2D /* WCPayChargeMapperTests.swift */; };
-		0359EA2127AAE58C0048DE2D /* wcpay-charge.json in Resources */ = {isa = PBXBuildFile; fileRef = 0359EA2027AAE58C0048DE2D /* wcpay-charge.json */; };
+		0359EA2127AAE58C0048DE2D /* wcpay-charge-card-present.json in Resources */ = {isa = PBXBuildFile; fileRef = 0359EA2027AAE58C0048DE2D /* wcpay-charge-card-present.json */; };
+		0359EA2527AAF7D60048DE2D /* wcpay-charge-card.json in Resources */ = {isa = PBXBuildFile; fileRef = 0359EA2427AAF7D60048DE2D /* wcpay-charge-card.json */; };
 		03DCB72626244B9B00C8953D /* Coupon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB72526244B9B00C8953D /* Coupon.swift */; };
 		03DCB7402624AD7D00C8953D /* CouponListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB73F2624AD7D00C8953D /* CouponListMapper.swift */; };
 		03DCB7442624AD9B00C8953D /* CouponListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB7432624AD9A00C8953D /* CouponListMapperTests.swift */; };
@@ -754,7 +755,8 @@
 		0359EA1A27AAC7CC0048DE2D /* WCPayCardPresentReceiptDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayCardPresentReceiptDetails.swift; sourceTree = "<group>"; };
 		0359EA1C27AADE000048DE2D /* WCPayChargeMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayChargeMapper.swift; sourceTree = "<group>"; };
 		0359EA1E27AAE4680048DE2D /* WCPayChargeMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayChargeMapperTests.swift; sourceTree = "<group>"; };
-		0359EA2027AAE58C0048DE2D /* wcpay-charge.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-charge.json"; sourceTree = "<group>"; };
+		0359EA2027AAE58C0048DE2D /* wcpay-charge-card-present.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-charge-card-present.json"; sourceTree = "<group>"; };
+		0359EA2427AAF7D60048DE2D /* wcpay-charge-card.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-charge-card.json"; sourceTree = "<group>"; };
 		03DCB72526244B9B00C8953D /* Coupon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coupon.swift; sourceTree = "<group>"; };
 		03DCB73F2624AD7D00C8953D /* CouponListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListMapper.swift; sourceTree = "<group>"; };
 		03DCB7432624AD9A00C8953D /* CouponListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListMapperTests.swift; sourceTree = "<group>"; };
@@ -2001,7 +2003,8 @@
 				02A26F1A2744F5FC008E4EDB /* wp-site-settings.json */,
 				DEC51AEC2768A0AD009F3DF4 /* systemStatusWithPluginsOnly.json */,
 				077F39D726A58EB600ABEADC /* systemStatus.json */,
-				0359EA2027AAE58C0048DE2D /* wcpay-charge.json */,
+				0359EA2427AAF7D60048DE2D /* wcpay-charge-card.json */,
+				0359EA2027AAE58C0048DE2D /* wcpay-charge-card-present.json */,
 				45CCFCE927A2E59B0012E8CB /* inbox-note-list.json */,
 			);
 			path = Responses;
@@ -2572,6 +2575,7 @@
 				31D27C8F2602B553002EDB1D /* plugins.json in Resources */,
 				261CF1B4255AD6B30090D8D3 /* payment-gateway-list.json in Resources */,
 				268B68FB24C87384007EBF1D /* leaderboards-products.json in Resources */,
+				0359EA2527AAF7D60048DE2D /* wcpay-charge-card.json in Resources */,
 				028FA473257E110700F88A48 /* shipping-label-refund-error.json in Resources */,
 				74ABA1C9213F19FE00FFAD30 /* top-performers-month.json in Resources */,
 				3158FE7026129D7500E566B9 /* wcpay-account-rejected-listed.json in Resources */,
@@ -2589,7 +2593,7 @@
 				D800DA0E25EFEC21001E13CE /* wcpay-connection-token.json in Resources */,
 				74159628224D63CE003C21CF /* settings-product-alt.json in Resources */,
 				45AB8B2024AB3E1F00B5B36E /* product-tags-empty.json in Resources */,
-				0359EA2127AAE58C0048DE2D /* wcpay-charge.json in Resources */,
+				0359EA2127AAE58C0048DE2D /* wcpay-charge-card-present.json in Resources */,
 				451274A625276C82009911FF /* product-variation.json in Resources */,
 				020D07C223D858BB00FD9580 /* media-upload.json in Resources */,
 				31A451D127863A2E00FE81AA /* stripe-account-rejected-other.json in Resources */,

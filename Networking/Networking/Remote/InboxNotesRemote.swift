@@ -75,7 +75,7 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
     /// This internally marks a notification’s is_deleted field to true and such notifications do not show in the results anymore.
     ///
     /// - Parameters:
-    ///     - siteID: The site for which we'll fetch InboxNotes.
+    ///     - siteID: The site for which we'll dismiss the InboxNote.
     ///     - noteID: The ID of the note that should be marked as dismissed.
     ///     - completion: Closure to be executed upon completion.
     ///
@@ -87,6 +87,33 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
                                      method: .delete,
                                      siteID: siteID,
                                      path: Path.notes + "/\(noteID)",
+                                     parameters: nil)
+
+        let mapper = InboxNoteMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    // MARK: - Set Inbox Note as `actioned`
+
+    /// Set an `InboxNote` as `actioned`.
+    /// This internally marks a notification’s status as `actioned`.
+    ///
+    /// - Parameters:
+    ///     - siteID: The site for which we'll mark the InboxNote as actioned.
+    ///     - noteID: The ID of the note.
+    ///     - actionID: The ID of the action.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func markInboxNoteAsActioned(for siteID: Int64,
+                                        noteID: Int64,
+                                        actionID: Int64,
+                                        completion: @escaping (Result<InboxNote, Error>) -> ()) {
+
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: Path.notes + "/\(noteID)/action/\(actionID)",
                                      parameters: nil)
 
         let mapper = InboxNoteMapper(siteID: siteID)
@@ -106,7 +133,6 @@ public extension InboxNotesRemote {
 
     private enum Path {
         static let notes = "admin/notes"
-        static let deleteNote = "admin/notes/delete"
     }
 
     private enum ParameterKey {

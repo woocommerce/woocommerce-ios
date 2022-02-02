@@ -17,19 +17,20 @@ extension Hardware.PaymentIntentParameters {
 
         let returnValue = StripeTerminal.PaymentIntentParameters(amount: amountForStripe, currency: self.currency)
         returnValue.stripeDescription = self.receiptDescription
-
-        /// Stripe allows the credit card statement descriptor to be nil, but not an empty string
-        /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPPaymentIntentParameters.html#/c:objc(cs)SCPPaymentIntentParameters(py)statementDescriptor
-        returnValue.statementDescriptor = nil
-        let descriptor = self.statementDescription ?? ""
-        if !descriptor.isEmpty {
-            returnValue.statementDescriptor = descriptor
-        }
-
+        returnValue.statementDescriptor = nonEmptyStatementDescription
         returnValue.receiptEmail = self.receiptEmail
         returnValue.customer = self.customerID
         returnValue.metadata = self.metadata
 
         return returnValue
+    }
+
+    /// Stripe allows the credit card statement descriptor to be nil, but not an empty string
+    ///
+    /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPPaymentIntentParameters.html#/c:objc(cs)SCPPaymentIntentParameters(py)statementDescriptor
+    private var nonEmptyStatementDescription: String? {
+        return statementDescription.flatMap {
+            return $0.isEmpty ? nil : $0
+        }
     }
 }

@@ -83,7 +83,7 @@
 		0359EA1127AAC6740048DE2D /* WCPayPaymentMethodType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0359EA1027AAC6740048DE2D /* WCPayPaymentMethodType.swift */; };
 		0359EA1327AAC6D00048DE2D /* WCPayCardPaymentDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0359EA1227AAC6D00048DE2D /* WCPayCardPaymentDetails.swift */; };
 		0359EA1527AAC7460048DE2D /* WCPayCardBrand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0359EA1427AAC7460048DE2D /* WCPayCardBrand.swift */; };
-		0359EA1727AAC7740048DE2D /* WCPayAccountType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0359EA1627AAC7740048DE2D /* WCPayAccountType.swift */; };
+		0359EA1727AAC7740048DE2D /* WCPayCardFunding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0359EA1627AAC7740048DE2D /* WCPayCardFunding.swift */; };
 		0359EA1927AAC79E0048DE2D /* WCPayCardPresentPaymentDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0359EA1827AAC79E0048DE2D /* WCPayCardPresentPaymentDetails.swift */; };
 		0359EA1B27AAC7CC0048DE2D /* WCPayCardPresentReceiptDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0359EA1A27AAC7CC0048DE2D /* WCPayCardPresentReceiptDetails.swift */; };
 		03DCB72626244B9B00C8953D /* Coupon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB72526244B9B00C8953D /* Coupon.swift */; };
@@ -746,7 +746,7 @@
 		0359EA1027AAC6740048DE2D /* WCPayPaymentMethodType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayPaymentMethodType.swift; sourceTree = "<group>"; };
 		0359EA1227AAC6D00048DE2D /* WCPayCardPaymentDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayCardPaymentDetails.swift; sourceTree = "<group>"; };
 		0359EA1427AAC7460048DE2D /* WCPayCardBrand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayCardBrand.swift; sourceTree = "<group>"; };
-		0359EA1627AAC7740048DE2D /* WCPayAccountType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayAccountType.swift; sourceTree = "<group>"; };
+		0359EA1627AAC7740048DE2D /* WCPayCardFunding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayCardFunding.swift; sourceTree = "<group>"; };
 		0359EA1827AAC79E0048DE2D /* WCPayCardPresentPaymentDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayCardPresentPaymentDetails.swift; sourceTree = "<group>"; };
 		0359EA1A27AAC7CC0048DE2D /* WCPayCardPresentReceiptDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayCardPresentReceiptDetails.swift; sourceTree = "<group>"; };
 		03DCB72526244B9B00C8953D /* Coupon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coupon.swift; sourceTree = "<group>"; };
@@ -1766,7 +1766,7 @@
 				31054705262E278100C5C02B /* RemotePaymentIntent.swift */,
 				3192F21F260D33BB0067FEF9 /* WCPayAccount.swift */,
 				3192F223260D34C40067FEF9 /* WCPayAccountStatusEnum.swift */,
-				0359EA1627AAC7740048DE2D /* WCPayAccountType.swift */,
+				0359EA1627AAC7740048DE2D /* WCPayCardFunding.swift */,
 				0359EA1827AAC79E0048DE2D /* WCPayCardPresentPaymentDetails.swift */,
 				0359EA1A27AAC7CC0048DE2D /* WCPayCardPresentReceiptDetails.swift */,
 				0359EA1427AAC7460048DE2D /* WCPayCardBrand.swift */,
@@ -2885,7 +2885,7 @@
 				314703082670222500EF253A /* PaymentGatewayAccount.swift in Sources */,
 				CCF48B282628A4EB0034EA83 /* ShippingLabelAccountSettingsMapper.swift in Sources */,
 				B5BB1D1220A255EC00112D92 /* OrderStatusEnum.swift in Sources */,
-				0359EA1727AAC7740048DE2D /* WCPayAccountType.swift in Sources */,
+				0359EA1727AAC7740048DE2D /* WCPayCardFunding.swift in Sources */,
 				D88E229425AC9B420023F3B1 /* OrderFeeTaxStatus.swift in Sources */,
 				B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */,
 				2665032A261F41510079A159 /* ProductAddOn.swift in Sources */,

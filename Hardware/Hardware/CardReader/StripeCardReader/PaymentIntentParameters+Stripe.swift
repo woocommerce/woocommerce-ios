@@ -5,7 +5,7 @@ extension Hardware.PaymentIntentParameters {
     /// Hardware.PaymentIntentParameters
     func toStripe() -> StripeTerminal.PaymentIntentParameters? {
         // Shortcircuit if we do not have a valid currency code
-        guard !self.currency.isEmpty else {
+        guard !currency.isEmpty else {
             return nil
         }
 
@@ -15,12 +15,12 @@ extension Hardware.PaymentIntentParameters {
 
         let amountForStripe = NSDecimalNumber(decimal: amountInSmallestUnit).uintValue
 
-        let returnValue = StripeTerminal.PaymentIntentParameters(amount: amountForStripe, currency: self.currency)
-        returnValue.stripeDescription = self.receiptDescription
+        let returnValue = StripeTerminal.PaymentIntentParameters(amount: amountForStripe, currency: currency)
+        returnValue.stripeDescription = receiptDescription
         returnValue.statementDescriptor = nonEmptyStatementDescription
-        returnValue.receiptEmail = self.receiptEmail
-        returnValue.customer = self.customerID
-        returnValue.metadata = self.metadata
+        returnValue.receiptEmail = receiptEmail
+        returnValue.customer = customerID
+        returnValue.metadata = metadata
 
         return returnValue
     }

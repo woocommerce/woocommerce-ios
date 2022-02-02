@@ -4,8 +4,8 @@
 <dict>
 	<key>com.apple.developer.passkit.pass-presentation-suppression</key>
 	<true/>
-	<key>aps-environment</key>
-	<string>development</string>
+	<key>com.apple.developer.aps-environment</key>
+	<string>production</string>
 	<key>com.apple.developer.applesignin</key>
 	<array>
 		<string>Default</string>

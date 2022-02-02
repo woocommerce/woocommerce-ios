@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 /// Implementation of the ConnectionTokenProvider protocol that
@@ -21,3 +22,4 @@ final class DefaultConnectionTokenProvider: ConnectionTokenProvider {
         }
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 extension Hardware.UpdateTimeEstimate {
@@ -20,3 +21,4 @@ extension Hardware.UpdateTimeEstimate {
         }
     }
 }
+#endif

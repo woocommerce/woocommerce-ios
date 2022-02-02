@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 extension CardReaderEvent {
@@ -13,3 +14,4 @@ extension CardReaderEvent {
          .displayMessage(Terminal.stringFromReaderDisplayMessage(displayMessage))
     }
 }
+#endif

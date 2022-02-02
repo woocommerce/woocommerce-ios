@@ -232,6 +232,14 @@ final class NewOrderViewModel: ObservableObject {
     /// Assign this closure to be notified when a new order is created
     ///
     var onOrderCreated: (Order) -> Void = { _ in }
+
+    /// Updates the order status & tracks its event
+    ///
+    func updateOrderStatus(newStatus: OrderStatusEnum) {
+        let oldStatus = orderDetails.status
+        orderDetails.status = newStatus
+        analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .creation, from: oldStatus, to: newStatus))
+    }
 }
 
 // MARK: - Types
@@ -501,7 +509,8 @@ private extension NewOrderViewModel {
     /// Tracks when the create order button is tapped.
     ///
     /// Warning: This methods assume that `orderDetails.items.count` is equal to the product count,
-    /// As the module evolves to handle more types of items we should update this property to something like `itemsCount` or figure a  better way to get the product count.
+    /// As the module evolves to handle more types of items, we need to update the property to something like `itemsCount`
+    /// or figure out a better way to get the product count.
     ///
     func trackCreateButtonTapped() {
         let hasCustomerDetails = orderDetails.billingAddress != nil || orderDetails.shippingAddress != nil

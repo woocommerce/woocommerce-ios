@@ -218,8 +218,10 @@ final class NewOrderViewModel: ObservableObject {
             switch result {
             case .success(let newOrder):
                 self.onOrderCreated(newOrder)
+                self.trackCreateOrderSuccess()
             case .failure(let error):
                 self.notice = NoticeFactory.createOrderCreationErrorNotice()
+                self.trackCreateOrderFailure(error: error)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
@@ -499,13 +501,26 @@ private extension NewOrderViewModel {
     /// Tracks when the create order button is tapped.
     ///
     /// Warning: This methods assume that `orderDetails.items.count` is equal to the product count,
-    /// We probably should update this property to something like `itemsCount` or include  better way to get the product count as the module evolves.
+    /// As the module evolves to handle more types of items we should update this property to something like `itemsCount` or figure a  better way to get the product count.
     ///
     func trackCreateButtonTapped() {
         let hasCustomerDetails = orderDetails.billingAddress != nil || orderDetails.shippingAddress != nil
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderDetails.status,
                                                                                 productCount: orderDetails.items.count,
                                                                                 hasCustomerDetails: hasCustomerDetails))
+    }
+
+    /// Tracks an order creation success
+    ///
+    func trackCreateOrderSuccess() {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationSuccess())
+    }
+
+    /// Tracks an order creation failure
+    ///
+    func trackCreateOrderFailure(error: Error) {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(errorContext: String(describing: error),
+                                                                            errorDescription: error.localizedDescription))
     }
 }
 

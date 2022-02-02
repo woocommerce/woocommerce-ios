@@ -8,12 +8,13 @@ import Codegen
 /// [these docs are relevant](https://stripe.com/docs/api/charges/object#charge_object-payment_method_details)
 ///
 public enum WCPayPaymentMethodDetails: Decodable, GeneratedCopiable, GeneratedFakeable, Equatable {
+    case unknown
+
     /// A card payment, with `details`. This represents a payment made online, rather than in-person
     case card(details: WCPayCardPaymentDetails)
 
     /// A card present payment, with `details`. This represents an In-Person Payment.
     case cardPresent(details: WCPayCardPresentPaymentDetails)
-    case unknown
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)

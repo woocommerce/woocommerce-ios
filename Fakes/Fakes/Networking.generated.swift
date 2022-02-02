@@ -1733,7 +1733,7 @@ extension WCPayPaymentMethodDetails {
     /// Returns a "ready to use" type filled with fake values.
     ///
     public static func fake() -> WCPayPaymentMethodDetails {
-        .card
+        .unknown
     }
 }
 extension WCPayPaymentMethodType {

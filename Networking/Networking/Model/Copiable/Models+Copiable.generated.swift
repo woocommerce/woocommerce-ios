@@ -1763,7 +1763,7 @@ extension WCPayCharge {
         amount: CopiableProp<Int64> = .copy,
         amountCaptured: CopiableProp<Int64> = .copy,
         amountRefunded: CopiableProp<Int64> = .copy,
-        authorizationCode: CopiableProp<String> = .copy,
+        authorizationCode: NullableCopiableProp<String> = .copy,
         captured: CopiableProp<Bool> = .copy,
         created: CopiableProp<Date> = .copy,
         currency: CopiableProp<String> = .copy,

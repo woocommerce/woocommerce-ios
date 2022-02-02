@@ -24,7 +24,7 @@ public struct WCPayCharge: Decodable, GeneratedCopiable, GeneratedFakeable, Equa
     public let amountRefunded: Int64
 
     /// The authorization code for the charge. This is not part of the Stripe model, but a WCPay-added field.
-    public let authorizationCode: String
+    public let authorizationCode: String?
 
     /// Whether the charge has been captured yet
     public let captured: Bool
@@ -58,7 +58,7 @@ public struct WCPayCharge: Decodable, GeneratedCopiable, GeneratedFakeable, Equa
                 amount: Int64,
                 amountCaptured: Int64,
                 amountRefunded: Int64,
-                authorizationCode: String,
+                authorizationCode: String?,
                 captured: Bool,
                 created: Date,
                 currency: String,
@@ -98,7 +98,7 @@ public struct WCPayCharge: Decodable, GeneratedCopiable, GeneratedFakeable, Equa
         let amount = try container.decode(Int64.self, forKey: .amount)
         let amountCaptured = try container.decode(Int64.self, forKey: .amountCaptured)
         let amountRefunded = try container.decode(Int64.self, forKey: .amountRefunded)
-        let authorizationCode = try container.decode(String.self, forKey: .authorizationCode)
+        let authorizationCode = try container.decodeIfPresent(String.self, forKey: .authorizationCode)
         let captured = try container.decode(Bool.self, forKey: .captured)
         let created = try container.decode(Date.self, forKey: .created)
         let currency = try container.decode(String.self, forKey: .currency)

@@ -164,7 +164,7 @@ struct AddressFormFields {
             // When a country is selected, check if the new country has a state list.
             // If it has, clear the selected state and its name in fields.
             // If it doesn't only clear the selected state.
-            if selectedCountry?.states.isEmpty == false, selectedState != nil {
+            if selectedCountry?.states.isEmpty == false {
                 self.state = ""
             }
             self.selectedState = nil
@@ -189,8 +189,9 @@ struct AddressFormFields {
             return
         }
 
+        let initialStateValue = state // storing initial state value because it will be cleared by selectedCountry setter
         selectedCountry = allCountries.first { $0.code == country }
-        selectedState = selectedCountry?.states.first { $0.code == state }
+        selectedState = selectedCountry?.states.first { $0.code == initialStateValue }
     }
 }
 
@@ -430,8 +431,9 @@ private extension AddressFormViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func bindNavigationTrailingItemPublisher() {
-        Publishers.CombineLatest3($fields, $secondaryFields, performingNetworkRequest)
-            .map { [originalAddress, secondaryOriginalAddress] fields, secondaryFields, performingNetworkRequest -> AddressFormNavigationItem in
+        Publishers.CombineLatest4($fields, $secondaryFields, $showDifferentAddressForm, performingNetworkRequest)
+            .map { [originalAddress, secondaryOriginalAddress]
+                fields, secondaryFields, showDifferentAddressForm, performingNetworkRequest -> AddressFormNavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
@@ -440,7 +442,13 @@ private extension AddressFormViewModel {
                     return .done(enabled: true)
                 }
 
-                return .done(enabled: originalAddress != fields.toAddress() || secondaryOriginalAddress != secondaryFields.toAddress())
+                let addressesAreDifferentButSecondAddressSwitchIsDisabled = secondaryOriginalAddress != .empty &&
+                originalAddress != secondaryOriginalAddress &&
+                !showDifferentAddressForm
+
+                return .done(enabled: addressesAreDifferentButSecondAddressSwitchIsDisabled ||
+                             originalAddress != fields.toAddress() ||
+                             secondaryOriginalAddress != secondaryFields.toAddress())
             }
             .assign(to: &$navigationTrailingItem)
     }

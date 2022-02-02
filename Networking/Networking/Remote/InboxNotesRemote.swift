@@ -82,10 +82,10 @@ public extension InboxNotesRemote {
 
     private enum ParameterKey {
         static let orderBy = "order_by"
-        static let page
+        static let page = "page"
         static let pageSize = "per_page"
-        static let type
-        static let status
+        static let type = "type"
+        static let status = "status"
     }
 
     /// Order By parameter

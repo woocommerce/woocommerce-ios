@@ -35,6 +35,20 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showDifferentAddressForm)
     }
 
+    func test_input_of_identical_addresses_does_not_prefill_second_set_of_fields() {
+        // Given
+        let viewModel = CreateOrderAddressFormViewModel(siteID: sampleSiteID,
+                                                        addressData: .init(billingAddress: sampleAddress(), shippingAddress: sampleAddress()),
+                                                        onAddressUpdate: nil,
+                                                        storageManager: testingStorage)
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then
+        assertEqual(viewModel.secondaryFields.toAddress(), .empty)
+    }
+
     func test_input_of_different_addresses_enables_different_address_toggle() {
         // Given
         let address1 = sampleAddress()
@@ -60,7 +74,6 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
         // When
         viewModel.onLoadTrigger.send()
 
-
         // Then
         XCTAssertEqual(viewModel.secondaryFields.firstName, address2.firstName)
         XCTAssertEqual(viewModel.secondaryFields.lastName, address2.lastName)
@@ -84,8 +97,10 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
         // Given
         let newCountry = Self.sampleCountries[0]
 
+        let address1 = sampleAddress()
+        let address2 = sampleAddress().copy(firstName: "John")
         let viewModel = CreateOrderAddressFormViewModel(siteID: sampleSiteID,
-                                                        addressData: .init(billingAddress: sampleAddress(), shippingAddress: sampleAddress()),
+                                                        addressData: .init(billingAddress: address1, shippingAddress: address2),
                                                         onAddressUpdate: nil,
                                                         storageManager: testingStorage)
         viewModel.onLoadTrigger.send()
@@ -101,8 +116,10 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
 
     func test_country_and_state_names_are_converted_from_codes_when_available() {
         // Given
+        let address1 = sampleAddress()
+        let address2 = sampleAddress().copy(firstName: "John")
         let viewModel = CreateOrderAddressFormViewModel(siteID: sampleSiteID,
-                                                        addressData: .init(billingAddress: sampleAddress(), shippingAddress: sampleAddress()),
+                                                        addressData: .init(billingAddress: address1, shippingAddress: address2),
                                                         onAddressUpdate: nil,
                                                         storageManager: testingStorage)
         XCTAssertEqual(viewModel.secondaryFields.country, "US")
@@ -122,10 +139,10 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
 
     func test_state_name_is_displayed_as_string_when_mapping_is_not_available() {
         // Given
-        let addressWithUnknownCountryAndState = sampleAddress().copy(state: "Bavaria", country: "Germany")
+        let address1 = sampleAddress()
+        let address2 = sampleAddress().copy(state: "Bavaria", country: "Germany")
         let viewModel = CreateOrderAddressFormViewModel(siteID: sampleSiteID,
-                                                        addressData: .init(billingAddress: addressWithUnknownCountryAndState,
-                                                                           shippingAddress: addressWithUnknownCountryAndState),
+                                                        addressData: .init(billingAddress: address1, shippingAddress: address2),
                                                         onAddressUpdate: nil,
                                                         storageManager: testingStorage)
 
@@ -141,8 +158,10 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
         // Given
         let newCountry = Country(code: "GB", name: "United Kingdom", states: [])
 
+        let address1 = sampleAddress()
+        let address2 = sampleAddress().copy(firstName: "John")
         let viewModel = CreateOrderAddressFormViewModel(siteID: sampleSiteID,
-                                                        addressData: .init(billingAddress: sampleAddress(), shippingAddress: sampleAddress()),
+                                                        addressData: .init(billingAddress: address1, shippingAddress: address2),
                                                         onAddressUpdate: nil,
                                                         storageManager: testingStorage)
         viewModel.onLoadTrigger.send()
@@ -163,8 +182,10 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
         // Given
         let newCountry = Country(code: "AU", name: "Australia", states: [.init(code: "VIC", name: "Victoria")])
 
+        let address1 = sampleAddress()
+        let address2 = sampleAddress().copy(firstName: "John")
         let viewModel = CreateOrderAddressFormViewModel(siteID: sampleSiteID,
-                                                        addressData: .init(billingAddress: sampleAddress(), shippingAddress: sampleAddress()),
+                                                        addressData: .init(billingAddress: address1, shippingAddress: address2),
                                                         onAddressUpdate: nil,
                                                         storageManager: testingStorage)
         viewModel.onLoadTrigger.send()
@@ -185,8 +206,10 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
         // Given
         let newState = StateOfACountry(code: "CA", name: "California")
 
+        let address1 = sampleAddress()
+        let address2 = sampleAddress().copy(firstName: "John")
         let viewModel = CreateOrderAddressFormViewModel(siteID: sampleSiteID,
-                                                        addressData: .init(billingAddress: sampleAddress(), shippingAddress: sampleAddress()),
+                                                        addressData: .init(billingAddress: address1, shippingAddress: address2),
                                                         onAddressUpdate: nil,
                                                         storageManager: testingStorage)
         viewModel.onLoadTrigger.send()

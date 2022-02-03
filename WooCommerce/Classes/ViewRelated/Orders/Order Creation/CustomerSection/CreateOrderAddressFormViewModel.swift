@@ -21,14 +21,17 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
          analytics: Analytics = ServiceLocator.analytics) {
         self.onAddressUpdate = onAddressUpdate
 
+        // don't prefill second set of fields if input addresses are identical
+        let addressesAreDifferent = addressData.billingAddress != addressData.shippingAddress
+
         super.init(siteID: siteID,
                    address: addressData.billingAddress ?? .empty,
-                   secondaryAddress: addressData.shippingAddress ?? .empty,
+                   secondaryAddress: addressesAreDifferent ? (addressData.shippingAddress ?? .empty) : .empty,
                    storageManager: storageManager,
                    stores: stores,
                    analytics: analytics)
 
-        if addressData.billingAddress != addressData.shippingAddress {
+        if addressesAreDifferent {
             showDifferentAddressForm = true
         }
     }

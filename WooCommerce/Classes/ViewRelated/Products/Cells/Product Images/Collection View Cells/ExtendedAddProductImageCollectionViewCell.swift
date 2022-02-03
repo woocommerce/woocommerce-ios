@@ -9,7 +9,16 @@ final class ExtendedAddProductImageCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
         configureBackground()
         configureImageView()
-        configureLabel()
+    }
+
+    func configurePlaceholderLabelForProductImages(isVariation: Bool) {
+        title.applyEmptyStateTitleStyle()
+        title.textAlignment = .center
+        if isVariation {
+            title.text = NSLocalizedString("Add a variation image", comment: "Cell text in Add / Edit variation when there are no images.")
+        } else {
+        title.text = NSLocalizedString("Add a product image", comment: "Cell text in Add / Edit product when there are no images.")
+        }
     }
 
 }
@@ -25,16 +34,6 @@ private extension ExtendedAddProductImageCollectionViewCell {
         imageView.image = UIImage.addImage
         imageView.contentMode = Settings.imageContentMode
         imageView.clipsToBounds = Settings.clipToBounds
-    }
-
-    func configureLabel() {
-        title.applyEmptyStateTitleStyle()
-        title.textAlignment = .center
-        title.text = NSLocalizedString("Add a product image", comment: "Cell text in Add / Edit product when there are no images.")
-    }
-
-    func configureForVariations() {
-        title.text = NSLocalizedString("Add a variation image", comment: "Cell text in Add / Edit variation when there are no images.")
     }
 }
 

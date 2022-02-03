@@ -99,7 +99,7 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegateFlowLayout {
 
 /// Cell configurations allowed
 ///
-enum ProductImagesCellConfig : Equatable {
+enum ProductImagesCellConfig: Equatable {
 
         // only images
         case images

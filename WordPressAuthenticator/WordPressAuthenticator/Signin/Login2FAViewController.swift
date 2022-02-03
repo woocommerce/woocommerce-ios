@@ -100,12 +100,8 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
     ///
     @objc func configureTextFields() {
         verificationCodeField.contentInsets = WPStyleGuide.edgeInsetForLoginTextFields()
+        verificationCodeField.textContentType = .oneTimeCode
 
-#if swift(>=4.2)
-        if #available(iOS 12, *) {
-            verificationCodeField.textContentType = .oneTimeCode
-        }
-#endif
     }
 
     /// Configures the appearance and state of the submit button.

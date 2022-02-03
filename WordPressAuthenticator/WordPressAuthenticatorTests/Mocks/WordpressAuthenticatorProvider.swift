@@ -13,7 +13,7 @@ public class WordpressAuthenticatorProvider: NSObject {
                                                    userAgent: "")
     }
 
-    static func wordPressAuthenticatorStyle(_ style: AuthenticatorStyeType) -> WordPressAuthenticatorStyle {
+    static func wordPressAuthenticatorStyle(_ style: AuthenticatorStyleType) -> WordPressAuthenticatorStyle {
         var wpAuthStyle: WordPressAuthenticatorStyle!
 
         switch style {
@@ -48,7 +48,7 @@ public class WordpressAuthenticatorProvider: NSObject {
         }
     }
 
-    static func wordPressAuthenticatorUnifiedStyle(_ style: AuthenticatorStyeType) -> WordPressAuthenticatorUnifiedStyle {
+    static func wordPressAuthenticatorUnifiedStyle(_ style: AuthenticatorStyleType) -> WordPressAuthenticatorUnifiedStyle {
         var wpUnifiedAuthStyle: WordPressAuthenticatorUnifiedStyle!
 
         switch style {
@@ -89,7 +89,7 @@ public class WordpressAuthenticatorProvider: NSObject {
     }
 }
 
-enum AuthenticatorStyeType {
+enum AuthenticatorStyleType {
     case random
 }
 

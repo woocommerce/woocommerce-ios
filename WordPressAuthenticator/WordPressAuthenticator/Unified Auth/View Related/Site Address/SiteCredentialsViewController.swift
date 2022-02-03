@@ -284,23 +284,6 @@ private extension SiteCredentialsViewController {
         // Save a reference to the textField so it can becomeFirstResponder.
         usernameField = cell.textField
         cell.textField.delegate = self
-        cell.onePasswordHandler = { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            guard let sourceView = self.usernameField else {
-                return
-            }
-
-            self.view.endEditing(true)
-
-            WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sourceView, loginFields: self.loginFields) { [unowned self] loginFields in
-                self.usernameField?.text = loginFields.username
-                self.passwordField?.text = loginFields.password
-                self.validateForm()
-            }
-        }
 
         cell.onChangeSelectionHandler = { [weak self] textfield in
             self?.loginFields.username = textfield.nonNilTrimmedText()

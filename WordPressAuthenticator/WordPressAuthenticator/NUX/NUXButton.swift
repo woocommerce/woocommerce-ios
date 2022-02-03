@@ -36,20 +36,12 @@ public struct NUXButtonStyle {
 
     open override var isEnabled: Bool {
         didSet {
-            if #available(iOS 13, *) {
-                activityIndicator.color = activityIndicatorColor(isEnabled: isEnabled)
-            }
+            activityIndicator.color = activityIndicatorColor(isEnabled: isEnabled)
         }
     }
 
     @objc let activityIndicator: UIActivityIndicatorView = {
-        let indicator: UIActivityIndicatorView
-        if #available(iOS 13, *) {
-            indicator = UIActivityIndicatorView(style: .medium)
-        } else {
-            indicator = UIActivityIndicatorView(style: .white)
-        }
-
+        let indicator = UIActivityIndicatorView(style: .medium)
         indicator.hidesWhenStopped = true
         return indicator
     }()
@@ -125,10 +117,6 @@ public struct NUXButtonStyle {
     open override func awakeFromNib() {
         super.awakeFromNib()
         configureAppearance()
-        guard #available(iOS 13, *) else {
-            activityIndicator.style = .gray
-            return
-        }
     }
 
     /// Setup: Everything = [Insets, Backgrounds, titleColor(s), titleLabel]

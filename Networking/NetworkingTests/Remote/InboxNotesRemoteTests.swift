@@ -147,4 +147,54 @@ final class InboxNotesRemoteTests: XCTestCase {
         let resultError = try XCTUnwrap(result.failure as? NetworkError)
         XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
     }
+
+    // MARK: - Mark an Inbox Note as `actioned`
+
+    /// Verifies that markInboxNoteAsActioned properly parses the `InboxNote` sample response.
+    ///
+    func test_markInboxNoteAsActioned_properly_returns_parsed_InboxNote() throws {
+        // Given
+        let remote = InboxNotesRemote(network: network)
+        let sampleInboxNoteID: Int64 = 296
+        let sampleActionID: Int64 = 13329
+
+        network.simulateResponse(requestUrlSuffix: "admin/notes/\(sampleInboxNoteID)/action/\(sampleActionID)", filename: "inbox-note")
+
+        // When
+        let result = waitFor { promise in
+            remote.markInboxNoteAsActioned(for: self.sampleSiteID, noteID: sampleInboxNoteID, actionID: sampleActionID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssert(result.isSuccess)
+        let inboxNote = try XCTUnwrap(result.get())
+        XCTAssertEqual(inboxNote.id, sampleInboxNoteID)
+        XCTAssertEqual(inboxNote.actions.first?.id, sampleActionID)
+    }
+
+    /// Verifies that markInboxNoteAsActioned properly relays Networking Layer errors.
+    ///
+    func test_markInboxNoteAsActioned_properly_relays_networking_errors() throws {
+        // Given
+        let remote = InboxNotesRemote(network: network)
+        let sampleInboxNoteID: Int64 = 296
+        let sampleActionID: Int64 = 13329
+
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "admin/notes/\(sampleInboxNoteID)/action/\(sampleActionID)", error: error)
+
+        // When
+        let result = waitFor { promise in
+            remote.markInboxNoteAsActioned(for: self.sampleSiteID, noteID: sampleInboxNoteID, actionID: sampleActionID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let resultError = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
+    }
 }

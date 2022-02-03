@@ -37,14 +37,13 @@ struct ProductRow: View {
                     }
                     .accessibilityElement(children: .combine)
                 }
-
-                Spacer()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color(.listForeground))
 
                 ProductStepper(viewModel: viewModel)
                     .renderedIf(viewModel.canChangeQuantity)
             }
         }
-        .contentShape(Rectangle())
     }
 }
 

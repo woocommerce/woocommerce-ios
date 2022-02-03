@@ -44,6 +44,7 @@ struct ProductRow: View {
                     .renderedIf(viewModel.canChangeQuantity)
             }
         }
+        .contentShape(Rectangle())
     }
 }
 

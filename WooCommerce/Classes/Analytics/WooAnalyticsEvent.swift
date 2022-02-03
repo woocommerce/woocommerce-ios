@@ -322,6 +322,76 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Order General
+//
+extension WooAnalyticsEvent {
+    // Namespace
+    enum Orders {
+        /// Possible Order Flows
+        ///
+        enum Flow: String {
+            case creation
+            case editing
+        }
+
+        private enum Keys {
+            static let flow = "flow"
+            static let hasDifferentShippingDetails = "has_different_shipping_details"
+            static let orderStatus = "order_status"
+            static let productCount = "product_count"
+            static let hasCustomerDetails = "has_customer_details"
+            static let errorContext = "error_context"
+            static let errorDescription = "error_description"
+            static let to = "to"
+            static let from = "from"
+        }
+
+        static func orderAddNew() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderAddNew, properties: [:])
+        }
+
+        static func orderProductAdd(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductAdd, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderCustomerAdd(flow: Flow, hasDifferentShippingDetails: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCustomerAdd, properties: [
+                Keys.flow: flow.rawValue,
+                Keys.hasDifferentShippingDetails: hasDifferentShippingDetails
+            ])
+        }
+
+        static func orderStatusChange(flow: Flow, from oldStatus: OrderStatusEnum, to newStatus: OrderStatusEnum) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderStatusChange, properties: [
+                Keys.flow: flow.rawValue,
+                Keys.from: oldStatus.rawValue,
+                Keys.to: newStatus.rawValue
+            ])
+        }
+
+        static func orderCreateButtonTapped(status: OrderStatusEnum,
+                                            productCount: Int,
+                                            hasCustomerDetails: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCreateButtonTapped, properties: [
+                Keys.orderStatus: status.rawValue,
+                Keys.productCount: Int64(productCount),
+                Keys.hasCustomerDetails: hasCustomerDetails
+            ])
+        }
+
+        static func orderCreationSuccess() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCreationSuccess, properties: [:])
+        }
+
+        static func orderCreationFailed(errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCreationFailed, properties: [
+                Keys.errorContext: errorContext,
+                Keys.errorDescription: errorDescription
+            ])
+        }
+    }
+}
+
 // MARK: - Order Details Edit
 //
 extension WooAnalyticsEvent {

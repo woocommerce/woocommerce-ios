@@ -145,10 +145,6 @@ final class OrderListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Needed in `viewWillAppear` because this ViewController is not recreated
-        // and the toggle can be switch in the Settings section that resides in a different tab.
-        viewModel.reloadSimplePaymentsExperimentalFeatureState()
-
         viewModel.syncOrderStatuses()
 
         syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
@@ -162,6 +158,8 @@ final class OrderListViewController: UIViewController {
         //
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
+
+        restartPlaceholderAnimation()
     }
 
     /// Returns a function that creates cells for `dataSource`.
@@ -219,10 +217,8 @@ private extension OrderListViewController {
                     self.hideTopBannerView()
                 case .error:
                     self.setErrorTopBanner()
-                case .simplePaymentsEnabled:
+                case .simplePayments:
                     self.setSimplePaymentsEnabledTopBanner()
-                case .simplePaymentsDisabled:
-                    self.setSimplePaymentsDisabledTopBanner()
                 }
             }
             .store(in: &cancellables)
@@ -416,7 +412,7 @@ private extension OrderListViewController {
         // let's reset the state before using it again
         ghostableTableView.removeGhostContent()
         ghostableTableView.displayGhostContent(options: options,
-                                               style: .wooDefaultGhostStyle)
+                                               style: Constants.ghostStyle)
         ghostableTableView.startGhostAnimation()
         ghostableTableView.isHidden = false
     }
@@ -427,6 +423,14 @@ private extension OrderListViewController {
         ghostableTableView.isHidden = true
         ghostableTableView.stopGhostAnimation()
         ghostableTableView.removeGhostContent()
+    }
+
+    /// After returning to the screen, `restartGhostAnimation` is required to resume ghost animation.
+    func restartPlaceholderAnimation() {
+        guard ghostableTableView.isHidden == false else {
+            return
+        }
+        ghostableTableView.restartGhostAnimation(style: Constants.ghostStyle)
     }
 
     /// Shows the EmptyStateViewController
@@ -639,18 +643,7 @@ private extension OrderListViewController {
         },
         onContactSupportButtonPressed: { [weak self] in
             guard let self = self else { return }
-            ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
-        })
-        showTopBannerView()
-    }
-
-    /// Sets the `topBannerView` property to a simple payments disabled banner.
-    ///
-    func setSimplePaymentsDisabledTopBanner() {
-        topBannerView = SimplePaymentsTopBannerFactory.createFeatureDisabledBanner(onTopButtonPressed: { [weak self] in
-            self?.tableView.updateHeaderHeight()
-        }, onDismissButtonPressed: { [weak self] in
-            self?.viewModel.hideSimplePaymentsBanners = true
+            ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
         })
         showTopBannerView()
     }
@@ -691,5 +684,9 @@ private extension OrderListViewController {
         case syncing
         case results
         case empty
+    }
+
+    enum Constants {
+        static let ghostStyle: GhostStyle = .wooDefaultGhostStyle
     }
 }

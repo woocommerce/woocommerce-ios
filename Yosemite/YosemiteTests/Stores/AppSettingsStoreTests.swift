@@ -447,42 +447,6 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
-    func test_loadSimplePaymentsSwitchState_returns_false_on_new_generalAppSettings() throws {
-        // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-
-        // When
-        let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.loadSimplePaymentsSwitchState { result in
-                promise(result)
-            }
-            self.subject?.onAction(action)
-        }
-
-        // Then
-        let isEnabled = try result.get()
-        XCTAssertFalse(isEnabled)
-    }
-
-    func test_loadSimplePaymentsSwitchState_returns_true_after_updating_switch_state_to_true() throws {
-        // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.setSimplePaymentsFeatureSwitchState(isEnabled: true, onCompletion: { _ in })
-        subject?.onAction(updateAction)
-
-        // When
-        let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.loadSimplePaymentsSwitchState { result in
-                promise(result)
-            }
-            self.subject?.onAction(action)
-        }
-
-        // Then
-        let isEnabled = try result.get()
-        XCTAssertTrue(isEnabled)
-    }
-
     func test_loadOrderCreationSwitchState_returns_false_on_new_generalAppSettings() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -643,6 +607,78 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertFalse(isVisible)
     }
 
+    func test_loadStripeInPersonPaymentsSwitchState_returns_false_on_new_generalAppSettings() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadStripeInPersonPaymentsSwitchState { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertFalse(isEnabled)
+    }
+
+    func test_loadStripeInPersonPaymentsSwitchState_returns_true_after_updating_switch_state_to_true() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.setStripeInPersonPaymentsSwitchState(isEnabled: true, onCompletion: { _ in })
+        subject?.onAction(updateAction)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadStripeInPersonPaymentsSwitchState { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertTrue(isEnabled)
+    }
+
+    func test_loadCanadaInPersonPaymentsSwitchState_returns_false_on_new_generalAppSettings() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadCanadaInPersonPaymentsSwitchState { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertFalse(isEnabled)
+    }
+
+    func test_loadCanadaInPersonPaymentsSwitchState_returns_true_after_updating_switch_state_to_true() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.setCanadaInPersonPaymentsSwitchState(isEnabled: true, onCompletion: { _ in })
+        subject?.onAction(updateAction)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadCanadaInPersonPaymentsSwitchState { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertTrue(isEnabled)
+    }
+
     // MARK: - General Store Settings
 
     func test_saving_isTelemetryAvailable_works_correctly() throws {
@@ -767,6 +803,42 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertNil(data.telemetryLastReportedTime)
     }
 
+    func test_simplePaymentsToggleTaxes_returns_correct_default_data() throws {
+        // Given
+        let siteID: Int64 = 1234
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.getSimplePaymentsTaxesToggleState(siteID: siteID) { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(try result.get())
+    }
+
+    func test_simplePaymentsToggleTaxes_returns_correct_saved_data() throws {
+        // Given
+        let siteID: Int64 = 1234
+
+        let action = AppSettingsAction.setSimplePaymentsTaxesToggleState(siteID: siteID, isOn: true) { _ in }
+        self.subject?.onAction(action)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.getSimplePaymentsTaxesToggleState(siteID: siteID) { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(try result.get())
+    }
+
     func test_resetGeneralStoreSettings_resets_all_settings() throws {
         // Given
         let siteID: Int64 = 1234
@@ -801,8 +873,10 @@ private extension AppSettingsStoreTests {
             installationDate: installationDate,
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
-            isSimplePaymentsSwitchEnabled: false,
             isOrderCreationSwitchEnabled: false,
+            isStripeInPersonPaymentsSwitchEnabled: false,
+            isCanadaInPersonPaymentsSwitchEnabled: false,
+            isProductSKUInputScannerSwitchEnabled: false,
             knownCardReaders: []
         )
         return (settings, feedback)

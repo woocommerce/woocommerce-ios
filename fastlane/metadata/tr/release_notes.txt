@@ -1,0 +1,5 @@
+Satıcılar bizden minimum bilgi ile (örneğin yalnızca bir ücret tutarıyla) uygulamada bir işlemi kaydetmenin hızlı bir yolunu istiyor.  Örneğin, bir köylü pazarındasınız, bir müşterinin kredi kartından ödeme almak istiyorsunuz ve envanteri yönetmenize gerek yok. Bu sürüm, siparişler sekmesinde yeni bir "Basit Ödemeler" özelliği içerir. Bir WooCommerce Payments müşterisiyseniz, bunun Şahsen Ödemeler kredi kartı okuyucusuyla harika şekilde çalıştığını göreceksiniz! Henüz bir kredi kartı okuyucunuz yok mu? Alternatif olarak, siteniz üzerinden cihazıyla ödeme yapması için müşterinize bir ödeme bağlantısını kolayca gönderebilirsiniz.
+
+Bu sürümde ayrıca bir siparişle ilgili ücretleri iade etme özelliği de bulunur. Ayrıca, bir ürünü düzenlerken kullanılabilecek deneysel bir SKU giriş barkod okuyucusu da ekledik (Ayarlar'dan etkinleştirilebilir).
+
+Önümüzdeki birkaç ay içinde sunulacak yeni ve heyecan verici bazı özellikler üzerinde de çalışmalarımız devam ediyor. Bize geri bildirim göndermeye devam edin!

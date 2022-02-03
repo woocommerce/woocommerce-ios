@@ -52,8 +52,10 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
         }
         presenter.configure(viewModel: viewModelAndView.viewModel)
 
-        self.view.addSubview(childViewController.view)
         self.addChild(childViewController)
+        self.view.addSubview(childViewController.view)
+        childViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        self.view.pinSubviewToAllEdges(childViewController.view)
         childViewController.didMove(toParent: self)
     }
 }

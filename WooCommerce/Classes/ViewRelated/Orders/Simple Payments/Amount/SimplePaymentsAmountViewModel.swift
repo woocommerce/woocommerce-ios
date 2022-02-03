@@ -7,12 +7,13 @@ import Experiments
 ///
 final class SimplePaymentsAmountViewModel: ObservableObject {
 
-    /// Stores the amount(formatted) entered by the merchant.
+    /// Stores the amount(unformatted) entered by the merchant.
     ///
     @Published var amount: String = "" {
         didSet {
             guard amount != oldValue else { return }
-            amount = formatAmount(amount)
+            amount = sanitizeAmount(amount)
+            amountWithSymbol = setCurrencySymbol(to: amount)
         }
     }
 
@@ -31,9 +32,20 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         }
     }
 
-    /// Assign this closure to be notified when a new order is created
+    /// Formatted amount to display. When empty displays a placeholder value.
     ///
-    var onOrderCreated: (Order) -> Void = { _ in }
+    var formattedAmount: String {
+        guard amount.isNotEmpty else {
+            return amountPlaceholder
+        }
+        return amountWithSymbol
+    }
+
+    /// Defines the amount text color.
+    ///
+    var amountTextColor: UIColor {
+        amount.isEmpty ? .textSubtle : .text
+    }
 
     /// Returns true when the amount is not a positive number.
     ///
@@ -49,11 +61,14 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         loading
     }
 
+    /// Stores the formatted amount with the store currency symbol.
+    ///
+    private var amountWithSymbol: String = ""
+
     /// Dynamically builds the amount placeholder based on the store decimal separator.
     ///
-    private(set) lazy var amountPlaceholder: String = {
-        // TODO: We are appending the currency symbol always to the left, we should use `CurrencyFormatter` when releasing to more countries.
-        storeCurrencySymbol + "0" + storeCurrencySettings.decimalSeparator + "00"
+    private lazy var amountPlaceholder: String = {
+        currencyFormatter.formatAmount("0.00") ?? "$0.00"
     }()
 
     /// Retains the SummaryViewModel.
@@ -97,17 +112,12 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     private let analytics: Analytics
 
-    /// Defines if the we are running a development version or not.
-    ///
-    private let isDevelopmentPrototype: Bool
-
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          locale: Locale = Locale.autoupdatingCurrent,
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics,
-         isDevelopmentPrototype: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.simplePaymentsPrototype)) {
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.userLocale = locale
@@ -116,7 +126,6 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         self.storeCurrencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
         self.currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
         self.analytics = analytics
-        self.isDevelopmentPrototype = isDevelopmentPrototype
     }
 
     /// Called when the view taps the done button.
@@ -126,25 +135,20 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
 
         loading = true
 
-        // Prototype in production does not support taxes. Development version does.
-        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount, taxable: isDevelopmentPrototype) { [weak self] result in
+        // Order created as taxable to delegate taxes calculation to the API.
+        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount, taxable: true) { [weak self] result in
             guard let self = self else { return }
             self.loading = false
 
             switch result {
             case .success(let order):
-                if self.isDevelopmentPrototype {
-                    self.summaryViewModel = SimplePaymentsSummaryViewModel(order: order,
-                                                                           providedAmount: self.amount,
-                                                                           presentNoticeSubject: self.presentNoticeSubject)
-                } else {
-                    self.onOrderCreated(order)
-                }
-                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCompleted(amount: order.total))
+                self.summaryViewModel = SimplePaymentsSummaryViewModel(order: order,
+                                                                       providedAmount: self.amount,
+                                                                       presentNoticeSubject: self.presentNoticeSubject)
 
             case .failure(let error):
                 self.presentNoticeSubject.send(.error(Localization.creationError))
-                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed())
+                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed(source: .amount))
                 DDLogError("⛔️ Error creating simple payments order: \(error)")
             }
         }
@@ -161,41 +165,44 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
 // MARK: Helpers
 private extension SimplePaymentsAmountViewModel {
 
-    /// Formats a received value by making sure the `$` symbol is present and trimming content to two decimal places.
-    /// TODO: Update to support multiple currencies
+    /// Formats a received value by sanitizing the input and trimming content to two decimal places.
     ///
-    func formatAmount(_ amount: String) -> String {
+    func sanitizeAmount(_ amount: String) -> String {
         guard amount.isNotEmpty else { return amount }
 
         let deviceDecimalSeparator = userLocale.decimalSeparator ?? "."
         let storeDecimalSeparator = storeCurrencySettings.decimalSeparator
+        let storeNumberOfDecimals = storeCurrencySettings.numberOfDecimals
 
         // Removes any unwanted character & makes sure to use the store decimal separator
-        var formattedAmount = amount
+        let sanitized = amount
             .replacingOccurrences(of: deviceDecimalSeparator, with: storeDecimalSeparator)
-            .filter { $0.isNumber || $0.isCurrencySymbol || "\($0)" == storeDecimalSeparator }
-
-        // Prepend the store currency symbol if needed.
-        // TODO: We are appending the currency symbol always to the left, we should use `CurrencyFormatter` when releasing to more countries.
-        if !formattedAmount.hasPrefix(storeCurrencySymbol) {
-            formattedAmount.insert(contentsOf: storeCurrencySymbol, at: formattedAmount.startIndex)
-        }
+            .filter { $0.isNumber || "\($0)" == storeDecimalSeparator }
 
         // Trim to two decimals & remove any extra "."
-        let components = formattedAmount.components(separatedBy: storeDecimalSeparator)
+        let components = sanitized.components(separatedBy: storeDecimalSeparator)
         switch components.count {
-        case 1 where formattedAmount.contains(storeDecimalSeparator):
+        case 1 where sanitized.contains(storeDecimalSeparator):
             return components[0] + storeDecimalSeparator
         case 1:
             return components[0]
         case 2...Int.max:
             let number = components[0]
             let decimals = components[1]
-            let trimmedDecimals = decimals.count > 2 ? "\(decimals.prefix(2))" : decimals
+            let trimmedDecimals = decimals.count > storeNumberOfDecimals ? "\(decimals.prefix(storeNumberOfDecimals))" : decimals
             return number + storeDecimalSeparator + trimmedDecimals
         default:
             fatalError("Should not happen, components can't be 0 or negative")
         }
+    }
+
+    /// Formats a received value by adding the store currency symbol to it's correct position.
+    ///
+    func setCurrencySymbol(to amount: String) -> String {
+        currencyFormatter.formatCurrency(using: amount,
+                                         at: storeCurrencySettings.currencyPosition,
+                                         with: storeCurrencySymbol,
+                                         isNegative: false)
     }
 }
 

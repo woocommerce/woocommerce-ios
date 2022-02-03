@@ -1,8 +1,8 @@
+import Combine
 import Photos
 import UIKit
 import WordPressUI
 import Yosemite
-import Observables
 
 /// The entry UI for adding/editing a Product.
 final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: UIViewController, UITableViewDelegate {
@@ -45,14 +45,15 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }()
 
     private let presentationStyle: ProductFormPresentationStyle
-    private let navigationRightBarButtonItemsSubject = PublishSubject<[UIBarButtonItem]>()
-    private var navigationRightBarButtonItems: Observable<[UIBarButtonItem]> {
-        navigationRightBarButtonItemsSubject
+    private let navigationRightBarButtonItemsSubject = PassthroughSubject<[UIBarButtonItem], Never>()
+    private var navigationRightBarButtonItems: AnyPublisher<[UIBarButtonItem], Never> {
+        navigationRightBarButtonItemsSubject.eraseToAnyPublisher()
     }
-    private var cancellableProduct: ObservationToken?
-    private var cancellableProductName: ObservationToken?
-    private var cancellableUpdateEnabled: ObservationToken?
-    private var cancellableNewVariationsPrice: ObservationToken?
+    private var productSubscription: AnyCancellable?
+    private var productNameSubscription: AnyCancellable?
+    private var updateEnabledSubscription: AnyCancellable?
+    private var newVariationsPriceSubscription: AnyCancellable?
+    private var productImageStatusesSubscription: AnyCancellable?
 
     init(viewModel: ViewModel,
          eventLogger: ProductFormEventLoggerProtocol,
@@ -88,10 +89,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
     deinit {
-        cancellableProduct?.cancel()
-        cancellableProductName?.cancel()
-        cancellableUpdateEnabled?.cancel()
-        cancellableNewVariationsPrice?.cancel()
+        productSubscription?.cancel()
+        productNameSubscription?.cancel()
+        updateEnabledSubscription?.cancel()
+        newVariationsPriceSubscription?.cancel()
     }
 
     override func viewDidLoad() {
@@ -111,7 +112,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeUpdateCTAVisibility()
         observeVariationsPriceChanges()
 
-        productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
                 return
             }
@@ -486,16 +487,23 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func observeProduct() {
-        cancellableProduct = viewModel.observableProduct.subscribe { [weak self] product in
+        productSubscription = viewModel.observableProduct.sink { [weak self] product in
             self?.onProductUpdated(product: product)
         }
     }
 
     /// Observe product name changes and re-render the product if the change happened outside this screen.
+    ///
+    /// This method covers the following case:
+    /// 1. User changes the product name locally
+    /// 2. User creates an attribute or a variation (This updates the whole product, overriding the unsaved product name)
+    /// 3. ViewModel detects that there was a pending name change and fires an event to the name observable
+    /// 4. View re-renders un-saved product name and updates the save button state.
+    ///
     /// The "happened outside" condition is needed to not reload the view while the user is typing a new name.
     ///
     func observeProductName() {
-        cancellableProductName = viewModel.productName?.subscribe { [weak self] _ in
+        productNameSubscription = viewModel.productName?.sink { [weak self] _ in
             guard let self = self else { return }
             self.updateBackButtonTitle()
             if self.view.window == nil { // If window is nil, this screen isn't the active screen.
@@ -505,16 +513,16 @@ private extension ProductFormViewController {
     }
 
     func observeUpdateCTAVisibility() {
-        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { [weak self] _ in
+        updateEnabledSubscription = viewModel.isUpdateEnabled.sink { [weak self] _ in
             self?.updateNavigationBar()
         }
     }
 
     /// Updates table rows when the price of the underlying variations change.
-    /// Needed to show/hide the `.noPrinceWarning` row.
+    /// Needed to show/hide the `.noPriceWarning` row.
     ///
     func observeVariationsPriceChanges() {
-        cancellableNewVariationsPrice = viewModel.newVariationsPrice.subscribe { [weak self] in
+        newVariationsPriceSubscription = viewModel.newVariationsPrice.sink { [weak self] in
             self?.onVariationsPriceChanged()
         }
     }
@@ -528,6 +536,30 @@ private extension ProductFormViewController {
     }
 
     func onImageStatusesUpdated(statuses: [ProductImageStatus]) {
+        ///
+        /// Why are we recreating the `tableViewModel`?
+        ///
+        /// When the user types and changes the product name, the `product` will change.
+        /// But, we are NOT recreating `tableViewModel` and reloading the `tableView`
+        /// to avoid reloading the cell while the user is still typing.
+        ///
+        /// The above scenario results in `tableViewModel` and `product` getting out of sync.
+        /// i.e. `product` has name changed in it, but `tableViewModel` doesn’t reflect the "changed name".
+        ///
+        /// Now, if the user tries to add/edit images before saving the product name `onImageStatusesUpdated` is fired.
+        ///
+        /// If `onImageStatusesUpdated` calls `reconfigureDataSource` without recreating `tableViewModel`
+        /// we end up showing old `product` information (old name in this case) in the `tableView`.
+        ///
+        /// By recreating `tableViewModel` using the latest `product` before calling `reconfigureDataSource`,
+        /// we are making sure that we are not showing outdated `product` information in `tableView`.
+        ///
+        /// Note that the new name information isn’t lost. It lives inside `product`.
+        /// If we recreate `tableViewModel` and reload using `reconfigureDataSource` we will have the new product name displayed in `tableView`.
+        ///
+        tableViewModel = DefaultProductFormTableViewModel(product: product,
+                                                          actionsFactory: viewModel.actionsFactory,
+                                                          currency: currency)
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: statuses)
     }
 
@@ -1086,7 +1118,8 @@ private extension ProductFormViewController {
         }
         let originalData = ProductInventoryEditableData(productModel: product)
         let hasChangedData = originalData != data
-        //TODO: Add analytics
+
+        ServiceLocator.analytics.track(.productInventorySettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
 
         guard hasChangedData else {
             return

@@ -95,6 +95,7 @@ public enum WooAnalyticsStat: String {
     case dashboardNewStatsAvailabilityBannerTryTapped = "dashboard_new_stats_availability_banner_try_tapped"
     case dashboardNewStatsRevertedBannerDismissTapped = "dashboard_new_stats_reverted_banner_dismiss_tapped"
     case dashboardNewStatsRevertedBannerLearnMoreTapped = "dashboard_new_stats_reverted_banner_learn_more_tapped"
+    case usedAnalytics = "used_analytics"
 
     // MARK: Site picker. Can be triggered by login epilogue or settings.
     //
@@ -119,6 +120,8 @@ public enum WooAnalyticsStat: String {
     case supportHelpCenterUserSearched = "support_help_center_user_searched"
     case supportIdentityFormViewed = "support_identity_form_viewed"
     case supportIdentitySet = "support_identity_set"
+    case supportSSROpened = "support_ssr_opened"
+    case supportSSRCopyButtonTapped = "support_ssr_copy_button_tapped"
 
     // MARK: Settings View Events
     //
@@ -130,7 +133,6 @@ public enum WooAnalyticsStat: String {
     case settingsBetaFeaturesButtonTapped = "settings_beta_features_button_tapped"
     case settingsBetaFeaturesProductsToggled = "settings_beta_features_products_toggled"
     case settingsBetaFeaturesOrderAddOnsToggled = "settings_beta_features_order_addons_toggled"
-    case settingsBetaFeaturesSimplePaymentsToggled = "settings_beta_features_simple_payments_toggled"
 
     case settingsPrivacySettingsTapped = "settings_privacy_settings_button_tapped"
     case settingsCollectInfoToggled = "privacy_settings_collect_info_toggled"
@@ -286,6 +288,7 @@ public enum WooAnalyticsStat: String {
     case pushNotificationOSAlertAllowed = "push_notification_os_alert_allowed"
     case pushNotificationOSAlertDenied = "push_notification_os_alert_denied"
     case pushNotificationOSAlertShown = "push_notification_os_alert_shown"
+    case viewInAppPushNotificationPressed = "view_in_app_push_notification_pressed"
 
     // MARK: Notification View Events
     //
@@ -379,6 +382,8 @@ public enum WooAnalyticsStat: String {
     case productDetailViewLinkedProductsTapped = "product_detail_view_linked_products_tapped"
     case productDetailProductDeleted = "product_detail_product_deleted"
     case productDetailViewProductAddOnsTapped = "product_detail_view_product_addons_tapped"
+    case productInventorySettingsSKUScannerButtonTapped = "product_inventory_settings_sku_scanner_button_tapped"
+    case productInventorySettingsSKUScanned = "product_inventory_settings_sku_scanned"
 
     // MARK: Edit Product Variation Events
     //
@@ -532,12 +537,28 @@ public enum WooAnalyticsStat: String {
     case simplePaymentsFlowCompleted = "simple_payments_flow_completed"
     case simplePaymentsFlowCanceled = "simple_payments_flow_canceled"
     case simplePaymentsFlowFailed = "simple_payments_flow_failed"
+    case simplePaymentsFlowNoteAdded = "simple_payments_flow_note_added"
+    case simplePaymentsFlowTaxesToggled = "simple_payments_flow_taxes_toggled"
+    case simplePaymentsFlowCollect = "simple_payments_flow_collect"
 
     // MARK: Jetpack-the-plugin events
     //
     case jetpackBenefitsBanner = "feature_jetpack_benefits_banner"
     case jetpackInstallButtonTapped = "jetpack_install_button_tapped"
     case jetpackCPSitesFetched = "jetpack_cp_sites_fetched"
+    case jetpackInstallGetStartedButtonTapped = "jetpack_install_get_started_button_tapped"
+    case jetpackInstallSucceeded = "jetpack_install_succeeded"
+    case jetpackInstallFailed = "jetpack_install_failed"
+    case jetpackInstallInWPAdminButtonTapped = "jetpack_install_in_wpadmin_button_tapped"
+    case jetpackInstallContactSupportButtonTapped = "jetpack_install_contact_support_button_tapped"
+
+    // MARK: Hub Menu
+    //
+    case hubMenuTabSelected = "hub_menu_tab_selected"
+    case hubMenuTabReselected = "hub_menu_tab_reselected"
+    case hubMenuSwitchStoreTapped = "hub_menu_switch_store_tapped"
+    case hubMenuOptionTapped = "hub_menu_option_tapped"
+    case hubMenuSettingsTapped = "hub_menu_settings_tapped"
 }
 
 public extension WooAnalyticsStat {

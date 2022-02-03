@@ -361,6 +361,7 @@ extension ShippingLabelPackageDetailsViewModel {
                      orderID: 963,
                      parentID: 0,
                      customerID: 11,
+                     orderKey: "",
                      number: "963",
                      status: .processing,
                      currency: "USD",
@@ -376,13 +377,15 @@ extension ShippingLabelPackageDetailsViewModel {
                      totalTax: "1.20",
                      paymentMethodID: "stripe",
                      paymentMethodTitle: "Credit Card (Stripe)",
+                     chargeID: nil,
                      items: sampleItems(),
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
                      shippingLines: sampleShippingLines(),
                      coupons: sampleCoupons(),
                      refunds: [],
-                     fees: [])
+                     fees: [],
+                     taxes: [])
     }
 
     static func sampleAddress() -> Address {

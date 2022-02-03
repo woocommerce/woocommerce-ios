@@ -18,6 +18,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             automaticallyRefundsPayment: true,
                                             items: [],
                                             shippingLine: nil,
+                                            fees: [],
                                             currencyFormatter: formatter)
 
         // When
@@ -40,6 +41,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             automaticallyRefundsPayment: false,
                                             items: items,
                                             shippingLine: nil,
+                                            fees: [],
                                             currencyFormatter: formatter)
 
         // When
@@ -74,6 +76,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             automaticallyRefundsPayment: false,
                                             items: items,
                                             shippingLine: nil,
+                                            fees: [],
                                             currencyFormatter: formatter)
 
         // When
@@ -99,6 +102,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             automaticallyRefundsPayment: false,
                                             items: [],
                                             shippingLine: shippingLine,
+                                            fees: [],
                                             currencyFormatter: formatter)
 
         // When
@@ -130,6 +134,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             automaticallyRefundsPayment: false,
                                             items: items,
                                             shippingLine: shippingLine,
+                                            fees: [],
                                             currencyFormatter: formatter)
 
         // When
@@ -172,6 +177,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             automaticallyRefundsPayment: false,
                                             items: items,
                                             shippingLine: nil,
+                                            fees: [],
                                             currencyFormatter: formatter)
 
         // When
@@ -181,5 +187,61 @@ final class RefundCreationUseCaseTests: XCTestCase {
         XCTAssertEqual(refund.items[0].total, "1200")
         XCTAssertEqual(refund.items[1].total, "1301.4")
         XCTAssertEqual(refund.items[1].taxes[0].total, "1130.6")
+    }
+
+    func test_refund_fees_values_are_transformed_correctly() {
+        // Given
+        let items: [RefundableOrderItem] = [
+            .init(item: MockOrderItem.sampleItem(itemID: 1, quantity: 2, price: 5.1, totalTax: "0.0"), quantity: 1),
+            .init(item: MockOrderItem.sampleItem(itemID: 2, quantity: 2, price: 6.3, totalTax: "0.0"), quantity: 2)
+        ]
+        let feeTaxes = OrderItemTax(taxID: 15, subtotal: "", total: "15.00")
+        let expectedTransformedFeeTaxes = OrderItemTaxRefund(taxID: feeTaxes.taxID, subtotal: feeTaxes.subtotal, total: feeTaxes.total)
+        let fees = [
+            OrderFeeLine(feeID: 5, name: "", taxClass: "", taxStatus: .taxable, total: "45.00", totalTax: "15.00", taxes: [feeTaxes], attributes: []),
+            OrderFeeLine(feeID: 6, name: "", taxClass: "", taxStatus: .taxable, total: "55.00", totalTax: "15.00", taxes: [feeTaxes], attributes: []),
+            OrderFeeLine(feeID: 7, name: "", taxClass: "", taxStatus: .taxable, total: "65.00", totalTax: "15.00", taxes: [feeTaxes], attributes: [])
+        ]
+        let useCase = RefundCreationUseCase(amount: "7.99",
+                                            reason: nil,
+                                            automaticallyRefundsPayment: false,
+                                            items: items,
+                                            shippingLine: nil,
+                                            fees: fees,
+                                            currencyFormatter: formatter)
+
+        // When
+        let refund = useCase.createRefund()
+
+        // Then
+        XCTAssertEqual(refund.items.count, items.count + 3) // 3 from the fees
+
+        // First Item
+        XCTAssertEqual(refund.items[0].itemID, 1)
+        XCTAssertEqual(refund.items[0].quantity, 1)
+        XCTAssertEqual(refund.items[0].total, "5.1")
+        XCTAssertEqual(refund.items[0].taxes, [])
+
+        // Second Item
+        XCTAssertEqual(refund.items[1].itemID, 2)
+        XCTAssertEqual(refund.items[1].quantity, 2)
+        XCTAssertEqual(refund.items[1].total, "12.6")
+        XCTAssertEqual(refund.items[1].taxes, [])
+
+        // First Fee
+        XCTAssertEqual(refund.items[2].itemID, 5)
+        XCTAssertEqual(refund.items[2].total, "45.00")
+        XCTAssertEqual(refund.items[2].taxes, [expectedTransformedFeeTaxes])
+
+        // Second Fee
+        XCTAssertEqual(refund.items[3].itemID, 6)
+        XCTAssertEqual(refund.items[3].total, "55.00")
+        XCTAssertEqual(refund.items[3].taxes, [expectedTransformedFeeTaxes])
+
+        // Third Fee
+        XCTAssertEqual(refund.items[4].itemID, 7)
+        XCTAssertEqual(refund.items[4].total, "65.00")
+        XCTAssertEqual(refund.items[4].taxes, [expectedTransformedFeeTaxes])
+
     }
 }

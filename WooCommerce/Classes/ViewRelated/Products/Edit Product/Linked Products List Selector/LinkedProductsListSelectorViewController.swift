@@ -1,7 +1,7 @@
+import Combine
 import UIKit
 import WordPressUI
 import Yosemite
-import Observables
 
 /// Displays a paginated list of products given product IDs, with a CTA to add more products.
 final class LinkedProductsListSelectorViewController: UIViewController {
@@ -29,7 +29,7 @@ final class LinkedProductsListSelectorViewController: UIViewController {
             return PaginatedListSelectorViewController(viewProperties: viewProperties, dataSource: dataSource, onDismiss: { _ in })
     }()
 
-    private var cancellable: ObservationToken?
+    private var productIDsSubscription: AnyCancellable?
 
     // Completion callback
     //
@@ -168,7 +168,7 @@ private extension LinkedProductsListSelectorViewController {
     }
 
     func observeLinkedProductIDs() {
-        cancellable = dataSource.productIDs.subscribe { [weak self] productIDs in
+        productIDsSubscription = dataSource.productIDs.sink { [weak self] productIDs in
             self?.paginatedListSelector.updateResultsController()
             self?.updateNavigationRightBarButtonItem()
         }

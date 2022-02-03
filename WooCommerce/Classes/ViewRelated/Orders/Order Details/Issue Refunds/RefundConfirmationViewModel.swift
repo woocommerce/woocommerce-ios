@@ -65,11 +65,13 @@ final class RefundConfirmationViewModel {
     func submit(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         // Create refund object
         let shippingLine = details.refundsShipping ? details.order.shippingLines.first : nil
+        let fees = details.refundsFees ? details.order.fees : []
         let useCase = RefundCreationUseCase(amount: details.amount,
-                                            reason: reasonForRefundCellViewModel.currentValue,
+                                            reason: reasonForRefundCellViewModel.value,
                                             automaticallyRefundsPayment: gatewaySupportsAutomaticRefunds(),
                                             items: details.items,
                                             shippingLine: shippingLine,
+                                            fees: fees,
                                             currencyFormatter: currencyFormatter)
         let refund = useCase.createRefund()
 
@@ -120,6 +122,10 @@ extension RefundConfirmationViewModel {
         /// Indicates if shipping will be refunded
         ///
         let refundsShipping: Bool
+
+        /// Indicates if fees will be refunded
+        ///
+        let refundsFees: Bool
 
         /// Order items and quantities to refund
         ///

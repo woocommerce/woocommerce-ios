@@ -1,3 +1,5 @@
+require 'cocoapods-catalyst-support'
+
 # For security reasons, please always keep the wordpress-mobile source first and the CDN second.
 # For more info, see https://github.com/wordpress-mobile/cocoapods-specs#source-order-and-security-considerations
 install! 'cocoapods', warn_for_multiple_pod_sources: false
@@ -16,7 +18,7 @@ platform :ios, app_ios_deployment_target.version
 workspace 'WooCommerce.xcworkspace'
 
 ## Pods shared between all the targets
-## ===================================
+## =====================================
 ##
 def aztec
   pod 'WordPress-Editor-iOS', '~> 1.11.0'
@@ -35,7 +37,7 @@ target 'WooCommerce' do
   #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'add/build-configuration'
   pod 'Automattic-Tracks-iOS', '~> 0.9.1'
 
-  pod 'Gridicons', '~> 1.0'
+  pod 'Gridicons', '~> 1.2.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   # pod 'WordPressAuthenticator', '~> 1.42.0'
@@ -45,12 +47,12 @@ target 'WooCommerce' do
 
   pod 'WordPressShared', '~> 1.15'
 
-  pod 'WordPressUI', '~> 1.12.1'
+  pod 'WordPressUI', '~> 1.12.4-beta'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
 
   aztec
 
-  pod 'WPMediaPicker', '~> 1.7.3'
+  pod 'WPMediaPicker', '~> 1.8.1'
 
   # External Libraries
   # ==================
@@ -62,7 +64,7 @@ target 'WooCommerce' do
   pod 'XLPagerTabStrip', '~> 9.0'
   pod 'Charts', '~> 3.6.0'
   pod 'ZendeskSupportSDK', '~> 5.0'
-  pod 'StripeTerminal', '~> 2.4'
+  pod 'StripeTerminal', '~> 2.5'
   pod 'Kingfisher', '~> 6.0.0'
   pod 'Wormholy', '~> 1.6.5', configurations: ['Debug']
 
@@ -79,7 +81,7 @@ end
 #
 def yosemite_pods
   pod 'Alamofire', '~> 4.8'
-  pod 'StripeTerminal', '~> 2.4'
+  pod 'StripeTerminal', '~> 2.5'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 
@@ -167,7 +169,7 @@ end
 # =================
 #
 def hardware_pods
-  pod 'StripeTerminal', '~> 2.4'
+  pod 'StripeTerminal', '~> 2.5'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 end
@@ -246,20 +248,35 @@ pre_install do |installer|
     end
     static << pod
     def pod.static_framework?
-      true
-    end
-  end
-
-  puts "Installing #{static.count} pods as static frameworks"
-  puts "Installing #{dynamic.count} pods as dynamic frameworks"
-
-  # Force CocoaLumberjack Swift version
-  installer.analysis_result.specifications.each do |s|
-    s.swift_version = '5.0' if s.name == 'CocoaLumberjack'
+    true
   end
 end
 
+puts "Installing #{static.count} pods as static frameworks"
+puts "Installing #{dynamic.count} pods as dynamic frameworks"
+
+# Force CocoaLumberjack Swift version
+installer.analysis_result.specifications.each do |s|
+  s.swift_version = '5.0' if s.name == 'CocoaLumberjack'
+end
+end
+
+
+# Configure your macCatalyst dependencies
+catalyst_configuration do
+  # Uncomment the next line for a verbose output
+  # verbose!
+
+  # ios '<pod_name>' # This dependency will only be available for iOS
+  ios 'StripeTerminal'
+  ios 'ZendeskSupportSDK'
+  # macos '<pod_name>' # This dependency will only be available for macOS
+end
+
+
 post_install do |installer|
+
+  installer.configure_catalyst
   # Workaround: Drop 32 Bit Architectures
   # =====================================
   #
@@ -272,6 +289,12 @@ post_install do |installer|
   # =====================================
   #
   installer.pods_project.targets.each do |target|
+    # Fix bundle targets' 'Signing Certificate' to 'Sign to Run Locally'
+    if target.respond_to?(:product_type) and target.product_type == "com.apple.product-type.bundle"
+      target.build_configurations.each do |config|
+        config.build_settings['CODE_SIGN_IDENTITY[sdk=macosx*]'] = '-'
+      end
+    end
     target.build_configurations.each do |configuration|
       pod_ios_deployment_target = Gem::Version.new(configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'])
       if pod_ios_deployment_target <= app_ios_deployment_target

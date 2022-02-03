@@ -16,6 +16,8 @@ public typealias Announcement = WordPressKit.Announcement
 public typealias APNSDevice = Networking.APNSDevice
 public typealias FallibleCancelable = Hardware.FallibleCancelable
 public typealias CommentStatus = Networking.CommentStatus
+public typealias Coupon = Networking.Coupon
+public typealias CouponReport = Networking.CouponReport
 public typealias Country = Networking.Country
 public typealias Credentials = Networking.Credentials
 public typealias CreateProductVariation = Networking.CreateProductVariation
@@ -41,6 +43,7 @@ public typealias OrderCouponLine = Networking.OrderCouponLine
 public typealias OrderFeeLine = Networking.OrderFeeLine
 public typealias OrderFeeTaxStatus = Networking.OrderFeeTaxStatus
 public typealias OrderNote = Networking.OrderNote
+public typealias OrderTaxLine = Networking.OrderTaxLine
 public typealias OrderRefundCondensed = Networking.OrderRefundCondensed
 public typealias OrderStatsV4 = Networking.OrderStatsV4
 public typealias OrderStatsV4Interval = Networking.OrderStatsV4Interval
@@ -134,15 +137,18 @@ public typealias PaymentIntent = Hardware.PaymentIntent
 public typealias PrintingResult = Hardware.PrintingResult
 public typealias CardPresentReceiptParameters = Hardware.CardPresentReceiptParameters
 public typealias CardPresentTransactionDetails = Hardware.CardPresentTransactionDetails
+public typealias StripeAccount = Networking.StripeAccount
 public typealias WCPayAccount = Networking.WCPayAccount
 public typealias WCPayAccountStatusEnum = Networking.WCPayAccountStatusEnum
-public typealias WCPayCustomer = Networking.WCPayCustomer
+public typealias WCPayCustomer = Networking.Customer
 
 // MARK: - Exported Storage Symbols
 
 public typealias StorageAccount = Storage.Account
 public typealias StorageAccountSettings = Storage.AccountSettings
 public typealias StorageAttribute = Storage.GenericAttribute
+public typealias StorageCoupon = Storage.Coupon
+public typealias StorageCouponSearchResult = Storage.CouponSearchResult
 public typealias StorageAddOnGroup = Storage.AddOnGroup
 public typealias StorageAnnouncement = Storage.Announcement
 public typealias StorageEligibilityErrorInfo = Storage.EligibilityErrorInfo

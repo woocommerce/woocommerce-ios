@@ -80,6 +80,38 @@ final class ReviewsCoordinatorTests: XCTestCase {
         assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: ReviewsViewController.self)
     }
 
+    func test_when_receiving_a_foreground_notification_to_view_then_it_will_present_the_review_details() throws {
+        // Given
+        let pushNotification = PushNotification(noteID: 1_234, kind: .comment, title: "", subtitle: "", message: "")
+
+        var willPresentReviewDetailsFromPushNotificationCallCount: Int = 0
+        let coordinator = makeReviewsCoordinator(willPresentReviewDetailsFromPushNotification: {
+            willPresentReviewDetailsFromPushNotificationCallCount += 1
+        })
+        coordinator.start()
+        coordinator.activate(siteID: siteID)
+
+        // When
+        pushNotificationsManager.sendForegroundNotificationToView(pushNotification)
+
+        // Simulate that the network call returns a parcel
+        let receivedAction = try XCTUnwrap(storesManager.receivedActions.first as? ProductReviewAction)
+        guard case .retrieveProductReviewFromNote(_, let completion) = receivedAction else {
+            return XCTFail("Expected retrieveProductReviewFromNote action.")
+        }
+        completion(.success(ProductReviewFromNoteParcelFactory().parcel()))
+
+        // Then
+        waitUntil {
+            coordinator.navigationController.viewControllers.count == 2
+        }
+        XCTAssertEqual(willPresentReviewDetailsFromPushNotificationCallCount, 1)
+
+        // A ReviewDetailsViewController should be pushed
+        XCTAssertEqual(coordinator.navigationController.viewControllers.count, 2)
+        assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: ReviewDetailsViewController.self)
+    }
+
     func test_when_receiving_a_review_notification_while_inactive_then_it_will_present_the_review_details() throws {
         // Given
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, title: "", subtitle: "", message: "")

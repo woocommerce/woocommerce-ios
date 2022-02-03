@@ -20,7 +20,7 @@ final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewMod
 
     let primaryButtonTitle: String? = Localization.printReceipt
 
-    let secondaryButtonTitle: String? = Localization.noThanks
+    let secondaryButtonTitle: String?
 
     let auxiliaryButtonTitle: String? = nil
 
@@ -32,9 +32,12 @@ final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewMod
         return Localization.paymentSuccessful
     }
 
-    init(printReceipt: @escaping () -> Void, noReceiptAction: @escaping () -> Void) {
+    init(printReceipt: @escaping () -> Void,
+         noReceiptTitle: String,
+         noReceiptAction: @escaping () -> Void) {
         self.printReceiptAction = printReceipt
         self.noReceiptAction = noReceiptAction
+        self.secondaryButtonTitle = noReceiptTitle
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
@@ -62,11 +65,6 @@ private extension CardPresentModalSuccessWithoutEmail {
         static let printReceipt = NSLocalizedString(
             "Print receipt",
             comment: "Button to print receipts. Presented to users after a payment has been successfully collected"
-        )
-
-        static let noThanks = NSLocalizedString(
-            "Back to Order",
-            comment: "Button to dismiss modal overlay. Presented to users after a payment has been successfully collected"
         )
     }
 }

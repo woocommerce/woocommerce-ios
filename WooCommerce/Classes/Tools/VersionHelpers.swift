@@ -6,6 +6,13 @@ final class VersionHelpers {
     /// Compares two strings as versions using the same approach as PHP `version_compare`.
     /// https://www.php.net/manual/en/function.version-compare.php
     ///
+    static func isVersionSupported(version: String, minimumRequired: String) -> Bool {
+        VersionHelpers.compare(version, minimumRequired) != .orderedAscending
+    }
+
+    /// Compares two strings as versions using the same approach as PHP `version_compare`.
+    /// https://www.php.net/manual/en/function.version-compare.php
+    ///
     /// Returns `orderedAscending` if the lhs version is older than the rhs
     /// Returns `orderedSame` if the lhs version is the same as the rhs
     /// Returns `orderedDescending` if the lhs version is newer than the rhs

@@ -1,6 +1,7 @@
 import SwiftUI
+import Kingfisher
 
-/// Represent a single product row in the Product section of a New Order
+/// Represent a single product or variation row in the Product section of a New Order
 ///
 struct ProductRow: View {
     /// View model to drive the view.
@@ -15,18 +16,21 @@ struct ProductRow: View {
             AdaptiveStack(horizontalAlignment: .leading) {
                 HStack(alignment: .top) {
                     // Product image
-                    // TODO: Display actual product image when available
-                    Image(uiImage: .productPlaceholderImage)
+                    KFImage.url(viewModel.imageURL)
+                        .placeholder {
+                            Image(uiImage: .productPlaceholderImage)
+                        }
                         .resizable()
-                        .aspectRatio(contentMode: .fill)
+                        .scaledToFill()
                         .frame(width: Layout.productImageSize * scale, height: Layout.productImageSize * scale)
+                        .cornerRadius(Layout.cornerRadius)
                         .foregroundColor(Color(UIColor.listSmallIcon))
                         .accessibilityHidden(true)
 
                     // Product details
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
-                        Text(viewModel.stockAndPriceLabel)
+                        Text(viewModel.productDetailsLabel)
                             .subheadlineStyle()
                         Text(viewModel.skuLabel)
                             .subheadlineStyle()
@@ -39,8 +43,6 @@ struct ProductRow: View {
                 ProductStepper(viewModel: viewModel)
                     .renderedIf(viewModel.canChangeQuantity)
             }
-
-            Divider()
         }
     }
 }
@@ -58,20 +60,25 @@ private struct ProductStepper: View {
     @ScaledMetric private var scale: CGFloat = 1
 
     var body: some View {
-        HStack(spacing: Layout.stepperSpacing * scale) {
+        HStack {
             Button {
-                // TODO: Decrement the product quantity
+                viewModel.decrementQuantity()
             } label: {
                 Image(uiImage: .minusSmallImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: Layout.stepperButtonSize * scale)
             }
+            .disabled(viewModel.shouldDisableQuantityDecrementer)
 
-            Text("\(viewModel.quantity)")
+            Spacer()
+
+            Text(viewModel.quantity.description)
+
+            Spacer()
 
             Button {
-                // TODO: Increment the product quantity
+                viewModel.incrementQuantity()
             } label: {
                 Image(uiImage: .plusSmallImage)
                     .resizable()
@@ -79,20 +86,21 @@ private struct ProductStepper: View {
                     .frame(height: Layout.stepperButtonSize * scale)
             }
         }
-        .padding(Layout.stepperSpacing/2 * scale)
+        .padding(Layout.stepperPadding * scale)
+        .frame(width: Layout.stepperWidth * scale)
         .overlay(
             RoundedRectangle(cornerRadius: Layout.stepperBorderRadius)
                 .stroke(Color(UIColor.separator), lineWidth: Layout.stepperBorderWidth)
         )
         .accessibilityElement(children: .ignore)
         .accessibility(label: Text(Localization.quantityLabel))
-        .accessibility(value: Text("\(viewModel.quantity)"))
+        .accessibility(value: Text(viewModel.quantity.description))
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .decrement:
-                break // TODO: Decrement the product quantity
+                viewModel.decrementQuantity()
             case .increment:
-                break // TODO: Increment the product quantity
+                viewModel.incrementQuantity()
             @unknown default:
                 break
             }
@@ -102,10 +110,12 @@ private struct ProductStepper: View {
 
 private enum Layout {
     static let productImageSize: CGFloat = 44.0
+    static let cornerRadius: CGFloat = 4.0
     static let stepperBorderWidth: CGFloat = 1.0
     static let stepperBorderRadius: CGFloat = 4.0
     static let stepperButtonSize: CGFloat = 22.0
-    static let stepperSpacing: CGFloat = 22.0
+    static let stepperPadding: CGFloat = 11.0
+    static let stepperWidth: CGFloat = 112.0
 }
 
 private enum Localization {
@@ -114,22 +124,24 @@ private enum Localization {
 
 struct ProductRow_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ProductRowViewModel(id: 1,
+        let viewModel = ProductRowViewModel(productOrVariationID: 1,
                                             name: "Love Ficus",
                                             sku: "123456",
                                             price: "20",
                                             stockStatusKey: "instock",
                                             stockQuantity: 7,
                                             manageStock: true,
-                                            canChangeQuantity: true)
-        let viewModelWithoutStepper = ProductRowViewModel(id: 1,
+                                            canChangeQuantity: true,
+                                            imageURL: nil)
+        let viewModelWithoutStepper = ProductRowViewModel(productOrVariationID: 1,
                                                           name: "Love Ficus",
                                                           sku: "123456",
                                                           price: "20",
                                                           stockStatusKey: "instock",
                                                           stockQuantity: 7,
                                                           manageStock: true,
-                                                          canChangeQuantity: false)
+                                                          canChangeQuantity: false,
+                                                          imageURL: nil)
 
         ProductRow(viewModel: viewModel)
             .previewDisplayName("ProductRow with stepper")

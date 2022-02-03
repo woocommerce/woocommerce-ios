@@ -6,67 +6,41 @@ final class MockOrders {
 
     /// Returns an `Order` with empty values. Use `copy()` to modify them.
     func empty() -> Order {
-        Order(
-            siteID: 0,
-            orderID: 0,
-            parentID: 0,
-            customerID: 0,
-            number: "",
-            status: .pending,
-            currency: "",
-            customerNote: nil,
-            dateCreated: Date(),
-            dateModified: Date(),
-            datePaid: nil,
-            discountTotal: "",
-            discountTax: "",
-            shippingTotal: "",
-            shippingTax: "",
-            total: "",
-            totalTax: "",
-            paymentMethodID: "",
-            paymentMethodTitle: "",
-            items: [],
-            billingAddress: nil,
-            shippingAddress: nil,
-            shippingLines: [],
-            coupons: [],
-            refunds: [],
-            fees: []
-        )
+        Order.fake()
     }
 
     func makeOrder(status: OrderStatusEnum = .processing,
                    items: [OrderItem] = [],
                    shippingLines: [ShippingLine] = sampleShippingLines(),
                    refunds: [OrderRefundCondensed] = [],
-                   fees: [OrderFeeLine] = []) -> Order {
-        return Order(siteID: siteID,
-                     orderID: orderID,
-                     parentID: 0,
-                     customerID: 11,
-                     number: "963",
-                     status: status,
-                     currency: "USD",
-                     customerNote: "",
-                     dateCreated: date(with: "2018-04-03T23:05:12"),
-                     dateModified: date(with: "2018-04-03T23:05:14"),
-                     datePaid: date(with: "2018-04-03T23:05:14"),
-                     discountTotal: "30.00",
-                     discountTax: "1.20",
-                     shippingTotal: "0.00",
-                     shippingTax: "0.00",
-                     total: "31.20",
-                     totalTax: "1.20",
-                     paymentMethodID: "stripe",
-                     paymentMethodTitle: "Credit Card (Stripe)",
-                     items: items,
-                     billingAddress: sampleAddress(),
-                     shippingAddress: sampleAddress(),
-                     shippingLines: shippingLines,
-                     coupons: [],
-                     refunds: refunds,
-                     fees: fees)
+                   fees: [OrderFeeLine] = [],
+                   taxes: [OrderTaxLine] = []) -> Order {
+        return Order.fake().copy(siteID: siteID,
+                                 orderID: orderID,
+                                 customerID: 11,
+                                 orderKey: "abc123",
+                                 number: "963",
+                                 status: status,
+                                 currency: "USD",
+                                 customerNote: "",
+                                 dateCreated: date(with: "2018-04-03T23:05:12"),
+                                 dateModified: date(with: "2018-04-03T23:05:14"),
+                                 datePaid: date(with: "2018-04-03T23:05:14"),
+                                 discountTotal: "30.00",
+                                 discountTax: "1.20",
+                                 shippingTotal: "0.00",
+                                 shippingTax: "0.00",
+                                 total: "31.20",
+                                 totalTax: "1.20",
+                                 paymentMethodID: "stripe",
+                                 paymentMethodTitle: "Credit Card (Stripe)",
+                                 items: items,
+                                 billingAddress: sampleAddress(),
+                                 shippingAddress: sampleAddress(),
+                                 shippingLines: shippingLines,
+                                 refunds: refunds,
+                                 fees: fees,
+                                 taxes: taxes)
     }
 
     func sampleOrder() -> Order {
@@ -86,32 +60,26 @@ final class MockOrders {
     }
 
     func sampleOrderCreatedInCurrentYear() -> Order {
-        return Order(siteID: siteID,
-                     orderID: orderID,
-                     parentID: 0,
-                     customerID: 11,
-                     number: "963",
-                     status: .processing,
-                     currency: "USD",
-                     customerNote: "",
-                     dateCreated: Date(),
-                     dateModified: Date(),
-                     datePaid: Date(),
-                     discountTotal: "30.00",
-                     discountTax: "1.20",
-                     shippingTotal: "0.00",
-                     shippingTax: "0.00",
-                     total: "31.20",
-                     totalTax: "1.20",
-                     paymentMethodID: "stripe",
-                     paymentMethodTitle: "Credit Card (Stripe)",
-                     items: [],
-                     billingAddress: sampleAddress(),
-                     shippingAddress: sampleAddress(),
-                     shippingLines: Self.sampleShippingLines(),
-                     coupons: [],
-                     refunds: [],
-                     fees: [])
+        return Order.fake().copy(siteID: siteID,
+                                 orderID: orderID,
+                                 customerID: 11,
+                                 orderKey: "abc123",
+                                 number: "963",
+                                 status: .processing,
+                                 currency: "USD",
+                                 customerNote: "",
+                                 datePaid: Date(),
+                                 discountTotal: "30.00",
+                                 discountTax: "1.20",
+                                 shippingTotal: "0.00",
+                                 shippingTax: "0.00",
+                                 total: "31.20",
+                                 totalTax: "1.20",
+                                 paymentMethodID: "stripe",
+                                 paymentMethodTitle: "Credit Card (Stripe)",
+                                 billingAddress: sampleAddress(),
+                                 shippingAddress: sampleAddress(),
+                                 shippingLines: Self.sampleShippingLines())
     }
 
     static func sampleShippingLines(cost: String = "133.00", tax: String = "0.00") -> [ShippingLine] {
@@ -157,63 +125,49 @@ final class MockOrders {
     /// An order with broken elements, inspired by `broken-order.json`
     ///
     func brokenOrder() -> Order {
-        return Order(siteID: 545,
-                     orderID: 85,
-                     parentID: 0,
-                     customerID: 0,
-                     number: "85",
-                     status: .custom("draft"),
-                     currency: "GBP",
-                     customerNote: "",
-                     dateCreated: Date(),
-                     dateModified: Date(),
-                     datePaid: nil, // there is no paid date
-                     discountTotal: "0.00",
-                     discountTax: "0.00",
-                     shippingTotal: "0.00",
-                     shippingTax: "0.00",
-                     total: "0.00",
-                     totalTax: "0.00",
-                     paymentMethodID: "",
-                     paymentMethodTitle: "", // broken in the sense that there should be a payment title
-                     items: [],
-                     billingAddress: brokenAddress(), // empty address
-                     shippingAddress: brokenAddress(),
-                     shippingLines: brokenShippingLines(), // empty shipping
-                     coupons: [],
-                     refunds: [],
-                     fees: [])
+        return Order.fake().copy(siteID: 545,
+                                 orderID: 85,
+                                 orderKey: "abc123",
+                                 number: "85",
+                                 status: .custom("draft"),
+                                 currency: "GBP",
+                                 customerNote: "",
+                                 datePaid: nil, // there is no paid date
+                                 discountTotal: "0.00",
+                                 discountTax: "0.00",
+                                 shippingTotal: "0.00",
+                                 shippingTax: "0.00",
+                                 total: "0.00",
+                                 totalTax: "0.00",
+                                 paymentMethodID: "",
+                                 paymentMethodTitle: "", // broken in the sense that there should be a payment title
+                                 billingAddress: brokenAddress(), // empty address
+                                 shippingAddress: brokenAddress(),
+                                 shippingLines: brokenShippingLines()) // empty shipping
     }
 
     /// An order with broken elements that hasn't been paid, inspired by `broken-order.json`
     ///
     func unpaidOrder() -> Order {
-        return Order(siteID: 545,
-                     orderID: 85,
-                     parentID: 0,
-                     customerID: 0,
-                     number: "85",
-                     status: .custom("draft"),
-                     currency: "GBP",
-                     customerNote: "",
-                     dateCreated: Date(),
-                     dateModified: Date(),
-                     datePaid: nil, // there is no paid date
-                     discountTotal: "0.00",
-                     discountTax: "0.00",
-                     shippingTotal: "0.00",
-                     shippingTax: "0.00",
-                     total: "0.00",
-                     totalTax: "0.00",
-                     paymentMethodID: "cod",
-                     paymentMethodTitle: "Cash on Delivery",
-                     items: [],
-                     billingAddress: brokenAddress(), // empty address
-                     shippingAddress: brokenAddress(),
-                     shippingLines: brokenShippingLines(), // empty shipping
-                     coupons: [],
-                     refunds: [],
-                     fees: [])
+        return Order.fake().copy(siteID: 545,
+                                 orderID: 85,
+                                 orderKey: "abc123",
+                                 number: "85",
+                                 status: .custom("draft"),
+                                 currency: "GBP",
+                                 customerNote: "",
+                                 datePaid: nil, // there is no paid date
+                                 discountTotal: "0.00",
+                                 discountTax: "0.00",
+                                 shippingTotal: "0.00",
+                                 shippingTax: "0.00",
+                                 total: "0.00",
+                                 totalTax: "0.00",
+                                 paymentMethodID: "cod",
+                                 paymentMethodTitle: "Cash on Delivery",
+                                 billingAddress: brokenAddress(), // empty address
+                                 shippingAddress: brokenAddress(),
+                                 shippingLines: brokenShippingLines()) // empty shipping
     }
 
     /// An address that may or may not be broken, that came from `broken-order.json`

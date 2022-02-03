@@ -155,7 +155,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         viewModel.onLoadTrigger.send()
-        viewModel.updateRemoteAddress { _ in }
+        viewModel.saveAddress { _ in }
 
         // Then
         assertEqual(viewModel.navigationTrailingItem, .loading)
@@ -168,7 +168,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         // When
         viewModel.onLoadTrigger.send()
         let navigationItem = waitFor { promise in
-            viewModel.updateRemoteAddress { _ in
+            viewModel.saveAddress { _ in
                 promise(viewModel.navigationTrailingItem)
             }
         }
@@ -265,7 +265,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                     XCTFail("Unsupported Action")
                 }
             }
-            viewModel.updateRemoteAddress { _ in }
+            viewModel.saveAddress { _ in }
         }
 
         // Then
@@ -291,7 +291,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                     XCTFail("Unsupported Action")
                 }
             }
-            viewModel.updateRemoteAddress { _ in }
+            viewModel.saveAddress { _ in }
         }
 
         // Then
@@ -316,7 +316,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                     XCTFail("Unsupported Action")
                 }
             }
-            viewModel.updateRemoteAddress { _ in }
+            viewModel.saveAddress { _ in }
         }
 
         // Then
@@ -358,7 +358,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                     XCTFail("Unsupported Action")
                 }
             }
-            viewModel.updateRemoteAddress { _ in }
+            viewModel.saveAddress { _ in }
         }
 
         // Then
@@ -381,13 +381,13 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         let noticeRequest = waitFor { promise in
-            viewModel.updateRemoteAddress { _ in
-                promise(viewModel.presentNotice)
+            viewModel.saveAddress { _ in
+                promise(viewModel.notice)
             }
         }
 
         // Then
-        assertEqual(noticeRequest, .success)
+        assertEqual(noticeRequest, EditOrderAddressFormViewModel.NoticeFactory.createSuccessNotice())
     }
 
     func test_view_model_fires_error_notice_after_failing_to_update_address() {
@@ -404,13 +404,13 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         let noticeRequest = waitFor { promise in
-            viewModel.updateRemoteAddress { _ in
-                promise(viewModel.presentNotice)
+            viewModel.saveAddress { _ in
+                promise(viewModel.notice)
             }
         }
 
         // Then
-        assertEqual(noticeRequest, .error(.unableToUpdateAddress))
+        assertEqual(noticeRequest, AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToUpdateAddress))
     }
 
     func test_view_model_fires_error_notice_after_failing_to_fetch_countries() {
@@ -427,7 +427,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         viewModel.onLoadTrigger.send()
 
         // Then
-        assertEqual(viewModel.presentNotice, .error(.unableToLoadCountries))
+        assertEqual(viewModel.notice, AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToLoadCountries))
     }
 
     func test_copying_empty_shipping_address_for_billing_does_not_sends_an_empty_email_field() {
@@ -447,7 +447,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                 }
             }
 
-            viewModel.updateRemoteAddress(onFinish: { _ in })
+            viewModel.saveAddress(onFinish: { _ in })
         }
 
         // Then
@@ -474,7 +474,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                 }
             }
 
-            viewModel.updateRemoteAddress(onFinish: { _ in })
+            viewModel.saveAddress(onFinish: { _ in })
         }
 
         // Then
@@ -501,7 +501,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                 }
             }
 
-            viewModel.updateRemoteAddress(onFinish: { _ in })
+            viewModel.saveAddress(onFinish: { _ in })
         }
 
         // Then
@@ -542,7 +542,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         _ = waitFor { promise in
-            viewModel.updateRemoteAddress(onFinish: { finished in
+            viewModel.saveAddress(onFinish: { finished in
                 promise(finished)
             })
         }
@@ -570,7 +570,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         _ = waitFor { promise in
-            viewModel.updateRemoteAddress(onFinish: { finished in
+            viewModel.saveAddress(onFinish: { finished in
                 promise(finished)
             })
         }
@@ -598,7 +598,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         _ = waitFor { promise in
-            viewModel.updateRemoteAddress(onFinish: { finished in
+            viewModel.saveAddress(onFinish: { finished in
                 promise(finished)
             })
         }
@@ -626,7 +626,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         _ = waitFor { promise in
-            viewModel.updateRemoteAddress(onFinish: { finished in
+            viewModel.saveAddress(onFinish: { finished in
                 promise(finished)
             })
         }

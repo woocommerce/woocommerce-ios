@@ -304,9 +304,10 @@ private extension SettingsViewController {
 
         ServiceLocator.analytics.track(event: .jetpackInstallButtonTapped(source: .settings))
 
-        let installJetpackController = JetpackInstallHostingController(siteID: site.siteID, siteURL: site.url)
+        let installJetpackController = JetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
         installJetpackController.setDismissAction { [weak self] in
             self?.dismiss(animated: true, completion: nil)
+            self?.viewModel.onJetpackInstallDismiss()
         }
         present(installJetpackController, animated: true, completion: nil)
     }

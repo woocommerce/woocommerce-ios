@@ -7,7 +7,10 @@
                 "equalTo": "true"
             },
             "path": {
-                "matches": "/wc/v3/products/reviews(.*)"
+                "matches": "/wc/v3/products/reviews&_method=get"
+            },
+            "query": {
+                "matches": "(.*)\"status\":\"all\"(.*)"
             }
         }
     },
@@ -22,7 +25,7 @@
                 "status": "hold",
                 "reviewer": "Paytin Lubin",
                 "reviewer_email": "pa@example.com",
-                "review": "<p>Travel in style!<\/p>\n",
+                "review": "Travel in style!",
                 "rating": 5,
                 "verified": false,
                 "reviewer_avatar_urls": {
@@ -49,7 +52,7 @@
                 "status": "hold",
                 "reviewer": "Lydia Donin",
                 "reviewer_email": "lydia@example.com",
-                "review": "<p>I love these shades! They are super sturdy and stylish at the same time. I\u2019m planning to buy them again for a birthday gift next month.<\/p>\n",
+                "review": "I love these shades! They are super sturdy and stylish at the same time. I'm planning to buy them again for a birthday gift next month.",
                 "rating": 5,
                 "verified": false,
                 "reviewer_avatar_urls": {
@@ -76,7 +79,7 @@
                 "status": "hold",
                 "reviewer": "Mira Workman",
                 "reviewer_email": "mira@example.com",
-                "review": "<p>Can\u2019t go outside without them anymore!<\/p>\n",
+                "review": "Can't go outside without them anymore!",
                 "rating": 5,
                 "verified": false,
                 "reviewer_avatar_urls": {
@@ -103,7 +106,7 @@
                 "status": "approved",
                 "reviewer": "Marcus Curtis",
                 "reviewer_email": "marcu@example.com",
-                "review": "<p>Such a great product!<\/p>\n",
+                "review": "Such a great product!",
                 "rating": 5,
                 "verified": false,
                 "reviewer_avatar_urls": {
@@ -130,7 +133,7 @@
                 "status": "approved",
                 "reviewer": "Lucy Liu",
                 "reviewer_email": "lucy@example.com",
-                "review": "<p>Great UV protection, I've dropped them a few times and they are still holding up perfectly.<\/p>\n",
+                "review": "Great UV protection, I've dropped them a few times and they are still holding up perfectly.",
                 "rating": 5,
                 "verified": false,
                 "reviewer_avatar_urls": {
@@ -161,7 +164,7 @@
                 "status": "approved",
                 "reviewer": "Wang King",
                 "reviewer_email": "w@example.com",
-                "review": "<p>I love these shades! They are super sturdy and stylish at the same time. I'm planning to buy them again for a birthday gift next month.<\/p>\n",
+                "review": "I love these shades! They are super sturdy and stylish at the same time. I'm planning to buy them again for a birthday gift next month.",
                 "rating": 5,
                 "verified": false,
                 "reviewer_avatar_urls": {
@@ -192,7 +195,7 @@
                 "status": "approved",
                 "reviewer": "Mathilde Gerard",
                 "reviewer_email": "m@example.com",
-                "review": "<p>Can't go outside without them anymore!<\/p>\n",
+                "review": "Can't go outside without them anymore!",
                 "rating": 5,
                 "verified": false,
                 "reviewer_avatar_urls": {

@@ -28,6 +28,10 @@ final class IssueRefundViewModel {
         ///
         var shouldRefundShipping: Bool = false
 
+        /// Bool indicating if fees will be refunded
+        ///
+        var shouldRefundFees: Bool = false
+
         ///  Holds the quantity of items to refund
         ///
         var refundQuantityStore = RefundQuantityStore()
@@ -110,6 +114,7 @@ final class IssueRefundViewModel {
         let details = RefundConfirmationViewModel.Details(order: state.order,
                                                           amount: "\(calculateRefundTotal())",
                                                           refundsShipping: state.shouldRefundShipping,
+                                                          refundsFees: state.shouldRefundFees,
                                                           items: state.refundQuantityStore.refundableItems(),
                                                           paymentGateway: paymentGateway)
         return RefundConfirmationViewModel(details: details, currencySettings: state.currencySettings)
@@ -125,6 +130,10 @@ extension IssueRefundViewModel {
         trackShippingSwitchChanged()
     }
 
+    func toggleRefundFees() {
+        state.shouldRefundFees.toggle()
+    }
+
     /// Returns the number of items available for refund for the provided item index.
     /// Returns `nil` if the index is out of bounds
     ///
@@ -135,7 +144,7 @@ extension IssueRefundViewModel {
         return refundable.quantity
     }
 
-    /// Returns the current quantlty set for refund for the provided item index.
+    /// Returns the current quantity set for refund for the provided item index.
     /// Returns `nil` if the index is out of bounds.
     ///
     func currentQuantityForItemAtIndex(_ itemIndex: Int) -> Int? {
@@ -214,11 +223,16 @@ private extension IssueRefundViewModel {
 }
 
 // MARK: Constants
-private extension IssueRefundViewModel {
+extension IssueRefundViewModel {
     enum Localization {
         static let refundShippingTitle = NSLocalizedString("Refund Shipping", comment: "Title of the switch in the IssueRefund screen to refund shipping")
+        static let refundFeesTitle = NSLocalizedString(
+            "Refund Fees", comment: "Title of the switch in the IssueRefund screen to refund fees")
         static let itemSingular = NSLocalizedString("1 item selected", comment: "Title of the label indicating that there is 1 item to refund.")
         static let itemsPlural = NSLocalizedString("%d items selected", comment: "Title of the label indicating that there are multiple items to refund.")
+        static let unsupportedFeesRefund = NSLocalizedString(
+            "You can refund fees in your store admin",
+            comment: "Shown in Refunds screen. Refunding fees are currently not supported.")
     }
 }
 
@@ -240,12 +254,19 @@ extension IssueRefundViewModel {
         let isOn: Bool
     }
 
+    /// ViewModel that represents the fees switch row.
+    struct FeesSwitchViewModel: IssueRefundRow {
+        let title: String
+        let isOn: Bool
+    }
+
     /// Creates sections for the table view to display
     ///
     private func createSections() -> [Section] {
         [
             createItemsToRefundSection(),
-            createShippingSection()
+            createShippingSection(),
+            createFeesSection()
         ].compactMap { $0 }
     }
 
@@ -293,6 +314,23 @@ extension IssueRefundViewModel {
         return Section(rows: [switchRow, detailsRow])
     }
 
+    private func createFeesSection() -> Section? {
+        guard isAnyFeeAvailableForRefund() else {
+            return nil
+        }
+
+        let switchRow = FeesSwitchViewModel(title: Localization.refundFeesTitle, isOn: state.shouldRefundFees)
+        guard state.shouldRefundFees else {
+            return Section(rows: [switchRow])
+        }
+
+        let detailsRow = RefundFeesDetailsViewModel(fees: state.order.fees,
+                                                    currency: state.order.currency,
+                                                    currencySettings: state.currencySettings)
+
+        return Section(rows: [switchRow, detailsRow])
+    }
+
     /// Returns a string of the refund total formatted with the proper currency settings and store currency.
     ///
     private func calculateTitle() -> String {
@@ -308,13 +346,19 @@ extension IssueRefundViewModel {
         let refundItems = state.refundQuantityStore.refundableItems()
         let productsTotalUseCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
 
-        // If shipping is not enabled, return only the products value
-        guard let shippingLine = state.order.shippingLines.first, state.shouldRefundShipping else {
-            return productsTotalUseCase.calculateRefundValues().total
+        var refundsTotal = productsTotalUseCase.calculateRefundValues().total
+
+        // If shipping is enabled, sum the refund value to the total
+        if let shippingLine = state.order.shippingLines.first, state.shouldRefundShipping {
+            refundsTotal += RefundShippingCalculationUseCase(shippingLine: shippingLine, currencyFormatter: formatter).calculateRefundValue()
         }
 
-        let shippingTotalUseCase = RefundShippingCalculationUseCase(shippingLine: shippingLine, currencyFormatter: formatter)
-        return productsTotalUseCase.calculateRefundValues().total + shippingTotalUseCase.calculateRefundValue()
+        // If fees are enabled, sum the refund value to the total
+        if state.shouldRefundFees {
+            refundsTotal += RefundFeesCalculationUseCase(fees: state.order.fees, currencyFormatter: formatter).calculateRefundValues().total
+        }
+
+        return refundsTotal
     }
 
     /// Returns a string with the count of how many items are selected for refund.
@@ -333,7 +377,7 @@ extension IssueRefundViewModel {
     /// Calculates wether there are pending changes to commit
     ///
     private func calculatePendingChangesState() -> Bool {
-        state.refundQuantityStore.count() > 0 || state.shouldRefundShipping
+        state.refundQuantityStore.count() > 0 || state.shouldRefundShipping || state.shouldRefundFees
     }
 
     /// Calculates wether the "select all" button should be visible or not.
@@ -360,6 +404,11 @@ extension IssueRefundViewModel {
 
         // Return true if there is any non-empty shipping refund
         return state.refunds.first { $0.shippingLines?.isNotEmpty ?? false } != nil
+    }
+
+    private func isAnyFeeAvailableForRefund() -> Bool {
+        // Return false if there are no fees left to be refunded.
+        return state.order.fees.isNotEmpty
     }
 
     /// Return an array of `RefundableOrderItems` by taking out all previously refunded items
@@ -398,6 +447,10 @@ extension RefundItemViewModel: IssueRefundRow {}
 extension RefundProductsTotalViewModel: IssueRefundRow {}
 
 extension RefundShippingDetailsViewModel: IssueRefundRow {}
+
+extension RefundFeesDetailsViewModel: IssueRefundRow {}
+
+extension ImageAndTitleAndTextTableViewCell.ViewModel: IssueRefundRow {}
 
 // MARK: Refund Quantity Store
 private extension IssueRefundViewModel {

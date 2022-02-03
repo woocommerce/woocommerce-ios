@@ -8,6 +8,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     public let orderID: Int64
     public let parentID: Int64
     public let customerID: Int64
+    public let orderKey: String
 
     public let number: String
     /// The Order status.
@@ -30,6 +31,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     public let totalTax: String
     public let paymentMethodID: String
     public let paymentMethodTitle: String
+    public let chargeID: String?
 
     public let items: [OrderItem]
     public let billingAddress: Address?
@@ -38,6 +40,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     public let coupons: [OrderCouponLine]
     public let refunds: [OrderRefundCondensed]
     public let fees: [OrderFeeLine]
+    public let taxes: [OrderTaxLine]
 
     /// Order struct initializer.
     ///
@@ -45,6 +48,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 orderID: Int64,
                 parentID: Int64,
                 customerID: Int64,
+                orderKey: String,
                 number: String,
                 status: OrderStatusEnum,
                 currency: String,
@@ -60,18 +64,21 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 totalTax: String,
                 paymentMethodID: String,
                 paymentMethodTitle: String,
+                chargeID: String?,
                 items: [OrderItem]?,
                 billingAddress: Address?,
                 shippingAddress: Address?,
                 shippingLines: [ShippingLine],
                 coupons: [OrderCouponLine],
                 refunds: [OrderRefundCondensed],
-                fees: [OrderFeeLine]) {
+                fees: [OrderFeeLine],
+                taxes: [OrderTaxLine]) {
 
         self.siteID = siteID
         self.orderID = orderID
         self.parentID = parentID
         self.customerID = customerID
+        self.orderKey = orderKey
 
         self.number = number
         self.status = status
@@ -90,6 +97,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.totalTax = totalTax
         self.paymentMethodID = paymentMethodID
         self.paymentMethodTitle = paymentMethodTitle
+        self.chargeID = chargeID
 
         self.items = items ?? []
         self.billingAddress = billingAddress
@@ -98,6 +106,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.coupons = coupons
         self.refunds = refunds
         self.fees = fees
+        self.taxes = taxes
     }
 
 
@@ -113,6 +122,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         let orderID = try container.decode(Int64.self, forKey: .orderID)
         let parentID = try container.decode(Int64.self, forKey: .parentID)
         let customerID = try container.decode(Int64.self, forKey: .customerID)
+        let orderKey = try container.decode(String.self, forKey: .orderKey)
 
         let number = try container.decode(String.self, forKey: .number)
         let status = try container.decode(OrderStatusEnum.self, forKey: .status)
@@ -133,12 +143,16 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         let paymentMethodID = try container.decode(String.self, forKey: .paymentMethodID)
         let paymentMethodTitle = try container.decode(String.self, forKey: .paymentMethodTitle)
 
+        let allOrderMetaData = try? container.decode([OrderMetaData].self, forKey: .metadata)
+        var chargeID: String? = nil
+        chargeID = allOrderMetaData?.first(where: { $0.key == "_charge_id" })?.value
+
         let items = try? container.decodeIfPresent([OrderItem].self, forKey: .items) ?? []
 
         var shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
         // In WooCommerce <5.6.0, the shipping phone number can be stored in the order metadata
         if let address = shippingAddress, address.phone == nil {
-            let allOrderMetaData = try? container.decode([OrderMetaData].self, forKey: .metadata)
+            let allOrderMetaData = allOrderMetaData
             let shippingPhone = allOrderMetaData?.first(where: { $0.key == "_shipping_phone" })?.value
             shippingAddress = address.copy(phone: shippingPhone)
         }
@@ -156,10 +170,13 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
 
         let fees = try container.decode([OrderFeeLine].self, forKey: .feeLines)
 
+        let taxes = try container.decode([OrderTaxLine].self, forKey: .taxLines)
+
         self.init(siteID: siteID,
                   orderID: orderID,
                   parentID: parentID,
                   customerID: customerID,
+                  orderKey: orderKey,
                   number: number,
                   status: status,
                   currency: currency,
@@ -175,42 +192,47 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   totalTax: totalTax,
                   paymentMethodID: paymentMethodID,
                   paymentMethodTitle: paymentMethodTitle,
+                  chargeID: chargeID,
                   items: items,
                   billingAddress: billingAddress,
                   shippingAddress: shippingAddress,
                   shippingLines: shippingLines,
                   coupons: coupons,
                   refunds: refunds,
-                  fees: fees)
+                  fees: fees,
+                  taxes: taxes)
     }
 
     public static var empty: Order {
         self.init(siteID: 0,
-              orderID: 0,
-              parentID: 0,
-              customerID: 0,
-              number: "",
-              status: .pending,
-              currency: "",
-              customerNote: "",
-              dateCreated: Date(),
-              dateModified: Date(),
-              datePaid: Date(),
-              discountTotal: "",
-              discountTax: "",
-              shippingTotal: "",
-              shippingTax: "",
-              total: "",
-              totalTax: "",
-              paymentMethodID: "",
-              paymentMethodTitle: "",
-              items: [],
-              billingAddress: nil,
-              shippingAddress: nil,
-              shippingLines: [],
-              coupons: [],
-              refunds: [],
-              fees: [])
+                  orderID: 0,
+                  parentID: 0,
+                  customerID: 0,
+                  orderKey: "",
+                  number: "",
+                  status: .pending,
+                  currency: "",
+                  customerNote: "",
+                  dateCreated: Date(),
+                  dateModified: Date(),
+                  datePaid: Date(),
+                  discountTotal: "",
+                  discountTax: "",
+                  shippingTotal: "",
+                  shippingTax: "",
+                  total: "",
+                  totalTax: "",
+                  paymentMethodID: "",
+                  paymentMethodTitle: "",
+                  chargeID: nil,
+                  items: [],
+                  billingAddress: nil,
+                  shippingAddress: nil,
+                  shippingLines: [],
+                  coupons: [],
+                  refunds: [],
+                  fees: [],
+                  taxes: [])
     }
 }
 
@@ -223,6 +245,7 @@ internal extension Order {
         case orderID            = "id"
         case parentID           = "parent_id"
         case customerID         = "customer_id"
+        case orderKey           = "order_key"
 
         case number             = "number"
         case status             = "status"
@@ -249,6 +272,7 @@ internal extension Order {
         case couponLines        = "coupon_lines"
         case refunds            = "refunds"
         case feeLines           = "fee_lines"
+        case taxLines           = "tax_lines"
         case metadata           = "meta_data"
     }
 }
@@ -263,6 +287,7 @@ extension Order: Equatable {
             lhs.orderID == rhs.orderID &&
             lhs.parentID == rhs.parentID &&
             lhs.customerID == rhs.customerID &&
+            lhs.orderKey == rhs.orderKey &&
             lhs.number == rhs.number &&
             lhs.status == rhs.status &&
             lhs.dateCreated == rhs.dateCreated &&

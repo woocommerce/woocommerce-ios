@@ -67,16 +67,15 @@ final class SummaryTableViewCellTests: XCTestCase {
 
 private extension SummaryTableViewCellTests {
     func sampleOrder() -> Order {
-        return Order(siteID: 123,
+        return Order.fake().copy(siteID: 123,
                      orderID: 963,
                      parentID: 2,
                      customerID: 11,
+                     orderKey: "abc123",
                      number: "963",
                      status: .custom("automattic"),
                      currency: "USD",
                      customerNote: "",
-                     dateCreated: Date(),
-                     dateModified: Date(),
                      datePaid: Date(),
                      discountTotal: "30.00",
                      discountTax: "1.20",
@@ -86,13 +85,7 @@ private extension SummaryTableViewCellTests {
                      totalTax: "1.20",
                      paymentMethodID: "stripe",
                      paymentMethodTitle: "Credit Card (Stripe)",
-                     items: [],
-                     billingAddress: nil,
-                     shippingAddress: nil,
-                     shippingLines: [],
-                     coupons: [],
-                     refunds: [],
-                     fees: [])
+                     items: [])
     }
 }
 

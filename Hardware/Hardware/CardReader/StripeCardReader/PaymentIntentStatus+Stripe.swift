@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 extension PaymentIntentStatus {
@@ -23,3 +24,4 @@ extension PaymentIntentStatus {
         }
     }
 }
+#endif

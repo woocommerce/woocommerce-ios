@@ -27,7 +27,7 @@ PODS:
     - AppAuth (~> 1.4)
     - GTMAppAuth (~> 1.0)
     - GTMSessionFetcher/Core (~> 1.1)
-  - Gridicons (1.0)
+  - Gridicons (1.2.0)
   - GTMAppAuth (1.2.2):
     - AppAuth/Core (~> 1.4)
     - GTMSessionFetcher/Core (~> 1.5)
@@ -43,7 +43,7 @@ PODS:
   - Sentry/Core (6.2.1)
   - Sodium (0.9.1)
   - Sourcery (1.0.3)
-  - StripeTerminal (2.4.0)
+  - StripeTerminal (2.5.0)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (1.7.1)
   - WordPress-Aztec-iOS (1.11.0)
@@ -71,9 +71,9 @@ PODS:
   - WordPressShared (1.16.1):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (~> 1.8)
-  - WordPressUI (1.12.1)
+  - WordPressUI (1.12.4-beta.1)
   - Wormholy (1.6.5)
-  - WPMediaPicker (1.7.3)
+  - WPMediaPicker (1.8.1)
   - wpxmlrpc (0.9.0)
   - XLPagerTabStrip (9.0.0)
   - ZendeskCommonUISDK (6.1.1)
@@ -96,18 +96,18 @@ DEPENDENCIES:
   - Charts (~> 3.6.0)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
-  - Gridicons (~> 1.0)
+  - Gridicons (~> 1.2.0)
   - KeychainAccess (~> 3.2)
   - Kingfisher (~> 6.0.0)
   - Sourcery (~> 1.0.3)
-  - StripeTerminal (~> 2.4)
+  - StripeTerminal (~> 2.5)
   - WordPress-Editor-iOS (~> 1.11.0)
   - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `fix/circular-imageview`)
   - WordPressKit (~> 4.40.0)
   - WordPressShared (~> 1.15)
-  - WordPressUI (~> 1.12.1)
+  - WordPressUI (~> 1.12.4-beta)
   - Wormholy (~> 1.6.5)
-  - WPMediaPicker (~> 1.7.3)
+  - WPMediaPicker (~> 1.8.1)
   - XLPagerTabStrip (~> 9.0)
   - ZendeskSupportSDK (~> 5.0)
 
@@ -172,7 +172,7 @@ SPEC CHECKSUMS:
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 184db51bf120b633693a73624a4cede89ec51a41
   GoogleSignIn: fd381840dbe7c1137aa6dc30849a5c3e070c034a
-  Gridicons: f032dbc3350f8648e0fabe3e531b72cf97d428a9
+  Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
   GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
   GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
   KeychainAccess: d5470352939ced6d6f7fb51cb2e67aae51fc294f
@@ -184,7 +184,7 @@ SPEC CHECKSUMS:
   Sentry: 9b922b396b0e0bca8516a10e36b0ea3ebea5faf7
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
-  StripeTerminal: da566fa62a4e7bbf0510dd27614f3087293cd79e
+  StripeTerminal: 2c7d261881b0039693a6ba30c00e1e6133e6d393
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: d0fee204f467dacf8808b7ac14ce43affeb271a5
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
@@ -192,9 +192,9 @@ SPEC CHECKSUMS:
   WordPressAuthenticator: 3d07d05d0b3abff5f4e3f3efd6bbe8f3386b3d93
   WordPressKit: 062e4f57ce871e2217b632a1f3cb0bbd54b5df6d
   WordPressShared: 5477f179c7fe03b5d574f91adda66f67d131827e
-  WordPressUI: 414bf3a7d007618f94a1c7969d6e849779877d5d
+  WordPressUI: ccfa31bdd46676ffd8b71ff235e8059ed0832d61
   Wormholy: 3252bc3e55a1847ef9a0976c1377bd77bf3635fa
-  WPMediaPicker: 4af3fdfba06541ada2613178f8c01175671c38a8
+  WPMediaPicker: 9011a0ec1f468c039af7485c244576b4c9889a0f
   wpxmlrpc: bf55a43a7e710bd2a4fb8c02dfe83b1246f14f13
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskCommonUISDK: 5808802951ad2bb424f0bed4259dc3c0ce9b52ec
@@ -205,6 +205,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 5de84e3ddbe9bf8fb20e6e7f412c6cd2f6337dca
+PODFILE CHECKSUM: 1fceea7aa1ac560e50ea6a0de9841e2aa40263f0
 
 COCOAPODS: 1.11.2

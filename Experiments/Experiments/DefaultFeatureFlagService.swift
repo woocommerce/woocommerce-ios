@@ -21,15 +21,29 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pushNotificationsForAllStores:
             return true
-        case .simplePaymentsPrototype:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .orderListFilters:
             return true
         case .jetpackConnectionPackageSupport:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .orderCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .hubMenu:
+            return true
+        case .systemStatusReport:
+            return true
+        case .stripeExtensionInPersonPayments:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .myStoreTabUpdates:
+            return true
+        case .couponManagement:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .productSKUInputScanner:
+            return true
+        case .canadaInPersonPayments:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .taxLinesInSimplePayments:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

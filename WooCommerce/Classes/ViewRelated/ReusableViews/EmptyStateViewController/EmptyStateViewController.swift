@@ -124,14 +124,26 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
                                               },
                                               onContactSupportButtonPressed: { [weak self] in
                                                 guard let self = self else { return }
-                                                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+                                                ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
                                               })
     }()
 
-    init(style: Style = .basic, configuration: Config? = nil, zendeskManager: ZendeskManagerProtocol = ZendeskManager.shared) {
+    convenience init(style: Style = .basic, configuration: Config? = nil, zendeskManager: ZendeskManagerProtocol? = nil) {
+        if let zendeskManager = zendeskManager {
+            self.init(style: style, configuration: configuration, zendesk: zendeskManager)
+        } else {
+            #if !targetEnvironment(macCatalyst)
+            self.init(style: style, configuration: configuration, zendesk: ZendeskProvider.shared)
+            #else
+            self.init(style: style, configuration: configuration, zendesk: NoZendeskManager())
+            #endif
+        }
+    }
+
+    init(style: Style, configuration: Config?, zendesk: ZendeskManagerProtocol) {
         self.style = style
         self.configuration = configuration
-        self.zendeskManager = zendeskManager
+        self.zendeskManager = zendesk
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 

@@ -1,0 +1,5 @@
+Los vendedores nos han pedido que les proporcionemos una forma rápida de registrar en la aplicación una transacción con poca información, por ejemplo, solo con el importe del cargo. Imagina que te encuentras en un mercado agrícola y quieres cobrar a un cliente con tarjeta de crédito y no necesitas gestionar el inventario. Esta versión incluye una nueva función de "Pagos simples" en la pestaña de pedidos. Si eres cliente de WooCommerce Payments, verás que esta acción funciona muy bien con el lector de tarjetas de crédito de los pagos en persona. ¿Aún no tienes un lector de tarjetas de crédito? Si lo prefieres, puedes enviar un enlace al cliente para que realice el pago con su dispositivo a través de tu sitio web.
+
+En esta versión, también se incluye la posibilidad de reembolsar los cargos de un pedido. También hemos introducido un lector experimental de códigos de barras de entrada SKU para la edición de un producto, que se puede activar en Ajustes.
+
+Estamos trabajando en varias funciones interesantes que llegarán en los próximos meses. Sigue enviándonos tus comentarios.

@@ -12,6 +12,7 @@ enum OrderFactory {
               orderID: 0,
               parentID: 0,
               customerID: 0,
+              orderKey: "",
               number: "",
               status: .pending,
               currency: "",
@@ -27,13 +28,15 @@ enum OrderFactory {
               totalTax: "",
               paymentMethodID: "",
               paymentMethodTitle: "",
+              chargeID: nil,
               items: [],
               billingAddress: nil,
               shippingAddress: nil,
               shippingLines: [],
               coupons: [],
               refunds: [],
-              fees: [simplePaymentFee(feeID: 0, amount: amount, taxable: taxable)])
+              fees: [simplePaymentFee(feeID: 0, amount: amount, taxable: taxable)],
+              taxes: [])
     }
 
     /// Creates a fee line suitable to be used within a simple payments order.

@@ -29,7 +29,9 @@ extension Double {
     ///
     /// Note: This helper function does work with negative values as well.
     ///
-    func humanReadableString() -> String {
+    /// - Parameter shouldHideDecimalsForIntegerAbbreviatedValue: Whether decimal digits should be hidden when the abbreviated value is an integer.
+    ///                                                           If `false`, a decimal digit is always shown.
+    func humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: Bool = false) -> String {
         let num = Double(self)
 
         // If the starting value is between -1000 and 1000, return the rounded Int version
@@ -41,7 +43,7 @@ extension Double {
             return returnString == Constants.negativeZeroString ? Constants.zeroString : returnString
         }
 
-        return abbreviatedString(for: num)
+        return abbreviatedString(for: num, shouldHideDecimalsForIntegerAbbreviatedValue: shouldHideDecimalsForIntegerAbbreviatedValue)
     }
 }
 
@@ -50,9 +52,9 @@ extension Double {
 //
 private extension Double {
 
-    func abbreviatedString(for number: Double) -> String {
+    func abbreviatedString(for number: Double, shouldHideDecimalsForIntegerAbbreviatedValue: Bool) -> String {
         let absNumber = fabs(number)
-        let abbreviation: Abbrevation = {
+        let abbreviation: Abbreviation = {
             var prevAbbreviation = Constants.abbreviations[0]
             for tmpAbbreviation in Constants.abbreviations {
                 if absNumber < tmpAbbreviation.threshold {
@@ -68,6 +70,10 @@ private extension Double {
         numFormatter.positiveSuffix = abbreviation.suffix
         numFormatter.negativeSuffix = abbreviation.suffix
 
+        if shouldHideDecimalsForIntegerAbbreviatedValue {
+            numFormatter.minimumFractionDigits = 0
+        }
+
         let finalValue = NSNumber(value: value)
         return numFormatter.string(from: finalValue) ?? Constants.zeroString
     }
@@ -78,13 +84,13 @@ private extension Double {
 //
 private extension Double {
 
-    typealias Abbrevation = (threshold: Double, divisor: Double, suffix: String)
+    typealias Abbreviation = (threshold: Double, divisor: Double, suffix: String)
 
     enum Constants {
         static let negativeZeroString = "-0"
         static let zeroString         = "0"
 
-        static let abbreviations: [Abbrevation] = [(0, 1, ""),
+        static let abbreviations: [Abbreviation] = [(0, 1, ""),
                                                    (999.0, 1_000.0, "k"),
                                                    (999_999.0, 1_000_000.0, "m"),
                                                    (999_999_999.0, 1_000_000_000.0, "b"),
@@ -95,7 +101,7 @@ private extension Double {
 
         /// Formatter used for numbers between -1000 and 1000 (exclusive)
         ///
-        public static let smallNumberFormatter: NumberFormatter = {
+        static let smallNumberFormatter: NumberFormatter = {
             let numFormatter = NumberFormatter()
             numFormatter.allowsFloats = true
             numFormatter.minimumIntegerDigits = 1
@@ -106,7 +112,7 @@ private extension Double {
 
         /// Formatter used for numbers greater than -1000 and greater that 1000 (inclusive)
         ///
-        public static var largeNumberFormatter: NumberFormatter {
+        static var largeNumberFormatter: NumberFormatter {
             let numFormatter = NumberFormatter()
             numFormatter.allowsFloats = true
             numFormatter.minimumIntegerDigits = 1

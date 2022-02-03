@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 extension CardPresentTransactionDetails {
@@ -37,3 +38,4 @@ protocol StripeCardPresentDetails {
 
 
 extension StripeTerminal.CardPresentDetails: StripeCardPresentDetails {}
+#endif

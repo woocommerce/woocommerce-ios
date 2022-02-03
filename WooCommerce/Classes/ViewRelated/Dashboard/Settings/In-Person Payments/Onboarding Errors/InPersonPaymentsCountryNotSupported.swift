@@ -27,18 +27,18 @@ struct InPersonPaymentsCountryNotSupported: View {
 
 private enum Localization {
     static let title = NSLocalizedString(
-        "We don’t support In-Person Payments in %@",
-        comment: "Title for the error screen when WooCommerce Payments is not supported in a specific country"
+        "We don’t support In-Person Payments in %1$@",
+        comment: "Title for the error screen when In-Person Payments is not supported in a specific country"
     )
 
     static let titleUnknownCountry = NSLocalizedString(
         "We don’t support In-Person Payments in your country",
-        comment: "Title for the error screen when WooCommerce Payments is not supported because we don't know the name of the country"
+        comment: "Title for the error screen when In-Person Payments is not supported because we don't know the name of the country"
     )
 
     static let message = NSLocalizedString(
         "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store.",
-        comment: "Error message when WooCommerce Payments is not supported in a specific country"
+        comment: "Error message when In-Person Payments is not supported in a specific country"
     )
 }
 

@@ -1,8 +1,33 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+8.5
+-----
+- [*] In-Person Payments: Inform the user when a card reader battery is so low that it needs to be charged before the reader can be connected. [https://github.com/woocommerce/woocommerce-ios/pull/5998]
+- [***] The My store tab is having a new look with new conversion stats and shows up to 5 top performing products now (used to be 3). [https://github.com/woocommerce/woocommerce-ios/pull/5991]
+- [**] Fixed a crash at the startup of the app, related to Gridicons. [https://github.com/woocommerce/woocommerce-ios/pull/6005]
+
+8.4
+-----
+- [***] In-Person Payments: Support for Stripe M2 card reader. [https://github.com/woocommerce/woocommerce-ios/pull/5844]
+- [***] We introduced a new tab called "Menu", a tab in the main navigation where you can browser different sub-sections of the app: Switch Store, Settings, WooCommerce Admin, View Store and Reviews. [https://github.com/woocommerce/woocommerce-ios/pull/5926]
+- [***] Store admins can now access sites with plugins that have Jetpack Connection Package (e.g. WooCommerce Payments, Jetpack Backup) in the app. These sites do not require Jetpack-the-plugin to connect anymore. Store admins can still install Jetpack-the-plugin from the app through settings or a Jetpack banner. [https://github.com/woocommerce/woocommerce-ios/pull/5924]
+- [*] Add/Edit Product screen: Fix transient product name while adding images.[https://github.com/woocommerce/woocommerce-ios/pull/5840]
+
+8.3
+-----
+- [***] All merchants can create Simple Payments orders. [https://github.com/woocommerce/woocommerce-ios/pull/5684]
+- [**] System status report can now be viewed and copied directly from within the app. [https://github.com/woocommerce/woocommerce-ios/pull/5702]
+- [**] Product SKU input scanner is now available as a beta feature. To try it, enable it from settings and you can scan a barcode to use as the product SKU in product inventory settings! [https://github.com/woocommerce/woocommerce-ios/pull/5695]
+- [**] Now you chan share a payment link when creating a Simple Payments order [https://github.com/woocommerce/woocommerce-ios/pull/5819]
+- [*] Reviews: "Mark all as read" checkmark bar button item button replaced with menu button which launches an action sheet. Menu button is displayed only if there are unread reviews available.[https://github.com/woocommerce/woocommerce-ios/pull/5833]
+- [internal] Refactored ReviewsViewController to add tests. [https://github.com/woocommerce/woocommerce-ios/pull/5834]
+
 8.2
 -----
-
+- [***] In-Person Payments: Now you can collect Simple Payments on the go. [https://github.com/woocommerce/woocommerce-ios/pull/5635]
+- [*] Products: After generating a new variation for a variable product, you are now taken directly to edit the new variation. [https://github.com/woocommerce/woocommerce-ios/pull/5649]
+- [*] Dashboard: the visitor count in the Today tab is now shown when Jetpack site stats are enabled.
+- [*] Add/Edit Product Images: tapping on the last `n` images while `n` images are pending upload does not crash the app anymore. [https://github.com/woocommerce/woocommerce-ios/pull/5672]
 
 8.2
 -----
@@ -15,6 +40,7 @@
 - [***] Now it's possible to filter Order List by multiple statuses and date ranges. Plus, we removed the top tab bar on Orders Tab. [https://github.com/woocommerce/woocommerce-ios/pull/5491]
 - [*] Login: Password AutoFill will suggest wordpress.com accounts. [https://github.com/woocommerce/woocommerce-ios/pull/5399]
 - [*] Store picker: after logging in with store address, the pre-selected store is now the currently selected store instead of the store from login flow. [https://github.com/woocommerce/woocommerce-ios/pull/5508]
+- [*] The application icon number from order push notifications is now cleared after visiting the orders tab. [https://github.com/woocommerce/woocommerce-ios/pull/5715]
 - [internal] Migrated Settings screen to MVVM [https://github.com/woocommerce/woocommerce-ios/pull/5393]
 
 

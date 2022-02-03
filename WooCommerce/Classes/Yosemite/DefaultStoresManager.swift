@@ -150,7 +150,7 @@ class DefaultStoresManager: StoresManager {
     ///
     func removeDefaultStore() {
         ServiceLocator.analytics.refreshUserData()
-        ZendeskManager.shared.reset()
+        ZendeskProvider.shared.reset()
         ServiceLocator.pushNotesManager.unregisterForRemoteNotifications()
     }
 
@@ -165,7 +165,7 @@ class DefaultStoresManager: StoresManager {
 
         sessionManager.reset()
         ServiceLocator.analytics.refreshUserData()
-        ZendeskManager.shared.reset()
+        ZendeskProvider.shared.reset()
         ServiceLocator.storageManager.reset()
 
         NotificationCenter.default.post(name: .logOutEventReceived, object: nil)
@@ -186,6 +186,15 @@ class DefaultStoresManager: StoresManager {
         ServiceLocator.pushNotesManager.reloadBadgeCount()
 
         NotificationCenter.default.post(name: .StoresManagerDidUpdateDefaultSite, object: nil)
+    }
+
+    /// Updates the default site only in cases where a site's properties are updated (e.g. after installing & activating Jetpack-the-plugin).
+    ///
+    func updateDefaultStore(_ site: Site) {
+        guard site.siteID == sessionManager.defaultStoreID else {
+            return
+        }
+        sessionManager.defaultSite = site
     }
 
     /// Updates the user roles for the default Store site.
@@ -321,6 +330,15 @@ private extension DefaultStoresManager {
             group.leave()
         }
         dispatch(productSettingsAction)
+
+        group.enter()
+        let advancedSettingsAction = SettingAction.synchronizeAdvancedSiteSettings(siteID: siteID) { error in
+            if let error = error {
+                errors.append(error)
+            }
+            group.leave()
+        }
+        dispatch(advancedSettingsAction)
 
         group.enter()
         let sitePlanAction = AccountAction.synchronizeSitePlan(siteID: siteID) { result in

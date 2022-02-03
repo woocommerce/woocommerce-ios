@@ -843,6 +843,156 @@ final class MigrationTests: XCTestCase {
         let newAdminURL = try XCTUnwrap(migratedSite.value(forKey: "adminURL") as? String)
         XCTAssertEqual(newAdminURL, adminURL)
     }
+
+    func test_migrating_from_59_to_60_adds_order_orderKey_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 59")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertOrder(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["orderKey"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 60")
+        let targetContext = targetContainer.viewContext
+
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+        let defaultOrderKey = migratedOrder.value(forKey: "orderKey")
+
+        let orderValue = "frtgyh87654567"
+        migratedOrder.setValue(orderValue, forKey: "orderKey")
+
+        // Then
+        // Default value is empty
+        XCTAssertEqual(defaultOrderKey as? String, "")
+
+        let newOrderKey = try XCTUnwrap(migratedOrder.value(forKey: "orderKey") as? String)
+        XCTAssertEqual(newOrderKey, orderValue)
+    }
+
+    func test_migrating_from_59_to_60_enables_creating_new_Coupon() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 59")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 60")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 0)
+
+        // Creates an `Coupon`
+        let coupon = insertCoupon(to: targetContext)
+
+        XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 1)
+        XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: Coupon.self)), coupon)
+    }
+
+    func test_migrating_from_60_to_61_adds_tax_lines_as_a_property_to_order() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 60")
+        let sourceContext = sourceContainer.viewContext
+
+        let order = insertOrder(to: sourceContext)
+        try sourceContext.save()
+
+        // `taxes` should not be present before migration
+        XCTAssertNil(order.entity.relationshipsByName["taxes"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 61")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        // Confidence-check
+        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "OrderTaxLine"), 0)
+
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+
+        // `taxes` should be present in `migratedOrder`
+        XCTAssertNotNil(migratedOrder.entity.relationshipsByName["taxes"])
+
+        // Test adding tax to a migrated `Order`.
+        let tax = insertOrderTaxLine(to: targetContext)
+        migratedOrder.mutableSetValue(forKey: "taxes").add(tax)
+
+        XCTAssertNoThrow(try targetContext.save())
+
+        // Confidence-check
+        XCTAssertEqual(try targetContext.count(entityName: "OrderTaxLine"), 1)
+
+        // The relationship between Order and OrderTaxLine should be updated.
+        XCTAssertEqual(migratedOrder.value(forKey: "taxes") as? Set<NSManagedObject>, [tax])
+
+        // The OrderTaxLine.order inverse relationship should be updated.
+        XCTAssertEqual(tax.value(forKey: "order") as? NSManagedObject, migratedOrder)
+    }
+
+    func test_migrating_from_61_to_62_adds_new_attribute_searchResults_to_coupon() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 61")
+        let sourceContext = sourceContainer.viewContext
+
+        // `searchResults` should not be present before the migration
+        let coupon = insertCoupon(to: sourceContext)
+        XCTAssertNil(coupon.entity.relationshipsByName["searchResults"])
+        XCTAssertNoThrow(try sourceContext.save())
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 62")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedCoupon = try XCTUnwrap(targetContext.first(entityName: "Coupon"))
+        XCTAssertNotNil(migratedCoupon.entity.relationshipsByName["searchResults"])
+
+        // Creates a `CouponSearchResult`
+        let searchResult = insertCouponSearchResult(to: targetContext)
+        migratedCoupon.mutableSetValue(forKey: "searchResults").add(searchResult)
+
+        XCTAssertNoThrow(try targetContext.save())
+        XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: CouponSearchResult.self)), searchResult)
+
+        // The relationship between Coupon and CouponSearchResult should be updated.
+        XCTAssertEqual(migratedCoupon.value(forKey: "searchResults") as? Set<NSManagedObject>, [searchResult])
+
+        // The CouponSearchResult.coupons inverse relationship should be updated.
+        XCTAssertEqual(searchResult.value(forKey: "coupons") as? Set<NSManagedObject>, [migratedCoupon])
+    }
+
+    func test_migrating_from_62_to_63_adds_new_attribute_chargeID_to_order() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 62")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertOrder(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["chargeID"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 63")
+        let targetContext = targetContainer.viewContext
+
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+        let defaultChargeID = migratedOrder.value(forKey: "chargeID")
+
+        let orderValue = "ch_3KMtak2EdyGr1FMV02G9Qqq1"
+        migratedOrder.setValue(orderValue, forKey: "chargeID")
+
+        // Then
+        // Default value is nil
+        XCTAssertNil(defaultChargeID)
+
+        let newOrderKey = try XCTUnwrap(migratedOrder.value(forKey: "chargeID") as? String)
+        XCTAssertEqual(newOrderKey, orderValue)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -952,6 +1102,41 @@ private extension MigrationTests {
     }
 
     @discardableResult
+    func insertCoupon(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Coupon", properties: [
+            "couponID": 123123,
+            "maximumAmount": "12.00",
+            "minimumAmount": "1.00",
+            "excludeSaleItems": true,
+            "freeShipping": false,
+            "limitUsageToXItems": 3,
+            "usageLimitPerUser": 1,
+            "usageLimit": 1000,
+            "individualUse": true,
+            "usageCount": 200,
+            "dateExpires": Date(),
+            "fullDescription": "Coupon for getting discounts",
+            "discountType": "fixed_cart",
+            "dateModified": Date(),
+            "dateCreated": Date(),
+            "amount": "2.00",
+            "code": "2off2021",
+            "usedBy": ["me@example.com"],
+            "emailRestrictions": ["*@woocommerce.com"],
+            "siteID": 1212,
+            "products": [1231, 111],
+            "excludedProducts": [19182, 192],
+            "productCategories": [1092281],
+            "excludedProductCategories": [128121212]
+        ])
+    }
+
+    @discardableResult
+    func insertCouponSearchResult(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "CouponSearchResult", properties: ["keyword": "test"])
+    }
+
+    @discardableResult
     func insertOrder(to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "Order", properties: [
             "orderID": 134,
@@ -981,6 +1166,15 @@ private extension MigrationTests {
             "feeID": 134,
             "name": "Woo",
             "total": "125.0"
+        ])
+    }
+
+    @discardableResult
+    func insertOrderTaxLine(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderTaxLine", properties: [
+            "taxID": 134,
+            "label": "State",
+            "ratePercent": 5.0
         ])
     }
 

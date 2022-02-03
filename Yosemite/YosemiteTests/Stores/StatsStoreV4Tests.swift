@@ -253,7 +253,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` effectively persists any retrieved TopEarnerStats.
     ///
-    func test_retrieveTopEarnerStats_efectively_persists_retrieved_stats() {
+    func test_retrieveTopEarnerStats_effectively_persists_retrieved_stats() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "leaderboards", filename: "leaderboards-year")
@@ -265,7 +265,8 @@ final class StatsStoreV4Tests: XCTestCase {
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisYear,
                                                               earliestDateToInclude: self.date(with: "2020-01-01T00:00:00"),
-                                                              latestDateToInclude: self.date(with: "2020-07-22T12:00:00")) { result in
+                                                              latestDateToInclude: self.date(with: "2020-07-22T12:00:00"),
+                                                              quantity: 3) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -278,6 +279,26 @@ final class StatsStoreV4Tests: XCTestCase {
 
         let readOnlyTopEarnerStats = viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
         XCTAssertEqual(readOnlyTopEarnerStats, sampleTopEarnerStats())
+    }
+
+    /// Verifies that `StatsActionV4.retrieveTopEarnerStats` makes a network request with the given quantity parameter.
+    ///
+    func test_retrieveTopEarnerStats_makes_network_request_with_given_quantity_parameter() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let quantity = 6
+        let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
+                                                          timeRange: .thisYear,
+                                                          earliestDateToInclude: self.date(with: "2020-01-01T00:00:00"),
+                                                          latestDateToInclude: self.date(with: "2020-07-22T12:00:00"),
+                                                          quantity: quantity) { _ in }
+        store.onAction(action)
+
+        // Then
+        let expectedQuantityParam = "per_page=\(quantity)"
+        XCTAssertEqual(network.queryParameters?.contains(expectedQuantityParam), true)
     }
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` effectively persists any updated TopEarnerStatsItems.
@@ -294,7 +315,8 @@ final class StatsStoreV4Tests: XCTestCase {
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisYear,
                                                               earliestDateToInclude: self.date(with: "2020-01-01T00:00:00"),
-                                                              latestDateToInclude: self.date(with: "2020-07-22T12:00:00")) { result in
+                                                              latestDateToInclude: self.date(with: "2020-07-22T12:00:00"),
+                                                              quantity: 3) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -311,7 +333,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` returns an error whenever there is an error response from the backend.
     ///
-    func test_retrieveTopEarnerStats_returns_error_upon_reponse_error() {
+    func test_retrieveTopEarnerStats_returns_error_upon_response_error() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/top-earners/", filename: "generic_error")
@@ -321,7 +343,8 @@ final class StatsStoreV4Tests: XCTestCase {
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisMonth,
                                                               earliestDateToInclude: Date(),
-                                                              latestDateToInclude: Date()) { result in
+                                                              latestDateToInclude: Date(),
+                                                              quantity: 3) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -342,7 +365,8 @@ final class StatsStoreV4Tests: XCTestCase {
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisMonth,
                                                               earliestDateToInclude: Date(),
-                                                              latestDateToInclude: Date()) { result in
+                                                              latestDateToInclude: Date(),
+                                                              quantity: 3) { result in
                 promise(result)
             }
             store.onAction(action)

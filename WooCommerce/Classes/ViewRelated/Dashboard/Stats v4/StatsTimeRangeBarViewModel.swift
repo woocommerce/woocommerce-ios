@@ -1,32 +1,45 @@
+import Experiments
 import Yosemite
 
 private extension StatsTimeRangeV4 {
-    func timeRangeText(startDate: Date, endDate: Date, selectedDate: Date, timezone: TimeZone) -> String {
-        let selectedDateString = timeRangeSelectedDateFormatter(timezone: timezone).string(from: selectedDate)
-        switch self {
-        case .today, .thisYear:
-            let dateBreadcrumbFormat = NSLocalizedString("%1$@ › %2$@", comment: "Displays a time range followed by a specific date/time")
-            let timeRangeString = timeRangeText(startDate: startDate, endDate: endDate, timezone: timezone)
-            return String.localizedStringWithFormat(dateBreadcrumbFormat, timeRangeString, selectedDateString)
-        case .thisWeek, .thisMonth:
+    func timeRangeText(startDate: Date, endDate: Date, selectedDate: Date, timezone: TimeZone, isMyStoreTabUpdatesEnabled: Bool) -> String {
+        let selectedDateString = timeRangeSelectedDateFormatter(timezone: timezone,
+                                                                isMyStoreTabUpdatesEnabled: isMyStoreTabUpdatesEnabled)
+            .string(from: selectedDate)
+
+        if isMyStoreTabUpdatesEnabled {
             return selectedDateString
+        } else {
+            switch self {
+            case .today, .thisYear:
+                let dateBreadcrumbFormat = NSLocalizedString("%1$@ › %2$@", comment: "Displays a time range followed by a specific date/time")
+                let timeRangeString = timeRangeText(startDate: startDate,
+                                                    endDate: endDate,
+                                                    timezone: timezone,
+                                                    isMyStoreTabUpdatesEnabled: isMyStoreTabUpdatesEnabled)
+                return String.localizedStringWithFormat(dateBreadcrumbFormat, timeRangeString, selectedDateString)
+            case .thisWeek, .thisMonth:
+                return selectedDateString
+            }
         }
     }
 
-    func timeRangeText(startDate: Date, endDate: Date, timezone: TimeZone) -> String {
-        let dateFormatter = timeRangeDateFormatter(timezone: timezone)
+    func timeRangeText(startDate: Date, endDate: Date, timezone: TimeZone, isMyStoreTabUpdatesEnabled: Bool) -> String {
+        let dateFormatter = timeRangeDateFormatter(timezone: timezone, isMyStoreTabUpdatesEnabled: isMyStoreTabUpdatesEnabled)
         switch self {
         case .today, .thisMonth, .thisYear:
             return dateFormatter.string(from: startDate)
         case .thisWeek:
             let startDateString = dateFormatter.string(from: startDate)
             let endDateString = dateFormatter.string(from: endDate)
-            let format = NSLocalizedString("%1$@-%2$@", comment: "Displays a date range for a stats interval")
+            let format = isMyStoreTabUpdatesEnabled ?
+            NSLocalizedString("%1$@ - %2$@", comment: "Displays a date range for a stats interval"):
+            NSLocalizedString("%1$@-%2$@", comment: "Displays a date range for a stats interval in the legacy version")
             return String.localizedStringWithFormat(format, startDateString, endDateString)
         }
     }
 
-    func timeRangeDateFormatter(timezone: TimeZone) -> DateFormatter {
+    func timeRangeDateFormatter(timezone: TimeZone, isMyStoreTabUpdatesEnabled: Bool) -> DateFormatter {
         let dateFormatter: DateFormatter
         switch self {
         case .today:
@@ -36,7 +49,9 @@ private extension StatsTimeRangeV4 {
         case .thisWeek:
             dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
         case .thisMonth:
-            dateFormatter = DateFormatter.Charts.chartAxisFullMonthFormatter
+            dateFormatter = isMyStoreTabUpdatesEnabled ?
+            DateFormatter.Charts.chartAxisFullMonthFormatter:
+            DateFormatter.Charts.legacyChartAxisFullMonthFormatter
         case .thisYear:
             dateFormatter = DateFormatter.Charts.chartAxisYearFormatter
         }
@@ -45,15 +60,18 @@ private extension StatsTimeRangeV4 {
     }
 
     /// Date formatter for a selected date for a time range.
-    func timeRangeSelectedDateFormatter(timezone: TimeZone) -> DateFormatter {
+    func timeRangeSelectedDateFormatter(timezone: TimeZone, isMyStoreTabUpdatesEnabled: Bool) -> DateFormatter {
         let dateFormatter: DateFormatter
         switch self {
         case .today:
-            dateFormatter = DateFormatter.Charts.chartAxisHourFormatter
+            dateFormatter = isMyStoreTabUpdatesEnabled ?
+            DateFormatter.Charts.chartSelectedDateHourFormatter:
+            DateFormatter.Charts.legacyChartSelectedDateHourFormatter
         case .thisWeek, .thisMonth:
             dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
         case .thisYear:
-            dateFormatter = DateFormatter.Charts.chartAxisFullMonthFormatter
+            dateFormatter = isMyStoreTabUpdatesEnabled ? DateFormatter.Charts.chartAxisFullMonthFormatter:
+            DateFormatter.Charts.legacyChartAxisFullMonthFormatter
         }
         dateFormatter.timeZone = timezone
         return dateFormatter
@@ -61,26 +79,30 @@ private extension StatsTimeRangeV4 {
 }
 
 /// View model for `StatsTimeRangeBarView`.
-struct StatsTimeRangeBarViewModel {
+struct StatsTimeRangeBarViewModel: Equatable {
     let timeRangeText: String
 
     init(startDate: Date,
          endDate: Date,
          timeRange: StatsTimeRangeV4,
-         timezone: TimeZone) {
+         timezone: TimeZone,
+         isMyStoreTabUpdatesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates)) {
         timeRangeText = timeRange.timeRangeText(startDate: startDate,
                                                 endDate: endDate,
-                                                timezone: timezone)
+                                                timezone: timezone,
+                                                isMyStoreTabUpdatesEnabled: isMyStoreTabUpdatesEnabled)
     }
 
     init(startDate: Date,
          endDate: Date,
          selectedDate: Date,
          timeRange: StatsTimeRangeV4,
-         timezone: TimeZone) {
+         timezone: TimeZone,
+         isMyStoreTabUpdatesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates)) {
         timeRangeText = timeRange.timeRangeText(startDate: startDate,
                                                 endDate: endDate,
                                                 selectedDate: selectedDate,
-                                                timezone: timezone)
+                                                timezone: timezone,
+                                                isMyStoreTabUpdatesEnabled: isMyStoreTabUpdatesEnabled)
     }
 }

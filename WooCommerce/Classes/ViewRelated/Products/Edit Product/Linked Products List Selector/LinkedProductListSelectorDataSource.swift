@@ -1,6 +1,6 @@
+import Combine
 import UIKit
 import Yosemite
-import Observables
 
 /// Configures the results and cells for a paginated list of linked products, syncs each page of products,
 /// and handles actions that could alter the linked products.
@@ -21,10 +21,10 @@ final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource
     }
 
     // Observable list of the latest linked product IDs
-    var productIDs: Observable<[Int64]> {
-        productIDsSubject
+    var productIDs: AnyPublisher<[Int64], Never> {
+        productIDsSubject.eraseToAnyPublisher()
     }
-    private let productIDsSubject: PublishSubject<[Int64]> = PublishSubject<[Int64]>()
+    private let productIDsSubject: PassthroughSubject<[Int64], Never> = PassthroughSubject<[Int64], Never>()
 
     private let originalLinkedProductIDs: [Int64]
     private(set) var linkedProductIDs: [Int64] = [] {

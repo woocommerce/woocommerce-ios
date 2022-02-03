@@ -1,0 +1,157 @@
+{
+    "data": {
+        "id": "ch_3KMVap2EdyGr1FMV1uKJEWtg",
+        "object": "charge",
+        "amount": 1800,
+        "amount_captured": 1800,
+        "amount_refunded": 0,
+        "application": "ca_Ex84e31yMTLaNU5ozQvi5woLclpIDVpX",
+        "application_fee": "fee_1KMVaw2EdyGr1FMVkom8DN98",
+        "application_fee_amount": 57,
+        "authorization_code": "123456",
+        "balance_transaction": {
+            "id": "txn_3KMVap2EdyGr1FMV1M2Xw1C4",
+            "object": "balance_transaction",
+            "amount": 1800,
+            "available_on": 1643846400,
+            "created": 1643280770,
+            "currency": "usd",
+            "description": "In-Person Payment for Order #205 for My WordPress Site",
+            "exchange_rate": null,
+            "fee": 57,
+            "fee_details": [
+                {
+                    "amount": 57,
+                    "application": "ca_Ex84e31yMTLaNU5ozQvi5woLclpIDVpX",
+                    "currency": "usd",
+                    "description": "WooCommerce Payments application fee",
+                    "type": "application_fee"
+                }
+            ],
+            "net": 1743,
+            "reporting_category": "charge",
+            "source": "ch_3KMVap2EdyGr1FMV1uKJEWtg",
+            "status": "pending",
+            "type": "charge"
+        },
+        "billing_details": {
+            "address": {
+                "city": null,
+                "country": null,
+                "line1": null,
+                "line2": null,
+                "postal_code": null,
+                "state": null
+            },
+            "email": null,
+            "name": null,
+            "phone": null,
+            "formatted_address": ""
+        },
+        "calculated_statement_descriptor": "AwesomeStore",
+        "captured": true,
+        "created": 1643280767,
+        "currency": "usd",
+        "customer": "cus_L2amf96J6ksaTQ",
+        "description": "In-Person Payment for Order #205 for My WordPress Site",
+        "destination": null,
+        "dispute": null,
+        "disputed": false,
+        "failure_code": null,
+        "failure_message": null,
+        "fraud_details": [],
+        "invoice": null,
+        "level3": {
+            "customer_reference": "205",
+            "line_items": [
+                {
+                    "discount_amount": 0,
+                    "product_code": "simple-payme",
+                    "product_description": "Simple Payments",
+                    "quantity": 1,
+                    "tax_amount": 0,
+                    "unit_cost": 1800
+                }
+            ],
+            "merchant_reference": "205",
+            "shipping_amount": 0,
+            "shipping_from_zip": "85120"
+        },
+        "livemode": false,
+        "metadata": {
+            "order_id": "205",
+            "payment_type": "single",
+            "paymentintent.storename": "My WordPress Site",
+            "reader_ID": "STRM26138002546",
+            "reader_model": "STRIPE_M2",
+            "site_url": "https:\/\/store.example.com"
+        },
+        "on_behalf_of": null,
+        "order": {
+            "number": "205",
+            "url": "https:\/\/store.example.com\/wp-admin\/post.php?post=205&action=edit",
+            "customer_url": "admin.php?page=wc-admin&path=\/customers&filter=single_customer&customers=0",
+            "subscriptions": []
+        },
+        "outcome": {
+            "network_status": "approved_by_network",
+            "reason": null,
+            "risk_level": "not_assessed",
+            "seller_message": "Payment complete.",
+            "type": "authorized"
+        },
+        "paid": true,
+        "payment_intent": "pi_3KMVap2EdyGr1FMV16atNgK9",
+        "payment_method": "pm_1KMVas2EdyGr1FMVnleuPovE",
+        "payment_method_details": {
+            "card_present": {
+                "amount_authorized": 1800,
+                "brand": "visa",
+                "cardholder_name": "CARDHOLDER\/VISA",
+                "country": "US",
+                "emv_auth_data": "8A023030",
+                "exp_month": 3,
+                "exp_year": 2023,
+                "fingerprint": "gXsIWYqS9BLUBw0c",
+                "funding": "credit",
+                "generated_card": "pm_1KMVas2EdyGr1FMVa2Zzy6lj",
+                "last4": "9969",
+                "network": "visa",
+                "overcapture_supported": false,
+                "read_method": "contactless_emv",
+                "receipt": {
+                    "account_type": "credit",
+                    "application_cryptogram": "6B75F6DE4A78CD0A",
+                    "application_preferred_name": "Stripe Credit",
+                    "authorization_code": null,
+                    "authorization_response_code": "3030",
+                    "cardholder_verification_method": "approval",
+                    "dedicated_file_name": "A000000003101001",
+                    "terminal_verification_results": "0000000000",
+                    "transaction_status_information": "0000"
+                }
+            },
+            "type": "card_present"
+        },
+        "receipt_email": null,
+        "receipt_number": null,
+        "receipt_url": "https:\/\/pay.stripe.com\/receipts\/acct_1Jaefx2EdyGr1FMV\/ch_3KMVap2EdyGr1FMV1uKJEWtg\/rcpt_L2amKKvKwznzyj7VprDFvjt6LVfqpsN",
+        "refunded": false,
+        "refunds": {
+            "object": "list",
+            "data": [],
+            "has_more": false,
+            "total_count": 0,
+            "url": "\/v1\/charges\/ch_3KMVap2EdyGr1FMV1uKJEWtg\/refunds"
+        },
+        "review": null,
+        "shipping": null,
+        "source": null,
+        "source_transfer": null,
+        "statement_descriptor": "AwesomeStore",
+        "statement_descriptor_suffix": null,
+        "status": "succeeded",
+        "transfer_data": null,
+        "transfer_group": null
+    }
+}

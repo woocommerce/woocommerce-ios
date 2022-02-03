@@ -1699,6 +1699,117 @@ extension TopEarnerStatsItem {
     }
 }
 
+extension WCPayCardPaymentDetails {
+    public func copy(
+        brand: CopiableProp<WCPayCardBrand> = .copy,
+        last4: CopiableProp<String> = .copy,
+        funding: CopiableProp<WCPayCardFunding> = .copy
+    ) -> WCPayCardPaymentDetails {
+        let brand = brand ?? self.brand
+        let last4 = last4 ?? self.last4
+        let funding = funding ?? self.funding
+
+        return WCPayCardPaymentDetails(
+            brand: brand,
+            last4: last4,
+            funding: funding
+        )
+    }
+}
+
+extension WCPayCardPresentPaymentDetails {
+    public func copy(
+        brand: CopiableProp<WCPayCardBrand> = .copy,
+        last4: CopiableProp<String> = .copy,
+        funding: CopiableProp<WCPayCardFunding> = .copy,
+        receipt: CopiableProp<WCPayCardPresentReceiptDetails> = .copy
+    ) -> WCPayCardPresentPaymentDetails {
+        let brand = brand ?? self.brand
+        let last4 = last4 ?? self.last4
+        let funding = funding ?? self.funding
+        let receipt = receipt ?? self.receipt
+
+        return WCPayCardPresentPaymentDetails(
+            brand: brand,
+            last4: last4,
+            funding: funding,
+            receipt: receipt
+        )
+    }
+}
+
+extension WCPayCardPresentReceiptDetails {
+    public func copy(
+        accountType: CopiableProp<WCPayCardFunding> = .copy,
+        applicationPreferredName: CopiableProp<String> = .copy,
+        dedicatedFileName: CopiableProp<String> = .copy
+    ) -> WCPayCardPresentReceiptDetails {
+        let accountType = accountType ?? self.accountType
+        let applicationPreferredName = applicationPreferredName ?? self.applicationPreferredName
+        let dedicatedFileName = dedicatedFileName ?? self.dedicatedFileName
+
+        return WCPayCardPresentReceiptDetails(
+            accountType: accountType,
+            applicationPreferredName: applicationPreferredName,
+            dedicatedFileName: dedicatedFileName
+        )
+    }
+}
+
+extension WCPayCharge {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        id: CopiableProp<String> = .copy,
+        amount: CopiableProp<Int64> = .copy,
+        amountCaptured: CopiableProp<Int64> = .copy,
+        amountRefunded: CopiableProp<Int64> = .copy,
+        authorizationCode: NullableCopiableProp<String> = .copy,
+        captured: CopiableProp<Bool> = .copy,
+        created: CopiableProp<Date> = .copy,
+        currency: CopiableProp<String> = .copy,
+        paid: CopiableProp<Bool> = .copy,
+        paymentIntentID: NullableCopiableProp<String> = .copy,
+        paymentMethodID: CopiableProp<String> = .copy,
+        paymentMethodDetails: CopiableProp<WCPayPaymentMethodDetails> = .copy,
+        refunded: CopiableProp<Bool> = .copy,
+        status: CopiableProp<WCPayChargeStatus> = .copy
+    ) -> WCPayCharge {
+        let siteID = siteID ?? self.siteID
+        let id = id ?? self.id
+        let amount = amount ?? self.amount
+        let amountCaptured = amountCaptured ?? self.amountCaptured
+        let amountRefunded = amountRefunded ?? self.amountRefunded
+        let authorizationCode = authorizationCode ?? self.authorizationCode
+        let captured = captured ?? self.captured
+        let created = created ?? self.created
+        let currency = currency ?? self.currency
+        let paid = paid ?? self.paid
+        let paymentIntentID = paymentIntentID ?? self.paymentIntentID
+        let paymentMethodID = paymentMethodID ?? self.paymentMethodID
+        let paymentMethodDetails = paymentMethodDetails ?? self.paymentMethodDetails
+        let refunded = refunded ?? self.refunded
+        let status = status ?? self.status
+
+        return WCPayCharge(
+            siteID: siteID,
+            id: id,
+            amount: amount,
+            amountCaptured: amountCaptured,
+            amountRefunded: amountRefunded,
+            authorizationCode: authorizationCode,
+            captured: captured,
+            created: created,
+            currency: currency,
+            paid: paid,
+            paymentIntentID: paymentIntentID,
+            paymentMethodID: paymentMethodID,
+            paymentMethodDetails: paymentMethodDetails,
+            refunded: refunded,
+            status: status
+        )
+    }
+}
+
 extension WordPressMedia {
     public func copy(
         mediaID: CopiableProp<Int64> = .copy,

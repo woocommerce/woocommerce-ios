@@ -842,11 +842,11 @@ private extension OrderDetailsViewController {
         let undo = updateOrderStatusAction(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, status: undoStatus)
 
         ServiceLocator.stores.dispatch(done)
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .editing, from: undoStatus, to: newStatus))
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .editing, orderID: orderID, from: undoStatus, to: newStatus))
 
         displayOrderStatusUpdatedNotice {
             ServiceLocator.stores.dispatch(undo)
-            ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .editing, from: newStatus, to: undoStatus))
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .editing, orderID: orderID, from: newStatus, to: undoStatus))
         }
     }
 

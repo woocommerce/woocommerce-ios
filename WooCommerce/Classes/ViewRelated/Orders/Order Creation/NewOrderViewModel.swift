@@ -238,7 +238,7 @@ final class NewOrderViewModel: ObservableObject {
     func updateOrderStatus(newStatus: OrderStatusEnum) {
         let oldStatus = orderDetails.status
         orderDetails.status = newStatus
-        analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .creation, from: oldStatus, to: newStatus))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .creation, orderID: nil, from: oldStatus, to: newStatus))
     }
 }
 

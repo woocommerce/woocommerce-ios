@@ -362,7 +362,7 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderStatusChange(flow: Flow, orderID: Int64? = nil, from oldStatus: OrderStatusEnum, to newStatus: OrderStatusEnum) -> WooAnalyticsEvent {
+        static func orderStatusChange(flow: Flow, orderID: Int64?, from oldStatus: OrderStatusEnum, to newStatus: OrderStatusEnum) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
                 Keys.flow: flow.rawValue,
                 Keys.orderID: orderID,

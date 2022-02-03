@@ -41,9 +41,17 @@ private extension ProductImagesCollectionViewDataSource {
             configureImageCell(cell, productImageStatus: status)
         case .extendedAddImage(let isVariation):
             //if isVariation, configure the cell for variations
-            if isVariation, let cell = cell as? ExtendedAddProductImageCollectionViewCell {
-                cell.configureForVariations()
-            } //ExtendedAddProduct.... is where we just added .configureForVariations.
+            if let cell = cell as? ExtendedAddProductImageCollectionViewCell {
+                //cell.configureForVariations()
+                cell.configurePlaceholderLabelForProductImages(isVariation: isVariation)
+            }
+
+
+
+            //ExtendedAddProduct.... is where we just added .configureForVariations.
+            // ExtendedAddProductImageCollectionViewCell is a subclass of UICollectionViewCell, which is a required parameter type for this function "configure".
+            //So, in case .extendedAddImage, we check that the cell is an ExtendedAddProductImageCollectionViewCell, and then we do the stuff in {}.
+            // so the "as?" checks whether this is ExtendedAddProductImageCollectionViewCell?
         default:
             break
         }
@@ -105,7 +113,7 @@ enum ProductImagesItem {
             }
         case .addImage:
             return AddProductImageCollectionViewCell.reuseIdentifier
-        case .extendedAddImage: //do we need to include anything about the Bool here?
+        case .extendedAddImage: //do we need to include anything about the Bool here? Not if we are going to do this in both cases.
             return ExtendedAddProductImageCollectionViewCell.reuseIdentifier //what does .reuseIdentifier do?
         }
     }

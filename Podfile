@@ -18,7 +18,7 @@ platform :ios, app_ios_deployment_target.version
 workspace 'WooCommerce.xcworkspace'
 
 ## Pods shared between all the targets
-## ===================================
+## =====================================
 ##
 def aztec
   pod 'WordPress-Editor-iOS', '~> 1.11.0'
@@ -47,7 +47,7 @@ target 'WooCommerce' do
 
   pod 'WordPressShared', '~> 1.15'
 
-  pod 'WordPressUI', '~> 1.12.3'
+  pod 'WordPressUI', '~> 1.12.4-beta'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
 
   aztec

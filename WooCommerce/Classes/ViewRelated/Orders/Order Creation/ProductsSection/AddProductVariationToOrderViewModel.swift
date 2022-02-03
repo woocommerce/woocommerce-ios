@@ -1,5 +1,6 @@
 import Yosemite
 import protocol Storage.StorageManagerType
+import Combine
 
 /// View model for `AddProductVariationToOrder`.
 ///
@@ -13,6 +14,14 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
     /// Stores to sync product variation list
     ///
     private let stores: StoresManager
+
+    /// Store for publishers subscriptions
+    ///
+    private var subscriptions = Set<AnyCancellable>()
+
+    /// Trigger to perform any one time setups.
+    ///
+    let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
 
     /// The ID of the parent variable product
     ///
@@ -90,6 +99,7 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
 
         configureSyncingCoordinator()
         configureProductVariationsResultsController()
+        configureFirstPageLoad()
     }
 
     convenience init(siteID: Int64,
@@ -208,6 +218,18 @@ private extension AddProductVariationToOrderViewModel {
     ///
     func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
+    }
+
+    /// Performs initial sync on first page load
+    ///
+    func configureFirstPageLoad() {
+        // Listen only to the first emitted event.
+        onLoadTrigger.first()
+            .sink { [weak self] in
+                guard let self = self else { return }
+                self.syncFirstPage()
+            }
+            .store(in: &subscriptions)
     }
 }
 

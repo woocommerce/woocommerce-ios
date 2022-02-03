@@ -35,7 +35,7 @@ public enum WCPayPaymentMethodDetails: Decodable, GeneratedCopiable, GeneratedFa
                 throw WCPayPaymentMethodDetailsDecodingError.noDetailsPresentForPaymentType
             }
             self = .cardPresent(details: cardPresentDetails)
-        case .unknown:
+        case .interacPresent, .unknown:
             self = .unknown
         }
     }

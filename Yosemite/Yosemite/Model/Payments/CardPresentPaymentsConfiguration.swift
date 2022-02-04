@@ -11,27 +11,30 @@ struct CardPresentPaymentsConfiguration {
         self.paymentGateways = paymentGateways
     }
 
-    init(country: String) throws {
-        guard let configuration = Self.countryConfigurations[country] else {
+    init(country: String, stripeEnabled: Bool, canadaEnabled: Bool) throws {
+        switch country {
+        case "US" where stripeEnabled == true:
+            self.init(
+                paymentMethods: [.cardPresent],
+                currencies: ["USD"],
+                paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID]
+            )
+        case "US" where stripeEnabled == false:
+            self.init(
+                paymentMethods: [.cardPresent],
+                currencies: ["USD"],
+                paymentGateways: [WCPayAccount.gatewayID]
+            )
+        case "CA" where canadaEnabled == true:
+            self.init(
+                paymentMethods: [.cardPresent, .interacPresent],
+                currencies: ["CAD"],
+                paymentGateways: [WCPayAccount.gatewayID]
+            )
+        default:
             throw CardPresentPaymentsConfigurationMissingError()
         }
-        self = configuration
     }
-}
-
-private extension CardPresentPaymentsConfiguration {
-    static let countryConfigurations: [String: CardPresentPaymentsConfiguration] = [
-        "US": .init(
-            paymentMethods: [.cardPresent],
-            currencies: ["USD"],
-            paymentGateways: [WCPayAccount.gatewayID]
-        ),
-        "CA": .init(
-            paymentMethods: [.cardPresent, .interacPresent],
-            currencies: ["CAD"],
-            paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID]
-        ),
-    ]
 }
 
 struct CardPresentPaymentsConfigurationMissingError: Error {}

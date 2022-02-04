@@ -11,13 +11,18 @@ struct InPersonPaymentsPluginChoicesView: View {
     }
 
     var body: some View {
-        Text(CardPresentPaymentsPlugins.wcPay.pluginName)
-            .font(.callout)
-        Text(Localization.conjunctiveOr)
-            .font(.body)
-        Text(CardPresentPaymentsPlugins.stripe.pluginName)
-            .font(.callout)
-            .padding(.bottom, isCompact ? 12 : 24)
+        VStack {
+            Text(CardPresentPaymentsPlugins.wcPay.pluginName)
+                .font(.callout)
+                .bold()
+                .padding(.bottom, 1)
+            Text(Localization.conjunctiveOr)
+                .font(.callout)
+                .padding(.bottom, 1)
+            Text(CardPresentPaymentsPlugins.stripe.pluginName)
+                .font(.callout).bold()
+                .padding(.bottom, isCompact ? 12 : 24)
+        }
     }
 }
 

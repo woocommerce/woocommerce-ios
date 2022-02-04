@@ -1,22 +1,50 @@
 import SwiftUI
+import Yosemite
 
 struct InPersonPaymentsSelectPlugin: View {
+    let userIsAdministrator: Bool
     let onRefresh: () -> Void
     @State var presentedSetupURL: URL? = nil
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+
+    var isCompact: Bool {
+        get {
+            verticalSizeClass == .compact
+        }
+    }
+
+    var imageInfo: InPersonPaymentsOnboardingError.ImageInfo {
+        get {
+            .init(image: .paymentErrorImage, height: 24)
+        }
+    }
 
     var body: some View {
         ScrollableVStack {
             Spacer()
 
-            InPersonPaymentsOnboardingError.MainContent(
-                title: Localization.title,
-                message: Localization.message,
-                image: InPersonPaymentsOnboardingError.ImageInfo(
-                    image: .wcPayPlugin,
-                    height: Constants.height
-                ),
-                supportLink: false
-            )
+            VStack(alignment: .center) {
+                Text(Localization.title)
+                    .font(.headline)
+                    .padding(.bottom, isCompact ? 16 : 32)
+                Image(uiImage: imageInfo.image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: isCompact ? imageInfo.height / 3 : imageInfo.height)
+                    .padding(.bottom, isCompact ? 16 : 32)
+                Text(userIsAdministrator ? Localization.adminMessage : Localization.nonAdminMessage)
+                    .font(.callout)
+                    .padding(.bottom, isCompact ? 12 : 24)
+                Text(CardPresentPaymentsPlugins.wcPay.pluginName)
+                    .font(.callout)
+                Text(Localization.conjunctiveOr)
+                    .font(.body)
+                Text(CardPresentPaymentsPlugins.stripe.pluginName)
+                    .font(.callout)
+                    .padding(.bottom, isCompact ? 12 : 24)
+                InPersonPaymentsSupportLink()
+            }.multilineTextAlignment(.center)
+            .frame(maxWidth: 500)
 
             Spacer()
 
@@ -47,18 +75,28 @@ struct InPersonPaymentsSelectPlugin: View {
 
 private enum Localization {
     static let title = NSLocalizedString(
-        "Please select an extension",
-        comment: "Title for the error screen when there is more than one extension active."
+        "Conflicting payment plugins detected",
+        comment: "Title for the error screen when there is more than one plugin active that supports in-person payments."
     )
 
-    static let message = NSLocalizedString(
-        "You must disable either the WooCommerce Payments or the WooCommerce Stripe Gateway extension.",
-        comment: "Message requesting merchants to select between available payments processors"
+    static let nonAdminMessage = NSLocalizedString(
+        "In-Person Payments will only work with one of following plugins activated. Please contact a site administrator to deactivate one of these plugins to continue:",
+        comment: "Message prompting a shop manager to ask an administrator to deactivate one of two plugins"
+    )
+
+    static let adminMessage = NSLocalizedString(
+        "In-Person Payments will only work with one of following plugins activated. Please deactivate one of these plugins to continue:",
+        comment: "Message prompting an administrator to deactivate one of two plugins"
+    )
+
+    static let conjunctiveOr = NSLocalizedString(
+        "or",
+        comment: "A single word displayed on a line by itself inbetween the names of two plugins"
     )
 
     static let primaryButton = NSLocalizedString(
-        "Select extension in Store Admin",
-        comment: "Button to select the active payment processor plugin"
+        "Manage Plugins",
+        comment: "Button to open browser to manage plugins"
     )
 }
 

@@ -30,7 +30,7 @@ struct InPersonPaymentsView: View {
             case .loading:
                 InPersonPaymentsLoading()
             case .selectPlugin:
-                if userIsAdministrator {
+                if viewModel.userIsAdministrator {
                     InPersonPaymentsPluginConfictAdmin(onRefresh: viewModel.refresh)
                 } else {
                     InPersonPaymentsPluginConfictShopManager(onRefresh: viewModel.refresh)

@@ -68,4 +68,3 @@ struct InPersonPaymentsPluginConfictShopManager_Previews: PreviewProvider {
         InPersonPaymentsPluginConfictShopManager(onRefresh: {})
     }
 }
-

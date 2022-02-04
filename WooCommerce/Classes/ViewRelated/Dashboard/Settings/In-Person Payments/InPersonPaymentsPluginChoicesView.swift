@@ -2,6 +2,14 @@ import SwiftUI
 import Yosemite
 
 struct InPersonPaymentsPluginChoicesView: View {
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+
+    var isCompact: Bool {
+        get {
+            verticalSizeClass == .compact
+        }
+    }
+
     var body: some View {
         Text(CardPresentPaymentsPlugins.wcPay.pluginName)
             .font(.callout)

@@ -5,6 +5,7 @@
 - [*] In-Person Payments: Inform the user when a card reader battery is so low that it needs to be charged before the reader can be connected. [https://github.com/woocommerce/woocommerce-ios/pull/5998]
 - [***] The My store tab is having a new look with new conversion stats and shows up to 5 top performing products now (used to be 3). [https://github.com/woocommerce/woocommerce-ios/pull/5991]
 - [**] Fixed a crash at the startup of the app, related to Gridicons. [https://github.com/woocommerce/woocommerce-ios/pull/6005]
+- [***] Experimental Feature: It's now possible to create Orders in the app by enabling it in Settings > Experimental Features. For now you can change the order status, add products, and add customer details (billing and shipping addresses). [https://github.com/woocommerce/woocommerce-ios/pull/6060]
 
 8.4
 -----

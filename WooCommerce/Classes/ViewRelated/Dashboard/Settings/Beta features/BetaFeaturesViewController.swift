@@ -86,10 +86,6 @@ private extension BetaFeaturesViewController {
     }
 
     func orderCreationSection() -> Section? {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) else {
-            return nil
-        }
-
         return Section(rows: [.orderCreation,
                               .orderCreationDescription])
     }

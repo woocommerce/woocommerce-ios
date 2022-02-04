@@ -1,9 +1,9 @@
 import Foundation
 
-struct CardPresentPaymentsConfiguration {
-    let paymentMethods: [WCPayPaymentMethodType]
-    let currencies: [String]
-    let paymentGateways: [String]
+public struct CardPresentPaymentsConfiguration {
+    public let paymentMethods: [WCPayPaymentMethodType]
+    public let currencies: [String]
+    public let paymentGateways: [String]
 
     init(paymentMethods: [WCPayPaymentMethodType], currencies: [String], paymentGateways: [String]) {
         self.paymentMethods = paymentMethods
@@ -11,7 +11,7 @@ struct CardPresentPaymentsConfiguration {
         self.paymentGateways = paymentGateways
     }
 
-    init(country: String, stripeEnabled: Bool, canadaEnabled: Bool) throws {
+    public init(country: String, stripeEnabled: Bool, canadaEnabled: Bool) throws {
         switch country {
         case "US" where stripeEnabled == true:
             self.init(
@@ -37,4 +37,4 @@ struct CardPresentPaymentsConfiguration {
     }
 }
 
-struct CardPresentPaymentsConfigurationMissingError: Error {}
+public struct CardPresentPaymentsConfigurationMissingError: Error {}

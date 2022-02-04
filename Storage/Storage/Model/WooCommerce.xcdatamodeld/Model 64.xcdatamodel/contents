@@ -725,6 +725,44 @@
         <attribute name="total" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="stats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TopEarnerStats" inverseName="items" inverseEntity="TopEarnerStats"/>
     </entity>
+    <entity name="WCPayCardPaymentDetails" representedClassName="WCPayCardPaymentDetails" syncable="YES">
+        <attribute name="brand" optional="YES" attributeType="String"/>
+        <attribute name="funding" optional="YES" attributeType="String"/>
+        <attribute name="last4" optional="YES" attributeType="String"/>
+        <relationship name="charge" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WCPayCharge" inverseName="cardDetails" inverseEntity="WCPayCharge"/>
+    </entity>
+    <entity name="WCPayCardPresentPaymentDetails" representedClassName="WCPayCardPresentPaymentDetails" syncable="YES">
+        <attribute name="brand" attributeType="String"/>
+        <attribute name="funding" attributeType="String"/>
+        <attribute name="last4" attributeType="String"/>
+        <relationship name="charge" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WCPayCharge" inverseName="cardPresentDetails" inverseEntity="WCPayCharge"/>
+        <relationship name="receipt" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="WCPayCardPresentReceiptDetails" inverseName="cardPresentPayment" inverseEntity="WCPayCardPresentReceiptDetails"/>
+    </entity>
+    <entity name="WCPayCardPresentReceiptDetails" representedClassName="WCPayCardPresentReceiptDetails" syncable="YES">
+        <attribute name="accountType" attributeType="String"/>
+        <attribute name="applicationPreferredName" attributeType="String"/>
+        <attribute name="dedicatedFileName" attributeType="String"/>
+        <relationship name="cardPresentPayment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WCPayCardPresentPaymentDetails" inverseName="receipt" inverseEntity="WCPayCardPresentPaymentDetails"/>
+    </entity>
+    <entity name="WCPayCharge" representedClassName="WCPayCharge" syncable="YES">
+        <attribute name="amount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="amountCaptured" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="amountRefunded" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="authorizationCode" optional="YES" attributeType="String"/>
+        <attribute name="captured" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="created" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="currency" attributeType="String"/>
+        <attribute name="id" attributeType="String"/>
+        <attribute name="paid" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="paymentIntentID" optional="YES" attributeType="String"/>
+        <attribute name="paymentMethodID" attributeType="String"/>
+        <attribute name="paymentMethodType" attributeType="String"/>
+        <attribute name="refunded" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="status" attributeType="String"/>
+        <relationship name="cardDetails" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="WCPayCardPaymentDetails" inverseName="charge" inverseEntity="WCPayCardPaymentDetails"/>
+        <relationship name="cardPresentDetails" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="WCPayCardPresentPaymentDetails" inverseName="charge" inverseEntity="WCPayCardPresentPaymentDetails"/>
+    </entity>
     <elements>
         <element name="Account" positionX="-200.9765625" positionY="63.5625" width="128" height="120"/>
         <element name="AccountSettings" positionX="-846" positionY="270" width="128" height="89"/>
@@ -789,5 +827,9 @@
         <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="88"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="118"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
+        <element name="WCPayCharge" positionX="-684" positionY="54" width="128" height="284"/>
+        <element name="WCPayCardPaymentDetails" positionX="-675" positionY="72" width="128" height="89"/>
+        <element name="WCPayCardPresentPaymentDetails" positionX="-666" positionY="72" width="128" height="104"/>
+        <element name="WCPayCardPresentReceiptDetails" positionX="-657" positionY="81" width="128" height="89"/>
     </elements>
 </model>

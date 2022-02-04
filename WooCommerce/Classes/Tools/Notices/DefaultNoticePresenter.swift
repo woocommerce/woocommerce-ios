@@ -20,6 +20,10 @@ class DefaultNoticePresenter: NoticePresenter {
     ///
     private var noticeOnScreen: Notice?
 
+    /// Dismiss the current onScreen notice
+    ///
+    private var dismissNoticeOnScreen: (() -> Void)?
+
     /// UIViewController to be used as Notice(s) Presenter
     ///
     weak var presentingViewController: UIViewController?
@@ -39,6 +43,15 @@ class DefaultNoticePresenter: NoticePresenter {
         }
         notices.append(notice)
         presentNextNoticeIfPossible()
+    }
+
+    /// It dismisses the provided `Notice` if it is currenly presented in the foreground, or removes it from the queue
+    ///
+    func cancel(notice: Notice) {
+        notices.removeAll(where: { $0 == notice })
+        if notice == noticeOnScreen {
+            dismissNoticeOnScreen?()
+        }
     }
 }
 
@@ -161,7 +174,7 @@ private extension DefaultNoticePresenter {
         }
 
         let dismiss = { [weak noticeContainerView] in
-            guard let noticeContainerView = noticeContainerView, noticeContainerView.superview != nil else {
+            guard let noticeContainerView = noticeContainerView, noticeContainerView.superview != nil, notice == self.noticeOnScreen else {
                 return
             }
 
@@ -171,6 +184,7 @@ private extension DefaultNoticePresenter {
             })
         }
 
+        dismissNoticeOnScreen = dismiss
         noticeView.dismissHandler = dismiss
 
         if let feedbackType = notice.feedbackType {
@@ -178,11 +192,14 @@ private extension DefaultNoticePresenter {
         }
 
         animatePresentation(fromState: offScreenState, toState: onScreenState, completion: {
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay, execute: dismiss)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay) { [weak self] in
+                self?.dismissNoticeOnScreen?()
+            }
         })
     }
 
     func dismiss() {
+        dismissNoticeOnScreen = nil
         noticeOnScreen = nil
         keyboardFrameObserver = nil
         presentNextNoticeIfPossible()

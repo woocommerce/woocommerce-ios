@@ -2,6 +2,10 @@ import Foundation
 import Yosemite
 
 final class OrderDetailsNotices {
+
+    /// Contains the latest  order update notice
+    var orderUpdateNotice: Notice?
+
     /// Displays the `Unable to delete tracking` Notice.
     ///
     func displayDeleteErrorNotice(order: Order, tracking: ShipmentTracking, onAction: @escaping () -> Void) {
@@ -18,6 +22,10 @@ final class OrderDetailsNotices {
                             feedbackType: .error,
                             actionTitle: actionTitle) {
                                 onAction()
+        }
+
+        if let orderUpdateNotice = orderUpdateNotice {
+            ServiceLocator.noticePresenter.cancel(notice: orderUpdateNotice)
         }
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)

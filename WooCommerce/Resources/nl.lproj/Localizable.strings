@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-02-05 01:05:59+0000 */
+/* Translation-Revision-Date: 2022-02-05 01:07:32+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -3715,7 +3715,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "De %1$@-extensie is geïnstalleerd in je winkel, maar nog niet geactiveerd. Activeer deze om fysieke betalingen aan te nemen";
 
 /* Error message when a Card Present Payments extension is installed but the version is not supported */
-"The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "De % $1@-extensie is geïnstalleerd in je winkel, maar moet worden bijgewerkt voor fysieke betalingen. Werk deze bij naar de meest recente versie.";
+"The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "De %1$@-extensie is geïnstalleerd in je winkel, maar moet worden bijgewerkt voor fysieke betalingen. Werk deze bij naar de meest recente versie.";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Het Google-account \"%@\" komt niet overeen met een account op WordPress.com";

@@ -1,5 +1,3 @@
-Satıcılar bizden minimum bilgi ile (örneğin yalnızca bir ücret tutarıyla) uygulamada bir işlemi kaydetmenin hızlı bir yolunu istiyor.  Örneğin, bir köylü pazarındasınız, bir müşterinin kredi kartından ödeme almak istiyorsunuz ve envanteri yönetmenize gerek yok. Bu sürüm, siparişler sekmesinde yeni bir "Basit Ödemeler" özelliği içerir. Bir WooCommerce Payments müşterisiyseniz, bunun Şahsen Ödemeler kredi kartı okuyucusuyla harika şekilde çalıştığını göreceksiniz! Henüz bir kredi kartı okuyucunuz yok mu? Alternatif olarak, siteniz üzerinden cihazıyla ödeme yapması için müşterinize bir ödeme bağlantısını kolayca gönderebilirsiniz.
+You’ll notice a new tab called “Menu” in this release. We’ve moved store settings, switching between different stores, and viewing WooCommerce Admin to that screen. More functionality will appear there over the next couple of months!
 
-Bu sürümde ayrıca bir siparişle ilgili ücretleri iade etme özelliği de bulunur. Ayrıca, bir ürünü düzenlerken kullanılabilecek deneysel bir SKU giriş barkod okuyucusu da ekledik (Ayarlar'dan etkinleştirilebilir).
-
-Önümüzdeki birkaç ay içinde sunulacak yeni ve heyecan verici bazı özellikler üzerinde de çalışmalarımız devam ediyor. Bize geri bildirim göndermeye devam edin!
+This release also includes a fix for the product screen where the product’s name would revert back to the previous one if you uploaded an image. Thank you for reporting bugs – we are listening!

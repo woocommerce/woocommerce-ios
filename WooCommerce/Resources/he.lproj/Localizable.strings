@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-01-19 14:54:03+0000 */
+/* Translation-Revision-Date: 2022-02-02 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -40,6 +40,9 @@
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ במלאי";
+
+/* Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
+"%1$@ is in Test Mode" = "%1$@ במצב בדיקה";
 
 /* Review title. Reads as {Review author} left a review */
 "%1$@ left a review" = "ביקורת נכתבה על ידי %1$@";
@@ -160,10 +163,12 @@
 /* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
 "%ld upsell products" = "%ld מוצרים של שדרוגי מכירות";
 
-/* Label about one product variation shown on Products tab */
+/* Label about one product variation shown on Products tab
+   Label for one product variation when showing details about a variable product */
 "%ld variation" = "סוג %ld";
 
-/* Label about number of variations shown on Products tab */
+/* Label about number of variations shown on Products tab
+   Label for multiple product variations when showing details about a variable product */
 "%ld variations" = "%ld סוגים";
 
 /* Product title in Products list when there is no title */
@@ -250,16 +255,17 @@
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "מידע על האפליקציה";
 
+/* Title for the error screen when a Card Present Payments extension is installed but not activated */
+"Activate %1$@" = "להפעיל את %1$@";
+
 /* Action button to activate Jetpack on WP-Admin instead of on app */
 "Activate Jetpack in WP-Admin" = "להפעיל את Jetpack בניהול WP";
-
-/* Title for the error screen when WooCommerce Payments is installed but not activated */
-"Activate WooCommerce Payments" = "להפעיל את WooCommerce Payments";
 
 /* Name of the activation Jetpack plugin step */
 "Activating" = "מפעיל";
 
-/* Application's Active State */
+/* Application's Active State
+   Status of coupons that are active */
 "Active" = "פעיל";
 
 /* Title for table view section of active plugins */
@@ -281,6 +287,9 @@
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "להוסיף קטגוריה";
+
+/* Title for the action button to add coupon on the coupon list screen. */
+"Add Coupon" = "הוספת קופון";
 
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "להוסיף הערת לקוח";
@@ -615,6 +624,9 @@
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "מודגש";
 
+/* The description on the placeholder overlay when there are no coupons on the coupon list screen. */
+"Boost your business by sending customers special offers and discounts." = "אפשר לקדם את העסק באמצעות שליחה של מבצעים מיוחדים והנחות ללקוחות.";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "קופסה";
 
@@ -673,9 +685,6 @@
 /* Card method title on the select payment method screen for simple payments */
 "Card" = "כרטיס";
 
-/* Navigates to Card Reader manual */
-"Card reader manual" = "מדריך לקורא הכרטיסים";
-
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "ספק משלוח ותעריפים";
 
@@ -722,6 +731,9 @@
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "יש לבדוק את תיבת האימייל!";
+
+/* Navigates to Chipper Card Reader manual */
+"Chipper 2X card reader manual" = "מדריך לקורא הכרטיסים של Chipper 2X";
 
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "יש לבחור גודל נייר";
@@ -1109,7 +1121,7 @@
 "Do not allow" = "לא לאפשר";
 
 /* Dialog title that displays the name of a found card reader */
-"Do you want to connect to reader %@?" = "האם ברצונך להתחבר לקורא %@?";
+"Do you want to connect to reader %1$@?" = "האם ברצונך להתחבר לקורא %1$@?";
 
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "האם ברצונך להעביר מוצר זה לפח?";
@@ -1355,9 +1367,15 @@
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "שגיאה ברכישת התוויות";
 
+/* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
+"Everyone loves a deal" = "מי לא רוצה לקבל מבצע";
+
 /* Experimental features navigation title
    Navigates to experimental features screen */
 "Experimental Features" = "תכונות ניסיוניות";
+
+/* Status of coupons that are expired */
+"Expired" = "פג תוקף";
 
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "מוצר חיצוני";
@@ -1447,6 +1465,12 @@
 
 /* Text field name in Edit Address Form */
 "First name" = "שם פרטי";
+
+/* Name of fixed cart discount type */
+"Fixed Cart Discount" = "הנחה קבועה לעגלת הקניות";
+
+/* Name of fixed product discount type */
+"Fixed Product Discount" = "הנחת מוצר קבועה";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new blogs." = "לעקוב אחר האתרים המועדפים שלך ולגלות בלוגים חדשים לקריאה.";
@@ -1605,9 +1629,6 @@
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "איך נוכל לשפר את השירות שלנו?";
-
-/* Navigation bar title of hub menu view */
-"Hub Menu" = "תפריט המרכז";
 
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "אהבתי את זה";
@@ -2015,9 +2036,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "לסמן את ההזמנה כ'הושלמה' ולהודיע ללקוח";
 
-/* The details on the placeholder overlay when there are no coupons on the coupon management list */
-"Market your products by adding a coupon to offer your customers a discount." = "אפשר לשווק את המוצרים שלך בעזרת קופון ולהציע ללקוחות הנחה.";
-
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "לפריט המדיה חסר קובץ מקושר להעלאה.";
 
@@ -2143,14 +2161,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No activity this period" = "אין פעילות בפרק זמן זה";
 
 /* Order details > customer info > billing information. This is where the address would normally display.
-   Order details > customer info > shipping details. This is where the address would normally display. */
+   Order details > customer info > shipping details. This is where the address would normally display. - Placeholder for empty address in order customer data */
 "No address specified." = "לא צוינה כתובת.";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "אין חיבור";
-
-/* The text on the placeholder overlay when there are no coupons on the coupon management list */
-"No coupons yet" = "עדיין אין קופונים";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "אין נתונים זמינים";
@@ -2172,6 +2187,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "טרם צוין מחיר";
+
+/* Message displayed if there are no product variations for a product. */
+"No product variations found" = "לא נמצאו סוגי מוצרים";
 
 /* Message displayed if there are no products to display in the Add Product screen */
 "No products found" = "לא נמצאו מוצרים";
@@ -2354,8 +2372,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "אריזה מקורית";
 
-/* My Store > Settings > Other app section
-   Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
+/* Generic name of non-default discount types
+   My Store > Settings > Other app section - Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "אחר";
 
 /* Display label for the product's inventory stock status */
@@ -2451,6 +2469,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's pending status */
 "Pending review" = "תצוגה מקדימה בהמתנה";
 
+/* Name of percentage discount type */
+"Percentage Discount" = "אחוזי הנחה";
+
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
 "Phone" = "טלפון";
@@ -2541,6 +2562,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "יש לבחור חבילה";
+
+/* Title for the error screen when there is more than one extension active. */
+"Please select an extension" = "יש לבחור הרחבה";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "יש לנסות שוב מאוחר יותר או לפנות אלינו בכל עת ואנחנו נשמח לעזור!";
@@ -2822,14 +2846,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the view containing a receipt preview */
 "Receipt" = "קבלה";
 
-/* Button to reload plugin data after activating the WooCommerce Payments plugin */
+/* Button to reload plugin data after activating a Card Present Payments extension */
 "Refresh After Activating" = "לרענן לאחר הפעלה";
 
 /* Button to reload plugin data after installing the WooCommerce Payments plugin */
 "Refresh After Installing" = "לרענן לאחר התקנה";
 
-/* Button to reload plugin data after updating the WooCommerce Payments plugin
-   Button to reload plugin data after updating the WooCommerce Payments plugin settings */
+/* Button to reload plugin data after updating a Card Present Payments extension plugin
+   Button to reload plugin data after updating a card present payments plugin settings */
 "Refresh After Updating" = "לרענן לאחר עדכון";
 
 /* The title of the button to confirm the refund. */
@@ -3121,6 +3145,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "לבחור בתאריך סיום";
+
+/* Button to select the active payment processor plugin */
+"Select extension in Store Admin" = "יש לבחור הרחבה ב-Store Admin";
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "בחירת סגנון פסקה";
@@ -3460,6 +3487,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "קו חוצה";
 
+/* Navigates to Stripe M2 Card Reader manual */
+"Stripe M2 card reader manual" = "מדריך לקורא הכרטיסים של Stripe M2";
+
 /* Display label for subscription product type. */
 "Subscription" = "מינוי";
 
@@ -3678,6 +3708,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "That username is not allowed." = "שם המשתמש אינו מורשה.";
 
+/* Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
+"The %1$@ extension cannot be in test mode for In-Person Payments. Please disable test mode." = "לא ניתן להגדיר את ההרחבה של %1$@ למצב בדיקה בביצוע תשלומים באופן אישי. יש להשבית את מצב הבדיקה.";
+
+/* Error message when a Card Present Payments extension is not activated */
+"The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "בחנות שלך הותקנה ההרחבה %1$@ אך היא לא הופעלה. יש להפעיל אותה כדי לקבל תשלומים באופן אישי";
+
+/* Error message when a Card Present Payments extension is installed but the version is not supported */
+"The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "בחנות שלך הותקנה ההרחבה %1$@ אך יש לעדכן אותה כדי לבצע 'תשלומים באופן אישי'. עליך לעדכן את ההרחבה לגרסה האחרונה.";
+
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "חשבון ה-Google‏ \"%@\" לא תואם לשום חשבון ב-WordPress.com‏";
 
@@ -3686,15 +3725,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "בכתובת האינטרנט חסר מארח חוקי.";
-
-/* Error message when WooCommerce Payments is in test mode on a live site */
-"The WooCommerce Payments extension cannot be in test mode for In-Person Payments. Please disable test mode." = "לא ניתן להגדיר את ההרחבה של WooCommerce Payments למצב בדיקה בביצוע תשלומים באופן אישי. יש להשבית את מצב הבדיקה.";
-
-/* Error message when WooCommerce Payments is not activated */
-"The WooCommerce Payments extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "בחנות שלך הותקנה ההרחבה WooCommerce Payments אך היא לא הופעלה. יש להפעיל אותה כדי לקבל תשלומים באופן אישי";
-
-/* Error message when WooCommerce Payments is installed but the version is not supported */
-"The WooCommerce Payments extension is installed on your store, but needs to be updated for In-Person Payments. Please update WooCommerce Payments to the most recent version." = "בחנות שלך הותקנה ההרחבה WooCommerce Payments אך יש לעדכן אותה כדי לבצע 'תשלומים באופן אישי'. עליך לעדכן את WooCommerce Payments לגרסה האחרונה.";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "לא ניתן היה להסיר את המאפיין.";
@@ -4118,8 +4148,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the review's unspam status */
 "Unspam" = "ביטול הסימון כתגובת זבל";
 
-/* Title for the error screen when the installed version of WooCommerce Payments is unsupported */
-"Unsupported WooCommerce Payments version" = "גרסה לא נתמכת של WooCommerce Payments";
+/* Title for the error screen when the installed version of a Card Present Payments extension is unsupported */
+"Unsupported %1$@ version" = "גרסת %1$@ לא נתמכת";
 
 /* Display label for the review's untrash status */
 "Untrash" = "ביטול ההעברה לפח";
@@ -4260,6 +4290,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Displays the connected reader software version */
 "Version: %1$@" = "גרסה: %1$@";
 
+/* Action title in an in-app notification to view more details. */
+"View" = "הצג";
+
 /* Cell title on the beta features screen to enable the order add-ons feature
    Title of the button on the order detail item to navigate to add-ons - Title of the button on the order details product list item to navigate to add-ons */
 "View Add-Ons" = "להציג הרחבות";
@@ -4358,7 +4391,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We couldn’t update your reader’s software" = "לא הצלחנו לעדכן את התוכנה של קורא הכרטיסים שלך";
 
 /* Title for the error screen when WooCommerce Payments is not supported in a specific country */
-"We don’t support In-Person Payments in %@" = "אנחנו לא תומכים בתשלומים באופן אישי במדינה %@";
+"We don’t support In-Person Payments in %1$@" = "אנחנו לא תומכים בתשלומים באופן אישי במדינה %1$@";
 
 /* Title for the error screen when WooCommerce Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments in your country" = "אנחנו לא תומכים בתשלומים באופן אישי במדינה שלך";
@@ -4471,9 +4504,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "הנחה על רכישת WooCommerce";
 
-/* Title for the error screen when WooCommerce Payments is in test mode on a live site */
-"WooCommerce Payments is in Test Mode" = "השירות של WooCommerce Payments נמצא במצב בדיקה";
-
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "הגדרות WooCommerce";
 
@@ -4532,6 +4562,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "בחשבונך קיימת לפחות דרישה אחת שעבר המועד שלה. יש לטפל בה כדי לחדש את פעולת התשלומים באופן אישי.";
+
+/* Message requesting merchants to select between available payments processors */
+"You must disable either the WooCommerce Payments or the WooCommerce Stripe Gateway extension." = "עליך להשבית את WooCommerce Payments או את ההרחבה של WooCommerce Stripe Gateway.";
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "עליך להוסיף סיסמה כדי להגן על המוצר שלך באמצעות סיסמה";

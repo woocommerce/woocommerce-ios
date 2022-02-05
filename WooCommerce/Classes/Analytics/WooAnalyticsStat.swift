@@ -559,8 +559,8 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Hub Menu
     //
-    case hubMenuTabSelected = "hub_menu_tab_selected"
-    case hubMenuTabReselected = "hub_menu_tab_reselected"
+    case hubMenuTabSelected = "main_tab_hub_menu_selected"
+    case hubMenuTabReselected = "main_tab_hub_menu_reselected"
     case hubMenuSwitchStoreTapped = "hub_menu_switch_store_tapped"
     case hubMenuOptionTapped = "hub_menu_option_tapped"
     case hubMenuSettingsTapped = "hub_menu_settings_tapped"

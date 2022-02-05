@@ -28,7 +28,7 @@ struct InPersonPaymentsPluginConfictShopManager: View {
 
             InPersonPaymentsPluginChoicesView()
 
-            // TODO Support
+            InPersonPaymentsSupportLink()
 
             Spacer()
 
@@ -53,7 +53,8 @@ private enum Localization {
     )
 
     static let message = NSLocalizedString(
-        "In-Person Payments will only work with one of following plugins activated. Please contact a site administrator to deactivate one of these plugins to continue:",
+        "In-Person Payments will only work with one of following plugins activated. "
+            + "Please contact a site administrator to deactivate one of these plugins to continue:",
         comment: "Message prompting a shop manager to ask an administrator to deactivate one of two plugins"
     )
 }

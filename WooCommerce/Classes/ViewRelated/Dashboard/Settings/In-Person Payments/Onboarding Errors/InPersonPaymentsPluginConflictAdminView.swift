@@ -27,7 +27,7 @@ struct InPersonPaymentsPluginConfictAdmin: View {
 
             InPersonPaymentsPluginChoicesView()
 
-            // TODO Support
+            InPersonPaymentsSupportLink()
 
             Spacer()
 

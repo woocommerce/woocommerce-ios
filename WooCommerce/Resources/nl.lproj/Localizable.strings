@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-02-02 13:54:03+0000 */
+/* Translation-Revision-Date: 2022-02-05 01:05:59+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -1121,7 +1121,7 @@
 "Do not allow" = "Niet toestaan";
 
 /* Dialog title that displays the name of a found card reader */
-"Do you want to connect to reader %1$@?" = "Wil je verbinding maken met %$1@-lezer?";
+"Do you want to connect to reader %1$@?" = "Wil je verbinding maken met %1$@-lezer?";
 
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Wil je dit product naar de prullenbak verplaatsen?";
@@ -3712,7 +3712,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The %1$@ extension cannot be in test mode for In-Person Payments. Please disable test mode." = "De %1$@-extensie mag niet in de testmodus staan voor fysieke betalingen. Schakel de testmodus uit.";
 
 /* Error message when a Card Present Payments extension is not activated */
-"The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "De %$1@-extensie is geïnstalleerd in je winkel, maar nog niet geactiveerd. Activeer deze om fysieke betalingen aan te nemen";
+"The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "De %1$@-extensie is geïnstalleerd in je winkel, maar nog niet geactiveerd. Activeer deze om fysieke betalingen aan te nemen";
 
 /* Error message when a Card Present Payments extension is installed but the version is not supported */
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "De % $1@-extensie is geïnstalleerd in je winkel, maar moet worden bijgewerkt voor fysieke betalingen. Werk deze bij naar de meest recente versie.";
@@ -4149,7 +4149,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unspam" = "Geen spam";
 
 /* Title for the error screen when the installed version of a Card Present Payments extension is unsupported */
-"Unsupported %1$@ version" = "Niet-ondersteunde % $1@ versie";
+"Unsupported %1$@ version" = "Niet-ondersteunde %1$@ versie";
 
 /* Display label for the review's untrash status */
 "Untrash" = "Uit prullenbak";
@@ -4391,7 +4391,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We couldn’t update your reader’s software" = "We konden de software van je lezer niet bijwerken";
 
 /* Title for the error screen when WooCommerce Payments is not supported in a specific country */
-"We don’t support In-Person Payments in %1$@" = "We ondersteunen fysieke betalingen niet in %$1@";
+"We don’t support In-Person Payments in %1$@" = "We ondersteunen fysieke betalingen niet in %1$@";
 
 /* Title for the error screen when WooCommerce Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments in your country" = "We ondersteunen fysieke betalingen niet in je land";

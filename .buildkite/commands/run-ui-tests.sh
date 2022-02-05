@@ -10,6 +10,10 @@ echo "Running $TEST_NAME on $DEVICE for iOS $IOS_VERSION"
 echo "--- :rubygems: Fixing Ruby Setup"
 gem install bundler
 
+# FIXIT-13.1: Temporary fix until all VMs have a JVM
+brew install openjdk@11
+sudo ln -sfn /usr/local/opt/openjdk@11/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-11.jdk
+
 echo "--- 📦 Downloading Build Artifacts"
 buildkite-agent artifact download build-products.tar .
 tar -xf build-products.tar

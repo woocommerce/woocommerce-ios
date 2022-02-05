@@ -66,7 +66,7 @@ steps:
   # UI Tests
   #################
   - label: "🧪 UI Tests (iPhone)"
-    command: .buildkite/commands/run-ui-tests.sh WooCommerceUITests 'iPhone 11' 14.1
+    command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 11' 15.0
     depends_on: "build"
     env: *common_env
     plugins: *common_plugins
@@ -77,7 +77,7 @@ steps:
           context: "UI Tests (iPhone)"
 
   - label: "🧪 UI Tests (iPad)"
-    command: .buildkite/commands/run-ui-tests.sh WooCommerceUITests "iPad Air (4th generation)" 14.1
+    command: .buildkite/commands/run-ui-tests.sh UITests "iPad Air (4th generation)" 15.0
     depends_on: "build"
     env: *common_env
     plugins: *common_plugins

@@ -12,4 +12,4 @@ echo "--- :rubygems: Setting up Gems"
 install_gems
 
 echo "--- 🧪 Testing"
-bundle exec fastlane test_without_building name:WordPressUnitTests try_count:3
+bundle exec fastlane test_without_building name:UnitTests try_count:3

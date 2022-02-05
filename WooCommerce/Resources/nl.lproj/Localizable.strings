@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-01-20 22:03:41+0000 */
+/* Translation-Revision-Date: 2022-02-02 13:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -40,6 +40,9 @@
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ op voorraad";
+
+/* Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
+"%1$@ is in Test Mode" = "%1$@ is in de testmodus";
 
 /* Review title. Reads as {Review author} left a review */
 "%1$@ left a review" = "%1$@ heeft een beoordeling geplaatst";
@@ -160,10 +163,12 @@
 /* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
 "%ld upsell products" = "%ld upsell-producten";
 
-/* Label about one product variation shown on Products tab */
+/* Label about one product variation shown on Products tab
+   Label for one product variation when showing details about a variable product */
 "%ld variation" = "%ld variatie";
 
-/* Label about number of variations shown on Products tab */
+/* Label about number of variations shown on Products tab
+   Label for multiple product variations when showing details about a variable product */
 "%ld variations" = "%ld variaties";
 
 /* Product title in Products list when there is no title */
@@ -250,16 +255,17 @@
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Over de app";
 
+/* Title for the error screen when a Card Present Payments extension is installed but not activated */
+"Activate %1$@" = "Activeer %1$@";
+
 /* Action button to activate Jetpack on WP-Admin instead of on app */
 "Activate Jetpack in WP-Admin" = "Activeer Jetpack in WP-Admin";
-
-/* Title for the error screen when WooCommerce Payments is installed but not activated */
-"Activate WooCommerce Payments" = "WooCommerce Payments activeren";
 
 /* Name of the activation Jetpack plugin step */
 "Activating" = "Activeren";
 
-/* Application's Active State */
+/* Application's Active State
+   Status of coupons that are active */
 "Active" = "Actief";
 
 /* Title for table view section of active plugins */
@@ -281,6 +287,9 @@
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "Categorie toevoegen";
+
+/* Title for the action button to add coupon on the coupon list screen. */
+"Add Coupon" = "Coupon toevoegen";
 
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "Notitie voor klant toevoegen";
@@ -615,6 +624,9 @@
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Vetgedrukt";
 
+/* The description on the placeholder overlay when there are no coupons on the coupon list screen. */
+"Boost your business by sending customers special offers and discounts." = "Geef je bedrijf een boost door klanten speciale aanbiedingen en kortingen te geven";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Doos";
 
@@ -673,9 +685,6 @@
 /* Card method title on the select payment method screen for simple payments */
 "Card" = "Kaart";
 
-/* Navigates to Card Reader manual */
-"Card reader manual" = "Handleiding kaartlezer";
-
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Bezorgservice en tarieven";
 
@@ -722,6 +731,9 @@
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Controleer je e-mail!";
+
+/* Navigates to Chipper Card Reader manual */
+"Chipper 2X card reader manual" = "Handleiding Chipper 2X-kaartlezer";
 
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Kies papierformaat";
@@ -1109,7 +1121,7 @@
 "Do not allow" = "Niet toestaan";
 
 /* Dialog title that displays the name of a found card reader */
-"Do you want to connect to reader %@?" = "Wil je verbinding maken met lezer %@?";
+"Do you want to connect to reader %1$@?" = "Wil je verbinding maken met %$1@-lezer?";
 
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Wil je dit product naar de prullenbak verplaatsen?";
@@ -1355,9 +1367,15 @@
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Fout tijdens het aanschaffen van het label";
 
+/* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
+"Everyone loves a deal" = "Iedereen houdt van een goede deal";
+
 /* Experimental features navigation title
    Navigates to experimental features screen */
 "Experimental Features" = "Experimentele functies";
+
+/* Status of coupons that are expired */
+"Expired" = "Verlopen";
 
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "Extern product";
@@ -1447,6 +1465,12 @@
 
 /* Text field name in Edit Address Form */
 "First name" = "Voornaam";
+
+/* Name of fixed cart discount type */
+"Fixed Cart Discount" = "Vaste winkelwagenkorting";
+
+/* Name of fixed product discount type */
+"Fixed Product Discount" = "Vaste productkorting";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new blogs." = "Volg je favoriete sites en ontdek nieuwe blogs.";
@@ -1605,9 +1629,6 @@
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Hoe kunnen we verbeteren?";
-
-/* Navigation bar title of hub menu view */
-"Hub Menu" = "Hubmenu";
 
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "Ik vind dit leuk";
@@ -2015,9 +2036,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Markeer deze bestelling als voltooid en informeer de klant";
 
-/* The details on the placeholder overlay when there are no coupons on the coupon management list */
-"Market your products by adding a coupon to offer your customers a discount." = "Promoot je producten door een coupon toe te voegen om je klanten korting te bieden.";
-
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Media heeft geen geassocieerd bestand om te uploaden.";
 
@@ -2143,14 +2161,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No activity this period" = "Geen activiteiten deze periode";
 
 /* Order details > customer info > billing information. This is where the address would normally display.
-   Order details > customer info > shipping details. This is where the address would normally display. */
+   Order details > customer info > shipping details. This is where the address would normally display. - Placeholder for empty address in order customer data */
 "No address specified." = "Geen adres opgegeven.";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "Geen verbinding";
-
-/* The text on the placeholder overlay when there are no coupons on the coupon management list */
-"No coupons yet" = "Nog geen coupons";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Geen gegevens beschikbaar";
@@ -2172,6 +2187,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Geen prijs ingesteld";
+
+/* Message displayed if there are no product variations for a product. */
+"No product variations found" = "Geen productvariaties gevonden";
 
 /* Message displayed if there are no products to display in the Add Product screen */
 "No products found" = "Geen producten gevonden";
@@ -2354,8 +2372,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "Oorspronkelijke verpakking";
 
-/* My Store > Settings > Other app section
-   Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
+/* Generic name of non-default discount types
+   My Store > Settings > Other app section - Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Overige";
 
 /* Display label for the product's inventory stock status */
@@ -2451,6 +2469,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's pending status */
 "Pending review" = "Beoordeling in behandeling";
 
+/* Name of percentage discount type */
+"Percentage Discount" = "Procentuele korting";
+
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
 "Phone" = "Telefoonnummer";
@@ -2541,6 +2562,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Selecteer een pakket";
+
+/* Title for the error screen when there is more than one extension active. */
+"Please select an extension" = "Selecteer een extensie";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Probeer het later opnieuw of neem contact met ons op zodat wij je kunnen helpen.";
@@ -2822,14 +2846,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the view containing a receipt preview */
 "Receipt" = "Factuur";
 
-/* Button to reload plugin data after activating the WooCommerce Payments plugin */
+/* Button to reload plugin data after activating a Card Present Payments extension */
 "Refresh After Activating" = "Vernieuwen na activeren";
 
 /* Button to reload plugin data after installing the WooCommerce Payments plugin */
 "Refresh After Installing" = "Vernieuwen na installeren";
 
-/* Button to reload plugin data after updating the WooCommerce Payments plugin
-   Button to reload plugin data after updating the WooCommerce Payments plugin settings */
+/* Button to reload plugin data after updating a Card Present Payments extension plugin
+   Button to reload plugin data after updating a card present payments plugin settings */
 "Refresh After Updating" = "Vernieuwen na bijwerken";
 
 /* The title of the button to confirm the refund. */
@@ -3121,6 +3145,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "Selecteer einddatum";
+
+/* Button to select the active payment processor plugin */
+"Select extension in Store Admin" = "Selecteer een extensie in winkelbeheer";
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Alineastijl selecteren";
@@ -3460,6 +3487,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Doorstrepen";
 
+/* Navigates to Stripe M2 Card Reader manual */
+"Stripe M2 card reader manual" = "Handleiding Stripe M2-kaartlezer";
+
 /* Display label for subscription product type. */
 "Subscription" = "Abonnement";
 
@@ -3678,6 +3708,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "That username is not allowed." = "Deze gebruikersnaam is niet toegestaan.";
 
+/* Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
+"The %1$@ extension cannot be in test mode for In-Person Payments. Please disable test mode." = "De %1$@-extensie mag niet in de testmodus staan voor fysieke betalingen. Schakel de testmodus uit.";
+
+/* Error message when a Card Present Payments extension is not activated */
+"The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "De %$1@-extensie is geïnstalleerd in je winkel, maar nog niet geactiveerd. Activeer deze om fysieke betalingen aan te nemen";
+
+/* Error message when a Card Present Payments extension is installed but the version is not supported */
+"The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "De % $1@-extensie is geïnstalleerd in je winkel, maar moet worden bijgewerkt voor fysieke betalingen. Werk deze bij naar de meest recente versie.";
+
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Het Google-account \"%@\" komt niet overeen met een account op WordPress.com";
 
@@ -3686,15 +3725,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "De URL heeft geen geldige host.";
-
-/* Error message when WooCommerce Payments is in test mode on a live site */
-"The WooCommerce Payments extension cannot be in test mode for In-Person Payments. Please disable test mode." = "De extensie WooCommerce Payments mag niet in de testmodus staan voor fysieke betalingen. Schakel de testmodus uit.";
-
-/* Error message when WooCommerce Payments is not activated */
-"The WooCommerce Payments extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "De WooCommerce Payments-extensie is geïnstalleerd in je winkel, maar nog niet geactiveerd. Activeer deze om fysieke betalingen aan te nemen.";
-
-/* Error message when WooCommerce Payments is installed but the version is not supported */
-"The WooCommerce Payments extension is installed on your store, but needs to be updated for In-Person Payments. Please update WooCommerce Payments to the most recent version." = "De extensie WooCommerce Payments is geïnstalleerd in je winkel, maar moet worden bijgewerkt voor fysieke betalingen. Werk WooCommerce Payments bij naar de meest recente versie.";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "De eigenschap kon niet worden verwijderd.";
@@ -4118,8 +4148,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the review's unspam status */
 "Unspam" = "Geen spam";
 
-/* Title for the error screen when the installed version of WooCommerce Payments is unsupported */
-"Unsupported WooCommerce Payments version" = "Niet-ondersteunde versie van WooCommerce Payments";
+/* Title for the error screen when the installed version of a Card Present Payments extension is unsupported */
+"Unsupported %1$@ version" = "Niet-ondersteunde % $1@ versie";
 
 /* Display label for the review's untrash status */
 "Untrash" = "Uit prullenbak";
@@ -4260,6 +4290,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Displays the connected reader software version */
 "Version: %1$@" = "Versie: %1$@";
 
+/* Action title in an in-app notification to view more details. */
+"View" = "Bekijk";
+
 /* Cell title on the beta features screen to enable the order add-ons feature
    Title of the button on the order detail item to navigate to add-ons - Title of the button on the order details product list item to navigate to add-ons */
 "View Add-Ons" = "Add-ons bekijken";
@@ -4358,7 +4391,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We couldn’t update your reader’s software" = "We konden de software van je lezer niet bijwerken";
 
 /* Title for the error screen when WooCommerce Payments is not supported in a specific country */
-"We don’t support In-Person Payments in %@" = "We ondersteunen fysieke betalingen niet in %@";
+"We don’t support In-Person Payments in %1$@" = "We ondersteunen fysieke betalingen niet in %$1@";
 
 /* Title for the error screen when WooCommerce Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments in your country" = "We ondersteunen fysieke betalingen niet in je land";
@@ -4471,9 +4504,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "Kortingen binnen WooCommerce";
 
-/* Title for the error screen when WooCommerce Payments is in test mode on a live site */
-"WooCommerce Payments is in Test Mode" = "WooCommerce Payments staat in de testmodus.";
-
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "WooCommerce instellingen";
 
@@ -4532,6 +4562,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Je hebt ten minste openstaande verplichting op je account. Rond de verplichting af om fysieke betalingen te blijven ontvangen";
+
+/* Message requesting merchants to select between available payments processors */
+"You must disable either the WooCommerce Payments or the WooCommerce Stripe Gateway extension." = "Je moet de WooCommerce Payments-extensie of de WooCommerce Stripe gateway-extensie uitschakelen.";
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Je moet een wachtwoord toevoegen om je product met een wachtwoord te beschermen";

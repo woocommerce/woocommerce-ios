@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-01-20 22:07:09+0000 */
+/* Translation-Revision-Date: 2022-02-01 10:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -40,6 +40,9 @@
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ в наличии";
+
+/* Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
+"%1$@ is in Test Mode" = "%1$@ работает в тестовом режиме";
 
 /* Review title. Reads as {Review author} left a review */
 "%1$@ left a review" = "Пользователь %1$@ оставил отзыв";
@@ -160,10 +163,12 @@
 /* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
 "%ld upsell products" = "Продукты для апсела: %ld";
 
-/* Label about one product variation shown on Products tab */
+/* Label about one product variation shown on Products tab
+   Label for one product variation when showing details about a variable product */
 "%ld variation" = "%ld вариант";
 
-/* Label about number of variations shown on Products tab */
+/* Label about number of variations shown on Products tab
+   Label for multiple product variations when showing details about a variable product */
 "%ld variations" = "Вариантов: %ld";
 
 /* Product title in Products list when there is no title */
@@ -250,16 +255,17 @@
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "О приложении";
 
+/* Title for the error screen when a Card Present Payments extension is installed but not activated */
+"Activate %1$@" = "Активировать %1$@";
+
 /* Action button to activate Jetpack on WP-Admin instead of on app */
 "Activate Jetpack in WP-Admin" = "Активировать Jetpack на консоли";
-
-/* Title for the error screen when WooCommerce Payments is installed but not activated */
-"Activate WooCommerce Payments" = "Активировать WooCommerce Payments";
 
 /* Name of the activation Jetpack plugin step */
 "Activating" = "Активация";
 
-/* Application's Active State */
+/* Application's Active State
+   Status of coupons that are active */
 "Active" = "Активно";
 
 /* Title for table view section of active plugins */
@@ -281,6 +287,9 @@
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "Добавить категорию";
+
+/* Title for the action button to add coupon on the coupon list screen. */
+"Add Coupon" = "Добавить купон";
 
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "Добавить примечание для клиента";
@@ -615,6 +624,9 @@
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Полужирный";
 
+/* The description on the placeholder overlay when there are no coupons on the coupon list screen. */
+"Boost your business by sending customers special offers and discounts." = "Повысьте эффективность бизнеса, отправляя клиентам информацию о специальных предложениях и скидках.";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Коробка";
 
@@ -673,9 +685,6 @@
 /* Card method title on the select payment method screen for simple payments */
 "Card" = "Карта";
 
-/* Navigates to Card Reader manual */
-"Card reader manual" = "Руководство по работе с платёжным терминалом";
-
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Перевозчик и тарифы";
 
@@ -722,6 +731,9 @@
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Проверьте электронную почту!";
+
+/* Navigates to Chipper Card Reader manual */
+"Chipper 2X card reader manual" = "Руководство по работе с платёжным терминалом Chipper 2X";
 
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Выбрать размер бумаги";
@@ -1109,7 +1121,7 @@
 "Do not allow" = "Запретить";
 
 /* Dialog title that displays the name of a found card reader */
-"Do you want to connect to reader %@?" = "Подключить устройство чтения %@?";
+"Do you want to connect to reader %1$@?" = "Подключить платёжный терминал %1$@?";
 
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Вы уверены, что хотите переместить товар в корзину?";
@@ -1355,9 +1367,15 @@
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Ошибка при покупке этикетки";
 
+/* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
+"Everyone loves a deal" = "Все любят скидки";
+
 /* Experimental features navigation title
    Navigates to experimental features screen */
 "Experimental Features" = "Экспериментальные функции";
+
+/* Status of coupons that are expired */
+"Expired" = "Истекла";
 
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "Внешний товар";
@@ -1447,6 +1465,12 @@
 
 /* Text field name in Edit Address Form */
 "First name" = "Имя";
+
+/* Name of fixed cart discount type */
+"Fixed Cart Discount" = "Фиксированная скидка на сумму корзины";
+
+/* Name of fixed product discount type */
+"Fixed Product Discount" = "Фиксированная скидка на товар";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new blogs." = "Подписывайтесь на избранные сайты и находите новое чтиво.";
@@ -1605,9 +1629,6 @@
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Что можно улучшить?";
-
-/* Navigation bar title of hub menu view */
-"Hub Menu" = "Меню центра";
 
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "Мне нравится";
@@ -2015,9 +2036,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Отметить заказ как выполненный и уведомить заказчика";
 
-/* The details on the placeholder overlay when there are no coupons on the coupon management list */
-"Market your products by adding a coupon to offer your customers a discount." = "Продавайте товары, предлагая покупателям купоны на скидку.";
-
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Мультимедиа объект не имеет ассоциированного файла для загрузки.";
 
@@ -2143,14 +2161,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No activity this period" = "Активность за этот период отсутствует";
 
 /* Order details > customer info > billing information. This is where the address would normally display.
-   Order details > customer info > shipping details. This is where the address would normally display. */
+   Order details > customer info > shipping details. This is where the address would normally display. - Placeholder for empty address in order customer data */
 "No address specified." = "Адрес не указан.";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "Нет подключения";
-
-/* The text on the placeholder overlay when there are no coupons on the coupon management list */
-"No coupons yet" = "Купонов пока нет";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Данные недоступны";
@@ -2172,6 +2187,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Не установлена цена";
+
+/* Message displayed if there are no product variations for a product. */
+"No product variations found" = "Варианты продукта не указаны";
 
 /* Message displayed if there are no products to display in the Add Product screen */
 "No products found" = "Товаров не обнаружено";
@@ -2354,8 +2372,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "Оригинальная упаковка";
 
-/* My Store > Settings > Other app section
-   Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
+/* Generic name of non-default discount types
+   My Store > Settings > Other app section - Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Прочее";
 
 /* Display label for the product's inventory stock status */
@@ -2451,6 +2469,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's pending status */
 "Pending review" = "Ожидает проверки";
 
+/* Name of percentage discount type */
+"Percentage Discount" = "Процент скидки";
+
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
 "Phone" = "Телефон";
@@ -2541,6 +2562,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Выберите посылку";
+
+/* Title for the error screen when there is more than one extension active. */
+"Please select an extension" = "Выберите расширение";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Повторите попытку позже или свяжитесь с нами. Мы будем рады помочь!";
@@ -2822,14 +2846,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the view containing a receipt preview */
 "Receipt" = "Чек";
 
-/* Button to reload plugin data after activating the WooCommerce Payments plugin */
+/* Button to reload plugin data after activating a Card Present Payments extension */
 "Refresh After Activating" = "Перезагрузить после активации";
 
 /* Button to reload plugin data after installing the WooCommerce Payments plugin */
 "Refresh After Installing" = "Перезагрузить после установки";
 
-/* Button to reload plugin data after updating the WooCommerce Payments plugin
-   Button to reload plugin data after updating the WooCommerce Payments plugin settings */
+/* Button to reload plugin data after updating a Card Present Payments extension plugin
+   Button to reload plugin data after updating a card present payments plugin settings */
 "Refresh After Updating" = "Перезагрузить после обновления";
 
 /* The title of the button to confirm the refund. */
@@ -3121,6 +3145,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "Выбрать дату окончания";
+
+/* Button to select the active payment processor plugin */
+"Select extension in Store Admin" = "Выберите расширение в разделе администрирования магазина";
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Выбрать стиль абзацев";
@@ -3460,6 +3487,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Зачеркнутый";
 
+/* Navigates to Stripe M2 Card Reader manual */
+"Stripe M2 card reader manual" = "Руководство по работе с платёжным терминалом Stripe M2";
+
 /* Display label for subscription product type. */
 "Subscription" = "Подписка";
 
@@ -3678,6 +3708,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "That username is not allowed." = "Это имя пользователя недопустимо.";
 
+/* Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
+"The %1$@ extension cannot be in test mode for In-Person Payments. Please disable test mode." = "Расширение %1$@ нельзя использовать в тестовом режиме для очных платежей. Отключите тестовый режим.";
+
+/* Error message when a Card Present Payments extension is not activated */
+"The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "В вашем магазине версия расширения %1$@ установлена, но не активирована. Активируйте её, чтобы получать платежи при личном контакте с покупателем.";
+
+/* Error message when a Card Present Payments extension is installed but the version is not supported */
+"The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "Расширение %1$@ установлено в вашем магазине, но его необходимо обновить для активации очных платежей. Установите последнюю версию расширения.";
+
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Учетная запись Google \"%@\" не соответствует ни одной учетной записи WordPress.com";
 
@@ -3686,15 +3725,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "В URL-адресе отсутствует допустимый хост.";
-
-/* Error message when WooCommerce Payments is in test mode on a live site */
-"The WooCommerce Payments extension cannot be in test mode for In-Person Payments. Please disable test mode." = "Расширение WooCommerce Payments не может использоваться в тестовом режиме для очных платежей. Отключите тестовый режим.";
-
-/* Error message when WooCommerce Payments is not activated */
-"The WooCommerce Payments extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "В вашем магазине версия расширения WooCommerce Payments установлена, но не активирована. Активируйте её, чтобы получать платежи при личном контакте с покупателем.";
-
-/* Error message when WooCommerce Payments is installed but the version is not supported */
-"The WooCommerce Payments extension is installed on your store, but needs to be updated for In-Person Payments. Please update WooCommerce Payments to the most recent version." = "В вашем магазине установлена версия расширения WooCommerce Payments, но, чтобы получать очные платежи, её необходимо обновить. Установите последнюю версию WooCommerce Payments.";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "Не удалось удалить атрибут.";
@@ -4118,8 +4148,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the review's unspam status */
 "Unspam" = "Снять пометку «Спам»";
 
-/* Title for the error screen when the installed version of WooCommerce Payments is unsupported */
-"Unsupported WooCommerce Payments version" = "Неподдерживаемая версия WooCommerce Payments";
+/* Title for the error screen when the installed version of a Card Present Payments extension is unsupported */
+"Unsupported %1$@ version" = "Неподдерживаемая версия %1$@";
 
 /* Display label for the review's untrash status */
 "Untrash" = "Восстановить";
@@ -4260,6 +4290,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Displays the connected reader software version */
 "Version: %1$@" = "Версия %1$@";
 
+/* Action title in an in-app notification to view more details. */
+"View" = "Просмотреть";
+
 /* Cell title on the beta features screen to enable the order add-ons feature
    Title of the button on the order detail item to navigate to add-ons - Title of the button on the order details product list item to navigate to add-ons */
 "View Add-Ons" = "Просмотреть дополнения";
@@ -4358,7 +4391,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We couldn’t update your reader’s software" = "Не удалось обновить ПО вашего платёжного терминала";
 
 /* Title for the error screen when WooCommerce Payments is not supported in a specific country */
-"We don’t support In-Person Payments in %@" = "Мы не поддерживаем платежи при личном контакте с покупателем в %@";
+"We don’t support In-Person Payments in %1$@" = "Мы не поддерживаем очные платежи в %1$@";
 
 /* Title for the error screen when WooCommerce Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments in your country" = "Мы не поддерживаем платежи при личном контакте с покупателем в вашей стране";
@@ -4471,9 +4504,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "Скидки WooCommerce";
 
-/* Title for the error screen when WooCommerce Payments is in test mode on a live site */
-"WooCommerce Payments is in Test Mode" = "Расширение WooCommerce Payments работает в тестовом режиме";
-
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "Настройки WooCommerce";
 
@@ -4532,6 +4562,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Для вашей учётной записи есть по крайней мере одно просроченное требование. Чтобы возобновить очные платежи, необходимо выполнить это требование.";
+
+/* Message requesting merchants to select between available payments processors */
+"You must disable either the WooCommerce Payments or the WooCommerce Stripe Gateway extension." = "Необходимо деактивировать расширение WooCommerce Payments или WooCommerce Stripe Gateway.";
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Добавьте пароль, чтобы защитить товар";

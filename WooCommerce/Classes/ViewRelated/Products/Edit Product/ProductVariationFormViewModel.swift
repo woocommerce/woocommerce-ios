@@ -149,7 +149,7 @@ extension ProductVariationFormViewModel {
     }
 
     func canViewProductInStore() -> Bool {
-        false
+        originalProductVariation.productVariation.status == .publish && formType != .add
     }
 
     func canShareProduct() -> Bool {

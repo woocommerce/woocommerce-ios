@@ -31,9 +31,12 @@ struct HubMenuElement: View {
                     }
                     .frame(width: imageSize, height: imageSize, alignment: .center)
                     .cornerRadius(imageSize/2)
-                    .padding(.bottom, Constants.paddingBetweenElements)
+                    .padding(.top, Constants.iconTopPadding)
+
                     Text(text)
                         .bodyStyle()
+                        .padding(.top, Constants.paddingBetweenElements)
+                    Spacer()
                 }
                 .frame(width: Constants.itemSize, height: Constants.itemSize)
                 HubMenuBadge(value: badge)
@@ -62,6 +65,7 @@ struct HubMenuElement: View {
     }
 
     enum Constants {
+        static let iconTopPadding: CGFloat = 32
         static let paddingBetweenElements: CGFloat = 8
         static let itemSize: CGFloat = 160
         static let badgeSize: CGFloat = 24
@@ -72,7 +76,7 @@ struct HubMenuElement: View {
 struct HubMenuElement_Previews: PreviewProvider {
     static var previews: some View {
         HubMenuElement(image: .starOutlineImage(),
-                       imageColor: .blue,
+                       imageColor: .brand,
                        text: "Menu",
                        badge: 1,
                        onTapGesture: {})

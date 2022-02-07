@@ -43,7 +43,7 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
     }
 
     var viewTitle: String {
-        Localization.newCustomerTitle
+        Localization.customerDetailsTitle
     }
 
     var sectionTitle: String {
@@ -94,7 +94,7 @@ private extension CreateOrderAddressFormViewModel {
 
     // MARK: Constants
     enum Localization {
-        static let newCustomerTitle = NSLocalizedString("New Customer", comment: "Title for the Shipping Address Form for New Customer")
+        static let customerDetailsTitle = NSLocalizedString("Customer Details", comment: "Title for the Shipping Address Form for Customer Details")
 
         static let shippingTitle = NSLocalizedString("Shipping Address", comment: "Title for the Edit Shipping Address Form")
         static let billingTitle = NSLocalizedString("Billing Address", comment: "Title for the Edit Billing Address Form")

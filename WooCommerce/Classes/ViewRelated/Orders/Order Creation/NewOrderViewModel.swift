@@ -127,6 +127,13 @@ final class NewOrderViewModel: ObservableObject {
         orderDetails.items.isNotEmpty
     }
 
+    /// Defines if the view should be disabled.
+    /// Currently `true` while performing a network request.
+    ///
+    var disabled: Bool {
+        performingNetworkRequest
+    }
+
     /// Representation of payment data display properties
     ///
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()

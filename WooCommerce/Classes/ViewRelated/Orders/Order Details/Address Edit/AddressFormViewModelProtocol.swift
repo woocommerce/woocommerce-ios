@@ -1,5 +1,6 @@
 import Combine
 import Yosemite
+import class WordPressShared.EmailFormatValidator
 import protocol Storage.StorageManagerType
 
 /// Protocol to describe viewmodel of editable address
@@ -376,6 +377,12 @@ open class AddressFormViewModel: ObservableObject {
     ///
     func trackOnLoad() {
         // override in subclass
+    }
+
+    /// Returns `true` if the fields contains a valid email or if there is no email to validate. `False` otherwise.
+    ///
+    func validateEmail() -> Bool {
+        EmailFormatValidator.validate(string: fields.email)
     }
 }
 

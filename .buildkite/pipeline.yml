@@ -1,0 +1,88 @@
+# Nodes with values to reuse in the pipeline.
+common_params:
+  # Common plugin settings to use with the `plugins` key.
+  - &common_plugins
+    - automattic/bash-cache#v1.5.0
+    - automattic/git-s3-cache#v1.1.0:
+        bucket: "a8c-repo-mirrors"
+        repo: "woocommerce/woocommerce-ios/"
+  # Common environment values to use with the `env` key.
+  - &common_env
+    IMAGE_ID: xcode-13
+
+# This is the default pipeline – it will build and test the app
+steps:
+  #################
+  # Build the app
+  #################
+  - label: ":pipeline: Build"
+    key: "build"
+    command: ".buildkite/commands/build-for-testing.sh"
+    env: *common_env
+    plugins: *common_plugins
+    notify:
+      - github_commit_status:
+          context: "Build"
+
+  #################
+  # Create Installable Build
+  #################
+  - label: "🛠 Installable Build"
+    command: ".buildkite/commands/installable-build.sh"
+    env: *common_env
+    plugins: *common_plugins
+    if: build.pull_request.id != null
+    notify:
+      - github_commit_status:
+          context: "Installable Build"
+
+  #################
+  # Run Unit Tests
+  #################
+  - label: "🔬 Unit Tests"
+    command: ".buildkite/commands/run-unit-tests.sh"
+    depends_on: "build"
+    env: *common_env
+    plugins: *common_plugins
+    notify:
+      - github_commit_status:
+          context: "Unit Tests"
+
+  #################
+  # Lint Translations
+  #################
+  - label: "🧹 Lint Translations"
+    command: "gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot"
+    plugins:
+      - docker#v3.8.0:
+          image: "public.ecr.aws/automattic/glotpress-validator:1.0.0"
+    agents:
+      queue: "default"
+    notify:
+      - github_commit_status:
+          context: "Lint Translations"
+
+  #################
+  # UI Tests
+  #################
+  - label: "🔬 UI Tests (iPhone)"
+    command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 11' 15.0
+    depends_on: "build"
+    env: *common_env
+    plugins: *common_plugins
+    artifact_paths:
+      - "build/results/"
+    notify:
+      - github_commit_status:
+          context: "UI Tests (iPhone)"
+
+  - label: "🔬 UI Tests (iPad)"
+    command: .buildkite/commands/run-ui-tests.sh UITests "iPad Air (4th generation)" 15.0
+    depends_on: "build"
+    env: *common_env
+    plugins: *common_plugins
+    artifact_paths:
+      - "build/results/"
+    notify:
+      - github_commit_status:
+          context: "UI Tests (iPad)"

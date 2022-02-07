@@ -4,28 +4,28 @@ import XCTest
 
 class CardPresentConfigurationTests: XCTestCase {
     // MARK: - US Tests
-    func testConfigurationForUsWithStripeEnabledCanadaEnabled() throws {
+    func test_configuration_for_US_with_Stripe_enabled_Canada_enabled() throws {
         let configuration = try CardPresentPaymentsConfiguration(country: "US", stripeEnabled: true, canadaEnabled: true)
         XCTAssertEqual(configuration.currencies, [Constants.Currency.usd])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
     }
 
-    func testConfigurationForUsWithStripeEnabledCanadaDisabled() throws {
+    func test_configuration_for_US_with_Stripe_enabled_Canada_disabled() throws {
         let configuration = try CardPresentPaymentsConfiguration(country: "US", stripeEnabled: true, canadaEnabled: false)
         XCTAssertEqual(configuration.currencies, [Constants.Currency.usd])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
     }
 
-    func testConfigurationForUsWithStripeDisabledCanadaEnabled() throws {
+    func test_configuration_for_US_with_Stripe_disabled_Canada_enabled() throws {
         let configuration = try CardPresentPaymentsConfiguration(country: "US", stripeEnabled: false, canadaEnabled: true)
         XCTAssertEqual(configuration.currencies, [Constants.Currency.usd])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
     }
 
-    func testConfigurationForUsWithStripeDisabledCanadaDisabled() throws {
+    func test_configuration_for_US_with_Stripe_disabled_Canada_disabled() throws {
         let configuration = try CardPresentPaymentsConfiguration(country: "US", stripeEnabled: false, canadaEnabled: false)
         XCTAssertEqual(configuration.currencies, [Constants.Currency.usd])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay])
@@ -33,25 +33,25 @@ class CardPresentConfigurationTests: XCTestCase {
     }
 
     // MARK: - Canada Tests
-    func testConfigurationForCanadaWithStripeEnabledCanadaEnabled() throws {
+    func test_configuration_for_Canada_with_Stripe_enabled_Canada_enabled() throws {
         let configuration = try CardPresentPaymentsConfiguration(country: "CA", stripeEnabled: true, canadaEnabled: true)
         XCTAssertEqual(configuration.currencies, [Constants.Currency.cad])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent, .interacPresent])
     }
 
-    func testConfigurationForCanadaWithStripeEnabledCanadaDisabled() {
+    func test_configuration_for_Canada_with_Stripe_enabled_Canada_disabled() {
         XCTAssertThrowsError(try CardPresentPaymentsConfiguration(country: "CA", stripeEnabled: true, canadaEnabled: false))
     }
 
-    func testConfigurationForCanadaWithStripeDisabledCanadaEnabled() throws {
+    func test_configuration_for_Canada_with_Stripe_disabled_Canada_enabled() throws {
         let configuration = try CardPresentPaymentsConfiguration(country: "CA", stripeEnabled: false, canadaEnabled: true)
         XCTAssertEqual(configuration.currencies, [Constants.Currency.cad])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent, .interacPresent])
     }
 
-    func testConfigurationForCanadaWithStripeDisabledCanadaDisabled() throws {
+    func test_configuration_for_Canada_with_Stripe_disabled_Canada_disabled() throws {
         XCTAssertThrowsError(try CardPresentPaymentsConfiguration(country: "CA", stripeEnabled: false, canadaEnabled: false))
     }
 

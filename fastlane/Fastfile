@@ -423,6 +423,8 @@ platform :ios do
   #####################################################################################
   desc 'Builds and uploads an installable build'
   lane :build_and_upload_installable_build do |options|
+    ensure_sentry_installed
+
     alpha_code_signing
 
     # Get the current build version, and update it if needed
@@ -452,8 +454,6 @@ platform :ios do
       destinations: 'All-users-of-WooCommerce-Installable-Builds',
       notify_testers: false
     )
-
-    ensure_sentry_installed
 
     sentry_upload_dsym(
       auth_token: get_required_env('SENTRY_AUTH_TOKEN'),

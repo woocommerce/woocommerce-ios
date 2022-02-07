@@ -161,8 +161,8 @@ private extension OrdersRootViewController {
     ///
     func configureNavigationButtons(isOrderCreationExperimentalToggleEnabled: Bool) {
         let buttons: [UIBarButtonItem] = [
-            createSearchBarButtonItem(),
-            createAddOrderItem(isOrderCreationEnabled: isOrderCreationExperimentalToggleEnabled)
+            createAddOrderItem(isOrderCreationEnabled: isOrderCreationExperimentalToggleEnabled),
+            createSearchBarButtonItem()
         ]
         navigationItem.rightBarButtonItems = buttons
     }

@@ -1,6 +1,7 @@
 import Yosemite
 import protocol Storage.StorageManagerType
 import Combine
+import Foundation
 
 /// View model for `AddProductToOrder`.
 ///
@@ -74,6 +75,20 @@ final class AddProductToOrderViewModel: ObservableObject {
         return resultsController
     }()
 
+    /// Predicate for the results controller.
+    ///
+    private lazy var resultsPredicate: NSPredicate? = {
+        productsResultsController.predicate
+    }()
+
+    /// Current search term entered by the user.
+    /// Each update will trigger a remote product search and sync.
+    var searchTerm: String = "" {
+        didSet {
+            synchronizeSearchResults(with: searchTerm)
+        }
+    }
+
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
@@ -115,6 +130,17 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
         transitionToSyncingState()
+
+        if searchTerm.isNotEmpty {
+            searchProducts(siteID: siteID, keyword: searchTerm, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        } else {
+            syncProducts(pageNumber: pageNumber, pageSize: pageSize, reason: reason, onCompletion: onCompletion)
+        }
+    }
+
+    /// Sync all products from remote.
+    ///
+    private func syncProducts(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
         let action = ProductAction.synchronizeProducts(siteID: siteID,
                                                        pageNumber: pageNumber,
                                                        pageSize: pageSize,
@@ -136,6 +162,29 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
             self.transitionToResultsUpdatedState()
             onCompletion?(result.isSuccess)
         }
+        stores.dispatch(action)
+    }
+
+    /// Sync products matching a given keyword.
+    ///
+    private func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+        let action = ProductAction.searchProducts(siteID: siteID,
+                                                  keyword: keyword,
+                                                  pageNumber: pageNumber,
+                                                  pageSize: pageSize) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success:
+                self.updateProductsResultsController()
+            case .failure(let error):
+                DDLogError("⛔️ Error searching products during order creation: \(error)")
+            }
+
+            self.transitionToResultsUpdatedState()
+            onCompletion?(result.isSuccess)
+        }
+
         stores.dispatch(action)
     }
 
@@ -189,6 +238,22 @@ private extension AddProductToOrderViewModel {
         } catch {
             DDLogError("⛔️ Error fetching products for new order: \(error)")
         }
+    }
+
+    /// Updates the product results predicate & triggers a new sync
+    ///
+    func synchronizeSearchResults(with keyword: String) {
+        if keyword.isNotEmpty {
+            // When the search query changes, also includes the original results predicate in addition to the search keyword.
+            let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
+            let subpredicates = [resultsPredicate].compactMap { $0 } + [searchResultsPredicate]
+            productsResultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
+        } else {
+            // Resets the results to the full product list when there is no search query.
+            productsResultsController.predicate = resultsPredicate
+        }
+
+        syncingCoordinator.resynchronize()
     }
 
     /// Setup: Syncing Coordinator

@@ -144,6 +144,59 @@ class AddProductToOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(timesSynced, 1)
     }
+
+    func test_entering_search_term_performs_remote_product_search() {
+        // Given
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let searchTerm = "shirt"
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .searchProducts(_, _, _, _, _, onCompletion):
+                let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
+                self.insert(product, withSearchTerm: searchTerm)
+                onCompletion(.success(()))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.searchTerm = searchTerm
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 1)
+    }
+
+    func test_searching_products_returns_expected_results() {
+        // Given
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let product = Product.fake().copy(siteID: sampleSiteID, purchasable: true)
+        insert(product.copy(name: "T-shirt"), withSearchTerm: "shirt")
+        insert(product.copy(name: "Hoodie"), withSearchTerm: "hoodie")
+
+        // When
+        viewModel.searchTerm = "shirt"
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 1)
+        XCTAssertEqual(viewModel.productRows[0].name, "T-shirt")
+    }
+
+    func test_clearing_search_returns_full_product_list() {
+        // Given
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let product = Product.fake().copy(siteID: sampleSiteID, purchasable: true)
+        insert(product.copy(name: "T-shirt"), withSearchTerm: "shirt")
+        insert(product.copy(name: "Hoodie"), withSearchTerm: "hoodie")
+
+        // When
+        viewModel.searchTerm = "shirt"
+        XCTAssertNotEqual(viewModel.productRows.count, 2)
+
+        // Then
+        viewModel.searchTerm = ""
+        XCTAssertEqual(viewModel.productRows.count, 2)
+    }
 }
 
 // MARK: - Utils
@@ -157,6 +210,17 @@ private extension AddProductToOrderViewModelTests {
         for readOnlyProduct in readOnlyProducts {
             let product = storage.insertNewObject(ofType: StorageProduct.self)
             product.update(with: readOnlyProduct)
+        }
+    }
+
+    func insert(_ readOnlyProduct: Yosemite.Product, withSearchTerm keyword: String) {
+        insert(readOnlyProduct)
+
+        let searchResult = storage.insertNewObject(ofType: ProductSearchResults.self)
+        searchResult.keyword = keyword
+
+        if let storedProduct = storage.loadProduct(siteID: readOnlyProduct.siteID, productID: readOnlyProduct.productID) {
+            searchResult.addToProducts(storedProduct)
         }
     }
 }

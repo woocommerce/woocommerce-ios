@@ -153,7 +153,7 @@ extension ProductVariationFormViewModel {
     }
 
     func canShareProduct() -> Bool {
-        false
+        formType != .add
     }
 
     func canDeleteProduct() -> Bool {

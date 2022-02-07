@@ -12,7 +12,6 @@ echo "--- :cocoapods: Setting up Pods"
 install_cocoapods
 
 echo "--- :writing_hand: Copy Files"
-cp -v fastlane/env/project.env.example .configure-files/project.env
 mkdir -pv ~/.configure/woocommerce-ios/secrets
 cp -v fastlane/env/project.env.example ~/.configure/woocommerce-ios/secrets/project.env
 

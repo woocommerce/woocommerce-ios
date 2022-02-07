@@ -1174,6 +1174,7 @@
 		CC593A6B26EA640800EF0E04 /* PackageCreationError+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC593A6A26EA640800EF0E04 /* PackageCreationError+UI.swift */; };
 		CC69236226010946002FB669 /* LoginProloguePages.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC69236126010946002FB669 /* LoginProloguePages.swift */; };
 		CC6923AC26010D8D002FB669 /* LoginProloguePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6923AB26010D8D002FB669 /* LoginProloguePageViewController.swift */; };
+		CC770C8A27B1497700CE6ABC /* SearchHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC770C8927B1497700CE6ABC /* SearchHeader.swift */; };
 		CC77488E2719A07D0043CDD7 /* ShippingLabelAddressTopBannerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC77488D2719A07D0043CDD7 /* ShippingLabelAddressTopBannerFactoryTests.swift */; };
 		CC8413E423F5C48E00EFC277 /* stop.sh in Resources */ = {isa = PBXBuildFile; fileRef = CCFC011123E9E40B00157A78 /* stop.sh */; };
 		CC8413E523F5C49100EFC277 /* start.sh in Resources */ = {isa = PBXBuildFile; fileRef = CCFC011023E9E3F400157A78 /* start.sh */; };
@@ -2788,6 +2789,7 @@
 		CC593A6A26EA640800EF0E04 /* PackageCreationError+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PackageCreationError+UI.swift"; sourceTree = "<group>"; };
 		CC69236126010946002FB669 /* LoginProloguePages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginProloguePages.swift; sourceTree = "<group>"; };
 		CC6923AB26010D8D002FB669 /* LoginProloguePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginProloguePageViewController.swift; sourceTree = "<group>"; };
+		CC770C8927B1497700CE6ABC /* SearchHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchHeader.swift; sourceTree = "<group>"; };
 		CC77488D2719A07D0043CDD7 /* ShippingLabelAddressTopBannerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressTopBannerFactoryTests.swift; sourceTree = "<group>"; };
 		CCB366AE274518EC007D437A /* NewOrderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewOrderViewModelTests.swift; sourceTree = "<group>"; };
 		CCC284102768C18500F6CC8B /* ProductInOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInOrder.swift; sourceTree = "<group>"; };
@@ -5018,6 +5020,7 @@
 				26B3EC632745916F0075EAE6 /* BindableTextField.swift */,
 				AEACCB6C2785FF4A000D01F0 /* NavigationRow.swift */,
 				CCF87BBD279047BC00461C43 /* InfiniteScrollList.swift */,
+				CC770C8927B1497700CE6ABC /* SearchHeader.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -8367,6 +8370,7 @@
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,
 				45EF7984244F26BB00B22BA2 /* Array+IndexPath.swift in Sources */,
 				02E6B97823853D81000A36F0 /* TitleAndValueTableViewCell.swift in Sources */,
+				CC770C8A27B1497700CE6ABC /* SearchHeader.swift in Sources */,
 				02BAB02724D13A6400F8B06E /* ProductVariationFormActionsFactory.swift in Sources */,
 				45CDAFAE2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.swift in Sources */,
 				D85B8333222FABD1002168F3 /* StatusListTableViewCell.swift in Sources */,

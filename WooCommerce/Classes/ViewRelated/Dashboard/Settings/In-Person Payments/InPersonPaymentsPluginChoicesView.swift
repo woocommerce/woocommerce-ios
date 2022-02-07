@@ -12,25 +12,14 @@ struct InPersonPaymentsPluginChoicesView: View {
 
     var body: some View {
         VStack {
-            Text(CardPresentPaymentsPlugins.wcPay.pluginName)
-                .font(.callout)
-                .bold()
-                .padding(.bottom, 1)
-            Text(Localization.conjunctiveOr)
-                .font(.callout)
-                .padding(.bottom, 1)
-            Text(CardPresentPaymentsPlugins.stripe.pluginName)
-                .font(.callout).bold()
-                .padding(.bottom, isCompact ? 12 : 24)
-        }
+            ForEach(CardPresentPaymentsPlugins.allCases, id: \.self) { plugin in
+                HStack {
+                    Text("\u{2022}")
+                    Text(plugin.pluginName).font(.callout).bold()
+                }.padding(.bottom, 1)
+            }
+        }.padding(.bottom, isCompact ? 12 : 24)
     }
-}
-
-private enum Localization {
-    static let conjunctiveOr = NSLocalizedString(
-        "or",
-        comment: "A single word displayed on a line by itself inbetween the names of two plugins"
-    )
 }
 
 struct InPersonPaymentsPluginChoicesView_Previews: PreviewProvider {

@@ -526,7 +526,18 @@ private extension CardPresentPaymentStore {
     func fetchCharge(siteID: Int64, chargeID: String, completion: @escaping (Result<WCPayCharge, Error>) -> Void) {
         switch usingBackend {
         case .wcpay:
-            remote.fetchCharge(for: siteID, chargeID: chargeID, completion: completion)
+            remote.fetchCharge(for: siteID, chargeID: chargeID) { result in
+                switch result {
+                case .success(let charge):
+                    self.upsertChargeInBackground(readonlyCharge: charge)
+                    completion(.success(charge))
+                case .failure(let error):
+                    if case .noSuchChargeError(_) = WCPayChargesError(underlyingError: error) {
+                        self.deleteCharge(siteID: siteID, chargeID: chargeID)
+                    }
+                    completion(.failure(error))
+                }
+            }
         case .stripe:
             break; /// not implemented
         }
@@ -550,6 +561,45 @@ private extension CardPresentPaymentStore {
         }
 
         storage.deleteObject(storageAccount)
+        storage.saveIfNeeded()
+    }
+
+    func upsertChargeInBackground(readonlyCharge: WCPayCharge) {
+        let storage = storageManager.viewStorage
+        let storageWCPayCharge = storage.loadWCPayCharge(siteID: readonlyCharge.siteID, chargeID: readonlyCharge.id) ??
+        storage.insertNewObject(ofType: Storage.WCPayCharge.self)
+
+        switch readonlyCharge.paymentMethodDetails {
+        case .cardPresent(let details):
+            let storageCardPresentDetails = storageWCPayCharge.cardPresentDetails ??
+            storage.insertNewObject(ofType: Storage.WCPayCardPresentPaymentDetails.self)
+            let storageReceiptDetails = storageCardPresentDetails.receipt ?? storage.insertNewObject(ofType: Storage.WCPayCardPresentReceiptDetails.self)
+            storageCardPresentDetails.update(with: details)
+            storageReceiptDetails.update(with: details.receipt)
+            storageCardPresentDetails.receipt = storageReceiptDetails
+            storageWCPayCharge.cardPresentDetails = storageCardPresentDetails
+            storageWCPayCharge.cardDetails = nil
+        case .card(let details):
+            let storageCardDetails = storageWCPayCharge.cardDetails ?? storage.insertNewObject(ofType: Storage.WCPayCardPaymentDetails.self)
+            storageCardDetails.update(with: details)
+            storageWCPayCharge.cardDetails = storageCardDetails
+            storageWCPayCharge.cardPresentDetails = nil
+        case .unknown:
+            storageWCPayCharge.cardDetails = nil
+            storageWCPayCharge.cardPresentDetails = nil
+            break
+        }
+
+        storageWCPayCharge.update(with: readonlyCharge)
+    }
+
+    func deleteCharge(siteID: Int64, chargeID: String) {
+        let storage = storageManager.viewStorage
+        guard let charge = storage.loadWCPayCharge(siteID: siteID, chargeID: chargeID) else {
+            return
+        }
+
+        storage.deleteObject(charge)
         storage.saveIfNeeded()
     }
 }
@@ -616,3 +666,49 @@ public protocol CardReaderCapableRemote {
 
 extension WCPayRemote: CardReaderCapableRemote {}
 extension StripeRemote: CardReaderCapableRemote {}
+
+// MARK: - WCPayChargesError
+public enum WCPayChargesError: Error, LocalizedError {
+    case noSuchChargeError(message: String)
+    case otherError(error: AnyError)
+
+    init(underlyingError error: Error) {
+        guard case let DotcomError.unknown(code, message) = error,
+        let message = message else {
+            self = .otherError(error: error.toAnyError)
+            return
+        }
+
+        /// See if we recognize this DotcomError code
+        ///
+        self = ErrorCode(rawValue: code)?.error(message: message) ?? .otherError(error: error.toAnyError)
+    }
+
+    enum ErrorCode: String {
+        case getChargeError = "wcpay_get_charge"
+        case unknown
+
+        func error(message: String) -> WCPayChargesError? {
+            switch self {
+            case .getChargeError:
+                guard message.starts(with: "Error: No such charge") else {
+                    return nil
+                }
+                return .noSuchChargeError(message: message)
+            default:
+                return nil
+            }
+        }
+    }
+
+    public var errorDescription: String? {
+        switch self {
+        case .noSuchChargeError(let message):
+            /// Return the message directly from the store
+            /// "Error: No such charge: 'ch_3KMVapErrorERROR'"
+            return message
+        case .otherError(let error):
+            return error.localizedDescription
+        }
+    }
+}

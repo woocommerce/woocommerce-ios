@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 /// Maps Stripe SDK specific errors to domain errors:
 /// the mapping is done according to the error codes documented here:
@@ -36,6 +37,8 @@ extension UnderlyingError {
             self = .bluetoothScanTimedOut
         case ErrorCode.Code.bluetoothLowEnergyUnsupported.rawValue:
             self = .bluetoothLowEnergyUnsupported
+        case ErrorCode.Code.bluetoothConnectionFailedBatteryCriticallyLow.rawValue:
+            self = .bluetoothConnectionFailedBatteryCriticallyLow
         case ErrorCode.Code.readerSoftwareUpdateFailedBatteryLow.rawValue:
             self = .readerSoftwareUpdateFailedBatteryLow
         case ErrorCode.Code.readerSoftwareUpdateFailedInterrupted.rawValue:
@@ -91,3 +94,4 @@ extension UnderlyingError {
         }
     }
 }
+#endif

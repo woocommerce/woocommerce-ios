@@ -471,7 +471,7 @@ private extension StoreStatsAndTopPerformersViewController {
 //
 private extension StoreStatsAndTopPerformersViewController {
     enum TabStrip {
-        static let buttonLeftRightMargin: CGFloat   = 14.0
+        static let buttonLeftRightMargin: CGFloat   = 16.0
         static let selectedBarHeight: CGFloat       = 3.0
     }
 

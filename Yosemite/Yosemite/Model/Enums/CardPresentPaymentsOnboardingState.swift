@@ -26,16 +26,16 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// CPP plugin is installed on the store but is not activated.
     ///
-    case pluginNotActivated
+    case pluginNotActivated(plugin: CardPresentPaymentsPlugins)
 
     /// CPP plugin is installed and activated but requires to be setup first.
     ///
-    case pluginSetupNotCompleted
+    case pluginSetupNotCompleted(plugin: CardPresentPaymentsPlugins)
 
-    /// This is a bit special case: WCPay is set to "dev mode" but the connected Stripe account is in live mode.
+    /// This is a bit special case: The plugin is set to test mode but the connected Stripe account is a real (live) account.
     /// Connecting to a reader or accepting payments is not supported in this state.
     ///
-    case pluginInTestModeWithLiveStripeAccount
+    case pluginInTestModeWithLiveStripeAccount(plugin: CardPresentPaymentsPlugins)
 
     /// The connected Stripe account has not been reviewed by Stripe yet. This is a temporary state and the user needs to wait.
     ///
@@ -114,21 +114,14 @@ public enum CardPresentPaymentsPlugins: Equatable {
         }
     }
 
+    /// Changing values here? You'll need to also update `CardPresentPaymentsOnboardingUseCaseTests`
+    ///
     public var minimumSupportedPluginVersion: String {
         switch self {
         case .wcPay:
             return "3.2.1"
         case .stripe:
-            return "5.9.0"
-        }
-    }
-
-    public var supportedCountryCodes: [String] {
-        switch self {
-        case .wcPay:
-            return ["US"]
-        case .stripe:
-            return ["US"]
+            return "6.1.0"
         }
     }
 }

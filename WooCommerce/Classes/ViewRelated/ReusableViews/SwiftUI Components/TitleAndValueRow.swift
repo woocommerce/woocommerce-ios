@@ -18,8 +18,11 @@ struct TitleAndValueRow: View {
                 AdaptiveStack(horizontalAlignment: .leading) {
                     Text(title)
                         .style(bold: bold)
+                        .multilineTextAlignment(.leading)
+
                     Text(value.text)
                         .style(for: value, bold: bold)
+                        .multilineTextAlignment(.trailing)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .padding(.vertical, Constants.verticalPadding)
                 }
@@ -99,6 +102,13 @@ struct TitleAndValueRow_Previews: PreviewProvider {
         TitleAndValueRow(title: "Package selected", value: .placeholder("Small package 2"), selectable: false, action: { })
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("Row Not Selectable")
+
+        TitleAndValueRow(title: "This is a really long title which will take multiple lines",
+                         value: .placeholder("This is a really long value which will take multiple lines"),
+                         selectable: false,
+                         action: { })
+            .previewLayout(.fixed(width: 375, height: 150))
+            .previewDisplayName("Long title and value")
 
         TitleAndValueRow(title: "Package selected", value: .placeholder("Small"), selectable: true, action: { })
             .environment(\.sizeCategory, .accessibilityExtraLarge)

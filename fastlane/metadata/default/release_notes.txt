@@ -1,3 +1,3 @@
-Sometimes you just need to create a quick order to take a payment from your customer for a transaction you’re doing in-person, like at a trade show. We added a new option for you to create Simple Payments! Head over to the Orders tab to make a quick order to record that transaction. We are working hard on full order creation as well – and you’ll see that later this year.
+You’ll notice a new tab called “Menu” in this release. We’ve moved store settings, switching between different stores, and viewing WooCommerce Admin to that screen. More functionality will appear there over the next couple of months!
 
-We also fixed a bug with the site visitors count not showing up on the Today tab on your store’s dashboard. Thanks for letting us know!
+This release also includes a fix for the product screen where the product’s name would revert back to the previous one if you uploaded an image. Thank you for reporting bugs – we are listening!

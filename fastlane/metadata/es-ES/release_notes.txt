@@ -1,3 +1,3 @@
-A veces, solo debes crear un pedido rápido para recibir un pago de un cliente por una transacción que se realiza en persona, como en una feria comercial. Hemos añadido una nueva opción para que puedas crear pagos simples. Para hacer un pedido rápido y registrar esa transacción, dirígete a la pestaña "Pedidos". Además, estamos trabajando intensamente en la creación de pedidos completos (lo podrás ver a finales de este año).
+En esta versión, verás que hay una pestaña nueva llamada “Menú”. En esa pestaña encontrarás la configuración de la tienda, el cambio entre tiendas y la visualización de WooCommerce Admin. Además, en los próximos meses se incorporarán nuevas funcionalidades.
 
-También hemos corregido un error por el que el recuento de visitantes del sitio no aparecía en la pestaña "Hoy" del escritorio de la tienda. ¡Gracias por tu opinión!
+En esta versión también se ha corregido un error de la pantalla de productos por el que el nombre del producto volvía al anterior cuando se cargaba una imagen. Gracias por notificar errores, ¡os tenemos en cuenta!

@@ -82,5 +82,7 @@ private extension AddOrderCoordinator {
         let viewController = NewOrderHostingController(viewModel: viewModel)
         viewController.hidesBottomBarWhenPushed = true
         navigationController.pushViewController(viewController, animated: true)
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
     }
 }

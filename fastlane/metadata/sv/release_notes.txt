@@ -1,3 +1,3 @@
-Ibland kan det hända att du behöver skapa en snabb beställning för att ta emot en betalning från en kund för en transaktion som du gör personligen, exempelvis på en mässa. Vi har lagt till ett nytt alternativ som du kan använda för att skapa enkla betalningar! Gå till fliken Beställningar för att göra en snabb beställning och registrera transaktionen. Vi arbetar även hårt på möjligheten att skapa fullständiga beställningar – det kommer senare under året.
+Du kommer att märka att den här versionen innehåller en ny flik med namnet "Meny". Vi har flyttat butiksinställningarna, möjligheten att växla mellan olika butiker och visning av WooCommerce Admin till den skärmen. Ytterligare funktioner kommer att läggas till där under de kommande månaderna!
 
-Vi har också åtgärdat ett fel som gjorde att antalet webbplatsbesökare inte visades på fliken Idag i din butiks adminpanel. Tack för att du berättar!
+Den här versionen inkluderar också en korrigering för produktskärmen, där ett fel tidigare gjorde att produktens namn återgick till det föregående namnet om du laddade upp en bild. Tack för att ni rapporterar buggar – vi lyssnar!

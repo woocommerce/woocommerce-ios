@@ -204,6 +204,41 @@ class CardReaderConnectionControllerTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func test_user_can_cancel_search_after_connection_error_due_to_low_battery() {
+        // Given
+        let expectation = self.expectation(description: #function)
+
+        let discoveredReaders = [MockCardReader.bbposChipper2XBTWithCriticallyLowBattery()]
+
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [],
+            discoveredReaders: discoveredReaders,
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+        let mockPresentingViewController = UIViewController()
+        let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
+        let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelSearchingAfterConnectionFailure)
+
+        let controller = CardReaderConnectionController(
+            forSiteID: sampleSiteID,
+            knownReaderProvider: mockKnownReaderProvider,
+            alertsProvider: mockAlerts
+        )
+
+        // When
+        controller.searchAndConnect(from: mockPresentingViewController) { result in
+            XCTAssertTrue(result.isSuccess)
+            if case .success(let connected) = result {
+                XCTAssertFalse(connected)
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     func test_finding_multiple_readers_presents_list_to_user_and_choosing_one_calls_completion_with_success_true() {
         // Given
         let expectation = self.expectation(description: #function)

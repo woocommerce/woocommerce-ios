@@ -38,7 +38,9 @@ final class DashboardViewController: UIViewController {
     ///
     private lazy var innerStackView: UIStackView = {
         let view = UIStackView()
-        view.layoutMargins = UIEdgeInsets(top: 0, left: Constants.horizontalMargin, bottom: 0, right: Constants.horizontalMargin)
+        let horizontalMargin = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) ?
+        Constants.horizontalMargin: Constants.legacyHorizontalMargin
+        view.layoutMargins = UIEdgeInsets(top: 0, left: horizontalMargin, bottom: 0, right: horizontalMargin)
         view.isLayoutMarginsRelativeArrangement = true
         return view
     }()
@@ -67,7 +69,7 @@ final class DashboardViewController: UIViewController {
                                               },
                                               onContactSupportButtonPressed: { [weak self] in
                                                 guard let self = self else { return }
-                                                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+                                                ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
                                               })
     }()
 
@@ -169,6 +171,9 @@ private extension DashboardViewController {
 
     func configureSubtitle() {
         storeNameLabel.text = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) {
+            storeNameLabel.textColor = Constants.storeNameTextColor
+        }
         innerStackView.addArrangedSubview(storeNameLabel)
         headerStackView.addArrangedSubview(innerStackView)
     }
@@ -478,7 +483,9 @@ private extension DashboardViewController {
 
     enum Constants {
         static let bannerBottomMargin = CGFloat(8)
-        static let horizontalMargin = CGFloat(20)
+        static let horizontalMargin = CGFloat(16)
+        static let legacyHorizontalMargin = CGFloat(20)
+        static let storeNameTextColor: UIColor = .secondaryLabel
         static let backgroundColor: UIColor = .systemBackground
         static let legacyBackgroundColor: UIColor = .listBackground
         static let collapsedNavigationBarHeight = CGFloat(44)

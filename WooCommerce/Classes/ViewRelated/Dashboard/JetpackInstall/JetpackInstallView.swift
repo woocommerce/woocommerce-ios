@@ -6,7 +6,7 @@ final class JetpackInstallHostingController: UIHostingController<JetpackInstallV
     init(siteID: Int64, siteURL: String, siteAdminURL: String) {
         super.init(rootView: JetpackInstallView(siteID: siteID, siteURL: siteURL, siteAdminURL: siteAdminURL))
         rootView.supportAction = {
-            ZendeskManager.shared.showNewRequestIfPossible(from: self)
+            ZendeskProvider.shared.showNewRequestIfPossible(from: self)
         }
     }
 

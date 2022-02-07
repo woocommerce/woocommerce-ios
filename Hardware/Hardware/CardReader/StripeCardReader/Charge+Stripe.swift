@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 extension Charge {
@@ -32,3 +33,4 @@ protocol StripeCharge {
 
 
 extension StripeTerminal.Charge: StripeCharge { }
+#endif

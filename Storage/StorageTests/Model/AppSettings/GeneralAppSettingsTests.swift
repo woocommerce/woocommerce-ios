@@ -63,6 +63,7 @@ final class GeneralAppSettingsTests: XCTestCase {
                                                   isViewAddOnsSwitchEnabled: true,
                                                   isOrderCreationSwitchEnabled: true,
                                                   isStripeInPersonPaymentsSwitchEnabled: true,
+                                                  isCanadaInPersonPaymentsSwitchEnabled: true,
                                                   isProductSKUInputScannerSwitchEnabled: true,
                                                   knownCardReaders: readers,
                                                   lastEligibilityErrorInfo: eligibilityInfo,
@@ -84,6 +85,7 @@ final class GeneralAppSettingsTests: XCTestCase {
         assertEqual(newSettings.isViewAddOnsSwitchEnabled, false)
         assertEqual(newSettings.isOrderCreationSwitchEnabled, true)
         assertEqual(newSettings.isStripeInPersonPaymentsSwitchEnabled, true)
+        assertEqual(newSettings.isCanadaInPersonPaymentsSwitchEnabled, true)
         assertEqual(newSettings.isProductSKUInputScannerSwitchEnabled, true)
         assertEqual(newSettings.lastJetpackBenefitsBannerDismissedTime, jetpackBannerDismissedDate)
     }
@@ -95,6 +97,7 @@ private extension GeneralAppSettingsTests {
                                   isViewAddOnsSwitchEnabled: Bool = false,
                                   isOrderCreationSwitchEnabled: Bool = false,
                                   isStripeInPersonPaymentsSwitchEnabled: Bool = false,
+                                  isCanadaInPersonPaymentsSwitchEnabled: Bool = false,
                                   isProductSKUInputScannerSwitchEnabled: Bool = false,
                                   knownCardReaders: [String] = [],
                                   lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
@@ -104,6 +107,7 @@ private extension GeneralAppSettingsTests {
                            isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
                            isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
                            isStripeInPersonPaymentsSwitchEnabled: isStripeInPersonPaymentsSwitchEnabled,
+                           isCanadaInPersonPaymentsSwitchEnabled: isCanadaInPersonPaymentsSwitchEnabled,
                            isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
                            knownCardReaders: knownCardReaders,
                            lastEligibilityErrorInfo: lastEligibilityErrorInfo,

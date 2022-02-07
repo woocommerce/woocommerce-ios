@@ -1,3 +1,4 @@
+import Combine
 import Photos
 import XCTest
 @testable import WooCommerce
@@ -17,6 +18,9 @@ extension ProductImageStatus: Equatable {
 }
 
 final class ProductImageActionHandlerTests: XCTestCase {
+    private var productImageStatusesSubscription: AnyCancellable?
+    private var assetUploadSubscription: AnyCancellable?
+
     func testUploadingMediaSuccessfully() {
         let mockMedia = createMockMedia()
         let mockUploadedProductImage = ProductImage(imageID: mockMedia.mediaID,
@@ -50,7 +54,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         waitForStatusUpdates.expectedFulfillmentCount = 1
 
         var observedProductImageStatusChanges: [[ProductImageStatus]] = []
-        productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
             XCTAssertTrue(Thread.current.isMainThread)
             observedProductImageStatusChanges.append(productImageStatuses)
             if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
@@ -59,7 +63,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         }
 
         let waitForAssetUpload = self.expectation(description: "Wait for asset upload callback from image upload")
-        productImageActionHandler.addAssetUploadObserver(self) { (asset, productImage) in
+        assetUploadSubscription = productImageActionHandler.addAssetUploadObserver(self) { (asset, productImage) in
             XCTAssertTrue(Thread.current.isMainThread)
             XCTAssertEqual(asset, mockAsset)
             XCTAssertEqual(productImage, mockUploadedProductImage)
@@ -101,7 +105,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         expectation.expectedFulfillmentCount = 1
 
         var observedProductImageStatusChanges: [[ProductImageStatus]] = []
-        productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
             XCTAssertTrue(Thread.current.isMainThread)
             observedProductImageStatusChanges.append(productImageStatuses)
             if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
@@ -139,7 +143,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         expectation.expectedFulfillmentCount = 1
 
         var observedProductImageStatusChanges: [[ProductImageStatus]] = []
-        productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
             XCTAssertTrue(Thread.current.isMainThread)
             observedProductImageStatusChanges.append(productImageStatuses)
             if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
@@ -194,7 +198,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         expectation.expectedFulfillmentCount = 1
 
         var observedProductImageStatusChanges: [[ProductImageStatus]] = []
-        productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
             XCTAssertTrue(Thread.current.isMainThread)
             observedProductImageStatusChanges.append(productImageStatuses)
             if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {

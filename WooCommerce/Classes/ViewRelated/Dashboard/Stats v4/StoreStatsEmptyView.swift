@@ -1,3 +1,4 @@
+import Experiments
 import UIKit
 
 final class StoreStatsEmptyView: UIView {
@@ -27,7 +28,8 @@ final class StoreStatsEmptyView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
 
         let emptyView = UIView(frame: .zero)
-        emptyView.backgroundColor = .systemColor(.secondarySystemBackground)
+        emptyView.backgroundColor = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) ?
+            .systemColor(.secondarySystemBackground): .systemColor(.systemGroupedBackground)
         emptyView.layer.cornerRadius = 2.0
         emptyView.translatesAutoresizingMaskIntoConstraints = false
 

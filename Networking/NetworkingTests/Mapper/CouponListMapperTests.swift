@@ -11,7 +11,7 @@ class CouponListMapperTests: XCTestCase {
     ///
     func test_CouponsList_map_parses_all_coupons_in_response() throws {
         let coupons = try mapLoadAllCouponsResponse()
-        XCTAssertEqual(coupons.count, 3)
+        XCTAssertEqual(coupons.count, 4)
     }
 
     /// Verifies that the `siteID` is added in the mapper, to all results, because it's not provided by the API endpoint

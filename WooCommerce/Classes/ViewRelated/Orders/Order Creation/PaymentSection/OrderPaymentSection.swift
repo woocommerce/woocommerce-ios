@@ -39,7 +39,7 @@ private extension OrderPaymentSection {
         static let payment = NSLocalizedString("Payment", comment: "Title text of the section that shows Payment details when creating a new order")
         static let productsTotal = NSLocalizedString("Products Total", comment: "Label for the row showing the total cost of products in the order")
         static let orderTotal = NSLocalizedString("Order Total", comment: "Label for the the row showing the total cost of the order")
-        static let taxesInfo = NSLocalizedString("Total excluding taxes. Taxes will be automatically calculated based on your store settings.",
+        static let taxesInfo = NSLocalizedString("Taxes will be automatically calculated based on your store settings.",
                                                  comment: "Information about taxes and the order total when creating a new order")
     }
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-01-05 15:45:12+0000 */
+/* Translation-Revision-Date: 2022-02-01 21:54:03+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -21,6 +21,9 @@
 /* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld من الخيارات)";
 
+/* Displays a date range for a stats interval */
+"%1$@ - %2$@" = "‎%1$@-%2$@‎";
+
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
 "%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (خاص)";
 
@@ -37,6 +40,9 @@
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ متوفر في المخزون";
+
+/* Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
+"%1$@ is in Test Mode" = "%1$@ في وضع الاختبار";
 
 /* Review title. Reads as {Review author} left a review */
 "%1$@ left a review" = "تَرَكَ %1$@ مراجعة";
@@ -65,7 +71,8 @@
 /* Card reader battery level as an integer percentage */
 "%1$@%% Battery" = "بطارية قدرها %1$@%%";
 
-/* Displays a date range for a stats interval */
+/* Displays a date range for a stats interval
+   Displays a date range for a stats interval in the legacy version */
 "%1$@-%2$@" = "‎%1$@-%2$@‎";
 
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
@@ -92,10 +99,12 @@
 /* Number of rates selected in Shipping Labels > Carrier and Rates */
 "%1$d rates selected" = "تم تحديد ⁦%1$d⁩ من الأسعار";
 
-/* Format for the variations detail row in singular form. Reads, `1 variation` */
+/* Format for the variations detail row in singular form. Reads, `1 variation`
+   Label about one product variation shown on Products tab. Reads, `1 variation` */
 "%1$ld variation" = "%1$ld مجموعة";
 
-/* Format for the variations detail row in plural form. Reads, `2 variations` */
+/* Format for the variations detail row in plural form. Reads, `2 variations`
+   Label about number of variations shown on Products tab. Reads, `2 variations` */
 "%1$ld variations" = "%1$ld من المجموعات";
 
 /* 1 Item */
@@ -154,11 +163,13 @@
 /* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
 "%ld upsell products" = "%ld من المنتجات الموصى بها";
 
-/* Label about one product variation shown on Products tab */
-"%ld variant" = "%ld من المتغيرات";
+/* Label about one product variation shown on Products tab
+   Label for one product variation when showing details about a variable product */
+"%ld variation" = "%ld مجموعة";
 
-/* Label about number of variations shown on Products tab */
-"%ld variants" = "%ld من المتغيرات";
+/* Label about number of variations shown on Products tab
+   Label for multiple product variations when showing details about a variable product */
+"%ld variations" = "%ld من المجموعات";
 
 /* Product title in Products list when there is no title */
 "(No Title)" = "(بدون عنوان)";
@@ -235,19 +246,26 @@
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "إضافة خيارات";
 
+/* Details section title in the Edit Address Form */
+"ADDRESS" = "العنوان";
+
 /* About this app (information page title) */
 "About" = "نبذة عن";
 
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "حول التطبيق";
 
-/* Title for the error screen when WooCommerce Payments is installed but not activated */
-"Activate WooCommerce Payments" = "تفعيل مدفوعات WooCommerce";
+/* Title for the error screen when a Card Present Payments extension is installed but not activated */
+"Activate %1$@" = "تفعيل %1$@";
+
+/* Action button to activate Jetpack on WP-Admin instead of on app */
+"Activate Jetpack in WP-Admin" = "تفعيل Jetpack في مسؤول ووردبريس";
 
 /* Name of the activation Jetpack plugin step */
 "Activating" = "جاري التفعيل";
 
-/* Application's Active State */
+/* Application's Active State
+   Status of coupons that are active */
 "Active" = "نشط";
 
 /* Title for table view section of active plugins */
@@ -269,6 +287,9 @@
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "إضافة فئة";
+
+/* Title for the action button to add coupon on the coupon list screen. */
+"Add Coupon" = "إضافة قسيمة";
 
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "إضافة ملحوظة العميل";
@@ -318,9 +339,6 @@
 /* Placeholder in Shipping Label form for the Payment Method row. */
 "Add a new credit card" = "إضافة بطاقة ائتمان جديدة";
 
-/* Navigates to a screen to create a full manual order */
-"Add a new order" = "إضافة طلب جديد";
-
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
 "Add a note" = "إضافة ملاحظة";
@@ -345,6 +363,9 @@
 
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "إضافة بطاقة ائتمان";
+
+/* Title text of the button that adds a customer when creating a new order */
+"Add customer" = "إضافة عميل";
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "إضافة كل الخيارات واضغط على مفتاح enter";
@@ -432,6 +453,9 @@
 /* Display label for the product's inventory backorders setting option */
 "Allow" = "سماح";
 
+/* Title of alert that links to settings for camera access. */
+"Allow camera access" = "السماح بالوصول إلى الكاميرا";
+
 /* Subtitle of user profiles as part of Jetpack benefits. */
 "Allow multiple users to access WooCommerce Mobile." = "اسمح لعدة مستخدمين بالوصول إلى تطبيق WooCommerce للهاتف المحمول.";
 
@@ -513,6 +537,9 @@
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "هل أنت متأكد من رغبتك في تسجيل الخروج من الحساب %@؟";
 
+/* Alert message to confirm a user meant to mark all reviews as read. */
+"Are you sure you want to mark all reviews as read?" = "هل أنت متأكد من رغبتك في وسم جميع المراجعات كمقروءة؟";
+
 /* Confirmation text before removing an attribute from a variation. */
 "Are you sure you want to remove this attribute?" = "هل أنت متأكد من رغبتك في إزالة هذه السمة؟";
 
@@ -561,7 +588,7 @@
 /* Accessibility announcement message when device goes back online */
 "Back online" = "الاتصال بالإنترنت مرة أخرى";
 
-/* Button to dismiss modal overlay. Presented to users after a payment has been successfully collected
+/* Button to dismiss modal overlay and go back to the order after a sucessful payment
    Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "Back to Order" = "الرجوع إلى الطلب";
 
@@ -582,7 +609,7 @@
 "Bar number %i, %@, " = "رقم الشريط %1$i, %2$@, ";
 
 /* Section header title for billing address in billing information
-   Title for the Edit Billing Address Form */
+   Title for the Billing Address section in order customer data - Title for the Edit Billing Address Form */
 "Billing Address" = "عنوان الفوترة";
 
 /* Billing Information view Title */
@@ -596,6 +623,9 @@
 
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "عريض غامق";
+
+/* The description on the placeholder overlay when there are no coupons on the coupon list screen. */
+"Boost your business by sending customers special offers and discounts." = "قم بتعزيز أعمالك عن طريق إرسال عروض وخصومات خاصة إلى العملاء.";
 
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "صندوق";
@@ -625,7 +655,7 @@
 "Can Not Request Link" = "يتعذر طلب رابط";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "إلغاء";
 
 /* Display label for cancelled order status. */
@@ -654,9 +684,6 @@
 
 /* Card method title on the select payment method screen for simple payments */
 "Card" = "بطاقة";
-
-/* Navigates to Card Reader manual */
-"Card reader manual" = "دليل قارئ البطاقة";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "شركة النقل وأسعارها";
@@ -705,6 +732,9 @@
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "التحقق من بريدك الإلكتروني!";
 
+/* Navigates to Chipper Card Reader manual */
+"Chipper 2X card reader manual" = "دليل قارئ بطاقة Chipper 2X";
+
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "اختيار مقاس الورقة";
 
@@ -738,7 +768,7 @@
 "Clear all" = "مسح الكل";
 
 /* Text for the close button in the Add Product screen
-   Text for the close button in the Edit Address Form - Title of the Close action on the Jetpack Install view */
+   Text for the close button in the Edit Address Form - Text for the close button in the Product screen - Title of the Close action on the Jetpack Install view */
 "Close" = "إغلاق";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
@@ -817,8 +847,8 @@
 /* Contact Email title */
 "Contact Email" = "البريد الإلكتروني لجهة الاتصال";
 
-/* Contact Support title
-   Text for the button to contact support from the store picker error screen - The title of the button to contact support in the Error Loading Data banner */
+/* Action button to contact support when Jetpack install fails
+   Contact Support title - Text for the button to contact support from the store picker error screen - The title of the button to contact support in the Error Loading Data banner */
 "Contact Support" = "اتصل بالدعم";
 
 /* Contact WooComerce Payments Support title */
@@ -840,6 +870,9 @@
    The button title text when there is a next step for logging in or signing up. - Title of continue button - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
 "Continue" = "المتابعة";
 
+/* Button to dismiss modal overlay and go back to the orders list after a sucessful payment */
+"Continue To Orders" = "المتابعة إلى الطلبات";
+
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "المتابعة باستخدام ووردبريس.كوم";
 
@@ -854,6 +887,9 @@
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "المتابعة باستخدام Apple";
+
+/* Conversion stat label on dashboard. */
+"Conversion" = "تحويل";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "نسخ";
@@ -903,6 +939,10 @@
 
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "البلد الذي تم تصنيع المنتج فيه أو تجميعه";
+
+/* Coupon management coupon list screen title
+   Title of the Coupons menu in the hub menu */
+"Coupons" = "القسائم";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "قائمة تصحيح الأعطال";
@@ -981,7 +1021,7 @@
 "Custom forms require a 10-digit phone number" = "تتطلب النماذج الجمركية رقم هاتف مكوَّنًا من 10 أرقام";
 
 /* Customer info section title
-   Customer info section title in Review Order screen */
+   Customer info section title in Review Order screen - Title text of the section that shows Customer details when creating a new order */
 "Customer" = "العميل";
 
 /* Customer note row title
@@ -1043,9 +1083,6 @@
    Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "الوصف";
 
-/* Screen title: Details Order number. Parameters: %1$@ - order number */
-"Details Order #%1$@" = "تفاصيل الطلب رقم %1$@";
-
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "تحديد وضع المنتجات في الكتالوج. كلما انخفضت قيمة العدد، سيكون العنصر الموجود في قائمة المنتجات أعلى. يمكنك أيضًا استخدام قيم سالبة";
 
@@ -1084,7 +1121,7 @@
 "Do not allow" = "لا تسمح بذلك";
 
 /* Dialog title that displays the name of a found card reader */
-"Do you want to connect to reader %@?" = "هل ترغب في الربط بالقارئ %@؟";
+"Do you want to connect to reader %1$@?" = "هل ترغب في الربط بالقارئ %1$@؟";
 
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "هل تريد نقل هذا المنتج إلى سلة المهملات؟";
@@ -1166,8 +1203,8 @@
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "حدِّد منتجاتك التي تحتوي على أكواد مميزة بسهولة.";
 
-/* Button to edit an order status on the New Order screen
-   Title text of the button that edits a note when creating a simple payment */
+/* Button to edit a customer on the New Order screen
+   Button to edit an order status on the New Order screen - Title text of the button that edits a note when creating a simple payment */
 "Edit" = "تحرير";
 
 /* Action to edit the address in Shipping Label Suggested screen */
@@ -1318,6 +1355,9 @@
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "ظرف";
 
+/* Title for the error alert when fetching system status report fails */
+"Error fetching report" = "حدث خطأ في أثناء إحضاء التقرير";
+
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "حدث خطأ في أثناء العثور على العنوان في خرائط Apple";
 
@@ -1327,9 +1367,15 @@
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "حدث خطأ في أثناء شراء الملصق";
 
+/* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
+"Everyone loves a deal" = "يحب الجميع الصفقات";
+
 /* Experimental features navigation title
    Navigates to experimental features screen */
 "Experimental Features" = "الميزات التجريبية";
+
+/* Status of coupons that are expired */
+"Expired" = "منتهي الصلاحية";
 
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "منتج خارجي";
@@ -1360,6 +1406,9 @@
 
 /* Fees label for payment view */
 "Fees" = "الرسوم";
+
+/* Title on the refund screen that lists the fees total cost */
+"Fees Refund" = "استرداد الرسوم";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -1416,6 +1465,12 @@
 
 /* Text field name in Edit Address Form */
 "First name" = "الاسم الأول";
+
+/* Name of fixed cart discount type */
+"Fixed Cart Discount" = "خصم ثابت لعربة التسوق";
+
+/* Name of fixed product discount type */
+"Fixed Product Discount" = "خصم ثابت للمنتجات";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new blogs." = "تابع مواقعك المفضَّلة واكتشف مدوّنات جديدة.";
@@ -1575,11 +1630,11 @@
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "كيف يمكننا تحسين ذلك؟";
 
-/* Navigation bar title of hub menu view */
-"Hub Menu" = "قائمة المركز";
-
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "يعجبني هذا";
+
+/* Cell title on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
+"IPP with Stripe extension" = "إضافة IPP with Stripe";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "العناصر المراد تنفيذها";
@@ -1678,6 +1733,9 @@
    Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
 "Install Jetpack" = "تنصيب Jetpack";
 
+/* Action button to install Jetpack on WP-Admin instead of on app */
+"Install Jetpack in WP-Admin" = "تثبيت Jetpack في مسؤول ووردبريس";
+
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "تثبيت مدفوعات WooCommerce";
 
@@ -1765,6 +1823,9 @@
 
 /* Error message for missing value in Weight row in Customs screen of Shipping Label flow */
 "Item weight must be larger than 0" = "يجب أن يزيد وزن العنصر عن 0";
+
+/* Description for Top Performers right column header */
+"Items Sold" = "العناصر المباعة";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack هو إضافة مجانية على ووردبريس تربط متجرك بالأدوات اللازمة لمنحك أفضل تجربة على الهاتف المحمول، بما في ذلك تنبيهات الدفع والإحصاءات.";
@@ -1953,12 +2014,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "النطاق المعيّن";
 
-/* Accessibility label for the Mark All Reviews as Read Button */
-"Mark All as Read" = "وسم الكل كمقروء";
-
 /* Action button on Review Order screen
    Fulfill Order Action Button */
 "Mark Order Complete" = "وضع علامة مكتمل على الطلب";
+
+/* Alert button title - confirms and marks all reviews as read */
+"Mark all" = "وسم الجميع";
+
+/* Title of Alert which asks user for confirmation before marking all reviews as read. */
+"Mark all as read" = "وسم الكل كمقروء";
+
+/* Option to mark all reviews as read from the action sheet in Reviews screen. */
+"Mark all reviews as read" = "وسم جميع المراجعات كمقروءة";
 
 /* Alert button when selecting the cash payment method for simple payments */
 "Mark as Paid" = "وضع علامة كمدفوع";
@@ -1969,9 +2036,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "وضع علامة على هذا الطلب على أنه مكتمل وإخطار العميل";
 
-/* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
-"Marks Every Review as Read" = "يوسم كل مراجعة كمقروءة";
-
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "لا تحتوي وسائل التواصل على ملف مرتبط لرفعه.";
 
@@ -1981,6 +2045,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Menu order label in Product Settings
    Product Menu Order navigation title */
 "Menu Order" = "ترتيب القائمة";
+
+/* VoiceOver accessibility hint for the Menu button action */
+"Menu button which opens an action sheet with option to mark all reviews as read." = "يتضمن زر القائمة الذي يفتح ورقة إجراءات خيارًا لوسم جميع المراجعات كمقروءة.";
 
 /* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
 "Menu order" = "ترتيب القائمة";
@@ -2026,6 +2093,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "ينقل التعليق إلى سلة المهملات";
 
+/* Title of the hub menu view in case there is no title for the store */
+"My Store" = "مخزني";
+
 /* My Tickets title */
 "My Tickets" = "تذاكري";
 
@@ -2062,11 +2132,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title for the net amount paid cell */
 "Net Payment" = "الدفع الصافي";
 
+/* Top performers — label for the total sales of a product */
+"Net sales: %@" = "صافي المبيعات: %@";
+
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "الإضافات النشطة الخاصة بالشبكة";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "اسم السمة الجديدة";
+
+/* Title for the Shipping Address Form for New Customer */
+"New Customer" = "العميل الجديد";
 
 /* Title for the order creation screen */
 "New Order" = "طلب جديد";
@@ -2085,7 +2161,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No activity this period" = "لا يوجد أي نشاط في هذه الفترة";
 
 /* Order details > customer info > billing information. This is where the address would normally display.
-   Order details > customer info > shipping details. This is where the address would normally display. */
+   Order details > customer info > shipping details. This is where the address would normally display. - Placeholder for empty address in order customer data */
 "No address specified." = "لا يوجد عنوان محدد.";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
@@ -2111,6 +2187,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "لم يتم تعيين أي سعر";
+
+/* Message displayed if there are no product variations for a product. */
+"No product variations found" = "لم يتم العثور على أنواع منتج";
 
 /* Message displayed if there are no products to display in the Add Product screen */
 "No products found" = "لم يتم العثور على أي منتجات";
@@ -2213,8 +2292,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Open Map action in Shipping Label Address Validation. */
 "Open Map" = "فتح الخريطة";
 
+/* Button title to open device settings in an alert */
+"Open Settings" = "فتح الإعدادات";
+
 /* Label for the description of openening a link using a new window */
 "Open in a new Window\/Tab" = "فتح في نافذة\/علامة تبويب جديدة";
+
+/* Accessibility label for the Menu button */
+"Open menu" = "افتح القائمة";
 
 /* Accessibility hint for 1 password button */
 "Opens One Password manager" = "يفتح مدير One Password";
@@ -2259,7 +2344,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Order Status" = "حالة الطلب";
 
 /* Create Shipping Label form -> Order Total label
-   Order Total label for payment view - Title text of the row that shows the total to charge when creating a simple payment */
+   Label for the the row showing the total cost of the order - Order Total label for payment view - Title text of the row that shows the total to charge when creating a simple payment */
 "Order Total" = "إجمالي الطلبات";
 
 /* Navigates to Card Reader ordering screen */
@@ -2287,8 +2372,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "الحزمة الأصلية";
 
-/* My Store > Settings > Other app section
-   Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
+/* Generic name of non-default discount types
+   My Store > Settings > Other app section - Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "أخرى";
 
 /* Display label for the product's inventory stock status */
@@ -2350,7 +2435,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Paste without Formatting" = "اللصق من دون تنسيق";
 
 /* Payment section title
-   Title text of the row that shows the payment headline when creating a simple payment */
+   Title text of the row that shows the payment headline when creating a simple payment - Title text of the section that shows Payment details when creating a new order */
 "Payment" = "السداد";
 
 /* Navigation bar title in the Shipping Label Payment Method screen
@@ -2384,6 +2469,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's pending status */
 "Pending review" = "في انتظار المراجعة";
 
+/* Name of percentage discount type */
+"Percentage Discount" = "الخصم بالنسبة المئوية";
+
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
 "Phone" = "الهاتف";
@@ -2402,6 +2490,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "جارٍ وضع منتجك في سلة المهملات...";
+
+/* Message of alert that links to settings for camera access. */
+"Please change your camera permissions in device settings." = "يرجى تغيير صلاحيات الكاميرا الخاصة بك في إعدادات الجهاز.";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "يرجى شحن القارئ";
@@ -2472,14 +2563,26 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "يرجى تحديد حزمة";
 
+/* Title for the error screen when there is more than one extension active. */
+"Please select an extension" = "يرجى تحديد إضافة";
+
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "يرجى المحاولة مرة أخرى لاحقًا أو تواصل معنا وستسرنا مساعدتك!";
+
+/* Error message when Jetpack connection fails */
+"Please try again or contact us for support." = "يُرجى المحاولة مرة أخرى أو الاتصال بنا للحصول على الدعم.";
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "ترجى المحاولة مجددًا أو التواصل معنا وسنكون سعداء لمساعدتك!";
 
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "يُرجى المحاولة مرة أخرى.";
+
+/* Error message when Jetpack activation fails */
+"Please try again. Alternatively, you can activate Jetpack through your WP-Admin." = "يُرجى المحاولة مرة أخرى. بدلاً من ذلك، يمكنك تفعيل Jetpack من خلال مسؤول ووردبريس الخاص بك.";
+
+/* Error message when Jetpack install fails */
+"Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "يُرجى المحاولة مرة أخرى. بدلاً من ذلك، يمكنك تثبيت Jetpack من خلال مسؤول ووردبريس الخاص بك.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Please update your reader software to keep accepting payments" = "يرجى تحديث برنامج القارئ الخاص بك ليستمر في قبول المدفوعات";
@@ -2598,8 +2701,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "جارٍ معالجة الدفع...";
 
-/* Description for Top Performers left column header
-   Product section title - Product section title if there is only one product. - Product section title in Review Order screen if there is one product. */
+/* Legacy description for Top Performers left column header
+   Product section title - Product section title if there is only one product. - Product section title in Review Order screen if there is one product. - Title for the Product screen during order creation */
 "Product" = "المنتج";
 
 /* The title on the navigation bar when viewing an order item add-ons
@@ -2614,6 +2717,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the view containing a single Product Review */
 "Product Review" = "مراجعة المنتج";
+
+/* Cell title on beta features screen to enable product SKU input scanner in inventory settings. */
+"Product SKU Scanner" = "فاحص وحدة SKU الخاصة بالمنتج";
 
 /* Button title Product Settings in Edit Product More Options Action Sheet
    Product Settings navigation title */
@@ -2640,13 +2746,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Product Type row on Product main screen */
 "Product type" = "نوع المنتج";
 
-/* Product section title if there is more than one product.
-   Product section title in Review Order screen if there is more than one product. - Title of the Products tab — plural form of Product - Title text of the section that shows the Products when creating a new order - Title that appears on top of the Product List screen (plural form of the word Product). */
+/* Description for Top Performers left column header
+   Product section title if there is more than one product. - Product section title in Review Order screen if there is more than one product. - Title of the Products tab — plural form of Product - Title text of the section that shows the Products when creating a new order - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "المنتجات";
 
 /* Label for computed value `product refunds + taxes = subtotal`.
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "استرداد المنتجات";
+
+/* Label for the row showing the total cost of products in the order */
+"Products Total" = "إجمالي المنتجات";
 
 /* Cell description for Cross-sells products in Linked Products Settings screen */
 "Products promoted in the cart when current product is selected" = "يتم الترويج للمنتجات في عربة التسوق عند تحديد المنتج الحالي";
@@ -2737,14 +2846,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the view containing a receipt preview */
 "Receipt" = "الاستلام";
 
-/* Button to reload plugin data after activating the WooCommerce Payments plugin */
+/* Button to reload plugin data after activating a Card Present Payments extension */
 "Refresh After Activating" = "التنشيط بعد التفعيل";
 
 /* Button to reload plugin data after installing the WooCommerce Payments plugin */
 "Refresh After Installing" = "التنشيط بعد التثبيت";
 
-/* Button to reload plugin data after updating the WooCommerce Payments plugin
-   Button to reload plugin data after updating the WooCommerce Payments plugin settings */
+/* Button to reload plugin data after updating a Card Present Payments extension plugin
+   Button to reload plugin data after updating a card present payments plugin settings */
 "Refresh After Updating" = "التنشيط بعد التحديث";
 
 /* The title of the button to confirm the refund. */
@@ -2759,6 +2868,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Refund Details section title */
 "Refund Details" = "تفاصيل الاسترداد";
+
+/* Title of the switch in the IssueRefund screen to refund fees */
+"Refund Fees" = "استرداد الرسوم";
 
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
 "Refund Label (%1$@)" = "بطاقة استرداد الأموال (%1$@)";
@@ -2810,6 +2922,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the alert when a user is moving a product to the trash */
 "Remove product" = "إزالة منتج";
+
+/* Text for the button to remove a product from the order during order creation */
+"Remove product from order" = "إزالة منتج من الطلب";
 
 /* Title of the alert when a user is deleting a variation */
 "Remove variation" = "إزالة المجموعة المتنوعة";
@@ -2863,6 +2978,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
 "Retry After Updating" = "إعادة المحاولة بعد التحديث";
 
+/* Action button to check site's connection again. */
+"Retry Connection" = "إعادة محاولة الاتصال";
+
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "الرجوع إلى المرسل إذا تعذر توصيل الحزمة";
 
@@ -2875,8 +2993,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "Review marked as %@";
 
-/* Title of the Reviews row on Product main screen
-   Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). - Title that appears on top of the Product Reviews screen. */
+/* Title of one of the hub menu options
+   Title of the Reviews row on Product main screen - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). - Title that appears on top of the Product Reviews screen. */
 "Reviews" = "مراجعات";
 
 /* Post Rich content */
@@ -3028,6 +3146,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "تحديد تاريخ الانتهاء";
 
+/* Button to select the active payment processor plugin */
+"Select extension in Store Admin" = "تحديد إضافة في مسؤول المخزن";
+
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "تحديد نمط الفقرة";
 
@@ -3075,6 +3196,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title Share in Edit Product More Options Action Sheet */
 "Share" = "مشاركة";
 
+/* Payment Link method title on the select payment method screen for simple payments */
+"Share Payment Link" = "مشاركة رابط الدفع";
+
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "شارك المعلومات مع أداة التحليلات لدينا حول استخدامك الخدمات أثناء تسجيل الدخول إلى حساب وردبرس.كوم الخاص بك.";
 
@@ -3105,7 +3229,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Shipping" = "الشحن";
 
 /* Shipping Address title for customer info section
-   Title for the Edit Shipping Address Form */
+   Title for the Edit Shipping Address Form - Title for the Edit Shipping Address section in order customer data */
 "Shipping Address" = "عنوان الشحن";
 
 /* Title of shipping carrier and rates in shipping label details
@@ -3214,9 +3338,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for simple product type. */
 "Simple" = "بسيط";
 
-/* Action sheet option when the user wants to create Simple Payments order
-   Cell title on the beta features screen to enable the Simple Payments feature */
-"Simple Payments" = "عمليات الدفع البسيطة";
+/* Action sheet option when the user wants to create Simple Payments order */
+"Simple payment" = "عملية دفع بسيطة";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
 "Simple physical product" = "منتج مادي بسيط";
@@ -3265,6 +3388,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "Sorry, site addresses must have letters too!" = "عذرًا، يجب أن تحتوي عناوين المواقع على حروف أبجدية أيضًا!";
+
+/* Error title when Jetpack install fails */
+"Sorry, something went wrong during install" = "عذرًا، حدث خطأ ما في أثناء التثبيت";
 
 /* Error message displayed when the entered email is not available. */
 "Sorry, that email address is already being used!" = "عذرًا، يتم بالفعل استخدام عنوان البريد الإلكتروني هذا!";
@@ -3361,11 +3487,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "يتوسطه خط";
 
+/* Navigates to Stripe M2 Card Reader manual */
+"Stripe M2 card reader manual" = "دليل قارئ بطاقة Stripe M2";
+
 /* Display label for subscription product type. */
 "Subscription" = "الاشتراك";
 
 /* Create Shipping Label form -> Subtotal label
-   Subtotal label for a refund details view - Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost - Title text of the row that shows the subtotal when creating a simple payment */
+   Subtotal label for a refund details view - Title on the refund screen that lists the fees subtotal cost - Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost - Title text of the row that shows the subtotal when creating a simple payment */
 "Subtotal" = "الإجمالي الفرعي";
 
 /* Notice text after updating the order successfully */
@@ -3376,6 +3505,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "تحويل المتجر";
+
+/* Switch store option in the hub menu */
+"Switch store" = "تبديل المخزن";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
 "Switched to %1$@." = "تم التبديل إلى %1$@.";
@@ -3403,6 +3535,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "يقوم بالتبديل إلى حجم الخط الافتراضي";
+
+/* Navigation title of system status report screen
+   View system status report cell title on Help screen */
+"System Status Report" = "تقرير حالة النظام";
+
+/* Toast message showing up when tapping Copy button on System Status Report screen. */
+"System status report copied to clipboard" = "تم نسخ تقرير حالة النظام إلى الحافظة";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
@@ -3492,7 +3631,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Tap, insert or swipe to pay" = "الضغط أو الإدراج أو التمرير للدفع";
 
 /* Tax label for a refund details view
-   Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
+   Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "الضريبة";
 
 /* Tax percentage to be applied to the simple payments order */
@@ -3529,11 +3668,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "شروط الخدمة";
 
+/* Cell description on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
+"Test out In-Person Payments with the Stripe Payment Gateway extension" = "اختبار المدفوعات الشخصية باستخدام إضافة بوابة دفع Stripe";
+
 /* Cell description on the beta features screen to enable creating new orders */
 "Test out creating new manual orders as we get ready to launch" = "اختبر إنشاء طلبات يدوية جديدة بينما نستعد لإطلاقها";
 
-/* Cell description on the beta features screen to enable the Simple Payments feature */
-"Test out creating orders with minimal information as we get ready to launch" = "اختبر إنشاء الطلبات من خلال أقل قدر من المعلومات بينما نستعد لإطلاقها";
+/* Cell description on beta features screen to enable product SKU input scanner in inventory settings. */
+"Test out scanning a barcode for a product SKU in the product inventory settings" = "اختبار فحص الرمز الشرطي لوحدة SKU منتج ما في إعدادات مخزن المنتج";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "اختبر عرض الوظائف الإضافية للطلبات بينما نستعد للإطلاق";
@@ -3566,6 +3708,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "That username is not allowed." = "اسم المستخدم هذا غير مسموح به.";
 
+/* Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
+"The %1$@ extension cannot be in test mode for In-Person Payments. Please disable test mode." = "يتعذر أن تكون إضافة %1$@ في وضع الاختبار للمدفوعات الشخصية. يرجى تعطيل وضع الاختبار.";
+
+/* Error message when a Card Present Payments extension is not activated */
+"The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "تم تثبيت إضافة %1$@ على مخزنك ولكن لم يتم تفعيلها. يرجى تفعيلها لقبول المدفوعات الشخصية.";
+
+/* Error message when a Card Present Payments extension is installed but the version is not supported */
+"The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "تم تثبيت إضافة %1$@ على مخزنك ولكن يتعيَّن تحديثها للمدفوعات الشخصية. يرجى تحديثها إلى أحدث إصدار.";
+
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "لا يتطابق حساب غوغل \"‎%@\" مع أي حساب موجود على ووردبريس.كوم";
 
@@ -3574,15 +3725,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "يفتقد عنوان URL إلى مضيف صالح.";
-
-/* Error message when WooCommerce Payments is in test mode on a live site */
-"The WooCommerce Payments extension cannot be in test mode for In-Person Payments. Please disable test mode." = "يتعذر أن تكون إضافة مدفوعات WooCommerce في وضع الاختبار للمدفوعات الشخصية. يرجى تعطيل وضع الاختبار.";
-
-/* Error message when WooCommerce Payments is not activated */
-"The WooCommerce Payments extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "تم تثبيت إضافة مدفوعات WooCommerce على مخزنك ولكن لم يتم تفعيلها. يرجى تفعيلها لقبول المدفوعات الشخصية.";
-
-/* Error message when WooCommerce Payments is installed but the version is not supported */
-"The WooCommerce Payments extension is installed on your store, but needs to be updated for In-Person Payments. Please update WooCommerce Payments to the most recent version." = "تم تثبيت إضافة مدفوعات WooCommerce على مخزنك ولكن يتعيَّن تحديثها للمدفوعات الشخصية. يرجى تحديث مدفوعات WooCommerce إلى أحدث إصدار.";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "تتعذر إزالة السمة.";
@@ -3646,6 +3788,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "كمية المخزون لهذا المنتج. قابل للتحرير.";
+
+/* Message for the error alert when fetching system status report fails */
+"The system status report for your site cannot be fetched at the moment. Please try again." = "يتعذر إحضار تقرير حالة نظام موقعك في هذه اللحظة. يُرجى المحاولة مرة أخرى.";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "يتعذر إنشاء المجموعة.";
@@ -3808,8 +3953,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "لم يتم العثور على موضوع من المُعرّف:";
 
-/* Description for Top Performers right column header */
+/* Legacy description for Top Performers right column header */
 "Total Spend" = "إجمالي الإنفاق";
+
+/* Information about taxes and the order total when creating a new order */
+"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "الإجمالي باستثناء الضرائب. سيتم حساب الضرائب تلقائيًا بناءً على إعدادات مخزنك.";
 
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "إجمالي الطلبات: %ld";
@@ -3855,7 +4003,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Trust" = "الثقة";
 
 /* Button to retry a software update. Presented to users when updating the card reader software fails
-   Button to try again. Presented to users after a failure occurs */
+   Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "حاول مرّة اخرى";
 
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
@@ -4000,8 +4148,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the review's unspam status */
 "Unspam" = "ليس بريدًا مزعجًا";
 
-/* Title for the error screen when the installed version of WooCommerce Payments is unsupported */
-"Unsupported WooCommerce Payments version" = "إصدار مدفوعات WooCommerce غير المدعوم";
+/* Title for the error screen when the installed version of a Card Present Payments extension is unsupported */
+"Unsupported %1$@ version" = "إصدار %1$@ غير مدعوم";
 
 /* Display label for the review's untrash status */
 "Untrash" = "استعادة من سلة المهملات";
@@ -4127,6 +4275,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the variations attributes row on Product screen */
 "Variations Attributes" = "سمات المجموعة";
 
+/* Description of the system status report on Help screen */
+"Various system information about your site" = "معلومات النظام المتنوعة حول موقعك";
+
 /* two factor code placeholder */
 "Verification code" = "رمز التحقق";
 
@@ -4138,6 +4289,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Displays the connected reader software version */
 "Version: %1$@" = "الإصدار: %1$@";
+
+/* Action title in an in-app notification to view more details. */
+"View" = "عرض";
 
 /* Cell title on the beta features screen to enable the order add-ons feature
    Title of the button on the order detail item to navigate to add-ons - Title of the button on the order details product list item to navigate to add-ons */
@@ -4156,6 +4310,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the 'View Shipment Details' button
    Button on bottom of shipping label package card to show shipping details */
 "View Shipment Details" = "عرض تفاصيل الشحن";
+
+/* Title of one of the hub menu options */
+"View Store" = "عرض المخزن";
 
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "اعرض الوظائف الإضافية من جهازك!";
@@ -4234,7 +4391,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We couldn’t update your reader’s software" = "يتعذر علينا تحديث برنامج القارئ الخاص بك";
 
 /* Title for the error screen when WooCommerce Payments is not supported in a specific country */
-"We don’t support In-Person Payments in %@" = "لا ندعم المدفوعات الشخصية في %@";
+"We don’t support In-Person Payments in %1$@" = "لا ندعم المدفوعات الشخصية في %1$@";
 
 /* Title for the error screen when WooCommerce Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments in your country" = "لا ندعم المدفوعات الشخصية في بلدك";
@@ -4341,11 +4498,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
 
+/* Title of one of the hub menu options */
+"WooCommerce Admin" = "مدير WooCommerce";
+
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "خصم WooCommerce";
-
-/* Title for the error screen when WooCommerce Payments is in test mode on a live site */
-"WooCommerce Payments is in Test Mode" = "مدفوعات WooCommerce في وضع الاختبار";
 
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "إعدادات WooCommerce";
@@ -4405,6 +4562,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "لديك متطلب متأخر على الأقل على حسابك. يرجى الاهتمام بذلك لمتابعة المدفوعات الشخصية.";
+
+/* Message requesting merchants to select between available payments processors */
+"You must disable either the WooCommerce Payments or the WooCommerce Stripe Gateway extension." = "يجب أن تقوم بتعطيل إما مدفوعات WooCommerce أو إضافة بوابة WooCommerce Stripe.";
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "يتعين عليك إضافة كلمة مرور لحماية منتجك بكلمة مرور.";
@@ -4483,8 +4643,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 تم اكتمال الطلب";
 
-/* Title for the button to cancel the simple payments screen */
+/* Notice text after completing a simple payment order */
 "🎉 Order completed" = "🎉 تم اكتمال الطلب";
+
+/* Notice text after creating a simple payment order */
+"🎉 Order created" = "🎉 تم إنشاء طلب";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "تم استرداد أموال 🎉 من المنتجات بنجاح";

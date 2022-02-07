@@ -1,3 +1,4 @@
+import Combine
 import Photos
 import XCTest
 
@@ -7,6 +8,7 @@ import Yosemite
 /// Unit tests for unsaved changes (`hasUnsavedChanges`)
 final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
     private let defaultSiteID: Int64 = 134
+    private var productImageStatusesSubscription: AnyCancellable?
 
     func test_product_variation_has_no_changes_from_edit_actions_of_the_same_data() {
         // Arrange
@@ -45,7 +47,7 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
 
         // Action
         waitForExpectation { expectation in
-            productImageActionHandler.addUpdateObserver(self) { statuses in
+            self.productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { statuses in
                 if statuses.productImageStatuses.isNotEmpty {
                     expectation.fulfill()
                 }

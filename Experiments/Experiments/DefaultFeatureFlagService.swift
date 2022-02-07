@@ -34,12 +34,16 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .stripeExtensionInPersonPayments:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .myStoreTabUpdates:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .couponManagement:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .productSKUInputScanner:
             return true
+        case .canadaInPersonPayments:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .taxLinesInSimplePayments:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

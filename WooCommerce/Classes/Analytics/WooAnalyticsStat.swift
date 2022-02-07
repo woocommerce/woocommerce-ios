@@ -175,7 +175,6 @@ public enum WooAnalyticsStat: String {
     case ordersSelected = "main_tab_orders_selected"
     case ordersReselected = "main_tab_orders_reselected"
     case ordersListPulledToRefresh = "orders_list_pulled_to_refresh"
-    case ordersListFilterTapped = "orders_list_menu_filter_tapped"
     case ordersListSearchTapped = "orders_list_menu_search_tapped"
     case filterOrdersOptionSelected = "filter_orders_by_status_dialog_option_selected"
     case orderDetailAddNoteButtonTapped = "order_detail_add_note_button_tapped"
@@ -208,13 +207,20 @@ public enum WooAnalyticsStat: String {
     // MARK: Order Data/Action Events
     //
     case orderOpen = "order_open"
+    case orderAddNew = "orders_add_new"
     case orderNotesLoaded = "order_notes_loaded"
     case orderNoteAdd = "order_note_add"
     case orderNoteAddSuccess = "order_note_add_success"
     case orderNoteAddFailed = "order_note_add_failed"
+    case orderCreateButtonTapped = "order_create_button_tapped"
+    case orderCreationSuccess = "order_creation_success"
+    case orderCreationFailed = "order_creation_failed"
     case orderContactAction = "order_contact_action"
-    case ordersListFilterOrSearch = "orders_list_filter"
+    case orderCustomerAdd = "order_customer_add"
+    case ordersListFilter = "orders_list_filter"
+    case ordersListSearch = "orders_list_search"
     case ordersListLoaded = "orders_list_loaded"
+    case orderProductAdd = "order_product_add"
     case orderStatusChange = "order_status_change"
     case orderStatusChangeSuccess = "order_status_change_success"
     case orderStatusChangeFailed = "order_status_change_failed"
@@ -554,8 +560,8 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Hub Menu
     //
-    case hubMenuTabSelected = "hub_menu_tab_selected"
-    case hubMenuTabReselected = "hub_menu_tab_reselected"
+    case hubMenuTabSelected = "main_tab_hub_menu_selected"
+    case hubMenuTabReselected = "main_tab_hub_menu_reselected"
     case hubMenuSwitchStoreTapped = "hub_menu_switch_store_tapped"
     case hubMenuOptionTapped = "hub_menu_option_tapped"
     case hubMenuSettingsTapped = "hub_menu_settings_tapped"

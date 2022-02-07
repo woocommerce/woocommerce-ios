@@ -30,15 +30,15 @@ struct ProductRow: View {
                     // Product details
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
-                        Text(viewModel.stockAndPriceLabel)
+                        Text(viewModel.productDetailsLabel)
                             .subheadlineStyle()
                         Text(viewModel.skuLabel)
                             .subheadlineStyle()
                     }
                     .accessibilityElement(children: .combine)
                 }
-
-                Spacer()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
 
                 ProductStepper(viewModel: viewModel)
                     .renderedIf(viewModel.canChangeQuantity)

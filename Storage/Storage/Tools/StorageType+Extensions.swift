@@ -584,6 +584,13 @@ public extension StorageType {
         return firstObject(ofType: PaymentGatewayAccount.self, matching: predicate)
     }
 
+    /// Returns a charge with a specified `siteID` and `chargeID`
+    ///
+    func loadWCPayCharge(siteID: Int64, chargeID: String) -> WCPayCharge? {
+        let predicate = \WCPayCharge.siteID == siteID && \WCPayCharge.id == chargeID
+        return firstObject(ofType: WCPayCharge.self, matching: predicate)
+    }
+
     // MARK: - System plugins
 
     /// Returns all stored system plugins for a provided `siteID`.

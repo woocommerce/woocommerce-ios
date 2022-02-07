@@ -1170,4 +1170,21 @@ final class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(foundSystemPlugin, systemPlugin2)
     }
+
+    func test_load_WCPayCharge_by_siteID_and_chargeID() throws {
+        // Given
+        let charge1 = storage.insertNewObject(ofType: WCPayCharge.self)
+        charge1.id = "ch_1"
+        charge1.siteID = sampleSiteID
+
+        let charge2 = storage.insertNewObject(ofType: WCPayCharge.self)
+        charge2.id = "ch_2"
+        charge2.siteID = sampleSiteID
+
+        // When
+        let foundCharge = try XCTUnwrap(storage.loadWCPayCharge(siteID: sampleSiteID, chargeID: "ch_2"))
+
+        // Then
+        XCTAssertEqual(foundCharge, charge2)
+    }
 }

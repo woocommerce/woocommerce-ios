@@ -106,6 +106,8 @@ public final class CardPresentPaymentStore: Store {
             reset()
         case .checkCardReaderConnected(onCompletion: let completion):
             checkCardReaderConnected(onCompletion: completion)
+        case .fetchWCPayCharge(let siteID, let chargeID, let completion):
+            fetchCharge(siteID: siteID, chargeID: chargeID, completion: completion)
         }
     }
 }
@@ -519,7 +521,17 @@ private extension CardPresentPaymentStore {
                 return
             }
         })
-    }}
+    }
+
+    func fetchCharge(siteID: Int64, chargeID: String, completion: @escaping (Result<WCPayCharge, Error>) -> Void) {
+        switch usingBackend {
+        case .wcpay:
+            remote.fetchCharge(for: siteID, chargeID: chargeID, completion: completion)
+        case .stripe:
+            break; /// not implemented
+        }
+    }
+}
 
 // MARK: Storage Methods
 private extension CardPresentPaymentStore {

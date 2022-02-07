@@ -2,6 +2,7 @@
 //
 
 import Combine
+import Networking
 
 public enum CardPresentPaymentAction: Action {
     /// Sets the store to use a given payment gateway
@@ -73,4 +74,8 @@ public enum CardPresentPaymentAction: Action {
 
     /// Checks if a reader is connected
     case checkCardReaderConnected(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void)
+
+    /// Fetches Charge details by charge ID
+    ///
+    case fetchWCPayCharge(siteID: Int64, chargeID: String, onCompletion: (Result<WCPayCharge, Error>) -> Void)
 }

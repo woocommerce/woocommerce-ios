@@ -141,6 +141,7 @@ public typealias StripeAccount = Networking.StripeAccount
 public typealias WCPayAccount = Networking.WCPayAccount
 public typealias WCPayAccountStatusEnum = Networking.WCPayAccountStatusEnum
 public typealias WCPayCustomer = Networking.Customer
+public typealias WCPayCharge = Networking.WCPayCharge
 
 // MARK: - Exported Storage Symbols
 

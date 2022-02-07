@@ -109,6 +109,10 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
     /// Update the address remotely and invoke a completion block when finished
     ///
     func saveAddress(onFinish: @escaping (Bool) -> Void) {
+        guard validateEmail() else {
+            return notice = AddressFormViewModel.NoticeFactory.createInvalidEmailNotice()
+        }
+
         let updatedAddress = fields.toAddress()
         let orderFields: [OrderUpdateField]
 

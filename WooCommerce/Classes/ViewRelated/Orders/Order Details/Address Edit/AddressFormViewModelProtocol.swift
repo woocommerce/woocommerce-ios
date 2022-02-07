@@ -382,7 +382,9 @@ open class AddressFormViewModel: ObservableObject {
     /// Returns `true` if the fields contains a valid email or if there is no email to validate. `False` otherwise.
     ///
     func validateEmail() -> Bool {
-        EmailFormatValidator.validate(string: fields.email)
+        let primaryEmailIsValid = fields.email.isEmpty || EmailFormatValidator.validate(string: fields.email)
+        let secondaryEmailIsValid = secondaryFields.email.isEmpty || EmailFormatValidator.validate(string: fields.email)
+        return primaryEmailIsValid && secondaryEmailIsValid
     }
 }
 
@@ -415,6 +417,10 @@ extension AddressFormViewModel {
         }
     }
 
+    enum Localization {
+        static let invalidEmail = NSLocalizedString("Please enter a valid email address.", comment: "Notice text when the merchant enters an invalid email")
+    }
+
     /// Creates address form general notices.
     ///
     enum NoticeFactory {
@@ -422,6 +428,12 @@ extension AddressFormViewModel {
         ///
         static func createErrorNotice(from error: EditAddressError) -> Notice {
             Notice(title: error.errorDescription ?? "", message: error.recoverySuggestion, feedbackType: .error)
+        }
+
+        /// Creates an error notice indicating that the email address is invalid.
+        ///
+        static func createInvalidEmailNotice() -> Notice {
+            .init(title: Localization.invalidEmail, feedbackType: .error)
         }
     }
 }

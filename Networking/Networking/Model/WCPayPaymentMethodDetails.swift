@@ -35,6 +35,9 @@ public enum WCPayPaymentMethodDetails: Decodable, GeneratedCopiable, GeneratedFa
                 throw WCPayPaymentMethodDetailsDecodingError.noDetailsPresentForPaymentType
             }
             self = .cardPresent(details: cardPresentDetails)
+        case .interacPresent:
+            // Unsupported for now, coming up in https://github.com/woocommerce/woocommerce-ios/issues/5979
+            self = .unknown
         case .unknown:
             self = .unknown
         }

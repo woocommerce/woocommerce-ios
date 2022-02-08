@@ -65,6 +65,20 @@ final class CouponDetailsViewModel: ObservableObject {
         }
         stores.dispatch(action)
     }
+
+    func loadCouponReport() {
+        let action = CouponAction.loadCouponReport(siteID: coupon.siteID, couponID: coupon.couponID) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let report):
+                self.discountedOrdersCount = "\(report.ordersCount)"
+                self.discountedAmount = self.formatStringAmount("\(report.amount)")
+            case .failure(let error):
+                DDLogError("⛔️ Error loading coupon report: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
 }
 
 // MARK: - Private helpers
@@ -95,20 +109,6 @@ private extension CouponDetailsViewModel {
                                                excludedCategoriesCount: coupon.excludedProductCategories.count)
 
         expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none) ?? ""
-    }
-
-    func loadCouponReport() {
-        let action = CouponAction.loadCouponReport(siteID: coupon.siteID, couponID: coupon.couponID) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let report):
-                self.discountedOrdersCount = "\(report.ordersCount)"
-                self.discountedAmount = self.formatStringAmount("\(report.amount)")
-            case .failure(let error):
-                DDLogError("⛔️ Error loading coupon report: \(error)")
-            }
-        }
-        stores.dispatch(action)
     }
 
     func formatStringAmount(_ amount: String) -> String {

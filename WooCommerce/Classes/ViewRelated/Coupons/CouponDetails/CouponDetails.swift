@@ -7,6 +7,7 @@ struct CouponDetails: View {
     init(viewModel: CouponDetailsViewModel) {
         self.viewModel = viewModel
         viewModel.syncCoupon()
+        viewModel.loadCouponReport()
     }
 
     private var detailRows: [DetailRow] {

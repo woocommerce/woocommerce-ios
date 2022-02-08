@@ -63,6 +63,9 @@ private extension CouponDetails {
         static let discount = NSLocalizedString("Discount", comment: "Title of the Discount row in Coupon Details screen")
         static let applyTo = NSLocalizedString("Apply To", comment: "Title of the Apply To row in Coupon Details screen")
         static let expiryDate = NSLocalizedString("Coupon Expiry Date", comment: "Title of the Coupon Expiry Date row in Coupon Details screen")
+        static let performance = NSLocalizedString("Performance", comment: "Title of the Performance section on Coupons Details screen")
+        static let discountedOrders = NSLocalizedString("Discounted Orders", comment: "Title of the Discounted Orders label on Coupon Details screen")
+        static let amount = NSLocalizedString("Amount", comment: "Title of the Amount label on Coupon Details screen")
     }
 
     struct DetailRow: Identifiable {

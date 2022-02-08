@@ -188,8 +188,14 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     public func loadCouponReport(for siteID: Int64,
                                  couponID: Int64,
                                  completion: @escaping (Result<CouponReport, Error>) -> Void) {
-        let parameters = [
-            ParameterKey.coupons: [couponID]
+        // Get an "ancient" date to fetch all possible reports
+        let startTime = Date(timeIntervalSince1970: 1)
+        let dateFormatter = ISO8601DateFormatter()
+        let formattedTime = dateFormatter.string(from: startTime)
+
+        let parameters: [String: Any] = [
+            ParameterKey.coupons: [couponID],
+            ParameterKey.after: formattedTime
         ]
 
         let request = JetpackRequest(wooApiVersion: .wcAnalytics,
@@ -238,5 +244,6 @@ public extension CouponsRemote {
         static let force = "force"
         static let coupons = "coupons"
         static let keyword = "search"
+        static let after = "after"
     }
 }

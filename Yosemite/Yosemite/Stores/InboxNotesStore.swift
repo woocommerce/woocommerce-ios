@@ -59,8 +59,8 @@ private extension InboxNotesStore {
     /// This internally marks a notification’s is_deleted field to true and such notifications do not show in the results anymore.
     ///
     func dismissInboxNote(for siteID: Int64,
-                                 noteID: Int64,
-                                 completion: @escaping (Result<InboxNote, Error>) -> ()) {
+                          noteID: Int64,
+                          completion: @escaping (Result<InboxNote, Error>) -> ()) {
         remote.dismissInboxNote(for: siteID, noteID: noteID, completion: completion)
     }
 
@@ -68,9 +68,9 @@ private extension InboxNotesStore {
     /// This internally marks a notification’s status as `actioned`.
     ///
     func markInboxNoteAsActioned(for siteID: Int64,
-                                        noteID: Int64,
-                                        actionID: Int64,
-                                        completion: @escaping (Result<InboxNote, Error>) -> ()) {
+                                 noteID: Int64,
+                                 actionID: Int64,
+                                 completion: @escaping (Result<InboxNote, Error>) -> ()) {
         remote.markInboxNoteAsActioned(for: siteID, noteID: noteID, actionID: actionID, completion: completion)
     }
 }

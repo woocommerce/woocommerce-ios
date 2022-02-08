@@ -68,7 +68,7 @@ private struct OrderCustomerSectionContent: View {
     }
 
     private var createCustomerView: some View {
-        Button(Localization.addCustomer) {
+        Button(Localization.addCustomerDetails) {
             showAddressForm.toggle()
         }
         .buttonStyle(PlusButtonStyle())
@@ -112,7 +112,8 @@ private extension OrderCustomerSectionContent {
 
     enum Localization {
         static let customer = NSLocalizedString("Customer", comment: "Title text of the section that shows Customer details when creating a new order")
-        static let addCustomer = NSLocalizedString("Add customer", comment: "Title text of the button that adds a customer when creating a new order")
+        static let addCustomerDetails = NSLocalizedString("Add Customer Details",
+                                                          comment: "Title text of the button that adds customer data when creating a new order")
         static let editButton = NSLocalizedString("Edit", comment: "Button to edit a customer on the New Order screen")
 
         static let billingTitle = NSLocalizedString("Billing Address", comment: "Title for the Billing Address section in order customer data")

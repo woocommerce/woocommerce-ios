@@ -183,17 +183,19 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         )
     ]
 
-    let thisYearVisitStats: SiteVisitStats = createVisitStats(
-        siteID: 1,
-        granularity: .year,
-        items: [Int](0..<12).map { monthIndex in
-            createVisitStatsItem(
-                granularity: .month,
-                periodDate: Date().yearStart.addingMonths(monthIndex),
-                visitors: Int.random(in: 100 ... 1000)
-            )
-        }
-    )
+    var thisYearVisitStats: SiteVisitStats {
+        Self.createVisitStats(
+            siteID: 1,
+            granularity: .year,
+            items: [Int](0..<12).map { monthIndex in
+                Self.createVisitStatsItem(
+                    granularity: .month,
+                    periodDate: date.yearStart.addingMonths(monthIndex),
+                    visitors: Int.random(in: 100 ... 1000)
+                )
+            }
+        )
+    }
 
     var thisYearTopProducts: TopEarnerStats = createStats(siteID: 1, granularity: .year, items: [
         createTopEarningItem(product: Products.akoyaPearlShades, quantity: 17),
@@ -215,12 +217,18 @@ struct ScreenshotObjectGraph: MockObjectGraph {
             granularity: .yearly,
             intervals: thisYearVisitStats.items!.enumerated().map {
                 Self.createInterval(
-                    date: Date().yearStart.addingMonths($0.offset),
+                    date: date.yearStart.addingMonths($0.offset),
                     orderCount: Int(Double($0.element.visitors) * Double.random(in: orderProbabilityRange)),
                     revenue: Decimal($0.element.visitors) * Decimal.random(in: orderValueRange)
                 )
             }
         )
+    }
+
+    private let date: Date
+
+    init(date: Date = .init()) {
+        self.date = date
     }
 }
 

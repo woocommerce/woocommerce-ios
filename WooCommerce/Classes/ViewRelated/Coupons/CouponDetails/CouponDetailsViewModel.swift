@@ -27,7 +27,7 @@ final class CouponDetailsViewModel: ObservableObject {
 
     /// Total number of orders that applied the coupon
     ///
-    @Published private(set) var discountedOrdersCount: Int64 = 0
+    @Published private(set) var discountedOrdersCount: String = ""
 
     /// Total amount deducted from orders that applied the coupon
     ///
@@ -108,7 +108,7 @@ private extension CouponDetailsViewModel {
             guard let self = self else { return }
             switch result {
             case .success(let report):
-                self.discountedOrdersCount = report.ordersCount
+                self.discountedOrdersCount = "\(report.ordersCount)"
                 let currencyFormatter = CurrencyFormatter(currencySettings: self.currencySettings)
                 self.discountedAmount = currencyFormatter.formatAmount("\(report.amount)") ?? ""
             case .failure(let error):

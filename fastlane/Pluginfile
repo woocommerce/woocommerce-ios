@@ -8,5 +8,5 @@ end
 
 gem 'fastlane-plugin-wpmreleasetoolkit', '~> 2.0'
 gem 'fastlane-plugin-sentry', '~> 1.0'
-gem 'fastlane-plugin-appcenter', '~> 1.6'
+gem 'fastlane-plugin-appcenter', '~> 2.0'
 gem 'fastlane-plugin-test_center', '~> 3.0'

@@ -26,9 +26,6 @@ class AuthenticatedState: StoresManagerState {
         let storageManager = ServiceLocator.storageManager
         let network = AlamofireNetwork(credentials: credentials)
 
-        /// TODO - remove this feature flag related logic when no longer needed
-        let allowStripeIPP = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.stripeExtensionInPersonPayments)
-
         services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
@@ -66,8 +63,7 @@ class AuthenticatedState: StoresManagerState {
             CardPresentPaymentStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
-                                    cardReaderService: ServiceLocator.cardReaderService,
-                                    allowStripeIPP: allowStripeIPP),
+                                    cardReaderService: ServiceLocator.cardReaderService),
             ReceiptStore(dispatcher: dispatcher,
                          storageManager: storageManager,
                          network: network,

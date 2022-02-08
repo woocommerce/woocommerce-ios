@@ -35,6 +35,10 @@ public struct CardPresentPaymentsConfiguration {
             throw CardPresentPaymentsConfigurationMissingError()
         }
     }
+
+    var supportsStripe: Bool {
+        paymentGateways.contains(StripeAccount.gatewayID)
+    }
 }
 
 public struct CardPresentPaymentsConfigurationMissingError: Error {}

@@ -17,13 +17,6 @@ public final class CardPresentPaymentStore: Store {
     ///
     private let commonReaderConfigProvider: CommonReaderConfigProvider
 
-    /// Instead of adding a reference to the feature flag service (in the WooCommerce layer),
-    /// and since feature flag values don't mutate, let's just have a private bool passed into this service
-    /// to allow (or not) Stripe IPP.
-    /// TODO: Remove this feature flag when no longer needed.
-    ///
-    private var allowStripeIPP: Bool
-
     /// Which backend is the store using? Default to WCPay until told otherwise
     private var usingBackend: CardPresentPaymentStoreBackend = .wcpay
 
@@ -39,14 +32,12 @@ public final class CardPresentPaymentStore: Store {
         dispatcher: Dispatcher,
         storageManager: StorageManagerType,
         network: Network,
-        cardReaderService: CardReaderService,
-        allowStripeIPP: Bool
+        cardReaderService: CardReaderService
     ) {
         self.cardReaderService = cardReaderService
         self.commonReaderConfigProvider = CommonReaderConfigProvider()
         self.remote = WCPayRemote(network: network)
         self.stripeRemote = StripeRemote(network: network)
-        self.allowStripeIPP = allowStripeIPP
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -363,17 +354,22 @@ private extension CardPresentPaymentStore {
     /// Sets the store to use a given payment gateway
     ///
     func use(paymentGatewayAccount: PaymentGatewayAccount) {
-        guard allowStripeIPP else {
-            DDLogError("useStripeAsBackend called when stripeExtensionInPersonPayments disabled")
-            return
-        }
+        loadConfiguration(siteID: paymentGatewayAccount.siteID) { [weak self] configuration in
+            guard let configuration = configuration else {
+                DDLogError("[CardPresentPaymentStore] Unable to load configuration")
+                return
+            }
+            guard configuration.supportsStripe else {
+                DDLogError("useStripeAsBackend called when stripeExtensionInPersonPayments disabled")
+                return
+            }
+            guard paymentGatewayAccount.isWCPay else {
+                self?.usingBackend = .stripe
+                return
+            }
 
-        guard paymentGatewayAccount.isWCPay else {
-            usingBackend = .stripe
-            return
+            self?.usingBackend = .wcpay
         }
-
-        usingBackend = .wcpay
     }
 
     /// Loads the account corresponding to the currently selected backend. Deletes the other (if it exists).
@@ -539,6 +535,44 @@ private extension CardPresentPaymentStore {
 
         storage.deleteObject(storageAccount)
         storage.saveIfNeeded()
+    }
+
+    func getCountryCode(siteID: Int64) -> String? {
+        let storage = storageManager.viewStorage
+        guard let countryAndRegion = storage.loadSiteSetting(siteID: siteID, settingID: "woocommerce_default_country")?.value else {
+            return nil
+        }
+        return countryAndRegion.components(separatedBy: ":").first
+    }
+
+    func loadConfiguration(siteID: Int64, onCompletion: @escaping (CardPresentPaymentsConfiguration?) -> Void) {
+        guard let countryCode = getCountryCode(siteID: siteID) else {
+            return onCompletion(nil)
+        }
+        var stripeIPPEnabled = false
+        var canadaIPPEnabled = false
+
+        let group = DispatchGroup()
+
+        group.enter()
+        let stripeAction = AppSettingsAction.loadStripeInPersonPaymentsSwitchState(onCompletion: { result in
+            stripeIPPEnabled = (try? result.get()) ?? false
+            group.leave()
+        })
+        dispatcher.dispatch(stripeAction)
+
+        group.enter()
+        let canadaAction = AppSettingsAction.loadCanadaInPersonPaymentsSwitchState(onCompletion: { result in
+            canadaIPPEnabled = (try? result.get()) ?? false
+            group.leave()
+        })
+        dispatcher.dispatch(canadaAction)
+
+
+        group.notify(queue: .main) {
+            let configuration = try? CardPresentPaymentsConfiguration(country: countryCode, stripeEnabled: stripeIPPEnabled, canadaEnabled: canadaIPPEnabled)
+            onCompletion(configuration)
+        }
     }
 }
 

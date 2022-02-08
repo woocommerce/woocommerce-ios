@@ -27,7 +27,7 @@ final class CouponDetailsViewModel: ObservableObject {
 
     /// Total number of orders that applied the coupon
     ///
-    @Published private(set) var discountedOrdersCount: Int = 0
+    @Published private(set) var discountedOrdersCount: Int64 = 0
 
     /// Total amount deducted from orders that applied the coupon
     ///
@@ -49,6 +49,7 @@ final class CouponDetailsViewModel: ObservableObject {
         self.currencySettings = currencySettings
         observeCoupon()
         syncCoupon()
+        loadCouponReport()
     }
 }
 
@@ -96,6 +97,21 @@ private extension CouponDetailsViewModel {
                 self.coupon = coupon
             case .failure(let error):
                 DDLogError("⛔️ Error synchronizing coupon detail: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    func loadCouponReport() {
+        let action = CouponAction.loadCouponReport(siteID: coupon.siteID, couponID: coupon.couponID) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let report):
+                self.discountedOrdersCount = report.ordersCount
+                let currencyFormatter = CurrencyFormatter(currencySettings: self.currencySettings)
+                self.discountedAmount = currencyFormatter.formatAmount("\(report.amount)") ?? ""
+            case .failure(let error):
+                DDLogError("⛔️ Error loading coupon report: \(error)")
             }
         }
         stores.dispatch(action)

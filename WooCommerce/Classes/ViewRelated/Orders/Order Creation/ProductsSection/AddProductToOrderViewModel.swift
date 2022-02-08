@@ -260,6 +260,7 @@ private extension AddProductToOrderViewModel {
     func configureProductSearch() {
         $searchTerm
             .dropFirst() // Drop initial value
+            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
             .removeDuplicates()
             .sink { [weak self] newSearchTerm in
                 guard let self = self else { return }

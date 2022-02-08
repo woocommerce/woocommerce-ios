@@ -22,6 +22,35 @@ struct CouponDetails: View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
+                    Text(Localization.performance)
+                        .bold()
+                        .padding(Constants.margin)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+                    HStack(spacing: 0) {
+                        VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                            Text(Localization.discountedOrders)
+                                .secondaryBodyStyle()
+                            Text(viewModel.discountedOrdersCount)
+                                .font(.title)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                        VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                            Text(Localization.amount)
+                                .secondaryBodyStyle()
+                            Text(viewModel.discountedAmount)
+                                .font(.title)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding([.horizontal, .bottom], Constants.margin)
+                    .padding(.horizontal, insets: geometry.safeAreaInsets)
+                }
+                .background(Color(.listForeground))
+
+                Spacer().frame(height: Constants.margin)
+
+                VStack(alignment: .leading, spacing: 0) {
                     Text(Localization.detailSectionTitle)
                         .bold()
                         .padding(Constants.margin)

@@ -91,7 +91,8 @@ private extension CouponDetailsViewModel {
     }
 
     func syncCoupon() {
-        let action = CouponAction.retrieveCoupon(siteID: coupon.siteID, couponID: coupon.couponID) { result in
+        let action = CouponAction.retrieveCoupon(siteID: coupon.siteID, couponID: coupon.couponID) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let coupon):
                 self.coupon = coupon

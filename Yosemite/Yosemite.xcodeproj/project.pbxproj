@@ -146,7 +146,6 @@
 		263E37DC2641AD6B00260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37DB2641AD6B00260D3B /* Codegen */; };
 		263E38422641FF2300260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E38412641FF2300260D3B /* Codegen */; };
 		263E38442641FF2300260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E38412641FF2300260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		26455E2E25F66A47008A1D32 /* Observables in Frameworks */ = {isa = PBXBuildFile; productRef = 26455E2D25F66A47008A1D32 /* Observables */; };
 		26577517243D5E42003168A5 /* ProductCategoryUpdated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26577516243D5E42003168A5 /* ProductCategoryUpdated.swift */; };
 		265BCA0024301ACD004E53EE /* ProductCategoryStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265BC9FF24301ACD004E53EE /* ProductCategoryStoreTests.swift */; };
 		2665034D2620E0A90079A159 /* ProductAddOnOption+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2665034C2620E0A90079A159 /* ProductAddOnOption+ReadOnlyConvertible.swift */; };
@@ -764,7 +763,6 @@
 				B5B19DE220E6A45E00899568 /* Networking.framework in Frameworks */,
 				D88FDB3E25DD222600CB0DBD /* Hardware.framework in Frameworks */,
 				B5B19DE020E6A45900899568 /* Storage.framework in Frameworks */,
-				26455E2E25F66A47008A1D32 /* Observables in Frameworks */,
 				263E37DC2641AD6B00260D3B /* Codegen in Frameworks */,
 				0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */,
 			);
@@ -1627,7 +1625,6 @@
 			);
 			name = Yosemite;
 			packageProductDependencies = (
-				26455E2D25F66A47008A1D32 /* Observables */,
 				263E37DB2641AD6B00260D3B /* Codegen */,
 			);
 			productName = FluxC;
@@ -2501,10 +2498,6 @@
 		263E38412641FF2300260D3B /* Codegen */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Codegen;
-		};
-		26455E2D25F66A47008A1D32 /* Observables */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Observables;
 		};
 		57150E1024F462D900E81611 /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;

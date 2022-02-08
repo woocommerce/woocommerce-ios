@@ -12,8 +12,6 @@ struct MockAppSettingsActionHandler: MockActionHandler {
         case .loadInitialStatsVersionToShow(let siteId, let onCompletion):
             loadInitialStatsVersionToShow(siteId: siteId, onCompletion: onCompletion)
         case .setStatsVersionLastShown:
-            // This case needs to be handled to avoid crashing when running screenshots
-            // Once the enum is removed, this can be as well.
             success()
         case .loadFeedbackVisibility(let type, let onCompletion):
             loadFeedbackVisibility(type: type, onCompletion: onCompletion)
@@ -30,8 +28,8 @@ struct MockAppSettingsActionHandler: MockActionHandler {
         case .loadOrderCreationSwitchState(let onCompletion):
             onCompletion(.success(true))
         case .resetEligibilityErrorInfo, .setTelemetryAvailability, .loadOrdersSettings, .upsertProductsSettings:
-                break
-            default: unimplementedAction(action: action)
+            break
+        default: unimplementedAction(action: action)
         }
     }
 

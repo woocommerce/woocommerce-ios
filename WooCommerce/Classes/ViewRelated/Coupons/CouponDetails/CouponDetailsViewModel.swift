@@ -1,4 +1,4 @@
-import Foundation
+import Combine
 import Yosemite
 
 /// View model for `CouponDetails` view
@@ -26,10 +26,11 @@ final class CouponDetailsViewModel: ObservableObject {
 
     /// The current coupon
     ///
-    private let coupon: Coupon
+    @Published private var coupon: Coupon
 
     private let stores: StoresManager
     private let currencySettings: CurrencySettings
+    private var couponSubscription: AnyCancellable?
 
     init(coupon: Coupon,
          stores: StoresManager = ServiceLocator.stores,
@@ -37,13 +38,21 @@ final class CouponDetailsViewModel: ObservableObject {
         self.coupon = coupon
         self.stores = stores
         self.currencySettings = currencySettings
-        populateDetails()
+        observeCoupon()
+        syncCoupon()
     }
 }
 
 // MARK: - Private helpers
 //
 private extension CouponDetailsViewModel {
+    func observeCoupon() {
+        couponSubscription =  $coupon
+            .sink { [weak self] _ in
+                self?.populateDetails()
+            }
+    }
+
     func populateDetails() {
         couponCode = coupon.code
         description = coupon.description
@@ -66,6 +75,18 @@ private extension CouponDetailsViewModel {
         // TODO: match product IDs to names
         productsAppliedTo = coupon.productIds.isEmpty ? Localization.allProducts : "Some Products"
         expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none) ?? ""
+    }
+
+    func syncCoupon() {
+        let action = CouponAction.retrieveCoupon(siteID: coupon.siteID, couponID: coupon.couponID) { result in
+            switch result {
+            case .success(let coupon):
+                self.coupon = coupon
+            case .failure(let error):
+                DDLogError("⛔️ Error synchronizing coupon detail: \(error)")
+            }
+        }
+        stores.dispatch(action)
     }
 }
 

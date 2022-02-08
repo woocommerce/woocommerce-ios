@@ -125,6 +125,7 @@ private struct ProductsSection: View {
                 }, content: {
                     AddProductToOrder(isPresented: $showAddProduct, viewModel: viewModel.addProductViewModel)
                         .onDisappear {
+                            viewModel.addProductViewModel.searchTerm = ""
                             navigationButtonID = UUID()
                         }
                 })

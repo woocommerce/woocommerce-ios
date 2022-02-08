@@ -1494,7 +1494,7 @@ private extension MigrationTests {
     func insertWCPayCharge(to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "WCPayCharge", properties: [
             "siteID": 1234,
-            "id": "ch_idhash",
+            "chargeID": "ch_idhash",
             "amount": 12,
             "amountCaptured": 12,
             "amountRefunded": 3,

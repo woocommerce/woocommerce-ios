@@ -587,7 +587,7 @@ public extension StorageType {
     /// Returns a charge with a specified `siteID` and `chargeID`
     ///
     func loadWCPayCharge(siteID: Int64, chargeID: String) -> WCPayCharge? {
-        let predicate = \WCPayCharge.siteID == siteID && \WCPayCharge.id == chargeID
+        let predicate = \WCPayCharge.siteID == siteID && \WCPayCharge.chargeID == chargeID
         return firstObject(ofType: WCPayCharge.self, matching: predicate)
     }
 

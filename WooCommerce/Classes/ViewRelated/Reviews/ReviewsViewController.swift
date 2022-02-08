@@ -215,7 +215,6 @@ private extension ReviewsViewController {
         // provided by the view model. It could be argued that we are just cheating.
         tableView.delegate = self
 
-        // For screenshots test.
         tableView.accessibilityIdentifier = "reviews-table"
     }
 

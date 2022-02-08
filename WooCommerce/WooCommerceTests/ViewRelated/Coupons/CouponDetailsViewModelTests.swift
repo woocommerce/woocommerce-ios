@@ -126,6 +126,10 @@ final class CouponDetailsViewModelTests: XCTestCase {
         let sampleCoupon = Coupon.fake().copy(amount: "15.00", discountType: .percent)
         let updatedCoupon = sampleCoupon.copy(amount: "10.00")
         let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
+        XCTAssertEqual(viewModel.amount, "15%")
+
+        // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
             case let .retrieveCoupon(_, _, onCompletion):
@@ -134,13 +138,9 @@ final class CouponDetailsViewModelTests: XCTestCase {
                 break
             }
         }
-        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores)
-        XCTAssertEqual(viewModel.amount, "15%")
+        viewModel.syncCoupon()
 
         // Then
-        // Wait until the synchronization is done
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            XCTAssertEqual(viewModel.amount, "10%")
-        }
+        XCTAssertEqual(viewModel.amount, "10%")
     }
 }

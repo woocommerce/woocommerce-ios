@@ -1,6 +1,5 @@
-import Combine
-import Yosemite
 import Foundation
+import Yosemite
 
 /// View model for `CouponDetails` view
 ///
@@ -35,11 +34,14 @@ final class CouponDetailsViewModel: ObservableObject {
 
     /// The current coupon
     ///
-    @Published private var coupon: Coupon
+    @Published private var coupon: Coupon {
+        didSet {
+            populateDetails()
+        }
+    }
 
     private let stores: StoresManager
     private let currencySettings: CurrencySettings
-    private var couponSubscription: AnyCancellable?
 
     init(coupon: Coupon,
          stores: StoresManager = ServiceLocator.stores,
@@ -48,21 +50,26 @@ final class CouponDetailsViewModel: ObservableObject {
         self.stores = stores
         self.currencySettings = currencySettings
         self.discountedAmount = formatStringAmount("0")
-        observeCoupon()
-        syncCoupon()
-        loadCouponReport()
+        populateDetails()
+    }
+
+    func syncCoupon() {
+        let action = CouponAction.retrieveCoupon(siteID: coupon.siteID, couponID: coupon.couponID) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let coupon):
+                self.coupon = coupon
+            case .failure(let error):
+                DDLogError("⛔️ Error synchronizing coupon detail: \(error)")
+            }
+        }
+        stores.dispatch(action)
     }
 }
 
 // MARK: - Private helpers
 //
 private extension CouponDetailsViewModel {
-    func observeCoupon() {
-        couponSubscription =  $coupon
-            .sink { [weak self] _ in
-                self?.populateDetails()
-            }
-    }
 
     func populateDetails() {
         couponCode = coupon.code
@@ -88,19 +95,6 @@ private extension CouponDetailsViewModel {
                                                excludedCategoriesCount: coupon.excludedProductCategories.count)
 
         expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none) ?? ""
-    }
-
-    func syncCoupon() {
-        let action = CouponAction.retrieveCoupon(siteID: coupon.siteID, couponID: coupon.couponID) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let coupon):
-                self.coupon = coupon
-            case .failure(let error):
-                DDLogError("⛔️ Error synchronizing coupon detail: \(error)")
-            }
-        }
-        stores.dispatch(action)
     }
 
     func loadCouponReport() {

@@ -1,7 +1,6 @@
 import Combine
 import Foundation
 import Yosemite
-import Observables
 import enum Networking.DotcomError
 import class Networking.UserAgent
 

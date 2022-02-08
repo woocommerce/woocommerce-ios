@@ -1,5 +1,6 @@
 import Combine
 import Yosemite
+import Foundation
 
 /// View model for `CouponDetails` view
 ///
@@ -95,5 +96,26 @@ private extension CouponDetailsViewModel {
 private extension CouponDetailsViewModel {
     enum Localization {
         static let allProducts = NSLocalizedString("All Products", comment: "The text to be displayed in when the coupon is not limit to any specific product")
+        static let singleProduct = NSLocalizedString(
+            "%1$d Product",
+            comment: "The number of products allowed for a coupon in singular form. Reads like: 1 Product"
+        )
+        static let multipleProducts = NSLocalizedString(
+            "%1$d Products",
+            comment: "The number of products allowed for a coupon in plural form. " +
+            "Reads like: 10 Products"
+        )
+        static let singleCategory = NSLocalizedString(
+            "%1$d Category",
+            comment: "The number of category allowed for a coupon in singular form. Reads like: 1 Category"
+        )
+        static let pluralNumberOfCategories = NSLocalizedString(
+            "%1$d Categories",
+            comment: "The number of category allowed for a coupon in plural form. " +
+            "Reads like: 10 Categories"
+        )
+        static let allWithException = NSLocalizedString("All except %1$@", comment: "Exception rule for a coupon. Reads like: All except 2 Products")
+        static let ruleWithException = NSLocalizedString("%1$@ except %2$@", comment: "Exception rule for a coupon. Reads like: 3 Products except 1 Category")
+        static let combinedRule = NSLocalizedString("%1$@ and %2$@", comment: "Combined rule for a coupon. Reads like: 2 Products and 1 Category")
     }
 }

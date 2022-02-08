@@ -128,7 +128,7 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
         transitionToSyncingState()
 
-        if searchTerm.isNotEmpty {
+        if let searchTerm = reason, searchTerm.isNotEmpty {
             searchProducts(siteID: siteID, keyword: searchTerm, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         } else {
             syncProducts(pageNumber: pageNumber, pageSize: pageSize, reason: reason, onCompletion: onCompletion)
@@ -258,21 +258,24 @@ private extension AddProductToOrderViewModel {
     /// Updates the product results predicate & triggers a new sync when search term changes
     ///
     func configureProductSearch() {
-        $searchTerm.sink { [weak self] keyword in
-            guard let self = self else { return }
+        $searchTerm
+            .dropFirst() // Drop initial value
+            .removeDuplicates()
+            .sink { [weak self] newSearchTerm in
+                guard let self = self else { return }
 
-            if keyword.isNotEmpty {
-                // When the search query changes, also includes the original results predicate in addition to the search keyword.
-                let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
-                let subpredicates = [self.resultsPredicate].compactMap { $0 } + [searchResultsPredicate]
-                self.productsResultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
-            } else {
-                // Resets the results to the full product list when there is no search query.
-                self.productsResultsController.predicate = self.resultsPredicate
-            }
+                if newSearchTerm.isNotEmpty {
+                    // When the search query changes, also includes the original results predicate in addition to the search keyword.
+                    let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", newSearchTerm)
+                    let subpredicates = [self.resultsPredicate].compactMap { $0 } + [searchResultsPredicate]
+                    self.productsResultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
+                } else {
+                    // Resets the results to the full product list when there is no search query.
+                    self.productsResultsController.predicate = self.resultsPredicate
+                }
 
-            self.syncingCoordinator.resynchronize()
-        }.store(in: &subscriptions)
+                self.syncingCoordinator.resynchronize(reason: newSearchTerm)
+            }.store(in: &subscriptions)
     }
 }
 

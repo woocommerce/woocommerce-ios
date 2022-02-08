@@ -73,8 +73,11 @@ private extension CouponDetailsViewModel {
             amount = coupon.amount
         }
 
-        // TODO: match product IDs to names
-        productsAppliedTo = coupon.productIds.isEmpty ? Localization.allProducts : "Some Products"
+        productsAppliedTo = localizeApplyRules(productsCount: coupon.productIds.count,
+                                               excludedProductsCount: coupon.excludedProductIds.count,
+                                               categoriesCount: coupon.productCategories.count,
+                                               excludedCategoriesCount: coupon.excludedProductCategories.count)
+
         expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none) ?? ""
     }
 
@@ -88,6 +91,36 @@ private extension CouponDetailsViewModel {
             }
         }
         stores.dispatch(action)
+    }
+
+    func localizeApplyRules(productsCount: Int, excludedProductsCount: Int, categoriesCount: Int, excludedCategoriesCount: Int) -> String {
+        let productText = String.pluralize(productsCount, singular: Localization.singleProduct, plural: Localization.multipleProducts)
+        let productExceptionText = String.pluralize(excludedProductsCount, singular: Localization.singleProduct, plural: Localization.multipleProducts)
+        let categoryText = String.pluralize(categoriesCount, singular: Localization.singleCategory, plural: Localization.multipleCategories)
+        let categoryExceptionText = String.pluralize(excludedCategoriesCount, singular: Localization.singleCategory, plural: Localization.multipleCategories)
+
+        switch (productsCount, excludedCategoriesCount, categoriesCount, excludedCategoriesCount) {
+        case let (products, _, categories, _) where products > 0 && categories > 0:
+            return String.localizedStringWithFormat(Localization.combinedRules, productText, categoryText)
+        case let (products, excludedProducts, _, _) where products > 0 && excludedProducts > 0:
+            return String.localizedStringWithFormat(Localization.ruleWithException, productText, productExceptionText)
+        case let (products, _, _, excludedCategories) where products > 0 && excludedCategories > 0:
+            return String.localizedStringWithFormat(Localization.ruleWithException, productText, categoryExceptionText)
+        case let (products, _, _, _) where products > 0:
+            return productText
+        case let (_, excludedProducts, categories, _) where excludedProducts > 0 && categories > 0:
+            return String.localizedStringWithFormat(Localization.ruleWithException, categoryText, productExceptionText)
+        case let (_, _, categories, excludedCategories) where categories > 0 && excludedCategories > 0:
+            return String.localizedStringWithFormat(Localization.ruleWithException, categoryText, excludedCategories)
+        case let (_, _, categories, _) where categories > 0:
+            return categoryText
+        case let (_, excludedProducts, _, _) where excludedProducts > 0:
+            return productExceptionText
+        case let (_, _, _, excludedCategories) where excludedCategories > 0:
+            return categoryExceptionText
+        default:
+            return Localization.allProducts
+        }
     }
 }
 
@@ -109,13 +142,13 @@ private extension CouponDetailsViewModel {
             "%1$d Category",
             comment: "The number of category allowed for a coupon in singular form. Reads like: 1 Category"
         )
-        static let pluralNumberOfCategories = NSLocalizedString(
+        static let multipleCategories = NSLocalizedString(
             "%1$d Categories",
             comment: "The number of category allowed for a coupon in plural form. " +
             "Reads like: 10 Categories"
         )
         static let allWithException = NSLocalizedString("All except %1$@", comment: "Exception rule for a coupon. Reads like: All except 2 Products")
         static let ruleWithException = NSLocalizedString("%1$@ except %2$@", comment: "Exception rule for a coupon. Reads like: 3 Products except 1 Category")
-        static let combinedRule = NSLocalizedString("%1$@ and %2$@", comment: "Combined rule for a coupon. Reads like: 2 Products and 1 Category")
+        static let combinedRules = NSLocalizedString("%1$@ and %2$@", comment: "Combined rule for a coupon. Reads like: 2 Products and 1 Category")
     }
 }

@@ -69,7 +69,7 @@ private extension CouponDetailsViewModel {
         case .fixedCart, .fixedProduct:
             let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
             amount = currencyFormatter.formatAmount(coupon.amount) ?? ""
-        case .other: // TODO: confirm this case
+        case .other:
             amount = coupon.amount
         }
 
@@ -99,7 +99,7 @@ private extension CouponDetailsViewModel {
         let categoryText = String.pluralize(categoriesCount, singular: Localization.singleCategory, plural: Localization.multipleCategories)
         let categoryExceptionText = String.pluralize(excludedCategoriesCount, singular: Localization.singleCategory, plural: Localization.multipleCategories)
 
-        switch (productsCount, excludedCategoriesCount, categoriesCount, excludedCategoriesCount) {
+        switch (productsCount, excludedProductsCount, categoriesCount, excludedCategoriesCount) {
         case let (products, _, categories, _) where products > 0 && categories > 0:
             return String.localizedStringWithFormat(Localization.combinedRules, productText, categoryText)
         case let (products, excludedProducts, _, _) where products > 0 && excludedProducts > 0:
@@ -111,13 +111,13 @@ private extension CouponDetailsViewModel {
         case let (_, excludedProducts, categories, _) where excludedProducts > 0 && categories > 0:
             return String.localizedStringWithFormat(Localization.ruleWithException, categoryText, productExceptionText)
         case let (_, _, categories, excludedCategories) where categories > 0 && excludedCategories > 0:
-            return String.localizedStringWithFormat(Localization.ruleWithException, categoryText, excludedCategories)
+            return String.localizedStringWithFormat(Localization.ruleWithException, categoryText, categoryExceptionText)
         case let (_, _, categories, _) where categories > 0:
             return categoryText
         case let (_, excludedProducts, _, _) where excludedProducts > 0:
-            return productExceptionText
+            return String.localizedStringWithFormat(Localization.allWithException, productExceptionText)
         case let (_, _, _, excludedCategories) where excludedCategories > 0:
-            return categoryExceptionText
+            return String.localizedStringWithFormat(Localization.allWithException, categoryExceptionText)
         default:
             return Localization.allProducts
         }

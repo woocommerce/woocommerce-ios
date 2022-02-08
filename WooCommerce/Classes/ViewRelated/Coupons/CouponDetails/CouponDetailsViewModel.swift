@@ -27,7 +27,7 @@ final class CouponDetailsViewModel: ObservableObject {
 
     /// Total number of orders that applied the coupon
     ///
-    @Published private(set) var discountedOrdersCount: String = ""
+    @Published private(set) var discountedOrdersCount: String = "0"
 
     /// Total amount deducted from orders that applied the coupon
     ///
@@ -47,6 +47,7 @@ final class CouponDetailsViewModel: ObservableObject {
         self.coupon = coupon
         self.stores = stores
         self.currencySettings = currencySettings
+        self.discountedAmount = formatStringAmount("0")
         observeCoupon()
         syncCoupon()
         loadCouponReport()
@@ -76,8 +77,7 @@ private extension CouponDetailsViewModel {
                 amount = percentFormatter.string(from: amountNumber) ?? ""
             }
         case .fixedCart, .fixedProduct:
-            let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-            amount = currencyFormatter.formatAmount(coupon.amount) ?? ""
+            amount = formatStringAmount(coupon.amount)
         case .other:
             amount = coupon.amount
         }
@@ -109,13 +109,17 @@ private extension CouponDetailsViewModel {
             switch result {
             case .success(let report):
                 self.discountedOrdersCount = "\(report.ordersCount)"
-                let currencyFormatter = CurrencyFormatter(currencySettings: self.currencySettings)
-                self.discountedAmount = currencyFormatter.formatAmount("\(report.amount)") ?? ""
+                self.discountedAmount = self.formatStringAmount("\(report.amount)")
             case .failure(let error):
                 DDLogError("⛔️ Error loading coupon report: \(error)")
             }
         }
         stores.dispatch(action)
+    }
+
+    func formatStringAmount(_ amount: String) -> String {
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        return currencyFormatter.formatAmount(amount) ?? ""
     }
 
     func localizeApplyRules(productsCount: Int, excludedProductsCount: Int, categoriesCount: Int, excludedCategoriesCount: Int) -> String {

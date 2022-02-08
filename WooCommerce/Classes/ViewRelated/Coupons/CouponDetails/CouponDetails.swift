@@ -41,6 +41,7 @@ struct CouponDetails: View {
                             Text(viewModel.discountedAmount)
                                 .font(.title)
                         }
+                        .padding(.leading, Constants.margin)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .padding([.horizontal, .bottom], Constants.margin)

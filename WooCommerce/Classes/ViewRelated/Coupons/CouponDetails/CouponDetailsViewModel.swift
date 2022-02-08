@@ -25,6 +25,14 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var expiryDate: String = ""
 
+    /// Total number of orders that applied the coupon
+    ///
+    @Published private(set) var discountedOrdersCount: Int = 0
+
+    /// Total amount deducted from orders that applied the coupon
+    ///
+    @Published private(set) var discountedAmount: String = ""
+
     /// The current coupon
     ///
     @Published private var coupon: Coupon

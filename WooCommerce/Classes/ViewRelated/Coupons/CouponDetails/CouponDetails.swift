@@ -3,6 +3,7 @@ import Yosemite
 
 struct CouponDetails: View {
     @ObservedObject private var viewModel: CouponDetailsViewModel
+    @State private var showingActionSheet: Bool = false
 
     init(viewModel: CouponDetailsViewModel) {
         self.viewModel = viewModel
@@ -50,7 +51,13 @@ struct CouponDetails: View {
                     showingActionSheet = true
                 }, label: {
                     Image(uiImage: .moreImage)
-                })
+                }).actionSheet(isPresented: $showingActionSheet) {
+                    ActionSheet(
+                        title: Text(Localization.manageCoupon),
+                        buttons: [
+                        ]
+                    )
+                }
             }
         }
         .wooNavigationBarStyle()
@@ -73,6 +80,7 @@ private extension CouponDetails {
         static let discount = NSLocalizedString("Discount", comment: "Title of the Discount row in Coupon Details screen")
         static let applyTo = NSLocalizedString("Apply To", comment: "Title of the Apply To row in Coupon Details screen")
         static let expiryDate = NSLocalizedString("Coupon Expiry Date", comment: "Title of the Coupon Expiry Date row in Coupon Details screen")
+        static let manageCoupon = NSLocalizedString("Manage Coupon", comment: "Title of the action sheet displayed from the Coupon Details screen")
     }
 
     struct DetailRow: Identifiable {

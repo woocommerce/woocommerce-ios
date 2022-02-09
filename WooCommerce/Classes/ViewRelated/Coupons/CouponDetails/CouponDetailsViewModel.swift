@@ -67,7 +67,9 @@ final class CouponDetailsViewModel: ObservableObject {
     }
 
     func loadCouponReport() {
-        let action = CouponAction.loadCouponReport(siteID: coupon.siteID, couponID: coupon.couponID) { [weak self] result in
+        // Get "ancient" date to fetch all possible reports
+        let startDate = Date(timeIntervalSince1970: 1)
+        let action = CouponAction.loadCouponReport(siteID: coupon.siteID, couponID: coupon.couponID, startDate: startDate) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let report):

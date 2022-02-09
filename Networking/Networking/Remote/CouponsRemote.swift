@@ -30,6 +30,7 @@ public protocol CouponsRemoteProtocol {
 
     func loadCouponReport(for siteID: Int64,
                           couponID: Int64,
+                          from startDate: Date,
                           completion: @escaping (Result<CouponReport, Error>) -> Void)
 }
 
@@ -183,15 +184,15 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     /// - Parameters:
     ///     - siteID: The site from which we'll fetch the analytics report.
     ///     - couponID: The coupon for which we'll fetch the analytics report.
+    ///     - startDate: The start of the date range for which we'll fetch the analytics report.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadCouponReport(for siteID: Int64,
                                  couponID: Int64,
+                                 from startDate: Date,
                                  completion: @escaping (Result<CouponReport, Error>) -> Void) {
-        // Get an "ancient" date to fetch all possible reports
-        let startTime = Date(timeIntervalSince1970: 1)
         let dateFormatter = ISO8601DateFormatter()
-        let formattedTime = dateFormatter.string(from: startTime)
+        let formattedTime = dateFormatter.string(from: startDate)
 
         let parameters: [String: Any] = [
             ParameterKey.coupons: [couponID],

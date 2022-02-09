@@ -134,7 +134,7 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
         transitionToSyncingState()
 
-        if let searchTerm = reason, searchTerm.isNotEmpty {
+        if searchTerm.isNotEmpty {
             searchProducts(siteID: siteID, keyword: searchTerm, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         } else {
             syncProducts(pageNumber: pageNumber, pageSize: pageSize, reason: reason, onCompletion: onCompletion)
@@ -270,8 +270,8 @@ private extension AddProductToOrderViewModel {
     func configureProductSearch() {
         $searchTerm
             .dropFirst() // Drop initial value
-            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
             .removeDuplicates()
+            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
             .sink { [weak self] newSearchTerm in
                 guard let self = self else { return }
 
@@ -285,7 +285,7 @@ private extension AddProductToOrderViewModel {
                     self.productsResultsController.predicate = self.resultsPredicate
                 }
 
-                self.syncingCoordinator.resynchronize(reason: newSearchTerm)
+                self.syncingCoordinator.resynchronize()
             }.store(in: &subscriptions)
     }
 }

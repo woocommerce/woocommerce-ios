@@ -213,7 +213,7 @@ extension InboxNote {
             actions: .fake(),
             title: .fake(),
             content: .fake(),
-            isDeleted: .fake(),
+            isRemoved: .fake(),
             isRead: .fake(),
             dateCreated: .fake()
         )

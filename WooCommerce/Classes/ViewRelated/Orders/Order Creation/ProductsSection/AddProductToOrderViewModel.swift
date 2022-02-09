@@ -184,7 +184,11 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
                 DDLogError("⛔️ Error searching products during order creation: \(error)")
             }
 
-            self.transitionToResultsUpdatedState()
+            // Don't update sync status if this isn't the latest search term.
+            // Avoids a flash of the empty results view if a new search is being performed.
+            if keyword == self.searchTerm {
+                self.transitionToResultsUpdatedState()
+            }
             onCompletion?(result.isSuccess)
         }
 

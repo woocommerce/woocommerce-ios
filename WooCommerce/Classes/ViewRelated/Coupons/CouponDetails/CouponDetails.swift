@@ -52,7 +52,6 @@ struct CouponDetails: View {
                 VStack(alignment: .leading, spacing: 0) {
                     // Anchor the action sheet at the top to be able to show the popover on iPad in the most appropriate position
                     Divider()
-                        .foregroundColor(.clear)
                         .actionSheet(isPresented: $showingActionSheet) {
                             ActionSheet(
                                 title: Text(Localization.manageCoupon),
@@ -72,6 +71,7 @@ struct CouponDetails: View {
                         .shareSheet(isPresented: $showingShareSheet) {
                             ShareSheet(activityItems: [viewModel.shareMessage])
                         }
+
                     VStack(alignment: .leading, spacing: 0) {
                         Text(Localization.performance)
                             .bold()
@@ -100,7 +100,9 @@ struct CouponDetails: View {
                     }
                     .background(Color(.listForeground))
 
+                    Divider()
                     Spacer().frame(height: Constants.margin)
+                    Divider()
 
                     VStack(alignment: .leading, spacing: 0) {
                         Text(Localization.detailSectionTitle)

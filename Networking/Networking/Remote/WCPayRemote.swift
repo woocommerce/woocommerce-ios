@@ -72,7 +72,7 @@ public class WCPayRemote: Remote {
                             completion: @escaping (Result<WCPayCharge, Error>) -> Void) {
         let path = "\(Path.charges)/\(chargeID)"
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: [:])
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: [:])
 
         let mapper = WCPayChargeMapper(siteID: siteID)
 

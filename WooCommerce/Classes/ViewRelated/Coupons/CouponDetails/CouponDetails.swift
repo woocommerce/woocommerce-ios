@@ -95,11 +95,12 @@ struct CouponDetails: View {
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
         .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
+            ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     showingActionSheet = true
                 }, label: {
                     Image(uiImage: .moreImage)
+                        .renderingMode(.template)
                 })
             }
         }

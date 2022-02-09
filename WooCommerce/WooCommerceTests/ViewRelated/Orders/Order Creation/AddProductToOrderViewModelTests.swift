@@ -154,8 +154,8 @@ class AddProductToOrderViewModelTests: XCTestCase {
             case let .searchProducts(_, _, _, _, _, onCompletion):
                 let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
                 self.insert(product, withSearchTerm: "shirt")
-                expectation.fulfill()
                 onCompletion(.success(()))
+                expectation.fulfill()
             default:
                 XCTFail("Unsupported Action")
             }
@@ -179,8 +179,8 @@ class AddProductToOrderViewModelTests: XCTestCase {
             switch action {
             case let .searchProducts(_, _, _, _, _, onCompletion):
                 self.insert(product.copy(name: "T-shirt"), withSearchTerm: "shirt")
-                expectation.fulfill()
                 onCompletion(.success(()))
+                expectation.fulfill()
             default:
                 XCTFail("Unsupported Action")
             }
@@ -219,8 +219,8 @@ class AddProductToOrderViewModelTests: XCTestCase {
                 self.insert(product.copy(name: "T-shirt"), withSearchTerm: "shirt")
                 onCompletion(.success(()))
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
-                expectation.fulfill()
                 onCompletion(.success(true))
+                expectation.fulfill()
             default:
                 XCTFail("Unsupported Action")
             }

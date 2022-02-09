@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 default_platform(:ios)
 fastlane_require 'dotenv'
 fastlane_require 'git'
@@ -15,7 +17,7 @@ DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
 IOS_LOCALES = %w[ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
 GLOTPRESS_LOCALES = %w[ar de es fr he id it ja ko nl pt-br ru sv tr zh-cn zh-tw].freeze
-SIMULATOR_VERSION = '14.3'.freeze # For screenshots
+SIMULATOR_VERSION = '14.3' # For screenshots
 SCREENSHOT_DEVICES = [
   'iPhone 11 Pro Max',
   'iPhone 8 Plus',
@@ -23,8 +25,8 @@ SCREENSHOT_DEVICES = [
   'iPad Pro (12.9-inch) (3rd generation)'
 ].freeze
 
-MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce]        # Registered in our main account, for development and AppStore
-ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce] # Registered in our Enterprise account, for AppCenter / Installable Builds
+MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce].freeze        # Registered in our main account, for development and AppStore
+ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce].freeze # Registered in our Enterprise account, for AppCenter / Installable Builds
 
 # Use this instead of getting values from ENV directly
 # It will throw an error if the requested value is missing
@@ -240,7 +242,9 @@ platform :ios do
   #####################################################################################
   desc 'Trigger the final release build on CI'
   lane :finalize_release do |options|
-    UI.user_error!('To finalize a hotfix, please use the finalize_hotfix_release lane instead') if ios_current_branch_is_hotfix
+    if ios_current_branch_is_hotfix
+      UI.user_error!('To finalize a hotfix, please use the finalize_hotfix_release lane instead')
+    end
 
     ios_finalize_prechecks(options)
 
@@ -250,7 +254,7 @@ platform :ios do
       abort_on_violations: false
     )
 
-    UI.message("Checking release notes strings translation status...")
+    UI.message('Checking release notes strings translation status...')
     check_translation_progress(
       glotpress_url: 'https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/release-notes/',
       abort_on_violations: false
@@ -395,7 +399,7 @@ platform :ios do
     sh('cd .. && rm WooCommerce.app.dSYM.zip')
 
     if options[:create_release]
-      archive_zip_path = File.dirname(Dir.pwd) + '/WooCommerce.xarchive.zip'
+      archive_zip_path = "#{File.dirname(Dir.pwd)}/WooCommerce.xarchive.zip"
       zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
 
       version = options[:beta_release] ? ios_get_build_version : ios_get_app_version
@@ -422,7 +426,7 @@ platform :ios do
   # bundle exec fastlane build_and_upload_installable_build build_number:123
   #####################################################################################
   desc 'Builds and uploads an installable build'
-  lane :build_and_upload_installable_build do |options|
+  lane :build_and_upload_installable_build do |_options|
     ensure_sentry_installed
 
     alpha_code_signing
@@ -657,9 +661,9 @@ platform :ios do
 
     # Provide enough information to bootstrap the configuration and generate the HTML report
     Snapshot.config = FastlaneCore::Configuration.create(Snapshot::Options.available_options, {
-      "workspace": '../WooCommerce.xcworkspace',
-      "scheme": 'WooCommerceScreenshots'
-    })
+                                                           "workspace": '../WooCommerce.xcworkspace',
+                                                           "scheme": 'WooCommerceScreenshots'
+                                                         })
 
     Snapshot::ReportsGenerator.new.generate
   end
@@ -796,7 +800,7 @@ platform :ios do
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
       readonly: false,
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
-      template_name: 'Apple Pay Pass Suppression',
+      template_name: 'Apple Pay Pass Suppression'
     )
   end
 
@@ -820,33 +824,33 @@ platform :ios do
   rescue IOError => e
     UI.crash(e)
   ensure
-    file.close unless file.nil?
+    file&.close
   end
 end
 
-def fastlane_directory()
-  File.expand_path File.dirname(__FILE__)
+def fastlane_directory
+  __dir__
 end
 
-def derived_data_directory()
-  File.join(fastlane_directory, "DerivedData")
+def derived_data_directory
+  File.join(fastlane_directory, 'DerivedData')
 end
 
-def screenshots_directory()
-  File.join(fastlane_directory, "screenshots")
+def screenshots_directory
+  File.join(fastlane_directory, 'screenshots')
 end
 
-def screenshot_devices()
+def screenshot_devices
   [
-    "iPhone 11 Pro Max",
-    "iPhone 8 Plus",
-    "iPad Pro (12.9-inch) (2nd generation)",
-    "iPad Pro (12.9-inch) (3rd generation)",
+    'iPhone 11 Pro Max',
+    'iPhone 8 Plus',
+    'iPad Pro (12.9-inch) (2nd generation)',
+    'iPad Pro (12.9-inch) (3rd generation)'
   ]
 end
 
-def simulator_version()
-  return '14.4'
+def simulator_version
+  '14.4'
 end
 
 ########################################################################
@@ -864,26 +868,26 @@ end
 # Example:
 # bundle exec fastlane test_without_building name:UITests try_count:3
 #####################################################################################
-desc "Run tests without building"
-lane :test_without_building do | options |
+desc 'Run tests without building'
+lane :test_without_building do |options|
   # Find the referenced .xctestrun file based on its name
-  buildProductsPath = File.expand_path("DerivedData/Build/Products/", File.dirname(Dir.pwd))
+  buildProductsPath = File.expand_path('DerivedData/Build/Products/', File.dirname(Dir.pwd))
 
-  testPlanPath = Dir.glob(File.join(buildProductsPath, '*.xctestrun') ).select { |e|
+  testPlanPath = Dir.glob(File.join(buildProductsPath, '*.xctestrun')).select do |e|
     e.include?(options[:name])
-  }.first
+  end.first
 
-  UI.user_error!("Unable to find .xctestrun file") unless testPlanPath != nil and File.exists? (testPlanPath)
+  UI.user_error!('Unable to find .xctestrun file') unless !testPlanPath.nil? && File.exist?((testPlanPath))
 
   summary = multi_scan(
-    workspace: "WooCommerce.xcworkspace",
-    scheme: "WooCommerce",
+    workspace: 'WooCommerce.xcworkspace',
+    scheme: 'WooCommerce',
     device: options[:device],
     deployment_target_version: options[:ios_version],
     test_without_building: true,
     xctestrun: testPlanPath,
     try_count: options[:try_count],
-    output_directory: "build/reports",
+    output_directory: 'build/reports',
     result_bundle: true,
     fail_build: false
   )
@@ -893,14 +897,14 @@ lane :test_without_building do | options |
   delete_scan_reports(summary[:report_files])
 
   # Manually fail build if test have failed.
-  UI.test_failure!("#{summary[:failed_testcount]} tests have failed") if summary[:failed_testcount] > 0
+  UI.test_failure!("#{summary[:failed_testcount]} tests have failed") if (summary[:failed_testcount]).positive?
 end
 
 # -----------------------------------------------------------------------------------
 # Geneate trainer reports for each xcresult report file.
 # -----------------------------------------------------------------------------------
 def generate_trainer_reports(report_files)
-  report_files.reject { |path| File.extname(path) != '.xcresult' }.each do |report_path|
+  report_files.select { |path| File.extname(path) == '.xcresult' }.each do |report_path|
     trainer(path: report_path, fail_build: false)
   end
 end
@@ -919,17 +923,17 @@ end
 # -----------------------------------------------------------------------------------
 def generate_installable_build_number
   if ENV['BUILDKITE']
-    commit = ENV['BUILDKITE_COMMIT'][0,7]
+    commit = ENV['BUILDKITE_COMMIT'][0, 7]
     branch = ENV['BUILDKITE_BRANCH']
     pr_num = ENV['BUILDKITE_PULL_REQUEST']
 
-    return pr_num == 'false' ? "#{branch}-#{commit}" : "pr#{pr_num}-#{commit}"
+    pr_num == 'false' ? "#{branch}-#{commit}" : "pr#{pr_num}-#{commit}"
   else
     repo = Git.open(PROJECT_ROOT_FOLDER)
     commit = repo.current_branch
     branch = repo.revparse('HEAD')[0, 7]
 
-    return "#{branch}-#{commit}"
+    "#{branch}-#{commit}"
   end
 end
 

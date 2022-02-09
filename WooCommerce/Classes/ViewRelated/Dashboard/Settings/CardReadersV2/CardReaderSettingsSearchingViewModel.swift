@@ -29,13 +29,34 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
         foundReader?.id
     }
 
+    /// The connected gateway ID (plugin slug) - useful for the view controller's tracks events
+    var connectedGatewayID: String?
+
+    /// The datasource that will be used to help render the related screens
+    ///
+    private(set) lazy var dataSource: CardReaderSettingsDataSource = {
+        return CardReaderSettingsDataSource(siteID: siteID)
+    }()
+
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil) {
         self.didChangeShouldShow = didChangeShouldShow
         self.siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
         self.knownReaderProvider = knownReaderProvider
 
+        configureResultsControllers()
+
         beginKnownReaderObservation()
         beginConnectedReaderObservation()
+    }
+
+
+    private func configureResultsControllers() {
+        dataSource.configureResultsControllers(onReload: { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.connectedGatewayID = self.dataSource.cardPresentPaymentGatewayID()
+        })
     }
 
     deinit {

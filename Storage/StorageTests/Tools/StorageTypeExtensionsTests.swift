@@ -1026,6 +1026,36 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(searchResult, storedSearchResult)
     }
 
+    func test_loadInboxNote_by_siteID_id() throws {
+        // Given
+        let inboxNote = storage.insertNewObject(ofType: InboxNote.self)
+        inboxNote.siteID = 123
+        inboxNote.id = 321
+
+        // When
+        let storedInboxNote = try XCTUnwrap(storage.loadInboxNote(siteID: 123, id: 321))
+
+        // Then
+        XCTAssertEqual(inboxNote, storedInboxNote)
+    }
+
+    func test_loadAllInboxNotes_by_siteID() throws {
+        // Given
+        let inboxNote1 = storage.insertNewObject(ofType: InboxNote.self)
+        inboxNote1.siteID = 123
+        inboxNote1.id = 321
+
+        let inboxNote2 = storage.insertNewObject(ofType: InboxNote.self)
+        inboxNote2.siteID = 123
+        inboxNote2.id = 654
+
+        // When
+        let storedInboxNotes = try XCTUnwrap(storage.loadAllInboxNotes(siteID: 123))
+
+        // Then
+        XCTAssertEqual(Set([inboxNote1, inboxNote2]), Set(storedInboxNotes))
+    }
+
     func test_loadShippingLabelAccountSettings_by_siteID() throws {
         // Given
         let accountSettings = storage.insertNewObject(ofType: ShippingLabelAccountSettings.self)

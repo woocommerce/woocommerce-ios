@@ -6,6 +6,7 @@ struct CouponDetails: View {
 
     init(viewModel: CouponDetailsViewModel) {
         self.viewModel = viewModel
+        viewModel.syncCoupon()
     }
 
     private var detailRows: [DetailRow] {

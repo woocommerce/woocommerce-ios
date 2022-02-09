@@ -740,8 +740,8 @@
     </entity>
     <entity name="WCPayCardPresentReceiptDetails" representedClassName="WCPayCardPresentReceiptDetails" syncable="YES">
         <attribute name="accountType" attributeType="String"/>
-        <attribute name="applicationPreferredName" attributeType="String"/>
-        <attribute name="dedicatedFileName" attributeType="String"/>
+        <attribute name="applicationPreferredName" optional="YES" attributeType="String"/>
+        <attribute name="dedicatedFileName" optional="YES" attributeType="String"/>
         <relationship name="cardPresentPayment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WCPayCardPresentPaymentDetails" inverseName="receipt" inverseEntity="WCPayCardPresentPaymentDetails"/>
     </entity>
     <entity name="WCPayCharge" representedClassName="WCPayCharge" syncable="YES">

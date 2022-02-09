@@ -9,8 +9,8 @@ extension WCPayCardPresentReceiptDetails {
     }
 
     @NSManaged public var accountType: String
-    @NSManaged public var applicationPreferredName: String
-    @NSManaged public var dedicatedFileName: String
+    @NSManaged public var applicationPreferredName: String?
+    @NSManaged public var dedicatedFileName: String?
     @NSManaged public var cardPresentPayment: WCPayCardPresentPaymentDetails?
 
 }

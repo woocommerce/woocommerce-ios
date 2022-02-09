@@ -119,6 +119,12 @@ final class AddProductToOrderViewModel: ObservableObject {
         }
         return AddProductVariationToOrderViewModel(siteID: siteID, product: variableProduct, onVariationSelected: onVariationSelected)
     }
+
+    /// Clears the current search term to display the full product list.
+    ///
+    func clearSearch() {
+        searchTerm = ""
+    }
 }
 
 // MARK: - SyncingCoordinatorDelegate & Sync Methods
@@ -268,7 +274,7 @@ private extension AddProductToOrderViewModel {
                 if newSearchTerm.isNotEmpty {
                     // When the search query changes, also includes the original results predicate in addition to the search keyword.
                     let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", newSearchTerm)
-                    let subpredicates = [self.resultsPredicate].compactMap { $0 } + [searchResultsPredicate]
+                    let subpredicates = [self.resultsPredicate, searchResultsPredicate].compactMap { $0 }
                     self.productsResultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
                 } else {
                     // Resets the results to the full product list when there is no search query.

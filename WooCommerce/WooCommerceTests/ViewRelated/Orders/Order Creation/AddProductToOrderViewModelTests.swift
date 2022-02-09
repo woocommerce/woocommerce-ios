@@ -195,6 +195,18 @@ class AddProductToOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows[0].name, "T-shirt")
     }
 
+    func test_clearSearch_resets_searchTerm() {
+        // Given
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID)
+
+        // When
+        viewModel.searchTerm = "shirt"
+        viewModel.clearSearch()
+
+        // Then
+        XCTAssertEqual(viewModel.searchTerm, "")
+    }
+
     func test_clearing_search_returns_full_product_list() {
         // Given
         let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
@@ -216,7 +228,7 @@ class AddProductToOrderViewModelTests: XCTestCase {
 
         // When
         viewModel.searchTerm = "shirt"
-        viewModel.searchTerm = ""
+        viewModel.clearSearch()
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then

@@ -44,6 +44,16 @@ struct CouponDetails: View {
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
         .navigationTitle(Localization.navigationTitle)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(action: {
+                    showingActionSheet = true
+                }, label: {
+                    Image(uiImage: .moreImage)
+                })
+            }
+        }
+        .wooNavigationBarStyle()
     }
 }
 

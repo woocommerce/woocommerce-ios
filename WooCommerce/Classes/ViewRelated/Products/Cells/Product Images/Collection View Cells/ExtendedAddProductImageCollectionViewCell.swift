@@ -9,6 +9,7 @@ final class ExtendedAddProductImageCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
         configureBackground()
         configureImageView()
+        configureLabel()
     }
 
     func configurePlaceholderLabelForProductImages(isVariation: Bool) {

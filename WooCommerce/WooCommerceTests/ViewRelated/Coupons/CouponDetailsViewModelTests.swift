@@ -168,4 +168,24 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.discountedOrdersCount, "10")
         XCTAssertEqual(viewModel.discountedAmount, "$220.00")
     }
+
+    func test_coupon_share_message_is_correct_if_there_is_no_restriction() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent)
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
+
+        // Then
+        let shareMessage = String(format: NSLocalizedString("Apply %@ off to all products with the promo code “%@”.", comment: ""), "10%", "TEST")
+        XCTAssertEqual(viewModel.shareMessage, shareMessage)
+    }
+
+    func test_coupon_share_message_is_correct_if_there_is_some_restriction() {
+        // Given
+        let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, productIds: [12, 23])
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
+
+        // Then
+        let shareMessage = String(format: NSLocalizedString("Apply %@ off to some products with the promo code “%@”.", comment: ""), "10%", "TEST")
+        XCTAssertEqual(viewModel.shareMessage, shareMessage)
+    }
 }

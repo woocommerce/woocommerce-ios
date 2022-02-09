@@ -14,14 +14,14 @@ public struct WCPayCardPresentReceiptDetails: Codable, GeneratedCopiable, Genera
     public let accountType: WCPayCardFunding
 
     /// The EMV Application Identifier (AID)
-    public let applicationPreferredName: String
+    public let applicationPreferredName: String?
 
     /// The EMV Dedicated File (DF) Name
-    public let dedicatedFileName: String
+    public let dedicatedFileName: String?
 
     public init(accountType: WCPayCardFunding,
-                applicationPreferredName: String,
-                dedicatedFileName: String) {
+                applicationPreferredName: String?,
+                dedicatedFileName: String?) {
         self.accountType = accountType
         self.applicationPreferredName = applicationPreferredName
         self.dedicatedFileName = dedicatedFileName

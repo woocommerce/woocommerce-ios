@@ -55,6 +55,12 @@ struct CouponDetails: View {
                     ActionSheet(
                         title: Text(Localization.manageCoupon),
                         buttons: [
+                            .default(Text(Localization.copyCode), action: {
+                                // TODO:
+                            }),
+                            .default(Text(Localization.shareCoupon), action: {
+                                // TODO:
+                            })
                         ]
                     )
                 }

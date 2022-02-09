@@ -52,10 +52,14 @@ final class HubMenuViewModel: ObservableObject {
     init(siteID: Int64, navigationController: UINavigationController? = nil, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.navigationController = navigationController
-        menuElements = [.woocommerceAdmin, .viewStore, .reviews]
+        menuElements = [.woocommerceAdmin, .viewStore]
+        if featureFlagService.isFeatureFlagEnabled(.inbox) {
+            menuElements.append(.inbox)
+        }
         if featureFlagService.isFeatureFlagEnabled(.couponManagement) {
             menuElements.append(.coupons)
         }
+        menuElements.append(.reviews)
         observeSiteForUIUpdates()
     }
 
@@ -93,6 +97,7 @@ extension HubMenuViewModel {
     enum Menu: CaseIterable {
         case woocommerceAdmin
         case viewStore
+        case inbox
         case coupons
         case reviews
 
@@ -102,6 +107,8 @@ extension HubMenuViewModel {
                 return Localization.woocommerceAdmin
             case .viewStore:
                 return Localization.viewStore
+            case .inbox:
+                return Localization.inbox
             case .coupons:
                 return Localization.coupon
             case .reviews:
@@ -115,6 +122,8 @@ extension HubMenuViewModel {
                 return .wordPressLogoImage
             case .viewStore:
                 return .storeImage
+            case .inbox:
+                return .mailboxImage
             case .coupons:
                 return .couponImage
             case .reviews:
@@ -128,6 +137,8 @@ extension HubMenuViewModel {
                 return .blue
             case .viewStore:
                 return .accent
+            case .inbox:
+                return .withColorStudio(.blue, shade: .shade40)
             case .coupons:
                 return UIColor(light: .withColorStudio(.green, shade: .shade30),
                                dark: .withColorStudio(.green, shade: .shade50))
@@ -144,6 +155,7 @@ extension HubMenuViewModel {
                                                         comment: "Title of one of the hub menu options")
         static let viewStore = NSLocalizedString("View Store",
                                                  comment: "Title of one of the hub menu options")
+        static let inbox = NSLocalizedString("Inbox", comment: "Title of the Inbox menu in the hub menu")
         static let coupon = NSLocalizedString("Coupons", comment: "Title of the Coupons menu in the hub menu")
         static let reviews = NSLocalizedString("Reviews",
                                                comment: "Title of one of the hub menu options")

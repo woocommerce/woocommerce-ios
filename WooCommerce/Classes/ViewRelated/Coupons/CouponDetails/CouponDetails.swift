@@ -23,6 +23,7 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 struct CouponDetails: View {
     @ObservedObject private var viewModel: CouponDetailsViewModel
     @State private var showingActionSheet: Bool = false
+    @State private var showingShareSheet: Bool = false
 
     /// The presenter to display notice when the coupon code is copied.
     /// It is kept internal so that the hosting controller can update its presenting controller to itself.
@@ -84,16 +85,19 @@ struct CouponDetails: View {
                                 noticePresenter.enqueue(notice: notice)
                             }),
                             .default(Text(Localization.shareCoupon), action: {
-                                // TODO:
+                                showingShareSheet = true
                             }),
                             .cancel()
                         ]
                     )
+                }.shareSheet(isPresented: $showingShareSheet) {
+                    ShareSheet(activityItems: [viewModel.shareMessage])
                 }
             }
         }
         .wooNavigationBarStyle()
     }
+
 }
 
 // MARK: - Subtypes

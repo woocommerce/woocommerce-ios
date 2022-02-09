@@ -56,23 +56,45 @@ struct CouponDetails: View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    Text(Localization.detailSectionTitle)
-                        .bold()
-                        .padding(Constants.margin)
-                        .padding(.horizontal, insets: geometry.safeAreaInsets)
-                    ForEach(detailRows) { row in
-                        TitleAndValueRow(title: row.title,
-                                         value: .content(row.content),
-                                         selectable: true,
-                                         action: row.action)
-                            .padding(.vertical, Constants.verticalSpacing)
+                    // Anchor the action sheet at the top to be able to show the popover on iPad in the most appropriate position
+                    Divider()
+                        .foregroundColor(.clear)
+                        .actionSheet(isPresented: $showingActionSheet) {
+                            ActionSheet(
+                                title: Text(Localization.manageCoupon),
+                                buttons: [
+                                    .default(Text(Localization.copyCode), action: {
+                                        UIPasteboard.general.string = viewModel.couponCode
+                                        let notice = Notice(title: Localization.couponCopied, feedbackType: .success)
+                                        noticePresenter.enqueue(notice: notice)
+                                    }),
+                                    .default(Text(Localization.shareCoupon), action: {
+                                        shareAction(viewModel.shareMessage)
+                                    }),
+                                    .cancel()
+                                ]
+                            )
+                        }
+
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(Localization.detailSectionTitle)
+                            .bold()
+                            .padding(Constants.margin)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
-                        Divider()
-                            .padding(.leading, Constants.margin)
-                            .padding(.leading, insets: geometry.safeAreaInsets)
+                        ForEach(detailRows) { row in
+                            TitleAndValueRow(title: row.title,
+                                             value: .content(row.content),
+                                             selectable: true,
+                                             action: row.action)
+                                .padding(.vertical, Constants.verticalSpacing)
+                                .padding(.horizontal, insets: geometry.safeAreaInsets)
+                            Divider()
+                                .padding(.leading, Constants.margin)
+                                .padding(.leading, insets: geometry.safeAreaInsets)
+                        }
                     }
+                    .background(Color(.listForeground))
                 }
-                .background(Color(.listForeground))
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
@@ -84,22 +106,6 @@ struct CouponDetails: View {
                 }, label: {
                     Image(uiImage: .moreImage)
                 })
-                .actionSheet(isPresented: $showingActionSheet) {
-                    ActionSheet(
-                        title: Text(Localization.manageCoupon),
-                        buttons: [
-                            .default(Text(Localization.copyCode), action: {
-                                UIPasteboard.general.string = viewModel.couponCode
-                                let notice = Notice(title: Localization.couponCopied, feedbackType: .success)
-                                noticePresenter.enqueue(notice: notice)
-                            }),
-                            .default(Text(Localization.shareCoupon), action: {
-                                shareAction(viewModel.shareMessage)
-                            }),
-                            .cancel()
-                        ]
-                    )
-                }
             }
         }
         .wooNavigationBarStyle()

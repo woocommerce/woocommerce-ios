@@ -5,8 +5,11 @@ struct CouponDetails: View {
     @ObservedObject private var viewModel: CouponDetailsViewModel
     @State private var showingActionSheet: Bool = false
 
+    private let noticePresenter: DefaultNoticePresenter
+
     init(viewModel: CouponDetailsViewModel) {
         self.viewModel = viewModel
+        self.noticePresenter = DefaultNoticePresenter()
     }
 
     private var detailRows: [DetailRow] {
@@ -56,7 +59,9 @@ struct CouponDetails: View {
                         title: Text(Localization.manageCoupon),
                         buttons: [
                             .default(Text(Localization.copyCode), action: {
-                                // TODO:
+                                UIPasteboard.general.string = viewModel.couponCode
+                                let notice = Notice(title: Localization.couponCopied, feedbackType: .success)
+                                noticePresenter.enqueue(notice: notice)
                             }),
                             .default(Text(Localization.shareCoupon), action: {
                                 // TODO:
@@ -88,7 +93,8 @@ private extension CouponDetails {
         static let expiryDate = NSLocalizedString("Coupon Expiry Date", comment: "Title of the Coupon Expiry Date row in Coupon Details screen")
         static let manageCoupon = NSLocalizedString("Manage Coupon", comment: "Title of the action sheet displayed from the Coupon Details screen")
         static let copyCode = NSLocalizedString("Copy Code", comment: "Action title for copying coupon code from the Coupon Details screen")
-        static let couponCopied = NSLocalizedString("Coupon copied", comment: "Notice message displayed when a coupon code is copied from the Coupon Details screen")
+        static let couponCopied = NSLocalizedString("Coupon copied", comment: "Notice message displayed when a coupon code is " +
+                                                    "copied from the Coupon Details screen")
         static let shareCoupon = NSLocalizedString("Share Coupon", comment: "Action title for sharing coupon from the Coupon Details screen")
     }
 

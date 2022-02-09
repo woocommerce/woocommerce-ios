@@ -32,6 +32,8 @@ struct CouponDetails: View {
     init(viewModel: CouponDetailsViewModel) {
         self.viewModel = viewModel
         self.noticePresenter = DefaultNoticePresenter()
+        viewModel.syncCoupon()
+        viewModel.loadCouponReport()
     }
 
     private var detailRows: [DetailRow] {
@@ -70,6 +72,35 @@ struct CouponDetails: View {
                         .shareSheet(isPresented: $showingShareSheet) {
                             ShareSheet(activityItems: [viewModel.shareMessage])
                         }
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(Localization.performance)
+                            .bold()
+                            .padding(Constants.margin)
+                            .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        HStack(spacing: 0) {
+                            VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                                Text(Localization.discountedOrders)
+                                    .secondaryBodyStyle()
+                                Text(viewModel.discountedOrdersCount)
+                                    .font(.title)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                            VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                                Text(Localization.amount)
+                                    .secondaryBodyStyle()
+                                Text(viewModel.discountedAmount)
+                                    .font(.title)
+                            }
+                            .padding(.leading, Constants.margin)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        .padding([.horizontal, .bottom], Constants.margin)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+                    }
+                    .background(Color(.listForeground))
+
+                    Spacer().frame(height: Constants.margin)
 
                     VStack(alignment: .leading, spacing: 0) {
                         Text(Localization.detailSectionTitle)
@@ -129,6 +160,9 @@ private extension CouponDetails {
         static let couponCopied = NSLocalizedString("Coupon copied", comment: "Notice message displayed when a coupon code is " +
                                                     "copied from the Coupon Details screen")
         static let shareCoupon = NSLocalizedString("Share Coupon", comment: "Action title for sharing coupon from the Coupon Details screen")
+        static let performance = NSLocalizedString("Performance", comment: "Title of the Performance section on Coupons Details screen")
+        static let discountedOrders = NSLocalizedString("Discounted Orders", comment: "Title of the Discounted Orders label on Coupon Details screen")
+        static let amount = NSLocalizedString("Amount", comment: "Title of the Amount label on Coupon Details screen")
     }
 
     struct DetailRow: Identifiable {

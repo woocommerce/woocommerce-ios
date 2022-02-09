@@ -5,7 +5,7 @@ import class AutomatticTracks.CrashLogging
 import UIKit
 
 enum CouponListState {
-    case initialized // ViewModel ready to recieve actions
+    case initialized // ViewModel ready to receive actions
     case loading // View should show ghost cells
     case empty // View should display the empty state
     case coupons // View should display the contents of `couponViewModels`

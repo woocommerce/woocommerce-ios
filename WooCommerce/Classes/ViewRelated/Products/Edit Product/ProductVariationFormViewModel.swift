@@ -1,5 +1,5 @@
+import Combine
 import Yosemite
-import Observables
 
 /// Provides data for product form UI on a `ProductVariation`, and handles product editing actions.
 final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
@@ -7,8 +7,8 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     typealias ProductModel = EditableProductVariationModel
 
     /// Emits product variation on change.
-    var observableProduct: Observable<EditableProductVariationModel> {
-        productVariationSubject
+    var observableProduct: AnyPublisher<EditableProductVariationModel, Never> {
+        productVariationSubject.eraseToAnyPublisher()
     }
 
     /// The latest product variation including potential edits.
@@ -22,8 +22,8 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     }
 
     /// Emits a boolean of whether the product variation has unsaved changes for remote update.
-    var isUpdateEnabled: Observable<Bool> {
-        isUpdateEnabledSubject
+    var isUpdateEnabled: AnyPublisher<Bool, Never> {
+        isUpdateEnabledSubject.eraseToAnyPublisher()
     }
 
     /// The product variation ID
@@ -32,7 +32,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     }
 
     /// Emits a void value informing when there is a new variation price state available
-    var newVariationsPrice: Observable<Void> = PublishSubject<Void>()
+    var newVariationsPrice: AnyPublisher<Void, Never> = PassthroughSubject<Void, Never>().eraseToAnyPublisher()
 
     /// Creates actions available on the bottom sheet.
     private(set) var actionsFactory: ProductFormActionsFactoryProtocol
@@ -46,10 +46,10 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     private(set) var password: String? = nil
 
     /// Not applicable to product variation form
-    private(set) var productName: Observable<String>? = nil
+    private(set) var productName: AnyPublisher<String, Never>? = nil
 
-    private let productVariationSubject: PublishSubject<EditableProductVariationModel> = PublishSubject<EditableProductVariationModel>()
-    private let isUpdateEnabledSubject: PublishSubject<Bool>
+    private let productVariationSubject: PassthroughSubject<EditableProductVariationModel, Never> = PassthroughSubject<EditableProductVariationModel, Never>()
+    private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never>
 
     /// The product variation before any potential edits; reset after a remote update.
     private var originalProductVariation: EditableProductVariationModel {
@@ -97,7 +97,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     private let parentProductSKU: String?
     private let productImageActionHandler: ProductImageActionHandler
     private let storesManager: StoresManager
-    private var cancellable: ObservationToken?
+    private var cancellable: AnyCancellable?
 
     init(productVariation: EditableProductVariationModel,
          allAttributes: [ProductAttribute],
@@ -114,7 +114,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         self.formType = formType
         self.editable = formType != .readonly
         self.actionsFactory = ProductVariationFormActionsFactory(productVariation: productVariation, editable: editable)
-        self.isUpdateEnabledSubject = PublishSubject<Bool>()
+        self.isUpdateEnabledSubject = PassthroughSubject<Bool, Never>()
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             if allStatuses.productImageStatuses.hasPendingUpload {
                 self?.isUpdateEnabledSubject.send(true)
@@ -149,11 +149,11 @@ extension ProductVariationFormViewModel {
     }
 
     func canViewProductInStore() -> Bool {
-        false
+        originalProductVariation.productVariation.status == .publish && formType != .add
     }
 
     func canShareProduct() -> Bool {
-        false
+        formType != .add
     }
 
     func canDeleteProduct() -> Bool {

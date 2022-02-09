@@ -40,19 +40,18 @@ class ProductRowViewModelTests: XCTestCase {
         // Given
         let rowID = "0"
         let imageURLString = "https://woo.com/woo.jpg"
-        let allAttributes = [ProductAttribute.fake().copy(attributeID: 1, name: "Color"),
-                             ProductAttribute.fake().copy(attributeID: 2, name: "Size")]
+        let name = "Blue - Any Size"
         let productVariation = ProductVariation.fake().copy(productVariationID: 12,
                                                             attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")],
                                                             image: ProductImage.fake().copy(src: imageURLString))
 
         // When
-        let viewModel = ProductRowViewModel(id: rowID, productVariation: productVariation, allAttributes: allAttributes, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(id: rowID, productVariation: productVariation, name: name, canChangeQuantity: false)
 
         // Then
         XCTAssertEqual(viewModel.id, rowID)
         XCTAssertEqual(viewModel.productOrVariationID, productVariation.productVariationID)
-        XCTAssertEqual(viewModel.name, "Blue - Any Size")
+        XCTAssertEqual(viewModel.name, name)
         XCTAssertEqual(viewModel.imageURL, URL(string: imageURLString))
         XCTAssertFalse(viewModel.canChangeQuantity)
         XCTAssertEqual(viewModel.quantity, 1)
@@ -126,6 +125,21 @@ class ProductRowViewModelTests: XCTestCase {
 
         // Then
         let expectedPriceLabel = "$0.00"
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedPriceLabel),
+                      "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
+    }
+
+    func test_view_model_updates_price_label_when_quantity_changes() {
+        // Given
+        let product = Product.fake().copy(price: "2.50")
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Defaults to US currency & format
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, currencyFormatter: currencyFormatter)
+        viewModel.incrementQuantity()
+
+        // Then
+        let expectedPriceLabel = "$5.00"
         XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedPriceLabel),
                       "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }

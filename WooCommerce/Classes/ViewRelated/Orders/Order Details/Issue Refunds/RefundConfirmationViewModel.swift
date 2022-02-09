@@ -67,7 +67,7 @@ final class RefundConfirmationViewModel {
         let shippingLine = details.refundsShipping ? details.order.shippingLines.first : nil
         let fees = details.refundsFees ? details.order.fees : []
         let useCase = RefundCreationUseCase(amount: details.amount,
-                                            reason: reasonForRefundCellViewModel.currentValue,
+                                            reason: reasonForRefundCellViewModel.value,
                                             automaticallyRefundsPayment: gatewaySupportsAutomaticRefunds(),
                                             items: details.items,
                                             shippingLine: shippingLine,

@@ -156,6 +156,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         observeReloadChartAnimated()
         observeVisitorStatsViewState()
         observeConversionStatsViewState()
+        observeYAxisMaximum()
+        observeYAxisMinimum()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -234,6 +236,18 @@ private extension StoreStatsV4PeriodViewController {
             .sink { [weak self] viewState in
                 guard let self = self, self.conversionDataOrRedactedView != nil else { return }
                 self.conversionDataOrRedactedView.state = viewState
+        }.store(in: &cancellables)
+    }
+
+    func observeYAxisMaximum() {
+        viewModel.yAxisMaximum.sink { [weak self] yAxisMaximum in
+            self?.lineChartView.leftAxis.axisMaximum = yAxisMaximum
+        }.store(in: &cancellables)
+    }
+
+    func observeYAxisMinimum() {
+        viewModel.yAxisMinimum.sink { [weak self] yAxisMinimum in
+            self?.lineChartView.leftAxis.axisMinimum = yAxisMinimum
         }.store(in: &cancellables)
     }
 }
@@ -388,7 +402,7 @@ private extension StoreStatsV4PeriodViewController {
         yAxis.drawAxisLineEnabled = false
         yAxis.drawZeroLineEnabled = true
         yAxis.valueFormatter = self
-        yAxis.setLabelCount(3, force: false)
+        yAxis.setLabelCount(3, force: true)
     }
 }
 
@@ -460,7 +474,7 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
                 return "   "
             } else {
                 return CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-                                    .formatCurrency(using: value.humanReadableString(),
+                    .formatCurrency(using: value.humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true),
                                     at: ServiceLocator.currencySettings.currencyPosition,
                                     with: currencySymbol,
                                     isNegative: value.sign == .minus)

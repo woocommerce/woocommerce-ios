@@ -30,7 +30,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// CPP plugin is installed and activated but requires to be setup first.
     ///
-    case pluginSetupNotCompleted
+    case pluginSetupNotCompleted(plugin: CardPresentPaymentsPlugins)
 
     /// This is a bit special case: The plugin is set to test mode but the connected Stripe account is a real (live) account.
     /// Connecting to a reader or accepting payments is not supported in this state.
@@ -101,7 +101,7 @@ extension CardPresentPaymentOnboardingState {
     }
 }
 
-public enum CardPresentPaymentsPlugins: Equatable {
+public enum CardPresentPaymentsPlugins: Equatable, CaseIterable {
     case wcPay
     case stripe
 
@@ -121,16 +121,7 @@ public enum CardPresentPaymentsPlugins: Equatable {
         case .wcPay:
             return "3.2.1"
         case .stripe:
-            return "5.9.0"
-        }
-    }
-
-    public var supportedCountryCodes: [String] {
-        switch self {
-        case .wcPay:
-            return ["US"]
-        case .stripe:
-            return ["US"]
+            return "6.1.0"
         }
     }
 }

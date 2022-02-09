@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import StripeTerminal
 
 extension CardReaderType {
@@ -15,3 +16,4 @@ extension CardReaderType {
         }
     }
 }
+#endif

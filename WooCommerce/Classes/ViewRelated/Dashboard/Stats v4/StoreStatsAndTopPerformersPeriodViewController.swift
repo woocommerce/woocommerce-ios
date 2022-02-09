@@ -1,8 +1,8 @@
+import Combine
 import UIKit
 import struct WordPressUI.GhostStyle
 import XLPagerTabStrip
 import Yosemite
-import Observables
 
 /// Container view controller for a stats v4 time range that consists of a scrollable stack view of:
 /// - Store stats data view (managed by child view controller `StoreStatsV4PeriodViewController`)
@@ -109,8 +109,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
-    /// Subscriptions that should be cancelled on `deinit`.
-    private var cancellables = [ObservationToken]()
+    private var subscriptions = Set<AnyCancellable>()
 
     /// Create an instance of `self`.
     ///
@@ -139,12 +138,6 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    deinit {
-        cancellables.forEach {
-            $0.cancel()
-        }
     }
 
     override func viewDidLoad() {
@@ -250,7 +243,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
             return
         }
 
-        let cancellable = viewModel.isInAppFeedbackCardVisible.subscribe { [weak self] isVisible in
+        viewModel.$isInAppFeedbackCardVisible.sink { [weak self] isVisible in
             guard let self = self else {
                 return
             }
@@ -267,8 +260,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
                     }
                 }
             }
-        }
-        cancellables.append(cancellable)
+        }.store(in: &subscriptions)
     }
 
     func configureSubviews() {

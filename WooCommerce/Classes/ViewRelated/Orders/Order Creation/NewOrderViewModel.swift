@@ -28,7 +28,7 @@ final class NewOrderViewModel: ObservableObject {
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
     ///
-    @Published var presentNotice: NewOrderNotice?
+    @Published var notice: Notice?
 
     // MARK: Status properties
 
@@ -70,12 +70,43 @@ final class NewOrderViewModel: ObservableObject {
 
     // MARK: Products properties
 
+    /// Products Results Controller.
+    ///
+    private lazy var productsResultsController: ResultsController<StorageProduct> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [])
+        return resultsController
+    }()
+
+    /// Products list
+    ///
+    private var allProducts: [Product] {
+        productsResultsController.fetchedObjects
+    }
+
+    /// Product Variations Results Controller.
+    ///
+    private lazy var productVariationsResultsController: ResultsController<StorageProductVariation> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let resultsController = ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [])
+        return resultsController
+    }()
+
+    /// Product Variations list
+    ///
+    private var allProductVariations: [ProductVariation] {
+        productVariationsResultsController.fetchedObjects
+    }
+
     /// View model for the product list
     ///
     lazy var addProductViewModel = {
         AddProductToOrderViewModel(siteID: siteID, storageManager: storageManager, stores: stores) { [weak self] product in
             guard let self = self else { return }
             self.addProductToOrder(product)
+        } onVariationSelected: { [weak self] variation in
+            guard let self = self else { return }
+            self.addProductVariationToOrder(variation)
         }
     }()
 
@@ -96,18 +127,31 @@ final class NewOrderViewModel: ObservableObject {
         orderDetails.items.isNotEmpty
     }
 
+    /// Defines if the view should be disabled.
+    /// Currently `true` while performing a network request.
+    ///
+    var disabled: Bool {
+        performingNetworkRequest
+    }
+
     /// Representation of payment data display properties
     ///
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
 
+    /// Analytics engine.
+    ///
+    private let analytics: Analytics
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.analytics = analytics
 
         configureNavigationTrailingItem()
         configureStatusBadgeViewModel()
@@ -131,6 +175,24 @@ final class NewOrderViewModel: ObservableObject {
         configureProductRowViewModels()
     }
 
+    /// Creates a view model for the `ProductRow` corresponding to an order item.
+    ///
+    func createProductRowViewModel(for item: NewOrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
+        guard let product = allProducts.first(where: { $0.productID == item.productID }) else {
+            return nil
+        }
+
+        if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+            return ProductRowViewModel(id: item.id,
+                                       productVariation: variation,
+                                       name: product.name,
+                                       quantity: item.quantity,
+                                       canChangeQuantity: canChangeQuantity)
+        } else {
+            return ProductRowViewModel(id: item.id, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
+        }
+    }
+
     // MARK: Customer data properties
 
     /// Representation of customer data display properties.
@@ -141,10 +203,12 @@ final class NewOrderViewModel: ObservableObject {
     ///
     func createOrderAddressFormViewModel() -> CreateOrderAddressFormViewModel {
         CreateOrderAddressFormViewModel(siteID: siteID,
-                                        address: orderDetails.billingAddress,
-                                        onAddressUpdate: { [weak self] updatedAddress in
-            self?.orderDetails.billingAddress = updatedAddress
-            self?.orderDetails.shippingAddress = updatedAddress
+                                        addressData: .init(billingAddress: orderDetails.billingAddress,
+                                                           shippingAddress: orderDetails.shippingAddress),
+                                        onAddressUpdate: { [weak self] updatedAddressData in
+            self?.orderDetails.billingAddress = updatedAddressData.billingAddress
+            self?.orderDetails.shippingAddress = updatedAddressData.shippingAddress
+            self?.trackCustomerDetailsAdded()
         })
     }
 
@@ -161,17 +225,28 @@ final class NewOrderViewModel: ObservableObject {
             switch result {
             case .success(let newOrder):
                 self.onOrderCreated(newOrder)
+                self.trackCreateOrderSuccess()
             case .failure(let error):
-                self.presentNotice = .error
+                self.notice = NoticeFactory.createOrderCreationErrorNotice()
+                self.trackCreateOrderFailure(error: error)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
         stores.dispatch(action)
+        trackCreateButtonTapped()
     }
 
     /// Assign this closure to be notified when a new order is created
     ///
     var onOrderCreated: (Order) -> Void = { _ in }
+
+    /// Updates the order status & tracks its event
+    ///
+    func updateOrderStatus(newStatus: OrderStatusEnum) {
+        let oldStatus = orderDetails.status
+        orderDetails.status = newStatus
+        analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .creation, orderID: nil, from: oldStatus, to: newStatus))
+    }
 }
 
 // MARK: - Types
@@ -205,12 +280,6 @@ extension NewOrderViewModel {
         }
     }
 
-    /// Representation of possible notices that can be displayed
-    ///
-    enum NewOrderNotice {
-        case error
-    }
-
     /// Representation of order status display properties
     ///
     struct StatusBadgeViewModel {
@@ -242,18 +311,46 @@ extension NewOrderViewModel {
     /// Representation of new items in an order.
     ///
     struct NewOrderItem: Equatable, Identifiable {
-        var id: String
-        let product: Product
+        let id: String
+        let productID: Int64
+        let variationID: Int64
         var quantity: Decimal
+        let price: NSDecimalNumber
+        var subtotal: String {
+            String(describing: quantity * price.decimalValue)
+        }
 
         var orderItem: OrderItem {
-            product.toOrderItem(quantity: quantity)
+            OrderItem(itemID: 0,
+                      name: "",
+                      productID: productID,
+                      variationID: variationID,
+                      quantity: quantity,
+                      price: price,
+                      sku: nil,
+                      subtotal: subtotal,
+                      subtotalTax: "",
+                      taxClass: "",
+                      taxes: [],
+                      total: "",
+                      totalTax: "",
+                      attributes: [])
         }
 
         init(product: Product, quantity: Decimal) {
             self.id = UUID().uuidString
-            self.product = product
+            self.productID = product.productID
+            self.variationID = 0 // Products in an order are represented in Core with a variation ID of 0
             self.quantity = quantity
+            self.price = NSDecimalNumber(string: product.price)
+        }
+
+        init(variation: ProductVariation, quantity: Decimal) {
+            self.id = UUID().uuidString
+            self.productID = variation.productID
+            self.variationID = variation.productVariationID
+            self.quantity = quantity
+            self.price = NSDecimalNumber(string: variation.price)
         }
     }
 
@@ -338,13 +435,29 @@ private extension NewOrderViewModel {
         let newOrderItem = NewOrderItem(product: product, quantity: 1)
         orderDetails.items.append(newOrderItem)
         configureProductRowViewModels()
+
+        analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
+    }
+
+    /// Adds a selected product variation (from the product list) to the order.
+    ///
+    func addProductVariationToOrder(_ variation: ProductVariation) {
+        let newOrderItem = NewOrderItem(variation: variation, quantity: 1)
+        orderDetails.items.append(newOrderItem)
+        configureProductRowViewModels()
+
+        analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
     }
 
     /// Configures product row view models for each item in `orderDetails`.
     ///
     func configureProductRowViewModels() {
-        productRows = orderDetails.items.enumerated().map { index, item in
-            let productRowViewModel = ProductRowViewModel(id: item.id, product: item.product, quantity: item.quantity, canChangeQuantity: true)
+        updateProductsResultsController()
+        updateProductVariationsResultsController()
+        productRows = orderDetails.items.enumerated().compactMap { index, item in
+            guard let productRowViewModel = createProductRowViewModel(for: item, canChangeQuantity: true) else {
+                return nil
+            }
 
             // Observe changes to the product quantity
             productRowViewModel.$quantity
@@ -386,5 +499,85 @@ private extension NewOrderViewModel {
                 return PaymentDataViewModel(itemsTotal: itemsTotal, orderTotal: itemsTotal, currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)
+    }
+
+    /// Tracks when customer details have been added
+    ///
+    func trackCustomerDetailsAdded() {
+        let areAddressesDifferent: Bool = {
+            guard let billingAddress = orderDetails.billingAddress, let shippingAddress = orderDetails.shippingAddress else {
+                return false
+            }
+            return billingAddress != shippingAddress
+        }()
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerAdd(flow: .creation, hasDifferentShippingDetails: areAddressesDifferent))
+    }
+
+    /// Tracks when the create order button is tapped.
+    ///
+    /// Warning: This methods assume that `orderDetails.items.count` is equal to the product count,
+    /// As the module evolves to handle more types of items, we need to update the property to something like `itemsCount`
+    /// or figure out a better way to get the product count.
+    ///
+    func trackCreateButtonTapped() {
+        let hasCustomerDetails = orderDetails.billingAddress != nil || orderDetails.shippingAddress != nil
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderDetails.status,
+                                                                                productCount: orderDetails.items.count,
+                                                                                hasCustomerDetails: hasCustomerDetails))
+    }
+
+    /// Tracks an order creation success
+    ///
+    func trackCreateOrderSuccess() {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationSuccess())
+    }
+
+    /// Tracks an order creation failure
+    ///
+    func trackCreateOrderFailure(error: Error) {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(errorContext: String(describing: error),
+                                                                            errorDescription: error.localizedDescription))
+    }
+}
+
+private extension NewOrderViewModel {
+    /// Fetches products from storage.
+    ///
+    func updateProductsResultsController() {
+        do {
+            try productsResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching products for new order: \(error)")
+        }
+    }
+
+    /// Fetches product variations from storage.
+    ///
+    func updateProductVariationsResultsController() {
+        do {
+            try productVariationsResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching product variations for new order: \(error)")
+        }
+    }
+}
+
+// MARK: Constants
+
+extension NewOrderViewModel {
+    /// New Order notices
+    ///
+    enum NoticeFactory {
+        /// Returns a default order creation error notice.
+        ///
+        static func createOrderCreationErrorNotice() -> Notice {
+            Notice(title: Localization.errorMessage, feedbackType: .error)
+        }
+    }
+}
+
+private extension NewOrderViewModel {
+    enum Localization {
+        static let errorMessage = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
     }
 }

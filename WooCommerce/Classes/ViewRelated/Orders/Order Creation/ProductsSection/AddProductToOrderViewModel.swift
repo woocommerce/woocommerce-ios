@@ -1,5 +1,6 @@
 import Yosemite
 import protocol Storage.StorageManagerType
+import Combine
 
 /// View model for `AddProductToOrder`.
 ///
@@ -13,6 +14,14 @@ final class AddProductToOrderViewModel: ObservableObject {
     /// Stores to sync product list
     ///
     private let stores: StoresManager
+
+    /// Store for publishers subscriptions
+    ///
+    private var subscriptions = Set<AnyCancellable>()
+
+    /// Trigger to perform any one time setups.
+    ///
+    let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
 
     /// All products that can be added to an order.
     ///
@@ -29,6 +38,10 @@ final class AddProductToOrderViewModel: ObservableObject {
     /// Closure to be invoked when a product is selected
     ///
     let onProductSelected: ((Product) -> Void)?
+
+    /// Closure to be invoked when a product variation is selected
+    ///
+    let onVariationSelected: ((ProductVariation) -> Void)?
 
     // MARK: Sync & Storage properties
 
@@ -64,14 +77,17 @@ final class AddProductToOrderViewModel: ObservableObject {
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         onProductSelected: ((Product) -> Void)? = nil) {
+         onProductSelected: ((Product) -> Void)? = nil,
+         onVariationSelected: ((ProductVariation) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
         self.onProductSelected = onProductSelected
+        self.onVariationSelected = onVariationSelected
 
         configureSyncingCoordinator()
         configureProductsResultsController()
+        configureFirstPageLoad()
     }
 
     /// Select a product to add to the order
@@ -89,7 +105,7 @@ final class AddProductToOrderViewModel: ObservableObject {
         guard let variableProduct = products.first(where: { $0.productID == productID }) else {
             return nil
         }
-        return AddProductVariationToOrderViewModel(siteID: siteID, product: variableProduct)
+        return AddProductVariationToOrderViewModel(siteID: siteID, product: variableProduct, onVariationSelected: onVariationSelected)
     }
 }
 
@@ -179,6 +195,18 @@ private extension AddProductToOrderViewModel {
     ///
     func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
+    }
+
+    /// Performs initial sync on first page load
+    ///
+    func configureFirstPageLoad() {
+        // Listen only to the first emitted event.
+        onLoadTrigger.first()
+            .sink { [weak self] in
+                guard let self = self else { return }
+                self.syncFirstPage()
+            }
+            .store(in: &subscriptions)
     }
 }
 

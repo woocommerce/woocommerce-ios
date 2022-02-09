@@ -1,5 +1,4 @@
 import Combine
-import Observables
 import Storage
 
 public class MockStoresManager: StoresManager {
@@ -91,44 +90,46 @@ public class MockStoresManager: StoresManager {
     public func dispatch(_ action: Action) {
         // We can choose which actions we want to handle and how we respond.
         switch action {
-            case let action as OrderAction:
-                orderActionHandler.handle(action: action)
-            case let action as NotificationCountAction:
-                notificationCountActionHandler.handle(action: action)
-            case let action as AppSettingsAction:
-                appSettingsActionHandler.handle(action: action)
-            case let action as StatsActionV4:
-                statsV4ActionHandler.handle(action: action)
-            case let action as AvailabilityAction:
-                availabilityActionHandler.handle(action: action)
-            case let action as SettingAction:
-                settingActionHandler.handle(action: action)
-            case let action as OrderStatusAction:
-                orderStatusActionHandler.handle(action: action)
-            case let action as OrderNoteAction:
-                orderNoteActionHandler.handle(action: action)
-            case let action as ProductAction:
-                productActionHandler.handle(action: action)
-            case let action as ProductVariationAction:
-                productVariationActionHandler.handle(action: action)
-            case let action as RefundAction:
-                refundActionHandler.handle(action: action)
-            case let action as ShippingLabelAction:
-                shippingLabelActionHandler.handle(action: action)
-            case let action as ShipmentAction:
-                shipmentActionHandler.handle(action: action)
-            case let action as ProductReviewAction:
-                productReviewActionHandler.handle(action: action)
-            case let action as NotificationAction:
-                notificationActionHandler.handle(action: action)
-            case let action as UserAction:
-                userActionHandler.handle(action: action)
-            case let action as AnnouncementsAction:
-                announcementsActionHandler.handle(action: action)
-            case let action as ReceiptAction:
-                receiptActionHandler.handle(action: action)
-            default:
-                fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")
+        case let action as OrderAction:
+            orderActionHandler.handle(action: action)
+        case let action as NotificationCountAction:
+            notificationCountActionHandler.handle(action: action)
+        case let action as AppSettingsAction:
+            appSettingsActionHandler.handle(action: action)
+        case let action as StatsActionV4:
+            statsV4ActionHandler.handle(action: action)
+        case let action as AvailabilityAction:
+            availabilityActionHandler.handle(action: action)
+        case let action as SettingAction:
+            settingActionHandler.handle(action: action)
+        case let action as OrderStatusAction:
+            orderStatusActionHandler.handle(action: action)
+        case let action as OrderNoteAction:
+            orderNoteActionHandler.handle(action: action)
+        case let action as ProductAction:
+            productActionHandler.handle(action: action)
+        case let action as ProductVariationAction:
+            productVariationActionHandler.handle(action: action)
+        case let action as RefundAction:
+            refundActionHandler.handle(action: action)
+        case let action as ShippingLabelAction:
+            shippingLabelActionHandler.handle(action: action)
+        case let action as ShipmentAction:
+            shipmentActionHandler.handle(action: action)
+        case let action as ProductReviewAction:
+            productReviewActionHandler.handle(action: action)
+        case let action as NotificationAction:
+            notificationActionHandler.handle(action: action)
+        case let action as UserAction:
+            userActionHandler.handle(action: action)
+        case let action as AnnouncementsAction:
+            announcementsActionHandler.handle(action: action)
+        case let action as ReceiptAction:
+            receiptActionHandler.handle(action: action)
+        case _ as CardPresentPaymentAction:
+            break
+        default:
+            fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")
         }
     }
 

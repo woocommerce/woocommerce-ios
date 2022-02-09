@@ -4,7 +4,7 @@ final class InPersonPaymentsViewController: UIHostingController<InPersonPayments
     init(viewModel: InPersonPaymentsViewModel) {
         super.init(rootView: InPersonPaymentsView(viewModel: viewModel))
         rootView.showSupport = {
-            ZendeskManager.shared.showNewWCPayRequestIfPossible(from: self)
+            ZendeskProvider.shared.showNewWCPayRequestIfPossible(from: self)
         }
         rootView.showURL = { url in
             WebviewHelper.launch(url, with: self)
@@ -22,13 +22,19 @@ struct InPersonPaymentsView: View {
     var showSupport: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
 
+    let userIsAdministrator = true // TODO
+
     var body: some View {
         Group {
             switch viewModel.state {
             case .loading:
                 InPersonPaymentsLoading()
             case .selectPlugin:
-                InPersonPaymentsSelectPlugin(onRefresh: viewModel.refresh)
+                if viewModel.userIsAdministrator {
+                    InPersonPaymentsPluginConfictAdmin(onRefresh: viewModel.refresh)
+                } else {
+                    InPersonPaymentsPluginConfictShopManager(onRefresh: viewModel.refresh)
+                }
             case .countryNotSupported(let countryCode):
                 InPersonPaymentsCountryNotSupported(countryCode: countryCode)
             case .pluginNotInstalled:
@@ -40,8 +46,8 @@ struct InPersonPaymentsView: View {
             case .pluginInTestModeWithLiveStripeAccount(let plugin):
                 InPersonPaymentsLiveSiteInTestMode(plugin: plugin, onRefresh:
                     viewModel.refresh)
-            case .pluginSetupNotCompleted:
-                InPersonPaymentsWCPayNotSetup(onRefresh: viewModel.refresh)
+            case .pluginSetupNotCompleted(let plugin):
+                InPersonPaymentsPluginNotSetup(plugin: plugin, onRefresh: viewModel.refresh)
             case .stripeAccountOverdueRequirement:
                 InPersonPaymentsStripeAccountOverdue()
             case .stripeAccountPendingRequirement(let deadline):

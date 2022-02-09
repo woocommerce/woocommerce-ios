@@ -23,6 +23,8 @@ public typealias Credentials = Networking.Credentials
 public typealias CreateProductVariation = Networking.CreateProductVariation
 public typealias DotcomDevice = Networking.DotcomDevice
 public typealias Feature = WordPressKit.Feature
+public typealias InboxNote = Networking.InboxNote
+public typealias InboxAction = Networking.InboxAction
 public typealias Leaderboard = Networking.Leaderboard
 public typealias LeaderboardRow = Networking.LeaderboardRow
 public typealias LeaderboardRowContent = Networking.LeaderboardRowContent
@@ -141,6 +143,7 @@ public typealias StripeAccount = Networking.StripeAccount
 public typealias WCPayAccount = Networking.WCPayAccount
 public typealias WCPayAccountStatusEnum = Networking.WCPayAccountStatusEnum
 public typealias WCPayCustomer = Networking.Customer
+public typealias WCPayPaymentMethodType = Networking.WCPayPaymentMethodType
 
 // MARK: - Exported Storage Symbols
 
@@ -148,6 +151,7 @@ public typealias StorageAccount = Storage.Account
 public typealias StorageAccountSettings = Storage.AccountSettings
 public typealias StorageAttribute = Storage.GenericAttribute
 public typealias StorageCoupon = Storage.Coupon
+public typealias StorageCouponSearchResult = Storage.CouponSearchResult
 public typealias StorageAddOnGroup = Storage.AddOnGroup
 public typealias StorageAnnouncement = Storage.Announcement
 public typealias StorageEligibilityErrorInfo = Storage.EligibilityErrorInfo

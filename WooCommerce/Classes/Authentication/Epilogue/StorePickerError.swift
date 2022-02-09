@@ -15,7 +15,7 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
         },
         contactSupportAction: {
             presenting.dismiss(animated: true) {
-                ZendeskManager.shared.showNewRequestIfPossible(from: presenting)
+                ZendeskProvider.shared.showNewRequestIfPossible(from: presenting)
             }
         },
         dismissAction: {

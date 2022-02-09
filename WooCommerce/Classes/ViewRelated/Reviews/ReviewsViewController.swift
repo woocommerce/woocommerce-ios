@@ -107,7 +107,7 @@ final class ReviewsViewController: UIViewController {
                                               },
                                               onContactSupportButtonPressed: { [weak self] in
                                                 guard let self = self else { return }
-                                                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+                                                ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
                                               })
     }()
 
@@ -214,6 +214,8 @@ private extension ReviewsViewController {
         // UITableViewDelegate to the implementation of UITableViewDelegate
         // provided by the view model. It could be argued that we are just cheating.
         tableView.delegate = self
+
+        tableView.accessibilityIdentifier = "reviews-table"
     }
 
     /// Setup: ResultsController

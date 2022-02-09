@@ -136,7 +136,10 @@ private extension DefaultNoticePresenter {
             makeBottomConstraintForNoticeContainer(noticeContainerView)
         ])
 
-        let offScreenState = {
+        let offScreenState = { [weak noticeView, weak self] in
+            guard let noticeView = noticeView, let self = self else {
+                return
+            }
             noticeView.alpha = UIKitConstants.alphaZero
             noticeContainerView.noticeBottomConstraint.constant = self.offscreenBottomOffset
 
@@ -150,12 +153,15 @@ private extension DefaultNoticePresenter {
             noticeContainerView.layoutIfNeeded()
         }
 
-        let hiddenState = {
+        let hiddenState = { [weak noticeView] in
+            guard let noticeView = noticeView else {
+                return
+            }
             noticeView.alpha = UIKitConstants.alphaZero
         }
 
-        let dismiss = {
-            guard noticeContainerView.superview != nil else {
+        let dismiss = { [weak noticeContainerView] in
+            guard let noticeContainerView = noticeContainerView, noticeContainerView.superview != nil else {
                 return
             }
 

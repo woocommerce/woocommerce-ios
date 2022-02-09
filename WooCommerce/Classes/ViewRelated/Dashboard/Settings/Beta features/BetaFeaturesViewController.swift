@@ -86,21 +86,26 @@ private extension BetaFeaturesViewController {
     }
 
     func orderCreationSection() -> Section? {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) else {
-            return nil
-        }
-
         return Section(rows: [.orderCreation,
                               .orderCreationDescription])
     }
 
     func inPersonPaymentsSection() -> Section? {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.stripeExtensionInPersonPayments) else {
+        var rows: [Row] = []
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.stripeExtensionInPersonPayments) {
+            rows += [.stripeExtensionInPersonPayments, .stripeExtensionInPersonPaymentsDescription]
+        }
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.canadaInPersonPayments) {
+            rows += [.canadaInPersonPayments, .canadaInPersonPaymentsDescription]
+        }
+
+        guard rows.isNotEmpty else {
             return nil
         }
 
-        return Section(rows: [.stripeExtensionInPersonPayments,
-                              .stripeExtensionInPersonPaymentsDescription])
+        return Section(rows: rows)
     }
 
     func productSKUInputScannerSection() -> Section? {
@@ -144,6 +149,11 @@ private extension BetaFeaturesViewController {
             configureStripeExtensionInPersonPaymentsSwitch(cell: cell)
         case let cell as BasicTableViewCell where row == .stripeExtensionInPersonPaymentsDescription:
             configureStripeExtensionInPersonPaymentsDescription(cell: cell)
+        // In-Person Payments in Canada
+        case let cell as SwitchTableViewCell where row == .canadaInPersonPayments:
+            configureCanadaInPersonPaymentsSwitch(cell: cell)
+        case let cell as BasicTableViewCell where row == .canadaInPersonPaymentsDescription:
+            configureCanadaInPersonPaymentsDescription(cell: cell)
         // Product SKU Input Scanner
         case let cell as SwitchTableViewCell where row == .productSKUInputScanner:
             configureProductSKUInputScannerSwitch(cell: cell)
@@ -251,6 +261,37 @@ private extension BetaFeaturesViewController {
         cell.textLabel?.text = Localization.stripeExtensionInPersonPaymentsDescription
     }
 
+    func configureCanadaInPersonPaymentsSwitch(cell: SwitchTableViewCell) {
+        configureCommonStylesForSwitchCell(cell)
+        cell.title = Localization.canadaExtensionInPersonPaymentsTitle
+
+        // Fetch switch's state stored value.
+        let action = AppSettingsAction.loadCanadaInPersonPaymentsSwitchState { result in
+            guard let isEnabled = try? result.get() else {
+                return cell.isOn = false
+            }
+            cell.isOn = isEnabled
+        }
+        ServiceLocator.stores.dispatch(action)
+
+        // Change switch's state stored value
+        cell.onChange = { isSwitchOn in
+            let action = AppSettingsAction.setCanadaInPersonPaymentsSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
+                // Roll back toggle if an error occurred
+                if result.isFailure {
+                    cell.isOn.toggle()
+                }
+            })
+            ServiceLocator.stores.dispatch(action)
+        }
+        cell.accessibilityIdentifier = "beta-features-canada-in-person-payments-cell"
+    }
+
+    func configureCanadaInPersonPaymentsDescription(cell: BasicTableViewCell) {
+        configureCommonStylesForDescriptionCell(cell)
+        cell.textLabel?.text = Localization.canadaExtensionInPersonPaymentsDescription
+    }
+
     func configureProductSKUInputScannerSwitch(cell: SwitchTableViewCell) {
         configureCommonStylesForSwitchCell(cell)
         cell.title = Localization.productSKUInputScannerTitle
@@ -353,15 +394,20 @@ private enum Row: CaseIterable {
     case stripeExtensionInPersonPayments
     case stripeExtensionInPersonPaymentsDescription
 
+    // In-Person Payments in Canada
+    case canadaInPersonPayments
+    case canadaInPersonPaymentsDescription
+
     // Product SKU Input Scanner
     case productSKUInputScanner
     case productSKUInputScannerDescription
 
     var type: UITableViewCell.Type {
         switch self {
-        case .orderAddOns, .orderCreation, .stripeExtensionInPersonPayments, .productSKUInputScanner:
+        case .orderAddOns, .orderCreation, .stripeExtensionInPersonPayments, .canadaInPersonPayments, .productSKUInputScanner:
             return SwitchTableViewCell.self
-        case .orderAddOnsDescription, .orderCreationDescription, .stripeExtensionInPersonPaymentsDescription, .productSKUInputScannerDescription:
+        case .orderAddOnsDescription, .orderCreationDescription, .stripeExtensionInPersonPaymentsDescription, .canadaInPersonPaymentsDescription,
+                .productSKUInputScannerDescription:
             return BasicTableViewCell.self
         }
     }
@@ -395,6 +441,13 @@ private extension BetaFeaturesViewController {
             "Test out In-Person Payments with the Stripe Payment Gateway extension",
             comment: "Cell description on beta features screen to enable accepting in-person payments for stores with " +
             "the WooCommerce Stripe Payment Gateway extension")
+
+        static let canadaExtensionInPersonPaymentsTitle = NSLocalizedString(
+            "In-Person Payments in Canada",
+            comment: "Cell title on beta features screen to enable accepting in-person payments for stores in Canada ")
+        static let canadaExtensionInPersonPaymentsDescription = NSLocalizedString(
+            "Test out In-Person Payments in Canada",
+            comment: "Cell description on beta features screen to enable accepting in-person payments for stores in Canada")
 
         static let productSKUInputScannerTitle = NSLocalizedString(
             "Product SKU Scanner",

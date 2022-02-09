@@ -382,12 +382,12 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         // When
         let noticeRequest = waitFor { promise in
             viewModel.saveAddress { _ in
-                promise(viewModel.presentNotice)
+                promise(viewModel.notice)
             }
         }
 
         // Then
-        assertEqual(noticeRequest, .success)
+        assertEqual(noticeRequest, EditOrderAddressFormViewModel.NoticeFactory.createSuccessNotice())
     }
 
     func test_view_model_fires_error_notice_after_failing_to_update_address() {
@@ -405,12 +405,12 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         // When
         let noticeRequest = waitFor { promise in
             viewModel.saveAddress { _ in
-                promise(viewModel.presentNotice)
+                promise(viewModel.notice)
             }
         }
 
         // Then
-        assertEqual(noticeRequest, .error(.unableToUpdateAddress))
+        assertEqual(noticeRequest, AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToUpdateAddress))
     }
 
     func test_view_model_fires_error_notice_after_failing_to_fetch_countries() {
@@ -427,7 +427,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         viewModel.onLoadTrigger.send()
 
         // Then
-        assertEqual(viewModel.presentNotice, .error(.unableToLoadCountries))
+        assertEqual(viewModel.notice, AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToLoadCountries))
     }
 
     func test_copying_empty_shipping_address_for_billing_does_not_sends_an_empty_email_field() {
@@ -686,6 +686,22 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         // Then
         assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowStarted.rawValue])
         assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "billing_address")
+    }
+
+    func test_view_model_fires_error_notice_when_providing_an_invalid_email() {
+        // Given
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing)
+        viewModel.fields.email = "invalid"
+
+        // When
+        let notice: Notice? = waitFor { promise in
+            viewModel.saveAddress { _ in
+                promise(viewModel.notice)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(notice, AddressFormViewModel.NoticeFactory.createInvalidEmailNotice())
     }
 }
 

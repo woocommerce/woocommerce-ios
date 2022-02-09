@@ -1,7 +1,7 @@
+import Combine
 import UIKit
 import WordPressUI
 import Yosemite
-import Observables
 
 import class AutomatticTracks.CrashLogging
 
@@ -95,7 +95,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
     private let scrollWatcher = ScrollWatcher()
     private let paginationTracker = PaginationTracker()
 
-    private var cancellableScrollWatcher: ObservationToken?
+    private var scrollWatcherSubscription: AnyCancellable?
 
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
     ///
@@ -328,7 +328,7 @@ private extension PaginatedListSelectorViewController {
 
     func configurePaginationTracker() {
         paginationTracker.delegate = self
-        cancellableScrollWatcher = scrollWatcher.trigger.subscribe { [weak self] _ in
+        scrollWatcherSubscription = scrollWatcher.trigger.sink { [weak self] _ in
             self?.paginationTracker.ensureNextPageIsSynced()
         }
     }

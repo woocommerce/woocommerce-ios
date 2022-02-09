@@ -81,11 +81,15 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
         }
     }
 
+    var secondarySectionTitle: String {
+        ""
+    }
+
     var showAlternativeUsageToggle: Bool {
         true
     }
 
-    var alternativeUsageToggleTitle: String {
+    var alternativeUsageToggleTitle: String? {
         switch type {
         case .shipping:
             return Localization.useAsBillingToggle
@@ -94,9 +98,23 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
         }
     }
 
+    var showDifferentAddressToggle: Bool {
+        false
+    }
+
+    var differentAddressToggleTitle: String? {
+        nil
+    }
+
     /// Update the address remotely and invoke a completion block when finished
     ///
     func saveAddress(onFinish: @escaping (Bool) -> Void) {
+        guard validateEmail() else {
+            notice = AddressFormViewModel.NoticeFactory.createInvalidEmailNotice()
+            return onFinish(false)
+        }
+
+        let updatedAddress = fields.toAddress()
         let orderFields: [OrderUpdateField]
 
         let modifiedOrder: Yosemite.Order
@@ -124,15 +142,15 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
             switch result {
             case .success(let updatedOrder):
                 self.onOrderUpdate?(updatedOrder)
-                self.presentNotice = .success
+                self.notice = NoticeFactory.createSuccessNotice()
                 self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: self.analyticsFlowType()))
 
             case .failure(let error):
                 DDLogError("⛔️ Error updating order: \(error)")
-                if self.type == .billing, self.updatedAddress.hasEmailAddress == false {
+                if self.type == .billing, updatedAddress.hasEmailAddress == false {
                     DDLogError("⛔️ Email is nil in address. It won't work in WC < 5.9.0 (https://git.io/J68Gl)")
                 }
-                self.presentNotice = .error(.unableToUpdateAddress)
+                self.notice = AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToUpdateAddress)
                 self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: self.analyticsFlowType()))
             }
             onFinish(result.isSuccess)
@@ -148,6 +166,18 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
 
     func userDidCancelFlow() {
         analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: self.analyticsFlowType()))
+    }
+}
+
+extension EditOrderAddressFormViewModel {
+    /// Creates edit address form notices.
+    ///
+    enum NoticeFactory {
+        /// Creates a success notice for editing an address.
+        ///
+        static func createSuccessNotice() -> Notice {
+            .init(title: Localization.success, feedbackType: .success)
+        }
     }
 }
 
@@ -176,6 +206,8 @@ private extension EditOrderAddressFormViewModel {
                                                           comment: "Title for the Use as Billing Address switch in the Address form")
         static let useAsShippingToggle = NSLocalizedString("Use as Shipping Address",
                                                            comment: "Title for the Use as Shipping Address switch in the Address form")
+
+        static let success = NSLocalizedString("Address successfully updated.", comment: "Notice text after updating the shipping or billing address")
     }
 }
 

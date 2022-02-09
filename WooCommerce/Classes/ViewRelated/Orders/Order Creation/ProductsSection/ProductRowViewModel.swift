@@ -51,7 +51,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Label showing product details: stock status, price, and variations (if any).
     ///
-    lazy var productDetailsLabel: String = {
+    var productDetailsLabel: String {
         let stockLabel = createStockText()
         let priceLabel = createPriceText()
         let variationsLabel = createVariationsText()
@@ -59,7 +59,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return [stockLabel, priceLabel, variationsLabel]
             .compactMap({ $0 })
             .joined(separator: " • ")
-    }()
+    }
 
     /// Label showing product SKU
     ///
@@ -150,18 +150,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     convenience init(id: String? = nil,
                      productVariation: ProductVariation,
-                     allAttributes: [ProductAttribute],
+                     name: String,
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
-        let variationAttributes = allAttributes.map { attribute -> VariationAttributeViewModel in
-            guard let variationAttribute = productVariation.attributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name }) else {
-                return VariationAttributeViewModel(name: attribute.name)
-            }
-            return VariationAttributeViewModel(productVariationAttribute: variationAttribute)
-        }
-        let name = variationAttributes.map { $0.nameOrValue }.joined(separator: " - ")
-
         let imageURL: URL?
         if let encodedImageURLString = productVariation.image?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
             imageURL = URL(string: encodedImageURLString)
@@ -199,14 +191,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         }
     }
 
-    /// Create the price text based on a product's price.
+    /// Create the price text based on a product's price and quantity.
     ///
     private func createPriceText() -> String? {
         guard let price = price else {
             return nil
         }
-        let unformattedPrice = price.isNotEmpty ? price : "0"
-        return currencyFormatter.formatAmount(unformattedPrice)
+        let productSubtotal = quantity * (currencyFormatter.convertToDecimal(from: price)?.decimalValue ?? Decimal.zero)
+        return currencyFormatter.formatAmount(productSubtotal)
     }
 
     /// Create the variations text for a variable product.

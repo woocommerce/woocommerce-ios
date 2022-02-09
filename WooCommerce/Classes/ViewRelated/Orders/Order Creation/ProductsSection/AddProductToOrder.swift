@@ -48,7 +48,7 @@ struct AddProductToOrder: View {
                 }
             }
             .onAppear {
-                viewModel.syncFirstPage()
+                viewModel.onLoadTrigger.send()
             }
         }
         .wooNavigationBarStyle()

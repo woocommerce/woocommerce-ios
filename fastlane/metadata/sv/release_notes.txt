@@ -1,5 +1,3 @@
-Handlare har bett oss om ett snabbt sätt att registrera en transaktion i appen med minimal information – exempelvis bara ett debiteringsbelopp. Kanske är du på en marknad och vill bara debitera en kunds kreditkort utan någon lagerhantering. Detta inkluderar den nya funktionen "Enkla betalningar" på fliken Beställningar. Om du är WooCommerce Payments-kund kommer du att märka att denna funktion fungerar utmärkt med kreditkortsläsaren för personliga betalningar! Har du inte någon kortläsare än? Alternativt kan du enkelt skicka en betalningslänk till din kund, så att kunden kan betala med sin enhet via din webbplats.
+Du kommer att märka att den här versionen innehåller en ny flik med namnet "Meny". Vi har flyttat butiksinställningarna, möjligheten att växla mellan olika butiker och visning av WooCommerce Admin till den skärmen. Ytterligare funktioner kommer att läggas till där under de kommande månaderna!
 
-Den här versionen gör det även möjligt att återbetala avgifter för en beställning. Vi har dessutom smugit en experimentell streckkodsläsare för SKU-inmatning vid redigering av den produkt. Denna kan aktiveras i Inställningar.
-
-Vi jobbar på flera spännande funktioner som dyker upp under de kommande månaderna. Fortsätt skicka feedback!
+Den här versionen inkluderar också en korrigering för produktskärmen, där ett fel tidigare gjorde att produktens namn återgick till det föregående namnet om du laddade upp en bild. Tack för att ni rapporterar buggar – vi lyssnar!

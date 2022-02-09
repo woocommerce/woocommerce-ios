@@ -57,7 +57,7 @@ struct AddProductVariationToOrder: View {
             }
         }
         .onAppear {
-            viewModel.syncFirstPage()
+            viewModel.onLoadTrigger.send()
         }
     }
 }

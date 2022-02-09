@@ -483,7 +483,7 @@ private extension ProductsViewController {
             },
             onContactSupportButtonPressed: { [weak self] in
                 guard let self = self else { return }
-                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+                ZendeskProvider.shared.showNewRequestIfPossible(from: self, with: nil)
             })
         topBannerContainerView.updateSubview(errorBanner)
         topBannerView = errorBanner

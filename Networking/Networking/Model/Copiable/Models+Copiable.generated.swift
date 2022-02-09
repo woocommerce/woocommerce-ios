@@ -169,6 +169,72 @@ extension CouponReport {
     }
 }
 
+extension InboxAction {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        label: CopiableProp<String> = .copy,
+        status: CopiableProp<String> = .copy,
+        url: CopiableProp<String> = .copy
+    ) -> InboxAction {
+        let id = id ?? self.id
+        let name = name ?? self.name
+        let label = label ?? self.label
+        let status = status ?? self.status
+        let url = url ?? self.url
+
+        return InboxAction(
+            id: id,
+            name: name,
+            label: label,
+            status: status,
+            url: url
+        )
+    }
+}
+
+extension InboxNote {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        id: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        type: CopiableProp<String> = .copy,
+        status: CopiableProp<String> = .copy,
+        actions: CopiableProp<[InboxAction]> = .copy,
+        title: CopiableProp<String> = .copy,
+        content: CopiableProp<String> = .copy,
+        isDeleted: CopiableProp<Bool> = .copy,
+        isRead: CopiableProp<Bool> = .copy,
+        dateCreated: CopiableProp<Date> = .copy
+    ) -> InboxNote {
+        let siteID = siteID ?? self.siteID
+        let id = id ?? self.id
+        let name = name ?? self.name
+        let type = type ?? self.type
+        let status = status ?? self.status
+        let actions = actions ?? self.actions
+        let title = title ?? self.title
+        let content = content ?? self.content
+        let isDeleted = isDeleted ?? self.isDeleted
+        let isRead = isRead ?? self.isRead
+        let dateCreated = dateCreated ?? self.dateCreated
+
+        return InboxNote(
+            siteID: siteID,
+            id: id,
+            name: name,
+            type: type,
+            status: status,
+            actions: actions,
+            title: title,
+            content: content,
+            isDeleted: isDeleted,
+            isRead: isRead,
+            dateCreated: dateCreated
+        )
+    }
+}
+
 extension Order {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -191,6 +257,7 @@ extension Order {
         totalTax: CopiableProp<String> = .copy,
         paymentMethodID: CopiableProp<String> = .copy,
         paymentMethodTitle: CopiableProp<String> = .copy,
+        chargeID: NullableCopiableProp<String> = .copy,
         items: CopiableProp<[OrderItem]> = .copy,
         billingAddress: NullableCopiableProp<Address> = .copy,
         shippingAddress: NullableCopiableProp<Address> = .copy,
@@ -220,6 +287,7 @@ extension Order {
         let totalTax = totalTax ?? self.totalTax
         let paymentMethodID = paymentMethodID ?? self.paymentMethodID
         let paymentMethodTitle = paymentMethodTitle ?? self.paymentMethodTitle
+        let chargeID = chargeID ?? self.chargeID
         let items = items ?? self.items
         let billingAddress = billingAddress ?? self.billingAddress
         let shippingAddress = shippingAddress ?? self.shippingAddress
@@ -250,6 +318,7 @@ extension Order {
             totalTax: totalTax,
             paymentMethodID: paymentMethodID,
             paymentMethodTitle: paymentMethodTitle,
+            chargeID: chargeID,
             items: items,
             billingAddress: billingAddress,
             shippingAddress: shippingAddress,
@@ -1626,6 +1695,117 @@ extension TopEarnerStatsItem {
             total: total,
             currency: currency,
             imageUrl: imageUrl
+        )
+    }
+}
+
+extension WCPayCardPaymentDetails {
+    public func copy(
+        brand: CopiableProp<WCPayCardBrand> = .copy,
+        last4: CopiableProp<String> = .copy,
+        funding: CopiableProp<WCPayCardFunding> = .copy
+    ) -> WCPayCardPaymentDetails {
+        let brand = brand ?? self.brand
+        let last4 = last4 ?? self.last4
+        let funding = funding ?? self.funding
+
+        return WCPayCardPaymentDetails(
+            brand: brand,
+            last4: last4,
+            funding: funding
+        )
+    }
+}
+
+extension WCPayCardPresentPaymentDetails {
+    public func copy(
+        brand: CopiableProp<WCPayCardBrand> = .copy,
+        last4: CopiableProp<String> = .copy,
+        funding: CopiableProp<WCPayCardFunding> = .copy,
+        receipt: CopiableProp<WCPayCardPresentReceiptDetails> = .copy
+    ) -> WCPayCardPresentPaymentDetails {
+        let brand = brand ?? self.brand
+        let last4 = last4 ?? self.last4
+        let funding = funding ?? self.funding
+        let receipt = receipt ?? self.receipt
+
+        return WCPayCardPresentPaymentDetails(
+            brand: brand,
+            last4: last4,
+            funding: funding,
+            receipt: receipt
+        )
+    }
+}
+
+extension WCPayCardPresentReceiptDetails {
+    public func copy(
+        accountType: CopiableProp<WCPayCardFunding> = .copy,
+        applicationPreferredName: CopiableProp<String> = .copy,
+        dedicatedFileName: CopiableProp<String> = .copy
+    ) -> WCPayCardPresentReceiptDetails {
+        let accountType = accountType ?? self.accountType
+        let applicationPreferredName = applicationPreferredName ?? self.applicationPreferredName
+        let dedicatedFileName = dedicatedFileName ?? self.dedicatedFileName
+
+        return WCPayCardPresentReceiptDetails(
+            accountType: accountType,
+            applicationPreferredName: applicationPreferredName,
+            dedicatedFileName: dedicatedFileName
+        )
+    }
+}
+
+extension WCPayCharge {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        id: CopiableProp<String> = .copy,
+        amount: CopiableProp<Int64> = .copy,
+        amountCaptured: CopiableProp<Int64> = .copy,
+        amountRefunded: CopiableProp<Int64> = .copy,
+        authorizationCode: NullableCopiableProp<String> = .copy,
+        captured: CopiableProp<Bool> = .copy,
+        created: CopiableProp<Date> = .copy,
+        currency: CopiableProp<String> = .copy,
+        paid: CopiableProp<Bool> = .copy,
+        paymentIntentID: NullableCopiableProp<String> = .copy,
+        paymentMethodID: CopiableProp<String> = .copy,
+        paymentMethodDetails: CopiableProp<WCPayPaymentMethodDetails> = .copy,
+        refunded: CopiableProp<Bool> = .copy,
+        status: CopiableProp<WCPayChargeStatus> = .copy
+    ) -> WCPayCharge {
+        let siteID = siteID ?? self.siteID
+        let id = id ?? self.id
+        let amount = amount ?? self.amount
+        let amountCaptured = amountCaptured ?? self.amountCaptured
+        let amountRefunded = amountRefunded ?? self.amountRefunded
+        let authorizationCode = authorizationCode ?? self.authorizationCode
+        let captured = captured ?? self.captured
+        let created = created ?? self.created
+        let currency = currency ?? self.currency
+        let paid = paid ?? self.paid
+        let paymentIntentID = paymentIntentID ?? self.paymentIntentID
+        let paymentMethodID = paymentMethodID ?? self.paymentMethodID
+        let paymentMethodDetails = paymentMethodDetails ?? self.paymentMethodDetails
+        let refunded = refunded ?? self.refunded
+        let status = status ?? self.status
+
+        return WCPayCharge(
+            siteID: siteID,
+            id: id,
+            amount: amount,
+            amountCaptured: amountCaptured,
+            amountRefunded: amountRefunded,
+            authorizationCode: authorizationCode,
+            captured: captured,
+            created: created,
+            currency: currency,
+            paid: paid,
+            paymentIntentID: paymentIntentID,
+            paymentMethodID: paymentMethodID,
+            paymentMethodDetails: paymentMethodDetails,
+            refunded: refunded,
+            status: status
         )
     }
 }

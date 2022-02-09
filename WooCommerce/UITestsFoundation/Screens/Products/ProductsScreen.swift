@@ -3,6 +3,9 @@ import XCTest
 
 public final class ProductsScreen: ScreenObject {
 
+    // TODO: Remove force `try` once `ScreenObject` migration is completed
+    public let tabBar = try! TabNavComponent()
+
     static var isVisible: Bool {
         (try? ProductsScreen().isLoaded) ?? false
     }

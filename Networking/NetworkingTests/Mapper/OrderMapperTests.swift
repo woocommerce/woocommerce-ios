@@ -320,6 +320,12 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(tax.ratePercent, 4.5)
         XCTAssertEqual(tax.attributes, [])
     }
+
+    func test_order_charge_id_is_parsed_successfully() throws {
+        let order = try XCTUnwrap(mapLoadOrderWithChargeResponse())
+
+        XCTAssertEqual(order.chargeID, "ch_3KMuym2EdyGr1FMV0uQZeFqm")
+    }
 }
 
 
@@ -384,6 +390,12 @@ private extension OrderMapperTests {
     ///
     func mapLoadOrderWithDeletedRefundsResponse() -> Order? {
         return mapOrder(from: "order-with-deleted-refunds")
+    }
+
+    /// Returns the OrderMapper output upon receiving `order-with-charge`
+    ///
+    func mapLoadOrderWithChargeResponse() -> Order? {
+        return mapOrder(from: "order-with-charge")
     }
 
 }

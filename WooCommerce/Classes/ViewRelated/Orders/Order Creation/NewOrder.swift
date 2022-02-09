@@ -4,38 +4,17 @@ import Combine
 /// Hosting controller that wraps an `NewOrder` view.
 ///
 final class NewOrderHostingController: UIHostingController<NewOrder> {
-    private let noticePresenter: NoticePresenter
 
     /// References to keep the Combine subscriptions alive within the lifecycle of the object.
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(viewModel: NewOrderViewModel, noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
-        self.noticePresenter = noticePresenter
+    init(viewModel: NewOrderViewModel) {
         super.init(rootView: NewOrder(viewModel: viewModel))
-
-        observeNoticeIntent()
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    /// Observe the present notice intent and set it back after presented.
-    ///
-    private func observeNoticeIntent() {
-        rootView.viewModel.$presentNotice
-            .compactMap { $0 }
-            .sink { [weak self] notice in
-                switch notice {
-                case .error:
-                    self?.noticePresenter.enqueue(notice: .init(title: NewOrder.Localization.errorMessage, feedbackType: .error))
-                }
-
-                // Nullify the presentation intent.
-                self?.rootView.viewModel.presentNotice = nil
-            }
-            .store(in: &subscriptions)
     }
 }
 
@@ -90,6 +69,8 @@ struct NewOrder: View {
             }
         }
         .wooNavigationBarStyle()
+        .notice($viewModel.notice)
+        .disabled(viewModel.disabled)
     }
 }
 
@@ -128,10 +109,7 @@ private struct ProductsSection: View {
                             viewModel.selectOrderItem(productRow.id)
                         }
                         .sheet(item: $viewModel.selectedOrderItem) { item in
-                            let productInOrderVM = ProductInOrderViewModel(product: item.product) {
-                                viewModel.removeItemFromOrder(item)
-                            }
-                            ProductInOrder(viewModel: productInOrderVM)
+                            createProductInOrderView(for: item)
                         }
 
                     Divider()
@@ -158,6 +136,16 @@ private struct ProductsSection: View {
             Divider()
         }
     }
+
+    @ViewBuilder private func createProductInOrderView(for item: NewOrderViewModel.NewOrderItem) -> some View {
+        if let productRowViewModel = viewModel.createProductRowViewModel(for: item, canChangeQuantity: false) {
+            let productInOrderViewModel = ProductInOrderViewModel(productRowViewModel: productRowViewModel) {
+                viewModel.removeItemFromOrder(item)
+            }
+            ProductInOrder(viewModel: productInOrderViewModel)
+        }
+        EmptyView()
+    }
 }
 
 // MARK: Constants
@@ -171,7 +159,6 @@ private extension NewOrder {
     enum Localization {
         static let title = NSLocalizedString("New Order", comment: "Title for the order creation screen")
         static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the New Order screen")
-        static let errorMessage = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating a new order")
         static let addProduct = NSLocalizedString("Add product", comment: "Title text of the button that adds a product when creating a new order")
     }

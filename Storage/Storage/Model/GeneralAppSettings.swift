@@ -32,6 +32,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let isStripeInPersonPaymentsSwitchEnabled: Bool
 
+    /// The state for the In-Person Payments in Canada feature switch
+    ///
+    public let isCanadaInPersonPaymentsSwitchEnabled: Bool
+
     /// The state(`true` or `false`) for the Product SKU Input Scanner feature switch.
     ///
     public let isProductSKUInputScannerSwitchEnabled: Bool
@@ -53,6 +57,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 isViewAddOnsSwitchEnabled: Bool,
                 isOrderCreationSwitchEnabled: Bool,
                 isStripeInPersonPaymentsSwitchEnabled: Bool,
+                isCanadaInPersonPaymentsSwitchEnabled: Bool,
                 isProductSKUInputScannerSwitchEnabled: Bool,
                 knownCardReaders: [String],
                 lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
@@ -62,6 +67,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
         self.isOrderCreationSwitchEnabled = isOrderCreationSwitchEnabled
         self.isStripeInPersonPaymentsSwitchEnabled = isStripeInPersonPaymentsSwitchEnabled
+        self.isCanadaInPersonPaymentsSwitchEnabled = isCanadaInPersonPaymentsSwitchEnabled
         self.isProductSKUInputScannerSwitchEnabled = isProductSKUInputScannerSwitchEnabled
         self.knownCardReaders = knownCardReaders
         self.lastEligibilityErrorInfo = lastEligibilityErrorInfo
@@ -91,6 +97,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
             isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
             isStripeInPersonPaymentsSwitchEnabled: isStripeInPersonPaymentsSwitchEnabled,
+            isCanadaInPersonPaymentsSwitchEnabled: isCanadaInPersonPaymentsSwitchEnabled,
             isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo
@@ -110,6 +117,7 @@ extension GeneralAppSettings {
         self.isViewAddOnsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isViewAddOnsSwitchEnabled) ?? false
         self.isOrderCreationSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isOrderCreationSwitchEnabled) ?? false
         self.isStripeInPersonPaymentsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isStripeInPersonPaymentsSwitchEnabled) ?? false
+        self.isCanadaInPersonPaymentsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isCanadaInPersonPaymentsSwitchEnabled) ?? false
         self.isProductSKUInputScannerSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isProductSKUInputScannerSwitchEnabled) ?? false
         self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []
         self.lastEligibilityErrorInfo = try container.decodeIfPresent(EligibilityErrorInfo.self, forKey: .lastEligibilityErrorInfo)

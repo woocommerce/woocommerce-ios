@@ -1,7 +1,7 @@
+import Combine
 import UIKit
 import XLPagerTabStrip
 import Yosemite
-import Observables
 
 /// Container view controller for a stats v4 time range that consists of a scrollable stack view of:
 /// - Store stats data view (managed by child view controller `OldStoreStatsV4PeriodViewController`)
@@ -113,7 +113,7 @@ final class OldStoreStatsAndTopPerformersPeriodViewController: UIViewController 
     private let siteID: Int64
 
     /// Subscriptions that should be cancelled on `deinit`.
-    private var cancellables = [ObservationToken]()
+    private var cancellables = Set<AnyCancellable>()
 
     /// Create an instance of `self`.
     ///
@@ -236,7 +236,7 @@ private extension OldStoreStatsAndTopPerformersPeriodViewController {
             return
         }
 
-        let cancellable = viewModel.isInAppFeedbackCardVisible.subscribe { [weak self] isVisible in
+        viewModel.$isInAppFeedbackCardVisible.sink { [weak self] isVisible in
             guard let self = self else {
                 return
             }
@@ -253,8 +253,7 @@ private extension OldStoreStatsAndTopPerformersPeriodViewController {
                     }
                 }
             }
-        }
-        cancellables.append(cancellable)
+        }.store(in: &cancellables)
     }
 
     func configureSubviews() {

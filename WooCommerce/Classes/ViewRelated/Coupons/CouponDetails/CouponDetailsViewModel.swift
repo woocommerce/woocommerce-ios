@@ -89,6 +89,12 @@ private extension CouponDetailsViewModel {
         expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none) ?? ""
     }
 
+    /// Localize content for the "Apply to" field. This takes into consideration different cases of apply rules:
+    ///    - When only specific products or categories are defined: Display "x Products" or "x Categories"
+    ///    - When specific products/categories and exceptions are defined: Display "x Products except y Categories" etc.
+    ///    - When both specific products and categories are defined: Display "x Products and y Categories"
+    ///    - When only exceptions are defined: Display "All except x Products" or "All except y Categories"
+    ///
     func localizeApplyRules(productsCount: Int, excludedProductsCount: Int, categoriesCount: Int, excludedCategoriesCount: Int) -> String {
         let productText = String.pluralize(productsCount, singular: Localization.singleProduct, plural: Localization.multipleProducts)
         let productExceptionText = String.pluralize(excludedProductsCount, singular: Localization.singleProduct, plural: Localization.multipleProducts)

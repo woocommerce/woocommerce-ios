@@ -156,7 +156,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case let .loadCouponReport(_, _, onCompletion):
+            case let .loadCouponReport(_, _, _, onCompletion):
                 onCompletion(.success(sampleReport))
             default:
                 break

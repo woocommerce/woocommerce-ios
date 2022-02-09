@@ -13,13 +13,6 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 
         // Set presenting view controller to show the notice presenter here
         rootView.noticePresenter.presentingViewController = self
-
-        // Set action to display the share modal from this controller
-        rootView.shareAction = { [weak self] message in
-            let controller = UIActivityViewController(
-                activityItems: [message], applicationActivities: nil)
-            self?.present(controller, animated: true, completion: nil)
-        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -30,12 +23,11 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
 struct CouponDetails: View {
     @ObservedObject private var viewModel: CouponDetailsViewModel
     @State private var showingActionSheet: Bool = false
+    @State private var showingShareSheet: Bool = false
 
     /// The presenter to display notice when the coupon code is copied.
     /// It is kept internal so that the hosting controller can update its presenting controller to itself.
     let noticePresenter: DefaultNoticePresenter
-
-    var shareAction: (String) -> Void = { _ in }
 
     init(viewModel: CouponDetailsViewModel) {
         self.viewModel = viewModel
@@ -69,11 +61,14 @@ struct CouponDetails: View {
                                         noticePresenter.enqueue(notice: notice)
                                     }),
                                     .default(Text(Localization.shareCoupon), action: {
-                                        shareAction(viewModel.shareMessage)
+                                        showingShareSheet = true
                                     }),
                                     .cancel()
                                 ]
                             )
+                        }
+                        .shareSheet(isPresented: $showingShareSheet) {
+                            ShareSheet(activityItems: [viewModel.shareMessage])
                         }
 
                     VStack(alignment: .leading, spacing: 0) {

@@ -31,6 +31,9 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     /// Mock Card Reader Service: In memory
     private var mockCardReaderService: MockCardReaderService!
 
+    /// Mock Actions Processor for app settings
+    private var mockActionsProcessor: ActionsProcessor!
+
     /// Dummy Site ID
     ///
     private let sampleSiteID: Int64 = 1234
@@ -49,6 +52,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         storageManager = MockStorageManager()
         network = MockNetwork()
         mockCardReaderService = MockCardReaderService()
+        setupCountry()
+        setupFeatureFlags(stripeEnabled: true, canadaEnabled: true)
     }
 
     override func tearDown() {
@@ -56,6 +61,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         storageManager = nil
         network = nil
         mockCardReaderService = nil
+        mockActionsProcessor = nil
 
         super.tearDown()
     }
@@ -68,8 +74,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,
                                                        network: network,
-                                                       cardReaderService: mockCardReaderService,
-                                                       allowStripeIPP: false)
+                                                       cardReaderService: mockCardReaderService)
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID, onReaderDiscovered: { _ in }, onError: { _ in })
 
@@ -82,8 +87,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,
                                                        network: network,
-                                                       cardReaderService: mockCardReaderService,
-                                                       allowStripeIPP: false)
+                                                       cardReaderService: mockCardReaderService)
 
         let expectation = self.expectation(description: "Readers discovered")
 
@@ -104,8 +108,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,
                                                        network: network,
-                                                       cardReaderService: mockCardReaderService,
-                                                       allowStripeIPP: false)
+                                                       cardReaderService: mockCardReaderService)
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID, onReaderDiscovered: { _ in }, onError: { _ in })
 
@@ -127,8 +130,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,
                                                        network: network,
-                                                       cardReaderService: mockCardReaderService,
-                                                       allowStripeIPP: false)
+                                                       cardReaderService: mockCardReaderService)
 
         network.simulateResponse(requestUrlSuffix: "payments/connection_tokens", filename: "generic_error")
 
@@ -152,8 +154,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,
                                                        network: network,
-                                                       cardReaderService: mockCardReaderService,
-                                                       allowStripeIPP: false)
+                                                       cardReaderService: mockCardReaderService)
 
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery { result in
             //
@@ -170,8 +171,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,
                                                        network: network,
-                                                       cardReaderService: mockCardReaderService,
-                                                       allowStripeIPP: false)
+                                                       cardReaderService: mockCardReaderService)
 
         let expectation = self.expectation(description: "Cancelling discovery published idle as discoveryStatus")
 
@@ -190,8 +190,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,
                                                        network: network,
-                                                       cardReaderService: mockCardReaderService,
-                                                       allowStripeIPP: false)
+                                                       cardReaderService: mockCardReaderService)
 
         let expectation = self.expectation(description: "Cancelling discovery changes discoveryStatus to idle")
 
@@ -215,8 +214,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,
                                                        network: network,
-                                                       cardReaderService: mockCardReaderService,
-                                                       allowStripeIPP: false)
+                                                       cardReaderService: mockCardReaderService)
 
         let expectation = self.expectation(description: "Connect to card reader")
 
@@ -241,8 +239,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,
                                                        network: network,
-                                                       cardReaderService: mockCardReaderService,
-                                                       allowStripeIPP: false)
+                                                       cardReaderService: mockCardReaderService)
 
         let action = CardPresentPaymentAction.disconnect(onCompletion: { result in
             //
@@ -259,8 +256,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let store = CardPresentPaymentStore(dispatcher: dispatcher,
                                             storageManager: storageManager,
                                             network: network,
-                                            cardReaderService: mockCardReaderService,
-                                            allowStripeIPP: false)
+                                            cardReaderService: mockCardReaderService)
         let expectation = self.expectation(description: "Load Account error response")
         network.simulateResponse(requestUrlSuffix: "payments/accounts",
                                  filename: "generic_error")
@@ -284,8 +280,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let store = CardPresentPaymentStore(dispatcher: dispatcher,
                                             storageManager: storageManager,
                                             network: network,
-                                            cardReaderService: mockCardReaderService,
-                                            allowStripeIPP: false)
+                                            cardReaderService: mockCardReaderService)
         let expectation = self.expectation(description: "Load Account fetch response")
         network.simulateResponse(requestUrlSuffix: "payments/accounts",
                                  filename: "wcpay-account-complete")
@@ -317,8 +312,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let store = CardPresentPaymentStore(dispatcher: dispatcher,
                                             storageManager: storageManager,
                                             network: network,
-                                            cardReaderService: mockCardReaderService,
-                                            allowStripeIPP: false)
+                                            cardReaderService: mockCardReaderService)
         let expectation = self.expectation(description: "Capture Payment Intent error response")
         network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment", filename: "generic_error")
         let action = CardPresentPaymentAction.captureOrderPayment(siteID: sampleSiteID,
@@ -339,8 +333,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let store = CardPresentPaymentStore(dispatcher: dispatcher,
                                             storageManager: storageManager,
                                             network: network,
-                                            cardReaderService: mockCardReaderService,
-                                            allowStripeIPP: false)
+                                            cardReaderService: mockCardReaderService)
         let expectation = self.expectation(description: "Load Account fetch response")
         network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-succeeded")
@@ -361,8 +354,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let store = CardPresentPaymentStore(dispatcher: dispatcher,
                                             storageManager: storageManager,
                                             network: network,
-                                            cardReaderService: mockCardReaderService,
-                                            allowStripeIPP: false)
+                                            cardReaderService: mockCardReaderService)
         let expectation = self.expectation(description: #function)
         network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/create_customer",
                                  filename: "wcpay-customer")
@@ -385,8 +377,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let store = CardPresentPaymentStore(dispatcher: dispatcher,
                                             storageManager: storageManager,
                                             network: network,
-                                            cardReaderService: mockCardReaderService,
-                                            allowStripeIPP: false)
+                                            cardReaderService: mockCardReaderService)
         let expectation = self.expectation(description: #function)
         network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/create_customer",
                                  filename: "wcpay-customer-error")
@@ -399,5 +390,33 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         store.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+}
+
+// MARK: - Country helpers
+private extension CardPresentPaymentStoreTests {
+    func setupCountry() {
+        let setting = SiteSetting.fake()
+            .copy(
+                siteID: sampleSiteID,
+                settingID: "woocommerce_default_country",
+                value: "US:CA",
+                settingGroupKey: SiteSettingGroup.general.rawValue
+            )
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
+    }
+
+    func setupFeatureFlags(stripeEnabled: Bool, canadaEnabled: Bool) {
+        mockActionsProcessor = MockActionProcessor<AppSettingsAction> { action in
+            switch action {
+            case .loadStripeInPersonPaymentsSwitchState(onCompletion: let onCompletion):
+                onCompletion(.success(stripeEnabled))
+            case .loadCanadaInPersonPaymentsSwitchState(onCompletion: let onCompletion):
+                onCompletion(.success(canadaEnabled))
+            default:
+                break
+            }
+        }
+        dispatcher.register(processor: mockActionsProcessor, for: AppSettingsAction.self)
     }
 }

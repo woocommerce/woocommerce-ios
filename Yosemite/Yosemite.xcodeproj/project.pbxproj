@@ -351,6 +351,7 @@
 		DEFD6D9326443A4000E51E0D /* SitePluginAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */; };
 		DEFD6D9526443CA100E51E0D /* SitePluginStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */; };
 		DEFD6D972644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D962644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift */; };
+		E12DCD1E27B3CBE0009ACB18 /* MockActionProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12DCD1D27B3CBE0009ACB18 /* MockActionProcessor.swift */; };
 		E138D4FA269EE5BD006EA5C6 /* CardPresentPaymentsOnboardingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E138D4F9269EE5BD006EA5C6 /* CardPresentPaymentsOnboardingState.swift */; };
 		E1BD4D0027ABF84D006416D9 /* CardPresentPaymentsConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BD4CFF27ABF84D006416D9 /* CardPresentPaymentsConfiguration.swift */; };
 		E1F54D0427AD4DAF00012983 /* CardPresentConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F54D0327AD4DAF00012983 /* CardPresentConfigurationTests.swift */; };
@@ -745,6 +746,7 @@
 		DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginAction.swift; sourceTree = "<group>"; };
 		DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStore.swift; sourceTree = "<group>"; };
 		DEFD6D962644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		E12DCD1D27B3CBE0009ACB18 /* MockActionProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockActionProcessor.swift; sourceTree = "<group>"; };
 		E138D4F9269EE5BD006EA5C6 /* CardPresentPaymentsOnboardingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingState.swift; sourceTree = "<group>"; };
 		E1BD4CFF27ABF84D006416D9 /* CardPresentPaymentsConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsConfiguration.swift; sourceTree = "<group>"; };
 		E1F54D0327AD4DAF00012983 /* CardPresentConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentConfigurationTests.swift; sourceTree = "<group>"; };
@@ -950,6 +952,7 @@
 				247CE7C72582DF5500F9D9D1 /* MockStoresManager.swift */,
 				247CE7CF2582E1C100F9D9D1 /* MockSessionManager.swift */,
 				247CE7D32582E1FD00F9D9D1 /* ScreenshotStoresManager.swift */,
+				E12DCD1D27B3CBE0009ACB18 /* MockActionProcessor.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -2006,6 +2009,7 @@
 				45E462102684C63700011BF2 /* StateOfACountry+ReadOnlyConvertible.swift in Sources */,
 				022F00C024725BC6008CD97F /* NotificationCountAction.swift in Sources */,
 				D8652E2026303D4800350F37 /* PaymentIntent+ReceiptParameters.swift in Sources */,
+				E12DCD1E27B3CBE0009ACB18 /* MockActionProcessor.swift in Sources */,
 				453305F7245AE68C00264E50 /* SitePostStore.swift in Sources */,
 				026CF62A237D92C6009563D4 /* ProductVariation+ReadOnlyConvertible.swift in Sources */,
 				02F6AAAC270556A4002425D0 /* Models+Copiable.generated.swift in Sources */,

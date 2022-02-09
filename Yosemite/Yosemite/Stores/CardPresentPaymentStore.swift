@@ -118,6 +118,11 @@ private extension CardPresentPaymentStore {
     }
 
     func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
+        guard let configuration = loadConfigurationSync(siteID: siteID) else {
+            DDLogError("startCardReaderDiscovery: unable to load configuration")
+            return onError(CardPresentPaymentsConfigurationMissingError())
+        }
+
         do {
             switch usingBackend {
             case .wcpay:
@@ -145,7 +150,7 @@ private extension CardPresentPaymentStore {
                     }
                 },
                 receiveValue: { readers in
-                    let supportedReaders = readers.filter({$0.readerType == .chipper || $0.readerType == .stripeM2})
+                    let supportedReaders = readers.filter({ configuration.supportedCardReaders.contains($0.readerType) })
                     onReaderDiscovered(supportedReaders)
                 }
             ))
@@ -568,11 +573,23 @@ private extension CardPresentPaymentStore {
         })
         dispatcher.dispatch(canadaAction)
 
-
-        group.notify(queue: .main) {
+        group.notify(queue: .global()) {
             let configuration = try? CardPresentPaymentsConfiguration(country: countryCode, stripeEnabled: stripeIPPEnabled, canadaEnabled: canadaIPPEnabled)
             onCompletion(configuration)
         }
+    }
+
+    func loadConfigurationSync(siteID: Int64) -> CardPresentPaymentsConfiguration? {
+        let group = DispatchGroup()
+        var configuration: CardPresentPaymentsConfiguration? = nil
+
+        group.enter()
+        loadConfiguration(siteID: siteID) {
+            configuration = $0
+            group.leave()
+        }
+        _ = group.wait(timeout: .now() + .seconds(2))
+        return configuration
     }
 }
 

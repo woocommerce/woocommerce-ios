@@ -1,11 +1,32 @@
 import SwiftUI
 import Yosemite
 
+/// Hosting controller wrapper for `CouponDetails`
+///
+final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
+
+    init(viewModel: CouponDetailsViewModel) {
+        super.init(rootView: CouponDetails(viewModel: viewModel))
+        // The navigation title is set here instead of the SwiftUI view's `navigationTitle`
+        // to avoid the blinking of the title label when pushed from UIKit view.
+        title = NSLocalizedString("Coupon", comment: "Title of Coupon Details screen")
+
+        // Set presenting view controller to show the notice presenter here
+        rootView.noticePresenter.presentingViewController = self
+    }
+
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 struct CouponDetails: View {
     @ObservedObject private var viewModel: CouponDetailsViewModel
     @State private var showingActionSheet: Bool = false
 
-    private let noticePresenter: DefaultNoticePresenter
+    /// The presenter to display notice when the coupon code is copied.
+    /// It is kept internal so that the hosting controller can update its presenting controller to itself.
+    let noticePresenter: DefaultNoticePresenter
 
     init(viewModel: CouponDetailsViewModel) {
         self.viewModel = viewModel
@@ -47,7 +68,6 @@ struct CouponDetails: View {
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
-        .navigationTitle(Localization.navigationTitle)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
@@ -84,7 +104,6 @@ private extension CouponDetails {
     }
 
     enum Localization {
-        static let navigationTitle = NSLocalizedString("Coupon", comment: "Title of Coupon Details screen")
         static let detailSectionTitle = NSLocalizedString("Coupon Details", comment: "Title of Details section in Coupon Details screen")
         static let couponCode = NSLocalizedString("Coupon Code", comment: "Title of the Coupon Code row in Coupon Details screen")
         static let description = NSLocalizedString("Description", comment: "Title of the Description row in Coupon Details screen")

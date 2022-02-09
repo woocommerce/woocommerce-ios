@@ -9,9 +9,6 @@ struct HubMenuElement: View {
     let badge: Int
     let onTapGesture: (() -> Void)
 
-    @ScaledMetric var imageSize: CGFloat = 58
-    @ScaledMetric var iconSize: CGFloat = 34
-
     var body: some View {
         Button {
             onTapGesture()
@@ -27,15 +24,16 @@ struct HubMenuElement: View {
                             .resizable()
                             .scaledToFit()
                             .foregroundColor(Color(imageColor))
-                            .frame(width: iconSize, height: iconSize)
+                            .frame(width: Constants.iconSize, height: Constants.iconSize)
                     }
-                    .frame(width: imageSize, height: imageSize, alignment: .center)
-                    .cornerRadius(imageSize/2)
+                    .frame(width: Constants.imageSize, height: Constants.imageSize, alignment: .center)
+                    .cornerRadius(Constants.imageSize/2)
                     .padding(.top, Constants.iconTopPadding)
 
                     Text(text)
                         .bodyStyle()
                         .padding(.top, Constants.paddingBetweenElements)
+                        .padding(.bottom, Constants.minimumBottomPadding)
                     Spacer()
                 }
                 .frame(width: Constants.itemSize, height: Constants.itemSize)
@@ -67,9 +65,12 @@ struct HubMenuElement: View {
     enum Constants {
         static let iconTopPadding: CGFloat = 32
         static let paddingBetweenElements: CGFloat = 8
+        static let minimumBottomPadding: CGFloat = 2
         static let itemSize: CGFloat = 160
         static let badgeSize: CGFloat = 24
         static let cornerRadius: CGFloat = badgeSize/2
+        static let imageSize: CGFloat = 58
+        static let iconSize: CGFloat = 34
     }
 }
 

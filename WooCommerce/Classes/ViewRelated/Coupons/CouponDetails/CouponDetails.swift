@@ -85,7 +85,8 @@ struct CouponDetails: View {
                             }),
                             .default(Text(Localization.shareCoupon), action: {
                                 // TODO:
-                            })
+                            }),
+                            .cancel()
                         ]
                     )
                 }

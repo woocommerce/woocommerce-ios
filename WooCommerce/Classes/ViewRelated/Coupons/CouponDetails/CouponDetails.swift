@@ -81,6 +81,9 @@ private extension CouponDetails {
         static let applyTo = NSLocalizedString("Apply To", comment: "Title of the Apply To row in Coupon Details screen")
         static let expiryDate = NSLocalizedString("Coupon Expiry Date", comment: "Title of the Coupon Expiry Date row in Coupon Details screen")
         static let manageCoupon = NSLocalizedString("Manage Coupon", comment: "Title of the action sheet displayed from the Coupon Details screen")
+        static let copyCode = NSLocalizedString("Copy Code", comment: "Action title for copying coupon code from the Coupon Details screen")
+        static let couponCopied = NSLocalizedString("Coupon copied", comment: "Notice message displayed when a coupon code is copied from the Coupon Details screen")
+        static let shareCoupon = NSLocalizedString("Share Coupon", comment: "Action title for sharing coupon from the Coupon Details screen")
     }
 
     struct DetailRow: Identifiable {

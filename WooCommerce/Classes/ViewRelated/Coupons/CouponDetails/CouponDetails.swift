@@ -7,6 +7,7 @@ struct CouponDetails: View {
     init(viewModel: CouponDetailsViewModel) {
         self.viewModel = viewModel
         viewModel.syncCoupon()
+        viewModel.loadCouponReport()
     }
 
     private var detailRows: [DetailRow] {
@@ -22,6 +23,36 @@ struct CouponDetails: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(Localization.performance)
+                        .bold()
+                        .padding(Constants.margin)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+                    HStack(spacing: 0) {
+                        VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                            Text(Localization.discountedOrders)
+                                .secondaryBodyStyle()
+                            Text(viewModel.discountedOrdersCount)
+                                .font(.title)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                        VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                            Text(Localization.amount)
+                                .secondaryBodyStyle()
+                            Text(viewModel.discountedAmount)
+                                .font(.title)
+                        }
+                        .padding(.leading, Constants.margin)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding([.horizontal, .bottom], Constants.margin)
+                    .padding(.horizontal, insets: geometry.safeAreaInsets)
+                }
+                .background(Color(.listForeground))
+
+                Spacer().frame(height: Constants.margin)
+
                 VStack(alignment: .leading, spacing: 0) {
                     Text(Localization.detailSectionTitle)
                         .bold()
@@ -64,6 +95,9 @@ private extension CouponDetails {
         static let discount = NSLocalizedString("Discount", comment: "Title of the Discount row in Coupon Details screen")
         static let applyTo = NSLocalizedString("Apply To", comment: "Title of the Apply To row in Coupon Details screen")
         static let expiryDate = NSLocalizedString("Coupon Expiry Date", comment: "Title of the Coupon Expiry Date row in Coupon Details screen")
+        static let performance = NSLocalizedString("Performance", comment: "Title of the Performance section on Coupons Details screen")
+        static let discountedOrders = NSLocalizedString("Discounted Orders", comment: "Title of the Discounted Orders label on Coupon Details screen")
+        static let amount = NSLocalizedString("Amount", comment: "Title of the Amount label on Coupon Details screen")
     }
 
     struct DetailRow: Identifiable {

@@ -24,6 +24,14 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var expiryDate: String = ""
 
+    /// Total number of orders that applied the coupon
+    ///
+    @Published private(set) var discountedOrdersCount: String = "0"
+
+    /// Total amount deducted from orders that applied the coupon
+    ///
+    @Published private(set) var discountedAmount: String = ""
+
     /// The current coupon
     ///
     @Published private var coupon: Coupon {
@@ -41,6 +49,7 @@ final class CouponDetailsViewModel: ObservableObject {
         self.coupon = coupon
         self.stores = stores
         self.currencySettings = currencySettings
+        self.discountedAmount = formatStringAmount("0")
         populateDetails()
     }
 
@@ -52,6 +61,22 @@ final class CouponDetailsViewModel: ObservableObject {
                 self.coupon = coupon
             case .failure(let error):
                 DDLogError("⛔️ Error synchronizing coupon detail: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    func loadCouponReport() {
+        // Get "ancient" date to fetch all possible reports
+        let startDate = Date(timeIntervalSince1970: 1)
+        let action = CouponAction.loadCouponReport(siteID: coupon.siteID, couponID: coupon.couponID, startDate: startDate) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let report):
+                self.discountedOrdersCount = "\(report.ordersCount)"
+                self.discountedAmount = self.formatStringAmount("\(report.amount)")
+            case .failure(let error):
+                DDLogError("⛔️ Error loading coupon report: \(error)")
             }
         }
         stores.dispatch(action)
@@ -75,8 +100,7 @@ private extension CouponDetailsViewModel {
                 amount = percentFormatter.string(from: amountNumber) ?? ""
             }
         case .fixedCart, .fixedProduct:
-            let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-            amount = currencyFormatter.formatAmount(coupon.amount) ?? ""
+            amount = formatStringAmount(coupon.amount)
         case .other:
             amount = coupon.amount
         }
@@ -87,6 +111,11 @@ private extension CouponDetailsViewModel {
                                                excludedCategoriesCount: coupon.excludedProductCategories.count)
 
         expiryDate = coupon.dateExpires?.toString(dateStyle: .long, timeStyle: .none) ?? ""
+    }
+
+    func formatStringAmount(_ amount: String) -> String {
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        return currencyFormatter.formatAmount(amount) ?? ""
     }
 
     /// Localize content for the "Apply to" field. This takes into consideration different cases of apply rules:

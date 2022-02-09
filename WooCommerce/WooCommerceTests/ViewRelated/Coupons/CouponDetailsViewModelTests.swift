@@ -143,4 +143,29 @@ final class CouponDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.amount, "10%")
     }
+
+    func test_coupon_performance_is_correct() {
+        // Given
+        let sampleCoupon = Coupon.fake()
+        let sampleReport = CouponReport.fake().copy(amount: 220.0, ordersCount: 10)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = CouponDetailsViewModel(coupon: sampleCoupon, stores: stores, currencySettings: CurrencySettings())
+        XCTAssertEqual(viewModel.discountedOrdersCount, "0")
+        XCTAssertEqual(viewModel.discountedAmount, "$0.00")
+
+        // When
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .loadCouponReport(_, _, _, onCompletion):
+                onCompletion(.success(sampleReport))
+            default:
+                break
+            }
+        }
+        viewModel.loadCouponReport()
+
+        // Then
+        XCTAssertEqual(viewModel.discountedOrdersCount, "10")
+        XCTAssertEqual(viewModel.discountedAmount, "$220.00")
+    }
 }

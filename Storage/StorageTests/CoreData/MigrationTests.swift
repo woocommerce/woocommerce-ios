@@ -1016,6 +1016,7 @@ final class MigrationTests: XCTestCase {
         inboxNote.setValue(NSSet(array: [inboxAction]), forKey: "actions")
         try targetContext.save()
 
+        XCTAssertNotNil(inboxNote.entity.relationshipsByName["actions"])
         XCTAssertEqual(try targetContext.count(entityName: "InboxNote"), 1)
         XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: InboxNote.self)), inboxNote)
     }

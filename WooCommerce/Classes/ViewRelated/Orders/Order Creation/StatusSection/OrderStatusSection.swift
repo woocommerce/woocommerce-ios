@@ -62,7 +62,7 @@ private extension OrderStatusSection {
     enum Localization {
         static let editButton = NSLocalizedString("Edit", comment: "Button to edit an order status on the New Order screen")
         static let editButtonAccessibilityLabel = NSLocalizedString("Edit Status",
-                                                                    comment: "Accessibility label for the button to order status on the New Order screen")
+                                                                    comment: "Accessibility label for the button to edit order status on the New Order screen")
     }
 }
 

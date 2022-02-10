@@ -128,7 +128,7 @@ final class InboxNotesStoreTests: XCTestCase {
     }
 
     func test_loadAllInboxNotes_then_it_returns_error_upon_empty_response() {
-        // Given a an empty network response
+        // Given an empty network response
         XCTAssertEqual(storedInboxNotesCount, 0)
 
         // When dispatching a `loadAllInboxNotes` action
@@ -138,6 +138,51 @@ final class InboxNotesStoreTests: XCTestCase {
             }
 
             let action = InboxNotesAction.loadAllInboxNotes(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then no inbox notes should be stored
+        XCTAssertEqual(storedInboxNotesCount, 0)
+        XCTAssertFalse(result.isSuccess)
+    }
+
+    func test_dismissInboxNote_then_it_update_inbox_note_upon_successful_response() {
+        // Given a stubbed inbox note network response
+        let sampleInboxNoteID: Int64 = 296
+        network.simulateResponse(requestUrlSuffix: "admin/notes/\(sampleInboxNoteID)", filename: "inbox-note")
+
+        // When dispatching a `dismissInboxNote` action
+        let result: Result<Networking.InboxNote, Error> = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = InboxNotesAction.dismissInboxNote(siteID: self.sampleSiteID, noteID: sampleInboxNoteID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then a valid inbox note should be stored
+        XCTAssertEqual(storedInboxNotesCount, 1)
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_dismissInboxNote_then_it_returns_error_upon_response_error() {
+        // Given a stubbed generic-error network response
+        let sampleInboxNoteID: Int64 = 296
+        network.simulateResponse(requestUrlSuffix: "admin/notes/\(sampleInboxNoteID)", filename: "generic_error")
+        XCTAssertEqual(storedInboxNotesCount, 0)
+
+        // When dispatching a `dismissInboxNote` action
+        let result: Result<Networking.InboxNote, Error> = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = InboxNotesAction.dismissInboxNote(siteID: self.sampleSiteID, noteID: sampleInboxNoteID) { result in
                 promise(result)
             }
             self.store.onAction(action)

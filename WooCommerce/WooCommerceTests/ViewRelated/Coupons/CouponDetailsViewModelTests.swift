@@ -179,7 +179,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shareMessage, shareMessage)
     }
 
-    func test_coupon_share_message_is_correct_if_there_is_some_restriction() {
+    func test_coupon_share_message_is_correct_if_there_is_product_restriction() {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, productIds: [12, 23])
         let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)

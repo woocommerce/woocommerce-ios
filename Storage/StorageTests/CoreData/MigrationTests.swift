@@ -1010,8 +1010,8 @@ final class MigrationTests: XCTestCase {
 
         // Creates a `InboxNote`
         let inboxNote = insertInboxNote(to: targetContext)
-        
-        // Creates an `OrderItemAttribute` and adds it to `InboxNote`.
+
+        // Creates an `InboxAction` and adds it to `InboxNote`.
         let inboxAction = insertInboxAction(to: targetContext)
         inboxNote.setValue(NSSet(array: [inboxAction]), forKey: "actions")
         try targetContext.save()

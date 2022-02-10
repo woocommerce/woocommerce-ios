@@ -2,7 +2,7 @@
 
 8.6
 -----
-
+- [*] Orders: In the experimental Order Creation feature, product variations added to a new order now show a list of their attributes. [https://github.com/woocommerce/woocommerce-ios/pull/6131]
 
 8.5
 -----

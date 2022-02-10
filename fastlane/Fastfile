@@ -25,8 +25,12 @@ SCREENSHOT_DEVICES = [
   'iPad Pro (12.9-inch) (3rd generation)'
 ].freeze
 
-MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce].freeze        # Registered in our main account, for development and AppStore
-ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce].freeze # Registered in our Enterprise account, for AppCenter / Installable Builds
+# rubocop:disable Style/MutableConstant
+# Fastlane mutates these internally, see
+# https://github.com/fastlane/fastlane/blob/b817148d4967ab6e38b8f1a8b81d1b3e60d6e645/match/lib/match/runner.rb#L84-L86
+MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce]        # Registered in our main account, for development and AppStore
+ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce] # Registered in our Enterprise account, for AppCenter / Installable Builds
+# rubocop:enable Style/MutableConstant
 
 # Use this instead of getting values from ENV directly
 # It will throw an error if the requested value is missing

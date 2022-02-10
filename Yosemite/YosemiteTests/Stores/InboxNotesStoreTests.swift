@@ -127,6 +127,27 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertFalse(result.isSuccess)
     }
 
+    func test_loadAllInboxNotes_then_it_returns_error_upon_empty_response() {
+        // Given a an empty network response
+        XCTAssertEqual(storedInboxNotesCount, 0)
+
+        // When dispatching a `loadAllInboxNotes` action
+        let result: Result<[Networking.InboxNote], Error> = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = InboxNotesAction.loadAllInboxNotes(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then no inbox notes should be stored
+        XCTAssertEqual(storedInboxNotesCount, 0)
+        XCTAssertFalse(result.isSuccess)
+    }
+
 }
 
 private extension InboxNotesStoreTests {

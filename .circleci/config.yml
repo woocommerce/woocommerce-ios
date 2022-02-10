@@ -98,7 +98,7 @@ jobs:
           command: bundle --path vendor/bundle
       - run:
           name: Run Unit Tests
-          command: bundle exec fastlane test_without_building name:UnitTests try_count:3 device:'<< parameters.device >>' ios-version:'<< parameters.ios-version >>'
+          command: bundle exec fastlane test_without_building name:UnitTests device:'<< parameters.device >>' ios-version:'<< parameters.ios-version >>'
       - ios/save-xcodebuild-artifacts:
           result-bundle-path: build/results
   UI Tests:

@@ -9,6 +9,8 @@ final class CardReaderSettingsResultsControllers {
 
     private let siteID: Int64
 
+    private let instanceID = Int.random(in: 1..<10000)
+
     /// Completion handler for when results controllers reload.
     ///
     var onReload: (() -> Void)?
@@ -20,24 +22,38 @@ final class CardReaderSettingsResultsControllers {
         return ResultsController<StoragePaymentGatewayAccount>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
-    init(siteID: Int64,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+    init(siteID: Int64, storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        print("==== in CardReaderSettingsResultsControllers \(instanceID) init siteID = \(siteID)")
         self.siteID = siteID
         self.storageManager = storageManager
     }
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
+        print("==== In CardReaderSettingsResultsControllers \(instanceID) configureResultsControllers")
         self.onReload = onReload
         configurePaymentGatewayAccountResultsController(onReload: onReload)
     }
 
     private func configurePaymentGatewayAccountResultsController(onReload: @escaping () -> Void) {
+        print("==== In CardReaderSettingsResultsControllers \(instanceID) configurePaymentGatewayAccountResultsController")
         paymentGatewayAccountResultsController.onDidChangeContent = {
+            print("==== In \(self.instanceID) onDidChangeContent")
+            onReload()
+        }
+
+        paymentGatewayAccountResultsController.onDidChangeObject = { [weak self] (object, indexPath, type, newIndexPath) in
+            guard let self = self else {
+                print("==== In onDidChangeObject nil self")
+                return
+            }
+            print("==== In \(self.instanceID) onDidChangeObject")
             onReload()
         }
 
         paymentGatewayAccountResultsController.onDidResetContent = { [weak self] in
+            print("==== In CardReaderSettingsResultsControllers onDidResetContent")
             guard let self = self else {
+                print("==== In onDidResetContent nil self")
                 return
             }
 
@@ -45,6 +61,7 @@ final class CardReaderSettingsResultsControllers {
             onReload()
         }
 
+        print("==== CardReaderSettingsResultsControllers \(instanceID) - About to performFetch")
         try? paymentGatewayAccountResultsController.performFetch()
     }
 

@@ -8,6 +8,8 @@ final class CardReaderSettingsDataSource: NSObject {
 
     private let siteID: Int64
 
+    private let instanceID = Int.random(in: 1..<10000)
+
     private lazy var resultsControllers: CardReaderSettingsResultsControllers = {
         return CardReaderSettingsResultsControllers(siteID: self.siteID, storageManager: self.storageManager)
     }()
@@ -19,6 +21,7 @@ final class CardReaderSettingsDataSource: NSObject {
     }
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
+        print("==== in CardReaderSettingsDataSource \(instanceID) configureResultsControllers")
         resultsControllers.configureResultsControllers(onReload: onReload)
     }
 
@@ -26,9 +29,11 @@ final class CardReaderSettingsDataSource: NSObject {
         let filteredAccounts = resultsControllers.paymentGatewayAccounts.filter { $0.isCardPresentEligible }
 
         guard let account = filteredAccounts.first else {
+            print("==== in CardReaderSettingsDataSource \(instanceID) cardPresentPaymentGatewayID no accounts!")
             return "unknown"
         }
 
+        print("==== in CardReaderSettingsDataSource \(instanceID) cardPresentPaymentGatewayID we have 1 or more accounts")
         return account.gatewayID
     }
 }

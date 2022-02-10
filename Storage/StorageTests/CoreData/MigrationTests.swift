@@ -1009,8 +1009,8 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "InboxNote"), 0)
 
         // Creates a `InboxNote`
-        let inboxNote = insertInboxNote(to: targetContext
-        )
+        let inboxNote = insertInboxNote(to: targetContext)
+        
         // Creates an `OrderItemAttribute` and adds it to `InboxNote`.
         let inboxAction = insertInboxAction(to: targetContext)
         inboxNote.setValue(NSSet(array: [inboxAction]), forKey: "actions")

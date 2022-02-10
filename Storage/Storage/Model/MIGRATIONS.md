@@ -6,7 +6,7 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 - @pmusolino 2022-02-09
     - Added `InboxNote` entity.
     - Added `InboxAction` entity.
-    - Added `inboxActions` relationship from `InboxNote` to `InboxAction`.
+    - Added `actions` relationship from `InboxNote` to `[InboxAction]`.
 
 ## Model 63 (Release 8.5.0.0)
 - @joshheald 2022-01-31

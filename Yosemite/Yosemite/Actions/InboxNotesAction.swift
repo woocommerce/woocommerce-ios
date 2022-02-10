@@ -8,11 +8,11 @@ public enum InboxNotesAction: Action {
     /// Retrieves all of the `InboxNote`s from the API.
     ///
     case loadAllInboxNotes(siteID: Int64,
-                           pageNumber: Int,
-                           pageSize: Int,
-                           orderBy: InboxNotesRemote.OrderBy,
-                           type: [InboxNotesRemote.NoteType]?,
-                           status: [InboxNotesRemote.Status]?,
+                           pageNumber: Int = Default.pageNumber,
+                           pageSize: Int = Default.pageSize,
+                           orderBy: InboxNotesRemote.OrderBy = .date,
+                           type: [InboxNotesRemote.NoteType]? = nil,
+                           status: [InboxNotesRemote.Status]? = nil,
                            completion: (Result<[InboxNote], Error>) -> ())
 
     /// Dismiss one `InboxNote`.
@@ -29,4 +29,13 @@ public enum InboxNotesAction: Action {
                                  noteID: Int64,
                                  actionID: Int64,
                                  completion: (Result<InboxNote, Error>) -> ())
+}
+
+// MARK: - Constants
+//
+public extension InboxNotesAction {
+    enum Default {
+        public static let pageSize = 25
+        public static let pageNumber = 1
+    }
 }

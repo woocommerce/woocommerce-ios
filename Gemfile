@@ -8,6 +8,7 @@ gem 'dotenv'
 gem 'fastlane', '~> 2'
 gem 'rake', '~> 12.3'
 gem 'rubocop', '~> 1.25'
+gem 'rubocop-rake', '~> 0.6'
 gem 'xcode-install'
 gem 'xcpretty-travis-formatter'
 

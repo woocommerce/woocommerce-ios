@@ -41,7 +41,7 @@ public struct InboxNote: GeneratedCopiable, GeneratedFakeable, Equatable {
 
     /// Registers whether the note is deleted or not.
     ///
-    public let isDeleted: Bool
+    public let isRemoved: Bool
 
     /// Registers whether the note is read or not.
     ///
@@ -60,7 +60,7 @@ public struct InboxNote: GeneratedCopiable, GeneratedFakeable, Equatable {
                 actions: [InboxAction],
                 title: String,
                 content: String,
-                isDeleted: Bool,
+                isRemoved: Bool,
                 isRead: Bool,
                 dateCreated: Date) {
         self.siteID = siteID
@@ -71,7 +71,7 @@ public struct InboxNote: GeneratedCopiable, GeneratedFakeable, Equatable {
         self.actions = actions
         self.title = title
         self.content = content
-        self.isDeleted = isDeleted
+        self.isRemoved = isRemoved
         self.isRead = isRead
         self.dateCreated = dateCreated
     }
@@ -96,7 +96,7 @@ extension InboxNote: Codable {
         let actions = try container.decode([InboxAction].self, forKey: .actions)
         let title = try container.decode(String.self, forKey: .title)
         let content = try container.decode(String.self, forKey: .content)
-        let isDeleted = try container.decode(Bool.self, forKey: .isDeleted)
+        let isRemoved = try container.decode(Bool.self, forKey: .isRemoved)
         let isRead = try container.decode(Bool.self, forKey: .isRead)
         let dateCreated = try container.decode(Date.self, forKey: .dateCreated)
 
@@ -108,7 +108,7 @@ extension InboxNote: Codable {
                   actions: actions,
                   title: title,
                   content: content,
-                  isDeleted: isDeleted,
+                  isRemoved: isRemoved,
                   isRead: isRead,
                   dateCreated: dateCreated)
     }
@@ -121,7 +121,7 @@ extension InboxNote: Codable {
         case actions
         case title
         case content
-        case isDeleted = "is_deleted"
+        case isRemoved = "is_deleted"
         case isRead = "is_read"
         case dateCreated = "date_created_gmt"
     }

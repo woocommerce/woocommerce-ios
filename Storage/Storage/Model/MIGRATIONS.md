@@ -2,6 +2,12 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 64 (Release 8.6.0.0)
+- @pmusolino 2022-02-09
+    - Added `InboxNote` entity.
+    - Added `InboxAction` entity.
+    - Added `actions` relationship from `InboxNote` to `[InboxAction]`.
+
 ## Model 63 (Release 8.5.0.0)
 - @joshheald 2022-01-31
     - Added `chargeID` attribute to `Order` entity.

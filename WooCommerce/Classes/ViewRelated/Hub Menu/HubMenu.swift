@@ -9,6 +9,7 @@ struct HubMenu: View {
     @ObservedObject private var viewModel: HubMenuViewModel
     @State private var showingWooCommerceAdmin = false
     @State private var showingViewStore = false
+    @State private var showingInbox = false
     @State private var showingReviews = false
     @State private var showingCoupons = false
 
@@ -43,6 +44,10 @@ struct HubMenu: View {
                             case .viewStore:
                                 ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "view_store"])
                                 showingViewStore = true
+                            case .inbox:
+                                // TODO: Inbox analytics
+                                // TODO: 5954 - Show Inbox view
+                                showingInbox = true
                             case .reviews:
                                 ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "reviews"])
                                 showingReviews = true

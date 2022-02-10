@@ -101,7 +101,7 @@ extension CardPresentPaymentOnboardingState {
     }
 }
 
-public enum CardPresentPaymentsPlugins: Equatable {
+public enum CardPresentPaymentsPlugins: Equatable, CaseIterable {
     case wcPay
     case stripe
 

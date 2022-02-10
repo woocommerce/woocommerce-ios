@@ -144,6 +144,96 @@ class AddProductToOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(timesSynced, 1)
     }
+
+    func test_entering_search_term_performs_remote_product_search() {
+        // Given
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let expectation = expectation(description: "Completed product search")
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .searchProducts(_, _, _, _, _, onCompletion):
+                let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
+                self.insert(product, withSearchTerm: "shirt")
+                onCompletion(.success(()))
+                expectation.fulfill()
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.searchTerm = "shirt"
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 1)
+    }
+
+    func test_searching_products_returns_expected_results() {
+        // Given
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let expectation = expectation(description: "Completed product search")
+        let product = Product.fake().copy(siteID: sampleSiteID, purchasable: true)
+        insert([product.copy(name: "T-shirt"), product.copy(name: "Hoodie")])
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .searchProducts(_, _, _, _, _, onCompletion):
+                self.insert(product.copy(name: "T-shirt"), withSearchTerm: "shirt")
+                onCompletion(.success(()))
+                expectation.fulfill()
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.searchTerm = "shirt"
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 1)
+        XCTAssertEqual(viewModel.productRows[0].name, "T-shirt")
+    }
+
+    func test_clearSearch_resets_searchTerm() {
+        // Given
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID)
+
+        // When
+        viewModel.searchTerm = "shirt"
+        viewModel.clearSearch()
+
+        // Then
+        XCTAssertEqual(viewModel.searchTerm, "")
+    }
+
+    func test_clearing_search_returns_full_product_list() {
+        // Given
+        let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let expectation = expectation(description: "Cleared product search")
+        let product = Product.fake().copy(siteID: sampleSiteID, purchasable: true)
+        insert([product.copy(name: "T-shirt"), product.copy(name: "Hoodie")])
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .searchProducts(_, _, _, _, _, onCompletion):
+                self.insert(product.copy(name: "T-shirt"), withSearchTerm: "shirt")
+                onCompletion(.success(()))
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+                onCompletion(.success(true))
+                expectation.fulfill()
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.searchTerm = "shirt"
+        viewModel.clearSearch()
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 2)
+    }
 }
 
 // MARK: - Utils
@@ -157,6 +247,17 @@ private extension AddProductToOrderViewModelTests {
         for readOnlyProduct in readOnlyProducts {
             let product = storage.insertNewObject(ofType: StorageProduct.self)
             product.update(with: readOnlyProduct)
+        }
+    }
+
+    func insert(_ readOnlyProduct: Yosemite.Product, withSearchTerm keyword: String) {
+        insert(readOnlyProduct)
+
+        let searchResult = storage.insertNewObject(ofType: ProductSearchResults.self)
+        searchResult.keyword = keyword
+
+        if let storedProduct = storage.loadProduct(siteID: readOnlyProduct.siteID, productID: readOnlyProduct.productID) {
+            searchResult.addToProducts(storedProduct)
         }
     }
 }

@@ -1044,16 +1044,18 @@ final class StorageTypeExtensionsTests: XCTestCase {
         let inboxNote1 = storage.insertNewObject(ofType: InboxNote.self)
         inboxNote1.siteID = 123
         inboxNote1.id = 321
+        inboxNote1.dateCreated = Calendar.current.date(byAdding: DateComponents(day: 1), to: Date())
 
         let inboxNote2 = storage.insertNewObject(ofType: InboxNote.self)
         inboxNote2.siteID = 123
         inboxNote2.id = 654
+        inboxNote2.dateCreated = Calendar.current.date(byAdding: DateComponents(day: 4), to: Date())
 
         // When
         let storedInboxNotes = try XCTUnwrap(storage.loadAllInboxNotes(siteID: 123))
 
         // Then
-        XCTAssertEqual(Set([inboxNote1, inboxNote2]), Set(storedInboxNotes))
+        XCTAssertEqual([inboxNote2, inboxNote1], storedInboxNotes)
     }
 
     func test_loadShippingLabelAccountSettings_by_siteID() throws {

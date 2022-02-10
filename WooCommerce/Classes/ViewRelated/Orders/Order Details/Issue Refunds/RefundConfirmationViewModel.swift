@@ -115,6 +115,10 @@ extension RefundConfirmationViewModel {
         ///
         let order: Order
 
+        /// Charge of original payment
+        ///
+        let charge: WCPayCharge?
+
         /// Total amount to refund
         ///
         let amount: String
@@ -151,7 +155,11 @@ private extension RefundConfirmationViewModel {
     ///
     func makeRefundViaRow() -> RefundConfirmationViewModelRow {
         if gatewaySupportsAutomaticRefunds() {
-            return SimpleTextRow(text: details.order.paymentMethodTitle)
+            guard case .cardPresent(let cardDetails) = details.charge?.paymentMethodDetails else {
+                return SimpleTextRow(text: details.order.paymentMethodTitle)
+            }
+            return TitleAndBodyRow(title: details.order.paymentMethodTitle,
+                                   body: "\(cardDetails.brand.localizedBrand()) •••• \(cardDetails.last4)")
         } else {
             return TitleAndBodyRow(title: Localization.manualRefund(via: details.order.paymentMethodTitle),
                                    body: Localization.refundWillNotBeIssued(paymentMethod: details.order.paymentMethodTitle))

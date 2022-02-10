@@ -145,6 +145,7 @@ public typealias WCPayCharge = Networking.WCPayCharge
 public typealias WCPayCardPresentPaymentDetails = Networking.WCPayCardPresentPaymentDetails
 public typealias WCPayCardPaymentDetails = Networking.WCPayCardPaymentDetails
 public typealias WCPayCardPresentReceiptDetails = Networking.WCPayCardPresentReceiptDetails
+public typealias WCPayCardBrand = Networking.WCPayCardBrand
 
 // MARK: - Exported Storage Symbols
 

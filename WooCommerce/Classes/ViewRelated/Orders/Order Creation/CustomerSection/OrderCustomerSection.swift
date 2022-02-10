@@ -51,6 +51,7 @@ private struct OrderCustomerSectionContent: View {
                     .fixedSize(horizontal: true, vertical: true)
                     .padding(.top, -Layout.linkButtonTopPadding) // remove padding to align button title to the top
                     .padding(.trailing, -Layout.linkButtonTrailingPadding) // remove padding to align button title to the side
+                    .accessibilityLabel(Text(Localization.editButtonAccessibilityLabel))
                 }
             }
             .padding([.leading, .top, .trailing])
@@ -115,6 +116,10 @@ private extension OrderCustomerSectionContent {
         static let addCustomerDetails = NSLocalizedString("Add Customer Details",
                                                           comment: "Title text of the button that adds customer data when creating a new order")
         static let editButton = NSLocalizedString("Edit", comment: "Button to edit a customer on the New Order screen")
+        static let editButtonAccessibilityLabel = NSLocalizedString(
+            "Edit Customer Details",
+            comment: "Accessibility label for the button to edit customer details on the New Order screen"
+        )
 
         static let billingTitle = NSLocalizedString("Billing Address", comment: "Title for the Billing Address section in order customer data")
         static let shippingTitle = NSLocalizedString("Shipping Address", comment: "Title for the Edit Shipping Address section in order customer data")

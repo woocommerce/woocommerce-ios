@@ -24,10 +24,12 @@ struct SearchHeader: View {
                 .frame(width: Layout.iconSize.width * scale, height: Layout.iconSize.height * scale)
                 .foregroundColor(Color(.listSmallIcon))
                 .padding([.leading, .trailing], Layout.internalPadding)
+                .accessibilityHidden(true)
 
             // TextField
             TextField(filterPlaceholder, text: $filterText)
                 .padding([.bottom, .top], Layout.internalPadding)
+                .accessibility(addTraits: .isSearchField)
         }
         .background(Color(.searchBarBackground))
         .cornerRadius(Layout.cornerRadius)

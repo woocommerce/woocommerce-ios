@@ -44,7 +44,7 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
     /// View models for each product variation row
     ///
     var productVariationRows: [ProductRowViewModel] {
-        productVariations.map { .init(productVariation: $0, name: createVariationName(for: $0), canChangeQuantity: false) }
+        productVariations.map { .init(productVariation: $0, name: $0.generateVariationName(from: productAttributes), canChangeQuantity: false) }
     }
 
     /// Closure to be invoked when a product variation is selected
@@ -123,18 +123,6 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
             return
         }
         onVariationSelected?(selectedVariation)
-    }
-
-    /// Creates a name for a provided variation using all available product attributes, e.g. "Blue - Any Size"
-    ///
-    func createVariationName(for variation: ProductVariation) -> String {
-        let variationAttributes = productAttributes.map { attribute -> VariationAttributeViewModel in
-            guard let variationAttribute = variation.attributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name }) else {
-                return VariationAttributeViewModel(name: attribute.name)
-            }
-            return VariationAttributeViewModel(productVariationAttribute: variationAttribute)
-        }
-        return variationAttributes.map { $0.nameOrValue }.joined(separator: " - ")
     }
 }
 

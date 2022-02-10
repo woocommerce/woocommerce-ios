@@ -24,10 +24,15 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_view_model_adds_product_variation_rows_with_unchangeable_quantity() {
+    func test_view_model_adds_product_variation_rows_with_expected_values() {
         // Given
-        let product = Product.fake().copy(productID: sampleProductID)
-        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        let product = Product.fake().copy(productID: sampleProductID,
+                                          attributes: [ProductAttribute.fake().copy(siteID: sampleSiteID, attributeID: 1, name: "Color", variation: true),
+                                                       ProductAttribute.fake().copy(siteID: sampleSiteID, attributeID: 2, name: "Size", variation: true)])
+        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")],
+                                                            purchasable: true)
         insert(productVariation)
 
         // When
@@ -39,6 +44,7 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
         let productVariationRow = viewModel.productVariationRows[0]
         XCTAssertFalse(productVariationRow.canChangeQuantity,
                        "Product variation row canChangeQuantity property should be false but is true instead")
+        XCTAssertEqual(productVariationRow.name, "Blue - Any Size")
     }
 
     func test_product_variation_rows_only_include_purchasable_product_variations() {
@@ -59,20 +65,6 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
                       "Product variation rows do not include purchasable product variation")
         XCTAssertFalse(viewModel.productVariationRows.contains(where: { $0.productOrVariationID == 2 }),
                        "Product variation rows include non-purchasable product variation")
-    }
-
-    func test_createVariationName_creates_expected_name_for_product_variation_rows() {
-        // Given
-        let product = Product.fake().copy(attributes: [ProductAttribute.fake().copy(siteID: sampleSiteID, attributeID: 1, name: "Color", variation: true),
-                                                       ProductAttribute.fake().copy(siteID: sampleSiteID, attributeID: 2, name: "Size", variation: true)])
-        let viewModel = AddProductVariationToOrderViewModel(siteID: sampleSiteID, product: product)
-        let productVariation = ProductVariation.fake().copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")])
-
-        // When
-        let variationName = viewModel.createVariationName(for: productVariation)
-
-        // Then
-        XCTAssertEqual(variationName, "Blue - Any Size")
     }
 
     func test_scrolling_indicator_appears_only_during_sync() {
@@ -190,16 +182,24 @@ class AddProductVariationToOrderViewModelTests: XCTestCase {
 // MARK: - Utils
 private extension AddProductVariationToOrderViewModelTests {
     /// Insert a `ProductVariation` into storage
-    func insert(_ readOnlyProduct: Yosemite.ProductVariation) {
-        let product = storage.insertNewObject(ofType: StorageProductVariation.self)
-        product.update(with: readOnlyProduct)
+    func insert(_ readOnlyVariation: Yosemite.ProductVariation) {
+        let productVariation = storage.insertNewObject(ofType: StorageProductVariation.self)
+        productVariation.update(with: readOnlyVariation)
+
+        // Inserts the attributes from the read-only product variation.
+        var storageAttributes = [StorageAttribute]()
+        for readOnlyAttribute in readOnlyVariation.attributes {
+            let newStorageAttribute = storage.insertNewObject(ofType: Storage.GenericAttribute.self)
+            newStorageAttribute.update(with: readOnlyAttribute)
+            storageAttributes.append(newStorageAttribute)
+        }
+        productVariation.attributes = NSOrderedSet(array: storageAttributes)
     }
 
     /// Insert an array of `ProductVariation`s into storage
-    func insert(_ readOnlyProducts: [Yosemite.ProductVariation]) {
-        for readOnlyProduct in readOnlyProducts {
-            let product = storage.insertNewObject(ofType: StorageProductVariation.self)
-            product.update(with: readOnlyProduct)
+    func insert(_ readOnlyVariations: [Yosemite.ProductVariation]) {
+        for readOnlyVariation in readOnlyVariations {
+            insert(readOnlyVariation)
         }
     }
 }

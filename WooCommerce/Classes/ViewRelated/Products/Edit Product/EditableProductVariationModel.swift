@@ -6,10 +6,6 @@ final class EditableProductVariationModel {
 
     let allAttributes: [ProductAttribute]
 
-    private lazy var variationAttributes: [VariationAttributeViewModel] = {
-        return generateVariationAttributes(productVariationAttributes: productVariation.attributes, allAttributes: allAttributes)
-    }()
-
     init(productVariation: ProductVariation, allAttributes: [ProductAttribute], parentProductSKU: String?) {
         self.allAttributes = allAttributes
 
@@ -18,23 +14,6 @@ final class EditableProductVariationModel {
         // As a workaround, we set a variation's SKU to nil if it has the same SKU as its parent product during initialization.
         let sku = parentProductSKU == productVariation.sku ? nil: productVariation.sku
         self.productVariation = productVariation.copy(sku: sku)
-    }
-}
-
-private extension EditableProductVariationModel {
-
-    func generateVariationAttributes(productVariationAttributes: [ProductVariationAttribute],
-                                     allAttributes: [ProductAttribute]) -> [VariationAttributeViewModel] {
-        return allAttributes
-            .sorted(by: { (lhs, rhs) -> Bool in
-                lhs.position < rhs.position
-            })
-            .map { attribute -> VariationAttributeViewModel in
-            guard let variationAttribute = productVariation.attributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name }) else {
-                return VariationAttributeViewModel(name: attribute.name)
-            }
-            return VariationAttributeViewModel(productVariationAttribute: variationAttribute)
-        }
     }
 }
 
@@ -48,7 +27,7 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
     }
 
     var name: String {
-        variationAttributes.map { $0.nameOrValue }.joined(separator: " - ")
+        productVariation.generateVariationName(from: allAttributes)
     }
 
     var description: String? {

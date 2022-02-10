@@ -175,7 +175,10 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
                                                   keyword: keyword,
                                                   pageNumber: pageNumber,
                                                   pageSize: pageSize) { [weak self] result in
-            guard let self = self else { return }
+            // Don't continue if this isn't the latest search.
+            guard let self = self, keyword == self.searchTerm else {
+                return
+            }
 
             switch result {
             case .success:
@@ -184,11 +187,7 @@ extension AddProductToOrderViewModel: SyncingCoordinatorDelegate {
                 DDLogError("⛔️ Error searching products during order creation: \(error)")
             }
 
-            // Don't update sync status if this isn't the latest search term.
-            // Avoids a flash of the empty results view if a new search is being performed.
-            if keyword == self.searchTerm {
-                self.transitionToResultsUpdatedState()
-            }
+            self.transitionToResultsUpdatedState()
             onCompletion?(result.isSuccess)
         }
 

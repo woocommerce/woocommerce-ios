@@ -7,6 +7,10 @@ import Networking
 public class InboxNotesStore: Store {
     private let remote: InboxNotesRemote
 
+    private lazy var sharedDerivedStorage: StorageType = {
+        return storageManager.writerDerivedStorage
+    }()
+
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = InboxNotesRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -52,7 +56,22 @@ private extension InboxNotesStore {
                            type: [InboxNotesRemote.NoteType]? = nil,
                            status: [InboxNotesRemote.Status]? = nil,
                            completion: @escaping (Result<[InboxNote], Error>) -> ()) {
-        remote.loadAllInboxNotes(for: siteID, pageNumber: pageNumber, pageSize: pageSize, orderBy: orderBy, type: type, status: status, completion: completion)
+        remote.loadAllInboxNotes(for: siteID, pageNumber: pageNumber, pageSize: pageSize, orderBy: orderBy, type: type, status: status) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+
+            case .success(let inboxNotes):
+                if pageNumber == Default.pageNumber {
+                    self.deleteStoredInboxNotes(siteID: siteID)
+                }
+
+                self.upsertStoredInboxNotesInBackground(readOnlyInboxNotes: inboxNotes, siteID: siteID) {
+                    completion(.success(inboxNotes))
+                }
+            }
+        }
     }
 
     /// Dismiss one `InboxNote`.
@@ -61,7 +80,17 @@ private extension InboxNotesStore {
     func dismissInboxNote(for siteID: Int64,
                           noteID: Int64,
                           completion: @escaping (Result<InboxNote, Error>) -> ()) {
-        remote.dismissInboxNote(for: siteID, noteID: noteID, completion: completion)
+        remote.dismissInboxNote(for: siteID, noteID: noteID) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+
+            case .success(let inboxNote):
+                self?.upsertStoredInboxNotesInBackground(readOnlyInboxNotes: [inboxNote], siteID: siteID, onCompletion: {
+                    completion(.success(inboxNote))
+                })
+            }
+        }
     }
 
     /// Set an `InboxNote` as `actioned`.
@@ -72,6 +101,65 @@ private extension InboxNotesStore {
                                  actionID: Int64,
                                  completion: @escaping (Result<InboxNote, Error>) -> ()) {
         remote.markInboxNoteAsActioned(for: siteID, noteID: noteID, actionID: actionID, completion: completion)
+        remote.markInboxNoteAsActioned(for: siteID, noteID: noteID, actionID: actionID) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+
+            case .success(let inboxNote):
+                self?.upsertStoredInboxNotesInBackground(readOnlyInboxNotes: [inboxNote], siteID: siteID, onCompletion: {
+                    completion(.success(inboxNote))
+                })
+            }
+        }
+    }
+}
+
+// MARK: - Storage: InboxNote
+//
+private extension InboxNotesStore {
+
+    /// Updates or Inserts specified Inbox Notes Entities in a background thread
+    /// `onCompletion` will be called on the main thread.
+    ///
+    func upsertStoredInboxNotesInBackground(readOnlyInboxNotes: [Networking.InboxNote],
+                                            siteID: Int64,
+                                            onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform { [weak self] in
+            self?.upsertStoredInboxNotes(readOnlyInboxNotes: readOnlyInboxNotes,
+                                         in: derivedStorage,
+                                         siteID: siteID)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates or Inserts the specified Inbox Note entities
+    ///
+    func upsertStoredInboxNotes(readOnlyInboxNotes: [Networking.InboxNote],
+                                in storage: StorageType,
+                                siteID: Int64) {
+        for inboxNote in readOnlyInboxNotes {
+            let storageInboxNote: Storage.InboxNote = {
+                if let storedInboxNote = storage.loadInboxNote(siteID: siteID, id: inboxNote.id) {
+                    return storedInboxNote
+                }
+                return storage.insertNewObject(ofType: Storage.InboxNote.self)
+            }()
+
+            storageInboxNote.update(with: inboxNote)
+        }
+    }
+
+    /// Deletes all Storage.InboxNote with the specified `siteID`
+    ///
+    func deleteStoredInboxNotes(siteID: Int64) {
+        let storage = storageManager.viewStorage
+        storage.deleteInboxNotes(siteID: siteID)
+        storage.saveIfNeeded()
     }
 }
 

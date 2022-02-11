@@ -76,7 +76,8 @@ private extension BetaFeaturesViewController {
             productsSection(),
             orderCreationSection(),
             inPersonPaymentsSection(),
-            productSKUInputScannerSection()
+            productSKUInputScannerSection(),
+            couponManagementSection()
         ].compactMap { $0 }
     }
 
@@ -115,6 +116,14 @@ private extension BetaFeaturesViewController {
 
         return Section(rows: [.productSKUInputScanner,
                               .productSKUInputScannerDescription])
+    }
+
+    func couponManagementSection() -> Section? {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.couponManagement) else {
+            return nil
+        }
+        return Section(rows: [.couponManagement,
+                              .couponManagementDescription])
     }
 
     /// Register table cells.
@@ -159,6 +168,10 @@ private extension BetaFeaturesViewController {
             configureProductSKUInputScannerSwitch(cell: cell)
         case let cell as BasicTableViewCell where row == .productSKUInputScannerDescription:
             configureProductSKUInputScannerDescription(cell: cell)
+        case let cell as SwitchTableViewCell where row == .couponManagement:
+            configureCouponManagementSwitch(cell: cell)
+        case let cell as BasicTableViewCell where row == .couponManagementDescription:
+            configureCouponManagementDescription(cell: cell)
         default:
             fatalError()
         }
@@ -322,6 +335,37 @@ private extension BetaFeaturesViewController {
         configureCommonStylesForDescriptionCell(cell)
         cell.textLabel?.text = Localization.productSKUInputScannerDescription
     }
+
+    func configureCouponManagementSwitch(cell: SwitchTableViewCell) {
+        configureCommonStylesForSwitchCell(cell)
+        cell.title = Localization.couponManagementTitle
+
+        // Fetch switch's state stored value.
+        let action = AppSettingsAction.loadCouponManagementFeatureSwitchState { result in
+            guard let isEnabled = try? result.get() else {
+                return cell.isOn = false
+            }
+            cell.isOn = isEnabled
+        }
+        ServiceLocator.stores.dispatch(action)
+
+        // Change switch's state stored value
+        cell.onChange = { isSwitchOn in
+            let action = AppSettingsAction.setCouponManagementFeatureSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
+                // Roll back toggle if an error occurred
+                if result.isFailure {
+                    cell.isOn.toggle()
+                }
+            })
+            ServiceLocator.stores.dispatch(action)
+        }
+        cell.accessibilityIdentifier = "beta-features-coupon-management-cell"
+    }
+
+    func configureCouponManagementDescription(cell: BasicTableViewCell) {
+        configureCommonStylesForDescriptionCell(cell)
+        cell.textLabel?.text = Localization.couponManagementDescription
+    }
 }
 
 // MARK: - Shared Configurations
@@ -402,12 +446,16 @@ private enum Row: CaseIterable {
     case productSKUInputScanner
     case productSKUInputScannerDescription
 
+    // Coupon management
+    case couponManagement
+    case couponManagementDescription
+
     var type: UITableViewCell.Type {
         switch self {
-        case .orderAddOns, .orderCreation, .stripeExtensionInPersonPayments, .canadaInPersonPayments, .productSKUInputScanner:
+        case .orderAddOns, .orderCreation, .stripeExtensionInPersonPayments, .canadaInPersonPayments, .productSKUInputScanner, .couponManagement:
             return SwitchTableViewCell.self
         case .orderAddOnsDescription, .orderCreationDescription, .stripeExtensionInPersonPaymentsDescription, .canadaInPersonPaymentsDescription,
-                .productSKUInputScannerDescription:
+                .productSKUInputScannerDescription, .couponManagementDescription:
             return BasicTableViewCell.self
         }
     }

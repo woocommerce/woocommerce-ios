@@ -206,7 +206,7 @@ private extension NoticeView {
     enum Metrics {
         static let cornerRadius: CGFloat = 13.0
         static let layoutMargins = UIEdgeInsets(top: 16.0, left: 16.0, bottom: 16.0, right: 16.0)
-        static let actionButtonContentInsets = UIEdgeInsets(top: 24.0, left: 16.0, bottom: 24.0, right: 16.0)
+        static let actionButtonContentInsets = UIEdgeInsets(top: 22.0, left: 16.0, bottom: 22.0, right: 16.0)
         static let labelLineSpacing: CGFloat = 18.0
     }
 

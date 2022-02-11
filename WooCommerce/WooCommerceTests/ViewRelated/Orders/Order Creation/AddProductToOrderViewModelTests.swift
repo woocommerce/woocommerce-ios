@@ -169,16 +169,18 @@ class AddProductToOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 1)
     }
 
-    func test_searching_products_returns_expected_results() {
+    func test_searching_products_filters_product_list_as_expected() {
         // Given
+        let hoodie = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Hoodie", purchasable: true)
+        let shirt = Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "T-shirt", purchasable: true)
+        insert([hoodie, shirt])
+
         let viewModel = AddProductToOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
         let expectation = expectation(description: "Completed product search")
-        let product = Product.fake().copy(siteID: sampleSiteID, purchasable: true)
-        insert([product.copy(name: "T-shirt"), product.copy(name: "Hoodie")])
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .searchProducts(_, _, _, _, _, onCompletion):
-                self.insert(product.copy(name: "T-shirt"), withSearchTerm: "shirt")
+                self.insert(shirt, withSearchTerm: "shirt")
                 onCompletion(.success(()))
                 expectation.fulfill()
             default:
@@ -186,12 +188,14 @@ class AddProductToOrderViewModelTests: XCTestCase {
             }
         }
 
+        XCTAssertEqual(viewModel.productRows.count, 2, "Full product list is not loaded before search")
+
         // When
         viewModel.searchTerm = "shirt"
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then
-        XCTAssertEqual(viewModel.productRows.count, 1)
+        XCTAssertEqual(viewModel.productRows.count, 1, "Product list is not filtered after search")
         XCTAssertEqual(viewModel.productRows[0].name, "T-shirt")
     }
 

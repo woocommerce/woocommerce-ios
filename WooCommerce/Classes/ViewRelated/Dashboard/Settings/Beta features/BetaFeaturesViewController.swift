@@ -455,5 +455,11 @@ private extension BetaFeaturesViewController {
         static let productSKUInputScannerDescription = NSLocalizedString(
             "Test out scanning a barcode for a product SKU in the product inventory settings",
             comment: "Cell description on beta features screen to enable product SKU input scanner in inventory settings.")
+
+        static let couponManagementTitle = NSLocalizedString("Coupon Management", comment: "Cell title on beta features screen to enable coupon management")
+        static let couponManagementDescription = NSLocalizedString(
+            "Test out coupon management as we get ready to launch",
+            comment: "Cell description on beta features screen to enable coupon management"
+        )
     }
 }

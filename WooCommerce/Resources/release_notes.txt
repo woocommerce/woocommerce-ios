@@ -1,7 +1,3 @@
-- [*] In-Person Payments: Inform the user when a card reader battery is so low that it needs to be charged before the reader can be connected. [https://github.com/woocommerce/woocommerce-ios/pull/5998]
-- [***] The My store tab is having a new look with new conversion stats and shows up to 5 top performing products now (used to be 3). [https://github.com/woocommerce/woocommerce-ios/pull/5991]
-- [**] Fixed a crash at the startup of the app, related to Gridicons. [https://github.com/woocommerce/woocommerce-ios/pull/6005]
-- [***] Experimental Feature: It's now possible to create Orders in the app by enabling it in Settings > Experimental Features. For now you can change the order status, add products, and add customer details (billing and shipping addresses). [https://github.com/woocommerce/woocommerce-ios/pull/6060]
-- [*] Fixed issue in date range selection for the orders filters where is some cases dates are not available for selection. [https://github.com/woocommerce/woocommerce-ios/pull/6090]
-- [*] Enabled "view product in store" and "share product" options for variable products when accessing them through the order details screen. [https://github.com/woocommerce/woocommerce-ios/pull/6091]
+We’ve refreshed a bit of the My Store tab based on your feedback. You’ll see a conversion percentage and now top 5 (instead of 3) products sold.
 
+You’ve been asking to create orders in the app. We’re happy to say we have a sneak peek ready if you want to help us test it out! Head over to settings in the app and turn on the experimental feature for Order Creation. Right now, you can add products, notes, and addresses, and future releases will have additional functionality.

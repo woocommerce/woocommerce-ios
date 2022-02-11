@@ -214,6 +214,82 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertEqual(storedInboxNotesCount, 0)
         XCTAssertFalse(result.isSuccess)
     }
+
+    func test_markInboxNoteAsActioned_then_it_updates_stored_inbox_notes_and_inbox_action_upon_successful_response() {
+        // Given a stubbed inbox note network response
+        let sampleInboxNoteID: Int64 = 296
+        let sampleActionID: Int64 = 13329
+        let initialInboxNote = sampleInboxNote(id: 296)
+        network.simulateResponse(requestUrlSuffix: "admin/notes/\(sampleInboxNoteID)/action/\(sampleActionID)", filename: "inbox-note")
+        storageManager.insertSampleInboxNote(readOnlyInboxNote: initialInboxNote)
+        XCTAssertEqual(storedInboxNotesCount, 1)
+
+        // When dispatching a `markInboxNoteAsActioned` action
+        let result: Result<Networking.InboxNote, Error> = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = InboxNotesAction.markInboxNoteAsActioned(siteID: self.sampleSiteID, noteID: sampleInboxNoteID, actionID: sampleActionID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then the initial inbox action should have it's values updated
+        let updatedInboxNote = viewStorage.loadInboxNote(siteID: sampleSiteID, id: 296)
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertNotEqual(initialInboxNote.actions.first?.name, updatedInboxNote?.actions?.first?.name)
+        XCTAssertNotEqual(initialInboxNote.actions.first?.label, updatedInboxNote?.actions?.first?.label)
+        XCTAssertNotEqual(initialInboxNote.actions.first?.status, updatedInboxNote?.actions?.first?.status)
+    }
+
+    func test_markInboxNoteAsActioned_then_it_returns_error_upon_response_error() {
+        // Given a stubbed generic-error network response
+        let sampleInboxNoteID: Int64 = 296
+        let sampleActionID: Int64 = 13329
+        network.simulateResponse(requestUrlSuffix: "admin/notes/\(sampleInboxNoteID)/action/\(sampleActionID)", filename: "generic_error")
+        XCTAssertEqual(storedInboxNotesCount, 0)
+
+        // When dispatching a `markInboxNoteAsActioned` action
+        let result: Result<Networking.InboxNote, Error> = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = InboxNotesAction.markInboxNoteAsActioned(siteID: self.sampleSiteID, noteID: sampleInboxNoteID, actionID: sampleActionID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then no inbox notes should be stored
+        XCTAssertEqual(storedInboxNotesCount, 0)
+        XCTAssertFalse(result.isSuccess)
+    }
+
+    func test_markInboxNoteAsActioned_then_it_returns_error_upon_empty_response() {
+        // Given an empty network response
+        let sampleInboxNoteID: Int64 = 296
+        let sampleActionID: Int64 = 13329
+        XCTAssertEqual(storedInboxNotesCount, 0)
+
+        // When dispatching a `markInboxNoteAsActioned` action
+        let result: Result<Networking.InboxNote, Error> = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = InboxNotesAction.markInboxNoteAsActioned(siteID: self.sampleSiteID, noteID: sampleInboxNoteID, actionID: sampleActionID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then no inbox notes should be stored
+        XCTAssertEqual(storedInboxNotesCount, 0)
+        XCTAssertFalse(result.isSuccess)
+    }
 }
 
 private extension InboxNotesStoreTests {
@@ -227,8 +303,8 @@ private extension InboxNotesStoreTests {
                          type: "warning",
                          status: "unactioned",
                          actions: [InboxAction(id: 13329,
-                                               name: "renew-subscription",
-                                               label: "Renew Subscription",
+                                               name: "test",
+                                               label: "Test",
                                                status: "actioned",
                                                url: url)],
                          title: "This is a test",

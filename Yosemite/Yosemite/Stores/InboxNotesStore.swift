@@ -100,7 +100,6 @@ private extension InboxNotesStore {
                                  noteID: Int64,
                                  actionID: Int64,
                                  completion: @escaping (Result<InboxNote, Error>) -> ()) {
-        remote.markInboxNoteAsActioned(for: siteID, noteID: noteID, actionID: actionID, completion: completion)
         remote.markInboxNoteAsActioned(for: siteID, noteID: noteID, actionID: actionID) { [weak self] result in
             switch result {
             case .failure(let error):

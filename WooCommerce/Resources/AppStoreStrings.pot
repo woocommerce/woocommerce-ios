@@ -57,11 +57,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v8.4-whats-new"
+msgctxt "v8.5-whats-new"
 msgid ""
-"You’ll notice a new tab called “Menu” in this release. We’ve moved store settings, switching between different stores, and viewing WooCommerce Admin to that screen. More functionality will appear there over the next couple of months!\n"
+"We’ve refreshed a bit of the My Store tab based on your feedback. You’ll see a conversion percentage and now top 5 (instead of 3) products sold.\n"
 "\n"
-"This release also includes a fix for the product screen where the product’s name would revert back to the previous one if you uploaded an image. Thank you for reporting bugs – we are listening!\n"
+"You’ve been asking to create orders in the app. We’re happy to say we have a sneak peek ready if you want to help us test it out! Head over to settings in the app and turn on the experimental feature for Order Creation. Right now, you can add products, notes, and addresses, and future releases will have additional functionality.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

@@ -8,7 +8,6 @@ class NoticeView: UIView {
 
     private let backgroundContainerView = UIView()
     private let backgroundView: UIVisualEffectView
-    private let actionBackgroundView = UIView()
     private let shadowLayer = CAShapeLayer()
     private let shadowMaskLayer = CAShapeLayer()
 
@@ -138,19 +137,12 @@ private extension NoticeView {
     }
 
     func configureActionButton() {
-        contentStackView.addArrangedSubview(actionBackgroundView)
-        actionBackgroundView.translatesAutoresizingMaskIntoConstraints = false
-
-        actionBackgroundView.layoutMargins = .zero
-        actionBackgroundView.addSubview(actionButton)
-        actionButton.translatesAutoresizingMaskIntoConstraints = false
+        contentStackView.addArrangedSubview(actionButton)
 
         NSLayoutConstraint.activate([
-            actionBackgroundView.topAnchor.constraint(equalTo: backgroundView.contentView.topAnchor),
-            actionBackgroundView.bottomAnchor.constraint(equalTo: backgroundView.contentView.bottomAnchor),
+            actionButton.topAnchor.constraint(equalTo: backgroundView.contentView.topAnchor),
+            actionButton.bottomAnchor.constraint(equalTo: backgroundView.contentView.bottomAnchor),
             ])
-
-        actionBackgroundView.pinSubviewToAllEdgeMargins(actionButton)
 
         actionButton.titleLabel?.font = Fonts.actionButtonFont
         actionButton.setTitleColor(Appearance.actionColor, for: .normal)
@@ -184,8 +176,9 @@ private extension NoticeView {
 
         if let actionTitle = notice.actionTitle {
             actionButton.setTitle(actionTitle, for: .normal)
+            actionButton.isHidden = false
         } else {
-            actionBackgroundView.isHidden = true
+            actionButton.isHidden = true
         }
     }
 }

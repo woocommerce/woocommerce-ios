@@ -40,6 +40,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let isProductSKUInputScannerSwitchEnabled: Bool
 
+    /// The state for the Coupon Management feature switch.
+    ///
+    public let isCouponManagementSwitchEnabled: Bool
+
     /// A list (possibly empty) of known card reader IDs - i.e. IDs of card readers that should be reconnected to automatically
     /// e.g. ["CHB204909005931"]
     ///
@@ -59,6 +63,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 isStripeInPersonPaymentsSwitchEnabled: Bool,
                 isCanadaInPersonPaymentsSwitchEnabled: Bool,
                 isProductSKUInputScannerSwitchEnabled: Bool,
+                isCouponManagementSwitchEnabled: Bool,
                 knownCardReaders: [String],
                 lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
                 lastJetpackBenefitsBannerDismissedTime: Date? = nil) {
@@ -69,6 +74,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.isStripeInPersonPaymentsSwitchEnabled = isStripeInPersonPaymentsSwitchEnabled
         self.isCanadaInPersonPaymentsSwitchEnabled = isCanadaInPersonPaymentsSwitchEnabled
         self.isProductSKUInputScannerSwitchEnabled = isProductSKUInputScannerSwitchEnabled
+        self.isCouponManagementSwitchEnabled = isCouponManagementSwitchEnabled
         self.knownCardReaders = knownCardReaders
         self.lastEligibilityErrorInfo = lastEligibilityErrorInfo
         self.lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime
@@ -99,6 +105,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             isStripeInPersonPaymentsSwitchEnabled: isStripeInPersonPaymentsSwitchEnabled,
             isCanadaInPersonPaymentsSwitchEnabled: isCanadaInPersonPaymentsSwitchEnabled,
             isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
+            isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo
         )
@@ -119,6 +126,7 @@ extension GeneralAppSettings {
         self.isStripeInPersonPaymentsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isStripeInPersonPaymentsSwitchEnabled) ?? false
         self.isCanadaInPersonPaymentsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isCanadaInPersonPaymentsSwitchEnabled) ?? false
         self.isProductSKUInputScannerSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isProductSKUInputScannerSwitchEnabled) ?? false
+        self.isCouponManagementSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isCouponManagementSwitchEnabled) ?? false
         self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []
         self.lastEligibilityErrorInfo = try container.decodeIfPresent(EligibilityErrorInfo.self, forKey: .lastEligibilityErrorInfo)
         self.lastJetpackBenefitsBannerDismissedTime = try container.decodeIfPresent(Date.self, forKey: .lastJetpackBenefitsBannerDismissedTime)

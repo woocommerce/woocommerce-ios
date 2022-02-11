@@ -506,7 +506,7 @@ private extension BetaFeaturesViewController {
 
         static let couponManagementTitle = NSLocalizedString("Coupon Management", comment: "Cell title on beta features screen to enable coupon management")
         static let couponManagementDescription = NSLocalizedString(
-            "Test out coupon management as we get ready to launch",
+            "Test out managing coupons as we get ready to launch",
             comment: "Cell description on beta features screen to enable coupon management"
         )
     }

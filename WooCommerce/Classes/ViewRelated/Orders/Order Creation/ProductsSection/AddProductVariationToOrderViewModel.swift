@@ -44,7 +44,9 @@ final class AddProductVariationToOrderViewModel: ObservableObject {
     /// View models for each product variation row
     ///
     var productVariationRows: [ProductRowViewModel] {
-        productVariations.map { .init(productVariation: $0, name: $0.generateVariationName(from: productAttributes), canChangeQuantity: false) }
+        return productVariations.map {
+            .init(productVariation: $0, name: ProductVariationFormatter().generateName(for: $0, from: productAttributes), canChangeQuantity: false)
+        }
     }
 
     /// Closure to be invoked when a product variation is selected

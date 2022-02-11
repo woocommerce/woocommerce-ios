@@ -27,7 +27,7 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
     }
 
     var name: String {
-        productVariation.generateVariationName(from: allAttributes)
+        ProductVariationFormatter().generateName(for: productVariation, from: allAttributes)
     }
 
     var description: String? {

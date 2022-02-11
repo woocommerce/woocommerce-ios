@@ -188,7 +188,7 @@ final class NewOrderViewModel: ObservableObject {
                                        name: product.name,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
-                                       attributes: variation.generateVariationAttributes(from: product.attributes))
+                                       attributes: ProductVariationFormatter().generateAttributes(for: variation, from: product.attributes))
         } else {
             return ProductRowViewModel(id: item.id, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
         }

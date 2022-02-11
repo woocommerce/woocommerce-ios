@@ -2,6 +2,7 @@
 
 8.6
 -----
+- [*] Enlarged the tap area for the action button on the notice view. [https://github.com/woocommerce/woocommerce-ios/pull/6146]
 
 
 8.5

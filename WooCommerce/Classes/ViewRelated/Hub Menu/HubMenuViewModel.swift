@@ -86,7 +86,7 @@ final class HubMenuViewModel: ObservableObject {
                 self.menuElements.append(.coupons)
             }
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.

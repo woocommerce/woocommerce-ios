@@ -679,6 +679,42 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
+    func test_loadCouponManagementFeatureSwitchState_returns_false_on_new_generalAppSettings() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadCouponManagementFeatureSwitchState { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertFalse(isEnabled)
+    }
+
+    func test_loadCouponManagementFeatureSwitchState_returns_true_after_updating_switch_state_to_true() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.setCouponManagementFeatureSwitchState(isEnabled: true, onCompletion: { _ in })
+        subject?.onAction(updateAction)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadCouponManagementFeatureSwitchState { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertTrue(isEnabled)
+    }
+
     // MARK: - General Store Settings
 
     func test_saving_isTelemetryAvailable_works_correctly() throws {
@@ -877,6 +913,7 @@ private extension AppSettingsStoreTests {
             isStripeInPersonPaymentsSwitchEnabled: false,
             isCanadaInPersonPaymentsSwitchEnabled: false,
             isProductSKUInputScannerSwitchEnabled: false,
+            isCouponManagementSwitchEnabled: false,
             knownCardReaders: []
         )
         return (settings, feedback)

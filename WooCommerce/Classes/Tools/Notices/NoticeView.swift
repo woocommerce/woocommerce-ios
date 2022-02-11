@@ -141,9 +141,7 @@ private extension NoticeView {
         contentStackView.addArrangedSubview(actionBackgroundView)
         actionBackgroundView.translatesAutoresizingMaskIntoConstraints = false
 
-        actionBackgroundView.layoutMargins = Metrics.layoutMargins
-        actionBackgroundView.backgroundColor = Appearance.actionBackgroundColor
-
+        actionBackgroundView.layoutMargins = .zero
         actionBackgroundView.addSubview(actionButton)
         actionButton.translatesAutoresizingMaskIntoConstraints = false
 
@@ -158,6 +156,8 @@ private extension NoticeView {
         actionButton.setTitleColor(Appearance.actionColor, for: .normal)
         actionButton.addTarget(self, action: #selector(actionButtonTapped), for: .touchUpInside)
         actionButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        actionButton.contentEdgeInsets = Metrics.layoutMargins
+        actionButton.backgroundColor = Appearance.actionBackgroundColor
     }
 
     func configureDismissRecognizer() {

@@ -47,6 +47,7 @@ final class HubMenuViewModel: ObservableObject {
     @Published var showingReviewDetail = false
 
     private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
 
     private var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
@@ -61,15 +62,31 @@ final class HubMenuViewModel: ObservableObject {
         self.siteID = siteID
         self.navigationController = navigationController
         self.stores = stores
+        self.featureFlagService = featureFlagService
+        observeSiteForUIUpdates()
+    }
+
+    /// Resets the menu elements displayed on the menu.
+    ///
+    func setupMenuElements() {
         menuElements = [.woocommerceAdmin, .viewStore]
         if featureFlagService.isFeatureFlagEnabled(.inbox) {
             menuElements.append(.inbox)
         }
-        if featureFlagService.isFeatureFlagEnabled(.couponManagement) {
-            menuElements.append(.coupons)
-        }
         menuElements.append(.reviews)
-        observeSiteForUIUpdates()
+
+        let action = AppSettingsAction.loadCouponManagementFeatureSwitchState { [weak self] result in
+            guard let self = self else { return }
+            guard case let .success(enabled) = result, enabled else {
+                return
+            }
+            if let index = self.menuElements.firstIndex(of: .reviews) {
+                self.menuElements.insert(.coupons, at: index)
+            } else {
+                self.menuElements.append(.coupons)
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.

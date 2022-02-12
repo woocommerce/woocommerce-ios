@@ -494,6 +494,7 @@
 		26B98758273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B98757273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift */; };
 		26B9875D273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B9875C273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift */; };
 		26B9875F273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B9875E273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift */; };
+		26C6439327B5DBE900DD00D1 /* OrderSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6439227B5DBE900DD00D1 /* OrderSynchronizer.swift */; };
 		26C6E8E026E2B7BD00C7BB0F /* CountrySelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6E8DF26E2B7BD00C7BB0F /* CountrySelectorViewModel.swift */; };
 		26C6E8E426E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6E8E326E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift */; };
 		26C6E8E626E6B5F500C7BB0F /* StateSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6E8E526E6B5F500C7BB0F /* StateSelectorViewModel.swift */; };
@@ -2115,6 +2116,7 @@
 		26B98757273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomerNoteViewModelProtocol.swift; sourceTree = "<group>"; };
 		26B9875C273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsNoteViewModel.swift; sourceTree = "<group>"; };
 		26B9875E273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsNoteViewModelTests.swift; sourceTree = "<group>"; };
+		26C6439227B5DBE900DD00D1 /* OrderSynchronizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderSynchronizer.swift; sourceTree = "<group>"; };
 		26C6E8DF26E2B7BD00C7BB0F /* CountrySelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountrySelectorViewModel.swift; sourceTree = "<group>"; };
 		26C6E8E326E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountrySelectorViewModelTests.swift; sourceTree = "<group>"; };
 		26C6E8E526E6B5F500C7BB0F /* StateSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateSelectorViewModel.swift; sourceTree = "<group>"; };
@@ -4474,6 +4476,14 @@
 			path = Summary;
 			sourceTree = "<group>";
 		};
+		26C6439127B5DBE900DD00D1 /* Synchronizer */ = {
+			isa = PBXGroup;
+			children = (
+				26C6439227B5DBE900DD00D1 /* OrderSynchronizer.swift */,
+			);
+			path = Synchronizer;
+			sourceTree = "<group>";
+		};
 		26C6E8E126E2D85300C7BB0F /* Addresses */ = {
 			isa = PBXGroup;
 			children = (
@@ -6484,6 +6494,7 @@
 			children = (
 				CCFC50542743BC0D001E505F /* NewOrder.swift */,
 				CCFC50582743E021001E505F /* NewOrderViewModel.swift */,
+				26C6439127B5DBE900DD00D1 /* Synchronizer */,
 				AE264C05275A495E00B52996 /* FlowCoordinator */,
 				CC200BAF27847D9300EC5884 /* PaymentSection */,
 				CC53FB3627551A8700C4CA4F /* ProductsSection */,
@@ -8241,6 +8252,7 @@
 				CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */,
 				45BBFBC5274FDCE900213001 /* HubMenu.swift in Sources */,
 				02A9BCD62737F73C00159C79 /* JetpackBenefitItem.swift in Sources */,
+				26C6439327B5DBE900DD00D1 /* OrderSynchronizer.swift in Sources */,
 				CE0F17D222A8308900964A63 /* FancyAlertController+PurchaseNote.swift in Sources */,
 				E1BAAEA026BBECEF00F2C037 /* ButtonStyles.swift in Sources */,
 				CC13C0CB278E021300C0B5B5 /* AddProductVariationToOrderViewModel.swift in Sources */,

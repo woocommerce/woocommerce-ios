@@ -13,7 +13,13 @@ enum OrderSyncState {
 /// Product input for an `OrderSynchronizer` type.
 ///
 struct OrderSyncProductInput {
-    let product: Product
+    /// Types of products the synchronizer supports
+    ///
+    enum ProductType {
+        case product(Product)
+        case variation(ProductVariation)
+    }
+    let product: ProductType
     let quantity: Int
 }
 

@@ -82,5 +82,5 @@ protocol OrderSynchronizer {
 
     /// Commits all order changes to the remote source. State needs to be in `.synced` to initiate work.
     ///
-    func commitAllChanges(onCompletion: (Result<Order, Error>) -> Void)
+    func commitAllChanges(onCompletion: @escaping (Result<Order, Error>) -> Void)
 }

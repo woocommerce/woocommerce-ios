@@ -19,6 +19,7 @@ struct OrderSyncProductInput {
         case product(Product)
         case variation(ProductVariation)
     }
+    let id = UUID().uuidString
     let product: ProductType
     let quantity: Int
 }

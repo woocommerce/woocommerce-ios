@@ -43,6 +43,7 @@ final class LocalOrderSynchronizer: OrderSynchronizer {
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
+        bindInputs()
     }
 
     // MARK: Methods
@@ -53,5 +54,15 @@ final class LocalOrderSynchronizer: OrderSynchronizer {
     func commitAllChanges(onCompletion: @escaping (Result<Order, Error>) -> Void) {
         let action = OrderAction.createOrder(siteID: siteID, order: order, onCompletion: onCompletion)
         stores.dispatch(action)
+    }
+}
+
+private extension LocalOrderSynchronizer {
+    func bindInputs() {
+        setStatus.withLatestFrom(orderPublisher)
+            .map { newStatus, order in
+                order.copy(status: newStatus)
+            }
+            .assign(to: &$order)
     }
 }

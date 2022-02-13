@@ -6,6 +6,8 @@ import Combine
 ///
 final class LocalOrderSynchronizer: OrderSynchronizer {
 
+    // MARK: Outputs
+
     @Published private(set) var state: OrderSyncState = .synced
 
     var statePublisher: Published<OrderSyncState>.Publisher {
@@ -18,6 +20,8 @@ final class LocalOrderSynchronizer: OrderSynchronizer {
         $order
     }
 
+    // MARK: Inputs
+
     var setStatus = PassthroughSubject<OrderStatusEnum, Never>()
 
     var setProduct = PassthroughSubject<OrderSyncProductInput, Never>()
@@ -28,9 +32,26 @@ final class LocalOrderSynchronizer: OrderSynchronizer {
 
     var setFee = PassthroughSubject<OrderFeeLine?, Never>()
 
-    func retrySync() {
+    // MARK: Private properties
+
+    private let siteID: Int64
+
+    private let stores: StoresManager
+
+    // MARK: Initializers
+
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+        self.siteID = siteID
+        self.stores = stores
     }
 
-    func commitAllChanges(onCompletion: (Result<Order, Error>) -> Void) {
+    // MARK: Methods
+    func retrySync() {
+        // No op
+    }
+
+    func commitAllChanges(onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        let action = OrderAction.createOrder(siteID: siteID, order: order, onCompletion: onCompletion)
+        stores.dispatch(action)
     }
 }

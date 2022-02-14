@@ -258,7 +258,11 @@ class NewOrderViewModelTests: XCTestCase {
         let productRow = viewModel.createProductRowViewModel(for: newOrderItem, canChangeQuantity: false)
 
         // Then
-        let expectedProductRow = ProductRowViewModel(productVariation: productVariation, name: product.name, quantity: 2, canChangeQuantity: false)
+        let expectedProductRow = ProductRowViewModel(productVariation: productVariation,
+                                                     name: product.name,
+                                                     quantity: 2,
+                                                     canChangeQuantity: false,
+                                                     displayMode: .stock)
         XCTAssertEqual(productRow?.name, expectedProductRow.name)
         XCTAssertEqual(productRow?.skuLabel, expectedProductRow.skuLabel)
         XCTAssertEqual(productRow?.quantity, expectedProductRow.quantity)

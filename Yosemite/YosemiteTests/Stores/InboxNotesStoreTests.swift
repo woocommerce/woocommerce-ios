@@ -244,7 +244,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         XCTAssertNotEqual(initialInboxNote.actions.first?.name, updatedInboxNote?.actions?.first?.name)
         XCTAssertNotEqual(initialInboxNote.actions.first?.label, updatedInboxNote?.actions?.first?.label)
-        XCTAssertNotEqual(initialInboxNote.actions.first?.status, updatedInboxNote?.actions?.first?.status)
+        XCTAssertEqual(initialInboxNote.actions.first?.status, updatedInboxNote?.actions?.first?.status)
     }
 
     func test_markInboxNoteAsActioned_then_it_returns_error_upon_response_error() {

@@ -144,7 +144,27 @@ private extension InboxNotesStore {
         for inboxNote in readOnlyInboxNotes {
             let storageInboxNote = storage.loadInboxNote(siteID: siteID, id: inboxNote.id) ?? storage.insertNewObject(ofType: Storage.InboxNote.self)
             storageInboxNote.update(with: inboxNote)
+            handleInboxActions(inboxNote, storageInboxNote, storage)
         }
+    }
+
+    /// Updates, inserts, or prunes the provided stored inboxnote actions using the provided read-only Inbox's actions
+    ///
+    func handleInboxActions(_ readOnlyInboxNote: Networking.InboxNote, _ storageInboxNote: Storage.InboxNote, _ storage: StorageType) {
+
+        // Removes all the inbox action first.
+        storageInboxNote.actions?.forEach { existingStorageAction in
+            storage.deleteObject(existingStorageAction)
+        }
+
+        // Inserts the actions from the read-only inbox note.
+        var storageInboxActions = [StorageInboxAction]()
+        for readOnlyInboxAction in readOnlyInboxNote.actions {
+            let newStorageInboxAction = storage.insertNewObject(ofType: Storage.InboxAction.self)
+            newStorageInboxAction.update(with: readOnlyInboxAction)
+            storageInboxActions.append(newStorageInboxAction)
+        }
+        storageInboxNote.actions = Set(storageInboxActions)
     }
 
     /// Deletes all Storage.InboxNote with the specified `siteID`

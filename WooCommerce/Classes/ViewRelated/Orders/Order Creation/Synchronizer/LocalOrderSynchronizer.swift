@@ -67,7 +67,7 @@ private extension LocalOrderSynchronizer {
 
         setProduct.withLatestFrom(orderPublisher)
             .map { productInput, order in
-               ProductInputTransformer.addOrReplace(input: productInput, on: order)
+               ProductInputTransformer.update(input: productInput, on: order)
             }
             .assign(to: &$order)
     }
@@ -85,9 +85,12 @@ private struct ProductInputTransformer {
         }
     }
 
-    static func addOrReplace(input: OrderSyncProductInput, on order: Order) -> Order {
-        let newItem = createOrderItem(using: input)
+    static func update(input: OrderSyncProductInput, on order: Order) -> Order {
+        guard input.quantity > 0 else {
+            return remove(input: input, from: order)
+        }
 
+        let newItem = createOrderItem(using: input)
         var items = order.items
         if let itemIndex = order.items.firstIndex(where: { $0.itemID == newItem.itemID }) {
             items[itemIndex] = newItem
@@ -95,6 +98,12 @@ private struct ProductInputTransformer {
             items.append(newItem)
         }
 
+        return order.copy(items: items)
+    }
+
+    static func remove(input: OrderSyncProductInput, from order: Order) -> Order {
+        var items = order.items
+        items.removeAll { $0.itemID == input.id.hashValue }
         return order.copy(items: items)
     }
 

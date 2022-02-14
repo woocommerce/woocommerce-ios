@@ -142,6 +142,10 @@ final class NewOrderViewModel: ObservableObject {
     ///
     private let analytics: Analytics
 
+    /// Order Synchronizer helper.
+    ///
+    private let orderSynchronizer: OrderSynchronizer
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -152,6 +156,7 @@ final class NewOrderViewModel: ObservableObject {
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
+        self.orderSynchronizer = LocalOrderSynchronizer(siteID: siteID, stores: stores)
 
         configureNavigationTrailingItem()
         configureStatusBadgeViewModel()
@@ -245,8 +250,8 @@ final class NewOrderViewModel: ObservableObject {
     /// Updates the order status & tracks its event
     ///
     func updateOrderStatus(newStatus: OrderStatusEnum) {
-        let oldStatus = orderDetails.status
-        orderDetails.status = newStatus
+        let oldStatus = orderSynchronizer.order.status
+        orderSynchronizer.setStatus.send(newStatus)
         analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .creation, orderID: nil, from: oldStatus, to: newStatus))
     }
 }

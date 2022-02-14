@@ -27,6 +27,12 @@ final class InboxNotesStoreTests: XCTestCase {
         return viewStorage.countObjects(ofType: InboxNote.self)
     }
 
+    /// Convenience Property: Returns stored inbox actions count.
+    ///
+    private var storedInboxActionsCount: Int {
+        return viewStorage.countObjects(ofType: InboxAction.self)
+    }
+
     /// Store
     ///
     private var store: InboxNotesStore!
@@ -290,8 +296,9 @@ final class InboxNotesStoreTests: XCTestCase {
             self.store.onAction(action)
         }
 
-        // Then no inbox notes should be stored
+        // Then no inbox notes or actions should be stored
         XCTAssertEqual(storedInboxNotesCount, 0)
+        XCTAssertEqual(storedInboxActionsCount, 0)
         XCTAssertFalse(result.isSuccess)
     }
 }

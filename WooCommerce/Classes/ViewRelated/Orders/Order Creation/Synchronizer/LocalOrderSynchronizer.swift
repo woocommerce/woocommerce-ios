@@ -51,6 +51,8 @@ final class LocalOrderSynchronizer: OrderSynchronizer {
         // No op
     }
 
+    /// Creates the order remotely.
+    ///
     func commitAllChanges(onCompletion: @escaping (Result<Order, Error>) -> Void) {
         let action = OrderAction.createOrder(siteID: siteID, order: order, onCompletion: onCompletion)
         stores.dispatch(action)
@@ -58,6 +60,8 @@ final class LocalOrderSynchronizer: OrderSynchronizer {
 }
 
 private extension LocalOrderSynchronizer {
+    /// Updates order as inputs are received.
+    ///
     func bindInputs() {
         setStatus.withLatestFrom(orderPublisher)
             .map { newStatus, order in
@@ -76,11 +80,16 @@ private extension LocalOrderSynchronizer {
                 order.copy(billingAddress: addressesInput?.billing, shippingAddress: addressesInput?.shipping)
             }
             .assign(to: &$order)
+
+        // TODO: Bind shipping & fees input
     }
 }
 
+/// Helper to updates an `order` given an `OrderSyncInput` type.
+///
 private struct ProductInputTransformer {
-
+    /// Type to help bundling  order Items parameters.
+    ///
     struct OrderItemParameters {
         let quantity: Decimal
         let price: Decimal
@@ -91,11 +100,15 @@ private struct ProductInputTransformer {
         }
     }
 
+    /// Adds, deletes, or updates order items based on the given product input.
+    ///
     static func update(input: OrderSyncProductInput, on order: Order) -> Order {
+        // If the input's quantity is 0 or less, delete the item if possible.
         guard input.quantity > 0 else {
             return remove(input: input, from: order)
         }
 
+        // Add or update the order items with the new input.
         let newItem = createOrderItem(using: input)
         var items = order.items
         if let itemIndex = order.items.firstIndex(where: { $0.itemID == newItem.itemID }) {
@@ -107,13 +120,17 @@ private struct ProductInputTransformer {
         return order.copy(items: items)
     }
 
-    static func remove(input: OrderSyncProductInput, from order: Order) -> Order {
+    /// Removes an order item from an order when the `item.itemID` matches the `input.id`.
+    ///
+    private static func remove(input: OrderSyncProductInput, from order: Order) -> Order {
         var items = order.items
         items.removeAll { $0.itemID == input.id.hashValue }
         return order.copy(items: items)
     }
 
-    static func createOrderItem(using input: OrderSyncProductInput) -> OrderItem {
+    /// Creates and order item by using the `input.id` as the `item.itemID`.
+    ///
+    private static func createOrderItem(using input: OrderSyncProductInput) -> OrderItem {
         let quantity = Decimal(input.quantity)
         let parameters: OrderItemParameters = {
             switch input.product {

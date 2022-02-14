@@ -66,7 +66,7 @@ struct ShippingLabelCustomsFormInput: View {
 
     private var contentRows: some View {
         VStack(spacing: 0) {
-            TitleAndValueRow(title: Localization.contentTypeTitle, value: .placeholder(viewModel.contentsType.localizedName), selectable: true) {
+            TitleAndValueRow(title: Localization.contentTypeTitle, value: .placeholder(viewModel.contentsType.localizedName), selectionStyle: .disclosure) {
                 showingContentTypes.toggle()
             }
             .sheet(isPresented: $showingContentTypes, content: {
@@ -99,7 +99,9 @@ struct ShippingLabelCustomsFormInput: View {
 
     private var restrictionRows: some View {
         VStack(spacing: 0) {
-            TitleAndValueRow(title: Localization.restrictionTypeTitle, value: .placeholder(viewModel.restrictionType.localizedName), selectable: true) {
+            TitleAndValueRow(title: Localization.restrictionTypeTitle,
+                             value: .placeholder(viewModel.restrictionType.localizedName),
+                             selectionStyle: .disclosure) {
                 showingRestrictionTypes.toggle()
             }
             .sheet(isPresented: $showingRestrictionTypes, content: {

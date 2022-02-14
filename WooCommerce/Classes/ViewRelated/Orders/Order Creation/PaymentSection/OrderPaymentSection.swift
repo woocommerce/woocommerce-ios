@@ -22,10 +22,10 @@ struct OrderPaymentSection: View {
                 .headlineStyle()
                 .padding()
 
-            TitleAndValueRow(title: Localization.productsTotal, value: .content(viewModel.itemsTotal), selectable: false) {}
+            TitleAndValueRow(title: Localization.productsTotal, value: .content(viewModel.itemsTotal), selectionStyle: .none) {}
 
             if viewModel.shouldShowShippingTotal {
-                TitleAndValueRow(title: Localization.shippingTotal, value: .content(viewModel.shippingTotal), selectable: true) {
+                TitleAndValueRow(title: Localization.shippingTotal, value: .content(viewModel.shippingTotal), selectionStyle: .highlight) {
                     saveShippingLineClosure(nil)
                 }
             } else {
@@ -42,7 +42,7 @@ struct OrderPaymentSection: View {
                 .padding()
             }
 
-            TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectable: false) {}
+            TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
 
             Text(Localization.taxesInfo)
                 .footnoteStyle()

@@ -22,13 +22,19 @@ struct InPersonPaymentsView: View {
     var showSupport: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
 
+    let userIsAdministrator = true // TODO
+
     var body: some View {
         Group {
             switch viewModel.state {
             case .loading:
                 InPersonPaymentsLoading()
             case .selectPlugin:
-                InPersonPaymentsSelectPlugin(onRefresh: viewModel.refresh)
+                if viewModel.userIsAdministrator {
+                    InPersonPaymentsPluginConfictAdmin(onRefresh: viewModel.refresh)
+                } else {
+                    InPersonPaymentsPluginConfictShopManager(onRefresh: viewModel.refresh)
+                }
             case .countryNotSupported(let countryCode):
                 InPersonPaymentsCountryNotSupported(countryCode: countryCode)
             case .pluginNotInstalled:

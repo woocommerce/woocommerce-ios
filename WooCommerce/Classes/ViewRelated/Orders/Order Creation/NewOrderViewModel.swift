@@ -127,6 +127,13 @@ final class NewOrderViewModel: ObservableObject {
         orderDetails.items.isNotEmpty
     }
 
+    /// Defines if the view should be disabled.
+    /// Currently `true` while performing a network request.
+    ///
+    var disabled: Bool {
+        performingNetworkRequest
+    }
+
     /// Representation of payment data display properties
     ///
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
@@ -176,11 +183,13 @@ final class NewOrderViewModel: ObservableObject {
         }
 
         if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: product.attributes)
             return ProductRowViewModel(id: item.id,
                                        productVariation: variation,
                                        name: product.name,
                                        quantity: item.quantity,
-                                       canChangeQuantity: canChangeQuantity)
+                                       canChangeQuantity: canChangeQuantity,
+                                       displayMode: .attributes(attributes))
         } else {
             return ProductRowViewModel(id: item.id, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
         }
@@ -238,7 +247,7 @@ final class NewOrderViewModel: ObservableObject {
     func updateOrderStatus(newStatus: OrderStatusEnum) {
         let oldStatus = orderDetails.status
         orderDetails.status = newStatus
-        analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .creation, from: oldStatus, to: newStatus))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .creation, orderID: nil, from: oldStatus, to: newStatus))
     }
 }
 

@@ -320,6 +320,12 @@ extension UIImage {
         UIImage(imageLiteralResourceName: "icon-house-outlined")
     }
 
+    /// Mailbox Icon - used in hub menu
+    ///
+    static var mailboxImage: UIImage {
+        return UIImage(named: "icon-mailbox")!
+    }
+
     /// Store Image
     ///
     static var storeImage: UIImage {

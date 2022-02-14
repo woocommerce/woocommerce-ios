@@ -422,7 +422,8 @@ final class CouponStoreTests: XCTestCase {
         setUpUsingSpyRemote()
         // Given
         let sampleCouponID: Int64 = 571
-        let action = CouponAction.loadCouponReport(siteID: sampleSiteID, couponID: sampleCouponID) { _ in }
+        let sampleDate = Date(timeIntervalSince1970: 1)
+        let action = CouponAction.loadCouponReport(siteID: sampleSiteID, couponID: sampleCouponID, startDate: sampleDate) { _ in }
 
         // When
         store.onAction(action)
@@ -431,18 +432,19 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertTrue(remote.didCallLoadCouponReport)
         XCTAssertEqual(remote.spyLoadCouponReportSiteID, sampleSiteID)
         XCTAssertEqual(remote.spyLoadCouponReportCouponID, sampleCouponID)
+        XCTAssertEqual(remote.spyLoadCouponReportDate, sampleDate)
     }
 
     func test_loadCouponReport_returns_network_error_on_failure() {
         // Given
         let sampleCouponID: Int64 = 571
-
+        let sampleDate = Date(timeIntervalSince1970: 1)
         let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: "coupons", error: expectedError)
 
         // When
         let result: Result<Networking.CouponReport, Error> = waitFor { promise in
-            let action = CouponAction.loadCouponReport(siteID: self.sampleSiteID, couponID: sampleCouponID) { result in
+            let action = CouponAction.loadCouponReport(siteID: self.sampleSiteID, couponID: sampleCouponID, startDate: sampleDate) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -455,12 +457,13 @@ final class CouponStoreTests: XCTestCase {
     func test_loadCouponReport_returns_expected_details_upon_success() throws {
         // Given
         let sampleCouponID: Int64 = 571
+        let sampleDate = Date(timeIntervalSince1970: 1)
         let expectedReport = CouponReport(couponID: sampleCouponID, amount: 12, ordersCount: 1)
         network.simulateResponse(requestUrlSuffix: "reports/coupons", filename: "coupon-reports")
 
         // When
         let result: Result<Networking.CouponReport, Error> = waitFor { promise in
-            let action = CouponAction.loadCouponReport(siteID: self.sampleSiteID, couponID: sampleCouponID) { result in
+            let action = CouponAction.loadCouponReport(siteID: self.sampleSiteID, couponID: sampleCouponID, startDate: sampleDate) { result in
                 promise(result)
             }
             self.store.onAction(action)

@@ -1,5 +1,3 @@
-Verkopers hebben gevraagd om een snelle manier om een transactie vast te leggen in de app met minimale informatie, bijvoorbeeld met alleen het bedrag. Misschien sta je op een markt en wil je alleen kosten in rekening brengen op de creditcard van een klant zonder voorraad bij te houden. Deze release bevat een nieuwe functie 'Eenvoudige betalingen' op het tabblad Bestellingen. Als je WooCommerce Payments gebruikt, zul je zien dat dit goed werkt met de creditcardlezer voor fysieke betalingen! Heb je nog geen creditcardlezer? Je kunt ook eenvoudig een betaallink sturen naar je klant, die vervolgens via je site kan betalen met zijn of haar toestel.
+In deze release zie je een nieuw tabblad 'Menu' . We hebben de winkelinstellingen, schakelen tussen winkels en het bekijken van WooCommerce Admin verplaatst naar dat scherm. De komende maanden worden er meer functies naar dat tabblad verplaatst.
 
-Deze release bevat ook de mogelijkheid om bedragen van een bestelling terug te betalen. We hebben ook een experimentele SKU-barcodelezer toegevoegd voor bij het bewerken van een product. Dit kan ingeschakeld worden via Instellingen.
-
-We werken aan een aantal spannende functies die de komende maanden beschikbaar zullen zijn. Blijf ons je feedback sturen!
+Deze release omvat ook een oplossing voor het productscherm waar de productnaam werd gewijzigd in de oude naam als je een afbeelding had geüpload. Bedankt voor het melden van bugs, we luisteren naar jullie!

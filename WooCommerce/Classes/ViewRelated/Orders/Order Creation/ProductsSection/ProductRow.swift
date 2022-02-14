@@ -37,8 +37,8 @@ struct ProductRow: View {
                     }
                     .accessibilityElement(children: .combine)
                 }
-
-                Spacer()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
 
                 ProductStepper(viewModel: viewModel)
                     .renderedIf(viewModel.canChangeQuantity)

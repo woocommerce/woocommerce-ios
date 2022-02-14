@@ -30,8 +30,8 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
 final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol, ObservableObject {
     let storageManager: StorageManagerType
     let stores: StoresManager
-    private var stripeGatewayIPPEnabled: Bool?
-    private var canadaIPPEnabled: Bool?
+    private var stripeGatewayIPPEnabled: Bool = false
+    private var canadaIPPEnabled: Bool = false
 
     @Published var state: CardPresentPaymentOnboardingState = .loading
 
@@ -156,8 +156,27 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func checkOnboardingState() -> CardPresentPaymentOnboardingState {
+        guard let countryCode = storeCountryCode else {
+            DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
+            return .genericError
+        }
+
+        let configuration: CardPresentPaymentsConfiguration
+        do {
+            configuration = try CardPresentPaymentsConfiguration(
+                country: countryCode,
+                stripeEnabled: stripeGatewayIPPEnabled,
+                canadaEnabled: canadaIPPEnabled
+            )
+        } catch is CardPresentPaymentsConfigurationMissingError {
+            return .countryNotSupported(countryCode: countryCode)
+        } catch {
+            DDLogError("[CardPresentPaymentsOnboarding] Unexpected error loading configuration: \(error)")
+            return .genericError
+        }
+
         let wcPay = getWCPayPlugin()
-        guard stripeGatewayIPPEnabled == true else {
+        guard configuration.paymentGateways.contains(StripeAccount.gatewayID) == true else {
             return wcPayOnlyOnboardingState(plugin: wcPay)
         }
 
@@ -179,15 +198,6 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func wcPayOnlyOnboardingState(plugin: SystemPlugin?) -> CardPresentPaymentOnboardingState {
-        // Country checks
-        guard let countryCode = storeCountryCode else {
-            DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
-            return .genericError
-        }
-        guard isCountrySupported(plugin: .wcPay, countryCode: countryCode) else {
-            return .countryNotSupported(countryCode: countryCode)
-        }
-
         // Plugin checks
         guard let plugin = plugin else {
             return .pluginNotInstalled
@@ -204,15 +214,6 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func stripeGatewayOnlyOnboardingState(plugin: SystemPlugin) -> CardPresentPaymentOnboardingState {
-        // Country checks
-        guard let countryCode = storeCountryCode else {
-            DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
-            return .genericError
-        }
-        guard isCountrySupported(plugin: .stripe, countryCode: countryCode) else {
-            return .countryNotSupported(countryCode: countryCode)
-        }
-
         guard isStripeVersionSupported(plugin: plugin) else {
             return .pluginUnsupportedVersion(plugin: .stripe)
         }
@@ -270,10 +271,6 @@ private extension CardPresentPaymentsOnboardingUseCase {
         let storeCountryCode = storeAddress.countryCode
 
         return storeCountryCode.nonEmptyString()
-    }
-
-    func isCountrySupported(plugin: CardPresentPaymentsPlugins, countryCode: String) -> Bool {
-        return supportedCountryCodes(plugin: plugin).contains(countryCode)
     }
 
     func getWCPayPlugin() -> SystemPlugin? {
@@ -376,22 +373,5 @@ private extension CardPresentPaymentsOnboardingUseCase {
 private extension PaymentGatewayAccount {
     var wcpayStatus: WCPayAccountStatusEnum {
         .init(rawValue: status)
-    }
-}
-
-private extension CardPresentPaymentsOnboardingUseCase {
-    // This was moved from Yosemite so it can check the feature flag
-    // In a future iteration, we might want to store all the configuration in a better place
-    func supportedCountryCodes(plugin: CardPresentPaymentsPlugins) -> [String] {
-        switch plugin {
-        case .wcPay:
-            if canadaIPPEnabled == true {
-                return ["US", "CA"]
-            } else {
-                return ["US"]
-            }
-        case .stripe:
-            return ["US"]
-        }
     }
 }

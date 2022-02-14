@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-01-19 12:54:03+0000 */
+/* Translation-Revision-Date: 2022-01-26 03:09:34+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -40,6 +40,9 @@
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "库存 %1$@ 件";
+
+/* Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
+"%1$@ is in Test Mode" = "%1$@ is in Test Mode";
 
 /* Review title. Reads as {Review author} left a review */
 "%1$@ left a review" = "%1$@ 发表了评论";
@@ -160,10 +163,12 @@
 /* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
 "%ld upsell products" = "%ld 个追加销售产品";
 
-/* Label about one product variation shown on Products tab */
+/* Label about one product variation shown on Products tab
+   Label for one product variation when showing details about a variable product */
 "%ld variation" = "%ld 个变体";
 
-/* Label about number of variations shown on Products tab */
+/* Label about number of variations shown on Products tab
+   Label for multiple product variations when showing details about a variable product */
 "%ld variations" = "%ld 个变体";
 
 /* Product title in Products list when there is no title */
@@ -250,16 +255,17 @@
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "关于该应用程序";
 
+/* Title for the error screen when a Card Present Payments extension is installed but not activated */
+"Activate %1$@" = "Activate %1$@";
+
 /* Action button to activate Jetpack on WP-Admin instead of on app */
 "Activate Jetpack in WP-Admin" = "在 WP-Admin 中启用 Jetpack";
-
-/* Title for the error screen when WooCommerce Payments is installed but not activated */
-"Activate WooCommerce Payments" = "激活 WooCommerce Payments";
 
 /* Name of the activation Jetpack plugin step */
 "Activating" = "激活";
 
-/* Application's Active State */
+/* Application's Active State
+   Status of coupons that are active */
 "Active" = "激活";
 
 /* Title for table view section of active plugins */
@@ -281,6 +287,9 @@
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "添加类别";
+
+/* Title for the action button to add coupon on the coupon list screen. */
+"Add Coupon" = "Add Coupon";
 
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "添加客户备注";
@@ -615,6 +624,9 @@
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "粗体";
 
+/* The description on the placeholder overlay when there are no coupons on the coupon list screen. */
+"Boost your business by sending customers special offers and discounts." = "Boost your business by sending customers special offers and discounts.";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "包装箱";
 
@@ -673,9 +685,6 @@
 /* Card method title on the select payment method screen for simple payments */
 "Card" = "卡片";
 
-/* Navigates to Card Reader manual */
-"Card reader manual" = "读卡器手册";
-
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "承运商和费率";
 
@@ -722,6 +731,9 @@
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "请查看电子邮件！";
+
+/* Navigates to Chipper Card Reader manual */
+"Chipper 2X card reader manual" = "Chipper 2X card reader manual";
 
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "选择纸张尺寸";
@@ -1109,7 +1121,7 @@
 "Do not allow" = "不允许";
 
 /* Dialog title that displays the name of a found card reader */
-"Do you want to connect to reader %@?" = "是否要连接读卡器 %@？";
+"Do you want to connect to reader %1$@?" = "Do you want to connect to reader %1$@?";
 
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "您要将此产品移至回收站吗？";
@@ -1355,9 +1367,15 @@
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "购买标签时出错";
 
+/* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
+"Everyone loves a deal" = "Everyone loves a deal";
+
 /* Experimental features navigation title
    Navigates to experimental features screen */
 "Experimental Features" = "实验功能";
+
+/* Status of coupons that are expired */
+"Expired" = "Expired";
 
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "外部产品";
@@ -1447,6 +1465,12 @@
 
 /* Text field name in Edit Address Form */
 "First name" = "名字";
+
+/* Name of fixed cart discount type */
+"Fixed Cart Discount" = "Fixed Cart Discount";
+
+/* Name of fixed product discount type */
+"Fixed Product Discount" = "Fixed Product Discount";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new blogs." = "关注您喜欢的站点，发现新的阅读内容。";
@@ -1605,9 +1629,6 @@
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "我们应该如何改善？";
-
-/* Navigation bar title of hub menu view */
-"Hub Menu" = "中心菜单";
 
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "我喜欢";
@@ -2015,9 +2036,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "将订单标注为已完成并通知客户";
 
-/* The details on the placeholder overlay when there are no coupons on the coupon management list */
-"Market your products by adding a coupon to offer your customers a discount." = "添加优惠券，为您的客户提供折扣，从而推销您的产品。";
-
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "媒体没有可上传的关联文件。";
 
@@ -2143,14 +2161,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No activity this period" = "这段时间内没有任何活动";
 
 /* Order details > customer info > billing information. This is where the address would normally display.
-   Order details > customer info > shipping details. This is where the address would normally display. */
+   Order details > customer info > shipping details. This is where the address would normally display. - Placeholder for empty address in order customer data */
 "No address specified." = "未指定地址。";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "没有连接";
-
-/* The text on the placeholder overlay when there are no coupons on the coupon management list */
-"No coupons yet" = "没有优惠券";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "无可用数据";
@@ -2172,6 +2187,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "未设置价格";
+
+/* Message displayed if there are no product variations for a product. */
+"No product variations found" = "No product variations found";
 
 /* Message displayed if there are no products to display in the Add Product screen */
 "No products found" = "没找到产品";
@@ -2354,8 +2372,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "原包裹";
 
-/* My Store > Settings > Other app section
-   Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
+/* Generic name of non-default discount types
+   My Store > Settings > Other app section - Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "其他";
 
 /* Display label for the product's inventory stock status */
@@ -2451,6 +2469,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's pending status */
 "Pending review" = "待审核";
 
+/* Name of percentage discount type */
+"Percentage Discount" = "Percentage Discount";
+
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
 "Phone" = "电话";
@@ -2541,6 +2562,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "请选择包裹";
+
+/* Title for the error screen when there is more than one extension active. */
+"Please select an extension" = "Please select an extension";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "请稍后再试或与我们联系，我们很乐意为您提供帮助！";
@@ -2822,14 +2846,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the view containing a receipt preview */
 "Receipt" = "收据";
 
-/* Button to reload plugin data after activating the WooCommerce Payments plugin */
+/* Button to reload plugin data after activating a Card Present Payments extension */
 "Refresh After Activating" = "激活后刷新";
 
 /* Button to reload plugin data after installing the WooCommerce Payments plugin */
 "Refresh After Installing" = "安装后刷新";
 
-/* Button to reload plugin data after updating the WooCommerce Payments plugin
-   Button to reload plugin data after updating the WooCommerce Payments plugin settings */
+/* Button to reload plugin data after updating a Card Present Payments extension plugin
+   Button to reload plugin data after updating a card present payments plugin settings */
 "Refresh After Updating" = "更新后刷新";
 
 /* The title of the button to confirm the refund. */
@@ -3121,6 +3145,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "选择结束日期";
+
+/* Button to select the active payment processor plugin */
+"Select extension in Store Admin" = "Select extension in Store Admin";
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "选择段落样式";
@@ -3460,6 +3487,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "删除";
 
+/* Navigates to Stripe M2 Card Reader manual */
+"Stripe M2 card reader manual" = "Stripe M2 card reader manual";
+
 /* Display label for subscription product type. */
 "Subscription" = "订阅";
 
@@ -3678,6 +3708,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "That username is not allowed." = "不允许使用这个用户名。";
 
+/* Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
+"The %1$@ extension cannot be in test mode for In-Person Payments. Please disable test mode." = "The %1$@ extension cannot be in test mode for In-Person Payments. Please disable test mode.";
+
+/* Error message when a Card Present Payments extension is not activated */
+"The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments";
+
+/* Error message when a Card Present Payments extension is installed but the version is not supported */
+"The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version.";
+
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Google 帐户“%@”与 WordPress.com 上的任何帐户均不匹配";
 
@@ -3686,15 +3725,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "URL 缺少有效主机。";
-
-/* Error message when WooCommerce Payments is in test mode on a live site */
-"The WooCommerce Payments extension cannot be in test mode for In-Person Payments. Please disable test mode." = "现场付款时，WooCommerce Payments 扩展程序不能处于测试模式。 请禁用测试模式。";
-
-/* Error message when WooCommerce Payments is not activated */
-"The WooCommerce Payments extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "您的商店中已安装 WooCommerce Payments 扩展程序，但未激活。 请将其激活，以支持现场付款";
-
-/* Error message when WooCommerce Payments is installed but the version is not supported */
-"The WooCommerce Payments extension is installed on your store, but needs to be updated for In-Person Payments. Please update WooCommerce Payments to the most recent version." = "您的商店中已安装 WooCommerce Payments 扩展程序，但需要更新，才能支持现场付款 请将 WooCommerce Payments 更新为最新版本。";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "无法删除属性。";
@@ -4118,8 +4148,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the review's unspam status */
 "Unspam" = "不标记为垃圾评论";
 
-/* Title for the error screen when the installed version of WooCommerce Payments is unsupported */
-"Unsupported WooCommerce Payments version" = "不支持的 WooCommerce Payments 版本";
+/* Title for the error screen when the installed version of a Card Present Payments extension is unsupported */
+"Unsupported %1$@ version" = "Unsupported %1$@ version";
 
 /* Display label for the review's untrash status */
 "Untrash" = "还原";
@@ -4260,6 +4290,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Displays the connected reader software version */
 "Version: %1$@" = "版本：%1$@";
 
+/* Action title in an in-app notification to view more details. */
+"View" = "视图";
+
 /* Cell title on the beta features screen to enable the order add-ons feature
    Title of the button on the order detail item to navigate to add-ons - Title of the button on the order details product list item to navigate to add-ons */
 "View Add-Ons" = "查看插件";
@@ -4358,7 +4391,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We couldn’t update your reader’s software" = "我们无法更新您的读卡器软件";
 
 /* Title for the error screen when WooCommerce Payments is not supported in a specific country */
-"We don’t support In-Person Payments in %@" = "在 %@ 中，我们不支持现场付款";
+"We don’t support In-Person Payments in %1$@" = "We don’t support In-Person Payments in %1$@";
 
 /* Title for the error screen when WooCommerce Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments in your country" = "在您的国家\/地区，我们不支持现场付款";
@@ -4471,9 +4504,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "WooCommerce 折扣";
 
-/* Title for the error screen when WooCommerce Payments is in test mode on a live site */
-"WooCommerce Payments is in Test Mode" = "WooCommerce Payments 处于测试模式";
-
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "WooCommerce 设置";
 
@@ -4532,6 +4562,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "您的帐户中至少有一项逾期要求。 请注意恢复现场付款。";
+
+/* Message requesting merchants to select between available payments processors */
+"You must disable either the WooCommerce Payments or the WooCommerce Stripe Gateway extension." = "You must disable either the WooCommerce Payments or the WooCommerce Stripe Gateway extension.";
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "您需要添加密码，以便通过密码保护产品";

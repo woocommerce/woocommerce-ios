@@ -54,6 +54,28 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(navigationItem, .loading)
     }
 
+    func test_view_is_disabled_during_network_request() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        let isViewDisabled: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder:
+                    promise(viewModel.disabled)
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+            viewModel.createOrder()
+        }
+
+        // Then
+        XCTAssertTrue(isViewDisabled)
+    }
+
     func test_create_button_is_enabled_after_the_network_operation_completes() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -236,7 +258,11 @@ class NewOrderViewModelTests: XCTestCase {
         let productRow = viewModel.createProductRowViewModel(for: newOrderItem, canChangeQuantity: false)
 
         // Then
-        let expectedProductRow = ProductRowViewModel(productVariation: productVariation, name: product.name, quantity: 2, canChangeQuantity: false)
+        let expectedProductRow = ProductRowViewModel(productVariation: productVariation,
+                                                     name: product.name,
+                                                     quantity: 2,
+                                                     canChangeQuantity: false,
+                                                     displayMode: .stock)
         XCTAssertEqual(productRow?.name, expectedProductRow.name)
         XCTAssertEqual(productRow?.skuLabel, expectedProductRow.skuLabel)
         XCTAssertEqual(productRow?.quantity, expectedProductRow.quantity)

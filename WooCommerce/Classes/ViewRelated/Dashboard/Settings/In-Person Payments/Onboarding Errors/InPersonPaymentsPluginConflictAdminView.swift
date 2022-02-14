@@ -1,8 +1,15 @@
 import SwiftUI
 
-struct InPersonPaymentsSelectPlugin: View {
+struct InPersonPaymentsPluginConfictAdmin: View {
     let onRefresh: () -> Void
     @State var presentedSetupURL: URL? = nil
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+
+    var isCompact: Bool {
+        get {
+            verticalSizeClass == .compact
+        }
+    }
 
     var body: some View {
         ScrollableVStack {
@@ -12,11 +19,15 @@ struct InPersonPaymentsSelectPlugin: View {
                 title: Localization.title,
                 message: Localization.message,
                 image: InPersonPaymentsOnboardingError.ImageInfo(
-                    image: .wcPayPlugin,
-                    height: Constants.height
+                    image: .paymentErrorImage,
+                    height: 108.0
                 ),
                 supportLink: false
             )
+
+            InPersonPaymentsPluginChoicesView()
+
+            InPersonPaymentsSupportLink()
 
             Spacer()
 
@@ -47,18 +58,18 @@ struct InPersonPaymentsSelectPlugin: View {
 
 private enum Localization {
     static let title = NSLocalizedString(
-        "Please select an extension",
-        comment: "Title for the error screen when there is more than one extension active."
+        "Conflicting payment plugins detected",
+        comment: "Title for the error screen when there is more than one plugin active that supports in-person payments."
     )
 
     static let message = NSLocalizedString(
-        "You must disable either the WooCommerce Payments or the WooCommerce Stripe Gateway extension.",
-        comment: "Message requesting merchants to select between available payments processors"
+        "In-Person Payments will only work with one of following plugins activated. Please deactivate one of these plugins to continue:",
+        comment: "Message prompting an administrator to deactivate one of two plugins"
     )
 
     static let primaryButton = NSLocalizedString(
-        "Select extension in Store Admin",
-        comment: "Button to select the active payment processor plugin"
+        "Manage Plugins",
+        comment: "Button to open browser to manage plugins"
     )
 }
 
@@ -67,8 +78,8 @@ private enum Constants {
     static let padding: CGFloat = 24.0
 }
 
-struct InPersonPaymentsSelectPlugin_Previews: PreviewProvider {
+struct InPersonPaymentsPluginConfictAdmin_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsSelectPlugin(onRefresh: {})
+        InPersonPaymentsPluginConfictAdmin(onRefresh: {})
     }
 }

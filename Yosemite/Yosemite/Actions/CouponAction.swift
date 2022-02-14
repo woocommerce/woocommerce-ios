@@ -48,10 +48,12 @@ public enum CouponAction: Action {
     ///
     /// - `siteID`: ID of the site that the coupon belongs to.
     /// - `couponID`: ID of the coupon to load analytics report for.
+    /// - `startDate`: the start of the date range to fetch report for.
     /// - `onCompletion`: invoked when the creation finishes.
     ///
     case loadCouponReport(siteID: Int64,
                           couponID: Int64,
+                          startDate: Date,
                           onCompletion: (Result<CouponReport, Error>) -> Void)
 
     /// Search Coupons matching a given keyword for a site

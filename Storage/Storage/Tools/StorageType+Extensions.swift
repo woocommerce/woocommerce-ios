@@ -607,4 +607,21 @@ public extension StorageType {
         let predicate = \SystemPlugin.siteID == siteID && \SystemPlugin.name == name
         return firstObject(ofType: SystemPlugin.self, matching: predicate)
     }
+
+    // MARK: - Inbox Notes
+
+    /// Returns a single Inbox Note given a `siteID` and `id`
+    ///
+    func loadInboxNote(siteID: Int64, id: Int64) -> InboxNote? {
+        let predicate = \InboxNote.siteID == siteID && \InboxNote.id == id
+        return firstObject(ofType: InboxNote.self, matching: predicate)
+    }
+
+    /// Returns all stored Inbox Notes for a provided `siteID`.
+    ///
+    func loadAllInboxNotes(siteID: Int64) -> [InboxNote] {
+        let predicate = \InboxNote.siteID == siteID
+        let descriptor = NSSortDescriptor(keyPath: \InboxNote.dateCreated, ascending: false)
+        return allObjects(ofType: InboxNote.self, matching: predicate, sortedBy: [descriptor])
+    }
 }

@@ -214,6 +214,8 @@ private extension ReviewsViewController {
         // UITableViewDelegate to the implementation of UITableViewDelegate
         // provided by the view model. It could be argued that we are just cheating.
         tableView.delegate = self
+
+        tableView.accessibilityIdentifier = "reviews-table"
     }
 
     /// Setup: ResultsController

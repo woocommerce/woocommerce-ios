@@ -225,7 +225,7 @@ final class NewOrderViewModel: ObservableObject {
     func createOrder() {
         performingNetworkRequest = true
 
-        let action = OrderAction.createOrder(siteID: siteID, order: orderDetails.toOrder()) { [weak self] result in
+        orderSynchronizer.commitAllChanges { [weak self] result in
             guard let self = self else { return }
             self.performingNetworkRequest = false
 
@@ -239,7 +239,6 @@ final class NewOrderViewModel: ObservableObject {
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
-        stores.dispatch(action)
         trackCreateButtonTapped()
     }
 
@@ -527,9 +526,9 @@ private extension NewOrderViewModel {
     /// or figure out a better way to get the product count.
     ///
     func trackCreateButtonTapped() {
-        let hasCustomerDetails = orderDetails.billingAddress != nil || orderDetails.shippingAddress != nil
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderDetails.status,
-                                                                                productCount: orderDetails.items.count,
+        let hasCustomerDetails = orderSynchronizer.order.billingAddress != nil || orderSynchronizer.order.shippingAddress != nil
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderSynchronizer.order.status,
+                                                                                productCount: orderSynchronizer.order.items.count,
                                                                                 hasCustomerDetails: hasCustomerDetails))
     }
 

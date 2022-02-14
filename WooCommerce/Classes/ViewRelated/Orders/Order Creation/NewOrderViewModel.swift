@@ -134,6 +134,12 @@ final class NewOrderViewModel: ObservableObject {
         performingNetworkRequest
     }
 
+    /// Defines the current order status.
+    ///
+    var currentOrderStatus: OrderStatusEnum {
+        orderSynchronizer.order.status
+    }
+
     /// Representation of payment data display properties
     ///
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
@@ -268,7 +274,6 @@ extension NewOrderViewModel {
     /// Type to hold all order detail values
     ///
     struct OrderDetails {
-        var status: OrderStatusEnum = .pending
         var items: [NewOrderItem] = []
         var billingAddress: Address?
         var shippingAddress: Address?
@@ -279,7 +284,7 @@ extension NewOrderViewModel {
         let emptyOrder = Order.empty
 
         func toOrder() -> Order {
-            emptyOrder.copy(status: status,
+            emptyOrder.copy(status: .pending,
                             items: items.map { $0.orderItem },
                             billingAddress: billingAddress,
                             shippingAddress: shippingAddress)
@@ -425,10 +430,10 @@ private extension NewOrderViewModel {
     /// Updates status badge viewmodel based on status order property.
     ///
     func configureStatusBadgeViewModel() {
-        $orderDetails
-            .map { [weak self] orderDetails in
-                guard let siteOrderStatus = self?.currentSiteStatuses.first(where: { $0.status == orderDetails.status }) else {
-                    return StatusBadgeViewModel(orderStatusEnum: orderDetails.status)
+        orderSynchronizer.orderPublisher
+            .map { [weak self] order in
+                guard let siteOrderStatus = self?.currentSiteStatuses.first(where: { $0.status == order.status }) else {
+                    return StatusBadgeViewModel(orderStatusEnum: order.status)
                 }
                 return StatusBadgeViewModel(orderStatus: siteOrderStatus)
             }

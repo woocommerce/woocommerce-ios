@@ -46,7 +46,6 @@ struct HubMenu: View {
                                 showingViewStore = true
                             case .inbox:
                                 // TODO: Inbox analytics
-                                // TODO: 5954 - Show Inbox view
                                 showingInbox = true
                             case .reviews:
                                 ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [Constants.option: "reviews"])
@@ -66,6 +65,11 @@ struct HubMenu: View {
             }
             .safariSheet(isPresented: $showingWooCommerceAdmin, url: viewModel.woocommerceAdminURL)
             .safariSheet(isPresented: $showingViewStore, url: viewModel.storeURL)
+            NavigationLink(destination:
+                            Inbox(viewModel: .init(siteID: viewModel.siteID)),
+                           isActive: $showingInbox) {
+                EmptyView()
+            }.hidden()
             NavigationLink(destination:
                             ReviewsView(siteID: viewModel.siteID),
                            isActive: $showingReviews) {

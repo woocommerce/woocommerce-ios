@@ -124,7 +124,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(row.title, order.paymentMethodTitle)
         let body = try XCTUnwrap(row.body)
-        XCTAssert(body.contains("MasterCard"))
+        XCTAssert(body.contains("Mastercard"))
         XCTAssert(body.contains("6292"))
     }
 

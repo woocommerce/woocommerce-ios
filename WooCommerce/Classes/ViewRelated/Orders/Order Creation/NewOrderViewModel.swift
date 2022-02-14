@@ -264,6 +264,9 @@ extension NewOrderViewModel {
     struct OrderDetails {
         var status: OrderStatusEnum = .pending
         var items: [NewOrderItem] = []
+
+        var shippingLine: ShippingLine?
+
         var billingAddress: Address?
         var shippingAddress: Address?
 
@@ -276,7 +279,8 @@ extension NewOrderViewModel {
             emptyOrder.copy(status: status,
                             items: items.map { $0.orderItem },
                             billingAddress: billingAddress,
-                            shippingAddress: shippingAddress)
+                            shippingAddress: shippingAddress,
+                            shippingLines: shippingLine.flatMap { [$0] } ?? [])
         }
     }
 
@@ -501,11 +505,11 @@ private extension NewOrderViewModel {
                     .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
                     .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
-                let shippingTotal = NSDecimalNumber(value: 0)
+                let shippingTotal = orderDetails.shippingLine.flatMap { self.currencyFormatter.convertToDecimal(from: $0.total) } ?? NSDecimalNumber(value: 0)
                 let orderTotal = itemsTotal.adding(shippingTotal)
 
                 return PaymentDataViewModel(itemsTotal: itemsTotal.stringValue,
-                                            shouldShowShippingTotal: false,
+                                            shouldShowShippingTotal: orderDetails.shippingLine != nil,
                                             shippingTotal: shippingTotal.stringValue,
                                             orderTotal: orderTotal.stringValue,
                                             currencyFormatter: self.currencyFormatter)

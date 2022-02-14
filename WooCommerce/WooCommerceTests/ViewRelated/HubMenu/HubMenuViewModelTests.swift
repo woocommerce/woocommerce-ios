@@ -50,7 +50,7 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .inbox, .coupons, .reviews])
     }
 
-    func test_menuElements_does_not_include_coupons_when_couponManagement_is_not_enabled_in_app_settings() {
+    func test_menuElements_do_not_include_coupons_when_couponManagement_is_not_enabled_in_app_settings() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let featureFlagService = MockFeatureFlagService(isInboxOn: false)

@@ -70,6 +70,12 @@ private extension LocalOrderSynchronizer {
                ProductInputTransformer.update(input: productInput, on: order)
             }
             .assign(to: &$order)
+
+        setAddresses.withLatestFrom(orderPublisher)
+            .map { addressesInput, order in
+                order.copy(billingAddress: addressesInput?.billing, shippingAddress: addressesInput?.shipping)
+            }
+            .assign(to: &$order)
     }
 }
 
@@ -136,4 +142,3 @@ private struct ProductInputTransformer {
                          attributes: [])
     }
 }
-

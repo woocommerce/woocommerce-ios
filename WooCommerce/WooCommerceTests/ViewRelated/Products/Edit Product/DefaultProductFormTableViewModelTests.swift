@@ -39,6 +39,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                           stockStatusKey: ProductStockStatus.onBackOrder.rawValue)
         let model = EditableProductModel(product: product)
         let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        print(product)
 
         // Action
         let tableViewModel = DefaultProductFormTableViewModel(product: model, actionsFactory: actionsFactory, currency: "")
@@ -48,6 +49,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
             return
         }
+        print(rows)
         var inventoryViewModel: ProductFormSection.SettingsRow.ViewModel?
         for row in rows {
             if case let .inventory(viewModel, _) = row {
@@ -56,5 +58,49 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             }
         }
         XCTAssertNil(inventoryViewModel?.details)
+    }
+
+    func test_variable_product_view_model_row_has_isVariation_true() {
+        // Arrange
+        let product = Product.fake().copy(productTypeKey: ProductType.variable.rawValue,
+                                          sku: "",
+                                          manageStock: false,
+                                          stockStatusKey: ProductStockStatus.onBackOrder.rawValue)
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        print(product)
+
+        // Action
+        let tableViewModel = DefaultProductFormTableViewModel(product: model, actionsFactory: actionsFactory, currency: "")
+
+        // Assert
+      guard case let .primaryFields(rows) = tableViewModel.sections[0] else {
+            XCTFail("Unexpected section at index 0: \(tableViewModel.sections)")
+            return
+        }
+//        guard case let .settings(rows) = tableViewModel.sections[0] else {
+//            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+//            return
+//        }
+        print(rows)
+        var isVariation = ProductFormSection.PrimaryFieldRow.images
+        for row in rows {
+            if case let .images(_, _, isVariation) = row {
+                let isVariation = "the value of isVariation"
+                break
+            }
+        }
+      //  XCTAssertNil(inventoryViewModel?.details)
+        XCTAssertTrue(isVariation)
+
+
+//        var inventoryViewModel: ProductFormSection.SettingsRow.ViewModel?
+//        for row in rows {
+//            if case let .inventory(viewModel, _) = row {
+//                inventoryViewModel = viewModel
+//                break
+//            }
+//        }
+
     }
 }

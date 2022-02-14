@@ -14,14 +14,18 @@ public struct WCPayCardPresentReceiptDetails: Codable, GeneratedCopiable, Genera
     public let accountType: WCPayCardFunding
 
     /// The EMV Application Identifier (AID)
-    public let applicationPreferredName: String
+    /// Ideally these would not be optional, as they are required on the receipt. Stripe's simulated cards currently give `null` here.
+    /// p1644486564027519-slack-C01G168NFC2
+    public let applicationPreferredName: String?
 
     /// The EMV Dedicated File (DF) Name
-    public let dedicatedFileName: String
+    /// Ideally these would not be optional, as they are required on the receipt. Stripe's simulated cards currently give `null` here.
+    /// p1644486564027519-slack-C01G168NFC2 
+    public let dedicatedFileName: String?
 
     public init(accountType: WCPayCardFunding,
-                applicationPreferredName: String,
-                dedicatedFileName: String) {
+                applicationPreferredName: String?,
+                dedicatedFileName: String?) {
         self.accountType = accountType
         self.applicationPreferredName = applicationPreferredName
         self.dedicatedFileName = dedicatedFileName

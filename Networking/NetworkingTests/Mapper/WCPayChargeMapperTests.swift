@@ -53,6 +53,39 @@ class WCPayChargeMapperTests: XCTestCase {
         XCTAssertEqual(wcpayCharge, expectedWcpayCharge)
     }
 
+    /// Verifies that the fields are all parsed correctly for a card present payment
+    ///
+    func test_WCPayCharge_map_parses_all_fields_in_result_for_card_present_with_nulls() throws {
+        let wcpayCharge = try mapRetrieveWCPayChargeResponse(responseName: .cardPresentMinimal)
+
+        let expectedCreatedDate = Date.init(timeIntervalSince1970: 1643799478) //2022-02-02 10:57:58 UTC
+
+        let expectedPaymentMethodDetails = WCPayPaymentMethodDetails.cardPresent(
+            details: .init(brand: .visa,
+                           last4: "4242",
+                           funding: .credit,
+                           receipt: .init(accountType: .credit,
+                                          applicationPreferredName: nil,
+                                          dedicatedFileName: nil)))
+
+        let expectedWcpayCharge = WCPayCharge(siteID: dummySiteID,
+                                              id: "ch_3KOgX62EdyGr1FMV0CSW2k48",
+                                              amount: 100,
+                                              amountCaptured: 100,
+                                              amountRefunded: 0,
+                                              authorizationCode: "123456",
+                                              captured: true,
+                                              created: expectedCreatedDate,
+                                              currency: "usd",
+                                              paid: true,
+                                              paymentIntentID: "pi_3KOgX62EdyGr1FMV0HpUJ10k",
+                                              paymentMethodID: "pm_1KOgXB2EdyGr1FMVucJRZLpC",
+                                              paymentMethodDetails: expectedPaymentMethodDetails,
+                                              refunded: false,
+                                              status: .succeeded)
+        XCTAssertEqual(wcpayCharge, expectedWcpayCharge)
+    }
+
     /// Verifies that the fields are all parsed correctly for a card payment
     ///
     func test_WCPayCharge_map_parses_all_fields_in_result_for_card() throws {
@@ -107,6 +140,7 @@ private extension WCPayChargeMapperTests {
 
     enum ChargeResponse: String {
         case cardPresent = "wcpay-charge-card-present"
+        case cardPresentMinimal = "wcpay-charge-card-present-minimal"
         case card = "wcpay-charge-card"
     }
 }

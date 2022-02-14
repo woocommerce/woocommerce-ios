@@ -183,12 +183,13 @@ final class NewOrderViewModel: ObservableObject {
         }
 
         if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: product.attributes)
             return ProductRowViewModel(id: item.id,
                                        productVariation: variation,
                                        name: product.name,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
-                                       attributes: ProductVariationFormatter().generateAttributes(for: variation, from: product.attributes))
+                                       displayMode: .attributes(attributes))
         } else {
             return ProductRowViewModel(id: item.id, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
         }

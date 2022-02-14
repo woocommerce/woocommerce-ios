@@ -46,7 +46,7 @@ class ProductRowViewModelTests: XCTestCase {
                                                             image: ProductImage.fake().copy(src: imageURLString))
 
         // When
-        let viewModel = ProductRowViewModel(id: rowID, productVariation: productVariation, name: name, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(id: rowID, productVariation: productVariation, name: name, canChangeQuantity: false, displayMode: .stock)
 
         // Then
         XCTAssertEqual(viewModel.id, rowID)
@@ -156,13 +156,13 @@ class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productDetailsLabel, expectedProductDetailsLabel)
     }
 
-    func test_view_model_creates_expected_label_for_variation_with_provided_attributes() {
+    func test_view_model_creates_expected_label_for_variation_with_attributes_display_mode() {
         // Given
         let variation = ProductVariation.fake().copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")], stockStatus: .inStock)
         let attributes = [VariationAttributeViewModel(name: "Color", value: "Blue"), VariationAttributeViewModel(name: "Size")]
 
         // When
-        let viewModel = ProductRowViewModel(productVariation: variation, name: "", canChangeQuantity: false, attributes: attributes)
+        let viewModel = ProductRowViewModel(productVariation: variation, name: "", canChangeQuantity: false, displayMode: .attributes(attributes))
 
         // Then
         let expectedAttributesText = "Blue, Any Size"
@@ -172,12 +172,12 @@ class ProductRowViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.productDetailsLabel.contains(unexpectedStockText))
     }
 
-    func test_view_model_creates_expected_label_for_variation_without_provided_attributes() {
+    func test_view_model_creates_expected_label_for_variation_with_stock_display_mode() {
         // Given
         let variation = ProductVariation.fake().copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")], stockStatus: .inStock)
 
         // When
-        let viewModel = ProductRowViewModel(productVariation: variation, name: "", canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(productVariation: variation, name: "", canChangeQuantity: false, displayMode: .stock)
 
         // Then
         let expectedStockText = "In stock"

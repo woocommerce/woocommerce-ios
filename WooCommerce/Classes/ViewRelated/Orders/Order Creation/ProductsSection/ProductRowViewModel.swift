@@ -49,15 +49,15 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private let manageStock: Bool
 
-    /// Product variation attributes
+    /// Display mode for a product variation.
+    /// Determines which details to display in the product details label.
     ///
-    private let variationAttributes: [VariationAttributeViewModel]?
+    private let variationDisplayMode: VariationDisplayMode?
 
     /// Label showing product details. Can include stock status or attributes, price, and variations (if any).
     ///
     var productDetailsLabel: String {
-        // When provided, the variation attributes should replace the stock status
-        let stockOrAttributesLabel = variationAttributes != nil ? createAttributesText() : createStockText()
+        let stockOrAttributesLabel = createStockOrAttributesText()
         let priceLabel = createPriceText()
         let variationsLabel = createVariationsText()
 
@@ -105,7 +105,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          canChangeQuantity: Bool,
          imageURL: URL?,
          numberOfVariations: Int = 0,
-         variationAttributes: [VariationAttributeViewModel]? = nil,
+         variationDisplayMode: VariationDisplayMode? = nil,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.id = id ?? productOrVariationID.description
         self.productOrVariationID = productOrVariationID
@@ -120,7 +120,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.imageURL = imageURL
         self.currencyFormatter = currencyFormatter
         self.numberOfVariations = numberOfVariations
-        self.variationAttributes = variationAttributes
+        self.variationDisplayMode = variationDisplayMode
     }
 
     /// Initialize `ProductRowViewModel` with a `Product`
@@ -160,7 +160,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      name: String,
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
-                     attributes: [VariationAttributeViewModel]? = nil,
+                     displayMode: VariationDisplayMode,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         let imageURL: URL?
         if let encodedImageURLString = productVariation.image?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
@@ -180,8 +180,30 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   quantity: quantity,
                   canChangeQuantity: canChangeQuantity,
                   imageURL: imageURL,
-                  variationAttributes: attributes,
+                  variationDisplayMode: displayMode,
                   currencyFormatter: currencyFormatter)
+    }
+
+    /// Determines which product variation details to display.
+    ///
+    enum VariationDisplayMode {
+        /// Displays the variation's stock status
+        case stock
+
+        /// Displays the provided list of variation attributes
+        case attributes([VariationAttributeViewModel])
+    }
+
+    /// Creates the stock or variation attributes text.
+    /// Returns stock text for non-variations; uses variation display mode to determine the text for variations.
+    ///
+    private func createStockOrAttributesText() -> String {
+        switch variationDisplayMode {
+        case .attributes(let attributes):
+            return createAttributesText(from: attributes)
+        default:
+            return createStockText()
+        }
     }
 
     /// Create the stock text based on a product's stock status/quantity.
@@ -202,10 +224,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Create the attributes text based on the provided product variation attributes.
     ///
-    private func createAttributesText() -> String? {
-        guard let attributes = variationAttributes else {
-            return nil
-        }
+    private func createAttributesText(from attributes: [VariationAttributeViewModel]) -> String {
         return attributes.map { $0.nameOrValue }.joined(separator: ", ")
     }
 

@@ -142,13 +142,7 @@ private extension InboxNotesStore {
                                 in storage: StorageType,
                                 siteID: Int64) {
         for inboxNote in readOnlyInboxNotes {
-            let storageInboxNote: Storage.InboxNote = {
-                if let storedInboxNote = storage.loadInboxNote(siteID: siteID, id: inboxNote.id) {
-                    return storedInboxNote
-                }
-                return storage.insertNewObject(ofType: Storage.InboxNote.self)
-            }()
-
+            let storageInboxNote = storage.loadInboxNote(siteID: siteID, id: inboxNote.id) ?? storage.insertNewObject(ofType: Storage.InboxNote.self)
             storageInboxNote.update(with: inboxNote)
         }
     }

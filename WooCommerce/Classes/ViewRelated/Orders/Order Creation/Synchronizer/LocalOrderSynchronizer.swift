@@ -64,5 +64,67 @@ private extension LocalOrderSynchronizer {
                 order.copy(status: newStatus)
             }
             .assign(to: &$order)
+
+        setProduct.withLatestFrom(orderPublisher)
+            .map { productInput, order in
+               ProductInputTransformer.addOrReplace(input: productInput, on: order)
+            }
+            .assign(to: &$order)
     }
 }
+
+private struct ProductInputTransformer {
+
+    struct OrderItemParameters {
+        let quantity: Decimal
+        let price: Decimal
+        let productID: Int64
+        let variationID: Int64?
+        var subtotal: String {
+            "\(price * quantity)"
+        }
+    }
+
+    static func addOrReplace(input: OrderSyncProductInput, on order: Order) -> Order {
+        let newItem = createOrderItem(using: input)
+
+        var items = order.items
+        if let itemIndex = order.items.firstIndex(where: { $0.itemID == newItem.itemID }) {
+            items[itemIndex] = newItem
+        } else {
+            items.append(newItem)
+        }
+
+        return order.copy(items: items)
+    }
+
+    static func createOrderItem(using input: OrderSyncProductInput) -> OrderItem {
+        let quantity = Decimal(input.quantity)
+        let parameters: OrderItemParameters = {
+            switch input.product {
+            case .product(let product):
+                let price = Decimal(string: product.price) ?? .zero
+                return OrderItemParameters(quantity: quantity, price: price, productID: product.productID, variationID: nil)
+            case .variation(let variation):
+                let price = Decimal(string: variation.price) ?? .zero
+                return OrderItemParameters(quantity: quantity, price: price, productID: variation.productID, variationID: variation.productVariationID)
+            }
+        }()
+
+        return OrderItem(itemID: Int64(input.id.hashValue),
+                         name: "",
+                         productID: parameters.productID,
+                         variationID: parameters.variationID ?? 0,
+                         quantity: quantity,
+                         price: parameters.price as NSDecimalNumber,
+                         sku: nil,
+                         subtotal: parameters.subtotal,
+                         subtotalTax: "",
+                         taxClass: "",
+                         taxes: [],
+                         total: "",
+                         totalTax: "",
+                         attributes: [])
+    }
+}
+

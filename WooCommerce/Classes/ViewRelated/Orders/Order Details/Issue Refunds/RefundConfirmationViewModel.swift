@@ -159,7 +159,7 @@ private extension RefundConfirmationViewModel {
                 return SimpleTextRow(text: details.order.paymentMethodTitle)
             }
             return TitleAndBodyRow(title: details.order.paymentMethodTitle,
-                                   body: cardDetails.brand.localizedCardDetails(last4: cardDetails.last4))
+                                   body: cardDetails.brand.cardDescription(last4: cardDetails.last4))
         } else {
             return TitleAndBodyRow(title: Localization.manualRefund(via: details.order.paymentMethodTitle),
                                    body: Localization.refundWillNotBeIssued(paymentMethod: details.order.paymentMethodTitle))
@@ -289,42 +289,37 @@ private extension RefundConfirmationViewModel {
 }
 
 private extension WCPayCardBrand {
-    /// A displayable brand name and last 4 digits for a card.
+    /// A displayable brand name and last 4 digits for a card. These are deliberately not localized, always in English,
+    /// because of various limitations on localization by the card companies. Care should be taken if localizing (some of)
+    /// these brand names in future – e.g. Mastercard allows only English, or specific authorized versions in Chinese (translation),
+    /// Arabic (transliteration), and Georgian (transliteration).
+    ///
     /// Names taken from [Stripe's card branding in the API docs](https://stripe.com/docs/api/cards/object#card_object-brand):
-    /// American Express, Diners Club, Discover, JCB, MasterCard, UnionPay, Visa, or Unknown.
-    func localizedCardDetails(last4: String) -> String {
-        return String(format: localizedCardDetailsFormatString(), last4)
+    /// American Express, Diners Club, Discover, JCB, Mastercard, UnionPay, Visa, or Unknown.
+    /// N.B. on review, we found that Mastercard should not have an uppercase "c" as it does in Stripe's documentation
+    /// https://brand.mastercard.com/brandcenter/branding-requirements/mastercard.html#name
+    func cardDescription(last4: String) -> String {
+        return String(format: cardDescriptionFormatString(), last4)
     }
 
-    func localizedCardDetailsFormatString() -> String {
+    func cardDescriptionFormatString() -> String {
         switch self {
         case .amex:
-            return NSLocalizedString("•••• %1$@ (American Express)",
-                                     comment: "American Express card brand details. %1$@ is a placeholder for the last 4 digits of the card.")
+            return "•••• %1$@ (American Express)"
         case .diners:
-            return NSLocalizedString("•••• %1$@ (Diners Club)",
-                                     comment: "Diners Club card brand details. %1$@ is a placeholder for the last 4 digits of the card.")
+            return "•••• %1$@ (Diners Club)"
         case .discover:
-            return NSLocalizedString("•••• %1$@ (Discover)",
-                                     comment: "Discover card brand details. %1$@ is a placeholder for the last 4 digits of the card.")
+            return "•••• %1$@ (Discover)"
         case .jcb:
-            return NSLocalizedString("•••• %1$@ (JCB)",
-                                     comment: "JCB card brand details. %1$@ is a placeholder for the last 4 digits of the card.")
+            return "•••• %1$@ (JCB)"
         case .mastercard:
-            return NSLocalizedString("•••• %1$@ (MasterCard)",
-                                     comment: "MasterCard card brand details. %1$@ is a placeholder for the last 4 digits of the card.")
+            return "•••• %1$@ (Mastercard)"
         case .unionpay:
-            return NSLocalizedString("•••• %1$@ (UnionPay)",
-                                     comment: "UnionPay card brand details. %1$@ is a placeholder for the last 4 digits of the card.")
+            return "•••• %1$@ (UnionPay)"
         case .visa:
-            return NSLocalizedString("•••• %1$@ (Visa)",
-                                     comment: "Visa card brand details. %1$@ is a placeholder for the last 4 digits of the card.")
+            return "•••• %1$@ (Visa)"
         case .unknown:
-            return NSLocalizedString("•••• %1$@ (Unknown provider)",
-                                     comment: "Short string to describe unknown card details. %1$@ is a " +
-                                     "placeholder for the last 4 digits of the card., used in contexts where " +
-                                     "otherwise the card network would be displayed, e.g." +
-                                     "\"Visa\" or \"MasterCard\"")
+            return "•••• %1$@"
         }
     }
 }

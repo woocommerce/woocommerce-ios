@@ -2,7 +2,6 @@
 //
 
 import Combine
-import Networking
 
 public enum CardPresentPaymentAction: Action {
     /// Sets the store to use a given payment gateway

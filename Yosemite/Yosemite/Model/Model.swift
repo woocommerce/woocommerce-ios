@@ -145,9 +145,13 @@ public typealias WCPayAccountStatusEnum = Networking.WCPayAccountStatusEnum
 public typealias WCPayCustomer = Networking.Customer
 public typealias WCPayPaymentMethodType = Networking.WCPayPaymentMethodType
 public typealias WCPayCharge = Networking.WCPayCharge
+public typealias WCPayCardBrand = Networking.WCPayCardBrand
+public typealias WCPayCardFunding = Networking.WCPayCardFunding
 public typealias WCPayCardPresentPaymentDetails = Networking.WCPayCardPresentPaymentDetails
 public typealias WCPayCardPaymentDetails = Networking.WCPayCardPaymentDetails
 public typealias WCPayCardPresentReceiptDetails = Networking.WCPayCardPresentReceiptDetails
+public typealias WCPayPaymentMethodDetails = Networking.WCPayPaymentMethodDetails
+public typealias WCPayChargeStatus = Networking.WCPayChargeStatus
 
 // MARK: - Exported Storage Symbols
 

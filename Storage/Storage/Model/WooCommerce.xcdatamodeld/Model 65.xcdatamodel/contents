@@ -757,7 +757,7 @@
         <attribute name="funding" attributeType="String"/>
         <attribute name="last4" attributeType="String"/>
         <relationship name="charge" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WCPayCharge" inverseName="cardPresentDetails" inverseEntity="WCPayCharge"/>
-        <relationship name="receipt" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="WCPayCardPresentReceiptDetails" inverseName="cardPresentPayment" inverseEntity="WCPayCardPresentReceiptDetails"/>
+        <relationship name="receipt" maxCount="1" deletionRule="Cascade" destinationEntity="WCPayCardPresentReceiptDetails" inverseName="cardPresentPayment" inverseEntity="WCPayCardPresentReceiptDetails"/>
     </entity>
     <entity name="WCPayCardPresentReceiptDetails" representedClassName="WCPayCardPresentReceiptDetails" syncable="YES">
         <attribute name="accountType" attributeType="String"/>

@@ -62,13 +62,14 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
 
     func test_variable_product_view_model_row_has_isVariation_true() {
         // Arrange
-        let product = Product.fake().copy(productTypeKey: ProductType.variable.rawValue,
-                                          sku: "",
-                                          manageStock: false,
-                                          stockStatusKey: ProductStockStatus.onBackOrder.rawValue)
-        let model = EditableProductModel(product: product)
-        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
-        print(product)
+        let variation = ProductVariation.fake()
+        //let product = Product.fake().copy(productTypeKey: ProductType.variable.rawValue,
+//                                          sku: "",
+//                                          manageStock: false,
+//                                          stockStatusKey: ProductStockStatus.onBackOrder.rawValue)
+        let model = EditableProductVariationModel(productVariation: variation)
+        let actionsFactory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
+        print(variation)
 
         // Action
         let tableViewModel = DefaultProductFormTableViewModel(product: model, actionsFactory: actionsFactory, currency: "")

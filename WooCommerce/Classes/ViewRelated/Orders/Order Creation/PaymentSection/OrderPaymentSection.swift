@@ -1,10 +1,14 @@
 import SwiftUI
+import Yosemite
 
 /// Represents the Payment section in an order
 ///
 struct OrderPaymentSection: View {
     /// View model to drive the view content
     let viewModel: NewOrderViewModel.PaymentDataViewModel
+
+    /// Closure to create/update the shipping line object
+    let saveShippingLineClosure: (ShippingLine?) -> Void
 
     ///   Environment safe areas
     ///
@@ -22,9 +26,17 @@ struct OrderPaymentSection: View {
 
             if viewModel.shouldShowShippingTotal {
                 TitleAndValueRow(title: Localization.shippingTotal, value: .content(viewModel.shippingTotal), selectable: true) {
+                    saveShippingLineClosure(nil)
                 }
             } else {
                 Button(Localization.addShipping) {
+                    let testShippingLine = ShippingLine(shippingID: 0,
+                                                        methodTitle: "Flat Rate",
+                                                        methodID: "other",
+                                                        total: "10",
+                                                        totalTax: "",
+                                                        taxes: [])
+                    saveShippingLineClosure(testShippingLine)
                 }
                 .buttonStyle(PlusButtonStyle())
                 .padding()
@@ -60,7 +72,7 @@ struct OrderPaymentSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = NewOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00", orderTotal: "20.00")
 
-        OrderPaymentSection(viewModel: viewModel)
+        OrderPaymentSection(viewModel: viewModel, saveShippingLineClosure: { _ in })
             .previewLayout(.sizeThatFits)
     }
 }

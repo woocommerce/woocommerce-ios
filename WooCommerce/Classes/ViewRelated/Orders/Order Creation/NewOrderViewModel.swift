@@ -138,6 +138,13 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
 
+    /// Saves a shipping line.
+    ///
+    /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
+    func saveShippingLine(_ shippingLine: ShippingLine?) {
+        orderDetails.shippingLine = shippingLine
+    }
+
     /// Analytics engine.
     ///
     private let analytics: Analytics

@@ -8,7 +8,17 @@ final class InboxViewModel: ObservableObject {
     let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
 
     /// All inbox notes.
-    @Published private(set) var notes: [InboxNote] = []
+    @Published private var notes: [InboxNote] = []
+
+    /// View models for inbox note rows.
+    @Published private(set) var noteRowViewModels: [InboxNoteRowViewModel] = []
+
+    /// View models for placeholder rows.
+    let placeholderRowViewModels: [InboxNoteRowViewModel] = [Int64](0..<3).map {
+        // The content does not matter because the text in placeholder rows is redacted.
+        InboxNoteRowViewModel(id: $0, title: "            ",
+                              actions: [.init(id: 0, title: "Placeholder", url: nil)])
+    }
 
     // MARK: Sync
 
@@ -35,6 +45,8 @@ final class InboxViewModel: ObservableObject {
         self.stores = stores
         self.syncState = syncState
         self.paginationTracker = PaginationTracker(pageSize: pageSize)
+
+        $notes.map { $0.map { InboxNoteRowViewModel(note: $0) } }.assign(to: &$noteRowViewModels)
 
         configurePaginationTracker()
         configureFirstPageLoad()

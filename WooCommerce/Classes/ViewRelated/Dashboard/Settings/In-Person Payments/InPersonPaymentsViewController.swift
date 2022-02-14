@@ -24,8 +24,6 @@ struct InPersonPaymentsView: View {
     var showSupport: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
 
-    let userIsAdministrator = true // TODO
-
     var body: some View {
         Group {
             switch viewModel.state {

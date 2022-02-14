@@ -16,22 +16,25 @@ final class HubMenuViewModel: ObservableObject {
     private(set) unowned var navigationController: UINavigationController?
 
     var avatarURL: URL? {
-        guard let urlString = ServiceLocator.stores.sessionManager.defaultAccount?.gravatarUrl, let url = URL(string: urlString) else {
+        guard let urlString = stores.sessionManager.defaultAccount?.gravatarUrl, let url = URL(string: urlString) else {
             return nil
         }
         return url
     }
+
     var storeTitle: String {
-        ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.myStore
+        stores.sessionManager.defaultSite?.name ?? Localization.myStore
     }
+
     var storeURL: URL {
-        guard let urlString = ServiceLocator.stores.sessionManager.defaultSite?.url, let url = URL(string: urlString) else {
+        guard let urlString = stores.sessionManager.defaultSite?.url, let url = URL(string: urlString) else {
             return WooConstants.URLs.blog.asURL()
         }
         return url
     }
+
     var woocommerceAdminURL: URL {
-        guard let urlString = ServiceLocator.stores.sessionManager.defaultSite?.adminURL, let url = URL(string: urlString) else {
+        guard let urlString = stores.sessionManager.defaultSite?.adminURL, let url = URL(string: urlString) else {
             return WooConstants.URLs.blog.asURL()
         }
         return url
@@ -43,24 +46,47 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published var showingReviewDetail = false
 
+    private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
+
     private var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
     private var storePickerCoordinator: StorePickerCoordinator?
 
     private var cancellables = Set<AnyCancellable>()
 
-    init(siteID: Int64, navigationController: UINavigationController? = nil, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(siteID: Int64,
+         navigationController: UINavigationController? = nil,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.navigationController = navigationController
+        self.stores = stores
+        self.featureFlagService = featureFlagService
+        observeSiteForUIUpdates()
+    }
+
+    /// Resets the menu elements displayed on the menu.
+    ///
+    func setupMenuElements() {
         menuElements = [.woocommerceAdmin, .viewStore]
         if featureFlagService.isFeatureFlagEnabled(.inbox) {
             menuElements.append(.inbox)
         }
-        if featureFlagService.isFeatureFlagEnabled(.couponManagement) {
-            menuElements.append(.coupons)
-        }
         menuElements.append(.reviews)
-        observeSiteForUIUpdates()
+
+        let action = AppSettingsAction.loadCouponManagementFeatureSwitchState { [weak self] result in
+            guard let self = self else { return }
+            guard case let .success(enabled) = result, enabled else {
+                return
+            }
+            if let index = self.menuElements.firstIndex(of: .reviews) {
+                self.menuElements.insert(.coupons, at: index)
+            } else {
+                self.menuElements.append(.coupons)
+            }
+        }
+        stores.dispatch(action)
     }
 
     /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.
@@ -87,7 +113,7 @@ final class HubMenuViewModel: ObservableObject {
     }
 
     private func observeSiteForUIUpdates() {
-        ServiceLocator.stores.site.sink { site in
+        stores.site.sink { site in
             // This will be useful in the future for updating some info of the screen depending on the store site info
         }.store(in: &cancellables)
     }

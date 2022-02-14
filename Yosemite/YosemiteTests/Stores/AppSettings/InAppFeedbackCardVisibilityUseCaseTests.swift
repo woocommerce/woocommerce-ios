@@ -37,7 +37,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
-        let settings = createAppSetting(instalationDate: installationDate, feedbackType: .general, feedbackSatus: .pending)
+        let settings = createAppSetting(installationDate: installationDate, feedbackType: .general, feedbackStatus: .pending)
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .general, fileManager: fileManager, calendar: calendar)
 
         // When
@@ -54,7 +54,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
-        let settings = createAppSetting(instalationDate: installationDate, feedbackType: .general, feedbackSatus: .pending)
+        let settings = createAppSetting(installationDate: installationDate, feedbackType: .general, feedbackStatus: .pending)
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .general, fileManager: fileManager, calendar: calendar)
 
         // When
@@ -72,7 +72,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
-        let settings = createAppSetting(instalationDate: installationDate, feedbackType: .general, feedbackSatus: .given(lastFeedbackDate))
+        let settings = createAppSetting(installationDate: installationDate, feedbackType: .general, feedbackStatus: .given(lastFeedbackDate))
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .general, fileManager: fileManager, calendar: calendar)
 
         // When
@@ -90,7 +90,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
-        let settings = createAppSetting(instalationDate: installationDate, feedbackType: .general, feedbackSatus: .given(lastFeedbackDate))
+        let settings = createAppSetting(installationDate: installationDate, feedbackType: .general, feedbackStatus: .given(lastFeedbackDate))
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .general, fileManager: fileManager, calendar: calendar)
 
         // When
@@ -108,7 +108,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path,
                                                    thenReturn: [.creationDate: documentDirCreationDate])
 
-        let settings = createAppSetting(instalationDate: nil, feedbackType: .general, feedbackSatus: .pending)
+        let settings = createAppSetting(installationDate: nil, feedbackType: .general, feedbackStatus: .pending)
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .general, fileManager: fileManager, calendar: calendar)
 
         // When
@@ -128,7 +128,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path,
                                                    thenReturn: [.creationDate: documentDirCreationDate])
 
-        let settings = createAppSetting(instalationDate: installationDate, feedbackType: .general, feedbackSatus: .pending)
+        let settings = createAppSetting(installationDate: installationDate, feedbackType: .general, feedbackStatus: .pending)
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .general, fileManager: fileManager, calendar: calendar)
 
         // When
@@ -142,7 +142,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         // Given
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
-        let settings = createAppSetting(instalationDate: nil, feedbackType: .general, feedbackSatus: .pending)
+        let settings = createAppSetting(installationDate: nil, feedbackType: .general, feedbackStatus: .pending)
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .general, fileManager: fileManager, calendar: calendar)
 
         // When
@@ -163,6 +163,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
                                           isStripeInPersonPaymentsSwitchEnabled: false,
                                           isCanadaInPersonPaymentsSwitchEnabled: false,
                                           isProductSKUInputScannerSwitchEnabled: false,
+                                          isCouponManagementSwitchEnabled: false,
                                           knownCardReaders: [])
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsVariations)
 
@@ -175,7 +176,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
     func test_shouldBeVisible_for_productM5_is_true_if_feedback_has_pending_status() throws {
         // Given
-        let settings = createAppSetting(instalationDate: nil, feedbackType: .productsVariations, feedbackSatus: .pending)
+        let settings = createAppSetting(installationDate: nil, feedbackType: .productsVariations, feedbackStatus: .pending)
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsVariations)
 
         // When
@@ -187,7 +188,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
     func test_shouldBeVisible_for_productM5_is_false_if_feedback_has_dismissed_status() throws {
         // Given
-        let settings = createAppSetting(instalationDate: nil, feedbackType: .productsVariations, feedbackSatus: .dismissed)
+        let settings = createAppSetting(installationDate: nil, feedbackType: .productsVariations, feedbackStatus: .dismissed)
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsVariations)
 
         // When
@@ -199,7 +200,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
     func test_shouldBeVisible_for_productM5_is_false_if_feedback_has_given_status() throws {
         // Given
-        let settings = createAppSetting(instalationDate: nil, feedbackType: .productsVariations, feedbackSatus: .given(Date()))
+        let settings = createAppSetting(installationDate: nil, feedbackType: .productsVariations, feedbackStatus: .given(Date()))
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsVariations)
 
         // When
@@ -221,16 +222,17 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
         try XCTUnwrap(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last)
     }
 
-    func createAppSetting(instalationDate: Date?, feedbackType: FeedbackType, feedbackSatus: FeedbackSettings.Status) -> GeneralAppSettings {
-        let feedback = FeedbackSettings(name: feedbackType, status: feedbackSatus)
+    func createAppSetting(installationDate: Date?, feedbackType: FeedbackType, feedbackStatus: FeedbackSettings.Status) -> GeneralAppSettings {
+        let feedback = FeedbackSettings(name: feedbackType, status: feedbackStatus)
         let settings = GeneralAppSettings(
-            installationDate: instalationDate,
+            installationDate: installationDate,
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
             isOrderCreationSwitchEnabled: false,
             isStripeInPersonPaymentsSwitchEnabled: false,
             isCanadaInPersonPaymentsSwitchEnabled: false,
             isProductSKUInputScannerSwitchEnabled: false,
+            isCouponManagementSwitchEnabled: false,
             knownCardReaders: []
         )
         return settings

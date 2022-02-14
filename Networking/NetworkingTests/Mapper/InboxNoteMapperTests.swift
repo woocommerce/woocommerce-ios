@@ -43,7 +43,7 @@ final class InboxNoteMapperTests: XCTestCase {
                                                                 url: url)],
                                           title: "WooCommerce Bookings subscription expired",
                                           content: content,
-                                          isDeleted: true,
+                                          isRemoved: true,
                                           isRead: false,
                                           dateCreated: dateFormatter.date(from: "2022-01-31T14:25:32")!)
 

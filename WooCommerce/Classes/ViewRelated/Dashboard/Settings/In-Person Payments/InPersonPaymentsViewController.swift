@@ -3,10 +3,12 @@ import SwiftUI
 final class InPersonPaymentsViewController: UIHostingController<InPersonPaymentsView> {
     init(viewModel: InPersonPaymentsViewModel) {
         super.init(rootView: InPersonPaymentsView(viewModel: viewModel))
-        rootView.showSupport = {
+        rootView.showSupport = { [weak self] in
+            guard let self = self else { return }
             ZendeskProvider.shared.showNewWCPayRequestIfPossible(from: self)
         }
-        rootView.showURL = { url in
+        rootView.showURL = { [weak self] url in
+            guard let self = self else { return }
             WebviewHelper.launch(url, with: self)
         }
     }
@@ -21,8 +23,6 @@ struct InPersonPaymentsView: View {
 
     var showSupport: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
-
-    let userIsAdministrator = true // TODO
 
     var body: some View {
         Group {

@@ -24,6 +24,18 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var expiryDate: String = ""
 
+    /// The message to be shared about the coupon
+    ///
+    var shareMessage: String {
+        if coupon.productIds.isNotEmpty ||
+            coupon.productCategories.isNotEmpty ||
+            coupon.excludedProductIds.isNotEmpty ||
+            coupon.excludedProductCategories.isNotEmpty {
+            return String.localizedStringWithFormat(Localization.shareMessageSomeProducts, amount, couponCode)
+        }
+        return String.localizedStringWithFormat(Localization.shareMessageAllProducts, amount, couponCode)
+    }
+
     /// Total number of orders that applied the coupon
     ///
     @Published private(set) var discountedOrdersCount: String = "0"
@@ -159,6 +171,14 @@ private extension CouponDetailsViewModel {
 //
 private extension CouponDetailsViewModel {
     enum Localization {
+        static let shareMessageAllProducts = NSLocalizedString(
+            "Apply %1$@ off to all products with the promo code “%2$@”.",
+            comment: "Message to share the coupon code if it is applicable to all products. " +
+            "Reads like: Apply 10% off to all products with the promo code “20OFF”.")
+        static let shareMessageSomeProducts = NSLocalizedString(
+            "Apply %1$@ off to some products with the promo code “%2$@”.",
+            comment: "Message to share the coupon code if it is applicable to some products. " +
+            "Reads like: Apply 10% off to some products with the promo code “20OFF”.")
         static let allProducts = NSLocalizedString("All Products", comment: "The text to be displayed in when the coupon is not limit to any specific product")
         static let singleProduct = NSLocalizedString(
             "%1$d Product",

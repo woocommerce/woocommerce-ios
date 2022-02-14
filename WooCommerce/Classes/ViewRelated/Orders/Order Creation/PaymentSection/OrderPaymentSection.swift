@@ -24,22 +24,8 @@ struct OrderPaymentSection: View {
 
             TitleAndValueRow(title: Localization.productsTotal, value: .content(viewModel.itemsTotal), selectionStyle: .none) {}
 
-            if viewModel.shouldShowShippingTotal {
-                TitleAndValueRow(title: Localization.shippingTotal, value: .content(viewModel.shippingTotal), selectionStyle: .highlight) {
-                    saveShippingLineClosure(nil)
-                }
-            } else {
-                Button(Localization.addShipping) {
-                    let testShippingLine = ShippingLine(shippingID: 0,
-                                                        methodTitle: "Flat Rate",
-                                                        methodID: "other",
-                                                        total: "10",
-                                                        totalTax: "",
-                                                        taxes: [])
-                    saveShippingLineClosure(testShippingLine)
-                }
-                .buttonStyle(PlusButtonStyle())
-                .padding()
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) {
+                shippingRow
             }
 
             TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
@@ -52,6 +38,26 @@ struct OrderPaymentSection: View {
         .background(Color(.listForeground))
 
         Divider()
+    }
+
+    @ViewBuilder private var shippingRow: some View {
+        if viewModel.shouldShowShippingTotal {
+            TitleAndValueRow(title: Localization.shippingTotal, value: .content(viewModel.shippingTotal), selectionStyle: .highlight) {
+                saveShippingLineClosure(nil)
+            }
+        } else {
+            Button(Localization.addShipping) {
+                let testShippingLine = ShippingLine(shippingID: 0,
+                                                    methodTitle: "Flat Rate",
+                                                    methodID: "other",
+                                                    total: "10",
+                                                    totalTax: "",
+                                                    taxes: [])
+                saveShippingLineClosure(testShippingLine)
+            }
+            .buttonStyle(PlusButtonStyle())
+            .padding()
+        }
     }
 }
 

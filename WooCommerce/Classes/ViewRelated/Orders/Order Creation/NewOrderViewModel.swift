@@ -213,8 +213,15 @@ final class NewOrderViewModel: ObservableObject {
                                         addressData: .init(billingAddress: orderDetails.billingAddress,
                                                            shippingAddress: orderDetails.shippingAddress),
                                         onAddressUpdate: { [weak self] updatedAddressData in
-            self?.orderDetails.billingAddress = updatedAddressData.billingAddress
-            self?.orderDetails.shippingAddress = updatedAddressData.shippingAddress
+            // TODO: Delete
+//            self?.orderDetails.billingAddress = updatedAddressData.billingAddress
+//            self?.orderDetails.shippingAddress = updatedAddressData.shippingAddress
+
+            let addressesInput = OrderSyncAddressesInput(billing: updatedAddressData.billingAddress ?? .empty,
+                                                         shipping: updatedAddressData.shippingAddress ?? .empty)
+            self?.orderSynchronizer.setAddresses.send(addressesInput)
+
+            // TODO: Update
             self?.trackCustomerDetailsAdded()
         })
     }

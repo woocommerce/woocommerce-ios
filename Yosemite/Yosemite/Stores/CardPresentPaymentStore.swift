@@ -674,10 +674,10 @@ public enum WCPayChargesError: Error, LocalizedError {
 
     init(underlyingError error: Error) {
         guard case let DotcomError.unknown(code, message) = error,
-        let message = message else {
-            self = .otherError(error: error.toAnyError)
-            return
-        }
+              let message = message else {
+                  self = .otherError(error: error.toAnyError)
+                  return
+              }
 
         /// See if we recognize this DotcomError code
         ///

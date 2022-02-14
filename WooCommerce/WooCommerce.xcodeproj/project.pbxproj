@@ -208,10 +208,8 @@
 		0262DA5823A23AC80029AF30 /* ProductShippingSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0262DA5623A23AC80029AF30 /* ProductShippingSettingsViewController.swift */; };
 		0262DA5923A23AC80029AF30 /* ProductShippingSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0262DA5723A23AC80029AF30 /* ProductShippingSettingsViewController.xib */; };
 		0262DA5B23A244830029AF30 /* Product+ShippingSettingsViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0262DA5A23A244830029AF30 /* Product+ShippingSettingsViewModels.swift */; };
-		02645D7C27BA027B0065DC68 /* InboxNoteRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02645D7827BA027A0065DC68 /* InboxNoteRowViewModel.swift */; };
 		02645D7D27BA027B0065DC68 /* Inbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02645D7927BA027B0065DC68 /* Inbox.swift */; };
 		02645D7E27BA027B0065DC68 /* InboxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02645D7A27BA027B0065DC68 /* InboxViewModel.swift */; };
-		02645D7F27BA027B0065DC68 /* InboxNoteRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02645D7B27BA027B0065DC68 /* InboxNoteRow.swift */; };
 		02691780232600A6002AFC20 /* ProductsTabProductViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269177F232600A6002AFC20 /* ProductsTabProductViewModelTests.swift */; };
 		02691782232605B9002AFC20 /* PaginatedListViewControllerStateCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02691781232605B9002AFC20 /* PaginatedListViewControllerStateCoordinatorTests.swift */; };
 		0269576A23726304001BA0BF /* KeyboardFrameObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269576923726304001BA0BF /* KeyboardFrameObserver.swift */; };
@@ -1835,10 +1833,8 @@
 		0262DA5623A23AC80029AF30 /* ProductShippingSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductShippingSettingsViewController.swift; sourceTree = "<group>"; };
 		0262DA5723A23AC80029AF30 /* ProductShippingSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductShippingSettingsViewController.xib; sourceTree = "<group>"; };
 		0262DA5A23A244830029AF30 /* Product+ShippingSettingsViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ShippingSettingsViewModels.swift"; sourceTree = "<group>"; };
-		02645D7827BA027A0065DC68 /* InboxNoteRowViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxNoteRowViewModel.swift; sourceTree = "<group>"; };
 		02645D7927BA027B0065DC68 /* Inbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Inbox.swift; sourceTree = "<group>"; };
 		02645D7A27BA027B0065DC68 /* InboxViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewModel.swift; sourceTree = "<group>"; };
-		02645D7B27BA027B0065DC68 /* InboxNoteRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxNoteRow.swift; sourceTree = "<group>"; };
 		0269177F232600A6002AFC20 /* ProductsTabProductViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTabProductViewModelTests.swift; sourceTree = "<group>"; };
 		02691781232605B9002AFC20 /* PaginatedListViewControllerStateCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListViewControllerStateCoordinatorTests.swift; sourceTree = "<group>"; };
 		0269576923726304001BA0BF /* KeyboardFrameObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardFrameObserver.swift; sourceTree = "<group>"; };
@@ -3757,8 +3753,6 @@
 			isa = PBXGroup;
 			children = (
 				02645D7927BA027B0065DC68 /* Inbox.swift */,
-				02645D7B27BA027B0065DC68 /* InboxNoteRow.swift */,
-				02645D7827BA027A0065DC68 /* InboxNoteRowViewModel.swift */,
 				02645D7A27BA027B0065DC68 /* InboxViewModel.swift */,
 			);
 			path = Inbox;
@@ -8590,7 +8584,6 @@
 				311237EE2714DA240033C44E /* CardPresentModalDisplayMessage.swift in Sources */,
 				45E3C8F325E7D30300102E84 /* ShippingLabelAddress+Woo.swift in Sources */,
 				57A25C7C25ACFAEC00A54A62 /* OrderFulfillmentNoticePresenter.swift in Sources */,
-				02645D7C27BA027B0065DC68 /* InboxNoteRowViewModel.swift in Sources */,
 				D8610BD2256F291000A5DF27 /* JetpackErrorViewModel.swift in Sources */,
 				26C6E8E626E6B5F500C7BB0F /* StateSelectorViewModel.swift in Sources */,
 				020B2F9423BDDBDC00BD79AD /* ProductUpdateError+UI.swift in Sources */,
@@ -8763,7 +8756,6 @@
 				454453CA27566CDE00464AC5 /* HubMenuViewModel.swift in Sources */,
 				934CB123224EAB150005CCB9 /* main.swift in Sources */,
 				456396AE25C81D81001F1A26 /* ShippingLabelFormViewModel.swift in Sources */,
-				02645D7F27BA027B0065DC68 /* InboxNoteRow.swift in Sources */,
 				02ECD1DF24FF48D000735BE5 /* PaginationTracker.swift in Sources */,
 				020886572499E643001D784E /* ProductExternalLinkViewController.swift in Sources */,
 				262A09812628A8F40033AD20 /* WooStyleModifiers.swift in Sources */,

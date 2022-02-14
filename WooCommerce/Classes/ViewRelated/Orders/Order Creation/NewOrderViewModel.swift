@@ -450,9 +450,13 @@ private extension NewOrderViewModel {
     /// Adds a selected product (from the product list) to the order.
     ///
     func addProductToOrder(_ product: Product) {
-        let newOrderItem = NewOrderItem(product: product, quantity: 1)
-        orderDetails.items.append(newOrderItem)
-        configureProductRowViewModels()
+        // TODO: Delete
+//        let newOrderItem = NewOrderItem(product: product, quantity: 1)
+//        orderDetails.items.append(newOrderItem)
+//        configureProductRowViewModels()
+
+        let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+        orderSynchronizer.setProduct.send(input)
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
     }
@@ -460,9 +464,13 @@ private extension NewOrderViewModel {
     /// Adds a selected product variation (from the product list) to the order.
     ///
     func addProductVariationToOrder(_ variation: ProductVariation) {
-        let newOrderItem = NewOrderItem(variation: variation, quantity: 1)
-        orderDetails.items.append(newOrderItem)
-        configureProductRowViewModels()
+        // TODO: Delete
+//        let newOrderItem = NewOrderItem(variation: variation, quantity: 1)
+//        orderDetails.items.append(newOrderItem)
+//        configureProductRowViewModels()
+
+        let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
+        orderSynchronizer.setProduct.send(input)
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
     }

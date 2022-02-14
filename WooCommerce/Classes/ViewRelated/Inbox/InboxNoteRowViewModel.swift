@@ -1,28 +1,38 @@
 import Yosemite
 
 /// View model for `InboxNoteRow`.
-struct InboxNoteRowViewModel: Identifiable {
+struct InboxNoteRowViewModel: Identifiable, Equatable {
     let id: Int64
     let title: String
+
+    /// HTML note content.
+    let attributedContent: NSAttributedString
 
     let actions: [InboxNoteRowActionViewModel]
 
     init(note: InboxNote) {
+        let attributedContent = note.content.htmlToAttributedString
+            .addingAttributes([
+                .font: UIFont.body,
+                .foregroundColor: UIColor.secondaryLabel
+            ])
         let actions = note.actions.map { InboxNoteRowActionViewModel(action: $0) }
         self.init(id: note.id,
                   title: note.title,
+                  attributedContent: attributedContent,
                   actions: actions)
     }
 
-    init(id: Int64, title: String, actions: [InboxNoteRowActionViewModel]) {
+    init(id: Int64, title: String, attributedContent: NSAttributedString, actions: [InboxNoteRowActionViewModel]) {
         self.id = id
         self.title = title
+        self.attributedContent = attributedContent
         self.actions = actions
     }
 }
 
 /// View model for an action in `InboxNoteRow`.
-struct InboxNoteRowActionViewModel: Identifiable {
+struct InboxNoteRowActionViewModel: Identifiable, Equatable {
     let id: Int64
     let title: String
     let url: URL?

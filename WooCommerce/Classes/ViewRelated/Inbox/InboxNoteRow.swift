@@ -18,7 +18,8 @@ struct InboxNoteRow: View {
                     .fixedSize(horizontal: false, vertical: true)
 
                 // Content.
-                // TODO: 5954 - HTML content
+                AttributedText(viewModel.attributedContent)
+                    .attributedTextLinkColor(Color(.accent))
 
                 // HStack with actions and dismiss action.
                 HStack(spacing: Constants.spacingBetweenActions) {

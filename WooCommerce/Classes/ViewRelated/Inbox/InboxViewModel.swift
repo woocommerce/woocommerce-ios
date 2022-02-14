@@ -17,6 +17,7 @@ final class InboxViewModel: ObservableObject {
     let placeholderRowViewModels: [InboxNoteRowViewModel] = [Int64](0..<3).map {
         // The content does not matter because the text in placeholder rows is redacted.
         InboxNoteRowViewModel(id: $0, title: "            ",
+                              attributedContent: .init(string: "\n\n\n"),
                               actions: [.init(id: 0, title: "Placeholder", url: nil)])
     }
 

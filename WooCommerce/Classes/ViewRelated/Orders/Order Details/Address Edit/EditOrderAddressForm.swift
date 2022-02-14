@@ -197,6 +197,7 @@ struct SingleAddressForm: View {
     var body: some View {
         ListHeaderView(text: Localization.detailsSection, alignment: .left)
             .padding(.horizontal, insets: safeAreaInsets)
+            .accessibility(addTraits: .isHeader)
         VStack(spacing: 0) {
             TitleAndTextFieldRow(title: Localization.firstNameField,
                                  placeholder: "",
@@ -237,6 +238,7 @@ struct SingleAddressForm: View {
 
         ListHeaderView(text: sectionTitle, alignment: .left)
             .padding(.horizontal, insets: safeAreaInsets)
+            .accessibility(addTraits: .isHeader)
         VStack(spacing: 0) {
             Group {
                 TitleAndTextFieldRow(title: Localization.companyField,

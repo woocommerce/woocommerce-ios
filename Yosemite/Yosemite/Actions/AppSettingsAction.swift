@@ -152,6 +152,14 @@ public enum AppSettingsAction: Action {
     ///
     case loadProductSKUInputScannerFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
+    /// Sets the state for the Coupon Management beta feature switch.
+    ///
+    case setCouponManagementFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Loads the most recent state for the Coupon Management beta feature switch
+    ///
+    case loadCouponManagementFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+
     /// Remember the given card reader (to support automatic reconnection)
     /// where `cardReaderID` is a String e.g. "CHB204909005931"
     ///

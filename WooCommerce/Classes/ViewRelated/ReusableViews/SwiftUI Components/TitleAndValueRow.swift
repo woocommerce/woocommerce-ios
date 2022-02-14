@@ -38,6 +38,10 @@ struct TitleAndValueRow: View {
         .disabled(!selectable)
         .frame(minHeight: Constants.minHeight)
         .padding(.horizontal, Constants.horizontalPadding)
+        .accessibilityElement()
+        .accessibilityLabel(Text(title))
+        .accessibilityValue(Text(value.text))
+        .accessibilityAddTraits(selectable ? .isButton : [])
     }
 }
 

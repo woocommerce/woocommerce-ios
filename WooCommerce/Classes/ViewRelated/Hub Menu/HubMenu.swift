@@ -80,6 +80,9 @@ struct HubMenu: View {
         }
         .navigationBarHidden(true)
         .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
+        .onAppear {
+            viewModel.setupMenuElements()
+        }
     }
 
     func pushReviewDetailsView(using parcel: ProductReviewFromNoteParcel) {

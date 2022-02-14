@@ -84,15 +84,16 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
 //            return
 //        }
         print(rows)
-        var isVariation = ProductFormSection.PrimaryFieldRow.images
+        var isVariableProduct = false // could do optional boolean type, but need to adjust how you write the assertion. Have to unwrap the optional
+        //= ProductFormSection.PrimaryFieldRow.images
         for row in rows {
             if case let .images(_, _, isVariation) = row {
-                let isVariation = "the value of isVariation"
+                isVariableProduct = isVariation
                 break
             }
         }
       //  XCTAssertNil(inventoryViewModel?.details)
-        XCTAssertTrue(isVariation)
+        XCTAssertTrue(isVariableProduct)
 
 
 //        var inventoryViewModel: ProductFormSection.SettingsRow.ViewModel?

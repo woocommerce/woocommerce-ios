@@ -180,6 +180,7 @@ final class NewOrderViewModel: ObservableObject {
         configureProductRowViewModels()
     }
 
+    // TODO: Delete
     /// Creates a view model for the `ProductRow` corresponding to an order item.
     ///
     func createProductRowViewModel(for item: NewOrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
@@ -197,6 +198,26 @@ final class NewOrderViewModel: ObservableObject {
                                        displayMode: .attributes(attributes))
         } else {
             return ProductRowViewModel(id: item.id, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
+        }
+    }
+
+    /// Creates a view model for the `ProductRow` corresponding to an order item.
+    ///
+    func createProductRowViewModel(for item: OrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
+        guard let product = allProducts.first(where: { $0.productID == item.productID }) else {
+            return nil
+        }
+
+        if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: product.attributes)
+            return ProductRowViewModel(id: "\(item.itemID)",
+                                       productVariation: variation,
+                                       name: product.name,
+                                       quantity: item.quantity,
+                                       canChangeQuantity: canChangeQuantity,
+                                       displayMode: .attributes(attributes))
+        } else {
+            return ProductRowViewModel(id: "\(item.itemID)", product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
         }
     }
 
@@ -457,6 +478,7 @@ private extension NewOrderViewModel {
 
         let input = OrderSyncProductInput(product: .product(product), quantity: 1)
         orderSynchronizer.setProduct.send(input)
+        configureProductRowViewModels()
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
     }
@@ -471,6 +493,7 @@ private extension NewOrderViewModel {
 
         let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
         orderSynchronizer.setProduct.send(input)
+        configureProductRowViewModels()
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
     }
@@ -480,7 +503,7 @@ private extension NewOrderViewModel {
     func configureProductRowViewModels() {
         updateProductsResultsController()
         updateProductVariationsResultsController()
-        productRows = orderDetails.items.enumerated().compactMap { index, item in
+        productRows = orderSynchronizer.order.items.compactMap { item in
             guard let productRowViewModel = createProductRowViewModel(for: item, canChangeQuantity: true) else {
                 return nil
             }
@@ -488,12 +511,38 @@ private extension NewOrderViewModel {
             // Observe changes to the product quantity
             productRowViewModel.$quantity
                 .sink { [weak self] newQuantity in
-                    self?.orderDetails.items[index].quantity = newQuantity
+                    guard let self = self else { return }
+                    let newInput = self.createUpdateProductInput(item: item, quantity: newQuantity)
+                    self.orderSynchronizer.setProduct.send(newInput)
                 }
                 .store(in: &cancellables)
 
             return productRowViewModel
         }
+    }
+
+    /// Creates a new product input meant to update an existing input.
+    ///
+    private func createUpdateProductInput(item: OrderItem, quantity: Decimal) -> OrderSyncProductInput {
+        /// Finds the product or productVariation associated with the order item.
+        ///
+        let product: OrderSyncProductInput.ProductType? = {
+            if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+                return .variation(variation)
+            }
+
+            if let product = allProducts.first(where: { $0.productID == item.productID }) {
+                return .product(product)
+            }
+
+            return nil
+        }()
+
+        guard let product = product else {
+            fatalError("A product should exists at this point!")
+        }
+
+        return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity)
     }
 
     /// Updates customer data viewmodel based on order addresses.

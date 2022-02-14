@@ -103,6 +103,9 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertNotEqual(initialInboxNote.name, updatedInboxNote?.name)
         XCTAssertNotEqual(initialInboxNote.title, updatedInboxNote?.title)
         XCTAssertNotEqual(initialInboxNote.content, updatedInboxNote?.content)
+        XCTAssertNotEqual(initialInboxNote.actions.first?.name, updatedInboxNote?.actions?.first?.name)
+        XCTAssertNotEqual(initialInboxNote.actions.first?.label, updatedInboxNote?.actions?.first?.label)
+        XCTAssertNotEqual(initialInboxNote.actions.first?.status, updatedInboxNote?.actions?.first?.status)
     }
 
     func test_loadAllInboxNotes_then_it_returns_error_upon_response_error() {

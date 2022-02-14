@@ -124,30 +124,29 @@ private struct ProductInputTransformer {
     ///
     private static func remove(input: OrderSyncProductInput, from order: Order) -> Order {
         var items = order.items
-        items.removeAll { $0.itemID == input.id.hashValue }
+        items.removeAll { $0.itemID == input.id }
         return order.copy(items: items)
     }
 
     /// Creates and order item by using the `input.id` as the `item.itemID`.
     ///
     private static func createOrderItem(using input: OrderSyncProductInput) -> OrderItem {
-        let quantity = Decimal(input.quantity)
         let parameters: OrderItemParameters = {
             switch input.product {
             case .product(let product):
                 let price = Decimal(string: product.price) ?? .zero
-                return OrderItemParameters(quantity: quantity, price: price, productID: product.productID, variationID: nil)
+                return OrderItemParameters(quantity: input.quantity, price: price, productID: product.productID, variationID: nil)
             case .variation(let variation):
                 let price = Decimal(string: variation.price) ?? .zero
-                return OrderItemParameters(quantity: quantity, price: price, productID: variation.productID, variationID: variation.productVariationID)
+                return OrderItemParameters(quantity: input.quantity, price: price, productID: variation.productID, variationID: variation.productVariationID)
             }
         }()
 
-        return OrderItem(itemID: Int64(input.id.hashValue),
+        return OrderItem(itemID: input.id,
                          name: "",
                          productID: parameters.productID,
                          variationID: parameters.variationID ?? 0,
-                         quantity: quantity,
+                         quantity: parameters.quantity,
                          price: parameters.price as NSDecimalNumber,
                          sku: nil,
                          subtotal: parameters.subtotal,

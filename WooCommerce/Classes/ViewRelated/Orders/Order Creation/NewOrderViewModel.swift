@@ -387,10 +387,17 @@ extension NewOrderViewModel {
         let itemsTotal: String
         let orderTotal: String
 
+        let shouldShowShippingTotal: Bool
+        let shippingTotal: String
+
         init(itemsTotal: String = "",
+             shouldShowShippingTotal: Bool = false,
+             shippingTotal: String = "",
              orderTotal: String = "",
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? ""
+            self.shouldShowShippingTotal = shouldShowShippingTotal
+            self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? ""
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? ""
         }
     }
@@ -493,10 +500,15 @@ private extension NewOrderViewModel {
                     .map { $0.orderItem.subtotal }
                     .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
                     .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
-                    .stringValue
 
-                // For now, the order total is the same as the items total
-                return PaymentDataViewModel(itemsTotal: itemsTotal, orderTotal: itemsTotal, currencyFormatter: self.currencyFormatter)
+                let shippingTotal = NSDecimalNumber(value: 0)
+                let orderTotal = itemsTotal.adding(shippingTotal)
+
+                return PaymentDataViewModel(itemsTotal: itemsTotal.stringValue,
+                                            shouldShowShippingTotal: false,
+                                            shippingTotal: shippingTotal.stringValue,
+                                            orderTotal: orderTotal.stringValue,
+                                            currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)
     }

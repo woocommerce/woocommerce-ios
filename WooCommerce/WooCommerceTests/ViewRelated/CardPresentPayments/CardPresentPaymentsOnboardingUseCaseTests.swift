@@ -31,10 +31,12 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
             }
         }
         stores.sessionManager.setStoreId(sampleSiteID)
-        ServiceLocator.setSelectedSiteSettings(.init(stores: stores, storageManager: storageManager))
+        ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings(stores: stores, storageManager: storageManager))
     }
 
     override func tearDownWithError() throws {
+        ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings())
+        storageManager.reset()
         storageManager = nil
         stores = nil
         try super.tearDownWithError()

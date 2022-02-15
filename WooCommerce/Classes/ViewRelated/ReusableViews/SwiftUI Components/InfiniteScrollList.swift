@@ -31,7 +31,7 @@ struct InfiniteScrollList<Content: View>: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack {
+            LazyVStack(spacing: 0) {
                 listContent
 
                 InfiniteScrollIndicator(showContent: isLoading)

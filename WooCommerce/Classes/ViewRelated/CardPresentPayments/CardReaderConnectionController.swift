@@ -428,14 +428,20 @@ private extension CardReaderConnectionController {
             return { [weak self] in
                 self?.state = .cancel
                 ServiceLocator.analytics.track(
-                    event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareRequiredUpdateCancelTapped(forGatewayID: self?.gatewayID)
+                    event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateCancelTapped(
+                        forGatewayID: self?.gatewayID,
+                        updateType: .required
+                    )
                 )
                 cancelable.cancel { result in
                     if case .failure(let error) = result {
                         DDLogError("💳 Error: canceling software update \(error)")
                     } else {
                         ServiceLocator.analytics.track(
-                            event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareRequiredUpdateCanceled(forGatewayID: self?.gatewayID)
+                            event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateCanceled(
+                                forGatewayID: self?.gatewayID,
+                                updateType: .required
+                            )
                         )
                     }
                 }

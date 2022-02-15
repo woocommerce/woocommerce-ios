@@ -548,6 +548,7 @@ extension WooAnalyticsEvent {
             static let batteryLevel = "battery_level"
             static let gatewayID = "plugin_slug"
             static let error = "error"
+            static let softwareUpdateType = "software_update_type"
         }
 
         static let unknownGatewayID = "unknown"
@@ -556,10 +557,142 @@ extension WooAnalyticsEvent {
             forGatewayID ?? unknownGatewayID
         }
 
+        /// Tracked when card reader discovery fails
+        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        /// `error` is the error to be included in the event properties.
+        ///
+        static func cardReaderDiscoveryFailed(forGatewayID: String?, error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderDiscoveryFailed,
+                              properties: [
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.error: error.localizedDescription
+                              ]
+            )
+        }
+
+        /// Tracked when connecting to a card reader
+        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        /// `batteryLevel` is the battery level (if available) to be included in the event properties in Tracks, e.g. 0.75 = 75%.
+        ///
+        static func cardReaderConnectionSuccess(forGatewayID: String?, batteryLevel: Float?) -> WooAnalyticsEvent {
+            var properties = [
+                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+            ]
+
+            if let batteryLevel = batteryLevel {
+                properties[Keys.batteryLevel] = String(format: "%.2f", batteryLevel)
+            }
+
+            return WooAnalyticsEvent(statName: .cardReaderConnectionSuccess, properties: properties)
+        }
+
+        /// Tracked when connecting to a card reader fails
+        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        /// `error` is the error to be included in the event properties.
+        ///
+        static func cardReaderConnectionFailed(forGatewayID: String?, error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderConnectionFailed,
+                              properties: [
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.error: error.localizedDescription
+                              ]
+            )
+        }
+
+
+        /// Tracked when disconnecting from a card reader
+        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///
+        static func cardReaderDisconnectTapped(forGatewayID: String?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderDisconnectTapped,
+                              properties: [
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                              ]
+            )
+        }
+        /// Tracksed when a software update is initiated manually
+        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        /// `updateType` is `.required` or `.optional`
+        ///
+        static func cardReaderSoftwareUpdateTapped(forGatewayID: String?, updateType: SoftwareUpdateTypeProperty) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateTapped,
+                              properties: [
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.softwareUpdateType: updateType.rawValue
+                              ]
+            )
+        }
+
+        /// Tracked when a card reader update starts
+        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        /// `updateType` is `.required` or `.optional`
+        ///
+        static func cardReaderSoftwareUpdateStarted(forGatewayID: String?, updateType: SoftwareUpdateTypeProperty) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateStarted,
+                              properties: [
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.softwareUpdateType: updateType.rawValue
+                              ]
+            )
+        }
+
+        /// Tracked when a card reader update fails
+        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        /// `updateType` is `.required` or `.optional`
+        /// `error` is the error to be included in the event properties.
+        ///
+        static func cardReaderSoftwareUpdateFailed(
+            forGatewayID: String?, updateType: SoftwareUpdateTypeProperty, error: Error
+        ) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateFailed,
+                              properties: [
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.softwareUpdateType: updateType.rawValue,
+                                Keys.error: error.localizedDescription
+                              ]
+            )
+        }
+
+        /// Tracksed when a software update completes successfully
+        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        /// `updateType` is `.required` or `.optional`
+        ///
+        static func cardReaderSoftwareUpdateSuccess(forGatewayID: String?, updateType: SoftwareUpdateTypeProperty) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateSuccess,
+                              properties: [
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.softwareUpdateType: updateType.rawValue
+                              ]
+            )
+        }
+
+        /// Tracked when an update cancel button is tapped
+        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///
+        static func cardReaderSoftwareUpdateCancelTapped(forGatewayID: String?, updateType: SoftwareUpdateTypeProperty) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateCancelTapped,
+                              properties: [
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.softwareUpdateType: updateType.rawValue
+                              ]
+            )
+        }
+
+        /// Tracked when an update is cancelled
+        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///
+        static func cardReaderSoftwareUpdateCanceled(forGatewayID: String?, updateType: SoftwareUpdateTypeProperty) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateCanceled,
+                              properties: [
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.softwareUpdateType: updateType.rawValue
+                              ]
+            )
+        }
 
         /// Tracked when the user taps to collect a payment
         /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        /// 
+        ///
         static func collectPaymentTapped(forGatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentTapped,
                               properties: [
@@ -599,72 +732,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentSuccess,
                               properties: [
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
-                              ]
-            )
-        }
-
-        /// Tracked when card reader discovery fails
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        /// `error` is the error to be included in the event properties.
-        ///
-        static func cardReaderDiscoveryFailed(forGatewayID: String?, error: Error) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .cardReaderDiscoveryFailed,
-                              properties: [
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
-                                Keys.error: error.localizedDescription
-                              ]
-            )
-        }
-
-        /// Tracked when a required update cancel button is tapped
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        ///
-        static func cardReaderSoftwareRequiredUpdateCancelTapped(forGatewayID: String?) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateCancelTapped,
-                              properties: [
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
-                                SoftwareUpdateTypeProperty.name: SoftwareUpdateTypeProperty.required.rawValue
-                              ]
-            )
-        }
-
-        /// Tracked when a required update is cancelled
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        ///
-        static func cardReaderSoftwareRequiredUpdateCanceled(forGatewayID: String?) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateCanceled,
-                              properties: [
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
-                                SoftwareUpdateTypeProperty.name: SoftwareUpdateTypeProperty.required.rawValue
-                              ]
-            )
-        }
-
-        /// Tracked when connecting to a card reader
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        /// `batteryLevel` is the battery level (if available) to be included in the event properties in Tracks, e.g. 0.75 = 75%.
-        ///
-        static func cardReaderConnectionSuccess(forGatewayID: String?, batteryLevel: Float?) -> WooAnalyticsEvent {
-            var properties = [
-                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
-            ]
-
-            if let batteryLevel = batteryLevel {
-                properties[Keys.batteryLevel] = String(format: "%.2f", batteryLevel)
-            }
-
-            return WooAnalyticsEvent(statName: .cardReaderConnectionSuccess, properties: properties)
-        }
-
-        /// Tracked when connecting to a card reader fails
-        /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        /// `error` is the error to be included in the event properties.
-        ///
-        static func cardReaderConnectionFailed(forGatewayID: String?, error: Error) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .cardReaderConnectionFailed,
-                              properties: [
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
-                                Keys.error: error.localizedDescription
                               ]
             )
         }

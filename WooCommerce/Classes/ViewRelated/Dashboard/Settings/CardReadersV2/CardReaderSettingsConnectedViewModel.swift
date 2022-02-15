@@ -39,6 +39,10 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         return CardReaderSettingsDataSource(siteID: siteID)
     }()
 
+    var updateType: SoftwareUpdateTypeProperty {
+        optionalReaderUpdateAvailable ? .optional : .required
+    }
+
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
          knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil,
          delayToShowUpdateSuccessMessage: DispatchTimeInterval = .seconds(1)) {
@@ -103,7 +107,11 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                         self.readerUpdateError = nil
                         self.softwareUpdateCancelable = cancelable
                         self.readerUpdateProgress = 0
-                        self.trackUpdate(.cardReaderSoftwareUpdateStarted)
+                        ServiceLocator.analytics.track(
+                            event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateStarted(
+                                forGatewayID: self.connectedGatewayID, updateType: self.updateType
+                            )
+                        )
                     case .installing(progress: let progress):
                         self.readerUpdateProgress = progress
                     case .failed(error: let error):
@@ -113,12 +121,20 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                             break
                         }
                         self.readerUpdateError = error
-                        self.trackUpdate(.cardReaderSoftwareUpdateFailed, error: error)
+                        ServiceLocator.analytics.track(
+                            event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateFailed(
+                                forGatewayID: self.connectedGatewayID, updateType: self.updateType, error: error
+                            )
+                        )
                         self.completeCardReaderUpdate(success: false)
                     case .completed:
                         self.readerUpdateProgress = 1
                         self.softwareUpdateCancelable = nil
-                        self.trackUpdate(.cardReaderSoftwareUpdateSuccess)
+                        ServiceLocator.analytics.track(
+                            event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateSuccess(
+                                forGatewayID: self.connectedGatewayID, updateType: self.updateType
+                            )
+                        )
                         // If we were installing a software update, introduce a small delay so the user can
                         // actually see a success message showing the installation was complete
                         DispatchQueue.main.asyncAfter(deadline: .now() + self.delayToShowUpdateSuccessMessage) { [weak self] in
@@ -170,7 +186,11 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// Allows the view controller to kick off a card reader update
     ///
     func startCardReaderUpdate() {
-        trackUpdate(.cardReaderSoftwareUpdateTapped)
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateTapped(
+                forGatewayID: self.connectedGatewayID, updateType: self.updateType
+            )
+        )
         let action = CardPresentPaymentAction.startCardReaderUpdate
         ServiceLocator.stores.dispatch(action)
     }
@@ -181,16 +201,24 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
             return nil
         }
         return { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.trackUpdate(.cardReaderSoftwareUpdateCancelTapped)
+            guard let self = self else { return }
+            ServiceLocator.analytics.track(
+                event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateCancelTapped(
+                    forGatewayID: self.connectedGatewayID, updateType: self.updateType
+                )
+            )
             self.softwareUpdateCancelable?.cancel(completion: { [weak self] result in
+                guard let self = self else { return }
+
                 if case .failure(let error) = result {
                     DDLogError("💳 Error: canceling software update \(error)")
                 } else {
-                    self?.trackUpdate(.cardReaderSoftwareUpdateCanceled)
-                    self?.completeCardReaderUpdate(success: false)
+                    ServiceLocator.analytics.track(
+                        event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateCanceled(
+                            forGatewayID: self.connectedGatewayID, updateType: self.updateType
+                        )
+                    )
+                    self.completeCardReaderUpdate(success: false)
                 }
             })
         }
@@ -211,7 +239,11 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// Dispatch a request to disconnect from a reader
     ///
     func disconnectReader() {
-        trackOther(.cardReaderDisconnectTapped)
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.InPersonPayments.cardReaderDisconnectTapped(
+                forGatewayID: self.connectedGatewayID
+            )
+        )
 
         self.readerDisconnectInProgress = true
         self.didUpdate?()
@@ -251,32 +283,6 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         if didChange {
             didChangeShouldShow?(shouldShow)
         }
-    }
-
-    /// Track an event related to software update. Adds whether it was for an optional or a required update to the tracked properties.
-    /// TODOTODO move details to WooAnalyticsEvent
-    private func trackUpdate(_ stat: WooAnalyticsStat, error: Error? = nil) {
-        let updateType = optionalReaderUpdateAvailable ? SoftwareUpdateTypeProperty.optional : SoftwareUpdateTypeProperty.required
-        ServiceLocator.analytics.track(
-            stat,
-            properties: [
-                SoftwareUpdateTypeProperty.name: updateType.rawValue,
-                "plugin_slug": connectedGatewayID ?? "unknown"
-            ],
-            error: error
-        )
-    }
-
-    /// Track an event NOT related to software update
-    /// TODOTODO move details to WooAnalyticsEvent
-    private func trackOther(_ stat: WooAnalyticsStat, error: Error? = nil) {
-        ServiceLocator.analytics.track(
-            stat,
-            properties: [
-                "plugin_slug": connectedGatewayID ?? "unknown"
-            ],
-            error: error
-        )
     }
 }
 

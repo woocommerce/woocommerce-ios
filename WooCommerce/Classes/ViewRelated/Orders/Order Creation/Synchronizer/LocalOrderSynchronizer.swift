@@ -124,7 +124,7 @@ private struct ProductInputTransformer {
     ///
     private static func remove(input: OrderSyncProductInput, from order: Order) -> Order {
         var items = order.items
-        items.removeAll { $0.itemID == input.id.hashValue }
+        items.removeAll { $0.itemID == input.id }
         return order.copy(items: items)
     }
 
@@ -142,7 +142,7 @@ private struct ProductInputTransformer {
             }
         }()
 
-        return OrderItem(itemID: Int64(input.id.hashValue),
+        return OrderItem(itemID: input.id,
                          name: "",
                          productID: parameters.productID,
                          variationID: parameters.variationID ?? 0,

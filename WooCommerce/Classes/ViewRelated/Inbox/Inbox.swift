@@ -24,7 +24,7 @@ struct Inbox: View {
                         } else {
                             InboxNoteRow(viewModel: rowViewModel)
                         }
-                    }
+                    }.background(Color(.listForeground))
                 }
             case .empty:
                 // TODO: 5954 - update empty state

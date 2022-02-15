@@ -24,6 +24,7 @@ struct AddProductToOrder: View {
                             Divider().frame(height: Constants.dividerHeight)
                         }
                     }
+                                       .background(Color(.listForeground))
                 case .empty:
                     EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
                         .frame(maxHeight: .infinity)

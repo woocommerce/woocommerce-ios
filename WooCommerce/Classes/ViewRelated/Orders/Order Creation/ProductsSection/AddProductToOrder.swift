@@ -13,7 +13,8 @@ struct AddProductToOrder: View {
 
     var body: some View {
         NavigationView {
-            Group {
+            VStack {
+                SearchHeader(filterText: $viewModel.searchTerm, filterPlaceholder: Localization.searchPlaceholder)
                 switch viewModel.syncStatus {
                 case .results:
                     InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
@@ -78,6 +79,7 @@ private extension AddProductToOrder {
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Add Product screen")
         static let emptyStateMessage = NSLocalizedString("No products found",
                                                          comment: "Message displayed if there are no products to display in the Add Product screen")
+        static let searchPlaceholder = NSLocalizedString("Search Products", comment: "Placeholder on the search field to search for a specific product")
     }
 }
 

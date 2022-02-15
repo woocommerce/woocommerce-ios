@@ -994,7 +994,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(newOrderKey, orderValue)
     }
 
-    func test_migrating_from_63_to_64_enables_creating_new_WCPayCharge_withCardPaymentDetails() throws {
+    func test_migrating_from_63_to_64_enables_creating_new_InboxNote() throws {
         // Given
         let sourceContainer = try startPersistentContainer("Model 63")
         let sourceContext = sourceContainer.viewContext
@@ -1003,6 +1003,33 @@ final class MigrationTests: XCTestCase {
 
         // When
         let targetContainer = try migrate(sourceContainer, to: "Model 64")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        XCTAssertEqual(try targetContext.count(entityName: "InboxNote"), 0)
+
+        // Creates a `InboxNote`
+        let inboxNote = insertInboxNote(to: targetContext)
+
+        // Creates an `InboxAction` and adds it to `InboxNote`.
+        let inboxAction = insertInboxAction(to: targetContext)
+        inboxNote.setValue(NSSet(array: [inboxAction]), forKey: "actions")
+        try targetContext.save()
+
+        XCTAssertNotNil(inboxNote.entity.relationshipsByName["actions"])
+        XCTAssertEqual(try targetContext.count(entityName: "InboxNote"), 1)
+        XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: InboxNote.self)), inboxNote)
+    }
+
+    func test_migrating_from_64_to_65_enables_creating_new_WCPayCharge_withCardPaymentDetails() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 64")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 65")
 
         // Then
         let targetContext = targetContainer.viewContext
@@ -1023,15 +1050,15 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(wcPayCharge.value(forKey: "cardDetails") as? WCPayCardPaymentDetails, payment)
     }
 
-    func test_migrating_from_63_to_64_enables_creating_new_WCPayCharge_withCardPresentPaymentDetails() throws {
+    func test_migrating_from_64_to_65_enables_creating_new_WCPayCharge_withCardPresentPaymentDetails() throws {
         // Given
-        let sourceContainer = try startPersistentContainer("Model 63")
+        let sourceContainer = try startPersistentContainer("Model 64")
         let sourceContext = sourceContainer.viewContext
 
         try sourceContext.save()
 
         // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 64")
+        let targetContainer = try migrate(sourceContainer, to: "Model 65")
 
         // Then
         let targetContext = targetContainer.viewContext
@@ -1198,6 +1225,32 @@ private extension MigrationTests {
     @discardableResult
     func insertCouponSearchResult(to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "CouponSearchResult", properties: ["keyword": "test"])
+    }
+
+    @discardableResult
+    func insertInboxNote(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "InboxNote", properties: [
+            "id": 123123,
+            "name": "wc-admin-wc-helper-subscription",
+            "type": "warning",
+            "status": "unactioned",
+            "title": "WooCommerce Bookings subscription expired",
+            "content": "Your subscription expired on October 22nd. Get a new subscription to continue receiving updates and access to support.",
+            "isRemoved": false,
+            "isRead": false,
+            "dateCreated": Date()
+        ])
+    }
+
+    @discardableResult
+    func insertInboxAction(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "InboxAction", properties: [
+            "id": 13329,
+            "name": "renew-subscription",
+            "label": "Renew Subscription",
+            "status": "actioned",
+            "url": "https://woocommerce.com/products/woocommerce-bookings/"
+        ])
     }
 
     @discardableResult

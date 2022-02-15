@@ -19,6 +19,12 @@ struct MockProductReviewActionHandler: MockActionHandler {
 
     func synchronizeProductReviews(siteId: Int64, onCompletion: @escaping (Error?) -> ()) {
         let reviews = objectGraph.reviews(forSiteId: siteId)
+
+        // Deletes previous product reviews before saving new ones to avoid duplicate reviews after multiple runs.
+        let storage = storageManager.viewStorage
+        storage.deleteAllObjects(ofType: StorageProductReview.self)
+        storage.saveIfNeeded()
+
         save(mocks: reviews, as: StorageProductReview.self, onCompletion: onCompletion)
     }
 }

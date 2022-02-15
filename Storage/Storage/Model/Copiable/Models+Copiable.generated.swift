@@ -13,6 +13,7 @@ extension GeneralAppSettings {
         isStripeInPersonPaymentsSwitchEnabled: CopiableProp<Bool> = .copy,
         isCanadaInPersonPaymentsSwitchEnabled: CopiableProp<Bool> = .copy,
         isProductSKUInputScannerSwitchEnabled: CopiableProp<Bool> = .copy,
+        isCouponManagementSwitchEnabled: CopiableProp<Bool> = .copy,
         knownCardReaders: CopiableProp<[String]> = .copy,
         lastEligibilityErrorInfo: NullableCopiableProp<EligibilityErrorInfo> = .copy,
         lastJetpackBenefitsBannerDismissedTime: NullableCopiableProp<Date> = .copy
@@ -24,6 +25,7 @@ extension GeneralAppSettings {
         let isStripeInPersonPaymentsSwitchEnabled = isStripeInPersonPaymentsSwitchEnabled ?? self.isStripeInPersonPaymentsSwitchEnabled
         let isCanadaInPersonPaymentsSwitchEnabled = isCanadaInPersonPaymentsSwitchEnabled ?? self.isCanadaInPersonPaymentsSwitchEnabled
         let isProductSKUInputScannerSwitchEnabled = isProductSKUInputScannerSwitchEnabled ?? self.isProductSKUInputScannerSwitchEnabled
+        let isCouponManagementSwitchEnabled = isCouponManagementSwitchEnabled ?? self.isCouponManagementSwitchEnabled
         let knownCardReaders = knownCardReaders ?? self.knownCardReaders
         let lastEligibilityErrorInfo = lastEligibilityErrorInfo ?? self.lastEligibilityErrorInfo
         let lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime ?? self.lastJetpackBenefitsBannerDismissedTime
@@ -36,6 +38,7 @@ extension GeneralAppSettings {
             isStripeInPersonPaymentsSwitchEnabled: isStripeInPersonPaymentsSwitchEnabled,
             isCanadaInPersonPaymentsSwitchEnabled: isCanadaInPersonPaymentsSwitchEnabled,
             isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
+            isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime

@@ -273,7 +273,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadCouponReport(for: self.sampleSiteID, couponID: 571) { (result) in
+            remote.loadCouponReport(for: self.sampleSiteID, couponID: 571, from: Date()) { (result) in
                 promise(result)
             }
         }
@@ -296,7 +296,7 @@ final class CouponsRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadCouponReport(for: self.sampleSiteID, couponID: 571) { (result) in
+            remote.loadCouponReport(for: self.sampleSiteID, couponID: 571, from: Date()) { (result) in
                 promise(result)
             }
         }

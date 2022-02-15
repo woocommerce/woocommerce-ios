@@ -67,7 +67,7 @@ private extension OrderStatusFilterViewController {
     }
 
     func configureRows() {
-        rows = [.any, .pending, .processing, .onHold, .failed, .cancelled, .completed, .refunded]
+        rows = Row.allCases
     }
 
     func selectOrDelesectRow(_ row: Row) {
@@ -125,14 +125,16 @@ extension OrderStatusFilterViewController: UITableViewDelegate {
 //
 private extension OrderStatusFilterViewController {
     enum Row: CaseIterable {
+        // The order of the statuses declaration is according to the Order's lifecycle
+        // and it is used to determine the user facing display order using the synthesized allCases
         case any
         case pending
         case processing
         case onHold
-        case failed
-        case cancelled
         case completed
+        case cancelled
         case refunded
+        case failed
 
         var status: OrderStatusEnum? {
             switch self {

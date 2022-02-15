@@ -1,6 +1,5 @@
 import Foundation
 import Storage
-import Networking
 
 extension Storage.WCPayCardPaymentDetails: ReadOnlyConvertible {
     public func update(with paymentDetails: Yosemite.WCPayCardPaymentDetails) {

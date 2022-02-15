@@ -282,6 +282,36 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertTrue(receivedError)
     }
 
+    func test_view_model_attempts_error_notice_presentation_when_submitting_invalid_email() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
+                                                       totalWithTaxes: "1.0",
+                                                       taxAmount: "0.0",
+                                                       taxLines: [],
+                                                       presentNoticeSubject: noticeSubject,
+                                                       stores: mockStores)
+        viewModel.email = "invalid"
+
+        // When
+        let receivedError: Bool = waitFor { promise in
+            noticeSubject.sink { intent in
+                switch intent {
+                case .error:
+                    promise(true)
+                case .completed, .created:
+                    promise(false)
+                }
+            }
+            .store(in: &self.subscriptions)
+            viewModel.updateOrder()
+        }
+
+        // Then
+        XCTAssertTrue(receivedError)
+    }
+
     func test_when_order_is_updated_navigation_to_payments_method_is_triggered() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)

@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Combine
 import Experiments
+import class WordPressShared.EmailFormatValidator
 
 /// `ViewModel` to drive the content of the `SimplePaymentsSummary` view.
 ///
@@ -246,10 +247,15 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     /// Updates the order remotely with the information entered by the merchant.
     ///
     func updateOrder() {
-        showLoadingIndicator = true
-
         // Clean any whitespace as it is not allowed by the remote endpoint
         email = email.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // Perform local email validation
+        guard email.isEmpty || EmailFormatValidator.validate(string: email) else {
+            return presentNoticeSubject.send(.error(Localization.invalidEmail))
+        }
+
+        showLoadingIndicator = true
 
         // Don't send empty emails as older WC stores can't handle them.
         let action = OrderAction.updateSimplePaymentsOrder(siteID: siteID,
@@ -315,6 +321,7 @@ private extension SimplePaymentsSummaryViewModel {
     enum Localization {
         static let updateError = NSLocalizedString("There was an error updating the order",
                                                    comment: "Notice text after failing to update a simple payments order.")
+        static let invalidEmail = NSLocalizedString("Please enter a valid email address.", comment: "Notice text when the merchant enters an invalid email")
         static let tax = NSLocalizedString("Tax",
                                              comment: "Tax label for the tax detail row.")
 

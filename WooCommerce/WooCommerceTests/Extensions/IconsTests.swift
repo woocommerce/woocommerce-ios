@@ -180,6 +180,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.houseOutlinedImage)
     }
 
+    func test_mailbox_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.mailboxImage)
+    }
+
     func testStoreImageIsNotNil() {
         XCTAssertNotNil(UIImage.storeImage)
     }

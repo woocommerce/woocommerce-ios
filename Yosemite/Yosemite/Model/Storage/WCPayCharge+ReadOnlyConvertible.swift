@@ -1,6 +1,5 @@
 import Foundation
 import Storage
-import Networking
 
 // MARK: - Storage.WCPayCharge: ReadOnlyConvertible
 //

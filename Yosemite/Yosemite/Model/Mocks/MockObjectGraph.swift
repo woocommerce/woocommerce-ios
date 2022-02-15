@@ -274,30 +274,22 @@ extension MockObjectGraph {
 extension MockObjectGraph {
 
     static func createInterval(
-        monthsAgo: Int,
+        date: Date,
         orderCount: Int,
         revenue: Decimal
     ) -> OrderStatsV4Interval {
-
-        let startDate = Date().subtractingMonths(monthsAgo).monthStart
-
-        return OrderStatsV4Interval(
-            interval: String(startDate.month),
-            dateStart: startDate.asOrderStatsString,
-            dateEnd: startDate.monthEnd.asOrderStatsString,
+        OrderStatsV4Interval(
+            interval: String(date.month),
+            dateStart: date.asOrderStatsString,
+            dateEnd: date.monthEnd.asOrderStatsString,
             subtotals: createTotal(orderCount: orderCount, revenue: revenue)
         )
     }
 
-    static func createVisitStatsItem(granularity: StatGranularity, ago count: Int, visitors: Int) -> SiteVisitStatsItem {
+    static func createVisitStatsItem(granularity: StatGranularity, periodDate: Date, visitors: Int) -> SiteVisitStatsItem {
         switch granularity {
             case .month:
-                let period = Date().subtractingMonths(count).monthStart
-                return SiteVisitStatsItem(period: period.asVisitStatsMonthString, visitors: visitors)
-            case .year:
-                let period = Date().subtracingYears(count).yearStart
-                let item = SiteVisitStatsItem(period: period.asVisitStatsMonthString, visitors: visitors)
-                return item
+                return SiteVisitStatsItem(period: periodDate.asVisitStatsMonthString, visitors: visitors)
             default:
                 fatalError("Not implemented yet")
         }

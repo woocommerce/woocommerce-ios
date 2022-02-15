@@ -64,8 +64,8 @@ public final class CouponStore: Store {
             updateCoupon(coupon, onCompletion: onCompletion)
         case .createCoupon(let coupon, let onCompletion):
             createCoupon(coupon, onCompletion: onCompletion)
-        case .loadCouponReport(let siteID, let couponID, let onCompletion):
-            loadCouponReport(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
+        case .loadCouponReport(let siteID, let couponID, let startDate, let onCompletion):
+            loadCouponReport(siteID: siteID, couponID: couponID, startDate: startDate, onCompletion: onCompletion)
         case .searchCoupons(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchCoupons(siteID: siteID,
                           keyword: keyword,
@@ -192,11 +192,12 @@ private extension CouponStore {
     ///
     /// - Parameters:
     ///     - siteID: ID of the site that the coupon belongs to.
-    ///     - couponID: ID of the coupon to load analytics report for.
+    ///     - couponID: ID of the coupon to load the analytics report for.
+    ///     - startDate: the start of the date range to load the analytics report for.
     ///     - onCompletion: invoked when the creation finishes.
     ///
-    func loadCouponReport(siteID: Int64, couponID: Int64, onCompletion: @escaping (Result<CouponReport, Error>) -> Void) {
-        remote.loadCouponReport(for: siteID, couponID: couponID, completion: onCompletion)
+    func loadCouponReport(siteID: Int64, couponID: Int64, startDate: Date, onCompletion: @escaping (Result<CouponReport, Error>) -> Void) {
+        remote.loadCouponReport(for: siteID, couponID: couponID, from: startDate, completion: onCompletion)
     }
 
     /// Search coupons from a Site that match a specified keyword.

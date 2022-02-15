@@ -12,6 +12,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isHubMenuOn: Bool
     private let isMyStoreTabUpdatesOn: Bool
     private let isTaxLinesInSimplePaymentsOn: Bool
+    private let isInboxOn: Bool
 
     init(isShippingLabelsM2M3On: Bool = false,
          isInternationalShippingLabelsOn: Bool = false,
@@ -22,7 +23,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          isJetpackConnectionPackageSupportOn: Bool = false,
          isHubMenuOn: Bool = false,
          isMyStoreTabUpdatesOn: Bool = false,
-         isTaxLinesInSimplePaymentsOn: Bool = false) {
+         isTaxLinesInSimplePaymentsOn: Bool = false,
+         isInboxOn: Bool = false) {
         self.isShippingLabelsM2M3On = isShippingLabelsM2M3On
         self.isInternationalShippingLabelsOn = isInternationalShippingLabelsOn
         self.isShippingLabelsPaymentMethodCreationOn = isShippingLabelsPaymentMethodCreationOn
@@ -33,6 +35,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isHubMenuOn = isHubMenuOn
         self.isMyStoreTabUpdatesOn = isMyStoreTabUpdatesOn
         self.isTaxLinesInSimplePaymentsOn = isTaxLinesInSimplePaymentsOn
+        self.isInboxOn = isInboxOn
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -57,6 +60,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isMyStoreTabUpdatesOn
         case .taxLinesInSimplePayments:
             return isTaxLinesInSimplePaymentsOn
+        case .inbox:
+            return isInboxOn
         default:
             return false
         }

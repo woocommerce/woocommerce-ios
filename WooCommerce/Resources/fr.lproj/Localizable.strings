@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-01-19 14:54:03+0000 */
+/* Translation-Revision-Date: 2022-02-02 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -40,6 +40,9 @@
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ en stock";
+
+/* Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
+"%1$@ is in Test Mode" = "%1$@ est en mode test";
 
 /* Review title. Reads as {Review author} left a review */
 "%1$@ left a review" = "%1$@ a laissé un avis";
@@ -160,10 +163,12 @@
 /* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
 "%ld upsell products" = "%ld produits suggérés";
 
-/* Label about one product variation shown on Products tab */
+/* Label about one product variation shown on Products tab
+   Label for one product variation when showing details about a variable product */
 "%ld variation" = "%ld variante";
 
-/* Label about number of variations shown on Products tab */
+/* Label about number of variations shown on Products tab
+   Label for multiple product variations when showing details about a variable product */
 "%ld variations" = "%ld variantes";
 
 /* Product title in Products list when there is no title */
@@ -250,16 +255,17 @@
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "À propos de l’application";
 
+/* Title for the error screen when a Card Present Payments extension is installed but not activated */
+"Activate %1$@" = "Activer %1$@";
+
 /* Action button to activate Jetpack on WP-Admin instead of on app */
 "Activate Jetpack in WP-Admin" = "Activer Jetpack dans WP-Admin";
-
-/* Title for the error screen when WooCommerce Payments is installed but not activated */
-"Activate WooCommerce Payments" = "Activer WooCommerce Payments";
 
 /* Name of the activation Jetpack plugin step */
 "Activating" = "Activation";
 
-/* Application's Active State */
+/* Application's Active State
+   Status of coupons that are active */
 "Active" = "Actif";
 
 /* Title for table view section of active plugins */
@@ -281,6 +287,9 @@
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "Ajouter une catégorie";
+
+/* Title for the action button to add coupon on the coupon list screen. */
+"Add Coupon" = "Ajouter un code promo";
 
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "Ajouter une note client";
@@ -615,6 +624,9 @@
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Gras";
 
+/* The description on the placeholder overlay when there are no coupons on the coupon list screen. */
+"Boost your business by sending customers special offers and discounts." = "Boostez votre activité en envoyant des remises et des offres spéciales à vos clients.";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Boîte";
 
@@ -673,9 +685,6 @@
 /* Card method title on the select payment method screen for simple payments */
 "Card" = "Carte";
 
-/* Navigates to Card Reader manual */
-"Card reader manual" = "Manuel du lecteur de carte";
-
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Transporteur et frais de port";
 
@@ -722,6 +731,9 @@
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Vérifiez vos e-mails !";
+
+/* Navigates to Chipper Card Reader manual */
+"Chipper 2X card reader manual" = "Manuel du lecteur de carte Chipper 2X";
 
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Choisir le format papier";
@@ -1109,7 +1121,7 @@
 "Do not allow" = "Ne pas autoriser";
 
 /* Dialog title that displays the name of a found card reader */
-"Do you want to connect to reader %@?" = "Voulez-vous connecter le lecteur %@ ?";
+"Do you want to connect to reader %1$@?" = "Voulez-vous connecter le lecteur %1$@ ?";
 
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Voulez-vous déplacer ce produit dans la corbeille ?";
@@ -1355,9 +1367,15 @@
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Erreur lors de l’achat de l’étiquette";
 
+/* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
+"Everyone loves a deal" = "On ne dit jamais non aux bonnes affaires";
+
 /* Experimental features navigation title
    Navigates to experimental features screen */
 "Experimental Features" = "Fonctionnalités expérimentales";
+
+/* Status of coupons that are expired */
+"Expired" = "Expiré";
 
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "Produit externe";
@@ -1447,6 +1465,12 @@
 
 /* Text field name in Edit Address Form */
 "First name" = "Prénom";
+
+/* Name of fixed cart discount type */
+"Fixed Cart Discount" = "Remise panier fixe";
+
+/* Name of fixed product discount type */
+"Fixed Product Discount" = "Remise produit fixe";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new blogs." = "Suivez vos sites préférés et découvrez de nouveaux blogs.";
@@ -1605,9 +1629,6 @@
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Comment nous améliorer ?";
-
-/* Navigation bar title of hub menu view */
-"Hub Menu" = "Menu principal";
 
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "J’aime";
@@ -2015,9 +2036,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Marquer cette commande comme terminée et informer le client";
 
-/* The details on the placeholder overlay when there are no coupons on the coupon management list */
-"Market your products by adding a coupon to offer your customers a discount." = "Commercialisez vos produits en ajoutant un code promo pour offrir une réduction à vos clients.";
-
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Le média n’a pas de fichier associé à téléverser.";
 
@@ -2143,14 +2161,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No activity this period" = "Aucune activité sur cette période";
 
 /* Order details > customer info > billing information. This is where the address would normally display.
-   Order details > customer info > shipping details. This is where the address would normally display. */
+   Order details > customer info > shipping details. This is where the address would normally display. - Placeholder for empty address in order customer data */
 "No address specified." = "Aucune adresse spécifiée.";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "Aucune connexion";
-
-/* The text on the placeholder overlay when there are no coupons on the coupon management list */
-"No coupons yet" = "Pas encore de codes promo";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Aucune donnée disponible";
@@ -2172,6 +2187,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Aucun prix défini";
+
+/* Message displayed if there are no product variations for a product. */
+"No product variations found" = "Aucune variante du produit trouvée";
 
 /* Message displayed if there are no products to display in the Add Product screen */
 "No products found" = "Aucun produit trouvé";
@@ -2354,8 +2372,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "Emballage d’origine";
 
-/* My Store > Settings > Other app section
-   Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
+/* Generic name of non-default discount types
+   My Store > Settings > Other app section - Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Autre";
 
 /* Display label for the product's inventory stock status */
@@ -2451,6 +2469,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's pending status */
 "Pending review" = "En attente de relecture";
 
+/* Name of percentage discount type */
+"Percentage Discount" = "Remise en pourcentage";
+
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
 "Phone" = "Téléphone";
@@ -2541,6 +2562,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Veuillez sélectionner un colis";
+
+/* Title for the error screen when there is more than one extension active. */
+"Please select an extension" = "Veuillez sélectionner une extension";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Réessayez plus tard ou contactez-nous et nous vous aiderons avec plaisir !";
@@ -2822,14 +2846,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the view containing a receipt preview */
 "Receipt" = "Reçu";
 
-/* Button to reload plugin data after activating the WooCommerce Payments plugin */
+/* Button to reload plugin data after activating a Card Present Payments extension */
 "Refresh After Activating" = "Rafraîchir après l’activation";
 
 /* Button to reload plugin data after installing the WooCommerce Payments plugin */
 "Refresh After Installing" = "Rafraîchir après l’installation";
 
-/* Button to reload plugin data after updating the WooCommerce Payments plugin
-   Button to reload plugin data after updating the WooCommerce Payments plugin settings */
+/* Button to reload plugin data after updating a Card Present Payments extension plugin
+   Button to reload plugin data after updating a card present payments plugin settings */
 "Refresh After Updating" = "Rafraîchir après la mise à jour";
 
 /* The title of the button to confirm the refund. */
@@ -3121,6 +3145,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "Sélectionner la date de fin";
+
+/* Button to select the active payment processor plugin */
+"Select extension in Store Admin" = "Sélectionner une extension sur la page d’administration de la boutique";
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Sélectionner le style de paragraphe";
@@ -3460,6 +3487,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Barrer";
 
+/* Navigates to Stripe M2 Card Reader manual */
+"Stripe M2 card reader manual" = "Manuel du lecteur de carte Stripe M2";
+
 /* Display label for subscription product type. */
 "Subscription" = "Abonnement";
 
@@ -3678,6 +3708,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "That username is not allowed." = "Cet identifiant n’est pas autorisé.";
 
+/* Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
+"The %1$@ extension cannot be in test mode for In-Person Payments. Please disable test mode." = "L’extension %1$@ ne peut pas être en mode test pour les paiements en personne. Veuillez désactiver le mode test.";
+
+/* Error message when a Card Present Payments extension is not activated */
+"The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "L’extension %1$@ est installée sur votre boutique, mais elle n’est pas activée. Veuillez l’activer afin d’accepter les paiements en personne";
+
+/* Error message when a Card Present Payments extension is installed but the version is not supported */
+"The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "L’extension %1$@ est installée sur votre boutique, mais doit être mise à jour pour les paiements en personne. Veuillez la mettre à jour vers la version la plus récente.";
+
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Le compte Google « %@ » ne correspond pas avec le compte WordPress.com.";
 
@@ -3686,15 +3725,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "L’URL ne contient pas d’hôte valide.";
-
-/* Error message when WooCommerce Payments is in test mode on a live site */
-"The WooCommerce Payments extension cannot be in test mode for In-Person Payments. Please disable test mode." = "L’extension WooCommerce Payments ne peut pas être en mode test pour les paiements en personne. Veuillez désactiver le mode test.";
-
-/* Error message when WooCommerce Payments is not activated */
-"The WooCommerce Payments extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "L’extension WooCommerce Payments est installée sur votre boutique, mais elle n’est pas activée. Veuillez l’activer afin d’accepter les paiements en personne";
-
-/* Error message when WooCommerce Payments is installed but the version is not supported */
-"The WooCommerce Payments extension is installed on your store, but needs to be updated for In-Person Payments. Please update WooCommerce Payments to the most recent version." = "L’extension WooCommerce Payments est installée sur votre boutique, mais doit être mise à jour pour les paiements en personne. Veuillez mettre à jour WooCommerce Payments vers la version la plus récente.";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "Impossible de supprimer l’attribut.";
@@ -4118,8 +4148,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the review's unspam status */
 "Unspam" = "Sain";
 
-/* Title for the error screen when the installed version of WooCommerce Payments is unsupported */
-"Unsupported WooCommerce Payments version" = "Version de WooCommerce Payments non prise en charge";
+/* Title for the error screen when the installed version of a Card Present Payments extension is unsupported */
+"Unsupported %1$@ version" = "Version %1$@ non prise en charge";
 
 /* Display label for the review's untrash status */
 "Untrash" = "Récupérer";
@@ -4260,6 +4290,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Displays the connected reader software version */
 "Version: %1$@" = "Version : %1$@";
 
+/* Action title in an in-app notification to view more details. */
+"View" = "Afficher";
+
 /* Cell title on the beta features screen to enable the order add-ons feature
    Title of the button on the order detail item to navigate to add-ons - Title of the button on the order details product list item to navigate to add-ons */
 "View Add-Ons" = "Voir les modules";
@@ -4358,7 +4391,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We couldn’t update your reader’s software" = "Nous n’avons pas pu mettre à jour le logiciel de votre lecteur";
 
 /* Title for the error screen when WooCommerce Payments is not supported in a specific country */
-"We don’t support In-Person Payments in %@" = "Nous ne prenons pas en charge les paiements en personne en %@";
+"We don’t support In-Person Payments in %1$@" = "Nous ne prenons pas en charge les paiements en personne dans le pays suivant : %1$@.";
 
 /* Title for the error screen when WooCommerce Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments in your country" = "Nous ne prenons pas en charge les paiements en personne dans votre pays";
@@ -4471,9 +4504,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "WooCommerce Discount";
 
-/* Title for the error screen when WooCommerce Payments is in test mode on a live site */
-"WooCommerce Payments is in Test Mode" = "WooCommerce Payments est en mode test";
-
 /* Navigation title of the webview which used by the merchant to update their store address */
 "WooCommerce Settings" = "Réglages WooCommerce";
 
@@ -4532,6 +4562,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Votre compte comporte au moins un prérequis en attente. Veuillez y remédier afin de reprendre les paiements en personne.";
+
+/* Message requesting merchants to select between available payments processors */
+"You must disable either the WooCommerce Payments or the WooCommerce Stripe Gateway extension." = "Vous devez désactiver soit l’extension WooCommerce Payments, soit l’extension WooCommerce Stripe.";
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Vous devez ajouter un mot de passe afin de protéger votre produit par mot de passe";

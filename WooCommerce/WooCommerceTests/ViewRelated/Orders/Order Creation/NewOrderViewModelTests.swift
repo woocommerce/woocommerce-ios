@@ -161,7 +161,6 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product.productID)
 
         // Then
-        let expectedOrderItem = NewOrderViewModel.NewOrderItem(product: product, quantity: 1).orderItem
         XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == sampleProductID }), "Product rows do not contain expected product")
     }
 
@@ -180,10 +179,8 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product.productID)
 
         // Then
-        throw XCTSkip("Test disabled while we enable update quantity support on OrderSynchronizer")
-        let expectedOrderItem = NewOrderViewModel.NewOrderItem(product: product, quantity: 2).orderItem
-        XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }),
-                      "Order details do not contain order item with updated quantity")
+        XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
+        XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
     }
 
     func test_selectOrderItem_selects_expected_order_item() throws {
@@ -355,7 +352,6 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
 
         // When & Then
-        throw XCTSkip("Test disabled while we enable update quantity support on OrderSynchronizer")
         viewModel.productRows[0].incrementQuantity()
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£17.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£17.00")

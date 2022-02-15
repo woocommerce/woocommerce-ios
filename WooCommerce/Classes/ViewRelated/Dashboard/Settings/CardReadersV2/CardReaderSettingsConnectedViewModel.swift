@@ -48,6 +48,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         self.delayToShowUpdateSuccessMessage = delayToShowUpdateSuccessMessage
 
         configureResultsControllers()
+        loadPaymentGatewayAccounts()
         beginObservation()
     }
 
@@ -58,6 +59,21 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
             }
             self.connectedGatewayID = self.dataSource.cardPresentPaymentGatewayID()
         })
+    }
+
+    private func loadPaymentGatewayAccounts() {
+        /// Ask the CardPresentPaymentStore to loadAccounts from the network and update storage
+        ///
+        func loadPaymentGatewayAccounts() {
+            guard let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID else {
+                return
+            }
+
+            /// No need for a completion here. We will be notified of storage changes in `onDidChangeContent`
+            ///
+            let action = CardPresentPaymentAction.loadAccounts(siteID: siteID) {_ in}
+            ServiceLocator.stores.dispatch(action)
+        }
     }
 
     /// Dispatches actions to the CardPresentPaymentStore so that we can monitor changes to the list of
@@ -240,12 +256,25 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// Track an event related to software update. Adds whether it was for an optional or a required update to the tracked properties.
     private func trackUpdate(_ stat: WooAnalyticsStat, error: Error? = nil) {
         let updateType = optionalReaderUpdateAvailable ? SoftwareUpdateTypeProperty.optional : SoftwareUpdateTypeProperty.required
-        ServiceLocator.analytics.track(stat, properties: [SoftwareUpdateTypeProperty.name: updateType.rawValue], error: error)
+        ServiceLocator.analytics.track(
+            stat,
+            properties: [
+                SoftwareUpdateTypeProperty.name: updateType.rawValue,
+                "plugin_slug": connectedGatewayID ?? "unknown"
+            ],
+            error: error
+        )
     }
 
     /// Track an event NOT related to software update
     private func trackOther(_ stat: WooAnalyticsStat, error: Error? = nil) {
-        ServiceLocator.analytics.track(stat, properties: [:], error: error)
+        ServiceLocator.analytics.track(
+            stat,
+            properties: [
+                "plugin_slug": connectedGatewayID ?? "unknown"
+            ],
+            error: error
+        )
     }
 }
 

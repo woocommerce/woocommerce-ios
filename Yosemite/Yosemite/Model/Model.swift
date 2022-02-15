@@ -215,6 +215,7 @@ public typealias StorageSystemPlugin = Storage.SystemPlugin
 public typealias StorageTopEarnerStats = Storage.TopEarnerStats
 public typealias StorageTopEarnerStatsItem = Storage.TopEarnerStatsItem
 public typealias StorageTaxClass = Storage.TaxClass
+public typealias StorageWCPayCharge = Storage.WCPayCharge
 
 // MARK: - Internal ReadOnly Models
 

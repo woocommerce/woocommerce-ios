@@ -505,6 +505,8 @@ extension WooAnalyticsEvent {
     }
 }
 
+
+
 // MARK: - Jetpack Benefits Banner
 //
 extension WooAnalyticsEvent {
@@ -533,5 +535,38 @@ extension WooAnalyticsEvent {
     /// Tracked when the user taps to install Jetpack.
     static func jetpackInstallButtonTapped(source: JetpackInstallSource) -> WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .jetpackInstallButtonTapped, properties: ["source": source.rawValue])
+    }
+}
+
+// MARK: - In Person Payments - Payment Collection
+//
+extension WooAnalyticsEvent {
+    /// Tracked when the user taps to collect a payment
+    /// `gatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+    static func collectPaymentTapped(gatewayID: String) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .collectPaymentTapped, properties: ["plugin_slug": gatewayID])
+    }
+
+    /// Tracked when the payment collection fails
+    /// `gatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+    static func collectPaymentFailed(gatewayID: String, error: Error) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .collectPaymentFailed,
+                          properties: [
+                            "plugin_slug": gatewayID,
+                            "error": error.localizedDescription
+                          ]
+        )
+    }
+
+    /// Tracked when the payment collection is cancelled
+    /// `gatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+    static func collectPaymentCanceled(gatewayID: String) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .collectPaymentCanceled, properties: ["plugin_slug": gatewayID])
+    }
+
+    /// Tracked when payment collection succeeds
+    /// `gatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+    static func collectPaymentSuccess(gatewayID: String) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: ["plugin_slug": gatewayID])
     }
 }

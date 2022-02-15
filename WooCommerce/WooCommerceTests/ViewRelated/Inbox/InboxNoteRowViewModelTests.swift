@@ -27,12 +27,12 @@ final class InboxNoteRowViewModelTests: XCTestCase {
         // Given
         let types = ["error", "warning", "update", "info", "marketing", "survey"]
         // TODO: 5954 - update type icons after design updates
-        let expectedTypeIcons = [Image(uiImage: .infoImage), // error
-                                Image(uiImage: .infoImage), // warning
-                                Image(uiImage: .infoImage), // update
-                                Image(uiImage: .infoImage), // info
-                                Image(systemName: "lightbulb.fill"), // marketing
-                                Image(uiImage: .infoImage) // survey
+        let expectedTypeIcons = [Image(systemName: "exclamationmark.octagon.fill"), // error
+                                 Image(systemName: "exclamationmark.bubble.fill"), // warning
+                                 Image(systemName: "gearshape.fill"), // update
+                                 Image(uiImage: .infoImage), // info
+                                 Image(systemName: "lightbulb.fill"), // marketing
+                                 Image(systemName: "doc.plaintext") // survey
         ]
 
         for (type, expectedTypeIcon) in zip(types, expectedTypeIcons) {

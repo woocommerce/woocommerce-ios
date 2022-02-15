@@ -64,17 +64,17 @@ private extension InboxNoteRowViewModel {
         var image: Image {
             switch self {
             case .error:
-                return Image(uiImage: .infoImage)
+                return Image(systemName: "exclamationmark.octagon.fill")
             case .warning:
-                return Image(uiImage: .infoImage)
+                return Image(systemName: "exclamationmark.bubble.fill")
             case .update:
-                return Image(uiImage: .infoImage)
+                return Image(systemName: "gearshape.fill")
             case .info:
                 return Image(uiImage: .infoImage)
             case .marketing:
                 return Image(systemName: "lightbulb.fill")
             case .survey:
-                return Image(uiImage: .infoImage)
+                return Image(systemName: "doc.plaintext")
             }
         }
     }

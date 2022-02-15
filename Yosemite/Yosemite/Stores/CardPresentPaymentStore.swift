@@ -529,7 +529,7 @@ private extension CardPresentPaymentStore {
             remote.fetchCharge(for: siteID, chargeID: chargeID) { result in
                 switch result {
                 case .success(let charge):
-                    self.upsertChargeInBackground(readonlyCharge: charge)
+                    self.upsertCharge(readonlyCharge: charge)
                     completion(.success(charge))
                 case .failure(let error):
                     if case .noSuchChargeError(_) = WCPayChargesError(underlyingError: error) {
@@ -564,33 +564,50 @@ private extension CardPresentPaymentStore {
         storage.saveIfNeeded()
     }
 
-    func upsertChargeInBackground(readonlyCharge: WCPayCharge) {
+    func upsertCharge(readonlyCharge: WCPayCharge) {
         let storage = storageManager.viewStorage
-        let storageWCPayCharge = storage.loadWCPayCharge(siteID: readonlyCharge.siteID, chargeID: readonlyCharge.id) ??
-        storage.insertNewObject(ofType: Storage.WCPayCharge.self)
+        let storageWCPayCharge = existingOrNewWCPayCharge(siteID: readonlyCharge.siteID, chargeID: readonlyCharge.id, in: storage)
 
         switch readonlyCharge.paymentMethodDetails {
         case .cardPresent(let details):
-            let storageCardPresentDetails = storageWCPayCharge.cardPresentDetails ??
-            storage.insertNewObject(ofType: Storage.WCPayCardPresentPaymentDetails.self)
-            let storageReceiptDetails = storageCardPresentDetails.receipt ?? storage.insertNewObject(ofType: Storage.WCPayCardPresentReceiptDetails.self)
-            storageCardPresentDetails.update(with: details)
-            storageReceiptDetails.update(with: details.receipt)
-            storageCardPresentDetails.receipt = storageReceiptDetails
-            storageWCPayCharge.cardPresentDetails = storageCardPresentDetails
-            storageWCPayCharge.cardDetails = nil
+            upsertCardPresentDetails(details, for: storageWCPayCharge, in: storage)
         case .card(let details):
-            let storageCardDetails = storageWCPayCharge.cardDetails ?? storage.insertNewObject(ofType: Storage.WCPayCardPaymentDetails.self)
-            storageCardDetails.update(with: details)
-            storageWCPayCharge.cardDetails = storageCardDetails
-            storageWCPayCharge.cardPresentDetails = nil
+            upsertCardDetails(details, for: storageWCPayCharge, in: storage)
         case .unknown:
             storageWCPayCharge.cardDetails = nil
             storageWCPayCharge.cardPresentDetails = nil
-            break
         }
 
         storageWCPayCharge.update(with: readonlyCharge)
+    }
+
+    private func existingOrNewWCPayCharge(siteID: Int64, chargeID: String, in storage: StorageType) -> Storage.WCPayCharge {
+        storage.loadWCPayCharge(siteID: siteID, chargeID: chargeID) ?? storage.insertNewObject(ofType: Storage.WCPayCharge.self)
+    }
+
+    private func upsertCardPresentDetails(_ details: WCPayCardPresentPaymentDetails,
+                                          for storageWCPayCharge: Storage.WCPayCharge,
+                                          in storage: StorageType) {
+        let storageCardPresentDetails = storageWCPayCharge.cardPresentDetails ?? storage.insertNewObject(ofType: Storage.WCPayCardPresentPaymentDetails.self)
+        let storageReceiptDetails = storageCardPresentDetails.receipt ?? storage.insertNewObject(ofType: Storage.WCPayCardPresentReceiptDetails.self)
+
+        storageCardPresentDetails.update(with: details)
+        storageReceiptDetails.update(with: details.receipt)
+
+        storageCardPresentDetails.receipt = storageReceiptDetails
+
+        storageWCPayCharge.cardPresentDetails = storageCardPresentDetails
+        storageWCPayCharge.cardDetails = nil
+    }
+
+    private func upsertCardDetails(_ details: WCPayCardPaymentDetails,
+                                   for storageWCPayCharge: Storage.WCPayCharge,
+                                   in storage: StorageType) {
+        let storageCardDetails = storageWCPayCharge.cardDetails ?? storage.insertNewObject(ofType: Storage.WCPayCardPaymentDetails.self)
+        storageCardDetails.update(with: details)
+
+        storageWCPayCharge.cardDetails = storageCardDetails
+        storageWCPayCharge.cardPresentDetails = nil
     }
 
     func deleteCharge(siteID: Int64, chargeID: String) {

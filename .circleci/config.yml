@@ -131,6 +131,12 @@ jobs:
       - run:
           name: Run UI Tests
           command: bundle exec fastlane test_without_building name:UITests device:'<< parameters.device >>' ios-version:'<< parameters.ios-version >>'
+      - store_artifacts:
+          path: output/scan/report.html
+      - store_artifacts:
+          path: output/scan/report.junit
+      - store_test_results:
+          path: output/scan          
       - ios/save-xcodebuild-artifacts:
           result-bundle-path: build/results
       - when:

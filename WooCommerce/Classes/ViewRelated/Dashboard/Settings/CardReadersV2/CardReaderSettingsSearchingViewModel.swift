@@ -41,7 +41,6 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil) {
         self.didChangeShouldShow = didChangeShouldShow
         self.siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
-        print("==== \(siteID)")
         self.knownReaderProvider = knownReaderProvider
 
         configureResultsControllers()

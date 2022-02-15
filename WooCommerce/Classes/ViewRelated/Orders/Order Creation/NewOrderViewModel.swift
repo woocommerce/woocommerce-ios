@@ -275,14 +275,12 @@ extension NewOrderViewModel {
     ///
     struct OrderDetails {
         var items: [NewOrderItem] = []
-        var billingAddress: Address?
-        var shippingAddress: Address?
 
         func toOrder() -> Order {
             OrderFactory.emptyNewOrder.copy(status: .pending,
                                             items: items.map { $0.orderItem },
-                                            billingAddress: billingAddress,
-                                            shippingAddress: shippingAddress)
+                                            billingAddress: nil,
+                                            shippingAddress: nil)
         }
     }
 

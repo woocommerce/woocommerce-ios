@@ -278,16 +278,11 @@ extension NewOrderViewModel {
         var billingAddress: Address?
         var shippingAddress: Address?
 
-        /// Used to create `Order` and check if order details have changed from empty/default values.
-        /// Required because `Order` has `Date` properties that have to be the same to be Equatable.
-        ///
-        let emptyOrder = Order.empty
-
         func toOrder() -> Order {
-            emptyOrder.copy(status: .pending,
-                            items: items.map { $0.orderItem },
-                            billingAddress: billingAddress,
-                            shippingAddress: shippingAddress)
+            OrderFactory.emptyNewOrder.copy(status: .pending,
+                                            items: items.map { $0.orderItem },
+                                            billingAddress: billingAddress,
+                                            shippingAddress: shippingAddress)
         }
     }
 
@@ -412,13 +407,13 @@ private extension NewOrderViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func configureNavigationTrailingItem() {
-        Publishers.CombineLatest($orderDetails, $performingNetworkRequest)
-            .map { orderDetails, performingNetworkRequest -> NavigationItem in
+        Publishers.CombineLatest(orderSynchronizer.orderPublisher, $performingNetworkRequest)
+            .map { order, performingNetworkRequest -> NavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
 
-                guard orderDetails.emptyOrder != orderDetails.toOrder() else {
+                guard OrderFactory.emptyNewOrder != order else {
                     return .none
                 }
 

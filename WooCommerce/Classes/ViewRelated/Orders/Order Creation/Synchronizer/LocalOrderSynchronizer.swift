@@ -14,7 +14,7 @@ final class LocalOrderSynchronizer: OrderSynchronizer {
         $state
     }
 
-    @Published private(set) var order: Order = Order.empty
+    @Published private(set) var order: Order = OrderFactory.emptyNewOrder
 
     var orderPublisher: Published<Order>.Publisher {
         $order

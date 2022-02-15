@@ -188,21 +188,21 @@ final class NewOrderViewModel: ObservableObject {
 
     /// Creates a view model for the `ProductRow` corresponding to an order item.
     ///
-    func createProductRowViewModel(for item: NewOrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
+    func createProductRowViewModel(for item: OrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
         guard let product = allProducts.first(where: { $0.productID == item.productID }) else {
             return nil
         }
 
         if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
             let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: product.attributes)
-            return ProductRowViewModel(id: item.id,
+            return ProductRowViewModel(id: item.itemID,
                                        productVariation: variation,
                                        name: product.name,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
                                        displayMode: .attributes(attributes))
         } else {
-            return ProductRowViewModel(id: item.id, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
+            return ProductRowViewModel(id: item.itemID, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
         }
     }
 
@@ -458,7 +458,7 @@ private extension NewOrderViewModel {
     func configureProductRowViewModels() {
         updateProductsResultsController()
         updateProductVariationsResultsController()
-        productRows = orderDetails.items.enumerated().compactMap { index, item in
+        productRows = orderSynchronizer.order.items.compactMap { item in
             guard let productRowViewModel = createProductRowViewModel(for: item, canChangeQuantity: true) else {
                 return nil
             }
@@ -466,7 +466,8 @@ private extension NewOrderViewModel {
             // Observe changes to the product quantity
             productRowViewModel.$quantity
                 .sink { [weak self] newQuantity in
-                    self?.orderDetails.items[index].quantity = newQuantity
+                    // TODO: Add update quantity support
+                    // self?.orderDetails.items[index].quantity = newQuantity
                 }
                 .store(in: &cancellables)
 

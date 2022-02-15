@@ -106,7 +106,8 @@ private struct ProductsSection: View {
                 ForEach(viewModel.productRows) { productRow in
                     ProductRow(viewModel: productRow)
                         .onTapGesture {
-                            viewModel.selectOrderItem(productRow.id)
+                            // TODO: Support selecting an order item
+                            // viewModel.selectOrderItem(productRow.id)
                         }
                         .sheet(item: $viewModel.selectedOrderItem) { item in
                             createProductInOrderView(for: item)
@@ -139,12 +140,13 @@ private struct ProductsSection: View {
     }
 
     @ViewBuilder private func createProductInOrderView(for item: NewOrderViewModel.NewOrderItem) -> some View {
-        if let productRowViewModel = viewModel.createProductRowViewModel(for: item, canChangeQuantity: false) {
-            let productInOrderViewModel = ProductInOrderViewModel(productRowViewModel: productRowViewModel) {
-                viewModel.removeItemFromOrder(item)
-            }
-            ProductInOrder(viewModel: productInOrderViewModel)
-        }
+        // TODO: Support selecting an order item
+//        if let productRowViewModel = viewModel.createProductRowViewModel(for: item, canChangeQuantity: false) {
+//            let productInOrderViewModel = ProductInOrderViewModel(productRowViewModel: productRowViewModel) {
+//                viewModel.removeItemFromOrder(item)
+//            }
+//            ProductInOrder(viewModel: productInOrderViewModel)
+//        }
         EmptyView()
     }
 }

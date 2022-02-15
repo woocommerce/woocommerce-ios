@@ -477,7 +477,7 @@ private extension NewOrderViewModel {
     /// Updates customer data viewmodel based on order addresses.
     ///
     func configureCustomerDataViewModel() {
-        $orderDetails
+        orderSynchronizer.orderPublisher
             .map {
                 CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
             }

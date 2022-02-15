@@ -547,7 +547,7 @@ extension WooAnalyticsEvent {
         enum Keys {
             static let batteryLevel = "battery_level"
             static let gatewayID = "plugin_slug"
-            static let error = "error"
+            static let errorDescription = "error_description"
             static let softwareUpdateType = "software_update_type"
         }
 
@@ -565,7 +565,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderDiscoveryFailed,
                               properties: [
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
-                                Keys.error: error.localizedDescription
+                                Keys.errorDescription: error.localizedDescription
                               ]
             )
         }
@@ -594,7 +594,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderConnectionFailed,
                               properties: [
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
-                                Keys.error: error.localizedDescription
+                                Keys.errorDescription: error.localizedDescription
                               ]
             )
         }
@@ -648,7 +648,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue,
-                                Keys.error: error.localizedDescription
+                                Keys.errorDescription: error.localizedDescription
                               ]
             )
         }
@@ -709,7 +709,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentFailed,
                               properties: [
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
-                                Keys.error: error.localizedDescription
+                                Keys.errorDescription: error.localizedDescription
                               ]
             )
         }

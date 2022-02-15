@@ -509,7 +509,7 @@ private extension NewOrderViewModel {
     ///
     func trackCustomerDetailsAdded() {
         let areAddressesDifferent: Bool = {
-            guard let billingAddress = orderDetails.billingAddress, let shippingAddress = orderDetails.shippingAddress else {
+            guard let billingAddress = orderSynchronizer.order.billingAddress, let shippingAddress = orderSynchronizer.order.shippingAddress else {
                 return false
             }
             return billingAddress != shippingAddress
@@ -547,7 +547,7 @@ private extension NewOrderViewModel {
     /// Expects `billing` and `shipping` addresses to exists together,
     ///
     static func createAddressesInput(from data: CreateOrderAddressFormViewModel.NewOrderAddressData) -> OrderSyncAddressesInput? {
-        guard let billingAddress = data.shippingAddress, let shippingAddress = data.shippingAddress else {
+        guard let billingAddress = data.billingAddress, let shippingAddress = data.shippingAddress else {
             return nil
         }
         return OrderSyncAddressesInput(billing: billingAddress, shipping: shippingAddress)

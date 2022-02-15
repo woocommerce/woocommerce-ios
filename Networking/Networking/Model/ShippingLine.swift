@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Shipping Line Entity.
 ///
-public struct ShippingLine: Decodable, Equatable, GeneratedFakeable {
+public struct ShippingLine: Codable, Equatable, GeneratedFakeable {
     public let shippingID: Int64
     public let methodTitle: String
     public let methodID: String
@@ -26,6 +26,21 @@ public struct ShippingLine: Decodable, Equatable, GeneratedFakeable {
         self.total = total
         self.totalTax = totalTax
         self.taxes = taxes
+    }
+}
+
+// MARK: Codable
+extension ShippingLine {
+
+    /// Encodes ShippingLine writable fields.
+    ///
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(shippingID, forKey: .shippingID)
+        try container.encode(methodTitle, forKey: .methodTitle)
+        try container.encode(methodID, forKey: .methodID)
+        try container.encode(total, forKey: .total)
     }
 }
 

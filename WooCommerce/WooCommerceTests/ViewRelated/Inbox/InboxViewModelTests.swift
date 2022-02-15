@@ -12,6 +12,8 @@ final class InboxViewModelTests: XCTestCase {
         subscriptions = []
     }
 
+    // MARK: - State transitions
+
     func test_state_is_empty_without_any_actions() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -147,5 +149,44 @@ final class InboxViewModelTests: XCTestCase {
         XCTAssertEqual(states, [.empty, .syncingFirstPage, .results, .results])
         XCTAssertEqual(invocationCountOfLoadInboxNotes, 2)
         XCTAssertEqual(syncPageNumber, 2)
+    }
+
+    // MARK: - Row view models
+
+    func test_noteRowViewModels_match_loaded_notes() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let note = InboxNote.fake()
+        stores.whenReceivingAction(ofType: InboxNotesAction.self) { action in
+            guard case let .loadAllInboxNotes(_, _, _, _, _, _, completion) = action else {
+                return
+            }
+            completion(.success([note]))
+        }
+        let viewModel = InboxViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then
+        XCTAssertEqual(viewModel.noteRowViewModels.first, .init(note: note))
+    }
+
+    func test_noteRowViewModels_are_empty_when_loaded_notes_are_empty() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: InboxNotesAction.self) { action in
+            guard case let .loadAllInboxNotes(_, _, _, _, _, _, completion) = action else {
+                return
+            }
+            completion(.success([]))
+        }
+        let viewModel = InboxViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then
+        XCTAssertEqual(viewModel.noteRowViewModels, [])
     }
 }

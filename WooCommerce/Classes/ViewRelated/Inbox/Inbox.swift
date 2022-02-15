@@ -15,11 +15,16 @@ struct Inbox: View {
         Group {
             switch viewModel.syncState {
             case .results:
-                // TODO: 5954 - update results state
                 InfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
                                    loadAction: viewModel.onLoadNextPageAction) {
-                    ForEach(viewModel.notes, id: \.id) { note in
-                        TitleAndSubtitleRow(title: note.title, subtitle: note.content)
+                    ForEach(viewModel.noteRowViewModels) { rowViewModel in
+                        if #available(iOS 15.0, *) {
+                            // In order to show full-width separator, the default list separator is hidden and a `Divider` is shown inside the row.
+                            InboxNoteRow(viewModel: rowViewModel)
+                                .listRowSeparator(.hidden)
+                        } else {
+                            InboxNoteRow(viewModel: rowViewModel)
+                        }
                     }
                 }
             case .empty:
@@ -29,8 +34,14 @@ struct Inbox: View {
                            image: .emptyProductsTabImage)
                     .frame(maxHeight: .infinity)
             case .syncingFirstPage:
-                // TODO: 5954 - update placeholder state
-                EmptyView()
+                List {
+                    ForEach(viewModel.placeholderRowViewModels) { rowViewModel in
+                        InboxNoteRow(viewModel: rowViewModel)
+                            .redacted(reason: .placeholder)
+                            .shimmering()
+                    }
+                }
+                .listStyle(PlainListStyle())
             }
         }
         .background(Color(.listBackground).ignoresSafeArea())

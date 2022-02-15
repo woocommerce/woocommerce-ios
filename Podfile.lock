@@ -69,7 +69,7 @@ PODS:
   - WordPressShared (1.16.1):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (~> 1.8)
-  - WordPressUI (1.12.4-beta.1)
+  - WordPressUI (1.12.4)
   - Wormholy (1.6.5)
   - WPMediaPicker (1.8.1)
   - wpxmlrpc (0.9.0)
@@ -103,7 +103,7 @@ DEPENDENCIES:
   - WordPressAuthenticator (~> 1.43.1-beta)
   - WordPressKit (~> 4.40.0)
   - WordPressShared (~> 1.15)
-  - WordPressUI (~> 1.12.4-beta)
+  - WordPressUI (~> 1.12.4)
   - Wormholy (~> 1.6.5)
   - WPMediaPicker (~> 1.8.1)
   - XLPagerTabStrip (~> 9.0)
@@ -180,7 +180,7 @@ SPEC CHECKSUMS:
   WordPressAuthenticator: adba93ef31576dcc0f72b8c0a8dfbd1c4467de99
   WordPressKit: 062e4f57ce871e2217b632a1f3cb0bbd54b5df6d
   WordPressShared: 5477f179c7fe03b5d574f91adda66f67d131827e
-  WordPressUI: ccfa31bdd46676ffd8b71ff235e8059ed0832d61
+  WordPressUI: 9e470758bc3a4a25e94478c2babe106f4ae7315a
   Wormholy: 3252bc3e55a1847ef9a0976c1377bd77bf3635fa
   WPMediaPicker: 9011a0ec1f468c039af7485c244576b4c9889a0f
   wpxmlrpc: bf55a43a7e710bd2a4fb8c02dfe83b1246f14f13
@@ -193,6 +193,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 7b9510331daa4f56335427278d1d4dec14532e4b
+PODFILE CHECKSUM: 0872fc8f8ec57fd5d53d7ae0937cbc20a279bb8a
 
 COCOAPODS: 1.11.2

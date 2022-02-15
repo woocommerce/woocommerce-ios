@@ -31,8 +31,9 @@ final class OrderSearchUICommand: SearchUICommand {
 
     func createResultsController() -> ResultsController<ResultsControllerModel> {
         let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
-        return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [descriptor])
+        return ResultsController<StorageOrder>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
 
     func createStarterViewController() -> UIViewController? {
@@ -69,7 +70,7 @@ final class OrderSearchUICommand: SearchUICommand {
         }
 
         ServiceLocator.stores.dispatch(action)
-        ServiceLocator.analytics.track(.ordersListFilterOrSearch, withProperties: ["filter": "", "search": "\(keyword)"])
+        ServiceLocator.analytics.track(.ordersListSearch, withProperties: ["search": "\(keyword)"])
     }
 
     func didSelectSearchResult(model: Order, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {

@@ -3,10 +3,12 @@ import SwiftUI
 final class InPersonPaymentsViewController: UIHostingController<InPersonPaymentsView> {
     init(viewModel: InPersonPaymentsViewModel) {
         super.init(rootView: InPersonPaymentsView(viewModel: viewModel))
-        rootView.showSupport = {
+        rootView.showSupport = { [weak self] in
+            guard let self = self else { return }
             ZendeskProvider.shared.showNewWCPayRequestIfPossible(from: self)
         }
-        rootView.showURL = { url in
+        rootView.showURL = { [weak self] url in
+            guard let self = self else { return }
             WebviewHelper.launch(url, with: self)
         }
     }
@@ -28,7 +30,11 @@ struct InPersonPaymentsView: View {
             case .loading:
                 InPersonPaymentsLoading()
             case .selectPlugin:
-                InPersonPaymentsSelectPlugin(onRefresh: viewModel.refresh)
+                if viewModel.userIsAdministrator {
+                    InPersonPaymentsPluginConfictAdmin(onRefresh: viewModel.refresh)
+                } else {
+                    InPersonPaymentsPluginConfictShopManager(onRefresh: viewModel.refresh)
+                }
             case .countryNotSupported(let countryCode):
                 InPersonPaymentsCountryNotSupported(countryCode: countryCode)
             case .pluginNotInstalled:

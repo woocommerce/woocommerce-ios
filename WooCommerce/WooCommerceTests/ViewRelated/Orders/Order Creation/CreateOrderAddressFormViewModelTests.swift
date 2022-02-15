@@ -380,6 +380,24 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.showEmailField)
     }
+
+    func test_view_model_fires_error_notice_when_providing_an_invalid_email() {
+        // Given
+        let address1 = sampleAddress().copy(email: "invalid")
+        let viewModel = CreateOrderAddressFormViewModel(siteID: sampleSiteID,
+                                                        addressData: .init(billingAddress: address1, shippingAddress: nil),
+                                                        onAddressUpdate: { _ in })
+
+        // When
+        let notice: Notice? = waitFor { promise in
+            viewModel.saveAddress { _ in
+                promise(viewModel.notice)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(notice, AddressFormViewModel.NoticeFactory.createInvalidEmailNotice())
+    }
 }
 
 private extension CreateOrderAddressFormViewModelTests {

@@ -48,7 +48,7 @@ final class InboxNoteListMapperTests: XCTestCase {
                                                                 url: url)],
                                           title: "Ready to launch your store?",
                                           content: content,
-                                          isDeleted: false,
+                                          isRemoved: false,
                                           isRead: false,
                                           dateCreated: dateFormatter.date(from: "2022-01-26T14:32:08")!)
 

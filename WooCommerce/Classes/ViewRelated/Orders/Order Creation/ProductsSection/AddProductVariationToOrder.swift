@@ -54,6 +54,7 @@ struct AddProductVariationToOrder: View {
                 } label: {
                     Image(uiImage: .chevronLeftImage.imageFlippedForRightToLeftLayoutDirection())
                 }
+                .accessibilityLabel(Text(Localization.backButtonAccessibilityLabel))
             }
         }
         .onAppear {
@@ -66,6 +67,8 @@ private extension AddProductVariationToOrder {
     enum Localization {
         static let emptyStateMessage = NSLocalizedString("No product variations found",
                                                          comment: "Message displayed if there are no product variations for a product.")
+
+        static let backButtonAccessibilityLabel = NSLocalizedString("Back", comment: "Accessibility label for Back button in the navigation bar")
     }
 }
 

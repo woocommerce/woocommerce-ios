@@ -127,18 +127,31 @@ final class NewOrderViewModel: ObservableObject {
         orderDetails.items.isNotEmpty
     }
 
+    /// Defines if the view should be disabled.
+    /// Currently `true` while performing a network request.
+    ///
+    var disabled: Bool {
+        performingNetworkRequest
+    }
+
     /// Representation of payment data display properties
     ///
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
 
+    /// Analytics engine.
+    ///
+    private let analytics: Analytics
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.analytics = analytics
 
         configureNavigationTrailingItem()
         configureStatusBadgeViewModel()
@@ -170,11 +183,13 @@ final class NewOrderViewModel: ObservableObject {
         }
 
         if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: product.attributes)
             return ProductRowViewModel(id: item.id,
                                        productVariation: variation,
                                        name: product.name,
                                        quantity: item.quantity,
-                                       canChangeQuantity: canChangeQuantity)
+                                       canChangeQuantity: canChangeQuantity,
+                                       displayMode: .attributes(attributes))
         } else {
             return ProductRowViewModel(id: item.id, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
         }
@@ -195,6 +210,7 @@ final class NewOrderViewModel: ObservableObject {
                                         onAddressUpdate: { [weak self] updatedAddressData in
             self?.orderDetails.billingAddress = updatedAddressData.billingAddress
             self?.orderDetails.shippingAddress = updatedAddressData.shippingAddress
+            self?.trackCustomerDetailsAdded()
         })
     }
 
@@ -211,17 +227,28 @@ final class NewOrderViewModel: ObservableObject {
             switch result {
             case .success(let newOrder):
                 self.onOrderCreated(newOrder)
+                self.trackCreateOrderSuccess()
             case .failure(let error):
                 self.notice = NoticeFactory.createOrderCreationErrorNotice()
+                self.trackCreateOrderFailure(error: error)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
         stores.dispatch(action)
+        trackCreateButtonTapped()
     }
 
     /// Assign this closure to be notified when a new order is created
     ///
     var onOrderCreated: (Order) -> Void = { _ in }
+
+    /// Updates the order status & tracks its event
+    ///
+    func updateOrderStatus(newStatus: OrderStatusEnum) {
+        let oldStatus = orderDetails.status
+        orderDetails.status = newStatus
+        analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .creation, orderID: nil, from: oldStatus, to: newStatus))
+    }
 }
 
 // MARK: - Types
@@ -410,6 +437,8 @@ private extension NewOrderViewModel {
         let newOrderItem = NewOrderItem(product: product, quantity: 1)
         orderDetails.items.append(newOrderItem)
         configureProductRowViewModels()
+
+        analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
     }
 
     /// Adds a selected product variation (from the product list) to the order.
@@ -418,6 +447,8 @@ private extension NewOrderViewModel {
         let newOrderItem = NewOrderItem(variation: variation, quantity: 1)
         orderDetails.items.append(newOrderItem)
         configureProductRowViewModels()
+
+        analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
     }
 
     /// Configures product row view models for each item in `orderDetails`.
@@ -470,6 +501,44 @@ private extension NewOrderViewModel {
                 return PaymentDataViewModel(itemsTotal: itemsTotal, orderTotal: itemsTotal, currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)
+    }
+
+    /// Tracks when customer details have been added
+    ///
+    func trackCustomerDetailsAdded() {
+        let areAddressesDifferent: Bool = {
+            guard let billingAddress = orderDetails.billingAddress, let shippingAddress = orderDetails.shippingAddress else {
+                return false
+            }
+            return billingAddress != shippingAddress
+        }()
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCustomerAdd(flow: .creation, hasDifferentShippingDetails: areAddressesDifferent))
+    }
+
+    /// Tracks when the create order button is tapped.
+    ///
+    /// Warning: This methods assume that `orderDetails.items.count` is equal to the product count,
+    /// As the module evolves to handle more types of items, we need to update the property to something like `itemsCount`
+    /// or figure out a better way to get the product count.
+    ///
+    func trackCreateButtonTapped() {
+        let hasCustomerDetails = orderDetails.billingAddress != nil || orderDetails.shippingAddress != nil
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderDetails.status,
+                                                                                productCount: orderDetails.items.count,
+                                                                                hasCustomerDetails: hasCustomerDetails))
+    }
+
+    /// Tracks an order creation success
+    ///
+    func trackCreateOrderSuccess() {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationSuccess())
+    }
+
+    /// Tracks an order creation failure
+    ///
+    func trackCreateOrderFailure(error: Error) {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(errorContext: String(describing: error),
+                                                                            errorDescription: error.localizedDescription))
     }
 }
 

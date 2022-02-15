@@ -100,6 +100,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// - Parameter onCollect: Closure Invoked after the collect process has finished.
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed, Currently after merchant has handled the receipt.
     func collectPayment(backButtonTitle: String, onCollect: @escaping (Result<Void, Error>) -> (), onCompleted: @escaping () -> ()) {
+        configureBackend()
         connectReader { [weak self] in
             self?.attemptPayment(onCompletion: { [weak self] result in
                 // Inform about the collect payment state
@@ -117,6 +118,12 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
 // MARK: Private functions
 private extension CollectOrderPaymentUseCase {
+    /// Configure the CardPresentPaymentStore to use the appropriate backend
+    ///
+    func configureBackend() {
+        let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
+        stores.dispatch(setAccount)
+    }
 
     /// Attempts to connect to a reader.
     /// Finishes immediately if a reader is already connected.

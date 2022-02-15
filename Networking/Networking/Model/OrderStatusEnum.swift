@@ -3,17 +3,19 @@ import Codegen
 
 /// Represents all of the possible Order Statuses in enum form
 ///
-public enum OrderStatusEnum: Codable, Hashable, GeneratedFakeable {
+/// The order of the statuses declaration is according to the Order's lifecycle
+/// and it is used to determine the user facing display order
+///
+public enum OrderStatusEnum: Codable, Hashable, Comparable, GeneratedFakeable {
     case pending
     case processing
     case onHold
-    case failed
-    case cancelled
     case completed
+    case cancelled
     case refunded
+    case failed
     case custom(String)
 }
-
 
 /// RawRepresentable Conformance
 ///

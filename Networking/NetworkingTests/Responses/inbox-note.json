@@ -1,52 +1,54 @@
 {
-    "id": 296,
-    "name": "wc-admin-wc-helper-subscription",
-    "type": "warning",
-    "locale": "en_US",
-    "title": "WooCommerce Bookings subscription expired",
-    "content": "Your subscription expired on October 22nd. Get a new subscription to continue receiving updates and access to support.",
-    "content_data": {
-        "product_id": 390890,
-        "product_name": "WooCommerce Bookings",
-        "expired": true,
-        "expires": 1634860800,
-        "expires_date": "October 22nd"
-    },
-    "status": "unactioned",
-    "source": "woocommerce-admin",
-    "date_created": "2022-01-31T08:55:32",
-    "date_reminder": null,
-    "is_snoozable": false,
-    "actions": [
-        {
-            "id": 13329,
-            "name": "renew-subscription",
-            "label": "Renew Subscription",
-            "query": "https://woocommerce.com/products/woocommerce-bookings/",
-            "status": "actioned",
-            "primary": false,
-            "actioned_text": "",
-            "nonce_action": null,
-            "nonce_name": null,
-            "url": "https://woocommerce.com/products/woocommerce-bookings/"
-        }
-    ],
-    "layout": "plain",
-    "image": "",
-    "is_deleted": true,
-    "is_read": false,
-    "date_created_gmt": "2022-01-31T14:25:32",
-    "date_reminder_gmt": null,
-    "_links": {
-        "self": [
+    "data": {
+        "id": 296,
+        "name": "wc-admin-wc-helper-subscription",
+        "type": "warning",
+        "locale": "en_US",
+        "title": "WooCommerce Bookings subscription expired",
+        "content": "Your subscription expired on October 22nd. Get a new subscription to continue receiving updates and access to support.",
+        "content_data": {
+            "product_id": 390890,
+            "product_name": "WooCommerce Bookings",
+            "expired": true,
+            "expires": 1634860800,
+            "expires_date": "October 22nd"
+        },
+        "status": "unactioned",
+        "source": "woocommerce-admin",
+        "date_created": "2022-01-31T08:55:32",
+        "date_reminder": null,
+        "is_snoozable": false,
+        "actions": [
             {
-                "href": "https://mywootesting.mystagingwebsite.com/wp-json/wc-analytics/admin/notes/296"
+                "id": 13329,
+                "name": "renew-subscription",
+                "label": "Renew Subscription",
+                "query": "https://woocommerce.com/products/woocommerce-bookings/",
+                "status": "actioned",
+                "primary": false,
+                "actioned_text": "",
+                "nonce_action": null,
+                "nonce_name": null,
+                "url": "https://woocommerce.com/products/woocommerce-bookings/"
             }
         ],
-        "collection": [
-            {
-                "href": "https://mywootesting.mystagingwebsite.com/wp-json/wc-analytics/admin/notes"
-            }
-        ]
+        "layout": "plain",
+        "image": "",
+        "is_deleted": true,
+        "is_read": false,
+        "date_created_gmt": "2022-01-31T14:25:32",
+        "date_reminder_gmt": null,
+        "_links": {
+            "self": [
+                {
+                    "href": "https://mywootesting.mystagingwebsite.com/wp-json/wc-analytics/admin/notes/296"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://mywootesting.mystagingwebsite.com/wp-json/wc-analytics/admin/notes"
+                }
+            ]
+        }
     }
 }

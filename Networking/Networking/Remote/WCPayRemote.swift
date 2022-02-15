@@ -60,6 +60,24 @@ public class WCPayRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Fetches the details of a charge, if available. See https://stripe.com/docs/api/charges/object
+    /// Also note that the JSON returned by the WCPay endpoint is an abridged copy of Stripe's response.
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch the charge.
+    ///   - chargeID: ID of the charge to fetch
+    ///   - completion: Closure to be run on completion.
+    public func fetchCharge(for siteID: Int64,
+                            chargeID: String,
+                            completion: @escaping (Result<WCPayCharge, Error>) -> Void) {
+        let path = "\(Path.charges)/\(chargeID)"
+
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: [:])
+
+        let mapper = WCPayChargeMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: - CardReaderCapableRemote
@@ -104,6 +122,7 @@ private extension WCPayRemote {
         static let captureTerminalPayment = "capture_terminal_payment"
         static let createCustomer = "create_customer"
         static let locations = "payments/terminal/locations/store"
+        static let charges = "payments/charges"
     }
 
     enum AccountParameterKeys {

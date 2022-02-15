@@ -164,7 +164,7 @@ private extension CollectOrderPaymentUseCase {
     ///
     func attemptPayment(onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> ()) {
         // Track tapped event
-        analytics.track(event: WooAnalyticsEvent.collectPaymentTapped(gatewayID: paymentGatewayAccount.gatewayID))
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentTapped(forGatewayID: paymentGatewayAccount.gatewayID))
 
         // Show reader ready alert
         alerts.readerIsReady(title: Localization.collectPaymentTitle(username: order.billingAddress?.firstName), amount: formattedAmount)
@@ -202,7 +202,7 @@ private extension CollectOrderPaymentUseCase {
     ///
     func handleSuccessfulPayment(receipt: CardPresentReceiptParameters, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> ()) {
         // Record success
-        analytics.track(event: WooAnalyticsEvent.collectPaymentSuccess(gatewayID: paymentGatewayAccount.gatewayID))
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentSuccess(forGatewayID: paymentGatewayAccount.gatewayID))
 
         // Success Callback
         onCompletion(.success(receipt))
@@ -212,7 +212,7 @@ private extension CollectOrderPaymentUseCase {
     ///
     func handlePaymentFailureAndRetryPayment(_ error: Error, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> ()) {
         // Record error
-        analytics.track(event: WooAnalyticsEvent.collectPaymentFailed(gatewayID: paymentGatewayAccount.gatewayID, error: error))
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentFailed(forGatewayID: paymentGatewayAccount.gatewayID, error: error))
         DDLogError("Failed to collect payment: \(error.localizedDescription)")
 
         // Inform about the error
@@ -241,7 +241,7 @@ private extension CollectOrderPaymentUseCase {
     func cancelPayment() {
         paymentOrchestrator.cancelPayment { [weak self, analytics] _ in
             guard let self = self else { return }
-            analytics.track(event: WooAnalyticsEvent.collectPaymentCanceled(gatewayID: self.paymentGatewayAccount.gatewayID))
+            analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: self.paymentGatewayAccount.gatewayID))
         }
     }
 

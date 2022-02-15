@@ -545,7 +545,9 @@ extension WooAnalyticsEvent {
     enum InPersonPayments {
 
         private enum Keys {
+            static let batteryLevel = "battery_level"
             static let gatewayID = "plugin_slug"
+            static let error = "error"
         }
 
 
@@ -560,19 +562,20 @@ extension WooAnalyticsEvent {
         static func collectPaymentTapped(forGatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentTapped,
                               properties: [
-                                "plugin_slug": gatewayID(forGatewayID: forGatewayID)
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
                               ]
             )
         }
 
         /// Tracked when the payment collection fails
         /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        /// `error` is the error to be included in the event properties.
         ///
         static func collectPaymentFailed(forGatewayID: String?, error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentFailed,
                               properties: [
-                                "plugin_slug": gatewayID(forGatewayID: forGatewayID),
-                                "error": error.localizedDescription
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.error: error.localizedDescription
                               ]
             )
         }
@@ -583,7 +586,7 @@ extension WooAnalyticsEvent {
         static func collectPaymentCanceled(forGatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentCanceled,
                               properties: [
-                                "plugin_slug": gatewayID(forGatewayID: forGatewayID)
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
                               ]
             )
         }
@@ -594,19 +597,20 @@ extension WooAnalyticsEvent {
         static func collectPaymentSuccess(forGatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentSuccess,
                               properties: [
-                                "plugin_slug": gatewayID(forGatewayID: forGatewayID)
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
                               ]
             )
         }
 
         /// Tracked when card reader discovery fails
         /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        /// `error` is the error to be included in the event properties.
         ///
         static func cardReaderDiscoveryFailed(forGatewayID: String?, error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderDiscoveryFailed,
                               properties: [
-                                "plugin_slug": gatewayID(forGatewayID: forGatewayID),
-                                "error": error.localizedDescription
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.error: error.localizedDescription
                               ]
             )
         }
@@ -617,7 +621,7 @@ extension WooAnalyticsEvent {
         static func cardReaderSoftwareRequiredUpdateCancelTapped(forGatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateCancelTapped,
                               properties: [
-                                "plugin_slug": gatewayID(forGatewayID: forGatewayID),
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 SoftwareUpdateTypeProperty.name: SoftwareUpdateTypeProperty.required.rawValue
                               ]
             )
@@ -629,7 +633,7 @@ extension WooAnalyticsEvent {
         static func cardReaderSoftwareRequiredUpdateCanceled(forGatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateCanceled,
                               properties: [
-                                "plugin_slug": gatewayID(forGatewayID: forGatewayID),
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 SoftwareUpdateTypeProperty.name: SoftwareUpdateTypeProperty.required.rawValue
                               ]
             )
@@ -641,11 +645,11 @@ extension WooAnalyticsEvent {
         ///
         static func cardReaderConnectionSuccess(forGatewayID: String?, batteryLevel: Float?) -> WooAnalyticsEvent {
             var properties = [
-                "plugin_slug": gatewayID(forGatewayID: forGatewayID)
+                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
             ]
 
             if let batteryLevel = batteryLevel {
-                properties["battery_level"] = String(format: "%.2f", batteryLevel)
+                properties[Keys.batteryLevel] = String(format: "%.2f", batteryLevel)
             }
 
             return WooAnalyticsEvent(statName: .cardReaderConnectionSuccess, properties: properties)
@@ -653,12 +657,13 @@ extension WooAnalyticsEvent {
 
         /// Tracked when connecting to a card reader fails
         /// `forGatewayID` is the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        /// `error` is the error to be included in the event properties.
         ///
         static func cardReaderConnectionFailed(forGatewayID: String?, error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderConnectionFailed,
                               properties: [
-                                "plugin_slug": gatewayID(forGatewayID: forGatewayID),
-                                "error": error.localizedDescription
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.error: error.localizedDescription
                               ]
             )
         }

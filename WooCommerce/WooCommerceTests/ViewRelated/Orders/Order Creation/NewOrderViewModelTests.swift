@@ -26,7 +26,7 @@ class NewOrderViewModelTests: XCTestCase {
         let viewModel = NewOrderViewModel(siteID: sampleSiteID)
 
         // When
-        viewModel.orderDetails.status = .processing
+        viewModel.updateOrderStatus(newStatus: .processing)
 
         // Then
         XCTAssertEqual(viewModel.navigationTrailingItem, .create)
@@ -82,7 +82,7 @@ class NewOrderViewModelTests: XCTestCase {
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
-        viewModel.orderDetails.status = .processing
+        viewModel.updateOrderStatus(newStatus: .processing)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .createOrder(_, order, onCompletion):
@@ -144,7 +144,7 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "Pending payment")
 
         // When
-        viewModel.orderDetails.status = .processing
+        viewModel.updateOrderStatus(newStatus: .processing)
 
         // Then
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "Processing")

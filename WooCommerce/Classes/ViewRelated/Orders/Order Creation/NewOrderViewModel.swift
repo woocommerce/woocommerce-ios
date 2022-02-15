@@ -134,6 +134,12 @@ final class NewOrderViewModel: ObservableObject {
         performingNetworkRequest
     }
 
+    /// Defines the current order status.
+    ///
+    var currentOrderStatus: OrderStatusEnum {
+        orderSynchronizer.order.status
+    }
+
     /// Representation of payment data display properties
     ///
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
@@ -141,6 +147,10 @@ final class NewOrderViewModel: ObservableObject {
     /// Analytics engine.
     ///
     private let analytics: Analytics
+
+    /// Order Synchronizer helper.
+    ///
+    private let orderSynchronizer: OrderSynchronizer
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -152,6 +162,7 @@ final class NewOrderViewModel: ObservableObject {
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
+        self.orderSynchronizer = LocalOrderSynchronizer(siteID: siteID, stores: stores)
 
         configureNavigationTrailingItem()
         configureStatusBadgeViewModel()
@@ -220,7 +231,7 @@ final class NewOrderViewModel: ObservableObject {
     func createOrder() {
         performingNetworkRequest = true
 
-        let action = OrderAction.createOrder(siteID: siteID, order: orderDetails.toOrder()) { [weak self] result in
+        orderSynchronizer.commitAllChanges { [weak self] result in
             guard let self = self else { return }
             self.performingNetworkRequest = false
 
@@ -234,7 +245,6 @@ final class NewOrderViewModel: ObservableObject {
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
-        stores.dispatch(action)
         trackCreateButtonTapped()
     }
 
@@ -245,8 +255,8 @@ final class NewOrderViewModel: ObservableObject {
     /// Updates the order status & tracks its event
     ///
     func updateOrderStatus(newStatus: OrderStatusEnum) {
-        let oldStatus = orderDetails.status
-        orderDetails.status = newStatus
+        let oldStatus = orderSynchronizer.order.status
+        orderSynchronizer.setStatus.send(newStatus)
         analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .creation, orderID: nil, from: oldStatus, to: newStatus))
     }
 }
@@ -264,21 +274,15 @@ extension NewOrderViewModel {
     /// Type to hold all order detail values
     ///
     struct OrderDetails {
-        var status: OrderStatusEnum = .pending
         var items: [NewOrderItem] = []
         var billingAddress: Address?
         var shippingAddress: Address?
 
-        /// Used to create `Order` and check if order details have changed from empty/default values.
-        /// Required because `Order` has `Date` properties that have to be the same to be Equatable.
-        ///
-        let emptyOrder = Order.empty
-
         func toOrder() -> Order {
-            emptyOrder.copy(status: status,
-                            items: items.map { $0.orderItem },
-                            billingAddress: billingAddress,
-                            shippingAddress: shippingAddress)
+            OrderFactory.emptyNewOrder.copy(status: .pending,
+                                            items: items.map { $0.orderItem },
+                                            billingAddress: billingAddress,
+                                            shippingAddress: shippingAddress)
         }
     }
 
@@ -403,13 +407,13 @@ private extension NewOrderViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func configureNavigationTrailingItem() {
-        Publishers.CombineLatest($orderDetails, $performingNetworkRequest)
-            .map { orderDetails, performingNetworkRequest -> NavigationItem in
+        Publishers.CombineLatest(orderSynchronizer.orderPublisher, $performingNetworkRequest)
+            .map { order, performingNetworkRequest -> NavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
 
-                guard orderDetails.emptyOrder != orderDetails.toOrder() else {
+                guard OrderFactory.emptyNewOrder != order else {
                     return .none
                 }
 
@@ -421,10 +425,10 @@ private extension NewOrderViewModel {
     /// Updates status badge viewmodel based on status order property.
     ///
     func configureStatusBadgeViewModel() {
-        $orderDetails
-            .map { [weak self] orderDetails in
-                guard let siteOrderStatus = self?.currentSiteStatuses.first(where: { $0.status == orderDetails.status }) else {
-                    return StatusBadgeViewModel(orderStatusEnum: orderDetails.status)
+        orderSynchronizer.orderPublisher
+            .map { [weak self] order in
+                guard let siteOrderStatus = self?.currentSiteStatuses.first(where: { $0.status == order.status }) else {
+                    return StatusBadgeViewModel(orderStatusEnum: order.status)
                 }
                 return StatusBadgeViewModel(orderStatus: siteOrderStatus)
             }
@@ -522,9 +526,9 @@ private extension NewOrderViewModel {
     /// or figure out a better way to get the product count.
     ///
     func trackCreateButtonTapped() {
-        let hasCustomerDetails = orderDetails.billingAddress != nil || orderDetails.shippingAddress != nil
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderDetails.status,
-                                                                                productCount: orderDetails.items.count,
+        let hasCustomerDetails = orderSynchronizer.order.billingAddress != nil || orderSynchronizer.order.shippingAddress != nil
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderSynchronizer.order.status,
+                                                                                productCount: orderSynchronizer.order.items.count,
                                                                                 hasCustomerDetails: hasCustomerDetails))
     }
 

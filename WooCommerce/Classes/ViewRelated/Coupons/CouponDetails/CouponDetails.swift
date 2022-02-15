@@ -83,14 +83,20 @@ struct CouponDetails: View {
                                     .secondaryBodyStyle()
                                 Text(viewModel.discountedOrdersCount)
                                     .font(.title)
+                                Spacer()
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
 
                             VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                                 Text(Localization.amount)
                                     .secondaryBodyStyle()
-                                Text(viewModel.discountedAmount)
-                                    .font(.title)
+                                if let amount = viewModel.discountedAmount {
+                                    Text(amount)
+                                        .font(.title)
+                                } else {
+                                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                                }
+                                Spacer()
                             }
                             .padding(.leading, Constants.margin)
                             .frame(maxWidth: .infinity, alignment: .leading)

@@ -103,13 +103,18 @@ final class CardReaderConnectionController {
 
     private var onCompletion: ((Result<Bool, Error>) -> Void)?
 
+    /// Gateway ID to include in tracks events
+    private var gatewayID: String?
+
     init(
         forSiteID: Int64,
+        forGatewayID: String,
         knownReaderProvider: CardReaderSettingsKnownReaderProvider,
         alertsProvider: CardReaderSettingsAlertsProvider
     ) {
         state = .idle
         siteID = forSiteID
+        gatewayID = forGatewayID
         knownCardReaderProvider = knownReaderProvider
         alerts = alertsProvider
         foundReaders = []
@@ -308,11 +313,11 @@ private extension CardReaderConnectionController {
                 }
             },
             onError: { [weak self] error in
-                guard let self = self else {
-                    return
-                }
+                guard let self = self else { return }
 
-                ServiceLocator.analytics.track(.cardReaderDiscoveryFailed, withError: error)
+                ServiceLocator.analytics.track(
+                    event: WooAnalyticsEvent.cardReaderDiscoveryFailed(gatewayID: self.gatewayID, error: error)
+                )
                 self.state = .discoveryFailed(error)
             })
 
@@ -422,13 +427,16 @@ private extension CardReaderConnectionController {
         let cancel = softwareUpdateCancelable.map { cancelable in
             return { [weak self] in
                 self?.state = .cancel
-                let analyticsProperties = [SoftwareUpdateTypeProperty.name: SoftwareUpdateTypeProperty.required.rawValue]
-                ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCancelTapped, withProperties: analyticsProperties)
+                ServiceLocator.analytics.track(
+                    event: WooAnalyticsEvent.cardReaderSoftwareRequiredUpdateCancelTapped(gatewayID: self?.gatewayID)
+                )
                 cancelable.cancel { result in
                     if case .failure(let error) = result {
                         DDLogError("💳 Error: canceling software update \(error)")
                     } else {
-                        ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCanceled, withProperties: analyticsProperties)
+                        ServiceLocator.analytics.track(
+                            event: WooAnalyticsEvent.cardReaderSoftwareRequiredUpdateCanceled(gatewayID: self?.gatewayID)
+                        )
                     }
                 }
             }
@@ -495,14 +503,14 @@ private extension CardReaderConnectionController {
         }
         ServiceLocator.stores.dispatch(softwareUpdateAction)
 
-        let action = CardPresentPaymentAction.connect(reader: candidateReader) { result in
+        let action = CardPresentPaymentAction.connect(reader: candidateReader) { [weak self] result in
             switch result {
             case .success(let reader):
+                guard let self = self else { return }
                 self.knownCardReaderProvider.rememberCardReader(cardReaderID: reader.id)
-                // If the reader does not have a battery, or the battery level is unknown, it will be nil
-                let properties = reader.batteryLevel
-                    .map { ["battery_level": $0] }
-                ServiceLocator.analytics.track(.cardReaderConnectionSuccess, withProperties: properties)
+                ServiceLocator.analytics.track(
+                    event: WooAnalyticsEvent.cardReaderConnectionSuccess(gatewayID: self.gatewayID, batteryLevel: reader.batteryLevel)
+                )
                 // If we were installing a software update, introduce a small delay so the user can
                 // actually see a success message showing the installation was complete
                 if case .updating(progress: 1) = self.state {
@@ -513,7 +521,10 @@ private extension CardReaderConnectionController {
                     self.returnSuccess(connected: true)
                 }
             case .failure(let error):
-                ServiceLocator.analytics.track(.cardReaderConnectionFailed, withError: error)
+                guard let self = self else { return }
+                ServiceLocator.analytics.track(
+                    event: WooAnalyticsEvent.cardReaderConnectionFailed(gatewayID: self.gatewayID, error: error)
+                )
                 self.state = .connectingFailed(error)
             }
         }

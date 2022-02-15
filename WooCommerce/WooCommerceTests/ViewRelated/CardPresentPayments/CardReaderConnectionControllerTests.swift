@@ -8,6 +8,10 @@ class CardReaderConnectionControllerTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 1234
 
+    /// Dummy GatewayID
+    ///
+    private let sampleGatewayID: String = "dummy-gateway-for-unit-tests"
+
     func test_cancelling_search_calls_completion_with_success_false() throws {
         // Given
         let expectation = self.expectation(description: #function)
@@ -23,6 +27,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelScanning)
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
+            forGatewayID: sampleGatewayID,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -55,6 +60,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
+            forGatewayID: sampleGatewayID,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -89,6 +95,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
+            forGatewayID: sampleGatewayID,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -122,6 +129,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .closeScanFailure)
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
+            forGatewayID: sampleGatewayID,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -151,6 +159,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelFoundSeveral)
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
+            forGatewayID: sampleGatewayID,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -187,6 +196,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
+            forGatewayID: sampleGatewayID,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -222,6 +232,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
+            forGatewayID: sampleGatewayID,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -255,6 +266,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
+            forGatewayID: sampleGatewayID,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -291,6 +303,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
+            forGatewayID: sampleGatewayID,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -327,6 +340,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
+            forGatewayID: sampleGatewayID,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )

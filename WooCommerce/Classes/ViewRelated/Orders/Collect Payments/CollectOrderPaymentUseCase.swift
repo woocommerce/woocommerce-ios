@@ -70,7 +70,9 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private lazy var connectionController = {
         CardReaderConnectionController(forSiteID: siteID,
-                                       knownReaderProvider: CardReaderSettingsKnownReaderStorage(), alertsProvider: CardReaderSettingsAlerts())
+                                       forGatewayID: paymentGatewayAccount.gatewayID,
+                                       knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
+                                       alertsProvider: CardReaderSettingsAlerts())
     }()
 
     init(siteID: Int64,

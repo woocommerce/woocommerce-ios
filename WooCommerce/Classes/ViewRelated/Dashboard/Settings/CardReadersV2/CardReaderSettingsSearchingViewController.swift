@@ -22,8 +22,13 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
             return nil
         }
 
+        guard let gatewayID = viewModel?.connectedGatewayID else {
+            return nil
+        }
+
         return CardReaderConnectionController(
             forSiteID: siteID,
+            forGatewayID: gatewayID,
             knownReaderProvider: knownReaderProvider,
             alertsProvider: CardReaderSettingsAlerts()
         )

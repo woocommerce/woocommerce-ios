@@ -164,7 +164,7 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == sampleProductID }), "Product rows do not contain expected product")
     }
 
-    func test_order_details_are_updated_when_product_quantity_changes() throws {
+    func test_order_details_are_updated_when_product_quantity_changes() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         let storageManager = MockStorageManager()
@@ -184,8 +184,6 @@ class NewOrderViewModelTests: XCTestCase {
     }
 
     func test_selectOrderItem_selects_expected_order_item() throws {
-        throw XCTSkip("Test disabled while we enable select order support on OrderSynchronizer")
-
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         let storageManager = MockStorageManager()
@@ -194,14 +192,15 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product.productID)
 
         // When
-        let expectedOrderItem = viewModel.orderDetails.items[0]
-        viewModel.selectOrderItem(expectedOrderItem.id)
+        let expectedRow = viewModel.productRows[0]
+        viewModel.selectOrderItem(expectedRow.id)
 
         // Then
-        XCTAssertEqual(viewModel.selectedOrderItem, expectedOrderItem)
+        XCTAssertNotNil(viewModel.selectedProductViewModel)
+        XCTAssertEqual(viewModel.selectedProductViewModel?.productRowViewModel.id, expectedRow.id)
     }
 
-    func test_view_model_is_updated_when_product_is_removed_from_order() throws {
+    func test_view_model_is_updated_when_product_is_removed_from_order() {
         // Given
         let product0 = Product.fake().copy(siteID: sampleSiteID, productID: 0, purchasable: true)
         let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
@@ -214,13 +213,13 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product1.productID)
 
         // When
-        throw XCTSkip("Test disabled while we enable remove item support on OrderSynchronizer")
-        let expectedRemainingItem = viewModel.orderDetails.items[1]
-        viewModel.removeItemFromOrder(viewModel.orderDetails.items[0])
+        let expectedRemainingRow = viewModel.productRows[1]
+        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows[0].id)
+        viewModel.removeItemFromOrder(itemToRemove)
 
         // Then
         XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == product0.productID }))
-        XCTAssertEqual(viewModel.orderDetails.items, [expectedRemainingItem])
+        XCTAssertEqual(viewModel.productRows.map { $0.id }, [expectedRemainingRow].map { $0.id })
     }
 
     func test_createProductRowViewModel_creates_expected_row_for_product() {
@@ -321,7 +320,7 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(paymentDataViewModel.orderTotal, "£30.00")
     }
 
-    func test_payment_section_only_displayed_when_order_has_products() throws {
+    func test_payment_section_only_displayed_when_order_has_products() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         let storageManager = MockStorageManager()
@@ -333,12 +332,13 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldShowPaymentSection)
 
         // When & Then
-        throw XCTSkip("This unit test needs to be reenabled when the remove item method is migrated")
-        viewModel.removeItemFromOrder(viewModel.orderDetails.items[0])
+        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows[0].id, productID: product.productID)
+        viewModel.removeItemFromOrder(itemToRemove)
+
         XCTAssertFalse(viewModel.shouldShowPaymentSection)
     }
 
-    func test_payment_section_is_updated_when_products_update() throws {
+    func test_payment_section_is_updated_when_products_update() {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)

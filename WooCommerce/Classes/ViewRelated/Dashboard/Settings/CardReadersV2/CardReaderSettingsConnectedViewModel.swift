@@ -87,7 +87,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                         self.readerUpdateError = nil
                         self.softwareUpdateCancelable = cancelable
                         self.readerUpdateProgress = 0
-                        self.track(.cardReaderSoftwareUpdateStarted)
+                        self.trackUpdate(.cardReaderSoftwareUpdateStarted)
                     case .installing(progress: let progress):
                         self.readerUpdateProgress = progress
                     case .failed(error: let error):
@@ -97,12 +97,12 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                             break
                         }
                         self.readerUpdateError = error
-                        self.track(.cardReaderSoftwareUpdateFailed, error: error)
+                        self.trackUpdate(.cardReaderSoftwareUpdateFailed, error: error)
                         self.completeCardReaderUpdate(success: false)
                     case .completed:
                         self.readerUpdateProgress = 1
                         self.softwareUpdateCancelable = nil
-                        self.track(.cardReaderSoftwareUpdateSuccess)
+                        self.trackUpdate(.cardReaderSoftwareUpdateSuccess)
                         // If we were installing a software update, introduce a small delay so the user can
                         // actually see a success message showing the installation was complete
                         DispatchQueue.main.asyncAfter(deadline: .now() + self.delayToShowUpdateSuccessMessage) { [weak self] in
@@ -154,7 +154,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// Allows the view controller to kick off a card reader update
     ///
     func startCardReaderUpdate() {
-        track(.cardReaderSoftwareUpdateTapped)
+        trackUpdate(.cardReaderSoftwareUpdateTapped)
         let action = CardPresentPaymentAction.startCardReaderUpdate
         ServiceLocator.stores.dispatch(action)
     }
@@ -168,12 +168,12 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
             guard let self = self else {
                 return
             }
-            self.track(.cardReaderSoftwareUpdateCancelTapped)
+            self.trackUpdate(.cardReaderSoftwareUpdateCancelTapped)
             self.softwareUpdateCancelable?.cancel(completion: { [weak self] result in
                 if case .failure(let error) = result {
                     DDLogError("💳 Error: canceling software update \(error)")
                 } else {
-                    self?.track(.cardReaderSoftwareUpdateCanceled)
+                    self?.trackUpdate(.cardReaderSoftwareUpdateCanceled)
                     self?.completeCardReaderUpdate(success: false)
                 }
             })
@@ -195,7 +195,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// Dispatch a request to disconnect from a reader
     ///
     func disconnectReader() {
-        track(.cardReaderDisconnectTapped)
+        trackOther(.cardReaderDisconnectTapped)
 
         self.readerDisconnectInProgress = true
         self.didUpdate?()
@@ -237,9 +237,15 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         }
     }
 
-    private func track(_ stat: WooAnalyticsStat, error: Error? = nil) {
+    /// Track an event related to software update. Adds whether it was for an optional or a required update to the tracked properties.
+    private func trackUpdate(_ stat: WooAnalyticsStat, error: Error? = nil) {
         let updateType = optionalReaderUpdateAvailable ? SoftwareUpdateTypeProperty.optional : SoftwareUpdateTypeProperty.required
         ServiceLocator.analytics.track(stat, properties: [SoftwareUpdateTypeProperty.name: updateType.rawValue], error: error)
+    }
+
+    /// Track an event NOT related to software update
+    private func trackOther(_ stat: WooAnalyticsStat, error: Error? = nil) {
+        ServiceLocator.analytics.track(stat, properties: [:], error: error)
     }
 }
 

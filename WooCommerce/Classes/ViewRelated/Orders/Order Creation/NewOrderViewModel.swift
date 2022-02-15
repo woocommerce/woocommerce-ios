@@ -124,7 +124,7 @@ final class NewOrderViewModel: ObservableObject {
     /// Indicates if the Payment section should be shown
     ///
     var shouldShowPaymentSection: Bool {
-        orderDetails.items.isNotEmpty
+        orderSynchronizer.order.items.isNotEmpty
     }
 
     /// Defines if the view should be disabled.
@@ -488,14 +488,14 @@ private extension NewOrderViewModel {
     /// Updates payment section view model based on items in the order.
     ///
     func configurePaymentDataViewModel() {
-        $orderDetails
-            .map { [weak self] orderDetails in
+        orderSynchronizer.orderPublisher
+            .map { [weak self] order in
                 guard let self = self else {
                     return PaymentDataViewModel()
                 }
 
-                let itemsTotal = orderDetails.items
-                    .map { $0.orderItem.subtotal }
+                let itemsTotal = order.items
+                    .map { $0.subtotal }
                     .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
                     .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
                     .stringValue
@@ -520,7 +520,7 @@ private extension NewOrderViewModel {
 
     /// Tracks when the create order button is tapped.
     ///
-    /// Warning: This methods assume that `orderDetails.items.count` is equal to the product count,
+    /// Warning: This methods assume that `orderSynchronizer.order.items.count` is equal to the product count,
     /// As the module evolves to handle more types of items, we need to update the property to something like `itemsCount`
     /// or figure out a better way to get the product count.
     ///

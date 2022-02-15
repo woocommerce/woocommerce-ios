@@ -687,6 +687,22 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowStarted.rawValue])
         assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "billing_address")
     }
+
+    func test_view_model_fires_error_notice_when_providing_an_invalid_email() {
+        // Given
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing)
+        viewModel.fields.email = "invalid"
+
+        // When
+        let notice: Notice? = waitFor { promise in
+            viewModel.saveAddress { _ in
+                promise(viewModel.notice)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(notice, AddressFormViewModel.NoticeFactory.createInvalidEmailNotice())
+    }
 }
 
 private extension EditOrderAddressFormViewModelTests {

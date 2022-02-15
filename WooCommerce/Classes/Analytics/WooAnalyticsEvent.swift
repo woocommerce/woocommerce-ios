@@ -344,6 +344,7 @@ extension WooAnalyticsEvent {
             static let errorDescription = "error_description"
             static let to = "to"
             static let from = "from"
+            static let orderID = "id"
         }
 
         static func orderAddNew() -> WooAnalyticsEvent {
@@ -361,12 +362,14 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderStatusChange(flow: Flow, from oldStatus: OrderStatusEnum, to newStatus: OrderStatusEnum) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderStatusChange, properties: [
+        static func orderStatusChange(flow: Flow, orderID: Int64?, from oldStatus: OrderStatusEnum, to newStatus: OrderStatusEnum) -> WooAnalyticsEvent {
+            let properties: [String: WooAnalyticsEventPropertyType?] = [
                 Keys.flow: flow.rawValue,
+                Keys.orderID: orderID,
                 Keys.from: oldStatus.rawValue,
                 Keys.to: newStatus.rawValue
-            ])
+            ]
+            return WooAnalyticsEvent(statName: .orderStatusChange, properties: properties.compactMapValues { $0 })
         }
 
         static func orderCreateButtonTapped(status: OrderStatusEnum,

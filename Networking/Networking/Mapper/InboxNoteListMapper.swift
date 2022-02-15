@@ -17,6 +17,17 @@ struct InboxNoteListMapper: Mapper {
         decoder.userInfo = [
             .siteID: siteID
         ]
-        return try decoder.decode([InboxNote].self, from: response)
+        return try decoder.decode(InboxNoteListEnvelope.self, from: response).data
+    }
+}
+
+/// InboxNoteListEnvelope Disposable Entity:
+/// This entity allows us to parse [InboxNote] with JSONDecoder.
+///
+private struct InboxNoteListEnvelope: Decodable {
+    let data: [InboxNote]
+
+    private enum CodingKeys: String, CodingKey {
+        case data
     }
 }

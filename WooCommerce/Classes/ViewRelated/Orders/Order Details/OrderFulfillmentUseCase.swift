@@ -61,9 +61,7 @@ final class OrderFulfillmentUseCase {
     private func dispatchStatusUpdateAction(order: Order,
                                             status targetStatus: OrderStatusEnum,
                                             activity: Activity) -> FulfillmentProcess {
-        analytics.track(.orderStatusChange, withProperties: ["id": order.orderID,
-                                                             "from": order.status.rawValue,
-                                                             "to": targetStatus.rawValue])
+        analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .editing, orderID: order.orderID, from: order.status, to: targetStatus))
 
         let result: Future<Void, FulfillmentError> = Future { promise in
             let action = OrderAction.updateOrderStatus(siteID: order.siteID, orderID: order.orderID, status: targetStatus) { error in

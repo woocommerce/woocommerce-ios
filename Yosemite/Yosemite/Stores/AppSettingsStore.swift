@@ -205,6 +205,10 @@ public class AppSettingsStore: Store {
             setProductSKUInputScannerFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadProductSKUInputScannerFeatureSwitchState(onCompletion: let onCompletion):
             loadProductSKUInputScannerFeatureSwitchState(onCompletion: onCompletion)
+        case .setCouponManagementFeatureSwitchState(let isEnabled, let onCompletion):
+            setCouponManagementFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
+        case .loadCouponManagementFeatureSwitchState(let onCompletion):
+            loadCouponManagementFeatureSwitchState(onCompletion: onCompletion)
         }
     }
 }
@@ -357,6 +361,25 @@ private extension AppSettingsStore {
         onCompletion(.success(settings.isProductSKUInputScannerSwitchEnabled))
     }
 
+    /// Sets the state for the Coupon Mangagement beta feature switch into `GeneralAppSettings`.
+    ///
+    func setCouponManagementFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(isCouponManagementSwitchEnabled: isEnabled)
+            try saveGeneralAppSettings(settings)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Loads the most recent state for the Coupon Management beta feature switch from `GeneralAppSettings`.
+    ///
+    func loadCouponManagementFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        onCompletion(.success(settings.isCouponManagementSwitchEnabled))
+    }
+
     /// Loads the last persisted eligibility error information from `GeneralAppSettings`
     ///
     func loadEligibilityErrorInfo(onCompletion: (Result<EligibilityErrorInfo, Error>) -> Void) {
@@ -417,6 +440,7 @@ private extension AppSettingsStore {
                                       isStripeInPersonPaymentsSwitchEnabled: false,
                                       isCanadaInPersonPaymentsSwitchEnabled: false,
                                       isProductSKUInputScannerSwitchEnabled: false,
+                                      isCouponManagementSwitchEnabled: false,
                                       knownCardReaders: [],
                                       lastEligibilityErrorInfo: nil)
         }

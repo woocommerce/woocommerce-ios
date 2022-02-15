@@ -30,6 +30,7 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     var spyCreateCoupon: Coupon?
 
     var didCallLoadCouponReport = false
+    var spyLoadCouponReportDate: Date?
     var spyLoadCouponReportSiteID: Int64?
     var spyLoadCouponReportCouponID: Int64?
 
@@ -79,8 +80,9 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
         spyCreateCoupon = coupon
     }
 
-    func loadCouponReport(for siteID: Int64, couponID: Int64, completion: @escaping (Result<CouponReport, Error>) -> Void) {
+    func loadCouponReport(for siteID: Int64, couponID: Int64, from startDate: Date, completion: @escaping (Result<CouponReport, Error>) -> Void) {
         didCallLoadCouponReport = true
+        spyLoadCouponReportDate = startDate
         spyLoadCouponReportSiteID = siteID
         spyLoadCouponReportCouponID = couponID
     }

@@ -23,6 +23,8 @@ public typealias Credentials = Networking.Credentials
 public typealias CreateProductVariation = Networking.CreateProductVariation
 public typealias DotcomDevice = Networking.DotcomDevice
 public typealias Feature = WordPressKit.Feature
+public typealias InboxNote = Networking.InboxNote
+public typealias InboxAction = Networking.InboxAction
 public typealias Leaderboard = Networking.Leaderboard
 public typealias LeaderboardRow = Networking.LeaderboardRow
 public typealias LeaderboardRowContent = Networking.LeaderboardRowContent
@@ -141,11 +143,15 @@ public typealias StripeAccount = Networking.StripeAccount
 public typealias WCPayAccount = Networking.WCPayAccount
 public typealias WCPayAccountStatusEnum = Networking.WCPayAccountStatusEnum
 public typealias WCPayCustomer = Networking.Customer
+public typealias WCPayPaymentMethodType = Networking.WCPayPaymentMethodType
 public typealias WCPayCharge = Networking.WCPayCharge
+public typealias WCPayCardBrand = Networking.WCPayCardBrand
+public typealias WCPayCardFunding = Networking.WCPayCardFunding
 public typealias WCPayCardPresentPaymentDetails = Networking.WCPayCardPresentPaymentDetails
 public typealias WCPayCardPaymentDetails = Networking.WCPayCardPaymentDetails
 public typealias WCPayCardPresentReceiptDetails = Networking.WCPayCardPresentReceiptDetails
-public typealias WCPayCardBrand = Networking.WCPayCardBrand
+public typealias WCPayPaymentMethodDetails = Networking.WCPayPaymentMethodDetails
+public typealias WCPayChargeStatus = Networking.WCPayChargeStatus
 
 // MARK: - Exported Storage Symbols
 
@@ -158,6 +164,8 @@ public typealias StorageAddOnGroup = Storage.AddOnGroup
 public typealias StorageAnnouncement = Storage.Announcement
 public typealias StorageEligibilityErrorInfo = Storage.EligibilityErrorInfo
 public typealias StorageFeature = Storage.Feature
+public typealias StorageInboxNote = Storage.InboxNote
+public typealias StorageInboxAction = Storage.InboxAction
 public typealias StorageNote = Storage.Note
 public typealias StorageOrder = Storage.Order
 public typealias StorageOrderItemAttribute = Storage.OrderItemAttribute

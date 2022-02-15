@@ -48,6 +48,14 @@ class WooCommerceScreenshots: XCTestCase {
             .thenTakeScreenshot(named: "order-search")
             .cancel()
 
+            // Products
+            .tabBar.goToProductsScreen()
+            .collapseTopBannerIfNeeded()
+            .thenTakeScreenshot(named: "product-list")
+            .selectProduct(atIndex: 1)
+            .thenTakeScreenshot(named: "product-details")
+            .goBackToProductList()
+
             // Reviews
             .tabBar.goToMenuScreen()
             .goToReviewsScreen()
@@ -55,13 +63,6 @@ class WooCommerceScreenshots: XCTestCase {
             .selectReview(atIndex: 3)
             .thenTakeScreenshot(named: "review-details")
             .goBackToReviewsScreen()
-
-            // Products
-            .tabBar.goToProductsScreen()
-            .collapseTopBannerIfNeeded()
-            .thenTakeScreenshot(named: "product-list")
-            .selectProduct(atIndex: 1)
-            .thenTakeScreenshot(named: "product-details")
     }
 
     private let loop = try! SelectorEventLoop(selector: try! KqueueSelector())

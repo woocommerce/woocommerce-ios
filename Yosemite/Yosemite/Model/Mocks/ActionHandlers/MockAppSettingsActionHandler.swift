@@ -9,25 +9,27 @@ struct MockAppSettingsActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-            case .loadInitialStatsVersionToShow(let siteId, let onCompletion):
-                loadInitialStatsVersionToShow(siteId: siteId, onCompletion: onCompletion)
-            case .setStatsVersionLastShown:
-                // This case needs to be handled to avoid crashing when running screenshots
-                // Once the enum is removed, this can be as well.
-                success()
-            case .loadFeedbackVisibility(let type, let onCompletion):
-                loadFeedbackVisibility(type: type, onCompletion: onCompletion)
-            case .setInstallationDateIfNecessary(let date, let onCompletion):
-                setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
-            case .loadProductsSettings(let siteId, let onCompletion):
-                loadProductSettings(siteId: siteId, onCompletion: onCompletion)
-            case .loadEligibilityErrorInfo(let onCompletion):
-                onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
-            case .loadOrderAddOnsSwitchState(let onCompletion):
-                onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
-            case .resetEligibilityErrorInfo:
-                break
-            default: unimplementedAction(action: action)
+        case .loadInitialStatsVersionToShow(let siteId, let onCompletion):
+            loadInitialStatsVersionToShow(siteId: siteId, onCompletion: onCompletion)
+        case .setStatsVersionLastShown:
+            success()
+        case .loadFeedbackVisibility(let type, let onCompletion):
+            loadFeedbackVisibility(type: type, onCompletion: onCompletion)
+        case .setInstallationDateIfNecessary(let date, let onCompletion):
+            setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
+        case .loadProductsSettings(let siteId, let onCompletion):
+            loadProductSettings(siteId: siteId, onCompletion: onCompletion)
+        case .loadEligibilityErrorInfo(let onCompletion):
+            onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
+        case .loadOrderAddOnsSwitchState(let onCompletion):
+            onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
+        case .loadJetpackBenefitsBannerVisibility(_, _, let onCompletion):
+            onCompletion(false)
+        case .loadOrderCreationSwitchState(let onCompletion):
+            onCompletion(.success(true))
+        case .resetEligibilityErrorInfo, .setTelemetryAvailability, .loadOrdersSettings, .upsertProductsSettings:
+            break
+        default: unimplementedAction(action: action)
         }
     }
 

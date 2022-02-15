@@ -13,6 +13,12 @@ final class DatePickerTableViewCell: UITableViewCell {
         onDateSelected?(sender.date)
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        picker.minimumDate = nil
+        picker.maximumDate = nil
+    }
+
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBottomBorder()

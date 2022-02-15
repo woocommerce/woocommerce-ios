@@ -1,5 +1,6 @@
 default_platform(:ios)
 fastlane_require 'dotenv'
+fastlane_require 'git'
 
 UI.user_error!('Please run fastlane via `bundle exec`') unless FastlaneCore::Helper.bundler?
 
@@ -8,6 +9,7 @@ SECRETS_DIR = File.join(Dir.home, '.configure', 'woocommerce-ios', 'secrets')
 PROJECT_ENV_FILE_PATH = File.join(SECRETS_DIR, 'project.env')
 
 # Constants
+PROJECT_ROOT_FOLDER = File.dirname(File.expand_path(__dir__))
 FASTLANE_DIR = __dir__
 DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
@@ -421,22 +423,18 @@ platform :ios do
   #####################################################################################
   desc 'Builds and uploads an installable build'
   lane :build_and_upload_installable_build do |options|
+    ensure_sentry_installed
+
     alpha_code_signing
 
     # Get the current build version, and update it if needed
     version_config_path = '../config/Version.Public.xcconfig'
     versions = Xcodeproj::Config.new(File.new(version_config_path)).to_hash
-    build_number = versions['VERSION_LONG']
-
-    if options.key?(:build_number)
-      build_number = options[:build_number]
-
-      UI.message("Updating build version to #{build_number}")
-
-      versions['VERSION_LONG'] = build_number
-      new_config = Xcodeproj::Config.new(versions)
-      new_config.save_as(Pathname.new(version_config_path))
-    end
+    build_number = generate_installable_build_number
+    UI.message("Updating build version to #{build_number}")
+    versions['VERSION_LONG'] = build_number
+    new_config = Xcodeproj::Config.new(versions)
+    new_config.save_as(Pathname.new(version_config_path))
 
     gym(
       scheme: 'WooCommerce Alpha',
@@ -448,22 +446,14 @@ platform :ios do
       export_options: { method: 'enterprise', iCloudContainerEnvironment: 'Production' }
     )
 
-    sh('mv ../build/WooCommerce.ipa "../build/WooCommerce Alpha.ipa"')
-
-    # NOTE: "ipa" parameter is deprecated in appcenter_upload 1.6.0, but there's a bug in the action that
-    # makes the default gym output override the "file" parameter.
     appcenter_upload(
       api_token: get_required_env('APPCENTER_API_TOKEN'),
       owner_name: 'automattic',
       owner_type: 'organization',
       app_name: 'WooCommerce-Installable-Builds',
-      ipa: 'build/WooCommerce Alpha.ipa',
       destinations: 'All-users-of-WooCommerce-Installable-Builds',
       notify_testers: false
     )
-
-    # Install SentryCLI prior to trying to upload dSYMs
-    sh('curl -sL https://sentry.io/get-cli/ | bash')
 
     sentry_upload_dsym(
       auth_token: get_required_env('SENTRY_AUTH_TOKEN'),
@@ -472,13 +462,20 @@ platform :ios do
       dsym_path: './build/WooCommerce.app.dSYM.zip'
     )
 
+    return if ENV['BUILDKITE_PULL_REQUEST'].nil?
+
     download_url = Actions.lane_context[SharedValues::APPCENTER_DOWNLOAD_LINK]
     UI.message("Successfully built and uploaded installable build here: #{download_url}")
     install_url = 'https://install.appcenter.ms/orgs/automattic/apps/WooCommerce-Installable-Builds'
 
-    # Create a comment.json file so that Peril to comment with the build details, if this is running on CI
-    comment_body = "You can test the changes on this Pull Request by downloading it from AppCenter [here](#{install_url}) with build number: #{build_number}. IPA is available [here](#{download_url}). If you need access to this, you can ask a maintainer to add you."
-    File.write('comment.json', { body: comment_body }.to_json)
+    comment_body = "You can test the changes on this Pull Request by downloading it from AppCenter <a href='#{install_url}'>here</a> with build number: <code>#{build_number}</code>. IPA is available <a href='#{download_url}'>here</a>. If you need access to this, you can ask a maintainer to add you."
+
+    comment_on_pr(
+      project: 'woocommerce/woocommerce-ios',
+      pr_number: Integer(ENV['BUILDKITE_PULL_REQUEST']),
+      reuse_identifier: 'installable-build-link',
+      body: comment_body
+    )
   end
 
   #####################################################################################
@@ -660,9 +657,9 @@ platform :ios do
 
     # Provide enough information to bootstrap the configuration and generate the HTML report
     Snapshot.config = FastlaneCore::Configuration.create(Snapshot::Options.available_options, {
-                                                           "workspace": '../WooCommerce.xcworkspace',
-                                                           "scheme": 'WooCommerceScreenshots'
-                                                         })
+      "workspace": '../WooCommerce.xcworkspace',
+      "scheme": 'WooCommerceScreenshots'
+    })
 
     Snapshot::ReportsGenerator.new.generate
   end
@@ -827,92 +824,98 @@ platform :ios do
   end
 end
 
-  def fastlane_directory()
-    File.expand_path File.dirname(__FILE__)
-  end
+def fastlane_directory()
+  File.expand_path File.dirname(__FILE__)
+end
 
-  def derived_data_directory()
-    File.join(fastlane_directory, "DerivedData")
-  end
+def derived_data_directory()
+  File.join(fastlane_directory, "DerivedData")
+end
 
-  def screenshots_directory()
-    File.join(fastlane_directory, "screenshots")
-  end
+def screenshots_directory()
+  File.join(fastlane_directory, "screenshots")
+end
 
-  def screenshot_devices()
-    [
-      "iPhone 11 Pro Max",
-      "iPhone 8 Plus",
-      "iPad Pro (12.9-inch) (2nd generation)",
-      "iPad Pro (12.9-inch) (3rd generation)",
-    ]
-  end
+def screenshot_devices()
+  [
+    "iPhone 11 Pro Max",
+    "iPhone 8 Plus",
+    "iPad Pro (12.9-inch) (2nd generation)",
+    "iPad Pro (12.9-inch) (3rd generation)",
+  ]
+end
 
-  def simulator_version()
-    return '14.4'
-  end
+def simulator_version()
+  return '14.4'
+end
 
 ########################################################################
 # Test Lanes
 ########################################################################
-  #####################################################################################
-  # test_without_building
-  # -----------------------------------------------------------------------------------
-  # This lane runs tests without building the app.
-  # It requires a prebuilt xctestrun file and simulator destination where the tests will be run.
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane test_without_building [name:<Partial name of the .xctestrun file>] [try_count:<Number of times to try tests>]
-  #
-  # Example:
-  # bundle exec fastlane test_without_building name:UITests try_count:3
-  #####################################################################################
-  desc "Run tests without building"
-  lane :test_without_building do | options |
-    # Find the referenced .xctestrun file based on its name
-    buildProductsPath = File.expand_path("DerivedData/Build/Products/", File.dirname(Dir.pwd))
+#####################################################################################
+# test_without_building
+# -----------------------------------------------------------------------------------
+# This lane runs tests without building the app.
+# It requires a prebuilt xctestrun file and simulator destination where the tests will be run.
+# -----------------------------------------------------------------------------------
+# Usage:
+# bundle exec fastlane test_without_building [name:<Partial name of the .xctestrun file>]
+#
+# Example:
+# bundle exec fastlane test_without_building name:UITests
+#####################################################################################
+desc "Run tests without building"
+lane :test_without_building do | options |
+  # Find the referenced .xctestrun file based on its name
+  buildProductsPath = File.expand_path("DerivedData/Build/Products/", File.dirname(Dir.pwd))
 
-    testPlanPath = Dir.glob(File.join(buildProductsPath, '*.xctestrun') ).select { |e|
-      e.include?(options[:name])
-    }.first
+  testPlanPath = Dir.glob(File.join(buildProductsPath, '*.xctestrun') ).select { |e|
+    e.include?(options[:name])
+  }.first
 
-    UI.user_error!("Unable to find .xctestrun file") unless testPlanPath != nil and File.exists? (testPlanPath)
+  UI.user_error!("Unable to find .xctestrun file") unless testPlanPath != nil and File.exists? (testPlanPath)
 
-    summary = multi_scan(
-      workspace: "WooCommerce.xcworkspace",
-      scheme: "WooCommerce",
-      device: options[:device],
-      deployment_target_version: options[:ios_version],
-      test_without_building: true,
-      xctestrun: testPlanPath,
-      try_count: options[:try_count],
-      output_directory: "build/reports",
-      result_bundle: true,
-      fail_build: false
-    )
+  summary = run_tests(
+    workspace: "WooCommerce.xcworkspace",
+    scheme: "WooCommerce",
+    device: options[:device],
+    deployment_target_version: options[:ios_version],
+    test_without_building: true,
+    xctestrun: testPlanPath,
+    result_bundle: true,
+    # settins for XML test report generation via `trainer`
+    output_types: '',
+    fail_build: false
+  )
 
-    # Generate reports with trainer and delete scan ones.
-    generate_trainer_reports(summary[:report_files])
-    delete_scan_reports(summary[:report_files])
+  trainer(path: lane_context[SharedValues::SCAN_GENERATED_XCRESULT_PATH], fail_build: true)
+end
 
-    # Manually fail build if test have failed.
-    UI.test_failure!("#{summary[:failed_testcount]} tests have failed") if summary[:failed_testcount] > 0
+# -----------------------------------------------------------------------------------
+# Generates Installable Build Version Numbers in a Buildkite-specific way
+# -----------------------------------------------------------------------------------
+def generate_installable_build_number
+  if ENV['BUILDKITE']
+    commit = ENV['BUILDKITE_COMMIT'][0,7]
+    branch = ENV['BUILDKITE_BRANCH']
+    pr_num = ENV['BUILDKITE_PULL_REQUEST']
+
+    return pr_num == 'false' ? "#{branch}-#{commit}" : "pr#{pr_num}-#{commit}"
+  else
+    repo = Git.open(PROJECT_ROOT_FOLDER)
+    commit = repo.current_branch
+    branch = repo.revparse('HEAD')[0, 7]
+
+    return "#{branch}-#{commit}"
   end
+end
 
-  # -----------------------------------------------------------------------------------
-  # Geneate trainer reports for each xcresult report file.
-  # -----------------------------------------------------------------------------------
-  def generate_trainer_reports(report_files)
-    report_files.reject { |path| File.extname(path) != '.xcresult' }.each do |report_path|
-      trainer(path: report_path, fail_build: false)
-    end
-  end
-
-  # -----------------------------------------------------------------------------------
-  # Deletes html & junit reports generated by scan.
-  # -----------------------------------------------------------------------------------
-  def delete_scan_reports(report_files)
-    report_files.reject { |path| File.extname(path) == '.xcresult' }.each do |report_path|
-      File.delete(report_path)
-    end
-  end
+# -----------------------------------------------------------------------------------
+# Raises an error if Sentry is not installed
+# -----------------------------------------------------------------------------------
+def ensure_sentry_installed
+  # This is an action provided by the Sentry Fastlane plugin that verifies the
+  # CLI is installed and its version is compatible with the plugin's
+  # expectation.
+  sentry_check_cli_installed
+end

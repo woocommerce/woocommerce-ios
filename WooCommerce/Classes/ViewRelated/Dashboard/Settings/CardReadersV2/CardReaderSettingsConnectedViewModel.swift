@@ -254,6 +254,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     }
 
     /// Track an event related to software update. Adds whether it was for an optional or a required update to the tracked properties.
+    /// TODOTODO move details to WooAnalyticsEvent
     private func trackUpdate(_ stat: WooAnalyticsStat, error: Error? = nil) {
         let updateType = optionalReaderUpdateAvailable ? SoftwareUpdateTypeProperty.optional : SoftwareUpdateTypeProperty.required
         ServiceLocator.analytics.track(
@@ -267,6 +268,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     }
 
     /// Track an event NOT related to software update
+    /// TODOTODO move details to WooAnalyticsEvent
     private func trackOther(_ stat: WooAnalyticsStat, error: Error? = nil) {
         ServiceLocator.analytics.track(
             stat,

@@ -544,15 +544,16 @@ extension WooAnalyticsEvent {
 
     enum InPersonPayments {
 
-        private enum Keys {
+        enum Keys {
             static let batteryLevel = "battery_level"
             static let gatewayID = "plugin_slug"
             static let error = "error"
         }
 
+        static let unknownGatewayID = "unknown"
 
         static func gatewayID(forGatewayID: String?) -> String {
-            forGatewayID ?? "unknown"
+            forGatewayID ?? unknownGatewayID
         }
 
 

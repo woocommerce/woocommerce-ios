@@ -12,6 +12,22 @@ class CardReaderConnectionControllerTests: XCTestCase {
     ///
     private let sampleGatewayID: String = "dummy-gateway-for-unit-tests"
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        ServiceLocator.setAnalytics(analytics)
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        analytics = nil
+        analyticsProvider = nil
+    }
+
     func test_cancelling_search_calls_completion_with_success_false() throws {
         // Given
         let expectation = self.expectation(description: #function)
@@ -76,6 +92,12 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         // Then
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderConnectionSuccess.rawValue))
+        XCTAssertEqual(
+            analyticsProvider.receivedProperties.first?[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String,
+            sampleGatewayID
+        )
+
     }
 
     func test_finding_an_known_reader_automatically_connects_and_completes_with_success_true() {
@@ -142,6 +164,11 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         // Then
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderDiscoveryFailed.rawValue))
+        XCTAssertEqual(
+            analyticsProvider.receivedProperties.first?[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String,
+            sampleGatewayID
+        )
     }
 
     func test_finding_multiple_readers_presents_list_to_user_and_cancelling_list_calls_completion_with_success_false() {
@@ -212,6 +239,11 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         // Then
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderConnectionFailed.rawValue))
+        XCTAssertEqual(
+            analyticsProvider.receivedProperties.first?[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String,
+            sampleGatewayID
+        )
     }
 
     func test_user_can_cancel_search_after_connection_error_due_to_low_battery() {

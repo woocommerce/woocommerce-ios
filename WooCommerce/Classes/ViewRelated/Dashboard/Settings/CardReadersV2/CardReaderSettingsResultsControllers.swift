@@ -23,45 +23,30 @@ final class CardReaderSettingsResultsControllers {
     }()
 
     init(siteID: Int64, storageManager: StorageManagerType = ServiceLocator.storageManager) {
-        print("==== in CardReaderSettingsResultsControllers \(instanceID) init siteID = \(siteID)")
         self.siteID = siteID
         self.storageManager = storageManager
     }
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
-        print("==== In CardReaderSettingsResultsControllers \(instanceID) configureResultsControllers")
         self.onReload = onReload
         configurePaymentGatewayAccountResultsController(onReload: onReload)
     }
 
     private func configurePaymentGatewayAccountResultsController(onReload: @escaping () -> Void) {
-        print("==== In CardReaderSettingsResultsControllers \(instanceID) configurePaymentGatewayAccountResultsController")
         paymentGatewayAccountResultsController.onDidChangeContent = {
-            print("==== In \(self.instanceID) onDidChangeContent")
             onReload()
         }
 
-        paymentGatewayAccountResultsController.onDidChangeObject = { [weak self] (object, indexPath, type, newIndexPath) in
-            guard let self = self else {
-                print("==== In onDidChangeObject nil self")
-                return
-            }
-            print("==== In \(self.instanceID) onDidChangeObject")
+        paymentGatewayAccountResultsController.onDidChangeObject = { (object, indexPath, type, newIndexPath) in
             onReload()
         }
 
         paymentGatewayAccountResultsController.onDidResetContent = { [weak self] in
-            print("==== In CardReaderSettingsResultsControllers onDidResetContent")
-            guard let self = self else {
-                print("==== In onDidResetContent nil self")
-                return
-            }
-
+            guard let self = self else { return }
             self.refetchAllResultsControllers()
             onReload()
         }
 
-        print("==== CardReaderSettingsResultsControllers \(instanceID) - About to performFetch")
         try? paymentGatewayAccountResultsController.performFetch()
     }
 

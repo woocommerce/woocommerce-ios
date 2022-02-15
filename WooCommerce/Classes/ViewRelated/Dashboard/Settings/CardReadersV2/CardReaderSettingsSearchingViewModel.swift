@@ -53,11 +53,8 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
 
     private func configureResultsControllers() {
         dataSource.configureResultsControllers(onReload: { [weak self] in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
             self.connectedGatewayID = self.dataSource.cardPresentPaymentGatewayID()
-            print("==== \(self.connectedGatewayID)")
         })
     }
 

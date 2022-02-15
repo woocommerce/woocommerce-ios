@@ -21,19 +21,17 @@ final class CardReaderSettingsDataSource: NSObject {
     }
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
-        print("==== in CardReaderSettingsDataSource \(instanceID) configureResultsControllers")
         resultsControllers.configureResultsControllers(onReload: onReload)
     }
 
+    // TODOTODO allow nil to be returned
     func cardPresentPaymentGatewayID() -> String {
         let filteredAccounts = resultsControllers.paymentGatewayAccounts.filter { $0.isCardPresentEligible }
 
         guard let account = filteredAccounts.first else {
-            print("==== in CardReaderSettingsDataSource \(instanceID) cardPresentPaymentGatewayID no accounts!")
             return "unknown"
         }
 
-        print("==== in CardReaderSettingsDataSource \(instanceID) cardPresentPaymentGatewayID we have 1 or more accounts")
         return account.gatewayID
     }
 }

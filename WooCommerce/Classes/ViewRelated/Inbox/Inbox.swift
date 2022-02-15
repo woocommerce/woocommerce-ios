@@ -29,14 +29,16 @@ struct Inbox: View {
                            image: .emptyProductsTabImage)
                     .frame(maxHeight: .infinity)
             case .syncingFirstPage:
-                List {
-                    ForEach(viewModel.placeholderRowViewModels) { rowViewModel in
-                        InboxNoteRow(viewModel: rowViewModel)
-                            .redacted(reason: .placeholder)
-                            .shimmering()
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(viewModel.placeholderRowViewModels) { rowViewModel in
+                            InboxNoteRow(viewModel: rowViewModel)
+                                .redacted(reason: .placeholder)
+                                .shimmering()
+                        }
+                        .background(Color(.listForeground))
                     }
                 }
-                .listStyle(PlainListStyle())
             }
         }
         .background(Color(.listBackground).ignoresSafeArea())

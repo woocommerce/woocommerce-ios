@@ -25,6 +25,7 @@ struct AddProductVariationToOrder: View {
                                 viewModel.selectVariation(rowViewModel.productOrVariationID)
                                 isPresented.toggle()
                             }
+                        Divider().frame(height: Constants.dividerHeight)
                     }
                 }
             case .empty:
@@ -64,6 +65,10 @@ struct AddProductVariationToOrder: View {
 }
 
 private extension AddProductVariationToOrder {
+    enum Constants {
+        static let dividerHeight: CGFloat = 1
+    }
+
     enum Localization {
         static let emptyStateMessage = NSLocalizedString("No product variations found",
                                                          comment: "Message displayed if there are no product variations for a product.")

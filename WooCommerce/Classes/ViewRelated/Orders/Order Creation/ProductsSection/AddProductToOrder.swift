@@ -21,6 +21,7 @@ struct AddProductToOrder: View {
                                        loadAction: viewModel.syncNextPage) {
                         ForEach(viewModel.productRows) { rowViewModel in
                             createProductRow(rowViewModel: rowViewModel)
+                            Divider().frame(height: Constants.dividerHeight)
                         }
                     }
                 case .empty:
@@ -74,6 +75,10 @@ struct AddProductToOrder: View {
 }
 
 private extension AddProductToOrder {
+    enum Constants {
+        static let dividerHeight: CGFloat = 1
+    }
+
     enum Localization {
         static let title = NSLocalizedString("Add Product", comment: "Title for the screen to add a product to an order")
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Add Product screen")

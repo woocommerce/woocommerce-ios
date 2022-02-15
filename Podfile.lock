@@ -100,7 +100,7 @@ DEPENDENCIES:
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 2.5)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `fix/circular-imageview`)
+  - WordPressAuthenticator (~> 1.43.1-beta)
   - WordPressKit (~> 4.40.0)
   - WordPressShared (~> 1.15)
   - WordPressUI (~> 1.12.4-beta)
@@ -110,6 +110,8 @@ DEPENDENCIES:
   - ZendeskSupportSDK (~> 5.0)
 
 SPEC REPOS:
+  https://github.com/wordpress-mobile/cocoapods-specs.git:
+    - WordPressAuthenticator
   trunk:
     - Alamofire
     - AppAuth
@@ -150,16 +152,6 @@ SPEC REPOS:
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
 
-EXTERNAL SOURCES:
-  WordPressAuthenticator:
-    :branch: fix/circular-imageview
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-
-CHECKOUT OPTIONS:
-  WordPressAuthenticator:
-    :commit: e5f5971944c432889aaca8727682550f912592a3
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
@@ -185,7 +177,7 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: d0fee204f467dacf8808b7ac14ce43affeb271a5
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: 76a92d82b751a5bae1f9319f2c284c201ab09612
+  WordPressAuthenticator: adba93ef31576dcc0f72b8c0a8dfbd1c4467de99
   WordPressKit: 062e4f57ce871e2217b632a1f3cb0bbd54b5df6d
   WordPressShared: 5477f179c7fe03b5d574f91adda66f67d131827e
   WordPressUI: ccfa31bdd46676ffd8b71ff235e8059ed0832d61
@@ -201,6 +193,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 1fceea7aa1ac560e50ea6a0de9841e2aa40263f0
+PODFILE CHECKSUM: 7b9510331daa4f56335427278d1d4dec14532e4b
 
 COCOAPODS: 1.11.2

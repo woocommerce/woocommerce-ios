@@ -114,10 +114,10 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published private(set) var productRows: [ProductRowViewModel] = []
 
-    /// Item selected from the list of products in the order.
+    /// Selected product view model to render.
     /// Used to open the product details in `ProductInOrder`.
     ///
-    @Published var selectedOrderItem: NewOrderItem? = nil
+    @Published var selectedProductViewModel: ProductInOrderViewModel? = nil
 
     // MARK: Payment properties
 
@@ -171,18 +171,19 @@ final class NewOrderViewModel: ObservableObject {
         configurePaymentDataViewModel()
     }
 
-    /// Selects an order item.
+    /// Selects an order item by setting the `selectedProductViewModel`.
     ///
     /// - Parameter id: ID of the order item to select
-    func selectOrderItem(_ id: String) {
-        selectedOrderItem = orderDetails.items.first(where: { $0.id == id })
+    func selectOrderItem(_ id: Int64) {
+        selectedProductViewModel = createSelectedProductViewModel(itemID: id)
     }
 
     /// Removes an item from the order.
     ///
     /// - Parameter item: Item to remove from the order
-    func removeItemFromOrder(_ item: NewOrderItem) {
-        orderDetails.items.removeAll(where: { $0 == item })
+    func removeItemFromOrder(_ item: OrderItem) {
+        guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
+        orderSynchronizer.setProduct.send(input)
         configureProductRowViewModels()
     }
 
@@ -580,6 +581,23 @@ private extension NewOrderViewModel {
 
         // Return a new input with the new quantity but with the same item id to properly reference the update.
         return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity)
+    }
+
+    /// Creates a `ProductInOrderViewModel` based on the provided order item id.
+    ///
+    func createSelectedProductViewModel(itemID: Int64) -> ProductInOrderViewModel? {
+        // Find order item based on the provided id.
+        // Creates the product row view model needed for `ProductInOrderViewModel`.
+        guard
+            let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
+            let rowViewModel = createProductRowViewModel(for: orderItem, canChangeQuantity: false)
+        else {
+            return nil
+        }
+
+        return ProductInOrderViewModel(productRowViewModel: rowViewModel) { [weak self] in
+            self?.removeItemFromOrder(orderItem)
+        }
     }
 }
 

@@ -2,7 +2,13 @@ import Yosemite
 
 /// View model for `ProductInOrder`.
 ///
-final class ProductInOrderViewModel {
+final class ProductInOrderViewModel: Identifiable {
+
+    /// Underlying row ID.
+    ///
+    var ID: Int64 {
+        productRowViewModel.id
+    }
 
     /// The product being edited.
     ///

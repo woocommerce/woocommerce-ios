@@ -87,7 +87,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
 
         // Then
-        let appliedTo = String(format: NSLocalizedString("%d Products except %d Category", comment: ""), 3, 1)
+        let appliedTo = String(format: NSLocalizedString("%d Products excl. %d Category", comment: ""), 3, 1)
         XCTAssertEqual(viewModel.productsAppliedTo, appliedTo)
     }
 
@@ -97,7 +97,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
 
         // Then
-        let appliedTo = String(format: NSLocalizedString("%d Categories except %d Products", comment: ""), 3, 2)
+        let appliedTo = String(format: NSLocalizedString("%d Categories excl. %d Products", comment: ""), 3, 2)
         XCTAssertEqual(viewModel.productsAppliedTo, appliedTo)
     }
 
@@ -107,7 +107,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
 
         // Then
-        let appliedTo = String(format: NSLocalizedString("All except %d Products", comment: ""), 2)
+        let appliedTo = String(format: NSLocalizedString("All excl. %d Products", comment: ""), 2)
         XCTAssertEqual(viewModel.productsAppliedTo, appliedTo)
     }
 
@@ -117,7 +117,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         let viewModel = CouponDetailsViewModel(coupon: sampleCoupon)
 
         // Then
-        let appliedTo = String(format: NSLocalizedString("All except %d Categories", comment: ""), 2)
+        let appliedTo = String(format: NSLocalizedString("All excl. %d Categories", comment: ""), 2)
         XCTAssertEqual(viewModel.productsAppliedTo, appliedTo)
     }
 

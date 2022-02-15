@@ -112,7 +112,7 @@ struct CouponDetails: View {
                         ForEach(detailRows) { row in
                             TitleAndValueRow(title: row.title,
                                              value: .content(row.content),
-                                             selectionStyle: .disclosure,
+                                             selectionStyle: .none,
                                              action: row.action)
                                 .padding(.vertical, Constants.verticalSpacing)
                                 .padding(.horizontal, insets: geometry.safeAreaInsets)
@@ -122,6 +122,19 @@ struct CouponDetails: View {
                         }
                     }
                     .background(Color(.listForeground))
+
+                    Spacer().frame(height: Constants.margin)
+                    Divider()
+                    VStack {
+                        NavigationRow(content: {
+                            Text(Localization.usageDetails)
+                                .bodyStyle()
+                        }, action: {
+                            // TODO-5766: Add usage details screen
+                        }).padding(.horizontal, insets: geometry.safeAreaInsets)
+                    }
+                    .background(Color(.listForeground))
+                    Divider()
                 }
             }
             .background(Color(.listBackground))
@@ -165,6 +178,7 @@ private extension CouponDetails {
         static let performance = NSLocalizedString("Performance", comment: "Title of the Performance section on Coupons Details screen")
         static let discountedOrders = NSLocalizedString("Discounted Orders", comment: "Title of the Discounted Orders label on Coupon Details screen")
         static let amount = NSLocalizedString("Amount", comment: "Title of the Amount label on Coupon Details screen")
+        static let usageDetails = NSLocalizedString("Usage details", comment: "Title of the Usage details row in Coupon Details screen")
     }
 
     struct DetailRow: Identifiable {

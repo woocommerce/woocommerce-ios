@@ -46,7 +46,7 @@ class ProductRowViewModelTests: XCTestCase {
                                                             image: ProductImage.fake().copy(src: imageURLString))
 
         // When
-        let viewModel = ProductRowViewModel(id: rowID, productVariation: productVariation, name: name, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(id: rowID, productVariation: productVariation, name: name, canChangeQuantity: false, displayMode: .stock)
 
         // Then
         XCTAssertEqual(viewModel.id, rowID)
@@ -154,6 +154,37 @@ class ProductRowViewModelTests: XCTestCase {
         // Then
         let expectedProductDetailsLabel = "In stock • 2 variations"
         XCTAssertEqual(viewModel.productDetailsLabel, expectedProductDetailsLabel)
+    }
+
+    func test_view_model_creates_expected_label_for_variation_with_attributes_display_mode() {
+        // Given
+        let variation = ProductVariation.fake().copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")], stockStatus: .inStock)
+        let attributes = [VariationAttributeViewModel(name: "Color", value: "Blue"), VariationAttributeViewModel(name: "Size")]
+
+        // When
+        let viewModel = ProductRowViewModel(productVariation: variation, name: "", canChangeQuantity: false, displayMode: .attributes(attributes))
+
+        // Then
+        let expectedAttributesText = "Blue, Any Size"
+        let unexpectedStockText = "In stock"
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedAttributesText),
+                      "Expected label to contain \"\(expectedAttributesText)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
+        XCTAssertFalse(viewModel.productDetailsLabel.contains(unexpectedStockText))
+    }
+
+    func test_view_model_creates_expected_label_for_variation_with_stock_display_mode() {
+        // Given
+        let variation = ProductVariation.fake().copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")], stockStatus: .inStock)
+
+        // When
+        let viewModel = ProductRowViewModel(productVariation: variation, name: "", canChangeQuantity: false, displayMode: .stock)
+
+        // Then
+        let expectedStockText = "In stock"
+        let unexpectedAttributesText = "Blue"
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockText),
+                      "Expected label to contain \"\(expectedStockText)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
+        XCTAssertFalse(viewModel.productDetailsLabel.contains(unexpectedAttributesText))
     }
 
     func test_sku_label_is_formatted_correctly_for_product_with_sku() {

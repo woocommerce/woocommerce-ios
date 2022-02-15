@@ -137,7 +137,7 @@ struct CouponDetails: View {
                     .background(Color(.listForeground))
                     Divider()
                 }
-                NavigationLink(destination: CouponUsageDetails(), isActive: $showingUsageDetails) {
+                NavigationLink(destination: CouponUsageDetails(viewModel: .init(coupon: viewModel.coupon)), isActive: $showingUsageDetails) {
                     EmptyView()
                 }.hidden()
             }

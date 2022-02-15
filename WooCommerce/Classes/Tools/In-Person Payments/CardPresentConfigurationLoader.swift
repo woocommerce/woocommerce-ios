@@ -2,13 +2,10 @@ import Foundation
 import Yosemite
 
 final class CardPresentConfigurationLoader {
-    let stores: StoresManager
-
     private var stripeGatewayIPPEnabled: Bool = false
     private var canadaIPPEnabled: Bool = false
 
     init(stores: StoresManager = ServiceLocator.stores) {
-        self.stores = stores
         let stripeAction = AppSettingsAction.loadStripeInPersonPaymentsSwitchState(onCompletion: { [weak self] result in
             switch result {
             case .success(let stripeGatewayIPPEnabled):

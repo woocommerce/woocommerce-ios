@@ -31,6 +31,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
             }
         }
         stores.sessionManager.setStoreId(sampleSiteID)
+        ServiceLocator.setSelectedSiteSettings(.init(stores: stores, storageManager: storageManager))
     }
 
     override func tearDownWithError() throws {
@@ -609,6 +610,7 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
                 settingGroupKey: SiteSettingGroup.general.rawValue
             )
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
+        ServiceLocator.selectedSiteSettings.refresh()
     }
 
     enum Country: String {

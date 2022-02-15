@@ -415,7 +415,7 @@ final class OrdersRemoteTests: XCTestCase {
         let expected: [String: AnyHashable] = [
             "id": shipping.shippingID,
             "method_title": shipping.methodTitle,
-            "method_id": shipping.methodID,
+            "method_id": shipping.methodID ?? "",
             "total": shipping.total
         ]
         assertEqual(received, expected)

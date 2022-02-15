@@ -42,7 +42,7 @@ final class CouponDetailsViewModel: ObservableObject {
 
     /// Total amount deducted from orders that applied the coupon
     ///
-    @Published private(set) var discountedAmount: String = ""
+    @Published private(set) var discountedAmount: String?
 
     /// The current coupon
     ///
@@ -61,7 +61,6 @@ final class CouponDetailsViewModel: ObservableObject {
         self.coupon = coupon
         self.stores = stores
         self.currencySettings = currencySettings
-        self.discountedAmount = formatStringAmount("0")
         populateDetails()
     }
 
@@ -102,6 +101,10 @@ private extension CouponDetailsViewModel {
     func populateDetails() {
         couponCode = coupon.code
         description = coupon.description
+        discountedOrdersCount = "\(coupon.usageCount)"
+        if coupon.usageCount == 0 {
+            discountedAmount = formatStringAmount("0")
+        }
 
         switch coupon.discountType {
         case .percent:
@@ -132,9 +135,9 @@ private extension CouponDetailsViewModel {
 
     /// Localize content for the "Apply to" field. This takes into consideration different cases of apply rules:
     ///    - When only specific products or categories are defined: Display "x Products" or "x Categories"
-    ///    - When specific products/categories and exceptions are defined: Display "x Products except y Categories" etc.
+    ///    - When specific products/categories and exceptions are defined: Display "x Products excl. y Categories" etc.
     ///    - When both specific products and categories are defined: Display "x Products and y Categories"
-    ///    - When only exceptions are defined: Display "All except x Products" or "All except y Categories"
+    ///    - When only exceptions are defined: Display "All excl. x Products" or "All excl. y Categories"
     ///
     func localizeApplyRules(productsCount: Int, excludedProductsCount: Int, categoriesCount: Int, excludedCategoriesCount: Int) -> String {
         let productText = String.pluralize(productsCount, singular: Localization.singleProduct, plural: Localization.multipleProducts)
@@ -198,8 +201,8 @@ private extension CouponDetailsViewModel {
             comment: "The number of category allowed for a coupon in plural form. " +
             "Reads like: 10 Categories"
         )
-        static let allWithException = NSLocalizedString("All except %1$@", comment: "Exception rule for a coupon. Reads like: All except 2 Products")
-        static let ruleWithException = NSLocalizedString("%1$@ except %2$@", comment: "Exception rule for a coupon. Reads like: 3 Products except 1 Category")
+        static let allWithException = NSLocalizedString("All excl. %1$@", comment: "Exception rule for a coupon. Reads like: All excl. 2 Products")
+        static let ruleWithException = NSLocalizedString("%1$@ excl. %2$@", comment: "Exception rule for a coupon. Reads like: 3 Products excl. 1 Category")
         static let combinedRules = NSLocalizedString("%1$@ and %2$@", comment: "Combined rule for a coupon. Reads like: 2 Products and 1 Category")
     }
 }

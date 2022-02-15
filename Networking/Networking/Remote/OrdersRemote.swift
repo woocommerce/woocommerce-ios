@@ -147,6 +147,8 @@ public class OrdersRemote: Remote {
                         if let shippingAddress = order.shippingAddress {
                             params[Order.CodingKeys.shippingAddress.rawValue] = try shippingAddress.toDictionary()
                         }
+                    case .shippingLines:
+                        params[Order.CodingKeys.shippingLines.rawValue] = try order.shippingLines.compactMap { try $0.toDictionary() }
                     }
                 }
             }()
@@ -201,6 +203,9 @@ public class OrdersRemote: Remote {
                     case .fees:
                         let feesEncoded = try order.fees.map { try $0.toDictionary() }
                         params[Order.CodingKeys.feeLines.rawValue] = feesEncoded
+                    case .shippingLines:
+                        let shippingEncoded = try order.shippingLines.map { try $0.toDictionary() }
+                        params[Order.CodingKeys.shippingLines.rawValue] = shippingEncoded
                     }
                 }
             }()
@@ -283,6 +288,7 @@ public extension OrdersRemote {
         case shippingAddress
         case billingAddress
         case fees
+        case shippingLines
     }
 
     /// Order fields supported for create
@@ -293,5 +299,6 @@ public extension OrdersRemote {
         case items
         case billingAddress
         case shippingAddress
+        case shippingLines
     }
 }

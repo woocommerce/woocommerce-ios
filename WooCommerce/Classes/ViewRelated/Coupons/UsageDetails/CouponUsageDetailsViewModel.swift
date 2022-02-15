@@ -18,6 +18,14 @@ final class CouponUsageDetailsViewModel: ObservableObject {
 
     @Published private(set) var usageLimitPerCoupon: String = ""
 
+    @Published private(set) var limitUsageToXItems: String = ""
+
+    @Published private(set) var allowedEmails: String = ""
+
+    @Published private(set) var individualUseOnly: Bool = false
+
+    @Published private(set) var excludeSaleItems: Bool = false
+
     init(coupon: Coupon,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.coupon = coupon
@@ -37,6 +45,21 @@ private extension CouponUsageDetailsViewModel {
         } else {
             usageLimitPerCoupon = Localization.unlimited
         }
+
+        if let limitUsageItemCount = coupon.limitUsageToXItems {
+            limitUsageToXItems = "\(limitUsageItemCount)"
+        } else {
+            limitUsageToXItems = Localization.allQualifyingInCart
+        }
+
+        if coupon.emailRestrictions.isNotEmpty {
+            allowedEmails = coupon.emailRestrictions.joined(separator: ", ")
+        } else {
+            allowedEmails = Localization.noRestrictions
+        }
+
+        individualUseOnly = coupon.individualUse
+        excludeSaleItems = coupon.excludeSaleItems
     }
 
     func formatStringAmount(_ amount: String) -> String {
@@ -51,5 +74,13 @@ private extension CouponUsageDetailsViewModel {
     enum Localization {
         static let none = NSLocalizedString("None", comment: "Value for fields in Coupon Usage Details screen when no value is set")
         static let unlimited = NSLocalizedString("Unlimited", comment: "Value for fields in Coupon Usage Details screen when no limit is set")
+        static let allQualifyingInCart = NSLocalizedString(
+            "All Qualifying in Cart",
+            comment: "Value for the limit usage to X items row in Coupon Usage Details screen when no limit is set"
+        )
+        static let noRestrictions = NSLocalizedString(
+            "No Restrictions",
+            comment: "Value for the allowed emails row in Coupon Usage Details screen when no restriction is set"
+        )
     }
 }

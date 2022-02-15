@@ -12,34 +12,70 @@ struct CouponUsageDetails: View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    ListHeaderView(text: Localization.usageRestriction, alignment: .left)
+                    ListHeaderView(text: Localization.usageRestriction.uppercased(), alignment: .left)
                     VStack(alignment: .leading, spacing: 0) {
                         Divider()
                         TitleAndValueRow(title: String.localizedStringWithFormat(Localization.minimumSpend, viewModel.currencySymbol),
                                          value: .content(viewModel.minimumSpend))
-                            .padding(.horizontal, Constants.margin)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
                             .padding(.leading, insets: geometry.safeAreaInsets)
                         TitleAndValueRow(title: String.localizedStringWithFormat(Localization.maximumSpend, viewModel.currencySymbol),
                                          value: .content(viewModel.maximumSpend))
-                            .padding(.horizontal, Constants.margin)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
                             .padding(.leading, insets: geometry.safeAreaInsets)
                         TitleAndValueRow(title: Localization.usageLimitPerCoupon,
                                          value: .content(viewModel.usageLimitPerCoupon))
-                            .padding(.horizontal, Constants.margin)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        Divider()
+                    }
+                    .background(Color(.listForeground))
+                    .padding(.bottom, Constants.margin)
+
+                    VStack(alignment: .leading, spacing: 0) {
+                        Divider()
+                        TitleAndValueRow(title: Localization.limitUsageToXItems,
+                                         value: .content(viewModel.limitUsageToXItems))
+                            .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        Divider()
+                            .padding(.leading, Constants.margin)
+                            .padding(.leading, insets: geometry.safeAreaInsets)
+                        TitleAndValueRow(title: Localization.allowedEmails,
+                                         value: .content(viewModel.allowedEmails))
+                            .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        Divider()
+                    }
+                    .background(Color(.listForeground))
+                    .padding(.top, Constants.margin)
+
+                    ListHeaderView(text: Localization.usageLimits.uppercased(), alignment: .left)
+                    VStack(alignment: .leading, spacing: 0) {
+                        Divider()
+                        TitleAndToggleRow(title: Localization.individualUseOnly, isOn: .constant(viewModel.individualUseOnly))
+                            .padding(.horizontal, insets: geometry.safeAreaInsets)
+                            .padding(.horizontal, Constants.margin)
+                            .padding(.vertical, Constants.verticalSpacing)
+                        Divider()
+                    }
+                    .background(Color(.listForeground))
+                    .padding(.bottom, Constants.margin)
+
+                    VStack(alignment: .leading, spacing: 0) {
+                        Divider()
+                        TitleAndToggleRow(title: Localization.excludeSaleItems, isOn: .constant(viewModel.excludeSaleItems))
+                            .padding(.horizontal, insets: geometry.safeAreaInsets)
+                            .padding(.horizontal, Constants.margin)
+                            .padding(.vertical, Constants.verticalSpacing)
                         Divider()
                     }
                     .background(Color(.listForeground))
                 }
             }
             .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+            .ignoresSafeArea(.container, edges: [.horizontal])
         }
     }
 }

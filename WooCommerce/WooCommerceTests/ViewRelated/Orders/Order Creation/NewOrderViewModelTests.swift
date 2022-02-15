@@ -273,10 +273,13 @@ class NewOrderViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let addressViewModel = viewModel.createOrderAddressFormViewModel()
         XCTAssertFalse(viewModel.customerDataViewModel.isDataAvailable)
 
         // When
-        viewModel.orderDetails.billingAddress = sampleAddress1()
+        addressViewModel.fields.firstName = sampleAddress1().firstName
+        addressViewModel.fields.lastName = sampleAddress1().lastName
+        addressViewModel.saveAddress(onFinish: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.customerDataViewModel.isDataAvailable)

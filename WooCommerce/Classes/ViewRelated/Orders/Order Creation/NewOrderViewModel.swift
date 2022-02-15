@@ -216,11 +216,11 @@ final class NewOrderViewModel: ObservableObject {
     ///
     func createOrderAddressFormViewModel() -> CreateOrderAddressFormViewModel {
         CreateOrderAddressFormViewModel(siteID: siteID,
-                                        addressData: .init(billingAddress: orderDetails.billingAddress,
-                                                           shippingAddress: orderDetails.shippingAddress),
+                                        addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
+                                                           shippingAddress: orderSynchronizer.order.shippingAddress),
                                         onAddressUpdate: { [weak self] updatedAddressData in
-            self?.orderDetails.billingAddress = updatedAddressData.billingAddress
-            self?.orderDetails.shippingAddress = updatedAddressData.shippingAddress
+            let input = Self.createAddressesInput(from: updatedAddressData)
+            self?.orderSynchronizer.setAddresses.send(input)
             self?.trackCustomerDetailsAdded()
         })
     }
@@ -275,14 +275,12 @@ extension NewOrderViewModel {
     ///
     struct OrderDetails {
         var items: [NewOrderItem] = []
-        var billingAddress: Address?
-        var shippingAddress: Address?
 
         func toOrder() -> Order {
             OrderFactory.emptyNewOrder.copy(status: .pending,
                                             items: items.map { $0.orderItem },
-                                            billingAddress: billingAddress,
-                                            shippingAddress: shippingAddress)
+                                            billingAddress: nil,
+                                            shippingAddress: nil)
         }
     }
 
@@ -479,7 +477,7 @@ private extension NewOrderViewModel {
     /// Updates customer data viewmodel based on order addresses.
     ///
     func configureCustomerDataViewModel() {
-        $orderDetails
+        orderSynchronizer.orderPublisher
             .map {
                 CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
             }
@@ -511,7 +509,7 @@ private extension NewOrderViewModel {
     ///
     func trackCustomerDetailsAdded() {
         let areAddressesDifferent: Bool = {
-            guard let billingAddress = orderDetails.billingAddress, let shippingAddress = orderDetails.shippingAddress else {
+            guard let billingAddress = orderSynchronizer.order.billingAddress, let shippingAddress = orderSynchronizer.order.shippingAddress else {
                 return false
             }
             return billingAddress != shippingAddress
@@ -543,6 +541,16 @@ private extension NewOrderViewModel {
     func trackCreateOrderFailure(error: Error) {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(errorContext: String(describing: error),
                                                                             errorDescription: error.localizedDescription))
+    }
+
+    /// Creates an `OrderSyncAddressesInput` type from a `NewOrderAddressData` type.
+    /// Expects `billing` and `shipping` addresses to exists together,
+    ///
+    static func createAddressesInput(from data: CreateOrderAddressFormViewModel.NewOrderAddressData) -> OrderSyncAddressesInput? {
+        guard let billingAddress = data.billingAddress, let shippingAddress = data.shippingAddress else {
+            return nil
+        }
+        return OrderSyncAddressesInput(billing: billingAddress, shipping: shippingAddress)
     }
 }
 

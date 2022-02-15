@@ -16,27 +16,21 @@ struct CouponUsageDetails: View {
                     VStack(alignment: .leading, spacing: 0) {
                         Divider()
                         TitleAndValueRow(title: String.localizedStringWithFormat(Localization.minimumSpend, viewModel.currencySymbol),
-                                         value: .content(viewModel.minimumSpend),
-                                         selectable: false,
-                                         action: {})
+                                         value: .content(viewModel.minimumSpend))
                             .padding(.horizontal, Constants.margin)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
                             .padding(.leading, insets: geometry.safeAreaInsets)
                         TitleAndValueRow(title: String.localizedStringWithFormat(Localization.maximumSpend, viewModel.currencySymbol),
-                                         value: .content(viewModel.maximumSpend),
-                                         selectable: false,
-                                         action: {})
+                                         value: .content(viewModel.maximumSpend))
                             .padding(.horizontal, Constants.margin)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
                             .padding(.leading, insets: geometry.safeAreaInsets)
                         TitleAndValueRow(title: Localization.usageLimitPerCoupon,
-                                         value: .content(viewModel.usageLimitPerCoupon),
-                                         selectable: false,
-                                         action: {})
+                                         value: .content(viewModel.usageLimitPerCoupon))
                             .padding(.horizontal, Constants.margin)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()

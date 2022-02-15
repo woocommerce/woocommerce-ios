@@ -4,11 +4,19 @@ import SwiftUI
 ///
 struct TitleAndValueRow: View {
 
-    let title: String
-    let value: Value
-    var bold: Bool = false
-    let selectable: Bool
-    var action: () -> Void
+    private let title: String
+    private let value: Value
+    private let bold: Bool
+    private let selectable: Bool
+    private let action: () -> Void
+
+    init(title: String, value: Value, bold: Bool = false, selectable: Bool = false, action: @escaping () -> Void = {}) {
+        self.title = title
+        self.value = value
+        self.bold = bold
+        self.selectable = selectable
+        self.action = action
+    }
 
     var body: some View {
         Button(action: {

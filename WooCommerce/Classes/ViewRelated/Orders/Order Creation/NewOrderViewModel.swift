@@ -12,10 +12,6 @@ final class NewOrderViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    /// Order details used to create the order
-    ///
-    @Published var orderDetails = OrderDetails()
-
     /// Active navigation bar trailing item.
     /// Defaults to no visible button.
     ///
@@ -272,19 +268,6 @@ extension NewOrderViewModel {
         case loading
     }
 
-    /// Type to hold all order detail values
-    ///
-    struct OrderDetails {
-        var items: [NewOrderItem] = []
-
-        func toOrder() -> Order {
-            OrderFactory.emptyNewOrder.copy(status: .pending,
-                                            items: items.map { $0.orderItem },
-                                            billingAddress: nil,
-                                            shippingAddress: nil)
-        }
-    }
-
     /// Representation of order status display properties
     ///
     struct StatusBadgeViewModel {
@@ -310,52 +293,6 @@ extension NewOrderViewModel {
         init(orderStatusEnum: OrderStatusEnum) {
             let siteOrderStatus = OrderStatus(name: nil, siteID: 0, slug: orderStatusEnum.rawValue, total: 0)
             self.init(orderStatus: siteOrderStatus)
-        }
-    }
-
-    /// Representation of new items in an order.
-    ///
-    struct NewOrderItem: Equatable, Identifiable {
-        let id: String
-        let productID: Int64
-        let variationID: Int64
-        var quantity: Decimal
-        let price: NSDecimalNumber
-        var subtotal: String {
-            String(describing: quantity * price.decimalValue)
-        }
-
-        var orderItem: OrderItem {
-            OrderItem(itemID: 0,
-                      name: "",
-                      productID: productID,
-                      variationID: variationID,
-                      quantity: quantity,
-                      price: price,
-                      sku: nil,
-                      subtotal: subtotal,
-                      subtotalTax: "",
-                      taxClass: "",
-                      taxes: [],
-                      total: "",
-                      totalTax: "",
-                      attributes: [])
-        }
-
-        init(product: Product, quantity: Decimal) {
-            self.id = UUID().uuidString
-            self.productID = product.productID
-            self.variationID = 0 // Products in an order are represented in Core with a variation ID of 0
-            self.quantity = quantity
-            self.price = NSDecimalNumber(string: product.price)
-        }
-
-        init(variation: ProductVariation, quantity: Decimal) {
-            self.id = UUID().uuidString
-            self.productID = variation.productID
-            self.variationID = variation.productVariationID
-            self.quantity = quantity
-            self.price = NSDecimalNumber(string: variation.price)
         }
     }
 

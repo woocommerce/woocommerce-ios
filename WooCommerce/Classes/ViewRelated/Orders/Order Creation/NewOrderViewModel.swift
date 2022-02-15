@@ -124,7 +124,7 @@ final class NewOrderViewModel: ObservableObject {
     /// Indicates if the Payment section should be shown
     ///
     var shouldShowPaymentSection: Bool {
-        orderDetails.items.isNotEmpty
+        orderSynchronizer.order.items.isNotEmpty
     }
 
     /// Defines if the view should be disabled.
@@ -188,21 +188,21 @@ final class NewOrderViewModel: ObservableObject {
 
     /// Creates a view model for the `ProductRow` corresponding to an order item.
     ///
-    func createProductRowViewModel(for item: NewOrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
+    func createProductRowViewModel(for item: OrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
         guard let product = allProducts.first(where: { $0.productID == item.productID }) else {
             return nil
         }
 
         if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
             let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: product.attributes)
-            return ProductRowViewModel(id: item.id,
+            return ProductRowViewModel(id: item.itemID,
                                        productVariation: variation,
                                        name: product.name,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
                                        displayMode: .attributes(attributes))
         } else {
-            return ProductRowViewModel(id: item.id, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
+            return ProductRowViewModel(id: item.itemID, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
         }
     }
 
@@ -436,8 +436,8 @@ private extension NewOrderViewModel {
     /// Adds a selected product (from the product list) to the order.
     ///
     func addProductToOrder(_ product: Product) {
-        let newOrderItem = NewOrderItem(product: product, quantity: 1)
-        orderDetails.items.append(newOrderItem)
+        let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+        orderSynchronizer.setProduct.send(input)
         configureProductRowViewModels()
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
@@ -446,8 +446,8 @@ private extension NewOrderViewModel {
     /// Adds a selected product variation (from the product list) to the order.
     ///
     func addProductVariationToOrder(_ variation: ProductVariation) {
-        let newOrderItem = NewOrderItem(variation: variation, quantity: 1)
-        orderDetails.items.append(newOrderItem)
+        let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
+        orderSynchronizer.setProduct.send(input)
         configureProductRowViewModels()
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
@@ -458,7 +458,7 @@ private extension NewOrderViewModel {
     func configureProductRowViewModels() {
         updateProductsResultsController()
         updateProductVariationsResultsController()
-        productRows = orderDetails.items.enumerated().compactMap { index, item in
+        productRows = orderSynchronizer.order.items.compactMap { item in
             guard let productRowViewModel = createProductRowViewModel(for: item, canChangeQuantity: true) else {
                 return nil
             }
@@ -466,7 +466,8 @@ private extension NewOrderViewModel {
             // Observe changes to the product quantity
             productRowViewModel.$quantity
                 .sink { [weak self] newQuantity in
-                    self?.orderDetails.items[index].quantity = newQuantity
+                    // TODO: Add update quantity support
+                    // self?.orderDetails.items[index].quantity = newQuantity
                 }
                 .store(in: &cancellables)
 
@@ -487,14 +488,14 @@ private extension NewOrderViewModel {
     /// Updates payment section view model based on items in the order.
     ///
     func configurePaymentDataViewModel() {
-        $orderDetails
-            .map { [weak self] orderDetails in
+        orderSynchronizer.orderPublisher
+            .map { [weak self] order in
                 guard let self = self else {
                     return PaymentDataViewModel()
                 }
 
-                let itemsTotal = orderDetails.items
-                    .map { $0.orderItem.subtotal }
+                let itemsTotal = order.items
+                    .map { $0.subtotal }
                     .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
                     .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
                     .stringValue
@@ -519,7 +520,7 @@ private extension NewOrderViewModel {
 
     /// Tracks when the create order button is tapped.
     ///
-    /// Warning: This methods assume that `orderDetails.items.count` is equal to the product count,
+    /// Warning: This methods assume that `orderSynchronizer.order.items.count` is equal to the product count,
     /// As the module evolves to handle more types of items, we need to update the property to something like `itemsCount`
     /// or figure out a better way to get the product count.
     ///

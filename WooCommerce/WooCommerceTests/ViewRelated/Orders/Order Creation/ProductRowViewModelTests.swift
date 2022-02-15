@@ -1,12 +1,13 @@
 import XCTest
 import Yosemite
+import Fakes
 @testable import WooCommerce
 
 class ProductRowViewModelTests: XCTestCase {
 
     func test_viewModel_is_created_with_correct_initial_values_from_product() {
         // Given
-        let rowID = "0"
+        let rowID = Int64(0)
         let imageURLString = "https://woo.com/woo.jpg"
         let product = Product.fake().copy(productID: 12,
                                           name: "Test Product",
@@ -38,7 +39,7 @@ class ProductRowViewModelTests: XCTestCase {
 
     func test_viewModel_is_created_with_correct_initial_values_from_product_variation() {
         // Given
-        let rowID = "0"
+        let rowID = Int64(0)
         let imageURLString = "https://woo.com/woo.jpg"
         let name = "Blue - Any Size"
         let productVariation = ProductVariation.fake().copy(productVariationID: 12,

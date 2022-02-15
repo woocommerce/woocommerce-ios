@@ -19,7 +19,7 @@ struct OrderSyncProductInput {
         case product(Product)
         case variation(ProductVariation)
     }
-    var id: Int64 = Int64(UUID().uuidString.hashValue)
+    var id = Int64(UUID().uuidString.hashValue)
     let product: ProductType
     let quantity: Decimal
 }

@@ -18,13 +18,9 @@ struct Inbox: View {
                 InfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
                                    loadAction: viewModel.onLoadNextPageAction) {
                     ForEach(viewModel.noteRowViewModels) { rowViewModel in
-                        if #available(iOS 15.0, *) {
-                            // In order to show full-width separator, the default list separator is hidden and a `Divider` is shown inside the row.
-                            InboxNoteRow(viewModel: rowViewModel)
-                        } else {
-                            InboxNoteRow(viewModel: rowViewModel)
-                        }
-                    }.background(Color(.listForeground))
+                        InboxNoteRow(viewModel: rowViewModel)
+                    }
+                    .background(Color(.listForeground))
                 }
             case .empty:
                 // TODO: 5954 - update empty state

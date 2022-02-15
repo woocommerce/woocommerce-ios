@@ -21,7 +21,9 @@ struct AddProductToOrder: View {
                                        loadAction: viewModel.syncNextPage) {
                         ForEach(viewModel.productRows) { rowViewModel in
                             createProductRow(rowViewModel: rowViewModel)
+                                .padding(Constants.defaultPadding)
                             Divider().frame(height: Constants.dividerHeight)
+                                .padding(.leading, Constants.defaultPadding)
                         }
                     }
                                        .background(Color(.listForeground))
@@ -78,6 +80,7 @@ struct AddProductToOrder: View {
 private extension AddProductToOrder {
     enum Constants {
         static let dividerHeight: CGFloat = 1
+        static let defaultPadding: CGFloat = 16
     }
 
     enum Localization {

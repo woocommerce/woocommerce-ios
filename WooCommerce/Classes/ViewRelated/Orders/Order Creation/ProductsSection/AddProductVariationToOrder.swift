@@ -21,11 +21,13 @@ struct AddProductVariationToOrder: View {
                                    loadAction: viewModel.syncNextPage) {
                     ForEach(viewModel.productVariationRows) { rowViewModel in
                         ProductRow(viewModel: rowViewModel)
+                            .padding(Constants.defaultPadding)
                             .onTapGesture {
                                 viewModel.selectVariation(rowViewModel.productOrVariationID)
                                 isPresented.toggle()
                             }
                         Divider().frame(height: Constants.dividerHeight)
+                            .padding(.leading, Constants.defaultPadding)
                     }
                     .background(Color(.listForeground))
                 }
@@ -68,6 +70,7 @@ struct AddProductVariationToOrder: View {
 private extension AddProductVariationToOrder {
     enum Constants {
         static let dividerHeight: CGFloat = 1
+        static let defaultPadding: CGFloat = 16
     }
 
     enum Localization {

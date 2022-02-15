@@ -466,8 +466,10 @@ private extension NewOrderViewModel {
             // Observe changes to the product quantity
             productRowViewModel.$quantity
                 .sink { [weak self] newQuantity in
-                    // TODO: Add update quantity support
-                    // self?.orderDetails.items[index].quantity = newQuantity
+                    guard let self = self, let newInput = self.createUpdateProductInput(item: item, quantity: newQuantity) else {
+                        return
+                    }
+                    self.orderSynchronizer.setProduct.send(newInput)
                 }
                 .store(in: &cancellables)
 
@@ -552,6 +554,32 @@ private extension NewOrderViewModel {
             return nil
         }
         return OrderSyncAddressesInput(billing: billingAddress, shipping: shippingAddress)
+    }
+
+    /// Creates a new `OrderSyncProductInput` type meant to update an existing input from `OrderSynchronizer`
+    /// If the referenced product can't be found, `nil` is returned.
+    ///
+    private func createUpdateProductInput(item: OrderItem, quantity: Decimal) -> OrderSyncProductInput? {
+        // Finds the product or productVariation associated with the order item.
+        let product: OrderSyncProductInput.ProductType? = {
+            if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+                return .variation(variation)
+            }
+
+            if let product = allProducts.first(where: { $0.productID == item.productID }) {
+                return .product(product)
+            }
+
+            return nil
+        }()
+
+        guard let product = product else {
+            DDLogError("⛔️ Product with ID: \(item.productID) not found.")
+            return nil
+        }
+
+        // Return a new input with the new quantity but with the same item id to properly reference the update.
+        return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity)
     }
 }
 

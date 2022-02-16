@@ -88,6 +88,7 @@ struct CouponUsageDetails: View {
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal])
         }
+        .navigationTitle(Localization.usageDetails)
     }
 }
 
@@ -98,6 +99,7 @@ private extension CouponUsageDetails {
     }
 
     enum Localization {
+        static let usageDetails = NSLocalizedString("Usage Details", comment: "Navigation title for usage details screen")
         static let usageRestriction = NSLocalizedString(
             "Usage Restrictions",
             comment: "Title for the usage restrictions section on coupon usage details screen"

@@ -28,9 +28,6 @@ struct InboxNoteRow: View {
                     Spacer()
                 }
 
-                Spacer()
-                    .frame(height: 8)
-
                 VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                     // Title.
                     Text(viewModel.title)

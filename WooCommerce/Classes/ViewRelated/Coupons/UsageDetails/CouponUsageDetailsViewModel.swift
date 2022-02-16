@@ -9,61 +9,54 @@ final class CouponUsageDetailsViewModel: ObservableObject {
 
     let currencySymbol: String
 
-    @Published var minimumSpend: String = ""
+    @Published var minimumSpend: String
 
-    @Published var maximumSpend: String = ""
+    @Published var maximumSpend: String
 
-    @Published var usageLimitPerCoupon: String = ""
+    @Published var usageLimitPerCoupon: String
 
-    @Published var usageLimitPerUser: String = ""
+    @Published var usageLimitPerUser: String
 
-    @Published var limitUsageToXItems: String = ""
+    @Published var limitUsageToXItems: String
 
-    @Published var allowedEmails: String = ""
+    @Published var allowedEmails: String
 
-    @Published var individualUseOnly: Bool = false
+    @Published var individualUseOnly: Bool
 
-    @Published var excludeSaleItems: Bool = false
+    @Published var excludeSaleItems: Bool
 
     init(coupon: Coupon,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.coupon = coupon
         self.currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
-        populateDetails()
-    }
-}
 
-// MARK: - Private helpers
-//
-private extension CouponUsageDetailsViewModel {
-    func populateDetails() {
-        minimumSpend = coupon.minimumAmount
-        maximumSpend = coupon.maximumAmount
+        self.minimumSpend = coupon.minimumAmount
+        self.maximumSpend = coupon.maximumAmount
         if let perCoupon = coupon.usageLimit {
-            usageLimitPerCoupon = "\(perCoupon)"
+            self.usageLimitPerCoupon = "\(perCoupon)"
         } else {
-            usageLimitPerCoupon = ""
+            self.usageLimitPerCoupon = ""
         }
 
         if let perUser = coupon.usageLimitPerUser {
-            usageLimitPerUser = "\(perUser)"
+            self.usageLimitPerUser = "\(perUser)"
         } else {
-            usageLimitPerUser = ""
+            self.usageLimitPerUser = ""
         }
 
         if let limitUsageItemCount = coupon.limitUsageToXItems {
-            limitUsageToXItems = "\(limitUsageItemCount)"
+            self.limitUsageToXItems = "\(limitUsageItemCount)"
         } else {
-            limitUsageToXItems = ""
+            self.limitUsageToXItems = ""
         }
 
         if coupon.emailRestrictions.isNotEmpty {
-            allowedEmails = coupon.emailRestrictions.joined(separator: ", ")
+            self.allowedEmails = coupon.emailRestrictions.joined(separator: ", ")
         } else {
-            allowedEmails = ""
+            self.allowedEmails = ""
         }
 
-        individualUseOnly = coupon.individualUse
-        excludeSaleItems = coupon.excludeSaleItems
+        self.individualUseOnly = coupon.individualUse
+        self.excludeSaleItems = coupon.excludeSaleItems
     }
 }

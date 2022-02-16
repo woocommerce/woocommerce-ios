@@ -39,7 +39,6 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                           stockStatusKey: ProductStockStatus.onBackOrder.rawValue)
         let model = EditableProductModel(product: product)
         let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
-        print(product)
 
         // Action
         let tableViewModel = DefaultProductFormTableViewModel(product: model, actionsFactory: actionsFactory, currency: "")
@@ -49,7 +48,6 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
             return
         }
-        print(rows)
         var inventoryViewModel: ProductFormSection.SettingsRow.ViewModel?
         for row in rows {
             if case let .inventory(viewModel, _) = row {
@@ -65,7 +63,6 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let variation = ProductVariation.fake()
         let model = EditableProductVariationModel(productVariation: variation)
         let actionsFactory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
-        print(variation)
 
         // Action
         let tableViewModel = DefaultProductFormTableViewModel(product: model, actionsFactory: actionsFactory, currency: "")
@@ -76,7 +73,6 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             return
         }
 
-        print(rows)
         var isVariation: Bool?
         for row in rows {
             if case .images(_, _, let isVariationValue) = row {

@@ -13,6 +13,7 @@ struct CouponUsageDetails: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     ListHeaderView(text: Localization.usageRestriction.uppercased(), alignment: .left)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                     VStack(alignment: .leading, spacing: 0) {
                         Divider()
                         TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.minimumSpend, viewModel.currencySymbol),
@@ -75,6 +76,7 @@ struct CouponUsageDetails: View {
                     .padding(.top, Constants.margin)
 
                     ListHeaderView(text: Localization.usageLimits.uppercased(), alignment: .left)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                     VStack(alignment: .leading, spacing: 0) {
                         Divider()
                         TitleAndToggleRow(title: Localization.individualUseOnly, isOn: .constant(viewModel.individualUseOnly))

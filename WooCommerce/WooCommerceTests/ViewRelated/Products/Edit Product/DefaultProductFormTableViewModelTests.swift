@@ -63,10 +63,6 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
     func test_variable_product_view_model_row_has_isVariation_true() {
         // Arrange
         let variation = ProductVariation.fake()
-        //let product = Product.fake().copy(productTypeKey: ProductType.variable.rawValue,
-//                                          sku: "",
-//                                          manageStock: false,
-//                                          stockStatusKey: ProductStockStatus.onBackOrder.rawValue)
         let model = EditableProductVariationModel(productVariation: variation)
         let actionsFactory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
         print(variation)
@@ -79,35 +75,20 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             XCTFail("Unexpected section at index 0: \(tableViewModel.sections)")
             return
         }
-//        guard case let .settings(rows) = tableViewModel.sections[0] else {
-//            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
-//            return
-//        }
+
         print(rows)
-        var isVariation: Bool? // could do optional boolean type, but need to adjust how you write the assertion. Have to unwrap the optional. It gives us more information to use the optional.
-        //= ProductFormSection.PrimaryFieldRow.images
+        var isVariation: Bool?
         for row in rows {
-            if case .images(_, _, let isVariationValue) = row { //double-check style guide about putting "let" inside the ()
+            if case .images(_, _, let isVariationValue) = row {
                 isVariation = isVariationValue
                 break
             }
         }
-      //  XCTAssertNil(inventoryViewModel?.details)
 
         if let isVariation = isVariation {
           XCTAssertTrue(isVariation)
         } else {
           XCTFail("Cell not found")
         }
-
-
-//        var inventoryViewModel: ProductFormSection.SettingsRow.ViewModel?
-//        for row in rows {
-//            if case let .inventory(viewModel, _) = row {
-//                inventoryViewModel = viewModel
-//                break
-//            }
-//        }
-
     }
 }

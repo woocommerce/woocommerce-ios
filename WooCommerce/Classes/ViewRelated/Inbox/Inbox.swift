@@ -31,7 +31,7 @@ struct Inbox: View {
                 // TODO: 5954 - update empty state
                 EmptyState(title: Localization.emptyStateTitle,
                            description: Localization.emptyStateMessage,
-                           image: .emptyProductsTabImage)
+                           image: .emptyInboxNotesImage)
                     .frame(maxHeight: .infinity)
             case .syncingFirstPage:
                 List {

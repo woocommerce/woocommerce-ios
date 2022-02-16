@@ -228,6 +228,12 @@ extension UIImage {
         return UIImage(named: "woo-empty-coupons")!
     }
 
+    /// Empty Inbox Notes Icon
+    ///
+    static var emptyInboxNotesImage: UIImage {
+        return UIImage(named: "woo-empty-inbox-notes")!
+    }
+
     /// Empty Products Icon
     ///
     static var emptyProductsImage: UIImage {

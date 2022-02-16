@@ -151,20 +151,23 @@ extension CouponListViewModel: SyncingCoordinatorDelegate {
                                 pageNumber: pageNumber,
                                 pageSize: pageSize) { [weak self] result in
                 guard let self = self else { return }
-                self.handleCouponSyncResult(result: result)
+                self.handleCouponSyncResult(pageNumber: pageNumber, result: result)
                 onCompletion?(result.isSuccess)
         }
 
         storesManager.dispatch(action)
     }
 
-    func handleCouponSyncResult(result: Result<Bool, Error>) {
+    func handleCouponSyncResult(pageNumber: Int, result: Result<Bool, Error>) {
         switch result {
         case .success:
             DDLogInfo("Synchronized coupons")
+            ServiceLocator.analytics.track(.couponsLoaded,
+                                           withProperties: ["is_loading_more": pageNumber != SyncingCoordinator.Defaults.pageFirstIndex])
 
         case .failure(let error):
             DDLogError("⛔️ Error synchronizing coupons: \(error)")
+            ServiceLocator.analytics.track(.couponsLoadedFailed, withError: error)
         }
 
         self.transitionToResultsUpdatedState(hasData: couponViewModels.isNotEmpty)

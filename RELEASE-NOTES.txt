@@ -4,6 +4,7 @@
 -----
 - [*] Orders: In the experimental Order Creation feature, product variations added to a new order now show a list of their attributes. [https://github.com/woocommerce/woocommerce-ios/pull/6131]
 - [*] Enlarged the tap area for the action button on the notice view. [https://github.com/woocommerce/woocommerce-ios/pull/6146]
+- [*] Reviews: Fixed crash on iPad when tapping the More button. [https://github.com/woocommerce/woocommerce-ios/pull/6187]
 
 8.5
 -----

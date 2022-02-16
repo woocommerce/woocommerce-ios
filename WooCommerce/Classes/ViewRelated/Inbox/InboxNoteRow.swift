@@ -10,7 +10,7 @@ struct InboxNoteRow: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: Constants.spacingBetweenTopHStackAndContentVStack) {
                 // HStack with type icon and relative date.
                 HStack {
                     Circle()
@@ -87,6 +87,7 @@ private extension InboxNoteRow {
 
     enum Constants {
         static let spacingBetweenActions: CGFloat = 16
+        static let spacingBetweenTopHStackAndContentVStack: CGFloat = 8
         static let verticalSpacing: CGFloat = 14
         static let defaultPadding: CGFloat = 16
         static let dividerHeight: CGFloat = 1

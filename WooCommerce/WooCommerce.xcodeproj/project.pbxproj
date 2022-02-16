@@ -503,6 +503,7 @@
 		26B9875D273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B9875C273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift */; };
 		26B9875F273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B9875E273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift */; };
 		26C6439327B5DBE900DD00D1 /* OrderSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6439227B5DBE900DD00D1 /* OrderSynchronizer.swift */; };
+		26C6439527B9A1B300DD00D1 /* LocalOrderSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6439427B9A1B300DD00D1 /* LocalOrderSynchronizer.swift */; };
 		26C6E8E026E2B7BD00C7BB0F /* CountrySelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6E8DF26E2B7BD00C7BB0F /* CountrySelectorViewModel.swift */; };
 		26C6E8E426E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6E8E326E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift */; };
 		26C6E8E626E6B5F500C7BB0F /* StateSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6E8E526E6B5F500C7BB0F /* StateSelectorViewModel.swift */; };
@@ -2135,6 +2136,7 @@
 		26B9875C273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsNoteViewModel.swift; sourceTree = "<group>"; };
 		26B9875E273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsNoteViewModelTests.swift; sourceTree = "<group>"; };
 		26C6439227B5DBE900DD00D1 /* OrderSynchronizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderSynchronizer.swift; sourceTree = "<group>"; };
+		26C6439427B9A1B300DD00D1 /* LocalOrderSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalOrderSynchronizer.swift; sourceTree = "<group>"; };
 		26C6E8DF26E2B7BD00C7BB0F /* CountrySelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountrySelectorViewModel.swift; sourceTree = "<group>"; };
 		26C6E8E326E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountrySelectorViewModelTests.swift; sourceTree = "<group>"; };
 		26C6E8E526E6B5F500C7BB0F /* StateSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateSelectorViewModel.swift; sourceTree = "<group>"; };
@@ -4520,6 +4522,7 @@
 			isa = PBXGroup;
 			children = (
 				26C6439227B5DBE900DD00D1 /* OrderSynchronizer.swift */,
+				26C6439427B9A1B300DD00D1 /* LocalOrderSynchronizer.swift */,
 			);
 			path = Synchronizer;
 			sourceTree = "<group>";
@@ -8857,6 +8860,7 @@
 				45C8B2662316AB460002FA77 /* BillingAddressTableViewCell.swift in Sources */,
 				E11228BC2707161E004E9F2D /* CardPresentModalUpdateFailed.swift in Sources */,
 				454453CC27566FAE00464AC5 /* HubMenuElement.swift in Sources */,
+				26C6439527B9A1B300DD00D1 /* LocalOrderSynchronizer.swift in Sources */,
 				B541B2152189EEA1008FE7C1 /* Scanner+Helpers.swift in Sources */,
 				4512054F2464741B005D68DE /* ProductVisibility.swift in Sources */,
 				45A4221A24ACC79C003B1E4C /* SwitchStoreNoticePresenter.swift in Sources */,

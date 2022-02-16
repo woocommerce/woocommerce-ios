@@ -38,11 +38,17 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     private let stores: StoresManager
 
+    /// This is the order status that we will use to keep the order in sync with the remote source.
+    ///
+    private var baseSyncStatus: OrderStatusEnum = .pending
+
     // MARK: Initializers
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
+
+        updateBaseSyncOrderStatus()
     }
 
     // MARK: Methods
@@ -54,5 +60,16 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
     ///
     func commitAllChanges(onCompletion: @escaping (Result<Order, Error>) -> Void) {
         // TODO: Implement
+    }
+}
+
+// MARK: Helpers
+private extension RemoteOrderSynchronizer {
+    /// Updates the base sync order status.
+    ///
+    func updateBaseSyncOrderStatus() {
+        NewOrderInitialStatusResolver(siteID: siteID, stores: stores).resolve { [weak self] baseStatus in
+            self?.baseSyncStatus = baseStatus
+        }
     }
 }

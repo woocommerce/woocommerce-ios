@@ -81,7 +81,13 @@ private extension LocalOrderSynchronizer {
             }
             .assign(to: &$order)
 
-        // TODO: Bind shipping & fees input
+        setShipping.withLatestFrom(orderPublisher)
+            .map { shippingLineInput, order in
+                order.copy(shippingLines: shippingLineInput.flatMap { [$0] } ?? [])
+            }
+            .assign(to: &$order)
+
+        // TODO: Bind fees input
     }
 }
 

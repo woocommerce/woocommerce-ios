@@ -101,6 +101,14 @@ struct LinkStyle: ViewModifier {
     }
 }
 
+struct HeadlineLinkStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.headline)
+            .foregroundColor(Color(.accent))
+    }
+}
+
 // MARK: View extensions
 extension View {
     /// - Parameters:
@@ -142,5 +150,9 @@ extension View {
 
     func linkStyle() -> some View {
         self.modifier(LinkStyle())
+    }
+
+    func headlineLinkStyle() -> some View {
+        self.modifier(HeadlineLinkStyle())
     }
 }

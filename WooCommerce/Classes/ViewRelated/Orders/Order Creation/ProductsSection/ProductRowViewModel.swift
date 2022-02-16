@@ -13,7 +13,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Unique ID for the view model.
     ///
-    let id: String
+    let id: Int64
 
     // MARK: Product properties
 
@@ -93,7 +93,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     let numberOfVariations: Int
 
-    init(id: String? = nil,
+    init(id: Int64? = nil,
          productOrVariationID: Int64,
          name: String,
          sku: String?,
@@ -107,7 +107,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          numberOfVariations: Int = 0,
          variationDisplayMode: VariationDisplayMode? = nil,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
-        self.id = id ?? productOrVariationID.description
+        self.id = id ?? Int64(UUID().uuidString.hashValue)
         self.productOrVariationID = productOrVariationID
         self.name = name
         self.sku = sku
@@ -125,7 +125,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Initialize `ProductRowViewModel` with a `Product`
     ///
-    convenience init(id: String? = nil,
+    convenience init(id: Int64? = nil,
                      product: Product,
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
@@ -155,7 +155,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Initialize `ProductRowViewModel` with a `ProductVariation`
     ///
-    convenience init(id: String? = nil,
+    convenience init(id: Int64? = nil,
                      productVariation: ProductVariation,
                      name: String,
                      quantity: Decimal = 1,

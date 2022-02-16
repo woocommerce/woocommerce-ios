@@ -3,7 +3,7 @@ import Networking
 
 /// Factory to create convenience order types.
 ///
-enum OrderFactory {
+public enum OrderFactory {
     /// Creates an order suitable to be used as a simple payments order.
     /// Under the hood it uses a fee line with or without taxes to create an order with the desired amount.
     ///
@@ -51,4 +51,8 @@ enum OrderFactory {
               taxes: [],
               attributes: [])
     }
+
+    /// References a new empty order with constants `Date` values.
+    ///
+    public static let emptyNewOrder = Order.empty
 }

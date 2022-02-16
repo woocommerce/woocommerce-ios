@@ -15,20 +15,31 @@ struct CouponUsageDetails: View {
                     ListHeaderView(text: Localization.usageRestriction.uppercased(), alignment: .left)
                     VStack(alignment: .leading, spacing: 0) {
                         Divider()
-                        TitleAndValueRow(title: String.localizedStringWithFormat(Localization.minimumSpend, viewModel.currencySymbol),
-                                         value: .content(viewModel.minimumSpend))
+                        TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.minimumSpend, viewModel.currencySymbol),
+                                             placeholder: Localization.none,
+                                             text: $viewModel.minimumSpend,
+                                             symbol: viewModel.currencySymbol,
+                                             editable: false,
+                                             keyboardType: .decimalPad)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
                             .padding(.leading, insets: geometry.safeAreaInsets)
-                        TitleAndValueRow(title: String.localizedStringWithFormat(Localization.maximumSpend, viewModel.currencySymbol),
-                                         value: .content(viewModel.maximumSpend))
+                        TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.maximumSpend, viewModel.currencySymbol),
+                                             placeholder: Localization.none,
+                                             text: $viewModel.maximumSpend,
+                                             symbol: viewModel.currencySymbol,
+                                             editable: false,
+                                             keyboardType: .decimalPad)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
                             .padding(.leading, insets: geometry.safeAreaInsets)
-                        TitleAndValueRow(title: Localization.usageLimitPerCoupon,
-                                         value: .content(viewModel.usageLimitPerCoupon))
+                        TitleAndTextFieldRow(title: Localization.usageLimitPerCoupon,
+                                             placeholder: Localization.unlimited,
+                                             text: $viewModel.usageLimitPerCoupon,
+                                             editable: false,
+                                             keyboardType: .asciiCapableNumberPad)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                     }
@@ -37,14 +48,19 @@ struct CouponUsageDetails: View {
 
                     VStack(alignment: .leading, spacing: 0) {
                         Divider()
-                        TitleAndValueRow(title: Localization.limitUsageToXItems,
-                                         value: .content(viewModel.limitUsageToXItems))
+                        TitleAndTextFieldRow(title: Localization.limitUsageToXItems,
+                                             placeholder: Localization.allQualifyingInCart,
+                                             text: $viewModel.limitUsageToXItems,
+                                             editable: false,
+                                             keyboardType: .asciiCapableNumberPad)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
                             .padding(.leading, insets: geometry.safeAreaInsets)
                         TitleAndValueRow(title: Localization.allowedEmails,
-                                         value: .content(viewModel.allowedEmails))
+                                         value: viewModel.allowedEmails.isNotEmpty ?
+                                            .content(viewModel.allowedEmails) :
+                                            .placeholder(Localization.noRestrictions))
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                     }
@@ -59,12 +75,8 @@ struct CouponUsageDetails: View {
                             .padding(.horizontal, Constants.margin)
                             .padding(.vertical, Constants.verticalSpacing)
                         Divider()
-                    }
-                    .background(Color(.listForeground))
-                    .padding(.bottom, Constants.margin)
-
-                    VStack(alignment: .leading, spacing: 0) {
-                        Divider()
+                            .padding(.leading, Constants.margin)
+                            .padding(.leading, insets: geometry.safeAreaInsets)
                         TitleAndToggleRow(title: Localization.excludeSaleItems, isOn: .constant(viewModel.excludeSaleItems))
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                             .padding(.horizontal, Constants.margin)
@@ -72,6 +84,7 @@ struct CouponUsageDetails: View {
                         Divider()
                     }
                     .background(Color(.listForeground))
+                    .padding(.bottom, Constants.margin)
                 }
             }
             .background(Color(.listBackground))
@@ -121,6 +134,16 @@ private extension CouponUsageDetails {
         static let excludeSaleItems = NSLocalizedString(
             "Exclude Sale Items",
             comment: "Title for the exclude sale items row in coupon usage details screen."
+        )
+        static let none = NSLocalizedString("None", comment: "Value for fields in Coupon Usage Details screen when no value is set")
+        static let unlimited = NSLocalizedString("Unlimited", comment: "Value for fields in Coupon Usage Details screen when no limit is set")
+        static let allQualifyingInCart = NSLocalizedString(
+            "All Qualifying in Cart",
+            comment: "Value for the limit usage to X items row in Coupon Usage Details screen when no limit is set"
+        )
+        static let noRestrictions = NSLocalizedString(
+            "No Restrictions",
+            comment: "Value for the allowed emails row in Coupon Usage Details screen when no restriction is set"
         )
     }
 }

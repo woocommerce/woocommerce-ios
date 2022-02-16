@@ -657,9 +657,9 @@ platform :ios do
 
     # Provide enough information to bootstrap the configuration and generate the HTML report
     Snapshot.config = FastlaneCore::Configuration.create(Snapshot::Options.available_options, {
-                                                           "workspace": '../WooCommerce.xcworkspace',
-                                                           "scheme": 'WooCommerceScreenshots'
-                                                         })
+      "workspace": '../WooCommerce.xcworkspace',
+      "scheme": 'WooCommerceScreenshots'
+    })
 
     Snapshot::ReportsGenerator.new.generate
   end
@@ -824,118 +824,98 @@ platform :ios do
   end
 end
 
-  def fastlane_directory()
-    File.expand_path File.dirname(__FILE__)
-  end
+def fastlane_directory()
+  File.expand_path File.dirname(__FILE__)
+end
 
-  def derived_data_directory()
-    File.join(fastlane_directory, "DerivedData")
-  end
+def derived_data_directory()
+  File.join(fastlane_directory, "DerivedData")
+end
 
-  def screenshots_directory()
-    File.join(fastlane_directory, "screenshots")
-  end
+def screenshots_directory()
+  File.join(fastlane_directory, "screenshots")
+end
 
-  def screenshot_devices()
-    [
-      "iPhone 11 Pro Max",
-      "iPhone 8 Plus",
-      "iPad Pro (12.9-inch) (2nd generation)",
-      "iPad Pro (12.9-inch) (3rd generation)",
-    ]
-  end
+def screenshot_devices()
+  [
+    "iPhone 11 Pro Max",
+    "iPhone 8 Plus",
+    "iPad Pro (12.9-inch) (2nd generation)",
+    "iPad Pro (12.9-inch) (3rd generation)",
+  ]
+end
 
-  def simulator_version()
-    return '14.4'
-  end
+def simulator_version()
+  return '14.4'
+end
 
 ########################################################################
 # Test Lanes
 ########################################################################
-  #####################################################################################
-  # test_without_building
-  # -----------------------------------------------------------------------------------
-  # This lane runs tests without building the app.
-  # It requires a prebuilt xctestrun file and simulator destination where the tests will be run.
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane test_without_building [name:<Partial name of the .xctestrun file>] [try_count:<Number of times to try tests>]
-  #
-  # Example:
-  # bundle exec fastlane test_without_building name:UITests try_count:3
-  #####################################################################################
-  desc "Run tests without building"
-  lane :test_without_building do | options |
-    # Find the referenced .xctestrun file based on its name
-    buildProductsPath = File.expand_path("DerivedData/Build/Products/", File.dirname(Dir.pwd))
+#####################################################################################
+# test_without_building
+# -----------------------------------------------------------------------------------
+# This lane runs tests without building the app.
+# It requires a prebuilt xctestrun file and simulator destination where the tests will be run.
+# -----------------------------------------------------------------------------------
+# Usage:
+# bundle exec fastlane test_without_building [name:<Partial name of the .xctestrun file>]
+#
+# Example:
+# bundle exec fastlane test_without_building name:UITests
+#####################################################################################
+desc "Run tests without building"
+lane :test_without_building do | options |
+  # Find the referenced .xctestrun file based on its name
+  buildProductsPath = File.expand_path("DerivedData/Build/Products/", File.dirname(Dir.pwd))
 
-    testPlanPath = Dir.glob(File.join(buildProductsPath, '*.xctestrun') ).select { |e|
-      e.include?(options[:name])
-    }.first
+  testPlanPath = Dir.glob(File.join(buildProductsPath, '*.xctestrun') ).select { |e|
+    e.include?(options[:name])
+  }.first
 
-    UI.user_error!("Unable to find .xctestrun file") unless testPlanPath != nil and File.exists? (testPlanPath)
+  UI.user_error!("Unable to find .xctestrun file") unless testPlanPath != nil and File.exists? (testPlanPath)
 
-    summary = multi_scan(
-      workspace: "WooCommerce.xcworkspace",
-      scheme: "WooCommerce",
-      device: options[:device],
-      deployment_target_version: options[:ios_version],
-      test_without_building: true,
-      xctestrun: testPlanPath,
-      try_count: options[:try_count],
-      output_directory: "build/reports",
-      result_bundle: true,
-      fail_build: false
-    )
+  summary = run_tests(
+    workspace: "WooCommerce.xcworkspace",
+    scheme: "WooCommerce",
+    device: options[:device],
+    deployment_target_version: options[:ios_version],
+    test_without_building: true,
+    xctestrun: testPlanPath,
+    result_bundle: true,
+    # settins for XML test report generation via `trainer`
+    output_types: '',
+    fail_build: false
+  )
 
-    # Generate reports with trainer and delete scan ones.
-    generate_trainer_reports(summary[:report_files])
-    delete_scan_reports(summary[:report_files])
+  trainer(path: lane_context[SharedValues::SCAN_GENERATED_XCRESULT_PATH], fail_build: true)
+end
 
-    # Manually fail build if test have failed.
-    UI.test_failure!("#{summary[:failed_testcount]} tests have failed") if summary[:failed_testcount] > 0
+# -----------------------------------------------------------------------------------
+# Generates Installable Build Version Numbers in a Buildkite-specific way
+# -----------------------------------------------------------------------------------
+def generate_installable_build_number
+  if ENV['BUILDKITE']
+    commit = ENV['BUILDKITE_COMMIT'][0,7]
+    branch = ENV['BUILDKITE_BRANCH']
+    pr_num = ENV['BUILDKITE_PULL_REQUEST']
+
+    return pr_num == 'false' ? "#{branch}-#{commit}" : "pr#{pr_num}-#{commit}"
+  else
+    repo = Git.open(PROJECT_ROOT_FOLDER)
+    commit = repo.current_branch
+    branch = repo.revparse('HEAD')[0, 7]
+
+    return "#{branch}-#{commit}"
   end
+end
 
-  # -----------------------------------------------------------------------------------
-  # Geneate trainer reports for each xcresult report file.
-  # -----------------------------------------------------------------------------------
-  def generate_trainer_reports(report_files)
-    report_files.reject { |path| File.extname(path) != '.xcresult' }.each do |report_path|
-      trainer(path: report_path, fail_build: false)
-    end
-  end
-
-  # -----------------------------------------------------------------------------------
-  # Deletes html & junit reports generated by scan.
-  # -----------------------------------------------------------------------------------
-  def delete_scan_reports(report_files)
-    report_files.reject { |path| File.extname(path) == '.xcresult' }.each do |report_path|
-      File.delete(report_path)
-    end
-  end
-
-  # -----------------------------------------------------------------------------------
-  # Generates Installable Build Version Numbers in a Buildkite-specific way
-  # -----------------------------------------------------------------------------------
-  def generate_installable_build_number
-    if ENV['BUILDKITE']
-      commit = ENV['BUILDKITE_COMMIT'][0,7]
-      branch = ENV['BUILDKITE_BRANCH']
-      pr_num = ENV['BUILDKITE_PULL_REQUEST']
-
-      return pr_num == 'false' ? "#{branch}-#{commit}" : "pr#{pr_num}-#{commit}"
-    else
-      repo = Git.open(PROJECT_ROOT_FOLDER)
-      commit = repo.current_branch
-      branch = repo.revparse('HEAD')[0, 7]
-
-      return "#{branch}-#{commit}"
-    end
-  end
-
-  # -----------------------------------------------------------------------------------
-  # Raises an error if Sentry is not installed
-  # -----------------------------------------------------------------------------------
-  def ensure_sentry_installed
-      UI.user_error!('sentry-cli not installed') unless sh('command -v sentry-cli')
-  end
+# -----------------------------------------------------------------------------------
+# Raises an error if Sentry is not installed
+# -----------------------------------------------------------------------------------
+def ensure_sentry_installed
+  # This is an action provided by the Sentry Fastlane plugin that verifies the
+  # CLI is installed and its version is compatible with the plugin's
+  # expectation.
+  sentry_check_cli_installed
+end

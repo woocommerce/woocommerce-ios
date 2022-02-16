@@ -96,6 +96,10 @@
 		02FF056B23DED3670058E6E7 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 02FF056A23DED3670058E6E7 /* Media.xcassets */; };
 		02FF056D23DEDCB90058E6E7 /* MockImageSourceWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056C23DEDCB90058E6E7 /* MockImageSourceWriter.swift */; };
 		02FF056F23E04F320058E6E7 /* MockMediaExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */; };
+		031C1EAA27B1702800298699 /* WCPayCharge+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EA927B1702800298699 /* WCPayCharge+ReadOnlyConvertible.swift */; };
+		031C1EAC27B1873200298699 /* WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EAB27B1873200298699 /* WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift */; };
+		031C1EAE27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EAD27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift */; };
+		031C1EB027B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EAF27B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift */; };
 		031FD8A026FC970400B315C7 /* RosettaTestingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031FD89F26FC970300B315C7 /* RosettaTestingHelper.swift */; };
 		03FBDA222631521100ACE257 /* CouponAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDA212631521100ACE257 /* CouponAction.swift */; };
 		03FBDA26263296A100ACE257 /* CouponStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDA25263296A100ACE257 /* CouponStore.swift */; };
@@ -171,6 +175,9 @@
 		45010695239A6CDE00E24722 /* TaxClassAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45010694239A6CDE00E24722 /* TaxClassAction.swift */; };
 		45151A8F27B156E40080845F /* InboxNotesAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45151A8E27B156E40080845F /* InboxNotesAction.swift */; };
 		45151A9127B158A10080845F /* InboxNotesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45151A9027B158A10080845F /* InboxNotesStore.swift */; };
+		45182D1F27B54D3000B4C05C /* InboxNote+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45182D1E27B54D3000B4C05C /* InboxNote+ReadOnlyConvertible.swift */; };
+		45182D2127B5533400B4C05C /* InboxAction+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45182D2027B5533400B4C05C /* InboxAction+ReadOnlyConvertible.swift */; };
+		45182D2327B55F9C00B4C05C /* InboxNotesStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45182D2227B55F9C00B4C05C /* InboxNotesStoreTests.swift */; };
 		453305F7245AE68C00264E50 /* SitePostStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305F6245AE68C00264E50 /* SitePostStore.swift */; };
 		453305F9245AE6B200264E50 /* SitePostAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305F8245AE6B200264E50 /* SitePostAction.swift */; };
 		453305FB245AEDCB00264E50 /* SitePostStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305FA245AEDCB00264E50 /* SitePostStoreTests.swift */; };
@@ -487,6 +494,10 @@
 		02FF056A23DED3670058E6E7 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		02FF056C23DEDCB90058E6E7 /* MockImageSourceWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageSourceWriter.swift; sourceTree = "<group>"; };
 		02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMediaExportService.swift; sourceTree = "<group>"; };
+		031C1EA927B1702800298699 /* WCPayCharge+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCharge+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		031C1EAB27B1873200298699 /* WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		031C1EAD27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		031C1EAF27B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardPaymentDetails+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		031FD89F26FC970300B315C7 /* RosettaTestingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RosettaTestingHelper.swift; sourceTree = "<group>"; };
 		03FBDA212631521100ACE257 /* CouponAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponAction.swift; sourceTree = "<group>"; };
 		03FBDA25263296A100ACE257 /* CouponStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponStore.swift; sourceTree = "<group>"; };
@@ -558,6 +569,9 @@
 		45010694239A6CDE00E24722 /* TaxClassAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassAction.swift; sourceTree = "<group>"; };
 		45151A8E27B156E40080845F /* InboxNotesAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxNotesAction.swift; sourceTree = "<group>"; };
 		45151A9027B158A10080845F /* InboxNotesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxNotesStore.swift; sourceTree = "<group>"; };
+		45182D1E27B54D3000B4C05C /* InboxNote+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InboxNote+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		45182D2027B5533400B4C05C /* InboxAction+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InboxAction+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		45182D2227B55F9C00B4C05C /* InboxNotesStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxNotesStoreTests.swift; sourceTree = "<group>"; };
 		453305F6245AE68C00264E50 /* SitePostStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostStore.swift; sourceTree = "<group>"; };
 		453305F8245AE6B200264E50 /* SitePostAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostAction.swift; sourceTree = "<group>"; };
 		453305FA245AEDCB00264E50 /* SitePostStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostStoreTests.swift; sourceTree = "<group>"; };
@@ -1152,6 +1166,8 @@
 				03FBDA3D2632E29600ACE257 /* Coupon+ReadOnlyConvertible.swift */,
 				2685C10C263C900500D9EE97 /* AddOnGroup+ReadOnlyConvertible.swift */,
 				45E4620D2684C45500011BF2 /* Country+ReadOnlyConvertible.swift */,
+				45182D1E27B54D3000B4C05C /* InboxNote+ReadOnlyConvertible.swift */,
+				45182D2027B5533400B4C05C /* InboxAction+ReadOnlyConvertible.swift */,
 				74B2601E2188A92A0041793A /* Note+ReadOnlyConvertible.swift */,
 				74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */,
 				74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */,
@@ -1207,6 +1223,10 @@
 				DEFD6D962644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift */,
 				077F39E126A5AFCA00ABEADC /* SystemPlugin+ReadOnlyConvertible.swift */,
 				BAB3737827964A9500837B4A /* OrderTaxLine+ReadOnlyConvertible.swift */,
+				031C1EA927B1702800298699 /* WCPayCharge+ReadOnlyConvertible.swift */,
+				031C1EAB27B1873200298699 /* WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift */,
+				031C1EAF27B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift */,
+				031C1EAD27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -1332,6 +1352,7 @@
 				741F34832195F752005F5BD9 /* CommentStoreTests.swift */,
 				03FBDA29263296C400ACE257 /* CouponStoreTests.swift */,
 				45E462152684D9C000011BF2 /* DataStoreTests.swift */,
+				45182D2227B55F9C00B4C05C /* InboxNotesStoreTests.swift */,
 				748525AB218A45360036DF75 /* NotificationStoreTests.swift */,
 				74A7688D20D45ED400F9D437 /* OrderStoreTests.swift */,
 				573B448A2424082B00E71ADC /* OrderStoreTests+FetchFilteredAndAllOrders.swift */,
@@ -1815,6 +1836,7 @@
 				74685D4E20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift in Sources */,
 				7471401121877668009A11CC /* NotificationAction.swift in Sources */,
 				266503512620E2EB0079A159 /* ProductAddOn+ReadOnlyConvertible.swift in Sources */,
+				45182D2127B5533400B4C05C /* InboxAction+ReadOnlyConvertible.swift in Sources */,
 				453305F9245AE6B200264E50 /* SitePostAction.swift in Sources */,
 				CE4FD4522350FB5400A16B31 /* OrderItemTaxRefund+ReadOnlyConvertible.swift in Sources */,
 				31A89EE6278CC38F002A588E /* StripeAccount+PaymentGatewayAccount.swift in Sources */,
@@ -1834,6 +1856,7 @@
 				CE3B7AD72225ECA90050FE4B /* OrderStatusStore.swift in Sources */,
 				B5631ECD2114DF8C008D3535 /* EntityListener.swift in Sources */,
 				D80F758A223F72AA002F4A3B /* ShipmentTrackingProviderGroup+ReadOnlyConvertible.swift in Sources */,
+				031C1EAE27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift in Sources */,
 				5758EB3024DC7791009ED8A6 /* InAppFeedbackCardVisibilityUseCase.swift in Sources */,
 				7471401321877A8B009A11CC /* NotificationStore.swift in Sources */,
 				74D42DBA221C978D00B4977D /* ShipmentTracking+ReadOnlyType.swift in Sources */,
@@ -1887,6 +1910,7 @@
 				7493750E224988DE007D85D1 /* ProductImage+ReadOnlyConvertible.swift in Sources */,
 				26E5A08225A66868000DF8F6 /* ProductAttributeTermStore.swift in Sources */,
 				02FF056323DE9C490058E6E7 /* MediaAction.swift in Sources */,
+				031C1EAC27B1873200298699 /* WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift in Sources */,
 				D80F758C223F74B6002F4A3B /* ShipmentTrackingProvider+ReadOnlyConvertible.swift in Sources */,
 				45739F372437680F00480C95 /* ProductSettings.swift in Sources */,
 				247CE88725833F1200F9D9D1 /* MockObjectGraph.swift in Sources */,
@@ -1984,6 +2008,7 @@
 				247CE7C02582DC7200F9D9D1 /* ProductImage+Mocks.swift in Sources */,
 				7492FADF217FB11D00ED2C69 /* SettingAction.swift in Sources */,
 				450106872399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift in Sources */,
+				45182D1F27B54D3000B4C05C /* InboxNote+ReadOnlyConvertible.swift in Sources */,
 				022F00C224726090008CD97F /* SiteNotificationCountFileContents.swift in Sources */,
 				247CE7BC2582DC1E00F9D9D1 /* MockCustomer.swift in Sources */,
 				D87F614C22657B150031A13B /* AppSettingsStore.swift in Sources */,
@@ -2001,11 +2026,13 @@
 				CE179D55235F4E1700C24EB3 /* RefundAction.swift in Sources */,
 				02BA23C422EEEB3B009539E7 /* AvailabilityAction.swift in Sources */,
 				CE5F9A7A22B2D455001755E8 /* Array+Helpers.swift in Sources */,
+				031C1EB027B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift in Sources */,
 				D849A1452320E565006CB84F /* ProductReview+ReadOnlyType.swift in Sources */,
 				743057B3218B69D100441A76 /* Queue.swift in Sources */,
 				02C254F62563B47C00A04423 /* ShippingLabelAddress+ReadonlyConvertible.swift in Sources */,
 				247CE84A2583246800F9D9D1 /* MockOrderStatusActionHandler.swift in Sources */,
 				7492FADB217FAE4D00ED2C69 /* SiteSetting+ReadOnlyType.swift in Sources */,
+				031C1EAA27B1702800298699 /* WCPayCharge+ReadOnlyConvertible.swift in Sources */,
 				D8652E0D26303A8B00350F37 /* ReceiptAction.swift in Sources */,
 				0212AC62242C68B600C51F6C /* ResultsController+SortProducts.swift in Sources */,
 				741F34802195EA62005F5BD9 /* CommentAction.swift in Sources */,
@@ -2066,6 +2093,7 @@
 				02E262C0238CE80100B79588 /* StorageShippingSettingsServiceTests.swift in Sources */,
 				45AB8B1E24AB363D00B5B36E /* ProductTagStoreTests.swift in Sources */,
 				B5C9DE222087FF20006B910A /* DispatcherTests.swift in Sources */,
+				45182D2327B55F9C00B4C05C /* InboxNotesStoreTests.swift in Sources */,
 				03FBDA2A263296C400ACE257 /* CouponStoreTests.swift in Sources */,
 				02E7FFD92562234F00C53030 /* MockShippingLabelRemote.swift in Sources */,
 				D4CBAE5C26D401BC00BBE6D1 /* AnnouncementsStoreTests.swift in Sources */,

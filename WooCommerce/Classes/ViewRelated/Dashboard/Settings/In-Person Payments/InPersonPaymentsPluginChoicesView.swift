@@ -13,10 +13,10 @@ struct InPersonPaymentsPluginChoicesView: View {
     var body: some View {
         VStack {
             ForEach(CardPresentPaymentsPlugins.allCases, id: \.self) { plugin in
-                HStack {
-                    Text("\u{2022}")
-                    Text(plugin.pluginName).font(.callout).bold()
-                }.padding(.bottom, 1)
+                Text(plugin.pluginName)
+                    .font(.callout)
+                    .bold()
+                    .padding(.bottom, 1)
             }
         }.padding(.bottom, isCompact ? 12 : 24)
     }

@@ -8,7 +8,6 @@ class NoticeView: UIView {
 
     private let backgroundContainerView = UIView()
     private let backgroundView: UIVisualEffectView
-    private let actionBackgroundView = UIView()
     private let shadowLayer = CAShapeLayer()
     private let shadowMaskLayer = CAShapeLayer()
 
@@ -138,26 +137,19 @@ private extension NoticeView {
     }
 
     func configureActionButton() {
-        contentStackView.addArrangedSubview(actionBackgroundView)
-        actionBackgroundView.translatesAutoresizingMaskIntoConstraints = false
-
-        actionBackgroundView.layoutMargins = Metrics.layoutMargins
-        actionBackgroundView.backgroundColor = Appearance.actionBackgroundColor
-
-        actionBackgroundView.addSubview(actionButton)
-        actionButton.translatesAutoresizingMaskIntoConstraints = false
+        contentStackView.addArrangedSubview(actionButton)
 
         NSLayoutConstraint.activate([
-            actionBackgroundView.topAnchor.constraint(equalTo: backgroundView.contentView.topAnchor),
-            actionBackgroundView.bottomAnchor.constraint(equalTo: backgroundView.contentView.bottomAnchor),
+            actionButton.topAnchor.constraint(equalTo: backgroundView.contentView.topAnchor),
+            actionButton.bottomAnchor.constraint(equalTo: backgroundView.contentView.bottomAnchor),
             ])
-
-        actionBackgroundView.pinSubviewToAllEdgeMargins(actionButton)
 
         actionButton.titleLabel?.font = Fonts.actionButtonFont
         actionButton.setTitleColor(Appearance.actionColor, for: .normal)
         actionButton.addTarget(self, action: #selector(actionButtonTapped), for: .touchUpInside)
         actionButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        actionButton.contentEdgeInsets = Metrics.actionButtonContentInsets
+        actionButton.backgroundColor = Appearance.actionBackgroundColor
     }
 
     func configureDismissRecognizer() {
@@ -184,8 +176,9 @@ private extension NoticeView {
 
         if let actionTitle = notice.actionTitle {
             actionButton.setTitle(actionTitle, for: .normal)
+            actionButton.isHidden = false
         } else {
-            actionBackgroundView.isHidden = true
+            actionButton.isHidden = true
         }
     }
 }
@@ -213,6 +206,7 @@ private extension NoticeView {
     enum Metrics {
         static let cornerRadius: CGFloat = 13.0
         static let layoutMargins = UIEdgeInsets(top: 16.0, left: 16.0, bottom: 16.0, right: 16.0)
+        static let actionButtonContentInsets = UIEdgeInsets(top: 22.0, left: 16.0, bottom: 22.0, right: 16.0)
         static let labelLineSpacing: CGFloat = 18.0
     }
 

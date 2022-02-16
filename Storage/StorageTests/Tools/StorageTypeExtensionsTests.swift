@@ -1026,6 +1026,38 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(searchResult, storedSearchResult)
     }
 
+    func test_loadInboxNote_by_siteID_id() throws {
+        // Given
+        let inboxNote = storage.insertNewObject(ofType: InboxNote.self)
+        inboxNote.siteID = 123
+        inboxNote.id = 321
+
+        // When
+        let storedInboxNote = try XCTUnwrap(storage.loadInboxNote(siteID: 123, id: 321))
+
+        // Then
+        XCTAssertEqual(inboxNote, storedInboxNote)
+    }
+
+    func test_loadAllInboxNotes_by_siteID() throws {
+        // Given
+        let inboxNote1 = storage.insertNewObject(ofType: InboxNote.self)
+        inboxNote1.siteID = 123
+        inboxNote1.id = 321
+        inboxNote1.dateCreated = Calendar.current.date(byAdding: DateComponents(day: 1), to: Date())
+
+        let inboxNote2 = storage.insertNewObject(ofType: InboxNote.self)
+        inboxNote2.siteID = 123
+        inboxNote2.id = 654
+        inboxNote2.dateCreated = Calendar.current.date(byAdding: DateComponents(day: 4), to: Date())
+
+        // When
+        let storedInboxNotes = try XCTUnwrap(storage.loadAllInboxNotes(siteID: 123))
+
+        // Then
+        XCTAssertEqual([inboxNote2, inboxNote1], storedInboxNotes)
+    }
+
     func test_loadShippingLabelAccountSettings_by_siteID() throws {
         // Given
         let accountSettings = storage.insertNewObject(ofType: ShippingLabelAccountSettings.self)
@@ -1169,5 +1201,22 @@ final class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(foundSystemPlugin, systemPlugin2)
+    }
+
+    func test_load_WCPayCharge_by_siteID_and_chargeID() throws {
+        // Given
+        let charge1 = storage.insertNewObject(ofType: WCPayCharge.self)
+        charge1.chargeID = "ch_1"
+        charge1.siteID = sampleSiteID
+
+        let charge2 = storage.insertNewObject(ofType: WCPayCharge.self)
+        charge2.chargeID = "ch_2"
+        charge2.siteID = sampleSiteID
+
+        // When
+        let foundCharge = try XCTUnwrap(storage.loadWCPayCharge(siteID: sampleSiteID, chargeID: "ch_2"))
+
+        // Then
+        XCTAssertEqual(foundCharge, charge2)
     }
 }

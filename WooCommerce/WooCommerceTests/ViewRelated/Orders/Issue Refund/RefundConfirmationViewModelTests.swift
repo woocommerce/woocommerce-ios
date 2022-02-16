@@ -38,6 +38,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let order = MockOrders().empty().copy(refunds: refundItems)
 
         let details = RefundConfirmationViewModel.Details(order: order,
+                                                          charge: nil,
                                                           amount: "0.0",
                                                           refundsShipping: false,
                                                           refundsFees: false,
@@ -64,6 +65,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
 
         let order = MockOrders().empty()
         let details = RefundConfirmationViewModel.Details(order: order,
+                                                          charge: nil,
                                                           amount: "130.3473",
                                                           refundsShipping: false,
                                                           refundsFees: false,
@@ -82,6 +84,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")
         let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [.refunds])
         let details = RefundConfirmationViewModel.Details(order: order,
+                                                          charge: nil,
                                                           amount: "",
                                                           refundsShipping: false,
                                                           refundsFees: false,
@@ -98,11 +101,39 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertEqual(row.text, order.paymentMethodTitle)
     }
 
+    func test_viewModel_includes_card_details_in_refundVia_values_when_charge_is_available() throws {
+        // Given
+        let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")
+        let paymentMethodDetails = WCPayCardPresentPaymentDetails(brand: .mastercard, last4: "6292", funding: .credit, receipt: .fake())
+        let charge = WCPayCharge.fake().copy(paymentMethodDetails: .cardPresent(details: paymentMethodDetails))
+        let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [.refunds])
+        let details = RefundConfirmationViewModel.Details(order: order,
+                                                          charge: charge,
+                                                          amount: "",
+                                                          refundsShipping: false,
+                                                          refundsFees: false,
+                                                          items: [],
+                                                          paymentGateway: gateway)
+
+        // When
+        let viewModel = RefundConfirmationViewModel(details: details)
+
+        // We expect the Refund Via row to be the last item in the last row.
+        let row = try XCTUnwrap(viewModel.sections.last?.rows.last as? RefundConfirmationViewModel.TitleAndBodyRow)
+
+        // Then
+        XCTAssertEqual(row.title, order.paymentMethodTitle)
+        let body = try XCTUnwrap(row.body)
+        XCTAssert(body.contains("Mastercard"))
+        XCTAssert(body.contains("6292"))
+    }
+
     func test_viewModel_has_manual_refundVia_values_when_using_a_gateway_that_does_not_support_refunds() throws {
         // Given
         let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")
         let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [])
         let details = RefundConfirmationViewModel.Details(order: order,
+                                                          charge: nil,
                                                           amount: "",
                                                           refundsShipping: false,
                                                           refundsFees: false,
@@ -126,6 +157,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().empty()
         let details = RefundConfirmationViewModel.Details(order: order,
+                                                          charge: nil,
                                                           amount: "100.0",
                                                           refundsShipping: false,
                                                           refundsFees: false,
@@ -162,6 +194,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().empty()
         let details = RefundConfirmationViewModel.Details(order: order,
+                                                          charge: nil,
                                                           amount: "100.0",
                                                           refundsShipping: false,
                                                           refundsFees: false,
@@ -201,6 +234,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")
         let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [.refunds])
         let details = RefundConfirmationViewModel.Details(order: order,
+                                                          charge: nil,
                                                           amount: "100.0",
                                                           refundsShipping: true,
                                                           refundsFees: true,
@@ -230,6 +264,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")
         let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [.products])
         let details = RefundConfirmationViewModel.Details(order: order,
+                                                          charge: nil,
                                                           amount: "100.0",
                                                           refundsShipping: true,
                                                           refundsFees: true,
@@ -257,6 +292,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().empty()
         let details = RefundConfirmationViewModel.Details(order: order,
+                                                          charge: nil,
                                                           amount: "100.0",
                                                           refundsShipping: false,
                                                           refundsFees: false,
@@ -295,6 +331,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().makeOrder()
         let details = RefundConfirmationViewModel.Details(order: order,
+                                                          charge: nil,
                                                           amount: "0.0",
                                                           refundsShipping: false,
                                                           refundsFees: false,
@@ -315,6 +352,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let order = MockOrders().empty().copy(orderID: 123, total: "100.0", paymentMethodID: "stripe")
         let gateway = PaymentGateway(siteID: 234, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [])
         let details = RefundConfirmationViewModel.Details(order: order,
+                                                          charge: nil,
                                                           amount: "100.0",
                                                           refundsShipping: false,
                                                           refundsFees: false,
@@ -339,6 +377,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let order = MockOrders().empty().copy(orderID: 123, total: "120.0", paymentMethodID: "stripe")
         let gateway = PaymentGateway(siteID: 234, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [])
         let details = RefundConfirmationViewModel.Details(order: order,
+                                                          charge: nil,
                                                           amount: "100.0",
                                                           refundsShipping: false,
                                                           refundsFees: false,
@@ -362,6 +401,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().empty()
         let details = RefundConfirmationViewModel.Details(order: order,
+                                                          charge: nil,
                                                           amount: "100.0",
                                                           refundsShipping: false,
                                                           refundsFees: false,
@@ -396,6 +436,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().empty()
         let details = RefundConfirmationViewModel.Details(order: order,
+                                                          charge: nil,
                                                           amount: "100.0",
                                                           refundsShipping: false,
                                                           refundsFees: false,

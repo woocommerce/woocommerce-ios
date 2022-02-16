@@ -264,6 +264,8 @@ final class OrdersRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    // MARK: - Create Order Tests
+
     func test_create_order_properly_encodes_fee_lines() throws {
         // Given
         let remote = OrdersRemote(network: network)
@@ -375,6 +377,27 @@ final class OrdersRemoteTests: XCTestCase {
             "country": address2.country
         ]
         assertEqual(received2, expected2)
+    }
+
+    func test_create_order_properly_encodes_shipping_lines() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let shipping = ShippingLine(shippingID: 333, methodTitle: "Shipping", methodID: "other", total: "1.23", totalTax: "", taxes: [])
+        let order = Order.fake().copy(shippingLines: [shipping])
+
+        // When
+        remote.createOrder(siteID: 123, order: order, fields: [.shippingLines]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["shipping_lines"] as? [[String: AnyHashable]]).first
+        let expected: [String: AnyHashable] = [
+            "id": shipping.shippingID,
+            "method_title": shipping.methodTitle,
+            "method_id": shipping.methodID,
+            "total": shipping.total
+        ]
+        assertEqual(received, expected)
     }
 }
 

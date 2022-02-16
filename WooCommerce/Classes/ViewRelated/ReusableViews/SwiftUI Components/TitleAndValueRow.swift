@@ -4,10 +4,16 @@ import SwiftUI
 ///
 struct TitleAndValueRow: View {
 
+    enum SelectionStyle {
+        case none
+        case disclosure
+        case highlight
+    }
+
     let title: String
     let value: Value
     var bold: Bool = false
-    let selectable: Bool
+    let selectionStyle: SelectionStyle
     var action: () -> Void
 
     var body: some View {
@@ -17,11 +23,11 @@ struct TitleAndValueRow: View {
             HStack {
                 AdaptiveStack(horizontalAlignment: .leading) {
                     Text(title)
-                        .style(bold: bold)
+                        .style(bold: bold, highlighted: selectionStyle == .highlight)
                         .multilineTextAlignment(.leading)
 
                     Text(value.text)
-                        .style(for: value, bold: bold)
+                        .style(for: value, bold: bold, highlighted: false)
                         .multilineTextAlignment(.trailing)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .padding(.vertical, Constants.verticalPadding)
@@ -29,19 +35,19 @@ struct TitleAndValueRow: View {
 
                 Image(uiImage: .chevronImage)
                     .flipsForRightToLeftLayoutDirection(true)
-                    .renderedIf(selectable)
+                    .renderedIf(selectionStyle == .disclosure)
                     .frame(width: Constants.imageSize, height: Constants.imageSize)
                     .foregroundColor(Color(UIColor.gray(.shade30)))
             }
             .contentShape(Rectangle())
         })
-        .disabled(!selectable)
+        .disabled(selectionStyle == .none)
         .frame(minHeight: Constants.minHeight)
         .padding(.horizontal, Constants.horizontalPadding)
         .accessibilityElement()
         .accessibilityLabel(Text(title))
         .accessibilityValue(Text(value.text))
-        .accessibilityAddTraits(selectable ? .isButton : [])
+        .accessibilityAddTraits(selectionStyle != .none ? .isButton : [])
     }
 }
 
@@ -75,14 +81,18 @@ extension TitleAndValueRow {
 private extension Text {
     /// Styles the text based on the type of content.
     ///
-    @ViewBuilder func style(for value: TitleAndValueRow.Value = .content(""), bold: Bool) -> some View {
-        switch (value, bold) {
-        case (.placeholder, _):
+    @ViewBuilder func style(for value: TitleAndValueRow.Value = .content(""), bold: Bool, highlighted: Bool) -> some View {
+        switch (value, bold, highlighted) {
+        case (.placeholder, _, _):
             self.modifier(SecondaryBodyStyle())
-        case (.content, true):
+        case (.content, true, false):
             self.modifier(HeadlineStyle())
-        case (.content, false):
+        case (.content, true, true):
+            self.modifier(HeadlineLinkStyle())
+        case (.content, false, false):
             self.modifier(BodyStyle(isEnabled: true))
+        case (.content, false, true):
+            self.modifier(LinkStyle())
         }
     }
 }
@@ -99,22 +109,22 @@ private extension TitleAndValueRow {
 
 struct TitleAndValueRow_Previews: PreviewProvider {
     static var previews: some View {
-        TitleAndValueRow(title: "Package selected", value: .placeholder("Small package 1"), selectable: true, action: { })
+        TitleAndValueRow(title: "Package selected", value: .placeholder("Small package 1"), selectionStyle: .disclosure, action: { })
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("Row Selectable")
 
-        TitleAndValueRow(title: "Package selected", value: .placeholder("Small package 2"), selectable: false, action: { })
+        TitleAndValueRow(title: "Package selected", value: .placeholder("Small package 2"), selectionStyle: .none, action: { })
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("Row Not Selectable")
 
         TitleAndValueRow(title: "This is a really long title which will take multiple lines",
                          value: .placeholder("This is a really long value which will take multiple lines"),
-                         selectable: false,
+                         selectionStyle: .none,
                          action: { })
             .previewLayout(.fixed(width: 375, height: 150))
             .previewDisplayName("Long title and value")
 
-        TitleAndValueRow(title: "Package selected", value: .placeholder("Small"), selectable: true, action: { })
+        TitleAndValueRow(title: "Package selected", value: .placeholder("Small"), selectionStyle: .disclosure, action: { })
             .environment(\.sizeCategory, .accessibilityExtraLarge)
             .previewLayout(.fixed(width: 375, height: 150))
             .previewDisplayName("Dynamic Type: Large Font Size")

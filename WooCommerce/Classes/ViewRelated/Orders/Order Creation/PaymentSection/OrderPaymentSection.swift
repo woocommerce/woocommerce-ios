@@ -1,10 +1,14 @@
 import SwiftUI
+import Yosemite
 
 /// Represents the Payment section in an order
 ///
 struct OrderPaymentSection: View {
     /// View model to drive the view content
     let viewModel: NewOrderViewModel.PaymentDataViewModel
+
+    /// Closure to create/update the shipping line object
+    let saveShippingLineClosure: (ShippingLine?) -> Void
 
     ///   Environment safe areas
     ///
@@ -18,9 +22,13 @@ struct OrderPaymentSection: View {
                 .headlineStyle()
                 .padding()
 
-            TitleAndValueRow(title: Localization.productsTotal, value: .content(viewModel.itemsTotal), selectable: false) {}
+            TitleAndValueRow(title: Localization.productsTotal, value: .content(viewModel.itemsTotal), selectionStyle: .none) {}
 
-            TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectable: false) {}
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) {
+                shippingRow
+            }
+
+            TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
 
             Text(Localization.taxesInfo)
                 .footnoteStyle()
@@ -30,6 +38,26 @@ struct OrderPaymentSection: View {
         .background(Color(.listForeground))
 
         Divider()
+    }
+
+    @ViewBuilder private var shippingRow: some View {
+        if viewModel.shouldShowShippingTotal {
+            TitleAndValueRow(title: Localization.shippingTotal, value: .content(viewModel.shippingTotal), selectionStyle: .highlight) {
+                saveShippingLineClosure(nil)
+            }
+        } else {
+            Button(Localization.addShipping) {
+                let testShippingLine = ShippingLine(shippingID: 0,
+                                                    methodTitle: "Flat Rate",
+                                                    methodID: "other",
+                                                    total: "10",
+                                                    totalTax: "",
+                                                    taxes: [])
+                saveShippingLineClosure(testShippingLine)
+            }
+            .buttonStyle(PlusButtonStyle())
+            .padding()
+        }
     }
 }
 
@@ -41,6 +69,8 @@ private extension OrderPaymentSection {
         static let orderTotal = NSLocalizedString("Order Total", comment: "Label for the the row showing the total cost of the order")
         static let taxesInfo = NSLocalizedString("Taxes will be automatically calculated based on your store settings.",
                                                  comment: "Information about taxes and the order total when creating a new order")
+        static let addShipping = NSLocalizedString("Add shipping", comment: "Title text of the button that adds shipping line when creating a new order")
+        static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
     }
 }
 
@@ -48,7 +78,7 @@ struct OrderPaymentSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = NewOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00", orderTotal: "20.00")
 
-        OrderPaymentSection(viewModel: viewModel)
+        OrderPaymentSection(viewModel: viewModel, saveShippingLineClosure: { _ in })
             .previewLayout(.sizeThatFits)
     }
 }

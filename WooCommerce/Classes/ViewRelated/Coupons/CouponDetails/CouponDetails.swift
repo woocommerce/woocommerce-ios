@@ -122,7 +122,7 @@ struct CouponDetails: View {
                         ForEach(detailRows) { row in
                             TitleAndValueRow(title: row.title,
                                              value: .content(row.content),
-                                             selectable: false,
+                                             selectionStyle: .none,
                                              action: row.action)
                                 .padding(.vertical, Constants.verticalSpacing)
                                 .padding(.horizontal, insets: geometry.safeAreaInsets)

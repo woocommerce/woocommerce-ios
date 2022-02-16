@@ -40,7 +40,7 @@ struct NewOrder: View {
                         Spacer(minLength: Layout.sectionSpacing)
 
                         if viewModel.shouldShowPaymentSection {
-                            OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
+                            OrderPaymentSection(viewModel: viewModel.paymentDataViewModel, saveShippingLineClosure: viewModel.saveShippingLine)
 
                             Spacer(minLength: Layout.sectionSpacing)
                         }

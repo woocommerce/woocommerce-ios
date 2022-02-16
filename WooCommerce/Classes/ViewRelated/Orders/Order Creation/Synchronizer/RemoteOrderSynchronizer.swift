@@ -49,6 +49,7 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
         self.stores = stores
 
         updateBaseSyncOrderStatus()
+        bindInputs()
     }
 
     // MARK: Methods
@@ -71,5 +72,27 @@ private extension RemoteOrderSynchronizer {
         NewOrderInitialStatusResolver(siteID: siteID, stores: stores).resolve { [weak self] baseStatus in
             self?.baseSyncStatus = baseStatus
         }
+    }
+
+    /// Updates the underlying order as inputs are received.
+    ///
+    func bindInputs() {
+        setStatus.withLatestFrom(orderPublisher)
+            .map { newStatus, order in
+                order.copy(status: newStatus)
+            }
+            .assign(to: &$order)
+
+        setProduct.withLatestFrom(orderPublisher)
+            .map { productInput, order in
+                ProductInputTransformer.update(input: productInput, on: order)
+            }
+            .assign(to: &$order)
+
+        setAddresses.withLatestFrom(orderPublisher)
+            .map { addressesInput, order in
+                order.copy(billingAddress: addressesInput?.billing, shippingAddress: addressesInput?.shipping)
+            }
+            .assign(to: &$order)
     }
 }

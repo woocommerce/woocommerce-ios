@@ -231,7 +231,7 @@ extension UIImage {
     /// Empty Inbox Notes Icon
     ///
     static var emptyInboxNotesImage: UIImage {
-        return UIImage(named: "woo-empty-inbox-notes")!
+        UIImage(named: "woo-empty-inbox-notes")!
     }
 
     /// Empty Products Icon

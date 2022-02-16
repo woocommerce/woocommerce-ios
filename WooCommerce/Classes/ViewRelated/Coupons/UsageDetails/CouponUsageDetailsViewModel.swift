@@ -6,11 +6,8 @@ import Yosemite
 ///
 final class CouponUsageDetailsViewModel: ObservableObject {
     private let coupon: Coupon
-    private let currencySettings: CurrencySettings
 
-    var currencySymbol: String {
-        currencySettings.symbol(from: currencySettings.currencyCode)
-    }
+    let currencySymbol: String
 
     @Published var minimumSpend: String = ""
 
@@ -31,7 +28,7 @@ final class CouponUsageDetailsViewModel: ObservableObject {
     init(coupon: Coupon,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.coupon = coupon
-        self.currencySettings = currencySettings
+        self.currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
         populateDetails()
     }
 }

@@ -120,7 +120,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         }
 
         if let isVariation = isVariation {
-          XCTAssertTrue(isVariation)
+          XCTAssertFalse(isVariation)
         } else {
           XCTFail("Cell not found")
         }

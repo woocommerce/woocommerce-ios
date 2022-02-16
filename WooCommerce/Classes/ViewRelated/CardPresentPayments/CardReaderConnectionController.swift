@@ -103,23 +103,28 @@ final class CardReaderConnectionController {
 
     private var onCompletion: ((Result<Bool, Error>) -> Void)?
 
+    private(set) lazy var dataSource: CardReaderSettingsDataSource = {
+        return CardReaderSettingsDataSource(siteID: siteID)
+    }()
+
     /// Gateway ID to include in tracks events
     private var gatewayID: String?
 
     init(
         forSiteID: Int64,
-        forGatewayID: String,
         knownReaderProvider: CardReaderSettingsKnownReaderProvider,
         alertsProvider: CardReaderSettingsAlertsProvider
     ) {
         state = .idle
         siteID = forSiteID
-        gatewayID = forGatewayID
         knownCardReaderProvider = knownReaderProvider
         alerts = alertsProvider
         foundReaders = []
         knownReaderID = nil
         skippedReaderIDs = []
+
+        configureResultsControllers()
+        loadPaymentGatewayAccounts()
     }
 
     deinit {
@@ -138,6 +143,18 @@ final class CardReaderConnectionController {
 }
 
 private extension CardReaderConnectionController {
+    func configureResultsControllers() {
+        dataSource.configureResultsControllers(onReload: { [weak self] in
+            guard let self = self else { return }
+            self.gatewayID = self.dataSource.cardPresentPaymentGatewayID()
+        })
+    }
+
+    func loadPaymentGatewayAccounts() {
+        let action = CardPresentPaymentAction.loadAccounts(siteID: siteID) {_ in}
+        ServiceLocator.stores.dispatch(action)
+    }
+
     func didSetState() {
         switch state {
         case .idle:

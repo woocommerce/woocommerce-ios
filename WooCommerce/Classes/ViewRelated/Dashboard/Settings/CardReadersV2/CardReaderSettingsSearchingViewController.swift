@@ -10,7 +10,6 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
 
     private var viewModel: CardReaderSettingsSearchingViewModel?
 
-
     /// Connection Controller (helps connect readers)
     ///
     private lazy var connectionController: CardReaderConnectionController? = {
@@ -22,13 +21,8 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
             return nil
         }
 
-        guard let gatewayID = viewModel?.connectedGatewayID else {
-            return nil
-        }
-
         return CardReaderConnectionController(
             forSiteID: siteID,
-            forGatewayID: gatewayID,
             knownReaderProvider: knownReaderProvider,
             alertsProvider: CardReaderSettingsAlerts()
         )

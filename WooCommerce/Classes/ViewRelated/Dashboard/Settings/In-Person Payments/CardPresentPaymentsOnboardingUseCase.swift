@@ -30,7 +30,6 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
 final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol, ObservableObject {
     let storageManager: StorageManagerType
     let stores: StoresManager
-    private var stripeGatewayIPPEnabled: Bool = false
     private var canadaIPPEnabled: Bool = false
 
     @Published var state: CardPresentPaymentOnboardingState = .loading
@@ -45,16 +44,6 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     ) {
         self.storageManager = storageManager
         self.stores = stores
-
-        let stripeAction = AppSettingsAction.loadStripeInPersonPaymentsSwitchState(onCompletion: { [weak self] result in
-            switch result {
-            case .success(let stripeGatewayIPPEnabled):
-                self?.stripeGatewayIPPEnabled = stripeGatewayIPPEnabled
-            default:
-                break
-            }
-        })
-        stores.dispatch(stripeAction)
 
         let canadaAction = AppSettingsAction.loadCanadaInPersonPaymentsSwitchState(onCompletion: { [weak self]  result in
             switch result {
@@ -165,7 +154,6 @@ private extension CardPresentPaymentsOnboardingUseCase {
         do {
             configuration = try CardPresentPaymentsConfiguration(
                 country: countryCode,
-                stripeEnabled: stripeGatewayIPPEnabled,
                 canadaEnabled: canadaIPPEnabled
             )
         } catch is CardPresentPaymentsConfigurationMissingError {

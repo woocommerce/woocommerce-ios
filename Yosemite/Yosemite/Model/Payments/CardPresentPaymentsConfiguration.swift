@@ -11,19 +11,13 @@ public struct CardPresentPaymentsConfiguration {
         self.paymentGateways = paymentGateways
     }
 
-    public init(country: String, stripeEnabled: Bool, canadaEnabled: Bool) throws {
+    public init(country: String, canadaEnabled: Bool) throws {
         switch country {
-        case "US" where stripeEnabled == true:
+        case "US":
             self.init(
                 paymentMethods: [.cardPresent],
                 currencies: ["USD"],
                 paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID]
-            )
-        case "US" where stripeEnabled == false:
-            self.init(
-                paymentMethods: [.cardPresent],
-                currencies: ["USD"],
-                paymentGateways: [WCPayAccount.gatewayID]
             )
         case "CA" where canadaEnabled == true:
             self.init(

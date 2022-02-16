@@ -1741,8 +1741,8 @@ extension WCPayCardPresentPaymentDetails {
 extension WCPayCardPresentReceiptDetails {
     public func copy(
         accountType: CopiableProp<WCPayCardFunding> = .copy,
-        applicationPreferredName: CopiableProp<String> = .copy,
-        dedicatedFileName: CopiableProp<String> = .copy
+        applicationPreferredName: NullableCopiableProp<String> = .copy,
+        dedicatedFileName: NullableCopiableProp<String> = .copy
     ) -> WCPayCardPresentReceiptDetails {
         let accountType = accountType ?? self.accountType
         let applicationPreferredName = applicationPreferredName ?? self.applicationPreferredName

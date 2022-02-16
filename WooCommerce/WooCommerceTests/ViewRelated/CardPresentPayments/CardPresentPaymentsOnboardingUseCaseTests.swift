@@ -22,8 +22,6 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case .loadStripeInPersonPaymentsSwitchState(let completion):
-                completion(.success(true))
             case .loadCanadaInPersonPaymentsSwitchState(let completion):
                 completion(.success(true))
             default:

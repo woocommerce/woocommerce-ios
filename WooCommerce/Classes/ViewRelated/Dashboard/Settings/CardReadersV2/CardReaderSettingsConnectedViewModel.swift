@@ -68,16 +68,14 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     private func loadPaymentGatewayAccounts() {
         /// Ask the CardPresentPaymentStore to loadAccounts from the network and update storage
         ///
-        func loadPaymentGatewayAccounts() {
-            guard let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID else {
-                return
-            }
-
-            /// No need for a completion here. We will be notified of storage changes in `onDidChangeContent`
-            ///
-            let action = CardPresentPaymentAction.loadAccounts(siteID: siteID) {_ in}
-            ServiceLocator.stores.dispatch(action)
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID else {
+            return
         }
+
+        /// No need for a completion here. We will be notified of storage changes in `onDidChangeContent`
+        ///
+        let action = CardPresentPaymentAction.loadAccounts(siteID: siteID) {_ in}
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Dispatches actions to the CardPresentPaymentStore so that we can monitor changes to the list of

@@ -40,6 +40,15 @@ struct CouponUsageDetails: View {
                                              keyboardType: .asciiCapableNumberPad)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
+                            .padding(.leading, Constants.margin)
+                            .padding(.leading, insets: geometry.safeAreaInsets)
+                        TitleAndTextFieldRow(title: Localization.usageLimitPerUser,
+                                             placeholder: Localization.unlimited,
+                                             text: $viewModel.usageLimitPerUser,
+                                             editable: false,
+                                             keyboardType: .asciiCapableNumberPad)
+                            .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        Divider()
                     }
                     .background(Color(.listForeground))
                     .padding(.bottom, Constants.margin)
@@ -117,6 +126,10 @@ private extension CouponUsageDetails {
         static let usageLimitPerCoupon = NSLocalizedString(
             "Usage Limit Per Coupon",
             comment: "Title for the usage limit per coupon row in coupon usage details screen."
+        )
+        static let usageLimitPerUser = NSLocalizedString(
+            "Usage Limit Per User",
+            comment: "Title for the usage limit per user row in coupon usage details screen."
         )
         static let limitUsageToXItems = NSLocalizedString(
             "Limit Usage to X Items",

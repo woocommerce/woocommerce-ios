@@ -18,6 +18,8 @@ final class CouponUsageDetailsViewModel: ObservableObject {
 
     @Published var usageLimitPerCoupon: String = ""
 
+    @Published var usageLimitPerUser: String = ""
+
     @Published var limitUsageToXItems: String = ""
 
     @Published var allowedEmails: String = ""
@@ -40,10 +42,16 @@ private extension CouponUsageDetailsViewModel {
     func populateDetails() {
         minimumSpend = coupon.minimumAmount
         maximumSpend = coupon.maximumAmount
-        if let usageLimit = coupon.usageLimit {
-            usageLimitPerCoupon = "\(usageLimit)"
+        if let perCoupon = coupon.usageLimit {
+            usageLimitPerCoupon = "\(perCoupon)"
         } else {
             usageLimitPerCoupon = ""
+        }
+
+        if let perUser = coupon.usageLimitPerUser {
+            usageLimitPerUser = "\(perUser)"
+        } else {
+            usageLimitPerUser = ""
         }
 
         if let limitUsageItemCount = coupon.limitUsageToXItems {

@@ -230,8 +230,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         mockStoresManager.simulateFailedUpdate(error: expectedError)
 
         // Then
-        let expectedErrorDescription = "Hardware.CardReaderServiceError.softwareUpdate(underlyingError: " +
-            "Hardware.UnderlyingError.readerSoftwareUpdateFailedBatteryLow, batteryLevel: Optional(0.4))"
+        let expectedErrorDescription = "Unable to update card reader software - the reader battery is too low"
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateFailed.rawValue))
         XCTAssert(analyticsProvider.receivedProperties.contains(where: {
             $0["software_update_type"] as? String == "Required"

@@ -87,4 +87,43 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
           XCTFail("Cell not found")
         }
     }
+
+    func test_product_view_model_image_row_has_isVariation_false() {
+        // Arrange
+//        let variation = ProductVariation.fake()
+//        let model = EditableProductVariationModel(productVariation: variation)
+//        let actionsFactory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
+        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue
+//                                          sku: "",
+//                                          manageStock: false,
+//                                          stockStatusKey: ProductStockStatus.onBackOrder.rawValue
+        )
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+
+
+        // Action
+        let tableViewModel = DefaultProductFormTableViewModel(product: model, actionsFactory: actionsFactory, currency: "")
+
+        // Assert
+      guard case let .primaryFields(rows) = tableViewModel.sections[0] else {
+            XCTFail("Unexpected section at index 0: \(tableViewModel.sections)")
+            return
+        }
+
+        var isVariation: Bool?
+        for row in rows {
+            if case .images(_, _, let isVariationValue) = row {
+                isVariation = isVariationValue
+                break
+            }
+        }
+
+        if let isVariation = isVariation {
+          XCTAssertTrue(isVariation)
+        } else {
+          XCTFail("Cell not found")
+        }
+    }
+
 }

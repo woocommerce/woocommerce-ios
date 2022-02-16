@@ -334,7 +334,7 @@ extension Order {
 extension OrderFeeLine {
     public func copy(
         feeID: CopiableProp<Int64> = .copy,
-        name: CopiableProp<String> = .copy,
+        name: NullableCopiableProp<String> = .copy,
         taxClass: CopiableProp<String> = .copy,
         taxStatus: CopiableProp<OrderFeeTaxStatus> = .copy,
         total: CopiableProp<String> = .copy,
@@ -1741,8 +1741,8 @@ extension WCPayCardPresentPaymentDetails {
 extension WCPayCardPresentReceiptDetails {
     public func copy(
         accountType: CopiableProp<WCPayCardFunding> = .copy,
-        applicationPreferredName: CopiableProp<String> = .copy,
-        dedicatedFileName: CopiableProp<String> = .copy
+        applicationPreferredName: NullableCopiableProp<String> = .copy,
+        dedicatedFileName: NullableCopiableProp<String> = .copy
     ) -> WCPayCardPresentReceiptDetails {
         let accountType = accountType ?? self.accountType
         let applicationPreferredName = applicationPreferredName ?? self.applicationPreferredName

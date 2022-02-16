@@ -27,6 +27,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .orderCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .orderCreationRemoteSynchronizer:
+            return false
         case .hubMenu:
             return true
         case .systemStatusReport:

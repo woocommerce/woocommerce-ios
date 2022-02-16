@@ -18,7 +18,6 @@ struct CouponUsageDetails: View {
                         TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.minimumSpend, viewModel.currencySymbol),
                                              placeholder: Localization.none,
                                              text: $viewModel.minimumSpend,
-                                             symbol: viewModel.currencySymbol,
                                              editable: false,
                                              keyboardType: .decimalPad)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
@@ -28,7 +27,6 @@ struct CouponUsageDetails: View {
                         TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.maximumSpend, viewModel.currencySymbol),
                                              placeholder: Localization.none,
                                              text: $viewModel.maximumSpend,
-                                             symbol: viewModel.currencySymbol,
                                              editable: false,
                                              keyboardType: .decimalPad)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
@@ -60,7 +58,7 @@ struct CouponUsageDetails: View {
                         TitleAndValueRow(title: Localization.allowedEmails,
                                          value: viewModel.allowedEmails.isNotEmpty ?
                                             .content(viewModel.allowedEmails) :
-                                            .placeholder(Localization.noRestrictions))
+                                            .content(Localization.noRestrictions))
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                     }

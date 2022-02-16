@@ -1020,6 +1020,70 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "InboxNote"), 1)
         XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: InboxNote.self)), inboxNote)
     }
+
+    func test_migrating_from_64_to_65_enables_creating_new_WCPayCharge_withCardPaymentDetails() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 64")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 65")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        XCTAssertEqual(try targetContext.count(entityName: "WCPayCardPaymentDetails"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "WCPayCharge"), 0)
+
+        // Creates nested cardPresent objects
+        let payment = insertWCPayCardPaymentDetails(to: targetContext)
+
+        // Creates an `WCPayCharge`
+        let wcPayCharge = insertWCPayCharge(to: targetContext)
+        wcPayCharge.setValue(payment, forKey: "cardDetails")
+
+
+        XCTAssertEqual(try targetContext.count(entityName: "WCPayCardPaymentDetails"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "WCPayCharge"), 1)
+        XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: WCPayCharge.self)), wcPayCharge)
+        XCTAssertEqual(wcPayCharge.value(forKey: "cardDetails") as? WCPayCardPaymentDetails, payment)
+    }
+
+    func test_migrating_from_64_to_65_enables_creating_new_WCPayCharge_withCardPresentPaymentDetails() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 64")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 65")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        XCTAssertEqual(try targetContext.count(entityName: "WCPayCardPresentReceiptDetails"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "WCPayCardPresentPaymentDetails"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "WCPayCharge"), 0)
+
+        // Creates nested cardPresent objects
+        let receipt = insertWCPayCardPresentReceiptDetails(to: targetContext)
+        let payment = insertWCPayCardPresentPaymentDetails(to: targetContext)
+
+        payment.setValue(receipt, forKey: "receipt")
+
+        // Creates an `WCPayCharge`
+        let wcPayCharge = insertWCPayCharge(to: targetContext)
+        wcPayCharge.setValue(payment, forKey: "cardPresentDetails")
+
+
+        XCTAssertEqual(try targetContext.count(entityName: "WCPayCardPresentReceiptDetails"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "WCPayCardPresentPaymentDetails"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "WCPayCharge"), 1)
+        XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: WCPayCharge.self)), wcPayCharge)
+        XCTAssertEqual(wcPayCharge.value(forKey: "cardPresentDetails") as? WCPayCardPresentPaymentDetails, payment)
+        XCTAssertEqual(payment.value(forKey: "receipt") as? WCPayCardPresentReceiptDetails, receipt)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1476,6 +1540,53 @@ private extension MigrationTests {
     func insertSite(to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "Site", properties: [
             "siteID": 1372
+        ])
+    }
+
+    @discardableResult
+    func insertWCPayCharge(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "WCPayCharge", properties: [
+            "siteID": 1234,
+            "chargeID": "ch_idhash",
+            "amount": 12,
+            "amountCaptured": 12,
+            "amountRefunded": 3,
+            "authorizationCode": nil,
+            "captured": true,
+            "created": Date(),
+            "currency": "usd",
+            "paid": true,
+            "paymentIntentID": nil,
+            "paymentMethodID": "pm_idhash",
+            "refunded": false,
+            "status": "succeeded"
+        ])
+    }
+
+    @discardableResult
+    func insertWCPayCardPresentReceiptDetails(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "WCPayCardPresentReceiptDetails", properties: [
+            "accountType": "credit",
+            "applicationPreferredName": "Stripe Credit",
+            "dedicatedFileName": "293AAABBBCCCCC2"
+        ])
+    }
+
+    @discardableResult
+    func insertWCPayCardPresentPaymentDetails(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "WCPayCardPresentPaymentDetails", properties: [
+            "brand": "amex",
+            "last4": "1932",
+            "funding": "credit"
+        ])
+    }
+
+    @discardableResult
+    func insertWCPayCardPaymentDetails(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "WCPayCardPaymentDetails", properties: [
+            "brand": "visa",
+            "last4": "2096",
+            "funding": "debit"
         ])
     }
 }

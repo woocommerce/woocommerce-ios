@@ -768,6 +768,28 @@ final class OrderStoreTests: XCTestCase {
         let receivedNote = try XCTUnwrap(request.parameters["customer_note"] as? String)
         assertEqual(receivedNote, note)
     }
+
+    func test_create_order_sends_expected_fields() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let action = OrderAction.createOrder(siteID: sampleSiteID, order: sampleOrder()) { _ in }
+        store.onAction(action)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let receivedKeys = Array(request.parameters.keys).sorted()
+        let expectedKeys = [
+            "billing",
+            "line_items",
+            "shipping",
+            "shipping_lines",
+            "status"
+        ]
+        assertEqual(expectedKeys, receivedKeys)
+    }
 }
 
 

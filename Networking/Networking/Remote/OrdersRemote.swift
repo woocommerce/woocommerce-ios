@@ -147,6 +147,8 @@ public class OrdersRemote: Remote {
                         if let shippingAddress = order.shippingAddress {
                             params[Order.CodingKeys.shippingAddress.rawValue] = try shippingAddress.toDictionary()
                         }
+                    case .shippingLines:
+                        params[Order.CodingKeys.shippingLines.rawValue] = try order.shippingLines.compactMap { try $0.toDictionary() }
                     }
                 }
             }()
@@ -201,6 +203,9 @@ public class OrdersRemote: Remote {
                     case .fees:
                         let feesEncoded = try order.fees.map { try $0.toDictionary() }
                         params[Order.CodingKeys.feeLines.rawValue] = feesEncoded
+                    case .shippingLines:
+                        let shippingEncoded = try order.shippingLines.map { try $0.toDictionary() }
+                        params[Order.CodingKeys.shippingLines.rawValue] = shippingEncoded
                     }
                 }
             }()
@@ -269,10 +274,13 @@ public extension OrdersRemote {
         private static let commonOrderFieldValues = [
             "id", "parent_id", "number", "status", "currency", "customer_id", "customer_note", "date_created_gmt", "date_modified_gmt", "date_paid_gmt",
             "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
-            "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines"
+            "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", "meta_data"
         ]
+        // Use with caution. Any fields in here will be overwritten with empty values by
+        // `Order+ReadOnlyConvertible.swift: Order.update(with:)` when the list of orders is fetched.
+        // See p91TBi-7yL-p2 for discussion.
         private static let singleOrderExtraFieldValues = [
-            "line_items", "shipping", "meta_data"
+            "line_items", "shipping"
         ]
     }
 
@@ -283,6 +291,7 @@ public extension OrdersRemote {
         case shippingAddress
         case billingAddress
         case fees
+        case shippingLines
     }
 
     /// Order fields supported for create
@@ -293,5 +302,6 @@ public extension OrdersRemote {
         case items
         case billingAddress
         case shippingAddress
+        case shippingLines
     }
 }

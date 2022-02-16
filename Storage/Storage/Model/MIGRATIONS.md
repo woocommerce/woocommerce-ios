@@ -2,6 +2,13 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 65 (Release 8.6.0.0)
+- @joshheald 2022-02-14
+    - Added `WCPayCharge` entity.
+    - Added `WCPayCardPresentPaymentDetails` entity.
+    - Added `WCPayCardPaymentDetails` entity.
+    - Added `WCPayCardPresentReceiptDetails` entity.
+
 ## Model 64 (Release 8.6.0.0)
 - @pmusolino 2022-02-09
     - Added `InboxNote` entity.

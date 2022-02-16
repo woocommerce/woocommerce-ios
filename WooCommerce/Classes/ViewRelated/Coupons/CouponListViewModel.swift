@@ -151,14 +151,14 @@ extension CouponListViewModel: SyncingCoordinatorDelegate {
                                 pageNumber: pageNumber,
                                 pageSize: pageSize) { [weak self] result in
                 guard let self = self else { return }
-                self.handleCouponSyncResult(pageNumber: pageNumber, result: result)
+                self.handleCouponSyncResult(result: result, pageNumber: pageNumber)
                 onCompletion?(result.isSuccess)
         }
 
         storesManager.dispatch(action)
     }
 
-    func handleCouponSyncResult(pageNumber: Int, result: Result<Bool, Error>) {
+    func handleCouponSyncResult(result: Result<Bool, Error>, pageNumber: Int) {
         switch result {
         case .success:
             DDLogInfo("Synchronized coupons")

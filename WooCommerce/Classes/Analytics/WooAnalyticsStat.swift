@@ -565,6 +565,12 @@ public enum WooAnalyticsStat: String {
     case hubMenuSwitchStoreTapped = "hub_menu_switch_store_tapped"
     case hubMenuOptionTapped = "hub_menu_option_tapped"
     case hubMenuSettingsTapped = "hub_menu_settings_tapped"
+
+    // MARK: Coupons
+    case couponsLoaded = "coupons_loaded"
+    case couponsLoadedFailed = "coupons_loaded_failed"
+    case couponsListSearchTapped = "coupons_list_search_tapped"
+    case couponDetails = "coupon_details"
 }
 
 public extension WooAnalyticsStat {

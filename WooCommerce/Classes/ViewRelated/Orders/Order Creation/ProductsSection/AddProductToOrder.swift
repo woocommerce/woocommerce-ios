@@ -11,10 +11,6 @@ struct AddProductToOrder: View {
     ///
     @ObservedObject var viewModel: AddProductToOrderViewModel
 
-    /// Keeps track of the current screen scale
-    ///
-    @ScaledMetric private var scale = 1
-
     var body: some View {
         NavigationView {
             VStack {
@@ -73,12 +69,7 @@ struct AddProductToOrder: View {
                     ProductRow(viewModel: rowViewModel)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                    Image(uiImage: .chevronImage)
-                        .resizable()
-                        .flipsForRightToLeftLayoutDirection(true)
-                        .frame(width: Constants.chevronSize(scale: scale), height: Constants.chevronSize(scale: scale))
-                        .foregroundColor(Color(.systemGray))
-                        .accessibility(hidden: true)
+                    DisclosureIndicator()
                 }
             }
         } else {
@@ -95,9 +86,6 @@ private extension AddProductToOrder {
     enum Constants {
         static let dividerHeight: CGFloat = 1
         static let defaultPadding: CGFloat = 16
-        static func chevronSize(scale: CGFloat) -> CGFloat {
-            22 * scale
-        }
     }
 
     enum Localization {

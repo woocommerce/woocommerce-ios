@@ -16,10 +16,6 @@ struct NavigationRow<Content: View>: View {
     ///
     let action: () -> Void
 
-    /// Keeps track of the current screen scale
-    ///
-    @ScaledMetric private var scale = 1
-
     /// Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
@@ -37,13 +33,7 @@ struct NavigationRow<Content: View>: View {
             HStack {
                 content
                 Spacer()
-                Image(uiImage: .chevronImage)
-                    .resizable()
-                    .flipsForRightToLeftLayoutDirection(true)
-                    .frame(width: Layout.chevronWidthHeight(scale: scale),
-                           height: Layout.chevronWidthHeight(scale: scale))
-                    .foregroundColor(Color(.systemGray))
-                    .accessibility(hidden: true)
+                DisclosureIndicator()
                     .renderedIf(selectable)
             }
             .padding()
@@ -56,9 +46,6 @@ struct NavigationRow<Content: View>: View {
 
 private enum Layout {
     static let minHeight: CGFloat = 44
-    static func chevronWidthHeight(scale: CGFloat) -> CGFloat {
-        22 * scale
-    }
 }
 
 struct NavigationRow_Previews: PreviewProvider {

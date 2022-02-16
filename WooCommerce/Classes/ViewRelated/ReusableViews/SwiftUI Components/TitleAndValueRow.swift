@@ -33,11 +33,8 @@ struct TitleAndValueRow: View {
                         .padding(.vertical, Constants.verticalPadding)
                 }
 
-                Image(uiImage: .chevronImage)
-                    .flipsForRightToLeftLayoutDirection(true)
+                DisclosureIndicator()
                     .renderedIf(selectionStyle == .disclosure)
-                    .frame(width: Constants.imageSize, height: Constants.imageSize)
-                    .foregroundColor(Color(UIColor.gray(.shade30)))
             }
             .contentShape(Rectangle())
         })
@@ -99,7 +96,6 @@ private extension Text {
 
 private extension TitleAndValueRow {
     enum Constants {
-        static let imageSize: CGFloat = 22
         static let minHeight: CGFloat = 44
         static let maxHeight: CGFloat = 136
         static let horizontalPadding: CGFloat = 16

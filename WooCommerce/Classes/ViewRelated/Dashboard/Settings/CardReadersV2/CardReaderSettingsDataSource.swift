@@ -8,8 +8,6 @@ final class CardReaderSettingsDataSource: NSObject {
 
     private let siteID: Int64
 
-    private let instanceID = Int.random(in: 1..<10000)
-
     private lazy var resultsControllers: CardReaderSettingsResultsControllers = {
         return CardReaderSettingsResultsControllers(siteID: self.siteID, storageManager: self.storageManager)
     }()
@@ -24,12 +22,11 @@ final class CardReaderSettingsDataSource: NSObject {
         resultsControllers.configureResultsControllers(onReload: onReload)
     }
 
-    // TODOTODO allow nil to be returned
-    func cardPresentPaymentGatewayID() -> String {
+    func cardPresentPaymentGatewayID() -> String? {
         let filteredAccounts = resultsControllers.paymentGatewayAccounts.filter { $0.isCardPresentEligible }
 
         guard let account = filteredAccounts.first else {
-            return "unknown"
+            return nil
         }
 
         return account.gatewayID

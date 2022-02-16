@@ -9,8 +9,6 @@ final class CardReaderSettingsResultsControllers {
 
     private let siteID: Int64
 
-    private let instanceID = Int.random(in: 1..<10000)
-
     /// Completion handler for when results controllers reload.
     ///
     var onReload: (() -> Void)?

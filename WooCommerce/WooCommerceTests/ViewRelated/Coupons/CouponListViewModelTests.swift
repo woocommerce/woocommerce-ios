@@ -97,7 +97,7 @@ final class CouponListViewModelTests: XCTestCase {
         setUpWithCouponFetched()
 
         // When
-        sut.handleCouponSyncResult(result: .success(false))
+        sut.handleCouponSyncResult(result: .success(false), pageNumber: 1)
 
         // Then
         XCTAssertEqual(sut.state, .coupons)
@@ -106,7 +106,7 @@ final class CouponListViewModelTests: XCTestCase {
 
     func test_handleCouponSyncResult_shows_empty_when_no_coupons_present() {
         // When
-        sut.handleCouponSyncResult(result: .success(false))
+        sut.handleCouponSyncResult(result: .success(false), pageNumber: 1)
 
         // Then
         XCTAssertEqual(sut.state, .empty)
@@ -140,7 +140,7 @@ final class CouponListViewModelTests: XCTestCase {
         sut.refreshCoupons()
 
         // When
-        sut.handleCouponSyncResult(result: .success(false))
+        sut.handleCouponSyncResult(result: .success(false), pageNumber: 1)
 
         // Then
         XCTAssertEqual(sut.state, .coupons)

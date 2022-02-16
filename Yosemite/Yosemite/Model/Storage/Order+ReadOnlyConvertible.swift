@@ -32,6 +32,7 @@ extension Storage.Order: ReadOnlyConvertible {
         totalTax = order.totalTax
         paymentMethodID = order.paymentMethodID
         paymentMethodTitle = order.paymentMethodTitle
+        chargeID = order.chargeID
 
         if let billingAddress = order.billingAddress {
             billingFirstName = billingAddress.firstName

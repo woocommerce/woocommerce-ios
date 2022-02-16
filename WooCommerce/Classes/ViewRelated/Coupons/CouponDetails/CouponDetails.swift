@@ -34,6 +34,8 @@ struct CouponDetails: View {
         self.noticePresenter = DefaultNoticePresenter()
         viewModel.syncCoupon()
         viewModel.loadCouponReport()
+
+        ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "loaded"])
     }
 
     private var detailRows: [DetailRow] {
@@ -60,9 +62,11 @@ struct CouponDetails: View {
                                         UIPasteboard.general.string = viewModel.couponCode
                                         let notice = Notice(title: Localization.couponCopied, feedbackType: .success)
                                         noticePresenter.enqueue(notice: notice)
+                                        ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "copied_code"])
                                     }),
                                     .default(Text(Localization.shareCoupon), action: {
                                         showingShareSheet = true
+                                        ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "shared_code"])
                                     }),
                                     .cancel()
                                 ]

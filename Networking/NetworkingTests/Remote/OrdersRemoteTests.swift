@@ -211,6 +211,27 @@ final class OrdersRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func test_update_order_properly_encodes_shipping_lines_for_removal_from_order() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let shipping = ShippingLine(shippingID: 333, methodTitle: "Shipping", methodID: nil, total: "1.23", totalTax: "", taxes: [])
+        let order = Order.fake().copy(shippingLines: [shipping])
+
+        // When
+        remote.updateOrder(from: 123, order: order, fields: [.shippingLines]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["shipping_lines"] as? [[String: AnyHashable]]).first
+        let expected: [String: AnyHashable] = [
+            "id": shipping.shippingID,
+            "method_title": shipping.methodTitle,
+            "method_id": NSNull(),
+            "total": shipping.total
+        ]
+        assertEqual(received, expected)
+    }
+
 
     // MARK: - Load Order Notes Tests
 
@@ -394,7 +415,7 @@ final class OrdersRemoteTests: XCTestCase {
         let expected: [String: AnyHashable] = [
             "id": shipping.shippingID,
             "method_title": shipping.methodTitle,
-            "method_id": shipping.methodID,
+            "method_id": shipping.methodID ?? "",
             "total": shipping.total
         ]
         assertEqual(received, expected)

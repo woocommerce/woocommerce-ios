@@ -3,7 +3,6 @@ import Yosemite
 /// Helper that defines which `status` a new order should initially have.
 ///
 struct NewOrderInitialStatusResolver {
-
     /// Current site ID
     ///
     private let siteID: Int64
@@ -20,6 +19,10 @@ struct NewOrderInitialStatusResolver {
     ///
     private let wcPluginName = "WooCommerce"
 
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+        self.siteID = siteID
+        self.stores = stores
+    }
 
     /// Decides the initial `status` for a new order based on the current store version.
     ///
@@ -37,6 +40,6 @@ struct NewOrderInitialStatusResolver {
                 onCompletion(.pending)
             }
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 }

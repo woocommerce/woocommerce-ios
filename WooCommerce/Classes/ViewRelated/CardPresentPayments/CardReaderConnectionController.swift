@@ -12,9 +12,13 @@ final class CardReaderConnectionController {
         ///
         case idle
 
-        /// Initializing (fetching the list of any known readers)
+        /// Initializing (fetching payment gateway accounts)
         ///
         case initializing
+
+        /// Preparing for search (fetching the list of any known readers)
+        ///
+        case preparingForSearch
 
         /// Begin search for card readers
         ///
@@ -108,7 +112,11 @@ final class CardReaderConnectionController {
     }()
 
     /// Gateway ID to include in tracks events
-    private var gatewayID: String?
+    private var gatewayID: String? {
+        didSet {
+            didSetGatewayID()
+        }
+    }
 
     init(
         forSiteID: Int64,
@@ -161,6 +169,8 @@ private extension CardReaderConnectionController {
             onIdle()
         case .initializing:
             onInitialization()
+        case .preparingForSearch:
+            onPreparingForSearch()
         case .beginSearch:
             onBeginSearch()
         case .searching:
@@ -181,6 +191,14 @@ private extension CardReaderConnectionController {
             onDiscoveryFailed(error: error)
         case .updating(progress: let progress):
             onUpdateProgress(progress: progress)
+        }
+    }
+
+    /// Once the gatewayID arrives (during initialization) it is OK to proceed with search preparations
+    ///
+    func didSetGatewayID() {
+        if case .initializing = state {
+            state = .preparingForSearch
         }
     }
 
@@ -230,11 +248,19 @@ private extension CardReaderConnectionController {
     func onIdle() {
     }
 
-    /// Begins a fetch for the list of known readers
+    /// Searching for a reader is about to begin. Wait, if needed, for the gateway ID to be provided from the FRC
+    ///
+    func onInitialization() {
+        if gatewayID != nil {
+            state = .preparingForSearch
+        }
+    }
+
+    /// In preparation for search, initiates a fetch for the list of known readers
     /// Does NOT open any modal
     /// Transitions state to `.beginSearch` after receiving the known readers list
     ///
-    func onInitialization() {
+    func onPreparingForSearch() {
         /// Always start fresh - i.e. we haven't skipped connecting to any reader yet
         ///
         skippedReaderIDs = []
@@ -250,8 +276,8 @@ private extension CardReaderConnectionController {
 
             self.knownReaderID = readerID
 
-            /// Only kick off search if we received a known reader update during intializaton
-            if case .initializing = self.state {
+            /// Only kick off search if we received a known reader update
+            if case .preparingForSearch = self.state {
                 self.state = .beginSearch
             }
         }).store(in: &subscriptions)

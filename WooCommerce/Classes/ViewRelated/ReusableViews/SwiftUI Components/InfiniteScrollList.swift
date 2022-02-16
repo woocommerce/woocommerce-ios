@@ -30,15 +30,16 @@ struct InfiniteScrollList<Content: View>: View {
     }
 
     var body: some View {
-        List {
-            listContent
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                listContent
 
-            InfiniteScrollIndicator(showContent: isLoading)
-                .onAppear {
-                    loadAction()
-                }
+                InfiniteScrollIndicator(showContent: isLoading)
+                    .onAppear {
+                        loadAction()
+                    }
+            }
         }
-        .listStyle(PlainListStyle())
     }
 }
 

@@ -67,13 +67,9 @@ struct InboxNoteRow: View {
             }
                    .padding(Constants.defaultPadding)
 
-            if #available(iOS 15.0, *) {
-                // In order to show full-width separator, the default list separator is hidden and a `Divider` is shown inside the row.
-                Divider()
-                    .frame(height: Constants.dividerHeight)
-            }
+            Divider()
+                .frame(height: Constants.dividerHeight)
         }
-        .listRowInsets(.zero)
     }
 }
 

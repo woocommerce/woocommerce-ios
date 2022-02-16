@@ -18,14 +18,9 @@ struct Inbox: View {
                 InfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
                                    loadAction: viewModel.onLoadNextPageAction) {
                     ForEach(viewModel.noteRowViewModels) { rowViewModel in
-                        if #available(iOS 15.0, *) {
-                            // In order to show full-width separator, the default list separator is hidden and a `Divider` is shown inside the row.
-                            InboxNoteRow(viewModel: rowViewModel)
-                                .listRowSeparator(.hidden)
-                        } else {
-                            InboxNoteRow(viewModel: rowViewModel)
-                        }
+                        InboxNoteRow(viewModel: rowViewModel)
                     }
+                    .background(Constants.listForeground)
                 }
             case .empty:
                 // TODO: 5954 - update empty state
@@ -34,17 +29,19 @@ struct Inbox: View {
                            image: .emptyProductsTabImage)
                     .frame(maxHeight: .infinity)
             case .syncingFirstPage:
-                List {
-                    ForEach(viewModel.placeholderRowViewModels) { rowViewModel in
-                        InboxNoteRow(viewModel: rowViewModel)
-                            .redacted(reason: .placeholder)
-                            .shimmering()
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(viewModel.placeholderRowViewModels) { rowViewModel in
+                            InboxNoteRow(viewModel: rowViewModel)
+                                .redacted(reason: .placeholder)
+                                .shimmering()
+                        }
+                        .background(Constants.listForeground)
                     }
                 }
-                .listStyle(PlainListStyle())
             }
         }
-        .background(Color(.listBackground).ignoresSafeArea())
+        .background(Constants.listBackground.ignoresSafeArea())
         .navigationTitle(Localization.title)
         .onAppear {
             viewModel.onLoadTrigger.send()
@@ -53,6 +50,12 @@ struct Inbox: View {
 }
 
 private extension Inbox {
+
+    enum Constants {
+        static let listForeground: Color = Color(.listForeground)
+        static let listBackground: Color = Color(.listBackground)
+    }
+
     enum Localization {
         static let title = NSLocalizedString("Inbox", comment: "Title for the screen that shows inbox notes.")
         static let emptyStateTitle = NSLocalizedString("Congrats, you’ve read everything!",

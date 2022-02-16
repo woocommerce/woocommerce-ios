@@ -87,8 +87,8 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         var isVariation: Bool? // could do optional boolean type, but need to adjust how you write the assertion. Have to unwrap the optional. It gives us more information to use the optional.
         //= ProductFormSection.PrimaryFieldRow.images
         for row in rows {
-            if case let .images(_, _, isVariation) = row {
-                isVariableProduct = isVariation
+            if case .images(_, _, let isVariationValue) = row { //double-check style guide about putting "let" inside the ()
+                isVariation = isVariationValue
                 break
             }
         }

@@ -58,7 +58,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         XCTAssertNil(inventoryViewModel?.details)
     }
 
-    func test_variable_product_view_model_row_has_isVariation_true() {
+    func test_variation_view_model_image_row_has_isVariation_true() {
         // Arrange
         let variation = ProductVariation.fake()
         let model = EditableProductVariationModel(productVariation: variation)

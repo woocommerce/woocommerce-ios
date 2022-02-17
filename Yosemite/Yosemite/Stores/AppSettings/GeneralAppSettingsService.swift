@@ -2,7 +2,7 @@ import Combine
 import Foundation
 import Storage
 
-struct GeneralAppSettingsService {
+public struct GeneralAppSettingsService {
     /// Loads a plist file at a given URL
     ///
     private let fileStorage: FileStorage
@@ -28,6 +28,11 @@ struct GeneralAppSettingsService {
         settingsSubject.send(load())
     }
 
+    func update(settings: GeneralAppSettings) throws {
+        settingsSubject.send(settings)
+        try fileStorage.write(settings, to: fileURL)
+    }
+
     func value<Value>(for keyPath: KeyPath<GeneralAppSettings, Value>) -> Value {
         settings[keyPath: keyPath]
     }
@@ -40,7 +45,6 @@ struct GeneralAppSettingsService {
         var newSettings = settings
         newSettings[keyPath: keyPath] = value
         try update(settings: newSettings)
-        settingsSubject.send(newSettings)
     }
 
     func pluck<Key, Value>(from keyPath: KeyPath<GeneralAppSettings, [Key: Value]>, key: Key) -> Value? {
@@ -62,9 +66,5 @@ private extension GeneralAppSettingsService {
             return .default
         }
         return storedSettings
-    }
-
-    func update(settings: GeneralAppSettings) throws {
-        try fileStorage.write(settings, to: fileURL)
     }
 }

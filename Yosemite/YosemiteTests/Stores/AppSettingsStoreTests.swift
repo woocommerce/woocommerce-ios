@@ -25,26 +25,36 @@ private struct TestConstants {
 final class AppSettingsStoreTests: XCTestCase {
     /// Mock Dispatcher!
     ///
-    private var dispatcher: Dispatcher?
+    private var dispatcher: Dispatcher!
 
     /// Mock Storage: InMemory
     ///
-    private var storageManager: MockStorageManager?
+    private var storageManager: MockStorageManager!
 
     /// Mock File Storage: Load a plist in the test bundle
     ///
-    private var fileStorage: MockInMemoryStorage?
+    private var fileStorage: MockInMemoryStorage!
 
     /// Test subject
     ///
-    private var subject: AppSettingsStore?
+    private var subject: AppSettingsStore!
+
+    /// Settings Service
+    ///
+    private var generalAppSettingsService: GeneralAppSettingsService!
 
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         fileStorage = MockInMemoryStorage()
-        subject = AppSettingsStore(dispatcher: dispatcher!, storageManager: storageManager!, fileStorage: fileStorage!)
+        generalAppSettingsService = GeneralAppSettingsService(fileStorage: fileStorage, fileURL: expectedGeneralAppSettingsFileURL)
+        subject = AppSettingsStore(
+            dispatcher: dispatcher,
+            storageManager: storageManager,
+            fileStorage: fileStorage,
+            generalSettingsService: generalAppSettingsService
+        )
         subject?.selectedProvidersURL = TestConstants.fileURL!
         subject?.customSelectedProvidersURL = TestConstants.customFileURL!
     }
@@ -53,6 +63,7 @@ final class AppSettingsStoreTests: XCTestCase {
         dispatcher = nil
         storageManager = nil
         fileStorage = nil
+        generalAppSettingsService = nil
         subject = nil
         super.tearDown()
     }
@@ -194,7 +205,8 @@ final class AppSettingsStoreTests: XCTestCase {
 
         let (existingSettings, feedback) = createAppSettingAndGeneralFeedback(installationDate: Date(timeIntervalSince1970: 4_810),
                                                                               feedbackStatus: .given(Date(timeIntervalSince1970: 9_971_311)))
-        try fileStorage?.write(existingSettings, to: expectedGeneralAppSettingsFileURL)
+
+        try generalAppSettingsService.update(settings: existingSettings)
 
         // When
         var result: Result<Bool, Error>?
@@ -207,7 +219,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(result).isSuccess)
         XCTAssertTrue(try XCTUnwrap(result).get())
 
-        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+        let savedSettings: GeneralAppSettings = generalAppSettingsService.settings
         XCTAssertEqual(date, savedSettings.installationDate)
 
         // The other properties should be kept
@@ -307,7 +319,7 @@ final class AppSettingsStoreTests: XCTestCase {
         let (existingSettings, feedback) = createAppSettingAndGeneralFeedback(installationDate: Date(timeIntervalSince1970: 1),
                                                                               feedbackStatus: .given(Date(timeIntervalSince1970: 999)))
 
-        try fileStorage?.write(existingSettings, to: expectedGeneralAppSettingsFileURL)
+        try generalAppSettingsService.update(settings: existingSettings)
 
         // When
         var result: Result<Void, Error>?
@@ -319,7 +331,7 @@ final class AppSettingsStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(try XCTUnwrap(result).isSuccess)
 
-        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+        let savedSettings: GeneralAppSettings = generalAppSettingsService.settings
         let savedFeedback = try XCTUnwrap(savedSettings.feedbacks[feedback.name])
         XCTAssertEqual(.given(date), savedFeedback.status)
 

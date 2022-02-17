@@ -15,9 +15,14 @@ public class AppSettingsStore: Store {
     ///
     public init(dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
-                fileStorage: FileStorage) {
+                fileStorage: FileStorage,
+                generalSettingsService: GeneralAppSettingsService? = nil) {
         self.fileStorage = fileStorage
-        self.generalSettingsService = GeneralAppSettingsService(fileStorage: fileStorage, fileURL: Self.generalAppSettingsFileURL)
+        if let generalSettingsService = generalSettingsService {
+            self.generalSettingsService = generalSettingsService
+        } else {
+            self.generalSettingsService = GeneralAppSettingsService(fileStorage: fileStorage, fileURL: Self.generalAppSettingsFileURL)
+        }
         super.init(dispatcher: dispatcher,
                    storageManager: storageManager,
                    network: NullNetwork())

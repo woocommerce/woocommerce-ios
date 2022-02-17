@@ -160,7 +160,7 @@ final class InboxNotesStoreTests: XCTestCase {
     func test_dismissInboxNote_then_it_update_inbox_note_upon_successful_response() {
         // Given a stubbed inbox note network response
         let sampleInboxNoteID: Int64 = 296
-        network.simulateResponse(requestUrlSuffix: "admin/notes/\(sampleInboxNoteID)", filename: "inbox-note")
+        network.simulateResponse(requestUrlSuffix: "admin/notes/delete/\(sampleInboxNoteID)", filename: "inbox-note")
 
         // When dispatching a `dismissInboxNote` action
         let result: Result<Networking.InboxNote, Error> = waitFor { [weak self] promise in
@@ -182,7 +182,7 @@ final class InboxNotesStoreTests: XCTestCase {
     func test_dismissInboxNote_then_it_returns_error_upon_response_error() {
         // Given a stubbed generic-error network response
         let sampleInboxNoteID: Int64 = 296
-        network.simulateResponse(requestUrlSuffix: "admin/notes/\(sampleInboxNoteID)", filename: "generic_error")
+        network.simulateResponse(requestUrlSuffix: "admin/notes/delete/\(sampleInboxNoteID)", filename: "generic_error")
         XCTAssertEqual(storedInboxNotesCount, 0)
 
         // When dispatching a `dismissInboxNote` action

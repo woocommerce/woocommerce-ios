@@ -44,7 +44,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     ) {
         self.storageManager = storageManager
         self.stores = stores
-        self.configurationLoader = .init(stores: stores)
+        self.configurationLoader = .init()
 
         // At the time of writing, actions are dispatched and processed synchronously, so the completion blocks for
         // loadStripeInPersonPaymentsSwitchState and loadCanadaInPersonPaymentsSwitchState should have been called already.
@@ -53,7 +53,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 
     func refresh() {
-        if state != .completed {
+        if !state.isCompleted {
             state = .loading
         }
         synchronizeStoreCountryAndPlugins { [weak self] in
@@ -226,7 +226,9 @@ private extension CardPresentPaymentsOnboardingUseCase {
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: account)
         stores.dispatch(setAccount)
 
-        return .completed
+        // TODO: remove this, just to make it compile
+        return .genericError
+//        return .completed
     }
 }
 

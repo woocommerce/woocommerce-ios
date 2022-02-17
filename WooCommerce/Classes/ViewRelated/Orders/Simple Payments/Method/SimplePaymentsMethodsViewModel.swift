@@ -220,7 +220,7 @@ private extension SimplePaymentsMethodsViewModel {
     func bindStoreCPPState() {
         cppStoreStateObserver
             .statePublisher
-            .map { $0 == .completed }
+            .map { $0.isCompleted }
             .removeDuplicates()
             .assign(to: &$showPayWithCardRow)
         cppStoreStateObserver.refresh()

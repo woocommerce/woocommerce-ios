@@ -197,6 +197,10 @@ final class ServiceLocator {
     static var connectivityObserver: ConnectivityObserver {
         _connectivityObserver
     }
+
+    /// App Settings Service
+    ///
+    static let appSettingsService: GeneralAppSettingsService = GeneralAppSettingsService()
 }
 
 

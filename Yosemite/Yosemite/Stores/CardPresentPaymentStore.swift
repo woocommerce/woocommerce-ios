@@ -13,21 +13,35 @@ public final class CardPresentPaymentStore: Store {
     // If retaining the service here ended up being a problem, we would need to move this Store out of Yosemite and push it up to WooCommerce.
     private let cardReaderService: CardReaderService
 
+    private let appSettingsService: GeneralAppSettingsService
+
     /// Card reader config provider
     ///
     private let commonReaderConfigProvider: CommonReaderConfigProvider
 
-    /// Instead of adding a reference to the feature flag service (in the WooCommerce layer),
-    /// and since feature flag values don't mutate, let's just have a private bool passed into this service
-    /// to allow (or not) Stripe IPP.
-    /// TODO: Remove this feature flag when no longer needed.
-    ///
-    private var allowStripeIPP: Bool
-
     /// Which backend is the store using? Default to WCPay until told otherwise
-    private var usingBackend: CardPresentPaymentStoreBackend = .wcpay
+    private var usingBackend: CardPresentPaymentStoreBackend? {
+        switch onboardingState {
+        case .completed(let account) where account.isStripe:
+            return .stripe
+        case .completed(let account) where account.isWCPay:
+            return .wcpay
+        default:
+            return nil
+        }
+    }
 
-    private let remote: WCPayRemote
+    private var remote: CardReaderCapableRemote? {
+        switch onboardingState {
+        case .completed(let account) where account.isStripe:
+            return wcPayRemote
+        case .completed(let account) where account.isWCPay:
+            return stripeRemote
+        default:
+            return nil
+        }
+    }
+    private let wcPayRemote: WCPayRemote
     private let stripeRemote: StripeRemote
 
     private var cancellables: Set<AnyCancellable> = []
@@ -35,18 +49,26 @@ public final class CardPresentPaymentStore: Store {
     /// We need to be able to cancel the process of collecting a payment.
     private var paymentCancellable: AnyCancellable? = nil
 
+    private var configurationLoader: CardPresentConfigurationLoaderInterface? = nil
+    private var configuration: CardPresentPaymentsConfiguration {
+        configurationLoader?.configuration ?? .unsupported
+    }
+    private var onboardingState: CardPresentPaymentOnboardingState {
+        configurationLoader?.state ?? .loading
+    }
+
     public init(
         dispatcher: Dispatcher,
         storageManager: StorageManagerType,
         network: Network,
         cardReaderService: CardReaderService,
-        allowStripeIPP: Bool
+        appSettingsService: GeneralAppSettingsService
     ) {
         self.cardReaderService = cardReaderService
+        self.appSettingsService = appSettingsService
         self.commonReaderConfigProvider = CommonReaderConfigProvider()
-        self.remote = WCPayRemote(network: network)
+        self.wcPayRemote = WCPayRemote(network: network)
         self.stripeRemote = StripeRemote(network: network)
-        self.allowStripeIPP = allowStripeIPP
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -65,8 +87,10 @@ public final class CardPresentPaymentStore: Store {
         }
 
         switch action {
-        case .use(let account):
-            use(paymentGatewayAccount: account)
+        case .configure(let loader):
+            configure(loader: loader)
+        case .use(_):
+            break
         case .loadAccounts(let siteID, let onCompletion):
             loadAccounts(siteID: siteID,
                          onCompletion: onCompletion)
@@ -127,15 +151,13 @@ private extension CardPresentPaymentStore {
     }
 
     func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
+        guard let remote = remote else {
+            DDLogError("[CardPresentPaymentStore] Error starting discovery: no account configured")
+            return
+        }
         do {
-            switch usingBackend {
-            case .wcpay:
-                commonReaderConfigProvider.setContext(siteID: siteID, remote: self.remote)
-                try cardReaderService.start(commonReaderConfigProvider)
-            case .stripe:
-                commonReaderConfigProvider.setContext(siteID: siteID, remote: self.stripeRemote)
-                try cardReaderService.start(commonReaderConfigProvider)
-            }
+            commonReaderConfigProvider.setContext(siteID: siteID, remote: remote)
+            try cardReaderService.start(commonReaderConfigProvider)
         } catch {
             return onError(error)
         }
@@ -360,20 +382,8 @@ private extension CardReaderConfigError {
 
 // MARK: Networking Methods
 private extension CardPresentPaymentStore {
-    /// Sets the store to use a given payment gateway
-    ///
-    func use(paymentGatewayAccount: PaymentGatewayAccount) {
-        guard allowStripeIPP else {
-            DDLogError("useStripeAsBackend called when stripeExtensionInPersonPayments disabled")
-            return
-        }
-
-        guard paymentGatewayAccount.isWCPay else {
-            usingBackend = .stripe
-            return
-        }
-
-        usingBackend = .wcpay
+    func configure(loader: CardPresentConfigurationLoaderInterface) {
+        configurationLoader = loader
     }
 
     /// Loads the account corresponding to the currently selected backend. Deletes the other (if it exists).
@@ -420,7 +430,7 @@ private extension CardPresentPaymentStore {
         self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
 
         /// Fetch the WCPay account
-        remote.loadAccount(for: siteID) { [weak self] result in
+        wcPayRemote.loadAccount(for: siteID) { [weak self] result in
             guard let self = self else {
                 return
             }
@@ -459,31 +469,14 @@ private extension CardPresentPaymentStore {
     }
 
     func fetchOrderCustomer(siteID: Int64, orderID: Int64, completion: @escaping (Result<WCPayCustomer, Error>) -> Void) {
-        switch usingBackend {
-        case .wcpay:
-            remote.fetchOrderCustomer(for: siteID, orderID: orderID, completion: completion)
-        case .stripe:
-            stripeRemote.fetchOrderCustomer(for: siteID, orderID: orderID, completion: completion)
-        }
+        remote?.fetchOrderCustomer(for: siteID, orderID: orderID, completion: completion)
     }
 
     func captureOrderPayment(siteID: Int64,
                              orderID: Int64,
                              paymentIntentID: String,
                              onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        switch usingBackend {
-        case .wcpay:
-            captureOrderPaymentUsingWCPay(siteID: siteID, orderID: orderID, paymentIntentID: paymentIntentID, onCompletion: onCompletion)
-        case .stripe:
-            captureOrderPaymentUsingStripe(siteID: siteID, orderID: orderID, paymentIntentID: paymentIntentID, onCompletion: onCompletion)
-        }
-    }
-
-    func captureOrderPaymentUsingWCPay(siteID: Int64,
-                                       orderID: Int64,
-                                       paymentIntentID: String,
-                                       onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        remote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntentID, completion: { result in
+        remote?.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntentID, completion: { result in
             switch result {
             case .success(let intent):
                 guard intent.status == .succeeded else {
@@ -499,27 +492,7 @@ private extension CardPresentPaymentStore {
             }
         })
     }
-
-    func captureOrderPaymentUsingStripe(siteID: Int64,
-                                       orderID: Int64,
-                                       paymentIntentID: String,
-                                       onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        stripeRemote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntentID, completion: { result in
-            switch result {
-            case .success(let intent):
-                guard intent.status == .succeeded else {
-                    DDLogDebug("Unexpected payment intent status \(intent.status) after attempting capture")
-                    onCompletion(.failure(CardReaderServiceError.paymentCapture()))
-                    return
-                }
-
-                onCompletion(.success(()))
-            case .failure(let error):
-                onCompletion(.failure(PaymentGatewayAccountError(underlyingError: error)))
-                return
-            }
-        })
-    }}
+}
 
 // MARK: Storage Methods
 private extension CardPresentPaymentStore {
@@ -591,6 +564,10 @@ private extension PaymentGatewayAccount {
     var isWCPay: Bool {
         self.gatewayID == WCPayAccount.gatewayID
     }
+
+    var isStripe: Bool {
+        self.gatewayID == StripeAccount.gatewayID
+    }
 }
 
 // MARK: - CardReaderCapableRemote
@@ -600,6 +577,13 @@ public protocol CardReaderCapableRemote {
                              completion: @escaping(Result<ReaderConnectionToken, Error>) -> Void)
     func loadDefaultReaderLocation(for siteID: Int64,
                                    onCompletion: @escaping (Result<RemoteReaderLocation, Error>) -> Void)
+    func fetchOrderCustomer(for siteID: Int64,
+                            orderID: Int64,
+                            completion: @escaping (Result<Customer, Error>) -> Void)
+    func captureOrderPayment(for siteID: Int64,
+                             orderID: Int64,
+                             paymentIntentID: String,
+                             completion: @escaping (Result<RemotePaymentIntent, Error>) -> Void)
 }
 
 extension WCPayRemote: CardReaderCapableRemote {}

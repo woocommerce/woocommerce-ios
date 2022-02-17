@@ -4,6 +4,7 @@
 import Combine
 
 public enum CardPresentPaymentAction: Action {
+    case configure(loader: CardPresentConfigurationLoaderInterface)
     /// Sets the store to use a given payment gateway
     ///
     case use(paymentGatewayAccount: PaymentGatewayAccount)

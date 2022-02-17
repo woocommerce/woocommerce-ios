@@ -131,8 +131,8 @@ private extension InboxNotesStore {
                 self.deleteStoredInboxNotes(siteID: siteID, in: derivedStorage)
             }
             self.upsertStoredInboxNotes(readOnlyInboxNotes: readOnlyInboxNotes,
-                                         in: derivedStorage,
-                                         siteID: siteID)
+                                        in: derivedStorage,
+                                        siteID: siteID)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {

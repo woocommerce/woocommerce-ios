@@ -1533,6 +1533,7 @@
 		DEF3300C270444070073AE29 /* ShippingLabelSelectedRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF3300B270444060073AE29 /* ShippingLabelSelectedRate.swift */; };
 		DEFD6E61264990FB00E51E0D /* SitePluginListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */; };
 		DEFD6E86264ABFB700E51E0D /* PluginListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */; };
+		E10459C627BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */; };
 		E107FCE126C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift in Sources */ = {isa = PBXBuildFile; fileRef = E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */; };
 		E107FCE326C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = E107FCE226C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift */; };
 		E10BC15E26CC06970064F5E2 /* ScrollableVStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10BC15D26CC06970064F5E2 /* ScrollableVStack.swift */; };
@@ -1560,6 +1561,7 @@
 		E1BE703A265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BE7039265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift */; };
 		E1C47209267A1ECC00D06DA1 /* CrashLoggingStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C47208267A1ECC00D06DA1 /* CrashLoggingStack.swift */; };
 		E1C5E78226C2A971008D4C47 /* InPersonPaymentsPluginNotSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C5E78126C2A971008D4C47 /* InPersonPaymentsPluginNotSetup.swift */; };
+		E1C6535C27BD1D0A003E87D4 /* CardPresentConfigurationLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C6535B27BD1D0A003E87D4 /* CardPresentConfigurationLoaderTests.swift */; };
 		E1D4E84426776A6B00256B83 /* HeadlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D4E84326776A6A00256B83 /* HeadlineTableViewCell.swift */; };
 		E1D4E84526776AD900256B83 /* HeadlineTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1D4E84226776A6A00256B83 /* HeadlineTableViewCell.xib */; };
 		E1E125AA26EB42530068A9B0 /* CardPresentModalUpdateProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E125A926EB42530068A9B0 /* CardPresentModalUpdateProgress.swift */; };
@@ -3179,6 +3181,7 @@
 		DEF3300B270444060073AE29 /* ShippingLabelSelectedRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelSelectedRate.swift; sourceTree = "<group>"; };
 		DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginListViewModelTests.swift; sourceTree = "<group>"; };
 		DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PluginListViewController.xib; sourceTree = "<group>"; };
+		E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentConfigurationLoader.swift; sourceTree = "<group>"; };
 		E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCountryNotSupported.swift; sourceTree = "<group>"; };
 		E107FCE226C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsSupportLink.swift; sourceTree = "<group>"; };
 		E10BC15D26CC06970064F5E2 /* ScrollableVStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableVStack.swift; sourceTree = "<group>"; };
@@ -3206,6 +3209,7 @@
 		E1BE7039265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningFailed.swift; sourceTree = "<group>"; };
 		E1C47208267A1ECC00D06DA1 /* CrashLoggingStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashLoggingStack.swift; sourceTree = "<group>"; };
 		E1C5E78126C2A971008D4C47 /* InPersonPaymentsPluginNotSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsPluginNotSetup.swift; sourceTree = "<group>"; };
+		E1C6535B27BD1D0A003E87D4 /* CardPresentConfigurationLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentConfigurationLoaderTests.swift; sourceTree = "<group>"; };
 		E1D4E84226776A6A00256B83 /* HeadlineTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HeadlineTableViewCell.xib; sourceTree = "<group>"; };
 		E1D4E84326776A6A00256B83 /* HeadlineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadlineTableViewCell.swift; sourceTree = "<group>"; };
 		E1E125A926EB42530068A9B0 /* CardPresentModalUpdateProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalUpdateProgress.swift; sourceTree = "<group>"; };
@@ -5704,6 +5708,7 @@
 		B53A569521123D27000776C9 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				E1C6535A27BD1CFC003E87D4 /* In-Person Payments */,
 				029700ED24FE38DE00D242F8 /* InfiniteScroll */,
 				028AFFB42484ED7F00693C09 /* Logging */,
 				D8A8C4F22268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift */,
@@ -5824,6 +5829,7 @@
 				024A543222BA6DD500F4F38E /* Developer */,
 				02C0CD2823B5BAFB00F880B1 /* ImageService */,
 				029700EA24FE389C00D242F8 /* InfiniteScroll */,
+				E10459C427BBC20C00C1DCBA /* In-Person Payments */,
 				B5A03699214C0E7000774E2C /* Logging */,
 				B58B4ABC2108F7F800076FDD /* Notices */,
 				45C11B7D2508E99A006C2089 /* Shared Site Settings */,
@@ -7440,6 +7446,14 @@
 			path = Plugins;
 			sourceTree = "<group>";
 		};
+		E10459C427BBC20C00C1DCBA /* In-Person Payments */ = {
+			isa = PBXGroup;
+			children = (
+				E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */,
+			);
+			path = "In-Person Payments";
+			sourceTree = "<group>";
+		};
 		E107FCDD26C1295600BAF51B /* Onboarding Errors */ = {
 			isa = PBXGroup;
 			children = (
@@ -7483,6 +7497,14 @@
 				E138D4FB269EEAFE006EA5C6 /* InPersonPaymentsViewModel.swift */,
 				E15FC74426BC213500CF83E6 /* InPersonPaymentsLearnMore.swift */,
 				E107FCE226C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift */,
+			);
+			path = "In-Person Payments";
+			sourceTree = "<group>";
+		};
+		E1C6535A27BD1CFC003E87D4 /* In-Person Payments */ = {
+			isa = PBXGroup;
+			children = (
+				E1C6535B27BD1D0A003E87D4 /* CardPresentConfigurationLoaderTests.swift */,
 			);
 			path = "In-Person Payments";
 			sourceTree = "<group>";
@@ -8616,6 +8638,7 @@
 				B541B2172189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift in Sources */,
 				26F94E2E267A96A000DB6CCF /* ProductAddOnViewModel.swift in Sources */,
 				02A9BCD42737DE0D00159C79 /* JetpackBenefitsView.swift in Sources */,
+				E10459C627BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift in Sources */,
 				B586906621A5F4B1001F1EFC /* UINavigationController+Woo.swift in Sources */,
 				45FBDF3A238D3F8B00127F77 /* ExtendedAddProductImageCollectionViewCell.swift in Sources */,
 				02A410F52583A84C005E2925 /* SpacerTableViewCell.swift in Sources */,
@@ -9422,6 +9445,7 @@
 				02524A5D252ED5C60033E7BD /* ProductVariationLoadUseCaseTests.swift in Sources */,
 				028AFFB62484EDA000693C09 /* Dictionary+LoggingTests.swift in Sources */,
 				02BC5AA824D2802B00C43326 /* MockProductVariationStoresManager.swift in Sources */,
+				E1C6535C27BD1D0A003E87D4 /* CardPresentConfigurationLoaderTests.swift in Sources */,
 				2688644325D471C700821BA5 /* EditAttributesViewModelTests.swift in Sources */,
 				DE001323279A793A00EB0350 /* CouponWooTests.swift in Sources */,
 				45B98E1F25DECC1C00A1232B /* ShippingLabelAddressFormViewModelTests.swift in Sources */,

@@ -91,7 +91,7 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
         let request = JetpackRequest(wooApiVersion: .wcAnalytics,
                                      method: .delete,
                                      siteID: siteID,
-                                     path: Path.notes + "/\(noteID)",
+                                     path: Path.notes + "/delete/\(noteID)",
                                      parameters: nil)
 
         let mapper = InboxNoteMapper(siteID: siteID)

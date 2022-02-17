@@ -37,7 +37,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .myStoreTabUpdates:
             return true
-        case .couponsView:
+        case .couponView:
             return true
         case .productSKUInputScanner:
             return true

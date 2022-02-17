@@ -340,15 +340,18 @@ extension NewOrderViewModel {
 
         let shouldShowShippingTotal: Bool
         let shippingTotal: String
+        let shippingMethodTitle: String
 
         init(itemsTotal: String = "",
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "",
+             shippingMethodTitle: String = "",
              orderTotal: String = "",
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? ""
             self.shouldShowShippingTotal = shouldShowShippingTotal
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? ""
+            self.shippingMethodTitle = shippingMethodTitle
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? ""
         }
     }
@@ -460,11 +463,14 @@ private extension NewOrderViewModel {
                     .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
                     .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
+                let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
+
                 let orderTotal = itemsTotal.adding(shippingTotal)
 
                 return PaymentDataViewModel(itemsTotal: itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.isNotEmpty,
                                             shippingTotal: shippingTotal.stringValue,
+                                            shippingMethodTitle: shippingMethodTitle,
                                             orderTotal: orderTotal.stringValue,
                                             currencyFormatter: self.currencyFormatter)
             }

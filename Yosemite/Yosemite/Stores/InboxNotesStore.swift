@@ -73,20 +73,20 @@ private extension InboxNotesStore {
     }
 
     /// Dismiss one `InboxNote`.
-    /// This internally marks a notification’s is_deleted field to true and such notifications do not show in the results anymore.
+    /// This marks a notification’s is_deleted field to true and the inbox note will be deleted locally.
     ///
     func dismissInboxNote(for siteID: Int64,
                           noteID: Int64,
-                          completion: @escaping (Result<InboxNote, Error>) -> ()) {
+                          completion: @escaping (Result<Bool, Error>) -> ()) {
         remote.dismissInboxNote(for: siteID, noteID: noteID) { [weak self] result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
 
-            case .success(let inboxNote):
-                self?.upsertStoredInboxNotesInBackground(readOnlyInboxNotes: [inboxNote], siteID: siteID, shouldDeleteExistingNotes: false) {
-                    completion(.success(inboxNote))
-                }
+            case .success(_):
+                self?.deleteStoredInboxNoteInBackground(siteID: siteID, noteID: noteID, onCompletion: {
+                    completion(.success(true))
+                })
             }
         }
     }
@@ -169,6 +169,22 @@ private extension InboxNotesStore {
             storageInboxActions.append(newStorageInboxAction)
         }
         storageInboxNote.actions = Set(storageInboxActions)
+    }
+
+    /// Deletes specified Inbox Note Entity in a background thread
+    /// `onCompletion` will be called on the main thread.
+    ///
+    func deleteStoredInboxNoteInBackground(siteID: Int64,
+                                           noteID: Int64,
+                                           onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            derivedStorage.deleteInboxNote(siteID: siteID, id: noteID)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
     }
 
     /// Deletes all Storage.InboxNote with the specified `siteID`

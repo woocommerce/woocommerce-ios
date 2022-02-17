@@ -108,11 +108,11 @@ extension InboxNoteRowViewModel {
         let action = InboxNotesAction.dismissInboxNote(siteID: siteID, noteID: id) { result in
             switch result {
             case .success(_):
-                onCompletion(.success(true))
+                break
             case .failure(let error):
                 DDLogError("⛔️ Error on dismissing an inbox note: \(error)")
-                onCompletion(.failure(error))
             }
+            onCompletion(result)
         }
         stores.dispatch(action)
     }

@@ -7,6 +7,8 @@ struct InboxNoteRow: View {
 
     // Tracks the scale of the view due to accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1
+    @State private var displayedURL: URL?
+    @State private var showWebView: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -45,6 +47,8 @@ struct InboxNoteRow: View {
                                 Button(action.title) {
                                     // TODO: 5955 - handle action
                                     print("Handling action with URL: \(url)")
+                                    displayedURL = url
+                                    showWebView = true
                                 }
                                 .foregroundColor(Color(.accent))
                                 .font(.body)
@@ -65,10 +69,43 @@ struct InboxNoteRow: View {
                     }
                 }
             }
-                   .padding(Constants.defaultPadding)
+            .padding(Constants.defaultPadding)
+            .sheet(isPresented: $showWebView, content: {
+                webView
+            })
 
             Divider()
                 .frame(height: Constants.dividerHeight)
+        }
+    }
+
+    @ViewBuilder
+    private var webView: some View {
+        let isWPComStore = ServiceLocator.stores.sessionManager.defaultSite?.isWordPressStore ?? false
+
+        if isWPComStore {
+        NavigationView {
+            AuthenticatedWebView(isPresented: $showWebView,
+                                 url: displayedURL?.absoluteURL ?? WooConstants.URLs.blog.asURL(),
+                                 urlToTriggerExit: nil) {
+
+            }
+             .navigationTitle(Localization.inboxWebViewTitle)
+             .navigationBarTitleDisplayMode(.inline)
+             .toolbar {
+                 ToolbarItem(placement: .confirmationAction) {
+                     Button(action: {
+                         showWebView = false
+                     }, label: {
+                         Text(Localization.doneButtonWebview)
+                     })
+                 }
+             }
+        }
+        .wooNavigationBarStyle()
+        }
+        else {
+            SafariSheetView(url: displayedURL ?? WooConstants.URLs.blog.asURL())
         }
     }
 }
@@ -76,6 +113,12 @@ struct InboxNoteRow: View {
 private extension InboxNoteRow {
     enum Localization {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss button in inbox note row.")
+        static let inboxWebViewTitle = NSLocalizedString(
+            "Inbox",
+            comment: "Navigation title of the webview which is used in Inbox Notes."
+        )
+        static let doneButtonWebview = NSLocalizedString("Done",
+                                                         comment: "Done navigation button in Inbox Notes webview")
     }
 
     enum Constants {

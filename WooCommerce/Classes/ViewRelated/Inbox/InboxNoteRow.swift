@@ -45,7 +45,6 @@ struct InboxNoteRow: View {
                         ForEach(viewModel.actions) { action in
                             if let url = action.url {
                                 Button(action.title) {
-                                    print("Handling action with URL: \(url)")
                                     displayedURL = url
                                     showWebView = true
                                     viewModel.markInboxNoteAsActioned()
@@ -58,7 +57,6 @@ struct InboxNoteRow: View {
                             }
                         }
                         Button(Localization.dismiss) {
-                            print("Handling dismiss action")
                             viewModel.dismissInboxNote()
                         }
                         .foregroundColor(Color(.withColorStudio(.gray, shade: .shade30)))

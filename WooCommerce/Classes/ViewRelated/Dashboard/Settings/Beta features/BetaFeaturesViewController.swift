@@ -119,7 +119,7 @@ private extension BetaFeaturesViewController {
     }
 
     func couponManagementSection() -> Section? {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.couponManagement) else {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.couponView) else {
             return nil
         }
         return Section(rows: [.couponManagement,

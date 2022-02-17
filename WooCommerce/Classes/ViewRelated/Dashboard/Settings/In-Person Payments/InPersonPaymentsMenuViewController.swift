@@ -130,7 +130,7 @@ private extension InPersonPaymentsMenuViewController {
 //
 extension InPersonPaymentsMenuViewController {
     func orderCardReaderWasPressed() {
-        WebviewHelper.launch(Constants.woocommercePurchaseCardReaderURL, with: self)
+        WebviewHelper.launch(configurationLoader.configuration.purchaseCardReaderUrl, with: self)
     }
 
     func manageCardReaderWasPressed() {
@@ -246,7 +246,6 @@ private enum Row: CaseIterable {
 }
 
 private enum Constants {
-    static let woocommercePurchaseCardReaderURL = URL(string: "https://woocommerce.com/products/m2-card-reader/")!
     static let bbposChipper2XBTManualURL = URL(string: "https://developer.bbpos.com/quick_start_guide/Chipper%202X%20BT%20Quick%20Start%20Guide.pdf")!
     static let stripeM2ManualURL = URL(string: "https://stripe.com/files/docs/terminal/m2_product_sheet.pdf")!
     static let wisepad3ManualURL = URL(string: "https://stripe.com/files/docs/terminal/wp3_product_sheet.pdf")!

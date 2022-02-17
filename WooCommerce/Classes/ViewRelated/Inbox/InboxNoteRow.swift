@@ -48,6 +48,7 @@ struct InboxNoteRow: View {
                                     print("Handling action with URL: \(url)")
                                     displayedURL = url
                                     showWebView = true
+                                    viewModel.markInboxNoteAsActioned()
                                 }
                                 .foregroundColor(Color(.accent))
                                 .font(.body)

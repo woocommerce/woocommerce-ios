@@ -19,7 +19,8 @@ final class InboxViewModel: ObservableObject {
                               typeIcon: .init(uiImage: .infoImage),
                               title: "            ",
                               attributedContent: .init(string: "\n\n\n"),
-                              actions: [.init(id: 0, title: "Placeholder", url: nil)])
+                              actions: [.init(id: 0, title: "Placeholder", url: nil)],
+                              siteID: 123)
     }
 
     // MARK: Sync

@@ -1007,6 +1007,7 @@
 		AEA3F90F27BE8EB400B9F555 /* ShippingLineDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA3F90E27BE8EB400B9F555 /* ShippingLineDetailsViewModel.swift */; };
 		AEA3F91127BEC08800B9F555 /* PriceFieldFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA3F91027BEC08800B9F555 /* PriceFieldFormatter.swift */; };
 		AEA3F91327BEC40A00B9F555 /* ShippingLineDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA3F91227BEC40A00B9F555 /* ShippingLineDetailsViewModelTests.swift */; };
+		AEA3F91527BEC96B00B9F555 /* PriceFieldFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA3F91427BEC96B00B9F555 /* PriceFieldFormatterTests.swift */; };
 		AEA622B2274669D3002A9B57 /* AddOrderCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B1274669D3002A9B57 /* AddOrderCoordinator.swift */; };
 		AEA622B427466B78002A9B57 /* BottomSheetOrderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */; };
 		AEA622B727468790002A9B57 /* AddOrderCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */; };
@@ -2620,6 +2621,7 @@
 		AEA3F90E27BE8EB400B9F555 /* ShippingLineDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLineDetailsViewModel.swift; sourceTree = "<group>"; };
 		AEA3F91027BEC08800B9F555 /* PriceFieldFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceFieldFormatter.swift; sourceTree = "<group>"; };
 		AEA3F91227BEC40A00B9F555 /* ShippingLineDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLineDetailsViewModelTests.swift; sourceTree = "<group>"; };
+		AEA3F91427BEC96B00B9F555 /* PriceFieldFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceFieldFormatterTests.swift; sourceTree = "<group>"; };
 		AEA622B1274669D3002A9B57 /* AddOrderCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderCoordinator.swift; sourceTree = "<group>"; };
 		AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetOrderType.swift; sourceTree = "<group>"; };
 		AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderCoordinatorTests.swift; sourceTree = "<group>"; };
@@ -4355,6 +4357,7 @@
 				26B9875E273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift */,
 				261AA30D275506DE009530FE /* SimplePaymentsMethodsViewModelTests.swift */,
 				2655905A27863D1300BB8457 /* MockCollectOrderPaymentUseCase.swift */,
+				AEA3F91427BEC96B00B9F555 /* PriceFieldFormatterTests.swift */,
 			);
 			path = "Simple Payments";
 			sourceTree = "<group>";
@@ -9409,6 +9412,7 @@
 				748C7784211E2D8400814F2C /* DoubleWooTests.swift in Sources */,
 				02524A5D252ED5C60033E7BD /* ProductVariationLoadUseCaseTests.swift in Sources */,
 				028AFFB62484EDA000693C09 /* Dictionary+LoggingTests.swift in Sources */,
+				AEA3F91527BEC96B00B9F555 /* PriceFieldFormatterTests.swift in Sources */,
 				02BC5AA824D2802B00C43326 /* MockProductVariationStoresManager.swift in Sources */,
 				2688644325D471C700821BA5 /* EditAttributesViewModelTests.swift in Sources */,
 				DE001323279A793A00EB0350 /* CouponWooTests.swift in Sources */,

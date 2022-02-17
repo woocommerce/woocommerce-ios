@@ -390,6 +390,42 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
     }
+
+    func test_payment_section_is_updated_when_fee_line_updated() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        let testFeeLine = OrderFeeLine(feeID: 0,
+                                       name: "Fee",
+                                       taxClass: "",
+                                       taxStatus: .none,
+                                       total: "10",
+                                       totalTax: "",
+                                       taxes: [],
+                                       attributes: [])
+        viewModel.saveFeeLine(testFeeLine)
+
+        // Then
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowFees)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£10.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£18.50")
+
+        // When
+        viewModel.saveFeeLine(nil)
+
+        // Then
+        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowFees)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+    }
 }
 
 private extension MockStorageManager {

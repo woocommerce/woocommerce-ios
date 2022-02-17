@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import UIKit
+import Storage
 import SwiftUI
 import Yosemite
 
@@ -12,9 +13,13 @@ final class CardReaderConnectionController {
         ///
         case idle
 
-        /// Initializing (fetching the list of any known readers)
+        /// Initializing (fetching payment gateway accounts)
         ///
         case initializing
+
+        /// Preparing for search (fetching the list of any known readers)
+        ///
+        case preparingForSearch
 
         /// Begin search for card readers
         ///
@@ -64,6 +69,9 @@ final class CardReaderConnectionController {
         case discoveryFailed(Error)
     }
 
+    let storageManager: StorageManagerType
+    let stores: StoresManager
+
     private var state: ControllerState {
         didSet {
             didSetState()
@@ -103,18 +111,36 @@ final class CardReaderConnectionController {
 
     private var onCompletion: ((Result<Bool, Error>) -> Void)?
 
+    private(set) lazy var dataSource: CardReaderSettingsDataSource = {
+        return CardReaderSettingsDataSource(siteID: siteID, storageManager: storageManager)
+    }()
+
+    /// Gateway ID to include in tracks events
+    private var gatewayID: String? {
+        didSet {
+            didSetGatewayID()
+        }
+    }
+
     init(
         forSiteID: Int64,
+        storageManager: StorageManagerType = ServiceLocator.storageManager,
+        stores: StoresManager = ServiceLocator.stores,
         knownReaderProvider: CardReaderSettingsKnownReaderProvider,
         alertsProvider: CardReaderSettingsAlertsProvider
     ) {
-        state = .idle
         siteID = forSiteID
+        self.storageManager = storageManager
+        self.stores = stores
+        state = .idle
         knownCardReaderProvider = knownReaderProvider
         alerts = alertsProvider
         foundReaders = []
         knownReaderID = nil
         skippedReaderIDs = []
+
+        configureResultsControllers()
+        loadPaymentGatewayAccounts()
     }
 
     deinit {
@@ -133,12 +159,26 @@ final class CardReaderConnectionController {
 }
 
 private extension CardReaderConnectionController {
+    func configureResultsControllers() {
+        dataSource.configureResultsControllers(onReload: { [weak self] in
+            guard let self = self else { return }
+            self.gatewayID = self.dataSource.cardPresentPaymentGatewayID()
+        })
+    }
+
+    func loadPaymentGatewayAccounts() {
+        let action = CardPresentPaymentAction.loadAccounts(siteID: siteID) {_ in}
+        stores.dispatch(action)
+    }
+
     func didSetState() {
         switch state {
         case .idle:
             onIdle()
         case .initializing:
             onInitialization()
+        case .preparingForSearch:
+            onPreparingForSearch()
         case .beginSearch:
             onBeginSearch()
         case .searching:
@@ -159,6 +199,14 @@ private extension CardReaderConnectionController {
             onDiscoveryFailed(error: error)
         case .updating(progress: let progress):
             onUpdateProgress(progress: progress)
+        }
+    }
+
+    /// Once the gatewayID arrives (during initialization) it is OK to proceed with search preparations
+    ///
+    func didSetGatewayID() {
+        if case .initializing = state {
+            state = .preparingForSearch
         }
     }
 
@@ -208,11 +256,19 @@ private extension CardReaderConnectionController {
     func onIdle() {
     }
 
-    /// Begins a fetch for the list of known readers
+    /// Searching for a reader is about to begin. Wait, if needed, for the gateway ID to be provided from the FRC
+    ///
+    func onInitialization() {
+        if gatewayID != nil {
+            state = .preparingForSearch
+        }
+    }
+
+    /// In preparation for search, initiates a fetch for the list of known readers
     /// Does NOT open any modal
     /// Transitions state to `.beginSearch` after receiving the known readers list
     ///
-    func onInitialization() {
+    func onPreparingForSearch() {
         /// Always start fresh - i.e. we haven't skipped connecting to any reader yet
         ///
         skippedReaderIDs = []
@@ -228,8 +284,8 @@ private extension CardReaderConnectionController {
 
             self.knownReaderID = readerID
 
-            /// Only kick off search if we received a known reader update during intializaton
-            if case .initializing = self.state {
+            /// Only kick off search if we received a known reader update
+            if case .preparingForSearch = self.state {
                 self.state = .beginSearch
             }
         }).store(in: &subscriptions)
@@ -308,15 +364,15 @@ private extension CardReaderConnectionController {
                 }
             },
             onError: { [weak self] error in
-                guard let self = self else {
-                    return
-                }
+                guard let self = self else { return }
 
-                ServiceLocator.analytics.track(.cardReaderDiscoveryFailed, withError: error)
+                ServiceLocator.analytics.track(
+                    event: WooAnalyticsEvent.InPersonPayments.cardReaderDiscoveryFailed(forGatewayID: self.gatewayID, error: error)
+                )
                 self.state = .discoveryFailed(error)
             })
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Opens the scanning for reader modal
@@ -421,14 +477,24 @@ private extension CardReaderConnectionController {
 
         let cancel = softwareUpdateCancelable.map { cancelable in
             return { [weak self] in
-                self?.state = .cancel
-                let analyticsProperties = [SoftwareUpdateTypeProperty.name: SoftwareUpdateTypeProperty.required.rawValue]
-                ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCancelTapped, withProperties: analyticsProperties)
+                guard let self = self else { return }
+                self.state = .cancel
+                ServiceLocator.analytics.track(
+                    event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateCancelTapped(
+                        forGatewayID: self.gatewayID,
+                        updateType: .required
+                    )
+                )
                 cancelable.cancel { result in
                     if case .failure(let error) = result {
                         DDLogError("💳 Error: canceling software update \(error)")
                     } else {
-                        ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCanceled, withProperties: analyticsProperties)
+                        ServiceLocator.analytics.track(
+                            event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateCanceled(
+                                forGatewayID: self.gatewayID,
+                                updateType: .required
+                            )
+                        )
                     }
                 }
             }
@@ -447,7 +513,7 @@ private extension CardReaderConnectionController {
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
             self?.state = .beginSearch
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// End the search for a card reader
@@ -457,7 +523,7 @@ private extension CardReaderConnectionController {
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
             self?.returnSuccess(connected: false)
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Connect to the candidate card reader
@@ -493,16 +559,16 @@ private extension CardReaderConnectionController {
             }
             .store(in: &self.subscriptions)
         }
-        ServiceLocator.stores.dispatch(softwareUpdateAction)
+        stores.dispatch(softwareUpdateAction)
 
-        let action = CardPresentPaymentAction.connect(reader: candidateReader) { result in
+        let action = CardPresentPaymentAction.connect(reader: candidateReader) { [weak self] result in
             switch result {
             case .success(let reader):
+                guard let self = self else { return }
                 self.knownCardReaderProvider.rememberCardReader(cardReaderID: reader.id)
-                // If the reader does not have a battery, or the battery level is unknown, it will be nil
-                let properties = reader.batteryLevel
-                    .map { ["battery_level": $0] }
-                ServiceLocator.analytics.track(.cardReaderConnectionSuccess, withProperties: properties)
+                ServiceLocator.analytics.track(
+                    event: WooAnalyticsEvent.InPersonPayments.cardReaderConnectionSuccess(forGatewayID: self.gatewayID, batteryLevel: reader.batteryLevel)
+                )
                 // If we were installing a software update, introduce a small delay so the user can
                 // actually see a success message showing the installation was complete
                 if case .updating(progress: 1) = self.state {
@@ -513,11 +579,14 @@ private extension CardReaderConnectionController {
                     self.returnSuccess(connected: true)
                 }
             case .failure(let error):
-                ServiceLocator.analytics.track(.cardReaderConnectionFailed, withError: error)
+                guard let self = self else { return }
+                ServiceLocator.analytics.track(
+                    event: WooAnalyticsEvent.InPersonPayments.cardReaderConnectionFailed(forGatewayID: self.gatewayID, error: error)
+                )
                 self.state = .connectingFailed(error)
             }
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
 
         alerts.connectingToReader(from: from)
     }
@@ -608,7 +677,7 @@ private extension CardReaderConnectionController {
                                       from viewController: UIViewController,
                                       retrySearch: @escaping () -> Void) -> ((UIViewController) -> Void)? {
         if let adminUrl = adminUrl {
-            if let site = ServiceLocator.stores.sessionManager.defaultSite,
+            if let site = stores.sessionManager.defaultSite,
                site.isWordPressStore {
                 return { [weak self] viewController in
                     self?.openWCSettingsInWebview(url: adminUrl, from: viewController, retrySearch: retrySearch)

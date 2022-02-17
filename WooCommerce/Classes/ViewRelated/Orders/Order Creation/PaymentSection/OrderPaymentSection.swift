@@ -9,6 +9,7 @@ struct OrderPaymentSection: View {
 
     /// Closure to create/update the shipping line object
     let saveShippingLineClosure: (ShippingLine?) -> Void
+    let saveFeeClosure: (OrderFeeLine?) -> Void
 
     ///   Environment safe areas
     ///
@@ -26,6 +27,7 @@ struct OrderPaymentSection: View {
 
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) {
                 shippingRow
+                feesRow
             }
 
             TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
@@ -59,6 +61,28 @@ struct OrderPaymentSection: View {
             .padding()
         }
     }
+
+    @ViewBuilder private var feesRow: some View {
+        if viewModel.shouldShowFees {
+            TitleAndValueRow(title: Localization.feesTotal, value: .content(viewModel.feesTotal), selectionStyle: .highlight) {
+                saveFeeClosure(nil)
+            }
+        } else {
+            Button(Localization.addFees) {
+                let testFeeLine = OrderFeeLine(feeID: 0,
+                                               name: "Fee",
+                                               taxClass: "",
+                                               taxStatus: .none,
+                                               total: "10",
+                                               totalTax: "",
+                                               taxes: [],
+                                               attributes: [])
+                saveFeeClosure(testFeeLine)
+            }
+            .buttonStyle(PlusButtonStyle())
+            .padding()
+        }
+    }
 }
 
 // MARK: Constants
@@ -71,6 +95,8 @@ private extension OrderPaymentSection {
                                                  comment: "Information about taxes and the order total when creating a new order")
         static let addShipping = NSLocalizedString("Add Shipping", comment: "Title text of the button that adds shipping line when creating a new order")
         static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
+        static let addFees = NSLocalizedString("Add Fees", comment: "Title text of the button that adds fees when creating a new order")
+        static let feesTotal = NSLocalizedString("Fees", comment: "Label for the row showing the cost of fees in the order")
     }
 }
 
@@ -78,7 +104,7 @@ struct OrderPaymentSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = NewOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00", orderTotal: "20.00")
 
-        OrderPaymentSection(viewModel: viewModel, saveShippingLineClosure: { _ in })
+        OrderPaymentSection(viewModel: viewModel, saveShippingLineClosure: { _ in }, saveFeeClosure: { _ in })
             .previewLayout(.sizeThatFits)
     }
 }

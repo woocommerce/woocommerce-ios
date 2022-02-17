@@ -134,6 +134,13 @@ final class NewOrderViewModel: ObservableObject {
         orderSynchronizer.setShipping.send(shippingLine)
     }
 
+    /// Saves a fee.
+    ///
+    /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
+    func saveFeeLine(_ feeLine: OrderFeeLine?) {
+        orderSynchronizer.setFee.send(feeLine)
+    }
+
     // MARK: -
 
     /// Defines if the view should be disabled.
@@ -343,14 +350,21 @@ extension NewOrderViewModel {
         let shouldShowShippingTotal: Bool
         let shippingTotal: String
 
+        let shouldShowFees: Bool
+        let feesTotal: String
+
         init(itemsTotal: String = "",
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "",
+             shouldShowFees: Bool = false,
+             feesTotal: String = "",
              orderTotal: String = "",
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? ""
             self.shouldShowShippingTotal = shouldShowShippingTotal
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? ""
+            self.shouldShowFees = shouldShowFees
+            self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? ""
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? ""
         }
     }
@@ -462,11 +476,18 @@ private extension NewOrderViewModel {
                     .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
                     .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
-                let orderTotal = itemsTotal.adding(shippingTotal)
+                let feesTotal = order.fees
+                    .map { $0.total }
+                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
+                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
+
+                let orderTotal = itemsTotal.adding(shippingTotal).adding(feesTotal)
 
                 return PaymentDataViewModel(itemsTotal: itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.isNotEmpty,
                                             shippingTotal: shippingTotal.stringValue,
+                                            shouldShowFees: order.fees.isNotEmpty,
+                                            feesTotal: feesTotal.stringValue,
                                             orderTotal: orderTotal.stringValue,
                                             currencyFormatter: self.currencyFormatter)
             }

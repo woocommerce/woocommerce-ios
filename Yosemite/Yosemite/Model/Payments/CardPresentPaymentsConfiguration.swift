@@ -42,6 +42,6 @@ public struct CardPresentPaymentsConfiguration {
     }
 
     public var isSupportedCountry: Bool {
-        paymentMethods.isEmpty == false && currencies.isEmpty == false && paymentGateways.isEmpty == false
+        paymentMethods.isEmpty == false && currencies.isEmpty == false && paymentGateways.isEmpty == false && supportedReaders.isEmpty == false
     }
 }

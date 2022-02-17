@@ -30,6 +30,7 @@ struct OrderPaymentSection: View {
                 Spacer()
 
                 ProgressView()
+                    .renderedIf(viewModel.isLoading)
             }
             .padding()
 

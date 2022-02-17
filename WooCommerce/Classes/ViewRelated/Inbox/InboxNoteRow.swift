@@ -9,6 +9,7 @@ struct InboxNoteRow: View {
     @ScaledMetric private var scale: CGFloat = 1
     @State private var displayedURL: URL?
     @State private var showWebView: Bool = false
+    @State private var dismissButtonIsLoading: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -56,13 +57,20 @@ struct InboxNoteRow: View {
                                 Text(action.title)
                             }
                         }
-                        Button(Localization.dismiss) {
-                            viewModel.dismissInboxNote()
+                        if dismissButtonIsLoading {
+                            ActivityIndicator(isAnimating: .constant(true), style: .medium)
                         }
+                        else {
+                            Button(Localization.dismiss) {
+                                dismissButtonIsLoading = true
+                                viewModel.dismissInboxNote { _ in
+                                    dismissButtonIsLoading = false
+                                }
+                            }
                         .foregroundColor(Color(.withColorStudio(.gray, shade: .shade30)))
                         .font(.body)
                         .buttonStyle(PlainButtonStyle())
-
+                        }
                         Spacer()
                     }
                 }

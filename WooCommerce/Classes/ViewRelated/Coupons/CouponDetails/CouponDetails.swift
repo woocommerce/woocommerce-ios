@@ -24,6 +24,7 @@ struct CouponDetails: View {
     @ObservedObject private var viewModel: CouponDetailsViewModel
     @State private var showingActionSheet: Bool = false
     @State private var showingShareSheet: Bool = false
+    @State private var showingUsageDetails: Bool = false
 
     /// The presenter to display notice when the coupon code is copied.
     /// It is kept internal so that the hosting controller can update its presenting controller to itself.
@@ -140,12 +141,15 @@ struct CouponDetails: View {
                             Text(Localization.usageDetails)
                                 .bodyStyle()
                         }, action: {
-                            // TODO-5766: Add usage details screen
+                            showingUsageDetails = true
                         }).padding(.horizontal, insets: geometry.safeAreaInsets)
                     }
                     .background(Color(.listForeground))
                     Divider()
                 }
+                NavigationLink(destination: CouponUsageDetails(viewModel: .init(coupon: viewModel.coupon)), isActive: $showingUsageDetails) {
+                    EmptyView()
+                }.hidden()
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])

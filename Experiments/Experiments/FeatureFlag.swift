@@ -54,6 +54,10 @@ public enum FeatureFlag: Int {
     ///
     case orderCreation
 
+    /// Allows new orders to be created and synced as drafts
+    ///
+    case orderCreationRemoteSynchronizer
+
     /// Display the new tab "Menu" in the tab bar.
     ///
     case hubMenu
@@ -70,9 +74,9 @@ public enum FeatureFlag: Int {
     ///
     case myStoreTabUpdates
 
-    /// Displays the option to manage coupons
+    /// Displays the option to view coupons
     ///
-    case couponManagement
+    case couponView
 
     /// Barcode scanner for product SKU input
     ///

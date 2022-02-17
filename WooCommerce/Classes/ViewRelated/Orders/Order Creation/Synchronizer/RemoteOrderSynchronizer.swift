@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Combine
+import SwiftUI
 
 /// Type that syncs the order with the remote server.
 ///
@@ -42,6 +43,10 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
     ///
     private var baseSyncStatus: OrderStatusEnum = .pending
 
+    /// Subscriptions store.
+    ///
+    private var subscriptions = Set<AnyCancellable>()
+
     // MARK: Initializers
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
@@ -50,6 +55,7 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
         updateBaseSyncOrderStatus()
         bindInputs()
+        bindOrderSync()
     }
 
     // MARK: Methods
@@ -100,5 +106,24 @@ private extension RemoteOrderSynchronizer {
                 order.copy(shippingLines: shippingLineInput.flatMap { [$0] } ?? [])
             }
             .assign(to: &$order)
+    }
+
+    /// Creates the order(if needed) when a significant order input occurs.
+    ///
+    func bindOrderSync() {
+        // Combine inputs that should trigger an order sync
+        let syncTrigger: AnyPublisher<Void, Never> = setProduct.map { _ in () }
+            .merge(with: setAddresses.map { _ in () })
+            .merge(with: setShipping.map { _ in () })
+            .merge(with: setFee.map { _ in () })
+            .eraseToAnyPublisher()
+
+        // Creates a "draft" order if the order has not been created yet.
+        syncTrigger.withLatestFrom(orderPublisher)
+            .debounce(for: 0.5, scheduler: DispatchQueue.main) // Waits for 0.5s until the last signal is emitted.
+            .sink { order in
+                print("Order sync needed")
+            }
+            .store(in: &subscriptions)
     }
 }

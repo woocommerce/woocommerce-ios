@@ -334,7 +334,7 @@ extension Order {
 extension OrderFeeLine {
     public func copy(
         feeID: CopiableProp<Int64> = .copy,
-        name: CopiableProp<String> = .copy,
+        name: NullableCopiableProp<String> = .copy,
         taxClass: CopiableProp<String> = .copy,
         taxStatus: CopiableProp<OrderFeeTaxStatus> = .copy,
         total: CopiableProp<String> = .copy,

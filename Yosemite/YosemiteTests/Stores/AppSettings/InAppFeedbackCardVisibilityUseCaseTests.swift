@@ -38,7 +38,13 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
         let feedbackSettings = FeedbackSettings(name: .general, status: .pending)
-        let useCase = InAppFeedbackCardVisibilityUseCase(feedbackType: feedbackSettings.name, feedbackSettings: feedbackSettings, installationDate: installationDate, fileManager: fileManager, calendar: calendar)
+        let useCase = InAppFeedbackCardVisibilityUseCase(
+            feedbackType: feedbackSettings.name,
+            feedbackSettings: feedbackSettings,
+            installationDate: installationDate,
+            fileManager: fileManager,
+            calendar: calendar
+        )
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
@@ -55,7 +61,13 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
         let feedbackSettings = FeedbackSettings(name: .general, status: .pending)
-        let useCase = InAppFeedbackCardVisibilityUseCase(feedbackType: feedbackSettings.name, feedbackSettings: feedbackSettings, installationDate: installationDate, fileManager: fileManager, calendar: calendar)
+        let useCase = InAppFeedbackCardVisibilityUseCase(
+            feedbackType: feedbackSettings.name,
+            feedbackSettings: feedbackSettings,
+            installationDate: installationDate,
+            fileManager: fileManager,
+            calendar: calendar
+        )
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
@@ -73,7 +85,13 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
         let feedbackSettings = FeedbackSettings(name: .general, status: .given(lastFeedbackDate))
-        let useCase = InAppFeedbackCardVisibilityUseCase(feedbackType: feedbackSettings.name, feedbackSettings: feedbackSettings, installationDate: installationDate, fileManager: fileManager, calendar: calendar)
+        let useCase = InAppFeedbackCardVisibilityUseCase(
+            feedbackType: feedbackSettings.name,
+            feedbackSettings: feedbackSettings,
+            installationDate: installationDate,
+            fileManager: fileManager,
+            calendar: calendar
+        )
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
@@ -91,7 +109,13 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
         let feedbackSettings = FeedbackSettings(name: .general, status: .given(lastFeedbackDate))
-        let useCase = InAppFeedbackCardVisibilityUseCase(feedbackType: feedbackSettings.name, feedbackSettings: feedbackSettings, installationDate: installationDate, fileManager: fileManager, calendar: calendar)
+        let useCase = InAppFeedbackCardVisibilityUseCase(
+            feedbackType: feedbackSettings.name,
+            feedbackSettings: feedbackSettings,
+            installationDate: installationDate,
+            fileManager: fileManager,
+            calendar: calendar
+        )
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
@@ -109,7 +133,13 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
                                                    thenReturn: [.creationDate: documentDirCreationDate])
 
         let feedbackSettings = FeedbackSettings(name: .general, status: .pending)
-        let useCase = InAppFeedbackCardVisibilityUseCase(feedbackType: feedbackSettings.name, feedbackSettings: feedbackSettings, installationDate: nil, fileManager: fileManager, calendar: calendar)
+        let useCase = InAppFeedbackCardVisibilityUseCase(
+            feedbackType: feedbackSettings.name,
+            feedbackSettings: feedbackSettings,
+            installationDate: nil,
+            fileManager: fileManager,
+            calendar: calendar
+        )
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
@@ -129,7 +159,13 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
                                                    thenReturn: [.creationDate: documentDirCreationDate])
 
         let feedbackSettings = FeedbackSettings(name: .general, status: .pending)
-        let useCase = InAppFeedbackCardVisibilityUseCase(feedbackType: feedbackSettings.name, feedbackSettings: feedbackSettings, installationDate: installationDate, fileManager: fileManager, calendar: calendar)
+        let useCase = InAppFeedbackCardVisibilityUseCase(
+            feedbackType: feedbackSettings.name,
+            feedbackSettings: feedbackSettings,
+            installationDate: installationDate,
+            fileManager: fileManager,
+            calendar: calendar
+        )
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
@@ -143,7 +179,13 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
         let feedbackSettings = FeedbackSettings(name: .general, status: .pending)
-        let useCase = InAppFeedbackCardVisibilityUseCase(feedbackType: feedbackSettings.name, feedbackSettings: feedbackSettings, installationDate: nil, fileManager: fileManager, calendar: calendar)
+        let useCase = InAppFeedbackCardVisibilityUseCase(
+            feedbackType: feedbackSettings.name,
+            feedbackSettings: feedbackSettings,
+            installationDate: nil,
+            fileManager: fileManager,
+            calendar: calendar
+        )
 
         // When
         var error: Error?
@@ -157,7 +199,13 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
     func test_shouldBeVisible_for_productM5_is_true_if_no_settings_are_found() throws {
         // Given
-        let useCase = InAppFeedbackCardVisibilityUseCase(feedbackType: .productsVariations, feedbackSettings: nil, installationDate: nil, fileManager: fileManager, calendar: calendar)
+        let useCase = InAppFeedbackCardVisibilityUseCase(
+            feedbackType: .productsVariations,
+            feedbackSettings: nil,
+            installationDate: nil,
+            fileManager: fileManager,
+            calendar: calendar
+        )
 
 
         // When
@@ -170,7 +218,13 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
     func test_shouldBeVisible_for_productM5_is_true_if_feedback_has_pending_status() throws {
         // Given
         let feedbackSettings = FeedbackSettings(name: .productsVariations, status: .pending)
-        let useCase = InAppFeedbackCardVisibilityUseCase(feedbackType: feedbackSettings.name, feedbackSettings: feedbackSettings, installationDate: nil, fileManager: fileManager, calendar: calendar)
+        let useCase = InAppFeedbackCardVisibilityUseCase(
+            feedbackType: feedbackSettings.name,
+            feedbackSettings: feedbackSettings,
+            installationDate: nil,
+            fileManager: fileManager,
+            calendar: calendar
+        )
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible()
@@ -182,7 +236,13 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
     func test_shouldBeVisible_for_productM5_is_false_if_feedback_has_dismissed_status() throws {
         // Given
         let feedbackSettings = FeedbackSettings(name: .productsVariations, status: .dismissed)
-        let useCase = InAppFeedbackCardVisibilityUseCase(feedbackType: feedbackSettings.name, feedbackSettings: feedbackSettings, installationDate: nil, fileManager: fileManager, calendar: calendar)
+        let useCase = InAppFeedbackCardVisibilityUseCase(
+            feedbackType: feedbackSettings.name,
+            feedbackSettings: feedbackSettings,
+            installationDate: nil,
+            fileManager: fileManager,
+            calendar: calendar
+        )
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible()
@@ -194,7 +254,13 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
     func test_shouldBeVisible_for_productM5_is_false_if_feedback_has_given_status() throws {
         // Given
         let feedbackSettings = FeedbackSettings(name: .productsVariations, status: .given(Date()))
-        let useCase = InAppFeedbackCardVisibilityUseCase(feedbackType: feedbackSettings.name, feedbackSettings: feedbackSettings, installationDate: nil, fileManager: fileManager, calendar: calendar)
+        let useCase = InAppFeedbackCardVisibilityUseCase(
+            feedbackType: feedbackSettings.name,
+            feedbackSettings: feedbackSettings,
+            installationDate: nil,
+            fileManager: fileManager,
+            calendar: calendar
+        )
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible()

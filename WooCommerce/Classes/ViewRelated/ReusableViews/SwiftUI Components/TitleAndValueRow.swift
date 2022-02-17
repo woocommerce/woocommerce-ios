@@ -10,11 +10,19 @@ struct TitleAndValueRow: View {
         case highlight
     }
 
-    let title: String
-    let value: Value
-    var bold: Bool = false
-    let selectionStyle: SelectionStyle
-    var action: () -> Void
+    private let title: String
+    private let value: Value
+    private let bold: Bool
+    private let selectionStyle: SelectionStyle
+    private let action: () -> Void
+
+    init(title: String, value: Value, bold: Bool = false, selectionStyle: SelectionStyle = .none, action: @escaping () -> Void = {}) {
+        self.title = title
+        self.value = value
+        self.bold = bold
+        self.selectionStyle = selectionStyle
+        self.action = action
+    }
 
     var body: some View {
         Button(action: {

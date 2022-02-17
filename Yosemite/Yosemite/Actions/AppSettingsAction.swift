@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Storage
 import Networking
@@ -132,6 +133,8 @@ public enum AppSettingsAction: Action {
     ///
     case loadStripeInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
+    case observeStripeInPersonPaymentsSwitchState(onCompletion: (AnyPublisher<Bool, Never>) -> Void)
+
     /// Sets the state for the WooCommerce Stripe Payment Gateway extension In-Person Payments beta feature switch
     ///
     case setStripeInPersonPaymentsSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
@@ -139,6 +142,8 @@ public enum AppSettingsAction: Action {
     /// Loads the most recent state for the In-Person Payments in Canada beta feature switch
     ///
     case loadCanadaInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+
+    case observeCanadaInPersonPaymentsSwitchState(onCompletion: (AnyPublisher<Bool, Never>) -> Void)
 
     /// Sets the state for the In-Person Payments in Canada beta feature switch
     ///

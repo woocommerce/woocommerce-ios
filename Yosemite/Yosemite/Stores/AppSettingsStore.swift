@@ -1,5 +1,6 @@
 import Storage
 import Networking
+import Combine
 
 // MARK: - AppSettingsStore
 //
@@ -8,12 +9,15 @@ public class AppSettingsStore: Store {
     ///
     private let fileStorage: FileStorage
 
+    private let generalSettingsService: GeneralAppSettingsService
+
     /// Designated initaliser
     ///
     public init(dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
                 fileStorage: FileStorage) {
         self.fileStorage = fileStorage
+        self.generalSettingsService = GeneralAppSettingsService(fileStorage: fileStorage, fileURL: Self.generalAppSettingsFileURL)
         super.init(dispatcher: dispatcher,
                    storageManager: storageManager,
                    network: NullNetwork())
@@ -51,7 +55,7 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.statsVersionLastShownFileName)
     }()
 
-    private lazy var generalAppSettingsFileURL: URL! = {
+    private static let generalAppSettingsFileURL: URL! = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         return documents!.appendingPathComponent(Constants.generalAppSettingsFileName)
     }()
@@ -195,10 +199,14 @@ public class AppSettingsStore: Store {
             resetGeneralStoreSettings()
         case .loadStripeInPersonPaymentsSwitchState(onCompletion: let onCompletion):
             loadStripeInPersonPaymentsSwitchState(onCompletion: onCompletion)
+        case .observeStripeInPersonPaymentsSwitchState(onCompletion: let onCompletion):
+            observeStripeInPersonPaymentsSwitchState(onCompletion: onCompletion)
         case .setStripeInPersonPaymentsSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
             setStripeInPersonPaymentsSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadCanadaInPersonPaymentsSwitchState(onCompletion: let onCompletion):
             loadCanadaInPersonPaymentsSwitchState(onCompletion: onCompletion)
+        case .observeCanadaInPersonPaymentsSwitchState(onCompletion: let onCompletion):
+            observeCanadaInPersonPaymentsSwitchState(onCompletion: onCompletion)
         case .setCanadaInPersonPaymentsSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
             setCanadaInPersonPaymentsSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .setProductSKUInputScannerFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
@@ -307,16 +315,20 @@ private extension AppSettingsStore {
     /// Loads the current WooCommerce Stripe Payment Gateway extension In-Person Payments beta feature switch state from `GeneralAppSettings`
     ///
     func loadStripeInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
-        let settings = loadOrCreateGeneralAppSettings()
-        onCompletion(.success(settings.isStripeInPersonPaymentsSwitchEnabled))
+        let value = generalSettingsService.value(for: \.isStripeInPersonPaymentsSwitchEnabled)
+        onCompletion(.success(value))
+    }
+
+    func observeStripeInPersonPaymentsSwitchState(onCompletion: (AnyPublisher<Bool, Never>) -> Void) {
+        let publisher = generalSettingsService.publisher(for: \.isStripeInPersonPaymentsSwitchEnabled)
+        onCompletion(publisher)
     }
 
     /// Sets the provided WooCommerce Stripe Payment Gateway extension In-Person Payments  beta feature switch state into `GeneralAppSettings`
     ///
     func setStripeInPersonPaymentsSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
         do {
-            let settings = loadOrCreateGeneralAppSettings().copy(isStripeInPersonPaymentsSwitchEnabled: isEnabled)
-            try saveGeneralAppSettings(settings)
+            try generalSettingsService.update(isEnabled, for: \.isStripeInPersonPaymentsSwitchEnabled)
             onCompletion(.success(()))
         } catch {
             onCompletion(.failure(error))
@@ -329,6 +341,12 @@ private extension AppSettingsStore {
         let settings = loadOrCreateGeneralAppSettings()
         onCompletion(.success(settings.isCanadaInPersonPaymentsSwitchEnabled))
     }
+
+    func observeCanadaInPersonPaymentsSwitchState(onCompletion: (AnyPublisher<Bool, Never>) -> Void) {
+        let publisher = generalSettingsService.publisher(for: \.isCanadaInPersonPaymentsSwitchEnabled)
+        onCompletion(publisher)
+    }
+
 
     /// Sets the provided In-Person Payments in Canada beta feature switch state into `GeneralAppSettings`
     ///
@@ -432,7 +450,7 @@ private extension AppSettingsStore {
 
     /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.
     func loadOrCreateGeneralAppSettings() -> GeneralAppSettings {
-        guard let settings: GeneralAppSettings = try? fileStorage.data(for: generalAppSettingsFileURL) else {
+        guard let settings: GeneralAppSettings = try? fileStorage.data(for: Self.generalAppSettingsFileURL) else {
             return GeneralAppSettings(installationDate: nil,
                                       feedbacks: [:],
                                       isViewAddOnsSwitchEnabled: false,
@@ -450,7 +468,7 @@ private extension AppSettingsStore {
 
     /// Save the `GeneralAppSettings` to the appropriate file.
     func saveGeneralAppSettings(_ settings: GeneralAppSettings) throws {
-        try fileStorage.write(settings, to: generalAppSettingsFileURL)
+        try fileStorage.write(settings, to: Self.generalAppSettingsFileURL)
     }
 }
 

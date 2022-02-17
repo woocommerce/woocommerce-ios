@@ -30,11 +30,11 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
 
     /// The state for the Stripe Gateway Extension IPP feature switch
     ///
-    public let isStripeInPersonPaymentsSwitchEnabled: Bool
+    public var isStripeInPersonPaymentsSwitchEnabled: Bool
 
     /// The state for the In-Person Payments in Canada feature switch
     ///
-    public let isCanadaInPersonPaymentsSwitchEnabled: Bool
+    public var isCanadaInPersonPaymentsSwitchEnabled: Bool
 
     /// The state(`true` or `false`) for the Product SKU Input Scanner feature switch.
     ///
@@ -78,6 +78,19 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.knownCardReaders = knownCardReaders
         self.lastEligibilityErrorInfo = lastEligibilityErrorInfo
         self.lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime
+    }
+
+    public static var `default`: GeneralAppSettings {
+        GeneralAppSettings(installationDate: nil,
+                                  feedbacks: [:],
+                                  isViewAddOnsSwitchEnabled: false,
+                                  isOrderCreationSwitchEnabled: false,
+                                  isStripeInPersonPaymentsSwitchEnabled: false,
+                                  isCanadaInPersonPaymentsSwitchEnabled: false,
+                                  isProductSKUInputScannerSwitchEnabled: false,
+                                  isCouponManagementSwitchEnabled: false,
+                                  knownCardReaders: [],
+                                  lastEligibilityErrorInfo: nil)
     }
 
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.

@@ -14,11 +14,8 @@ final class CardPresentConfigurationLoader {
         stores.dispatch(stripeAction)
 
         let canadaAction = AppSettingsAction.loadCanadaInPersonPaymentsSwitchState(onCompletion: { [weak self]  result in
-            switch result {
-            case .success(let canadaIPPEnabled):
+            if case .success(let canadaIPPEnabled) = result {
                 self?.canadaIPPEnabled = canadaIPPEnabled
-            default:
-                break
             }
         })
         stores.dispatch(canadaAction)

@@ -7,34 +7,23 @@ class ShippingLineDetailsViewModel: ObservableObject {
     ///
     var didSelectSave: ((ShippingLine?) -> Void)
 
+    /// Helper to format price field input.
+    ///
+    private let priceFieldFormatter: PriceFieldFormatter
+
+    /// Formatted amount to display. When empty displays a placeholder value.
+    ///
+    var formattedAmount: String {
+        priceFieldFormatter.formattedAmount
+    }
+
     /// Stores the amount(unformatted) entered by the merchant.
     ///
     @Published var amount: String = "" {
         didSet {
             guard amount != oldValue else { return }
-            amount = sanitizeAmount(amount)
-            amountWithSymbol = setCurrencySymbol(to: amount)
+            amount = priceFieldFormatter.formatAmount(amount)
         }
-    }
-
-    /// Stores the method title entered by the merchant.
-    ///
-    @Published var methodTitle: String
-
-    private let initialAmount: NSDecimalNumber
-    private let initialMethodTitle: String
-
-    /// Returns true when existing shipping line is edited.
-    ///
-    let isExistingShippingLine: Bool
-
-    /// Formatted amount to display. When empty displays a placeholder value.
-    ///
-    var formattedAmount: String {
-        guard amount.isNotEmpty else {
-            return amountPlaceholder
-        }
-        return amountWithSymbol
     }
 
     /// Defines the amount text color.
@@ -43,15 +32,16 @@ class ShippingLineDetailsViewModel: ObservableObject {
         amount.isEmpty ? .textSubtle : .text
     }
 
-    /// Stores the formatted amount with the store currency symbol.
+    /// Stores the method title entered by the merchant.
     ///
-    private var amountWithSymbol: String = ""
+    @Published var methodTitle: String
 
-    /// Dynamically builds the amount placeholder based on the store decimal separator.
+    private let initialAmount: Decimal
+    private let initialMethodTitle: String
+
+    /// Returns true when existing shipping line is edited.
     ///
-    private lazy var amountPlaceholder: String = {
-        currencyFormatter.formatAmount("0.00") ?? "$0.00"
-    }()
+    let isExistingShippingLine: Bool
 
     /// Method title entered by user or placeholder if it's empty.
     ///
@@ -62,7 +52,7 @@ class ShippingLineDetailsViewModel: ObservableObject {
     /// Returns true when there are no valid pending changes.
     ///
     var shouldDisableDoneButton: Bool {
-        guard let amountDecimal = currencyFormatter.convertToDecimal(from: amount), amountDecimal as Decimal > 0 else {
+        guard let amountDecimal = priceFieldFormatter.amountDecimal, amountDecimal > .zero else {
             return true
         }
 
@@ -72,40 +62,28 @@ class ShippingLineDetailsViewModel: ObservableObject {
         return !(amountUpdated || methodTitleUpdated)
     }
 
-    /// Users locale, needed to use the correct decimal separator
-    ///
-    private let userLocale: Locale
-
-    /// Current store currency settings
-    ///
-    private let storeCurrencySettings: CurrencySettings
-
-    /// Currency formatter for the provided amount
-    ///
-    private let currencyFormatter: CurrencyFormatter
-
-    /// Current store currency symbol
-    ///
-    private let storeCurrencySymbol: String
-
     init(inputData: NewOrderViewModel.PaymentDataViewModel,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          didSelectSave: @escaping ((ShippingLine?) -> Void)) {
-        self.userLocale = locale
-        self.storeCurrencySettings = storeCurrencySettings
-        self.storeCurrencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
-        self.currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
-        self.didSelectSave = didSelectSave
+        self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
 
         self.isExistingShippingLine = inputData.shouldShowShippingTotal
         self.initialMethodTitle = inputData.shippingMethodTitle
         self.methodTitle = initialMethodTitle
 
-        self.initialAmount = currencyFormatter.convertToDecimal(from: inputData.shippingTotal) ?? .zero
-        if initialAmount as Decimal > 0, let formattedAmount = currencyFormatter.formatAmount(initialAmount) {
-            self.amount = formattedAmount
+       let currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
+        if let initialAmount = currencyFormatter.convertToDecimal(from: inputData.shippingTotal) {
+            self.initialAmount = initialAmount as Decimal
+        } else {
+            self.initialAmount = .zero
         }
+
+        if initialAmount > 0, let formattedInputAmount = currencyFormatter.formatAmount(initialAmount) {
+            self.amount = priceFieldFormatter.formatAmount(formattedInputAmount)
+        }
+
+        self.didSelectSave = didSelectSave
     }
 
     func saveData() {
@@ -116,48 +94,6 @@ class ShippingLineDetailsViewModel: ObservableObject {
                                         totalTax: "",
                                         taxes: [])
         didSelectSave(shippingLine)
-    }
-}
-// MARK: Helpers
-private extension ShippingLineDetailsViewModel {
-    /// Formats a received value by sanitizing the input and trimming content to two decimal places.
-    ///
-    func sanitizeAmount(_ amount: String) -> String {
-        guard amount.isNotEmpty else { return amount }
-
-        let deviceDecimalSeparator = userLocale.decimalSeparator ?? "."
-        let storeDecimalSeparator = storeCurrencySettings.decimalSeparator
-        let storeNumberOfDecimals = storeCurrencySettings.numberOfDecimals
-
-        // Removes any unwanted character & makes sure to use the store decimal separator
-        let sanitized = amount
-            .replacingOccurrences(of: deviceDecimalSeparator, with: storeDecimalSeparator)
-            .filter { $0.isNumber || "\($0)" == storeDecimalSeparator }
-
-        // Trim to two decimals & remove any extra "."
-        let components = sanitized.components(separatedBy: storeDecimalSeparator)
-        switch components.count {
-        case 1 where sanitized.contains(storeDecimalSeparator):
-            return components[0] + storeDecimalSeparator
-        case 1:
-            return components[0]
-        case 2...Int.max:
-            let number = components[0]
-            let decimals = components[1]
-            let trimmedDecimals = decimals.count > storeNumberOfDecimals ? "\(decimals.prefix(storeNumberOfDecimals))" : decimals
-            return number + storeDecimalSeparator + trimmedDecimals
-        default:
-            fatalError("Should not happen, components can't be 0 or negative")
-        }
-    }
-
-    /// Formats a received value by adding the store currency symbol to it's correct position.
-    ///
-    func setCurrencySymbol(to amount: String) -> String {
-        currencyFormatter.formatCurrency(using: amount,
-                                         at: storeCurrencySettings.currencyPosition,
-                                         with: storeCurrencySymbol,
-                                         isNegative: false)
     }
 }
 

@@ -148,6 +148,7 @@ public typealias WCPayPaymentMethodType = Networking.WCPayPaymentMethodType
 
 // MARK: - Exported Storage Symbols
 
+public typealias GeneralAppSettings = Storage.GeneralAppSettings
 public typealias StorageAccount = Storage.Account
 public typealias StorageAccountSettings = Storage.AccountSettings
 public typealias StorageAttribute = Storage.GenericAttribute

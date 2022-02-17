@@ -40,6 +40,7 @@ struct GeneralAppSettingsService {
         var newSettings = settings
         newSettings[keyPath: keyPath] = value
         try update(settings: newSettings)
+        settingsSubject.send(newSettings)
     }
 }
 

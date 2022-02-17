@@ -13,7 +13,7 @@ public struct CardPresentPaymentsConfiguration {
         self.supportedReaders = supportedReaders
     }
 
-    public init(country: String, canadaEnabled: Bool) throws {
+    public init(country: String, canadaEnabled: Bool) {
         switch country {
         case "US":
             self.init(

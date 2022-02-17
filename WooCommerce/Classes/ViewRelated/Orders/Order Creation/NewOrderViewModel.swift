@@ -289,7 +289,7 @@ extension NewOrderViewModel {
             title = orderStatus.name ?? orderStatus.slug
             color = {
                 switch orderStatus.status {
-                case .pending, .completed, .cancelled, .refunded, .custom:
+                case .autoDraft, .pending, .completed, .cancelled, .refunded, .custom:
                     return .gray(.shade5)
                 case .onHold:
                     return .withColorStudio(.orange, shade: .shade5)

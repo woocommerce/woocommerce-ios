@@ -45,7 +45,6 @@ struct InboxNoteRow: View {
                         ForEach(viewModel.actions) { action in
                             if let url = action.url {
                                 Button(action.title) {
-                                    // TODO: 5955 - handle action
                                     print("Handling action with URL: \(url)")
                                     displayedURL = url
                                     showWebView = true

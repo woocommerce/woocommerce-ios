@@ -1,5 +1,6 @@
 import XCTest
 import Fakes
+import Storage
 import Yosemite
 @testable import WooCommerce
 
@@ -8,15 +9,15 @@ class CardReaderConnectionControllerTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 1234
 
-    /// Dummy GatewayID
-    ///
-    private let sampleGatewayID: String = "dummy-gateway-for-unit-tests"
+    private let sampleGatewayID: String = "MOCKGATEWAY"
 
+    private var storageManager: StorageManagerType!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
     override func setUp() {
         super.setUp()
+        storageManager = MockStorageManager()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         ServiceLocator.setAnalytics(analytics)
@@ -24,6 +25,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
+        storageManager = nil
         analytics = nil
         analyticsProvider = nil
     }
@@ -35,7 +37,8 @@ class CardReaderConnectionControllerTests: XCTestCase {
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
             discoveredReaders: [],
-            sessionManager: SessionManager.testingInstance
+            sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager
         )
         ServiceLocator.setStores(mockStoresManager)
         let mockPresentingViewController = UIViewController()
@@ -43,7 +46,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelScanning)
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            forGatewayID: sampleGatewayID,
+            storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -68,7 +71,8 @@ class CardReaderConnectionControllerTests: XCTestCase {
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
             discoveredReaders: [MockCardReader.bbposChipper2XBT()],
-            sessionManager: SessionManager.testingInstance
+            sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager
         )
         ServiceLocator.setStores(mockStoresManager)
         let mockPresentingViewController = UIViewController()
@@ -76,7 +80,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            forGatewayID: sampleGatewayID,
+            storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -109,7 +113,8 @@ class CardReaderConnectionControllerTests: XCTestCase {
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
             discoveredReaders: [knownReader],
-            sessionManager: SessionManager.testingInstance
+            sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager
         )
         ServiceLocator.setStores(mockStoresManager)
         let mockPresentingViewController = UIViewController()
@@ -117,7 +122,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            forGatewayID: sampleGatewayID,
+            storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -143,6 +148,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
             connectedReaders: [],
             discoveredReaders: [],
             sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager,
             failDiscovery: true
         )
         ServiceLocator.setStores(mockStoresManager)
@@ -151,7 +157,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .closeScanFailure)
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            forGatewayID: sampleGatewayID,
+            storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -178,7 +184,8 @@ class CardReaderConnectionControllerTests: XCTestCase {
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
             discoveredReaders: [MockCardReader.bbposChipper2XBT(), MockCardReader.bbposChipper2XBT()],
-            sessionManager: SessionManager.testingInstance
+            sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager
         )
         ServiceLocator.setStores(mockStoresManager)
         let mockPresentingViewController = UIViewController()
@@ -186,7 +193,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelFoundSeveral)
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            forGatewayID: sampleGatewayID,
+            storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -214,6 +221,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
             connectedReaders: [],
             discoveredReaders: discoveredReaders,
             sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager,
             failConnection: true
         )
         ServiceLocator.setStores(mockStoresManager)
@@ -223,7 +231,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            forGatewayID: sampleGatewayID,
+            storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -255,7 +263,8 @@ class CardReaderConnectionControllerTests: XCTestCase {
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
             discoveredReaders: discoveredReaders,
-            sessionManager: SessionManager.testingInstance
+            sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager
         )
         ServiceLocator.setStores(mockStoresManager)
         let mockPresentingViewController = UIViewController()
@@ -264,7 +273,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            forGatewayID: sampleGatewayID,
+            storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -289,7 +298,8 @@ class CardReaderConnectionControllerTests: XCTestCase {
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
             discoveredReaders: [MockCardReader.bbposChipper2XBT(), MockCardReader.bbposChipper2XBT()],
-            sessionManager: SessionManager.testingInstance
+            sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager
 	)
         ServiceLocator.setStores(mockStoresManager)
         let mockPresentingViewController = UIViewController()
@@ -298,7 +308,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            forGatewayID: sampleGatewayID,
+            storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -326,6 +336,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
             connectedReaders: [],
             discoveredReaders: discoveredReaders,
             sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager,
             failConnection: true
 	)
         ServiceLocator.setStores(mockStoresManager)
@@ -335,7 +346,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            forGatewayID: sampleGatewayID,
+            storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
@@ -363,6 +374,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
             connectedReaders: [],
             discoveredReaders: discoveredReaders,
             sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager,
             failUpdate: true
     )
         ServiceLocator.setStores(mockStoresManager)
@@ -372,7 +384,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            forGatewayID: sampleGatewayID,
+            storageManager: storageManager,
             knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )

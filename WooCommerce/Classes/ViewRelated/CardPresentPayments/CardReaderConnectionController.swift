@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import UIKit
+import Storage
 import SwiftUI
 import Yosemite
 
@@ -68,6 +69,9 @@ final class CardReaderConnectionController {
         case discoveryFailed(Error)
     }
 
+    let storageManager: StorageManagerType
+    let stores: StoresManager
+
     private var state: ControllerState {
         didSet {
             didSetState()
@@ -108,7 +112,7 @@ final class CardReaderConnectionController {
     private var onCompletion: ((Result<Bool, Error>) -> Void)?
 
     private(set) lazy var dataSource: CardReaderSettingsDataSource = {
-        return CardReaderSettingsDataSource(siteID: siteID)
+        return CardReaderSettingsDataSource(siteID: siteID, storageManager: storageManager)
     }()
 
     /// Gateway ID to include in tracks events
@@ -120,11 +124,15 @@ final class CardReaderConnectionController {
 
     init(
         forSiteID: Int64,
+        storageManager: StorageManagerType = ServiceLocator.storageManager,
+        stores: StoresManager = ServiceLocator.stores,
         knownReaderProvider: CardReaderSettingsKnownReaderProvider,
         alertsProvider: CardReaderSettingsAlertsProvider
     ) {
-        state = .idle
         siteID = forSiteID
+        self.storageManager = storageManager
+        self.stores = stores
+        state = .idle
         knownCardReaderProvider = knownReaderProvider
         alerts = alertsProvider
         foundReaders = []
@@ -160,7 +168,7 @@ private extension CardReaderConnectionController {
 
     func loadPaymentGatewayAccounts() {
         let action = CardPresentPaymentAction.loadAccounts(siteID: siteID) {_ in}
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func didSetState() {
@@ -364,7 +372,7 @@ private extension CardReaderConnectionController {
                 self.state = .discoveryFailed(error)
             })
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Opens the scanning for reader modal
@@ -504,7 +512,7 @@ private extension CardReaderConnectionController {
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
             self?.state = .beginSearch
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// End the search for a card reader
@@ -514,7 +522,7 @@ private extension CardReaderConnectionController {
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
             self?.returnSuccess(connected: false)
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Connect to the candidate card reader
@@ -550,7 +558,7 @@ private extension CardReaderConnectionController {
             }
             .store(in: &self.subscriptions)
         }
-        ServiceLocator.stores.dispatch(softwareUpdateAction)
+        stores.dispatch(softwareUpdateAction)
 
         let action = CardPresentPaymentAction.connect(reader: candidateReader) { [weak self] result in
             switch result {
@@ -577,7 +585,7 @@ private extension CardReaderConnectionController {
                 self.state = .connectingFailed(error)
             }
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
 
         alerts.connectingToReader(from: from)
     }
@@ -668,7 +676,7 @@ private extension CardReaderConnectionController {
                                       from viewController: UIViewController,
                                       retrySearch: @escaping () -> Void) -> ((UIViewController) -> Void)? {
         if let adminUrl = adminUrl {
-            if let site = ServiceLocator.stores.sessionManager.defaultSite,
+            if let site = stores.sessionManager.defaultSite,
                site.isWordPressStore {
                 return { [weak self] viewController in
                     self?.openWCSettingsInWebview(url: adminUrl, from: viewController, retrySearch: retrySearch)

@@ -51,7 +51,8 @@ struct OrderPaymentSection: View {
 
     @ViewBuilder private var shippingRow: some View {
         if viewModel.shouldShowShippingTotal {
-            TitleAndValueRow(title: Localization.shippingTotal, value: .content(viewModel.shippingTotal), selectionStyle: .highlight) {
+            let shippingTitle = viewModel.shippingMethodTitle.isNotEmpty ? viewModel.shippingMethodTitle : Localization.shippingTotal
+            TitleAndValueRow(title: shippingTitle, value: .content(viewModel.shippingTotal), selectionStyle: .highlight) {
                 shouldShowShippingLineDetails = true
             }
         } else {

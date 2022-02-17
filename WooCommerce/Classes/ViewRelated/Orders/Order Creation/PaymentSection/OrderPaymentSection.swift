@@ -23,9 +23,15 @@ struct OrderPaymentSection: View {
         Divider()
 
         VStack(alignment: .leading, spacing: .zero) {
-            Text(Localization.payment)
-                .headlineStyle()
-                .padding()
+            HStack {
+                Text(Localization.payment)
+                    .headlineStyle()
+
+                Spacer()
+
+                ProgressView()
+            }
+            .padding()
 
             TitleAndValueRow(title: Localization.productsTotal, value: .content(viewModel.itemsTotal), selectionStyle: .none) {}
 

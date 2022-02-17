@@ -74,9 +74,9 @@ public enum FeatureFlag: Int {
     ///
     case myStoreTabUpdates
 
-    /// Displays the option to manage coupons
+    /// Displays the option to view coupons
     ///
-    case couponManagement
+    case couponsView
 
     /// Barcode scanner for product SKU input
     ///

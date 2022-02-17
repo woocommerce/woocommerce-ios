@@ -553,8 +553,8 @@ extension WooAnalyticsEvent {
 
         static let unknownGatewayID = "unknown"
 
-        static func gatewayID(forGatewayID: String?) -> String {
-            forGatewayID ?? unknownGatewayID
+        static func gatewayID(forGatewayID gatewayID: String?) -> String {
+            gatewayID ?? unknownGatewayID
         }
 
         /// Tracked when card reader discovery fails

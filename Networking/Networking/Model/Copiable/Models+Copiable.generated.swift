@@ -1468,6 +1468,33 @@ extension ShippingLabelPurchase {
     }
 }
 
+extension ShippingLine {
+    public func copy(
+        shippingID: CopiableProp<Int64> = .copy,
+        methodTitle: CopiableProp<String> = .copy,
+        methodID: NullableCopiableProp<String> = .copy,
+        total: CopiableProp<String> = .copy,
+        totalTax: CopiableProp<String> = .copy,
+        taxes: CopiableProp<[ShippingLineTax]> = .copy
+    ) -> ShippingLine {
+        let shippingID = shippingID ?? self.shippingID
+        let methodTitle = methodTitle ?? self.methodTitle
+        let methodID = methodID ?? self.methodID
+        let total = total ?? self.total
+        let totalTax = totalTax ?? self.totalTax
+        let taxes = taxes ?? self.taxes
+
+        return ShippingLine(
+            shippingID: shippingID,
+            methodTitle: methodTitle,
+            methodID: methodID,
+            total: total,
+            totalTax: totalTax,
+            taxes: taxes
+        )
+    }
+}
+
 extension Site {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -1741,8 +1768,8 @@ extension WCPayCardPresentPaymentDetails {
 extension WCPayCardPresentReceiptDetails {
     public func copy(
         accountType: CopiableProp<WCPayCardFunding> = .copy,
-        applicationPreferredName: CopiableProp<String> = .copy,
-        dedicatedFileName: CopiableProp<String> = .copy
+        applicationPreferredName: NullableCopiableProp<String> = .copy,
+        dedicatedFileName: NullableCopiableProp<String> = .copy
     ) -> WCPayCardPresentReceiptDetails {
         let accountType = accountType ?? self.accountType
         let applicationPreferredName = applicationPreferredName ?? self.applicationPreferredName

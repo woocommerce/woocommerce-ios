@@ -7,9 +7,10 @@ import Fakes
 
 class RemoteOrderSynchronizerTests: XCTestCase {
 
-    let sampleSiteID: Int64 = 123
-    let sampleProductID: Int64 = 234
-    let sampleInputID: Int64 = 345
+    private let sampleSiteID: Int64 = 123
+    private let sampleProductID: Int64 = 234
+    private let sampleInputID: Int64 = 345
+    private let sampleShippingID: Int64 = 456
 
     func test_sending_status_input_updates_local_order() throws {
         // Given
@@ -105,5 +106,32 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         // Then
         XCTAssertNil(synchronizer.order.billingAddress)
         XCTAssertNil(synchronizer.order.shippingAddress)
+    }
+
+    func test_sending_shipping_input_updates_local_order() throws {
+        // Given
+        let shippingLine = ShippingLine.fake().copy(shippingID: sampleShippingID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+
+        // When
+        synchronizer.setShipping.send(shippingLine)
+
+        // Then
+        XCTAssertEqual(synchronizer.order.shippingLines, [shippingLine])
+    }
+
+    func test_sending_nil_shipping_input_updates_local_order() throws {
+        // Given
+        let shippingLine = ShippingLine.fake().copy(shippingID: sampleShippingID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+
+        // When
+        synchronizer.setShipping.send(shippingLine)
+        synchronizer.setShipping.send(nil)
+
+        // Then
+        XCTAssertEqual(synchronizer.order.shippingLines, [])
     }
 }

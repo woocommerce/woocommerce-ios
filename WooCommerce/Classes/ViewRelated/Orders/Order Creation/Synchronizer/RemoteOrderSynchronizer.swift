@@ -94,5 +94,11 @@ private extension RemoteOrderSynchronizer {
                 order.copy(billingAddress: .some(addressesInput?.billing), shippingAddress: .some(addressesInput?.shipping))
             }
             .assign(to: &$order)
+
+        setShipping.withLatestFrom(orderPublisher)
+            .map { shippingLineInput, order in
+                order.copy(shippingLines: shippingLineInput.flatMap { [$0] } ?? [])
+            }
+            .assign(to: &$order)
     }
 }

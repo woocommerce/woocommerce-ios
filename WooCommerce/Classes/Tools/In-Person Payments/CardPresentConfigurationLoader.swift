@@ -7,11 +7,8 @@ final class CardPresentConfigurationLoader {
 
     init(stores: StoresManager = ServiceLocator.stores) {
         let stripeAction = AppSettingsAction.loadStripeInPersonPaymentsSwitchState(onCompletion: { [weak self] result in
-            switch result {
-            case .success(let stripeGatewayIPPEnabled):
+            if case .success(let stripeGatewayIPPEnabled) = result {
                 self?.stripeGatewayIPPEnabled = stripeGatewayIPPEnabled
-            default:
-                break
             }
         })
         stores.dispatch(stripeAction)

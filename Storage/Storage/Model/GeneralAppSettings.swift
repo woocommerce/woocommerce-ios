@@ -13,20 +13,20 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     /// Note that this is not accurate because this property/setting was created when we have
     /// thousands of users already.
     ///
-    public let installationDate: Date?
+    public var installationDate: Date?
 
     /// Key/Value type to store feedback settings
     /// Key: A `FeedbackType` to identify the feedback
     /// Value: A `FeedbackSetting` to store the feedback state
-    public let feedbacks: [FeedbackType: FeedbackSettings]
+    public var feedbacks: [FeedbackType: FeedbackSettings]
 
     /// The state(`true` or `false`) for the view add-on beta feature switch.
     ///
-    public let isViewAddOnsSwitchEnabled: Bool
+    public var isViewAddOnsSwitchEnabled: Bool
 
     /// The state(`true` or `false`) for the Order Creation feature switch.
     ///
-    public let isOrderCreationSwitchEnabled: Bool
+    public var isOrderCreationSwitchEnabled: Bool
 
     /// The state for the Stripe Gateway Extension IPP feature switch
     ///
@@ -38,23 +38,23 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
 
     /// The state(`true` or `false`) for the Product SKU Input Scanner feature switch.
     ///
-    public let isProductSKUInputScannerSwitchEnabled: Bool
+    public var isProductSKUInputScannerSwitchEnabled: Bool
 
     /// The state for the Coupon Management feature switch.
     ///
-    public let isCouponManagementSwitchEnabled: Bool
+    public var isCouponManagementSwitchEnabled: Bool
 
     /// A list (possibly empty) of known card reader IDs - i.e. IDs of card readers that should be reconnected to automatically
     /// e.g. ["CHB204909005931"]
     ///
-    public let knownCardReaders: [String]
+    public var knownCardReaders: [String]
 
     /// The last known eligibility error information persisted locally.
     ///
-    public let lastEligibilityErrorInfo: EligibilityErrorInfo?
+    public var lastEligibilityErrorInfo: EligibilityErrorInfo?
 
     /// The last time the Jetpack benefits banner is dismissed.
-    public let lastJetpackBenefitsBannerDismissedTime: Date?
+    public var lastJetpackBenefitsBannerDismissedTime: Date?
 
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
@@ -91,37 +91,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                                   isCouponManagementSwitchEnabled: false,
                                   knownCardReaders: [],
                                   lastEligibilityErrorInfo: nil)
-    }
-
-    /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
-    ///
-    public func feedbackStatus(of type: FeedbackType) -> FeedbackSettings.Status {
-        guard let feedbackSetting = feedbacks[type] else {
-            return .pending
-        }
-
-        return feedbackSetting.status
-    }
-
-    /// Returns a new instance of `GeneralAppSettings` with the provided feedback seetings updated.
-    ///
-    public func replacing(feedback: FeedbackSettings) -> GeneralAppSettings {
-        let updatedFeedbacks = feedbacks.merging([feedback.name: feedback]) {
-            _, new in new
-        }
-
-        return GeneralAppSettings(
-            installationDate: installationDate,
-            feedbacks: updatedFeedbacks,
-            isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
-            isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
-            isStripeInPersonPaymentsSwitchEnabled: isStripeInPersonPaymentsSwitchEnabled,
-            isCanadaInPersonPaymentsSwitchEnabled: isCanadaInPersonPaymentsSwitchEnabled,
-            isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
-            isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
-            knownCardReaders: knownCardReaders,
-            lastEligibilityErrorInfo: lastEligibilityErrorInfo
-        )
     }
 }
 

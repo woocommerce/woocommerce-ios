@@ -42,6 +42,18 @@ struct GeneralAppSettingsService {
         try update(settings: newSettings)
         settingsSubject.send(newSettings)
     }
+
+    func pluck<Key, Value>(from keyPath: KeyPath<GeneralAppSettings, [Key: Value]>, key: Key) -> Value? {
+        let container = settings[keyPath: keyPath]
+        let value = container[key]
+        return value
+    }
+
+    func patch<Key, Value>(_ value: Value, into keyPath: WritableKeyPath<GeneralAppSettings, [Key: Value]>, key: Key) throws {
+        var container = settings[keyPath: keyPath]
+        container[key] = value
+        try update(container, for: keyPath)
+    }
 }
 
 private extension GeneralAppSettingsService {

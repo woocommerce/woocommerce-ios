@@ -19,12 +19,24 @@ struct InAppFeedbackCardVisibilityUseCase {
     private let fileManager: FileManager
     private let calendar: Calendar
 
-    private let settings: GeneralAppSettings
     private let feedbackType: FeedbackType
+    private let feedbackSettings: FeedbackSettings?
+    private let installationDate: Date?
 
-    init(settings: GeneralAppSettings, feedbackType: FeedbackType, fileManager: FileManager = FileManager.default, calendar: Calendar = .current) {
-        self.settings = settings
+    private var feedbackStatus: FeedbackSettings.Status {
+        feedbackSettings?.status ?? .pending
+    }
+
+    init(
+        feedbackType: FeedbackType,
+        feedbackSettings: FeedbackSettings?,
+        installationDate: Date?,
+        fileManager: FileManager = FileManager.default,
+        calendar: Calendar = .current
+    ) {
         self.feedbackType = feedbackType
+        self.feedbackSettings = feedbackSettings
+        self.installationDate = installationDate
         self.fileManager = fileManager
         self.calendar = calendar
     }
@@ -55,7 +67,7 @@ struct InAppFeedbackCardVisibilityUseCase {
             return false
         }
 
-        guard case let .given(lastFeedbackDate) = settings.feedbackStatus(of: feedbackType) else {
+        guard case let .given(lastFeedbackDate) = feedbackStatus else {
             return true
         }
 
@@ -69,13 +81,13 @@ struct InAppFeedbackCardVisibilityUseCase {
     /// Returns whether the products feedback request should be displayed
     ///
     private func shouldProductsFeedbackBeVisible() -> Bool {
-        return settings.feedbackStatus(of: feedbackType) == .pending
+        return feedbackStatus == .pending
     }
 
     /// Returns whether the shippingLabelsRelease3 feedback request should be displayed
     ///
     private func shouldShippingLabelsRelease3FeedbackBeVisible() -> Bool {
-        return settings.feedbackStatus(of: feedbackType) == .pending
+        return feedbackStatus == .pending
     }
 
     /// Returns the total number of days between `from` and `to`.
@@ -98,7 +110,7 @@ struct InAppFeedbackCardVisibilityUseCase {
     /// consider the users who have already installed before we started tracking that value.
     ///
     private func inferInstallationDate() -> Date? {
-        switch (creationDateOfDocumentDir(), settings.installationDate) {
+        switch (creationDateOfDocumentDir(), installationDate) {
             case let (documentDirCreationDate?, savedInstallationDate?):
                 return min(documentDirCreationDate, savedInstallationDate)
             case let (documentDirCreationDate?, nil):

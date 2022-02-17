@@ -334,7 +334,7 @@ extension Order {
 extension OrderFeeLine {
     public func copy(
         feeID: CopiableProp<Int64> = .copy,
-        name: CopiableProp<String> = .copy,
+        name: NullableCopiableProp<String> = .copy,
         taxClass: CopiableProp<String> = .copy,
         taxStatus: CopiableProp<OrderFeeTaxStatus> = .copy,
         total: CopiableProp<String> = .copy,
@@ -1464,6 +1464,33 @@ extension ShippingLabelPurchase {
             status: status,
             productIDs: productIDs,
             productNames: productNames
+        )
+    }
+}
+
+extension ShippingLine {
+    public func copy(
+        shippingID: CopiableProp<Int64> = .copy,
+        methodTitle: CopiableProp<String> = .copy,
+        methodID: NullableCopiableProp<String> = .copy,
+        total: CopiableProp<String> = .copy,
+        totalTax: CopiableProp<String> = .copy,
+        taxes: CopiableProp<[ShippingLineTax]> = .copy
+    ) -> ShippingLine {
+        let shippingID = shippingID ?? self.shippingID
+        let methodTitle = methodTitle ?? self.methodTitle
+        let methodID = methodID ?? self.methodID
+        let total = total ?? self.total
+        let totalTax = totalTax ?? self.totalTax
+        let taxes = taxes ?? self.taxes
+
+        return ShippingLine(
+            shippingID: shippingID,
+            methodTitle: methodTitle,
+            methodID: methodID,
+            total: total,
+            totalTax: totalTax,
+            taxes: taxes
         )
     }
 }

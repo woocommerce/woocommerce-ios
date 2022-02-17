@@ -151,7 +151,7 @@ private extension NewOrder {
         static let title = NSLocalizedString("New Order", comment: "Title for the order creation screen")
         static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the New Order screen")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating a new order")
-        static let addProduct = NSLocalizedString("Add product", comment: "Title text of the button that adds a product when creating a new order")
+        static let addProduct = NSLocalizedString("Add Product", comment: "Title text of the button that adds a product when creating a new order")
     }
 }
 

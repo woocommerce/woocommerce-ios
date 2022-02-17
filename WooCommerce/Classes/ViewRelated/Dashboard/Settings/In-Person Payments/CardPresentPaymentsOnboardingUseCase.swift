@@ -30,7 +30,7 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
 final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol, ObservableObject {
     let storageManager: StorageManagerType
     let stores: StoresManager
-    private var canadaIPPEnabled: Bool = false
+    let configurationLoader: CardPresentConfigurationLoader
 
     @Published var state: CardPresentPaymentOnboardingState = .loading
 
@@ -44,16 +44,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     ) {
         self.storageManager = storageManager
         self.stores = stores
-
-        let canadaAction = AppSettingsAction.loadCanadaInPersonPaymentsSwitchState(onCompletion: { [weak self]  result in
-            switch result {
-            case .success(let canadaIPPEnabled):
-                self?.canadaIPPEnabled = canadaIPPEnabled
-            default:
-                break
-            }
-        })
-        stores.dispatch(canadaAction)
+        self.configurationLoader = .init(stores: stores)
 
         // At the time of writing, actions are dispatched and processed synchronously, so the completion blocks for
         // loadStripeInPersonPaymentsSwitchState and loadCanadaInPersonPaymentsSwitchState should have been called already.
@@ -150,17 +141,9 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return .genericError
         }
 
-        let configuration: CardPresentPaymentsConfiguration
-        do {
-            configuration = try CardPresentPaymentsConfiguration(
-                country: countryCode,
-                canadaEnabled: canadaIPPEnabled
-            )
-        } catch is CardPresentPaymentsConfigurationMissingError {
+        let configuration = configurationLoader.configuration
+        guard configuration.isSupportedCountry else {
             return .countryNotSupported(countryCode: countryCode)
-        } catch {
-            DDLogError("[CardPresentPaymentsOnboarding] Unexpected error loading configuration: \(error)")
-            return .genericError
         }
 
         let wcPay = getWCPayPlugin()

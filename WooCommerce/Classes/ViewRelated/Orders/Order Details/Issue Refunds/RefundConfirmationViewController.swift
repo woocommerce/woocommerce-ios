@@ -172,6 +172,7 @@ extension RefundConfirmationViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(WooBasicTableViewCell.self, for: indexPath)
             cell.applyPlainTextStyle()
             cell.bodyLabel.text = row.text
+            cell.selectionStyle = .none
             return cell
         default:
             assertionFailure("Unsupported row.")

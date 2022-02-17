@@ -161,13 +161,15 @@ final class NewOrderViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         enableRemoteSync: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreationRemoteSynchronizer)) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
-        self.orderSynchronizer = LocalOrderSynchronizer(siteID: siteID, stores: stores)
+        self.orderSynchronizer = enableRemoteSync ? RemoteOrderSynchronizer(siteID: siteID, stores: stores)
+                                                  : LocalOrderSynchronizer(siteID: siteID, stores: stores)
 
         configureNavigationTrailingItem()
         configureStatusBadgeViewModel()
@@ -287,7 +289,7 @@ extension NewOrderViewModel {
             title = orderStatus.name ?? orderStatus.slug
             color = {
                 switch orderStatus.status {
-                case .pending, .completed, .cancelled, .refunded, .custom:
+                case .autoDraft, .pending, .completed, .cancelled, .refunded, .custom:
                     return .gray(.shade5)
                 case .onHold:
                     return .withColorStudio(.orange, shade: .shade5)

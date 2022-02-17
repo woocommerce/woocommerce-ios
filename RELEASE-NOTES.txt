@@ -2,10 +2,12 @@
 
 8.6
 -----
+- [***] Merchants can now view coupons in their stores by enabling Coupon Management in Experimental Features. [https://github.com/woocommerce/woocommerce-ios/pull/6209]
 - [*] Orders: In the experimental Order Creation feature, product variations added to a new order now show a list of their attributes. [https://github.com/woocommerce/woocommerce-ios/pull/6131]
 - [*] Enlarged the tap area for the action button on the notice view. [https://github.com/woocommerce/woocommerce-ios/pull/6146]
 - [*] Reviews: Fixed crash on iPad when tapping the More button. [https://github.com/woocommerce/woocommerce-ios/pull/6187]
 - [*] In-Person Payments: Remove Stripe from Experimental Features as it is always enabled now. [https://github.com/woocommerce/woocommerce-ios/pull/6205]
+- [*] Disabled unneccesary selection of the "Refund via" row on the Refund Confirmation screen [https://github.com/woocommerce/woocommerce-ios/pull/6198]
 
 8.5
 -----

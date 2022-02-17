@@ -1,5 +1,4 @@
 import SwiftUI
-import struct Yosemite.ShippingLine
 
 /// View to add/edit a single shipping line in an order, with the option to remove it.
 ///
@@ -7,47 +6,18 @@ struct ShippingLineDetails: View {
 
     /// View model to drive the view content
     ///
-    let viewModel: NewOrderViewModel.PaymentDataViewModel
+    @ObservedObject var viewModel: ShippingLineDetailsViewModel
 
-    /// Closure to be invoked when the status is updated.
+    /// Defines if the amount input text field should be focused. Defaults to `true`
     ///
-    var didSelectSave: ((ShippingLine?) -> Void)
+    @State private var focusAmountInput: Bool = true
 
-    let currencyFormatter: CurrencyFormatter
-
-    @State private var amount: String
-
-    @State private var methodTitle: String
-
-    @Environment(\.presentationMode) private var presentation
+    @Environment(\.presentationMode) var presentation
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
-    init(viewModel: NewOrderViewModel.PaymentDataViewModel,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         didSelectSave: @escaping ((ShippingLine?) -> Void)) {
+    init(viewModel: ShippingLineDetailsViewModel) {
         self.viewModel = viewModel
-        self.currencyFormatter = currencyFormatter
-        self.didSelectSave = didSelectSave
-        self.isExistingShippingLine = viewModel.shouldShowShippingTotal
-
-        _amount = State(initialValue: viewModel.shippingTotal)
-        _methodTitle = State(initialValue: viewModel.shippingMethodTitle)
-    }
-
-    private var isExistingShippingLine: Bool
-
-    private var finalMethodTitle: String {
-        methodTitle.isNotEmpty ? methodTitle : Localization.namePlaceholder
-    }
-
-    private var isDoneEnabled: Bool {
-        guard let amountDecimal = currencyFormatter.convertToDecimal(from: amount) else {
-            return false
-        }
-
-        return amountDecimal != 0 &&
-        (amountDecimal != currencyFormatter.convertToDecimal(from: viewModel.shippingTotal) || finalMethodTitle != viewModel.shippingMethodTitle)
     }
 
     var body: some View {
@@ -56,16 +26,33 @@ struct ShippingLineDetails: View {
                 VStack(spacing: .zero) {
                     Section {
                         Group {
-                            TitleAndTextFieldRow(title: Localization.amountField,
-                                                 placeholder: "",
-                                                 text: $amount,
-                                                 symbol: nil,
-                                                 keyboardType: .decimalPad)
+                            ZStack(alignment: .center) {
+                                // Hidden input text field
+                                BindableTextfield("", text: $viewModel.amount, focus: $focusAmountInput)
+                                    .keyboardType(.decimalPad)
+                                    .opacity(0)
+
+                                // Visible & formatted field
+                                TitleAndTextFieldRow(title: Localization.amountField,
+                                                     placeholder: "",
+                                                     text: .constant(viewModel.formattedAmount),
+                                                     symbol: nil,
+                                                     keyboardType: .decimalPad)
+                                    .foregroundColor(Color(viewModel.amountTextColor))
+                                    .disabled(true)
+                            }
+                            .background(Color(.listForeground))
+                            .fixedSize(horizontal: false, vertical: true)
+                            .onTapGesture {
+                                focusAmountInput = true
+                            }
+
                             Divider()
                                 .padding(.leading, Layout.dividerPadding)
+
                             TitleAndTextFieldRow(title: Localization.nameField,
-                                                 placeholder: Localization.namePlaceholder,
-                                                 text: $methodTitle,
+                                                 placeholder: ShippingLineDetailsViewModel.Localization.namePlaceholder,
+                                                 text: $viewModel.methodTitle,
                                                  symbol: nil,
                                                  keyboardType: .default)
                         }
@@ -76,10 +63,10 @@ struct ShippingLineDetails: View {
 
                     Spacer(minLength: Layout.sectionSpacing)
 
-                    if isExistingShippingLine {
+                    if viewModel.isExistingShippingLine {
                         Section {
                             Button(Localization.remove) {
-                                didSelectSave(nil)
+                                viewModel.didSelectSave(nil)
                                 presentation.wrappedValue.dismiss()
                             }
                             .padding()
@@ -94,7 +81,7 @@ struct ShippingLineDetails: View {
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
-            .navigationTitle(Localization.shipping)
+            .navigationTitle(viewModel.isExistingShippingLine ? Localization.shipping : Localization.addShipping)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -104,24 +91,14 @@ struct ShippingLineDetails: View {
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button(Localization.done) {
-                        saveData()
+                        viewModel.saveData()
                         presentation.wrappedValue.dismiss()
                     }
-                    .disabled(!isDoneEnabled)
+                    .disabled(viewModel.shouldDisableDoneButton)
                 }
             }
         }
         .wooNavigationBarStyle()
-    }
-
-    private func saveData() {
-        let shippingLine = ShippingLine(shippingID: 0,
-                                        methodTitle: finalMethodTitle,
-                                        methodID: "other",
-                                        total: amount,
-                                        totalTax: "",
-                                        taxes: [])
-        didSelectSave(shippingLine)
     }
 }
 
@@ -138,8 +115,6 @@ private extension ShippingLineDetails {
 
         static let amountField = NSLocalizedString("Amount", comment: "Title for the amount field on the Shipping Line Details screen during order creation")
         static let nameField = NSLocalizedString("Name", comment: "Title for the name field on the Shipping Line Details screen during order creation")
-        static let namePlaceholder = NSLocalizedString("Shipping",
-                                                       comment: "Placeholder for the name field on the Shipping Line Details screen during order creation")
 
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Shipping Line Details screen")
         static let done = NSLocalizedString("Done", comment: "Text for the done button in the Shipping Line Details screen")
@@ -155,6 +130,6 @@ struct ShippingLineDetails_Previews: PreviewProvider {
                                                                shippingTotal: "10",
                                                                shippingMethodTitle: "Shipping",
                                                                orderTotal: "15")
-        ShippingLineDetails(viewModel: viewModel) { _ in }
+        ShippingLineDetails(viewModel: .init(inputData: viewModel, didSelectSave: { _ in }))
     }
 }

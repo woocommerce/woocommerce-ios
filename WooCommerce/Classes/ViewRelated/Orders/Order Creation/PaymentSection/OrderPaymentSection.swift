@@ -31,9 +31,9 @@ struct OrderPaymentSection: View {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) {
                 shippingRow
                     .sheet(isPresented: $shouldShowShippingLineDetails) {
-                        ShippingLineDetails(viewModel: viewModel) { newShippingLine in
+                        ShippingLineDetails(viewModel: .init(inputData: viewModel, didSelectSave: { newShippingLine in
                             saveShippingLineClosure(newShippingLine)
-                        }
+                        }))
                     }
             }
 

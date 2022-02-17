@@ -40,7 +40,7 @@ struct NewOrder: View {
                         Spacer(minLength: Layout.sectionSpacing)
 
                         if viewModel.shouldShowPaymentSection {
-                            OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
+                            OrderPaymentSection(viewModel: viewModel.paymentDataViewModel, saveShippingLineClosure: viewModel.saveShippingLine)
 
                             Spacer(minLength: Layout.sectionSpacing)
                         }
@@ -108,8 +108,8 @@ private struct ProductsSection: View {
                         .onTapGesture {
                             viewModel.selectOrderItem(productRow.id)
                         }
-                        .sheet(item: $viewModel.selectedOrderItem) { item in
-                            createProductInOrderView(for: item)
+                        .sheet(item: $viewModel.selectedProductViewModel) { productViewModel in
+                            ProductInOrder(viewModel: productViewModel)
                         }
 
                     Divider()
@@ -136,16 +136,6 @@ private struct ProductsSection: View {
 
             Divider()
         }
-    }
-
-    @ViewBuilder private func createProductInOrderView(for item: NewOrderViewModel.NewOrderItem) -> some View {
-        if let productRowViewModel = viewModel.createProductRowViewModel(for: item, canChangeQuantity: false) {
-            let productInOrderViewModel = ProductInOrderViewModel(productRowViewModel: productRowViewModel) {
-                viewModel.removeItemFromOrder(item)
-            }
-            ProductInOrder(viewModel: productInOrderViewModel)
-        }
-        EmptyView()
     }
 }
 

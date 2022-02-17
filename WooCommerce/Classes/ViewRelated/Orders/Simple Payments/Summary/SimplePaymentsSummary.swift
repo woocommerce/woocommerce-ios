@@ -166,7 +166,7 @@ private struct PaymentsSection: View {
                     .headlineStyle()
                     .padding([.horizontal, .top])
 
-                TitleAndValueRow(title: SimplePaymentsSummary.Localization.subtotal, value: .content(viewModel.providedAmount), selectable: false) {}
+                TitleAndValueRow(title: SimplePaymentsSummary.Localization.subtotal, value: .content(viewModel.providedAmount), selectionStyle: .none) {}
 
                 TitleAndToggleRow(title: SimplePaymentsSummary.Localization.chargeTaxes, isOn: $viewModel.enableTaxes)
                     .padding(.horizontal)
@@ -181,17 +181,17 @@ private struct PaymentsSection: View {
                         ForEach(viewModel.taxLines) { taxLine in
                             TitleAndValueRow(title: taxLine.title,
                                              value: .content(taxLine.value),
-                                             selectable: false) {}
+                                             selectionStyle: .none) {}
                         }
                     } else {
                         TitleAndValueRow(title: SimplePaymentsSummary.Localization.taxRate(viewModel.taxRate),
                                          value: .content(viewModel.taxAmount),
-                                         selectable: false) {}
+                                         selectionStyle: .none) {}
                     }
                 }
                 .renderedIf(viewModel.enableTaxes)
 
-                TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content(viewModel.total), bold: true, selectable: false) {}
+                TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content(viewModel.total), bold: true, selectionStyle: .none) {}
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .background(Color(.listForeground))

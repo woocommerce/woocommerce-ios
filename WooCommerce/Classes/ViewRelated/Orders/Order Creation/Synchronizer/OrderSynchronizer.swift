@@ -19,8 +19,9 @@ struct OrderSyncProductInput {
         case product(Product)
         case variation(ProductVariation)
     }
+    var id = Int64(UUID().uuidString.hashValue)
     let product: ProductType
-    let quantity: Int
+    let quantity: Decimal
 }
 
 /// Addresses input for an `OrderSynchronizer` type.
@@ -36,13 +37,21 @@ protocol OrderSynchronizer {
 
     // MARK: Outputs
 
-    /// Defines the current sync state of the synchronizer.
+    /// Latest order sync state.
     ///
-    var state: Published<OrderSyncState> { get }
+    var state: OrderSyncState { get }
 
-    /// Defines the latest order to be synced or that is synced.
+    /// Order Sync State Publisher.
     ///
-    var order: Published<Order> { get }
+    var statePublisher: Published<OrderSyncState>.Publisher { get }
+
+    /// Latest order to be synced or that is synced.
+    ///
+    var order: Order { get }
+
+    /// Publisher for the order toe be synced or that is synced.
+    ///
+    var orderPublisher: Published<Order>.Publisher { get }
 
     // MARK: Inputs
 
@@ -74,5 +83,5 @@ protocol OrderSynchronizer {
 
     /// Commits all order changes to the remote source. State needs to be in `.synced` to initiate work.
     ///
-    func commitAllChanges(onCompletion: (Result<Order, Error>) -> Void)
+    func commitAllChanges(onCompletion: @escaping (Result<Order, Error>) -> Void)
 }

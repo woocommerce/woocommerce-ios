@@ -94,6 +94,16 @@ final class IssueRefundViewModel {
         return resultsController.fetchedObjects.first
     }()
 
+    /// Charge related to the order. Used to show card details in the `Refund Via` section.
+    ///
+    private lazy var charge: WCPayCharge? = {
+        guard let resultsController = createWcPayChargeResultsController() else {
+            return nil
+        }
+        try? resultsController.performFetch()
+        return resultsController.fetchedObjects.first
+    }()
+
     private let analytics: Analytics
 
     init(order: Order, refunds: [Refund], currencySettings: CurrencySettings, analytics: Analytics = ServiceLocator.analytics) {
@@ -106,12 +116,14 @@ final class IssueRefundViewModel {
         isSelectAllButtonVisible = calculateSelectAllButtonVisibility()
         selectedItemsTitle = createSelectedItemsCount()
         hasUnsavedChanges = calculatePendingChangesState()
+        fetchCharge()
     }
 
     /// Creates the `ViewModel` to be used when navigating to the page where the user can
     /// confirm and submit the refund.
     func createRefundConfirmationViewModel() -> RefundConfirmationViewModel {
         let details = RefundConfirmationViewModel.Details(order: state.order,
+                                                          charge: charge,
                                                           amount: "\(calculateRefundTotal())",
                                                           refundsShipping: state.shouldRefundShipping,
                                                           refundsFees: state.shouldRefundFees,
@@ -219,6 +231,22 @@ private extension IssueRefundViewModel {
     func createPaymentGatewayResultsController() -> ResultsController<StoragePaymentGateway> {
         let predicate = NSPredicate(format: "siteID == %lld AND gatewayID == %@", state.order.siteID, state.order.paymentMethodID)
         return ResultsController<StoragePaymentGateway>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
+    }
+
+    func createWcPayChargeResultsController() -> ResultsController<StorageWCPayCharge>? {
+        guard let chargeID = state.order.chargeID else {
+            return nil
+        }
+        let predicate = NSPredicate(format: "siteID == %ld AND chargeID == %@", state.order.siteID, chargeID)
+        return ResultsController<StorageWCPayCharge>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
+    }
+
+    func fetchCharge() {
+        guard let chargeID = state.order.chargeID else {
+            return
+        }
+        let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { _ in })
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

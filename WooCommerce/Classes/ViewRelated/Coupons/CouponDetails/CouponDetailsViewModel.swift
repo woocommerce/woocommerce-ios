@@ -42,7 +42,7 @@ final class CouponDetailsViewModel: ObservableObject {
 
     /// Total amount deducted from orders that applied the coupon
     ///
-    @Published private(set) var discountedAmount: String = ""
+    @Published private(set) var discountedAmount: String?
 
     /// The current coupon
     ///
@@ -61,7 +61,6 @@ final class CouponDetailsViewModel: ObservableObject {
         self.coupon = coupon
         self.stores = stores
         self.currencySettings = currencySettings
-        self.discountedAmount = formatStringAmount("0")
         populateDetails()
     }
 
@@ -102,6 +101,10 @@ private extension CouponDetailsViewModel {
     func populateDetails() {
         couponCode = coupon.code
         description = coupon.description
+        discountedOrdersCount = "\(coupon.usageCount)"
+        if coupon.usageCount == 0 {
+            discountedAmount = formatStringAmount("0")
+        }
 
         switch coupon.discountType {
         case .percent:

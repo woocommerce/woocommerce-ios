@@ -1,3 +1,4 @@
+import SwiftUI
 import XCTest
 import Yosemite
 @testable import WooCommerce
@@ -5,7 +6,7 @@ import Yosemite
 final class InboxNoteRowViewModelTests: XCTestCase {
     // MARK: - `InboxNoteRowViewModel`
 
-    func test_initializing_InboxNoteRowViewModel_with_note_has_expected_properties() throws {
+    func test_initializing_InboxNoteRowViewModel_with_note_has_expected_title_content_actions() throws {
         // Given
         let action = InboxAction.fake().copy(id: 606)
         let note = InboxNote.fake().copy(actions: [action])
@@ -20,6 +21,91 @@ final class InboxNoteRowViewModelTests: XCTestCase {
 
         let actionViewModel = try XCTUnwrap(viewModel.actions.first)
         XCTAssertEqual(actionViewModel.id, action.id)
+    }
+
+    func test_initializing_InboxNoteRowViewModel_with_supported_note_types_sets_typeIcon_accordingly() {
+        // Given
+        let types = ["error", "warning", "update", "info", "marketing", "survey"]
+        // TODO: 5954 - update type icons after design updates
+        let expectedTypeIcons = [Image(systemName: "exclamationmark.octagon.fill"), // error
+                                 Image(systemName: "exclamationmark.bubble.fill"), // warning
+                                 Image(systemName: "gearshape.fill"), // update
+                                 Image(uiImage: .infoImage), // info
+                                 Image(systemName: "lightbulb.fill"), // marketing
+                                 Image(systemName: "doc.plaintext") // survey
+        ]
+
+        for (type, expectedTypeIcon) in zip(types, expectedTypeIcons) {
+            // When
+            let note = InboxNote.fake().copy(type: type)
+            let viewModel = InboxNoteRowViewModel(note: note)
+
+            // Then
+            XCTAssertEqual(viewModel.typeIcon, expectedTypeIcon)
+        }
+    }
+
+    func test_initializing_InboxNoteRowViewModel_with_unsupported_note_type_sets_typeIcon_to_info_type() {
+        // When
+        let note = InboxNote.fake().copy(type: "special")
+        let viewModel = InboxNoteRowViewModel(note: note)
+
+        // Then
+        // TODO: 5954 - update type icon after design updates
+        let infoTypeIcon = Image(uiImage: .infoImage)
+        XCTAssertEqual(viewModel.typeIcon, infoTypeIcon)
+    }
+
+    func test_initializing_InboxNoteRowViewModel_with_dateCreated_now_sets_date_to_now() throws {
+        // Given
+        // GMT Tuesday, February 15, 2022 6:55:28 AM
+        let today = Date(timeIntervalSince1970: 1644908128)
+        let note = InboxNote.fake().copy(dateCreated: today)
+        let locale = Locale(identifier: "en_US")
+        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let calendar = Calendar(identifier: .gregorian, timeZone: timeZone)
+
+        // When
+        let viewModel = InboxNoteRowViewModel(note: note, today: today, locale: locale, calendar: calendar)
+
+        // Then
+        XCTAssertEqual(viewModel.date, "now")
+    }
+
+    func test_initializing_InboxNoteRowViewModel_with_dateCreated_2_months_ago_sets_date_accordingly() throws {
+        // Given
+        // GMT Tuesday, February 15, 2022 6:55:28 AM
+        let today = Date(timeIntervalSince1970: 1644908128)
+        // GMT Wednesday, December 15, 2021 6:55:28 AM
+        let twoMonthsAgo = Date(timeIntervalSince1970: 1639551328)
+        let note = InboxNote.fake().copy(dateCreated: twoMonthsAgo)
+        let locale = Locale(identifier: "en_US")
+        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let calendar = Calendar(identifier: .gregorian, timeZone: timeZone)
+
+        // When
+        let viewModel = InboxNoteRowViewModel(note: note, today: today, locale: locale, calendar: calendar)
+
+        // Then
+        XCTAssertEqual(viewModel.date, "2 months ago")
+    }
+
+    func test_initializing_InboxNoteRowViewModel_with_dateCreated_2_months_later_sets_date_accordingly() throws {
+        // Given
+        // GMT Tuesday, February 15, 2022 6:55:28 AM
+        let today = Date(timeIntervalSince1970: 1644908128)
+        // GMT Friday, April 15, 2022 6:55:28 AM
+        let twoMonthsLater = Date(timeIntervalSince1970: 1650005728)
+        let note = InboxNote.fake().copy(dateCreated: twoMonthsLater)
+        let locale = Locale(identifier: "en_US")
+        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let calendar = Calendar(identifier: .gregorian, timeZone: timeZone)
+
+        // When
+        let viewModel = InboxNoteRowViewModel(note: note, today: today, locale: locale, calendar: calendar)
+
+        // Then
+        XCTAssertEqual(viewModel.date, "in 2 months")
     }
 
     // MARK: - `InboxNoteRowActionViewModel`

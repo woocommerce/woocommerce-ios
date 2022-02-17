@@ -106,6 +106,8 @@ public final class CardPresentPaymentStore: Store {
             reset()
         case .checkCardReaderConnected(onCompletion: let completion):
             checkCardReaderConnected(onCompletion: completion)
+        case .fetchWCPayCharge(let siteID, let chargeID, let completion):
+            fetchCharge(siteID: siteID, chargeID: chargeID, completion: completion)
         }
     }
 }
@@ -519,7 +521,28 @@ private extension CardPresentPaymentStore {
                 return
             }
         })
-    }}
+    }
+
+    func fetchCharge(siteID: Int64, chargeID: String, completion: @escaping (Result<WCPayCharge, Error>) -> Void) {
+        switch usingBackend {
+        case .wcpay:
+            remote.fetchCharge(for: siteID, chargeID: chargeID) { result in
+                switch result {
+                case .success(let charge):
+                    self.upsertCharge(readonlyCharge: charge)
+                    completion(.success(charge))
+                case .failure(let error):
+                    if case .noSuchChargeError(_) = WCPayChargesError(underlyingError: error) {
+                        self.deleteCharge(siteID: siteID, chargeID: chargeID)
+                    }
+                    completion(.failure(error))
+                }
+            }
+        case .stripe:
+            break; /// not implemented
+        }
+    }
+}
 
 // MARK: Storage Methods
 private extension CardPresentPaymentStore {
@@ -538,6 +561,62 @@ private extension CardPresentPaymentStore {
         }
 
         storage.deleteObject(storageAccount)
+        storage.saveIfNeeded()
+    }
+
+    func upsertCharge(readonlyCharge: WCPayCharge) {
+        let storage = storageManager.viewStorage
+        let storageWCPayCharge = existingOrNewWCPayCharge(siteID: readonlyCharge.siteID, chargeID: readonlyCharge.id, in: storage)
+
+        switch readonlyCharge.paymentMethodDetails {
+        case .cardPresent(let details):
+            upsertCardPresentDetails(details, for: storageWCPayCharge, in: storage)
+        case .card(let details):
+            upsertCardDetails(details, for: storageWCPayCharge, in: storage)
+        case .unknown:
+            storageWCPayCharge.cardDetails = nil
+            storageWCPayCharge.cardPresentDetails = nil
+        }
+
+        storageWCPayCharge.update(with: readonlyCharge)
+    }
+
+    private func existingOrNewWCPayCharge(siteID: Int64, chargeID: String, in storage: StorageType) -> Storage.WCPayCharge {
+        storage.loadWCPayCharge(siteID: siteID, chargeID: chargeID) ?? storage.insertNewObject(ofType: Storage.WCPayCharge.self)
+    }
+
+    private func upsertCardPresentDetails(_ details: WCPayCardPresentPaymentDetails,
+                                          for storageWCPayCharge: Storage.WCPayCharge,
+                                          in storage: StorageType) {
+        let storageCardPresentDetails = storageWCPayCharge.cardPresentDetails ?? storage.insertNewObject(ofType: Storage.WCPayCardPresentPaymentDetails.self)
+        let storageReceiptDetails = storageCardPresentDetails.receipt ?? storage.insertNewObject(ofType: Storage.WCPayCardPresentReceiptDetails.self)
+
+        storageCardPresentDetails.update(with: details)
+        storageReceiptDetails.update(with: details.receipt)
+
+        storageCardPresentDetails.receipt = storageReceiptDetails
+
+        storageWCPayCharge.cardPresentDetails = storageCardPresentDetails
+        storageWCPayCharge.cardDetails = nil
+    }
+
+    private func upsertCardDetails(_ details: WCPayCardPaymentDetails,
+                                   for storageWCPayCharge: Storage.WCPayCharge,
+                                   in storage: StorageType) {
+        let storageCardDetails = storageWCPayCharge.cardDetails ?? storage.insertNewObject(ofType: Storage.WCPayCardPaymentDetails.self)
+        storageCardDetails.update(with: details)
+
+        storageWCPayCharge.cardDetails = storageCardDetails
+        storageWCPayCharge.cardPresentDetails = nil
+    }
+
+    func deleteCharge(siteID: Int64, chargeID: String) {
+        let storage = storageManager.viewStorage
+        guard let charge = storage.loadWCPayCharge(siteID: siteID, chargeID: chargeID) else {
+            return
+        }
+
+        storage.deleteObject(charge)
         storage.saveIfNeeded()
     }
 }
@@ -604,3 +683,49 @@ public protocol CardReaderCapableRemote {
 
 extension WCPayRemote: CardReaderCapableRemote {}
 extension StripeRemote: CardReaderCapableRemote {}
+
+// MARK: - WCPayChargesError
+public enum WCPayChargesError: Error, LocalizedError {
+    case noSuchChargeError(message: String)
+    case otherError(error: AnyError)
+
+    init(underlyingError error: Error) {
+        guard case let DotcomError.unknown(code, message) = error,
+              let message = message else {
+                  self = .otherError(error: error.toAnyError)
+                  return
+              }
+
+        /// See if we recognize this DotcomError code
+        ///
+        self = ErrorCode(rawValue: code)?.error(message: message) ?? .otherError(error: error.toAnyError)
+    }
+
+    enum ErrorCode: String {
+        case getChargeError = "wcpay_get_charge"
+        case unknown
+
+        func error(message: String) -> WCPayChargesError? {
+            switch self {
+            case .getChargeError:
+                guard message.starts(with: "Error: No such charge") else {
+                    return nil
+                }
+                return .noSuchChargeError(message: message)
+            default:
+                return nil
+            }
+        }
+    }
+
+    public var errorDescription: String? {
+        switch self {
+        case .noSuchChargeError(let message):
+            /// Return the message directly from the store
+            /// "Error: No such charge: 'ch_3KMVapErrorERROR'"
+            return message
+        case .otherError(let error):
+            return error.localizedDescription
+        }
+    }
+}

@@ -2,8 +2,7 @@ import Yosemite
 
 /// View model for `ProductInOrder`.
 ///
-final class ProductInOrderViewModel {
-
+final class ProductInOrderViewModel: Identifiable {
     /// The product being edited.
     ///
     let productRowViewModel: ProductRowViewModel

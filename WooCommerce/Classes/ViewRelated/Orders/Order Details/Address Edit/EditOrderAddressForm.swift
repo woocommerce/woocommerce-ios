@@ -302,7 +302,7 @@ struct SingleAddressForm: View {
 
                 TitleAndValueRow(title: Localization.countryField,
                                  value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.country),
-                                 selectable: true) {
+                                 selectionStyle: .disclosure) {
                     showCountrySelector = true
                 }
                 Divider()
@@ -321,7 +321,7 @@ struct SingleAddressForm: View {
         if showStateFieldAsSelector {
             TitleAndValueRow(title: Localization.stateField,
                              value: .init(placeHolder: Localization.placeholderSelectOption, content: fields.state),
-                             selectable: true) {
+                             selectionStyle: .disclosure) {
                 showStateSelector = true
             }
         } else {

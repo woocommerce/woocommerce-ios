@@ -35,6 +35,8 @@ struct CouponDetails: View {
         self.noticePresenter = DefaultNoticePresenter()
         viewModel.syncCoupon()
         viewModel.loadCouponReport()
+
+        ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "loaded"])
     }
 
     private var detailRows: [DetailRow] {
@@ -61,9 +63,11 @@ struct CouponDetails: View {
                                         UIPasteboard.general.string = viewModel.couponCode
                                         let notice = Notice(title: Localization.couponCopied, feedbackType: .success)
                                         noticePresenter.enqueue(notice: notice)
+                                        ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "copied_code"])
                                     }),
                                     .default(Text(Localization.shareCoupon), action: {
                                         showingShareSheet = true
+                                        ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "shared_code"])
                                     }),
                                     .cancel()
                                 ]
@@ -84,14 +88,20 @@ struct CouponDetails: View {
                                     .secondaryBodyStyle()
                                 Text(viewModel.discountedOrdersCount)
                                     .font(.title)
+                                Spacer()
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
 
                             VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                                 Text(Localization.amount)
                                     .secondaryBodyStyle()
-                                Text(viewModel.discountedAmount)
-                                    .font(.title)
+                                if let amount = viewModel.discountedAmount {
+                                    Text(amount)
+                                        .font(.title)
+                                } else {
+                                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                                }
+                                Spacer()
                             }
                             .padding(.leading, Constants.margin)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -113,7 +123,7 @@ struct CouponDetails: View {
                         ForEach(detailRows) { row in
                             TitleAndValueRow(title: row.title,
                                              value: .content(row.content),
-                                             selectable: false,
+                                             selectionStyle: .none,
                                              action: row.action)
                                 .padding(.vertical, Constants.verticalSpacing)
                                 .padding(.horizontal, insets: geometry.safeAreaInsets)

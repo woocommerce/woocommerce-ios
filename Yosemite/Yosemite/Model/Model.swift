@@ -144,6 +144,14 @@ public typealias WCPayAccount = Networking.WCPayAccount
 public typealias WCPayAccountStatusEnum = Networking.WCPayAccountStatusEnum
 public typealias WCPayCustomer = Networking.Customer
 public typealias WCPayPaymentMethodType = Networking.WCPayPaymentMethodType
+public typealias WCPayCharge = Networking.WCPayCharge
+public typealias WCPayCardBrand = Networking.WCPayCardBrand
+public typealias WCPayCardFunding = Networking.WCPayCardFunding
+public typealias WCPayCardPresentPaymentDetails = Networking.WCPayCardPresentPaymentDetails
+public typealias WCPayCardPaymentDetails = Networking.WCPayCardPaymentDetails
+public typealias WCPayCardPresentReceiptDetails = Networking.WCPayCardPresentReceiptDetails
+public typealias WCPayPaymentMethodDetails = Networking.WCPayPaymentMethodDetails
+public typealias WCPayChargeStatus = Networking.WCPayChargeStatus
 
 // MARK: - Exported Storage Symbols
 
@@ -207,6 +215,7 @@ public typealias StorageSystemPlugin = Storage.SystemPlugin
 public typealias StorageTopEarnerStats = Storage.TopEarnerStats
 public typealias StorageTopEarnerStatsItem = Storage.TopEarnerStatsItem
 public typealias StorageTaxClass = Storage.TaxClass
+public typealias StorageWCPayCharge = Storage.WCPayCharge
 
 // MARK: - Internal ReadOnly Models
 

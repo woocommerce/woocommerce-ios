@@ -34,7 +34,7 @@ struct OrderStatusSection: View {
                 .padding(.trailing, -Layout.linkButtonTrailingPadding) // remove trailing padding to align button title to the side
                 .accessibilityLabel(Text(Localization.editButtonAccessibilityLabel))
                 .sheet(isPresented: $viewModel.shouldShowOrderStatusList) {
-                    OrderStatusList(siteID: viewModel.siteID, status: viewModel.orderDetails.status) { newStatus in
+                    OrderStatusList(siteID: viewModel.siteID, status: viewModel.currentOrderStatus) { newStatus in
                         viewModel.updateOrderStatus(newStatus: newStatus)
                     }
                 }

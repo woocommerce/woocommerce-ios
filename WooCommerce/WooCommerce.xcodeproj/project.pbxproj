@@ -422,6 +422,9 @@
 		2602A63D27BD3C8C00B347F1 /* RemoteOrderSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602A63C27BD3C8C00B347F1 /* RemoteOrderSynchronizer.swift */; };
 		2602A63F27BD880A00B347F1 /* NewOrderInitialStatusResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602A63E27BD880A00B347F1 /* NewOrderInitialStatusResolver.swift */; };
 		2602A64227BD89CE00B347F1 /* NewOrderInitialStatusResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602A64127BD89CE00B347F1 /* NewOrderInitialStatusResolverTests.swift */; };
+		2602A64627BDBEBA00B347F1 /* ProductInputTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602A64527BDBEBA00B347F1 /* ProductInputTransformer.swift */; };
+		2602A64827BDBF8000B347F1 /* ProductInputTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602A64727BDBF8000B347F1 /* ProductInputTransformerTests.swift */; };
+		2602A64A27BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602A64927BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift */; };
 		260C315E2523CC4000157BC2 /* RefundProductsTotalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260C315D2523CC4000157BC2 /* RefundProductsTotalViewModel.swift */; };
 		260C31602524ECA900157BC2 /* IssueRefundViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260C315F2524ECA900157BC2 /* IssueRefundViewController.swift */; };
 		260C31622524EEB200157BC2 /* IssueRefundViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 260C31612524EEB200157BC2 /* IssueRefundViewController.xib */; };
@@ -2068,6 +2071,9 @@
 		2602A63C27BD3C8C00B347F1 /* RemoteOrderSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteOrderSynchronizer.swift; sourceTree = "<group>"; };
 		2602A63E27BD880A00B347F1 /* NewOrderInitialStatusResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewOrderInitialStatusResolver.swift; sourceTree = "<group>"; };
 		2602A64127BD89CE00B347F1 /* NewOrderInitialStatusResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewOrderInitialStatusResolverTests.swift; sourceTree = "<group>"; };
+		2602A64527BDBEBA00B347F1 /* ProductInputTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInputTransformer.swift; sourceTree = "<group>"; };
+		2602A64727BDBF8000B347F1 /* ProductInputTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInputTransformerTests.swift; sourceTree = "<group>"; };
+		2602A64927BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteOrderSynchronizerTests.swift; sourceTree = "<group>"; };
 		260C315D2523CC4000157BC2 /* RefundProductsTotalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundProductsTotalViewModel.swift; sourceTree = "<group>"; };
 		260C315F2524ECA900157BC2 /* IssueRefundViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueRefundViewController.swift; sourceTree = "<group>"; };
 		260C31612524EEB200157BC2 /* IssueRefundViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IssueRefundViewController.xib; sourceTree = "<group>"; };
@@ -4313,6 +4319,8 @@
 			isa = PBXGroup;
 			children = (
 				2602A64127BD89CE00B347F1 /* NewOrderInitialStatusResolverTests.swift */,
+				2602A64727BDBF8000B347F1 /* ProductInputTransformerTests.swift */,
+				2602A64927BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift */,
 			);
 			path = Synchronizer;
 			sourceTree = "<group>";
@@ -4553,6 +4561,7 @@
 				26C6439427B9A1B300DD00D1 /* LocalOrderSynchronizer.swift */,
 				2602A63C27BD3C8C00B347F1 /* RemoteOrderSynchronizer.swift */,
 				2602A63E27BD880A00B347F1 /* NewOrderInitialStatusResolver.swift */,
+				2602A64527BDBEBA00B347F1 /* ProductInputTransformer.swift */,
 			);
 			path = Synchronizer;
 			sourceTree = "<group>";
@@ -9027,6 +9036,7 @@
 				021AEF9E2407F55C00029D28 /* PHAssetImageLoader.swift in Sources */,
 				DECE13FB27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift in Sources */,
 				26E0AE1926335AA900A5EB3B /* Survey.swift in Sources */,
+				2602A64627BDBEBA00B347F1 /* ProductInputTransformer.swift in Sources */,
 				AE77EA5027A47C99006A21BD /* View+AddingDividers.swift in Sources */,
 				0298430C259351F100979CAE /* ShippingLabelsTopBannerFactory.swift in Sources */,
 				020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */,
@@ -9300,6 +9310,7 @@
 				57B374B6245B331100D58BE0 /* EmptyStateViewControllerTests.swift in Sources */,
 				020BE76923B4A268007FE54C /* AztecItalicFormatBarCommandTests.swift in Sources */,
 				0271E1642509C66200633F7A /* DefaultProductFormTableViewModelTests.swift in Sources */,
+				2602A64827BDBF8000B347F1 /* ProductInputTransformerTests.swift in Sources */,
 				D802548726552E07001B2CC1 /* CardPresentModalNonRetryableErrorTests.swift in Sources */,
 				02BAB02924D13AA500F8B06E /* ProductVariationFormActionsFactoryTests.swift in Sources */,
 				B53A569B21123E8E000776C9 /* MockTableView.swift in Sources */,
@@ -9389,6 +9400,7 @@
 				020BE76B23B4A380007FE54C /* AztecUnderlineFormatBarCommandTests.swift in Sources */,
 				D83F5937225B402E00626E75 /* TitleAndEditableValueTableViewCellTests.swift in Sources */,
 				773077F3251E954300178696 /* ProductDownloadFileViewModelTests.swift in Sources */,
+				2602A64A27BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift in Sources */,
 				DE4B3B2E269455D400EEF2D8 /* MockShipmentActionStoresManager.swift in Sources */,
 				0246405F258B122100C10A7D /* PrintShippingLabelCoordinatorTests.swift in Sources */,
 				576D9F2924DB81D3007B48F4 /* StoreStatsAndTopPerformersPeriodViewModelTests.swift in Sources */,

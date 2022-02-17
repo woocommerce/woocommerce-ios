@@ -1003,6 +1003,7 @@
 		AE77EA5027A47C99006A21BD /* View+AddingDividers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE77EA4F27A47C99006A21BD /* View+AddingDividers.swift */; };
 		AE90475C27A99D6000073E1D /* CreateOrderAddressFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE90475B27A99D6000073E1D /* CreateOrderAddressFormViewModelTests.swift */; };
 		AE9E04752776213E003FA09E /* OrderCustomerSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9E04742776213E003FA09E /* OrderCustomerSection.swift */; };
+		AEA3F90D27BE76B300B9F555 /* ShippingLineDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA3F90C27BE76B300B9F555 /* ShippingLineDetails.swift */; };
 		AEA622B2274669D3002A9B57 /* AddOrderCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B1274669D3002A9B57 /* AddOrderCoordinator.swift */; };
 		AEA622B427466B78002A9B57 /* BottomSheetOrderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */; };
 		AEA622B727468790002A9B57 /* AddOrderCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */; };
@@ -2612,6 +2613,7 @@
 		AE77EA4F27A47C99006A21BD /* View+AddingDividers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+AddingDividers.swift"; sourceTree = "<group>"; };
 		AE90475B27A99D6000073E1D /* CreateOrderAddressFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrderAddressFormViewModelTests.swift; sourceTree = "<group>"; };
 		AE9E04742776213E003FA09E /* OrderCustomerSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomerSection.swift; sourceTree = "<group>"; };
+		AEA3F90C27BE76B300B9F555 /* ShippingLineDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLineDetails.swift; sourceTree = "<group>"; };
 		AEA622B1274669D3002A9B57 /* AddOrderCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderCoordinator.swift; sourceTree = "<group>"; };
 		AEA622B327466B78002A9B57 /* BottomSheetOrderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetOrderType.swift; sourceTree = "<group>"; };
 		AEA622B627468790002A9B57 /* AddOrderCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOrderCoordinatorTests.swift; sourceTree = "<group>"; };
@@ -6248,6 +6250,7 @@
 			isa = PBXGroup;
 			children = (
 				CC200BB027847DE300EC5884 /* OrderPaymentSection.swift */,
+				AEA3F90C27BE76B300B9F555 /* ShippingLineDetails.swift */,
 			);
 			path = PaymentSection;
 			sourceTree = "<group>";
@@ -9037,6 +9040,7 @@
 				748AD087219F481B00023535 /* UIView+Animation.swift in Sources */,
 				02564A8A246CDF6100D6DB2A /* ProductsTopBannerFactory.swift in Sources */,
 				D89C004725B467C7000E4683 /* ULAccountMismatchViewModel.swift in Sources */,
+				AEA3F90D27BE76B300B9F555 /* ShippingLineDetails.swift in Sources */,
 				B509FED321C05121000076A9 /* SupportManagerAdapter.swift in Sources */,
 				B5AA7B3D20ED5D15004DA14F /* SessionManager.swift in Sources */,
 				74C6FEA521C2F1FA009286B6 /* AboutViewController.swift in Sources */,

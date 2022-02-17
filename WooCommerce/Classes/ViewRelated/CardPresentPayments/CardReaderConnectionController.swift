@@ -477,10 +477,11 @@ private extension CardReaderConnectionController {
 
         let cancel = softwareUpdateCancelable.map { cancelable in
             return { [weak self] in
-                self?.state = .cancel
+                guard let self = self else { return }
+                self.state = .cancel
                 ServiceLocator.analytics.track(
                     event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateCancelTapped(
-                        forGatewayID: self?.gatewayID,
+                        forGatewayID: self.gatewayID,
                         updateType: .required
                     )
                 )
@@ -490,7 +491,7 @@ private extension CardReaderConnectionController {
                     } else {
                         ServiceLocator.analytics.track(
                             event: WooAnalyticsEvent.InPersonPayments.cardReaderSoftwareUpdateCanceled(
-                                forGatewayID: self?.gatewayID,
+                                forGatewayID: self.gatewayID,
                                 updateType: .required
                             )
                         )

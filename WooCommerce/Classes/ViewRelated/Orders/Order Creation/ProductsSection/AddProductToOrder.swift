@@ -65,7 +65,12 @@ struct AddProductToOrder: View {
         if rowViewModel.numberOfVariations > 0,
            let addVariationToOrderVM = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
             LazyNavigationLink(destination: AddProductVariationToOrder(isPresented: $isPresented, viewModel: addVariationToOrderVM)) {
-                ProductRow(viewModel: rowViewModel)
+                HStack {
+                    ProductRow(viewModel: rowViewModel)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    DisclosureIndicator()
+                }
             }
         } else {
             ProductRow(viewModel: rowViewModel)

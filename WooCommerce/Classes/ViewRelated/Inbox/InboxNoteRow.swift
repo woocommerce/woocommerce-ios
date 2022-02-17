@@ -58,8 +58,8 @@ struct InboxNoteRow: View {
                             }
                         }
                         Button(Localization.dismiss) {
-                            // TODO: 5955 - handle dismiss action
                             print("Handling dismiss action")
+                            viewModel.dismissInboxNote()
                         }
                         .foregroundColor(Color(.withColorStudio(.gray, shade: .shade30)))
                         .font(.body)

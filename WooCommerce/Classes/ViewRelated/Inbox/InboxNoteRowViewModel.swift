@@ -103,6 +103,18 @@ extension InboxNoteRowViewModel {
         }
         stores.dispatch(action)
     }
+
+    func dismissInboxNote() {
+        let action = InboxNotesAction.dismissInboxNote(siteID: siteID, noteID: id) { result in
+            switch result {
+            case .success(_):
+                break
+            case .failure(let error):
+                DDLogError("⛔️ Error on dismissing an inbox note: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
 }
 
 private extension InboxNoteRowViewModel {

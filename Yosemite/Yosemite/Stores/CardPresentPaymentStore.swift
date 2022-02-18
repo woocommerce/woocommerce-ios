@@ -17,13 +17,6 @@ public final class CardPresentPaymentStore: Store {
     ///
     private let commonReaderConfigProvider: CommonReaderConfigProvider
 
-    /// Instead of adding a reference to the feature flag service (in the WooCommerce layer),
-    /// and since feature flag values don't mutate, let's just have a private bool passed into this service
-    /// to allow (or not) Stripe IPP.
-    /// TODO: Remove this feature flag when no longer needed.
-    ///
-    private var allowStripeIPP: Bool
-
     /// Which backend is the store using? Default to WCPay until told otherwise
     private var usingBackend: CardPresentPaymentStoreBackend = .wcpay
 
@@ -39,14 +32,12 @@ public final class CardPresentPaymentStore: Store {
         dispatcher: Dispatcher,
         storageManager: StorageManagerType,
         network: Network,
-        cardReaderService: CardReaderService,
-        allowStripeIPP: Bool
+        cardReaderService: CardReaderService
     ) {
         self.cardReaderService = cardReaderService
         self.commonReaderConfigProvider = CommonReaderConfigProvider()
         self.remote = WCPayRemote(network: network)
         self.stripeRemote = StripeRemote(network: network)
-        self.allowStripeIPP = allowStripeIPP
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -365,11 +356,6 @@ private extension CardPresentPaymentStore {
     /// Sets the store to use a given payment gateway
     ///
     func use(paymentGatewayAccount: PaymentGatewayAccount) {
-        guard allowStripeIPP else {
-            DDLogError("useStripeAsBackend called when stripeExtensionInPersonPayments disabled")
-            return
-        }
-
         guard paymentGatewayAccount.isWCPay else {
             usingBackend = .stripe
             return

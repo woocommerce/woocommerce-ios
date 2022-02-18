@@ -20,23 +20,14 @@ public struct CardPresentPaymentsConfiguration {
         self.purchaseCardReaderUrl = purchaseCardReaderUrl
     }
 
-    public init(country: String, stripeEnabled: Bool, canadaEnabled: Bool) {
+    public init(country: String, canadaEnabled: Bool) {
         switch country {
-        case "US" where stripeEnabled == true:
+        case "US":
             //TODO: update to use Self.purchaseCardReaderUrl(for: country) when pages/redirects are added to the website pdfdoF-su-p2
             self.init(
                 paymentMethods: [.cardPresent],
                 currencies: ["USD"],
                 paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
-                supportedReaders: [.chipper, .stripeM2],
-                purchaseCardReaderUrl: Constants.purchaseM2ReaderUrl
-            )
-        case "US" where stripeEnabled == false:
-            //TODO: update to use Self.purchaseCardReaderUrl(for: country) when pages/redirects are added to the website pdfdoF-su-p2
-            self.init(
-                paymentMethods: [.cardPresent],
-                currencies: ["USD"],
-                paymentGateways: [WCPayAccount.gatewayID],
                 supportedReaders: [.chipper, .stripeM2],
                 purchaseCardReaderUrl: Constants.purchaseM2ReaderUrl
             )

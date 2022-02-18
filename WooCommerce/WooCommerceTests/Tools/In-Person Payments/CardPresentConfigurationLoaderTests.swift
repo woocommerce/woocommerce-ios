@@ -21,8 +21,6 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case .loadStripeInPersonPaymentsSwitchState(let completion):
-                completion(.success(true))
             case .loadCanadaInPersonPaymentsSwitchState(let completion):
                 completion(.success(true))
             default:
@@ -103,8 +101,6 @@ private extension CardPresentConfigurationLoaderTests {
     func setupFeatures(stripe: Bool, canada: Bool) {
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case .loadStripeInPersonPaymentsSwitchState(onCompletion: let completion):
-                completion(.success(stripe))
             case .loadCanadaInPersonPaymentsSwitchState(onCompletion: let completion):
                 completion(.success(canada))
             default:

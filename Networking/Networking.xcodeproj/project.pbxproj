@@ -181,6 +181,8 @@
 		311D41302783C0E200052F64 /* StripeRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311D412F2783C0E200052F64 /* StripeRemote.swift */; };
 		314703082670222500EF253A /* PaymentGatewayAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314703072670222500EF253A /* PaymentGatewayAccount.swift */; };
 		3148977027232982007A86BD /* SystemStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3148976F27232982007A86BD /* SystemStatus.swift */; };
+		314EDF2927C02CC100A56B6F /* stripe-account-complete-empty-descriptor.json in Resources */ = {isa = PBXBuildFile; fileRef = 314EDF2827C02CC100A56B6F /* stripe-account-complete-empty-descriptor.json */; };
+		314EDF2B27C02CD300A56B6F /* stripe-account-complete-null-descriptor.json in Resources */ = {isa = PBXBuildFile; fileRef = 314EDF2A27C02CD300A56B6F /* stripe-account-complete-null-descriptor.json */; };
 		3158A49F2729F3F600C3CFA8 /* wcpay-account-live-live.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158A49E2729F3F600C3CFA8 /* wcpay-account-live-live.json */; };
 		3158A4A12729F40F00C3CFA8 /* wcpay-account-live-test.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158A4A02729F40F00C3CFA8 /* wcpay-account-live-test.json */; };
 		3158A4A32729F42500C3CFA8 /* wcpay-account-dev-test.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158A4A22729F42500C3CFA8 /* wcpay-account-dev-test.json */; };
@@ -853,6 +855,8 @@
 		311D412F2783C0E200052F64 /* StripeRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeRemote.swift; sourceTree = "<group>"; };
 		314703072670222500EF253A /* PaymentGatewayAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayAccount.swift; sourceTree = "<group>"; };
 		3148976F27232982007A86BD /* SystemStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatus.swift; sourceTree = "<group>"; };
+		314EDF2827C02CC100A56B6F /* stripe-account-complete-empty-descriptor.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "stripe-account-complete-empty-descriptor.json"; sourceTree = "<group>"; };
+		314EDF2A27C02CD300A56B6F /* stripe-account-complete-null-descriptor.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "stripe-account-complete-null-descriptor.json"; sourceTree = "<group>"; };
 		3158A49E2729F3F600C3CFA8 /* wcpay-account-live-live.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-live-live.json"; sourceTree = "<group>"; };
 		3158A4A02729F40F00C3CFA8 /* wcpay-account-live-test.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-live-test.json"; sourceTree = "<group>"; };
 		3158A4A22729F42500C3CFA8 /* wcpay-account-dev-test.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-dev-test.json"; sourceTree = "<group>"; };
@@ -1822,6 +1826,8 @@
 				D865CE71278CC215002C8520 /* stripe-customer-error.json */,
 				D865CE70278CC215002C8520 /* stripe-customer.json */,
 				31A451C527863A2D00FE81AA /* stripe-account-complete.json */,
+				314EDF2827C02CC100A56B6F /* stripe-account-complete-empty-descriptor.json */,
+				314EDF2A27C02CD300A56B6F /* stripe-account-complete-null-descriptor.json */,
 				31A451C927863A2D00FE81AA /* stripe-account-dev-test.json */,
 				31A451C227863A2D00FE81AA /* stripe-account-live-live.json */,
 				31A451CB27863A2D00FE81AA /* stripe-account-live-test.json */,
@@ -2438,6 +2444,7 @@
 				02AF07EC27492FDD00B2D81E /* media-library-from-wordpress-site.json in Resources */,
 				CC9A253C26442C71005DE56E /* shipping-label-eligibility-success.json in Resources */,
 				B5A24179217F98F600595DEF /* notifications-load-all.json in Resources */,
+				314EDF2927C02CC100A56B6F /* stripe-account-complete-empty-descriptor.json in Resources */,
 				31A451CE27863A2E00FE81AA /* stripe-account-wrong-json.json in Resources */,
 				0282DD91233A120A006A5FDB /* products-search-photo.json in Resources */,
 				45152825257A8B740076B03C /* product-attribute-update.json in Resources */,
@@ -2626,6 +2633,7 @@
 				268EC45C26C169F600716F5C /* order-with-faulty-attributes.json in Resources */,
 				45AB8B0F24AA29DC00B5B36E /* product-tags-created.json in Resources */,
 				3158FE8426129F3A00E566B9 /* wcpay-account-unknown-status.json in Resources */,
+				314EDF2B27C02CD300A56B6F /* stripe-account-complete-null-descriptor.json in Resources */,
 				31054720262E2F9D00C5C02B /* wcpay-payment-intent-processing.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -171,7 +171,7 @@ private extension InboxNotesStore {
         storageInboxNote.actions = Set(storageInboxActions)
     }
 
-    /// Deletes specified Inbox Note Entity in a background thread
+    /// Deletes a single Inbox Note Entity in a background thread
     /// `onCompletion` will be called on the main thread.
     ///
     func deleteStoredInboxNoteInBackground(siteID: Int64,

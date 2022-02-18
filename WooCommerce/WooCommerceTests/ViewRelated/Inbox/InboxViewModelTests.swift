@@ -1,4 +1,6 @@
 import Combine
+import protocol Storage.StorageManagerType
+import protocol Storage.StorageType
 import XCTest
 import Yosemite
 @testable import WooCommerce
@@ -7,8 +9,17 @@ final class InboxViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 322
     private var subscriptions: [AnyCancellable] = []
 
+    /// Mock Storage: InMemory
+    private var storageManager: StorageManagerType!
+
+    /// View storage for tests
+    private var storage: StorageType {
+        storageManager.viewStorage
+    }
+
     override func setUp() {
         super.setUp()
+        storageManager = MockStorageManager()
         subscriptions = []
     }
 
@@ -61,16 +72,17 @@ final class InboxViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         var invocationCountOfLoadInboxNotes = 0
         var syncPageNumber: Int?
-        let note = InboxNote.fake()
+        let note = InboxNote.fake().copy(siteID: sampleSiteID)
         stores.whenReceivingAction(ofType: InboxNotesAction.self) { action in
             guard case let .loadAllInboxNotes(_, pageNumber, _, _, _, _, completion) = action else {
                 return
             }
             invocationCountOfLoadInboxNotes += 1
             syncPageNumber = pageNumber
+            self.insertInboxNotes([note])
             completion(.success([note]))
         }
-        let viewModel = InboxViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = InboxViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         var states = [InboxViewModel.SyncState]()
         viewModel.$syncState.sink { state in
@@ -122,18 +134,20 @@ final class InboxViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         var invocationCountOfLoadInboxNotes = 0
         var syncPageNumber: Int?
-        let firstPageNotes = [InboxNote](repeating: .fake(), count: pageSize)
-        let secondPageNotes = [InboxNote](repeating: .fake(), count: pageSize - 1)
+        let firstPageNotes = [InboxNote](repeating: .fake().copy(siteID: sampleSiteID), count: pageSize)
+        let secondPageNotes = [InboxNote](repeating: .fake().copy(siteID: sampleSiteID), count: pageSize - 1)
         stores.whenReceivingAction(ofType: InboxNotesAction.self) { action in
             guard case let .loadAllInboxNotes(_, pageNumber, _, _, _, _, completion) = action else {
                 return
             }
             invocationCountOfLoadInboxNotes += 1
             syncPageNumber = pageNumber
-            completion(.success(pageNumber == 1 ? firstPageNotes: secondPageNotes))
+            let notes = pageNumber == 1 ? firstPageNotes: secondPageNotes
+            self.insertInboxNotes(notes)
+            completion(.success(notes))
         }
 
-        let viewModel = InboxViewModel(siteID: sampleSiteID, pageSize: pageSize, stores: stores)
+        let viewModel = InboxViewModel(siteID: sampleSiteID, pageSize: pageSize, stores: stores, storageManager: storageManager)
 
         var states = [InboxViewModel.SyncState]()
         viewModel.$syncState.sink { state in
@@ -156,14 +170,15 @@ final class InboxViewModelTests: XCTestCase {
     func test_noteRowViewModels_match_loaded_notes() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let note = InboxNote.fake()
+        let note = InboxNote.fake().copy(siteID: sampleSiteID)
         stores.whenReceivingAction(ofType: InboxNotesAction.self) { action in
             guard case let .loadAllInboxNotes(_, _, _, _, _, _, completion) = action else {
                 return
             }
+            self.insertInboxNotes([note])
             completion(.success([note]))
         }
-        let viewModel = InboxViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = InboxViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -188,5 +203,15 @@ final class InboxViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.noteRowViewModels, [])
+    }
+}
+
+extension InboxViewModelTests {
+    func insertInboxNotes(_ readOnlyInboxNotes: [InboxNote]) {
+        readOnlyInboxNotes.forEach { inboxNote in
+            let newInboxNote = storage.insertNewObject(ofType: StorageInboxNote.self)
+            newInboxNote.update(with: inboxNote)
+        }
+        storage.saveIfNeeded()
     }
 }

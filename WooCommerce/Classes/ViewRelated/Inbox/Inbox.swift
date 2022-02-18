@@ -23,7 +23,6 @@ struct Inbox: View {
                     .background(Constants.listForeground)
                 }
             case .empty:
-                // TODO: 5954 - update empty state
                 EmptyState(title: Localization.emptyStateTitle,
                            description: Localization.emptyStateMessage,
                            image: .emptyInboxNotesImage)

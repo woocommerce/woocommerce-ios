@@ -405,6 +405,9 @@
 		031B10E3274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031B10E2274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift */; };
 		035C6DEB273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */; };
 		035F2308275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */; };
+		0379C51727BFCE9800A7E284 /* WCPayCardBrand+icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0379C51627BFCE9800A7E284 /* WCPayCardBrand+icons.swift */; };
+		0379C51927BFE23400A7E284 /* RefundConfirmationCardDetailsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0379C51827BFE23400A7E284 /* RefundConfirmationCardDetailsCell.xib */; };
+		0379C51B27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0379C51A27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift */; };
 		039D948D27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948C27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift */; };
 		039D948F276113490044EF38 /* UIView+SuperviewConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */; };
 		03AA165E2719B7EF005CCB7B /* ReceiptActionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AA165D2719B7EF005CCB7B /* ReceiptActionCoordinator.swift */; };
@@ -2056,6 +2059,9 @@
 		031B10E2274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectionFailedUpdateAddress.swift; sourceTree = "<group>"; };
 		035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareUpdateTypeProperty.swift; sourceTree = "<group>"; };
 		035F2307275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectingFailedUpdatePostalCode.swift; sourceTree = "<group>"; };
+		0379C51627BFCE9800A7E284 /* WCPayCardBrand+icons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardBrand+icons.swift"; sourceTree = "<group>"; };
+		0379C51827BFE23400A7E284 /* RefundConfirmationCardDetailsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundConfirmationCardDetailsCell.xib; sourceTree = "<group>"; };
+		0379C51A27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundConfirmationCardDetailsCell.swift; sourceTree = "<group>"; };
 		039D948C27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaConstraints.swift"; sourceTree = "<group>"; };
 		039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SuperviewConstraints.swift"; sourceTree = "<group>"; };
 		03AA165D2719B7EF005CCB7B /* ReceiptActionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptActionCoordinator.swift; sourceTree = "<group>"; };
@@ -4619,6 +4625,8 @@
 				B6E851F2276320C70041D1BA /* RefundFeesDetailsViewModel.swift */,
 				B6E851F4276330200041D1BA /* RefundFeesDetailsTableViewCell.swift */,
 				B6E851F6276331110041D1BA /* RefundFeesDetailsTableViewCell.xib */,
+				0379C51827BFE23400A7E284 /* RefundConfirmationCardDetailsCell.xib */,
+				0379C51A27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -7241,6 +7249,7 @@
 				D8EE9691264D328A0033B2F9 /* ReceiptViewController.xib */,
 				31C21FA326D9949000916E2E /* SeveralReadersFoundViewController.swift */,
 				31C21FA526D994B700916E2E /* SeveralReadersFoundViewController.xib */,
+				0379C51627BFCE9800A7E284 /* WCPayCardBrand+icons.swift */,
 			);
 			path = CardPresentPayments;
 			sourceTree = "<group>";
@@ -7968,6 +7977,7 @@
 				B5F355F121CD504400A7077A /* SearchViewController.xib in Resources */,
 				CE1EC8F020B8A408009762BF /* OrderNoteTableViewCell.xib in Resources */,
 				265BCA0E2430E771004E53EE /* ProductCategoryTableViewCell.xib in Resources */,
+				0379C51927BFE23400A7E284 /* RefundConfirmationCardDetailsCell.xib in Resources */,
 				4515262F2577D56C0076B03C /* AddAttributeViewController.xib in Resources */,
 				DECE13FC27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib in Resources */,
 				B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */,
@@ -8713,6 +8723,7 @@
 				CCD2F51A26D67BB50010E679 /* ShippingLabelServicePackageList.swift in Sources */,
 				45FDDD65267784AD00ADACE8 /* ShippingLabelSummaryTableViewCell.swift in Sources */,
 				45DB70662614CE3F0064A6CF /* Decimal+Helpers.swift in Sources */,
+				0379C51727BFCE9800A7E284 /* WCPayCardBrand+icons.swift in Sources */,
 				02E8B17C23E2C78A00A43403 /* ProductImageStatus.swift in Sources */,
 				0259D5FF2581F3FA003B1CD6 /* ShippingLabelPaperSizeOptionsViewController.swift in Sources */,
 				CCEC256A27B581E800EF9FA3 /* ProductVariationFormatter.swift in Sources */,
@@ -8977,6 +8988,7 @@
 				57CFCD28248845B4003F51EC /* PrimarySectionHeaderView.swift in Sources */,
 				023A059A24135F2600E3FC99 /* ReviewsViewController.swift in Sources */,
 				B5C3876421C41B9F006CE970 /* UIApplication+Woo.swift in Sources */,
+				0379C51B27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift in Sources */,
 				D85136B9231CED5800DD0539 /* ReviewAge.swift in Sources */,
 				5718852C2465D9EC00E2486F /* ReviewsCoordinator.swift in Sources */,
 				028BAC4022F2EFA5008BB4AF /* OldStoreStatsAndTopPerformersPeriodViewController.swift in Sources */,

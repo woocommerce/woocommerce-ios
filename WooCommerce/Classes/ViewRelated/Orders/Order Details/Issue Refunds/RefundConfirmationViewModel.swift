@@ -158,8 +158,10 @@ private extension RefundConfirmationViewModel {
             guard case .cardPresent(let cardDetails) = details.charge?.paymentMethodDetails else {
                 return SimpleTextRow(text: details.order.paymentMethodTitle)
             }
-            return TitleAndBodyRow(title: details.order.paymentMethodTitle,
-                                   body: cardDetails.brand.cardDescription(last4: cardDetails.last4))
+            return PaymentDetailsRow(cardIcon: cardDetails.brand.icon,
+                                     paymentGateway: details.order.paymentMethodTitle,
+                                     paymentMethodDescription: cardDetails.brand.cardDescription(last4: cardDetails.last4),
+                                     accessibilityDescription: cardDetails.brand.cardAccessibilityDescription(last4: cardDetails.last4))
         } else {
             return TitleAndBodyRow(title: Localization.manualRefund(via: details.order.paymentMethodTitle),
                                    body: Localization.refundWillNotBeIssued(paymentMethod: details.order.paymentMethodTitle))
@@ -243,6 +245,14 @@ extension RefundConfirmationViewModel {
         let body: String?
     }
 
+    /// A row that shows an optional payment method image, a gateway name, and an description for the payment below
+    struct PaymentDetailsRow: RefundConfirmationViewModelRow {
+        let cardIcon: UIImage?
+        let paymentGateway: String
+        let paymentMethodDescription: String
+        let accessibilityDescription: NSAttributedString
+    }
+
     /// A row that shows a simple text on it.
     struct SimpleTextRow: RefundConfirmationViewModelRow {
         let text: String
@@ -302,6 +312,24 @@ private extension WCPayCardBrand {
         return String(format: cardDescriptionFormatString(), last4)
     }
 
+    func cardAccessibilityDescription(last4: String) -> NSAttributedString {
+        let localizedDescription = String(format: Localization.cardAccessibilityDescriptionFormat, cardBrandName(), last4)
+        let attributedLocalizedDescription = NSMutableAttributedString(string: localizedDescription)
+
+        guard let brandNameRange = localizedDescription.range(of: cardBrandName()),
+              let last4Range = localizedDescription.range(of: last4)
+        else {
+            return attributedLocalizedDescription
+        }
+
+        let brandNameNSRange = NSRange(brandNameRange, in: localizedDescription)
+        let last4NSRange = NSRange(last4Range, in: localizedDescription)
+        attributedLocalizedDescription.setAttributes([.accessibilitySpeechLanguage: "en-US"], range: brandNameNSRange)
+        attributedLocalizedDescription.setAttributes([.accessibilitySpeechSpellOut: true], range: last4NSRange)
+
+        return attributedLocalizedDescription
+    }
+
     func cardDescriptionFormatString() -> String {
         switch self {
         case .amex:
@@ -321,5 +349,34 @@ private extension WCPayCardBrand {
         case .unknown:
             return "•••• %1$@"
         }
+    }
+
+    func cardBrandName() -> String {
+        switch self {
+        case .amex:
+            return "American Express"
+        case .diners:
+            return "Diners Club"
+        case .discover:
+            return "Discover"
+        case .jcb:
+            return "JCB"
+        case .mastercard:
+            return "Mastercard"
+        case .unionpay:
+            return "UnionPay"
+        case .visa:
+            return "Visa"
+        case .unknown:
+            return ""
+        }
+    }
+
+    enum Localization {
+        static let cardAccessibilityDescriptionFormat = NSLocalizedString(
+            "%1$@ card ending %2$@",
+            comment: "Accessibility description for a card payment method, used by assistive technologies " +
+            "such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the " +
+            "last 4 digits of the card number")
     }
 }

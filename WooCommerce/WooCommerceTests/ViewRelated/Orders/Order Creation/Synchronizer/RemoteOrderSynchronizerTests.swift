@@ -334,6 +334,40 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         // Then
         wait(for: [exp], timeout: 1.0)
     }
+
+    func test_order_is_created_with_draft_status_and_returned_with_selected_status() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in // Set version that supports auto-draft
+            switch action {
+            case let .fetchSystemPlugin(_, _, onCompletion):
+                onCompletion(.fake().copy(version: "6.3.0"))
+            default:
+                XCTFail("Unexpected action received: \(action)")
+            }
+        }
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+        XCTAssertEqual(synchronizer.order.status, .pending) // initial status
+
+        // When
+        let submittedStatus: OrderStatusEnum = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createOrder(_, order, onCompletion):
+                    onCompletion(.success(order))
+                    promise(order.status)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+
+            synchronizer.setFee.send(.fake())
+        }
+
+        // Then
+        XCTAssertEqual(submittedStatus, .autoDraft) // Submitted Status
+        XCTAssertEqual(synchronizer.order.status, .pending) // Selected status
+    }
 }
 
 extension OrderSyncState: Equatable {

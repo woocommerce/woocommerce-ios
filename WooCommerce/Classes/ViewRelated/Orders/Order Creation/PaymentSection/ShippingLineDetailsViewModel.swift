@@ -29,7 +29,7 @@ class ShippingLineDetailsViewModel: ObservableObject {
     /// Defines the amount text color.
     ///
     var amountTextColor: UIColor {
-        amount.isEmpty ? .textSubtle : .text
+        amount.isEmpty ? .textPlaceholder : .text
     }
 
     /// Stores the method title entered by the merchant.

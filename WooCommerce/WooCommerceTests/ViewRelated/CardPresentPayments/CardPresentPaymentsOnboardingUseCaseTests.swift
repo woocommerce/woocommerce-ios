@@ -666,7 +666,7 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
 
     enum StripePluginVersion: String {
         case minimumSupportedVersion = "6.2.0" // Should match `CardPresentPaymentsOnboardingState` `minimumSupportedPluginVersion`
-        case unsupportedVersion = "5.8.1"
+        case unsupportedVersion = "6.1.0"
     }
 
 }

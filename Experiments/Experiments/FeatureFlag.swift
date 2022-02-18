@@ -38,10 +38,6 @@ public enum FeatureFlag: Int {
     ///
     case shippingLabelsMultiPackage
 
-    /// Push notifications for all stores
-    ///
-    case pushNotificationsForAllStores
-
     /// Display the bar for displaying the filters in the Order List
     ///
     case orderListFilters

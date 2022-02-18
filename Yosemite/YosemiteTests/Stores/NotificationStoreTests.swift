@@ -356,27 +356,27 @@ class NotificationStoreTests: XCTestCase {
 
     /// Verifies that NotificationAction.registerDevice successfully handles a success response from the backend.
     ///
-    func testRegisterDeviceHandlesSuccessfulResponse() {
-        let expectation = self.expectation(description: "Register Device")
+    func test_registerDevice_handles_successful_response() throws {
+        // Given
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "new", filename: "device-settings")
 
-        let action = NotificationAction.registerDevice(device: sampleAPNSDevice(),
-                                                       applicationId: sampleApplicationID,
-                                                       applicationVersion: sampleApplicationVersion,
-                                                       defaultStoreID: sampleDefaultStoreID,
-                                                       pushNotificationsForAllStoresEnabled: false) { (device, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(device)
-            XCTAssertEqual(device?.deviceID, "12345678")
-
-            expectation.fulfill()
+        // When
+        let (device, error): (DotcomDevice?, Error?) = waitFor { promise in
+            let action = NotificationAction.registerDevice(device: self.sampleAPNSDevice(),
+                                                           applicationId: self.sampleApplicationID,
+                                                           applicationVersion: self.sampleApplicationVersion,
+                                                           defaultStoreID: self.sampleDefaultStoreID) { (device, error) in
+                promise((device, error))
+            }
+            noteStore.onAction(action)
         }
 
-        noteStore.onAction(action)
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertNil(error)
+        XCTAssertNotNil(device)
+        XCTAssertEqual(device?.deviceID, "12345678")
     }
 
     /// Verifies that NotificationAction.registerDevice successfully handles a failure response from the backend.
@@ -390,8 +390,7 @@ class NotificationStoreTests: XCTestCase {
         let action = NotificationAction.registerDevice(device: sampleAPNSDevice(),
                                                        applicationId: sampleApplicationID,
                                                        applicationVersion: sampleApplicationVersion,
-                                                       defaultStoreID: sampleDefaultStoreID,
-                                                       pushNotificationsForAllStoresEnabled: false) { (device, error) in
+                                                       defaultStoreID: sampleDefaultStoreID) { (device, error) in
             XCTAssertNotNil(error)
             XCTAssertNil(device)
 

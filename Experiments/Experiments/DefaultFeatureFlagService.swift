@@ -19,8 +19,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .shippingLabelsMultiPackage:
             return true
-        case .pushNotificationsForAllStores:
-            return true
         case .orderListFilters:
             return true
         case .jetpackConnectionPackageSupport:

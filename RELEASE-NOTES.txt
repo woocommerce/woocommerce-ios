@@ -8,6 +8,7 @@
 - [*] Reviews: Fixed crash on iPad when tapping the More button. [https://github.com/woocommerce/woocommerce-ios/pull/6187]
 - [*] In-Person Payments: Remove Stripe from Experimental Features as it is always enabled now. [https://github.com/woocommerce/woocommerce-ios/pull/6205]
 - [*] Disabled unneccesary selection of the "Refund via" row on the Refund Confirmation screen [https://github.com/woocommerce/woocommerce-ios/pull/6198]
+- [*] Increased minimum version of Stripe extension for In-Person Payments to 6.2.0 [https://github.com/woocommerce/woocommerce-ios/pull/xxxx]
 
 8.5
 -----

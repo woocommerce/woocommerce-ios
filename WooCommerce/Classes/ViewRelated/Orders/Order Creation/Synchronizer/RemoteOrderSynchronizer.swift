@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 import Combine
-import SwiftUI
 
 /// Type that syncs the order with the remote server.
 ///
@@ -46,10 +45,6 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
     /// Subscriptions store.
     ///
     private var subscriptions = Set<AnyCancellable>()
-
-    // MARK: DELETE
-    var created = false
-
 
     // MARK: Initializers
 
@@ -141,7 +136,6 @@ private extension RemoteOrderSynchronizer {
             .sink { [weak self] order in // When a value is received update state & order
                 self?.state = .synced
                 self?.order = order
-                print("Order Created: \(order)")
             }
             .store(in: &subscriptions)
     }

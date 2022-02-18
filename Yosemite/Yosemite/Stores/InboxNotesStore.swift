@@ -63,11 +63,9 @@ private extension InboxNotesStore {
                 completion(.failure(error))
 
             case .success(let inboxNotes):
-                if pageNumber == Default.pageNumber {
-                    self.deleteStoredInboxNotes(siteID: siteID)
-                }
-
-                self.upsertStoredInboxNotesInBackground(readOnlyInboxNotes: inboxNotes, siteID: siteID) {
+                self.upsertStoredInboxNotesInBackground(readOnlyInboxNotes: inboxNotes,
+                                                        siteID: siteID,
+                                                        shouldDeleteExistingNotes: pageNumber == Default.pageNumber) {
                     completion(.success(inboxNotes))
                 }
             }
@@ -86,9 +84,9 @@ private extension InboxNotesStore {
                 completion(.failure(error))
 
             case .success(let inboxNote):
-                self?.upsertStoredInboxNotesInBackground(readOnlyInboxNotes: [inboxNote], siteID: siteID, onCompletion: {
+                self?.upsertStoredInboxNotesInBackground(readOnlyInboxNotes: [inboxNote], siteID: siteID, shouldDeleteExistingNotes: false) {
                     completion(.success(inboxNote))
-                })
+                }
             }
         }
     }
@@ -106,9 +104,9 @@ private extension InboxNotesStore {
                 completion(.failure(error))
 
             case .success(let inboxNote):
-                self?.upsertStoredInboxNotesInBackground(readOnlyInboxNotes: [inboxNote], siteID: siteID, onCompletion: {
+                self?.upsertStoredInboxNotesInBackground(readOnlyInboxNotes: [inboxNote], siteID: siteID, shouldDeleteExistingNotes: false) {
                     completion(.success(inboxNote))
-                })
+                }
             }
         }
     }
@@ -123,10 +121,16 @@ private extension InboxNotesStore {
     ///
     func upsertStoredInboxNotesInBackground(readOnlyInboxNotes: [Networking.InboxNote],
                                             siteID: Int64,
+                                            shouldDeleteExistingNotes: Bool,
                                             onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
-            self?.upsertStoredInboxNotes(readOnlyInboxNotes: readOnlyInboxNotes,
+            guard let self = self else { return }
+
+            if shouldDeleteExistingNotes {
+                self.deleteStoredInboxNotes(siteID: siteID, in: derivedStorage)
+            }
+            self.upsertStoredInboxNotes(readOnlyInboxNotes: readOnlyInboxNotes,
                                          in: derivedStorage,
                                          siteID: siteID)
         }
@@ -169,10 +173,8 @@ private extension InboxNotesStore {
 
     /// Deletes all Storage.InboxNote with the specified `siteID`
     ///
-    func deleteStoredInboxNotes(siteID: Int64) {
-        let storage = storageManager.viewStorage
+    func deleteStoredInboxNotes(siteID: Int64, in storage: StorageType) {
         storage.deleteInboxNotes(siteID: siteID)
-        storage.saveIfNeeded()
     }
 }
 

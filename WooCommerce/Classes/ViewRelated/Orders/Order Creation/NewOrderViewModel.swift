@@ -349,6 +349,7 @@ extension NewOrderViewModel {
 
         let shouldShowShippingTotal: Bool
         let shippingTotal: String
+        let shippingMethodTitle: String
 
         let shouldShowFees: Bool
         let feesTotal: String
@@ -356,6 +357,7 @@ extension NewOrderViewModel {
         init(itemsTotal: String = "",
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "",
+             shippingMethodTitle: String = "",
              shouldShowFees: Bool = false,
              feesTotal: String = "",
              orderTotal: String = "",
@@ -363,6 +365,7 @@ extension NewOrderViewModel {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? ""
             self.shouldShowShippingTotal = shouldShowShippingTotal
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? ""
+            self.shippingMethodTitle = shippingMethodTitle
             self.shouldShowFees = shouldShowFees
             self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? ""
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? ""
@@ -476,16 +479,20 @@ private extension NewOrderViewModel {
                     .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
                     .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
+                let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
+
                 let feesTotal = order.fees
                     .map { $0.total }
                     .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
                     .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
+
 
                 let orderTotal = itemsTotal.adding(shippingTotal).adding(feesTotal)
 
                 return PaymentDataViewModel(itemsTotal: itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.isNotEmpty,
                                             shippingTotal: shippingTotal.stringValue,
+                                            shippingMethodTitle: shippingMethodTitle,
                                             shouldShowFees: order.fees.isNotEmpty,
                                             feesTotal: feesTotal.stringValue,
                                             orderTotal: orderTotal.stringValue,

@@ -11,6 +11,10 @@ struct OrderPaymentSection: View {
     let saveShippingLineClosure: (ShippingLine?) -> Void
     let saveFeeClosure: (OrderFeeLine?) -> Void
 
+    /// Indicates if the shipping line details screen should be shown or not.
+    ///
+    @State private var shouldShowShippingLineDetails: Bool = false
+
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
@@ -27,6 +31,11 @@ struct OrderPaymentSection: View {
 
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) {
                 shippingRow
+                    .sheet(isPresented: $shouldShowShippingLineDetails) {
+                        ShippingLineDetails(viewModel: .init(inputData: viewModel, didSelectSave: { newShippingLine in
+                            saveShippingLineClosure(newShippingLine)
+                        }))
+                    }
                 feesRow
             }
 
@@ -45,17 +54,11 @@ struct OrderPaymentSection: View {
     @ViewBuilder private var shippingRow: some View {
         if viewModel.shouldShowShippingTotal {
             TitleAndValueRow(title: Localization.shippingTotal, value: .content(viewModel.shippingTotal), selectionStyle: .highlight) {
-                saveShippingLineClosure(nil)
+                shouldShowShippingLineDetails = true
             }
         } else {
             Button(Localization.addShipping) {
-                let testShippingLine = ShippingLine(shippingID: 0,
-                                                    methodTitle: "Flat Rate",
-                                                    methodID: "other",
-                                                    total: "10",
-                                                    totalTax: "",
-                                                    taxes: [])
-                saveShippingLineClosure(testShippingLine)
+                shouldShowShippingLineDetails = true
             }
             .buttonStyle(PlusButtonStyle())
             .padding()

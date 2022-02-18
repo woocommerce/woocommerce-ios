@@ -213,13 +213,11 @@ private extension DashboardViewController {
     }
 
     func configureDashboardUIContainer() {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
-            hiddenScrollView.configureForLargeTitleWorkaround()
-            // Adds the "hidden" scroll view to the root of the UIViewController for large titles.
-            view.addSubview(hiddenScrollView)
-            hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
-            view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
-        }
+        hiddenScrollView.configureForLargeTitleWorkaround()
+        // Adds the "hidden" scroll view to the root of the UIViewController for large titles.
+        view.addSubview(hiddenScrollView)
+        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
 
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
@@ -265,9 +263,7 @@ private extension DashboardViewController {
 
     func reloadDashboardUIStatsVersion(forced: Bool) {
         dashboardUIFactory.reloadDashboardUI(onUIUpdate: { [weak self] dashboardUI in
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
-                dashboardUI.scrollDelegate = self
-            }
+            dashboardUI.scrollDelegate = self
             self?.onDashboardUIUpdate(forced: forced, updatedDashboardUI: dashboardUI)
         })
     }
@@ -287,8 +283,7 @@ private extension DashboardViewController {
     }
 
     func updateUI(site: Site?) {
-        guard let siteName = site?.name, siteName.isEmpty == false,
-              ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) else {
+        guard let siteName = site?.name, siteName.isEmpty == false else {
             shouldShowStoreNameAsSubtitle = false
             storeNameLabel.text = nil
             return

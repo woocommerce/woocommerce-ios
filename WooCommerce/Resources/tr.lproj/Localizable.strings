@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-02-02 17:54:02+0000 */
+/* Translation-Revision-Date: 2022-02-16 12:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -336,6 +336,9 @@
 /* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "Varyasyon Ekle";
 
+/* Title for the Add a Different Address switch in the Address form */
+"Add a different shipping address" = "Farklı bir gönderim adresi ekle";
+
 /* Placeholder in Shipping Label form for the Payment Method row. */
 "Add a new credit card" = "Yeni bir kredi kartı ekle";
 
@@ -441,6 +444,9 @@
 /* Header bar label on top of order list when no filters are applied */
 "All Orders" = "Tüm Siparişler";
 
+/* The text to be displayed in when the coupon is not limit to any specific product */
+"All Products" = "Tüm ürünler";
+
 /* Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow */
 "All available packages have been activated" = "Mevcut tüm paketler etkinleştirildi";
 
@@ -511,6 +517,9 @@
 
 /* Change order status screen - button title to apply selection */
 "Apply" = "Uygula";
+
+/* Title of the Apply To row in Coupon Details screen */
+"Apply To" = "Başvur";
 
 /* Approve a comment */
 "Approve" = "Onayla";
@@ -608,6 +617,9 @@
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Barkod numarası %1$i, %2$@, ";
 
+/* Beta annotation for sharing a payment link */
+"Beta" = "Beta";
+
 /* Section header title for billing address in billing information
    Title for the Billing Address section in order customer data - Title for the Edit Billing Address Form */
 "Billing Address" = "Fatura Adresi";
@@ -655,7 +667,7 @@
 "Can Not Request Link" = "Bağlantı istenemiyor";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "İptal";
 
 /* Display label for cancelled order status. */
@@ -792,6 +804,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Yeni bir sipariş notu oluşturur.";
+
+/* Title for the error screen when there is more than one plugin active that supports in-person payments. */
+"Conflicting payment plugins detected" = "Çakışan ödeme eklentileri algılandı";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "Tebrikler! Okuyucunuz en son yazılımı çalıştırıyor";
@@ -940,6 +955,18 @@
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "Ürünün üretildiği veya monte edildiği ülke";
 
+/* Title of Coupon Details screen */
+"Coupon" = "Kupon";
+
+/* Title of the Coupon Code row in Coupon Details screen */
+"Coupon Code" = "Kupon kodu";
+
+/* Title of Details section in Coupon Details screen */
+"Coupon Details" = "Kupon Ayrıntıları";
+
+/* Title of the Coupon Expiry Date row in Coupon Details screen */
+"Coupon Expiry Date" = "Kupon Son Kullanma Tarihi";
+
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "Kuponlar";
@@ -1080,7 +1107,7 @@
 "Describe your product to your future customers..." = "Ürününüzü gelecekteki müşterilerinize anlatın...";
 
 /* The navigation bar title of the Aztec editor screen.
-   Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow */
+   Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow - Title of the Description row in Coupon Details screen */
 "Description" = "Tanım";
 
 /* Footer text in Product Menu order screen */
@@ -1110,7 +1137,8 @@
 /* Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader */
 "Disconnect Reader" = "Okuyucunun bağlantısını kes";
 
-/* Discount label for payment view */
+/* Discount label for payment view
+   Title of the Discount row in Coupon Details screen */
 "Discount" = "İndirim";
 
 /* A unit test string for a button title
@@ -1457,11 +1485,11 @@
 /* The hint button's title text to help users find their store address. */
 "Find your store address" = "Mağaza adresinizi bulun";
 
-/* Button to set up the WooCommerce Payments plugin after installing it */
+/* Button to set up an in-person payments plugin after activating it */
 "Finish Setup in Store Admin" = "Mağaza Yöneticisinde Kurulumu Tamamla";
 
-/* Title for the error screen when WooCommerce Payments is installed but not set up */
-"Finish setup WooCommerce Payments in your store admin" = "Mağaza yönetici bölümünüzde WooCommerce Payments kurulumunu tamamlayın";
+/* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
+"Finish setup for %1$@ in your store admin" = "Mağaza yöneticinizde %1$@ kurulumunu tamamlayın";
 
 /* Text field name in Edit Address Form */
 "First name" = "İsim";
@@ -1686,12 +1714,21 @@
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "Şahsen Ödemeler";
 
+/* Cell title on beta features screen to enable accepting in-person payments for stores in Canada */
+"In-Person Payments in Canada" = "Kanada'da Şahsen Ödemeler";
+
 /* Title for the error screen when In-Person Payments is unavailable
-   Title for the error screen when the Stripe account is restricted because it's under reviw - Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
+   Title for the error screen when the merchant's payment account is restricted because it's under reviw - Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
 "In-Person Payments is currently unavailable" = "Şahsen Ödemeler şu anda kullanılamıyor";
 
-/* Title for the error screen when the Stripe account rejected. */
+/* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "Bu mağazada Şahsen Ödemeler kullanılamıyor";
+
+/* Message prompting a shop manager to ask an administrator to deactivate one of two plugins */
+"In-Person Payments will only work with one of following plugins activated. Please contact a site administrator to deactivate one of these plugins to continue:" = "Şahsen Ödemeler yalnızca aşağıdaki eklentilerden biri etkinleştirildiğinde çalışır. Devam etmek üzere bu eklentilerden birini devre dışı bırakması için lütfen bir site yöneticisiyle iletişime geçin:";
+
+/* Message prompting an administrator to deactivate one of two plugins */
+"In-Person Payments will only work with one of following plugins activated. Please deactivate one of these plugins to continue:" = "Şahsen Ödemeler yalnızca aşağıdaki eklentilerden biri etkinleştirildiğinde çalışır. Devam etmek için lütfen bu eklentilerden birini devre dışı bırakın:";
 
 /* Application's Inactive State */
 "Inactive" = "Etkin değil";
@@ -1989,6 +2026,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Card reader settings screen title
    Settings > Manage Card Reader > Title for the no-reader-connected screen in settings. - Settings > Manage Card Reader > Title for the reader connected screen in settings. */
 "Manage Card Reader" = "Kart Okuyucuyu Yönet";
+
+/* Button to open browser to manage plugins */
+"Manage Plugins" = "Eklentileri Yönet";
 
 /* Navigates to Card Reader management screen */
 "Manage card reader" = "Kart Okuyucuyu Yönet";
@@ -2563,9 +2603,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Lütfen bir paket seçin";
 
-/* Title for the error screen when there is more than one extension active. */
-"Please select an extension" = "Lütfen bir uzantı seçin";
-
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Lütfen daha sonra tekrar deneyin veya bize ulaşın, size yardımcı olmaktan memnuniyet duyarız.";
 
@@ -2964,6 +3001,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Restriction Type row in Customs screen of Shipping Label flow */
 "Restriction Type" = "Kısıtlama Türü";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search coupons. */
+"Retrieves a list of coupons that contain a given keyword." = "Belirli bir anahtar sözcüğü içeren kuponları listeler.";
+
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "Belirli bir anahtar sözcüğü içeren siparişlerin bir listesini alır.";
 
@@ -3086,11 +3126,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Programlı satış";
 
+/* Coupons Search Placeholder */
+"Search all coupons" = "Tüm kuponlarda ara";
+
 /* Orders Search Placeholder */
 "Search all orders" = "Tüm siparişleri ara";
 
 /* Products Search Placeholder */
 "Search all products" = "Tüm ürünleri ara";
+
+/* Accessibility label for the Search Coupons button */
+"Search coupons" = "Kuponları ara";
 
 /* Search Orders */
 "Search orders" = "Siparişleri ara";
@@ -3145,9 +3191,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "Bitiş tarihini seç";
-
-/* Button to select the active payment processor plugin */
-"Select extension in Store Admin" = "Mağaza Yöneticisi'nden uzantı seçin";
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Paragraf stilini seçin";
@@ -3631,7 +3674,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Tap, insert or swipe to pay" = "Ödeme yapmak için dokunun, ekleyin veya kaydırın";
 
 /* Tax label for a refund details view
-   Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
+   Tax label for the tax detail row. - Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "Vergi";
 
 /* Tax percentage to be applied to the simple payments order */
@@ -3662,11 +3705,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "Vergiler, mağaza adresinize göre otomatik olarak hesaplanır.";
 
+/* Information about taxes and the order total when creating a new order */
+"Taxes will be automatically calculated based on your store settings." = "Vergiler mağaza ayarlarınıza göre otomatik olarak hesaplanır.";
+
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Bize %1$@ ile ilgili daha fazla bilgi verin...";
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Hizmet Koşulları";
+
+/* Cell description on beta features screen to enable accepting in-person payments for stores in Canada */
+"Test out In-Person Payments in Canada" = "Kanada'da Şahsen Ödemeleri Test Edin";
 
 /* Cell description on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
 "Test out In-Person Payments with the Stripe Payment Gateway extension" = "Stripe Payment Gateway uzantısıyla Şahsen Ödemeleri test edin";
@@ -3750,6 +3799,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "Bu ürünün fiyatı. Düzenlenebilir.";
 
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"The reader has a critically low battery. Please charge the reader or try a different reader." = "Okuyucunun pili kritik düzeyde düşük. Lütfen okuyucuyu şarj edin veya farklı bir okuyucu deneyin.";
+
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "Standart fiyat olmadan indirimli fiyat eklenemez.";
 
@@ -3796,13 +3848,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The variation couldn't be generated." = "Varyasyon oluşturulamadı.";
 
 /* Error message when the Stripe account is restricted because there are pending requirements */
-"There are pending requirements in your account. Please complete those requirements by" = "Hesabınızda bekleyen gereksinimler var. Lütfen şu tarihe kadar gereksinimleri karşılayın:";
+"There are pending requirements for your account. Please complete those requirements by" = "Hesabınız için bekleyen gereksinimler var. Lütfen şu tarihe kadar gereksinimleri karşılayın:";
 
-/* Error message when WooCommerce Payments is not supported because there are pending requirements in the Stripe account.%1$d will contain the localized deadline (e.g. August 11, 2021) */
-"There are pending requirements in your account. Please complete those requirements by %1$@ to keep accepting in-Person Payments." = "Hesabınızda bekleyen gereksinimler var. Şahsen Ödemeleri kabul etmeye devam etmek için lütfen %1$@ tarihine kadar bu gereksinimleri karşılayın.";
+/* Error message when In-Person Payments is not supported because there are pending requirements in the merchant's payment account.%1$d will contain the localized deadline (e.g. August 11, 2021) */
+"There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments." = "Hesabınız için bekleyen gereksinimler var. Şahsen Ödemeleri kabul etmeye devam etmek için lütfen %1$@ tarihine kadar bu gereksinimleri karşılayın.";
 
-/* Error message when WooCommerce Payments is not supportedThere are pending requirements in the Stripe account (without a known deadline) */
-"There are pending requirements in your account. Please complete those requirements to keep accepting in-Person Payments." = "Hesabınızda bekleyen gereksinimler var. Şahsen Ödemeleri kabul etmeye devam etmek için lütfen bu gereksinimleri karşılayın.";
+/* Error message when In-Person Payments is not supportedThere are pending requirements in the merchant's payment account (without a known deadline) */
+"There are pending requirements for your account. Please complete those requirements to keep accepting In-Person Payments." = "Hesabınız için bekleyen gereksinimler var. Şahsen Ödemeleri kabul etmeye devam etmek için lütfen bu gereksinimleri karşılayın.";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Belirlenen sitenin yazıları engellenirken hata oluştu.";
@@ -3956,9 +4008,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Legacy description for Top Performers right column header */
 "Total Spend" = "Toplam Harcama";
 
-/* Information about taxes and the order total when creating a new order */
-"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "Vergiler hariç toplam. Vergiler mağaza ayarlarınıza göre otomatik olarak hesaplanır.";
-
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "Toplam sipariş: %ld";
 
@@ -4003,7 +4052,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Trust" = "Güven";
 
 /* Button to retry a software update. Presented to users when updating the card reader software fails
-   Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
+   Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "Tekrar deneyin";
 
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
@@ -4366,7 +4415,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "Kapsamlı analizlerle kitlenizin nasıl büyüdüğünü izleyin.";
 
-/* Error message when WooCommerce Payments is not supported because the Stripe account has been rejected */
+/* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "Maalesef bu mağaza için Şahsen Ödemeleri destekleyemiyoruz.";
 
 /* Content of the banner notice in the add-ons view */
@@ -4378,7 +4427,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "Mağazanızın analizlerini görüntüleyemiyoruz";
 
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails
+   Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "We couldn't connect your reader" = "Okuyucunuza bağlanılamadı";
 
 /* The title of the Error Loading Data banner */
@@ -4390,10 +4440,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "Okuyucunuzun yazılımı güncellenemedi";
 
-/* Title for the error screen when WooCommerce Payments is not supported in a specific country */
+/* Title for the error screen when In-Person Payments is not supported in a specific country */
 "We don’t support In-Person Payments in %1$@" = "%1$@ için Şahsen Ödemeleri desteklemiyoruz";
 
-/* Title for the error screen when WooCommerce Payments is not supported because we don't know the name of the country */
+/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments in your country" = "Ülkeniz için Şahsen Ödemeleri desteklemiyoruz";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
@@ -4435,8 +4485,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
 "We're sorry, we couldn't find any order that match %@" = "Üzgünüz, %@ ile eşleşen herhangi bir sipariş bulamadık";
 
-/* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
-   Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
+/* Message for empty Coupons search results. The %@ is a placeholder for the text entered by the user.
+   Message for empty Orders search results. The %@ is a placeholder for the text entered by the user. - Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "Üzgünüz, \"%@\" için sonuç bulamadık";
 
 /* Generic error message when In-Person Payments is unavailable */
@@ -4553,7 +4603,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "Mağazanızın posta kodunu wp-admin > WooCommerce > Ayarlar (Genel) altından ayarlayabilirsiniz.";
 
-/* Error message when WooCommerce Payments is not supported in a specific country
+/* Error message when In-Person Payments is not supported in a specific country
    Generic error message when In-Person Payments is unavailable */
 "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "Mağazanızda \"Kapıda Nakit\" ödeme yöntemini etkinleştirerek elden şahsen nakit ödeme kabul edebilirsiniz.";
 
@@ -4563,26 +4613,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Hesabınızda en az bir vadesi geçmiş gereksinim var. Şahsen Ödemeleri kullanmaya devam etmek için lütfen bu durumu giderin";
 
-/* Message requesting merchants to select between available payments processors */
-"You must disable either the WooCommerce Payments or the WooCommerce Stripe Gateway extension." = "WooCommerce Payments veya WooCommerce Stripe Gateway uzantısını devre dışı bırakmalısınız.";
-
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Ürününüzün parolayla korunmasını sağlamak için bir parola eklemelisiniz";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "DudaMobilden uygulamanın bloğunuza bağlanmasını engelleyen bir eklenti yüklemiş görünüyorsunuz ";
 
-/* Error message when WooCommerce Payments is not supported because the Stripe account is under review */
+/* Error message when the merchant's payment account is under review */
 "You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "Hesabınızın incelenmesi biter bitirmez Şahsen Ödemeleri kabul edebileceksiniz.";
-
-/* Title for the error screen when the Stripe account is restricted because there are pending requirements */
-"Your WooCommerce Payments account has pending requirements" = "WooCommerce Payments hesabınızda bekleyen gereksinimler var";
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Ödeme almak için kart okuyucu yazılımınızın güncellenmesi gerekiyor.  İptal ederseniz okuyucu bağlantınız engellenir.";
 
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "Bildirimleriniz sizinle birlikte geziyor; yorumları ve beğenileri gerçekleştikleri sırada görün.";
+
+/* Title for the error screen when the merchant's In-Person Payments account is restricted because there are pending requirements */
+"Your payments account has pending requirements" = "Ödeme hesabınızda bekleyen gereksinimler var";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Güncelleme tamamlandıktan sonra okuyucunuz otomatik olarak yeniden başlayacak ve yeniden bağlanacaktır";
@@ -4599,8 +4646,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when WooCommerce Payments is not installed */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "Şahsen Ödemeleri kabul etmek için mağazanıza ücretsiz WooCommerce Payments uzantısını yüklemeniz gerekir.";
 
-/* Error message when WooCommerce Payments is installed but not set up */
-"You’re almost there! Please finish setting up WooCommerce Payments to start accepting Card-Present Payments." = "Çok az kaldı! Card-Present Payments'ı kabul etmeye başlamak için lütfen WooCommerce Payments kurulumunu tamamlayın.";
+/* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name. */
+"You’re almost there! Please finish setting up %1$@ to start accepting In-Person Payments." = "Çok az kaldı! Şahsen Ödemeleri kabul etmeye başlamak için lütfen %1$@ kurulumunu tamamlayın.";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[YORUM]";

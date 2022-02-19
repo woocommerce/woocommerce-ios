@@ -132,7 +132,8 @@ final class ProductVariationsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureNavigationBar()
+        configureNavigationBarTitle()
+        configureNavigationBarButtons()
         configureMainView()
         configureTableView()
         configureSyncingCoordinator()
@@ -157,11 +158,24 @@ private extension ProductVariationsViewController {
 
     /// Set the title and navigation buttons.
     ///
-    func configureNavigationBar() {
+    func configureNavigationBarTitle() {
         title = NSLocalizedString(
             "Variations",
             comment: "Title that appears on top of the Product Variation List screen."
         )
+    }
+
+    func configureNavigationBarButtons() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.bulkEditProductVariations) else {
+            return
+        }
+
+        let moreButton = UIBarButtonItem(image: .moreImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(presentMoreActionSheet(_:)))
+
+        navigationItem.rightBarButtonItems = [moreButton]
     }
 
     /// Apply Woo styles.
@@ -541,6 +555,24 @@ private extension ProductVariationsViewController {
         analytics.track(event: WooAnalyticsEvent.Variations.addMoreVariationsButtonTapped(productID: product.productID))
         createVariation()
     }
+
+    /// More Options Action Sheet
+    ///
+    @objc func presentMoreActionSheet(_ sender: UIBarButtonItem) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.bulkUpdate) { _ in
+        }
+
+        actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel) { _ in
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.barButtonItem = sender
+
+        present(actionSheet, animated: true)
+    }
 }
 
 // MARK: - Placeholders
@@ -733,5 +765,11 @@ private extension ProductVariationsViewController {
         static let generateVariationError = NSLocalizedString("The variation couldn't be generated.",
                                                               comment: "Error title when failing to generate a variation.")
         static let variationCreated = NSLocalizedString("Variation created", comment: "Text for the notice after creating the first variation.")
+    }
+
+
+    private enum ActionSheetStrings {
+        static let bulkUpdate = NSLocalizedString("Bulk Update", comment: "Button title in the action sheet of product variatiosns that shows the bulk update")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button title that closes the action sheet in product variations")
     }
 }

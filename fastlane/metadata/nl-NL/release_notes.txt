@@ -1,3 +1,3 @@
-In deze release zie je een nieuw tabblad 'Menu' . We hebben de winkelinstellingen, schakelen tussen winkels en het bekijken van WooCommerce Admin verplaatst naar dat scherm. De komende maanden worden er meer functies naar dat tabblad verplaatst.
+We hebben het tabblad Mijn winkel vernieuwd op basis van jullie feedback. Je ziet vanaf nu een conversiepercentage en de top 5 (in plaats van de top 3) verkochte producten.
 
-Deze release omvat ook een oplossing voor het productscherm waar de productnaam werd gewijzigd in de oude naam als je een afbeelding had geüpload. Bedankt voor het melden van bugs, we luisteren naar jullie!
+Jullie hebben gevraagd om in de app bestellingen te kunnen creëren. We hebben vanaf nu een sneakpeek beschikbaar voor mensen die ons willen helpen met uittesten! Ga naar de instellingen in de app en zet de experimentele functie aan voor Aanmaken van bestellingen. Op dit moment kan je producten, opmerkingen en adressen toevoegen. Toekomstige releases zullen nog extra functies toevoegen.

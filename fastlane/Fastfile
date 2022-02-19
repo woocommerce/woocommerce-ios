@@ -50,10 +50,7 @@ before_all do |lane|
     UI.user_error!('project.env not found: Make sure your configuration is up to date with `rake dependencies`')
   end
 
-  # This allows code signing to work on CircleCI
-  # It is skipped if this isn't running on CI
-  # See https://circleci.com/docs/2.0/ios-codesigning/
-  setup_circle_ci
+  setup_ci
 end
 
 platform :ios do
@@ -325,13 +322,7 @@ platform :ios do
   #
   #####################################################################################
   lane :trigger_beta_build do |options|
-    circleci_trigger_job(
-      circle_ci_token: ENV['CIRCLE_CI_AUTH_TOKEN'],
-      repository: REPOSITORY_NAME,
-      organization: GH_ORG_NAME,
-      branch: options[:branch_to_build],
-      job_params: { 'beta_build' => true }
-    )
+    trigger_buildkite_release_build(branch: options[:branch_to_build], beta: true)
   end
 
   #####################################################################################
@@ -344,13 +335,7 @@ platform :ios do
   #
   #####################################################################################
   lane :trigger_release_build do |options|
-    circleci_trigger_job(
-      circle_ci_token: ENV['CIRCLE_CI_AUTH_TOKEN'],
-      repository: REPOSITORY_NAME,
-      organization: GH_ORG_NAME,
-      branch: options[:branch_to_build],
-      job_params: { 'release_build' => true }
-    )
+    trigger_buildkite_release_build(branch: options[:branch_to_build], beta: false)
   end
 
   #####################################################################################
@@ -918,4 +903,17 @@ def ensure_sentry_installed
   # CLI is installed and its version is compatible with the plugin's
   # expectation.
   sentry_check_cli_installed
+end
+
+# -----------------------------------------------------------------------------------
+# Kicks off a Buildkite build
+# -----------------------------------------------------------------------------------
+def trigger_buildkite_release_build(branch:, beta:)
+  buildkite_trigger_build(
+    buildkite_organization: 'automattic',
+    buildkite_pipeline: 'woocommerce-ios',
+    branch: branch,
+    environment: { BETA_RELEASE: beta },
+    pipeline_file: 'release-builds.yml'
+  )
 end

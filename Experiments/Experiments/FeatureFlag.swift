@@ -93,4 +93,8 @@ public enum FeatureFlag: Int {
     /// Displays the Inbox option under the Hub Menu.
     ///
     case inbox
+
+    /// Displays the bulk update option in product variations
+    ///
+    case bulkEditProductVariations
 }

@@ -47,6 +47,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .bulkEditProductVariations:
+            return buildConfig == .localDeveloper
         default:
             return true
         }

@@ -165,6 +165,8 @@ private extension ProductVariationsViewController {
         )
     }
 
+    /// Sets the navigation bar buttons
+    ///
     func configureNavigationBarButtons() {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.bulkEditProductVariations) else {
             return
@@ -767,7 +769,8 @@ private extension ProductVariationsViewController {
         static let variationCreated = NSLocalizedString("Variation created", comment: "Text for the notice after creating the first variation.")
     }
 
-
+    /// Localizated strings for the  action sheet options
+    ///
     private enum ActionSheetStrings {
         static let bulkUpdate = NSLocalizedString("Bulk Update", comment: "Button title in the action sheet of product variatiosns that shows the bulk update")
         static let cancel = NSLocalizedString("Cancel", comment: "Button title that closes the action sheet in product variations")

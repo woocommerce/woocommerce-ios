@@ -68,10 +68,14 @@ struct OrderPaymentSection: View {
     @ViewBuilder private var feesRow: some View {
         if viewModel.shouldShowFees {
             TitleAndValueRow(title: Localization.feesTotal, value: .content(viewModel.feesTotal), selectionStyle: .highlight) {
+                // TODO-6027: add navigation to Fee Details UI
+                // Temporary - remove existing fee line
                 saveFeeClosure(nil)
             }
         } else {
             Button(Localization.addFees) {
+                // TODO-6027: add navigation to Add Fee UI
+                // Temporary - add hardcoded fee line
                 let testFeeLine = OrderFeeLine(feeID: 0,
                                                name: "Fee",
                                                taxClass: "",

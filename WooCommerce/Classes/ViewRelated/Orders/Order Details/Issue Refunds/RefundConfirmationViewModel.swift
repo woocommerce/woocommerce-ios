@@ -159,6 +159,7 @@ private extension RefundConfirmationViewModel {
                 return SimpleTextRow(text: details.order.paymentMethodTitle)
             }
             return PaymentDetailsRow(cardIcon: cardDetails.brand.icon,
+                                     cardIconAspectHorizontal: cardDetails.brand.iconAspectHorizontal,
                                      paymentGateway: details.order.paymentMethodTitle,
                                      paymentMethodDescription: cardDetails.brand.cardDescription(last4: cardDetails.last4),
                                      accessibilityDescription: cardDetails.brand.cardAccessibilityDescription(last4: cardDetails.last4))
@@ -248,6 +249,7 @@ extension RefundConfirmationViewModel {
     /// A row that shows an optional payment method image, a gateway name, and an description for the payment below
     struct PaymentDetailsRow: RefundConfirmationViewModelRow {
         let cardIcon: UIImage?
+        let cardIconAspectHorizontal: CGFloat
         let paymentGateway: String
         let paymentMethodDescription: String
         let accessibilityDescription: NSAttributedString
@@ -338,6 +340,8 @@ private extension WCPayCardBrand {
             return "•••• %1$@ (Diners Club)"
         case .discover:
             return "•••• %1$@ (Discover)"
+        case .interac:
+            return "•••• %1$@ (Interac)"
         case .jcb:
             return "•••• %1$@ (JCB)"
         case .mastercard:
@@ -359,6 +363,8 @@ private extension WCPayCardBrand {
             return "Diners Club"
         case .discover:
             return "Discover"
+        case .interac:
+            return "interac"
         case .jcb:
             return "JCB"
         case .mastercard:

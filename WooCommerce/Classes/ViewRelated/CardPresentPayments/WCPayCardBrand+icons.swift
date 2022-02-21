@@ -12,21 +12,36 @@ extension WCPayCardBrand {
     var iconName: String {
         switch self {
         case .visa:
-            return "card-brand-visa"
+            return iconName(suffix: "visa")
         case .amex:
-            return "card-brand-amex"
+            return iconName(suffix: "amex")
         case .mastercard:
-            return "card-brand-mastercard"
+            return iconName(suffix: "mastercard")
         case .discover:
-            return "card-brand-discover"
+            return iconName(suffix: "discover")
+        case .interac:
+            return iconName(suffix: "interac")
         case .jcb:
-            return "card-brand-jcb"
+            return iconName(suffix: "jcb")
         case .diners:
-            return "card-brand-diners"
+            return iconName(suffix: "diners")
         case .unionpay:
-            return "card-brand-unionpay"
+            return iconName(suffix: "unionpay")
         default:
-            return "card-brand-unknown"
+            return iconName(suffix: "unknown")
         }
+    }
+
+    var iconAspectHorizontal: CGFloat {
+        switch self {
+        case .interac:
+            return 1
+        default:
+            return 1.58
+        }
+    }
+
+    private func iconName(suffix: String) -> String {
+        return "card-brand-\(suffix)"
     }
 }

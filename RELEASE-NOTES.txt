@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+8.7
+-----
+- [**] In-Person Payments: Added card details to refund confirmation screen to help with refunding to the payment card [https://github.com/woocommerce/woocommerce-ios/pull/6241]
+
 8.6
 -----
 - [***] Merchants can now view coupons in their stores by enabling Coupon Management in Experimental Features. [https://github.com/woocommerce/woocommerce-ios/pull/6209]

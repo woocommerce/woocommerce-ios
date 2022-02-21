@@ -27,15 +27,11 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
     /// Stores to handle note actions.
     private let stores: StoresManager
 
-    /// Storage to fetch inbox notes.
-    private let storageManager: StorageManagerType
-
     init(note: InboxNote,
          today: Date = .init(),
          locale: Locale = .current,
          calendar: Calendar = .current,
-         stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         stores: StoresManager = ServiceLocator.stores) {
         let attributedContent = note.content.htmlToAttributedString
             .addingAttributes([
                 .font: UIFont.body,
@@ -57,8 +53,7 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
                   attributedContent: attributedContent,
                   actions: actions,
                   siteID: note.siteID,
-                  stores: stores,
-                  storageManager: storageManager)
+                  stores: stores)
     }
 
     init(id: Int64,
@@ -67,8 +62,7 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
          title: String,
          attributedContent: NSAttributedString, actions: [InboxNoteRowActionViewModel],
          siteID: Int64,
-         stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         stores: StoresManager = ServiceLocator.stores) {
         self.id = id
         self.date = date
         self.typeIcon = typeIcon
@@ -77,7 +71,6 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
         self.actions = actions
         self.siteID = siteID
         self.stores = stores
-        self.storageManager = storageManager
     }
 
     static func == (lhs: InboxNoteRowViewModel, rhs: InboxNoteRowViewModel) -> Bool {

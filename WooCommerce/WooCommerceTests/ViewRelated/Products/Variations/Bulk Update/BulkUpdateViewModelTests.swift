@@ -27,7 +27,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         // Given
         let expectedSiteID: Int64 = 42
         let expectedProductID: Int64 = 19
-        let expectedPageSize = 101
+        let expectedPageSize = 100
         let expectedPageNumber = 1
         let viewModel = BulkUpdateViewModel(siteID: expectedSiteID, productID: expectedProductID, storageManager: storageManager, storesManager: storesManager)
 

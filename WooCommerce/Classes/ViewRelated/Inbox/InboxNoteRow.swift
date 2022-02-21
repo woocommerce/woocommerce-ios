@@ -7,7 +7,7 @@ struct InboxNoteRow: View {
 
     // Tracks the scale of the view due to accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1
-    @State private var displayedURL: URL?
+    @State private var actionURL: URL?
     @State private var showWebView: Bool = false
     @State private var dismissButtonIsLoading: Bool = false
 
@@ -46,7 +46,7 @@ struct InboxNoteRow: View {
                         ForEach(viewModel.actions) { action in
                             if let url = action.url {
                                 Button(action.title) {
-                                    displayedURL = url
+                                    actionURL = url
                                     showWebView = true
                                     viewModel.markInboxNoteAsActioned()
                                 }
@@ -88,7 +88,7 @@ struct InboxNoteRow: View {
     @ViewBuilder
     private var webView: some View {
         let isWPComStore = ServiceLocator.stores.sessionManager.defaultSite?.isWordPressStore ?? false
-        let url = displayedURL?.absoluteURL ?? WooConstants.URLs.blog.asURL()
+        let url = actionURL?.absoluteURL ?? WooConstants.URLs.blog.asURL()
 
         if isWPComStore {
         NavigationView {

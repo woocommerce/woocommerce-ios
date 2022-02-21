@@ -9,11 +9,15 @@ struct OrderPaymentSection: View {
 
     /// Closure to create/update the shipping line object
     let saveShippingLineClosure: (ShippingLine?) -> Void
-    let saveFeeClosure: (OrderFeeLine?) -> Void
+    let saveFeeLineClosure: (OrderFeeLine?) -> Void
 
     /// Indicates if the shipping line details screen should be shown or not.
     ///
     @State private var shouldShowShippingLineDetails: Bool = false
+
+    /// Indicates if the fee line details screen should be shown or not.
+    ///
+    @State private var shouldShowFeeLineDetails: Bool = false
 
     ///   Environment safe areas
     ///
@@ -37,6 +41,11 @@ struct OrderPaymentSection: View {
                         }))
                     }
                 feesRow
+                    .sheet(isPresented: $shouldShowFeeLineDetails) {
+                        FeeLineDetails(viewModel: .init(inputData: viewModel, didSelectSave: { newFeeLine in
+                            saveFeeLineClosure(newFeeLine)
+                        }))
+                    }
             }
 
             TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
@@ -68,23 +77,11 @@ struct OrderPaymentSection: View {
     @ViewBuilder private var feesRow: some View {
         if viewModel.shouldShowFees {
             TitleAndValueRow(title: Localization.feesTotal, value: .content(viewModel.feesTotal), selectionStyle: .highlight) {
-                // TODO-6027: add navigation to Fee Details UI
-                // Temporary - remove existing fee line
-                saveFeeClosure(nil)
+                shouldShowFeeLineDetails = true
             }
         } else {
             Button(Localization.addFees) {
-                // TODO-6027: add navigation to Add Fee UI
-                // Temporary - add hardcoded fee line
-                let testFeeLine = OrderFeeLine(feeID: 0,
-                                               name: "Fee",
-                                               taxClass: "",
-                                               taxStatus: .none,
-                                               total: "10",
-                                               totalTax: "",
-                                               taxes: [],
-                                               attributes: [])
-                saveFeeClosure(testFeeLine)
+                shouldShowFeeLineDetails = true
             }
             .buttonStyle(PlusButtonStyle())
             .padding()
@@ -111,7 +108,7 @@ struct OrderPaymentSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = NewOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00", orderTotal: "20.00")
 
-        OrderPaymentSection(viewModel: viewModel, saveShippingLineClosure: { _ in }, saveFeeClosure: { _ in })
+        OrderPaymentSection(viewModel: viewModel, saveShippingLineClosure: { _ in }, saveFeeLineClosure: { _ in })
             .previewLayout(.sizeThatFits)
     }
 }

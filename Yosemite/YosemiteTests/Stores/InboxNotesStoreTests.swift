@@ -162,7 +162,7 @@ final class InboxNotesStoreTests: XCTestCase {
         let sampleInboxNoteID: Int64 = 296
         network.simulateResponse(requestUrlSuffix: "admin/notes/delete/\(sampleInboxNoteID)", filename: "inbox-note")
         XCTAssertEqual(storedInboxNotesCount, 0)
-        
+
         // When dispatching a `dismissInboxNote` action
         let result: Result<Bool, Error> = waitFor { [weak self] promise in
             guard let self = self else {

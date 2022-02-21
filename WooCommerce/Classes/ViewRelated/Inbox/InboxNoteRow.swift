@@ -7,7 +7,7 @@ struct InboxNoteRow: View {
 
     // Tracks the scale of the view due to accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1
-    @State private var displayedURL: URL?
+    @State private var tappedAction: InboxNoteRowActionViewModel?
     @State private var showWebView: Bool = false
     @State private var dismissButtonIsLoading: Bool = false
 
@@ -46,7 +46,7 @@ struct InboxNoteRow: View {
                         ForEach(viewModel.actions) { action in
                             if let url = action.url {
                                 Button(action.title) {
-                                    displayedURL = url
+                                    tappedAction = action
                                     showWebView = true
                                     viewModel.markInboxNoteAsActioned()
                                 }
@@ -76,9 +76,9 @@ struct InboxNoteRow: View {
                 }
             }
             .padding(Constants.defaultPadding)
-            .sheet(isPresented: $showWebView, content: {
-                webView
-            })
+            .sheet(item: $tappedAction) { action in
+                webView(url: action.url ?? WooConstants.URLs.blog.asURL())
+            }
 
             Divider()
                 .frame(height: Constants.dividerHeight)
@@ -86,13 +86,13 @@ struct InboxNoteRow: View {
     }
 
     @ViewBuilder
-    private var webView: some View {
+    private func webView(url: URL) -> some View {
         let isWPComStore = ServiceLocator.stores.sessionManager.defaultSite?.isWordPressStore ?? false
 
         if isWPComStore {
         NavigationView {
             AuthenticatedWebView(isPresented: $showWebView,
-                                 url: displayedURL?.absoluteURL ?? WooConstants.URLs.blog.asURL(),
+                                 url: url,
                                  urlToTriggerExit: nil) {
 
             }
@@ -111,7 +111,7 @@ struct InboxNoteRow: View {
         .wooNavigationBarStyle()
         }
         else {
-            SafariSheetView(url: displayedURL ?? WooConstants.URLs.blog.asURL())
+            SafariSheetView(url: url)
         }
     }
 }

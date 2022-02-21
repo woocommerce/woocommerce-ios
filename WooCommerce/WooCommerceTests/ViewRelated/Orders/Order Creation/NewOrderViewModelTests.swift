@@ -426,6 +426,31 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
     }
+
+    func test_payment_section_loading_indicator_is_enabled_while_order_syncs() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
+
+        // When
+        let isLoadingDuringSync: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createOrder(_, _, onCompletion):
+                    promise(viewModel.paymentDataViewModel.isLoading)
+                    onCompletion(.success(.fake()))
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+            // Trigger remote sync
+            viewModel.saveShippingLine(ShippingLine.fake())
+        }
+
+        // Then
+        XCTAssertTrue(isLoadingDuringSync)
+        XCTAssertFalse(viewModel.paymentDataViewModel.isLoading) // Disabled after sync ends
+    }
 }
 
 private extension MockStorageManager {

@@ -354,6 +354,10 @@ extension NewOrderViewModel {
         let shouldShowFees: Bool
         let feesTotal: String
 
+        /// Whether payment data is being reloaded (during remote sync)
+        ///
+        let isLoading: Bool
+
         init(itemsTotal: String = "",
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "",
@@ -361,6 +365,7 @@ extension NewOrderViewModel {
              shouldShowFees: Bool = false,
              feesTotal: String = "",
              orderTotal: String = "",
+             isLoading: Bool = false,
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? ""
             self.shouldShowShippingTotal = shouldShowShippingTotal
@@ -369,6 +374,7 @@ extension NewOrderViewModel {
             self.shouldShowFees = shouldShowFees
             self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? ""
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? ""
+            self.isLoading = isLoading
         }
     }
 }
@@ -460,11 +466,11 @@ private extension NewOrderViewModel {
             .assign(to: &$customerDataViewModel)
     }
 
-    /// Updates payment section view model based on items in the order.
+    /// Updates payment section view model based on items in the order and order sync state.
     ///
     func configurePaymentDataViewModel() {
-        orderSynchronizer.orderPublisher
-            .map { [weak self] order in
+        Publishers.CombineLatest(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher)
+            .map { [weak self] order, state in
                 guard let self = self else {
                     return PaymentDataViewModel()
                 }
@@ -489,6 +495,15 @@ private extension NewOrderViewModel {
 
                 let orderTotal = itemsTotal.adding(shippingTotal).adding(feesTotal)
 
+                let isDataSyncing: Bool = {
+                    switch state {
+                    case .syncing:
+                        return true
+                    default:
+                        return false
+                    }
+                }()
+
                 return PaymentDataViewModel(itemsTotal: itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.isNotEmpty,
                                             shippingTotal: shippingTotal.stringValue,
@@ -496,6 +511,7 @@ private extension NewOrderViewModel {
                                             shouldShowFees: order.fees.isNotEmpty,
                                             feesTotal: feesTotal.stringValue,
                                             orderTotal: orderTotal.stringValue,
+                                            isLoading: isDataSyncing,
                                             currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)

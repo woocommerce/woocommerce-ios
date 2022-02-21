@@ -121,7 +121,7 @@ public enum CardPresentPaymentsPlugins: Equatable, CaseIterable {
         case .wcPay:
             return "3.2.1"
         case .stripe:
-            return "6.1.0"
+            return "6.2.0"
         }
     }
 }

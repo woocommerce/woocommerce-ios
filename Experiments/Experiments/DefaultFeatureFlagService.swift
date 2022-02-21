@@ -7,8 +7,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .barcodeScanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .largeTitles:
-            return true
         case .shippingLabelsM2M3:
             return true
         case .shippingLabelsInternational:
@@ -31,8 +29,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .systemStatusReport:
             return true
-        case .stripeExtensionInPersonPayments:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .myStoreTabUpdates:
             return true
         case .couponView:

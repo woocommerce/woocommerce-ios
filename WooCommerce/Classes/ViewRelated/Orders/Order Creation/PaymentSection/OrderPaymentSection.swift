@@ -1,5 +1,5 @@
 import SwiftUI
-import Yosemite
+import struct Yosemite.ShippingLine
 
 /// Represents the Payment section in an order
 ///
@@ -9,6 +9,10 @@ struct OrderPaymentSection: View {
 
     /// Closure to create/update the shipping line object
     let saveShippingLineClosure: (ShippingLine?) -> Void
+
+    /// Indicates if the shipping line details screen should be shown or not.
+    ///
+    @State private var shouldShowShippingLineDetails: Bool = false
 
     ///   Environment safe areas
     ///
@@ -26,6 +30,11 @@ struct OrderPaymentSection: View {
 
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) {
                 shippingRow
+                    .sheet(isPresented: $shouldShowShippingLineDetails) {
+                        ShippingLineDetails(viewModel: .init(inputData: viewModel, didSelectSave: { newShippingLine in
+                            saveShippingLineClosure(newShippingLine)
+                        }))
+                    }
             }
 
             TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
@@ -43,17 +52,11 @@ struct OrderPaymentSection: View {
     @ViewBuilder private var shippingRow: some View {
         if viewModel.shouldShowShippingTotal {
             TitleAndValueRow(title: Localization.shippingTotal, value: .content(viewModel.shippingTotal), selectionStyle: .highlight) {
-                saveShippingLineClosure(nil)
+                shouldShowShippingLineDetails = true
             }
         } else {
             Button(Localization.addShipping) {
-                let testShippingLine = ShippingLine(shippingID: 0,
-                                                    methodTitle: "Flat Rate",
-                                                    methodID: "other",
-                                                    total: "10",
-                                                    totalTax: "",
-                                                    taxes: [])
-                saveShippingLineClosure(testShippingLine)
+                shouldShowShippingLineDetails = true
             }
             .buttonStyle(PlusButtonStyle())
             .padding()

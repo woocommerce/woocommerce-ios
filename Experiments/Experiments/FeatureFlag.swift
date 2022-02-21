@@ -10,10 +10,6 @@ public enum FeatureFlag: Int {
     ///
     case barcodeScanner
 
-    /// Large titles on the main tabs
-    ///
-    case largeTitles
-
     /// Product Reviews
     ///
     case reviews
@@ -61,10 +57,6 @@ public enum FeatureFlag: Int {
     /// Displays the System Status Report on Settings/Help screen
     ///
     case systemStatusReport
-
-    /// Allows sites using the WooCommerce Stripe Payment Gateway extension to accept In-Person Payments
-    ///
-    case stripeExtensionInPersonPayments
 
     /// Home Screen project milestone 2: design updates to the My Store tab
     ///

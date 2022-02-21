@@ -147,30 +147,6 @@ jobs:
                 include_job_number_field: false
                 include_project_field: false
                 failure_message: '${SLACK_FAILURE_MESSAGE}'
-  Installable Build:
-    executor:
-      name: ios/default
-      <<: *xcode_version
-    steps:
-      - git/shallow-checkout
-      - fix-image
-      - ios/install-dependencies:
-            bundle-install: true
-            pod-install: true
-      - run:
-          name: Copy Secrets
-          command: bundle exec fastlane run configure_apply
-      - run:
-          name: Build
-          command: "bundle exec fastlane build_and_upload_installable_build build_number:$CIRCLE_BUILD_NUM"
-      - run:
-          name: Prepare Artifacts
-          command: |
-            mkdir -p Artifacts
-            mv "fastlane/comment.json" "Artifacts/comment.json"
-      - store_artifacts:
-          path: Artifacts
-          destination: Artifacts
   Release Build:
     executor:
       name: ios/default
@@ -280,22 +256,6 @@ workflows:
           name: Optional UI Tests (iPad)
           <<: *ipad_test_device
           requires: [ "Build Tests" ]
-  Installable Build:
-    unless:
-      or:
-        - << pipeline.parameters.beta_build >>
-        - << pipeline.parameters.release_build >>
-    jobs:
-      - Hold:
-          type: approval
-          filters:
-            branches:
-              ignore: /pull\/[0-9]+/
-      - Installable Build:
-          requires: [Hold]
-          filters:
-            branches:
-              ignore: /pull\/[0-9]+/
   Release Build:
     when:
       or:

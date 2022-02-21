@@ -48,7 +48,7 @@ struct InboxNoteRow: View {
                                 Button(action.title) {
                                     actionURL = url
                                     showsWebView = true
-                                    viewModel.markInboxNoteAsActioned()
+                                    viewModel.markInboxNoteAsActioned(actionID: action.id)
                                 }
                                 .foregroundColor(Color(.accent))
                                 .font(.body)

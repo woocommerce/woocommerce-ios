@@ -80,12 +80,9 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
 }
 
 extension InboxNoteRowViewModel {
-    func markInboxNoteAsActioned() {
-        guard let actionID = actions.first?.id else {
-            return
-        }
+    func markInboxNoteAsActioned(actionID: Int64) {
         let action = InboxNotesAction.markInboxNoteAsActioned(siteID: siteID,
-                                                              noteID: id,
+                                                              noteID: actionID,
                                                               actionID: actionID) { result in
             switch result {
             case .success(_):

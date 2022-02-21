@@ -352,6 +352,7 @@ extension NewOrderViewModel {
         let shippingMethodTitle: String
 
         let shouldShowFees: Bool
+        let feesBaseAmountForPercentage: Decimal
         let feesTotal: String
 
         init(itemsTotal: String = "",
@@ -359,6 +360,7 @@ extension NewOrderViewModel {
              shippingTotal: String = "",
              shippingMethodTitle: String = "",
              shouldShowFees: Bool = false,
+             feesBaseAmountForPercentage: Decimal = 0,
              feesTotal: String = "",
              orderTotal: String = "",
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
@@ -367,6 +369,7 @@ extension NewOrderViewModel {
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? ""
             self.shippingMethodTitle = shippingMethodTitle
             self.shouldShowFees = shouldShowFees
+            self.feesBaseAmountForPercentage = feesBaseAmountForPercentage
             self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? ""
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? ""
         }
@@ -481,19 +484,22 @@ private extension NewOrderViewModel {
 
                 let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
 
+                let feesBaseAmountForPercentage = itemsTotal.adding(shippingTotal)
+
                 let feesTotal = order.fees
                     .map { $0.total }
                     .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
                     .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
 
-                let orderTotal = itemsTotal.adding(shippingTotal).adding(feesTotal)
+                let orderTotal = feesBaseAmountForPercentage.adding(feesTotal)
 
                 return PaymentDataViewModel(itemsTotal: itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.isNotEmpty,
                                             shippingTotal: shippingTotal.stringValue,
                                             shippingMethodTitle: shippingMethodTitle,
                                             shouldShowFees: order.fees.isNotEmpty,
+                                            feesBaseAmountForPercentage: feesBaseAmountForPercentage as Decimal,
                                             feesTotal: feesTotal.stringValue,
                                             orderTotal: orderTotal.stringValue,
                                             currencyFormatter: self.currencyFormatter)

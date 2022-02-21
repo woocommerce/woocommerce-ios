@@ -81,16 +81,12 @@ final class PushNotificationsManager: PushNotesManager {
         configuration.storesManager
     }
 
-    private let featureFlagService: FeatureFlagService
-
     /// Initializes the PushNotificationsManager.
     ///
     /// - Parameter configuration: PushNotificationsConfiguration Instance that should be used.
-    /// - Parameter featureFlagService: called for multi-store push notifications feature.
     ///
-    init(configuration: PushNotificationsConfiguration = .default, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(configuration: PushNotificationsConfiguration = .default) {
         self.configuration = configuration
-        self.featureFlagService = featureFlagService
     }
 }
 
@@ -360,9 +356,7 @@ private extension PushNotificationsManager {
             return false
         }
 
-        let pushNotificationsForAllStoresEnabled = featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores)
-        if let foregroundNotification = PushNotification.from(userInfo: userInfo,
-                                                              pushNotificationsForAllStoresEnabled: pushNotificationsForAllStoresEnabled) {
+        if let foregroundNotification = PushNotification.from(userInfo: userInfo) {
             configuration.application
                 .presentInAppNotification(title: foregroundNotification.title,
                                           subtitle: foregroundNotification.subtitle,
@@ -398,9 +392,7 @@ private extension PushNotificationsManager {
 
         DDLogVerbose("📱 Handling Notification in Inactive State")
 
-        let pushNotificationsForAllStoresEnabled = featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores)
-        if let notification = PushNotification.from(userInfo: userInfo,
-                                                    pushNotificationsForAllStoresEnabled: pushNotificationsForAllStoresEnabled) {
+        if let notification = PushNotification.from(userInfo: userInfo) {
             presentDetails(for: notification)
 
             inactiveNotificationsSubject.send(notification)
@@ -451,12 +443,10 @@ private extension PushNotificationsManager {
     ///
     func registerDotcomDevice(with deviceToken: String, defaultStoreID: Int64, onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
         let device = APNSDevice(deviceToken: deviceToken)
-        let pushNotificationsForAllStoresEnabled = featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores)
         let action = NotificationAction.registerDevice(device: device,
                                                        applicationId: WooConstants.pushApplicationID,
                                                        applicationVersion: Bundle.main.version,
                                                        defaultStoreID: defaultStoreID,
-                                                       pushNotificationsForAllStoresEnabled: pushNotificationsForAllStoresEnabled,
                                                        onCompletion: onCompletion)
         stores.dispatch(action)
     }
@@ -557,27 +547,17 @@ private extension PushNotificationsManager {
 // MARK: - PushNotification Extension
 
 private extension PushNotification {
-    static func from(userInfo: [AnyHashable: Any], pushNotificationsForAllStoresEnabled: Bool) -> PushNotification? {
-        if pushNotificationsForAllStoresEnabled {
-            guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
-                  let alert = userInfo.dictionary(forKey: APNSKey.aps)?.dictionary(forKey: APNSKey.alert),
-                  let title = alert.string(forKey: APNSKey.alertTitle),
-                  let type = userInfo.string(forKey: APNSKey.type),
-                  let noteKind = Note.Kind(rawValue: type) else {
-                return nil
-            }
-            let subtitle = alert.string(forKey: APNSKey.alertSubtitle)
-            let message = alert.string(forKey: APNSKey.alertMessage)
-            return PushNotification(noteID: noteID, kind: noteKind, title: title, subtitle: subtitle, message: message)
-        } else {
-            guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
-                  let title = userInfo.dictionary(forKey: APNSKey.aps)?.string(forKey: APNSKey.alert),
-                  let type = userInfo.string(forKey: APNSKey.type),
-                  let noteKind = Note.Kind(rawValue: type) else {
-                return nil
-            }
-            return PushNotification(noteID: noteID, kind: noteKind, title: title, subtitle: nil, message: nil)
-        }
+    static func from(userInfo: [AnyHashable: Any]) -> PushNotification? {
+        guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
+              let alert = userInfo.dictionary(forKey: APNSKey.aps)?.dictionary(forKey: APNSKey.alert),
+              let title = alert.string(forKey: APNSKey.alertTitle),
+              let type = userInfo.string(forKey: APNSKey.type),
+              let noteKind = Note.Kind(rawValue: type) else {
+                  return nil
+              }
+        let subtitle = alert.string(forKey: APNSKey.alertSubtitle)
+        let message = alert.string(forKey: APNSKey.alertMessage)
+        return PushNotification(noteID: noteID, kind: noteKind, title: title, subtitle: subtitle, message: message)
     }
 }
 

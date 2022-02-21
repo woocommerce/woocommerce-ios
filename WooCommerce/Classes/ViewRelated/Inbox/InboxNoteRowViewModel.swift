@@ -85,7 +85,7 @@ extension InboxNoteRowViewModel {
                                                               noteID: actionID,
                                                               actionID: actionID) { result in
             switch result {
-            case .success(_):
+            case .success:
                 break
             case .failure(let error):
                 DDLogError("⛔️ Error on mark inbox note as actioned: \(error)")
@@ -97,7 +97,7 @@ extension InboxNoteRowViewModel {
     func dismissInboxNote(onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         let action = InboxNotesAction.dismissInboxNote(siteID: siteID, noteID: id) { result in
             switch result {
-            case .success(_):
+            case .success:
                 break
             case .failure(let error):
                 DDLogError("⛔️ Error on dismissing an inbox note: \(error)")

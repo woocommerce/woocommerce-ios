@@ -88,11 +88,12 @@ struct InboxNoteRow: View {
     @ViewBuilder
     private var webView: some View {
         let isWPComStore = ServiceLocator.stores.sessionManager.defaultSite?.isWordPressStore ?? false
+        let url = displayedURL?.absoluteURL ?? WooConstants.URLs.blog.asURL()
 
         if isWPComStore {
         NavigationView {
             AuthenticatedWebView(isPresented: $showWebView,
-                                 url: displayedURL?.absoluteURL ?? WooConstants.URLs.blog.asURL(),
+                                 url: url,
                                  urlToTriggerExit: nil) {
 
             }
@@ -111,7 +112,7 @@ struct InboxNoteRow: View {
         .wooNavigationBarStyle()
         }
         else {
-            SafariSheetView(url: displayedURL ?? WooConstants.URLs.blog.asURL())
+            SafariSheetView(url: url)
         }
     }
 }

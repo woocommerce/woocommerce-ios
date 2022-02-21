@@ -8,7 +8,7 @@ struct InboxNoteRow: View {
     // Tracks the scale of the view due to accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1
     @State private var actionURL: URL?
-    @State private var showWebView: Bool = false
+    @State private var showsWebView: Bool = false
     @State private var dismissButtonIsLoading: Bool = false
 
     var body: some View {
@@ -47,7 +47,7 @@ struct InboxNoteRow: View {
                             if let url = action.url {
                                 Button(action.title) {
                                     actionURL = url
-                                    showWebView = true
+                                    showsWebView = true
                                     viewModel.markInboxNoteAsActioned()
                                 }
                                 .foregroundColor(Color(.accent))
@@ -76,7 +76,7 @@ struct InboxNoteRow: View {
                 }
             }
             .padding(Constants.defaultPadding)
-            .sheet(isPresented: $showWebView, content: {
+            .sheet(isPresented: $showsWebView, content: {
                 webView
             })
 
@@ -92,7 +92,7 @@ struct InboxNoteRow: View {
 
         if isWPComStore {
         NavigationView {
-            AuthenticatedWebView(isPresented: $showWebView,
+            AuthenticatedWebView(isPresented: $showsWebView,
                                  url: url,
                                  urlToTriggerExit: nil) {
 
@@ -102,7 +102,7 @@ struct InboxNoteRow: View {
              .toolbar {
                  ToolbarItem(placement: .confirmationAction) {
                      Button(action: {
-                         showWebView = false
+                         showsWebView = false
                      }, label: {
                          Text(Localization.doneButtonWebview)
                      })

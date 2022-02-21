@@ -72,6 +72,14 @@ final class InboxViewModel: ObservableObject {
     func onLoadNextPageAction() {
         paginationTracker.ensureNextPageIsSynced()
     }
+
+    /// Called when the user pulls down the list to refresh.
+    /// - Parameter completion: called when the refresh completes.
+    func onRefreshAction(completion: @escaping () -> Void) {
+        paginationTracker.resync(reason: nil) {
+            completion()
+        }
+    }
 }
 
 // MARK: - Sync Methods

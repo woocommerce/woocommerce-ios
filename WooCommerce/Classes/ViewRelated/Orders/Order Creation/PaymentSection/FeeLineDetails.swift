@@ -25,6 +25,13 @@ struct FeeLineDetails: View {
             ScrollView {
                 VStack(spacing: .zero) {
                     Section {
+                        Picker("", selection: $viewModel.feeType) {
+                            Text(viewModel.percentSymbol).tag(FeeLineDetailsViewModel.FeeType.percentage)
+                            Text(viewModel.storeCurrencySymbol).tag(FeeLineDetailsViewModel.FeeType.fixed)
+                        }
+                        .pickerStyle(.segmented)
+                        .padding()
+
                         ZStack(alignment: .center) {
                             // Hidden input text field
                             BindableTextfield("", text: $viewModel.amount, focus: $focusAmountInput)
@@ -32,13 +39,12 @@ struct FeeLineDetails: View {
                                 .opacity(0)
 
                             // Visible & formatted field
-                            TitleAndTextFieldRow(title: Localization.amountField,
-                                                 placeholder: "",
-                                                 text: .constant(viewModel.formattedAmount),
-                                                 symbol: nil,
-                                                 keyboardType: .decimalPad)
-                                .foregroundColor(Color(viewModel.amountTextColor))
-                                .disabled(true)
+                            switch viewModel.feeType {
+                            case .fixed:
+                                inputFixedField
+                            case .percentage:
+                                inputPercentageField
+                            }
                         }
                         .background(Color(.listForeground))
                         .fixedSize(horizontal: false, vertical: true)
@@ -46,9 +52,9 @@ struct FeeLineDetails: View {
                             focusAmountInput = true
                         }
                         .padding(.horizontal, insets: safeAreaInsets)
-                        .addingTopAndBottomDividers()
                     }
                     .background(Color(.listForeground))
+                    .addingTopAndBottomDividers()
 
                     Spacer(minLength: Layout.sectionSpacing)
 
@@ -89,6 +95,26 @@ struct FeeLineDetails: View {
         }
         .wooNavigationBarStyle()
     }
+
+    private var inputFixedField: some View {
+        TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.amountField, viewModel.storeCurrencySymbol),
+                             placeholder: "",
+                             text: .constant(viewModel.formattedAmount),
+                             symbol: nil,
+                             keyboardType: .decimalPad)
+            .foregroundColor(Color(viewModel.amountTextColor))
+            .disabled(true)
+    }
+
+    private var inputPercentageField: some View {
+        TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.amountField, viewModel.percentSymbol),
+                             placeholder: "",
+                             text: .constant(viewModel.amount),
+                             symbol: nil,
+                             keyboardType: .decimalPad)
+            .foregroundColor(Color(viewModel.amountTextColor))
+            .disabled(true)
+    }
 }
 
 // MARK: Constants
@@ -102,7 +128,8 @@ private extension FeeLineDetails {
         static let addFee = NSLocalizedString("Add Fee", comment: "Title for the Fee screen during order creation")
         static let fee = NSLocalizedString("Fee", comment: "Title for the Fee Details screen during order creation")
 
-        static let amountField = NSLocalizedString("Amount", comment: "Title for the amount field on the Fee Details screen during order creation")
+        static let amountField = NSLocalizedString("Amount (%1$@)", comment: "Title for the amount field on the Fee Details screen during order creation"
+                                                   + "Parameters: %1$@ - fee type (percent sign or currency symbol)")
 
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Fee Details screen")
         static let done = NSLocalizedString("Done", comment: "Text for the done button in the Fee Details screen")

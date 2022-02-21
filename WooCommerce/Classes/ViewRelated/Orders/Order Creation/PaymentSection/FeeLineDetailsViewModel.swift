@@ -32,6 +32,12 @@ class FeeLineDetailsViewModel: ObservableObject {
         amount.isEmpty ? .textPlaceholder : .text
     }
 
+    /// The base amount (items + shipping) to apply percentage fee on.
+    ///
+    private let baseAmountForPercentage: Decimal
+
+    /// The initial fee amount.
+    ///
     private let initialAmount: Decimal
 
     /// Returns true when existing fee line is edited.
@@ -44,17 +50,36 @@ class FeeLineDetailsViewModel: ObservableObject {
         guard let amountDecimal = priceFieldFormatter.amountDecimal, amountDecimal > .zero else {
             return true
         }
+        let finalAmount = feeType == .percentage ? amountDecimal * 0.01 : amountDecimal
 
-        return amountDecimal == initialAmount
+        return finalAmount == initialAmount
     }
+
+    /// Localized percent symbol.
+    ///
+    let percentSymbol: String
+
+    /// Current store currency symbol.
+    ///
+    let storeCurrencySymbol: String
+
+    enum FeeType {
+        case fixed
+        case percentage
+    }
+
+    @Published var feeType: FeeType = .fixed
 
     init(inputData: NewOrderViewModel.PaymentDataViewModel,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          didSelectSave: @escaping ((OrderFeeLine?) -> Void)) {
         self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
+        self.percentSymbol = NumberFormatter().percentSymbol
+        self.storeCurrencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
 
         self.isExistingFeeLine = inputData.shouldShowFees
+        self.baseAmountForPercentage = inputData.feesBaseAmountForPercentage
 
        let currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
         if let initialAmount = currencyFormatter.convertToDecimal(from: inputData.feesTotal) {
@@ -71,11 +96,20 @@ class FeeLineDetailsViewModel: ObservableObject {
     }
 
     func saveData() {
+        let finalAmount: String
+        switch feeType {
+        case .fixed:
+            finalAmount = amount
+        case .percentage:
+            let amountDecimal = priceFieldFormatter.amountDecimal ?? .zero
+            finalAmount = "\(baseAmountForPercentage * amountDecimal * 0.01)"
+        }
+
         let feeLine = OrderFeeLine(feeID: 0,
                                    name: "Fee",
                                    taxClass: "",
                                    taxStatus: .none,
-                                   total: amount,
+                                   total: finalAmount,
                                    totalTax: "",
                                    taxes: [],
                                    attributes: [])

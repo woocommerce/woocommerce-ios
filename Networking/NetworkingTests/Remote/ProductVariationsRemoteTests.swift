@@ -232,6 +232,29 @@ final class ProductVariationsRemoteTests: XCTestCase {
         XCTAssertEqual(updatedProductVariation, productVariation)
     }
 
+    /// Verifies that updateProductVariations properly parses the `product-variations-bulk-update` sample response.
+    ///
+    func test_bulk_update_productVariations_properly_returns_parsed_products() {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let sampleProductVariationID: Int64 = 2783
+
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/batch", filename: "product-variations-bulk-update")
+        let productVariations = [sampleProductVariation(siteID: sampleSiteID, productID: sampleProductID, id: sampleProductVariationID)]
+
+        // When
+        var updatedProductVariation: [ProductVariation]?
+        waitForExpectation { expectation in
+            remote.updateProductVariations(productVariations: productVariations) { result in
+                updatedProductVariation = try? result.get()
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(updatedProductVariation, productVariations)
+    }
+
     /// Verifies that updateProductVariation properly relays Networking Layer errors.
     ///
     func testUpdateProductVariationProperlyRelaysNetwokingErrors() {

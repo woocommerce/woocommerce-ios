@@ -1,6 +1,5 @@
 import SwiftUI
 import Yosemite
-import protocol Storage.StorageManagerType
 
 /// View model for `InboxNoteRow`.
 struct InboxNoteRowViewModel: Identifiable, Equatable {

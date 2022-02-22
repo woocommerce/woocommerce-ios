@@ -7,8 +7,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .barcodeScanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .shippingLabelsAddPaymentMethods:
-            return true
         case .shippingLabelsAddCustomPackages:
             return true
         case .shippingLabelsMultiPackage:

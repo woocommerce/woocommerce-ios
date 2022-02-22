@@ -79,7 +79,7 @@ private extension InboxNotesStore {
     ///
     func dismissInboxNote(for siteID: Int64,
                           noteID: Int64,
-                          completion: @escaping (Result<Bool, Error>) -> ()) {
+                          completion: @escaping (Result<Void, Error>) -> ()) {
         remote.dismissInboxNote(for: siteID, noteID: noteID) { [weak self] result in
             switch result {
             case .failure(let error):
@@ -87,7 +87,7 @@ private extension InboxNotesStore {
 
             case .success(_):
                 self?.deleteStoredInboxNoteInBackground(siteID: siteID, noteID: noteID, onCompletion: {
-                    completion(.success(true))
+                    completion(.success(()))
                 })
             }
         }
@@ -97,15 +97,15 @@ private extension InboxNotesStore {
     /// This marks all notifications is_deleted field to true and the inbox notes will be deleted locally.
     ///
     func dismissAllInboxNotes(siteID: Int64,
-                              completion: @escaping (Result<Bool, Error>) -> ()) {
+                              completion: @escaping (Result<Void, Error>) -> ()) {
         remote.dismissAllInboxNotes(for: siteID) { [weak self] result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
 
-            case .success(_):
+            case .success:
                 self?.deleteStoredInboxNotesInBackground(siteID: siteID, onCompletion: {
-                    completion(.success(true))
+                    completion(.success(()))
                 })
             }
         }

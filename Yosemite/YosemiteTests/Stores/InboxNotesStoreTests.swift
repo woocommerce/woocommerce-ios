@@ -164,7 +164,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertEqual(storedInboxNotesCount, 0)
 
         // When dispatching a `dismissInboxNote` action
-        let result: Result<Bool, Error> = waitFor { [weak self] promise in
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
             guard let self = self else {
                 return
             }
@@ -189,7 +189,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertEqual(storedInboxNotesCount, 1)
 
         // When dispatching a `dismissInboxNote` action
-        let result: Result<Bool, Error> = waitFor { [weak self] promise in
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
             guard let self = self else {
                 return
             }
@@ -212,7 +212,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertEqual(storedInboxNotesCount, 0)
 
         // When dispatching a `dismissInboxNote` action
-        let result: Result<Bool, Error> = waitFor { [weak self] promise in
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
             guard let self = self else {
                 return
             }
@@ -234,7 +234,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertEqual(storedInboxNotesCount, 0)
 
         // When dispatching a `dismissInboxNote` action
-        let result: Result<Bool, Error> = waitFor { [weak self] promise in
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
             guard let self = self else {
                 return
             }
@@ -256,7 +256,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertEqual(storedInboxNotesCount, 0)
 
         // When dispatching a `dismissAllInboxNotes` action
-        let result: Result<Bool, Error> = waitFor { [weak self] promise in
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
             guard let self = self else {
                 return
             }
@@ -282,7 +282,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertEqual(storedInboxNotesCount, 2)
 
         // When dispatching a `dismissAllInboxNotes` action
-        let result: Result<Bool, Error> = waitFor { [weak self] promise in
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
             guard let self = self else {
                 return
             }
@@ -304,7 +304,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertEqual(storedInboxNotesCount, 0)
 
         // When dispatching a `dismissAllInboxNotes` action
-        let result: Result<Bool, Error> = waitFor { [weak self] promise in
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
             guard let self = self else {
                 return
             }
@@ -325,7 +325,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertEqual(storedInboxNotesCount, 0)
 
         // When dispatching a `dismissAllInboxNotes` action
-        let result: Result<Bool, Error> = waitFor { [weak self] promise in
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
             guard let self = self else {
                 return
             }

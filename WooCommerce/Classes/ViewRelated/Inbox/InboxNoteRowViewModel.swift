@@ -94,7 +94,7 @@ extension InboxNoteRowViewModel {
         stores.dispatch(action)
     }
 
-    func dismissInboxNote(onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func dismissInboxNote(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let action = InboxNotesAction.dismissInboxNote(siteID: siteID, noteID: id) { result in
             switch result {
             case .success:

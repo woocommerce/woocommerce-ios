@@ -8,7 +8,6 @@ struct InboxNoteRow: View {
     // Tracks the scale of the view due to accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1
     @State private var tappedAction: InboxNoteRowActionViewModel?
-    @State private var showsWebView: Bool = false
     @State private var isDismissButtonLoading: Bool = false
 
     var body: some View {
@@ -44,10 +43,9 @@ struct InboxNoteRow: View {
                     // HStack with actions and dismiss action.
                     HStack(spacing: Constants.spacingBetweenActions) {
                         ForEach(viewModel.actions) { action in
-                            if let url = action.url {
+                            if action.url != nil {
                                 Button(action.title) {
                                     tappedAction = action
-                                    showsWebView = true
                                     viewModel.markInboxNoteAsActioned(actionID: action.id)
                                 }
                                 .foregroundColor(Color(.accent))
@@ -91,7 +89,7 @@ struct InboxNoteRow: View {
 
         if isWPComStore {
         NavigationView {
-            AuthenticatedWebView(isPresented: $showsWebView,
+            AuthenticatedWebView(isPresented: .constant(tappedAction != nil),
                                  url: url,
                                  urlToTriggerExit: nil) {
 
@@ -101,7 +99,7 @@ struct InboxNoteRow: View {
              .toolbar {
                  ToolbarItem(placement: .confirmationAction) {
                      Button(action: {
-                         showsWebView = false
+                         tappedAction = nil
                      }, label: {
                          Text(Localization.doneButtonWebview)
                      })

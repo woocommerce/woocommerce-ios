@@ -104,14 +104,24 @@ private struct CurrencySymbol: ViewModifier {
     let position: CurrencySettings.CurrencyPosition
 
     func body(content: Content) -> some View {
-        HStack {
+        HStack(spacing: .zero) {
             switch position {
-            case .left, .leftSpace:
+            case .left:
                 Text(symbol)
                     .bodyStyle()
                 content
-            case .right, .rightSpace:
+            case .leftSpace:
+                Text(symbol)
+                    .bodyStyle()
+                Spacer()
                 content
+            case .right:
+                content
+                Text(symbol)
+                    .bodyStyle()
+            case .rightSpace:
+                content
+                Spacer()
                 Text(symbol)
                     .bodyStyle()
             }

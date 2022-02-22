@@ -79,9 +79,18 @@ private struct OffsetPreferenceKey: PreferenceKey {
     }
 }
 
+#if DEBUG
+
 struct RefreshableScrollView_Previews: PreviewProvider {
     static var previews: some View {
-        EmptyView()
-        //        RefreshableScrollView()
+        RefreshableScrollView(refreshAction: { isComplete in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                isComplete()
+            }
+        }) {
+            Text("refreshable view")
+        }
     }
 }
+
+#endif

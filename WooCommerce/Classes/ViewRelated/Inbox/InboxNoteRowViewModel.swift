@@ -8,9 +8,6 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
     /// Relative date when the note was created.
     let date: String
 
-    /// Icon for the note type (e.g. marketing, info).
-    let typeIcon: Image
-
     /// Title of the note.
     let title: String
 
@@ -36,16 +33,14 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
         let actions = note.actions.map { InboxNoteRowActionViewModel(action: $0) }
         self.init(id: note.id,
                   date: date,
-                  typeIcon: (NoteType(rawValue: note.type) ?? .info).image,
                   title: note.title,
                   attributedContent: attributedContent,
                   actions: actions)
     }
 
-    init(id: Int64, date: String, typeIcon: Image, title: String, attributedContent: NSAttributedString, actions: [InboxNoteRowActionViewModel]) {
+    init(id: Int64, date: String, title: String, attributedContent: NSAttributedString, actions: [InboxNoteRowActionViewModel]) {
         self.id = id
         self.date = date
-        self.typeIcon = typeIcon
         self.title = title
         self.attributedContent = attributedContent
         self.actions = actions

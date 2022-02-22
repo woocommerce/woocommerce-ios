@@ -135,8 +135,12 @@ private extension InboxViewModel {
 
     /// Performs initial fetch from storage and updates results.
     func configureResultsController() {
-        resultsController.onDidChangeContent = updateResults
-        resultsController.onDidResetContent = updateResults
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.updateResults()
+        }
+        resultsController.onDidResetContent = { [weak self] in
+            self?.updateResults()
+        }
 
         do {
             try resultsController.performFetch()

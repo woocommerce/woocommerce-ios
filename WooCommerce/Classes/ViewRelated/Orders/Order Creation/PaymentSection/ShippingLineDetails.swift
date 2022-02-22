@@ -26,26 +26,20 @@ struct ShippingLineDetails: View {
                 VStack(spacing: .zero) {
                     Section {
                         Group {
-                            ZStack(alignment: .center) {
-                                // Hidden input text field
-                                BindableTextfield("", text: $viewModel.amount, focus: $focusAmountInput)
-                                    .keyboardType(.decimalPad)
-                                    .opacity(0)
+                            AdaptiveStack(horizontalAlignment: .leading) {
+                                Text(Localization.amountField)
+                                    .bodyStyle()
+                                    .frame(maxWidth: .infinity, alignment: .leading)
 
-                                // Visible & formatted field
-                                TitleAndTextFieldRow(title: Localization.amountField,
-                                                     placeholder: "",
-                                                     text: .constant(viewModel.formattedAmount),
-                                                     symbol: nil,
-                                                     keyboardType: .decimalPad)
-                                    .foregroundColor(Color(viewModel.amountTextColor))
-                                    .disabled(true)
+                                BindableTextfield(viewModel.amountPlaceholder, text: $viewModel.amount, focus: $focusAmountInput)
+                                    .keyboardType(.decimalPad)
+                                    .addingCurrencySymbol(viewModel.currencySymbol, on: viewModel.currencyPosition)
+                                    .fixedSize()
+                                    .onTapGesture {
+                                        focusAmountInput = true
+                                    }
                             }
-                            .background(Color(.listForeground))
-                            .fixedSize(horizontal: false, vertical: true)
-                            .onTapGesture {
-                                focusAmountInput = true
-                            }
+                            .padding()
 
                             Divider()
                                 .padding(.leading, Layout.dividerPadding)
@@ -99,6 +93,38 @@ struct ShippingLineDetails: View {
             }
         }
         .wooNavigationBarStyle()
+    }
+}
+
+/// Adds a currency symbol to the left or right of the provided content
+///
+private struct CurrencySymbol: ViewModifier {
+    let symbol: String
+    let position: CurrencySettings.CurrencyPosition
+
+    func body(content: Content) -> some View {
+        HStack {
+            switch position {
+            case .left, .leftSpace:
+                Text(symbol)
+                    .bodyStyle()
+                content
+            case .right, .rightSpace:
+                content
+                Text(symbol)
+                    .bodyStyle()
+            }
+        }
+    }
+}
+
+private extension View {
+    /// Adds the provided symbol to the left or right of the text field
+    /// - Parameters:
+    ///   - symbol: Currency symbol
+    ///   - position: Position for the currency symbol, in relation to the text field
+    func addingCurrencySymbol(_ symbol: String, on position: CurrencySettings.CurrencyPosition) -> some View {
+        modifier(CurrencySymbol(symbol: symbol, position: position))
     }
 }
 

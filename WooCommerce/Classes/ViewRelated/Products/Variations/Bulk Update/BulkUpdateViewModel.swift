@@ -19,7 +19,7 @@ final class BulkUpdateViewModel {
     private let productID: Int64
 
     /// The state of synching all variations
-    @Published private(set) var syncState: SyncState 
+    @Published private(set) var syncState: SyncState
 
     init(siteID: Int64,
          productID: Int64,

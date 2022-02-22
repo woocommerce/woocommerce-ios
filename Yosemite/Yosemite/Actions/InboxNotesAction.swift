@@ -16,11 +16,11 @@ public enum InboxNotesAction: Action {
                            completion: (Result<[InboxNote], Error>) -> ())
 
     /// Dismiss one `InboxNote`.
-    /// This internally marks a notification’s is_deleted field to true and such notifications do not show in the results anymore.
+    /// This marks a notification’s is_deleted field to true and the inbox note will be deleted locally.
     ///
     case dismissInboxNote(siteID: Int64,
                           noteID: Int64,
-                          completion: (Result<InboxNote, Error>) -> ())
+                          completion: (Result<Bool, Error>) -> ())
 
     /// Set an `InboxNote` as `actioned`.
     /// This internally marks a notification’s status as `actioned`.

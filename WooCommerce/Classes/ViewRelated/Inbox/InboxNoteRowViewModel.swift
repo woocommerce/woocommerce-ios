@@ -20,7 +20,17 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
     /// Actions for the note.
     let actions: [InboxNoteRowActionViewModel]
 
-    init(note: InboxNote, today: Date = .init(), locale: Locale = .current, calendar: Calendar = .current) {
+    /// SiteID related to the Inbox note.
+    private let siteID: Int64
+
+    /// Stores to handle note actions.
+    private let stores: StoresManager
+
+    init(note: InboxNote,
+         today: Date = .init(),
+         locale: Locale = .current,
+         calendar: Calendar = .current,
+         stores: StoresManager = ServiceLocator.stores) {
         let attributedContent = note.content.htmlToAttributedString
             .addingAttributes([
                 .font: UIFont.body,
@@ -34,21 +44,66 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
             return formatter.localizedString(for: note.dateCreated, relativeTo: today)
         }()
         let actions = note.actions.map { InboxNoteRowActionViewModel(action: $0) }
+
         self.init(id: note.id,
                   date: date,
                   typeIcon: (NoteType(rawValue: note.type) ?? .info).image,
                   title: note.title,
                   attributedContent: attributedContent,
-                  actions: actions)
+                  actions: actions,
+                  siteID: note.siteID,
+                  stores: stores)
     }
 
-    init(id: Int64, date: String, typeIcon: Image, title: String, attributedContent: NSAttributedString, actions: [InboxNoteRowActionViewModel]) {
+    init(id: Int64,
+         date: String,
+         typeIcon: Image,
+         title: String,
+         attributedContent: NSAttributedString, actions: [InboxNoteRowActionViewModel],
+         siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores) {
         self.id = id
         self.date = date
         self.typeIcon = typeIcon
         self.title = title
         self.attributedContent = attributedContent
         self.actions = actions
+        self.siteID = siteID
+        self.stores = stores
+    }
+
+    static func == (lhs: InboxNoteRowViewModel, rhs: InboxNoteRowViewModel) -> Bool {
+        lhs.id == rhs.id &&
+        lhs.siteID == rhs.siteID
+    }
+}
+
+extension InboxNoteRowViewModel {
+    func markInboxNoteAsActioned(actionID: Int64) {
+        let action = InboxNotesAction.markInboxNoteAsActioned(siteID: siteID,
+                                                              noteID: actionID,
+                                                              actionID: actionID) { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                DDLogError("⛔️ Error on mark inbox note as actioned: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    func dismissInboxNote(onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        let action = InboxNotesAction.dismissInboxNote(siteID: siteID, noteID: id) { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                DDLogError("⛔️ Error on dismissing an inbox note: \(error)")
+            }
+            onCompletion(result)
+        }
+        stores.dispatch(action)
     }
 }
 

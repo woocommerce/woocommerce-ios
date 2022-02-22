@@ -110,7 +110,7 @@ final class InboxNotesRemoteTests: XCTestCase {
         let remote = InboxNotesRemote(network: network)
         let sampleInboxNoteID: Int64 = 296
 
-        network.simulateResponse(requestUrlSuffix: "admin/notes/\(sampleInboxNoteID)", filename: "inbox-note")
+        network.simulateResponse(requestUrlSuffix: "admin/notes/delete/\(sampleInboxNoteID)", filename: "inbox-note")
 
         // When
         let result = waitFor { promise in
@@ -133,7 +133,7 @@ final class InboxNotesRemoteTests: XCTestCase {
         let sampleInboxNoteID: Int64 = 296
 
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
-        network.simulateError(requestUrlSuffix: "admin/notes/\(sampleInboxNoteID)", error: error)
+        network.simulateError(requestUrlSuffix: "admin/notes/delete/\(sampleInboxNoteID)", error: error)
 
         // When
         let result = waitFor { promise in

@@ -7,6 +7,8 @@ struct InboxNoteRow: View {
 
     // Tracks the scale of the view due to accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1
+    @State private var tappedAction: InboxNoteRowActionViewModel?
+    @State private var isDismissButtonLoading: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -41,10 +43,10 @@ struct InboxNoteRow: View {
                     // HStack with actions and dismiss action.
                     HStack(spacing: Constants.spacingBetweenActions) {
                         ForEach(viewModel.actions) { action in
-                            if let url = action.url {
+                            if action.url != nil {
                                 Button(action.title) {
-                                    // TODO: 5955 - handle action
-                                    print("Handling action with URL: \(url)")
+                                    tappedAction = action
+                                    viewModel.markInboxNoteAsActioned(actionID: action.id)
                                 }
                                 .foregroundColor(Color(.accent))
                                 .font(.body)
@@ -53,22 +55,61 @@ struct InboxNoteRow: View {
                                 Text(action.title)
                             }
                         }
-                        Button(Localization.dismiss) {
-                            // TODO: 5955 - handle dismiss action
-                            print("Handling dismiss action")
+                        if isDismissButtonLoading {
+                            ActivityIndicator(isAnimating: .constant(true), style: .medium)
                         }
+                        else {
+                            Button(Localization.dismiss) {
+                                isDismissButtonLoading = true
+                                viewModel.dismissInboxNote { _ in
+                                    isDismissButtonLoading = false
+                                }
+                            }
                         .foregroundColor(Color(.withColorStudio(.gray, shade: .shade30)))
                         .font(.body)
                         .buttonStyle(PlainButtonStyle())
-
+                        }
                         Spacer()
                     }
                 }
             }
-                   .padding(Constants.defaultPadding)
+            .padding(Constants.defaultPadding)
+            .sheet(item: $tappedAction) { action in
+                webView(url: action.url ?? WooConstants.URLs.blog.asURL())
+            }
 
             Divider()
                 .frame(height: Constants.dividerHeight)
+        }
+    }
+
+    @ViewBuilder
+    private func webView(url: URL) -> some View {
+        let isWPComStore = ServiceLocator.stores.sessionManager.defaultSite?.isWordPressStore ?? false
+
+        if isWPComStore {
+        NavigationView {
+            AuthenticatedWebView(isPresented: .constant(tappedAction != nil),
+                                 url: url,
+                                 urlToTriggerExit: nil) {
+
+            }
+             .navigationTitle(Localization.inboxWebViewTitle)
+             .navigationBarTitleDisplayMode(.inline)
+             .toolbar {
+                 ToolbarItem(placement: .confirmationAction) {
+                     Button(action: {
+                         tappedAction = nil
+                     }, label: {
+                         Text(Localization.doneButtonWebview)
+                     })
+                 }
+             }
+        }
+        .wooNavigationBarStyle()
+        }
+        else {
+            SafariSheetView(url: url)
         }
     }
 }
@@ -76,6 +117,12 @@ struct InboxNoteRow: View {
 private extension InboxNoteRow {
     enum Localization {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss button in inbox note row.")
+        static let inboxWebViewTitle = NSLocalizedString(
+            "Inbox",
+            comment: "Navigation title of the webview which is used in Inbox Notes."
+        )
+        static let doneButtonWebview = NSLocalizedString("Done",
+                                                         comment: "Done navigation button in Inbox Notes webview")
     }
 
     enum Constants {

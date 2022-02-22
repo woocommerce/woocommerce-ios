@@ -26,60 +26,20 @@ extension CardBrand: CustomStringConvertible {
     public var description: String {
         switch self {
         case .visa:
-            return Localization.visa
+            return "Visa"
         case .amex:
-            return Localization.amex
+            return "American Express"
         case .masterCard:
-            return Localization.masterCard
+            return "Mastercard"
         case .discover:
-            return Localization.discover
+            return "Discover"
         case .jcb:
-            return Localization.jcb
+            return "JCB"
         case .dinersClub:
-            return Localization.dinersClub
+            return "Diners Club"
         case .unknown:
-            return Localization.other
+            return "Other"
         }
-    }
-}
-
-
-private extension CardBrand {
-    enum Localization {
-        static let visa = NSLocalizedString(
-            "Visa",
-            comment: "A credit card brand"
-        )
-
-        static let amex = NSLocalizedString(
-            "American Express",
-            comment: "A credit card brand"
-        )
-
-        static let masterCard = NSLocalizedString(
-            "MasterCard",
-            comment: "A credit card brand"
-        )
-
-        static let discover = NSLocalizedString(
-            "Discover",
-            comment: "A credit card brand"
-        )
-
-        static let jcb = NSLocalizedString(
-            "JCB",
-            comment: "A credit card brand"
-        )
-
-        static let dinersClub = NSLocalizedString(
-            "Diners Club",
-            comment: "A credit card brand"
-        )
-
-        static let other = NSLocalizedString(
-            "Other",
-            comment: "A credit card brand"
-        )
     }
 }
 

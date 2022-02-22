@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// A refreshable list that renders the provided list content with an infinite scroll indicator with pull-to-refresh support.
 struct RefreshableInfiniteScrollList<Content: View>: View {
     /// Content to render in the list.
     ///
@@ -48,33 +49,30 @@ struct RefreshableInfiniteScrollList<Content: View>: View {
     }
 }
 
-private struct InfiniteScrollIndicator: View {
-
-    let showContent: Bool
-
-    var body: some View {
-        if #available(iOS 15.0, *) {
-            createProgressView()
-                .listRowSeparator(.hidden, edges: .bottom)
-        } else {
-            createProgressView()
-        }
-    }
-
-    @ViewBuilder func createProgressView() -> some View {
-        ProgressView()
-            .frame(maxWidth: .infinity, alignment: .center)
-            .listRowInsets(EdgeInsets())
-            .listRowBackground(Color(.listBackground))
-            .if(!showContent) { progressView in
-                progressView.hidden() // Hidden but still in view hierarchy so `onAppear` will trigger the load action when needed
-            }
-    }
-}
-
 struct RefreshableInfiniteScrollList_Previews: PreviewProvider {
     static var previews: some View {
-        EmptyView()
-//        RefreshableInfiniteScrollList<<#Content: View#>>()
+        RefreshableInfiniteScrollList(isLoading: true, loadAction: {}, refreshAction: { isComplete in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                isComplete()
+            }
+        }) {
+            ForEach((0..<6)) { index in
+                Text("Item \(index)")
+            }
+        }
+        .previewDisplayName("Refreshable infinite scroll list: Loading")
+        .previewLayout(.sizeThatFits)
+
+        RefreshableInfiniteScrollList(isLoading: false, loadAction: {}, refreshAction: { isComplete in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                isComplete()
+            }
+        }) {
+            ForEach((0..<6)) { index in
+                Text("Item \(index)")
+            }
+        }
+        .previewDisplayName("Refreshable infinite scroll list: Loaded")
+        .previewLayout(.sizeThatFits)
     }
 }

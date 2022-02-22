@@ -107,35 +107,80 @@ private extension RemoteOrderSynchronizer {
             .assign(to: &$order)
     }
 
-    /// Creates the order(if needed) when a significant order input occurs.
+    /// Creates or updates the order when a significant order input occurs.
     ///
     func bindOrderSync() {
-        // Combine inputs that should trigger an order sync
-        let syncTrigger: AnyPublisher<Void, Never> = setProduct.map { _ in () }
+        // Signal to force an order update.
+        // Needed when the order creation finishes but the merchant issued new updates.
+        let forceUpdateSignal = PassthroughSubject<SyncOperation, Never>()
+
+        // Combine inputs that should trigger an order sync operation.
+        let syncTrigger: AnyPublisher<SyncOperation, Never> = setProduct.map { _ in () }
             .merge(with: setAddresses.map { _ in () })
             .merge(with: setShipping.map { _ in () })
             .merge(with: setFee.map { _ in () })
+            .debounce(for: 1, scheduler: DispatchQueue.main) // Group & wait for 0.5s since the last signal was emitted.
+            .compactMap { [weak self] in
+                guard let self = self else { return nil }
+                print ("ME: 1 - Trigger Sent")
+                return SyncOperation(order: self.order) // Imperative `withLatestFrom` as it appears to have bugs when assigning a new order value.
+            }
+            .share()
             .eraseToAnyPublisher()
+
 
         // Creates a "draft" order if the order has not been created yet.
         syncTrigger
-            .debounce(for: 0.5, scheduler: DispatchQueue.main) // Group & wait for 0.5s since the last signal was emitted.
-            .withLatestFrom(orderPublisher)
-            .filter { _, order in
-                order.orderID == .zero // Only continue if the order has not been created.
+            .filter { // Only continue if the order has not been created.
+                $0.order.orderID == .zero
             }
-            .flatMap(maxPublishers: .max(1)) { [weak self] (_, order) -> AnyPublisher<Order, Error> in // Only allow one request at a time.
+            .flatMap(maxPublishers: .max(1)) { [weak self] request -> AnyPublisher<SyncOperation, Error> in // Only allow one request at a time.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
                 self.state = .syncing
-                return self.createOrderRemotely(order)
+                return self.createOrderRemotely(request)
             }
-            .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
+            .catch { [weak self] error -> AnyPublisher<SyncOperation, Never> in // When an error occurs, update state & finish.
                 self?.state = .error(error)
                 return Empty().eraseToAnyPublisher()
             }
-            .sink { [weak self] order in // When a value is received update state & order
+            .withLatestFrom(syncTrigger) // Get the latest sync request to evaluate if we need to fire an update after the order is created.
+            .sink { [weak self] response, latestRequest in
+                print("ME: 3 - Order Created")
+                // If there are no pending update requests, update state & order.
+                if response.id == latestRequest.id {
+                    self?.state = .synced
+                    self?.order = response.order
+                } else {
+                    // Otherwise update order id & force an update request.
+                    let newOrderToUpdate = latestRequest.order.copy(orderID: response.order.orderID)
+                    self?.order = newOrderToUpdate
+
+                    forceUpdateSignal.send(SyncOperation(order: newOrderToUpdate))
+                }
+            }
+            .store(in: &subscriptions)
+
+
+        // Updates a "draft" order after it has already been created.
+        syncTrigger
+            .merge(with: forceUpdateSignal)
+            .filter { // Only continue if the order has been created.
+                $0.order.orderID != .zero
+            }
+            .map { [weak self] request -> AnyPublisher<SyncOperation, Error> in // Allow multiple requests, once per update request.
+                guard let self = self else { return Empty().eraseToAnyPublisher() }
+                self.state = .syncing
+                return self.updateOrderRemotely(request)
+            }
+            .switchToLatest() // Always switch/listen to the latest fired update request.
+            .catch { [weak self] error -> AnyPublisher<SyncOperation, Never> in // When an error occurs, update state & finish.
+                self?.state = .error(error)
+                return Empty().eraseToAnyPublisher()
+            }
+            .sink { [weak self] response in // When finished, update state & order.
+                print("ME: 3 - Order Updated")
                 self?.state = .synced
-                self?.order = order
+                self?.order = response.order
             }
             .store(in: &subscriptions)
     }
@@ -143,12 +188,14 @@ private extension RemoteOrderSynchronizer {
     /// Returns a publisher that creates an order remotely using the `baseSyncStatus`.
     /// The later emitted order is delivered with the latest selected status.
     ///
-    func createOrderRemotely(_ order: Order) -> AnyPublisher<Order, Error> {
-        Future<Order, Error> { [weak self] promise in
+    func createOrderRemotely(_ request: SyncOperation) -> AnyPublisher<SyncOperation, Error> {
+        Future<SyncOperation, Error> { [weak self] promise in
             guard let self = self else { return }
 
+            print ("ME: 2 - Creating Order")
+
             // Creates the order with the `draft` status
-            let draftOrder = order.copy(status: self.baseSyncStatus)
+            let draftOrder = request.order.copy(status: self.baseSyncStatus)
             let action = OrderAction.createOrder(siteID: self.siteID, order: draftOrder) { [weak self] result in
                 guard let self = self else { return }
 
@@ -156,7 +203,8 @@ private extension RemoteOrderSynchronizer {
                 case .success(let remoteOrder):
                     // Return the order with the current selected status.
                     let newLocalOrder = remoteOrder.copy(status: self.order.status)
-                    promise(.success(newLocalOrder))
+                    let updatedRequest = request.copy(order: newLocalOrder)
+                    promise(.success(updatedRequest))
 
                 case .failure(let error):
                     promise(.failure(error))
@@ -165,5 +213,61 @@ private extension RemoteOrderSynchronizer {
             self.stores.dispatch(action)
         }
         .eraseToAnyPublisher()
+    }
+
+    /// Returns a publisher that updates an order remotely.
+    /// The later emitted order is delivered with the latest selected status.
+    ///
+    func updateOrderRemotely(_ request: SyncOperation) -> AnyPublisher<SyncOperation, Error> {
+        Future<SyncOperation, Error> { [weak self] promise in
+            guard let self = self else { return }
+
+            print ("ME: 2 - Updating Order")
+
+            // Creates the order with the `draft` status
+            let draftOrder = request.order.copy(status: self.baseSyncStatus)
+            let supportedFields: [OrderUpdateField] = [
+                .shippingAddress,
+                .billingAddress,
+                .fees,
+                .shippingLines,
+            ]
+            let action = OrderAction.updateOrder(siteID: self.siteID, order: draftOrder, fields: supportedFields) { [weak self] result in
+                guard let self = self else { return }
+
+                switch result {
+                case .success(let remoteOrder):
+                    // Return the order with the current selected status.
+                    let newLocalOrder = remoteOrder.copy(status: self.order.status)
+                    let updatedRequest = request.copy(order: newLocalOrder)
+                    promise(.success(updatedRequest))
+
+                case .failure(let error):
+                    promise(.failure(error))
+                }
+            }
+            self.stores.dispatch(action)
+        }
+        .eraseToAnyPublisher()
+    }
+}
+
+// MARK: Definitions
+private extension RemoteOrderSynchronizer {
+    /// Type to represents a sync requests or a sync response.
+    ///
+    struct SyncOperation {
+        /// Autogenerated ID of the operation.
+        ///
+        private(set) var id: String = UUID().uuidString
+
+        /// Order to act upon.
+        let order: Order
+
+        /// Replaces the `order` maintaining the `ID`.
+        ///
+        func copy(order: Order) -> SyncOperation {
+            SyncOperation(id: id, order: order)
+        }
     }
 }

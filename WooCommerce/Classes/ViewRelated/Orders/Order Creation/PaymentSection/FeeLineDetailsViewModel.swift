@@ -50,7 +50,7 @@ class FeeLineDetailsViewModel: ObservableObject {
         guard let amountDecimal = priceFieldFormatter.amountDecimal, amountDecimal > .zero else {
             return true
         }
-        let finalAmount = feeType == .percentage ? amountDecimal * 0.01 : amountDecimal
+        let finalAmount = feeType == .percentage ? baseAmountForPercentage * amountDecimal * 0.01 : amountDecimal
 
         return finalAmount == initialAmount
     }

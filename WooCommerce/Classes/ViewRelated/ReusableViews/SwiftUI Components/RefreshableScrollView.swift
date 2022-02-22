@@ -79,8 +79,6 @@ private struct OffsetPreferenceKey: PreferenceKey {
     }
 }
 
-#if DEBUG
-
 struct RefreshableScrollView_Previews: PreviewProvider {
     static var previews: some View {
         RefreshableScrollView(refreshAction: { isComplete in
@@ -92,5 +90,3 @@ struct RefreshableScrollView_Previews: PreviewProvider {
         }
     }
 }
-
-#endif

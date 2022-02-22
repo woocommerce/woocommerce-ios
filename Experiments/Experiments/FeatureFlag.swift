@@ -14,10 +14,6 @@ public enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Shipping labels - Add custom packages
-    ///
-    case shippingLabelsAddCustomPackages
-
     /// Shipping labels - Multi-package support
     ///
     case shippingLabelsMultiPackage

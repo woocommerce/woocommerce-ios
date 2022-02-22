@@ -164,7 +164,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertEqual(storedInboxNotesCount, 0)
 
         // When dispatching a `dismissInboxNote` action
-        let result: Result<Bool, Error> = waitFor { [weak self] promise in
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
             guard let self = self else {
                 return
             }
@@ -189,7 +189,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertEqual(storedInboxNotesCount, 1)
 
         // When dispatching a `dismissInboxNote` action
-        let result: Result<Bool, Error> = waitFor { [weak self] promise in
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
             guard let self = self else {
                 return
             }
@@ -212,7 +212,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertEqual(storedInboxNotesCount, 0)
 
         // When dispatching a `dismissInboxNote` action
-        let result: Result<Bool, Error> = waitFor { [weak self] promise in
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
             guard let self = self else {
                 return
             }
@@ -234,12 +234,103 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertEqual(storedInboxNotesCount, 0)
 
         // When dispatching a `dismissInboxNote` action
-        let result: Result<Bool, Error> = waitFor { [weak self] promise in
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
             guard let self = self else {
                 return
             }
 
             let action = InboxNotesAction.dismissInboxNote(siteID: self.sampleSiteID, noteID: sampleInboxNoteID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then no inbox notes should be stored
+        XCTAssertEqual(storedInboxNotesCount, 0)
+        XCTAssertFalse(result.isSuccess)
+    }
+
+    func test_dismissAllInboxNotes_do_nothing_if_no_inbox_notes_exist_upon_successful_response() {
+        // Given a stubbed inbox note network response
+        network.simulateResponse(requestUrlSuffix: "admin/notes/delete/all", filename: "inbox-note-list")
+        XCTAssertEqual(storedInboxNotesCount, 0)
+
+        // When dispatching a `dismissAllInboxNotes` action
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = InboxNotesAction.dismissAllInboxNotes(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then no inbox notes should be stored
+        XCTAssertEqual(storedInboxNotesCount, 0)
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_dismissAllInboxNotes_delete_existing_inbox_notes_upon_successful_response() {
+        // Given two initial stored inbox note and a stubbed inbox notes network response
+        let initialInboxNote = sampleInboxNote(id: 296)
+        let initialInboxNote2 = sampleInboxNote(id: 297)
+        storageManager.insertSampleInboxNote(readOnlyInboxNote: initialInboxNote)
+        storageManager.insertSampleInboxNote(readOnlyInboxNote: initialInboxNote2)
+        network.simulateResponse(requestUrlSuffix: "admin/notes/delete/all", filename: "inbox-note-list")
+        XCTAssertEqual(storedInboxNotesCount, 2)
+
+        // When dispatching a `dismissAllInboxNotes` action
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = InboxNotesAction.dismissAllInboxNotes(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then no inbox notes should be stored
+        XCTAssertEqual(storedInboxNotesCount, 0)
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_dismissAllInboxNotes_then_it_returns_error_upon_response_error() {
+        // Given a stubbed generic-error network response
+        network.simulateResponse(requestUrlSuffix: "admin/notes/delete/all", filename: "generic_error")
+        XCTAssertEqual(storedInboxNotesCount, 0)
+
+        // When dispatching a `dismissAllInboxNotes` action
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = InboxNotesAction.dismissAllInboxNotes(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then no inbox notes should be stored
+        XCTAssertEqual(storedInboxNotesCount, 0)
+        XCTAssertFalse(result.isSuccess)
+    }
+
+    func test_dismissAllInboxNotes_then_it_returns_error_upon_empty_response() {
+        // Given an empty network response
+        XCTAssertEqual(storedInboxNotesCount, 0)
+
+        // When dispatching a `dismissAllInboxNotes` action
+        let result: Result<Void, Error> = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = InboxNotesAction.dismissAllInboxNotes(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
             self.store.onAction(action)

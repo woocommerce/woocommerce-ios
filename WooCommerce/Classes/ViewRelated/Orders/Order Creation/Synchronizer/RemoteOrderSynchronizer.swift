@@ -122,7 +122,6 @@ private extension RemoteOrderSynchronizer {
             .debounce(for: 1, scheduler: DispatchQueue.main) // Group & wait for 0.5s since the last signal was emitted.
             .compactMap { [weak self] in
                 guard let self = self else { return nil }
-                print ("ME: 1 - Trigger Sent")
                 return SyncOperation(order: self.order) // Imperative `withLatestFrom` as it appears to have bugs when assigning a new order value.
             }
             .share()
@@ -145,7 +144,6 @@ private extension RemoteOrderSynchronizer {
             }
             .withLatestFrom(syncTrigger) // Get the latest sync request to evaluate if we need to fire an update after the order is created.
             .sink { [weak self] response, latestRequest in
-                print("ME: 3 - Order Created")
                 // If there are no pending update requests, update state & order.
                 if response.id == latestRequest.id {
                     self?.state = .synced
@@ -178,7 +176,6 @@ private extension RemoteOrderSynchronizer {
                 return Empty().eraseToAnyPublisher()
             }
             .sink { [weak self] response in // When finished, update state & order.
-                print("ME: 3 - Order Updated")
                 self?.state = .synced
                 self?.order = response.order
             }
@@ -191,8 +188,6 @@ private extension RemoteOrderSynchronizer {
     func createOrderRemotely(_ request: SyncOperation) -> AnyPublisher<SyncOperation, Error> {
         Future<SyncOperation, Error> { [weak self] promise in
             guard let self = self else { return }
-
-            print ("ME: 2 - Creating Order")
 
             // Creates the order with the `draft` status
             let draftOrder = request.order.copy(status: self.baseSyncStatus)
@@ -221,8 +216,6 @@ private extension RemoteOrderSynchronizer {
     func updateOrderRemotely(_ request: SyncOperation) -> AnyPublisher<SyncOperation, Error> {
         Future<SyncOperation, Error> { [weak self] promise in
             guard let self = self else { return }
-
-            print ("ME: 2 - Updating Order")
 
             // Creates the order with the `draft` status
             let draftOrder = request.order.copy(status: self.baseSyncStatus)

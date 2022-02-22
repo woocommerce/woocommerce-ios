@@ -46,7 +46,7 @@ final class BulkUpdateViewModel {
         syncState = .syncing
 
         let numberOfObjects = Constants.numberOfObjects
-        // There is a limitof 100 objects for bulk update API, so we fetch 101 so see if user has more that 100.
+        // There is a limitof 100 objects for bulk update API
         let pageNumber = Constants.pageNumber
         let action = ProductVariationAction
             .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: numberOfObjects) { [weak self] error in

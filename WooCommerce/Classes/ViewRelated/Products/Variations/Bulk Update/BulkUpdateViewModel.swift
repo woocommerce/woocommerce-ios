@@ -8,8 +8,8 @@ final class BulkUpdateViewModel {
     /// Represents possible states for syncing product variations.
     enum SyncState: Equatable {
         case syncing
-        case syncedResults
-        case syncingError
+        case synced
+        case error
         case notStarted
     }
 
@@ -55,11 +55,11 @@ final class BulkUpdateViewModel {
                 }
 
                 if let error = error {
-                    self.syncState = .syncingError
+                    self.syncState = .error
 
                     DDLogError("⛔️ Error synchronizing product variations: \(error)")
                 } else {
-                    self.syncState = .syncedResults
+                    self.syncState = .synced
                 }
             }
 

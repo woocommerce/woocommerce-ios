@@ -86,7 +86,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Then
-        XCTAssertEqual(viewModel.syncState, .syncingError)
+        XCTAssertEqual(viewModel.syncState, .error)
     }
 
     func test_sync_state_updates_to_syncResults_when_product_variations_syncing_is_successful() {
@@ -105,6 +105,6 @@ final class BulkUpdateViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Then
-        XCTAssertEqual(viewModel.syncState, .syncedResults)
+        XCTAssertEqual(viewModel.syncState, .synced)
     }
 }

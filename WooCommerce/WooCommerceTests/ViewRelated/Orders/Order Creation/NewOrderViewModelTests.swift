@@ -18,7 +18,6 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .none)
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "pending")
         XCTAssertEqual(viewModel.productRows.count, 0)
-        XCTAssertFalse(viewModel.shouldShowPaymentSection)
     }
 
     func test_create_button_is_enabled_when_order_detail_changes_from_default_value() {
@@ -318,24 +317,6 @@ class NewOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(paymentDataViewModel.itemsTotal, "£20.00")
         XCTAssertEqual(paymentDataViewModel.orderTotal, "£30.00")
-    }
-
-    func test_payment_section_only_displayed_when_order_has_products() {
-        // Given
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
-        let storageManager = MockStorageManager()
-        storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
-
-        // When & Then
-        viewModel.addProductViewModel.selectProduct(product.productID)
-        XCTAssertTrue(viewModel.shouldShowPaymentSection)
-
-        // When & Then
-        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows[0].id, productID: product.productID)
-        viewModel.removeItemFromOrder(itemToRemove)
-
-        XCTAssertFalse(viewModel.shouldShowPaymentSection)
     }
 
     func test_payment_section_is_updated_when_products_update() {

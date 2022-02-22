@@ -6,6 +6,8 @@ import Yosemite
 struct Inbox: View {
     /// View model that drives the view.
     @ObservedObject private(set) var viewModel: InboxViewModel
+    @State private var showingActionSheet: Bool = false
+    @State private var showingDismissAlert: Bool = false
 
     init(viewModel: InboxViewModel) {
         self.viewModel = viewModel
@@ -45,6 +47,33 @@ struct Inbox: View {
         .onAppear {
             viewModel.onLoadTrigger.send()
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    showingActionSheet = true
+                }, label: {
+                    Image(uiImage: .moreImage)
+                        .renderingMode(.template)
+                })
+            }
+        }
+        .actionSheet(isPresented: $showingActionSheet) {
+            ActionSheet(
+                title: Text(Localization.title),
+                buttons: [
+                    .default(Text(Localization.dismissAllNotification), action: {
+                        showingDismissAlert = true
+                    }),
+                    .cancel()
+                ]
+            )
+        }
+        .alert(isPresented: $showingDismissAlert) {
+            return Alert(title: Text(Localization.dismissAlertTitle),
+                  message: Text(Localization.dismissAlertMessage),
+                  primaryButton: .default(Text(Localization.dismissAllNotification), action: viewModel.dismissAllInboxNotes),
+                  secondaryButton: .cancel())
+        }
     }
 }
 
@@ -61,6 +90,12 @@ private extension Inbox {
                                                          comment: "Title displayed if there are no inbox notes in the inbox screen.")
         static let emptyStateMessage = NSLocalizedString("Come back soon for more tips and insights on growing your store",
                                                          comment: "Message displayed if there are no inbox notes to display in the inbox screen.")
+        static let dismissAllNotification = NSLocalizedString("Dismiss All",
+                                                              comment: "Dismiss All button in Inbox Notes for dismissing all the notes.")
+        static let dismissAlertTitle = NSLocalizedString("Dismiss all messages",
+                                                         comment: "Title of the alert for dismissing all the inbox notes.")
+        static let dismissAlertMessage = NSLocalizedString("Are you sure? Inbox messages will be dismissed forever.",
+                                                           comment: "Message displayed in the alert for dismissing all the inbox notes.")
     }
 }
 

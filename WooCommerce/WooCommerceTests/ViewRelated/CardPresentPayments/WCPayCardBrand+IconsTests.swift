@@ -50,7 +50,7 @@ class WCPayCardBrand_IconsTests: XCTestCase {
         let sut = WCPayCardBrand.diners
         XCTAssertNotNil(sut.icon)
         XCTAssertEqual(sut.iconName, "card-brand-diners")
-        XCTAssertEqual(sut.iconAspectHorizontal, 1.58)
+        XCTAssertEqual(sut.iconAspectHorizontal, 1.3684)
     }
 
     func test_unionpay_has_icon_and_card_shaped_aspect_ratio() {

@@ -36,6 +36,8 @@ extension WCPayCardBrand {
         switch self {
         case .interac:
             return 1
+        case .diners:
+            return 1.3684
         default:
             return 1.58
         }

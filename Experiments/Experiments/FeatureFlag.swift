@@ -14,10 +14,6 @@ public enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Shipping labels - Multi-package support
-    ///
-    case shippingLabelsMultiPackage
-
     /// Display the bar for displaying the filters in the Order List
     ///
     case orderListFilters

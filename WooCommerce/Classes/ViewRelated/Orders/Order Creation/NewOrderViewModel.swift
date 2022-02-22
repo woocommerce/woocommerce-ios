@@ -484,6 +484,7 @@ private extension NewOrderViewModel {
 
                 let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
 
+                // TODO-6236: move totals calculation to LocalOrderSynchronizer, add tax to feesBaseAmount
                 let feesBaseAmountForPercentage = itemsTotal.adding(shippingTotal)
 
                 let feesTotal = order.fees

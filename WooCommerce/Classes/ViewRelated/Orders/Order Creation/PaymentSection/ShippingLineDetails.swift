@@ -29,12 +29,13 @@ struct ShippingLineDetails: View {
                             AdaptiveStack(horizontalAlignment: .leading) {
                                 Text(Localization.amountField)
                                     .bodyStyle()
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .fixedSize()
+
+                                Spacer()
 
                                 BindableTextfield(viewModel.amountPlaceholder, text: $viewModel.amount, focus: $focusAmountInput)
                                     .keyboardType(.decimalPad)
                                     .addingCurrencySymbol(viewModel.currencySymbol, on: viewModel.currencyPosition)
-                                    .fixedSize()
                                     .onTapGesture {
                                         focusAmountInput = true
                                     }
@@ -102,26 +103,30 @@ struct ShippingLineDetails: View {
 private struct CurrencySymbol: ViewModifier {
     let symbol: String
     let position: CurrencySettings.CurrencyPosition
+    let symbolSpacing: CGFloat?
+
+    init(symbol: String, position: CurrencySettings.CurrencyPosition) {
+        self.symbol = symbol
+        self.position = position
+        self.symbolSpacing = {
+            switch position {
+            case .left, .right:
+                return .zero
+            case .leftSpace, .rightSpace:
+                return nil
+            }
+        }()
+    }
 
     func body(content: Content) -> some View {
-        HStack(spacing: .zero) {
+        HStack(spacing: symbolSpacing) {
             switch position {
-            case .left:
+            case .left, .leftSpace:
                 Text(symbol)
                     .bodyStyle()
                 content
-            case .leftSpace:
-                Text(symbol)
-                    .bodyStyle()
-                Spacer()
+            case .right, .rightSpace:
                 content
-            case .right:
-                content
-                Text(symbol)
-                    .bodyStyle()
-            case .rightSpace:
-                content
-                Spacer()
                 Text(symbol)
                     .bodyStyle()
             }

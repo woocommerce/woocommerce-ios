@@ -1,6 +1,7 @@
 import UIKit
 import WordPressUI
 import Yosemite
+import Experiments
 
 import class AutomatticTracks.CrashLogging
 
@@ -101,6 +102,7 @@ final class ProductVariationsViewController: UIViewController {
     private let viewModel: ProductVariationsViewModel
     private let noticePresenter: NoticePresenter
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
 
     /// ViewController that pushed `self`. Needed in order to go back to it when the first variation is created.
     ///
@@ -114,12 +116,14 @@ final class ProductVariationsViewController: UIViewController {
          viewModel: ProductVariationsViewModel,
          product: Product,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.initialViewController = initialViewController
         self.product = product
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -168,7 +172,7 @@ private extension ProductVariationsViewController {
     /// Sets the navigation bar buttons
     ///
     func configureNavigationBarButtons() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.bulkEditProductVariations) else {
+        guard featureFlagService.isFeatureFlagEnabled(.bulkEditProductVariations) else {
             return
         }
 
@@ -567,8 +571,7 @@ private extension ProductVariationsViewController {
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.bulkUpdate) { _ in
         }
 
-        actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel) { _ in
-        }
+        actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel)
 
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.barButtonItem = sender

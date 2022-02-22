@@ -22,27 +22,6 @@ public enum CardBrand: String, CaseIterable, Codable {
     case unknown
 }
 
-extension CardBrand: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .visa:
-            return "Visa"
-        case .amex:
-            return "American Express"
-        case .masterCard:
-            return "Mastercard"
-        case .discover:
-            return "Discover"
-        case .jcb:
-            return "JCB"
-        case .dinersClub:
-            return "Diners Club"
-        case .unknown:
-            return "Other"
-        }
-    }
-}
-
 extension CardBrand {
     // The initializer for Bundle only works with class types.
     // We use this class as a shortcut to find the bundle for the CardBrand enum type

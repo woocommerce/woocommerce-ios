@@ -37,12 +37,12 @@ final class BulkUpdateViewModel {
     /// This should only be called when the corresponding view was loaded.
     ///
     func activate() {
-        synchAllProductVariations()
+        synchProductVariations()
     }
 
-    /// Start synching all product variations.
+    /// Start synching product variations. There is a limit of 100 objects that can be bulk updated.
     ///
-    func synchAllProductVariations() {
+    func synchProductVariations() {
         syncState = .syncing
 
         let numberOfObjects = Constants.numberOfObjects

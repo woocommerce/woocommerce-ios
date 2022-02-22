@@ -11,6 +11,7 @@ public enum WCPayCardBrand: String, Codable, GeneratedCopiable, GeneratedFakeabl
     case amex
     case diners
     case discover
+    case interac
     case jcb
     case mastercard
     case unionpay

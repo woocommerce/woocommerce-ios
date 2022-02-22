@@ -108,7 +108,7 @@ struct FeeLineDetails: View {
 
     private var inputPercentageField: some View {
         TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.amountField, viewModel.percentSymbol),
-                             placeholder: "",
+                             placeholder: "0",
                              text: .constant(viewModel.amount),
                              symbol: nil,
                              keyboardType: .decimalPad)

@@ -39,7 +39,8 @@ struct ShippingLineDetails: View {
                                         focusAmountInput = true
                                     }
                             }
-                            .padding()
+                            .frame(minHeight: Layout.amountRowHeight)
+                            .padding([.leading, .trailing], Layout.amountRowPadding)
 
                             Divider()
                                 .padding(.leading, Layout.dividerPadding)
@@ -133,6 +134,8 @@ private extension ShippingLineDetails {
     enum Layout {
         static let sectionSpacing: CGFloat = 16.0
         static let dividerPadding: CGFloat = 16.0
+        static let amountRowHeight: CGFloat = 44
+        static let amountRowPadding: CGFloat = 16
     }
 
     enum Localization {

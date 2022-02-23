@@ -227,9 +227,9 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
     }
 
     // MARK: - Navigation actions
-    
+
     func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSettingsError) -> Void) {
-        
+
         if let error = priceSettingsValidator.validate(regularPrice: regularPrice,
                                                        salePrice: salePrice,
                                                        dateOnSaleStart: dateOnSaleStart,

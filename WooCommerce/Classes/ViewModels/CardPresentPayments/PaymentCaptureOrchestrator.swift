@@ -233,6 +233,7 @@ private extension PaymentCaptureOrchestrator {
                                  receiptDescription: receiptDescription(orderNumber: order.number),
                                  statementDescription: statementDescriptor,
                                  receiptEmail: order.billingAddress?.email,
+                                 paymentMethodTypes: ["card_present"],
                                  metadata: metadata,
                                  customerID: customerID)
     }

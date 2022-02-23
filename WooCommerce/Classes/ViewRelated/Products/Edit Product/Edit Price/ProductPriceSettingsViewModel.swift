@@ -35,16 +35,8 @@ protocol ProductPriceSettingsActionHandler {
     func handleSaleEndDateChange(_ date: Date?)
 
     // Navigation actions
-    func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSetingsError) -> Void)
+    func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSettingsError) -> Void)
     func hasUnsavedChanges() -> Bool
-}
-
-/// Error cases that could occur in product price settings.
-///
-enum ProductPriceSetingsError: Error {
-    case salePriceWithoutRegularPrice
-    case salePriceHigherThanRegularPrice
-    case newSaleWithEmptySalePrice
 }
 
 /// Provides view data for price settings, and handles init/UI/navigation actions needed in product price settings.
@@ -88,14 +80,14 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
     //
     private let standardTaxClass: TaxClass
 
-    private let currencyFormatter: CurrencyFormatter
+    private let priceSettingsValidator: ProductPriceSettingsValidator
 
     init(product: ProductFormDataModel & TaxClassRequestable,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          timezoneForScheduleSaleDates: TimeZone = TimeZone.siteTimezone) {
         self.product = product
         self.timezoneForScheduleSaleDates = timezoneForScheduleSaleDates
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.priceSettingsValidator = ProductPriceSettingsValidator(currencySettings: currencySettings)
 
         regularPrice = product.regularPrice
         salePrice = product.salePrice
@@ -235,23 +227,14 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
     }
 
     // MARK: - Navigation actions
-
-    func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSetingsError) -> Void) {
-
-        guard doesScheduleDateHasPrice() else {
-            return onError(.newSaleWithEmptySalePrice)
-        }
-
-        // Check if the sale price is populated, and the regular price is not.
-        if getDecimalPrice(salePrice) != nil, getDecimalPrice(regularPrice) == nil {
-            onError(.salePriceWithoutRegularPrice)
-            return
-        }
-
-        // Check if the sale price is less of the regular price, else show an error.
-        if let decimalSalePrice = getDecimalPrice(salePrice), let decimalRegularPrice = getDecimalPrice(regularPrice),
-           decimalSalePrice.compare(decimalRegularPrice) != .orderedAscending {
-            onError(.salePriceHigherThanRegularPrice)
+    
+    func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSettingsError) -> Void) {
+        
+        if let error = priceSettingsValidator.validate(regularPrice: regularPrice,
+                                                       salePrice: salePrice,
+                                                       dateOnSaleStart: dateOnSaleStart,
+                                                       dateOnSaleEnd: dateOnSaleEnd) {
+            onError(error)
             return
         }
 
@@ -265,8 +248,8 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
         let newTaxClass = taxClass?.slug == standardTaxClass.slug ? "" : taxClass?.slug
         let originalTaxClass = product.taxClass == standardTaxClass.slug ? "": product.taxClass
 
-        if getDecimalPrice(regularPrice) != getDecimalPrice(product.regularPrice) ||
-            getDecimalPrice(salePrice) != getDecimalPrice(product.salePrice) ||
+        if priceSettingsValidator.getDecimalPrice(regularPrice) != priceSettingsValidator.getDecimalPrice(product.regularPrice) ||
+            priceSettingsValidator.getDecimalPrice(salePrice) != priceSettingsValidator.getDecimalPrice(product.salePrice) ||
             dateOnSaleStart != originalDateOnSaleStart ||
             dateOnSaleEnd != product.dateOnSaleEnd ||
             taxStatus.rawValue != product.taxStatusKey ||
@@ -275,22 +258,6 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
         }
 
         return false
-    }
-
-    func doesScheduleDateHasPrice() -> Bool {
-        if dateOnSaleStart != nil && dateOnSaleEnd != nil {
-            return getDecimalPrice(salePrice) != nil
-        }
-        return true
-    }
-}
-
-private extension ProductPriceSettingsViewModel {
-    func getDecimalPrice(_ price: String?) -> NSDecimalNumber? {
-        guard let price = price else {
-            return nil
-        }
-        return currencyFormatter.convertToDecimal(from: price)
     }
 }
 

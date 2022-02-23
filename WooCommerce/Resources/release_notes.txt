@@ -1,3 +1,9 @@
-We’ve refreshed a bit of the My Store tab based on your feedback. You’ll see a conversion percentage and now top 5 (instead of 3) products sold.
+- [***] Merchants can now view coupons in their stores by enabling Coupon Management in Experimental Features. [https://github.com/woocommerce/woocommerce-ios/pull/6209]
+- [*] Orders: In the experimental Order Creation feature, product variations added to a new order now show a list of their attributes. [https://github.com/woocommerce/woocommerce-ios/pull/6131]
+- [*] Enlarged the tap area for the action button on the notice view. [https://github.com/woocommerce/woocommerce-ios/pull/6146]
+- [*] Reviews: Fixed crash on iPad when tapping the More button. [https://github.com/woocommerce/woocommerce-ios/pull/6187]
+- [*] In-Person Payments: Remove Stripe from Experimental Features as it is always enabled now. [https://github.com/woocommerce/woocommerce-ios/pull/6205]
+- [*] Disabled unneccesary selection of the "Refund via" row on the Refund Confirmation screen [https://github.com/woocommerce/woocommerce-ios/pull/6198]
+- [*] Increased minimum version of Stripe extension for In-Person Payments to 6.2.0 [https://github.com/woocommerce/woocommerce-ios/pull/xxxx]
+- [internal] Removed `pushNotificationsForAllStores` feature flag. Since the changes are non-trivial, it would be great to smoke test push notifications for all stores in beta testing. [https://github.com/woocommerce/woocommerce-ios/pull/6231]
 
-You’ve been asking to create orders in the app. We’re happy to say we have a sneak peek ready if you want to help us test it out! Head over to settings in the app and turn on the experimental feature for Order Creation. Right now, you can add products, notes, and addresses, and future releases will have additional functionality.

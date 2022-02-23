@@ -1,4 +1,6 @@
 import Combine
+import protocol Storage.StorageManagerType
+import protocol Storage.StorageType
 import XCTest
 import Yosemite
 @testable import WooCommerce
@@ -7,8 +9,17 @@ final class InboxViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 322
     private var subscriptions: [AnyCancellable] = []
 
+    /// Mock Storage: InMemory
+    private var storageManager: StorageManagerType!
+
+    /// View storage for tests
+    private var storage: StorageType {
+        storageManager.viewStorage
+    }
+
     override func setUp() {
         super.setUp()
+        storageManager = MockStorageManager()
         subscriptions = []
     }
 
@@ -61,16 +72,17 @@ final class InboxViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         var invocationCountOfLoadInboxNotes = 0
         var syncPageNumber: Int?
-        let note = InboxNote.fake()
+        let note = InboxNote.fake().copy(siteID: sampleSiteID)
         stores.whenReceivingAction(ofType: InboxNotesAction.self) { action in
             guard case let .loadAllInboxNotes(_, pageNumber, _, _, _, _, completion) = action else {
                 return
             }
             invocationCountOfLoadInboxNotes += 1
             syncPageNumber = pageNumber
+            self.insertInboxNotes([note])
             completion(.success([note]))
         }
-        let viewModel = InboxViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = InboxViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         var states = [InboxViewModel.SyncState]()
         viewModel.$syncState.sink { state in
@@ -122,18 +134,20 @@ final class InboxViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         var invocationCountOfLoadInboxNotes = 0
         var syncPageNumber: Int?
-        let firstPageNotes = [InboxNote](repeating: .fake(), count: pageSize)
-        let secondPageNotes = [InboxNote](repeating: .fake(), count: pageSize - 1)
+        let firstPageNotes = [InboxNote](repeating: .fake().copy(siteID: sampleSiteID), count: pageSize)
+        let secondPageNotes = [InboxNote](repeating: .fake().copy(siteID: sampleSiteID), count: pageSize - 1)
         stores.whenReceivingAction(ofType: InboxNotesAction.self) { action in
             guard case let .loadAllInboxNotes(_, pageNumber, _, _, _, _, completion) = action else {
                 return
             }
             invocationCountOfLoadInboxNotes += 1
             syncPageNumber = pageNumber
-            completion(.success(pageNumber == 1 ? firstPageNotes: secondPageNotes))
+            let notes = pageNumber == 1 ? firstPageNotes: secondPageNotes
+            self.insertInboxNotes(notes)
+            completion(.success(notes))
         }
 
-        let viewModel = InboxViewModel(siteID: sampleSiteID, pageSize: pageSize, stores: stores)
+        let viewModel = InboxViewModel(siteID: sampleSiteID, pageSize: pageSize, stores: stores, storageManager: storageManager)
 
         var states = [InboxViewModel.SyncState]()
         viewModel.$syncState.sink { state in
@@ -156,14 +170,15 @@ final class InboxViewModelTests: XCTestCase {
     func test_noteRowViewModels_match_loaded_notes() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let note = InboxNote.fake()
+        let note = InboxNote.fake().copy(siteID: sampleSiteID)
         stores.whenReceivingAction(ofType: InboxNotesAction.self) { action in
             guard case let .loadAllInboxNotes(_, _, _, _, _, _, completion) = action else {
                 return
             }
+            self.insertInboxNotes([note])
             completion(.success([note]))
         }
-        let viewModel = InboxViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = InboxViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -188,5 +203,67 @@ final class InboxViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.noteRowViewModels, [])
+    }
+
+    func test_noteRowViewModels_do_not_include_removed_notes() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let note = InboxNote.fake().copy(siteID: sampleSiteID, isRemoved: false)
+        let removedNote = InboxNote.fake().copy(siteID: sampleSiteID, isRemoved: true)
+        stores.whenReceivingAction(ofType: InboxNotesAction.self) { action in
+            guard case let .loadAllInboxNotes(_, _, _, _, _, _, completion) = action else {
+                return
+            }
+            let notes = [removedNote, note]
+            self.insertInboxNotes(notes)
+            completion(.success(notes))
+        }
+        let viewModel = InboxViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then only note with `isRemoved: false` is available
+        XCTAssertEqual(viewModel.noteRowViewModels.count, 1)
+        XCTAssertEqual(viewModel.noteRowViewModels.first, .init(note: note))
+    }
+
+    func test_noteRowViewModels_are_sorted_by_dateCreated_and_id() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        // GMT Monday, February 28, 2022 8:18:04 AM
+        let latestNote = InboxNote.fake().copy(siteID: sampleSiteID, id: 0, dateCreated: .init(timeIntervalSince1970: 1646036284))
+        // GMT Friday, February 25, 2022 8:18:04 AM
+        let date = Date(timeIntervalSince1970: 1645777084)
+        let noteWithDateAndSmallerID = InboxNote.fake().copy(siteID: sampleSiteID, id: 1, dateCreated: date)
+        let noteWithDateAndLargerID = InboxNote.fake().copy(siteID: sampleSiteID, id: 3, dateCreated: date)
+        stores.whenReceivingAction(ofType: InboxNotesAction.self) { action in
+            guard case let .loadAllInboxNotes(_, _, _, _, _, _, completion) = action else {
+                return
+            }
+            let notes = [noteWithDateAndLargerID, noteWithDateAndSmallerID, latestNote]
+            self.insertInboxNotes(notes)
+            completion(.success(notes))
+        }
+        let viewModel = InboxViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then notes are first sorted by descending date and then by ascending ID
+        XCTAssertEqual(viewModel.noteRowViewModels.count, 3)
+        assertEqual(viewModel.noteRowViewModels[0], .init(note: latestNote))
+        assertEqual(viewModel.noteRowViewModels[1], .init(note: noteWithDateAndSmallerID))
+        assertEqual(viewModel.noteRowViewModels[2], .init(note: noteWithDateAndLargerID))
+    }
+}
+
+extension InboxViewModelTests {
+    func insertInboxNotes(_ readOnlyInboxNotes: [InboxNote]) {
+        readOnlyInboxNotes.forEach { inboxNote in
+            let newInboxNote = storage.insertNewObject(ofType: StorageInboxNote.self)
+            newInboxNote.update(with: inboxNote)
+        }
+        storage.saveIfNeeded()
     }
 }

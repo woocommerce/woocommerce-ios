@@ -316,12 +316,6 @@ extension ShippingLabelAddressFormViewController: UITableViewDelegate {
             show(listSelector, sender: self)
 
         case .country:
-            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsInternational) else {
-                let notice = Notice(title: Localization.countryNotEditable, feedbackType: .warning)
-                ServiceLocator.noticePresenter.enqueue(notice: notice)
-                return
-            }
-
             let countries = viewModel.countries
             let selectedCountry = countries.first { $0.code == viewModel.address?.country }
             let command = ShippingLabelCountryListSelectorCommand(countries: countries, selected: selectedCountry)
@@ -627,8 +621,6 @@ private extension ShippingLabelAddressFormViewController {
                                                             comment: "Error in finding the address in the Shipping Label Address Validation in Apple Maps")
         static let phoneNumberErrorNotice = NSLocalizedString("The phone number is not valid or you can't call the customer from this device.",
             comment: "Error in calling the phone number of the customer in the Shipping Label Address Validation")
-        static let countryNotEditable = NSLocalizedString("Currently we support just the United States from mobile.",
-                                                          comment: "Error when the user tap on Country field in Shipping Label Address Validation")
         static let contactActionLabel = NSLocalizedString("Contact Customer", comment: "Contact Customer action in Shipping Label Address Validation.")
         static let contactActionCancel = NSLocalizedString("Cancel", comment: "Close the action sheet")
         static let contactActionEmail = NSLocalizedString("Email", comment: "Email button title")

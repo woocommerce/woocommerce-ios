@@ -94,10 +94,6 @@ private extension BetaFeaturesViewController {
     func inPersonPaymentsSection() -> Section? {
         var rows: [Row] = []
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.stripeExtensionInPersonPayments) {
-            rows += [.stripeExtensionInPersonPayments, .stripeExtensionInPersonPaymentsDescription]
-        }
-
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.canadaInPersonPayments) {
             rows += [.canadaInPersonPayments, .canadaInPersonPaymentsDescription]
         }
@@ -153,11 +149,6 @@ private extension BetaFeaturesViewController {
             configureOrderCreationSwitch(cell: cell)
         case let cell as BasicTableViewCell where row == .orderCreationDescription:
             configureOrderCreationDescription(cell: cell)
-        // WooCommerce Stripe Payment Gateway extension In-Person Payments
-        case let cell as SwitchTableViewCell where row == .stripeExtensionInPersonPayments:
-            configureStripeExtensionInPersonPaymentsSwitch(cell: cell)
-        case let cell as BasicTableViewCell where row == .stripeExtensionInPersonPaymentsDescription:
-            configureStripeExtensionInPersonPaymentsDescription(cell: cell)
         // In-Person Payments in Canada
         case let cell as SwitchTableViewCell where row == .canadaInPersonPayments:
             configureCanadaInPersonPaymentsSwitch(cell: cell)
@@ -241,37 +232,6 @@ private extension BetaFeaturesViewController {
     func configureOrderCreationDescription(cell: BasicTableViewCell) {
         configureCommonStylesForDescriptionCell(cell)
         cell.textLabel?.text = Localization.orderCreationDescription
-    }
-
-    func configureStripeExtensionInPersonPaymentsSwitch(cell: SwitchTableViewCell) {
-        configureCommonStylesForSwitchCell(cell)
-        cell.title = Localization.stripeExtensionInPersonPaymentsTitle
-
-        // Fetch switch's state stored value.
-        let action = AppSettingsAction.loadStripeInPersonPaymentsSwitchState { result in
-            guard let isEnabled = try? result.get() else {
-                return cell.isOn = false
-            }
-            cell.isOn = isEnabled
-        }
-        ServiceLocator.stores.dispatch(action)
-
-        // Change switch's state stored value
-        cell.onChange = { isSwitchOn in
-            let action = AppSettingsAction.setStripeInPersonPaymentsSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
-                // Roll back toggle if an error occurred
-                if result.isFailure {
-                    cell.isOn.toggle()
-                }
-            })
-            ServiceLocator.stores.dispatch(action)
-        }
-        cell.accessibilityIdentifier = "beta-features-stripe-extension-in-person-payments-cell"
-    }
-
-    func configureStripeExtensionInPersonPaymentsDescription(cell: BasicTableViewCell) {
-        configureCommonStylesForDescriptionCell(cell)
-        cell.textLabel?.text = Localization.stripeExtensionInPersonPaymentsDescription
     }
 
     func configureCanadaInPersonPaymentsSwitch(cell: SwitchTableViewCell) {
@@ -434,10 +394,6 @@ private enum Row: CaseIterable {
     case orderCreation
     case orderCreationDescription
 
-    // WooCommerce Stripe Payment Gateway extension In-Person Payments
-    case stripeExtensionInPersonPayments
-    case stripeExtensionInPersonPaymentsDescription
-
     // In-Person Payments in Canada
     case canadaInPersonPayments
     case canadaInPersonPaymentsDescription
@@ -452,9 +408,9 @@ private enum Row: CaseIterable {
 
     var type: UITableViewCell.Type {
         switch self {
-        case .orderAddOns, .orderCreation, .stripeExtensionInPersonPayments, .canadaInPersonPayments, .productSKUInputScanner, .couponManagement:
+        case .orderAddOns, .orderCreation, .canadaInPersonPayments, .productSKUInputScanner, .couponManagement:
             return SwitchTableViewCell.self
-        case .orderAddOnsDescription, .orderCreationDescription, .stripeExtensionInPersonPaymentsDescription, .canadaInPersonPaymentsDescription,
+        case .orderAddOnsDescription, .orderCreationDescription, .canadaInPersonPaymentsDescription,
                 .productSKUInputScannerDescription, .couponManagementDescription:
             return BasicTableViewCell.self
         }
@@ -480,15 +436,6 @@ private extension BetaFeaturesViewController {
         static let orderCreationDescription = NSLocalizedString(
             "Test out creating new manual orders as we get ready to launch",
             comment: "Cell description on the beta features screen to enable creating new orders")
-
-        static let stripeExtensionInPersonPaymentsTitle = NSLocalizedString(
-            "IPP with Stripe extension",
-            comment: "Cell title on beta features screen to enable accepting in-person payments for stores with the " +
-            "WooCommerce Stripe Payment Gateway extension")
-        static let stripeExtensionInPersonPaymentsDescription = NSLocalizedString(
-            "Test out In-Person Payments with the Stripe Payment Gateway extension",
-            comment: "Cell description on beta features screen to enable accepting in-person payments for stores with " +
-            "the WooCommerce Stripe Payment Gateway extension")
 
         static let canadaExtensionInPersonPaymentsTitle = NSLocalizedString(
             "In-Person Payments in Canada",

@@ -28,10 +28,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let isOrderCreationSwitchEnabled: Bool
 
-    /// The state for the Stripe Gateway Extension IPP feature switch
-    ///
-    public let isStripeInPersonPaymentsSwitchEnabled: Bool
-
     /// The state for the In-Person Payments in Canada feature switch
     ///
     public let isCanadaInPersonPaymentsSwitchEnabled: Bool
@@ -60,7 +56,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
                 isOrderCreationSwitchEnabled: Bool,
-                isStripeInPersonPaymentsSwitchEnabled: Bool,
                 isCanadaInPersonPaymentsSwitchEnabled: Bool,
                 isProductSKUInputScannerSwitchEnabled: Bool,
                 isCouponManagementSwitchEnabled: Bool,
@@ -71,7 +66,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
         self.isOrderCreationSwitchEnabled = isOrderCreationSwitchEnabled
-        self.isStripeInPersonPaymentsSwitchEnabled = isStripeInPersonPaymentsSwitchEnabled
         self.isCanadaInPersonPaymentsSwitchEnabled = isCanadaInPersonPaymentsSwitchEnabled
         self.isProductSKUInputScannerSwitchEnabled = isProductSKUInputScannerSwitchEnabled
         self.isCouponManagementSwitchEnabled = isCouponManagementSwitchEnabled
@@ -102,7 +96,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             feedbacks: updatedFeedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
             isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
-            isStripeInPersonPaymentsSwitchEnabled: isStripeInPersonPaymentsSwitchEnabled,
             isCanadaInPersonPaymentsSwitchEnabled: isCanadaInPersonPaymentsSwitchEnabled,
             isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
             isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
@@ -123,7 +116,6 @@ extension GeneralAppSettings {
         self.feedbacks = try container.decodeIfPresent([FeedbackType: FeedbackSettings].self, forKey: .feedbacks) ?? [:]
         self.isViewAddOnsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isViewAddOnsSwitchEnabled) ?? false
         self.isOrderCreationSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isOrderCreationSwitchEnabled) ?? false
-        self.isStripeInPersonPaymentsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isStripeInPersonPaymentsSwitchEnabled) ?? false
         self.isCanadaInPersonPaymentsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isCanadaInPersonPaymentsSwitchEnabled) ?? false
         self.isProductSKUInputScannerSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isProductSKUInputScannerSwitchEnabled) ?? false
         self.isCouponManagementSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isCouponManagementSwitchEnabled) ?? false

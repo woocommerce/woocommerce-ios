@@ -42,7 +42,8 @@ extension Coupon {
         var calendar = Calendar.current
         calendar.timeZone = gmtTimeZone
 
-        let result = calendar.compare(expiryDate, to: now, toGranularity: .day)
+        // Compare the dates by minute to get around edge cases of timezone differences.
+        let result = calendar.compare(expiryDate, to: now, toGranularity: .minute)
         return result == .orderedDescending ? .active : .expired
     }
 

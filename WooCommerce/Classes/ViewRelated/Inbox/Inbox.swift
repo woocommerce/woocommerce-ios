@@ -55,6 +55,7 @@ struct Inbox: View {
                     Image(uiImage: .moreImage)
                         .renderingMode(.template)
                 })
+                    .renderedIf(viewModel.syncState == .results)
             }
         }
         .actionSheet(isPresented: $showingActionSheet) {

@@ -82,9 +82,6 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let action = try XCTUnwrap(storesManager.receivedActions.first as? ShippingLabelAction)
         guard case let ShippingLabelAction.checkCreationEligibility(siteID: siteID,
                                                                     orderID: orderID,
-                                                                    canCreatePaymentMethod: canCreatePaymentMethod,
-                                                                    canCreateCustomsForm: canCreateCustomsForm,
-                                                                    canCreatePackage: canCreatePackage,
                                                                     onCompletion: _) = action else {
             XCTFail("Expected \(action) to be \(ShippingLabelAction.self)")
             return
@@ -92,8 +89,5 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         XCTAssertEqual(siteID, order.siteID)
         XCTAssertEqual(orderID, order.orderID)
-        XCTAssertTrue(canCreatePaymentMethod)
-        XCTAssertTrue(canCreateCustomsForm)
-        XCTAssertTrue(canCreatePackage)
     }
 }

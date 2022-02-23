@@ -50,9 +50,10 @@ private extension ShippingLabelCustomsFormList {
     }
 }
 
+#if DEBUG
 struct ShippingLabelCustomsFormList_Previews: PreviewProvider {
     static let sampleViewModel: ShippingLabelCustomsFormListViewModel = {
-        let sampleOrder = ShippingLabelPackageDetailsViewModel.sampleOrder()
+        let sampleOrder = ShippingLabelSampleData.sampleOrder()
         let sampleForm = ShippingLabelCustomsForm(packageID: "Food Package", packageName: "Food Package", items: [])
         return ShippingLabelCustomsFormListViewModel(order: sampleOrder,
                                                      customsForms: [sampleForm],
@@ -64,3 +65,4 @@ struct ShippingLabelCustomsFormList_Previews: PreviewProvider {
         ShippingLabelCustomsFormList(viewModel: sampleViewModel) { _ in }
     }
 }
+#endif

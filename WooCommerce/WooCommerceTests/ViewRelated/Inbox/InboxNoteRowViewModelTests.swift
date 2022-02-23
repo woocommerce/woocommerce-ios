@@ -23,39 +23,6 @@ final class InboxNoteRowViewModelTests: XCTestCase {
         XCTAssertEqual(actionViewModel.id, action.id)
     }
 
-    func test_initializing_InboxNoteRowViewModel_with_supported_note_types_sets_typeIcon_accordingly() {
-        // Given
-        let types = ["error", "warning", "update", "info", "marketing", "survey"]
-        // TODO: 5954 - update type icons after design updates
-        let expectedTypeIcons = [Image(systemName: "exclamationmark.octagon.fill"), // error
-                                 Image(systemName: "exclamationmark.bubble.fill"), // warning
-                                 Image(systemName: "gearshape.fill"), // update
-                                 Image(uiImage: .infoImage), // info
-                                 Image(systemName: "lightbulb.fill"), // marketing
-                                 Image(systemName: "doc.plaintext") // survey
-        ]
-
-        for (type, expectedTypeIcon) in zip(types, expectedTypeIcons) {
-            // When
-            let note = InboxNote.fake().copy(type: type)
-            let viewModel = InboxNoteRowViewModel(note: note)
-
-            // Then
-            XCTAssertEqual(viewModel.typeIcon, expectedTypeIcon)
-        }
-    }
-
-    func test_initializing_InboxNoteRowViewModel_with_unsupported_note_type_sets_typeIcon_to_info_type() {
-        // When
-        let note = InboxNote.fake().copy(type: "special")
-        let viewModel = InboxNoteRowViewModel(note: note)
-
-        // Then
-        // TODO: 5954 - update type icon after design updates
-        let infoTypeIcon = Image(uiImage: .infoImage)
-        XCTAssertEqual(viewModel.typeIcon, infoTypeIcon)
-    }
-
     func test_initializing_InboxNoteRowViewModel_with_dateCreated_now_sets_date_to_now() throws {
         // Given
         // GMT Tuesday, February 15, 2022 6:55:28 AM

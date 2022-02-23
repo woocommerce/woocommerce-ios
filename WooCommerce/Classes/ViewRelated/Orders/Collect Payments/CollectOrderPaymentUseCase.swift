@@ -74,6 +74,11 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                                        alertsProvider: CardReaderSettingsAlerts())
     }()
 
+    /// IPP Configuration loader
+    private lazy var configurationLoader = {
+        CardPresentConfigurationLoader(stores: stores)
+    }()
+
     init(siteID: Int64,
          order: Order,
          formattedAmount: String,
@@ -172,6 +177,7 @@ private extension CollectOrderPaymentUseCase {
         paymentOrchestrator.collectPayment(
             for: order,
                paymentGatewayAccount: paymentGatewayAccount,
+               paymentMethodTypes: configurationLoader.configuration.paymentMethods.map(\.rawValue),
                onWaitingForInput: { [weak self] in
                    // Request card input
                    self?.alerts.tapOrInsertCard(onCancel: {

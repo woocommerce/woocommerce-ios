@@ -17,6 +17,7 @@ final class PaymentCaptureOrchestrator {
 
     func collectPayment(for order: Order,
                         paymentGatewayAccount: PaymentGatewayAccount,
+                        paymentMethodTypes: [String],
                         onWaitingForInput: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
@@ -50,6 +51,7 @@ final class PaymentCaptureOrchestrator {
             guard let parameters = paymentParameters(
                     order: order,
                     statementDescriptor: paymentGatewayAccount.statementDescriptor,
+                    paymentMethodTypes: paymentMethodTypes,
                     customerID: customerID
             ) else {
                 DDLogError("Error: failed to create payment parameters for an order")
@@ -213,7 +215,7 @@ private extension PaymentCaptureOrchestrator {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func paymentParameters(order: Order, statementDescriptor: String?, customerID: String?) -> PaymentParameters? {
+    func paymentParameters(order: Order, statementDescriptor: String?, paymentMethodTypes: [String], customerID: String?) -> PaymentParameters? {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without a valid total.")
             return nil
@@ -233,7 +235,7 @@ private extension PaymentCaptureOrchestrator {
                                  receiptDescription: receiptDescription(orderNumber: order.number),
                                  statementDescription: statementDescriptor,
                                  receiptEmail: order.billingAddress?.email,
-                                 paymentMethodTypes: ["card_present"],
+                                 paymentMethodTypes: paymentMethodTypes,
                                  metadata: metadata,
                                  customerID: customerID)
     }

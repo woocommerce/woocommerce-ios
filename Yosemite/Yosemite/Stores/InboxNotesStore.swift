@@ -115,7 +115,12 @@ private extension InboxNotesStore {
                               type: [InboxNotesRemote.NoteType]? = nil,
                               status: [InboxNotesRemote.Status]? = nil,
                               completion: @escaping (Result<Void, Error>) -> ()) {
-        remote.dismissAllInboxNotes(for: siteID, pageNumber: pageNumber, pageSize: pageSize, orderBy: orderBy, type: type, status: status) { [weak self] result in
+        remote.dismissAllInboxNotes(for: siteID,
+                                    pageNumber: pageNumber,
+                                    pageSize: pageSize,
+                                    orderBy: orderBy,
+                                    type: type,
+                                    status: status) { [weak self] result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))

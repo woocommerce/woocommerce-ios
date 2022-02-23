@@ -10,8 +10,7 @@ final class PaymentIntent_ReceiptParametersTests: XCTestCase {
         XCTAssertEqual(receiptParameters?.amount, intent.amount)
         XCTAssertEqual(receiptParameters?.currency, intent.currency)
 
-        guard let paymentMethod = intent.charges.first?.paymentMethod,
-              case .presentCard(details: let cardDetails) = paymentMethod else {
+        guard let cardDetails = self.charges.first?.paymentMethod?.cardPresentDetails else {
             XCTFail()
             return
         }

@@ -33,4 +33,13 @@ final class ExtendedAddProductImageCollectionViewCellTests: XCTestCase {
         XCTAssertEqual(cell?.title?.textColor, mockLabel.textColor)
     }
 
+    func testVariationAndProductProductImageLabelsDiffer() {
+        cell?.configurePlaceholderLabelForProductImages(isVariation: true)
+        let variationLabel = cell?.title?.text
+
+        cell?.configurePlaceholderLabelForProductImages(isVariation: false)
+        let productLabel = cell?.title?.text
+
+        XCTAssertNotEqual(variationLabel, productLabel)
+    }
 }

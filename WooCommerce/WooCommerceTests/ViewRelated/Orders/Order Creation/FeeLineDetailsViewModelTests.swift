@@ -87,7 +87,7 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
 
         // When & Then
         viewModel.feeType = .percentage
-        XCTAssertFalse(viewModel.shouldDisableDoneButton)
+        XCTAssertTrue(viewModel.shouldDisableDoneButton)
     }
 
     func test_view_model_disables_done_button_for_matched_percentage_value() {

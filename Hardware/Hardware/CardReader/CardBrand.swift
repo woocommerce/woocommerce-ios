@@ -18,7 +18,8 @@ public enum CardBrand: String, CaseIterable, Codable {
     /// Diners Club card
     case dinersClub
 
-    //TODO: Add Interac here
+    /// Interac unbranded card
+    case interac
 
     /// An unknown card brand
     case unknown
@@ -55,6 +56,8 @@ extension CardBrand {
             return "jcb"
         case .dinersClub:
             return "diners"
+        case .interac:
+            return "interac"
         case .unknown:
             return "unknown"
         }

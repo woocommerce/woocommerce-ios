@@ -114,6 +114,9 @@ private extension RemoteOrderSynchronizer {
         // Needed when the order creation finishes but the merchant issued new updates.
         let forceUpdateSignal = PassthroughSubject<SyncOperation, Never>()
 
+        // Stores the latest request. Needed to validate if an update needs to be fired after the order is created.
+        var latestRequest: SyncOperation?
+
         // Combine inputs that should trigger an order sync operation.
         let syncTrigger: AnyPublisher<SyncOperation, Never> = setProduct.map { _ in () }
             .merge(with: setAddresses.map { _ in () })
@@ -122,8 +125,12 @@ private extension RemoteOrderSynchronizer {
             .debounce(for: 1, scheduler: DispatchQueue.main) // Group & wait for 0.5s since the last signal was emitted.
             .compactMap { [weak self] in
                 guard let self = self else { return nil }
+                print("Me: Sync Trigger")
                 return SyncOperation(order: self.order) // Imperative `withLatestFrom` as it appears to have bugs when assigning a new order value.
             }
+            .handleEvents(receiveOutput: { request in
+                latestRequest = request // Assign latest request to further evaluation.
+            })
             .share()
             .eraseToAnyPublisher()
 
@@ -136,24 +143,26 @@ private extension RemoteOrderSynchronizer {
             .flatMap(maxPublishers: .max(1)) { [weak self] request -> AnyPublisher<SyncOperation, Error> in // Only allow one request at a time.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
                 self.state = .syncing
+                print("Me: Creating Order")
                 return self.createOrderRemotely(request)
             }
             .catch { [weak self] error -> AnyPublisher<SyncOperation, Never> in // When an error occurs, update state & finish.
                 self?.state = .error(error)
                 return Empty().eraseToAnyPublisher()
             }
-            .withLatestFrom(syncTrigger) // Get the latest sync request to evaluate if we need to fire an update after the order is created.
-            .sink { [weak self] response, latestRequest in
+            .sink { [weak self] response in
                 // If there are no pending update requests, update state & order.
-                if response.id == latestRequest.id {
+                if response.id == latestRequest?.id {
                     self?.state = .synced
                     self?.order = response.order
-                } else {
+                    print("Me: Order Created")
+                } else if let latestRequest = latestRequest {
                     // Otherwise update order id & force an update request.
                     let newOrderToUpdate = latestRequest.order.copy(orderID: response.order.orderID)
                     self?.order = newOrderToUpdate
 
                     forceUpdateSignal.send(SyncOperation(order: newOrderToUpdate))
+                    print("Me: Order Created - Needs Update")
                 }
             }
             .store(in: &subscriptions)
@@ -168,6 +177,7 @@ private extension RemoteOrderSynchronizer {
             .map { [weak self] request -> AnyPublisher<SyncOperation, Error> in // Allow multiple requests, once per update request.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
                 self.state = .syncing
+                print("Me: Updating Order")
                 return self.updateOrderRemotely(request)
             }
             .switchToLatest() // Always switch/listen to the latest fired update request.
@@ -178,6 +188,7 @@ private extension RemoteOrderSynchronizer {
             .sink { [weak self] response in // When finished, update state & order.
                 self?.state = .synced
                 self?.order = response.order
+                print("Me: Order Updated")
             }
             .store(in: &subscriptions)
     }
@@ -200,6 +211,7 @@ private extension RemoteOrderSynchronizer {
                     let newLocalOrder = remoteOrder.copy(status: self.order.status)
                     let updatedRequest = request.copy(order: newLocalOrder)
                     promise(.success(updatedRequest))
+                    print("Me: Create Request Ended")
 
                 case .failure(let error):
                     promise(.failure(error))
@@ -217,15 +229,15 @@ private extension RemoteOrderSynchronizer {
         Future<SyncOperation, Error> { [weak self] promise in
             guard let self = self else { return }
 
-            // Creates the order with the `draft` status
-            let draftOrder = request.order.copy(status: self.baseSyncStatus)
+            // Updates the order supported fields.
+            // Status is not updated as we want to continue using the "draft" status.
             let supportedFields: [OrderUpdateField] = [
                 .shippingAddress,
                 .billingAddress,
                 .fees,
                 .shippingLines,
             ]
-            let action = OrderAction.updateOrder(siteID: self.siteID, order: draftOrder, fields: supportedFields) { [weak self] result in
+            let action = OrderAction.updateOrder(siteID: self.siteID, order: request.order, fields: supportedFields) { [weak self] result in
                 guard let self = self else { return }
 
                 switch result {
@@ -234,6 +246,7 @@ private extension RemoteOrderSynchronizer {
                     let newLocalOrder = remoteOrder.copy(status: self.order.status)
                     let updatedRequest = request.copy(order: newLocalOrder)
                     promise(.success(updatedRequest))
+                    print("Me: Update Request Ended")
 
                 case .failure(let error):
                     promise(.failure(error))

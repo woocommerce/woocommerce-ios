@@ -18,6 +18,8 @@ public enum CardBrand: String, CaseIterable, Codable {
     /// Diners Club card
     case dinersClub
 
+    //TODO: Add Interac here
+
     /// An unknown card brand
     case unknown
 }

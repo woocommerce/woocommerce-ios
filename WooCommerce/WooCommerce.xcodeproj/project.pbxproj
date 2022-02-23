@@ -660,9 +660,7 @@
 		451A04F12386F7B500E368C9 /* ProductImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451A04EF2386F7B500E368C9 /* ProductImageCollectionViewCell.xib */; };
 		451A04F42386F7C900E368C9 /* AddProductImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A04F22386F7C900E368C9 /* AddProductImageCollectionViewCell.swift */; };
 		451A04F52386F7C900E368C9 /* AddProductImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451A04F32386F7C900E368C9 /* AddProductImageCollectionViewCell.xib */; };
-		451A9963260E31480059D135 /* ShippingLabelPackageDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A9962260E31480059D135 /* ShippingLabelPackageDetailsViewModel.swift */; };
 		451A9973260E39270059D135 /* ShippingLabelPackageNumberRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A9972260E39270059D135 /* ShippingLabelPackageNumberRow.swift */; };
-		451A997D260E393B0059D135 /* ShippingLabelPackageDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A997C260E393B0059D135 /* ShippingLabelPackageDetails.swift */; };
 		451B1740258B7EFB00836277 /* AddAttributeOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451B173E258B7EFB00836277 /* AddAttributeOptionsViewController.swift */; };
 		451B1741258B7EFB00836277 /* AddAttributeOptionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451B173F258B7EFB00836277 /* AddAttributeOptionsViewController.xib */; };
 		451B1747258BD7B600836277 /* AddAttributeOptionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451B1746258BD7B600836277 /* AddAttributeOptionsViewModel.swift */; };
@@ -2288,9 +2286,7 @@
 		451A04EF2386F7B500E368C9 /* ProductImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductImageCollectionViewCell.xib; sourceTree = "<group>"; };
 		451A04F22386F7C900E368C9 /* AddProductImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		451A04F32386F7C900E368C9 /* AddProductImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddProductImageCollectionViewCell.xib; sourceTree = "<group>"; };
-		451A9962260E31480059D135 /* ShippingLabelPackageDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageDetailsViewModel.swift; sourceTree = "<group>"; };
 		451A9972260E39270059D135 /* ShippingLabelPackageNumberRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageNumberRow.swift; sourceTree = "<group>"; };
-		451A997C260E393B0059D135 /* ShippingLabelPackageDetails.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageDetails.swift; sourceTree = "<group>"; };
 		451B173E258B7EFB00836277 /* AddAttributeOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAttributeOptionsViewController.swift; sourceTree = "<group>"; };
 		451B173F258B7EFB00836277 /* AddAttributeOptionsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddAttributeOptionsViewController.xib; sourceTree = "<group>"; };
 		451B1746258BD7B600836277 /* AddAttributeOptionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAttributeOptionsViewModel.swift; sourceTree = "<group>"; };
@@ -4801,8 +4797,6 @@
 			children = (
 				DE279BA226E9C3BF002BA963 /* Multi-package */,
 				DE69C55427C5E317000BB888 /* ShippingLabelSampleData.swift */,
-				451A997C260E393B0059D135 /* ShippingLabelPackageDetails.swift */,
-				451A9962260E31480059D135 /* ShippingLabelPackageDetailsViewModel.swift */,
 				45DB705F2614C7E80064A6CF /* ShippingLabelPackageDetailsResultsControllers.swift */,
 				451A9972260E39270059D135 /* ShippingLabelPackageNumberRow.swift */,
 				45CE2D302625AA7900E3CA00 /* Package Selection */,
@@ -8383,7 +8377,6 @@
 				02CA63DB23D1ADD100BBF148 /* MediaPickingCoordinator.swift in Sources */,
 				028FA466257E021100F88A48 /* RefundShippingLabelViewModel.swift in Sources */,
 				CCC284112768C18500F6CC8B /* ProductInOrder.swift in Sources */,
-				451A9963260E31480059D135 /* ShippingLabelPackageDetailsViewModel.swift in Sources */,
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,
 				265BCA0C2430E741004E53EE /* ProductCategoryTableViewCell.swift in Sources */,
 				451A9973260E39270059D135 /* ShippingLabelPackageNumberRow.swift in Sources */,
@@ -8470,7 +8463,6 @@
 				74D0A5302139CF1300E2919F /* String+Helpers.swift in Sources */,
 				0286B27F23C70557003D784B /* ColumnFlowLayout.swift in Sources */,
 				DEE6437626D87C4100888A75 /* PrintCustomsFormsView.swift in Sources */,
-				451A997D260E393B0059D135 /* ShippingLabelPackageDetails.swift in Sources */,
 				450C2CB624D1ABB200D570DD /* ProductImagesGalleryViewController.swift in Sources */,
 				7435E58E21C0151B00216F0F /* OrderNote+Woo.swift in Sources */,
 				451A04F42386F7C900E368C9 /* AddProductImageCollectionViewCell.swift in Sources */,

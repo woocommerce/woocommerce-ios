@@ -21,7 +21,7 @@ struct RefreshableScrollView<Content: View>: View {
 
     // MARK: Constants
 
-    private let minOffsetToRefresh: CGFloat = 50.0
+    private let minOffsetToRefresh: CGFloat = 30.0
 
     init(refreshAction: @escaping RefreshAction,
          @ViewBuilder content: () -> Content) {
@@ -35,6 +35,7 @@ struct RefreshableScrollView<Content: View>: View {
                 VStack(spacing: 0) {
                     if isRefreshing {
                         ProgressView()
+                            .scaleEffect(x: 1.5, y: 1.5, anchor: .center)
                             .padding()
                     }
                     content

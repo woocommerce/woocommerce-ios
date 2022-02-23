@@ -65,19 +65,17 @@ struct ShippingLabelPackageList: View {
                     }
                 }
 
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddCustomPackages) {
-                    NavigationLink(destination: ShippingLabelAddNewPackage(viewModel: viewModel.addNewPackageViewModel),
-                                   isActive: $isShowingNewPackageCreation) {
-                        EmptyView()
-                    }
-                    BottomButtonView(style: LinkButtonStyle(),
-                                     title: Localization.createPackageButton,
-                                     image: .plusImage,
-                                     onButtonTapped: {
-                                        ServiceLocator.analytics.track(.shippingLabelAddPackageTapped)
-                                        self.isShowingNewPackageCreation = true
-                                     })
+                NavigationLink(destination: ShippingLabelAddNewPackage(viewModel: viewModel.addNewPackageViewModel),
+                               isActive: $isShowingNewPackageCreation) {
+                    EmptyView()
                 }
+                BottomButtonView(style: LinkButtonStyle(),
+                                 title: Localization.createPackageButton,
+                                 image: .plusImage,
+                                 onButtonTapped: {
+                                    ServiceLocator.analytics.track(.shippingLabelAddPackageTapped)
+                                    self.isShowingNewPackageCreation = true
+                                 })
             }
         }
     }

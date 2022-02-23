@@ -68,7 +68,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let tableViewModel = DefaultProductFormTableViewModel(product: model, actionsFactory: actionsFactory, currency: "")
 
         // Assert
-      guard case let .primaryFields(rows) = tableViewModel.sections[0] else {
+        guard case let .primaryFields(rows) = tableViewModel.sections[0] else {
             XCTFail("Unexpected section at index 0: \(tableViewModel.sections)")
             return
         }
@@ -82,9 +82,9 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         }
 
         if let isVariation = isVariation {
-          XCTAssertTrue(isVariation)
+            XCTAssertTrue(isVariation)
         } else {
-          XCTFail("Cell not found")
+            XCTFail("Cell not found")
         }
     }
 
@@ -119,5 +119,4 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             XCTFail("Cell not found")
         }
     }
-
 }

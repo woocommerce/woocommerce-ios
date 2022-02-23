@@ -113,6 +113,18 @@ extension InboxViewModel: PaginationTrackerDelegate {
         }
         stores.dispatch(action)
     }
+
+    func dismissAllInboxNotes() {
+        let action = InboxNotesAction.dismissAllInboxNotes(siteID: siteID) { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                DDLogError("⛔️ Error on dismissing all inbox notes: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
 }
 
 // MARK: - Configuration

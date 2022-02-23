@@ -69,8 +69,8 @@ struct Inbox: View {
             )
         }
         .alert(isPresented: $showingDismissAlert) {
-            return Alert(title: Text(Localization.dismissAlertTitle),
-                  message: Text(Localization.dismissAlertMessage),
+            return Alert(title: Text(Localization.dismissAllNotesAlertTitle),
+                  message: Text(Localization.dismissAllNotesAlertMessage),
                   primaryButton: .default(Text(Localization.dismissAllNotes), action: viewModel.dismissAllInboxNotes),
                   secondaryButton: .cancel())
         }
@@ -92,9 +92,9 @@ private extension Inbox {
                                                          comment: "Message displayed if there are no inbox notes to display in the inbox screen.")
         static let dismissAllNotes = NSLocalizedString("Dismiss All",
                                                               comment: "Dismiss All button in Inbox Notes for dismissing all the notes.")
-        static let dismissAlertTitle = NSLocalizedString("Dismiss all messages",
+        static let dismissAllNotesAlertTitle = NSLocalizedString("Dismiss all messages",
                                                          comment: "Title of the alert for dismissing all the inbox notes.")
-        static let dismissAlertMessage = NSLocalizedString("Are you sure? Inbox messages will be dismissed forever.",
+        static let dismissAllNotesAlertMessage = NSLocalizedString("Are you sure? Inbox messages will be dismissed forever.",
                                                            comment: "Message displayed in the alert for dismissing all the inbox notes.")
     }
 }

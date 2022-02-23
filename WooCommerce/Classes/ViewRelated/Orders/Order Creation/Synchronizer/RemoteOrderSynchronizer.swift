@@ -131,7 +131,6 @@ private extension RemoteOrderSynchronizer {
             .debounce(for: 1, scheduler: DispatchQueue.main) // Group & wait for 0.5s since the last signal was emitted.
             .compactMap { [weak self] in
                 guard let self = self else { return nil }
-                print("Me: Sync Trigger")
                 return SyncOperation(order: self.order) // Imperative `withLatestFrom` as it appears to have bugs when assigning a new order value.
             }
             .handleEvents(receiveOutput: { request in
@@ -149,7 +148,6 @@ private extension RemoteOrderSynchronizer {
             .flatMap(maxPublishers: .max(1)) { [weak self] request -> AnyPublisher<SyncOperation, Error> in // Only allow one request at a time.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
                 self.state = .syncing
-                print("Me: Creating Order")
                 return self.createOrderRemotely(request)
             }
             .catch { [weak self] error -> AnyPublisher<SyncOperation, Never> in // When an error occurs, update state & finish.
@@ -161,7 +159,6 @@ private extension RemoteOrderSynchronizer {
                 if response.id == latestRequest?.id {
                     self?.state = .synced
                     self?.order = response.order
-                    print("Me: Order Created")
                 } else if let latestRequest = latestRequest {
                     // Otherwise update order id & force an update request.
                     let newOrderToUpdate = latestRequest.order.copy(orderID: response.order.orderID)
@@ -183,7 +180,6 @@ private extension RemoteOrderSynchronizer {
             .map { [weak self] request -> AnyPublisher<SyncOperation, Error> in // Allow multiple requests, once per update request.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
                 self.state = .syncing
-                print("Me: Updating Order")
                 return self.updateOrderRemotely(request)
             }
             .switchToLatest() // Always switch/listen to the latest fired update request.
@@ -194,7 +190,6 @@ private extension RemoteOrderSynchronizer {
             .sink { [weak self] response in // When finished, update state & order.
                 self?.state = .synced
                 self?.order = response.order
-                print("Me: Order Updated")
             }
             .store(in: &subscriptions)
     }

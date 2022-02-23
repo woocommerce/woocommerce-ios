@@ -205,6 +205,58 @@ final class InboxViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.noteRowViewModels, [])
     }
 
+    func test_noteRowViewModels_do_not_include_removed_notes() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let note = InboxNote.fake().copy(siteID: sampleSiteID, isRemoved: false)
+        let removedNote = InboxNote.fake().copy(siteID: sampleSiteID, isRemoved: true)
+        stores.whenReceivingAction(ofType: InboxNotesAction.self) { action in
+            guard case let .loadAllInboxNotes(_, _, _, _, _, _, completion) = action else {
+                return
+            }
+            let notes = [removedNote, note]
+            self.insertInboxNotes(notes)
+            completion(.success(notes))
+        }
+        let viewModel = InboxViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then only note with `isRemoved: false` is available
+        XCTAssertEqual(viewModel.noteRowViewModels.count, 1)
+        XCTAssertEqual(viewModel.noteRowViewModels.first, .init(note: note))
+    }
+
+    func test_noteRowViewModels_are_sorted_by_dateCreated_and_id() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        // GMT Monday, February 28, 2022 8:18:04 AM
+        let latestNote = InboxNote.fake().copy(siteID: sampleSiteID, id: 0, dateCreated: .init(timeIntervalSince1970: 1646036284))
+        // GMT Friday, February 25, 2022 8:18:04 AM
+        let date = Date(timeIntervalSince1970: 1645777084)
+        let noteWithDateAndSmallerID = InboxNote.fake().copy(siteID: sampleSiteID, id: 1, dateCreated: date)
+        let noteWithDateAndLargerID = InboxNote.fake().copy(siteID: sampleSiteID, id: 3, dateCreated: date)
+        stores.whenReceivingAction(ofType: InboxNotesAction.self) { action in
+            guard case let .loadAllInboxNotes(_, _, _, _, _, _, completion) = action else {
+                return
+            }
+            let notes = [noteWithDateAndLargerID, noteWithDateAndSmallerID, latestNote]
+            self.insertInboxNotes(notes)
+            completion(.success(notes))
+        }
+        let viewModel = InboxViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then notes are first sorted by descending date and then by ascending ID
+        XCTAssertEqual(viewModel.noteRowViewModels.count, 3)
+        assertEqual(viewModel.noteRowViewModels[0], .init(note: latestNote))
+        assertEqual(viewModel.noteRowViewModels[1], .init(note: noteWithDateAndSmallerID))
+        assertEqual(viewModel.noteRowViewModels[2], .init(note: noteWithDateAndLargerID))
+    }
+
     // MARK: - `onRefreshAction`
 
     func test_onRefreshAction_resyncs_the_first_page() {

@@ -26,26 +26,22 @@ struct ShippingLineDetails: View {
                 VStack(spacing: .zero) {
                     Section {
                         Group {
-                            ZStack(alignment: .center) {
-                                // Hidden input text field
-                                BindableTextfield("", text: $viewModel.amount, focus: $focusAmountInput)
-                                    .keyboardType(.decimalPad)
-                                    .opacity(0)
+                            AdaptiveStack(horizontalAlignment: .leading) {
+                                Text(Localization.amountField)
+                                    .bodyStyle()
+                                    .fixedSize()
 
-                                // Visible & formatted field
-                                TitleAndTextFieldRow(title: Localization.amountField,
-                                                     placeholder: "",
-                                                     text: .constant(viewModel.formattedAmount),
-                                                     symbol: nil,
-                                                     keyboardType: .decimalPad)
-                                    .foregroundColor(Color(viewModel.amountTextColor))
-                                    .disabled(true)
+                                Spacer()
+
+                                BindableTextfield(viewModel.amountPlaceholder, text: $viewModel.amount, focus: $focusAmountInput)
+                                    .keyboardType(.decimalPad)
+                                    .addingCurrencySymbol(viewModel.currencySymbol, on: viewModel.currencyPosition)
+                                    .onTapGesture {
+                                        focusAmountInput = true
+                                    }
                             }
-                            .background(Color(.listForeground))
-                            .fixedSize(horizontal: false, vertical: true)
-                            .onTapGesture {
-                                focusAmountInput = true
-                            }
+                            .frame(minHeight: Layout.amountRowHeight)
+                            .padding([.leading, .trailing], Layout.amountRowPadding)
 
                             Divider()
                                 .padding(.leading, Layout.dividerPadding)
@@ -102,11 +98,59 @@ struct ShippingLineDetails: View {
     }
 }
 
+/// Adds a currency symbol to the left or right of the provided content
+///
+private struct CurrencySymbol: ViewModifier {
+    let symbol: String
+    let position: CurrencySettings.CurrencyPosition
+    let symbolSpacing: CGFloat?
+
+    init(symbol: String, position: CurrencySettings.CurrencyPosition) {
+        self.symbol = symbol
+        self.position = position
+        self.symbolSpacing = {
+            switch position {
+            case .left, .right:
+                return .zero
+            case .leftSpace, .rightSpace:
+                return nil
+            }
+        }()
+    }
+
+    func body(content: Content) -> some View {
+        HStack(spacing: symbolSpacing) {
+            switch position {
+            case .left, .leftSpace:
+                Text(symbol)
+                    .bodyStyle()
+                content
+            case .right, .rightSpace:
+                content
+                Text(symbol)
+                    .bodyStyle()
+            }
+        }
+    }
+}
+
+private extension View {
+    /// Adds the provided symbol to the left or right of the text field
+    /// - Parameters:
+    ///   - symbol: Currency symbol
+    ///   - position: Position for the currency symbol, in relation to the text field
+    func addingCurrencySymbol(_ symbol: String, on position: CurrencySettings.CurrencyPosition) -> some View {
+        modifier(CurrencySymbol(symbol: symbol, position: position))
+    }
+}
+
 // MARK: Constants
 private extension ShippingLineDetails {
     enum Layout {
         static let sectionSpacing: CGFloat = 16.0
         static let dividerPadding: CGFloat = 16.0
+        static let amountRowHeight: CGFloat = 44
+        static let amountRowPadding: CGFloat = 16
     }
 
     enum Localization {

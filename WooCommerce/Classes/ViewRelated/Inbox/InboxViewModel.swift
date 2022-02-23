@@ -16,10 +16,10 @@ final class InboxViewModel: ObservableObject {
         // The content does not matter because the text in placeholder rows is redacted.
         InboxNoteRowViewModel(id: $0,
                               date: "   ",
-                              typeIcon: .init(uiImage: .infoImage),
                               title: "            ",
                               attributedContent: .init(string: "\n\n\n"),
-                              actions: [.init(id: 0, title: "Placeholder", url: nil)])
+                              actions: [.init(id: 0, title: "Placeholder", url: nil)],
+                              siteID: 123)
     }
 
     // MARK: Sync
@@ -91,8 +91,8 @@ extension InboxViewModel: PaginationTrackerDelegate {
                                                         pageNumber: pageNumber,
                                                         pageSize: pageSize,
                                                         orderBy: .date,
-                                                        type: nil,
-                                                        status: nil) { [weak self] result in
+                                                        type: [.info, .marketing, .survey, .warning],
+                                                        status: [.unactioned, .actioned]) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let notes):

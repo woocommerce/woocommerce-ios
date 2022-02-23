@@ -90,6 +90,28 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldDisableDoneButton)
     }
 
+    func test_view_model_disables_done_button_for_matched_percentage_value() {
+        // Given
+        // Initial fee is $10/5%
+        let inputData = NewOrderViewModel.PaymentDataViewModel(shouldShowFees: true,
+                                                               feesBaseAmountForPercentage: 200,
+                                                               feesTotal: "10")
+
+        let viewModel = FeeLineDetailsViewModel(inputData: inputData, locale: usLocale, storeCurrencySettings: usStoreSettings, didSelectSave: { _ in })
+        XCTAssertTrue(viewModel.shouldDisableDoneButton)
+
+        // When & Then
+        // Change fee to $5
+        viewModel.amount = "5"
+        XCTAssertFalse(viewModel.shouldDisableDoneButton)
+
+        // When & Then
+        // Change fee to 5%
+        viewModel.amount = "5"
+        viewModel.feeType = .percentage
+        XCTAssertTrue(viewModel.shouldDisableDoneButton)
+    }
+
     func test_view_model_creates_fee_line_with_fixed_amount() {
         // Given
         var savedFeeLine: OrderFeeLine?

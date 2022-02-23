@@ -101,34 +101,6 @@ extension InboxNoteRowViewModel {
     }
 }
 
-private extension InboxNoteRowViewModel {
-    enum NoteType: String {
-        case error
-        case warning
-        case update
-        case info
-        case marketing
-        case survey
-
-        var image: Image {
-            switch self {
-            case .error:
-                return Image(systemName: "exclamationmark.octagon.fill")
-            case .warning:
-                return Image(systemName: "exclamationmark.bubble.fill")
-            case .update:
-                return Image(systemName: "gearshape.fill")
-            case .info:
-                return Image(uiImage: .infoImage)
-            case .marketing:
-                return Image(systemName: "lightbulb.fill")
-            case .survey:
-                return Image(systemName: "doc.plaintext")
-            }
-        }
-    }
-}
-
 /// View model for an action in `InboxNoteRow`.
 struct InboxNoteRowActionViewModel: Identifiable, Equatable {
     let id: Int64

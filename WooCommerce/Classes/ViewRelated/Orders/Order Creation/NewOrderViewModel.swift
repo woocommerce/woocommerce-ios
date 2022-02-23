@@ -352,6 +352,7 @@ extension NewOrderViewModel {
         let shippingMethodTitle: String
 
         let shouldShowFees: Bool
+        let feesBaseAmountForPercentage: Decimal
         let feesTotal: String
 
         /// Whether payment data is being reloaded (during remote sync)
@@ -363,6 +364,7 @@ extension NewOrderViewModel {
              shippingTotal: String = "",
              shippingMethodTitle: String = "",
              shouldShowFees: Bool = false,
+             feesBaseAmountForPercentage: Decimal = 0,
              feesTotal: String = "",
              orderTotal: String = "",
              isLoading: Bool = false,
@@ -372,6 +374,7 @@ extension NewOrderViewModel {
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? ""
             self.shippingMethodTitle = shippingMethodTitle
             self.shouldShowFees = shouldShowFees
+            self.feesBaseAmountForPercentage = feesBaseAmountForPercentage
             self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? ""
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? ""
             self.isLoading = isLoading
@@ -487,13 +490,16 @@ private extension NewOrderViewModel {
 
                 let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
 
+                // TODO-6236: move totals calculation to LocalOrderSynchronizer, add tax to feesBaseAmount
+                let feesBaseAmountForPercentage = itemsTotal.adding(shippingTotal)
+
                 let feesTotal = order.fees
                     .map { $0.total }
                     .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
                     .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
 
-                let orderTotal = itemsTotal.adding(shippingTotal).adding(feesTotal)
+                let orderTotal = feesBaseAmountForPercentage.adding(feesTotal)
 
                 let isDataSyncing: Bool = {
                     switch state {
@@ -509,6 +515,7 @@ private extension NewOrderViewModel {
                                             shippingTotal: shippingTotal.stringValue,
                                             shippingMethodTitle: shippingMethodTitle,
                                             shouldShowFees: order.fees.isNotEmpty,
+                                            feesBaseAmountForPercentage: feesBaseAmountForPercentage as Decimal,
                                             feesTotal: feesTotal.stringValue,
                                             orderTotal: orderTotal.stringValue,
                                             isLoading: isDataSyncing,

@@ -105,6 +105,12 @@ private extension RemoteOrderSynchronizer {
                 order.copy(shippingLines: shippingLineInput.flatMap { [$0] } ?? [])
             }
             .assign(to: &$order)
+
+        setFee.withLatestFrom(orderPublisher)
+            .map { feeLineInput, order in
+                order.copy(fees: feeLineInput.flatMap { [$0] } ?? [])
+            }
+            .assign(to: &$order)
     }
 
     /// Creates or updates the order when a significant order input occurs.

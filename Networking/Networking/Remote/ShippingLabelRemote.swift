@@ -33,9 +33,6 @@ public protocol ShippingLabelRemoteProtocol {
                                             completion: @escaping (Result<Bool, Error>) -> Void)
     func checkCreationEligibility(siteID: Int64,
                                   orderID: Int64,
-                                  canCreatePaymentMethod: Bool,
-                                  canCreateCustomsForm: Bool,
-                                  canCreatePackage: Bool,
                                   completion: @escaping (Result<ShippingLabelCreationEligibilityResponse, Error>) -> Void)
     func purchaseShippingLabel(siteID: Int64,
                                orderID: Int64,
@@ -230,23 +227,12 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
     /// - Parameters:
     ///     - siteID: Remote ID of the site.
     ///     - orderID: Remote ID of the order that owns the shipping labels.
-    ///     - canCreatePaymentMethod: Whether the client supports creating new payment methods.
-    ///     - canCreateCustomsForm: Whether the client supports creating customs forms.
-    ///     - canCreatePackage: Whether the client supports creating packages.
     ///     - completion: Closure to be executed upon completion.
     public func checkCreationEligibility(siteID: Int64,
                                          orderID: Int64,
-                                         canCreatePaymentMethod: Bool,
-                                         canCreateCustomsForm: Bool,
-                                         canCreatePackage: Bool,
                                          completion: @escaping (Result<ShippingLabelCreationEligibilityResponse, Error>) -> Void) {
-        let parameters = [
-            ParameterKey.canCreatePaymentMethod: canCreatePaymentMethod,
-            ParameterKey.canCreateCustomsForm: canCreateCustomsForm,
-            ParameterKey.canCreatePackage: canCreatePackage
-        ]
         let path = "\(Path.shippingLabels)/\(orderID)/creation_eligibility"
-        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = ShippingLabelCreationEligibilityMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }

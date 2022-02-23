@@ -360,7 +360,7 @@ private extension WCPayCardBrand {
         case .discover:
             return "Discover"
         case .interac:
-            return "interac"
+            return "Interac"
         case .jcb:
             return "JCB"
         case .mastercard:

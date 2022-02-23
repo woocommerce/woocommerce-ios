@@ -120,28 +120,35 @@ private extension RemoteOrderSynchronizer {
         // Needed when the order creation finishes but the merchant issued new updates.
         let forceUpdateSignal = PassthroughSubject<SyncOperation, Never>()
 
-        // Stores the latest request. Needed to validate if an update needs to be fired after the order is created.
-        var latestRequest: SyncOperation?
-
         // Combine inputs that should trigger an order sync operation.
         let syncTrigger: AnyPublisher<SyncOperation, Never> = setProduct.map { _ in () }
             .merge(with: setAddresses.map { _ in () })
             .merge(with: setShipping.map { _ in () })
             .merge(with: setFee.map { _ in () })
-            .debounce(for: 1, scheduler: DispatchQueue.main) // Group & wait for 0.5s since the last signal was emitted.
+            .debounce(for: 1, scheduler: DispatchQueue.main) // Group & wait for 1s since the last signal was emitted.
             .compactMap { [weak self] in
                 guard let self = self else { return nil }
                 return SyncOperation(order: self.order) // Imperative `withLatestFrom` as it appears to have bugs when assigning a new order value.
             }
-            .handleEvents(receiveOutput: { request in
-                latestRequest = request // Assign latest request to further evaluation.
-            })
             .share()
             .eraseToAnyPublisher()
 
+        bindOrderCreation(trigger: syncTrigger, forceUpdateSignal: forceUpdateSignal)
+        bindOrderUpdate(trigger: syncTrigger, forceUpdateSignal: forceUpdateSignal)
+    }
+
+    /// Binds the provided `trigger` and creates an order when needed(order does not exists remotely).
+    /// Keeps track of subsequent update triggers to send a signal to the provided `forceUpdateSignal`.
+    ///
+    func bindOrderCreation(trigger: AnyPublisher<SyncOperation, Never>, forceUpdateSignal: PassthroughSubject<SyncOperation, Never>) {
+        // Stores the latest request. Needed to validate if an update needs to be fired after the order is created.
+        var latestRequest: SyncOperation?
 
         // Creates a "draft" order if the order has not been created yet.
-        syncTrigger
+        trigger
+            .handleEvents(receiveOutput: { request in
+                latestRequest = request // Assign latest request to further evaluation.
+            })
             .filter { // Only continue if the order has not been created.
                 $0.order.orderID == .zero
             }
@@ -165,14 +172,16 @@ private extension RemoteOrderSynchronizer {
                     self?.order = newOrderToUpdate
 
                     forceUpdateSignal.send(SyncOperation(order: newOrderToUpdate))
-                    print("Me: Order Created - Needs Update")
                 }
             }
             .store(in: &subscriptions)
+    }
 
-
+    /// Binds the provided `trigger` and updates an order when needed(order already exists remotely).
+    ///
+    func bindOrderUpdate(trigger: AnyPublisher<SyncOperation, Never>, forceUpdateSignal: PassthroughSubject<SyncOperation, Never>) {
         // Updates a "draft" order after it has already been created.
-        syncTrigger
+        trigger
             .merge(with: forceUpdateSignal)
             .filter { // Only continue if the order has been created.
                 $0.order.orderID != .zero
@@ -212,7 +221,6 @@ private extension RemoteOrderSynchronizer {
                     let newLocalOrder = remoteOrder.copy(status: self.order.status)
                     let updatedRequest = request.copy(order: newLocalOrder)
                     promise(.success(updatedRequest))
-                    print("Me: Create Request Ended")
 
                 case .failure(let error):
                     promise(.failure(error))
@@ -247,7 +255,6 @@ private extension RemoteOrderSynchronizer {
                     let newLocalOrder = remoteOrder.copy(status: self.order.status)
                     let updatedRequest = request.copy(order: newLocalOrder)
                     promise(.success(updatedRequest))
-                    print("Me: Update Request Ended")
 
                 case .failure(let error):
                     promise(.failure(error))

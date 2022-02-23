@@ -44,7 +44,7 @@ struct InboxNoteRow: View {
                     // HStack with actions and dismiss action.
                     HStack(spacing: Constants.spacingBetweenActions) {
                         ForEach(viewModel.actions) { action in
-                            if let url = action.url {
+                            if action.url != nil {
                                 Button(action.title) {
                                     tappedAction = action
                                     showsWebView = true

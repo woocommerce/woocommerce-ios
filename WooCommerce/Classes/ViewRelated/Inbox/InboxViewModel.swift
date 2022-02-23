@@ -41,7 +41,7 @@ final class InboxViewModel: ObservableObject {
 
     /// Inbox notes ResultsController.
     private lazy var resultsController: ResultsController<StorageInboxNote> = {
-        let predicate = NSPredicate(format: "siteID == %lld AND isRemoved == %@", siteID, NSNumber(value: false))
+        let predicate = NSPredicate(format: "siteID == %lld AND isRemoved == NO", siteID)
         let sortDescriptorByDateCreated = NSSortDescriptor(keyPath: \StorageInboxNote.dateCreated, ascending: false)
         let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageInboxNote.id, ascending: true)
         let resultsController = ResultsController<StorageInboxNote>(storageManager: storageManager,

@@ -657,13 +657,13 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
     enum WCPayPluginVersion: String {
         case unsupportedVersionWithPatch = "2.4.2"
         case unsupportedVersionWithoutPatch = "3.2"
-        case minimumSupportedVersion = "3.2.1" // Should match `CardPresentPaymentsOnboardingState` `minimumSupportedPluginVersion`
+        case minimumSupportedVersion = "3.2.1" // Should match `CardPresentPaymentOnboardingState` `minimumSupportedPluginVersion`
         case supportedVersionWithPatch = "3.2.5"
         case supportedVersionWithoutPatch = "3.3"
     }
 
     enum StripePluginVersion: String {
-        case minimumSupportedVersion = "6.2.0" // Should match `CardPresentPaymentsOnboardingState` `minimumSupportedPluginVersion`
+        case minimumSupportedVersion = "6.2.0" // Should match `CardPresentPaymentOnboardingState` `minimumSupportedPluginVersion`
         case unsupportedVersion = "6.1.0"
     }
 

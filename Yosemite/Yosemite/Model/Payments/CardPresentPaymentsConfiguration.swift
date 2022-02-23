@@ -61,7 +61,11 @@ public struct CardPresentPaymentsConfiguration {
             return Constants.stripeReaderPurchaseUrl
         }
 
-        return URL(string: Constants.purchaseReaderForCountryUrlBase + self.countryCode) ?? Constants.fallbackInPersonPaymentsUrl
+        // TODO
+        // remove this when pages/redirects are added to the website pdfdoF-su-p2 and
+        // return URL(string: Constants.purchaseReaderForCountryUrlBase + self.countryCode) ?? Constants.fallbackInPersonPaymentsUrl
+        // instead
+        return Constants.purchaseM2ReaderUrl
     }
 }
 

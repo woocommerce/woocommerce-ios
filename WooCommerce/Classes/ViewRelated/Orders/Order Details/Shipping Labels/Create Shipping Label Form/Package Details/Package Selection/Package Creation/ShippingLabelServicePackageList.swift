@@ -74,9 +74,10 @@ private extension ShippingLabelServicePackageList {
     }
 }
 
+#if DEBUG
 struct ShippingLabelServicePackageList_Previews: PreviewProvider {
     static var previews: some View {
-        let packagesResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
+        let packagesResponse = ShippingLabelSampleData.samplePackageDetails()
         let populatedViewModel = ShippingLabelServicePackageListViewModel(packagesResponse: packagesResponse)
         let emptyViewModel = ShippingLabelServicePackageListViewModel(packagesResponse: nil)
 
@@ -90,3 +91,4 @@ struct ShippingLabelServicePackageList_Previews: PreviewProvider {
         }
     }
 }
+#endif

@@ -113,12 +113,13 @@ private extension ShippingLabelPackageDetails {
     }
 }
 
+#if DEBUG
 struct ShippingLabelPackageDetails_Previews: PreviewProvider {
 
     static var previews: some View {
 
-        let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
-                                                             packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelSampleData.sampleOrder(),
+                                                             packagesResponse: ShippingLabelSampleData.samplePackageDetails(),
                                                              selectedPackages: [],
                                                              onPackageSyncCompletion: { _ in },
                                                              onPackageSaveCompletion: { _ in })
@@ -132,3 +133,4 @@ struct ShippingLabelPackageDetails_Previews: PreviewProvider {
         .previewDisplayName("Dark")
     }
 }
+#endif

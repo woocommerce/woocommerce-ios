@@ -95,10 +95,12 @@ private extension ShippingLabelPackageList {
     }
 }
 
+#if DEBUG
 struct ShippingLabelPackageList_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ShippingLabelPackageListViewModel(siteID: 123,
-                                                          packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
+                                                          packagesResponse: ShippingLabelSampleData.samplePackageDetails())
         ShippingLabelPackageList(viewModel: viewModel)
     }
 }
+#endif

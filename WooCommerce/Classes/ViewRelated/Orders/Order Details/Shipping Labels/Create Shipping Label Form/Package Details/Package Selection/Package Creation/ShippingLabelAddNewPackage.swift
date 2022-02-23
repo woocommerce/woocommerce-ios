@@ -99,12 +99,14 @@ private extension ShippingLabelAddNewPackage {
     }
 }
 
+#if DEBUG
 struct ShippingLabelAddNewPackage_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ShippingLabelAddNewPackageViewModel(siteID: 12345,
-                                                            packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
+                                                            packagesResponse: ShippingLabelSampleData.samplePackageDetails(),
                                                             onCompletion: { _, _, _ in })
 
         ShippingLabelAddNewPackage(viewModel: viewModel)
     }
 }
+#endif

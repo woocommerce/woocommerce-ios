@@ -6,7 +6,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// All the requirements are met and the feature is ready to use
     ///
-    case completed
+    case completed(plugin: CardPresentPaymentsPlugins)
 
     /// There is more than one plugin installed and activated. The user must deactivate one.
     /// 

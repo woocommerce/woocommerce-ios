@@ -11,25 +11,25 @@ class ShippingLineDetailsViewModel: ObservableObject {
     ///
     private let priceFieldFormatter: PriceFieldFormatter
 
-    /// Formatted amount to display. When empty displays a placeholder value.
+    /// Currency symbol to display with amount text field
     ///
-    var formattedAmount: String {
-        priceFieldFormatter.formattedAmount
-    }
+    let currencySymbol: String
 
-    /// Stores the amount(unformatted) entered by the merchant.
+    /// Position for currency symbol, relative to amount text field
+    ///
+    let currencyPosition: CurrencySettings.CurrencyPosition
+
+    /// Placeholder for amount text field
+    ///
+    let amountPlaceholder: String
+
+    /// Stores the amount entered by the merchant.
     ///
     @Published var amount: String = "" {
         didSet {
             guard amount != oldValue else { return }
             amount = priceFieldFormatter.formatAmount(amount)
         }
-    }
-
-    /// Defines the amount text color.
-    ///
-    var amountTextColor: UIColor {
-        amount.isEmpty ? .textPlaceholder : .text
     }
 
     /// Stores the method title entered by the merchant.
@@ -67,6 +67,9 @@ class ShippingLineDetailsViewModel: ObservableObject {
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          didSelectSave: @escaping ((ShippingLine?) -> Void)) {
         self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
+        self.currencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
+        self.currencyPosition = storeCurrencySettings.currencyPosition
+        self.amountPlaceholder = priceFieldFormatter.formatAmount("0")
 
         self.isExistingShippingLine = inputData.shouldShowShippingTotal
         self.initialMethodTitle = inputData.shippingMethodTitle

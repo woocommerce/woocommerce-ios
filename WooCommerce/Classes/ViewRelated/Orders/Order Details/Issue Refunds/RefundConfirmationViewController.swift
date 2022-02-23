@@ -93,7 +93,8 @@ private extension RefundConfirmationViewController {
             TitleAndValueTableViewCell.self,
             TitleAndEditableValueTableViewCell.self,
             HeadlineLabelTableViewCell.self,
-            WooBasicTableViewCell.self
+            WooBasicTableViewCell.self,
+            RefundConfirmationCardDetailsCell.self
         ].forEach(tableView.registerNib)
 
         // Keyboard handling
@@ -173,6 +174,15 @@ extension RefundConfirmationViewController: UITableViewDataSource {
             cell.applyPlainTextStyle()
             cell.bodyLabel.text = row.text
             cell.selectionStyle = .none
+            return cell
+        case let row as RefundConfirmationViewModel.PaymentDetailsRow:
+            let cell = tableView.dequeueReusableCell(RefundConfirmationCardDetailsCell.self, for: indexPath)
+            cell.selectionStyle = .none
+            cell.update(title: row.paymentGateway,
+                        cardDescription: row.paymentMethodDescription,
+                        cardIcon: row.cardIcon,
+                        iconAspectHorizontal: row.cardIconAspectHorizontal,
+                        accessibilityDescription: row.accessibilityDescription)
             return cell
         default:
             assertionFailure("Unsupported row.")

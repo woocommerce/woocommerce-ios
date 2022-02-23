@@ -17,15 +17,15 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
         viewModel.amount = "hi:11.3005.02-"
 
         // Then
-        XCTAssertEqual(viewModel.formattedAmount, "$11.30")
+        XCTAssertEqual(viewModel.amount, "11.30")
     }
 
     func test_view_model_formats_amount_with_custom_currency_settings() {
         // Given
         let customSettings = CurrencySettings(currencyCode: .GBP,
                                               currencyPosition: .rightSpace,
-                                              thousandSeparator: ",",
-                                              decimalSeparator: ".",
+                                              thousandSeparator: ".",
+                                              decimalSeparator: ",",
                                               numberOfDecimals: 3)
 
         let viewModel = ShippingLineDetailsViewModel(inputData: .init(), locale: usLocale, storeCurrencySettings: customSettings, didSelectSave: { _ in })
@@ -34,7 +34,9 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
         viewModel.amount = "12.203"
 
         // Then
-        XCTAssertEqual(viewModel.formattedAmount, "12.203 £")
+        XCTAssertEqual(viewModel.amount, "12,203")
+        XCTAssertEqual(viewModel.currencySymbol, "£")
+        XCTAssertEqual(viewModel.currencyPosition, .rightSpace)
     }
 
     func test_view_model_prefills_input_data_correctly() {
@@ -47,7 +49,7 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.isExistingShippingLine)
-        XCTAssertEqual(viewModel.formattedAmount, "$11.30")
+        XCTAssertEqual(viewModel.amount, "11.30")
         XCTAssertEqual(viewModel.methodTitle, "Flat Rate")
     }
 

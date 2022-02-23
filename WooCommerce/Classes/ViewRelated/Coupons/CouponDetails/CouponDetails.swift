@@ -24,6 +24,7 @@ struct CouponDetails: View {
     @ObservedObject private var viewModel: CouponDetailsViewModel
     @State private var showingActionSheet: Bool = false
     @State private var showingShareSheet: Bool = false
+    @State private var showingUsageDetails: Bool = false
 
     /// The presenter to display notice when the coupon code is copied.
     /// It is kept internal so that the hosting controller can update its presenting controller to itself.
@@ -34,6 +35,8 @@ struct CouponDetails: View {
         self.noticePresenter = DefaultNoticePresenter()
         viewModel.syncCoupon()
         viewModel.loadCouponReport()
+
+        ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "loaded"])
     }
 
     private var detailRows: [DetailRow] {
@@ -60,9 +63,11 @@ struct CouponDetails: View {
                                         UIPasteboard.general.string = viewModel.couponCode
                                         let notice = Notice(title: Localization.couponCopied, feedbackType: .success)
                                         noticePresenter.enqueue(notice: notice)
+                                        ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "copied_code"])
                                     }),
                                     .default(Text(Localization.shareCoupon), action: {
                                         showingShareSheet = true
+                                        ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "shared_code"])
                                     }),
                                     .cancel()
                                 ]
@@ -118,7 +123,7 @@ struct CouponDetails: View {
                         ForEach(detailRows) { row in
                             TitleAndValueRow(title: row.title,
                                              value: .content(row.content),
-                                             selectable: false,
+                                             selectionStyle: .none,
                                              action: row.action)
                                 .padding(.vertical, Constants.verticalSpacing)
                                 .padding(.horizontal, insets: geometry.safeAreaInsets)
@@ -136,12 +141,15 @@ struct CouponDetails: View {
                             Text(Localization.usageDetails)
                                 .bodyStyle()
                         }, action: {
-                            // TODO-5766: Add usage details screen
+                            showingUsageDetails = true
                         }).padding(.horizontal, insets: geometry.safeAreaInsets)
                     }
                     .background(Color(.listForeground))
                     Divider()
                 }
+                NavigationLink(destination: CouponUsageDetails(viewModel: .init(coupon: viewModel.coupon)), isActive: $showingUsageDetails) {
+                    EmptyView()
+                }.hidden()
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])

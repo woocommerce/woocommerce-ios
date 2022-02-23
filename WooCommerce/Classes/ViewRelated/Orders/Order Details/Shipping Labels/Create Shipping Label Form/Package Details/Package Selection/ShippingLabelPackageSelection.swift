@@ -15,13 +15,15 @@ struct ShippingLabelPackageSelection: View {
     }
 }
 
+#if DEBUG
 struct ShippingLabelPackageSelection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModelWithPackages = ShippingLabelPackageListViewModel(siteID: 123,
-                                                                      packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
+                                                                      packagesResponse: ShippingLabelSampleData.samplePackageDetails())
         let viewModelWithoutPackages = ShippingLabelPackageListViewModel(siteID: 123, packagesResponse: nil)
 
         ShippingLabelPackageSelection(viewModel: viewModelWithPackages)
         ShippingLabelPackageSelection(viewModel: viewModelWithoutPackages)
     }
 }
+#endif

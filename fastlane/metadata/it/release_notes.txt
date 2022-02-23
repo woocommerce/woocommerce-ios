@@ -1,3 +1,3 @@
-In questa nuova versione, noterai una nuova scheda chiamata "Menu". Abbiamo spostato le impostazioni del negozio, passando da un negozio all'altro e mostrando WooCommerce Admin su quella schermata. È lì che sarà possibile visualizzare nuove funzionalità nei prossimi due mesi.
+Abbiamo effettuato qualche piccolo aggiornamento alla scheda Il mio negozio in base al tuo feedback. Visualizzerai una percentuale di conversione e ora i primi 5 (anziché 3) prodotti venduti.
 
-Questo rilascio include anche una correzione alla schermata del prodotto, per la quale, se veniva caricata un'immagine, il nome del prodotto tornava a essere quello precedente. Grazie per aver segnalato i bug. Teniamo in considerazione il tuo feedback.
+Hai chiesto di creare ordini dall'app. Siamo felici di dire che abbiamo un'anteprima pronta se vuoi aiutarci a fare una prova. Passa alle impostazioni nell'app e attiva la funzionalità sperimentale per Creazione dell'ordine. Al momento, puoi aggiungere prodotti, note e indirizzi e i futuri rilasci avranno funzionalità aggiuntive.

@@ -3,7 +3,7 @@ import Networking
 
 /// Factory to create convenience order types.
 ///
-enum OrderFactory {
+public enum OrderFactory {
     /// Creates an order suitable to be used as a simple payments order.
     /// Under the hood it uses a fee line with or without taxes to create an order with the desired amount.
     ///
@@ -51,4 +51,20 @@ enum OrderFactory {
               taxes: [],
               attributes: [])
     }
+
+    /// Creates a fee line suitable to delete a fee line already saved remotely in an order.
+    ///
+    public static func deletedFeeLine(_ feeLine: OrderFeeLine) -> OrderFeeLine {
+        feeLine.copy(name: .some(nil))
+    }
+
+    /// Creates a shipping line suitable to delete a shipping line already saved remotely in an order.
+    ///
+    public static func deletedShippingLine(_ shippingLine: ShippingLine) -> ShippingLine {
+        shippingLine.copy(methodID: .some(nil))
+    }
+
+    /// References a new empty order with constants `Date` values.
+    ///
+    public static let emptyNewOrder = Order.empty
 }

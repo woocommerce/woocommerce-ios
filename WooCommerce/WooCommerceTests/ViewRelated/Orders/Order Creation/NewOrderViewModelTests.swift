@@ -26,7 +26,7 @@ class NewOrderViewModelTests: XCTestCase {
         let viewModel = NewOrderViewModel(siteID: sampleSiteID)
 
         // When
-        viewModel.orderDetails.status = .processing
+        viewModel.updateOrderStatus(newStatus: .processing)
 
         // Then
         XCTAssertEqual(viewModel.navigationTrailingItem, .create)
@@ -82,7 +82,7 @@ class NewOrderViewModelTests: XCTestCase {
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
-        viewModel.orderDetails.status = .processing
+        viewModel.updateOrderStatus(newStatus: .processing)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .createOrder(_, order, onCompletion):
@@ -144,7 +144,7 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "Pending payment")
 
         // When
-        viewModel.orderDetails.status = .processing
+        viewModel.updateOrderStatus(newStatus: .processing)
 
         // Then
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "Processing")
@@ -161,9 +161,7 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product.productID)
 
         // Then
-        let expectedOrderItem = NewOrderViewModel.NewOrderItem(product: product, quantity: 1).orderItem
         XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == sampleProductID }), "Product rows do not contain expected product")
-        XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }), "Order details do not contain expected order item")
     }
 
     func test_order_details_are_updated_when_product_quantity_changes() {
@@ -181,12 +179,11 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product.productID)
 
         // Then
-        let expectedOrderItem = NewOrderViewModel.NewOrderItem(product: product, quantity: 2).orderItem
-        XCTAssertTrue(viewModel.orderDetails.items.contains(where: { $0.orderItem == expectedOrderItem }),
-                      "Order details do not contain order item with updated quantity")
+        XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
+        XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
     }
 
-    func test_selectOrderItem_selects_expected_order_item() {
+    func test_selectOrderItem_selects_expected_order_item() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         let storageManager = MockStorageManager()
@@ -195,11 +192,12 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product.productID)
 
         // When
-        let expectedOrderItem = viewModel.orderDetails.items[0]
-        viewModel.selectOrderItem(expectedOrderItem.id)
+        let expectedRow = viewModel.productRows[0]
+        viewModel.selectOrderItem(expectedRow.id)
 
         // Then
-        XCTAssertEqual(viewModel.selectedOrderItem, expectedOrderItem)
+        XCTAssertNotNil(viewModel.selectedProductViewModel)
+        XCTAssertEqual(viewModel.selectedProductViewModel?.productRowViewModel.id, expectedRow.id)
     }
 
     func test_view_model_is_updated_when_product_is_removed_from_order() {
@@ -215,12 +213,13 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.addProductViewModel.selectProduct(product1.productID)
 
         // When
-        let expectedRemainingItem = viewModel.orderDetails.items[1]
-        viewModel.removeItemFromOrder(viewModel.orderDetails.items[0])
+        let expectedRemainingRow = viewModel.productRows[1]
+        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows[0].id)
+        viewModel.removeItemFromOrder(itemToRemove)
 
         // Then
         XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == product0.productID }))
-        XCTAssertEqual(viewModel.orderDetails.items, [expectedRemainingItem])
+        XCTAssertEqual(viewModel.productRows.map { $0.id }, [expectedRemainingRow].map { $0.id })
     }
 
     func test_createProductRowViewModel_creates_expected_row_for_product() {
@@ -231,8 +230,8 @@ class NewOrderViewModelTests: XCTestCase {
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
-        let newOrderItem = NewOrderViewModel.NewOrderItem(product: product, quantity: 1)
-        let productRow = viewModel.createProductRowViewModel(for: newOrderItem, canChangeQuantity: true)
+        let orderItem = OrderItem.fake().copy(name: product.name, productID: product.productID, quantity: 1)
+        let productRow = viewModel.createProductRowViewModel(for: orderItem, canChangeQuantity: true)
 
         // Then
         let expectedProductRow = ProductRowViewModel(product: product, canChangeQuantity: true)
@@ -254,8 +253,11 @@ class NewOrderViewModelTests: XCTestCase {
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
-        let newOrderItem = NewOrderViewModel.NewOrderItem(variation: productVariation, quantity: 2)
-        let productRow = viewModel.createProductRowViewModel(for: newOrderItem, canChangeQuantity: false)
+        let orderItem = OrderItem.fake().copy(name: product.name,
+                                              productID: product.productID,
+                                              variationID: productVariation.productVariationID,
+                                              quantity: 2)
+        let productRow = viewModel.createProductRowViewModel(for: orderItem, canChangeQuantity: false)
 
         // Then
         let expectedProductRow = ProductRowViewModel(productVariation: productVariation,
@@ -273,10 +275,13 @@ class NewOrderViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let addressViewModel = viewModel.createOrderAddressFormViewModel()
         XCTAssertFalse(viewModel.customerDataViewModel.isDataAvailable)
 
         // When
-        viewModel.orderDetails.billingAddress = sampleAddress1()
+        addressViewModel.fields.firstName = sampleAddress1().firstName
+        addressViewModel.fields.lastName = sampleAddress1().lastName
+        addressViewModel.saveAddress(onFinish: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.customerDataViewModel.isDataAvailable)
@@ -327,7 +332,9 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldShowPaymentSection)
 
         // When & Then
-        viewModel.removeItemFromOrder(viewModel.orderDetails.items[0])
+        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows[0].id, productID: product.productID)
+        viewModel.removeItemFromOrder(itemToRemove)
+
         XCTAssertFalse(viewModel.shouldShowPaymentSection)
     }
 
@@ -348,6 +355,101 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.productRows[0].incrementQuantity()
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£17.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£17.00")
+    }
+
+    func test_payment_section_is_updated_when_shipping_line_updated() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        let testShippingLine = ShippingLine(shippingID: 0,
+                                            methodTitle: "Flat Rate",
+                                            methodID: "other",
+                                            total: "10",
+                                            totalTax: "",
+                                            taxes: [])
+        viewModel.saveShippingLine(testShippingLine)
+
+        // Then
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowShippingTotal)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£10.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£18.50")
+
+        // When
+        viewModel.saveShippingLine(nil)
+
+        // Then
+        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowShippingTotal)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+    }
+
+    func test_payment_section_is_updated_when_fee_line_updated() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, currencySettings: currencySettings)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+        let testFeeLine = OrderFeeLine(feeID: 0,
+                                       name: "Fee",
+                                       taxClass: "",
+                                       taxStatus: .none,
+                                       total: "10",
+                                       totalTax: "",
+                                       taxes: [],
+                                       attributes: [])
+        viewModel.saveFeeLine(testFeeLine)
+
+        // Then
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowFees)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£10.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£18.50")
+
+        // When
+        viewModel.saveFeeLine(nil)
+
+        // Then
+        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowFees)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+    }
+
+    func test_payment_section_loading_indicator_is_enabled_while_order_syncs() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
+
+        // When
+        let isLoadingDuringSync: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createOrder(_, _, onCompletion):
+                    promise(viewModel.paymentDataViewModel.isLoading)
+                    onCompletion(.success(.fake()))
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+            // Trigger remote sync
+            viewModel.saveShippingLine(ShippingLine.fake())
+        }
+
+        // Then
+        XCTAssertTrue(isLoadingDuringSync)
+        XCTAssertFalse(viewModel.paymentDataViewModel.isLoading) // Disabled after sync ends
     }
 }
 

@@ -128,6 +128,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.emptyCouponsImage)
     }
 
+    func test_empty_inbox_notes_image_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.emptyInboxNotesImage)
+    }
+
     func testEmptyProductsImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.emptyProductsImage)
     }

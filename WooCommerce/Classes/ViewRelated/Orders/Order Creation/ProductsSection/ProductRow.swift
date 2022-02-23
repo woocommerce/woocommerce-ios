@@ -30,6 +30,7 @@ struct ProductRow: View {
                     // Product details
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
+                            .bodyStyle()
                         Text(viewModel.productDetailsLabel)
                             .subheadlineStyle()
                         Text(viewModel.skuLabel)

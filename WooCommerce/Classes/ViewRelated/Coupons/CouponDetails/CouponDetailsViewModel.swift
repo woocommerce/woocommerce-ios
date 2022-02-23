@@ -46,7 +46,7 @@ final class CouponDetailsViewModel: ObservableObject {
 
     /// The current coupon
     ///
-    @Published private var coupon: Coupon {
+    @Published private(set) var coupon: Coupon {
         didSet {
             populateDetails()
         }

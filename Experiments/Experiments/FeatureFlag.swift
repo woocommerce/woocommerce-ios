@@ -10,37 +10,9 @@ public enum FeatureFlag: Int {
     ///
     case barcodeScanner
 
-    /// Large titles on the main tabs
-    ///
-    case largeTitles
-
     /// Product Reviews
     ///
     case reviews
-
-    /// Shipping labels - Milestones 2 & 3
-    ///
-    case shippingLabelsM2M3
-
-    /// Shipping labels - International Shipping
-    ///
-    case shippingLabelsInternational
-
-    /// Shipping labels - Add payment methods
-    ///
-    case shippingLabelsAddPaymentMethods
-
-    /// Shipping labels - Add custom packages
-    ///
-    case shippingLabelsAddCustomPackages
-
-    /// Shipping labels - Multi-package support
-    ///
-    case shippingLabelsMultiPackage
-
-    /// Push notifications for all stores
-    ///
-    case pushNotificationsForAllStores
 
     /// Display the bar for displaying the filters in the Order List
     ///
@@ -54,6 +26,10 @@ public enum FeatureFlag: Int {
     ///
     case orderCreation
 
+    /// Allows new orders to be created and synced as drafts
+    ///
+    case orderCreationRemoteSynchronizer
+
     /// Display the new tab "Menu" in the tab bar.
     ///
     case hubMenu
@@ -62,17 +38,13 @@ public enum FeatureFlag: Int {
     ///
     case systemStatusReport
 
-    /// Allows sites using the WooCommerce Stripe Payment Gateway extension to accept In-Person Payments
-    ///
-    case stripeExtensionInPersonPayments
-
     /// Home Screen project milestone 2: design updates to the My Store tab
     ///
     case myStoreTabUpdates
 
-    /// Displays the option to manage coupons
+    /// Displays the option to view coupons
     ///
-    case couponManagement
+    case couponView
 
     /// Barcode scanner for product SKU input
     ///

@@ -1,9 +1,20 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+8.7
+-----
+- [**] In-Person Payments: Added card details to refund confirmation screen to help with refunding to the payment card [https://github.com/woocommerce/woocommerce-ios/pull/6241]
+- [internal] Removed all feature flags for Shipping Labels. Please smoke test all parts of Shipping Labels to make sure that everything still works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6270]
+
 8.6
 -----
+- [***] Merchants can now view coupons in their stores by enabling Coupon Management in Experimental Features. [https://github.com/woocommerce/woocommerce-ios/pull/6209]
 - [*] Orders: In the experimental Order Creation feature, product variations added to a new order now show a list of their attributes. [https://github.com/woocommerce/woocommerce-ios/pull/6131]
 - [*] Enlarged the tap area for the action button on the notice view. [https://github.com/woocommerce/woocommerce-ios/pull/6146]
+- [*] Reviews: Fixed crash on iPad when tapping the More button. [https://github.com/woocommerce/woocommerce-ios/pull/6187]
+- [*] In-Person Payments: Remove Stripe from Experimental Features as it is always enabled now. [https://github.com/woocommerce/woocommerce-ios/pull/6205]
+- [*] Disabled unnecessary selection of the "Refund via" row on the Refund Confirmation screen [https://github.com/woocommerce/woocommerce-ios/pull/6198]
+- [*] Increased minimum version of Stripe extension for In-Person Payments to 6.2.0 [https://github.com/woocommerce/woocommerce-ios/pull/xxxx]
+- [internal] Removed `pushNotificationsForAllStores` feature flag. Since the changes are non-trivial, it would be great to smoke test push notifications for all stores in beta testing. [https://github.com/woocommerce/woocommerce-ios/pull/6231]
 
 8.5
 -----

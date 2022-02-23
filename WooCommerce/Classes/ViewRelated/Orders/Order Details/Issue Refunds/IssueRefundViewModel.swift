@@ -106,8 +106,15 @@ final class IssueRefundViewModel {
 
     private let analytics: Analytics
 
-    init(order: Order, refunds: [Refund], currencySettings: CurrencySettings, analytics: Analytics = ServiceLocator.analytics) {
+    private let stores: StoresManager
+
+    init(order: Order,
+         refunds: [Refund],
+         currencySettings: CurrencySettings,
+         analytics: Analytics = ServiceLocator.analytics,
+         stores: StoresManager = ServiceLocator.stores) {
         self.analytics = analytics
+        self.stores = stores
         let items = Self.filterItems(from: order, with: refunds)
         state = State(order: order, refunds: refunds, itemsToRefund: items, currencySettings: currencySettings)
         sections = createSections()
@@ -246,7 +253,7 @@ private extension IssueRefundViewModel {
             return
         }
         let action = CardPresentPaymentAction.fetchWCPayCharge(siteID: state.order.siteID, chargeID: chargeID, onCompletion: { _ in })
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 }
 

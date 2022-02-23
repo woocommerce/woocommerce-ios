@@ -21,8 +21,12 @@ struct AddProductToOrder: View {
                                        loadAction: viewModel.syncNextPage) {
                         ForEach(viewModel.productRows) { rowViewModel in
                             createProductRow(rowViewModel: rowViewModel)
+                                .padding(Constants.defaultPadding)
+                            Divider().frame(height: Constants.dividerHeight)
+                                .padding(.leading, Constants.defaultPadding)
                         }
                     }
+                                       .background(Color(.listForeground))
                 case .empty:
                     EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
                         .frame(maxHeight: .infinity)
@@ -61,7 +65,12 @@ struct AddProductToOrder: View {
         if rowViewModel.numberOfVariations > 0,
            let addVariationToOrderVM = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
             LazyNavigationLink(destination: AddProductVariationToOrder(isPresented: $isPresented, viewModel: addVariationToOrderVM)) {
-                ProductRow(viewModel: rowViewModel)
+                HStack {
+                    ProductRow(viewModel: rowViewModel)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    DisclosureIndicator()
+                }
             }
         } else {
             ProductRow(viewModel: rowViewModel)
@@ -74,6 +83,11 @@ struct AddProductToOrder: View {
 }
 
 private extension AddProductToOrder {
+    enum Constants {
+        static let dividerHeight: CGFloat = 1
+        static let defaultPadding: CGFloat = 16
+    }
+
     enum Localization {
         static let title = NSLocalizedString("Add Product", comment: "Title for the screen to add a product to an order")
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Add Product screen")

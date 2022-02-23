@@ -17,6 +17,9 @@ public protocol InboxNotesRemoteProtocol {
                           noteID: Int64,
                           completion: @escaping (Result<InboxNote, Error>) -> ())
 
+    func dismissAllInboxNotes(for siteID: Int64,
+                              completion: @escaping (Result<[InboxNote], Error>) -> ())
+
     func markInboxNoteAsActioned(for siteID: Int64,
                                  noteID: Int64,
                                  actionID: Int64,
@@ -87,14 +90,35 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
     public func dismissInboxNote(for siteID: Int64,
                                  noteID: Int64,
                                  completion: @escaping (Result<InboxNote, Error>) -> ()) {
-
         let request = JetpackRequest(wooApiVersion: .wcAnalytics,
                                      method: .delete,
                                      siteID: siteID,
-                                     path: Path.notes + "/\(noteID)",
+                                     path: Path.notes + "/delete/\(noteID)",
                                      parameters: nil)
 
         let mapper = InboxNoteMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    // MARK: - DISMISS all Inbox Notes
+
+    /// Dismiss all `InboxNote`s.
+    /// This internally marks all notification’s is_deleted field to true and these notifications do not show in the results anymore.
+    ///
+    /// - Parameters:
+    ///     - siteID: The site for which we'll dismiss all the InboxNotes.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func dismissAllInboxNotes(for siteID: Int64,
+                                     completion: @escaping (Result<[InboxNote], Error>) -> ()) {
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .delete,
+                                     siteID: siteID,
+                                     path: Path.notes + "/delete/all",
+                                     parameters: nil)
+
+        let mapper = InboxNoteListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

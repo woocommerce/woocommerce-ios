@@ -40,7 +40,9 @@ struct NewOrder: View {
                         Spacer(minLength: Layout.sectionSpacing)
 
                         if viewModel.shouldShowPaymentSection {
-                            OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
+                            OrderPaymentSection(viewModel: viewModel.paymentDataViewModel,
+                                                saveShippingLineClosure: viewModel.saveShippingLine,
+                                                saveFeeClosure: viewModel.saveFeeLine)
 
                             Spacer(minLength: Layout.sectionSpacing)
                         }
@@ -108,8 +110,8 @@ private struct ProductsSection: View {
                         .onTapGesture {
                             viewModel.selectOrderItem(productRow.id)
                         }
-                        .sheet(item: $viewModel.selectedOrderItem) { item in
-                            createProductInOrderView(for: item)
+                        .sheet(item: $viewModel.selectedProductViewModel) { productViewModel in
+                            ProductInOrder(viewModel: productViewModel)
                         }
 
                     Divider()
@@ -137,16 +139,6 @@ private struct ProductsSection: View {
             Divider()
         }
     }
-
-    @ViewBuilder private func createProductInOrderView(for item: NewOrderViewModel.NewOrderItem) -> some View {
-        if let productRowViewModel = viewModel.createProductRowViewModel(for: item, canChangeQuantity: false) {
-            let productInOrderViewModel = ProductInOrderViewModel(productRowViewModel: productRowViewModel) {
-                viewModel.removeItemFromOrder(item)
-            }
-            ProductInOrder(viewModel: productInOrderViewModel)
-        }
-        EmptyView()
-    }
 }
 
 // MARK: Constants
@@ -161,7 +153,7 @@ private extension NewOrder {
         static let title = NSLocalizedString("New Order", comment: "Title for the order creation screen")
         static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the New Order screen")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating a new order")
-        static let addProduct = NSLocalizedString("Add product", comment: "Title text of the button that adds a product when creating a new order")
+        static let addProduct = NSLocalizedString("Add Product", comment: "Title text of the button that adds a product when creating a new order")
     }
 }
 

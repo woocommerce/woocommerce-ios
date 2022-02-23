@@ -133,6 +133,7 @@ public typealias CardReaderEvent = Hardware.CardReaderEvent
 public typealias CardReaderSoftwareUpdateState = Hardware.CardReaderSoftwareUpdateState
 public typealias CardReaderServiceDiscoveryStatus = Hardware.CardReaderServiceDiscoveryStatus
 public typealias CardReaderServiceError = Hardware.CardReaderServiceError
+public typealias CardReaderType = Hardware.CardReaderType
 public typealias CardReaderConfigError = Hardware.CardReaderConfigError
 public typealias PaymentParameters = Hardware.PaymentIntentParameters
 public typealias PaymentIntent = Hardware.PaymentIntent

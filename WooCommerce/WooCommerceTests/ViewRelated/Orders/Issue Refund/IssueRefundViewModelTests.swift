@@ -581,4 +581,26 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.isSelectAllButtonVisible)
     }
+
+    func test_viewModel_fetches_charge_before_creating_refundConfirmationViewModel() throws {
+        // Given
+        // The order has a chargeID
+        let order = MockOrders().sampleOrder().copy(chargeID: "ch_id")
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        // When
+        let chargeFetched: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+                guard case .fetchWCPayCharge(siteID: _, chargeID: "ch_id", onCompletion: _) = action else {
+                    return
+                }
+                promise(true)
+            }
+
+            _ = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores)
+        }
+
+        // Then
+        XCTAssertTrue(chargeFetched)
+    }
 }

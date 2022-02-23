@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-01-26 03:09:34+0000 */
+/* Translation-Revision-Date: 2022-02-15 18:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -42,7 +42,7 @@
 "%1$@ in stock" = "%1$@ 尚有庫存";
 
 /* Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
-"%1$@ is in Test Mode" = "%1$@ is in Test Mode";
+"%1$@ is in Test Mode" = "%1$@ 處於測試模式";
 
 /* Review title. Reads as {Review author} left a review */
 "%1$@ left a review" = "%1$@ 留下一則評論";
@@ -256,7 +256,7 @@
 "About the App" = "關於此應用程式";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
-"Activate %1$@" = "Activate %1$@";
+"Activate %1$@" = "啟用 %1$@";
 
 /* Action button to activate Jetpack on WP-Admin instead of on app */
 "Activate Jetpack in WP-Admin" = "在 WP 管理員中啟用 Jetpack";
@@ -289,7 +289,7 @@
 "Add Category" = "新增類別";
 
 /* Title for the action button to add coupon on the coupon list screen. */
-"Add Coupon" = "Add Coupon";
+"Add Coupon" = "新增優惠券";
 
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "新增顧客備註";
@@ -335,6 +335,9 @@
 
 /* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "新增款式";
+
+/* Title for the Add a Different Address switch in the Address form */
+"Add a different shipping address" = "新增其他運送地址";
 
 /* Placeholder in Shipping Label form for the Payment Method row. */
 "Add a new credit card" = "新增信用卡";
@@ -441,6 +444,9 @@
 /* Header bar label on top of order list when no filters are applied */
 "All Orders" = "全部訂單";
 
+/* The text to be displayed in when the coupon is not limit to any specific product */
+"All Products" = "所有產品";
+
 /* Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow */
 "All available packages have been activated" = "所有可用包裹均已啟用";
 
@@ -511,6 +517,9 @@
 
 /* Change order status screen - button title to apply selection */
 "Apply" = "套用";
+
+/* Title of the Apply To row in Coupon Details screen */
+"Apply To" = "適用於";
 
 /* Approve a comment */
 "Approve" = "核准";
@@ -608,6 +617,9 @@
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "長條數目 %1$i, %2$@,";
 
+/* Beta annotation for sharing a payment link */
+"Beta" = "測試版";
+
 /* Section header title for billing address in billing information
    Title for the Billing Address section in order customer data - Title for the Edit Billing Address Form */
 "Billing Address" = "帳單地址";
@@ -625,7 +637,7 @@
 "Bold" = "粗體";
 
 /* The description on the placeholder overlay when there are no coupons on the coupon list screen. */
-"Boost your business by sending customers special offers and discounts." = "Boost your business by sending customers special offers and discounts.";
+"Boost your business by sending customers special offers and discounts." = "傳送特別優惠和折扣給顧客，讓你的生意更加興隆。";
 
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "便利箱";
@@ -655,7 +667,7 @@
 "Can Not Request Link" = "無法要求連結";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "取消";
 
 /* Display label for cancelled order status. */
@@ -733,7 +745,7 @@
 "Check your email!" = "請檢查你的電子郵件！";
 
 /* Navigates to Chipper Card Reader manual */
-"Chipper 2X card reader manual" = "Chipper 2X card reader manual";
+"Chipper 2X card reader manual" = "Chipper 2X 讀卡機使用手冊";
 
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "選擇紙張大小";
@@ -792,6 +804,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "撰寫新訂單備註";
+
+/* Title for the error screen when there is more than one plugin active that supports in-person payments. */
+"Conflicting payment plugins detected" = "已偵測到衝突的付款外掛程式";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "恭喜！ 你的讀卡機已在執行最新的軟體";
@@ -940,6 +955,18 @@
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "產品製造或組裝的國家\/地區";
 
+/* Title of Coupon Details screen */
+"Coupon" = "優惠券";
+
+/* Title of the Coupon Code row in Coupon Details screen */
+"Coupon Code" = "優惠券代碼";
+
+/* Title of Details section in Coupon Details screen */
+"Coupon Details" = "優惠券詳細資訊";
+
+/* Title of the Coupon Expiry Date row in Coupon Details screen */
+"Coupon Expiry Date" = "優惠券到期日";
+
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "優惠券";
@@ -1080,7 +1107,7 @@
 "Describe your product to your future customers..." = "請向未來的客戶描述你的產品…";
 
 /* The navigation bar title of the Aztec editor screen.
-   Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow */
+   Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow - Title of the Description row in Coupon Details screen */
 "Description" = "說明";
 
 /* Footer text in Product Menu order screen */
@@ -1110,7 +1137,8 @@
 /* Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader */
 "Disconnect Reader" = "與讀卡機中斷連線";
 
-/* Discount label for payment view */
+/* Discount label for payment view
+   Title of the Discount row in Coupon Details screen */
 "Discount" = "折扣";
 
 /* A unit test string for a button title
@@ -1121,7 +1149,7 @@
 "Do not allow" = "不允許";
 
 /* Dialog title that displays the name of a found card reader */
-"Do you want to connect to reader %1$@?" = "Do you want to connect to reader %1$@?";
+"Do you want to connect to reader %1$@?" = "你要連線至讀卡機 %1$@ 嗎？";
 
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "你要將此商品移至垃圾桶嗎？";
@@ -1368,14 +1396,14 @@
 "Error purchasing the label" = "購買標籤時發生錯誤";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
-"Everyone loves a deal" = "Everyone loves a deal";
+"Everyone loves a deal" = "人人都喜歡優惠";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
 "Experimental Features" = "實驗性功能";
 
 /* Status of coupons that are expired */
-"Expired" = "Expired";
+"Expired" = "已到期";
 
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "外部商品";
@@ -1457,20 +1485,20 @@
 /* The hint button's title text to help users find their store address. */
 "Find your store address" = "尋找你的商店地址";
 
-/* Button to set up the WooCommerce Payments plugin after installing it */
+/* Button to set up an in-person payments plugin after activating it */
 "Finish Setup in Store Admin" = "在商店管理員中完成設定";
 
-/* Title for the error screen when WooCommerce Payments is installed but not set up */
-"Finish setup WooCommerce Payments in your store admin" = "在商店管理員中完成 WooCommerce Payments 設定";
+/* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
+"Finish setup for %1$@ in your store admin" = "在商店管理員中完成設定 %1$@";
 
 /* Text field name in Edit Address Form */
 "First name" = "名字";
 
 /* Name of fixed cart discount type */
-"Fixed Cart Discount" = "Fixed Cart Discount";
+"Fixed Cart Discount" = "固定的購物車折扣";
 
 /* Name of fixed product discount type */
-"Fixed Product Discount" = "Fixed Product Discount";
+"Fixed Product Discount" = "固定的商品折扣";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new blogs." = "關注你喜歡的網站並發掘新網誌。";
@@ -1686,12 +1714,21 @@
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "親自收款";
 
+/* Cell title on beta features screen to enable accepting in-person payments for stores in Canada */
+"In-Person Payments in Canada" = "在加拿大親自收款";
+
 /* Title for the error screen when In-Person Payments is unavailable
-   Title for the error screen when the Stripe account is restricted because it's under reviw - Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
+   Title for the error screen when the merchant's payment account is restricted because it's under reviw - Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
 "In-Person Payments is currently unavailable" = "目前無法親自收款";
 
-/* Title for the error screen when the Stripe account rejected. */
+/* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "此商店無法使用親自收款功能";
+
+/* Message prompting a shop manager to ask an administrator to deactivate one of two plugins */
+"In-Person Payments will only work with one of following plugins activated. Please contact a site administrator to deactivate one of these plugins to continue:" = "啟用下列其中一個外掛程式後，才可使用親自收款功能。 若要繼續，請聯絡網站管理員以停用其中一個外掛程式：";
+
+/* Message prompting an administrator to deactivate one of two plugins */
+"In-Person Payments will only work with one of following plugins activated. Please deactivate one of these plugins to continue:" = "啟用下列其中一個外掛程式後，才可使用親自收款功能。 若要繼續，請停用其中一個外掛程式：";
 
 /* Application's Inactive State */
 "Inactive" = "未啟用";
@@ -1990,6 +2027,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Settings > Manage Card Reader > Title for the no-reader-connected screen in settings. - Settings > Manage Card Reader > Title for the reader connected screen in settings. */
 "Manage Card Reader" = "管理讀卡機";
 
+/* Button to open browser to manage plugins */
+"Manage Plugins" = "管理外掛程式";
+
 /* Navigates to Card Reader management screen */
 "Manage card reader" = "管理讀卡機";
 
@@ -2189,7 +2229,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No price set" = "未設定價格";
 
 /* Message displayed if there are no product variations for a product. */
-"No product variations found" = "No product variations found";
+"No product variations found" = "找不到任何產品款式";
 
 /* Message displayed if there are no products to display in the Add Product screen */
 "No products found" = "找不到商品";
@@ -2470,7 +2510,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Pending review" = "待審中";
 
 /* Name of percentage discount type */
-"Percentage Discount" = "Percentage Discount";
+"Percentage Discount" = "百分比折扣";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -2562,9 +2602,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "請選取包裹";
-
-/* Title for the error screen when there is more than one extension active. */
-"Please select an extension" = "Please select an extension";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "請稍後再試或與我們聯絡，我們將很樂意提供協助！";
@@ -2964,6 +3001,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Restriction Type row in Customs screen of Shipping Label flow */
 "Restriction Type" = "限制類型";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search coupons. */
+"Retrieves a list of coupons that contain a given keyword." = "擷取內含指定關鍵字的優惠券清單。";
+
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "擷取內含指定關鍵字的訂單清單。";
 
@@ -3086,11 +3126,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "排程折扣";
 
+/* Coupons Search Placeholder */
+"Search all coupons" = "搜尋所有優惠券";
+
 /* Orders Search Placeholder */
 "Search all orders" = "搜尋全部訂單";
 
 /* Products Search Placeholder */
 "Search all products" = "搜尋所有產品";
+
+/* Accessibility label for the Search Coupons button */
+"Search coupons" = "搜尋優惠券";
 
 /* Search Orders */
 "Search orders" = "搜尋訂單";
@@ -3145,9 +3191,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "選擇結束日期";
-
-/* Button to select the active payment processor plugin */
-"Select extension in Store Admin" = "Select extension in Store Admin";
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "選取段落風格";
@@ -3488,7 +3531,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Strike Through" = "刪除線";
 
 /* Navigates to Stripe M2 Card Reader manual */
-"Stripe M2 card reader manual" = "Stripe M2 card reader manual";
+"Stripe M2 card reader manual" = "Stripe M2 讀卡機使用手冊";
 
 /* Display label for subscription product type. */
 "Subscription" = "訂購";
@@ -3631,7 +3674,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Tap, insert or swipe to pay" = "點選、插入或撥動以付款";
 
 /* Tax label for a refund details view
-   Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
+   Tax label for the tax detail row. - Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "稅金";
 
 /* Tax percentage to be applied to the simple payments order */
@@ -3662,11 +3705,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "稅金會根據你的商店地址自動計算。";
 
+/* Information about taxes and the order total when creating a new order */
+"Taxes will be automatically calculated based on your store settings." = "稅金會根據你的商店設定自動計算。";
+
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "告訴我們更多關於 %1$@ 的資訊…";
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "服務條款";
+
+/* Cell description on beta features screen to enable accepting in-person payments for stores in Canada */
+"Test out In-Person Payments in Canada" = "測試在加拿大親自收款";
 
 /* Cell description on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
 "Test out In-Person Payments with the Stripe Payment Gateway extension" = "透過 Stripe Payment Gateway 擴充功能，測試「親自收款」功能";
@@ -3709,13 +3758,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "That username is not allowed." = "不允許使用該使用者名稱。";
 
 /* Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
-"The %1$@ extension cannot be in test mode for In-Person Payments. Please disable test mode." = "The %1$@ extension cannot be in test mode for In-Person Payments. Please disable test mode.";
+"The %1$@ extension cannot be in test mode for In-Person Payments. Please disable test mode." = "若要使用親自收款功能，%1$@ 擴充功能無法設為測試模式。 請停用測試模式。";
 
 /* Error message when a Card Present Payments extension is not activated */
-"The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments";
+"The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "你的商店已安裝 %1$@ 擴充功能，但尚未啟用。 請啟用擴充功能以使用親自收款功能";
 
 /* Error message when a Card Present Payments extension is installed but the version is not supported */
-"The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version.";
+"The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "你的商店已安裝 %1$@ 擴充功能，但需要更新才能使用親自收款功能。 請更新至最新版本。";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "沒有任何與 Google 帳號「%@」匹配的 WordPress.com 帳號";
@@ -3749,6 +3798,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "此產品的價格。可編輯。";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"The reader has a critically low battery. Please charge the reader or try a different reader." = "讀卡機電量過低。 請為讀卡機充電，或嘗試使用其他讀卡機。";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "無法在沒有原價的情況下新增售價。";
@@ -3796,13 +3848,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The variation couldn't be generated." = "無法產生該款式。";
 
 /* Error message when the Stripe account is restricted because there are pending requirements */
-"There are pending requirements in your account. Please complete those requirements by" = "你的帳號有待確認的要求。 請在以下期限前完成這些要求：";
+"There are pending requirements for your account. Please complete those requirements by" = "你的帳號有待處理的要求。 請在以下時間以前完成這些要求：";
 
-/* Error message when WooCommerce Payments is not supported because there are pending requirements in the Stripe account.%1$d will contain the localized deadline (e.g. August 11, 2021) */
-"There are pending requirements in your account. Please complete those requirements by %1$@ to keep accepting in-Person Payments." = "你的帳號有待確認的要求。 請在 %1$@ 前完成這些要求，以繼續使用親自收款功能。";
+/* Error message when In-Person Payments is not supported because there are pending requirements in the merchant's payment account.%1$d will contain the localized deadline (e.g. August 11, 2021) */
+"There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments." = "你的帳號有待確認的要求。 請在 %1$@ 前完成這些要求，以便繼續使用親自收款功能。";
 
-/* Error message when WooCommerce Payments is not supportedThere are pending requirements in the Stripe account (without a known deadline) */
-"There are pending requirements in your account. Please complete those requirements to keep accepting in-Person Payments." = "你的帳號有待確認的要求。 請完成這些要求，以繼續使用親自收款功能。";
+/* Error message when In-Person Payments is not supportedThere are pending requirements in the merchant's payment account (without a known deadline) */
+"There are pending requirements for your account. Please complete those requirements to keep accepting In-Person Payments." = "你的帳號有待處理的要求。 請完成這些要求，以便繼續使用親自收款功能。";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "封鎖指定網站的文章時發生問題。";
@@ -3956,9 +4008,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Legacy description for Top Performers right column header */
 "Total Spend" = "消費總額";
 
-/* Information about taxes and the order total when creating a new order */
-"Total excluding taxes. Taxes will be automatically calculated based on your store settings." = "總計 (不含稅)。 稅金會根據你的商店設定自動計算。";
-
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "訂單總數：%ld";
 
@@ -4003,7 +4052,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Trust" = "信任";
 
 /* Button to retry a software update. Presented to users when updating the card reader software fails
-   Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
+   Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "再試一次";
 
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
@@ -4149,7 +4198,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unspam" = "取消標記為垃圾";
 
 /* Title for the error screen when the installed version of a Card Present Payments extension is unsupported */
-"Unsupported %1$@ version" = "Unsupported %1$@ version";
+"Unsupported %1$@ version" = "不支援 %1$@ 版本";
 
 /* Display label for the review's untrash status */
 "Untrash" = "還原";
@@ -4366,7 +4415,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "透過深入分析資料拓展讀者群。";
 
-/* Error message when WooCommerce Payments is not supported because the Stripe account has been rejected */
+/* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "很抱歉，我們不支援此商店的親自收款功能。";
 
 /* Content of the banner notice in the add-ons view */
@@ -4378,7 +4427,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "我們無法顯示你的商店分析資料";
 
-/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails
+   Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "We couldn't connect your reader" = "無法連線至讀卡機";
 
 /* The title of the Error Loading Data banner */
@@ -4390,10 +4440,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "我們無法更新你的讀卡機軟體";
 
-/* Title for the error screen when WooCommerce Payments is not supported in a specific country */
-"We don’t support In-Person Payments in %1$@" = "We don’t support In-Person Payments in %1$@";
+/* Title for the error screen when In-Person Payments is not supported in a specific country */
+"We don’t support In-Person Payments in %1$@" = "我們不支援在 %1$@ 使用親自收款功能";
 
-/* Title for the error screen when WooCommerce Payments is not supported because we don't know the name of the country */
+/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments in your country" = "我們不支援在你的國家\/地區使用親自收款功能";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
@@ -4435,8 +4485,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
 "We're sorry, we couldn't find any order that match %@" = "不好意思，我們找不到任何符合「%@」的訂單";
 
-/* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
-   Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
+/* Message for empty Coupons search results. The %@ is a placeholder for the text entered by the user.
+   Message for empty Orders search results. The %@ is a placeholder for the text entered by the user. - Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "很抱歉，我們找不到「%@」的搜尋結果";
 
 /* Generic error message when In-Person Payments is unavailable */
@@ -4553,7 +4603,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "你可以在「WP 管理員 > WooCommerce > 設定 (一般)」設定商店的郵遞區號\/ZIP";
 
-/* Error message when WooCommerce Payments is not supported in a specific country
+/* Error message when In-Person Payments is not supported in a specific country
    Generic error message when In-Person Payments is unavailable */
 "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "你仍可採用「親自收取現金」，只要為商店啟用「貨到付款」付款方式即可。";
 
@@ -4563,26 +4613,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "你的帳號中有至少一個逾期要求。 請處理此要求以繼續使用親自收款功能。";
 
-/* Message requesting merchants to select between available payments processors */
-"You must disable either the WooCommerce Payments or the WooCommerce Stripe Gateway extension." = "You must disable either the WooCommerce Payments or the WooCommerce Stripe Gateway extension.";
-
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "你需要新增密碼，才能讓產品受密碼保護";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "你似乎安裝了 DudaMobile 的行動版外掛程式，導致應用程式無法連接至你的網誌";
 
-/* Error message when WooCommerce Payments is not supported because the Stripe account is under review */
+/* Error message when the merchant's payment account is under review */
 "You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "你的帳號審核完畢後，就能使用親自收款功能了。";
-
-/* Title for the error screen when the Stripe account is restricted because there are pending requirements */
-"Your WooCommerce Payments account has pending requirements" = "你的 WooCommerce Payments 帳號有待處理的要求";
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "你的讀卡機軟體需要更新才能收取款項。 取消更新將會封鎖你的讀卡機連線。";
 
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "你走到哪，通知就到哪，第一時間查看留言和讚。";
+
+/* Title for the error screen when the merchant's In-Person Payments account is restricted because there are pending requirements */
+"Your payments account has pending requirements" = "你的付款帳號有待處理的要求";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "更新完成後，你的讀卡機會自動重新啟動並重新連線";
@@ -4599,8 +4646,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when WooCommerce Payments is not installed */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "你需要為商店安裝免費 WooCommerce Payments 擴充功能，才能使用親自收款功能。";
 
-/* Error message when WooCommerce Payments is installed but not set up */
-"You’re almost there! Please finish setting up WooCommerce Payments to start accepting Card-Present Payments." = "快完成了！ 請完成 WooCommerce Payments 設定以開始接受卡片付款。";
+/* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name. */
+"You’re almost there! Please finish setting up %1$@ to start accepting In-Person Payments." = "快完成了！ 請完成設定 %1$@ 以開始接受親自收款。";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[留言]";

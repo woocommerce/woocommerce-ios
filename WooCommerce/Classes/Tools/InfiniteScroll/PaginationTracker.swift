@@ -16,7 +16,7 @@ protocol PaginationTrackerDelegate: AnyObject {
 /// Keeps track of the pagination for API syncing to support infinite scroll.
 final class PaginationTracker {
     /// Default Settings
-    private enum Defaults {
+    enum Defaults {
         static let pageFirstIndex = Store.Default.firstPageNumber
         static let pageSize = 25
     }

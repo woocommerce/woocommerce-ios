@@ -7,14 +7,23 @@ import Experiments
 ///
 final class SimplePaymentsAmountViewModel: ObservableObject {
 
+    /// Helper to format price field input.
+    ///
+    private let priceFieldFormatter: PriceFieldFormatter
+
     /// Stores the amount(unformatted) entered by the merchant.
     ///
     @Published var amount: String = "" {
         didSet {
             guard amount != oldValue else { return }
-            amount = sanitizeAmount(amount)
-            amountWithSymbol = setCurrencySymbol(to: amount)
+            amount = priceFieldFormatter.formatAmount(amount)
         }
+    }
+
+    /// Formatted amount to display. When empty displays a placeholder value.
+    ///
+    var formattedAmount: String {
+        priceFieldFormatter.formattedAmount
     }
 
     /// True while performing the create order operation. False otherwise.
@@ -32,15 +41,6 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         }
     }
 
-    /// Formatted amount to display. When empty displays a placeholder value.
-    ///
-    var formattedAmount: String {
-        guard amount.isNotEmpty else {
-            return amountPlaceholder
-        }
-        return amountWithSymbol
-    }
-
     /// Defines the amount text color.
     ///
     var amountTextColor: UIColor {
@@ -50,8 +50,11 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     /// Returns true when the amount is not a positive number.
     ///
     var shouldDisableDoneButton: Bool {
-        let decimalAmount = (currencyFormatter.convertToDecimal(from: amount) ?? .zero) as Decimal
-        return decimalAmount <= .zero
+        guard let amountDecimal = priceFieldFormatter.amountDecimal else {
+            return true
+        }
+
+        return amountDecimal <= .zero
     }
 
     /// Defines if the view actions should be disabled.
@@ -60,16 +63,6 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     var disableViewActions: Bool {
         loading
     }
-
-    /// Stores the formatted amount with the store currency symbol.
-    ///
-    private var amountWithSymbol: String = ""
-
-    /// Dynamically builds the amount placeholder based on the store decimal separator.
-    ///
-    private lazy var amountPlaceholder: String = {
-        currencyFormatter.formatAmount("0.00") ?? "$0.00"
-    }()
 
     /// Retains the SummaryViewModel.
     /// Assigning it will set `navigateToSummary`.
@@ -88,25 +81,9 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
-    /// Users locale, needed to use the correct decimal separator
-    ///
-    private let userLocale: Locale
-
     /// Transmits notice presentation intents.
     ///
     private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
-
-    /// Current store currency settings
-    ///
-    private let storeCurrencySettings: CurrencySettings
-
-    /// Currency formatter for the provided amount
-    ///
-    private let currencyFormatter: CurrencyFormatter
-
-    /// Current store currency symbol
-    ///
-    private let storeCurrencySymbol: String
 
     /// Analytics tracker.
     ///
@@ -120,11 +97,8 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
-        self.userLocale = locale
+        self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
         self.presentNoticeSubject = presentNoticeSubject
-        self.storeCurrencySettings = storeCurrencySettings
-        self.storeCurrencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
-        self.currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
         self.analytics = analytics
     }
 
@@ -159,50 +133,6 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     func userDidCancelFlow() {
         analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCanceled())
-    }
-}
-
-// MARK: Helpers
-private extension SimplePaymentsAmountViewModel {
-
-    /// Formats a received value by sanitizing the input and trimming content to two decimal places.
-    ///
-    func sanitizeAmount(_ amount: String) -> String {
-        guard amount.isNotEmpty else { return amount }
-
-        let deviceDecimalSeparator = userLocale.decimalSeparator ?? "."
-        let storeDecimalSeparator = storeCurrencySettings.decimalSeparator
-        let storeNumberOfDecimals = storeCurrencySettings.numberOfDecimals
-
-        // Removes any unwanted character & makes sure to use the store decimal separator
-        let sanitized = amount
-            .replacingOccurrences(of: deviceDecimalSeparator, with: storeDecimalSeparator)
-            .filter { $0.isNumber || "\($0)" == storeDecimalSeparator }
-
-        // Trim to two decimals & remove any extra "."
-        let components = sanitized.components(separatedBy: storeDecimalSeparator)
-        switch components.count {
-        case 1 where sanitized.contains(storeDecimalSeparator):
-            return components[0] + storeDecimalSeparator
-        case 1:
-            return components[0]
-        case 2...Int.max:
-            let number = components[0]
-            let decimals = components[1]
-            let trimmedDecimals = decimals.count > storeNumberOfDecimals ? "\(decimals.prefix(storeNumberOfDecimals))" : decimals
-            return number + storeDecimalSeparator + trimmedDecimals
-        default:
-            fatalError("Should not happen, components can't be 0 or negative")
-        }
-    }
-
-    /// Formats a received value by adding the store currency symbol to it's correct position.
-    ///
-    func setCurrencySymbol(to amount: String) -> String {
-        currencyFormatter.formatCurrency(using: amount,
-                                         at: storeCurrencySettings.currencyPosition,
-                                         with: storeCurrencySymbol,
-                                         isNegative: false)
     }
 }
 

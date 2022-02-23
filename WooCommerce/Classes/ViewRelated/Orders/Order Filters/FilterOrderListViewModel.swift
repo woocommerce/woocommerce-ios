@@ -117,6 +117,8 @@ extension OrderStatusEnum: FilterType {
     ///
     var description: String {
         switch self {
+        case .autoDraft:
+            return NSLocalizedString("Draft", comment: "Display label for auto-draft order status.")
         case .pending:
             return NSLocalizedString("Pending", comment: "Display label for pending order status.")
         case .processing:

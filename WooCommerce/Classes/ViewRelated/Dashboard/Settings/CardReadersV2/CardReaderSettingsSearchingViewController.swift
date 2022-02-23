@@ -10,7 +10,6 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
 
     private var viewModel: CardReaderSettingsSearchingViewModel?
 
-
     /// Connection Controller (helps connect readers)
     ///
     private lazy var connectionController: CardReaderConnectionController? = {

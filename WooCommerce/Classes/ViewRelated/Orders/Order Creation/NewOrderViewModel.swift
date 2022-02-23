@@ -12,10 +12,6 @@ final class NewOrderViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    /// Order details used to create the order
-    ///
-    @Published var orderDetails = OrderDetails()
-
     /// Active navigation bar trailing item.
     /// Defaults to no visible button.
     ///
@@ -114,18 +110,38 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published private(set) var productRows: [ProductRowViewModel] = []
 
-    /// Item selected from the list of products in the order.
+    /// Selected product view model to render.
     /// Used to open the product details in `ProductInOrder`.
     ///
-    @Published var selectedOrderItem: NewOrderItem? = nil
+    @Published var selectedProductViewModel: ProductInOrderViewModel? = nil
 
     // MARK: Payment properties
 
     /// Indicates if the Payment section should be shown
     ///
     var shouldShowPaymentSection: Bool {
-        orderDetails.items.isNotEmpty
+        orderSynchronizer.order.items.isNotEmpty
     }
+
+    /// Representation of payment data display properties
+    ///
+    @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
+
+    /// Saves a shipping line.
+    ///
+    /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
+    func saveShippingLine(_ shippingLine: ShippingLine?) {
+        orderSynchronizer.setShipping.send(shippingLine)
+    }
+
+    /// Saves a fee.
+    ///
+    /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
+    func saveFeeLine(_ feeLine: OrderFeeLine?) {
+        orderSynchronizer.setFee.send(feeLine)
+    }
+
+    // MARK: -
 
     /// Defines if the view should be disabled.
     /// Currently `true` while performing a network request.
@@ -134,24 +150,33 @@ final class NewOrderViewModel: ObservableObject {
         performingNetworkRequest
     }
 
-    /// Representation of payment data display properties
+    /// Defines the current order status.
     ///
-    @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
+    var currentOrderStatus: OrderStatusEnum {
+        orderSynchronizer.order.status
+    }
 
     /// Analytics engine.
     ///
     private let analytics: Analytics
 
+    /// Order Synchronizer helper.
+    ///
+    private let orderSynchronizer: OrderSynchronizer
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         enableRemoteSync: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreationRemoteSynchronizer)) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
+        self.orderSynchronizer = enableRemoteSync ? RemoteOrderSynchronizer(siteID: siteID, stores: stores)
+                                                  : LocalOrderSynchronizer(siteID: siteID, stores: stores)
 
         configureNavigationTrailingItem()
         configureStatusBadgeViewModel()
@@ -160,38 +185,39 @@ final class NewOrderViewModel: ObservableObject {
         configurePaymentDataViewModel()
     }
 
-    /// Selects an order item.
+    /// Selects an order item by setting the `selectedProductViewModel`.
     ///
     /// - Parameter id: ID of the order item to select
-    func selectOrderItem(_ id: String) {
-        selectedOrderItem = orderDetails.items.first(where: { $0.id == id })
+    func selectOrderItem(_ id: Int64) {
+        selectedProductViewModel = createSelectedProductViewModel(itemID: id)
     }
 
     /// Removes an item from the order.
     ///
     /// - Parameter item: Item to remove from the order
-    func removeItemFromOrder(_ item: NewOrderItem) {
-        orderDetails.items.removeAll(where: { $0 == item })
+    func removeItemFromOrder(_ item: OrderItem) {
+        guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
+        orderSynchronizer.setProduct.send(input)
         configureProductRowViewModels()
     }
 
     /// Creates a view model for the `ProductRow` corresponding to an order item.
     ///
-    func createProductRowViewModel(for item: NewOrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
+    func createProductRowViewModel(for item: OrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
         guard let product = allProducts.first(where: { $0.productID == item.productID }) else {
             return nil
         }
 
         if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
             let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: product.attributes)
-            return ProductRowViewModel(id: item.id,
+            return ProductRowViewModel(id: item.itemID,
                                        productVariation: variation,
                                        name: product.name,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
                                        displayMode: .attributes(attributes))
         } else {
-            return ProductRowViewModel(id: item.id, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
+            return ProductRowViewModel(id: item.itemID, product: product, quantity: item.quantity, canChangeQuantity: canChangeQuantity)
         }
     }
 
@@ -205,11 +231,11 @@ final class NewOrderViewModel: ObservableObject {
     ///
     func createOrderAddressFormViewModel() -> CreateOrderAddressFormViewModel {
         CreateOrderAddressFormViewModel(siteID: siteID,
-                                        addressData: .init(billingAddress: orderDetails.billingAddress,
-                                                           shippingAddress: orderDetails.shippingAddress),
+                                        addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
+                                                           shippingAddress: orderSynchronizer.order.shippingAddress),
                                         onAddressUpdate: { [weak self] updatedAddressData in
-            self?.orderDetails.billingAddress = updatedAddressData.billingAddress
-            self?.orderDetails.shippingAddress = updatedAddressData.shippingAddress
+            let input = Self.createAddressesInput(from: updatedAddressData)
+            self?.orderSynchronizer.setAddresses.send(input)
             self?.trackCustomerDetailsAdded()
         })
     }
@@ -220,7 +246,7 @@ final class NewOrderViewModel: ObservableObject {
     func createOrder() {
         performingNetworkRequest = true
 
-        let action = OrderAction.createOrder(siteID: siteID, order: orderDetails.toOrder()) { [weak self] result in
+        orderSynchronizer.commitAllChanges { [weak self] result in
             guard let self = self else { return }
             self.performingNetworkRequest = false
 
@@ -234,7 +260,6 @@ final class NewOrderViewModel: ObservableObject {
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
-        stores.dispatch(action)
         trackCreateButtonTapped()
     }
 
@@ -245,8 +270,8 @@ final class NewOrderViewModel: ObservableObject {
     /// Updates the order status & tracks its event
     ///
     func updateOrderStatus(newStatus: OrderStatusEnum) {
-        let oldStatus = orderDetails.status
-        orderDetails.status = newStatus
+        let oldStatus = orderSynchronizer.order.status
+        orderSynchronizer.setStatus.send(newStatus)
         analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .creation, orderID: nil, from: oldStatus, to: newStatus))
     }
 }
@@ -261,27 +286,6 @@ extension NewOrderViewModel {
         case loading
     }
 
-    /// Type to hold all order detail values
-    ///
-    struct OrderDetails {
-        var status: OrderStatusEnum = .pending
-        var items: [NewOrderItem] = []
-        var billingAddress: Address?
-        var shippingAddress: Address?
-
-        /// Used to create `Order` and check if order details have changed from empty/default values.
-        /// Required because `Order` has `Date` properties that have to be the same to be Equatable.
-        ///
-        let emptyOrder = Order.empty
-
-        func toOrder() -> Order {
-            emptyOrder.copy(status: status,
-                            items: items.map { $0.orderItem },
-                            billingAddress: billingAddress,
-                            shippingAddress: shippingAddress)
-        }
-    }
-
     /// Representation of order status display properties
     ///
     struct StatusBadgeViewModel {
@@ -292,7 +296,7 @@ extension NewOrderViewModel {
             title = orderStatus.name ?? orderStatus.slug
             color = {
                 switch orderStatus.status {
-                case .pending, .completed, .cancelled, .refunded, .custom:
+                case .autoDraft, .pending, .completed, .cancelled, .refunded, .custom:
                     return .gray(.shade5)
                 case .onHold:
                     return .withColorStudio(.orange, shade: .shade5)
@@ -307,52 +311,6 @@ extension NewOrderViewModel {
         init(orderStatusEnum: OrderStatusEnum) {
             let siteOrderStatus = OrderStatus(name: nil, siteID: 0, slug: orderStatusEnum.rawValue, total: 0)
             self.init(orderStatus: siteOrderStatus)
-        }
-    }
-
-    /// Representation of new items in an order.
-    ///
-    struct NewOrderItem: Equatable, Identifiable {
-        let id: String
-        let productID: Int64
-        let variationID: Int64
-        var quantity: Decimal
-        let price: NSDecimalNumber
-        var subtotal: String {
-            String(describing: quantity * price.decimalValue)
-        }
-
-        var orderItem: OrderItem {
-            OrderItem(itemID: 0,
-                      name: "",
-                      productID: productID,
-                      variationID: variationID,
-                      quantity: quantity,
-                      price: price,
-                      sku: nil,
-                      subtotal: subtotal,
-                      subtotalTax: "",
-                      taxClass: "",
-                      taxes: [],
-                      total: "",
-                      totalTax: "",
-                      attributes: [])
-        }
-
-        init(product: Product, quantity: Decimal) {
-            self.id = UUID().uuidString
-            self.productID = product.productID
-            self.variationID = 0 // Products in an order are represented in Core with a variation ID of 0
-            self.quantity = quantity
-            self.price = NSDecimalNumber(string: product.price)
-        }
-
-        init(variation: ProductVariation, quantity: Decimal) {
-            self.id = UUID().uuidString
-            self.productID = variation.productID
-            self.variationID = variation.productVariationID
-            self.quantity = quantity
-            self.price = NSDecimalNumber(string: variation.price)
         }
     }
 
@@ -389,11 +347,34 @@ extension NewOrderViewModel {
         let itemsTotal: String
         let orderTotal: String
 
+        let shouldShowShippingTotal: Bool
+        let shippingTotal: String
+        let shippingMethodTitle: String
+
+        let shouldShowFees: Bool
+        let feesTotal: String
+
+        /// Whether payment data is being reloaded (during remote sync)
+        ///
+        let isLoading: Bool
+
         init(itemsTotal: String = "",
+             shouldShowShippingTotal: Bool = false,
+             shippingTotal: String = "",
+             shippingMethodTitle: String = "",
+             shouldShowFees: Bool = false,
+             feesTotal: String = "",
              orderTotal: String = "",
+             isLoading: Bool = false,
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? ""
+            self.shouldShowShippingTotal = shouldShowShippingTotal
+            self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? ""
+            self.shippingMethodTitle = shippingMethodTitle
+            self.shouldShowFees = shouldShowFees
+            self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? ""
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? ""
+            self.isLoading = isLoading
         }
     }
 }
@@ -403,13 +384,13 @@ private extension NewOrderViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func configureNavigationTrailingItem() {
-        Publishers.CombineLatest($orderDetails, $performingNetworkRequest)
-            .map { orderDetails, performingNetworkRequest -> NavigationItem in
+        Publishers.CombineLatest(orderSynchronizer.orderPublisher, $performingNetworkRequest)
+            .map { order, performingNetworkRequest -> NavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
 
-                guard orderDetails.emptyOrder != orderDetails.toOrder() else {
+                guard OrderFactory.emptyNewOrder != order else {
                     return .none
                 }
 
@@ -421,10 +402,10 @@ private extension NewOrderViewModel {
     /// Updates status badge viewmodel based on status order property.
     ///
     func configureStatusBadgeViewModel() {
-        $orderDetails
-            .map { [weak self] orderDetails in
-                guard let siteOrderStatus = self?.currentSiteStatuses.first(where: { $0.status == orderDetails.status }) else {
-                    return StatusBadgeViewModel(orderStatusEnum: orderDetails.status)
+        orderSynchronizer.orderPublisher
+            .map { [weak self] order in
+                guard let siteOrderStatus = self?.currentSiteStatuses.first(where: { $0.status == order.status }) else {
+                    return StatusBadgeViewModel(orderStatusEnum: order.status)
                 }
                 return StatusBadgeViewModel(orderStatus: siteOrderStatus)
             }
@@ -434,8 +415,8 @@ private extension NewOrderViewModel {
     /// Adds a selected product (from the product list) to the order.
     ///
     func addProductToOrder(_ product: Product) {
-        let newOrderItem = NewOrderItem(product: product, quantity: 1)
-        orderDetails.items.append(newOrderItem)
+        let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+        orderSynchronizer.setProduct.send(input)
         configureProductRowViewModels()
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
@@ -444,8 +425,8 @@ private extension NewOrderViewModel {
     /// Adds a selected product variation (from the product list) to the order.
     ///
     func addProductVariationToOrder(_ variation: ProductVariation) {
-        let newOrderItem = NewOrderItem(variation: variation, quantity: 1)
-        orderDetails.items.append(newOrderItem)
+        let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
+        orderSynchronizer.setProduct.send(input)
         configureProductRowViewModels()
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
@@ -456,7 +437,7 @@ private extension NewOrderViewModel {
     func configureProductRowViewModels() {
         updateProductsResultsController()
         updateProductVariationsResultsController()
-        productRows = orderDetails.items.enumerated().compactMap { index, item in
+        productRows = orderSynchronizer.order.items.compactMap { item in
             guard let productRowViewModel = createProductRowViewModel(for: item, canChangeQuantity: true) else {
                 return nil
             }
@@ -464,7 +445,10 @@ private extension NewOrderViewModel {
             // Observe changes to the product quantity
             productRowViewModel.$quantity
                 .sink { [weak self] newQuantity in
-                    self?.orderDetails.items[index].quantity = newQuantity
+                    guard let self = self, let newInput = self.createUpdateProductInput(item: item, quantity: newQuantity) else {
+                        return
+                    }
+                    self.orderSynchronizer.setProduct.send(newInput)
                 }
                 .store(in: &cancellables)
 
@@ -475,30 +459,60 @@ private extension NewOrderViewModel {
     /// Updates customer data viewmodel based on order addresses.
     ///
     func configureCustomerDataViewModel() {
-        $orderDetails
+        orderSynchronizer.orderPublisher
             .map {
                 CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
             }
             .assign(to: &$customerDataViewModel)
     }
 
-    /// Updates payment section view model based on items in the order.
+    /// Updates payment section view model based on items in the order and order sync state.
     ///
     func configurePaymentDataViewModel() {
-        $orderDetails
-            .map { [weak self] orderDetails in
+        Publishers.CombineLatest(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher)
+            .map { [weak self] order, state in
                 guard let self = self else {
                     return PaymentDataViewModel()
                 }
 
-                let itemsTotal = orderDetails.items
-                    .map { $0.orderItem.subtotal }
+                let itemsTotal = order.items
+                    .map { $0.subtotal }
                     .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
                     .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
-                    .stringValue
 
-                // For now, the order total is the same as the items total
-                return PaymentDataViewModel(itemsTotal: itemsTotal, orderTotal: itemsTotal, currencyFormatter: self.currencyFormatter)
+                let shippingTotal = order.shippingLines
+                    .map { $0.total }
+                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
+                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
+
+                let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
+
+                let feesTotal = order.fees
+                    .map { $0.total }
+                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
+                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
+
+
+                let orderTotal = itemsTotal.adding(shippingTotal).adding(feesTotal)
+
+                let isDataSyncing: Bool = {
+                    switch state {
+                    case .syncing:
+                        return true
+                    default:
+                        return false
+                    }
+                }()
+
+                return PaymentDataViewModel(itemsTotal: itemsTotal.stringValue,
+                                            shouldShowShippingTotal: order.shippingLines.isNotEmpty,
+                                            shippingTotal: shippingTotal.stringValue,
+                                            shippingMethodTitle: shippingMethodTitle,
+                                            shouldShowFees: order.fees.isNotEmpty,
+                                            feesTotal: feesTotal.stringValue,
+                                            orderTotal: orderTotal.stringValue,
+                                            isLoading: isDataSyncing,
+                                            currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)
     }
@@ -507,7 +521,7 @@ private extension NewOrderViewModel {
     ///
     func trackCustomerDetailsAdded() {
         let areAddressesDifferent: Bool = {
-            guard let billingAddress = orderDetails.billingAddress, let shippingAddress = orderDetails.shippingAddress else {
+            guard let billingAddress = orderSynchronizer.order.billingAddress, let shippingAddress = orderSynchronizer.order.shippingAddress else {
                 return false
             }
             return billingAddress != shippingAddress
@@ -517,14 +531,14 @@ private extension NewOrderViewModel {
 
     /// Tracks when the create order button is tapped.
     ///
-    /// Warning: This methods assume that `orderDetails.items.count` is equal to the product count,
+    /// Warning: This methods assume that `orderSynchronizer.order.items.count` is equal to the product count,
     /// As the module evolves to handle more types of items, we need to update the property to something like `itemsCount`
     /// or figure out a better way to get the product count.
     ///
     func trackCreateButtonTapped() {
-        let hasCustomerDetails = orderDetails.billingAddress != nil || orderDetails.shippingAddress != nil
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderDetails.status,
-                                                                                productCount: orderDetails.items.count,
+        let hasCustomerDetails = orderSynchronizer.order.billingAddress != nil || orderSynchronizer.order.shippingAddress != nil
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderSynchronizer.order.status,
+                                                                                productCount: orderSynchronizer.order.items.count,
                                                                                 hasCustomerDetails: hasCustomerDetails))
     }
 
@@ -539,6 +553,59 @@ private extension NewOrderViewModel {
     func trackCreateOrderFailure(error: Error) {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(errorContext: String(describing: error),
                                                                             errorDescription: error.localizedDescription))
+    }
+
+    /// Creates an `OrderSyncAddressesInput` type from a `NewOrderAddressData` type.
+    /// Expects `billing` and `shipping` addresses to exists together,
+    ///
+    static func createAddressesInput(from data: CreateOrderAddressFormViewModel.NewOrderAddressData) -> OrderSyncAddressesInput? {
+        guard let billingAddress = data.billingAddress, let shippingAddress = data.shippingAddress else {
+            return nil
+        }
+        return OrderSyncAddressesInput(billing: billingAddress, shipping: shippingAddress)
+    }
+
+    /// Creates a new `OrderSyncProductInput` type meant to update an existing input from `OrderSynchronizer`
+    /// If the referenced product can't be found, `nil` is returned.
+    ///
+    private func createUpdateProductInput(item: OrderItem, quantity: Decimal) -> OrderSyncProductInput? {
+        // Finds the product or productVariation associated with the order item.
+        let product: OrderSyncProductInput.ProductType? = {
+            if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+                return .variation(variation)
+            }
+
+            if let product = allProducts.first(where: { $0.productID == item.productID }) {
+                return .product(product)
+            }
+
+            return nil
+        }()
+
+        guard let product = product else {
+            DDLogError("⛔️ Product with ID: \(item.productID) not found.")
+            return nil
+        }
+
+        // Return a new input with the new quantity but with the same item id to properly reference the update.
+        return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity)
+    }
+
+    /// Creates a `ProductInOrderViewModel` based on the provided order item id.
+    ///
+    func createSelectedProductViewModel(itemID: Int64) -> ProductInOrderViewModel? {
+        // Find order item based on the provided id.
+        // Creates the product row view model needed for `ProductInOrderViewModel`.
+        guard
+            let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
+            let rowViewModel = createProductRowViewModel(for: orderItem, canChangeQuantity: false)
+        else {
+            return nil
+        }
+
+        return ProductInOrderViewModel(productRowViewModel: rowViewModel) { [weak self] in
+            self?.removeItemFromOrder(orderItem)
+        }
     }
 }
 

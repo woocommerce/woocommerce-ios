@@ -22,8 +22,6 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case .loadStripeInPersonPaymentsSwitchState(let completion):
-                completion(.success(true))
             case .loadCanadaInPersonPaymentsSwitchState(let completion):
                 completion(.success(true))
             default:
@@ -31,9 +29,12 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
             }
         }
         stores.sessionManager.setStoreId(sampleSiteID)
+        ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings(stores: stores, storageManager: storageManager))
     }
 
     override func tearDownWithError() throws {
+        ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings())
+        storageManager.reset()
         storageManager = nil
         stores = nil
         try super.tearDownWithError()
@@ -609,6 +610,7 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
                 settingGroupKey: SiteSettingGroup.general.rawValue
             )
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
+        ServiceLocator.selectedSiteSettings.refresh()
     }
 
     enum Country: String {
@@ -661,8 +663,8 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
     }
 
     enum StripePluginVersion: String {
-        case minimumSupportedVersion = "6.1.0" // Should match `CardPresentPaymentsOnboardingState` `minimumSupportedPluginVersion`
-        case unsupportedVersion = "5.8.1"
+        case minimumSupportedVersion = "6.2.0" // Should match `CardPresentPaymentsOnboardingState` `minimumSupportedPluginVersion`
+        case unsupportedVersion = "6.1.0"
     }
 
 }

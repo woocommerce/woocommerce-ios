@@ -3,10 +3,16 @@ import Codegen
 
 /// Represents a Shipping Line Entity.
 ///
-public struct ShippingLine: Codable, Equatable, GeneratedFakeable {
+public struct ShippingLine: Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
     public let shippingID: Int64
     public let methodTitle: String
-    public let methodID: String
+
+    /// Shipping Method ID
+    ///
+    /// Sending a null value to the REST API removes the Shipping Line.
+    ///
+    public let methodID: String?
+
     public let total: String
     public let totalTax: String
     public let taxes: [ShippingLineTax]
@@ -15,7 +21,7 @@ public struct ShippingLine: Codable, Equatable, GeneratedFakeable {
     ///
     public init(shippingID: Int64,
                 methodTitle: String,
-                methodID: String,
+                methodID: String?,
                 total: String,
                 totalTax: String,
                 taxes: [ShippingLineTax]) {

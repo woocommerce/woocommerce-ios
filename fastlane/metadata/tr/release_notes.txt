@@ -1,3 +1,3 @@
-You’ll notice a new tab called “Menu” in this release. We’ve moved store settings, switching between different stores, and viewing WooCommerce Admin to that screen. More functionality will appear there over the next couple of months!
+Geri bildiriminize dayanarak Mağazam sekmesini biraz yeniledik. Bir dönüşüm yüzdesi göreceksiniz ve şimdi satılan ilk 5 (3 yerine) ürün.
 
-This release also includes a fix for the product screen where the product’s name would revert back to the previous one if you uploaded an image. Thank you for reporting bugs – we are listening!
+Uygulamada sipariş oluşturmak istediniz. Test etmemize yardımcı olmak isterseniz, bir ön incelemeye hazır olduğumuzu söylemekten memnuniyet duyuyoruz! Uygulamadaki ayarlara gidin ve Sipariş Oluşturma için deneysel özelliği açın. Şu anda ürün, not ve adres ekleyebilirsiniz; gelecekteki sürümlerde ise ek işlevler olacaktır.

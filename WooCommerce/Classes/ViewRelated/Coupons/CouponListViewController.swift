@@ -167,7 +167,7 @@ private extension CouponListViewController {
     /// Shows `SearchViewController`.
     ///
     @objc private func displaySearchCoupons() {
-        // TODO: add analytics
+        ServiceLocator.analytics.track(.couponsListSearchTapped)
         let searchViewController = SearchViewController<TitleAndSubtitleAndStatusTableViewCell, CouponSearchUICommand>(
             storeID: siteID,
             command: CouponSearchUICommand(),

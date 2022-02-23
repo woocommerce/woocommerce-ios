@@ -62,7 +62,6 @@ final class GeneralAppSettingsTests: XCTestCase {
                                                   feedbacks: feedbackSettings,
                                                   isViewAddOnsSwitchEnabled: true,
                                                   isOrderCreationSwitchEnabled: true,
-                                                  isStripeInPersonPaymentsSwitchEnabled: true,
                                                   isCanadaInPersonPaymentsSwitchEnabled: true,
                                                   isProductSKUInputScannerSwitchEnabled: true,
                                                   isCouponManagementSwitchEnabled: true,
@@ -85,7 +84,6 @@ final class GeneralAppSettingsTests: XCTestCase {
         assertEqual(newSettings.lastEligibilityErrorInfo, eligibilityInfo)
         assertEqual(newSettings.isViewAddOnsSwitchEnabled, false)
         assertEqual(newSettings.isOrderCreationSwitchEnabled, true)
-        assertEqual(newSettings.isStripeInPersonPaymentsSwitchEnabled, true)
         assertEqual(newSettings.isCanadaInPersonPaymentsSwitchEnabled, true)
         assertEqual(newSettings.isProductSKUInputScannerSwitchEnabled, true)
         assertEqual(newSettings.isCouponManagementSwitchEnabled, true)
@@ -98,7 +96,6 @@ private extension GeneralAppSettingsTests {
                                   feedbacks: [FeedbackType: FeedbackSettings] = [:],
                                   isViewAddOnsSwitchEnabled: Bool = false,
                                   isOrderCreationSwitchEnabled: Bool = false,
-                                  isStripeInPersonPaymentsSwitchEnabled: Bool = false,
                                   isCanadaInPersonPaymentsSwitchEnabled: Bool = false,
                                   isProductSKUInputScannerSwitchEnabled: Bool = false,
                                   isCouponManagementSwitchEnabled: Bool = false,
@@ -109,7 +106,6 @@ private extension GeneralAppSettingsTests {
                            feedbacks: feedbacks,
                            isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
                            isOrderCreationSwitchEnabled: isOrderCreationSwitchEnabled,
-                           isStripeInPersonPaymentsSwitchEnabled: isStripeInPersonPaymentsSwitchEnabled,
                            isCanadaInPersonPaymentsSwitchEnabled: isCanadaInPersonPaymentsSwitchEnabled,
                            isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
                            isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,

@@ -53,11 +53,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 
     func refresh() {
-        var completed = false
-        if case .completed(_) = state { // Swift is weird
-            completed = true
-        }
-        if !completed {
+        if !state.isCompleted {
             state = .loading
         }
         synchronizeStoreCountryAndPlugins { [weak self] in

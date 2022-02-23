@@ -99,6 +99,14 @@ extension CardPresentPaymentOnboardingState {
             return "no_connection_error"
         }
     }
+
+    public var isCompleted: Bool {
+        if case .completed(_) = self {
+            return true
+        } else {
+            return false
+        }
+    }
 }
 
 public enum CardPresentPaymentsPlugins: Equatable, CaseIterable {

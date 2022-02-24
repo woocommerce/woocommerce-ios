@@ -61,7 +61,7 @@ final class MockProductVariationsRemote {
 // MARK: - ProductVariationsRemoteProtocol conformance
 
 extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
-    func updateProductVariations(productVariations: [ProductVariation], completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
+    func updateProductVariations(siteID: Int64, productID: Int64, productVariations: [ProductVariation], completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
         // no-op
     }
 

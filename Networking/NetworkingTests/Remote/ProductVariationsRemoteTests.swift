@@ -245,7 +245,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         // When
         var updatedProductVariation: [ProductVariation]?
         waitForExpectation { expectation in
-            remote.updateProductVariations(productVariations: productVariations) { result in
+            remote.updateProductVariations(siteID: sampleSiteID, productID: sampleProductID, productVariations: productVariations) { result in
                 updatedProductVariation = try? result.get()
                 expectation.fulfill()
             }

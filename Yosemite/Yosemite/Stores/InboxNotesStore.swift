@@ -36,13 +36,13 @@ public class InboxNotesStore: Store {
             loadAllInboxNotes(for: siteID, pageNumber: pageNumber, pageSize: pageSize, orderBy: orderBy, type: type, status: status, completion: completion)
         case .dismissInboxNote(let siteID, let noteID, let completion):
             dismissInboxNote(for: siteID, noteID: noteID, completion: completion)
-        case .dismissAllInboxNotes(let siteID,
-                                   let pageNumber,
-                                   let pageSize,
-                                   let orderBy,
-                                   let type,
-                                   let status,
-                                   let completion):
+        case let .dismissAllInboxNotes(siteID,
+                                       pageNumber,
+                                       pageSize,
+                                       orderBy,
+                                       type,
+                                       status,
+                                       completion):
             dismissAllInboxNotes(siteID: siteID,
                                  pageNumber: pageNumber,
                                  pageSize: pageSize,

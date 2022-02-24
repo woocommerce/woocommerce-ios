@@ -11,12 +11,6 @@ class FeeLineDetailsViewModel: ObservableObject {
     ///
     private let priceFieldFormatter: PriceFieldFormatter
 
-    /// Formatted amount to display. When empty displays a placeholder value.
-    ///
-    var formattedAmount: String {
-        priceFieldFormatter.formattedAmount
-    }
-
     /// Stores the amount(unformatted) entered by the merchant.
     ///
     @Published var amount: String = "" {
@@ -24,12 +18,6 @@ class FeeLineDetailsViewModel: ObservableObject {
             guard amount != oldValue else { return }
             amount = priceFieldFormatter.formatAmount(amount)
         }
-    }
-
-    /// Defines the amount text color.
-    ///
-    var amountTextColor: UIColor {
-        amount.isEmpty ? .textPlaceholder : .text
     }
 
     /// The base amount (items + shipping) to apply percentage fee on.
@@ -61,7 +49,15 @@ class FeeLineDetailsViewModel: ObservableObject {
 
     /// Current store currency symbol.
     ///
-    let storeCurrencySymbol: String
+    let currencySymbol: String
+
+    /// Position for currency symbol, relative to amount text field.
+    ///
+    let currencyPosition: CurrencySettings.CurrencyPosition
+
+    /// Placeholder for amount text field.
+    ///
+    let amountPlaceholder: String
 
     enum FeeType {
         case fixed
@@ -76,7 +72,9 @@ class FeeLineDetailsViewModel: ObservableObject {
          didSelectSave: @escaping ((OrderFeeLine?) -> Void)) {
         self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
         self.percentSymbol = NumberFormatter().percentSymbol
-        self.storeCurrencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
+        self.currencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
+        self.currencyPosition = storeCurrencySettings.currencyPosition
+        self.amountPlaceholder = priceFieldFormatter.formatAmount("0")
 
         self.isExistingFeeLine = inputData.shouldShowFees
         self.baseAmountForPercentage = inputData.feesBaseAmountForPercentage

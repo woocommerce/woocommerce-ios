@@ -1,3 +1,0 @@
-Vi har uppdaterat en del av fliken Min butik baserat på er feedback. Du kommer nu att se en konverteringsprocent och de 5 (inte 3) bäst säljande produkterna. 
-
-Ni har bett oss om möjligheten att skapa beställningar i appen. Vi är glada att kunna meddela att vi har en smygtitt redo om ni vill hjälpa oss att testa funktionen! Gå till inställningarna i appen och aktivera den experimentella funktionen Skapa beställning. För tillfället kan du lägga till produkter, anteckningar och adresser. Kommande versioner kommer att ha ytterligare funktioner.

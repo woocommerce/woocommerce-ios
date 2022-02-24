@@ -1,3 +1,0 @@
-We’ve refreshed a bit of the My Store tab based on your feedback. You’ll see a conversion percentage and now top 5 (instead of 3) products sold.
-
-You’ve been asking to create orders in the app. We’re happy to say we have a sneak peek ready if you want to help us test it out! Head over to settings in the app and turn on the experimental feature for Order Creation. Right now, you can add products, notes, and addresses, and future releases will have additional functionality.

@@ -1,3 +1,0 @@
-Wir haben den Tab „Mein Shop“ basierend auf eurem Feedback ein wenig überarbeitet. Du siehst jetzt die prozentuale Umwandlung und die 5 (statt 3) meistverkauften Produkte.
-
-Ihr habt den Wunsch geäußert, Bestellungen in der App erstellen zu können. Wir freuen uns, euch mitteilen zu können, dass eine Vorschau der Funktion nun zum Testen bereitsteht! Rufe in der App die Einstellungen auf und aktiviere die experimentelle Funktion „Erstellung von Bestellungen“. Du kannst momentan Produkte, Notizen und Adressen hinzufügen. In zukünftigen Versionen wird es noch zusätzliche Funktionen geben.

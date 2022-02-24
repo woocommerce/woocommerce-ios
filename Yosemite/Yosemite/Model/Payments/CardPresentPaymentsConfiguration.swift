@@ -2,6 +2,7 @@ import Foundation
 
 public struct CardPresentPaymentsConfiguration {
     private let countryCode: String
+    private let stripeTerminalforCanadaEnabled: Bool
 
     public let paymentMethods: [WCPayPaymentMethodType]
     public let currencies: [String]
@@ -9,11 +10,13 @@ public struct CardPresentPaymentsConfiguration {
     public let supportedReaders: [CardReaderType]
 
     init(countryCode: String,
+         stripeTerminalforCanadaEnabled: Bool,
          paymentMethods: [WCPayPaymentMethodType],
          currencies: [String],
          paymentGateways: [String],
          supportedReaders: [CardReaderType]) {
         self.countryCode = countryCode
+        self.stripeTerminalforCanadaEnabled = stripeTerminalforCanadaEnabled
         self.paymentMethods = paymentMethods
         self.currencies = currencies
         self.paymentGateways = paymentGateways
@@ -25,6 +28,7 @@ public struct CardPresentPaymentsConfiguration {
         case "US":
             self.init(
                 countryCode: country,
+                stripeTerminalforCanadaEnabled: canadaEnabled,
                 paymentMethods: [.cardPresent],
                 currencies: ["USD"],
                 paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
@@ -33,6 +37,7 @@ public struct CardPresentPaymentsConfiguration {
         case "CA" where canadaEnabled == true:
             self.init(
                 countryCode: country,
+                stripeTerminalforCanadaEnabled: true,
                 paymentMethods: [.cardPresent, .interacPresent],
                 currencies: ["CAD"],
                 paymentGateways: [WCPayAccount.gatewayID],
@@ -41,6 +46,7 @@ public struct CardPresentPaymentsConfiguration {
         default:
             self.init(
                 countryCode: country,
+                stripeTerminalforCanadaEnabled: canadaEnabled,
                 paymentMethods: [],
                 currencies: [],
                 paymentGateways: [],
@@ -61,11 +67,11 @@ public struct CardPresentPaymentsConfiguration {
             return Constants.stripeReaderPurchaseUrl
         }
 
-        // TODO
-        // remove this when pages/redirects are added to the website pdfdoF-su-p2 and
-        // return URL(string: Constants.purchaseReaderForCountryUrlBase + self.countryCode) ?? Constants.fallbackInPersonPaymentsUrl
-        // instead
-        return Constants.purchaseM2ReaderUrl
+        if !stripeTerminalforCanadaEnabled {
+            return Constants.purchaseM2ReaderUrl
+        }
+
+        return URL(string: Constants.purchaseReaderForCountryUrlBase + self.countryCode) ?? Constants.fallbackInPersonPaymentsUrl
     }
 }
 

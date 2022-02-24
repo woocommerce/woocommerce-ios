@@ -1,3 +1,4 @@
+import class Networking.InboxNotesRemote
 import protocol Storage.StorageManagerType
 import Yosemite
 import Combine
@@ -17,9 +18,10 @@ final class InboxViewModel: ObservableObject {
         InboxNoteRowViewModel(id: $0,
                               date: "   ",
                               title: "            ",
-                              attributedContent: .init(string: "\n\n\n"),
+                              attributedContent: .init(),
                               actions: [.init(id: 0, title: "Placeholder", url: nil)],
-                              siteID: 123)
+                              siteID: 123,
+                              isPlaceholder: true)
     }
 
     // MARK: Sync
@@ -29,6 +31,12 @@ final class InboxViewModel: ObservableObject {
 
     /// Tracks if the infinite scroll indicator should be displayed.
     @Published private(set) var shouldShowBottomActivityIndicator = false
+
+    private let pageSize: Int
+    private let noteTypes: [InboxNotesRemote.NoteType]? = [.info, .marketing, .survey, .warning]
+    private let noteStatuses: [InboxNotesRemote.Status]? = [.unactioned, .actioned]
+
+    private var highestSyncedPageNumber: Int = 0
 
     /// Supports infinite scroll.
     private let paginationTracker: PaginationTracker
@@ -64,6 +72,7 @@ final class InboxViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.syncState = syncState
+        self.pageSize = pageSize
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex, pageSize: pageSize)
 
         configureResultsController()
@@ -74,6 +83,14 @@ final class InboxViewModel: ObservableObject {
     /// Called when the next page should be loaded.
     func onLoadNextPageAction() {
         paginationTracker.ensureNextPageIsSynced()
+    }
+
+    /// Called when the user pulls down the list to refresh.
+    /// - Parameter completion: called when the refresh completes.
+    func onRefreshAction(completion: @escaping () -> Void) {
+        paginationTracker.resync(reason: nil) {
+            completion()
+        }
     }
 }
 
@@ -93,14 +110,16 @@ extension InboxViewModel: PaginationTrackerDelegate {
         let action = InboxNotesAction.loadAllInboxNotes(siteID: siteID,
                                                         pageNumber: pageNumber,
                                                         pageSize: pageSize,
-                                                        orderBy: .date,
-                                                        type: [.info, .marketing, .survey, .warning],
-                                                        status: [.unactioned, .actioned]) { [weak self] result in
+                                                        type: noteTypes,
+                                                        status: noteStatuses) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let notes):
                 let hasNextPage = notes.count == pageSize
                 onCompletion?(.success(hasNextPage))
+
+                self.highestSyncedPageNumber = pageNumber
+
                 // If the store has no inbox notes and thus there are no inbox notes for the first page, `ResultsController`'s
                 // callbacks from storage layer changes are not triggered and we have to manually update to `SyncState.empty` in this case.
                 if pageNumber == self.pageFirstIndex && notes.isEmpty {
@@ -109,6 +128,24 @@ extension InboxViewModel: PaginationTrackerDelegate {
             case .failure(let error):
                 DDLogError("⛔️ Error synchronizing inbox notes: \(error)")
                 onCompletion?(.failure(error))
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    func dismissAllInboxNotes() {
+        // Since the dismiss all API endpoint only deletes notes that match the given parameters, we want to match the parameters with the load request
+        // and specify the page size to include all the synced notes based on the last sync request.
+        let pageSizeForAllSyncedNotes = highestSyncedPageNumber * pageSize
+        let action = InboxNotesAction.dismissAllInboxNotes(siteID: siteID,
+                                                           pageSize: pageSizeForAllSyncedNotes,
+                                                           type: noteTypes,
+                                                           status: noteStatuses) { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                DDLogError("⛔️ Error on dismissing all inbox notes: \(error)")
             }
         }
         stores.dispatch(action)

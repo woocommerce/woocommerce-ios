@@ -6,17 +6,42 @@ import Yosemite
 struct Inbox: View {
     /// View model that drives the view.
     @ObservedObject private(set) var viewModel: InboxViewModel
+    @State private var showingActionSheet: Bool = false
+    @State private var showingDismissAlert: Bool = false
 
     init(viewModel: InboxViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
+        // Anchor the action sheet at the top to be able to show the popover on iPad in the most appropriate position
+        Divider()
+            .actionSheet(isPresented: $showingActionSheet) {
+                ActionSheet(
+                    title: Text(Localization.title),
+                    buttons: [
+                        .default(Text(Localization.dismissAllNotes), action: {
+                            showingDismissAlert = true
+                        }),
+                        .cancel()
+                    ]
+                )
+            }
+            .alert(isPresented: $showingDismissAlert) {
+                return Alert(title: Text(Localization.dismissAllNotesAlertTitle),
+                             message: Text(Localization.dismissAllNotesAlertMessage),
+                             primaryButton: .default(Text(Localization.dismissAllNotes), action: viewModel.dismissAllInboxNotes),
+                             secondaryButton: .cancel())
+            }
+
         Group {
             switch viewModel.syncState {
             case .results:
-                InfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
-                                   loadAction: viewModel.onLoadNextPageAction) {
+                RefreshableInfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
+                                              loadAction: viewModel.onLoadNextPageAction,
+                                              refreshAction: { completion in
+                    viewModel.onRefreshAction(completion: completion)
+                }) {
                     ForEach(viewModel.noteRowViewModels) { rowViewModel in
                         InboxNoteRow(viewModel: rowViewModel)
                     }
@@ -45,6 +70,17 @@ struct Inbox: View {
         .onAppear {
             viewModel.onLoadTrigger.send()
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    showingActionSheet = true
+                }, label: {
+                    Image(uiImage: .moreImage)
+                        .renderingMode(.template)
+                })
+                    .renderedIf(viewModel.syncState == .results)
+            }
+        }
     }
 }
 
@@ -61,6 +97,12 @@ private extension Inbox {
                                                          comment: "Title displayed if there are no inbox notes in the inbox screen.")
         static let emptyStateMessage = NSLocalizedString("Come back soon for more tips and insights on growing your store",
                                                          comment: "Message displayed if there are no inbox notes to display in the inbox screen.")
+        static let dismissAllNotes = NSLocalizedString("Dismiss All",
+                                                              comment: "Dismiss All button in Inbox Notes for dismissing all the notes.")
+        static let dismissAllNotesAlertTitle = NSLocalizedString("Dismiss all messages",
+                                                         comment: "Title of the alert for dismissing all the inbox notes.")
+        static let dismissAllNotesAlertMessage = NSLocalizedString("Are you sure? Inbox messages will be dismissed forever.",
+                                                           comment: "Message displayed in the alert for dismissing all the inbox notes.")
     }
 }
 

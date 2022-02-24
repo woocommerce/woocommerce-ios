@@ -18,71 +18,11 @@ public enum CardBrand: String, CaseIterable, Codable {
     /// Diners Club card
     case dinersClub
 
-    //TODO: Add Interac here
+    /// Interac unbranded card
+    case interac
 
     /// An unknown card brand
     case unknown
-}
-
-extension CardBrand: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .visa:
-            return Localization.visa
-        case .amex:
-            return Localization.amex
-        case .masterCard:
-            return Localization.masterCard
-        case .discover:
-            return Localization.discover
-        case .jcb:
-            return Localization.jcb
-        case .dinersClub:
-            return Localization.dinersClub
-        case .unknown:
-            return Localization.other
-        }
-    }
-}
-
-
-private extension CardBrand {
-    enum Localization {
-        static let visa = NSLocalizedString(
-            "Visa",
-            comment: "A credit card brand"
-        )
-
-        static let amex = NSLocalizedString(
-            "American Express",
-            comment: "A credit card brand"
-        )
-
-        static let masterCard = NSLocalizedString(
-            "MasterCard",
-            comment: "A credit card brand"
-        )
-
-        static let discover = NSLocalizedString(
-            "Discover",
-            comment: "A credit card brand"
-        )
-
-        static let jcb = NSLocalizedString(
-            "JCB",
-            comment: "A credit card brand"
-        )
-
-        static let dinersClub = NSLocalizedString(
-            "Diners Club",
-            comment: "A credit card brand"
-        )
-
-        static let other = NSLocalizedString(
-            "Other",
-            comment: "A credit card brand"
-        )
-    }
 }
 
 extension CardBrand {
@@ -116,6 +56,8 @@ extension CardBrand {
             return "jcb"
         case .dinersClub:
             return "diners"
+        case .interac:
+            return "interac"
         case .unknown:
             return "unknown"
         }

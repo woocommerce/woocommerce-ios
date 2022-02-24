@@ -23,6 +23,9 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
     /// Stores to handle note actions.
     private let stores: StoresManager
 
+    /// Whether the row is shown in placeholder state.
+    let isPlaceholder: Bool
+
     init(note: InboxNote,
          today: Date = .init(),
          locale: Locale = .current,
@@ -48,15 +51,18 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
                   attributedContent: attributedContent,
                   actions: actions,
                   siteID: note.siteID,
-                  stores: stores)
+                  stores: stores,
+                  isPlaceholder: false)
     }
 
     init(id: Int64,
          date: String,
          title: String,
-         attributedContent: NSAttributedString, actions: [InboxNoteRowActionViewModel],
+         attributedContent: NSAttributedString,
+         actions: [InboxNoteRowActionViewModel],
          siteID: Int64,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         isPlaceholder: Bool) {
         self.id = id
         self.date = date
         self.title = title
@@ -64,6 +70,7 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
         self.actions = actions
         self.siteID = siteID
         self.stores = stores
+        self.isPlaceholder = isPlaceholder
     }
 
     static func == (lhs: InboxNoteRowViewModel, rhs: InboxNoteRowViewModel) -> Bool {

@@ -26,6 +26,11 @@ public enum InboxNotesAction: Action {
     /// This marks all notifications is_deleted field to true and the inbox notes will be deleted locally.
     ///
     case dismissAllInboxNotes(siteID: Int64,
+                              pageNumber: Int = Default.pageNumber,
+                              pageSize: Int = Default.pageSize,
+                              orderBy: InboxNotesRemote.OrderBy = .date,
+                              type: [InboxNotesRemote.NoteType]? = nil,
+                              status: [InboxNotesRemote.Status]? = nil,
                               completion: (Result<Void, Error>) -> ())
 
     /// Set an `InboxNote` as `actioned`.

@@ -48,6 +48,10 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
     ///
     private var subscriptions = Set<AnyCancellable>()
 
+    /// Store to serve local IDs.
+    ///
+    private let localIDStore = LocalIDStore()
+
     // MARK: Initializers
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
@@ -286,5 +290,23 @@ private extension Order {
             return item.copy(subtotal: "", total: "")
         }
         return copy(items: sanitizedItems)
+    }
+
+    /// Simple type to serve negative IDs.
+    /// This is needed to differentiate if an item ID has been synced remotely while providing a unique ID to consumers.
+    /// If the ID is a negative number we assume that it's a local ID.
+    /// Warning: This is not thread safe.
+    ///
+    final class LocalIDStore {
+        /// Last used ID
+        ///
+        private var currentID: Int64 = 0
+
+        /// Creates a new and unique local ID for this session.
+        ///
+        func dispatchLocalID() -> Int64 {
+            currentID -= 1
+            return currentID
+        }
     }
 }

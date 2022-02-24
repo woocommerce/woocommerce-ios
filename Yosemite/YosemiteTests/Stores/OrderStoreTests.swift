@@ -791,6 +791,42 @@ final class OrderStoreTests: XCTestCase {
         ]
         assertEqual(expectedKeys, receivedKeys)
     }
+
+    func test_create_order_does_not_upsert_autodrafts() throws {
+        // Given
+        let expectation = self.expectation(description: "Create auto-draft order")
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "order-auto-draft-status")
+
+        // When
+        let action = OrderAction.createOrder(siteID: sampleSiteID, order: sampleOrder()) { result in
+            XCTAssertTrue(result.isSuccess)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+            expectation.fulfill()
+        }
+        store.onAction(action)
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_update_order_does_not_upsert_autodrafts() throws {
+        // Given
+        let expectation = self.expectation(description: "Update auto-draft order")
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order-auto-draft-status")
+
+        // When
+        let action = OrderAction.updateOrder(siteID: sampleSiteID, order: sampleOrder(), fields: []) { result in
+            XCTAssertTrue(result.isSuccess)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+            expectation.fulfill()
+        }
+        store.onAction(action)
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 

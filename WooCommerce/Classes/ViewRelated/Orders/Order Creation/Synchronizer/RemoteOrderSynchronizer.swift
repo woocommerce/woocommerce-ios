@@ -251,6 +251,7 @@ private extension RemoteOrderSynchronizer {
                 .billingAddress,
                 .fees,
                 .shippingLines,
+                .items,
             ]
             let action = OrderAction.updateOrder(siteID: self.siteID, order: request.order, fields: supportedFields) { [weak self] result in
                 guard let self = self else { return }

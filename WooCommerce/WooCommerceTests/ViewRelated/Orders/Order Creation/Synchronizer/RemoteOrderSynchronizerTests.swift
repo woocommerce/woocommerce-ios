@@ -510,7 +510,8 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(updateFields, [.shippingAddress,
                                       .billingAddress,
                                       .fees,
-                                      .shippingLines])
+                                      .shippingLines,
+                                      .items])
     }
 }
 

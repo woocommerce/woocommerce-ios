@@ -14,6 +14,26 @@ struct Inbox: View {
     }
 
     var body: some View {
+        // Anchor the action sheet at the top to be able to show the popover on iPad in the most appropriate position
+        Divider()
+            .actionSheet(isPresented: $showingActionSheet) {
+                ActionSheet(
+                    title: Text(Localization.title),
+                    buttons: [
+                        .default(Text(Localization.dismissAllNotes), action: {
+                            showingDismissAlert = true
+                        }),
+                        .cancel()
+                    ]
+                )
+            }
+            .alert(isPresented: $showingDismissAlert) {
+                return Alert(title: Text(Localization.dismissAllNotesAlertTitle),
+                             message: Text(Localization.dismissAllNotesAlertMessage),
+                             primaryButton: .default(Text(Localization.dismissAllNotes), action: viewModel.dismissAllInboxNotes),
+                             secondaryButton: .cancel())
+            }
+
         Group {
             switch viewModel.syncState {
             case .results:
@@ -60,23 +80,6 @@ struct Inbox: View {
                 })
                     .renderedIf(viewModel.syncState == .results)
             }
-        }
-        .actionSheet(isPresented: $showingActionSheet) {
-            ActionSheet(
-                title: Text(Localization.title),
-                buttons: [
-                    .default(Text(Localization.dismissAllNotes), action: {
-                        showingDismissAlert = true
-                    }),
-                    .cancel()
-                ]
-            )
-        }
-        .alert(isPresented: $showingDismissAlert) {
-            return Alert(title: Text(Localization.dismissAllNotesAlertTitle),
-                  message: Text(Localization.dismissAllNotesAlertMessage),
-                  primaryButton: .default(Text(Localization.dismissAllNotes), action: viewModel.dismissAllInboxNotes),
-                  secondaryButton: .cancel())
         }
     }
 }

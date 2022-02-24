@@ -37,8 +37,8 @@ private struct ProductVariationsEnvelope: Decodable {
     let updatedProductVariations: [ProductVariation]
 
     private enum CodingKeys: String, CodingKey {
-        case update = "update"
-        case data = "data"
+        case update
+        case data
     }
 
     public init(from decoder: Decoder) throws {

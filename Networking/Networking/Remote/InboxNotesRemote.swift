@@ -50,11 +50,11 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllInboxNotes(for siteID: Int64,
-                                  pageNumber: Int,
-                                  pageSize: Int,
-                                  orderBy: InboxNotesRemote.OrderBy,
-                                  type: [InboxNotesRemote.NoteType]?,
-                                  status: [InboxNotesRemote.Status]?,
+                                  pageNumber: Int = Default.pageNumber,
+                                  pageSize: Int = Default.pageSize,
+                                  orderBy: InboxNotesRemote.OrderBy = .date,
+                                  type: [InboxNotesRemote.NoteType]? = nil,
+                                  status: [InboxNotesRemote.Status]? = nil,
                                   completion: @escaping (Result<[InboxNote], Error>) -> ()) {
         var parameters = [
             ParameterKey.orderBy: orderBy.rawValue,

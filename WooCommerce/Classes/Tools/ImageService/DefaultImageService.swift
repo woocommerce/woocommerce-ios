@@ -66,7 +66,6 @@ struct DefaultImageService: ImageService {
                                            completion: ImageDownloadCompletion? = nil) {
         let encodedString = url?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         let url = URL(string: encodedString ?? "")
-        imageView.kf.cancelDownloadTask()
         imageView.kf.setImage(with: url,
                               placeholder: placeholder,
                               options: defaultOptions,

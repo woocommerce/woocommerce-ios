@@ -1030,6 +1030,7 @@
 		AEC95D412774C5AE001571F5 /* AddressFormViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC95D402774C5AE001571F5 /* AddressFormViewModelProtocol.swift */; };
 		AEC95D432774D07B001571F5 /* CreateOrderAddressFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC95D422774D07B001571F5 /* CreateOrderAddressFormViewModel.swift */; };
 		AECD57D226DFDF7500A3B580 /* EditOrderAddressForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECD57D126DFDF7500A3B580 /* EditOrderAddressForm.swift */; };
+		AED089F227C794BC0020AE10 /* View+CurrencySymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED089F127C794BC0020AE10 /* View+CurrencySymbol.swift */; };
 		AEDDDA0A25CA9C980077F9B2 /* AttributePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */; };
 		AEDDDA1A25CAB2170077F9B2 /* AttributePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */; };
 		AEE1D4F525D14F88006A490B /* AttributeOptionListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE1D4F425D14F88006A490B /* AttributeOptionListSelectorCommand.swift */; };
@@ -2663,6 +2664,7 @@
 		AEC95D402774C5AE001571F5 /* AddressFormViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressFormViewModelProtocol.swift; sourceTree = "<group>"; };
 		AEC95D422774D07B001571F5 /* CreateOrderAddressFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrderAddressFormViewModel.swift; sourceTree = "<group>"; };
 		AECD57D126DFDF7500A3B580 /* EditOrderAddressForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditOrderAddressForm.swift; sourceTree = "<group>"; };
+		AED089F127C794BC0020AE10 /* View+CurrencySymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+CurrencySymbol.swift"; sourceTree = "<group>"; };
 		AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewController.swift; sourceTree = "<group>"; };
 		AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AttributePickerViewController.xib; sourceTree = "<group>"; };
 		AEE1D4F425D14F88006A490B /* AttributeOptionListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeOptionListSelectorCommand.swift; sourceTree = "<group>"; };
@@ -4395,6 +4397,7 @@
 				581D5051274AA2480089B6AD /* View+AutofocusTextModifier.swift */,
 				26281775278F0B0100C836D3 /* View+NoticesModifier.swift */,
 				AE77EA4F27A47C99006A21BD /* View+AddingDividers.swift */,
+				AED089F127C794BC0020AE10 /* View+CurrencySymbol.swift */,
 			);
 			path = "View Modifiers";
 			sourceTree = "<group>";
@@ -8618,6 +8621,7 @@
 				CECC759723D607C900486676 /* OrderItemRefund+Woo.swift in Sources */,
 				0212275C244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift in Sources */,
 				DEC6C51A2747758D006832D3 /* JetpackInstallView.swift in Sources */,
+				AED089F227C794BC0020AE10 /* View+CurrencySymbol.swift in Sources */,
 				D85806292642BA5400A8AB6C /* PaymentCaptureOrchestrator.swift in Sources */,
 				E1E636BB26FB467A00C9D0D7 /* Comparable+Woo.swift in Sources */,
 				450C2CB024CF006A00D570DD /* ProductTagsDataSource.swift in Sources */,

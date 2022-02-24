@@ -29,20 +29,22 @@ struct FeeLineDetails: View {
             ScrollView {
                 VStack(spacing: .zero) {
                     Section {
-                        Picker("", selection: $viewModel.feeType) {
-                            Text(viewModel.percentSymbol).tag(FeeLineDetailsViewModel.FeeType.percentage)
-                            Text(viewModel.currencySymbol).tag(FeeLineDetailsViewModel.FeeType.fixed)
-                        }
-                        .onChange(of: viewModel.feeType, perform: { feeType in
-                            switch feeType {
-                            case .fixed:
-                                focusFixedAmountInput = true
-                            case .percentage:
-                                focusPercentageAmountInput = true
+                        if viewModel.isPercentageOptionAvailable {
+                            Picker("", selection: $viewModel.feeType) {
+                                Text(viewModel.percentSymbol).tag(FeeLineDetailsViewModel.FeeType.percentage)
+                                Text(viewModel.currencySymbol).tag(FeeLineDetailsViewModel.FeeType.fixed)
                             }
-                        })
-                        .pickerStyle(.segmented)
-                        .padding()
+                            .onChange(of: viewModel.feeType, perform: { feeType in
+                                switch feeType {
+                                case .fixed:
+                                    focusFixedAmountInput = true
+                                case .percentage:
+                                    focusPercentageAmountInput = true
+                                }
+                            })
+                            .pickerStyle(.segmented)
+                            .padding()
+                        }
 
                         Group {
                             switch viewModel.feeType {

@@ -132,7 +132,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                         completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
 
         do {
-            let parameters = try productVariations.map({ try $0.toDictionary() })
+            let parameters = try productVariations.map { try $0.toDictionary() }
             let path = "\(Path.products)/\(productID)/variations/batch"
             let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: ["update": parameters])
             let mapper = ProductVariationsBulkUpdateMapper(siteID: siteID, productID: productID)

@@ -17,7 +17,10 @@ public protocol ProductVariationsRemoteProtocol {
                                 newVariation: CreateProductVariation,
                                 completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void)
-    func updateProductVariations(siteID: Int64, productID: Int64, productVariations: [ProductVariation], completion: @escaping (Result<[ProductVariation], Error>) -> Void)
+    func updateProductVariations(siteID: Int64,
+                                 productID: Int64,
+                                 productVariations: [ProductVariation],
+                                 completion: @escaping (Result<[ProductVariation], Error>) -> Void)
     func deleteProductVariation(siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
 }
 
@@ -123,7 +126,10 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     ///     - productVariations: the ProductVariations to update remotely.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateProductVariations(siteID: Int64, productID: Int64, productVariations: [ProductVariation], completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
+    public func updateProductVariations(siteID: Int64,
+                                        productID: Int64,
+                                        productVariations: [ProductVariation],
+                                        completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
 
         do {
             let parameters = try productVariations.map({ try $0.toDictionary() })

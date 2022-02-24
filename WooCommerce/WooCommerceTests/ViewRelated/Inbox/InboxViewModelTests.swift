@@ -1,4 +1,5 @@
 import Combine
+import class Networking.InboxNotesRemote
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 import XCTest
@@ -255,6 +256,82 @@ final class InboxViewModelTests: XCTestCase {
         assertEqual(viewModel.noteRowViewModels[0], .init(note: latestNote))
         assertEqual(viewModel.noteRowViewModels[1], .init(note: noteWithDateAndSmallerID))
         assertEqual(viewModel.noteRowViewModels[2], .init(note: noteWithDateAndLargerID))
+    }
+
+    // MARK: - `onRefreshAction`
+
+    func test_onRefreshAction_resyncs_the_first_page() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var invocationCountOfLoadInboxNotes = 0
+        var syncPageNumber: Int?
+        stores.whenReceivingAction(ofType: InboxNotesAction.self) { action in
+            guard case let .loadAllInboxNotes(_, pageNumber, _, _, _, _, completion) = action else {
+                return
+            }
+            invocationCountOfLoadInboxNotes += 1
+            syncPageNumber = pageNumber
+
+            completion(.success([]))
+        }
+        let viewModel = InboxViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        waitFor { promise in
+            viewModel.onRefreshAction {
+                promise(())
+            }
+        }
+
+        // Then
+        XCTAssertEqual(syncPageNumber, 1)
+        XCTAssertEqual(invocationCountOfLoadInboxNotes, 1)
+    }
+
+    // MARK: - `dismissAllInboxNotes`
+
+    func test_dismissAllInboxNotes_after_syncing_2_pages_dispatches_action_with_matching_note_params_and_page_size_including_2_pages() {
+        typealias InboxNoteParameters = (pageNumber: Int,
+                                         pageSize: Int,
+                                         orderBy: InboxNotesRemote.OrderBy,
+                                         type: [InboxNotesRemote.NoteType]?,
+                                         status: [InboxNotesRemote.Status]?)
+
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        let pageSize: Int = 2
+        let fullPageNotes = [InboxNote](repeating: .fake().copy(siteID: sampleSiteID), count: pageSize)
+
+        var loadParameters: InboxNoteParameters?
+        var dismissAllParameters: InboxNoteParameters?
+        stores.whenReceivingAction(ofType: InboxNotesAction.self) { action in
+            if case let .loadAllInboxNotes(_, pageNumber, pageSize, orderBy, type, status, completion) = action {
+                loadParameters = (pageNumber: pageNumber, pageSize: pageSize, orderBy: orderBy, type: type, status: status)
+                completion(.success(fullPageNotes))
+            } else if case let .dismissAllInboxNotes(_, pageNumber, pageSize, orderBy, type, status, completion) = action {
+                dismissAllParameters = (pageNumber: pageNumber, pageSize: pageSize, orderBy: orderBy, type: type, status: status)
+                completion(.success(()))
+            }
+        }
+        let viewModel = InboxViewModel(siteID: sampleSiteID, pageSize: pageSize, stores: stores)
+
+        // When
+        viewModel.onLoadTrigger.send() // Loads the first page of notes.
+        viewModel.onLoadNextPageAction() // Loads the second page of notes.
+        viewModel.dismissAllInboxNotes() // Dismisses all notes of 2 pages.
+
+        // Then
+        XCTAssertEqual(loadParameters?.orderBy, dismissAllParameters?.orderBy)
+        XCTAssertEqual(loadParameters?.type, dismissAllParameters?.type)
+        XCTAssertEqual(loadParameters?.status, dismissAllParameters?.status)
+        XCTAssertEqual(dismissAllParameters?.pageNumber, 1)
+        XCTAssertEqual(dismissAllParameters?.pageSize, 4) // `pageSize` * 2 pages.
+
+        // Asserts on parameter values.
+        XCTAssertEqual(loadParameters?.orderBy, .date)
+        XCTAssertEqual(loadParameters?.type, [.info, .marketing, .survey, .warning])
+        XCTAssertEqual(loadParameters?.status, [.unactioned, .actioned])
     }
 }
 

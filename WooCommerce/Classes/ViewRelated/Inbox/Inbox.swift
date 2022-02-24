@@ -17,8 +17,11 @@ struct Inbox: View {
         Group {
             switch viewModel.syncState {
             case .results:
-                InfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
-                                   loadAction: viewModel.onLoadNextPageAction) {
+                RefreshableInfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
+                                              loadAction: viewModel.onLoadNextPageAction,
+                                              refreshAction: { completion in
+                    viewModel.onRefreshAction(completion: completion)
+                }) {
                     ForEach(viewModel.noteRowViewModels) { rowViewModel in
                         InboxNoteRow(viewModel: rowViewModel)
                     }

@@ -36,8 +36,20 @@ public class InboxNotesStore: Store {
             loadAllInboxNotes(for: siteID, pageNumber: pageNumber, pageSize: pageSize, orderBy: orderBy, type: type, status: status, completion: completion)
         case .dismissInboxNote(let siteID, let noteID, let completion):
             dismissInboxNote(for: siteID, noteID: noteID, completion: completion)
-        case .dismissAllInboxNotes(let siteID, let completion):
-            dismissAllInboxNotes(siteID: siteID, completion: completion)
+        case let .dismissAllInboxNotes(siteID,
+                                       pageNumber,
+                                       pageSize,
+                                       orderBy,
+                                       type,
+                                       status,
+                                       completion):
+            dismissAllInboxNotes(siteID: siteID,
+                                 pageNumber: pageNumber,
+                                 pageSize: pageSize,
+                                 orderBy: orderBy,
+                                 type: type,
+                                 status: status,
+                                 completion: completion)
         case .markInboxNoteAsActioned(let siteID, let noteID, let actionID, let completion):
             markInboxNoteAsActioned(for: siteID, noteID: noteID, actionID: actionID, completion: completion)
         }
@@ -97,8 +109,18 @@ private extension InboxNotesStore {
     /// This marks all notifications is_deleted field to true and the inbox notes will be deleted locally.
     ///
     func dismissAllInboxNotes(siteID: Int64,
+                              pageNumber: Int = Default.pageNumber,
+                              pageSize: Int = Default.pageSize,
+                              orderBy: InboxNotesRemote.OrderBy = .date,
+                              type: [InboxNotesRemote.NoteType]? = nil,
+                              status: [InboxNotesRemote.Status]? = nil,
                               completion: @escaping (Result<Void, Error>) -> ()) {
-        remote.dismissAllInboxNotes(for: siteID) { [weak self] result in
+        remote.dismissAllInboxNotes(for: siteID,
+                                    pageNumber: pageNumber,
+                                    pageSize: pageSize,
+                                    orderBy: orderBy,
+                                    type: type,
+                                    status: status) { [weak self] result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))

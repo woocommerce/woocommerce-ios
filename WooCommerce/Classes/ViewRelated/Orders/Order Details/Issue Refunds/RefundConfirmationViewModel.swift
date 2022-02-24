@@ -318,15 +318,11 @@ private extension WCPayCardBrand {
         let localizedDescription = String(format: Localization.cardAccessibilityDescriptionFormat, cardBrandName(), last4)
         let attributedLocalizedDescription = NSMutableAttributedString(string: localizedDescription)
 
-        guard let brandNameRange = localizedDescription.range(of: cardBrandName()),
-              let last4Range = localizedDescription.range(of: last4)
-        else {
+        guard let last4Range = localizedDescription.range(of: last4) else {
             return attributedLocalizedDescription
         }
 
-        let brandNameNSRange = NSRange(brandNameRange, in: localizedDescription)
         let last4NSRange = NSRange(last4Range, in: localizedDescription)
-        attributedLocalizedDescription.setAttributes([.accessibilitySpeechLanguage: "en-US"], range: brandNameNSRange)
         attributedLocalizedDescription.setAttributes([.accessibilitySpeechSpellOut: true], range: last4NSRange)
 
         return attributedLocalizedDescription
@@ -364,7 +360,7 @@ private extension WCPayCardBrand {
         case .discover:
             return "Discover"
         case .interac:
-            return "interac"
+            return "Interac"
         case .jcb:
             return "JCB"
         case .mastercard:

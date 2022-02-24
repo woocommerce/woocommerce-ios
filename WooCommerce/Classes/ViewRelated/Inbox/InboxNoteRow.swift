@@ -25,8 +25,14 @@ struct InboxNoteRow: View {
                         .fixedSize(horizontal: false, vertical: true)
 
                     // Content.
-                    AttributedText(viewModel.attributedContent)
-                        .attributedTextLinkColor(Color(.accent))
+                    // Showing `AttributedText` in placeholder state results in animated height changes, thus a `Text` is shown instead.
+                    if viewModel.isPlaceholder {
+                        Text(String(repeating: " ", count: 120))
+                            .bodyStyle()
+                    } else {
+                        AttributedText(viewModel.attributedContent)
+                            .attributedTextLinkColor(Color(.accent))
+                    }
 
                     // HStack with actions and dismiss action.
                     HStack(spacing: Constants.spacingBetweenActions) {
@@ -156,8 +162,16 @@ struct InboxNoteRow_Previews: PreviewProvider {
                              isRemoved: false,
                              isRead: false,
                              dateCreated: today)
+
+        let placeholderViewModel = InboxNoteRowViewModel(id: 1,
+                                                         date: .init(),
+                                                         title: "       ",
+                                                         attributedContent: .init(),
+                                                         actions: [],
+                                                         siteID: 1,
+                                                         isPlaceholder: true)
         Group {
-            List {
+            VStack {
                 InboxNoteRow(viewModel: .init(note: note.copy(type: "marketing", dateCreated: today), today: today))
                 InboxNoteRow(viewModel: .init(note: shortNote.copy(type: "error").copy(dateCreated: today.addingTimeInterval(-6*60)), today: today))
                 InboxNoteRow(viewModel: .init(note: shortNote.copy(type: "warning").copy(dateCreated: today.addingTimeInterval(-6*3600)), today: today))
@@ -173,6 +187,14 @@ struct InboxNoteRow_Previews: PreviewProvider {
             InboxNoteRow(viewModel: .init(note: note.copy(dateCreated: today.addingTimeInterval(-6*60)), today: today))
                 .preferredColorScheme(.light)
                 .environment(\.sizeCategory, .extraExtraExtraLarge)
+            InboxNoteRow(viewModel: placeholderViewModel)
+                .redacted(reason: .placeholder)
+                .shimmering()
+                .preferredColorScheme(.light)
+            InboxNoteRow(viewModel: placeholderViewModel)
+                .redacted(reason: .placeholder)
+                .shimmering()
+                .preferredColorScheme(.dark)
         }
     }
 }

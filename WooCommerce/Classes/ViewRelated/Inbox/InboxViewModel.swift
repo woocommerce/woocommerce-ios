@@ -18,9 +18,10 @@ final class InboxViewModel: ObservableObject {
         InboxNoteRowViewModel(id: $0,
                               date: "   ",
                               title: "            ",
-                              attributedContent: .init(string: "\n\n\n"),
+                              attributedContent: .init(),
                               actions: [.init(id: 0, title: "Placeholder", url: nil)],
-                              siteID: 123)
+                              siteID: 123,
+                              isPlaceholder: true)
     }
 
     // MARK: Sync

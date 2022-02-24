@@ -13,9 +13,9 @@ final class NewOrderViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
 
     /// Active navigation bar trailing item.
-    /// Defaults to no visible button.
+    /// Defaults to create button.
     ///
-    @Published private(set) var navigationTrailingItem: NavigationItem = .none
+    @Published private(set) var navigationTrailingItem: NavigationItem = .create
 
     /// Tracks if a network request is being performed.
     ///
@@ -275,7 +275,6 @@ extension NewOrderViewModel {
     /// Representation of possible navigation bar trailing buttons
     ///
     enum NavigationItem: Equatable {
-        case none
         case create
         case loading
     }
@@ -385,10 +384,6 @@ private extension NewOrderViewModel {
             .map { order, performingNetworkRequest -> NavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
-                }
-
-                guard OrderFactory.emptyNewOrder != order else {
-                    return .none
                 }
 
                 return .create

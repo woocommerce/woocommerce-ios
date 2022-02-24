@@ -27,7 +27,7 @@ struct InboxNoteRow: View {
                     // Content.
                     // Showing `AttributedText` in placeholder state results in animated height changes, thus a `Text` is shown instead.
                     if viewModel.isPlaceholder {
-                        Text(viewModel.attributedContent.string)
+                        Text(String(repeating: " ", count: 120))
                             .bodyStyle()
                     } else {
                         AttributedText(viewModel.attributedContent)
@@ -166,7 +166,7 @@ struct InboxNoteRow_Previews: PreviewProvider {
         let placeholderViewModel = InboxNoteRowViewModel(id: 1,
                                                          date: .init(),
                                                          title: "       ",
-                                                         attributedContent: .init(string: String(repeating: " ", count: 120)),
+                                                         attributedContent: .init(),
                                                          actions: [],
                                                          siteID: 1,
                                                          isPlaceholder: true)

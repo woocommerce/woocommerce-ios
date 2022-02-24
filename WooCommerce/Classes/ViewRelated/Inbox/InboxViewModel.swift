@@ -17,7 +17,7 @@ final class InboxViewModel: ObservableObject {
         InboxNoteRowViewModel(id: $0,
                               date: "   ",
                               title: "            ",
-                              attributedContent: .init(string: String(repeating: " ", count: 120)),
+                              attributedContent: .init(),
                               actions: [.init(id: 0, title: "Placeholder", url: nil)],
                               siteID: 123,
                               isPlaceholder: true)

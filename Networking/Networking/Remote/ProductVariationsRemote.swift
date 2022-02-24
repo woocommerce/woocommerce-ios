@@ -118,7 +118,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         }
     }
 
-    /// Updates a specific `ProductVariations`.
+    /// Updates the provided `ProductVariations`.
     ///
     /// - Parameters:
     ///     - siteID: Site which hosts the ProductVariations.

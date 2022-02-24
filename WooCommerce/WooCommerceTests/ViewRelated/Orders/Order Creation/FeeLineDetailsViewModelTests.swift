@@ -17,6 +17,7 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         viewModel.amount = "hi:11.3005.02-"
 
         // Then
+        XCTAssertFalse(viewModel.isPercentageOptionAvailable)
         XCTAssertEqual(viewModel.amount, "11.30")
         XCTAssertEqual(viewModel.currencySymbol, "$")
         XCTAssertEqual(viewModel.currencyPosition, .left)
@@ -36,6 +37,7 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         viewModel.amount = "12.203"
 
         // Then
+        XCTAssertFalse(viewModel.isPercentageOptionAvailable)
         XCTAssertEqual(viewModel.amount, "12.203")
         XCTAssertEqual(viewModel.currencySymbol, "£")
         XCTAssertEqual(viewModel.currencyPosition, .rightSpace)
@@ -50,6 +52,7 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         let viewModel = FeeLineDetailsViewModel(inputData: inputData, locale: usLocale, storeCurrencySettings: usStoreSettings, didSelectSave: { _ in })
 
         // Then
+        XCTAssertTrue(viewModel.isPercentageOptionAvailable)
         XCTAssertTrue(viewModel.isExistingFeeLine)
         XCTAssertEqual(viewModel.feeType, .fixed)
         XCTAssertEqual(viewModel.amount, "10.00")

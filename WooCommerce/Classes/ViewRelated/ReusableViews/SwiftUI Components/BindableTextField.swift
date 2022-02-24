@@ -46,6 +46,8 @@ struct BindableTextfield: UIViewRepresentable {
     func makeUIView(context: Context) -> UITextField {
         let textfield = UITextField()
         textfield.delegate = context.coordinator
+        textfield.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        textfield.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         return textfield
     }
 

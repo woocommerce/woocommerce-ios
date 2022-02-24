@@ -110,7 +110,7 @@ final class InboxNotesRemoteTests: XCTestCase {
         let remote = InboxNotesRemote(network: network)
         let sampleInboxNoteID: Int64 = 296
 
-        network.simulateResponse(requestUrlSuffix: "admin/notes/\(sampleInboxNoteID)", filename: "inbox-note")
+        network.simulateResponse(requestUrlSuffix: "admin/notes/delete/\(sampleInboxNoteID)", filename: "inbox-note")
 
         // When
         let result = waitFor { promise in
@@ -133,11 +133,56 @@ final class InboxNotesRemoteTests: XCTestCase {
         let sampleInboxNoteID: Int64 = 296
 
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
-        network.simulateError(requestUrlSuffix: "admin/notes/\(sampleInboxNoteID)", error: error)
+        network.simulateError(requestUrlSuffix: "admin/notes/delete/\(sampleInboxNoteID)", error: error)
 
         // When
         let result = waitFor { promise in
             remote.dismissInboxNote(for: self.sampleSiteID, noteID: sampleInboxNoteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let resultError = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
+    }
+
+    // MARK: - Dismiss all Inbox Notes tests
+
+    /// Verifies that dismissAllInboxNotes properly parses the `InboxNote`s sample response.
+    ///
+    func test_dismissAllInboxNotes_properly_returns_parsed_InboxNotes() throws {
+        // Given
+        let remote = InboxNotesRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "admin/notes/delete/all", filename: "inbox-note-list")
+
+        // When
+        let result = waitFor { promise in
+            remote.dismissAllInboxNotes(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssert(result.isSuccess)
+        let inboxNotes = try XCTUnwrap(result.get())
+        XCTAssertEqual(inboxNotes.count, 24)
+    }
+
+    /// Verifies that dismissAllInboxNotes properly relays Networking Layer errors.
+    ///
+    func test_dismissAllInboxNotes_properly_relays_networking_errors() throws {
+        // Given
+        let remote = InboxNotesRemote(network: network)
+
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "admin/notes/delete/all", error: error)
+
+        // When
+        let result = waitFor { promise in
+            remote.dismissAllInboxNotes(for: self.sampleSiteID) { result in
                 promise(result)
             }
         }

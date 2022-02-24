@@ -427,23 +427,8 @@ extension OrderDetailsViewModel {
     }
 
     func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {
-        // No orders are eligible for shipping label creation unless feature flag for Milestones 2 & 3 is enabled
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsM2M3) else {
-            dataSource.isEligibleForShippingLabelCreation = false
-            onCompletion?()
-            return
-        }
-
-        // Check shipping label creation eligibility remotely, according to client features available in Shipping Labels Milestone 4
-        // like creating Shipping Labels outside of United States
-        let isCustomsFormEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsInternational)
-        let isPaymentMethodCreationEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddPaymentMethods)
-        let isPackageCreationEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddCustomPackages)
         let action = ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
-                                                                  orderID: order.orderID,
-                                                                  canCreatePaymentMethod: isPaymentMethodCreationEnabled,
-                                                                  canCreateCustomsForm: isCustomsFormEnabled,
-                                                                  canCreatePackage: isPackageCreationEnabled) { [weak self] isEligible in
+                                                                  orderID: order.orderID) { [weak self] isEligible in
             self?.dataSource.isEligibleForShippingLabelCreation = isEligible
             if isEligible, let orderStatus = self?.orderStatus?.status.rawValue {
                 ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,

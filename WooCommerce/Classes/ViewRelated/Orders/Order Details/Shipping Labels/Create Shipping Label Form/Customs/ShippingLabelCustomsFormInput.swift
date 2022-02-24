@@ -217,9 +217,10 @@ private extension ShippingLabelCustomsFormInput {
     }
 }
 
+#if DEBUG
 struct ShippingLabelCustomsFormInput_Previews: PreviewProvider {
     static let sampleViewModel: ShippingLabelCustomsFormInputViewModel = {
-        let sampleOrder = ShippingLabelPackageDetailsViewModel.sampleOrder()
+        let sampleOrder = ShippingLabelSampleData.sampleOrder()
         let sampleForm = ShippingLabelCustomsForm(packageID: "Food Package", packageName: "Food Package", items: [])
         return .init(customsForm: sampleForm, destinationCountry: Country(code: "VN", name: "Vietnam", states: []), countries: [], currency: "$")
     }()
@@ -228,3 +229,4 @@ struct ShippingLabelCustomsFormInput_Previews: PreviewProvider {
         ShippingLabelCustomsFormInput(isCollapsible: true, packageNumber: 1, safeAreaInsets: .zero, viewModel: sampleViewModel)
     }
 }
+#endif

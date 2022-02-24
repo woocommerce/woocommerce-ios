@@ -160,7 +160,12 @@ final class InboxNotesRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.dismissAllInboxNotes(for: self.sampleSiteID) { result in
+            remote.dismissAllInboxNotes(for: self.sampleSiteID,
+                                        pageNumber: 1,
+                                        pageSize: 20,
+                                        orderBy: .date,
+                                        type: nil,
+                                        status: nil) { result in
                 promise(result)
             }
         }
@@ -182,7 +187,12 @@ final class InboxNotesRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.dismissAllInboxNotes(for: self.sampleSiteID) { result in
+            remote.dismissAllInboxNotes(for: self.sampleSiteID,
+                                        pageNumber: 1,
+                                        pageSize: 20,
+                                        orderBy: .date,
+                                        type: nil,
+                                        status: nil) { result in
                 promise(result)
             }
         }

@@ -149,10 +149,11 @@ private extension ShippingLabelSinglePackage {
     }
 }
 
+#if DEBUG
 struct ShippingLabelSinglePackage_Previews: PreviewProvider {
     static var previews: some View {
-        let order = ShippingLabelPackageDetailsViewModel.sampleOrder()
-        let packageResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
+        let order = ShippingLabelSampleData.sampleOrder()
+        let packageResponse = ShippingLabelSampleData.samplePackageDetails()
         let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                             orderItems: [],
                                                             packagesResponse: packageResponse,
@@ -167,3 +168,4 @@ struct ShippingLabelSinglePackage_Previews: PreviewProvider {
                                    viewModel: viewModel)
     }
 }
+#endif

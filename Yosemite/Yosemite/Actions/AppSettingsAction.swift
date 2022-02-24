@@ -128,14 +128,6 @@ public enum AppSettingsAction: Action {
     ///
     case setOrderCreationFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
 
-    /// Loads the most recent state for the WooCommerce Stripe Payment Gateway extension In-Person Payments beta feature switch
-    ///
-    case loadStripeInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
-
-    /// Sets the state for the WooCommerce Stripe Payment Gateway extension In-Person Payments beta feature switch
-    ///
-    case setStripeInPersonPaymentsSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
-
     /// Loads the most recent state for the In-Person Payments in Canada beta feature switch
     ///
     case loadCanadaInPersonPaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)

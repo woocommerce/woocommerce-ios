@@ -232,6 +232,28 @@ final class OrdersRemoteTests: XCTestCase {
         assertEqual(received, expected)
     }
 
+    func test_update_order_properly_encodes_fee_lines_for_removal_from_order() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let fee = OrderFeeLine(feeID: 333, name: nil, taxClass: "", taxStatus: .none, total: "12.34", totalTax: "", taxes: [], attributes: [])
+        let order = Order.fake().copy(fees: [fee])
+
+        // When
+        remote.updateOrder(from: 123, order: order, fields: [.fees]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: AnyHashable]]).first
+        let expected: [String: AnyHashable] = [
+            "id": fee.feeID,
+            "name": NSNull(),
+            "tax_status": fee.taxStatus.rawValue,
+            "tax_class": fee.taxClass,
+            "total": fee.total
+        ]
+        assertEqual(expected, received)
+    }
+
 
     // MARK: - Load Order Notes Tests
 
@@ -301,7 +323,7 @@ final class OrdersRemoteTests: XCTestCase {
         let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: AnyHashable]]).first
         let expected: [String: AnyHashable] = [
             "id": fee.feeID,
-            "name": fee.name,
+            "name": fee.name ?? "",
             "tax_status": fee.taxStatus.rawValue,
             "tax_class": fee.taxClass,
             "total": fee.total

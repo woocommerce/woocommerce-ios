@@ -52,6 +52,18 @@ public enum OrderFactory {
               attributes: [])
     }
 
+    /// Creates a fee line suitable to delete a fee line already saved remotely in an order.
+    ///
+    public static func deletedFeeLine(_ feeLine: OrderFeeLine) -> OrderFeeLine {
+        feeLine.copy(name: .some(nil))
+    }
+
+    /// Creates a shipping line suitable to delete a shipping line already saved remotely in an order.
+    ///
+    public static func deletedShippingLine(_ shippingLine: ShippingLine) -> ShippingLine {
+        shippingLine.copy(methodID: .some(nil))
+    }
+
     /// References a new empty order with constants `Date` values.
     ///
     public static let emptyNewOrder = Order.empty

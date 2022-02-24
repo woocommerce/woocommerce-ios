@@ -83,7 +83,7 @@ final class MainTabBarController: UITabBarController {
     /// Used for overriding the status bar style for all child view controllers
     ///
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) ? .default: StyleManager.statusBarLight
+        .default
     }
 
     /// Notifications badge

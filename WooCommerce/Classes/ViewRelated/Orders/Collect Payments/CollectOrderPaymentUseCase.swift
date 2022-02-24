@@ -70,7 +70,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private lazy var connectionController = {
         CardReaderConnectionController(forSiteID: siteID,
-                                       knownReaderProvider: CardReaderSettingsKnownReaderStorage(), alertsProvider: CardReaderSettingsAlerts())
+                                       knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
+                                       alertsProvider: CardReaderSettingsAlerts())
     }()
 
     init(siteID: Int64,
@@ -162,7 +163,7 @@ private extension CollectOrderPaymentUseCase {
     ///
     func attemptPayment(onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> ()) {
         // Track tapped event
-        analytics.track(.collectPaymentTapped)
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentTapped(forGatewayID: paymentGatewayAccount.gatewayID))
 
         // Show reader ready alert
         alerts.readerIsReady(title: Localization.collectPaymentTitle(username: order.billingAddress?.firstName), amount: formattedAmount)
@@ -200,7 +201,7 @@ private extension CollectOrderPaymentUseCase {
     ///
     func handleSuccessfulPayment(receipt: CardPresentReceiptParameters, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> ()) {
         // Record success
-        analytics.track(.collectPaymentSuccess)
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentSuccess(forGatewayID: paymentGatewayAccount.gatewayID))
 
         // Success Callback
         onCompletion(.success(receipt))
@@ -210,7 +211,7 @@ private extension CollectOrderPaymentUseCase {
     ///
     func handlePaymentFailureAndRetryPayment(_ error: Error, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> ()) {
         // Record error
-        analytics.track(.collectPaymentFailed, withError: error)
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentFailed(forGatewayID: paymentGatewayAccount.gatewayID, error: error))
         DDLogError("Failed to collect payment: \(error.localizedDescription)")
 
         // Inform about the error
@@ -237,8 +238,9 @@ private extension CollectOrderPaymentUseCase {
     /// Cancels payment and record analytics.
     ///
     func cancelPayment() {
-        paymentOrchestrator.cancelPayment { [analytics] _ in
-            analytics.track(.collectPaymentCanceled)
+        paymentOrchestrator.cancelPayment { [weak self, analytics] _ in
+            guard let self = self else { return }
+            analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: self.paymentGatewayAccount.gatewayID))
         }
     }
 

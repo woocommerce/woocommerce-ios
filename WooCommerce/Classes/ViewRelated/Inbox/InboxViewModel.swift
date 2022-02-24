@@ -17,7 +17,6 @@ final class InboxViewModel: ObservableObject {
         // The content does not matter because the text in placeholder rows is redacted.
         InboxNoteRowViewModel(id: $0,
                               date: "   ",
-                              typeIcon: .init(uiImage: .infoImage),
                               title: "            ",
                               attributedContent: .init(string: "\n\n\n"),
                               actions: [.init(id: 0, title: "Placeholder", url: nil)],
@@ -48,9 +47,12 @@ final class InboxViewModel: ObservableObject {
 
     /// Inbox notes ResultsController.
     private lazy var resultsController: ResultsController<StorageInboxNote> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageInboxNote.dateCreated, ascending: false)
-        let resultsController = ResultsController<StorageInboxNote>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        let predicate = NSPredicate(format: "siteID == %lld AND isRemoved == NO", siteID)
+        let sortDescriptorByDateCreated = NSSortDescriptor(keyPath: \StorageInboxNote.dateCreated, ascending: false)
+        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageInboxNote.id, ascending: true)
+        let resultsController = ResultsController<StorageInboxNote>(storageManager: storageManager,
+                                                                    matching: predicate,
+                                                                    sortedBy: [sortDescriptorByDateCreated, sortDescriptorByID])
         return resultsController
     }()
 
@@ -80,6 +82,14 @@ final class InboxViewModel: ObservableObject {
     /// Called when the next page should be loaded.
     func onLoadNextPageAction() {
         paginationTracker.ensureNextPageIsSynced()
+    }
+
+    /// Called when the user pulls down the list to refresh.
+    /// - Parameter completion: called when the refresh completes.
+    func onRefreshAction(completion: @escaping () -> Void) {
+        paginationTracker.resync(reason: nil) {
+            completion()
+        }
     }
 }
 
@@ -160,8 +170,12 @@ private extension InboxViewModel {
 
     /// Performs initial fetch from storage and updates results.
     func configureResultsController() {
-        resultsController.onDidChangeContent = updateResults
-        resultsController.onDidResetContent = updateResults
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.updateResults()
+        }
+        resultsController.onDidResetContent = { [weak self] in
+            self?.updateResults()
+        }
 
         do {
             try resultsController.performFetch()

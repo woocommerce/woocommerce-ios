@@ -7,20 +7,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .barcodeScanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .largeTitles:
-            return true
-        case .shippingLabelsM2M3:
-            return true
-        case .shippingLabelsInternational:
-            return true
-        case .shippingLabelsAddPaymentMethods:
-            return true
-        case .shippingLabelsAddCustomPackages:
-            return true
-        case .shippingLabelsMultiPackage:
-            return true
-        case .pushNotificationsForAllStores:
-            return true
         case .orderListFilters:
             return true
         case .jetpackConnectionPackageSupport:
@@ -33,12 +19,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .systemStatusReport:
             return true
-        case .stripeExtensionInPersonPayments:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .myStoreTabUpdates:
             return true
-        case .couponManagement:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .couponView:
+            return true
         case .productSKUInputScanner:
             return true
         case .canadaInPersonPayments:
@@ -46,6 +30,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .taxLinesInSimplePayments:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .inbox:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .bulkEditProductVariations:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

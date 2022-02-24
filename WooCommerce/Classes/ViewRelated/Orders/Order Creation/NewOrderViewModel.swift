@@ -117,12 +117,6 @@ final class NewOrderViewModel: ObservableObject {
 
     // MARK: Payment properties
 
-    /// Indicates if the Payment section should be shown
-    ///
-    var shouldShowPaymentSection: Bool {
-        orderSynchronizer.order.items.isNotEmpty
-    }
-
     /// Representation of payment data display properties
     ///
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
@@ -132,6 +126,13 @@ final class NewOrderViewModel: ObservableObject {
     /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
     func saveShippingLine(_ shippingLine: ShippingLine?) {
         orderSynchronizer.setShipping.send(shippingLine)
+    }
+
+    /// Saves a fee.
+    ///
+    /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
+    func saveFeeLine(_ feeLine: OrderFeeLine?) {
+        orderSynchronizer.setFee.send(feeLine)
     }
 
     // MARK: -
@@ -289,7 +290,7 @@ extension NewOrderViewModel {
             title = orderStatus.name ?? orderStatus.slug
             color = {
                 switch orderStatus.status {
-                case .pending, .completed, .cancelled, .refunded, .custom:
+                case .autoDraft, .pending, .completed, .cancelled, .refunded, .custom:
                     return .gray(.shade5)
                 case .onHold:
                     return .withColorStudio(.orange, shade: .shade5)
@@ -342,16 +343,35 @@ extension NewOrderViewModel {
 
         let shouldShowShippingTotal: Bool
         let shippingTotal: String
+        let shippingMethodTitle: String
+
+        let shouldShowFees: Bool
+        let feesBaseAmountForPercentage: Decimal
+        let feesTotal: String
+
+        /// Whether payment data is being reloaded (during remote sync)
+        ///
+        let isLoading: Bool
 
         init(itemsTotal: String = "",
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "",
+             shippingMethodTitle: String = "",
+             shouldShowFees: Bool = false,
+             feesBaseAmountForPercentage: Decimal = 0,
+             feesTotal: String = "",
              orderTotal: String = "",
+             isLoading: Bool = false,
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? ""
             self.shouldShowShippingTotal = shouldShowShippingTotal
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? ""
+            self.shippingMethodTitle = shippingMethodTitle
+            self.shouldShowFees = shouldShowFees
+            self.feesBaseAmountForPercentage = feesBaseAmountForPercentage
+            self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? ""
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? ""
+            self.isLoading = isLoading
         }
     }
 }
@@ -443,11 +463,11 @@ private extension NewOrderViewModel {
             .assign(to: &$customerDataViewModel)
     }
 
-    /// Updates payment section view model based on items in the order.
+    /// Updates payment section view model based on items in the order and order sync state.
     ///
     func configurePaymentDataViewModel() {
-        orderSynchronizer.orderPublisher
-            .map { [weak self] order in
+        Publishers.CombineLatest(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher)
+            .map { [weak self] order, state in
                 guard let self = self else {
                     return PaymentDataViewModel()
                 }
@@ -462,12 +482,37 @@ private extension NewOrderViewModel {
                     .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
                     .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
-                let orderTotal = itemsTotal.adding(shippingTotal)
+                let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
+
+                // TODO-6236: move totals calculation to LocalOrderSynchronizer, add tax to feesBaseAmount
+                let feesBaseAmountForPercentage = itemsTotal.adding(shippingTotal)
+
+                let feesTotal = order.fees
+                    .map { $0.total }
+                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
+                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
+
+
+                let orderTotal = feesBaseAmountForPercentage.adding(feesTotal)
+
+                let isDataSyncing: Bool = {
+                    switch state {
+                    case .syncing:
+                        return true
+                    default:
+                        return false
+                    }
+                }()
 
                 return PaymentDataViewModel(itemsTotal: itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.isNotEmpty,
                                             shippingTotal: shippingTotal.stringValue,
+                                            shippingMethodTitle: shippingMethodTitle,
+                                            shouldShowFees: order.fees.isNotEmpty,
+                                            feesBaseAmountForPercentage: feesBaseAmountForPercentage as Decimal,
+                                            feesTotal: feesTotal.stringValue,
                                             orderTotal: orderTotal.stringValue,
+                                            isLoading: isDataSyncing,
                                             currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)

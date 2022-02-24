@@ -1,3 +1,3 @@
-Vous remarquerez un nouvel onglet « Menu » dans cette version. Nous avons déplacé les réglages de la boutique, le basculement entre les différentes boutiques et l’aperçu de WooCommerce Admin vers cet écran. D’autres fonctionnalités y apparaîtront au cours des prochains mois !
+Nous avons mis à jour une partie de l’onglet Ma boutique en fonction de vos commentaires. Il affiche désormais un pourcentage de conversion ainsi que les cinq produits les plus vendus (jusqu’ici, vous ne pouviez en voir que trois).
 
-Cette version comprend également un correctif pour l’écran des produits, où le nom du produit revenait au nom précédent si vous téléchargiez une image. Merci de signaler les bugs. Votre avis nous intéresse !
+Vous souhaitiez pouvoir créer des commandes dans l’application. Nous sommes heureux de vous annoncer le lancement d’une fonctionnalité en version d’essai que vous pouvez nous aider à tester. Pour cela, accédez aux réglages de l’application et activez la fonctionnalité Création d’une commande. Vous pouvez ajouter des produits, des notes et des adresses. D’autres fonctionnalités seront également disponibles dans les prochaines versions.

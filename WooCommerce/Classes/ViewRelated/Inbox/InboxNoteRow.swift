@@ -8,28 +8,15 @@ struct InboxNoteRow: View {
     // Tracks the scale of the view due to accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1
     @State private var tappedAction: InboxNoteRowActionViewModel?
-    @State private var showsWebView: Bool = false
     @State private var isDismissButtonLoading: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
-            VStack(alignment: .leading, spacing: Constants.spacingBetweenTopHStackAndContentVStack) {
-                // HStack with type icon and relative date.
-                HStack {
-                    Circle()
-                        .frame(width: scale * Constants.typeIconDimension, height: scale * Constants.typeIconDimension, alignment: .center)
-                        .foregroundColor(Color(Constants.typeIconCircleColor))
-                        .overlay(
-                            viewModel.typeIcon
-                                    .resizable()
-                                    .scaledToFit()
-                                .padding(scale * Constants.typeIconPadding)
-                        )
-                    Text(viewModel.date)
-                        .font(.subheadline)
-                        .foregroundColor(Color(Constants.dateTextColor))
-                    Spacer()
-                }
+            VStack(alignment: .leading, spacing: Constants.spacingBetweenTopViewAndContentVStack) {
+                // Relative date.
+                Text(viewModel.date)
+                    .font(.subheadline)
+                    .foregroundColor(Color(Constants.dateTextColor))
 
                 VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                     // Title.
@@ -47,7 +34,6 @@ struct InboxNoteRow: View {
                             if action.url != nil {
                                 Button(action.title) {
                                     tappedAction = action
-                                    showsWebView = true
                                     viewModel.markInboxNoteAsActioned(actionID: action.id)
                                 }
                                 .foregroundColor(Color(.accent))
@@ -91,7 +77,7 @@ struct InboxNoteRow: View {
 
         if isWPComStore {
         NavigationView {
-            AuthenticatedWebView(isPresented: $showsWebView,
+            AuthenticatedWebView(isPresented: .constant(tappedAction != nil),
                                  url: url,
                                  urlToTriggerExit: nil) {
 
@@ -101,7 +87,7 @@ struct InboxNoteRow: View {
              .toolbar {
                  ToolbarItem(placement: .confirmationAction) {
                      Button(action: {
-                         showsWebView = false
+                         tappedAction = nil
                      }, label: {
                          Text(Localization.doneButtonWebview)
                      })
@@ -129,14 +115,11 @@ private extension InboxNoteRow {
 
     enum Constants {
         static let spacingBetweenActions: CGFloat = 16
-        static let spacingBetweenTopHStackAndContentVStack: CGFloat = 8
+        static let spacingBetweenTopViewAndContentVStack: CGFloat = 8
         static let verticalSpacing: CGFloat = 14
         static let defaultPadding: CGFloat = 16
         static let dividerHeight: CGFloat = 1
         static let dateTextColor: UIColor = .withColorStudio(.gray, shade: .shade30)
-        static let typeIconDimension: CGFloat = 29
-        static let typeIconPadding: CGFloat = 5
-        static let typeIconCircleColor: UIColor = .init(light: .withColorStudio(.gray, shade: .shade0), dark: .withColorStudio(.gray, shade: .shade70))
     }
 }
 

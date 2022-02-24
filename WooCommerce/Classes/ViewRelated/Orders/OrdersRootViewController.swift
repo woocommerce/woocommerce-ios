@@ -186,15 +186,13 @@ private extension OrdersRootViewController {
 
     func configureChildViewController() {
         // Configure large title using the `hiddenScrollView` trick.
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
-            hiddenScrollView.configureForLargeTitleWorkaround()
-            // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
-            view.addSubview(hiddenScrollView)
-            view.sendSubviewToBack(hiddenScrollView)
-            hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
-            view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
-            ordersViewController.delegate = self
-        }
+        hiddenScrollView.configureForLargeTitleWorkaround()
+        // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
+        view.addSubview(hiddenScrollView)
+        view.sendSubviewToBack(hiddenScrollView)
+        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
+        ordersViewController.delegate = self
 
         // Add contentView to stackview
         let contentView = ordersViewController.view!

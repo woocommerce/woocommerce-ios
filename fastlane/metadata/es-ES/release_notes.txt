@@ -1,3 +1,3 @@
-En esta versión, verás que hay una pestaña nueva llamada “Menú”. En esa pestaña encontrarás la configuración de la tienda, el cambio entre tiendas y la visualización de WooCommerce Admin. Además, en los próximos meses se incorporarán nuevas funcionalidades.
+Hemos actualizado un poco la pestaña "Mi tienda" en función de los comentarios que hemos recibido. Ahora, verás un porcentaje de conversión y los 5 productos más vendidos (en lugar de 3).
 
-En esta versión también se ha corregido un error de la pantalla de productos por el que el nombre del producto volvía al anterior cuando se cargaba una imagen. Gracias por notificar errores, ¡os tenemos en cuenta!
+Después de que hayas solicitado crear pedidos en la aplicación, estamos encantados de comunicarte que tenemos un anticipo listo para que nos ayudes a probar esta opción. Dirígete a los ajustes de la aplicación y activa la función experimental para la Creación de pedidos. En este momento, puedes añadir productos, notas y direcciones, y las futuras versiones tendrán funciones adicionales.

@@ -1,6 +1,5 @@
 import SwiftUI
 import Yosemite
-import protocol Storage.StorageManagerType
 
 /// View model for `InboxNoteRow`.
 struct InboxNoteRowViewModel: Identifiable, Equatable {
@@ -8,9 +7,6 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
 
     /// Relative date when the note was created.
     let date: String
-
-    /// Icon for the note type (e.g. marketing, info).
-    let typeIcon: Image
 
     /// Title of the note.
     let title: String
@@ -48,7 +44,6 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
 
         self.init(id: note.id,
                   date: date,
-                  typeIcon: (NoteType(rawValue: note.type) ?? .info).image,
                   title: note.title,
                   attributedContent: attributedContent,
                   actions: actions,
@@ -58,14 +53,12 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
 
     init(id: Int64,
          date: String,
-         typeIcon: Image,
          title: String,
          attributedContent: NSAttributedString, actions: [InboxNoteRowActionViewModel],
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores) {
         self.id = id
         self.date = date
-        self.typeIcon = typeIcon
         self.title = title
         self.attributedContent = attributedContent
         self.actions = actions
@@ -105,34 +98,6 @@ extension InboxNoteRowViewModel {
             onCompletion(result)
         }
         stores.dispatch(action)
-    }
-}
-
-private extension InboxNoteRowViewModel {
-    enum NoteType: String {
-        case error
-        case warning
-        case update
-        case info
-        case marketing
-        case survey
-
-        var image: Image {
-            switch self {
-            case .error:
-                return Image(systemName: "exclamationmark.octagon.fill")
-            case .warning:
-                return Image(systemName: "exclamationmark.bubble.fill")
-            case .update:
-                return Image(systemName: "gearshape.fill")
-            case .info:
-                return Image(uiImage: .infoImage)
-            case .marketing:
-                return Image(systemName: "lightbulb.fill")
-            case .survey:
-                return Image(systemName: "doc.plaintext")
-            }
-        }
     }
 }
 

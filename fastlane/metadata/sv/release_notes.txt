@@ -1,3 +1,3 @@
-Du kommer att märka att den här versionen innehåller en ny flik med namnet "Meny". Vi har flyttat butiksinställningarna, möjligheten att växla mellan olika butiker och visning av WooCommerce Admin till den skärmen. Ytterligare funktioner kommer att läggas till där under de kommande månaderna!
+Vi har uppdaterat en del av fliken Min butik baserat på er feedback. Du kommer nu att se en konverteringsprocent och de 5 (inte 3) bäst säljande produkterna. 
 
-Den här versionen inkluderar också en korrigering för produktskärmen, där ett fel tidigare gjorde att produktens namn återgick till det föregående namnet om du laddade upp en bild. Tack för att ni rapporterar buggar – vi lyssnar!
+Ni har bett oss om möjligheten att skapa beställningar i appen. Vi är glada att kunna meddela att vi har en smygtitt redo om ni vill hjälpa oss att testa funktionen! Gå till inställningarna i appen och aktivera den experimentella funktionen Skapa beställning. För tillfället kan du lägga till produkter, anteckningar och adresser. Kommande versioner kommer att ha ytterligare funktioner.

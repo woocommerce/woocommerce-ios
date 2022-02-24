@@ -79,16 +79,16 @@ struct CouponUsageDetails: View {
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                     VStack(alignment: .leading, spacing: 0) {
                         Divider()
-                        TitleAndToggleRow(title: Localization.individualUseOnly, isOn: .constant(viewModel.individualUseOnly))
+                        TitleAndValueRow(title: Localization.individualUseOnly,
+                                         value: .content(viewModel.individualUseOnly ? Localization.yes : Localization.no))
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
-                            .padding(.horizontal, Constants.margin)
                             .padding(.vertical, Constants.verticalSpacing)
                         Divider()
                             .padding(.leading, Constants.margin)
                             .padding(.leading, insets: geometry.safeAreaInsets)
-                        TitleAndToggleRow(title: Localization.excludeSaleItems, isOn: .constant(viewModel.excludeSaleItems))
+                        TitleAndValueRow(title: Localization.excludeSaleItems,
+                                         value: .content(viewModel.excludeSaleItems ? Localization.yes : Localization.no))
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
-                            .padding(.horizontal, Constants.margin)
                             .padding(.vertical, Constants.verticalSpacing)
                         Divider()
                     }
@@ -159,6 +159,14 @@ private extension CouponUsageDetails {
         static let noRestrictions = NSLocalizedString(
             "No Restrictions",
             comment: "Value for the allowed emails row in Coupon Usage Details screen when no restriction is set"
+        )
+        static let yes = NSLocalizedString(
+            "Yes",
+            comment: "Value for the individual use only row or the exclude sale items row in Coupon Usage Details screen when the value is true"
+        )
+        static let no = NSLocalizedString(
+            "No",
+            comment: "Value for the individual use only row or the exclude sale items row in Coupon Usage Details screen when the value is false"
         )
     }
 }

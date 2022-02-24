@@ -13,10 +13,10 @@ final class CouponWooTests: XCTestCase {
 
     func test_expiry_status_is_active_if_dateExpires_is_later_than_current_date() {
         // Given
-        // GMT: Wednesday, January 21, 2122 5:26:04 AM
-        let expiryDate = Date(timeIntervalSince1970: 4798416364)
-        // GMT: Friday, January 21, 2022 9:03:45 AM
-        let now = Date(timeIntervalSince1970: 1642755825)
+        // GMT: Monday, February 21, 2022 5:00:00 PM
+        let expiryDate = Date(timeIntervalSince1970: 1645462800)
+        // GMT: Monday, February 21, 2022 11:01:36 AM
+        let now = Date(timeIntervalSince1970: 1645441296)
         let coupon = Coupon.fake().copy(dateExpires: expiryDate)
 
         // Then

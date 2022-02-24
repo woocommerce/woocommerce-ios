@@ -36,6 +36,8 @@ public class InboxNotesStore: Store {
             loadAllInboxNotes(for: siteID, pageNumber: pageNumber, pageSize: pageSize, orderBy: orderBy, type: type, status: status, completion: completion)
         case .dismissInboxNote(let siteID, let noteID, let completion):
             dismissInboxNote(for: siteID, noteID: noteID, completion: completion)
+        case .dismissAllInboxNotes(let siteID, let completion):
+            dismissAllInboxNotes(siteID: siteID, completion: completion)
         case .markInboxNoteAsActioned(let siteID, let noteID, let actionID, let completion):
             markInboxNoteAsActioned(for: siteID, noteID: noteID, actionID: actionID, completion: completion)
         }
@@ -73,20 +75,38 @@ private extension InboxNotesStore {
     }
 
     /// Dismiss one `InboxNote`.
-    /// This internally marks a notification’s is_deleted field to true and such notifications do not show in the results anymore.
+    /// This marks a notification’s is_deleted field to true and the inbox note will be deleted locally.
     ///
     func dismissInboxNote(for siteID: Int64,
                           noteID: Int64,
-                          completion: @escaping (Result<InboxNote, Error>) -> ()) {
+                          completion: @escaping (Result<Void, Error>) -> ()) {
         remote.dismissInboxNote(for: siteID, noteID: noteID) { [weak self] result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
 
-            case .success(let inboxNote):
-                self?.upsertStoredInboxNotesInBackground(readOnlyInboxNotes: [inboxNote], siteID: siteID, shouldDeleteExistingNotes: false) {
-                    completion(.success(inboxNote))
-                }
+            case .success(_):
+                self?.deleteStoredInboxNoteInBackground(siteID: siteID, noteID: noteID, onCompletion: {
+                    completion(.success(()))
+                })
+            }
+        }
+    }
+
+    /// Dismiss all `InboxNote`s.
+    /// This marks all notifications is_deleted field to true and the inbox notes will be deleted locally.
+    ///
+    func dismissAllInboxNotes(siteID: Int64,
+                              completion: @escaping (Result<Void, Error>) -> ()) {
+        remote.dismissAllInboxNotes(for: siteID) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+
+            case .success:
+                self?.deleteStoredInboxNotesInBackground(siteID: siteID, onCompletion: {
+                    completion(.success(()))
+                })
             }
         }
     }
@@ -131,8 +151,8 @@ private extension InboxNotesStore {
                 self.deleteStoredInboxNotes(siteID: siteID, in: derivedStorage)
             }
             self.upsertStoredInboxNotes(readOnlyInboxNotes: readOnlyInboxNotes,
-                                         in: derivedStorage,
-                                         siteID: siteID)
+                                        in: derivedStorage,
+                                        siteID: siteID)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
@@ -169,6 +189,37 @@ private extension InboxNotesStore {
             storageInboxActions.append(newStorageInboxAction)
         }
         storageInboxNote.actions = Set(storageInboxActions)
+    }
+
+    /// Deletes a single Inbox Note Entity in a background thread
+    /// `onCompletion` will be called on the main thread.
+    ///
+    func deleteStoredInboxNoteInBackground(siteID: Int64,
+                                           noteID: Int64,
+                                           onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            derivedStorage.deleteInboxNote(siteID: siteID, id: noteID)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Deletes all Inbox Notes Entities in a background thread
+    /// `onCompletion` will be called on the main thread.
+    ///
+    func deleteStoredInboxNotesInBackground(siteID: Int64,
+                                            onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            derivedStorage.deleteInboxNotes(siteID: siteID)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
     }
 
     /// Deletes all Storage.InboxNote with the specified `siteID`

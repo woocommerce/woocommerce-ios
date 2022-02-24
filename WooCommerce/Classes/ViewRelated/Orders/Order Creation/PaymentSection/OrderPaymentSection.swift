@@ -1,5 +1,5 @@
 import SwiftUI
-import struct Yosemite.ShippingLine
+import Yosemite
 
 /// Represents the Payment section in an order
 ///
@@ -9,10 +9,15 @@ struct OrderPaymentSection: View {
 
     /// Closure to create/update the shipping line object
     let saveShippingLineClosure: (ShippingLine?) -> Void
+    let saveFeeLineClosure: (OrderFeeLine?) -> Void
 
     /// Indicates if the shipping line details screen should be shown or not.
     ///
     @State private var shouldShowShippingLineDetails: Bool = false
+
+    /// Indicates if the fee line details screen should be shown or not.
+    ///
+    @State private var shouldShowFeeLineDetails: Bool = false
 
     ///   Environment safe areas
     ///
@@ -22,9 +27,16 @@ struct OrderPaymentSection: View {
         Divider()
 
         VStack(alignment: .leading, spacing: .zero) {
-            Text(Localization.payment)
-                .headlineStyle()
-                .padding()
+            HStack {
+                Text(Localization.payment)
+                    .headlineStyle()
+
+                Spacer()
+
+                ProgressView()
+                    .renderedIf(viewModel.isLoading)
+            }
+            .padding()
 
             TitleAndValueRow(title: Localization.productsTotal, value: .content(viewModel.itemsTotal), selectionStyle: .none) {}
 
@@ -33,6 +45,12 @@ struct OrderPaymentSection: View {
                     .sheet(isPresented: $shouldShowShippingLineDetails) {
                         ShippingLineDetails(viewModel: .init(inputData: viewModel, didSelectSave: { newShippingLine in
                             saveShippingLineClosure(newShippingLine)
+                        }))
+                    }
+                feesRow
+                    .sheet(isPresented: $shouldShowFeeLineDetails) {
+                        FeeLineDetails(viewModel: .init(inputData: viewModel, didSelectSave: { newFeeLine in
+                            saveFeeLineClosure(newFeeLine)
                         }))
                     }
             }
@@ -62,6 +80,20 @@ struct OrderPaymentSection: View {
             .padding()
         }
     }
+
+    @ViewBuilder private var feesRow: some View {
+        if viewModel.shouldShowFees {
+            TitleAndValueRow(title: Localization.feesTotal, value: .content(viewModel.feesTotal), selectionStyle: .highlight) {
+                shouldShowFeeLineDetails = true
+            }
+        } else {
+            Button(Localization.addFees) {
+                shouldShowFeeLineDetails = true
+            }
+            .buttonStyle(PlusButtonStyle())
+            .padding()
+        }
+    }
 }
 
 // MARK: Constants
@@ -74,6 +106,8 @@ private extension OrderPaymentSection {
                                                  comment: "Information about taxes and the order total when creating a new order")
         static let addShipping = NSLocalizedString("Add Shipping", comment: "Title text of the button that adds shipping line when creating a new order")
         static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
+        static let addFees = NSLocalizedString("Add Fees", comment: "Title text of the button that adds fees when creating a new order")
+        static let feesTotal = NSLocalizedString("Fees", comment: "Label for the row showing the cost of fees in the order")
     }
 }
 
@@ -81,7 +115,7 @@ struct OrderPaymentSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = NewOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00", orderTotal: "20.00")
 
-        OrderPaymentSection(viewModel: viewModel, saveShippingLineClosure: { _ in })
+        OrderPaymentSection(viewModel: viewModel, saveShippingLineClosure: { _ in }, saveFeeLineClosure: { _ in })
             .previewLayout(.sizeThatFits)
     }
 }

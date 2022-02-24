@@ -1,6 +1,7 @@
 import UIKit
 import WordPressUI
 import Yosemite
+import Experiments
 
 import class AutomatticTracks.CrashLogging
 
@@ -101,6 +102,7 @@ final class ProductVariationsViewController: UIViewController {
     private let viewModel: ProductVariationsViewModel
     private let noticePresenter: NoticePresenter
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
 
     /// ViewController that pushed `self`. Needed in order to go back to it when the first variation is created.
     ///
@@ -114,12 +116,14 @@ final class ProductVariationsViewController: UIViewController {
          viewModel: ProductVariationsViewModel,
          product: Product,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.initialViewController = initialViewController
         self.product = product
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -132,7 +136,8 @@ final class ProductVariationsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureNavigationBar()
+        configureNavigationBarTitle()
+        configureNavigationBarButtons()
         configureMainView()
         configureTableView()
         configureSyncingCoordinator()
@@ -157,11 +162,26 @@ private extension ProductVariationsViewController {
 
     /// Set the title and navigation buttons.
     ///
-    func configureNavigationBar() {
+    func configureNavigationBarTitle() {
         title = NSLocalizedString(
             "Variations",
             comment: "Title that appears on top of the Product Variation List screen."
         )
+    }
+
+    /// Sets the navigation bar buttons
+    ///
+    func configureNavigationBarButtons() {
+        guard featureFlagService.isFeatureFlagEnabled(.bulkEditProductVariations) else {
+            return
+        }
+
+        let moreButton = UIBarButtonItem(image: .moreImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(presentMoreActionSheet(_:)))
+
+        navigationItem.rightBarButtonItems = [moreButton]
     }
 
     /// Apply Woo styles.
@@ -541,6 +561,23 @@ private extension ProductVariationsViewController {
         analytics.track(event: WooAnalyticsEvent.Variations.addMoreVariationsButtonTapped(productID: product.productID))
         createVariation()
     }
+
+    /// More Options Action Sheet
+    ///
+    @objc func presentMoreActionSheet(_ sender: UIBarButtonItem) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.bulkUpdate) { _ in
+        }
+
+        actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel)
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.barButtonItem = sender
+
+        present(actionSheet, animated: true)
+    }
 }
 
 // MARK: - Placeholders
@@ -733,5 +770,12 @@ private extension ProductVariationsViewController {
         static let generateVariationError = NSLocalizedString("The variation couldn't be generated.",
                                                               comment: "Error title when failing to generate a variation.")
         static let variationCreated = NSLocalizedString("Variation created", comment: "Text for the notice after creating the first variation.")
+    }
+
+    /// Localizated strings for the  action sheet options
+    ///
+    private enum ActionSheetStrings {
+        static let bulkUpdate = NSLocalizedString("Bulk Update", comment: "Button title in the action sheet of product variatiosns that shows the bulk update")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button title that closes the action sheet in product variations")
     }
 }

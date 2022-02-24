@@ -14,30 +14,6 @@ public enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Shipping labels - Milestones 2 & 3
-    ///
-    case shippingLabelsM2M3
-
-    /// Shipping labels - International Shipping
-    ///
-    case shippingLabelsInternational
-
-    /// Shipping labels - Add payment methods
-    ///
-    case shippingLabelsAddPaymentMethods
-
-    /// Shipping labels - Add custom packages
-    ///
-    case shippingLabelsAddCustomPackages
-
-    /// Shipping labels - Multi-package support
-    ///
-    case shippingLabelsMultiPackage
-
-    /// Push notifications for all stores
-    ///
-    case pushNotificationsForAllStores
-
     /// Display the bar for displaying the filters in the Order List
     ///
     case orderListFilters
@@ -85,4 +61,8 @@ public enum FeatureFlag: Int {
     /// Displays the Inbox option under the Hub Menu.
     ///
     case inbox
+
+    /// Displays the bulk update option in product variations
+    ///
+    case bulkEditProductVariations
 }

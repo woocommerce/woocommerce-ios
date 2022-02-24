@@ -81,7 +81,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
 
     func test_viewModel_has_automatic_refundVia_values_when_using_a_gateway_that_support_refunds() throws {
         // Given
-        let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")
+        let order = MockOrders().empty().copy(paymentMethodID: "stripe", paymentMethodTitle: "Stripe")
         let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [.refunds])
         let details = RefundConfirmationViewModel.Details(order: order,
                                                           charge: nil,
@@ -103,7 +103,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
 
     func test_viewModel_includes_card_details_in_refundVia_values_when_charge_is_available() throws {
         // Given
-        let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")
+        let order = MockOrders().empty().copy(paymentMethodID: "stripe", paymentMethodTitle: "Stripe")
         let paymentMethodDetails = WCPayCardPresentPaymentDetails(brand: .mastercard, last4: "6292", funding: .credit, receipt: .fake())
         let charge = WCPayCharge.fake().copy(paymentMethodDetails: .cardPresent(details: paymentMethodDetails))
         let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [.refunds])
@@ -119,18 +119,20 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let viewModel = RefundConfirmationViewModel(details: details)
 
         // We expect the Refund Via row to be the last item in the last row.
-        let row = try XCTUnwrap(viewModel.sections.last?.rows.last as? RefundConfirmationViewModel.TitleAndBodyRow)
+        let row = try XCTUnwrap(viewModel.sections.last?.rows.last as? RefundConfirmationViewModel.PaymentDetailsRow)
 
         // Then
-        XCTAssertEqual(row.title, order.paymentMethodTitle)
-        let body = try XCTUnwrap(row.body)
-        XCTAssert(body.contains("Mastercard"))
-        XCTAssert(body.contains("6292"))
+        XCTAssertEqual(row.paymentGateway, order.paymentMethodTitle)
+        let paymentMethodDescription = try XCTUnwrap(row.paymentMethodDescription)
+        XCTAssert(paymentMethodDescription.contains("Mastercard"))
+        XCTAssert(paymentMethodDescription.contains("6292"))
+        XCTAssertNotNil(row.cardIcon)
+        XCTAssertEqual(row.cardIconAspectHorizontal, 1.58)
     }
 
     func test_viewModel_has_manual_refundVia_values_when_using_a_gateway_that_does_not_support_refunds() throws {
         // Given
-        let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")
+        let order = MockOrders().empty().copy(paymentMethodID: "stripe", paymentMethodTitle: "Stripe")
         let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [])
         let details = RefundConfirmationViewModel.Details(order: order,
                                                           charge: nil,
@@ -231,7 +233,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
 
     func test_view_model_submits_refund_with_automatic_refund_enabled() throws {
         // Given
-        let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")
+        let order = MockOrders().empty().copy(paymentMethodID: "stripe", paymentMethodTitle: "Stripe")
         let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [.refunds])
         let details = RefundConfirmationViewModel.Details(order: order,
                                                           charge: nil,
@@ -261,7 +263,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
 
     func test_view_model_submits_refund_with_automatic_refund_disabled() throws {
         // Given
-        let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")
+        let order = MockOrders().empty().copy(paymentMethodID: "stripe", paymentMethodTitle: "Stripe")
         let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [.products])
         let details = RefundConfirmationViewModel.Details(order: order,
                                                           charge: nil,

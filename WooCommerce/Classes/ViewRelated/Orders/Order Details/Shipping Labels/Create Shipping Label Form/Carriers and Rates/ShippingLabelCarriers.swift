@@ -123,6 +123,7 @@ private extension ShippingLabelCarriers {
     }
 }
 
+#if DEBUG
 struct ShippingLabelCarriers_Previews: PreviewProvider {
     static var previews: some View {
 
@@ -137,7 +138,7 @@ struct ShippingLabelCarriers_Previews: PreviewProvider {
                                                    city: "San Francisco",
                                                    postcode: "90210")
 
-        let vm = ShippingLabelCarriersViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
+        let vm = ShippingLabelCarriersViewModel(order: ShippingLabelSampleData.sampleOrder(),
                                                 originAddress: shippingAddress,
                                                 destinationAddress: shippingAddress,
                                                 packages: [])
@@ -145,3 +146,4 @@ struct ShippingLabelCarriers_Previews: PreviewProvider {
         }
     }
 }
+#endif

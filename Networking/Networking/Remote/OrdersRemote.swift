@@ -206,6 +206,13 @@ public class OrdersRemote: Remote {
                     case .shippingLines:
                         let shippingEncoded = try order.shippingLines.map { try $0.toDictionary() }
                         params[Order.CodingKeys.shippingLines.rawValue] = shippingEncoded
+                    case .status:
+                        params[Order.CodingKeys.status.rawValue] = order.status.rawValue
+                    case .items:
+                        params[Order.CodingKeys.items.rawValue] = order.items.map { item in
+                            [OrderItem.CodingKeys.productID.rawValue: item.variationID != 0 ? item.variationID : item.productID,
+                             OrderItem.CodingKeys.quantity.rawValue: Int64(truncating: item.quantity as NSDecimalNumber)]
+                        }
                     }
                 }
             }()
@@ -292,6 +299,8 @@ public extension OrdersRemote {
         case billingAddress
         case fees
         case shippingLines
+        case items
+        case status
     }
 
     /// Order fields supported for create

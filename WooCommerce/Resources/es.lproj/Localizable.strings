@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-02-15 18:54:03+0000 */
+/* Translation-Revision-Date: 2022-02-23 09:37:52+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -695,7 +695,7 @@
 "Capture high-quality product reviews for your store." = "Conseguir reseñas de productos de gran calidad para tu tienda.";
 
 /* Card method title on the select payment method screen for simple payments */
-"Card" = "Carta";
+"Card" = "Tarjeta";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Empresa de transporte y tarifas";

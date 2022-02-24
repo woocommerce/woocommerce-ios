@@ -256,6 +256,36 @@ final class InboxViewModelTests: XCTestCase {
         assertEqual(viewModel.noteRowViewModels[1], .init(note: noteWithDateAndSmallerID))
         assertEqual(viewModel.noteRowViewModels[2], .init(note: noteWithDateAndLargerID))
     }
+
+    // MARK: - `onRefreshAction`
+
+    func test_onRefreshAction_resyncs_the_first_page() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var invocationCountOfLoadInboxNotes = 0
+        var syncPageNumber: Int?
+        stores.whenReceivingAction(ofType: InboxNotesAction.self) { action in
+            guard case let .loadAllInboxNotes(_, pageNumber, _, _, _, _, completion) = action else {
+                return
+            }
+            invocationCountOfLoadInboxNotes += 1
+            syncPageNumber = pageNumber
+
+            completion(.success([]))
+        }
+        let viewModel = InboxViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        waitFor { promise in
+            viewModel.onRefreshAction {
+                promise(())
+            }
+        }
+
+        // Then
+        XCTAssertEqual(syncPageNumber, 1)
+        XCTAssertEqual(invocationCountOfLoadInboxNotes, 1)
+    }
 }
 
 extension InboxViewModelTests {

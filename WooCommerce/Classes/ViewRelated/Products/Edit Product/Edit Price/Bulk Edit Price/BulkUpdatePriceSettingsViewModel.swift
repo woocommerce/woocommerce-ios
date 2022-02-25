@@ -28,7 +28,7 @@ final class BulkUpdatePriceSettingsViewModel {
     }
 
     /// The state of synching all variations
-    @Published private(set) var buttonState: ButtonState = .disabled
+    @Published private(set) var saveButtonState: ButtonState = .disabled
 
     /// The error state, true if the product bulk update API call failed. Used to trigger related informational notification
     @Published private(set) var lastUpdateDidFail: Bool = false
@@ -71,7 +71,7 @@ final class BulkUpdatePriceSettingsViewModel {
             return
         }
 
-        buttonState = .loading
+        saveButtonState = .loading
         lastUpdateDidFail = false
 
         let action = ProductVariationAction.updateProductVariations(siteID: siteID,
@@ -105,10 +105,10 @@ final class BulkUpdatePriceSettingsViewModel {
     ///
     private func updateButtonStateBasedOnCurrentPrice() {
         guard let price = currentPrice, price.isNotEmpty else {
-            buttonState = .disabled
+            saveButtonState = .disabled
             return
         }
-        buttonState = .enabled
+        saveButtonState = .enabled
     }
 
     /// Validates the curre price selection for all variations that will be updated

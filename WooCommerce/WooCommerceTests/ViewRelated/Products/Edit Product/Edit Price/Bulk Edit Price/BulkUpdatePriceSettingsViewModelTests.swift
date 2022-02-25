@@ -23,7 +23,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0, productID: 0, productVariations: [], edittingPriceType: .regular, priceUpdateDidFinish: { })
 
         // Then
-        XCTAssertEqual(viewModel.buttonState, .disabled)
+        XCTAssertEqual(viewModel.saveButtonState, .disabled)
         XCTAssertFalse(viewModel.lastUpdateDidFail)
         XCTAssertNil(viewModel.priceValidationError)
     }
@@ -35,7 +35,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         viewModel.handlePriceChange("42")
 
         // Then
-        XCTAssertEqual(viewModel.buttonState, .enabled)
+        XCTAssertEqual(viewModel.saveButtonState, .enabled)
         XCTAssertFalse(viewModel.lastUpdateDidFail)
         XCTAssertNil(viewModel.priceValidationError)
     }
@@ -47,7 +47,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         viewModel.handlePriceChange("")
 
         // Then
-        XCTAssertEqual(viewModel.buttonState, .disabled)
+        XCTAssertEqual(viewModel.saveButtonState, .disabled)
         XCTAssertFalse(viewModel.lastUpdateDidFail)
         XCTAssertNil(viewModel.priceValidationError)
     }
@@ -65,7 +65,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         viewModel.saveButtonTapped()
 
         // Then
-        XCTAssertEqual(viewModel.buttonState, .disabled)
+        XCTAssertEqual(viewModel.saveButtonState, .disabled)
         XCTAssertFalse(viewModel.lastUpdateDidFail)
         XCTAssertEqual(viewModel.priceValidationError, .salePriceWithoutRegularPrice)
     }
@@ -84,7 +84,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         viewModel.saveButtonTapped()
 
         // Then
-        XCTAssertEqual(viewModel.buttonState, .disabled)
+        XCTAssertEqual(viewModel.saveButtonState, .disabled)
         XCTAssertFalse(viewModel.lastUpdateDidFail)
         XCTAssertEqual(viewModel.priceValidationError, .salePriceWithoutRegularPrice)
     }
@@ -102,7 +102,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         viewModel.saveButtonTapped()
 
         // Then
-        XCTAssertEqual(viewModel.buttonState, .disabled)
+        XCTAssertEqual(viewModel.saveButtonState, .disabled)
         XCTAssertFalse(viewModel.lastUpdateDidFail)
         XCTAssertEqual(viewModel.priceValidationError, .newSaleWithEmptySalePrice)
     }
@@ -121,7 +121,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         viewModel.saveButtonTapped()
 
         // Then
-        XCTAssertEqual(viewModel.buttonState, .disabled)
+        XCTAssertEqual(viewModel.saveButtonState, .disabled)
         XCTAssertFalse(viewModel.lastUpdateDidFail)
         XCTAssertEqual(viewModel.priceValidationError, .newSaleWithEmptySalePrice)
     }
@@ -140,7 +140,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         viewModel.saveButtonTapped()
 
         // Then
-        XCTAssertEqual(viewModel.buttonState, .enabled)
+        XCTAssertEqual(viewModel.saveButtonState, .enabled)
         XCTAssertFalse(viewModel.lastUpdateDidFail)
         XCTAssertEqual(viewModel.priceValidationError, .salePriceHigherThanRegularPrice)
     }
@@ -160,7 +160,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         viewModel.saveButtonTapped()
 
         // Then
-        XCTAssertEqual(viewModel.buttonState, .enabled)
+        XCTAssertEqual(viewModel.saveButtonState, .enabled)
         XCTAssertFalse(viewModel.lastUpdateDidFail)
         XCTAssertEqual(viewModel.priceValidationError, .salePriceHigherThanRegularPrice)
     }
@@ -183,7 +183,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         viewModel.saveButtonTapped()
 
         // Then
-        XCTAssertEqual(viewModel.buttonState, .loading)
+        XCTAssertEqual(viewModel.saveButtonState, .loading)
         XCTAssertFalse(viewModel.lastUpdateDidFail)
         XCTAssertNil(viewModel.priceValidationError)
     }
@@ -211,7 +211,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         viewModel.saveButtonTapped()
 
         // Then
-        XCTAssertEqual(viewModel.buttonState, .enabled)
+        XCTAssertEqual(viewModel.saveButtonState, .enabled)
         XCTAssertTrue(viewModel.lastUpdateDidFail)
         XCTAssertNil(viewModel.priceValidationError)
     }

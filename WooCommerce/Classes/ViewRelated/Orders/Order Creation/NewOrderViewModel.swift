@@ -607,6 +607,7 @@ private extension NewOrderViewModel {
 
             // Observe changes to the product quantity
             productRowViewModel.$quantity
+                .dropFirst() // Omit the default/initial quantity to prevent a double trigger.
                 .sink { [weak self] newQuantity in
                     guard let self = self, let newInput = self.createUpdateProductInput(item: item, quantity: newQuantity) else {
                         return

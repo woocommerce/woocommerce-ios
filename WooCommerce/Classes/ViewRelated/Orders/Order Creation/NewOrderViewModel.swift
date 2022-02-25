@@ -318,7 +318,10 @@ extension NewOrderViewModel {
         let shippingAddressFormatted: String?
 
         init(fullName: String? = nil, email: String? = nil, billingAddressFormatted: String? = nil, shippingAddressFormatted: String? = nil) {
-            self.isDataAvailable = fullName != nil || email != nil || billingAddressFormatted != nil || shippingAddressFormatted != nil
+            self.isDataAvailable = !fullName.isNilOrEmpty
+                || !email.isNilOrEmpty
+                || !billingAddressFormatted.isNilOrEmpty
+                || !shippingAddressFormatted.isNilOrEmpty
             self.fullName = fullName
             self.email = email
             self.billingAddressFormatted = billingAddressFormatted
@@ -326,7 +329,7 @@ extension NewOrderViewModel {
         }
 
         init(billingAddress: Address?, shippingAddress: Address?) {
-            let availableFullName = billingAddress?.fullName ?? shippingAddress?.fullName
+            let availableFullName = billingAddress?.fullName.isNotEmpty == true ? billingAddress?.fullName : shippingAddress?.fullName
 
             self.init(fullName: availableFullName?.isNotEmpty == true ? availableFullName : nil,
                       email: billingAddress?.hasEmailAddress == true ? billingAddress?.email : nil,

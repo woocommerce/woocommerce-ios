@@ -303,6 +303,18 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertNil(customerDataViewModel.shippingAddressFormatted)
     }
 
+    func test_customer_data_view_model_is_initialized_correctly_from_empty_input() {
+        // Given
+        let customerDataViewModel = NewOrderViewModel.CustomerDataViewModel(billingAddress: Address.empty, shippingAddress: Address.empty)
+
+        // Then
+        XCTAssertFalse(customerDataViewModel.isDataAvailable)
+        XCTAssertNil(customerDataViewModel.fullName)
+        XCTAssertNil(customerDataViewModel.email)
+        XCTAssertEqual(customerDataViewModel.billingAddressFormatted, "")
+        XCTAssertEqual(customerDataViewModel.shippingAddressFormatted, "")
+    }
+
     func test_payment_data_view_model_is_initialized_with_expected_values() {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)

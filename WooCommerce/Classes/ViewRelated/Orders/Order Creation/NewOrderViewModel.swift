@@ -192,7 +192,6 @@ final class NewOrderViewModel: ObservableObject {
     func removeItemFromOrder(_ item: OrderItem) {
         guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
         orderSynchronizer.setProduct.send(input)
-        configureProductRowViewModels()
     }
 
     /// Creates a view model for the `ProductRow` corresponding to an order item.
@@ -414,7 +413,6 @@ private extension NewOrderViewModel {
     func addProductToOrder(_ product: Product) {
         let input = OrderSyncProductInput(product: .product(product), quantity: 1)
         orderSynchronizer.setProduct.send(input)
-        configureProductRowViewModels()
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
     }
@@ -424,7 +422,6 @@ private extension NewOrderViewModel {
     func addProductVariationToOrder(_ variation: ProductVariation) {
         let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
         orderSynchronizer.setProduct.send(input)
-        configureProductRowViewModels()
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
     }
@@ -434,23 +431,14 @@ private extension NewOrderViewModel {
     func configureProductRowViewModels() {
         updateProductsResultsController()
         updateProductVariationsResultsController()
-        productRows = orderSynchronizer.order.items.compactMap { item in
-            guard let productRowViewModel = createProductRowViewModel(for: item, canChangeQuantity: true) else {
-                return nil
+        orderSynchronizer.orderPublisher
+            .map { $0.items }
+            .removeDuplicates()
+            .map { [weak self] items -> [ProductRowViewModel] in
+                guard let self = self else { return [] }
+                return self.createProductRows(items: items)
             }
-
-            // Observe changes to the product quantity
-            productRowViewModel.$quantity
-                .sink { [weak self] newQuantity in
-                    guard let self = self, let newInput = self.createUpdateProductInput(item: item, quantity: newQuantity) else {
-                        return
-                    }
-                    self.orderSynchronizer.setProduct.send(newInput)
-                }
-                .store(in: &cancellables)
-
-            return productRowViewModel
-        }
+            .assign(to: &$productRows)
     }
 
     /// Updates customer data viewmodel based on order addresses.
@@ -606,6 +594,28 @@ private extension NewOrderViewModel {
 
         return ProductInOrderViewModel(productRowViewModel: rowViewModel) { [weak self] in
             self?.removeItemFromOrder(orderItem)
+        }
+    }
+
+    /// Creates `ProductRowViewModels` ready to be used as product rows.
+    ///
+    func createProductRows(items: [OrderItem]) -> [ProductRowViewModel] {
+        items.compactMap { item -> ProductRowViewModel? in
+            guard let productRowViewModel = self.createProductRowViewModel(for: item, canChangeQuantity: true) else {
+                return nil
+            }
+
+            // Observe changes to the product quantity
+            productRowViewModel.$quantity
+                .sink { [weak self] newQuantity in
+                    guard let self = self, let newInput = self.createUpdateProductInput(item: item, quantity: newQuantity) else {
+                        return
+                    }
+                    self.orderSynchronizer.setProduct.send(newInput)
+                }
+                .store(in: &self.cancellables)
+
+            return productRowViewModel
         }
     }
 }

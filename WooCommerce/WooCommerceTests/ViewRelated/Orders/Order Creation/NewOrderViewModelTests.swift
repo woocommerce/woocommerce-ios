@@ -315,6 +315,21 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(customerDataViewModel.shippingAddressFormatted, "")
     }
 
+    func test_customer_data_view_model_is_initialized_correctly_with_only_phone() {
+        // Given
+        let addressWithOnlyPhone = Address.fake().copy(phone: "123-456-7890")
+
+        // When
+        let customerDataViewModel = NewOrderViewModel.CustomerDataViewModel(billingAddress: addressWithOnlyPhone, shippingAddress: Address.empty)
+
+        // Then
+        XCTAssertTrue(customerDataViewModel.isDataAvailable)
+        XCTAssertNil(customerDataViewModel.fullName)
+        XCTAssertNil(customerDataViewModel.email)
+        XCTAssertEqual(customerDataViewModel.billingAddressFormatted, "")
+        XCTAssertEqual(customerDataViewModel.shippingAddressFormatted, "")
+    }
+
     func test_payment_data_view_model_is_initialized_with_expected_values() {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)

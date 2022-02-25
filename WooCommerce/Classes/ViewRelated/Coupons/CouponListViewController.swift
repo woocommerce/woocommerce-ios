@@ -45,7 +45,7 @@ final class CouponListViewController: UIViewController {
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    private var topBannerView: TopBannerView?
+    private lazy var topBannerView: TopBannerView = createFeedbackBannerView()
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -87,6 +87,24 @@ final class CouponListViewController: UIViewController {
             }
             .store(in: &subscriptions)
 
+        viewModel.$shouldDisplayFeedbackBanner
+            .removeDuplicates()
+            .sink { [weak self] isVisible in
+                guard let self = self else { return }
+                if isVisible {
+                    // Configure header container view
+                    let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(self.tableView.frame.width), height: 0))
+                    headerContainer.addSubview(self.topBannerView)
+                    headerContainer.pinSubviewToSafeArea(self.topBannerView)
+
+                    self.tableView.tableHeaderView = headerContainer
+                    self.tableView.updateHeaderHeight()
+                } else {
+                    self.topBannerView.removeFromSuperview()
+                    self.tableView.tableHeaderView = nil
+                }
+            }
+            .store(in: &subscriptions)
         // Call this after the state subscription for extra safety
         viewModel.viewDidLoad()
     }

@@ -70,8 +70,10 @@ private extension LocalOrderSynchronizer {
             .assign(to: &$order)
 
         setProduct.withLatestFrom(orderPublisher)
-            .map { productInput, order in
-               ProductInputTransformer.update(input: productInput, on: order)
+            .map { [weak self] productInput, order in
+                guard let self = self else { return order }
+                let sanitizedInput = self.replaceInputWithLocalIDIfNeeded(productInput)
+                return ProductInputTransformer.update(input: sanitizedInput, on: order)
             }
             .assign(to: &$order)
 
@@ -92,5 +94,14 @@ private extension LocalOrderSynchronizer {
                 order.copy(fees: feeLineInput.flatMap { [$0] } ?? [])
             }
             .assign(to: &$order)
+    }
+
+    /// Creates a new input with a random ID when the given ID is `.zero`.
+    ///
+    func replaceInputWithLocalIDIfNeeded(_ input: OrderSyncProductInput) -> OrderSyncProductInput {
+        guard input.id == .zero else {
+            return input
+        }
+        return input.updating(id: Int64(UUID().uuidString.hashValue))
     }
 }

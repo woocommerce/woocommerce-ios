@@ -39,7 +39,7 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
 
         // When
-        let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+        let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
         synchronizer.setProduct.send(input)
 
         // Then

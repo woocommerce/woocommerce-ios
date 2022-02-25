@@ -46,6 +46,10 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
     ///
     private var subscriptions = Set<AnyCancellable>()
 
+    /// Store to serve local IDs.
+    ///
+    private let localIDStore = LocalIDStore()
+
     // MARK: Initializers
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
@@ -89,8 +93,10 @@ private extension RemoteOrderSynchronizer {
             .assign(to: &$order)
 
         setProduct.withLatestFrom(orderPublisher)
-            .map { productInput, order in
-                ProductInputTransformer.update(input: productInput, on: order)
+            .map { [weak self] productInput, order in
+                guard let self = self else { return order }
+                let sanitizedInput = self.replaceInputWithLocalIDIfNeeded(productInput)
+                return ProductInputTransformer.update(input: sanitizedInput, on: order)
             }
             .assign(to: &$order)
 
@@ -264,6 +270,15 @@ private extension RemoteOrderSynchronizer {
         }
         .eraseToAnyPublisher()
     }
+
+    /// Creates a new input with a proper local ID when the given ID is `.zero`.
+    ///
+    func replaceInputWithLocalIDIfNeeded(_ input: OrderSyncProductInput) -> OrderSyncProductInput {
+        guard input.id == .zero else {
+            return input
+        }
+        return input.updating(id: localIDStore.dispatchLocalID())
+    }
 }
 
 // MARK: Definitions
@@ -282,6 +297,24 @@ private extension RemoteOrderSynchronizer {
         ///
         func copy(order: Order) -> SyncOperation {
             SyncOperation(id: id, order: order)
+        }
+    }
+
+    /// Simple type to serve negative IDs.
+    /// This is needed to differentiate if an item ID has been synced remotely while providing a unique ID to consumers.
+    /// If the ID is a negative number we assume that it's a local ID.
+    /// Warning: This is not thread safe.
+    ///
+    final class LocalIDStore {
+        /// Last used ID
+        ///
+        private var currentID: Int64 = 0
+
+        /// Creates a new and unique local ID for this session.
+        ///
+        func dispatchLocalID() -> Int64 {
+            currentID -= 1
+            return currentID
         }
     }
 }

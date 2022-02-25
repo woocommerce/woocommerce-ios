@@ -311,7 +311,7 @@ final class CouponListViewModelTests: XCTestCase {
             }
         }
         setUpWithCouponFetched(injectedStores: stores)
-        
+
         // When
         sut.sync(pageNumber: 2, pageSize: 10, reason: nil, onCompletion: nil)
         XCTAssertEqual(sut.state, .loadingNextPage) // confidence check

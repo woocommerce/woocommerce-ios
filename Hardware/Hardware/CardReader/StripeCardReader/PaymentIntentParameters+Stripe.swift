@@ -10,13 +10,18 @@ extension Hardware.PaymentIntentParameters {
             return nil
         }
 
+        // Shortcircuit if we do not have a valid payment method
+        guard !paymentMethodTypes.isEmpty else {
+            return nil
+        }
+
         /// The amount of the payment needs to be provided in the currency’s smallest unit.
         /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPPaymentIntentParameters.html#/c:objc(cs)SCPPaymentIntentParameters(py)amount
         let amountInSmallestUnit = amount * 100
 
         let amountForStripe = NSDecimalNumber(decimal: amountInSmallestUnit).uintValue
 
-        let returnValue = StripeTerminal.PaymentIntentParameters(amount: amountForStripe, currency: currency)
+        let returnValue = StripeTerminal.PaymentIntentParameters(amount: amountForStripe, currency: currency, paymentMethodTypes: paymentMethodTypes)
         returnValue.stripeDescription = receiptDescription
 
         /// Stripe allows the credit card statement descriptor to be nil, but not an empty string

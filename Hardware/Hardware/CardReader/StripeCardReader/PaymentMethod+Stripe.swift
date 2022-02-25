@@ -17,7 +17,13 @@ extension PaymentMethod {
                 self = .unknown
                 return
             }
-            self = .presentCard(details: CardPresentTransactionDetails(details: details))
+            self = .cardPresent(details: CardPresentTransactionDetails(details: details))
+        case .interacPresent:
+            guard let details = method.interacPresent else {
+                self = .unknown
+                return
+            }
+            self = .interacPresent(details: CardPresentTransactionDetails(details: details))
         case .unknown:
             self = .unknown
         default:

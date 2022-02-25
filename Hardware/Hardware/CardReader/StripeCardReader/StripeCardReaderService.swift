@@ -215,9 +215,9 @@ extension StripeCardReaderService: CardReaderService {
             .flatMap { intent in
                 self.collectPaymentMethod(intent: intent)
             }.flatMap { intent in
-                self.waitForInsertedCardToBeRemoved(intent: intent)
-            }.flatMap { intent in
                 self.processPayment(intent: intent)
+            }.flatMap { intent in
+                self.waitForInsertedCardToBeRemoved(intent: intent)
             }.eraseToAnyPublisher()
     }
 
@@ -406,7 +406,7 @@ private extension StripeCardReaderService {
         }
     }
 
-    func waitForInsertedCardToBeRemoved(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
+    func waitForInsertedCardToBeRemoved(intent: PaymentIntent) -> Future<PaymentIntent, Error> {
         return Future() { [weak self] promise in
             guard let self = self else {
                 return

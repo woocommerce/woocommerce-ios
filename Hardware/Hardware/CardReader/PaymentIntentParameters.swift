@@ -37,11 +37,18 @@ public struct PaymentIntentParameters {
     ///
     public let customerID: String?
 
+    /// Supported payment methods for this intent.
+    ///
+    /// Can be `card_present`, `interac_present`.
+    ///
+    public let paymentMethodTypes: [String]
+
     public init(amount: Decimal,
                 currency: String,
                 receiptDescription: String? = nil,
                 statementDescription: String? = nil,
                 receiptEmail: String? = nil,
+                paymentMethodTypes: [String] = [],
                 metadata: [AnyHashable: Any]? = nil,
                 customerID: String? = nil) {
         self.amount = amount
@@ -49,6 +56,7 @@ public struct PaymentIntentParameters {
         self.receiptDescription = receiptDescription
         self.statementDescription = statementDescription
         self.receiptEmail = receiptEmail
+        self.paymentMethodTypes = paymentMethodTypes
         self.metadata = metadata
         self.customerID = customerID
     }

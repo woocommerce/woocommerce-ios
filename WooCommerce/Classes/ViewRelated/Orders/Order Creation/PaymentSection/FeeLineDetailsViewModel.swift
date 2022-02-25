@@ -57,6 +57,12 @@ class FeeLineDetailsViewModel: ObservableObject {
     ///
     let isExistingFeeLine: Bool
 
+    /// Returns true when base amount for percentage > 0.
+    ///
+    var isPercentageOptionAvailable: Bool {
+        baseAmountForPercentage > 0
+    }
+
     /// Returns true when there are no valid pending changes.
     ///
     var shouldDisableDoneButton: Bool {

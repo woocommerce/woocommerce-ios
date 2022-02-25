@@ -52,11 +52,11 @@ class ProductInputTransformerTests: XCTestCase {
     func test_sending_a_new_product_input_twice_adds_adds_two_items_to_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
-        let input1 = OrderSyncProductInput(product: .product(product), quantity: 1)
+        let input1 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
         let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder)
 
         // When
-        let input2 = OrderSyncProductInput(product: .product(product), quantity: 1)
+        let input2 = OrderSyncProductInput(id: sampleInputID + 1, product: .product(product), quantity: 1)
         let update2 = ProductInputTransformer.update(input: input2, on: update1)
 
         // Then

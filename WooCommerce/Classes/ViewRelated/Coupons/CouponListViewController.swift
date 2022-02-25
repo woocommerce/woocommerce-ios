@@ -45,6 +45,8 @@ final class CouponListViewController: UIViewController {
 
     private var subscriptions: Set<AnyCancellable> = []
 
+    private var topBannerView: TopBannerView?
+
     init(siteID: Int64) {
         self.siteID = siteID
         self.viewModel = CouponListViewModel(siteID: siteID)
@@ -175,6 +177,38 @@ private extension CouponListViewController {
             cellSeparator: .singleLine
         )
         let navigationController = WooNavigationController(rootViewController: searchViewController)
+        present(navigationController, animated: true, completion: nil)
+    }
+
+    func createFeedbackBannerView() -> TopBannerView {
+        let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.giveFeedbackAction) { [weak self] _ in
+            ServiceLocator.analytics.track(event: .featureFeedbackBanner(context: .couponManagement, action: .gaveFeedback))
+            self?.presentCouponsFeedback()
+        }
+        let dismissAction = TopBannerViewModel.ActionButton(title: Localization.dismissAction) { [weak self] _ in
+            ServiceLocator.analytics.track(event: .featureFeedbackBanner(context: .couponManagement, action: .dismissed))
+            self?.viewModel.dismissFeedbackBanner()
+        }
+        let expandedStateChangeHandler: (() -> Void)? = { [weak self] in
+            self?.tableView.updateHeaderHeight()
+        }
+        let actions = [giveFeedbackAction, dismissAction]
+        let viewModel = TopBannerViewModel(title: Localization.feedbackBannerTitle,
+                                           infoText: Localization.feedbackBannerContent,
+                                           icon: .megaphoneIcon,
+                                           isExpanded: false,
+                                           topButton: .chevron(handler: expandedStateChangeHandler),
+                                           actionButtons: actions)
+        let topBannerView = TopBannerView(viewModel: viewModel)
+        topBannerView.translatesAutoresizingMaskIntoConstraints = false
+        return topBannerView
+    }
+
+    /// Presents coupons survey
+    ///
+    func presentCouponsFeedback() {
+        // Present survey
+        let navigationController = SurveyCoordinatingController(survey: .couponManagement)
         present(navigationController, animated: true, completion: nil)
     }
 }

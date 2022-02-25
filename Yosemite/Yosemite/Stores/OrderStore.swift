@@ -320,6 +320,10 @@ private extension OrderStore {
                            fields: [.status, .items, .billingAddress, .shippingAddress, .shippingLines, .feeLines]) { [weak self] result in
             switch result {
             case .success(let order):
+                // Auto-draft orders are temporary and should not be stored
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
                 self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
                     onCompletion(result)
                 })
@@ -354,6 +358,10 @@ private extension OrderStore {
         remote.updateOrder(from: siteID, order: order, fields: fields) { [weak self] result in
             switch result {
             case .success(let order):
+                // Auto-draft orders are temporary and should not be stored
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
                 self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
                     onCompletion(result)
                 })

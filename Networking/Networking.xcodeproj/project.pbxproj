@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		020220E223966CD900290165 /* product-shipping-classes-load-one.json in Resources */ = {isa = PBXBuildFile; fileRef = 020220E123966CD900290165 /* product-shipping-classes-load-one.json */; };
+		0205021C27C86B9700FB1C6B /* inbox-note-without-isRead.json in Resources */ = {isa = PBXBuildFile; fileRef = 0205021B27C86B9700FB1C6B /* inbox-note-without-isRead.json */; };
 		020C907B24C6E108001E2BEB /* product-variation-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 020C907A24C6E108001E2BEB /* product-variation-update.json */; };
 		020C907F24C7D359001E2BEB /* ProductVariationMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020C907E24C7D359001E2BEB /* ProductVariationMapperTests.swift */; };
 		020D07B823D852BB00FD9580 /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020D07B723D852BB00FD9580 /* Media.swift */; };
@@ -684,6 +685,7 @@
 
 /* Begin PBXFileReference section */
 		020220E123966CD900290165 /* product-shipping-classes-load-one.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-shipping-classes-load-one.json"; sourceTree = "<group>"; };
+		0205021B27C86B9700FB1C6B /* inbox-note-without-isRead.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "inbox-note-without-isRead.json"; sourceTree = "<group>"; };
 		020C907A24C6E108001E2BEB /* product-variation-update.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variation-update.json"; sourceTree = "<group>"; };
 		020C907E24C7D359001E2BEB /* ProductVariationMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationMapperTests.swift; sourceTree = "<group>"; };
 		020D07B723D852BB00FD9580 /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
@@ -2030,6 +2032,7 @@
 				0359EA2827AC2AAD0048DE2D /* wcpay-charge-error.json */,
 				45CCFCE927A2E59B0012E8CB /* inbox-note-list.json */,
 				4513382727A96DE700AE5E78 /* inbox-note.json */,
+				0205021B27C86B9700FB1C6B /* inbox-note-without-isRead.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -2469,6 +2472,7 @@
 				31A451CC27863A2E00FE81AA /* stripe-account-rejected-fraud.json in Resources */,
 				31A451D827863A2E00FE81AA /* stripe-account-restricted-overdue.json in Resources */,
 				D865CE69278CA245002C8520 /* stripe-payment-intent-unknown-status.json in Resources */,
+				0205021C27C86B9700FB1C6B /* inbox-note-without-isRead.json in Resources */,
 				24F98C622502EFF600F49B68 /* feature-flags-load-all.json in Resources */,
 				B58D10C82114D21D00107ED4 /* generic_error.json in Resources */,
 				077F39D826A58EB600ABEADC /* systemStatus.json in Resources */,

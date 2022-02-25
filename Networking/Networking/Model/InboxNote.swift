@@ -97,7 +97,7 @@ extension InboxNote: Codable {
         let title = try container.decode(String.self, forKey: .title)
         let content = try container.decode(String.self, forKey: .content)
         let isRemoved = try container.decode(Bool.self, forKey: .isRemoved)
-        let isRead = try container.decode(Bool.self, forKey: .isRead)
+        let isRead = try container.decodeIfPresent(Bool.self, forKey: .isRead) ?? false
         let dateCreated = try container.decode(Date.self, forKey: .dateCreated)
 
         self.init(siteID: siteID,

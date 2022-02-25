@@ -76,7 +76,7 @@ final class BulkUpdatePriceSettingsViewModel {
 
         let action = ProductVariationAction.updateProductVariations(siteID: siteID,
                                                                     productID: productID,
-                                                                    productVariations: productVariations) { [weak self] result in
+                                                                    productVariations: variationsWithUpdatedPrice()) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
@@ -109,6 +109,15 @@ final class BulkUpdatePriceSettingsViewModel {
             return
         }
         saveButtonState = .enabled
+    }
+
+    private func variationsWithUpdatedPrice() -> [ProductVariation] {
+        switch edittingPriceType {
+        case .regular:
+            return productVariations.map { $0.copy(regularPrice: currentPrice) }
+        case .sale:
+            return productVariations.map { $0.copy(salePrice: currentPrice) }
+        }
     }
 
     /// Validates the curre price selection for all variations that will be updated

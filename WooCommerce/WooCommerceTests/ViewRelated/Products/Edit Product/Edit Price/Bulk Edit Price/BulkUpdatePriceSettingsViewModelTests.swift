@@ -248,4 +248,39 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         }
         XCTAssertTrue(isCallbackCalled)
     }
+
+    func test_action_is_caled_with_the_updated_price() {
+        // Given
+        let dateOnSaleStart = Date()
+        let dateOnSaleEnd = dateOnSaleStart
+        let variations = [MockProductVariation().productVariation().copy(dateOnSaleStart: dateOnSaleStart, dateOnSaleEnd: dateOnSaleEnd, regularPrice: "50")]
+        var updatedVariations: [ProductVariation] = []
+        storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action  in
+            switch action {
+            case let .updateProductVariations(_, _, variations, onCompletion):
+                updatedVariations = variations
+                onCompletion(.success([]))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+        let viewModel = BulkUpdatePriceSettingsViewModel(siteID: 0,
+                                                         productID: 0,
+                                                         productVariations: variations,
+                                                         edittingPriceType: .sale,
+                                                         priceUpdateDidFinish: { },
+                                                         storesManager: storesManager)
+
+        // When
+        viewModel.handlePriceChange("9")
+        viewModel.saveButtonTapped()
+
+
+        // Then
+        waitUntil {
+            updatedVariations.isNotEmpty
+        }
+        let expectedVariation = variations.map { $0.copy(salePrice: "9") }
+        assertEqual(updatedVariations, expectedVariation)
+    }
 }

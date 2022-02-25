@@ -421,7 +421,9 @@
 		03FBDAF2263EE47C00ACE257 /* CouponListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDAF1263EE47C00ACE257 /* CouponListViewModel.swift */; };
 		03FBDAFD263EE4E800ACE257 /* CouponListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDAFC263EE4E700ACE257 /* CouponListViewModelTests.swift */; };
 		094C161227B0604700B25F51 /* ProductVariationFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094C161127B0604700B25F51 /* ProductVariationFormViewModelTests.swift */; };
+		09885C8727C6947A00910A62 /* ProductPriceSettingsValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09885C8627C6947A00910A62 /* ProductPriceSettingsValidator.swift */; };
 		098FFA1727AD7F5D002EBEE4 /* OrderStatusListDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098FFA1627AD7F5D002EBEE4 /* OrderStatusListDataSourceTests.swift */; };
+		09EA565227C8235200407D40 /* ProductPriceSettingsValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09EA565127C8235200407D40 /* ProductPriceSettingsValidatorTests.swift */; };
 		09C6A26227C01166001FAD73 /* BulkUpdateViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6A26127C01166001FAD73 /* BulkUpdateViewModelTests.swift */; };
 		09E41E1D27B90B3C00BFCB7C /* BulkUpdateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E41E1C27B90B3B00BFCB7C /* BulkUpdateViewModel.swift */; };
 		247CE89C2583402A00F9D9D1 /* Embassy in Frameworks */ = {isa = PBXBuildFile; productRef = 247CE89B2583402A00F9D9D1 /* Embassy */; };
@@ -2087,7 +2089,9 @@
 		03FBDAF1263EE47C00ACE257 /* CouponListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListViewModel.swift; sourceTree = "<group>"; };
 		03FBDAFC263EE4E700ACE257 /* CouponListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListViewModelTests.swift; sourceTree = "<group>"; };
 		094C161127B0604700B25F51 /* ProductVariationFormViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductVariationFormViewModelTests.swift; sourceTree = "<group>"; };
+		09885C8627C6947A00910A62 /* ProductPriceSettingsValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPriceSettingsValidator.swift; sourceTree = "<group>"; };
 		098FFA1627AD7F5D002EBEE4 /* OrderStatusListDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListDataSourceTests.swift; sourceTree = "<group>"; };
+		09EA565127C8235200407D40 /* ProductPriceSettingsValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPriceSettingsValidatorTests.swift; sourceTree = "<group>"; };
 		09C6A26127C01166001FAD73 /* BulkUpdateViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkUpdateViewModelTests.swift; sourceTree = "<group>"; };
 		09E41E1C27B90B3B00BFCB7C /* BulkUpdateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkUpdateViewModel.swift; sourceTree = "<group>"; };
 		247CE8A5258340E600F9D9D1 /* ScreenshotImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ScreenshotImages.xcassets; sourceTree = "<group>"; };
@@ -4156,6 +4160,7 @@
 			children = (
 				02153210242376B5003F2BBD /* ProductPriceSettingsViewModelTests.swift */,
 				02BAB02024D0235F00F8B06E /* ProductPriceSettingsViewModel+ProductVariationTests.swift */,
+				09EA565127C8235200407D40 /* ProductPriceSettingsValidatorTests.swift */,
 			);
 			path = "Edit Price";
 			sourceTree = "<group>";
@@ -5089,6 +5094,7 @@
 				45B9C63D23A8E50D007FC4C5 /* ProductPriceSettingsViewController.xib */,
 				45B9C64023A9139A007FC4C5 /* Product+PriceSettingsViewModels.swift */,
 				02DC2ED1242061BE002F9676 /* ProductPriceSettingsViewModel.swift */,
+				09885C8627C6947A00910A62 /* ProductPriceSettingsValidator.swift */,
 			);
 			path = "Edit Price";
 			sourceTree = "<group>";
@@ -9133,6 +9139,7 @@
 				26FE09DF24DB871100B9BDF5 /* SurveyViewControllersFactory.swift in Sources */,
 				02279587237A50C900787C63 /* AztecHeaderFormatBarCommand.swift in Sources */,
 				025C006B2550DE4700FAC222 /* BarcodeScannerViewController.swift in Sources */,
+				09885C8727C6947A00910A62 /* ProductPriceSettingsValidator.swift in Sources */,
 				A6557218258B7510008AE7CA /* OrderListCellViewModel.swift in Sources */,
 				D8915DC12372C8AC00F63762 /* ColorStudio.swift in Sources */,
 				F997174523DC068500592D8E /* XLPagerStrip+AccessibilityIdentifier.swift in Sources */,
@@ -9546,6 +9553,7 @@
 				454453C82755171E00464AC5 /* HubMenuCoordinatorTests.swift in Sources */,
 				5767E940256D9A4A00CFA652 /* OrderListViewModelTests.swift in Sources */,
 				26A630F3253F3CFE00CBC3B1 /* RefundCreationUseCaseTests.swift in Sources */,
+				09EA565227C8235200407D40 /* ProductPriceSettingsValidatorTests.swift in Sources */,
 				D8F01DD325DEDC1C00CE70BE /* StripeCardReaderIntegrationTests.swift in Sources */,
 				020BE76F23B4A468007FE54C /* AztecBlockquoteFormatBarCommandTests.swift in Sources */,
 				0258B66D2518778300EB5CF2 /* ProductFormViewModelTests.swift in Sources */,

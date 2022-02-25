@@ -277,6 +277,9 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
 
         try container.encode(image, forKey: .image)
 
+        // Needed for bulk update variations, in other API calls it is ingored
+        try container.encode(productVariationID, forKey: .productVariationID)
+
         try container.encode(description, forKey: .description)
         try container.encode(status.rawValue, forKey: .statusKey)
 

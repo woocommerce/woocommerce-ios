@@ -165,6 +165,7 @@ public typealias StorageAddOnGroup = Storage.AddOnGroup
 public typealias StorageAnnouncement = Storage.Announcement
 public typealias StorageEligibilityErrorInfo = Storage.EligibilityErrorInfo
 public typealias StorageFeature = Storage.Feature
+public typealias StorageFeatureIcon = Storage.FeatureIcon
 public typealias StorageInboxNote = Storage.InboxNote
 public typealias StorageInboxAction = Storage.InboxAction
 public typealias StorageNote = Storage.Note

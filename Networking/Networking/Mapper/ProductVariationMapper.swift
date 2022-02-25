@@ -28,7 +28,6 @@ struct ProductVariationMapper: Mapper {
     }
 }
 
-
 /// ProductVariationEnvelope Disposable Entity
 ///
 /// `ProductVariation` endpoint returns the requested product variation document in the `data` key. This entity

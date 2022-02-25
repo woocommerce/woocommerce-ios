@@ -172,6 +172,7 @@
 		CC2C030A262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0306262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataClass.swift */; };
 		CC2C030B262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0307262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataClass.swift */; };
 		CC2C030C262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0308262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataProperties.swift */; };
+		CCBEBD4027C68E660010C96F /* FeatureIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCBEBD3F27C68E660010C96F /* FeatureIcon.swift */; };
 		CCD2E70725DE9AAA00BD975D /* WooCommerceModelV45toV46.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = CCD2E70625DE9AAA00BD975D /* WooCommerceModelV45toV46.xcmappingmodel */; };
 		CE12FBCE221F0E1A00C59248 /* Order+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBCC221F0E1A00C59248 /* Order+CoreDataClass.swift */; };
 		CE12FBCF221F0E1A00C59248 /* Order+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBCD221F0E1A00C59248 /* Order+CoreDataProperties.swift */; };
@@ -419,6 +420,7 @@
 		CC2C0306262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ShippingLabelPaymentMethod+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CC2C0307262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAccountSettings+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CC2C0308262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ShippingLabelPaymentMethod+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		CCBEBD3F27C68E660010C96F /* FeatureIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureIcon.swift; sourceTree = "<group>"; };
 		CCD2E70625DE9AAA00BD975D /* WooCommerceModelV45toV46.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV45toV46.xcmappingmodel; sourceTree = "<group>"; };
 		CE12FBCC221F0E1A00C59248 /* Order+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CE12FBCD221F0E1A00C59248 /* Order+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -968,6 +970,7 @@
 			isa = PBXGroup;
 			children = (
 				D4466F5526D524FC003E931B /* Feature.swift */,
+				CCBEBD3F27C68E660010C96F /* FeatureIcon.swift */,
 				D4ABCACE26D6E7E400CD18F4 /* Announcement.swift */,
 			);
 			name = WhatsNew;
@@ -1278,6 +1281,7 @@
 				CE4FD44D2350EB7600A16B31 /* Refund+CoreDataClass.swift in Sources */,
 				45E4620A2684BCEE00011BF2 /* Country+CoreDataClass.swift in Sources */,
 				02DA64192313C2AA00284168 /* StatsVersion.swift in Sources */,
+				CCBEBD4027C68E660010C96F /* FeatureIcon.swift in Sources */,
 				2618707325409C65006522A1 /* ShippingLineTax+CoreDataClass.swift in Sources */,
 				7474539E2242C85E00E0B5EE /* ProductAttribute+CoreDataProperties.swift in Sources */,
 				D8FBFF5522D66A06006E3336 /* OrderStatsV4Interval+CoreDataClass.swift in Sources */,

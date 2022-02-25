@@ -10,6 +10,7 @@
 		030338102705F7D400764131 /* ReceiptTotalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0303380F2705F7D400764131 /* ReceiptTotalLine.swift */; };
 		039D948B2760C0660044EF38 /* NoOpCardReaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948A2760C0660044EF38 /* NoOpCardReaderService.swift */; };
 		03B440AA2754DFC400759429 /* UnderlyingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B440A92754DFC400759429 /* UnderlyingError.swift */; };
+		03CF78D327C6710C00523706 /* interac.svg in Resources */ = {isa = PBXBuildFile; fileRef = 03CF78D227C6710B00523706 /* interac.svg */; };
 		311889EB2653286B0080AEA2 /* PaymentIntentMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311889EA2653286B0080AEA2 /* PaymentIntentMetadataTests.swift */; };
 		317975C0274EB1F9004357B1 /* DeclineReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975BF274EB1F9004357B1 /* DeclineReason.swift */; };
 		317975C2274EBC1F004357B1 /* DeclineReason+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975C1274EBC1F004357B1 /* DeclineReason+Stripe.swift */; };
@@ -136,6 +137,7 @@
 		0303380F2705F7D400764131 /* ReceiptTotalLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptTotalLine.swift; sourceTree = "<group>"; };
 		039D948A2760C0660044EF38 /* NoOpCardReaderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoOpCardReaderService.swift; sourceTree = "<group>"; };
 		03B440A92754DFC400759429 /* UnderlyingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlyingError.swift; sourceTree = "<group>"; };
+		03CF78D227C6710B00523706 /* interac.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interac.svg; sourceTree = "<group>"; };
 		0C16E0AAFF5A7B364BD4E171 /* Pods-Hardware.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release-alpha.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		1CC96A71F2937BCB7432766F /* Pods-HardwareTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.debug.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.debug.xcconfig"; sourceTree = "<group>"; };
 		2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SampleReceiptPrinter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -470,6 +472,7 @@
 		E1B6854E264908360077F8BF /* Card Icons */ = {
 			isa = PBXGroup;
 			children = (
+				03CF78D227C6710B00523706 /* interac.svg */,
 				E1B6855526490E3D0077F8BF /* amex.svg */,
 				E1B6855426490E3D0077F8BF /* diners.svg */,
 				E1B6855226490E3C0077F8BF /* discover.svg */,
@@ -631,6 +634,7 @@
 				E1B6855926490E3D0077F8BF /* discover.svg in Resources */,
 				E1B6855A26490E3D0077F8BF /* mastercard.svg in Resources */,
 				E1B6855C26490E3D0077F8BF /* amex.svg in Resources */,
+				03CF78D327C6710C00523706 /* interac.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

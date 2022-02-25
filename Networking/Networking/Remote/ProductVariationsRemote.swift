@@ -17,6 +17,10 @@ public protocol ProductVariationsRemoteProtocol {
                                 newVariation: CreateProductVariation,
                                 completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void)
+    func updateProductVariations(siteID: Int64,
+                                 productID: Int64,
+                                 productVariations: [ProductVariation],
+                                 completion: @escaping (Result<[ProductVariation], Error>) -> Void)
     func deleteProductVariation(siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
 }
 
@@ -107,6 +111,31 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
             let path = "\(Path.products)/\(productID)/variations/\(productVariation.productVariationID)"
             let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
             let mapper = ProductVariationMapper(siteID: siteID, productID: productID)
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
+    /// Updates the provided `ProductVariations`.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the ProductVariations.
+    ///     - productID: Identifier of the Product.
+    ///     - productVariations: the ProductVariations to update remotely.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updateProductVariations(siteID: Int64,
+                                        productID: Int64,
+                                        productVariations: [ProductVariation],
+                                        completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
+
+        do {
+            let parameters = try productVariations.map { try $0.toDictionary() }
+            let path = "\(Path.products)/\(productID)/variations/batch"
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: ["update": parameters])
+            let mapper = ProductVariationsBulkUpdateMapper(siteID: siteID, productID: productID)
 
             enqueue(request, mapper: mapper, completion: completion)
         } catch {

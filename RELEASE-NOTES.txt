@@ -3,6 +3,8 @@
 8.7
 -----
 - [**] In-Person Payments: Added card details to refund confirmation screen to help with refunding to the payment card [https://github.com/woocommerce/woocommerce-ios/pull/6241]
+- [*] Coupons: Replace the toggles on Usage Details screen with text for uneditable contents. [https://github.com/woocommerce/woocommerce-ios/pull/6287]
+- [*] Improve image loading for thumbnails especially on the Product list. [https://github.com/woocommerce/woocommerce-ios/pull/6299]
 - [internal] Removed all feature flags for Shipping Labels. Please smoke test all parts of Shipping Labels to make sure that everything still works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6270]
 
 8.6

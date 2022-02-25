@@ -112,6 +112,19 @@ final class CouponListViewModel {
     func tableWillDisplayCell(at indexPath: IndexPath) {
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: indexPath.row)
     }
+
+    /// Mark feedback request as dismissed and update banner visibility
+    ///
+    func dismissFeedbackBanner() {
+        let action = AppSettingsAction.updateFeedbackStatus(type: .couponManagement,
+                                                            status: .dismissed) { [weak self] result in
+            if let error = result.failure {
+                DDLogError("⛔️ Error update feedback visibility for coupon management: \(error)")
+            }
+            self?.isFeedbackBannerEnabledInAppSettings = false
+        }
+        storesManager.dispatch(action)
+    }
 }
 
 // MARK: - Setup view model

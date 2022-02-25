@@ -5,6 +5,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 import enum Storage.FeedbackType
+import struct Storage.FeedbackSettings
 
 final class CouponListViewModelTests: XCTestCase {
     private var mockStorageManager: MockStorageManager!
@@ -334,13 +335,40 @@ final class CouponListViewModelTests: XCTestCase {
             }
         }
         setUpWithCouponFetched(injectedStores: stores)
-        
+
         // When
         sut.sync(pageNumber: 2, pageSize: 10, reason: nil, onCompletion: nil)
         XCTAssertEqual(sut.state, .loadingNextPage) // confidence check
 
         // Then
         XCTAssertEqual(feedbackType, .couponManagement)
+        XCTAssertFalse(sut.shouldDisplayFeedbackBanner)
+    }
+
+    func test_shouldDisplayFeedbackBanner_returns_false_after_dismissing_feedback_banner() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var status: FeedbackSettings.Status?
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadFeedbackVisibility(_, onCompletion):
+                onCompletion(.success(true))
+            case let .updateFeedbackStatus(_, newStatus, onCompletion):
+                status = newStatus
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        setUpWithCouponFetched(injectedStores: stores)
+
+        // When
+        sut.handleCouponSyncResult(result: .success(false), pageNumber: 1)
+        XCTAssertTrue(sut.shouldDisplayFeedbackBanner) // confidence check
+        sut.dismissFeedbackBanner()
+
+        // Then
+        XCTAssertEqual(status, .dismissed)
         XCTAssertFalse(sut.shouldDisplayFeedbackBanner)
     }
 }

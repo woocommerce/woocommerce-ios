@@ -63,6 +63,8 @@ final class BulkUpdatePriceSettingsViewModel {
         self.priceSettingsValidator = ProductPriceSettingsValidator(currencySettings: currencySettings)
     }
 
+    /// Called when the save button is tapped
+    ///
     func saveButtonTapped() {
         priceValidationError = validatePrice()
         guard priceValidationError == nil else {
@@ -92,11 +94,15 @@ final class BulkUpdatePriceSettingsViewModel {
         storesManager.dispatch(action)
     }
 
+    /// Called when price changes
+    ///
     func handlePriceChange(_ price: String) {
         currentPrice = price
         updateButtonStateBasedOnCurrentPrice()
     }
 
+    /// Update the button state to enable/disable based on price value
+    ///
     private func updateButtonStateBasedOnCurrentPrice() {
         guard let price = currentPrice, price.isNotEmpty else {
             buttonState = .disabled
@@ -105,6 +111,8 @@ final class BulkUpdatePriceSettingsViewModel {
         buttonState = .enabled
     }
 
+    /// Validates the curre price selection for all variations that will be updated
+    ///
     private func validatePrice() -> ProductPriceSettingsError? {
         var error: ProductPriceSettingsError?
 

@@ -794,38 +794,38 @@ final class OrderStoreTests: XCTestCase {
 
     func test_create_order_does_not_upsert_autodrafts() throws {
         // Given
-        let expectation = self.expectation(description: "Create auto-draft order")
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order-auto-draft-status")
 
         // When
-        let action = OrderAction.createOrder(siteID: sampleSiteID, order: sampleOrder()) { result in
-            XCTAssertTrue(result.isSuccess)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
-            expectation.fulfill()
+        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = OrderAction.createOrder(siteID: self.sampleSiteID, order: self.sampleOrder()) { result in
+                promise(result)
+            }
+            store.onAction(action)
         }
-        store.onAction(action)
 
         // Then
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
 
     func test_update_order_does_not_upsert_autodrafts() throws {
         // Given
-        let expectation = self.expectation(description: "Update auto-draft order")
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order-auto-draft-status")
 
         // When
-        let action = OrderAction.updateOrder(siteID: sampleSiteID, order: sampleOrder(), fields: []) { result in
-            XCTAssertTrue(result.isSuccess)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
-            expectation.fulfill()
+        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = OrderAction.updateOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), fields: []) { result in
+                promise(result)
+            }
+            store.onAction(action)
         }
-        store.onAction(action)
 
         // Then
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
 }
 

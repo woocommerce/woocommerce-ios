@@ -25,7 +25,7 @@ class FeeLineDetailsViewModel: ObservableObject {
     @Published var percentage: String = "" {
         didSet {
             guard percentage != oldValue else { return }
-            percentage = priceFieldFormatter.formatAmount(percentage)
+            percentage = sanitizePercentageAmount(percentage)
         }
     }
 
@@ -136,5 +136,34 @@ class FeeLineDetailsViewModel: ObservableObject {
                                    taxes: [],
                                    attributes: [])
         didSelectSave(feeLine)
+    }
+}
+
+private extension FeeLineDetailsViewModel {
+
+    /// Formats a received value by sanitizing the input and trimming content to two decimal places.
+    ///
+    func sanitizePercentageAmount(_ amount: String) -> String {
+        let deviceDecimalSeparator = Locale.autoupdatingCurrent.decimalSeparator ?? "."
+        let numberOfDecimals = 2
+
+        let sanitized = amount
+            .filter { $0.isNumber || "\($0)" == deviceDecimalSeparator }
+
+        // Trim to two decimals & remove any extra "."
+        let components = sanitized.components(separatedBy: deviceDecimalSeparator)
+        switch components.count {
+        case 1 where sanitized.contains(deviceDecimalSeparator):
+            return components[0] + deviceDecimalSeparator
+        case 1:
+            return components[0]
+        case 2...Int.max:
+            let number = components[0]
+            let decimals = components[1]
+            let trimmedDecimals = decimals.prefix(numberOfDecimals)
+            return number + deviceDecimalSeparator + trimmedDecimals
+        default:
+            fatalError("Should not happen, components can't be 0 or negative")
+        }
     }
 }

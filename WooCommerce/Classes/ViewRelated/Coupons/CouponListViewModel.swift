@@ -21,6 +21,8 @@ final class CouponListViewModel {
     ///
     @Published private(set) var state: CouponListState = .initialized
 
+    @Published private(set) var shouldDisplayFeedbackBanner: Bool = false
+
     /// couponViewModels: ViewModels for the cells representing Coupons
     ///
     var couponViewModels: [CouponListCellViewModel] = []
@@ -62,36 +64,6 @@ final class CouponListViewModel {
         configureResultsController()
     }
 
-    private static func createResultsController(siteID: Int64,
-                                                storageManager: StorageManagerType) -> ResultsController<StorageCoupon> {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
-                                          ascending: false)
-
-        return ResultsController<StorageCoupon>(storageManager: storageManager,
-                                                matching: predicate,
-                                                sortedBy: [descriptor])
-    }
-
-    /// Setup: Results Controller
-    ///
-    private func configureResultsController() {
-        resultsController.onDidChangeContent = buildCouponViewModels
-        resultsController.onDidResetContent = buildCouponViewModels
-
-        do {
-            try resultsController.performFetch()
-        } catch {
-            ServiceLocator.crashLogging.logError(error)
-        }
-    }
-
-    /// Setup: Syncing Coordinator
-    ///
-    private func configureSyncingCoordinator() {
-        syncingCoordinator.delegate = self
-    }
-
     func buildCouponViewModels() {
         couponViewModels = resultsController.fetchedObjects.map { coupon in
             CouponListCellViewModel(title: coupon.code,
@@ -130,6 +102,38 @@ final class CouponListViewModel {
     }
 }
 
+// MARK: - Setup view model
+private extension CouponListViewModel {
+    static func createResultsController(siteID: Int64,
+                                                storageManager: StorageManagerType) -> ResultsController<StorageCoupon> {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
+                                          ascending: false)
+
+        return ResultsController<StorageCoupon>(storageManager: storageManager,
+                                                matching: predicate,
+                                                sortedBy: [descriptor])
+    }
+
+    /// Setup: Results Controller
+    ///
+    func configureResultsController() {
+        resultsController.onDidChangeContent = buildCouponViewModels
+        resultsController.onDidResetContent = buildCouponViewModels
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    /// Setup: Syncing Coordinator
+    ///
+    func configureSyncingCoordinator() {
+        syncingCoordinator.delegate = self
+    }
+}
 
 // MARK: - SyncingCoordinatorDelegate
 //

@@ -8,9 +8,13 @@ struct FeeLineDetails: View {
     ///
     @ObservedObject private var viewModel: FeeLineDetailsViewModel
 
-    /// Defines if the amount input text field should be focused. Defaults to `true`
+    /// Defines if the fixed amount input text field should be focused. Defaults to `true`
     ///
-    @State private var focusAmountInput: Bool = true
+    @State private var focusFixedAmountInput: Bool = true
+
+    /// Defines if the percentage amount input text field should be focused. Defaults to `false`
+    ///
+    @State private var focusPercentageAmountInput: Bool = false
 
     @Environment(\.presentationMode) var presentation
 
@@ -27,18 +31,20 @@ struct FeeLineDetails: View {
                     Section {
                         Picker("", selection: $viewModel.feeType) {
                             Text(viewModel.percentSymbol).tag(FeeLineDetailsViewModel.FeeType.percentage)
-                            Text(viewModel.storeCurrencySymbol).tag(FeeLineDetailsViewModel.FeeType.fixed)
+                            Text(viewModel.currencySymbol).tag(FeeLineDetailsViewModel.FeeType.fixed)
                         }
+                        .onChange(of: viewModel.feeType, perform: { feeType in
+                            switch feeType {
+                            case .fixed:
+                                focusFixedAmountInput = true
+                            case .percentage:
+                                focusPercentageAmountInput = true
+                            }
+                        })
                         .pickerStyle(.segmented)
                         .padding()
 
-                        ZStack(alignment: .center) {
-                            // Hidden input text field
-                            BindableTextfield("", text: $viewModel.amount, focus: $focusAmountInput)
-                                .keyboardType(.decimalPad)
-                                .opacity(0)
-
-                            // Visible & formatted field
+                        Group {
                             switch viewModel.feeType {
                             case .fixed:
                                 inputFixedField
@@ -48,9 +54,6 @@ struct FeeLineDetails: View {
                         }
                         .background(Color(.listForeground))
                         .fixedSize(horizontal: false, vertical: true)
-                        .onTapGesture {
-                            focusAmountInput = true
-                        }
                         .padding(.horizontal, insets: safeAreaInsets)
                     }
                     .background(Color(.listForeground))
@@ -97,23 +100,44 @@ struct FeeLineDetails: View {
     }
 
     private var inputFixedField: some View {
-        TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.amountField, viewModel.storeCurrencySymbol),
-                             placeholder: "",
-                             text: .constant(viewModel.formattedAmount),
-                             symbol: nil,
-                             keyboardType: .decimalPad)
-            .foregroundColor(Color(viewModel.amountTextColor))
-            .disabled(true)
+        AdaptiveStack(horizontalAlignment: .leading) {
+            Text(String.localizedStringWithFormat(Localization.amountField, viewModel.currencySymbol))
+                .bodyStyle()
+                .fixedSize()
+
+            Spacer()
+
+            BindableTextfield(viewModel.amountPlaceholder,
+                              text: $viewModel.amount,
+                              focus: $focusFixedAmountInput)
+                .keyboardType(.decimalPad)
+                .addingCurrencySymbol(viewModel.currencySymbol, on: viewModel.currencyPosition)
+                .onTapGesture {
+                    focusFixedAmountInput = true
+                }
+        }
+        .frame(minHeight: Layout.rowHeight)
+        .padding([.leading, .trailing], Layout.rowPadding)
     }
 
     private var inputPercentageField: some View {
-        TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.amountField, viewModel.percentSymbol),
-                             placeholder: "0",
-                             text: .constant(viewModel.amount),
-                             symbol: nil,
-                             keyboardType: .decimalPad)
-            .foregroundColor(Color(viewModel.amountTextColor))
-            .disabled(true)
+        AdaptiveStack(horizontalAlignment: .leading) {
+            Text(String.localizedStringWithFormat(Localization.amountField, viewModel.percentSymbol))
+                .bodyStyle()
+                .fixedSize()
+
+            Spacer()
+
+            BindableTextfield("0",
+                              text: $viewModel.percentage,
+                              focus: $focusPercentageAmountInput)
+                .keyboardType(.decimalPad)
+                .onTapGesture {
+                    focusPercentageAmountInput = true
+                }
+        }
+        .frame(minHeight: Layout.rowHeight)
+        .padding([.leading, .trailing], Layout.rowPadding)
     }
 }
 
@@ -122,6 +146,8 @@ private extension FeeLineDetails {
     enum Layout {
         static let sectionSpacing: CGFloat = 16.0
         static let dividerPadding: CGFloat = 16.0
+        static let rowHeight: CGFloat = 44
+        static let rowPadding: CGFloat = 16
     }
 
     enum Localization {

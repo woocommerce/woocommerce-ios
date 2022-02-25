@@ -17,7 +17,9 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         viewModel.amount = "hi:11.3005.02-"
 
         // Then
-        XCTAssertEqual(viewModel.formattedAmount, "$11.30")
+        XCTAssertEqual(viewModel.amount, "11.30")
+        XCTAssertEqual(viewModel.currencySymbol, "$")
+        XCTAssertEqual(viewModel.currencyPosition, .left)
     }
 
     func test_view_model_formats_amount_with_custom_currency_settings() {
@@ -34,37 +36,66 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         viewModel.amount = "12.203"
 
         // Then
-        XCTAssertEqual(viewModel.formattedAmount, "12.203 £")
+        XCTAssertEqual(viewModel.amount, "12.203")
+        XCTAssertEqual(viewModel.currencySymbol, "£")
+        XCTAssertEqual(viewModel.currencyPosition, .rightSpace)
+    }
+
+    func test_view_model_formats_percentage_correctly() {
+        // Given
+        let viewModel = FeeLineDetailsViewModel(inputData: .init(), locale: usLocale, storeCurrencySettings: usStoreSettings, didSelectSave: { _ in })
+
+        // When
+        viewModel.percentage = "hi:11.3005.02-"
+
+        // Then
+        XCTAssertEqual(viewModel.percentage, "11.30")
     }
 
     func test_view_model_prefills_input_data_correctly() {
         // Given
         let inputData = NewOrderViewModel.PaymentDataViewModel(shouldShowFees: true,
-                                                               feesTotal: "15.30")
+                                                               feesBaseAmountForPercentage: 200,
+                                                               feesTotal: "10")
 
         let viewModel = FeeLineDetailsViewModel(inputData: inputData, locale: usLocale, storeCurrencySettings: usStoreSettings, didSelectSave: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.isExistingFeeLine)
         XCTAssertEqual(viewModel.feeType, .fixed)
-        XCTAssertEqual(viewModel.formattedAmount, "$15.30")
+        XCTAssertEqual(viewModel.amount, "10.00")
+        XCTAssertEqual(viewModel.percentage, "5")
     }
 
     func test_view_model_disables_done_button_for_empty_state_and_enables_with_input() {
         // Given
-        let viewModel = FeeLineDetailsViewModel(inputData: .init(), locale: usLocale, storeCurrencySettings: usStoreSettings, didSelectSave: { _ in })
+        let inputData = NewOrderViewModel.PaymentDataViewModel(feesBaseAmountForPercentage: 200)
+
+        let viewModel = FeeLineDetailsViewModel(inputData: inputData, locale: usLocale, storeCurrencySettings: usStoreSettings, didSelectSave: { _ in })
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
 
-        // When
+        // When & Then
+        // $11.30
         viewModel.amount = "11.30"
-
-        // Then
+        viewModel.feeType = .fixed
         XCTAssertFalse(viewModel.shouldDisableDoneButton)
 
-        // When
-        viewModel.amount = ""
+        // When & Then
+        // 0%
+        viewModel.percentage = ""
+        viewModel.feeType = .percentage
+        XCTAssertTrue(viewModel.shouldDisableDoneButton)
 
-        // Then
+        // When & Then
+        // 10%
+        viewModel.percentage = "10"
+        viewModel.feeType = .percentage
+        XCTAssertFalse(viewModel.shouldDisableDoneButton)
+
+        // When & Then
+        // $0
+        viewModel.amount = ""
+        viewModel.feeType = .fixed
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
     }
 
@@ -133,9 +164,9 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
     func test_view_model_creates_fee_line_with_percentage_amount() {
         // Given
         var savedFeeLine: OrderFeeLine?
-        let inputData = NewOrderViewModel.PaymentDataViewModel(shouldShowFees: true,
+        let inputData = NewOrderViewModel.PaymentDataViewModel(shouldShowFees: false,
                                                                feesBaseAmountForPercentage: 200,
-                                                               feesTotal: "10")
+                                                               feesTotal: "0")
         let viewModel = FeeLineDetailsViewModel(inputData: inputData,
                                                      locale: usLocale,
                                                      storeCurrencySettings: usStoreSettings,
@@ -145,9 +176,10 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
 
         // When
         viewModel.feeType = .percentage
+        viewModel.percentage = "10"
 
         // Then
         viewModel.saveData()
-        XCTAssertEqual(savedFeeLine?.total, "20")
+        XCTAssertEqual(savedFeeLine?.total, "20.00")
     }
 }

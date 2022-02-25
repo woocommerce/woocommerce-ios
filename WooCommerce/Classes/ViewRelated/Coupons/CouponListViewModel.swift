@@ -11,6 +11,15 @@ enum CouponListState {
     case coupons // View should display the contents of `couponViewModels`
     case refreshing // View should display the refresh control
     case loadingNextPage // View should display a bottom loading indicator and contents of `couponViewModels`
+
+    var shouldShowTopBanner: Bool {
+        switch self {
+        case .initialized, .loading, .empty:
+            return false
+        case .coupons, .refreshing, .loadingNextPage:
+            return true
+        }
+    }
 }
 
 final class CouponListViewModel {
@@ -22,6 +31,8 @@ final class CouponListViewModel {
     @Published private(set) var state: CouponListState = .initialized
 
     @Published private(set) var shouldDisplayFeedbackBanner: Bool = false
+
+    @Published private var isFeedbackBannerEnabledInAppSettings: Bool = false
 
     /// couponViewModels: ViewModels for the cells representing Coupons
     ///
@@ -62,6 +73,7 @@ final class CouponListViewModel {
                                                               storageManager: storageManager)
         configureSyncingCoordinator()
         configureResultsController()
+        configureFeedbackBannerVisibility()
     }
 
     func buildCouponViewModels() {
@@ -132,6 +144,28 @@ private extension CouponListViewModel {
     ///
     func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
+    }
+
+    func configureFeedbackBannerVisibility() {
+        checkAppSettingsForFeedbackBannerVisibility()
+        $state.combineLatest($isFeedbackBannerEnabledInAppSettings)
+            .map { state, feedbackBannerVisibility -> Bool in
+                state.shouldShowTopBanner && feedbackBannerVisibility
+            }
+            .assign(to: &$shouldDisplayFeedbackBanner)
+    }
+
+    func checkAppSettingsForFeedbackBannerVisibility() {
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .couponManagement) { [weak self] result in
+            switch result {
+            case .success(let visible):
+                self?.isFeedbackBannerEnabledInAppSettings = visible
+            case.failure(let error):
+                self?.isFeedbackBannerEnabledInAppSettings = false
+                DDLogError("⛔️ Error load feedback visibility for coupon management: \(error)")
+            }
+        }
+        storesManager.dispatch(action)
     }
 }
 

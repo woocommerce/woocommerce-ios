@@ -188,7 +188,7 @@ private extension ProductVariationStore {
                                                                                             onCompletion(.failure(.notFoundInStorage))
                                                                                             return
                                                                 }
-                    onCompletion(.success(storageProductVariation.map({ $0.toReadOnly() })))
+                    onCompletion(.success(storageProductVariation.map { $0.toReadOnly() }))
                 }
             }
         }

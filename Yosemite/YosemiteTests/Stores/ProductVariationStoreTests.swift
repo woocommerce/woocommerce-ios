@@ -730,7 +730,7 @@ final class ProductVariationStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
     }
 
-    /// Verifies that `ProductVariationAction.updateProductVariation` returns the expected `ProductVariation`.
+    /// Verifies that `ProductVariationAction.updateProductVariations` returns the expected `ProductVariations`.
     ///
     func test_updateProductVariations_is_correctly_updating_productVariation() throws {
         // Given

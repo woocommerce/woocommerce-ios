@@ -26,7 +26,7 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
     /// Whether the row is shown in placeholder state.
     let isPlaceholder: Bool
 
-    /// Indicate if the note was read or not (read = actioned).
+    /// Indicate if the note was actioned or not (the user did an action, so the note will be considered as read).
     let isRead: Bool
 
     init(note: InboxNote,
@@ -88,7 +88,7 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
 extension InboxNoteRowViewModel {
     func markInboxNoteAsActioned(actionID: Int64) {
         let action = InboxNotesAction.markInboxNoteAsActioned(siteID: siteID,
-                                                              noteID: actionID,
+                                                              noteID: id,
                                                               actionID: actionID) { result in
             switch result {
             case .success:

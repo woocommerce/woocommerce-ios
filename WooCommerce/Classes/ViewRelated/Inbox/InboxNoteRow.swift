@@ -19,10 +19,19 @@ struct InboxNoteRow: View {
                     .foregroundColor(Color(Constants.dateTextColor))
 
                 VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                    // Title.
+
+
+                    // Title Unread (unactioned)
+                    Text(viewModel.title)
+                        .headlineStyle()
+                        .fixedSize(horizontal: false, vertical: true)
+                        .renderedIf(!viewModel.isRead)
+
+                    // Title Read (actioned)
                     Text(viewModel.title)
                         .bodyStyle()
                         .fixedSize(horizontal: false, vertical: true)
+                        .renderedIf(viewModel.isRead)
 
                     // Content.
                     // Showing `AttributedText` in placeholder state results in animated height changes, thus a `Text` is shown instead.

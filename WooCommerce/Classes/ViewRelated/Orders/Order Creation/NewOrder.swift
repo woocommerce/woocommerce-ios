@@ -57,8 +57,6 @@ struct NewOrder: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 switch viewModel.navigationTrailingItem {
-                case .none:
-                    EmptyView()
                 case .create:
                     Button(Localization.createButton) {
                         viewModel.createOrder()

@@ -19,6 +19,9 @@ final class MockProductVariationsRemote {
     /// The results to return based on the given arguments in `updateProductVariation`
     private var productVariationUpdateResults = [ResultKey: Result<ProductVariation, Error>]()
 
+    /// The results to return based on the given arguments in `updateProductVariations`
+    private var productVariationsUpdateResults = [ResultKey: Result<[ProductVariation], Error>]()
+
     /// The results to return based on the given arguments in `loadProductVariation`
     private var productVariationLoadResults = [ResultKey: Result<ProductVariation, Error>]()
 
@@ -43,6 +46,13 @@ final class MockProductVariationsRemote {
         productVariationUpdateResults[key] = result
     }
 
+    /// Set the value passed to the `completion` block if `updateProductVariations()` is called.
+    ///
+    func whenUpdatingProductVariations(siteID: Int64, productID: Int64, productVariationIDs: [Int64], thenReturn result: Result<[ProductVariation], Error>) {
+        let key = ResultKey(siteID: siteID, productID: productID, productVariationIDs: productVariationIDs)
+        productVariationsUpdateResults[key] = result
+    }
+
     /// Set the value passed to the `completion` block if `loadProductVariation()` is called.
     ///
     func whenLoadingProductVariation(siteID: Int64, productID: Int64, productVariationID: Int64, thenReturn result: Result<ProductVariation, Error>) {
@@ -61,13 +71,6 @@ final class MockProductVariationsRemote {
 // MARK: - ProductVariationsRemoteProtocol conformance
 
 extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
-    func updateProductVariations(siteID: Int64,
-                                 productID: Int64,
-                                 productVariations: [ProductVariation],
-                                 completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
-        // no-op
-    }
-
     func loadAllProductVariations(for siteID: Int64,
                                   productID: Int64,
                                   context: String?,
@@ -124,6 +127,24 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
                                 productID: productVariation.productID,
                                 productVariationIDs: [productVariation.productVariationID])
             if let result = self.productVariationUpdateResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func updateProductVariations(siteID: Int64,
+                                 productID: Int64,
+                                 productVariations: [ProductVariation],
+                                 completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = ResultKey(siteID: siteID,
+                                productID: productID,
+                                productVariationIDs: productVariations.map(\.productVariationID))
+            if let result = self.productVariationsUpdateResults[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

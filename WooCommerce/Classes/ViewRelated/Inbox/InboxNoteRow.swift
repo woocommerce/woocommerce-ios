@@ -169,7 +169,8 @@ struct InboxNoteRow_Previews: PreviewProvider {
                                                          attributedContent: .init(),
                                                          actions: [],
                                                          siteID: 1,
-                                                         isPlaceholder: true)
+                                                         isPlaceholder: true,
+                                                         isRead: true)
         Group {
             VStack {
                 InboxNoteRow(viewModel: .init(note: note.copy(type: "marketing", dateCreated: today), today: today))

@@ -41,6 +41,17 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currencyPosition, .rightSpace)
     }
 
+    func test_view_model_formats_percentage_correctly() {
+        // Given
+        let viewModel = FeeLineDetailsViewModel(inputData: .init(), locale: usLocale, storeCurrencySettings: usStoreSettings, didSelectSave: { _ in })
+
+        // When
+        viewModel.percentage = "hi:11.3005.02-"
+
+        // Then
+        XCTAssertEqual(viewModel.percentage, "11.30")
+    }
+
     func test_view_model_prefills_input_data_correctly() {
         // Given
         let inputData = NewOrderViewModel.PaymentDataViewModel(shouldShowFees: true,

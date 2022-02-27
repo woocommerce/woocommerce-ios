@@ -1,3 +1,0 @@
-We hebben het tabblad Mijn winkel vernieuwd op basis van jullie feedback. Je ziet vanaf nu een conversiepercentage en de top 5 (in plaats van de top 3) verkochte producten.
-
-Jullie hebben gevraagd om in de app bestellingen te kunnen creëren. We hebben vanaf nu een sneakpeek beschikbaar voor mensen die ons willen helpen met uittesten! Ga naar de instellingen in de app en zet de experimentele functie aan voor Aanmaken van bestellingen. Op dit moment kan je producten, opmerkingen en adressen toevoegen. Toekomstige releases zullen nog extra functies toevoegen.

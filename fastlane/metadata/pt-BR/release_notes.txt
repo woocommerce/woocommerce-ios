@@ -1,3 +1,0 @@
-Mudamos um pouco a guia Minha loja de acordo com o feedback de vocês. Você verá uma porcentagem de conversão e os cinco produtos mais vendidos (em vez de três).
-
-As pessoas estavam querendo criar pedidos no app. Agora estamos oferecendo uma prévia se você quiser nos ajudar a testar essa funcionalidade! Vá nas configurações do app e ative a funcionalidade experimental para criação de pedido. No momento, é possível adicionar produtos, anotações e endereços, e nos próximos lançamentos teremos mais funcionalidades.

@@ -47,6 +47,7 @@ struct NewOrder: View {
 
                         OrderCustomerSection(viewModel: viewModel)
                     }
+                    .disabled(viewModel.disabled)
                 }
                 .background(Color(.listBackground).ignoresSafeArea())
                 .ignoresSafeArea(.container, edges: [.horizontal])
@@ -60,7 +61,10 @@ struct NewOrder: View {
                 case .create:
                     Button(Localization.createButton) {
                         viewModel.createOrder()
-                    }.id(navigationButtonID)
+                    }
+                    .id(navigationButtonID)
+                    .disabled(viewModel.disabled)
+
                 case .loading:
                     ProgressView()
                 }
@@ -68,7 +72,6 @@ struct NewOrder: View {
         }
         .wooNavigationBarStyle()
         .notice($viewModel.notice)
-        .disabled(viewModel.disabled)
     }
 }
 

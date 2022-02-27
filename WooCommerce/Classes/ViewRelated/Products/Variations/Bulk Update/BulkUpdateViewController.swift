@@ -40,16 +40,14 @@ final class BulkUpdateViewController: UIViewController {
             guard let self = self else { return }
 
             switch state {
+            // `.notStarted` is the initial state of the VM
+            // and transition to this state is not possible
             case .notStarted:
-                fallthrough
+                ()
             case .syncing:
-                self.displayPlaceholder()
-            case .synced:
-                fallthrough
-            case .error:
-                self.removePlaceholder()
-                self.removePlaceholder()
-                self.removePlaceholder()
+                self.displayGhostContent()
+            case .synced, .error:
+                self.removeGhostContent()
             }
         }.store(in: &subscriptions)
 

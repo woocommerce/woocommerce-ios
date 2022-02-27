@@ -122,10 +122,6 @@ private extension RemoteOrderSynchronizer {
     /// Creates or updates the order when a significant order input occurs.
     ///
     func bindOrderSync() {
-        // Signal to force an order update.
-        // Needed when the order creation finishes but the merchant issued new updates.
-        let forceUpdateSignal = PassthroughSubject<SyncOperation, Never>()
-
         // Combine inputs that should trigger an order sync operation.
         let syncTrigger: AnyPublisher<SyncOperation, Never> = setProduct.map { _ in () }
             .merge(with: setAddresses.map { _ in () })
@@ -134,33 +130,32 @@ private extension RemoteOrderSynchronizer {
             .debounce(for: 1, scheduler: DispatchQueue.main) // Group & wait for 1s since the last signal was emitted.
             .compactMap { [weak self] in
                 guard let self = self else { return nil }
-                return SyncOperation(order: self.order) // Imperative `withLatestFrom` as it appears to have bugs when assigning a new order value.
+                switch self.state {
+                case .syncing(blocking: true):
+                    return nil // Don't continue if the current state is `blocking`.
+                default:
+                    // TODO: Check if this is needed.
+                    return SyncOperation(order: self.order) // Imperative `withLatestFrom` as it appears to have bugs when assigning a new order value.
+                }
             }
             .share()
             .eraseToAnyPublisher()
 
-        bindOrderCreation(trigger: syncTrigger, forceUpdateSignal: forceUpdateSignal)
-        bindOrderUpdate(trigger: syncTrigger, forceUpdateSignal: forceUpdateSignal)
+        bindOrderCreation(trigger: syncTrigger)
+        bindOrderUpdate(trigger: syncTrigger)
     }
 
     /// Binds the provided `trigger` and creates an order when needed(order does not exists remotely).
-    /// Keeps track of subsequent update triggers to send a signal to the provided `forceUpdateSignal`.
     ///
-    func bindOrderCreation(trigger: AnyPublisher<SyncOperation, Never>, forceUpdateSignal: PassthroughSubject<SyncOperation, Never>) {
-        // Stores the latest request. Needed to validate if an update needs to be fired after the order is created.
-        var latestRequest: SyncOperation?
-
+    func bindOrderCreation(trigger: AnyPublisher<SyncOperation, Never>) {
         // Creates a "draft" order if the order has not been created yet.
         trigger
-            .handleEvents(receiveOutput: { request in
-                latestRequest = request // Assign latest request to further evaluation.
-            })
             .filter { // Only continue if the order has not been created.
                 $0.order.orderID == .zero
             }
             .flatMap(maxPublishers: .max(1)) { [weak self] request -> AnyPublisher<SyncOperation, Error> in // Only allow one request at a time.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
-                self.state = .syncing
+                self.state = .syncing(blocking: true) // Creating an oder is always a blocking operation
                 return self.createOrderRemotely(request)
             }
             .catch { [weak self] error -> AnyPublisher<SyncOperation, Never> in // When an error occurs, update state & finish.
@@ -168,33 +163,23 @@ private extension RemoteOrderSynchronizer {
                 return Empty().eraseToAnyPublisher()
             }
             .sink { [weak self] response in
-                // If there are no pending update requests, update state & order.
-                if response.id == latestRequest?.id {
-                    self?.state = .synced
-                    self?.order = response.order
-                } else if let latestRequest = latestRequest {
-                    // Otherwise update order id & force an update request.
-                    let newOrderToUpdate = latestRequest.order.copy(orderID: response.order.orderID)
-                    self?.order = newOrderToUpdate
-
-                    forceUpdateSignal.send(SyncOperation(order: newOrderToUpdate))
-                }
+                self?.state = .synced
+                self?.order = response.order
             }
             .store(in: &subscriptions)
     }
 
     /// Binds the provided `trigger` and updates an order when needed(order already exists remotely).
     ///
-    func bindOrderUpdate(trigger: AnyPublisher<SyncOperation, Never>, forceUpdateSignal: PassthroughSubject<SyncOperation, Never>) {
+    func bindOrderUpdate(trigger: AnyPublisher<SyncOperation, Never>) {
         // Updates a "draft" order after it has already been created.
         trigger
-            .merge(with: forceUpdateSignal)
             .filter { // Only continue if the order has been created.
                 $0.order.orderID != .zero
             }
             .map { [weak self] request -> AnyPublisher<SyncOperation, Error> in // Allow multiple requests, once per update request.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
-                self.state = .syncing
+                self.state = .syncing(blocking: false) // TODO: Figure out when the request involves an add-item operation.
                 return self.updateOrderRemotely(request)
             }
             .switchToLatest() // Always switch/listen to the latest fired update request.

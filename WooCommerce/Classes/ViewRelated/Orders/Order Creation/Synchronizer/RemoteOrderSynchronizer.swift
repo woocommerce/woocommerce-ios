@@ -146,10 +146,10 @@ private extension RemoteOrderSynchronizer {
             .filter { // Only continue if the order has not been created.
                 $0.orderID == .zero
             }
-            .flatMap(maxPublishers: .max(1)) { [weak self] request -> AnyPublisher<Order, Error> in // Only allow one request at a time.
+            .flatMap(maxPublishers: .max(1)) { [weak self] order -> AnyPublisher<Order, Error> in // Only allow one request at a time.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
                 self.state = .syncing(blocking: true) // Creating an oder is always a blocking operation
-                return self.createOrderRemotely(request)
+                return self.createOrderRemotely(order)
             }
             .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
                 self?.state = .error(error)
@@ -170,10 +170,10 @@ private extension RemoteOrderSynchronizer {
             .filter { // Only continue if the order has been created.
                 $0.orderID != .zero
             }
-            .map { [weak self] request -> AnyPublisher<Order, Error> in // Allow multiple requests, once per update request.
+            .map { [weak self] order -> AnyPublisher<Order, Error> in // Allow multiple requests, once per update request.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
-                self.state = .syncing(blocking: false) // TODO: Figure out when the request involves an add-item operation.
-                return self.updateOrderRemotely(request)
+                self.state = .syncing(blocking: order.containsLocalItems()) // Set a `blocking` state if the order contains new items
+                return self.updateOrderRemotely(order)
             }
             .switchToLatest() // Always switch/listen to the latest fired update request.
             .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
@@ -246,5 +246,14 @@ private extension RemoteOrderSynchronizer {
             self.stores.dispatch(action)
         }
         .eraseToAnyPublisher()
+    }
+}
+
+// MARK: Order Helpers
+private extension Order {
+    /// Returns true if the order contains local items.
+    /// Local Items: items with ID `.zero`.
+    func containsLocalItems() -> Bool {
+        items.contains { $0.itemID == .zero }
     }
 }

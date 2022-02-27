@@ -150,7 +150,6 @@ extension BulkUpdateViewController {
 
     enum Row: CaseIterable {
         case regularPrice
-        case salePrice
 
         fileprivate var type: UITableViewCell.Type {
             return ValueOneTableViewCell.self

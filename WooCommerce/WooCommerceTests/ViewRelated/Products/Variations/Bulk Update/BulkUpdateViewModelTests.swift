@@ -23,6 +23,23 @@ final class BulkUpdateViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_number_of_sections() {
+        // Given
+        let viewModel = BulkUpdateViewModel(siteID: 0, productID: 0, storageManager: storageManager, storesManager: storesManager)
+
+        // Then
+        XCTAssertEqual(viewModel.sections.count, 1)
+    }
+
+    func test_first_section_title() throws {
+        // Given
+        let viewModel = BulkUpdateViewModel(siteID: 0, productID: 0, storageManager: storageManager, storesManager: storesManager)
+
+        // Then
+        let sectionTitle = try XCTUnwrap(viewModel.sections.first?.title)
+        XCTAssertEqual(sectionTitle, Localization.priceTitle)
+    }
+
     func test_all_products_are_synchronized_on_the_viewload_event() throws {
         // Given
         let expectedSiteID: Int64 = 42
@@ -106,5 +123,11 @@ final class BulkUpdateViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.syncState, .synced)
+    }
+}
+
+private extension BulkUpdateViewModelTests {
+    private enum Localization {
+        static let priceTitle = NSLocalizedString("Price", comment: "The title for the price settings section in the product variation bulk update screen")
     }
 }

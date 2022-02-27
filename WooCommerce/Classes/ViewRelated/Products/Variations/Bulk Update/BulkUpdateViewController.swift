@@ -13,6 +13,10 @@ final class BulkUpdateViewController: UIViewController {
 
     private var subscriptions = Set<AnyCancellable>()
 
+    /// A child view controller that is shown when `displayGhostContent()` is called.
+    ///
+    private lazy var ghostTableViewController = GhostTableViewController()
+
     init(viewModel: BulkUpdateViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -50,21 +54,6 @@ final class BulkUpdateViewController: UIViewController {
         }.store(in: &subscriptions)
 
         viewModel.activate()
-    }
-
-    /// Renders the placeholders for the the bulk update settings
-    ///
-    func displayPlaceholder() {
-        // We currently support 2 options (Regular & Sale price)
-        let options = GhostOptions(reuseIdentifier: ValueOneTableViewCell.reuseIdentifier, rowsPerSection: [2])
-        tableView.displayGhostContent(options: options,
-                                      style: .wooDefaultGhostStyle)
-    }
-
-    /// Removes the placeholder cells.
-    ///
-    func removePlaceholder() {
-        tableView.removeGhostContent()
     }
 
     /// Configures the table view: registers Nibs & setup datasource / delegate
@@ -177,4 +166,76 @@ extension BulkUpdateViewController {
 
 private struct Constants {
     static let sectionHeight = CGFloat(44)
+    static let placeholderRowsPerSection = [1]
+}
+
+private extension BulkUpdateViewController {
+    /// Renders Placeholder Content.
+    ///
+    func displayGhostContent() {
+        guard let ghostView = ghostTableViewController.view else {
+            return
+        }
+
+        ghostView.translatesAutoresizingMaskIntoConstraints = false
+        addChild(ghostTableViewController)
+        view.addSubview(ghostView)
+        view.pinSubviewToAllEdges(ghostView)
+        ghostTableViewController.didMove(toParent: self)
+    }
+
+    /// Removes the Placeholder Content.
+    ///
+    func removeGhostContent() {
+        guard let ghostView = ghostTableViewController.view else {
+            return
+        }
+
+        ghostTableViewController.willMove(toParent: nil)
+        ghostView.removeFromSuperview()
+        ghostTableViewController.removeFromParent()
+    }
+
+    /// A  controller that is shown when `displayGhostContent()` is called. Added as a child view controller.
+    ///
+    final class GhostTableViewController: UITableViewController {
+
+        init() {
+            super.init(style: .plain)
+        }
+
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        override func viewDidLoad() {
+            super.viewDidLoad()
+
+            tableView.dataSource = nil
+            tableView.delegate = nil
+
+            tableView.backgroundColor = .listBackground
+            tableView.estimatedRowHeight = Constants.sectionHeight
+            tableView.applyFooterViewForHidingExtraRowPlaceholders()
+            tableView.registerNib(for: ValueOneTableViewCell.self)
+        }
+
+        /// Activate the ghost if this view is added to the parent.
+        ///
+        override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
+
+            let options = GhostOptions(reuseIdentifier: ValueOneTableViewCell.reuseIdentifier,
+                                       rowsPerSection: Constants.placeholderRowsPerSection)
+            tableView.displayGhostContent(options: options,
+                                          style: .wooDefaultGhostStyle)
+        }
+
+        /// Deactivate the ghost if this view is removed from the parent.
+        ///
+        override func viewWillDisappear(_ animated: Bool) {
+            super.viewWillDisappear(animated)
+            tableView.removeGhostContent()
+        }
+    }
 }

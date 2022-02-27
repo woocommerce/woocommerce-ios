@@ -5,7 +5,7 @@ import Combine
 /// Possible states of an `OrderSynchronizer` type.
 ///
 enum OrderSyncState {
-    case syncing
+    case syncing(blocking: Bool)
     case synced
     case error(Error)
 }

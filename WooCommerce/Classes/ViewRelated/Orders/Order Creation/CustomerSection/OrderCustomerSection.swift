@@ -133,7 +133,6 @@ struct OrderCustomerSection_Previews: PreviewProvider {
     static var previews: some View {
         let emptyViewModel = NewOrderViewModel.CustomerDataViewModel(billingAddress: nil, shippingAddress: nil)
         let addressViewModel = NewOrderViewModel.CustomerDataViewModel(fullName: "Johnny Appleseed",
-                                                                       email: "scrambled@scrambled.com",
                                                                        billingAddressFormatted: nil,
                                                                        shippingAddressFormatted: """
                                                                             Johnny Appleseed

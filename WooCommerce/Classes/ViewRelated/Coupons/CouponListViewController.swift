@@ -221,11 +221,10 @@ extension CouponListViewController {
     ///
     func displayNoResultsOverlay() {
         let emptyStateViewController = EmptyStateViewController(style: .list)
-        let config = EmptyStateViewController.Config.withButton(
+        let config = EmptyStateViewController.Config.simple(
             message: .init(string: Localization.emptyStateMessage),
-            image: .emptyCouponsImage,
-            details: "",
-            buttonTitle: Localization.addCouponButton) { _ in }
+            image: .emptyCouponsImage
+        )
 
         displayEmptyStateViewController(emptyStateViewController)
         emptyStateViewController.configure(config)

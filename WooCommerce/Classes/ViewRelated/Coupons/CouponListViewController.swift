@@ -224,7 +224,7 @@ extension CouponListViewController {
         let config = EmptyStateViewController.Config.withButton(
             message: .init(string: Localization.emptyStateMessage),
             image: .emptyCouponsImage,
-            details: Localization.emptyStateDetails,
+            details: "",
             buttonTitle: Localization.addCouponButton) { _ in }
 
         displayEmptyStateViewController(emptyStateViewController)
@@ -297,12 +297,8 @@ private extension CouponListViewController {
             comment: "Coupon management coupon list screen title")
 
         static let emptyStateMessage = NSLocalizedString(
-            "Everyone loves a deal",
+            "No coupons found",
             comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen.")
-
-        static let emptyStateDetails = NSLocalizedString(
-            "Boost your business by sending customers special offers and discounts.",
-            comment: "The description on the placeholder overlay when there are no coupons on the coupon list screen.")
 
         static let addCouponButton = NSLocalizedString("Add Coupon", comment: "Title for the action button to add coupon on the coupon list screen.")
 

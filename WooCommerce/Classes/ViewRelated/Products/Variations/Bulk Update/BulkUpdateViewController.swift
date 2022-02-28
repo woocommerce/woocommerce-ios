@@ -13,9 +13,9 @@ final class BulkUpdateViewController: UIViewController {
 
     private var subscriptions = Set<AnyCancellable>()
 
-    /// A child view controller that is shown when `displayGhostContent()` is called.
+    /// A second tableview used to display the placeholder content when `displayGhostContent()` is called.
     ///
-    private lazy var ghostTableViewController = GhostTableViewController()
+    private let ghostTableView = UITableView(frame: .zero, style: .plain)
 
     init(viewModel: BulkUpdateViewModel) {
         self.viewModel = viewModel
@@ -30,6 +30,7 @@ final class BulkUpdateViewController: UIViewController {
         super.viewDidLoad()
 
         configureTableView()
+        configureGhostTableView()
         configureViewModel()
     }
 
@@ -43,7 +44,7 @@ final class BulkUpdateViewController: UIViewController {
             // `.notStarted` is the initial state of the VM
             // and transition to this state is not possible
             case .notStarted:
-                ()
+                return
             case .syncing:
                 self.displayGhostContent()
             case .synced, .error:
@@ -52,6 +53,19 @@ final class BulkUpdateViewController: UIViewController {
         }.store(in: &subscriptions)
 
         viewModel.activate()
+    }
+
+    /// Configures the ghost view: registers Nibs and table view settings
+    ///
+    private func configureGhostTableView() {
+        ghostTableView.registerNib(for: ValueOneTableViewCell.self)
+        ghostTableView.translatesAutoresizingMaskIntoConstraints = false
+        ghostTableView.backgroundColor = .listBackground
+        ghostTableView.isScrollEnabled = false
+        ghostTableView.isHidden = true
+
+        view.addSubview(ghostTableView)
+        view.pinSubviewToAllEdges(ghostTableView)
     }
 
     /// Configures the table view: registers Nibs & setup datasource / delegate
@@ -65,6 +79,23 @@ final class BulkUpdateViewController: UIViewController {
 
         tableView.dataSource = self
         tableView.delegate = self
+    }
+
+    /// Renders the Placeholder content.
+    ///
+    private func displayGhostContent() {
+        let options = GhostOptions(reuseIdentifier: ValueOneTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
+        ghostTableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
+        ghostTableView.startGhostAnimation()
+        ghostTableView.isHidden = false
+    }
+
+    /// Hides the Placeholder content.
+    ///
+    private func removeGhostContent() {
+        ghostTableView.isHidden = true
+        ghostTableView.stopGhostAnimation()
+        ghostTableView.removeGhostContent()
     }
 
     private func registerTableViewHeaderSections() {
@@ -162,75 +193,4 @@ extension BulkUpdateViewController {
 private struct Constants {
     static let sectionHeight = CGFloat(44)
     static let placeholderRowsPerSection = [1]
-}
-
-private extension BulkUpdateViewController {
-    /// Renders the Placeholder Content.
-    ///
-    func displayGhostContent() {
-        guard let ghostView = ghostTableViewController.view else {
-            return
-        }
-
-        ghostView.translatesAutoresizingMaskIntoConstraints = false
-        addChild(ghostTableViewController)
-        view.addSubview(ghostView)
-        view.pinSubviewToAllEdges(ghostView)
-        ghostTableViewController.didMove(toParent: self)
-    }
-
-    /// Removes the Placeholder Content.
-    ///
-    func removeGhostContent() {
-        guard let ghostView = ghostTableViewController.view else {
-            return
-        }
-
-        ghostTableViewController.willMove(toParent: nil)
-        ghostView.removeFromSuperview()
-        ghostTableViewController.removeFromParent()
-    }
-
-    /// A  controller that is shown when `displayGhostContent()` is called. Added as a child view controller.
-    ///
-    final class GhostTableViewController: UITableViewController {
-
-        init() {
-            super.init(style: .plain)
-        }
-
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-
-        override func viewDidLoad() {
-            super.viewDidLoad()
-
-            tableView.dataSource = nil
-            tableView.delegate = nil
-
-            tableView.backgroundColor = .listBackground
-            tableView.estimatedRowHeight = Constants.sectionHeight
-            tableView.applyFooterViewForHidingExtraRowPlaceholders()
-            tableView.registerNib(for: ValueOneTableViewCell.self)
-        }
-
-        /// Activate the ghost if this view is added to the parent.
-        ///
-        override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(animated)
-
-            let options = GhostOptions(reuseIdentifier: ValueOneTableViewCell.reuseIdentifier,
-                                       rowsPerSection: Constants.placeholderRowsPerSection)
-            tableView.displayGhostContent(options: options,
-                                          style: .wooDefaultGhostStyle)
-        }
-
-        /// Deactivate the ghost if this view is removed from the parent.
-        ///
-        override func viewWillDisappear(_ animated: Bool) {
-            super.viewWillDisappear(animated)
-            tableView.removeGhostContent()
-        }
-    }
 }

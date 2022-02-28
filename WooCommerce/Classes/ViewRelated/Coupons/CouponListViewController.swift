@@ -85,6 +85,16 @@ final class CouponListViewController: UIViewController {
             }
             .store(in: &subscriptions)
 
+        viewModel.$couponViewModels
+            .map { viewModels -> Bool in
+                viewModels.isNotEmpty
+            }
+            .removeDuplicates()
+            .sink { [weak self] hasData in
+                self?.configureNavigationBarItems(hasCoupons: hasData)
+            }
+            .store(in: &subscriptions)
+
         // Call this after the state subscription for extra safety
         viewModel.viewDidLoad()
     }
@@ -148,7 +158,10 @@ extension CouponListViewController: UITableViewDelegate {
 private extension CouponListViewController {
     func configureNavigation() {
         title = Localization.title
-        navigationItem.rightBarButtonItem = searchBarButtonItem
+    }
+
+    func configureNavigationBarItems(hasCoupons: Bool) {
+        navigationItem.rightBarButtonItems = hasCoupons ? [searchBarButtonItem] : []
     }
 
     func configureTableView() {

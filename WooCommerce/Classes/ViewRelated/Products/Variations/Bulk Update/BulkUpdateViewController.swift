@@ -56,7 +56,7 @@ final class BulkUpdateViewController: UIViewController {
 
     /// Configures the table view: registers Nibs & setup datasource / delegate
     ///
-    func configureTableView() {
+    private func configureTableView() {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
 
@@ -67,18 +67,18 @@ final class BulkUpdateViewController: UIViewController {
         tableView.delegate = self
     }
 
-    func registerTableViewHeaderSections() {
+    private func registerTableViewHeaderSections() {
         let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
         tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
     }
 
-    func registerTableViewCells() {
+    private func registerTableViewCells() {
         for row in Row.allCases {
             tableView.registerNib(for: row.type)
         }
     }
 
-    var sections: [Section] {
+    private var sections: [Section] {
         return viewModel.sections
     }
 }
@@ -167,7 +167,7 @@ private struct Constants {
 }
 
 private extension BulkUpdateViewController {
-    /// Renders Placeholder Content.
+    /// Renders the Placeholder Content.
     ///
     func displayGhostContent() {
         guard let ghostView = ghostTableViewController.view else {

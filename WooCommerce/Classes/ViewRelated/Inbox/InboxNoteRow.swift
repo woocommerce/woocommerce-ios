@@ -21,17 +21,11 @@ struct InboxNoteRow: View {
                 VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
 
 
-                    // Title Unread (unactioned)
+                    // Title with status read or unread.
                     Text(viewModel.title)
-                        .headlineStyle()
+                        .if(viewModel.isRead) { $0.bodyStyle() }
+                        .if(!viewModel.isRead) { $0.headlineStyle() }
                         .fixedSize(horizontal: false, vertical: true)
-                        .renderedIf(!viewModel.isRead)
-
-                    // Title Read (actioned)
-                    Text(viewModel.title)
-                        .bodyStyle()
-                        .fixedSize(horizontal: false, vertical: true)
-                        .renderedIf(viewModel.isRead)
 
                     // Content.
                     // Showing `AttributedText` in placeholder state results in animated height changes, thus a `Text` is shown instead.

@@ -173,7 +173,7 @@ def localize(paths, language):
 ## Main
 ##
 if __name__ == '__main__':
-    paths = ['WooCommerce', 'Pods/WordPress*', 'Storage/Storage', 'Networking/Networking']
+    paths = ['WooCommerce', 'Pods/WordPress*', 'Storage/Storage', 'Networking/Networking', 'Hardware/Hardware']
     language = 'WooCommerce/Resources/en.lproj'
 
     localize(paths, language)

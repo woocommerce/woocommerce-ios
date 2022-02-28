@@ -299,8 +299,6 @@ private extension CouponListViewController {
             "No coupons found",
             comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen.")
 
-        static let addCouponButton = NSLocalizedString("Add Coupon", comment: "Title for the action button to add coupon on the coupon list screen.")
-
         static let accessibilityLabelSearchCoupons = NSLocalizedString("Search coupons", comment: "Accessibility label for the Search Coupons button")
         static let accessibilityHintSearchCoupons = NSLocalizedString(
             "Retrieves a list of coupons that contain a given keyword.",

@@ -213,7 +213,8 @@ private extension CouponListViewController {
         let actions = [giveFeedbackAction, dismissAction]
         let viewModel = TopBannerViewModel(title: Localization.feedbackBannerTitle,
                                            infoText: Localization.feedbackBannerContent,
-                                           icon: .megaphoneIcon,
+                                           icon: .speakerIcon,
+                                           iconTintColor: .wooCommercePurple(.shade50),
                                            isExpanded: false,
                                            topButton: .chevron(handler: expandedStateChangeHandler),
                                            actionButtons: actions)

@@ -313,22 +313,20 @@ extension NewOrderViewModel {
     struct CustomerDataViewModel {
         let isDataAvailable: Bool
         let fullName: String?
-        let email: String?
         let billingAddressFormatted: String?
         let shippingAddressFormatted: String?
 
         init(fullName: String? = nil,
-             email: String? = nil,
+             hasEmail: Bool = false,
              hasPhone: Bool = false,
              billingAddressFormatted: String? = nil,
              shippingAddressFormatted: String? = nil) {
             self.isDataAvailable = !fullName.isNilOrEmpty
-                || !email.isNilOrEmpty
+                || hasEmail
                 || hasPhone
                 || !billingAddressFormatted.isNilOrEmpty
                 || !shippingAddressFormatted.isNilOrEmpty
             self.fullName = fullName
-            self.email = email
             self.billingAddressFormatted = billingAddressFormatted
             self.shippingAddressFormatted = shippingAddressFormatted
         }
@@ -337,7 +335,7 @@ extension NewOrderViewModel {
             let availableFullName = billingAddress?.fullName.isNotEmpty == true ? billingAddress?.fullName : shippingAddress?.fullName
 
             self.init(fullName: availableFullName?.isNotEmpty == true ? availableFullName : nil,
-                      email: billingAddress?.hasEmailAddress == true ? billingAddress?.email : nil,
+                      hasEmail: billingAddress?.hasEmailAddress == true,
                       hasPhone: billingAddress?.hasPhoneNumber == true || shippingAddress?.hasPhoneNumber == true,
                       billingAddressFormatted: billingAddress?.fullNameWithCompanyAndAddress,
                       shippingAddressFormatted: shippingAddress?.fullNameWithCompanyAndAddress)

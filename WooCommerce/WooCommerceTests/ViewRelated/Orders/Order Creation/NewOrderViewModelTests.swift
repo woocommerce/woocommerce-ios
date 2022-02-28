@@ -298,7 +298,6 @@ class NewOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(customerDataViewModel.isDataAvailable)
         XCTAssertNil(customerDataViewModel.fullName)
-        XCTAssertNil(customerDataViewModel.email)
         XCTAssertNotNil(customerDataViewModel.billingAddressFormatted)
         XCTAssertNil(customerDataViewModel.shippingAddressFormatted)
     }
@@ -310,7 +309,6 @@ class NewOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(customerDataViewModel.isDataAvailable)
         XCTAssertNil(customerDataViewModel.fullName)
-        XCTAssertNil(customerDataViewModel.email)
         XCTAssertEqual(customerDataViewModel.billingAddressFormatted, "")
         XCTAssertEqual(customerDataViewModel.shippingAddressFormatted, "")
     }
@@ -325,7 +323,6 @@ class NewOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(customerDataViewModel.isDataAvailable)
         XCTAssertNil(customerDataViewModel.fullName)
-        XCTAssertNil(customerDataViewModel.email)
         XCTAssertEqual(customerDataViewModel.billingAddressFormatted, "")
         XCTAssertEqual(customerDataViewModel.shippingAddressFormatted, "")
     }

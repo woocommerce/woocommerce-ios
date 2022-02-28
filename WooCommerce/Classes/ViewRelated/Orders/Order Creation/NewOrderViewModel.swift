@@ -341,6 +341,7 @@ extension NewOrderViewModel {
 
         let shouldShowShippingTotal: Bool
         let shippingTotal: String
+        let shippingMethodTitle: String
 
         let shouldShowFees: Bool
         let feesBaseAmountForPercentage: Decimal
@@ -351,6 +352,7 @@ extension NewOrderViewModel {
         let isLoading: Bool
 
         let shippingLineViewModel: ShippingLineDetailsViewModel
+        let feeLineViewModel: FeeLineDetailsViewModel
 
         init(itemsTotal: String = "",
              shouldShowShippingTotal: Bool = false,
@@ -362,10 +364,12 @@ extension NewOrderViewModel {
              orderTotal: String = "",
              isLoading: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
+             saveFeeLineClosure: @escaping (OrderFeeLine?) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? ""
             self.shouldShowShippingTotal = shouldShowShippingTotal
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? ""
+            self.shippingMethodTitle = shippingMethodTitle
             self.shouldShowFees = shouldShowFees
             self.feesBaseAmountForPercentage = feesBaseAmountForPercentage
             self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? ""
@@ -375,6 +379,10 @@ extension NewOrderViewModel {
                                                                       initialMethodTitle: shippingMethodTitle,
                                                                       shippingTotal: self.shippingTotal,
                                                                       didSelectSave: saveShippingLineClosure)
+            self.feeLineViewModel = FeeLineDetailsViewModel(isExistingFeeLine: shouldShowFees,
+                                                            baseAmountForPercentage: feesBaseAmountForPercentage,
+                                                            feesTotal: self.feesTotal,
+                                                            didSelectSave: saveFeeLineClosure)
         }
     }
 }
@@ -502,6 +510,7 @@ private extension NewOrderViewModel {
                                             orderTotal: orderTotal.stringValue,
                                             isLoading: isDataSyncing,
                                             saveShippingLineClosure: self.saveShippingLine,
+                                            saveFeeLineClosure: self.saveFeeLine,
                                             currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)

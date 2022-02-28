@@ -7,8 +7,6 @@ struct OrderPaymentSection: View {
     /// View model to drive the view content
     let viewModel: NewOrderViewModel.PaymentDataViewModel
 
-    let saveFeeLineClosure: (OrderFeeLine?) -> Void
-
     /// Indicates if the shipping line details screen should be shown or not.
     ///
     @State private var shouldShowShippingLineDetails: Bool = false
@@ -45,9 +43,7 @@ struct OrderPaymentSection: View {
                     }
                 feesRow
                     .sheet(isPresented: $shouldShowFeeLineDetails) {
-                        FeeLineDetails(viewModel: .init(inputData: viewModel, didSelectSave: { newFeeLine in
-                            saveFeeLineClosure(newFeeLine)
-                        }))
+                        FeeLineDetails(viewModel: viewModel.feeLineViewModel)
                     }
             }
 
@@ -111,7 +107,7 @@ struct OrderPaymentSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = NewOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00", orderTotal: "20.00")
 
-        OrderPaymentSection(viewModel: viewModel, saveFeeLineClosure: { _ in })
+        OrderPaymentSection(viewModel: viewModel)
             .previewLayout(.sizeThatFits)
     }
 }

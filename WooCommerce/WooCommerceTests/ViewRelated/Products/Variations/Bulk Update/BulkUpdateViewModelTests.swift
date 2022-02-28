@@ -37,7 +37,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
 
         // Then
         let sectionTitle = try XCTUnwrap(viewModel.sections.first?.title)
-        XCTAssertEqual(sectionTitle, Localization.priceTitle)
+        XCTAssertTrue(sectionTitle.isNotEmpty)
     }
 
     func test_all_products_are_synchronized_on_the_viewload_event() throws {
@@ -123,11 +123,5 @@ final class BulkUpdateViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.syncState, .synced)
-    }
-}
-
-private extension BulkUpdateViewModelTests {
-    private enum Localization {
-        static let priceTitle = NSLocalizedString("Price", comment: "The title for the price settings section in the product variation bulk update screen")
     }
 }

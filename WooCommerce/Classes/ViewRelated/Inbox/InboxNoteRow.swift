@@ -19,9 +19,12 @@ struct InboxNoteRow: View {
                     .foregroundColor(Color(Constants.dateTextColor))
 
                 VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                    // Title.
+
+
+                    // Title with status read or unread.
                     Text(viewModel.title)
-                        .bodyStyle()
+                        .if(viewModel.isRead) { $0.bodyStyle() }
+                        .if(!viewModel.isRead) { $0.headlineStyle() }
                         .fixedSize(horizontal: false, vertical: true)
 
                     // Content.
@@ -169,7 +172,8 @@ struct InboxNoteRow_Previews: PreviewProvider {
                                                          attributedContent: .init(),
                                                          actions: [],
                                                          siteID: 1,
-                                                         isPlaceholder: true)
+                                                         isPlaceholder: true,
+                                                         isRead: true)
         Group {
             VStack {
                 InboxNoteRow(viewModel: .init(note: note.copy(type: "marketing", dateCreated: today), today: today))

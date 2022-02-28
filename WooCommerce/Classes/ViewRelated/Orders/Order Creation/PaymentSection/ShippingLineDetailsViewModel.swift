@@ -62,7 +62,9 @@ class ShippingLineDetailsViewModel: ObservableObject {
         return !(amountUpdated || methodTitleUpdated)
     }
 
-    init(inputData: NewOrderViewModel.PaymentDataViewModel,
+    init(isExistingShippingLine: Bool,
+         initialMethodTitle: String,
+         shippingTotal: String,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          didSelectSave: @escaping ((ShippingLine?) -> Void)) {
@@ -71,12 +73,12 @@ class ShippingLineDetailsViewModel: ObservableObject {
         self.currencyPosition = storeCurrencySettings.currencyPosition
         self.amountPlaceholder = priceFieldFormatter.formatAmount("0")
 
-        self.isExistingShippingLine = inputData.shouldShowShippingTotal
-        self.initialMethodTitle = inputData.shippingMethodTitle
+        self.isExistingShippingLine = isExistingShippingLine
+        self.initialMethodTitle = initialMethodTitle
         self.methodTitle = initialMethodTitle
 
        let currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
-        if let initialAmount = currencyFormatter.convertToDecimal(from: inputData.shippingTotal) {
+        if let initialAmount = currencyFormatter.convertToDecimal(from: shippingTotal) {
             self.initialAmount = initialAmount as Decimal
         } else {
             self.initialAmount = .zero

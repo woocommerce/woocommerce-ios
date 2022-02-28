@@ -341,7 +341,6 @@ extension NewOrderViewModel {
 
         let shouldShowShippingTotal: Bool
         let shippingTotal: String
-        let shippingMethodTitle: String
 
         let shouldShowFees: Bool
         let feesBaseAmountForPercentage: Decimal
@@ -350,6 +349,8 @@ extension NewOrderViewModel {
         /// Whether payment data is being reloaded (during remote sync)
         ///
         let isLoading: Bool
+
+        let shippingLineViewModel: ShippingLineDetailsViewModel
 
         init(itemsTotal: String = "",
              shouldShowShippingTotal: Bool = false,
@@ -360,16 +361,20 @@ extension NewOrderViewModel {
              feesTotal: String = "",
              orderTotal: String = "",
              isLoading: Bool = false,
+             saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? ""
             self.shouldShowShippingTotal = shouldShowShippingTotal
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? ""
-            self.shippingMethodTitle = shippingMethodTitle
             self.shouldShowFees = shouldShowFees
             self.feesBaseAmountForPercentage = feesBaseAmountForPercentage
             self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? ""
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? ""
             self.isLoading = isLoading
+            self.shippingLineViewModel = ShippingLineDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
+                                                                      initialMethodTitle: shippingMethodTitle,
+                                                                      shippingTotal: self.shippingTotal,
+                                                                      didSelectSave: saveShippingLineClosure)
         }
     }
 }
@@ -496,6 +501,7 @@ private extension NewOrderViewModel {
                                             feesTotal: feesTotal.stringValue,
                                             orderTotal: orderTotal.stringValue,
                                             isLoading: isDataSyncing,
+                                            saveShippingLineClosure: self.saveShippingLine,
                                             currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)

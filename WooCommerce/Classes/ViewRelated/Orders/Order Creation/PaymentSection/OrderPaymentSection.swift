@@ -7,8 +7,6 @@ struct OrderPaymentSection: View {
     /// View model to drive the view content
     let viewModel: NewOrderViewModel.PaymentDataViewModel
 
-    /// Closure to create/update the shipping line object
-    let saveShippingLineClosure: (ShippingLine?) -> Void
     let saveFeeLineClosure: (OrderFeeLine?) -> Void
 
     /// Indicates if the shipping line details screen should be shown or not.
@@ -43,9 +41,7 @@ struct OrderPaymentSection: View {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) {
                 shippingRow
                     .sheet(isPresented: $shouldShowShippingLineDetails) {
-                        ShippingLineDetails(viewModel: .init(inputData: viewModel, didSelectSave: { newShippingLine in
-                            saveShippingLineClosure(newShippingLine)
-                        }))
+                        ShippingLineDetails(viewModel: viewModel.shippingLineViewModel)
                     }
                 feesRow
                     .sheet(isPresented: $shouldShowFeeLineDetails) {
@@ -115,7 +111,7 @@ struct OrderPaymentSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = NewOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00", orderTotal: "20.00")
 
-        OrderPaymentSection(viewModel: viewModel, saveShippingLineClosure: { _ in }, saveFeeLineClosure: { _ in })
+        OrderPaymentSection(viewModel: viewModel, saveFeeLineClosure: { _ in })
             .previewLayout(.sizeThatFits)
     }
 }

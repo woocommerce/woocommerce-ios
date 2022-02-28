@@ -3,10 +3,12 @@ import SwiftUI
 import Yosemite
 
 final class InPersonPaymentsMenuViewController: UITableViewController {
+    private let plugin: CardPresentPaymentsPlugins
     private var rows = [Row]()
     private let configurationLoader: CardPresentConfigurationLoader
 
-    init() {
+    init(plugin: CardPresentPaymentsPlugins) {
+        self.plugin = plugin
         configurationLoader = CardPresentConfigurationLoader()
         super.init(style: .grouped)
     }
@@ -130,7 +132,7 @@ private extension InPersonPaymentsMenuViewController {
 //
 extension InPersonPaymentsMenuViewController {
     func orderCardReaderWasPressed() {
-        WebviewHelper.launch(configurationLoader.configuration.purchaseCardReaderUrl, with: self)
+        WebviewHelper.launch(configurationLoader.configuration.purchaseCardReaderUrl(for: plugin), with: self)
     }
 
     func manageCardReaderWasPressed() {
@@ -257,8 +259,10 @@ private enum Constants {
 /// SwiftUI wrapper for CardReaderSettingsPresentingViewController
 ///
 struct InPersonPaymentsMenu: UIViewControllerRepresentable {
+    let plugin: CardPresentPaymentsPlugins
+
     func makeUIViewController(context: Context) -> some UIViewController {
-        InPersonPaymentsMenuViewController()
+        InPersonPaymentsMenuViewController(plugin: plugin)
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {

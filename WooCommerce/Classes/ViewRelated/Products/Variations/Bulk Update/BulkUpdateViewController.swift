@@ -140,8 +140,6 @@ private extension BulkUpdateViewController {
     }
 }
 
-// MARK: - Private Types
-//
 extension BulkUpdateViewController {
     struct Section: Equatable {
         let title: String?

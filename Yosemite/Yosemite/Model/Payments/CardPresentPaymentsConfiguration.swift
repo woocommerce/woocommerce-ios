@@ -67,11 +67,12 @@ public struct CardPresentPaymentsConfiguration {
             return Constants.stripeReaderPurchaseUrl
         }
 
-        if !stripeTerminalforCanadaEnabled {
-            return Constants.purchaseM2ReaderUrl
-        }
+        // TODO when https://woocommerce.com/products/hardware/US and
+        // https://woocommerce.com/products/hardware/CA are live, return the
+        // following instead
+        // URL(string: Constants.purchaseReaderForCountryUrlBase + self.countryCode) ?? Constants.fallbackInPersonPaymentsUrl
 
-        return URL(string: Constants.purchaseReaderForCountryUrlBase + self.countryCode) ?? Constants.fallbackInPersonPaymentsUrl
+        return Constants.purchaseM2ReaderUrl
     }
 }
 

@@ -10,7 +10,7 @@ class CardPresentConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.currencies, [Constants.Currency.usd])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
-        XCTAssertEqual(configuration.purchaseCardReaderUrl(for: .wcPay).absoluteString, Constants.PurchaseURL.wcpayUS)
+        XCTAssertEqual(configuration.purchaseCardReaderUrl(for: .wcPay).absoluteString, Constants.PurchaseURL.wcpay)
         XCTAssertEqual(configuration.purchaseCardReaderUrl(for: .stripe).absoluteString, Constants.PurchaseURL.stripe)
     }
 
@@ -31,7 +31,7 @@ class CardPresentConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.currencies, [Constants.Currency.cad])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent, .interacPresent])
-        XCTAssertEqual(configuration.purchaseCardReaderUrl(for: .wcPay).absoluteString, Constants.PurchaseURL.wcpayCA)
+        XCTAssertEqual(configuration.purchaseCardReaderUrl(for: .wcPay).absoluteString, Constants.PurchaseURL.wcpay)
         XCTAssertEqual(configuration.purchaseCardReaderUrl(for: .stripe).absoluteString, Constants.PurchaseURL.stripe)
     }
 

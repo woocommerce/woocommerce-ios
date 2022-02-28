@@ -5,6 +5,9 @@ import protocol Storage.StorageManagerType
 /// View Model logic for the Bulk Variations Update
 final class BulkUpdateViewModel {
 
+    typealias Section = BulkUpdateViewController.Section
+    typealias Row = BulkUpdateViewController.Row
+
     /// Represents possible states for syncing product variations.
     enum SyncState: Equatable {
         case syncing
@@ -20,6 +23,12 @@ final class BulkUpdateViewModel {
 
     /// The state of synching all variations
     @Published private(set) var syncState: SyncState
+
+    var sections: [Section] {
+        let priceSection = Section(title: Localization.priceTitle, rows: [])
+
+        return [priceSection]
+    }
 
     init(siteID: Int64,
          productID: Int64,
@@ -64,6 +73,12 @@ final class BulkUpdateViewModel {
             }
 
         storesManager.dispatch(action)
+    }
+}
+
+extension BulkUpdateViewModel {
+    private enum Localization {
+        static let priceTitle = NSLocalizedString("Price", comment: "The title for the price settings section in the product variation bulk update screen")
     }
 }
 

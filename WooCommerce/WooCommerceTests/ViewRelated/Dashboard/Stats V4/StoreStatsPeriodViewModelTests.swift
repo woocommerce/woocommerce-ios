@@ -1,6 +1,7 @@
 import Codegen
 import Combine
-import Storage
+import protocol Storage.StorageManagerType
+import protocol Storage.StorageType
 import XCTest
 import Yosemite
 @testable import WooCommerce
@@ -425,18 +426,18 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["2022", "January 2022"])
     }
 
-    // MARK: - `reloadChartAnimated`
+    // MARK: - `orderStatsIntervals`
 
-    func test_reloadChartAnimated_is_emitted_once_after_order_stats_are_updated() {
+    func test_orderStatsIntervals_is_emitted_once_after_order_stats_are_updated() {
         // Given
         let timeRange: StatsTimeRangeV4 = .today
         let viewModel = createViewModel(timeRange: timeRange)
-        var reloadChartAnimatedValues: [Bool] = []
-        viewModel.reloadChartAnimated.sink { isAnimated in
-            reloadChartAnimatedValues.append(isAnimated)
+        var orderStatsIntervalsValues: [[OrderStatsV4Interval]] = []
+        viewModel.orderStatsIntervals.sink { orderStatsIntervals in
+            orderStatsIntervalsValues.append(orderStatsIntervals)
         }.store(in: &cancellables)
 
-        XCTAssertEqual(reloadChartAnimatedValues, [])
+        XCTAssertEqual(orderStatsIntervalsValues, [[]])
 
         // When
         let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(siteID: siteID, items: [
@@ -444,23 +445,24 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         ])
         insertSiteVisitStats(siteVisitStats, timeRange: timeRange)
 
-        // `reloadChartAnimated` is not emitted after visitor stats are updated.
-        XCTAssertEqual(reloadChartAnimatedValues, [])
+        // `orderStatsIntervals` is not emitted after visitor stats are updated.
+        XCTAssertEqual(orderStatsIntervalsValues, [[]])
 
         let orderStats = OrderStatsV4(siteID: siteID,
                                       granularity: timeRange.intervalGranularity,
                                       totals: .fake().copy(totalOrders: 3, grossRevenue: 62.7),
                                       intervals: [.fake().copy(dateStart: "2022-01-03 01:00:00",
-                                                               dateEnd: "2022-01-03 01:59:59")])
+                                                               dateEnd: "2022-01-03 01:59:59",
+                                                               subtotals: .fake().copy(totalProducts: 1))])
         insertOrderStats(orderStats, timeRange: timeRange)
 
-        // `reloadChartAnimated` is emitted after order stats are updated.
-        XCTAssertEqual(reloadChartAnimatedValues, [false])
+        // `orderStatsIntervals` is emitted after order stats are updated.
+        assertEqual([[], orderStats.intervals], orderStatsIntervalsValues)
 
         viewModel.selectedIntervalIndex = 0
 
-        // `reloadChartAnimated` is not emitted again after visitor stats are updated.
-        XCTAssertEqual(reloadChartAnimatedValues, [false])
+        // `orderStatsIntervals` is not emitted again after visitor stats are updated.
+        assertEqual([[], orderStats.intervals], orderStatsIntervalsValues)
     }
 
     // MARK: - `visitorStatsViewState`
@@ -859,13 +861,13 @@ private extension StoreStatsPeriodViewModelTests {
     }
 
     func insertOrderStats(_ readonlyOrderStats: Yosemite.OrderStatsV4, timeRange: StatsTimeRangeV4) {
-        let storageOrderStats = storage.insertNewObject(ofType: Storage.OrderStatsV4.self)
+        let storageOrderStats = storage.insertNewObject(ofType: StorageOrderStatsV4.self)
         storageOrderStats.timeRange = timeRange.rawValue
-        storageOrderStats.totals = storage.insertNewObject(ofType: Storage.OrderStatsV4Totals.self)
+        storageOrderStats.totals = storage.insertNewObject(ofType: StorageOrderStatsV4Totals.self)
         storageOrderStats.update(with: readonlyOrderStats)
         readonlyOrderStats.intervals.forEach { readOnlyInterval in
-            let newStorageInterval = storage.insertNewObject(ofType: Storage.OrderStatsV4Interval.self)
-            newStorageInterval.subtotals = storage.insertNewObject(ofType: Storage.OrderStatsV4Totals.self)
+            let newStorageInterval = storage.insertNewObject(ofType: StorageOrderStatsV4Interval.self)
+            newStorageInterval.subtotals = storage.insertNewObject(ofType: StorageOrderStatsV4Totals.self)
             newStorageInterval.update(with: readOnlyInterval)
             storageOrderStats.addToIntervals(newStorageInterval)
         }
@@ -873,11 +875,11 @@ private extension StoreStatsPeriodViewModelTests {
     }
 
     func insertSiteVisitStats(_ readonlySiteVisitStats: Yosemite.SiteVisitStats, timeRange: StatsTimeRangeV4) {
-        let storageSiteVisitStats = storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
+        let storageSiteVisitStats = storage.insertNewObject(ofType: StorageSiteVisitStats.self)
         storageSiteVisitStats.timeRange = timeRange.rawValue
         storageSiteVisitStats.update(with: readonlySiteVisitStats)
         readonlySiteVisitStats.items?.forEach { readOnlyItem in
-            let newStorageItem = storage.insertNewObject(ofType: Storage.SiteVisitStatsItem.self)
+            let newStorageItem = storage.insertNewObject(ofType: StorageSiteVisitStatsItem.self)
             newStorageItem.update(with: readOnlyItem)
             storageSiteVisitStats.addToItems(newStorageItem)
         }

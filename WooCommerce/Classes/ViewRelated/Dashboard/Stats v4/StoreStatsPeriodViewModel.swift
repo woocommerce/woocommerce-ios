@@ -8,9 +8,8 @@ final class StoreStatsPeriodViewModel {
     // MARK: - Public data & observables
 
     /// Used for chart updates.
-    var orderStatsIntervals: [OrderStatsV4Interval] {
-        orderStatsData.intervals
-    }
+    private(set) lazy var orderStatsIntervals: AnyPublisher<[OrderStatsV4Interval], Never> =
+    $orderStatsData.map { $0.intervals }.eraseToAnyPublisher()
 
     /// Updated externally from user interactions with the chart.
     @Published var selectedIntervalIndex: Int? = nil
@@ -62,11 +61,6 @@ final class StoreStatsPeriodViewModel {
         }
         .eraseToAnyPublisher()
 
-    /// Emits a boolean to reload chart, and the boolean indicates whether the reload should be animated.
-    var reloadChartAnimated: AnyPublisher<Bool, Never> {
-        shouldReloadChartAnimated.eraseToAnyPublisher()
-    }
-
     /// Emits the view state for visitor stats based on the visitor stats mode and the selected time interval.
     private(set) lazy var visitorStatsViewState: AnyPublisher<StoreStatsDataOrRedactedView.State, Never> =
     Publishers.CombineLatest($siteVisitStatsMode.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
@@ -109,8 +103,6 @@ final class StoreStatsPeriodViewModel {
 
     typealias OrderStatsData = (stats: OrderStatsV4?, intervals: [OrderStatsV4Interval])
     @Published private var orderStatsData: OrderStatsData = (nil, [])
-
-    private let shouldReloadChartAnimated: PassthroughSubject<Bool, Never> = .init()
 
     // MARK: - Results controllers
 
@@ -367,10 +359,6 @@ private extension StoreStatsPeriodViewModel {
         let orderStats = orderStatsResultsController.fetchedObjects.first
         let intervals = orderStatsIntervals(from: orderStats)
         orderStatsData = (stats: orderStats, intervals: intervals)
-
-        // Don't animate the chart here - this helps avoid a "double animation" effect if a
-        // small number of values change (the chart WILL be updated correctly however)
-        shouldReloadChartAnimated.send(false)
     }
 }
 

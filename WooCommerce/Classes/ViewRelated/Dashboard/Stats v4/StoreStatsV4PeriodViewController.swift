@@ -124,7 +124,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     init(siteID: Int64,
          timeRange: StatsTimeRangeV4,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         currencyCode: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
@@ -132,7 +132,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
                                                    timeRange: timeRange,
                                                    siteTimezone: siteTimezone,
                                                    currencyFormatter: currencyFormatter,
-                                                   currencyCode: currencyCode)
+                                                   currencySettings: currencySettings)
         self.usageTracksEventEmitter = usageTracksEventEmitter
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }

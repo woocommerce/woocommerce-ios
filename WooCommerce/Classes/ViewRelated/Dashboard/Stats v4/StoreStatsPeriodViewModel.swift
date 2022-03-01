@@ -27,11 +27,10 @@ final class StoreStatsPeriodViewModel {
         .removeDuplicates()
         .eraseToAnyPublisher()
 
-    /// Emits revenue stats text values based on order stats and selected time interval.
-    private(set) lazy var revenueStatsText: AnyPublisher<String, Never> =
-    Publishers.CombineLatest($orderStatsData.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-        .compactMap { [weak self] orderStatsData, selectedIntervalIndex in
-            self?.createRevenueStats(orderStatsData: orderStatsData, selectedIntervalIndex: selectedIntervalIndex)
+    /// Emits revenue stats text values based on order stats, selected time interval, and currency code.
+    private(set) lazy var revenueStatsText: AnyPublisher<String, Never> = $orderStatsData.combineLatest($selectedIntervalIndex, currencySettings.$currencyCode)
+        .compactMap { [weak self] orderStatsData, selectedIntervalIndex, currencyCode in
+            self?.createRevenueStats(orderStatsData: orderStatsData, selectedIntervalIndex: selectedIntervalIndex, currencyCode: currencyCode.rawValue)
         }
         .removeDuplicates()
         .eraseToAnyPublisher()
@@ -138,8 +137,8 @@ final class StoreStatsPeriodViewModel {
     private let siteID: Int64
     private let timeRange: StatsTimeRangeV4
     private let currencyFormatter: CurrencyFormatter
-    private let currencyCode: String
     private let storageManager: StorageManagerType
+    private let currencySettings: CurrencySettings
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -147,13 +146,13 @@ final class StoreStatsPeriodViewModel {
          timeRange: StatsTimeRangeV4,
          siteTimezone: TimeZone,
          currencyFormatter: CurrencyFormatter,
-         currencyCode: String,
+         currencySettings: CurrencySettings,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.timeRange = timeRange
         self.siteTimezone = siteTimezone
         self.currencyFormatter = currencyFormatter
-        self.currencyCode = currencyCode
+        self.currencySettings = currencySettings
         self.storageManager = storageManager
 
         // Make sure the ResultsControllers are ready to observe changes to the data even before the view loads
@@ -194,7 +193,7 @@ private extension StoreStatsPeriodViewModel {
         }
     }
 
-    func createRevenueStats(orderStatsData: OrderStatsData, selectedIntervalIndex: Int?) -> String {
+    func createRevenueStats(orderStatsData: OrderStatsData, selectedIntervalIndex: Int?, currencyCode: String) -> String {
         if let revenue = revenue(at: selectedIntervalIndex, orderStats: orderStatsData.stats, orderStatsIntervals: orderStatsData.intervals) {
             // If revenue is an integer, no decimal points are shown.
             let numberOfDecimals: Int? = revenue.isInteger ? 0: nil

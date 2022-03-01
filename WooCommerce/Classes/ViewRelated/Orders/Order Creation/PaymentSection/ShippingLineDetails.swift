@@ -123,11 +123,10 @@ private extension ShippingLineDetails {
 
 struct ShippingLineDetails_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = NewOrderViewModel.PaymentDataViewModel(itemsTotal: "5",
-                                                               shouldShowShippingTotal: true,
-                                                               shippingTotal: "10",
-                                                               shippingMethodTitle: "Shipping",
-                                                               orderTotal: "15")
-        ShippingLineDetails(viewModel: .init(inputData: viewModel, didSelectSave: { _ in }))
+        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: true,
+                                                     initialMethodTitle: "Shipping",
+                                                     shippingTotal: "10",
+                                                     didSelectSave: { _ in })
+        ShippingLineDetails(viewModel: viewModel)
     }
 }

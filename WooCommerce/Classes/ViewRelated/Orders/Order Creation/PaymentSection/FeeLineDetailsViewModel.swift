@@ -100,7 +100,9 @@ class FeeLineDetailsViewModel: ObservableObject {
 
     @Published var feeType: FeeType = .fixed
 
-    init(inputData: NewOrderViewModel.PaymentDataViewModel,
+    init(isExistingFeeLine: Bool,
+         baseAmountForPercentage: Decimal,
+         feesTotal: String,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          didSelectSave: @escaping ((OrderFeeLine?) -> Void)) {
@@ -111,10 +113,10 @@ class FeeLineDetailsViewModel: ObservableObject {
         self.currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
         self.amountPlaceholder = priceFieldFormatter.formatAmount("0")
 
-        self.isExistingFeeLine = inputData.shouldShowFees
-        self.baseAmountForPercentage = inputData.feesBaseAmountForPercentage
+        self.isExistingFeeLine = isExistingFeeLine
+        self.baseAmountForPercentage = baseAmountForPercentage
 
-        if let initialAmount = currencyFormatter.convertToDecimal(from: inputData.feesTotal) {
+        if let initialAmount = currencyFormatter.convertToDecimal(from: feesTotal) {
             self.initialAmount = initialAmount as Decimal
         } else {
             self.initialAmount = .zero

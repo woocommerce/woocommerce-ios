@@ -168,9 +168,10 @@ private extension FeeLineDetails {
 
 struct FeeLineDetails_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = NewOrderViewModel.PaymentDataViewModel(shouldShowFees: true,
-                                                               feesBaseAmountForPercentage: 200,
-                                                               feesTotal: "10")
-        FeeLineDetails(viewModel: .init(inputData: viewModel, didSelectSave: { _ in }))
+        let viewModel = FeeLineDetailsViewModel(isExistingFeeLine: true,
+                                                baseAmountForPercentage: 200,
+                                                feesTotal: "10",
+                                                didSelectSave: { _ in })
+        FeeLineDetails(viewModel: viewModel)
     }
 }

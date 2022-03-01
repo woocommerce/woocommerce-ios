@@ -13,7 +13,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
     private let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US.
-    private let currencyCode = CurrencySettings.CurrencyCode.USD.rawValue
+    private let currencySettings = CurrencySettings() // Default is US.
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - For testing observable's emitted values
@@ -829,7 +829,7 @@ private extension StoreStatsPeriodViewModelTests {
                                   timeRange: timeRange,
                                   siteTimezone: defaultSiteTimezone,
                                   currencyFormatter: currencyFormatter,
-                                  currencyCode: currencyCode,
+                                  currencySettings: currencySettings,
                                   storageManager: storageManager)
     }
 

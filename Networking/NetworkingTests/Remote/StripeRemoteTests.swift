@@ -91,6 +91,58 @@ final class StripeRemoteTests: XCTestCase {
         XCTAssertEqual(account.isCardPresentEligible, true)
     }
 
+    /// Verifies that loadAccount properly handles the a response with an empty descriptor.
+    ///
+    func test_loadAccount_properly_returns_account_with_empty_descriptor() throws {
+        // Given
+        let remote = StripeRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary", filename: "stripe-account-complete-empty-descriptor")
+
+        // When
+        let result: Result<StripeAccount, Error> = waitFor { promise in
+            remote.loadAccount(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let account = try result.get()
+        XCTAssertEqual(account.status, .complete)
+        XCTAssertEqual(account.statementDescriptor, "")
+        XCTAssertEqual(account.defaultCurrency, "usd")
+        XCTAssertEqual(account.supportedCurrencies, ["usd"])
+        XCTAssertEqual(account.country, "US")
+        XCTAssertEqual(account.isCardPresentEligible, true)
+    }
+
+    /// Verifies that loadAccount properly handles the a response with a null descriptor.
+    ///
+    func test_loadAccount_properly_returns_account_with_null_descriptor() throws {
+        // Given
+        let remote = StripeRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary", filename: "stripe-account-complete-null-descriptor")
+
+        // When
+        let result: Result<StripeAccount, Error> = waitFor { promise in
+            remote.loadAccount(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let account = try result.get()
+        XCTAssertEqual(account.status, .complete)
+        XCTAssertEqual(account.statementDescriptor, "")
+        XCTAssertEqual(account.defaultCurrency, "usd")
+        XCTAssertEqual(account.supportedCurrencies, ["usd"])
+        XCTAssertEqual(account.country, "US")
+        XCTAssertEqual(account.isCardPresentEligible, true)
+    }
+
     /// Verifies that loadAccount properly handles the rejected - fraud response
     ///
     func test_loadAccount_properly_handles_rejected_fraud_account() throws {

@@ -15,20 +15,9 @@ class NewOrderViewModelTests: XCTestCase {
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // Then
-        XCTAssertEqual(viewModel.navigationTrailingItem, .none)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .create)
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "pending")
         XCTAssertEqual(viewModel.productRows.count, 0)
-    }
-
-    func test_create_button_is_enabled_when_order_detail_changes_from_default_value() {
-        // Given
-        let viewModel = NewOrderViewModel(siteID: sampleSiteID)
-
-        // When
-        viewModel.updateOrderStatus(newStatus: .processing)
-
-        // Then
-        XCTAssertEqual(viewModel.navigationTrailingItem, .create)
     }
 
     func test_loading_indicator_is_enabled_during_network_request() {
@@ -298,9 +287,33 @@ class NewOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(customerDataViewModel.isDataAvailable)
         XCTAssertNil(customerDataViewModel.fullName)
-        XCTAssertNil(customerDataViewModel.email)
         XCTAssertNotNil(customerDataViewModel.billingAddressFormatted)
         XCTAssertNil(customerDataViewModel.shippingAddressFormatted)
+    }
+
+    func test_customer_data_view_model_is_initialized_correctly_from_empty_input() {
+        // Given
+        let customerDataViewModel = NewOrderViewModel.CustomerDataViewModel(billingAddress: Address.empty, shippingAddress: Address.empty)
+
+        // Then
+        XCTAssertFalse(customerDataViewModel.isDataAvailable)
+        XCTAssertNil(customerDataViewModel.fullName)
+        XCTAssertEqual(customerDataViewModel.billingAddressFormatted, "")
+        XCTAssertEqual(customerDataViewModel.shippingAddressFormatted, "")
+    }
+
+    func test_customer_data_view_model_is_initialized_correctly_with_only_phone() {
+        // Given
+        let addressWithOnlyPhone = Address.fake().copy(phone: "123-456-7890")
+
+        // When
+        let customerDataViewModel = NewOrderViewModel.CustomerDataViewModel(billingAddress: addressWithOnlyPhone, shippingAddress: Address.empty)
+
+        // Then
+        XCTAssertTrue(customerDataViewModel.isDataAvailable)
+        XCTAssertNil(customerDataViewModel.fullName)
+        XCTAssertEqual(customerDataViewModel.billingAddressFormatted, "")
+        XCTAssertEqual(customerDataViewModel.shippingAddressFormatted, "")
     }
 
     func test_payment_data_view_model_is_initialized_with_expected_values() {

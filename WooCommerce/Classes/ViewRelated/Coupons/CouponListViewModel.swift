@@ -36,7 +36,7 @@ final class CouponListViewModel {
 
     /// couponViewModels: ViewModels for the cells representing Coupons
     ///
-    var couponViewModels: [CouponListCellViewModel] = []
+    @Published private(set) var couponViewModels: [CouponListCellViewModel] = []
 
     /// siteID: siteID of the currently active site, used for fetching and storing coupons
     ///

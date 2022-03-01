@@ -1,3 +1,0 @@
-Kami telah sedikit memperbarui tab Toko Saya berdasarkan feedback Anda. Sekarang Anda akan melihat persentase konversi dan 5 (alih-alih 3) produk terlaris.
-
-Banyak permintaan untuk dapat membuat pesanan melalui aplikasi. Dengan senang hati kami sampaikan bahwa kami telah menyiapkan bocoran jika Anda ingin membantu kami mengujinya! Buka pengaturan pada aplikasi, lalu aktifkan fitur eksperimental untuk Pembuatan Pesanan. Sekarang, Anda dapat menambahkan produk, catatan, serta alamat, dan dan akan ada fungsi-fungsi tambahan dalam rilis berikutnya.

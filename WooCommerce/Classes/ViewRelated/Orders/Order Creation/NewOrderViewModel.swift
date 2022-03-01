@@ -13,9 +13,9 @@ final class NewOrderViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
 
     /// Active navigation bar trailing item.
-    /// Defaults to no visible button.
+    /// Defaults to create button.
     ///
-    @Published private(set) var navigationTrailingItem: NavigationItem = .none
+    @Published private(set) var navigationTrailingItem: NavigationItem = .create
 
     /// Tracks if a network request is being performed.
     ///
@@ -192,7 +192,6 @@ final class NewOrderViewModel: ObservableObject {
     func removeItemFromOrder(_ item: OrderItem) {
         guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
         orderSynchronizer.setProduct.send(input)
-        configureProductRowViewModels()
     }
 
     /// Creates a view model for the `ProductRow` corresponding to an order item.
@@ -275,7 +274,6 @@ extension NewOrderViewModel {
     /// Representation of possible navigation bar trailing buttons
     ///
     enum NavigationItem: Equatable {
-        case none
         case create
         case loading
     }
@@ -313,23 +311,30 @@ extension NewOrderViewModel {
     struct CustomerDataViewModel {
         let isDataAvailable: Bool
         let fullName: String?
-        let email: String?
         let billingAddressFormatted: String?
         let shippingAddressFormatted: String?
 
-        init(fullName: String? = nil, email: String? = nil, billingAddressFormatted: String? = nil, shippingAddressFormatted: String? = nil) {
-            self.isDataAvailable = fullName != nil || email != nil || billingAddressFormatted != nil || shippingAddressFormatted != nil
+        init(fullName: String? = nil,
+             hasEmail: Bool = false,
+             hasPhone: Bool = false,
+             billingAddressFormatted: String? = nil,
+             shippingAddressFormatted: String? = nil) {
+            self.isDataAvailable = !fullName.isNilOrEmpty
+                || hasEmail
+                || hasPhone
+                || !billingAddressFormatted.isNilOrEmpty
+                || !shippingAddressFormatted.isNilOrEmpty
             self.fullName = fullName
-            self.email = email
             self.billingAddressFormatted = billingAddressFormatted
             self.shippingAddressFormatted = shippingAddressFormatted
         }
 
         init(billingAddress: Address?, shippingAddress: Address?) {
-            let availableFullName = billingAddress?.fullName ?? shippingAddress?.fullName
+            let availableFullName = billingAddress?.fullName.isNotEmpty == true ? billingAddress?.fullName : shippingAddress?.fullName
 
             self.init(fullName: availableFullName?.isNotEmpty == true ? availableFullName : nil,
-                      email: billingAddress?.hasEmailAddress == true ? billingAddress?.email : nil,
+                      hasEmail: billingAddress?.hasEmailAddress == true,
+                      hasPhone: billingAddress?.hasPhoneNumber == true || shippingAddress?.hasPhoneNumber == true,
                       billingAddressFormatted: billingAddress?.fullNameWithCompanyAndAddress,
                       shippingAddressFormatted: shippingAddress?.fullNameWithCompanyAndAddress)
         }
@@ -387,10 +392,6 @@ private extension NewOrderViewModel {
                     return .loading
                 }
 
-                guard OrderFactory.emptyNewOrder != order else {
-                    return .none
-                }
-
                 return .create
             }
             .assign(to: &$navigationTrailingItem)
@@ -414,7 +415,6 @@ private extension NewOrderViewModel {
     func addProductToOrder(_ product: Product) {
         let input = OrderSyncProductInput(product: .product(product), quantity: 1)
         orderSynchronizer.setProduct.send(input)
-        configureProductRowViewModels()
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
     }
@@ -424,7 +424,6 @@ private extension NewOrderViewModel {
     func addProductVariationToOrder(_ variation: ProductVariation) {
         let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
         orderSynchronizer.setProduct.send(input)
-        configureProductRowViewModels()
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation))
     }
@@ -434,23 +433,14 @@ private extension NewOrderViewModel {
     func configureProductRowViewModels() {
         updateProductsResultsController()
         updateProductVariationsResultsController()
-        productRows = orderSynchronizer.order.items.compactMap { item in
-            guard let productRowViewModel = createProductRowViewModel(for: item, canChangeQuantity: true) else {
-                return nil
+        orderSynchronizer.orderPublisher
+            .map { $0.items }
+            .removeDuplicates()
+            .map { [weak self] items -> [ProductRowViewModel] in
+                guard let self = self else { return [] }
+                return self.createProductRows(items: items)
             }
-
-            // Observe changes to the product quantity
-            productRowViewModel.$quantity
-                .sink { [weak self] newQuantity in
-                    guard let self = self, let newInput = self.createUpdateProductInput(item: item, quantity: newQuantity) else {
-                        return
-                    }
-                    self.orderSynchronizer.setProduct.send(newInput)
-                }
-                .store(in: &cancellables)
-
-            return productRowViewModel
-        }
+            .assign(to: &$productRows)
     }
 
     /// Updates customer data viewmodel based on order addresses.
@@ -606,6 +596,29 @@ private extension NewOrderViewModel {
 
         return ProductInOrderViewModel(productRowViewModel: rowViewModel) { [weak self] in
             self?.removeItemFromOrder(orderItem)
+        }
+    }
+
+    /// Creates `ProductRowViewModels` ready to be used as product rows.
+    ///
+    func createProductRows(items: [OrderItem]) -> [ProductRowViewModel] {
+        items.compactMap { item -> ProductRowViewModel? in
+            guard let productRowViewModel = self.createProductRowViewModel(for: item, canChangeQuantity: true) else {
+                return nil
+            }
+
+            // Observe changes to the product quantity
+            productRowViewModel.$quantity
+                .dropFirst() // Omit the default/initial quantity to prevent a double trigger.
+                .sink { [weak self] newQuantity in
+                    guard let self = self, let newInput = self.createUpdateProductInput(item: item, quantity: newQuantity) else {
+                        return
+                    }
+                    self.orderSynchronizer.setProduct.send(newInput)
+                }
+                .store(in: &self.cancellables)
+
+            return productRowViewModel
         }
     }
 }

@@ -37,6 +37,12 @@
 %1$@ is a placeholder that always replaced with \"Learn more\" string, - which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ о приёме платежей с помощью мобильного устройства и о заказе устройств чтения карт";
 
+/* Combined rule for a coupon. Reads like: 2 Products and 1 Category */
+"%1$@ and %2$@" = "%1$@ and %2$@";
+
+/* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
+"%1$@ excl. %2$@" = "%1$@ excl. %2$@";
+
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ в наличии";
@@ -81,6 +87,18 @@
 /* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
 
+/* The number of category allowed for a coupon in plural form. Reads like: 10 Categories */
+"%1$d Categories" = "%1$d Categories";
+
+/* The number of category allowed for a coupon in singular form. Reads like: 1 Category */
+"%1$d Category" = "%1$d Category";
+
+/* The number of products allowed for a coupon in singular form. Reads like: 1 Product */
+"%1$d Product" = "%1$d Product";
+
+/* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
+"%1$d Products" = "%1$d Products";
+
 /* Singular format of number of business day in Shipping Labels > Carrier and Rates */
 "%1$d business day" = "%1$d рабочий день";
 
@@ -121,6 +139,21 @@
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "%1$@ через %2$@";
+
+/* No comment provided by engineer. */
+"%d Categories excl. %d Products" = "%d Categories excl. %d Products";
+
+/* No comment provided by engineer. */
+"%d Product" = "%d Product";
+
+/* No comment provided by engineer. */
+"%d Products" = "%d Products";
+
+/* No comment provided by engineer. */
+"%d Products and %d Categories" = "%d Products and %d Categories";
+
+/* No comment provided by engineer. */
+"%d Products excl. %d Category" = "%d Products excl. %d Category";
 
 /* For example: `1 item` in Aggregated Product List */
 "%d item" = "%d товар";
@@ -291,11 +324,17 @@
 /* Title for the action button to add coupon on the coupon list screen. */
 "Add Coupon" = "Добавить купон";
 
+/* Title text of the button that adds customer data when creating a new order */
+"Add Customer Details" = "Add Customer Details";
+
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "Добавить примечание для клиента";
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "Добавьте скачиваемый файл";
+
+/* Title text of the button that adds fees when creating a new order */
+"Add Fees" = "Add Fees";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "Добавить файл";
@@ -319,12 +358,16 @@
 "Add Price" = "Добавление цены";
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab
-   Title for the screen to add a product to an order */
+   Title for the screen to add a product to an order - Title text of the button that adds a product when creating a new order */
 "Add Product" = "Добавить товар";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
 "Add Products" = "Добавить товары";
+
+/* Title for the Shipping Line screen during order creation
+   Title text of the button that adds shipping line when creating a new order */
+"Add Shipping" = "Add Shipping";
 
 /* Title for the button to add the Shipping Address in Order Details */
 "Add Shipping Address" = "Добавить адрес доставки";
@@ -367,9 +410,6 @@
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "Добавить кредитную карту";
 
-/* Title text of the button that adds a customer when creating a new order */
-"Add customer" = "Добавить клиента";
-
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "Добавьте каждую опцию и нажмите \"Ввод\".";
 
@@ -382,9 +422,6 @@
 
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add price to your variations to make them visible on your store" = "Добавьте цены вариантов, чтобы они появились в магазине";
-
-/* Title text of the button that adds a product when creating a new order */
-"Add product" = "Добавить товар";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Добавление ссылки на товар";
@@ -447,11 +484,23 @@
 /* The text to be displayed in when the coupon is not limit to any specific product */
 "All Products" = "Все товары";
 
+/* Value for the limit usage to X items row in Coupon Usage Details screen when no limit is set */
+"All Qualifying in Cart" = "All Qualifying in Cart";
+
 /* Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow */
 "All available packages have been activated" = "Все доступные посылки активированы";
 
 /* Name of final step in Install Jetpack flow. */
 "All done" = "Все готово";
+
+/* Exception rule for a coupon. Reads like: All excl. 2 Products */
+"All excl. %1$@" = "All excl. %1$@";
+
+/* No comment provided by engineer. */
+"All excl. %d Categories" = "All excl. %d Categories";
+
+/* No comment provided by engineer. */
+"All excl. %d Products" = "All excl. %d Products";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Все отзывы помечены как прочитанные";
@@ -468,11 +517,18 @@
 /* Display label for the product's inventory backorders setting option */
 "Allow, but notify customer" = "Разрешить, но уведомить клиента";
 
+/* Title for the allowed email row in coupon usage details screen. */
+"Allowed Emails" = "Allowed Emails";
+
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Почти готово! Введите проверочный код из приложения Authenticator.";
 
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "Альтернативно:";
+
+/* Title for the amount field on the Shipping Line Details screen during order creation
+   Title of the Amount label on Coupon Details screen */
+"Amount" = "Amount";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "Сумма, доступная для возврата";
@@ -517,6 +573,18 @@
 
 /* Change order status screen - button title to apply selection */
 "Apply" = "Применить";
+
+/* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
+"Apply %1$@ off to all products with the promo code “%2$@”." = "Apply %1$@ off to all products with the promo code “%2$@”.";
+
+/* Message to share the coupon code if it is applicable to some products. Reads like: Apply 10% off to some products with the promo code “20OFF”. */
+"Apply %1$@ off to some products with the promo code “%2$@”." = "Apply %1$@ off to some products with the promo code “%2$@”.";
+
+/* No comment provided by engineer. */
+"Apply %@ off to all products with the promo code “%@”." = "Apply %@ off to all products with the promo code “%@”.";
+
+/* No comment provided by engineer. */
+"Apply %@ off to some products with the promo code “%@”." = "Apply %@ off to some products with the promo code “%@”.";
 
 /* Title of the Apply To row in Coupon Details screen */
 "Apply To" = "Применить к";
@@ -591,7 +659,8 @@
 /* Details section title in the Edit Address Form */
 "BILLING ADDRESS" = "ПЛАТЁЖНЫЙ АДРЕС";
 
-/* Alert button title - dismisses alert, which cancels the log out attempt */
+/* Accessibility label for Back button in the navigation bar
+   Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Назад";
 
 /* Accessibility announcement message when device goes back online */
@@ -780,7 +849,7 @@
 "Clear all" = "Очистить все";
 
 /* Text for the close button in the Add Product screen
-   Text for the close button in the Edit Address Form - Text for the close button in the Product screen - Title of the Close action on the Jetpack Install view */
+   Text for the close button in the Edit Address Form - Text for the close button in the Product screen - Text for the close button in the Shipping Line Details screen - Title of the Close action on the Jetpack Install view */
 "Close" = "Закрыть";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
@@ -795,6 +864,9 @@
 /* Alert title when starting the collect payment flow with a user name. */
 "Collect payment from %1$@" = "Сбор платежей от %1$@";
 
+/* Message displayed if there are no inbox notes to display in the inbox screen. */
+"Come back soon for more tips and insights on growing your store" = "Come back soon for more tips and insights on growing your store";
+
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
 "Company" = "Компания";
@@ -807,6 +879,9 @@
 
 /* Title for the error screen when there is more than one plugin active that supports in-person payments. */
 "Conflicting payment plugins detected" = "Обнаружены конфликтующие плагины оплаты";
+
+/* Title displayed if there are no inbox notes in the inbox screen. */
+"Congrats, you’ve read everything!" = "Congrats, you’ve read everything!";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "Поздравляем! На вашем устройстве чтения установлена новейшая версия программы";
@@ -909,6 +984,9 @@
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Копировать";
 
+/* Action title for copying coupon code from the Coupon Details screen */
+"Copy Code" = "Copy Code";
+
 /* Copy tracking number button title */
 "Copy Tracking Number" = "Копировать номер отслеживания";
 
@@ -966,6 +1044,12 @@
 
 /* Title of the Coupon Expiry Date row in Coupon Details screen */
 "Coupon Expiry Date" = "Дата окончания срока действия купона";
+
+/* Cell title on beta features screen to enable coupon management */
+"Coupon Management" = "Coupon Management";
+
+/* Notice message displayed when a coupon code is copied from the Coupon Details screen */
+"Coupon copied" = "Coupon copied";
 
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
@@ -1050,6 +1134,9 @@
 /* Customer info section title
    Customer info section title in Review Order screen - Title text of the section that shows Customer details when creating a new order */
 "Customer" = "Заказчик";
+
+/* Title for the Shipping Address Form for Customer Details */
+"Customer Details" = "Customer Details";
 
 /* Customer note row title
    Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
@@ -1141,8 +1228,11 @@
    Title of the Discount row in Coupon Details screen */
 "Discount" = "Скидка";
 
+/* Title of the Discounted Orders label on Coupon Details screen */
+"Discounted Orders" = "Discounted Orders";
+
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in inbox note row. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view */
 "Dismiss" = "Игнорировать";
 
 /* Display label for the product's inventory backorders setting option */
@@ -1161,7 +1251,7 @@
 "Don't have an account? _Sign up_" = "Нет учетной записи? _Зарегистрироваться_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done button on the Jetpack Install Progress screen. - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
+   Done button on the Jetpack Install Progress screen. - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Text for the done button in the Shipping Line Details screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
 "Done" = "Готово";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1225,7 +1315,8 @@
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "Скачиваемые файлы";
 
-/* Display label for the product's draft status */
+/* Display label for auto-draft order status.
+   Display label for the product's draft status */
 "Draft" = "Черновик";
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
@@ -1242,8 +1333,14 @@
    Navigation title for the Product Attributes screen */
 "Edit Attributes" = "Редактирование атрибутов";
 
+/* Accessibility label for the button to edit customer details on the New Order screen */
+"Edit Customer Details" = "Edit Customer Details";
+
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Редактировать продукты";
+
+/* Accessibility label for the button to edit order status on the New Order screen */
+"Edit Status" = "Edit Status";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Edit and add new products from anywhere" = "Добавляйте новые товары и редактируйте существующие откуда угодно";
@@ -1398,6 +1495,9 @@
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Everyone loves a deal" = "Все любят скидки";
 
+/* Title for the exclude sale items row in coupon usage details screen. */
+"Exclude Sale Items" = "Exclude Sale Items";
+
 /* Experimental features navigation title
    Navigates to experimental features screen */
 "Experimental Features" = "Экспериментальные функции";
@@ -1432,7 +1532,8 @@
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "Отзыв отправлен!";
 
-/* Fees label for payment view */
+/* Fees label for payment view
+   Label for the row showing the cost of fees in the order */
 "Fees" = "Сборы";
 
 /* Title on the refund screen that lists the fees total cost */
@@ -1448,9 +1549,6 @@
 
 /* Subtitle of the cell Customs inside Create Shipping Label form */
 "Fill out customs form" = "Заполните таможенную форму";
-
-/* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
-"Fill with password manager" = "Заполнить с помощью диспетчера паролей";
 
 /* Title of the toolbar button to filter orders without filters applied.
    Title of the toolbar button to filter products by different attributes. - Title of the toolbar button to filter products without any filters applied. */
@@ -1661,9 +1759,6 @@
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "Мне нравится";
 
-/* Cell title on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"IPP with Stripe extension" = "IPP с расширением Stripe";
-
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "ТОВАРЫ В ЗАКАЗЕ К ВЫПОЛНЕНИЮ";
 
@@ -1742,6 +1837,10 @@
 /* The plugin is not active on the site and has enabled automatic updates */
 "Inactive, Autoupdates on" = "Неактивен, автообновление включено";
 
+/* Title for the screen that shows inbox notes.
+   Title of the Inbox menu in the hub menu */
+"Inbox" = "Inbox";
+
 /* Describes a standard *.wordpress.com site domain */
 "Included with Site" = "Предоставляется вместе с сайтом";
 
@@ -1753,6 +1852,9 @@
 
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "Увеличивайте продажи благодаря продаже дополнительных и связанных продуктов";
+
+/* Title for the individual use only row in coupon usage details screen. */
+"Individual Use Only" = "Individual Use Only";
 
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "Индивидуально доставляемая позиция";
@@ -1790,6 +1892,9 @@
 
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Place holder is an amount. */
 "Insurance (up to %1$@)" = "Страхование (до %1$@)";
+
+/* Title of an alert letting the user know the email address that they've entered isn't valid */
+"Invalid Email Address" = "Invalid Email Address";
 
 /* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
 "Invalid ITN format" = "Недопустимый формат ITN";
@@ -1932,6 +2037,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter (8,5 x 11 in)";
 
+/* Title for the limit usage to X items row in coupon usage details screen. */
+"Limit Usage to X Items" = "Limit Usage to X Items";
+
 /* Title of the cell in Product Inventory Settings > Limit one per order */
 "Limit one per order" = "Ограничить одним на заказ";
 
@@ -2027,6 +2135,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Settings > Manage Card Reader > Title for the no-reader-connected screen in settings. - Settings > Manage Card Reader > Title for the reader connected screen in settings. */
 "Manage Card Reader" = "Управление устройством чтения карт";
 
+/* Title of the action sheet displayed from the Coupon Details screen */
+"Manage Coupon" = "Manage Coupon";
+
 /* Button to open browser to manage plugins */
 "Manage Plugins" = "Управление плагинами";
 
@@ -2076,6 +2187,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Отметить заказ как выполненный и уведомить заказчика";
 
+/* Title for the maximum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Maximum Spend ($) */
+"Maximum Spend (%1$@)" = "Maximum Spend (%1$@)";
+
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Мультимедиа объект не имеет ассоциированного файла для загрузки.";
 
@@ -2100,6 +2214,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Option to select the Microsft Outlook app when logging in with magic links */
 "Microsoft Outlook" = "Microsoft Outlook";
+
+/* Title for the minimum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Minimum Spend ($) */
+"Minimum Spend (%1$@)" = "Minimum Spend (%1$@)";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "Минимальное значение — %1$@, максимальное значение — %2$@";
@@ -2143,7 +2260,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "My store" = "Мой магазин";
 
 /* Name text field placeholder
-   Text field name in Shipping Label Address Validation */
+   Text field name in Shipping Label Address Validation - Title for the name field on the Shipping Line Details screen during order creation */
 "Name" = "Имя";
 
 /* Error showed in Shipping Label Address Validation for the name field */
@@ -2181,9 +2298,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "Название нового атрибута";
 
-/* Title for the Shipping Address Form for New Customer */
-"New Customer" = "Новый клиент";
-
 /* Title for the order creation screen */
 "New Order" = "Новый заказ";
 
@@ -2196,6 +2310,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen - Next nav bar button title in Add Product Attribute screen - Title for the button to confirm the amount in the simple payments screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "Далее";
+
+/* Value for the allowed emails row in Coupon Usage Details screen when no restriction is set */
+"No Restrictions" = "No Restrictions";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Активность за этот период отсутствует";
@@ -2260,7 +2377,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No tax classes yet" = "Налоговых классов пока нет";
 
 /* Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow */
+   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - Value for fields in Coupon Usage Details screen when no value is set */
 "None" = "Нет";
 
 /* Title of dismiss action in the Jetpack benefits view. */
@@ -2313,9 +2430,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for on hold order status. */
 "On hold" = "Отложен";
 
-/* Accessibility label for 1 password button */
-"One Password button" = "Кнопка One Password";
-
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "Для каждого варианта может отображаться только одна фотография";
 
@@ -2340,9 +2454,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label for the Menu button */
 "Open menu" = "Открыть меню";
-
-/* Accessibility hint for 1 password button */
-"Opens One Password manager" = "Открывает менеджер паролей One Password";
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Открывает список доступных статусов.";
@@ -2512,6 +2623,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Name of percentage discount type */
 "Percentage Discount" = "Процент скидки";
 
+/* Title of the Performance section on Coupons Details screen */
+"Performance" = "Performance";
+
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
 "Phone" = "Телефон";
@@ -2567,7 +2681,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Please enter a username." = "Пожалуйста, введите имя пользователя.";
 
-/* Error message displayed when the user attempts use an invalid email address. */
+/* An error message. */
+"Please enter a valid email address for a WordPress.com account." = "Please enter a valid email address for a WordPress.com account.";
+
+/* Error message displayed when the user attempts use an invalid email address.
+   Notice text when the merchant enters an invalid email */
 "Please enter a valid email address." = "Пожалуйста, введите корректный адрес e-mail.";
 
 /* Placeholder for editing the text of a text link */
@@ -2954,14 +3072,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label action for removing a link from the editor */
 "Remove Link" = "Удалить ссылку";
 
+/* Text for the button to remove a product from the order during order creation */
+"Remove Product from Order" = "Удалить товар из заказа";
+
+/* Text for the button to remove a shipping line from the order during order creation */
+"Remove Shipping from Order" = "Remove Shipping from Order";
+
 /* Label action for removing a link from the editor */
 "Remove end date" = "Удалить дату окончания";
 
 /* Title of the alert when a user is moving a product to the trash */
 "Remove product" = "Удалить товар";
-
-/* Text for the button to remove a product from the order during order creation */
-"Remove product from order" = "Удалить товар из заказа";
 
 /* Title of the alert when a user is deleting a variation */
 "Remove variation" = "Удалить вариант";
@@ -3126,6 +3247,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Запланировать распродажу";
 
+/* Placeholder on the search field to search for a specific product */
+"Search Products" = "Search Products";
+
 /* Coupons Search Placeholder */
 "Search all coupons" = "Поиск всех купонов";
 
@@ -3239,6 +3363,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title Share in Edit Product More Options Action Sheet */
 "Share" = "Поделиться";
 
+/* Action title for sharing coupon from the Coupon Details screen */
+"Share Coupon" = "Share Coupon";
+
 /* Payment Link method title on the select payment method screen for simple payments */
 "Share Payment Link" = "Поделиться ссылкой на оплату";
 
@@ -3267,8 +3394,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Date an item was shipped */
 "Shipped %@" = "Отправлено %@";
 
-/* Product Shipping Settings navigation title
-   Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
+/* Label for the row showing the cost of shipping in the order
+   Placeholder for the name field on the Shipping Line Details screen during order creation - Product Shipping Settings navigation title - Shipping label for payment view - Title for the Shipping Line Details screen during order creation - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Доставка";
 
 /* Shipping Address title for customer info section
@@ -3555,9 +3682,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
 "Switched to %1$@." = "Вы переключились на магазин \"%1$@\".";
 
-/* Message presented after users switch to a new store when multi-store push notifications are not supported. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
-"Switched to %1$@. You will only receive notifications from this store." = "Вы переключились на магазин \"%1$@\". Вы будете получать уведомления только из этого магазина.";
-
 /* Accessibility Identifier for the H1 Aztec Style */
 "Switches to the Heading 1 font size" = "Переход к размеру шрифта Heading 1";
 
@@ -3717,11 +3841,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description on beta features screen to enable accepting in-person payments for stores in Canada */
 "Test out In-Person Payments in Canada" = "Тестирование очных платежей в Канаде";
 
-/* Cell description on beta features screen to enable accepting in-person payments for stores with the WooCommerce Stripe Payment Gateway extension */
-"Test out In-Person Payments with the Stripe Payment Gateway extension" = "Попробуйте систему очных платежей с расширением Stripe Payment Gateway";
-
 /* Cell description on the beta features screen to enable creating new orders */
 "Test out creating new manual orders as we get ready to launch" = "Попробуйте создавать новые заказы вручную, пока мы готовим запуск функции";
+
+/* Cell description on beta features screen to enable coupon management */
+"Test out managing coupons as we get ready to launch" = "Test out managing coupons as we get ready to launch";
 
 /* Cell description on beta features screen to enable product SKU input scanner in inventory settings. */
 "Test out scanning a barcode for a product SKU in the product inventory settings" = "Попробуйте включить в настройках сканирование штрихкодов для ввода артикулов товаров";
@@ -4136,7 +4260,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to process payment. Order total amount is not valid." = "Не удалось обработать платеж. Недопустимая общая сумма заказа.";
 
 /* No comment provided by engineer. */
-"Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Не удалось найти веб-сайт WordPress по этому URL-адресу. Нажмите кнопку «Нужна помощь?», чтобы просмотреть ответы на часто задаваемые вопросы.";
+"Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ.";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Не удалось обновить список";
@@ -4187,6 +4311,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when capturing a unknown media type */
 "Unknown media type" = "Неизвестный тип медиафайлов";
+
+/* Value for fields in Coupon Usage Details screen when no limit is set */
+"Unlimited" = "Unlimited";
 
 /* Back button title when the product doesn't have a name */
 "Unnamed product" = "Товар без названия";
@@ -4276,6 +4403,24 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "Апсейл";
+
+/* Navigation title for usage details screen */
+"Usage Details" = "Usage Details";
+
+/* Title for the usage limit per coupon row in coupon usage details screen. */
+"Usage Limit Per Coupon" = "Usage Limit Per Coupon";
+
+/* Title for the usage limit per user row in coupon usage details screen. */
+"Usage Limit Per User" = "Usage Limit Per User";
+
+/* Title for the usage limits section on coupon usage details screen */
+"Usage Limits" = "Usage Limits";
+
+/* Title for the usage restrictions section on coupon usage details screen */
+"Usage Restrictions" = "Usage Restrictions";
+
+/* Title of the Usage details row in Coupon Details screen */
+"Usage details" = "Usage details";
 
 /* Action to use the address in Shipping Label Suggested screen as entered placeholder */
 "Use Address Entered" = "Использовать введённый адрес";
@@ -4541,6 +4686,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the row to enter the package width on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Width */
 "Width" = "Ширина";
+
+/* Navigates to WisePad 3 Card Reader manual */
+"WisePad 3 card reader manual" = "WisePad 3 card reader manual";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "With this powerful editor you can post on the go." = "С помощью этого мощного редактора вы можете размещать записи на ходу.";

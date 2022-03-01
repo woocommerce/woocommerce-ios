@@ -1,3 +1,0 @@
-Hemos actualizado un poco la pestaña "Mi tienda" en función de los comentarios que hemos recibido. Ahora, verás un porcentaje de conversión y los 5 productos más vendidos (en lugar de 3).
-
-Después de que hayas solicitado crear pedidos en la aplicación, estamos encantados de comunicarte que tenemos un anticipo listo para que nos ayudes a probar esta opción. Dirígete a los ajustes de la aplicación y activa la función experimental para la Creación de pedidos. En este momento, puedes añadir productos, notas y direcciones, y las futuras versiones tendrán funciones adicionales.

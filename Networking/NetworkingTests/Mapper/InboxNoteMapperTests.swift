@@ -50,6 +50,16 @@ final class InboxNoteMapperTests: XCTestCase {
         // Then
         XCTAssertEqual(inboxNote, expectedInboxNote)
     }
+
+    /// Verifies that `isRead` field is set to `false` when the corresponding API field (`is_read`) is not available.
+    ///
+    func test_InboxNoteMapper_sets_isRead_to_false_when_API_field_is_unavailable() throws {
+        // When
+        let inboxNote = try XCTUnwrap(mapLoadInboxNoteWithoutIsReadResponse())
+
+        // Then
+        XCTAssertFalse(inboxNote.isRead)
+    }
 }
 
 
@@ -71,5 +81,11 @@ private extension InboxNoteMapperTests {
     ///
     func mapLoadInboxNoteResponse() throws -> InboxNote? {
         return try mapInboxNote(from: "inbox-note")
+    }
+
+    /// Returns the InboxNoteMapper output from `inbox-note-without-isRead.json`
+    ///
+    func mapLoadInboxNoteWithoutIsReadResponse() throws -> InboxNote? {
+        try mapInboxNote(from: "inbox-note-without-isRead")
     }
 }

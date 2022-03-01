@@ -791,6 +791,42 @@ final class OrderStoreTests: XCTestCase {
         ]
         assertEqual(expectedKeys, receivedKeys)
     }
+
+    func test_create_order_does_not_upsert_autodrafts() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "order-auto-draft-status")
+
+        // When
+        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = OrderAction.createOrder(siteID: self.sampleSiteID, order: self.sampleOrder()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+    }
+
+    func test_update_order_does_not_upsert_autodrafts() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order-auto-draft-status")
+
+        // When
+        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = OrderAction.updateOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), fields: []) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+    }
 }
 
 

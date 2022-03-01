@@ -105,6 +105,17 @@ final class CouponListViewController: UIViewController {
                 }
             }
             .store(in: &subscriptions)
+
+        viewModel.$couponViewModels
+            .map { viewModels -> Bool in
+                viewModels.isNotEmpty
+            }
+            .removeDuplicates()
+            .sink { [weak self] hasData in
+                self?.configureNavigationBarItems(hasCoupons: hasData)
+            }
+            .store(in: &subscriptions)
+
         // Call this after the state subscription for extra safety
         viewModel.viewDidLoad()
     }
@@ -168,7 +179,10 @@ extension CouponListViewController: UITableViewDelegate {
 private extension CouponListViewController {
     func configureNavigation() {
         title = Localization.title
-        navigationItem.rightBarButtonItem = searchBarButtonItem
+    }
+
+    func configureNavigationBarItems(hasCoupons: Bool) {
+        navigationItem.rightBarButtonItems = hasCoupons ? [searchBarButtonItem] : []
     }
 
     func configureTableView() {
@@ -261,11 +275,10 @@ extension CouponListViewController {
     ///
     func displayNoResultsOverlay() {
         let emptyStateViewController = EmptyStateViewController(style: .list)
-        let config = EmptyStateViewController.Config.withButton(
+        let config = EmptyStateViewController.Config.simple(
             message: .init(string: Localization.emptyStateMessage),
-            image: .emptyCouponsImage,
-            details: Localization.emptyStateDetails,
-            buttonTitle: Localization.addCouponButton) { _ in }
+            image: .emptyCouponsImage
+        )
 
         displayEmptyStateViewController(emptyStateViewController)
         emptyStateViewController.configure(config)
@@ -337,14 +350,8 @@ private extension CouponListViewController {
             comment: "Coupon management coupon list screen title")
 
         static let emptyStateMessage = NSLocalizedString(
-            "Everyone loves a deal",
+            "No coupons found",
             comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen.")
-
-        static let emptyStateDetails = NSLocalizedString(
-            "Boost your business by sending customers special offers and discounts.",
-            comment: "The description on the placeholder overlay when there are no coupons on the coupon list screen.")
-
-        static let addCouponButton = NSLocalizedString("Add Coupon", comment: "Title for the action button to add coupon on the coupon list screen.")
 
         static let accessibilityLabelSearchCoupons = NSLocalizedString("Search coupons", comment: "Accessibility label for the Search Coupons button")
         static let accessibilityHintSearchCoupons = NSLocalizedString(

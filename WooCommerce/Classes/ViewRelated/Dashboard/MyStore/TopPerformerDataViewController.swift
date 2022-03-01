@@ -44,7 +44,6 @@ final class TopPerformerDataViewController: UIViewController {
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
     private let imageService: ImageService = ServiceLocator.imageService
-    private let isMyStoreTabUpdatesEnabled: Bool
 
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
@@ -82,7 +81,6 @@ final class TopPerformerDataViewController: UIViewController {
         self.currentDate = currentDate
         self.granularity = timeRange.topEarnerStatsGranularity
         self.timeRange = timeRange
-        self.isMyStoreTabUpdatesEnabled = featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates)
         self.usageTracksEventEmitter = usageTracksEventEmitter
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -191,7 +189,7 @@ private extension TopPerformerDataViewController {
     }
 
     func registerTableViewHeaderFooters() {
-        let headersAndFooters = isMyStoreTabUpdatesEnabled ? [TwoColumnSectionHeaderView.self]: [TopPerformersHeaderView.self]
+        let headersAndFooters = [TwoColumnSectionHeaderView.self]
 
         for kind in headersAndFooters {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
@@ -222,19 +220,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if isMyStoreTabUpdatesEnabled {
-            return nil
-        } else {
-            guard let cell =
-                    tableView.dequeueReusableHeaderFooterView(withIdentifier: TopPerformersHeaderView.reuseIdentifier) as? TopPerformersHeaderView else {
-                fatalError()
-            }
-
-            cell.configure(descriptionText: Text.sectionDescription,
-                           leftText: Text.legacySectionLeftColumn.uppercased(),
-                           rightText: Text.legacySectionRightColumn.uppercased())
-            return cell
-        }
+        nil
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -242,7 +228,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
             return tableView.dequeueReusableCell(withIdentifier: NoPeriodDataTableViewCell.reuseIdentifier, for: indexPath)
         }
         let cell = tableView.dequeueReusableCell(ProductTableViewCell.self, for: indexPath)
-        let viewModel = ProductTableViewCell.ViewModel(statsItem: statsItem, isMyStoreTabUpdatesEnabled: isMyStoreTabUpdatesEnabled)
+        let viewModel = ProductTableViewCell.ViewModel(statsItem: statsItem)
         cell.configure(viewModel: viewModel, imageService: imageService)
         cell.hidesBottomBorder = tableView.lastIndexPathOfTheLastSection() == indexPath ? true : false
         return cell
@@ -265,11 +251,11 @@ extension TopPerformerDataViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return isMyStoreTabUpdatesEnabled ? 0: Constants.estimatedSectionHeight
+        0
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return isMyStoreTabUpdatesEnabled ? 0: UITableView.automaticDimension
+        0
     }
 }
 
@@ -304,24 +290,12 @@ private extension TopPerformerDataViewController {
     }
 
     func statsItem(at indexPath: IndexPath) -> TopEarnerStatsItem? {
-        if isMyStoreTabUpdatesEnabled {
-            guard let topEarnerStatsItem = topEarnerStats?.items?
-                    .sorted(by: >)[safe: indexPath.row] else {
-                return nil
-            }
+        guard let topEarnerStatsItem = topEarnerStats?.items?
+                .sorted(by: >)[safe: indexPath.row] else {
+                    return nil
+                }
 
-            return topEarnerStatsItem
-        } else {
-            guard let topEarnerStatsItem = topEarnerStats?.items?
-                    .sorted(by: { lhs, rhs in
-                        lhs.total < rhs.total ||
-                        (lhs.total == rhs.total && lhs.quantity < rhs.quantity)
-                    })[safe: indexPath.row] else {
-                return nil
-            }
-
-            return topEarnerStatsItem
-        }
+        return topEarnerStatsItem
     }
 
     func numberOfRows() -> Int {

@@ -38,10 +38,6 @@ public enum FeatureFlag: Int {
     ///
     case systemStatusReport
 
-    /// Home Screen project milestone 2: design updates to the My Store tab
-    ///
-    case myStoreTabUpdates
-
     /// Displays the option to view coupons
     ///
     case couponView

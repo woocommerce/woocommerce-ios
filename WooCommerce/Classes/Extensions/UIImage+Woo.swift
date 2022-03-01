@@ -859,9 +859,7 @@ extension UIImage {
     /// Speaker icon
     ///
     static var speakerIcon: UIImage {
-        return UIImage.gridicon(.speaker)
-            .withRenderingMode(.alwaysTemplate)
-            .imageFlippedForRightToLeftLayoutDirection()
+        return UIImage.gridicon(.speaker).imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Multiple Users Image

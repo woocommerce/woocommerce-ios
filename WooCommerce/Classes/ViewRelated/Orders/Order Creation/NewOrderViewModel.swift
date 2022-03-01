@@ -42,6 +42,9 @@ final class NewOrderViewModel: ObservableObject {
     ///
     @Published var shouldShowOrderStatusList: Bool = false
 
+    /// Defines if the view should be disabled.
+    @Published private(set) var disabled: Bool = false
+
     /// Status Results Controller.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
@@ -137,13 +140,6 @@ final class NewOrderViewModel: ObservableObject {
 
     // MARK: -
 
-    /// Defines if the view should be disabled.
-    /// Currently `true` while performing a network request.
-    ///
-    var disabled: Bool {
-        performingNetworkRequest
-    }
-
     /// Defines the current order status.
     ///
     var currentOrderStatus: OrderStatusEnum {
@@ -172,6 +168,7 @@ final class NewOrderViewModel: ObservableObject {
         self.orderSynchronizer = enableRemoteSync ? RemoteOrderSynchronizer(siteID: siteID, stores: stores)
                                                   : LocalOrderSynchronizer(siteID: siteID, stores: stores)
 
+        configureDisabledState()
         configureNavigationTrailingItem()
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
@@ -396,6 +393,23 @@ extension NewOrderViewModel {
 
 // MARK: - Helpers
 private extension NewOrderViewModel {
+
+    /// Sets the view to be `disabled` when `performingNetworkRequest` or when `statePublisher` is `.syncing(blocking: true)`
+    ///
+    func configureDisabledState() {
+        Publishers.CombineLatest(orderSynchronizer.statePublisher, $performingNetworkRequest)
+            .map { state, performingNetworkRequest -> Bool in
+                switch (state, performingNetworkRequest) {
+                case (.syncing(blocking: true), _),
+                     (_, true):
+                    return true
+                default:
+                    return false
+                }
+            }
+            .assign(to: &$disabled)
+    }
+
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func configureNavigationTrailingItem() {

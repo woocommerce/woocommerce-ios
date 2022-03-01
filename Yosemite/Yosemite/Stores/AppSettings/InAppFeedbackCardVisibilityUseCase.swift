@@ -41,6 +41,8 @@ struct InAppFeedbackCardVisibilityUseCase {
             return shouldProductsFeedbackBeVisible()
         case .shippingLabelsRelease3:
             return shouldShippingLabelsRelease3FeedbackBeVisible()
+        case .couponManagement:
+            return shouldCouponManagementFeedbackBeVisible()
         }
     }
 
@@ -75,6 +77,12 @@ struct InAppFeedbackCardVisibilityUseCase {
     /// Returns whether the shippingLabelsRelease3 feedback request should be displayed
     ///
     private func shouldShippingLabelsRelease3FeedbackBeVisible() -> Bool {
+        return settings.feedbackStatus(of: feedbackType) == .pending
+    }
+
+    /// Returns whether the couponManagement feedback request should be displayed
+    ///
+    private func shouldCouponManagementFeedbackBeVisible() -> Bool {
         return settings.feedbackStatus(of: feedbackType) == .pending
     }
 

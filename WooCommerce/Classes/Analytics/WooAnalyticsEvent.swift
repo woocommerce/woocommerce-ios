@@ -66,6 +66,8 @@ extension WooAnalyticsEvent {
         case addOnsI1 = "add-ons_i1"
         /// Shown in beta feature banner for simple payments prototype.
         case simplePaymentsPrototype = "simple_payments_prototype"
+        /// Shown in beta feature banner for coupon management.
+        case couponManagement = "coupon_management"
     }
 
     /// The action performed on the survey screen.

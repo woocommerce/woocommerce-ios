@@ -135,10 +135,7 @@ public class OrdersRemote: Remote {
                     case .status:
                         params[Order.CodingKeys.status.rawValue] = order.status.rawValue
                     case .items:
-                        params[Order.CodingKeys.items.rawValue] = order.items.map { item in
-                            [OrderItem.CodingKeys.productID.rawValue: item.variationID != 0 ? item.variationID : item.productID,
-                             OrderItem.CodingKeys.quantity.rawValue: Int64(truncating: item.quantity as NSDecimalNumber)]
-                        }
+                        params[Order.CodingKeys.items.rawValue] = try order.items.map { try $0.toDictionary() }
                     case .billingAddress:
                         if let billingAddress = order.billingAddress {
                             params[Order.CodingKeys.billingAddress.rawValue] = try billingAddress.toDictionary()
@@ -209,13 +206,7 @@ public class OrdersRemote: Remote {
                     case .status:
                         params[Order.CodingKeys.status.rawValue] = order.status.rawValue
                     case .items:
-                        params[Order.CodingKeys.items.rawValue] = order.items.map { item in
-                            [
-                                OrderItem.CodingKeys.itemID.rawValue: item.itemID,
-                                OrderItem.CodingKeys.productID.rawValue: item.variationID != 0 ? item.variationID : item.productID,
-                                OrderItem.CodingKeys.quantity.rawValue: Int64(truncating: item.quantity as NSDecimalNumber)
-                            ]
-                        }
+                        params[Order.CodingKeys.items.rawValue] = try order.items.map { try $0.toDictionary() }
                     }
                 }
             }()

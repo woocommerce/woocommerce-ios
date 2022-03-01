@@ -49,9 +49,11 @@ struct OrderPaymentSection: View {
 
             TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
 
-            Text(Localization.taxesInfo)
-                .footnoteStyle()
-                .padding([.horizontal, .bottom])
+            if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) {
+                Text(Localization.taxesInfo)
+                    .footnoteStyle()
+                    .padding([.horizontal, .bottom])
+            }
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground))

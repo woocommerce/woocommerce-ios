@@ -121,7 +121,7 @@ private extension RemoteOrderSynchronizer {
             .merge(with: setAddresses.map { _ in () })
             .merge(with: setShipping.map { _ in () })
             .merge(with: setFee.map { _ in () })
-            .debounce(for: 1, scheduler: DispatchQueue.main) // Group & wait for 1s since the last signal was emitted.
+            .debounce(for: 0.5, scheduler: DispatchQueue.main) // Group & wait for 0.5 since the last signal was emitted.
             .compactMap { [weak self] in
                 guard let self = self else { return nil }
                 switch self.state {

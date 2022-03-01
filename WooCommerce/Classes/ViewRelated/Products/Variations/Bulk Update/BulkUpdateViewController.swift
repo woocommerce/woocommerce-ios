@@ -47,7 +47,10 @@ final class BulkUpdateViewController: UIViewController {
                 return
             case .syncing:
                 self.displayGhostContent()
-            case .synced, .error:
+            case .synced:
+                self.removeGhostContent()
+                self.tableView.reloadData()
+            case .error:
                 self.removeGhostContent()
             }
         }.store(in: &subscriptions)
@@ -129,8 +132,33 @@ extension BulkUpdateViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = rowAtIndexPath(indexPath)
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+        configure(cell, for: row, at: indexPath)
 
         return cell
+    }
+}
+
+// MARK: - Cell configuration
+//
+private extension BulkUpdateViewController {
+    /// Configures a cell
+    ///
+    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+        switch cell {
+        case let cell as ValueOneTableViewCell where row == .regularPrice:
+            configureRegularPrice(cell: cell)
+        default:
+            fatalError("Unidentified bulk update row type")
+            break
+        }
+    }
+
+    /// Configures the user facing properties of the cell displaying the regular price option
+    ///
+    func configureRegularPrice(cell: ValueOneTableViewCell) {
+
+        cell.textLabel?.text = Localization.priceTitle
+        cell.detailTextLabel?.text = viewModel.regularPriceValue().text
     }
 }
 
@@ -193,4 +221,11 @@ extension BulkUpdateViewController {
 private struct Constants {
     static let sectionHeight = CGFloat(44)
     static let placeholderRowsPerSection = [1]
+}
+
+extension BulkUpdateViewController {
+    private enum Localization {
+        static let priceTitle = NSLocalizedString("Regular Price",
+                                                  comment: "The label in the option of selecting to bulk update the regular price of a product variation")
+    }
 }

@@ -47,9 +47,13 @@ struct OrderPaymentSection: View {
                     }
             }
 
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreationRemoteSynchronizer) { // TODO: Also check if the taxes row should be shown
+                TitleAndValueRow(title: Localization.taxesTotal, value: .content("$0.00")) // TODO: Add real tax value from synchronizer
+            }
+
             TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
 
-            if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) {
+            if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreationRemoteSynchronizer) {
                 Text(Localization.taxesInfo)
                     .footnoteStyle()
                     .padding([.horizontal, .bottom])
@@ -102,6 +106,7 @@ private extension OrderPaymentSection {
         static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
         static let addFees = NSLocalizedString("Add Fees", comment: "Title text of the button that adds fees when creating a new order")
         static let feesTotal = NSLocalizedString("Fees", comment: "Label for the row showing the cost of fees in the order")
+        static let taxesTotal = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
     }
 }
 

@@ -88,7 +88,7 @@ public class CurrencySettings {
 
     /// Public variables, privately set
     ///
-    public private(set) var currencyCode: CurrencyCode
+    @Published public private(set) var currencyCode: CurrencyCode
     public private(set) var currencyPosition: CurrencyPosition
     public private(set) var thousandSeparator: String
     public private(set) var decimalSeparator: String

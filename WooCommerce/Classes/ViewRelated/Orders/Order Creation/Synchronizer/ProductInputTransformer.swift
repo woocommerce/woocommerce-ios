@@ -14,6 +14,9 @@ struct ProductInputTransformer {
         var subtotal: String {
             "\(price * quantity)"
         }
+        var total: String {
+            subtotal
+        }
     }
 
     /// Adds, deletes, or updates order items based on the given product input.
@@ -69,7 +72,7 @@ struct ProductInputTransformer {
                          subtotalTax: "",
                          taxClass: "",
                          taxes: [],
-                         total: "",
+                         total: parameters.total,
                          totalTax: "",
                          attributes: [])
     }

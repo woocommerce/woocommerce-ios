@@ -73,7 +73,6 @@
 		02162727237963AF000208D2 /* ProductFormViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02162725237963AF000208D2 /* ProductFormViewController.xib */; };
 		02162729237965E8000208D2 /* ProductFormTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02162728237965E8000208D2 /* ProductFormTableViewModel.swift */; };
 		0216272B2379662C000208D2 /* DefaultProductFormTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0216272A2379662C000208D2 /* DefaultProductFormTableViewModel.swift */; };
-		021739982772CE220084CD89 /* OldStoreStatsAndTopPerformersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021739972772CE220084CD89 /* OldStoreStatsAndTopPerformersViewController.swift */; };
 		0217399B2772F9DD0084CD89 /* StoreStatsV4PeriodViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 021739992772F9DC0084CD89 /* StoreStatsV4PeriodViewController.xib */; };
 		0217399C2772F9DD0084CD89 /* StoreStatsV4PeriodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0217399A2772F9DD0084CD89 /* StoreStatsV4PeriodViewController.swift */; };
 		0217399E2772FB7E0084CD89 /* StoreStatsAndTopPerformersPeriodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0217399D2772FB7E0084CD89 /* StoreStatsAndTopPerformersPeriodViewController.swift */; };
@@ -93,8 +92,6 @@
 		021FAFCD2355621E00B99241 /* UIView+SubviewsAxisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FAFCC2355621E00B99241 /* UIView+SubviewsAxisTests.swift */; };
 		021FAFCF23556D2B00B99241 /* UIView+SubviewsAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */; };
 		021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FB44B24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift */; };
-		0222729227746D8B007D3851 /* OldStoreStatsV4PeriodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0222729127746D8B007D3851 /* OldStoreStatsV4PeriodViewController.swift */; };
-		0224B1C82786E69B008F536D /* LegacyTopPerformersSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0224B1C72786E69B008F536D /* LegacyTopPerformersSectionHeaderView.swift */; };
 		0225C42824768A4C00C5B4F0 /* FilterProductListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225C42724768A4C00C5B4F0 /* FilterProductListViewModelTests.swift */; };
 		0225C42A24768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225C42924768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift */; };
 		0225C42C2477D0D500C5B4F0 /* ProductFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225C42B2477D0D500C5B4F0 /* ProductFormViewModel.swift */; };
@@ -267,8 +264,6 @@
 		028AFFB32484ED2800693C09 /* Dictionary+Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028AFFB22484ED2800693C09 /* Dictionary+Logging.swift */; };
 		028AFFB62484EDA000693C09 /* Dictionary+LoggingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028AFFB52484EDA000693C09 /* Dictionary+LoggingTests.swift */; };
 		028BAC3D22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC3C22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift */; };
-		028BAC4022F2EFA5008BB4AF /* OldStoreStatsAndTopPerformersPeriodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC3F22F2EFA5008BB4AF /* OldStoreStatsAndTopPerformersPeriodViewController.swift */; };
-		028BAC4522F3AE5C008BB4AF /* OldStoreStatsV4PeriodViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 028BAC4422F3AE5C008BB4AF /* OldStoreStatsV4PeriodViewController.xib */; };
 		028BAC4722F3B550008BB4AF /* StatsTimeRangeV4+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */; };
 		028FA466257E021100F88A48 /* RefundShippingLabelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028FA465257E021100F88A48 /* RefundShippingLabelViewModel.swift */; };
 		028FA46C257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028FA46B257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift */; };
@@ -423,9 +418,9 @@
 		094C161227B0604700B25F51 /* ProductVariationFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094C161127B0604700B25F51 /* ProductVariationFormViewModelTests.swift */; };
 		09885C8727C6947A00910A62 /* ProductPriceSettingsValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09885C8627C6947A00910A62 /* ProductPriceSettingsValidator.swift */; };
 		098FFA1727AD7F5D002EBEE4 /* OrderStatusListDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098FFA1627AD7F5D002EBEE4 /* OrderStatusListDataSourceTests.swift */; };
-		09EA565227C8235200407D40 /* ProductPriceSettingsValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09EA565127C8235200407D40 /* ProductPriceSettingsValidatorTests.swift */; };
 		09C6A26227C01166001FAD73 /* BulkUpdateViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6A26127C01166001FAD73 /* BulkUpdateViewModelTests.swift */; };
 		09E41E1D27B90B3C00BFCB7C /* BulkUpdateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E41E1C27B90B3B00BFCB7C /* BulkUpdateViewModel.swift */; };
+		09EA565227C8235200407D40 /* ProductPriceSettingsValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09EA565127C8235200407D40 /* ProductPriceSettingsValidatorTests.swift */; };
 		09EA565527C8ACEE00407D40 /* BulkUpdateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09EA565327C8ACEE00407D40 /* BulkUpdateViewController.swift */; };
 		09EA565627C8ACEE00407D40 /* BulkUpdateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 09EA565427C8ACEE00407D40 /* BulkUpdateViewController.xib */; };
 		247CE89C2583402A00F9D9D1 /* Embassy in Frameworks */ = {isa = PBXBuildFile; productRef = 247CE89B2583402A00F9D9D1 /* Embassy */; };
@@ -1072,8 +1067,6 @@
 		B541B223218A29A6008FE7C1 /* NSParagraphStyle+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B541B222218A29A6008FE7C1 /* NSParagraphStyle+Woo.swift */; };
 		B541B226218A412C008FE7C1 /* UIFont+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B541B225218A412C008FE7C1 /* UIFont+Woo.swift */; };
 		B54FBE552111F70700390F57 /* ResultsController+UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54FBE542111F70700390F57 /* ResultsController+UIKit.swift */; };
-		B55401692170D5E10067DC90 /* LegacyChartPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55401682170D5E10067DC90 /* LegacyChartPlaceholderView.swift */; };
-		B554016B2170D6010067DC90 /* LegacyChartPlaceholderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B554016A2170D6010067DC90 /* LegacyChartPlaceholderView.xib */; };
 		B554E1792152F20000F31188 /* UINavigationBar+Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554E1782152F20000F31188 /* UINavigationBar+Appearance.swift */; };
 		B554E17B2152F27200F31188 /* UILabel+Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554E17A2152F27200F31188 /* UILabel+Appearance.swift */; };
 		B555530D21B57DC300449E71 /* UserNotificationsCenterAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B555530C21B57DC300449E71 /* UserNotificationsCenterAdapter.swift */; };
@@ -1741,7 +1734,6 @@
 		02162725237963AF000208D2 /* ProductFormViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductFormViewController.xib; sourceTree = "<group>"; };
 		02162728237965E8000208D2 /* ProductFormTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormTableViewModel.swift; sourceTree = "<group>"; };
 		0216272A2379662C000208D2 /* DefaultProductFormTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultProductFormTableViewModel.swift; sourceTree = "<group>"; };
-		021739972772CE220084CD89 /* OldStoreStatsAndTopPerformersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldStoreStatsAndTopPerformersViewController.swift; sourceTree = "<group>"; };
 		021739992772F9DC0084CD89 /* StoreStatsV4PeriodViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoreStatsV4PeriodViewController.xib; sourceTree = "<group>"; };
 		0217399A2772F9DD0084CD89 /* StoreStatsV4PeriodViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreStatsV4PeriodViewController.swift; sourceTree = "<group>"; };
 		0217399D2772FB7E0084CD89 /* StoreStatsAndTopPerformersPeriodViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreStatsAndTopPerformersPeriodViewController.swift; sourceTree = "<group>"; };
@@ -1761,8 +1753,6 @@
 		021FAFCC2355621E00B99241 /* UIView+SubviewsAxisTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SubviewsAxisTests.swift"; sourceTree = "<group>"; };
 		021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SubviewsAxis.swift"; sourceTree = "<group>"; };
 		021FB44B24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListMultiSelectorSearchUICommand.swift; sourceTree = "<group>"; };
-		0222729127746D8B007D3851 /* OldStoreStatsV4PeriodViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldStoreStatsV4PeriodViewController.swift; sourceTree = "<group>"; };
-		0224B1C72786E69B008F536D /* LegacyTopPerformersSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyTopPerformersSectionHeaderView.swift; sourceTree = "<group>"; };
 		0225C42724768A4C00C5B4F0 /* FilterProductListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListViewModelTests.swift; sourceTree = "<group>"; };
 		0225C42924768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListViewModelProductListFilterTests.swift; sourceTree = "<group>"; };
 		0225C42B2477D0D500C5B4F0 /* ProductFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormViewModel.swift; sourceTree = "<group>"; };
@@ -1936,8 +1926,6 @@
 		028AFFB22484ED2800693C09 /* Dictionary+Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Logging.swift"; sourceTree = "<group>"; };
 		028AFFB52484EDA000693C09 /* Dictionary+LoggingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+LoggingTests.swift"; sourceTree = "<group>"; };
 		028BAC3C22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsAndTopPerformersViewController.swift; sourceTree = "<group>"; };
-		028BAC3F22F2EFA5008BB4AF /* OldStoreStatsAndTopPerformersPeriodViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldStoreStatsAndTopPerformersPeriodViewController.swift; sourceTree = "<group>"; };
-		028BAC4422F3AE5C008BB4AF /* OldStoreStatsV4PeriodViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OldStoreStatsV4PeriodViewController.xib; sourceTree = "<group>"; };
 		028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StatsTimeRangeV4+UI.swift"; sourceTree = "<group>"; };
 		028FA465257E021100F88A48 /* RefundShippingLabelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingLabelViewModel.swift; sourceTree = "<group>"; };
 		028FA46B257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainTextSectionHeaderView.swift; sourceTree = "<group>"; };
@@ -2094,9 +2082,9 @@
 		094C161127B0604700B25F51 /* ProductVariationFormViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductVariationFormViewModelTests.swift; sourceTree = "<group>"; };
 		09885C8627C6947A00910A62 /* ProductPriceSettingsValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPriceSettingsValidator.swift; sourceTree = "<group>"; };
 		098FFA1627AD7F5D002EBEE4 /* OrderStatusListDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListDataSourceTests.swift; sourceTree = "<group>"; };
-		09EA565127C8235200407D40 /* ProductPriceSettingsValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPriceSettingsValidatorTests.swift; sourceTree = "<group>"; };
 		09C6A26127C01166001FAD73 /* BulkUpdateViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkUpdateViewModelTests.swift; sourceTree = "<group>"; };
 		09E41E1C27B90B3B00BFCB7C /* BulkUpdateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkUpdateViewModel.swift; sourceTree = "<group>"; };
+		09EA565127C8235200407D40 /* ProductPriceSettingsValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPriceSettingsValidatorTests.swift; sourceTree = "<group>"; };
 		09EA565327C8ACEE00407D40 /* BulkUpdateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BulkUpdateViewController.swift; sourceTree = "<group>"; };
 		09EA565427C8ACEE00407D40 /* BulkUpdateViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BulkUpdateViewController.xib; sourceTree = "<group>"; };
 		247CE8A5258340E600F9D9D1 /* ScreenshotImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ScreenshotImages.xcassets; sourceTree = "<group>"; };
@@ -2715,8 +2703,6 @@
 		B541B222218A29A6008FE7C1 /* NSParagraphStyle+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSParagraphStyle+Woo.swift"; sourceTree = "<group>"; };
 		B541B225218A412C008FE7C1 /* UIFont+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Woo.swift"; sourceTree = "<group>"; };
 		B54FBE542111F70700390F57 /* ResultsController+UIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ResultsController+UIKit.swift"; sourceTree = "<group>"; };
-		B55401682170D5E10067DC90 /* LegacyChartPlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyChartPlaceholderView.swift; sourceTree = "<group>"; };
-		B554016A2170D6010067DC90 /* LegacyChartPlaceholderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LegacyChartPlaceholderView.xib; sourceTree = "<group>"; };
 		B554E1782152F20000F31188 /* UINavigationBar+Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Appearance.swift"; sourceTree = "<group>"; };
 		B554E17A2152F27200F31188 /* UILabel+Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Appearance.swift"; sourceTree = "<group>"; };
 		B555530C21B57DC300449E71 /* UserNotificationsCenterAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNotificationsCenterAdapter.swift; sourceTree = "<group>"; };
@@ -4041,11 +4027,6 @@
 				021739992772F9DC0084CD89 /* StoreStatsV4PeriodViewController.xib */,
 				02312796277D4F640060E180 /* StoreStatsPeriodViewModel.swift */,
 				0217399F2773F5F50084CD89 /* StoreStatsChartCircleMarker.swift */,
-				021739972772CE220084CD89 /* OldStoreStatsAndTopPerformersViewController.swift */,
-				028BAC3F22F2EFA5008BB4AF /* OldStoreStatsAndTopPerformersPeriodViewController.swift */,
-				0222729127746D8B007D3851 /* OldStoreStatsV4PeriodViewController.swift */,
-				028BAC4422F3AE5C008BB4AF /* OldStoreStatsV4PeriodViewController.xib */,
-				0224B1C72786E69B008F536D /* LegacyTopPerformersSectionHeaderView.swift */,
 				028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */,
 				0285BF6F22FBD91C003A2525 /* TopPerformersSectionHeaderView.swift */,
 				02E4FD79230688BA0049610C /* OrderStatsV4Interval+Chart.swift */,
@@ -5454,8 +5435,6 @@
 				74AAF6A4212A04A900C612B0 /* ChartMarker.swift */,
 				02AB407A27827C9100929CF3 /* ChartPlaceholderView.swift */,
 				02AB407927827C9000929CF3 /* ChartPlaceholderView.xib */,
-				B55401682170D5E10067DC90 /* LegacyChartPlaceholderView.swift */,
-				B554016A2170D6010067DC90 /* LegacyChartPlaceholderView.xib */,
 				748D34E02148291E00E21A2F /* TopPerformerDataViewController.swift */,
 				748D34DC214828DC00E21A2F /* TopPerformerDataViewController.xib */,
 			);
@@ -7985,7 +7964,6 @@
 				4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */,
 				26B119B924D0B38F00FED5C7 /* SurveyViewController.xib in Resources */,
 				D843D5D422485009001BFA55 /* ShipmentProvidersViewController.xib in Resources */,
-				028BAC4522F3AE5C008BB4AF /* OldStoreStatsV4PeriodViewController.xib in Resources */,
 				CE227099228F180B00C0626C /* WooBasicTableViewCell.xib in Resources */,
 				93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */,
 				02162727237963AF000208D2 /* ProductFormViewController.xib in Resources */,
@@ -8108,7 +8086,6 @@
 				0286B27C23C7051F003D784B /* ProductImagesViewController.xib in Resources */,
 				02F49ADE23BF3A4100FA0BFA /* ErrorSectionHeaderView.xib in Resources */,
 				6832C7CC26DA5FDF00BA4088 /* LabeledTextViewTableViewCell.xib in Resources */,
-				B554016B2170D6010067DC90 /* LegacyChartPlaceholderView.xib in Resources */,
 				26CCBE0D2523C2560073F94D /* RefundProductsTotalTableViewCell.xib in Resources */,
 				CE32B11620BF8779006FBCF4 /* ButtonTableViewCell.xib in Resources */,
 				45381B4627341B8A003FEC5F /* DateRangeFilterViewController.xib in Resources */,
@@ -8588,7 +8565,6 @@
 				E1ED16E4266E10A10037B8DB /* ApplicationLogViewModel.swift in Sources */,
 				02F6800925807CD300C3BAD2 /* GridStackView.swift in Sources */,
 				DE279BB126EA184A002BA963 /* ShippingLabelPackageListViewModel.swift in Sources */,
-				0222729227746D8B007D3851 /* OldStoreStatsV4PeriodViewController.swift in Sources */,
 				02B1AFEC24BC5AE5005DB1E3 /* LinkedProductListSelectorDataSource.swift in Sources */,
 				26F94E1C267A3E4500DB6CCF /* ProductAddOnsListViewController.swift in Sources */,
 				451A04EC2386D2B300E368C9 /* ProductImagesCollectionViewDataSource.swift in Sources */,
@@ -8774,7 +8750,6 @@
 				B5F8B7E02194759100DAB7E2 /* ReviewDetailsViewController.swift in Sources */,
 				262A098B2628C51D0033AD20 /* OrderAddOnListViewModel.swift in Sources */,
 				0262DA5323A238460029AF30 /* UnitInputTableViewCell.swift in Sources */,
-				021739982772CE220084CD89 /* OldStoreStatsAndTopPerformersViewController.swift in Sources */,
 				D8EE9692264D328A0033B2F9 /* ReceiptViewController.swift in Sources */,
 				02E4FD7C2306A04C0049610C /* StatsTimeRangeBarView.swift in Sources */,
 				D8810086257DCCF0008DE6F2 /* WordPressComSiteInfo+Woo.swift in Sources */,
@@ -8989,7 +8964,6 @@
 				45D1CF4723BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift in Sources */,
 				453DBF9023882814006762A5 /* ProductImagesFlowLayout.swift in Sources */,
 				024DF30E23742A70006658FE /* AztecBoldFormatBarCommand.swift in Sources */,
-				0224B1C82786E69B008F536D /* LegacyTopPerformersSectionHeaderView.swift in Sources */,
 				02396251239948470096F34C /* UIImage+TintColor.swift in Sources */,
 				DEE6437826D8DAD900888A75 /* InProgressView.swift in Sources */,
 				0290E275238E4F8100B5C466 /* PaginatedListSelectorViewController.swift in Sources */,
@@ -9065,7 +9039,6 @@
 				0379C51B27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift in Sources */,
 				D85136B9231CED5800DD0539 /* ReviewAge.swift in Sources */,
 				5718852C2465D9EC00E2486F /* ReviewsCoordinator.swift in Sources */,
-				028BAC4022F2EFA5008BB4AF /* OldStoreStatsAndTopPerformersPeriodViewController.swift in Sources */,
 				26E1BECA251BE5390096D0A1 /* RefundItemTableViewCell.swift in Sources */,
 				DE7B479527A38B8F0018742E /* CouponDetailsViewModel.swift in Sources */,
 				DEC2962926C20ECB005A056B /* CollapsibleView.swift in Sources */,
@@ -9076,7 +9049,6 @@
 				262A09A5262F65690033AD20 /* OrderAddOnTopBanner.swift in Sources */,
 				4515262E2577D56C0076B03C /* AddAttributeViewController.swift in Sources */,
 				57EBC92024EEE61800C1D45B /* WooAnalyticsEvent.swift in Sources */,
-				B55401692170D5E10067DC90 /* LegacyChartPlaceholderView.swift in Sources */,
 				57CDABB9252E9BEB00BED88C /* ButtonTableFooterView.swift in Sources */,
 				02E4FD7E2306A8180049610C /* StatsTimeRangeBarViewModel.swift in Sources */,
 				021FAFCF23556D2B00B99241 /* UIView+SubviewsAxis.swift in Sources */,

@@ -18,14 +18,6 @@ extension DateFormatter {
             return formatter
         }()
 
-        /// Date formatter used for creating the date for a selected date displayed on the time range bar for **hour** granularity.
-        ///
-        public static let legacyChartSelectedDateHourFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.setLocalizedDateFormatFromTemplate("ha")
-            return formatter
-        }()
-
         /// Date formatter used for creating the date displayed on a chart axis for **hour** granularity.
         ///
         public static let chartAxisHourFormatter: DateFormatter = {
@@ -71,14 +63,6 @@ extension DateFormatter {
         public static let chartAxisFullMonthFormatter: DateFormatter = {
             let formatter = DateFormatter()
             formatter.setLocalizedDateFormatFromTemplate("MMMM yyyy")
-            return formatter
-        }()
-
-        /// Date formatter used for displaying the full month on a chart axis.
-        ///
-        public static let legacyChartAxisFullMonthFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.setLocalizedDateFormatFromTemplate("MMMM")
             return formatter
         }()
 

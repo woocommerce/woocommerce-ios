@@ -58,8 +58,7 @@ final class ProductTableViewCell: UITableViewCell {
         accessoryLabel.applyBodyStyle()
         detailLabel.applyFootnoteStyle()
         applyProductImageStyle()
-        backgroundColor = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) ?
-        Constants.backgroundColor: Constants.legacyBackgroundColor
+        backgroundColor = Constants.backgroundColor
         bottomBorderView.backgroundColor = .systemColor(.separator)
         selectionStyle = .default
     }
@@ -107,28 +106,17 @@ extension ProductTableViewCell {
 
 extension ProductTableViewCell.ViewModel {
     init(statsItem: TopEarnerStatsItem?,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         isMyStoreTabUpdatesEnabled: Bool) {
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         nameText = statsItem?.productName
         imageURL = statsItem?.imageUrl
 
-        if isMyStoreTabUpdatesEnabled {
-            detailText = String.localizedStringWithFormat(
-                NSLocalizedString("Net sales: %@",
-                                  comment: "Top performers — label for the total sales of a product"),
-                statsItem?.totalString(currencyFormatter: currencyFormatter) ?? ""
-            )
-            accessoryText = "\(statsItem?.quantity ?? 0)"
-            backgroundColor = ProductTableViewCell.Constants.backgroundColor
-        } else {
-            detailText = String.localizedStringWithFormat(
-                NSLocalizedString("Total orders: %ld",
-                                  comment: "Top performers — label for the total number of products ordered"),
-                statsItem?.quantity ?? 0
-            )
-            accessoryText = statsItem?.formattedTotalString
-            backgroundColor = ProductTableViewCell.Constants.legacyBackgroundColor
-        }
+        detailText = String.localizedStringWithFormat(
+            NSLocalizedString("Net sales: %@",
+                              comment: "Top performers — label for the total sales of a product"),
+            statsItem?.totalString(currencyFormatter: currencyFormatter) ?? ""
+        )
+        accessoryText = "\(statsItem?.quantity ?? 0)"
+        backgroundColor = ProductTableViewCell.Constants.backgroundColor
     }
 }
 
@@ -144,7 +132,6 @@ private extension ProductTableViewCell {
 
     enum Constants {
         static let backgroundColor: UIColor = .systemBackground
-        static let legacyBackgroundColor: UIColor = .listForeground
     }
 }
 

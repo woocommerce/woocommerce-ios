@@ -8,6 +8,7 @@
 - [*] Coupons: Added feedback banner on the top of the coupon list. [https://github.com/woocommerce/woocommerce-ios/pull/6316]
 - [internal] Removed all feature flags for Shipping Labels. Please smoke test all parts of Shipping Labels to make sure that everything still works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6270]
 - [*] In-Person Payments: Localized messages and UI [https://github.com/woocommerce/woocommerce-ios/pull/6317]
+- [*] My Store: Fixed incorrect currency symbol of revenue text. [https://github.com/woocommerce/woocommerce-ios/pull/6335]
 
 8.6
 -----

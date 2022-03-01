@@ -364,8 +364,6 @@ private extension TopPerformerDataViewController {
                                                           comment: "Description for Top Performers section of My Store tab.")
         static let sectionLeftColumn = NSLocalizedString("Products", comment: "Description for Top Performers left column header")
         static let sectionRightColumn = NSLocalizedString("Items Sold", comment: "Description for Top Performers right column header")
-        static let legacySectionLeftColumn = NSLocalizedString("Product", comment: "Legacy description for Top Performers left column header")
-        static let legacySectionRightColumn = NSLocalizedString("Total Spend", comment: "Legacy description for Top Performers right column header")
     }
 
     enum TableViewStyle {

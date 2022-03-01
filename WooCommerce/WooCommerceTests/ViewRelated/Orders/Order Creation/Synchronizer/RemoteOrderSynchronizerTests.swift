@@ -5,6 +5,7 @@ import Combine
 
 @testable import WooCommerce
 @testable import Yosemite
+import SwiftUI
 
 class RemoteOrderSynchronizerTests: XCTestCase {
 
@@ -166,6 +167,69 @@ class RemoteOrderSynchronizerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(orderCreationInvoked)
+    }
+
+    func test_sending_new_product_input_sends_order_without_totals() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID, price: "20.0")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+
+        // When
+        let submittedItems: [OrderItem] = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, let order, _):
+                    promise(order.items)
+                default:
+                    XCTFail("Unexpected Action received: \(action)")
+                }
+            }
+
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            synchronizer.setProduct.send(input)
+        }
+
+        // Then
+        XCTAssertTrue(submittedItems.isNotEmpty)
+        for item in submittedItems {
+            XCTAssertTrue(item.total.isEmpty)
+            XCTAssertTrue(item.subtotal.isEmpty)
+        }
+    }
+
+    func test_sending_existing_product_input_sends_order_with_totals() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID, price: "20.0")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+
+        // When
+        let submittedItems: [OrderItem] = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, let order, let completion):
+                    completion(.success(order.copy(orderID: self.sampleOrderID)))
+                case .updateOrder(_, let order, _, _):
+                    promise(order.items)
+                default:
+                    XCTFail("Unexpected Action received: \(action)")
+                }
+            }
+
+            let initialInput = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 1)
+            self.createOrder(on: synchronizer, input: initialInput)
+
+            let input = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 2)
+            synchronizer.setProduct.send(input)
+        }
+
+        // Then
+        XCTAssertTrue(submittedItems.isNotEmpty)
+        for item in submittedItems {
+            XCTAssertTrue(item.total.isNotEmpty)
+            XCTAssertTrue(item.subtotal.isNotEmpty)
+        }
     }
 
     func test_sending_addresses_input_triggers_order_creation() {

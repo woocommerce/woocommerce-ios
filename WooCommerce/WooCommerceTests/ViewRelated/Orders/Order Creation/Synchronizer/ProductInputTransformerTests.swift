@@ -28,6 +28,7 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.variationID, 0)
         XCTAssertEqual(item.price, 9.99)
         XCTAssertEqual(item.subtotal, "9.99")
+        XCTAssertEqual(item.total, "9.99")
     }
 
     func test_sending_a_new_product_variation_input_adds_an_item_to_order() throws {
@@ -47,6 +48,7 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.variationID, productVariation.productVariationID)
         XCTAssertEqual(item.price, 9.99)
         XCTAssertEqual(item.subtotal, "9.99")
+        XCTAssertEqual(item.total, "9.99")
     }
 
     func test_sending_a_new_product_input_twice_adds_adds_two_items_to_order() throws {
@@ -80,6 +82,7 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.productID, product.productID)
         XCTAssertEqual(item.price, 9.99)
         XCTAssertEqual(item.subtotal, "19.98")
+        XCTAssertEqual(item.total, "19.98")
     }
 
     func test_sending_an_zero_quantity_update_product_input_deletes_item_on_order() throws {

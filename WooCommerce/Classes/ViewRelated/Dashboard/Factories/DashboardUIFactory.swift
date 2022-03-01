@@ -34,12 +34,10 @@ final class DashboardUIFactory {
 
     private var lastStatsV4DashboardUI: DashboardUI?
     private lazy var deprecatedStatsViewController = DeprecatedDashboardStatsViewController()
-    private let featureFlagService: FeatureFlagService
 
-    init(siteID: Int64, currentDateProvider: @escaping () -> Date = Date.init, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(siteID: Int64, currentDateProvider: @escaping () -> Date = Date.init) {
         self.siteID = siteID
         self.statsVersionCoordinator = StatsVersionCoordinator(siteID: siteID)
-        self.featureFlagService = featureFlagService
     }
 
     func reloadDashboardUI(onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
@@ -56,11 +54,7 @@ final class DashboardUIFactory {
             return lastStatsV4DashboardUI
         }
         let dashboardUI: DashboardUI
-        if featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) {
-            dashboardUI = StoreStatsAndTopPerformersViewController(siteID: siteID)
-        } else {
-            dashboardUI = OldStoreStatsAndTopPerformersViewController(siteID: siteID)
-        }
+        dashboardUI = StoreStatsAndTopPerformersViewController(siteID: siteID)
         lastStatsV4DashboardUI = dashboardUI
         return dashboardUI
     }

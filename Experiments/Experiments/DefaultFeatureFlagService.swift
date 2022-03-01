@@ -19,8 +19,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .systemStatusReport:
             return true
-        case .myStoreTabUpdates:
-            return true
         case .couponView:
             return true
         case .productSKUInputScanner:

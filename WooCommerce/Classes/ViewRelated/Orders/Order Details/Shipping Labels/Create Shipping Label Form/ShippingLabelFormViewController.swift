@@ -213,6 +213,8 @@ private extension ShippingLabelFormViewController {
                        body: viewModel.originAddress?.fullNameWithCompanyAndAddress,
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             guard let self = self else { return }
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "origin_address_started"])
+
             // Skip remote validation and navigate to edit address
             // if customs form is required and phone number is not found.
             if self.viewModel.customsFormRequired,
@@ -246,6 +248,7 @@ private extension ShippingLabelFormViewController {
                        body: viewModel.destinationAddress?.fullNameWithCompanyAndAddress,
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             guard let self = self else { return }
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "destination_address_started"])
 
             // Skip remote validation and navigate to edit address
             // if customs form is required and phone number is not found.

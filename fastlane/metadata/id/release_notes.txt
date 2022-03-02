@@ -1,0 +1,5 @@
+Kami telah memperbarui fitur pembuatan pesanan eksperimental. Berbagai produk kini ditunjukkan di daftar atribut.
+
+Kami juga menambahkan fitur eksperimental lainnya – Manajemen kupon! Buka Lebih banyak tab, pengaturan, dan pengaturan Eksperimental untuk mengaktifkannya. Kami menantikan umpan balik Anda untuk aplikasi ini, terutama fitur baru yang sedang kami kerjakan dan buka aksesnya lebih awal.
+
+Terima kasih kepada pengguna GitHub chrisKns karena membantu memperbaiki rilis. ❤

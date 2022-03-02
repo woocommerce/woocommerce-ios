@@ -157,8 +157,7 @@ private extension BulkUpdateViewController {
     ///
     func configureRegularPrice(cell: ValueOneTableViewCell) {
 
-        cell.textLabel?.text = Localization.priceTitle
-        cell.detailTextLabel?.text = viewModel.regularPriceValue().text
+        cell.configure(with: viewModel.viewModelForDisplayingRegularPrice())
     }
 }
 
@@ -221,11 +220,4 @@ extension BulkUpdateViewController {
 private struct Constants {
     static let sectionHeight = CGFloat(44)
     static let placeholderRowsPerSection = [1]
-}
-
-extension BulkUpdateViewController {
-    private enum Localization {
-        static let priceTitle = NSLocalizedString("Regular Price",
-                                                  comment: "The label in the option of selecting to bulk update the regular price of a product variation")
-    }
 }

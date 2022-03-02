@@ -8,9 +8,6 @@ final class BulkUpdateViewModel {
     typealias Section = BulkUpdateViewController.Section
     typealias Row = BulkUpdateViewController.Row
 
-    /// Type that holds the description of an bulk update option, like "Mixed" or "None", and a flag indicating if the value is missing from all variations.
-    typealias UpdateOptionDescription = (text: String, isNotSetForAll: Bool)
-
     /// Represents possible states for syncing product variations.
     enum SyncState: Equatable {
         case syncing
@@ -95,24 +92,26 @@ final class BulkUpdateViewModel {
         storesManager.dispatch(action)
     }
 
-    /// Provides the user facing details for the "bulk update option" of the sale price .
-    /// It returns a tuple with the user facing text and a `Bool` indicating all of the variations do not have a value for the sale price.
+    /// Provides the view model with all user facing data of the option for updating the regular price
     ///
-    func regularPriceValue() -> UpdateOptionDescription {
-        textforPrice(\ProductVariation.regularPrice)
+    func viewModelForDisplayingRegularPrice() -> ValueOneTableViewCell.ViewModel {
+        return ValueOneTableViewCell.ViewModel(text: Localization.updateRegularPriceTitle,
+                                               detailText: detailTextforPrice(\ProductVariation.regularPrice))
     }
 
-    /// It returns a tuple, containing a user facing description for the price of a collection of `ProductVariation`.
-    /// The value is defined by the `priceKeyPath`.
+    /// Returns the detail text of the option for updating a price
     ///
-    private func textforPrice(_ priceKeyPath: KeyPath<ProductVariation, String?>) -> UpdateOptionDescription {
-        switch bulkValueOf(priceKeyPath) {
+    private func detailTextforPrice(_ priceKeyPath: KeyPath<ProductVariation, String?>) -> String {
+        guard let bulkUpdateFormModel = bulkUpdateFormModel else {
+            return ""
+        }
+        switch bulkUpdateFormModel.bulkValueOf(priceKeyPath) {
         case .none:
-            return (BulkUpdateViewModel.Localization.noneValue, true)
+            return Localization.noneValue
         case .mixed:
-            return (BulkUpdateViewModel.Localization.mixedValue, false)
+            return Localization.mixedValue
         case let .value(price):
-            return (formatPriceString(price), false)
+            return formatPriceString(price)
         }
     }
 
@@ -154,12 +153,17 @@ final class BulkUpdateViewModel {
 
 extension BulkUpdateViewModel {
     private enum Localization {
-        static let priceTitle = NSLocalizedString("Price", comment: "The title for the price settings section in the product variation bulk update screen")
+        static let priceSectionTitle = NSLocalizedString("Price",
+                                                         comment: "The title for the price settings section in the product variation bulk update"
+                                                         + "screen")
         static let mixedValue = NSLocalizedString("Mixed",
                                                   comment: "The description in product variations bulk update, of a value, that is different across"
-                                                    + "all variations")
+                                                  + "all variations")
         static let noneValue = NSLocalizedString("None",
                                                  comment: "The description in product variations bulk update, of a value, that is missing from all variations")
+        static let updateRegularPriceTitle = NSLocalizedString("Regular Price",
+                                                               comment: "The label in the option of selecting to bulk update the regular price of a product"
+                                                               + " variation")
     }
 }
 

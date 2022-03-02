@@ -172,9 +172,9 @@ final class BulkUpdateViewModelTests: XCTestCase {
             viewModel.syncState == .synced
         }
 
-        let regularPriceValue = viewModel.regularPriceValue()
-        XCTAssertEqual(regularPriceValue.text, "$1.00")
-        XCTAssertFalse(regularPriceValue.isNotSetForAll)
+        let regularPriceViewModel = viewModel.viewModelForDisplayingRegularPrice()
+        XCTAssertFalse(regularPriceViewModel.text.isEmpty)
+        XCTAssertEqual(regularPriceViewModel.detailText, "$1.00")
     }
 
     func test_sale_price_description_when_some_products_have_different_price() {
@@ -203,9 +203,9 @@ final class BulkUpdateViewModelTests: XCTestCase {
             viewModel.syncState == .synced
         }
 
-        let regularPriceValue = viewModel.regularPriceValue()
-        XCTAssertTrue(regularPriceValue.text.isNotEmpty)
-        XCTAssertFalse(regularPriceValue.isNotSetForAll)
+        let regularPriceViewModel = viewModel.viewModelForDisplayingRegularPrice()
+        XCTAssertFalse(regularPriceViewModel.text.isEmpty)
+        XCTAssertFalse(regularPriceViewModel.detailText.isEmpty)
     }
 
     func test_sale_price_description_when_all_products_have_no_price() {
@@ -234,9 +234,10 @@ final class BulkUpdateViewModelTests: XCTestCase {
             viewModel.syncState == .synced
         }
 
-        let regularPriceValue = viewModel.regularPriceValue()
-        XCTAssertTrue(regularPriceValue.text.isNotEmpty)
-        XCTAssertTrue(regularPriceValue.isNotSetForAll)
+        let regularPriceViewModel = viewModel.viewModelForDisplayingRegularPrice()
+        XCTAssertFalse(regularPriceViewModel.text.isEmpty)
+        XCTAssertFalse(regularPriceViewModel.detailText.isEmpty)
+
     }
 
     func test_sale_price_description_when_some_products_have_no_price() {
@@ -265,8 +266,8 @@ final class BulkUpdateViewModelTests: XCTestCase {
             viewModel.syncState == .synced
         }
 
-        let regularPriceValue = viewModel.regularPriceValue()
-        XCTAssertTrue(regularPriceValue.text.isNotEmpty)
-        XCTAssertFalse(regularPriceValue.isNotSetForAll)
+        let regularPriceViewModel = viewModel.viewModelForDisplayingRegularPrice()
+        XCTAssertFalse(regularPriceViewModel.text.isEmpty)
+        XCTAssertFalse(regularPriceViewModel.detailText.isEmpty)
     }
 }

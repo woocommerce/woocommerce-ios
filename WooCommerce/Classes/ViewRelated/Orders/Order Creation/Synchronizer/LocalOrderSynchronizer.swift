@@ -73,14 +73,11 @@ private extension LocalOrderSynchronizer {
             .assign(to: &$order)
 
         setProduct.withLatestFrom(orderPublisher)
-            .map { [weak self] productInput, order -> Order in
+            .map { [weak self] productInput, order in
                 guard let self = self else { return order }
                 let sanitizedInput = self.replaceInputWithLocalIDIfNeeded(productInput)
-                return ProductInputTransformer.update(input: sanitizedInput, on: order)
-            }
-            .map { [weak self] order in
-                guard let self = self else { return order }
-                return order.copy(total: self.getTotalFor(order))
+                let updatedOrder = ProductInputTransformer.update(input: sanitizedInput, on: order)
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .assign(to: &$order)
 
@@ -91,22 +88,18 @@ private extension LocalOrderSynchronizer {
             .assign(to: &$order)
 
         setShipping.withLatestFrom(orderPublisher)
-            .map { shippingLineInput, order in
-                order.copy(shippingTotal: shippingLineInput?.total ?? "0", shippingLines: shippingLineInput.flatMap { [$0] } ?? [])
-            }
-            .map { [weak self] order in
-                guard let self = self else { return order }
-                return order.copy(total: self.getTotalFor(order))
+            .map { [weak self] shippingLineInput, order in
+                guard let self = self else { return order}
+                let updatedOrder = order.copy(shippingTotal: shippingLineInput?.total ?? "0", shippingLines: shippingLineInput.flatMap { [$0] } ?? [])
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .assign(to: &$order)
 
         setFee.withLatestFrom(orderPublisher)
-            .map { feeLineInput, order in
-                order.copy(fees: feeLineInput.flatMap { [$0] } ?? [])
-            }
-            .map { [weak self] order in
-                guard let self = self else { return order }
-                return order.copy(total: self.getTotalFor(order))
+            .map { [weak self] feeLineInput, order in
+                guard let self = self else { return order}
+                let updatedOrder = order.copy(fees: feeLineInput.flatMap { [$0] } ?? [])
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .assign(to: &$order)
     }
@@ -118,23 +111,5 @@ private extension LocalOrderSynchronizer {
             return input
         }
         return input.updating(id: Int64(UUID().uuidString.hashValue))
-    }
-
-    /// Calculates and returns the current order total.
-    ///
-    func getTotalFor(_ order: Order) -> String {
-        let itemsTotal = order.items
-            .map { $0.subtotal }
-            .compactMap { currencyFormatter.convertToDecimal(from: $0) }
-            .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
-
-        let shippingTotal = currencyFormatter.convertToDecimal(from: order.shippingTotal) ?? .zero
-
-        let feesTotal = order.fees
-            .map { $0.total }
-            .compactMap { currencyFormatter.convertToDecimal(from: $0) }
-            .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
-
-        return itemsTotal.adding(shippingTotal).adding(feesTotal).stringValue
     }
 }

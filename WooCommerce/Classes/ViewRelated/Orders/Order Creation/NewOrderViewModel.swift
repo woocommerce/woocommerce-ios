@@ -489,23 +489,9 @@ private extension NewOrderViewModel {
                     return PaymentDataViewModel()
                 }
 
-                let itemsTotal = order.items
-                    .map { $0.subtotal }
-                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
-                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
-
-                let shippingTotal = self.currencyFormatter.convertToDecimal(from: order.shippingTotal) ?? .zero
+                let orderTotals = OrderTotalsCalculator(for: order, using: self.currencyFormatter)
 
                 let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
-
-                let taxesTotal = self.currencyFormatter.convertToDecimal(from: order.totalTax) ?? .zero
-
-                let feesBaseAmountForPercentage = itemsTotal.adding(shippingTotal).adding(taxesTotal)
-
-                let feesTotal = order.fees
-                    .map { $0.total }
-                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
-                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
                 let isDataSyncing: Bool = {
                     switch state {
@@ -516,13 +502,13 @@ private extension NewOrderViewModel {
                     }
                 }()
 
-                return PaymentDataViewModel(itemsTotal: itemsTotal.stringValue,
+                return PaymentDataViewModel(itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.isNotEmpty,
                                             shippingTotal: order.shippingTotal,
                                             shippingMethodTitle: shippingMethodTitle,
                                             shouldShowFees: order.fees.isNotEmpty,
-                                            feesBaseAmountForPercentage: feesBaseAmountForPercentage as Decimal,
-                                            feesTotal: feesTotal.stringValue,
+                                            feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
+                                            feesTotal: orderTotals.feesTotal.stringValue,
                                             orderTotal: order.total,
                                             isLoading: isDataSyncing,
                                             saveShippingLineClosure: self.saveShippingLine,

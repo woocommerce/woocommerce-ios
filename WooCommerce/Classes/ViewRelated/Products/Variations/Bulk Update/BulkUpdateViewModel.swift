@@ -83,11 +83,11 @@ final class BulkUpdateViewModel {
 
                     DDLogError("⛔️ Error synchronizing product variations: \(error)")
                 } else {
-                    self.configureResultsControllerAndFetchData { error in
+                    self.configureResultsControllerAndFetchData { [weak self] error in
                         if error != nil {
-                            self.syncState = .error
+                            self?.syncState = .error
                         } else {
-                            self.syncState = .synced
+                            self?.syncState = .synced
                         }
                     }
                 }

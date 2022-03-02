@@ -82,7 +82,8 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         synchronizer.setProduct.send(input2)
 
         // Then
-        XCTAssertEqual(synchronizer.order.items.count, 0)
+        XCTAssertEqual(synchronizer.order.items.count, 1)
+        XCTAssertEqual(synchronizer.order.items[0].quantity, .zero)
     }
 
     func test_sending_addresses_input_updates_local_order() throws {

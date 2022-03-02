@@ -38,6 +38,8 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     private let stores: StoresManager
 
+    private let currencyFormatter: CurrencyFormatter
+
     /// This is the order status that we will use to keep the order in sync with the remote source.
     ///
     private var baseSyncStatus: OrderStatusEnum = .pending
@@ -48,9 +50,10 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     // MARK: Initializers
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.siteID = siteID
         self.stores = stores
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
         updateBaseSyncOrderStatus()
         bindInputs()
@@ -89,8 +92,11 @@ private extension RemoteOrderSynchronizer {
             .assign(to: &$order)
 
         setProduct.withLatestFrom(orderPublisher)
-            .map { productInput, order in
-                ProductInputTransformer.update(input: productInput, on: order)
+            .map { [weak self] productInput, order in
+                guard let self = self else { return order }
+                let updatedOrder = ProductInputTransformer.update(input: productInput, on: order)
+                // Calculate order total locally while order is being synced
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .assign(to: &$order)
 
@@ -101,14 +107,20 @@ private extension RemoteOrderSynchronizer {
             .assign(to: &$order)
 
         setShipping.withLatestFrom(orderPublisher)
-            .map { shippingLineInput, order in
-                order.copy(shippingLines: shippingLineInput.flatMap { [$0] } ?? [])
+            .map { [weak self] shippingLineInput, order in
+                guard let self = self else { return order }
+                let updatedOrder = order.copy(shippingTotal: shippingLineInput?.total ?? "0", shippingLines: shippingLineInput.flatMap { [$0] } ?? [])
+                // Calculate order total locally while order is being synced
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .assign(to: &$order)
 
         setFee.withLatestFrom(orderPublisher)
-            .map { feeLineInput, order in
-                order.copy(fees: feeLineInput.flatMap { [$0] } ?? [])
+            .map { [weak self] feeLineInput, order in
+                guard let self = self else { return order }
+                let updatedOrder = order.copy(fees: feeLineInput.flatMap { [$0] } ?? [])
+                // Calculate order total locally while order is being synced
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .assign(to: &$order)
     }

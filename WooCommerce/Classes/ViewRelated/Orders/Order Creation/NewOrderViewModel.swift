@@ -166,7 +166,7 @@ final class NewOrderViewModel: ObservableObject {
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
         self.orderSynchronizer = enableRemoteSync ? RemoteOrderSynchronizer(siteID: siteID, stores: stores)
-                                                  : LocalOrderSynchronizer(siteID: siteID, stores: stores)
+                                                  : LocalOrderSynchronizer(siteID: siteID, stores: stores, currencySettings: currencySettings)
 
         configureDisabledState()
         configureNavigationTrailingItem()
@@ -489,28 +489,9 @@ private extension NewOrderViewModel {
                     return PaymentDataViewModel()
                 }
 
-                let itemsTotal = order.items
-                    .map { $0.subtotal }
-                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
-                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
-
-                let shippingTotal = order.shippingLines
-                    .map { $0.total }
-                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
-                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
+                let orderTotals = OrderTotalsCalculator(for: order, using: self.currencyFormatter)
 
                 let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
-
-                // TODO-6236: move totals calculation to LocalOrderSynchronizer, add tax to feesBaseAmount
-                let feesBaseAmountForPercentage = itemsTotal.adding(shippingTotal)
-
-                let feesTotal = order.fees
-                    .map { $0.total }
-                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
-                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
-
-
-                let orderTotal = feesBaseAmountForPercentage.adding(feesTotal)
 
                 let isDataSyncing: Bool = {
                     switch state {
@@ -521,14 +502,14 @@ private extension NewOrderViewModel {
                     }
                 }()
 
-                return PaymentDataViewModel(itemsTotal: itemsTotal.stringValue,
+                return PaymentDataViewModel(itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.isNotEmpty,
-                                            shippingTotal: shippingTotal.stringValue,
+                                            shippingTotal: order.shippingTotal,
                                             shippingMethodTitle: shippingMethodTitle,
                                             shouldShowFees: order.fees.isNotEmpty,
-                                            feesBaseAmountForPercentage: feesBaseAmountForPercentage as Decimal,
-                                            feesTotal: feesTotal.stringValue,
-                                            orderTotal: orderTotal.stringValue,
+                                            feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
+                                            feesTotal: orderTotals.feesTotal.stringValue,
+                                            orderTotal: order.total,
                                             isLoading: isDataSyncing,
                                             saveShippingLineClosure: self.saveShippingLine,
                                             saveFeeLineClosure: self.saveFeeLine,

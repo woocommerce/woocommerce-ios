@@ -498,15 +498,16 @@ private extension NewOrderViewModel {
 
                 let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
 
-                // TODO-6236: move totals calculation to LocalOrderSynchronizer, add tax to feesBaseAmount
-                let feesBaseAmountForPercentage = itemsTotal.adding(shippingTotal)
+                let taxesTotal = self.currencyFormatter.convertToDecimal(from: order.totalTax) ?? .zero
+
+                let feesBaseAmountForPercentage = itemsTotal.adding(shippingTotal).adding(taxesTotal)
 
                 let feesTotal = order.fees
                     .map { $0.total }
                     .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
                     .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
-
+                // TODO: Get this total from the order directly
                 let orderTotal = feesBaseAmountForPercentage.adding(feesTotal)
 
                 let isDataSyncing: Bool = {

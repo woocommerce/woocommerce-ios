@@ -166,7 +166,7 @@ final class NewOrderViewModel: ObservableObject {
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
         self.orderSynchronizer = enableRemoteSync ? RemoteOrderSynchronizer(siteID: siteID, stores: stores)
-                                                  : LocalOrderSynchronizer(siteID: siteID, stores: stores)
+        : LocalOrderSynchronizer(siteID: siteID, stores: stores, currencySettings: currencySettings)
 
         configureDisabledState()
         configureNavigationTrailingItem()

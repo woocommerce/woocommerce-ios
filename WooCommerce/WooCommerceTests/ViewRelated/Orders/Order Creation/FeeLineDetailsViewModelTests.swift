@@ -26,6 +26,7 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.amount, "11.30")
         XCTAssertEqual(viewModel.currencySymbol, "$")
         XCTAssertEqual(viewModel.currencyPosition, .left)
+        XCTAssertFalse(viewModel.isExistingFeeLine)
     }
 
     func test_view_model_formats_amount_with_custom_currency_settings() {

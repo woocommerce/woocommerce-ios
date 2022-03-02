@@ -494,10 +494,7 @@ private extension NewOrderViewModel {
                     .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
                     .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
-                let shippingTotal = order.shippingLines
-                    .map { $0.total }
-                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
-                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
+                let shippingTotal = self.currencyFormatter.convertToDecimal(from: order.shippingTotal) ?? .zero
 
                 let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
 

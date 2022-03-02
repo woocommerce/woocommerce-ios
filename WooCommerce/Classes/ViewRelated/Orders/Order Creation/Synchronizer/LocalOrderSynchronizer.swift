@@ -85,7 +85,7 @@ private extension LocalOrderSynchronizer {
 
         setShipping.withLatestFrom(orderPublisher)
             .map { shippingLineInput, order in
-                order.copy(shippingLines: shippingLineInput.flatMap { [$0] } ?? [])
+                order.copy(shippingTotal: shippingLineInput?.total ?? "0", shippingLines: shippingLineInput.flatMap { [$0] } ?? [])
             }
             .assign(to: &$order)
 

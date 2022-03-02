@@ -24,7 +24,7 @@ final class BulkUpdateViewModel {
     private let currencySettings: CurrencySettings
     private let siteID: Int64
     private let productID: Int64
-    private var productVariations: [ProductVariation] = []
+    private var bulkUpdateFormModel: BulkUpdateOptionsModel?
     private let currencyFormatter: CurrencyFormatter
 
     /// Product Variations Controller.
@@ -39,13 +39,12 @@ final class BulkUpdateViewModel {
     @Published private(set) var syncState: SyncState
 
     var sections: [Section] {
-        let priceSection = Section(title: Localization.priceTitle, rows: [.regularPrice])
-
-        if productVariations.isEmpty {
+        guard let bulkUpdateFormModel = bulkUpdateFormModel, bulkUpdateFormModel.productVariations.isNotEmpty else {
             return []
-        } else {
-            return [priceSection]
         }
+        let priceSection = Section(title: Localization.priceSectionTitle, rows: [.regularPrice])
+
+        return [priceSection]
     }
 
     init(siteID: Int64,
@@ -146,8 +145,10 @@ final class BulkUpdateViewModel {
     /// When new data are available we should update them and then update the syncSate
     ///
     private func updateProductVariations() {
-        productVariations = resultsController.fetchedObjects
         syncState = .synced
+        // Limit the variations to `Constants.numberOfObjects`, since it is the limit of th bulk update API
+        let candidatesForUpdate = Array(resultsController.fetchedObjects.prefix(Constants.numberOfObjects))
+        bulkUpdateFormModel = BulkUpdateOptionsModel(productVariations: candidatesForUpdate)
     }
 }
 
@@ -171,41 +172,5 @@ extension BulkUpdateViewModel {
 
         /// The bulk update API limits the objects to be update to 100. 100 is also the page limit.
         static let numberOfObjects = 100
-    }
-}
-
-private extension BulkUpdateViewModel {
-    /// Represents if a property in a collection of `ProductVariation`  has the same value or different values or is missing.
-    ///
-    enum BulkValue {
-        /// All variations have the same value
-        case value(String)
-        /// When variations have mixed values.
-        case mixed
-        /// None of the variation has a value
-        case none
-    }
-
-    /// Calculates and returns if a property, specified by a `ProductVariation` keypath , has the same value or different values or is missing
-    /// over all product variations of this view model.
-    ///
-    func bulkValueOf(_ keypath: KeyPath<ProductVariation, String?>) -> BulkValue {
-        let allValues = productVariations.prefix(Constants.numberOfObjects).map(keypath)
-        let allValuesWithoutNilOrEmpty = allValues.compactMap { $0 }.filter { !$0.isEmpty }
-        // filter all unique values that are not nil or empty
-        let uniqueResults = allValuesWithoutNilOrEmpty.uniqued()
-
-        if let samePrice = uniqueResults.first {
-            if uniqueResults.count == 1 && allValues.count == allValuesWithoutNilOrEmpty.count {
-                // If we have only 1 value and we did not had any nil/empty
-                return BulkValue.value(samePrice)
-            } else {
-                // If at least ony value is different, even if it is missing (nil/empty)
-                return BulkValue.mixed
-            }
-        } else {
-            // If all values are missing or empty
-            return BulkValue.none
-        }
     }
 }

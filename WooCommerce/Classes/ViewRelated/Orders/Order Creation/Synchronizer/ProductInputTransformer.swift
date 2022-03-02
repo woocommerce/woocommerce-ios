@@ -1,6 +1,5 @@
 import Foundation
 import Yosemite
-import Experiments
 
 /// Helper to updates an `order` given an `OrderSyncInput` type.
 ///

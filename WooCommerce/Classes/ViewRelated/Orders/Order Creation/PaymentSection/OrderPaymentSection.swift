@@ -47,8 +47,8 @@ struct OrderPaymentSection: View {
                     }
             }
 
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreationRemoteSynchronizer) { // TODO: Also check if the taxes row should be shown
-                TitleAndValueRow(title: Localization.taxesTotal, value: .content("$0.00")) // TODO: Add real tax value from synchronizer
+            if viewModel.shouldShowTaxes {
+                TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))
             }
 
             TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}

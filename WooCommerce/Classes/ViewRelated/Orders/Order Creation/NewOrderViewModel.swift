@@ -507,9 +507,6 @@ private extension NewOrderViewModel {
                     .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
                     .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
-                // TODO: Get this total from the order directly
-                let orderTotal = feesBaseAmountForPercentage.adding(feesTotal)
-
                 let isDataSyncing: Bool = {
                     switch state {
                     case .syncing:
@@ -521,12 +518,12 @@ private extension NewOrderViewModel {
 
                 return PaymentDataViewModel(itemsTotal: itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.isNotEmpty,
-                                            shippingTotal: shippingTotal.stringValue,
+                                            shippingTotal: order.shippingTotal,
                                             shippingMethodTitle: shippingMethodTitle,
                                             shouldShowFees: order.fees.isNotEmpty,
                                             feesBaseAmountForPercentage: feesBaseAmountForPercentage as Decimal,
                                             feesTotal: feesTotal.stringValue,
-                                            orderTotal: orderTotal.stringValue,
+                                            orderTotal: order.total,
                                             isLoading: isDataSyncing,
                                             saveShippingLineClosure: self.saveShippingLine,
                                             saveFeeLineClosure: self.saveFeeLine,

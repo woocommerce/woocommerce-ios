@@ -85,7 +85,13 @@ final class BulkUpdateViewModel {
 
                     DDLogError("⛔️ Error synchronizing product variations: \(error)")
                 } else {
-                    self.configureResultsController()
+                    self.configureResultsControllerAndFetchData { error in
+                        if error != nil {
+                            self.syncState = .error
+                        } else {
+                            self.syncState = .synced
+                        }
+                    }
                 }
             }
 
@@ -126,25 +132,26 @@ final class BulkUpdateViewModel {
 
     /// Setup the results controller
     ///
-    private func configureResultsController() {
+    private func configureResultsControllerAndFetchData(onCompletion: @escaping (Error?) -> Void) {
         resultsController.onDidChangeContent = { [weak self] in
             guard let self = self else { return }
-            self.updateProductVariations()
+            self.updateDataModel()
+            onCompletion(nil)
         }
 
         do {
             try resultsController.performFetch()
-            updateProductVariations()
+            updateDataModel()
+            onCompletion(nil)
         } catch {
             DDLogError("⛔️ Error fetching product variations: \(error)")
-            syncState = .error
+            onCompletion(error)
         }
     }
 
     /// When new data are available we should update them and then update the syncSate
     ///
-    private func updateProductVariations() {
-        syncState = .synced
+    private func updateDataModel() {
         // Limit the variations to `Constants.numberOfObjects`, since it is the limit of th bulk update API
         let candidatesForUpdate = Array(resultsController.fetchedObjects.prefix(Constants.numberOfObjects))
         bulkUpdateFormModel = BulkUpdateOptionsModel(productVariations: candidatesForUpdate)

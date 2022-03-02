@@ -40,7 +40,14 @@ struct InboxNoteRow: View {
                     // HStack with actions and dismiss action.
                     HStack(spacing: Constants.spacingBetweenActions) {
                         ForEach(viewModel.actions) { action in
-                            if action.url != nil {
+                            if viewModel.isSurvey {
+                                Button(action.title) {
+                                    viewModel.markInboxNoteAsActioned(actionID: action.id)
+                                }
+                                .buttonStyle(SecondaryButtonStyle())
+                                .fixedSize(horizontal: true, vertical: true)
+                            }
+                            else if action.url != nil {
                                 Button(action.title) {
                                     tappedAction = action
                                     viewModel.markInboxNoteAsActioned(actionID: action.id)
@@ -173,7 +180,8 @@ struct InboxNoteRow_Previews: PreviewProvider {
                                                          actions: [],
                                                          siteID: 1,
                                                          isPlaceholder: true,
-                                                         isRead: true)
+                                                         isRead: true,
+                                                         isSurvey: false)
         Group {
             VStack {
                 InboxNoteRow(viewModel: .init(note: note.copy(type: "marketing", dateCreated: today), today: today))
@@ -181,11 +189,14 @@ struct InboxNoteRow_Previews: PreviewProvider {
                 InboxNoteRow(viewModel: .init(note: shortNote.copy(type: "warning").copy(dateCreated: today.addingTimeInterval(-6*3600)), today: today))
                 InboxNoteRow(viewModel: .init(note: shortNote.copy(type: "update").copy(dateCreated: today.addingTimeInterval(-6*86400)), today: today))
                 InboxNoteRow(viewModel: .init(note: shortNote.copy(type: "info").copy(dateCreated: today.addingTimeInterval(-14*86400)), today: today))
-                InboxNoteRow(viewModel: .init(note: shortNote.copy(type: "survey").copy(dateCreated: today.addingTimeInterval(-1.5*86400)), today: today))
+                InboxNoteRow(viewModel: .init(note: shortNote
+                                                .copy(type: "survey")
+                                                .copy(dateCreated: today .addingTimeInterval(-1.5*86400))
+                                                .copy(title: "This is a Survey"), today: today))
             }
                 .preferredColorScheme(.dark)
                 .environment(\.sizeCategory, .extraSmall)
-                .previewLayout(.sizeThatFits)
+                .previewLayout(.fixed(width: 375, height: 1100))
             InboxNoteRow(viewModel: .init(note: note.copy(dateCreated: today.addingTimeInterval(-86400*2)), today: today))
                 .preferredColorScheme(.light)
             InboxNoteRow(viewModel: .init(note: note.copy(dateCreated: today.addingTimeInterval(-6*60)), today: today))

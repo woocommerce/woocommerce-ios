@@ -117,6 +117,11 @@ final class OrdersRootViewController: UIViewController {
             return
         }
 
+        // dismiss any presented controller before pushing the detail view.
+        if let presentedVC = presentedViewController {
+            presentedVC.dismiss(animated: true, completion: nil)
+        }
+
         let loaderViewController = OrderLoaderViewController(note: note, orderID: Int64(orderID), siteID: Int64(siteID))
         navigationController?.pushViewController(loaderViewController, animated: true)
     }

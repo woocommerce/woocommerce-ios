@@ -130,9 +130,7 @@ final class BulkUpdateViewModel {
     ///
     private func configureResultsController() {
         resultsController.onDidChangeContent = { [weak self] in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
             self.updateProductVariations()
         }
 

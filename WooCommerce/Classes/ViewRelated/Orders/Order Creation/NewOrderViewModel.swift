@@ -194,7 +194,8 @@ final class NewOrderViewModel: ObservableObject {
     /// Creates a view model for the `ProductRow` corresponding to an order item.
     ///
     func createProductRowViewModel(for item: OrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
-        guard let product = allProducts.first(where: { $0.productID == item.productID }) else {
+        guard item.quantity > 0, // Don't render any item with `.zero` quantity.
+              let product = allProducts.first(where: { $0.productID == item.productID }) else {
             return nil
         }
 

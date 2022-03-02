@@ -31,7 +31,6 @@ final class BulkUpdateViewModel {
     ///
     private lazy var resultsController: ResultsController<StorageProductVariation> = {
         let predicate = NSPredicate(format: "siteID == %lld AND productID == %lld", siteID, productID)
-
         let resultsController = ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [])
 
         return resultsController

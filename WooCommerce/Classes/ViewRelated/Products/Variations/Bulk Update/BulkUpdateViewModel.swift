@@ -76,9 +76,7 @@ final class BulkUpdateViewModel {
         let pageNumber = Constants.pageNumber
         let action = ProductVariationAction
             .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: numberOfObjects) { [weak self] error in
-                guard let self = self else {
-                    return
-                }
+                guard let self = self else { return }
 
                 if let error = error {
                     self.syncState = .error

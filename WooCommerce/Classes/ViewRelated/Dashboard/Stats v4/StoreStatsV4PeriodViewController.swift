@@ -63,9 +63,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         return ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
     }
 
-    private var orderStatsIntervals: [OrderStatsV4Interval] {
-        viewModel.orderStatsIntervals
-    }
+    private var orderStatsIntervals: [OrderStatsV4Interval] = []
 
     private var revenueItems: [Double] {
         orderStatsIntervals.map({ ($0.revenueValue as NSDecimalNumber).doubleValue })
@@ -153,7 +151,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
         observeStatsLabels()
         observeSelectedBarIndex()
         observeTimeRangeBarViewModel()
-        observeReloadChartAnimated()
+        observeOrderStatsIntervals()
         observeVisitorStatsViewState()
         observeConversionStatsViewState()
         observeYAxisMaximum()
@@ -217,9 +215,15 @@ private extension StoreStatsV4PeriodViewController {
         }.store(in: &cancellables)
     }
 
-    func observeReloadChartAnimated() {
-        viewModel.reloadChartAnimated.sink { [weak self] animated in
-            self?.reloadChart(animateChart: animated)
+    func observeOrderStatsIntervals() {
+        viewModel.orderStatsIntervals.sink { [weak self] orderStatsIntervals in
+            guard let self = self else { return }
+
+            self.orderStatsIntervals = orderStatsIntervals
+
+            // Don't animate the chart here - this helps avoid a "double animation" effect if a
+            // small number of values change (the chart WILL be updated correctly however)
+            self.reloadChart(animateChart: false)
         }.store(in: &cancellables)
     }
 

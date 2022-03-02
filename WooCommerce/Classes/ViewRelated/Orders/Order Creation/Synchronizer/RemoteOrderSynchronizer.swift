@@ -90,7 +90,7 @@ private extension RemoteOrderSynchronizer {
 
         setProduct.withLatestFrom(orderPublisher)
             .map { productInput, order in
-                ProductInputTransformer.update(input: productInput, on: order)
+                ProductInputTransformer.update(input: productInput, on: order, updateZeroQuantities: true)
             }
             .assign(to: &$order)
 

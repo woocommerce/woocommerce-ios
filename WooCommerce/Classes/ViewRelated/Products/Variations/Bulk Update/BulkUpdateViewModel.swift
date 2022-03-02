@@ -147,7 +147,7 @@ final class BulkUpdateViewModel {
         }
     }
 
-    /// When new data are available we should update them and then update the syncSate
+    /// When new data are available we should update them.
     ///
     private func updateDataModel() {
         // Limit the variations to `Constants.numberOfObjects`, since it is the limit of th bulk update API

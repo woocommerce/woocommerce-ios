@@ -98,7 +98,8 @@ private extension RemoteOrderSynchronizer {
         setProduct.withLatestFrom(orderPublisher)
             .map { [weak self] productInput, order in
                 guard let self = self else { return order }
-                let updatedOrder = ProductInputTransformer.update(input: productInput, on: order, updateZeroQuantities: true)
+                let localInput = self.replaceInputWithLocalIDIfNeeded(productInput)
+                let updatedOrder = ProductInputTransformer.update(input: localInput, on: order, updateZeroQuantities: true)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
@@ -214,7 +215,7 @@ private extension RemoteOrderSynchronizer {
             guard let self = self else { return }
 
             // Creates the order with the `draft` status
-            let draftOrder = order.copy(status: self.baseSyncStatus).removingTotalsFromLocalItems()
+            let draftOrder = order.copy(status: self.baseSyncStatus).sanitizingLocalItems()
             let action = OrderAction.createOrder(siteID: self.siteID, order: draftOrder) { [weak self] result in
                 guard let self = self else { return }
 
@@ -250,7 +251,7 @@ private extension RemoteOrderSynchronizer {
                 .items,
             ]
 
-            let orderToSubmit = order.removingTotalsFromLocalItems()
+            let orderToSubmit = order.sanitizingLocalItems()
             let action = OrderAction.updateOrder(siteID: self.siteID, order: orderToSubmit, fields: supportedFields) { [weak self] result in
                 guard let self = self else { return }
 
@@ -268,30 +269,19 @@ private extension RemoteOrderSynchronizer {
         }
         .eraseToAnyPublisher()
     }
+
+    /// Creates a new input with a proper local ID when the provided input  ID is `.zero`.
+    ///
+    func replaceInputWithLocalIDIfNeeded(_ input: OrderSyncProductInput) -> OrderSyncProductInput {
+        guard input.id == .zero else {
+            return input
+        }
+        return input.updating(id: localIDStore.dispatchLocalID())
+    }
 }
 
-// MARK: Order Helpers
-private extension Order {
-    /// Returns true if the order contains local items.
-    /// Local Items: items with ID `.zero`.
-    func containsLocalItems() -> Bool {
-        items.contains { $0.itemID == .zero }
-    }
-
-    /// Removes `total` & `subtotal` values from local items.
-    /// This is needed to let the remote source calculate the correct item total as it can vary depending on the store configuration.
-    /// EG: `prices_include_tax` is set.
-    ///
-    func removingTotalsFromLocalItems() -> Order {
-        let sanitizedItems: [OrderItem] = items.map { item in
-            guard item.itemID == .zero else {
-                return item
-            }
-            return item.copy(subtotal: "", total: "")
-        }
-        return copy(items: sanitizedItems)
-    }
-
+// MARK: Definitions
+private extension RemoteOrderSynchronizer {
     /// Simple type to serve negative IDs.
     /// This is needed to differentiate if an item ID has been synced remotely while providing a unique ID to consumers.
     /// If the ID is a negative number we assume that it's a local ID.
@@ -302,11 +292,41 @@ private extension Order {
         ///
         private var currentID: Int64 = 0
 
+        /// Returns true if a given ID is deemed to be local(negative).
+        ///
+        static func isIDLocal(_ id: Int64) -> Bool {
+            id < 0
+        }
+
         /// Creates a new and unique local ID for this session.
         ///
         func dispatchLocalID() -> Int64 {
             currentID -= 1
             return currentID
         }
+    }
+}
+
+// MARK: Order Helpers
+private extension Order {
+    /// Returns true if the order contains local items.
+    ///
+    func containsLocalItems() -> Bool {
+        items.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.itemID) }
+    }
+
+    /// Removes the `itemID`, `total` & `subtotal` values from local items.
+    /// This is needed to:
+    /// 1. Create the item without the local ID, the remote API would fail otherwise.
+    /// 2. Let the remote source calculate the correct item price & total as it can vary depending on the store configuration. EG: `prices_include_tax` is set.
+    ///
+    func sanitizingLocalItems() -> Order {
+        let sanitizedItems: [OrderItem] = items.map { item in
+            guard RemoteOrderSynchronizer.LocalIDStore.isIDLocal(item.itemID) else {
+                return item
+            }
+            return item.copy(itemID: .zero, subtotal: "", total: "")
+        }
+        return copy(items: sanitizedItems)
     }
 }

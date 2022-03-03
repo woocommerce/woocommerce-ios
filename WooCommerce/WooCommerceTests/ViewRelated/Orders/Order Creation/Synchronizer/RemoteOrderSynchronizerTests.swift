@@ -199,6 +199,34 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         }
     }
 
+    func test_sending_new_product_input_sends_order_with_zero_ids() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID, price: "20.0")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+
+        // When
+        let submittedItems: [OrderItem] = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, let order, _):
+                    promise(order.items)
+                default:
+                    XCTFail("Unexpected Action received: \(action)")
+                }
+            }
+
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            synchronizer.setProduct.send(input)
+        }
+
+        // Then
+        XCTAssertTrue(submittedItems.isNotEmpty)
+        for item in submittedItems {
+            XCTAssertEqual(item.itemID, .zero)
+        }
+    }
+
     func test_sending_existing_product_input_sends_order_with_totals() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "20.0")

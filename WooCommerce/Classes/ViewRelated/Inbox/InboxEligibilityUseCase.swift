@@ -3,6 +3,8 @@ import enum Yosemite.SystemStatusAction
 import protocol Yosemite.StoresManager
 import Experiments
 
+/// Checks whether a store is eligible for Inbox feature.
+/// Since mobile requires API support for filtering, only stores with a minimum WC plugin version are eligible.
 final class InboxEligibilityUseCase {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService

@@ -168,7 +168,7 @@ private extension HubMenuViewModelTests {
     }
 
     enum Fixtures {
-        // WooCommerce plugin.
+        // TODO: 6148 - Update the minimum WC version with inbox filtering.
         static let wcPluginIneligibleForInbox = SystemPlugin.fake().copy(version: "3.0.0", active: true)
         static let wcPluginEligibleForInbox = SystemPlugin.fake().copy(version: "6.1.0", active: true)
     }

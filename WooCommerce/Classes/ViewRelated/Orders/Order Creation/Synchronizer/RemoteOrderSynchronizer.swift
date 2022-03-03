@@ -94,7 +94,7 @@ private extension RemoteOrderSynchronizer {
         setProduct.withLatestFrom(orderPublisher)
             .map { [weak self] productInput, order in
                 guard let self = self else { return order }
-                let updatedOrder = ProductInputTransformer.update(input: productInput, on: order)
+                let updatedOrder = ProductInputTransformer.update(input: productInput, on: order, updateZeroQuantities: true)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }

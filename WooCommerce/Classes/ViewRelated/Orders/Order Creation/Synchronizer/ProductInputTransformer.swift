@@ -20,10 +20,11 @@ struct ProductInputTransformer {
     }
 
     /// Adds, deletes, or updates order items based on the given product input.
+    /// When `updateZeroQuantities` is true, items with `.zero` quantities will be updated instead of being deleted.
     ///
-    static func update(input: OrderSyncProductInput, on order: Order) -> Order {
-        // If the input's quantity is 0 or less, delete the item if possible.
-        guard input.quantity > 0 else {
+    static func update(input: OrderSyncProductInput, on order: Order, updateZeroQuantities: Bool) -> Order {
+        // If the input's quantity is 0 or less, delete the item if required.
+        guard input.quantity > 0 || updateZeroQuantities else {
             return remove(input: input, from: order)
         }
 

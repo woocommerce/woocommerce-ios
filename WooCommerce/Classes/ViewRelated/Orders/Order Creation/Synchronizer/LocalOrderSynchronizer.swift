@@ -76,7 +76,7 @@ private extension LocalOrderSynchronizer {
             .map { [weak self] productInput, order in
                 guard let self = self else { return order }
                 let sanitizedInput = self.replaceInputWithLocalIDIfNeeded(productInput)
-                let updatedOrder = ProductInputTransformer.update(input: sanitizedInput, on: order)
+                let updatedOrder = ProductInputTransformer.update(input: sanitizedInput, on: order, updateZeroQuantities: false)
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .assign(to: &$order)

@@ -207,7 +207,7 @@ private extension RemoteOrderSynchronizer {
             guard let self = self else { return }
 
             // Creates the order with the `draft` status
-            let draftOrder = order.copy(status: self.baseSyncStatus)
+            let draftOrder = order.copy(status: self.baseSyncStatus).removingTotalsFromLocalItems()
             let action = OrderAction.createOrder(siteID: self.siteID, order: draftOrder) { [weak self] result in
                 guard let self = self else { return }
 
@@ -242,7 +242,9 @@ private extension RemoteOrderSynchronizer {
                 .shippingLines,
                 .items,
             ]
-            let action = OrderAction.updateOrder(siteID: self.siteID, order: order, fields: supportedFields) { [weak self] result in
+
+            let orderToSubmit = order.removingTotalsFromLocalItems()
+            let action = OrderAction.updateOrder(siteID: self.siteID, order: orderToSubmit, fields: supportedFields) { [weak self] result in
                 guard let self = self else { return }
 
                 switch result {
@@ -267,5 +269,19 @@ private extension Order {
     /// Local Items: items with ID `.zero`.
     func containsLocalItems() -> Bool {
         items.contains { $0.itemID == .zero }
+    }
+
+    /// Removes `total` & `subtotal` values from local items.
+    /// This is needed to let the remote source calculate the correct item total as it can vary depending on the store configuration.
+    /// EG: `prices_include_tax` is set.
+    ///
+    func removingTotalsFromLocalItems() -> Order {
+        let sanitizedItems: [OrderItem] = items.map { item in
+            guard item.itemID == .zero else {
+                return item
+            }
+            return item.copy(subtotal: "", total: "")
+        }
+        return copy(items: sanitizedItems)
     }
 }

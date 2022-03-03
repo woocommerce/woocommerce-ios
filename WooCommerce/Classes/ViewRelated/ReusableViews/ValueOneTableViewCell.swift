@@ -9,8 +9,21 @@ class ValueOneTableViewCell: UITableViewCell {
         configureTextLabel()
         configureDetailTextLabel()
     }
+
+    func configure(with viewModel: ViewModel) {
+        textLabel?.text = viewModel.text
+        detailTextLabel?.text = viewModel.detailText
+    }
 }
 
+// MARK: - CellViewModel subtype
+//
+extension ValueOneTableViewCell {
+    struct ViewModel {
+        let text: String
+        let detailText: String
+    }
+}
 
 private extension ValueOneTableViewCell {
     enum Constants {

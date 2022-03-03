@@ -152,18 +152,13 @@ extension ReviewsViewModel {
         }
 
         group.enter()
-        synchronizeProductsReviewed {
-            group.leave()
-        }
-
-        group.enter()
         synchronizeNotifications {
             group.leave()
         }
 
-        group.notify(queue: .main) {
-            if let completionBlock = onCompletion {
-                completionBlock()
+        group.notify(queue: .main) { [weak self] in
+            self?.synchronizeProductsReviewed {
+                onCompletion?()
             }
         }
     }

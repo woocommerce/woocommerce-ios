@@ -7,6 +7,7 @@ struct InboxNoteRow: View {
 
     @State private var tappedAction: InboxNoteRowActionViewModel?
     @State private var isDismissButtonLoading: Bool = false
+    @State private var surveyCompleted: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -40,11 +41,15 @@ struct InboxNoteRow: View {
                         ForEach(viewModel.actions) { action in
                             if viewModel.isSurvey {
                                 Button(action.title) {
+                                    withAnimation(.easeInOut) {
+                                        surveyCompleted = true
+                                    }
                                     viewModel.markInboxNoteAsActioned(actionID: action.id)
                                 }
                                 .buttonStyle(SecondaryButtonStyle())
                                 .frame(minWidth: Constants.minWidthSurveyButton)
                                 .fixedSize(horizontal: true, vertical: true)
+                                .renderedIf(!surveyCompleted)
                             }
                             else if action.url != nil {
                                 Button(action.title) {
@@ -58,6 +63,11 @@ struct InboxNoteRow: View {
                                 Text(action.title)
                             }
                         }
+
+                        Text("Thank you for your feedback!")
+                            .secondaryBodyStyle()
+                            .renderedIf(surveyCompleted)
+
                         if isDismissButtonLoading {
                             ActivityIndicator(isAnimating: .constant(true), style: .medium)
                         }
@@ -68,9 +78,10 @@ struct InboxNoteRow: View {
                                     isDismissButtonLoading = false
                                 }
                             }
-                        .foregroundColor(Color(.withColorStudio(.gray, shade: .shade30)))
-                        .font(.body)
-                        .buttonStyle(PlainButtonStyle())
+                            .foregroundColor(Color(.withColorStudio(.gray, shade: .shade30)))
+                            .font(.body)
+                            .buttonStyle(PlainButtonStyle())
+                            .renderedIf(!surveyCompleted)
                         }
                         Spacer()
                     }
@@ -181,7 +192,8 @@ struct InboxNoteRow_Previews: PreviewProvider {
                                                          siteID: 1,
                                                          isPlaceholder: true,
                                                          isRead: true,
-                                                         isSurvey: false)
+                                                         isSurvey: false,
+                                                         isActioned: false)
         Group {
             VStack {
                 InboxNoteRow(viewModel: .init(note: note.copy(type: "marketing", dateCreated: today), today: today))

@@ -23,7 +23,8 @@ final class InboxViewModel: ObservableObject {
                               siteID: 123,
                               isPlaceholder: true,
                               isRead: true,
-                              isSurvey: false)
+                              isSurvey: false,
+                              isActioned: false)
     }
 
     // MARK: Sync

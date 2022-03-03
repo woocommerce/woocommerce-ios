@@ -17,6 +17,8 @@ final class BulkUpdateViewController: UIViewController {
     ///
     private let ghostTableView = UITableView(frame: .zero, style: .plain)
 
+    private var sections: [Section] = []
+
     init(viewModel: BulkUpdateViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -46,8 +48,10 @@ final class BulkUpdateViewController: UIViewController {
             case .notStarted:
                 return
             case .syncing:
+                self.sections = []
                 self.displayGhostContent()
-            case .synced:
+            case let .synced(sections):
+                self.sections = sections
                 self.removeGhostContent()
                 self.tableView.reloadData()
             case .error:
@@ -111,10 +115,6 @@ final class BulkUpdateViewController: UIViewController {
             tableView.registerNib(for: row.type)
         }
     }
-
-    private var sections: [Section] {
-        return viewModel.sections
-    }
 }
 
 // MARK: - UITableViewDataSource Conformance
@@ -122,11 +122,11 @@ final class BulkUpdateViewController: UIViewController {
 extension BulkUpdateViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel.sections.count
+        return sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.sections[section].rows.count
+        return sections[section].rows.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -174,7 +174,7 @@ extension BulkUpdateViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let leftText = viewModel.sections[section].title else {
+        guard let leftText = sections[section].title else {
             return nil
         }
 

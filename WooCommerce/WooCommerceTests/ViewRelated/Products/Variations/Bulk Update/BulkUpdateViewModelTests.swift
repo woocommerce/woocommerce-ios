@@ -24,14 +24,6 @@ final class BulkUpdateViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_number_of_sections_when_in_initial_state() {
-        // Given
-        let viewModel = BulkUpdateViewModel(siteID: 0, productID: 0, storageManager: storageManager, storesManager: storesManager)
-
-        // Then
-        XCTAssertEqual(viewModel.sections.count, 0)
-    }
-
     func test_all_products_are_synchronized_on_the_viewload_event() throws {
         // Given
         let expectedSiteID: Int64 = 42
@@ -114,7 +106,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Then
-        XCTAssertEqual(viewModel.syncState, .synced)
+        XCTAssertEqual(viewModel.syncState, .synced([]))
     }
 
     func test_number_of_sections_and_title_when_in_synch_state() throws {
@@ -138,11 +130,11 @@ final class BulkUpdateViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.syncState == .synced
+            viewModel.syncState.sections()?.isNotEmpty ?? false
         }
 
-        XCTAssertEqual(viewModel.sections.count, 1)
-        let sectionTitle = try XCTUnwrap(viewModel.sections.first?.title)
+        XCTAssertEqual(viewModel.syncState.sections()?.count, 1)
+        let sectionTitle = try XCTUnwrap(viewModel.syncState.sections()?.first?.title)
         XCTAssertTrue(sectionTitle.isNotEmpty)
     }
 
@@ -169,7 +161,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.syncState == .synced
+            viewModel.syncState.sections()?.isNotEmpty ?? false
         }
 
         let regularPriceViewModel = viewModel.viewModelForDisplayingRegularPrice()
@@ -200,7 +192,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.syncState == .synced
+            viewModel.syncState.sections()?.isNotEmpty ?? false
         }
 
         let regularPriceViewModel = viewModel.viewModelForDisplayingRegularPrice()
@@ -231,7 +223,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.syncState == .synced
+            viewModel.syncState.sections()?.isNotEmpty ?? false
         }
 
         let regularPriceViewModel = viewModel.viewModelForDisplayingRegularPrice()
@@ -263,11 +255,24 @@ final class BulkUpdateViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.syncState == .synced
+            viewModel.syncState.sections()?.isNotEmpty ?? false
         }
 
         let regularPriceViewModel = viewModel.viewModelForDisplayingRegularPrice()
         XCTAssertFalse(regularPriceViewModel.text.isEmpty)
         XCTAssertFalse(regularPriceViewModel.detailText.isEmpty)
+    }
+}
+
+private extension BulkUpdateViewModel.SyncState {
+    /// Convenient method to access the sections value
+    ///
+    func sections() -> [BulkUpdateViewController.Section]? {
+        switch self {
+        case let .synced(sections):
+            return sections
+        default:
+            return nil
+        }
     }
 }

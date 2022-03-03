@@ -11,7 +11,7 @@ final class BulkUpdateViewModel {
     /// Represents possible states for syncing product variations.
     enum SyncState: Equatable {
         case syncing
-        case synced
+        case synced([Section])
         case error
         case notStarted
     }
@@ -32,10 +32,7 @@ final class BulkUpdateViewModel {
         return resultsController
     }()
 
-    /// The state of synching all variations
-    @Published private(set) var syncState: SyncState
-
-    var sections: [Section] {
+    private var sections: [Section] {
         guard bulkUpdateFormModel.productVariations.isNotEmpty else {
             return []
         }
@@ -43,6 +40,9 @@ final class BulkUpdateViewModel {
 
         return [priceSection]
     }
+
+    /// The state of synching all variations
+    @Published private(set) var syncState: SyncState
 
     init(siteID: Int64,
          productID: Int64,
@@ -84,10 +84,12 @@ final class BulkUpdateViewModel {
                     DDLogError("⛔️ Error synchronizing product variations: \(error)")
                 } else {
                     self.configureResultsControllerAndFetchData { [weak self] error in
+                        guard let self = self else { return }
+
                         if error != nil {
-                            self?.syncState = .error
+                            self.syncState = .error
                         } else {
-                            self?.syncState = .synced
+                            self.syncState = .synced(self.sections)
                         }
                     }
                 }

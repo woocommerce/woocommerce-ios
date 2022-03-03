@@ -949,13 +949,13 @@ private extension ProductsViewController {
         case .noResultsPlaceholder:
             displayNoResultsOverlay()
         case .syncing(let pageNumber):
-            if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
-                displayPlaceholderProducts()
-            } else {
+            if pageNumber != SyncingCoordinator.Defaults.pageFirstIndex {
                 ensureFooterSpinnerIsStarted()
             }
-            // Remove top banner when sync starts
-            hideTopBannerView()
+            // Remove error banner when sync starts
+            if hasErrorLoadingData {
+                hideTopBannerView()
+            }
         case .results:
             break
         }

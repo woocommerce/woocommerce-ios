@@ -176,12 +176,16 @@ private extension ProductVariationsViewController {
             return
         }
 
-        let moreButton = UIBarButtonItem(image: .moreImage,
-                                     style: .plain,
-                                     target: self,
-                                     action: #selector(presentMoreActionSheet(_:)))
+        var moreButton: UIBarButtonItem? = nil
+        // Do not display the "more" button with the bulk update option if we do not have any variations
+        if self.product.variations.isNotEmpty {
+            moreButton = UIBarButtonItem(image: .moreImage,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(presentMoreActionSheet(_:)))
+        }
 
-        navigationItem.rightBarButtonItems = [moreButton]
+        navigationItem.rightBarButtonItem = moreButton
     }
 
     /// Apply Woo styles.
@@ -536,6 +540,7 @@ private extension ProductVariationsViewController {
             let variationsUpdated = self.product.variations.filter { $0 != variation.productVariationID }
             let updatedProduct = self.product.copy(variations: variationsUpdated)
             self.product = updatedProduct
+            self.configureNavigationBarButtons()
         }
         let viewController = ProductFormViewController(viewModel: viewModel,
                                                        eventLogger: ProductVariationFormEventLogger(),
@@ -666,6 +671,7 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
                 self.noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))
                 self.product = updatedProduct
                 self.navigateToVariationDetail(for: newVariation)
+                self.configureNavigationBarButtons()
             case .failure(let error):
                 self.noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
                 DDLogError("⛔️ Error generating variation: \(error)")

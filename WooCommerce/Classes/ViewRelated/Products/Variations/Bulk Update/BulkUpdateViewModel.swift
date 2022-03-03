@@ -23,6 +23,7 @@ final class BulkUpdateViewModel {
     private let productID: Int64
     private var bulkUpdateFormModel = BulkUpdateOptionsModel(productVariations: [])
     private let currencyFormatter: CurrencyFormatter
+    private var onCancelButtonTapped: () -> Void
 
     /// Product Variations Controller.
     ///
@@ -46,11 +47,13 @@ final class BulkUpdateViewModel {
 
     init(siteID: Int64,
          productID: Int64,
+         onCancelButtonTapped: @escaping () -> Void,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          storesManager: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.siteID = siteID
         self.productID = productID
+        self.onCancelButtonTapped = onCancelButtonTapped
         self.storageManager = storageManager
         self.storesManager = storesManager
         self.currencySettings = currencySettings
@@ -96,6 +99,10 @@ final class BulkUpdateViewModel {
             }
 
         storesManager.dispatch(action)
+    }
+
+    func handleTapCancel() {
+        onCancelButtonTapped()
     }
 
     /// Provides the view model with all user facing data of the option for updating the regular price

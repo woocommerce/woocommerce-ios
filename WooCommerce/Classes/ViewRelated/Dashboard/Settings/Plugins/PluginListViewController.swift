@@ -104,7 +104,9 @@ private extension PluginListViewController {
     ///
     @objc func syncPlugins() {
         removeErrorStateView()
-        startGhostAnimation()
+        if viewModel.numberOfSections == 0 {
+            startGhostAnimation()
+        }
         viewModel.syncPlugins { [weak self] result in
             guard let self = self else { return }
             self.refreshControl.endRefreshing()

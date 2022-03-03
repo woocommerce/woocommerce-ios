@@ -166,7 +166,7 @@ final class NewOrderViewModel: ObservableObject {
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
         self.orderSynchronizer = enableRemoteSync ? RemoteOrderSynchronizer(siteID: siteID, stores: stores)
-                                                  : LocalOrderSynchronizer(siteID: siteID, stores: stores)
+                                                  : LocalOrderSynchronizer(siteID: siteID, stores: stores, currencySettings: currencySettings)
 
         configureDisabledState()
         configureNavigationTrailingItem()
@@ -352,6 +352,9 @@ extension NewOrderViewModel {
         let feesBaseAmountForPercentage: Decimal
         let feesTotal: String
 
+        let shouldShowTaxes: Bool
+        let taxesTotal: String
+
         /// Whether payment data is being reloaded (during remote sync)
         ///
         let isLoading: Bool
@@ -366,6 +369,8 @@ extension NewOrderViewModel {
              shouldShowFees: Bool = false,
              feesBaseAmountForPercentage: Decimal = 0,
              feesTotal: String = "",
+             shouldShowTaxes: Bool = false,
+             taxesTotal: String = "",
              orderTotal: String = "",
              isLoading: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
@@ -378,6 +383,8 @@ extension NewOrderViewModel {
             self.shouldShowFees = shouldShowFees
             self.feesBaseAmountForPercentage = feesBaseAmountForPercentage
             self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? ""
+            self.shouldShowTaxes = shouldShowTaxes
+            self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? ""
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? ""
             self.isLoading = isLoading
             self.shippingLineViewModel = ShippingLineDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
@@ -490,28 +497,9 @@ private extension NewOrderViewModel {
                     return PaymentDataViewModel()
                 }
 
-                let itemsTotal = order.items
-                    .map { $0.subtotal }
-                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
-                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
-
-                let shippingTotal = order.shippingLines
-                    .map { $0.total }
-                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
-                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
+                let orderTotals = OrderTotalsCalculator(for: order, using: self.currencyFormatter)
 
                 let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
-
-                // TODO-6236: move totals calculation to LocalOrderSynchronizer, add tax to feesBaseAmount
-                let feesBaseAmountForPercentage = itemsTotal.adding(shippingTotal)
-
-                let feesTotal = order.fees
-                    .map { $0.total }
-                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
-                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
-
-
-                let orderTotal = feesBaseAmountForPercentage.adding(feesTotal)
 
                 let isDataSyncing: Bool = {
                     switch state {
@@ -522,14 +510,16 @@ private extension NewOrderViewModel {
                     }
                 }()
 
-                return PaymentDataViewModel(itemsTotal: itemsTotal.stringValue,
+                return PaymentDataViewModel(itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.isNotEmpty,
-                                            shippingTotal: shippingTotal.stringValue,
+                                            shippingTotal: order.shippingTotal,
                                             shippingMethodTitle: shippingMethodTitle,
                                             shouldShowFees: order.fees.isNotEmpty,
-                                            feesBaseAmountForPercentage: feesBaseAmountForPercentage as Decimal,
-                                            feesTotal: feesTotal.stringValue,
-                                            orderTotal: orderTotal.stringValue,
+                                            feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
+                                            feesTotal: orderTotals.feesTotal.stringValue,
+                                            shouldShowTaxes: order.totalTax.isNotEmpty,
+                                            taxesTotal: order.totalTax,
+                                            orderTotal: order.total,
                                             isLoading: isDataSyncing,
                                             saveShippingLineClosure: self.saveShippingLine,
                                             saveFeeLineClosure: self.saveFeeLine,

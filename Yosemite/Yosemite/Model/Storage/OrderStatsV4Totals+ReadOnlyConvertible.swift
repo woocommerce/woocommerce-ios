@@ -18,6 +18,7 @@ extension Storage.OrderStatsV4Totals: ReadOnlyConvertible {
         taxes = NSDecimalNumber(decimal: statsTotals.taxes)
         shipping = NSDecimalNumber(decimal: statsTotals.shipping)
         netRevenue = NSDecimalNumber(decimal: statsTotals.netRevenue)
+        totalProducts = Int64(statsTotals.totalProducts ?? 0)
     }
 
     /// Returns a ReadOnly version of the receiver.

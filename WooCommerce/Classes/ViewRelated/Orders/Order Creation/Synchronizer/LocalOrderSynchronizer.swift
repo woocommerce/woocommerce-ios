@@ -38,11 +38,14 @@ final class LocalOrderSynchronizer: OrderSynchronizer {
 
     private let stores: StoresManager
 
+    private let currencyFormatter: CurrencyFormatter
+
     // MARK: Initializers
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.siteID = siteID
         self.stores = stores
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         bindInputs()
     }
 
@@ -73,7 +76,8 @@ private extension LocalOrderSynchronizer {
             .map { [weak self] productInput, order in
                 guard let self = self else { return order }
                 let sanitizedInput = self.replaceInputWithLocalIDIfNeeded(productInput)
-                return ProductInputTransformer.update(input: sanitizedInput, on: order, updateZeroQuantities: false)
+                let updatedOrder = ProductInputTransformer.update(input: sanitizedInput, on: order, updateZeroQuantities: false)
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .assign(to: &$order)
 
@@ -84,14 +88,18 @@ private extension LocalOrderSynchronizer {
             .assign(to: &$order)
 
         setShipping.withLatestFrom(orderPublisher)
-            .map { shippingLineInput, order in
-                order.copy(shippingLines: shippingLineInput.flatMap { [$0] } ?? [])
+            .map { [weak self] shippingLineInput, order in
+                guard let self = self else { return order}
+                let updatedOrder = order.copy(shippingTotal: shippingLineInput?.total ?? "0", shippingLines: shippingLineInput.flatMap { [$0] } ?? [])
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .assign(to: &$order)
 
         setFee.withLatestFrom(orderPublisher)
-            .map { feeLineInput, order in
-                order.copy(fees: feeLineInput.flatMap { [$0] } ?? [])
+            .map { [weak self] feeLineInput, order in
+                guard let self = self else { return order}
+                let updatedOrder = order.copy(fees: feeLineInput.flatMap { [$0] } ?? [])
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .assign(to: &$order)
     }

@@ -319,16 +319,20 @@ class NewOrderViewModelTests: XCTestCase {
     func test_payment_data_view_model_is_initialized_with_expected_values() {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
-        let itemsTotal = "20.00"
-        let orderTotal = "30.00"
 
         // When
-        let paymentDataViewModel = NewOrderViewModel.PaymentDataViewModel(itemsTotal: itemsTotal,
-                                                                          orderTotal: orderTotal,
+        let paymentDataViewModel = NewOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00",
+                                                                          shippingTotal: "3.00",
+                                                                          feesTotal: "2.00",
+                                                                          taxesTotal: "5.00",
+                                                                          orderTotal: "30.00",
                                                                           currencyFormatter: CurrencyFormatter(currencySettings: currencySettings))
 
         // Then
         XCTAssertEqual(paymentDataViewModel.itemsTotal, "£20.00")
+        XCTAssertEqual(paymentDataViewModel.shippingTotal, "£3.00")
+        XCTAssertEqual(paymentDataViewModel.feesTotal, "£2.00")
+        XCTAssertEqual(paymentDataViewModel.taxesTotal, "£5.00")
         XCTAssertEqual(paymentDataViewModel.orderTotal, "£30.00")
     }
 
@@ -448,6 +452,35 @@ class NewOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(isLoadingDuringSync)
         XCTAssertFalse(viewModel.paymentDataViewModel.isLoading) // Disabled after sync ends
+    }
+
+    func test_payment_section_is_updated_when_order_has_taxes() {
+        // Given
+        let expectation = expectation(description: "Order with taxes is synced")
+        let currencySettings = CurrencySettings()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, currencySettings: currencySettings, enableRemoteSync: true)
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .createOrder(_, _, onCompletion):
+                let order = Order.fake().copy(siteID: self.sampleSiteID, totalTax: "2.50")
+                onCompletion(.success(order))
+                expectation.fulfill()
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        // Trigger remote sync
+        viewModel.saveShippingLine(ShippingLine.fake())
+
+        // Then
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowTaxes)
+        XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "$2.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 2.50)
+
     }
 }
 

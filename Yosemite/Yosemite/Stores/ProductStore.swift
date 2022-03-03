@@ -162,6 +162,7 @@ private extension ProductStore {
                                     }
                                     let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
                                     self.upsertStoredProductsInBackground(readOnlyProducts: products,
+                                                                          siteID: siteID,
                                                                           shouldDeleteExistingProducts: shouldDeleteExistingProducts) {
                                         let hasNextPage = products.count == pageSize
                                         onCompletion(.success(hasNextPage))
@@ -188,7 +189,7 @@ private extension ProductStore {
         remote.loadProducts(for: order.siteID, by: missingIDs) { [weak self] result in
             switch result {
             case .success(let products):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
+                self?.upsertStoredProductsInBackground(readOnlyProducts: products, siteID: order.siteID, onCompletion: {
                     onCompletion(nil)
                 })
             case .failure(let error):
@@ -213,7 +214,7 @@ private extension ProductStore {
         remote.loadProducts(for: siteID, by: productIDs, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
             switch result {
             case .success(let products):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
+                self?.upsertStoredProductsInBackground(readOnlyProducts: products, siteID: siteID, onCompletion: {
                     let hasNextPage = products.count == pageSize
                     onCompletion(.success((products: products, hasNextPage: hasNextPage)))
                 })
@@ -241,7 +242,7 @@ private extension ProductStore {
 
                 onCompletion(.failure(error))
             case .success(let product):
-                self.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
+                self.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: siteID) { [weak self] in
                     guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: siteID, productID: productID) else {
                         return onCompletion(.failure(ProductLoadError.notFoundInStorage))
                     }
@@ -260,7 +261,7 @@ private extension ProductStore {
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))
             case .success(let product):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
+                self?.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID) { [weak self] in
                     guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID) else {
                         onCompletion(.failure(.notFoundInStorage))
                         return
@@ -293,7 +294,7 @@ private extension ProductStore {
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))
             case .success(let product):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
+                self?.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID) { [weak self] in
                     guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID) else {
                         onCompletion(.failure(.notFoundInStorage))
                         return
@@ -327,7 +328,7 @@ private extension ProductStore {
     /// Upserts a product in our local storage
     ///
     func replaceProductLocally(product: Product, onCompletion: @escaping () -> Void) {
-        upsertStoredProductsInBackground(readOnlyProducts: [product], onCompletion: onCompletion)
+        upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID, onCompletion: onCompletion)
     }
 }
 
@@ -353,12 +354,13 @@ extension ProductStore {
     /// `onCompletion` will be called on the main thread!
     ///
     func upsertStoredProductsInBackground(readOnlyProducts: [Networking.Product],
+                                          siteID: Int64,
                                           shouldDeleteExistingProducts: Bool = false,
                                           onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
-            if shouldDeleteExistingProducts, let id = readOnlyProducts.first?.siteID {
-                derivedStorage.deleteProducts(siteID: id)
+            if shouldDeleteExistingProducts {
+                derivedStorage.deleteProducts(siteID: siteID)
             }
             self.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
         }

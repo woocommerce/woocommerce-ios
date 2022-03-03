@@ -52,7 +52,7 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     func test_menuElements_do_not_include_inbox_when_store_has_ineligible_wc_version() {
-        // Given the store is ineligible for inbox with WC version and coupons feature is enabled in app settings
+        // Given the store is ineligible WC version for inbox and coupons feature is enabled in app settings
         let featureFlagService = MockFeatureFlagService(isInboxOn: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
@@ -81,12 +81,12 @@ final class HubMenuViewModelTests: XCTestCase {
         let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
         viewModel.setupMenuElements()
 
-        // Then both inbox and coupons are in the menu
+        // Then only coupons is in the menu
         XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .coupons, .reviews])
     }
 
     func test_menuElements_do_not_include_inbox_and_coupons_when_store_has_ineligible_wc_version_and_coupons_disabled() {
-        // Given the store is ineligible for inbox with WC version and coupons feature is enabled in app settings
+        // Given the store is ineligible WC version for inbox and coupons feature is disabled in app settings
         let featureFlagService = MockFeatureFlagService(isInboxOn: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
@@ -115,7 +115,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
         viewModel.setupMenuElements()
 
-        // Then both inbox and coupons are in the menu
+        // Then neither inbox nor coupons is in the menu
         XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .reviews])
     }
 

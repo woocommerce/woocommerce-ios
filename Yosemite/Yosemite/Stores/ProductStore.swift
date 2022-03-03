@@ -160,12 +160,10 @@ private extension ProductStore {
                                     guard let self = self else {
                                         return
                                     }
-
-                                    if pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage {
-                                        self.deleteStoredProducts(siteID: siteID)
-                                    }
-
-                                    self.upsertStoredProductsInBackground(readOnlyProducts: products) {
+                                    
+                                    let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
+                                    self.upsertStoredProductsInBackground(readOnlyProducts: products,
+                                                                          shouldDeleteExistingProducts: shouldDeleteExistingProducts) {
                                         let hasNextPage = products.count == pageSize
                                         onCompletion(.success(hasNextPage))
                                     }
@@ -351,20 +349,18 @@ extension ProductStore {
         storage.saveIfNeeded()
     }
 
-    /// Deletes any Storage.Product with the specified `siteID`
+    /// Updates (OR Inserts) the specified ReadOnly Product Entities *in a background thread*.
+    /// Also deletes existing products if requested.
+    /// `onCompletion` will be called on the main thread!
     ///
-    func deleteStoredProducts(siteID: Int64) {
-        let storage = storageManager.viewStorage
-        storage.deleteProducts(siteID: siteID)
-        storage.saveIfNeeded()
-    }
-
-    /// Updates (OR Inserts) the specified ReadOnly Product Entities *in a background thread*. onCompletion will be called
-    /// on the main thread!
-    ///
-    func upsertStoredProductsInBackground(readOnlyProducts: [Networking.Product], onCompletion: @escaping () -> Void) {
+    func upsertStoredProductsInBackground(readOnlyProducts: [Networking.Product],
+                                          shouldDeleteExistingProducts: Bool = false,
+                                          onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
+            if shouldDeleteExistingProducts, let id = readOnlyProducts.first?.siteID {
+                derivedStorage.deleteProducts(siteID: id)
+            }
             self.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
         }
 

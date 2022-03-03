@@ -160,7 +160,6 @@ private extension ProductStore {
                                     guard let self = self else {
                                         return
                                     }
-                                    
                                     let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
                                     self.upsertStoredProductsInBackground(readOnlyProducts: products,
                                                                           shouldDeleteExistingProducts: shouldDeleteExistingProducts) {

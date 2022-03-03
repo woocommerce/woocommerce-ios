@@ -443,9 +443,7 @@ private extension ReviewsViewController {
         case .placeholder:
             displayPlaceholderReviews()
         case .syncing(let pageNumber):
-            if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
-                displayPlaceholderReviews()
-            } else {
+            if pageNumber != SyncingCoordinator.Defaults.pageFirstIndex {
                 ensureFooterSpinnerIsStarted()
             }
         }

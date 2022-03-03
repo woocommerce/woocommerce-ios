@@ -49,7 +49,7 @@ struct InboxNoteRow: View {
                                 .buttonStyle(SecondaryButtonStyle())
                                 .frame(minWidth: Constants.minWidthSurveyButton)
                                 .fixedSize(horizontal: true, vertical: true)
-                                .renderedIf(!surveyCompleted)
+                                .renderedIf(!surveyCompleted &&  !viewModel.isActioned)
                             }
                             else if action.url != nil {
                                 Button(action.title) {
@@ -66,7 +66,7 @@ struct InboxNoteRow: View {
 
                         Text(Localization.surveyCompleted)
                             .secondaryBodyStyle()
-                            .renderedIf(surveyCompleted)
+                            .renderedIf(surveyCompleted || (viewModel.isSurvey && viewModel.isActioned))
 
                         if isDismissButtonLoading {
                             ActivityIndicator(isAnimating: .constant(true), style: .medium)
@@ -81,7 +81,7 @@ struct InboxNoteRow: View {
                             .foregroundColor(Color(.withColorStudio(.gray, shade: .shade30)))
                             .font(.body)
                             .buttonStyle(PlainButtonStyle())
-                            .renderedIf(!surveyCompleted)
+                            .renderedIf(!surveyCompleted || (viewModel.isSurvey && !viewModel.isActioned))
                         }
                         Spacer()
                     }

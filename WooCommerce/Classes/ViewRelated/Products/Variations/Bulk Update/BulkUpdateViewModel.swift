@@ -21,7 +21,7 @@ final class BulkUpdateViewModel {
     private let currencySettings: CurrencySettings
     private let siteID: Int64
     private let productID: Int64
-    private var bulkUpdateFormModel: BulkUpdateOptionsModel?
+    private var bulkUpdateFormModel = BulkUpdateOptionsModel(productVariations: [])
     private let currencyFormatter: CurrencyFormatter
 
     /// Product Variations Controller.
@@ -36,7 +36,7 @@ final class BulkUpdateViewModel {
     @Published private(set) var syncState: SyncState
 
     var sections: [Section] {
-        guard let bulkUpdateFormModel = bulkUpdateFormModel, bulkUpdateFormModel.productVariations.isNotEmpty else {
+        guard bulkUpdateFormModel.productVariations.isNotEmpty else {
             return []
         }
         let priceSection = Section(title: Localization.priceSectionTitle, rows: [.regularPrice])
@@ -106,9 +106,6 @@ final class BulkUpdateViewModel {
     /// Returns the detail text of the option for updating a price
     ///
     private func detailTextforPrice(_ priceKeyPath: KeyPath<ProductVariation, String?>) -> String {
-        guard let bulkUpdateFormModel = bulkUpdateFormModel else {
-            return ""
-        }
         switch bulkUpdateFormModel.bulkValueOf(priceKeyPath) {
         case .none:
             return Localization.noneValue

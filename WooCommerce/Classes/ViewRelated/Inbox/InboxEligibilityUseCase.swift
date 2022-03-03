@@ -22,27 +22,15 @@ final class InboxEligibilityUseCase {
         }
 
         // Fetches WC plugin.
-        let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { [weak self] wcPlugin in
-            guard let self = self else { return }
-
+        let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
             // WooCommerce plugin is expected to be active in order to use the app/inbox.
             guard let wcPlugin = wcPlugin, wcPlugin.active else {
                 return completion(false)
             }
 
-            // Fetches WC Admin plugin. When WC Admin is active, WC Admin overrides the bundled version in WC plugin.
-            let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcAdminPluginName) { wcAdminPlugin in
-                guard let wcAdminPlugin = wcAdminPlugin, wcAdminPlugin.active else {
-                    let isInboxSupportedForWCPlugin = VersionHelpers.isVersionSupported(version: wcPlugin.version,
-                                                                                        minimumRequired: Constants.wcPluginMinimumVersion)
-                    return completion(isInboxSupportedForWCPlugin)
-                }
-
-                let isInboxSupportedForWCAdminPlugin = VersionHelpers.isVersionSupported(version: wcAdminPlugin.version,
-                                                                                         minimumRequired: Constants.wcAdminPluginMinimumVersion)
-                completion(isInboxSupportedForWCAdminPlugin)
-            }
-            self.stores.dispatch(action)
+            let isInboxSupportedByWCPlugin = VersionHelpers.isVersionSupported(version: wcPlugin.version,
+                                                                               minimumRequired: Constants.wcPluginMinimumVersion)
+            completion(isInboxSupportedByWCPlugin)
         }
         stores.dispatch(action)
     }
@@ -53,8 +41,5 @@ private extension InboxEligibilityUseCase {
         static let wcPluginName = "WooCommerce"
         // TODO: 6148 - Update the minimum WC version with inbox filtering.
         static let wcPluginMinimumVersion = "5.0.0"
-        static let wcAdminPluginName = "WooCommerce Admin"
-        // TODO: 6148 - Update the minimum WC Admin version with inbox filtering.
-        static let wcAdminPluginMinimumVersion = "2.0.0"
     }
 }

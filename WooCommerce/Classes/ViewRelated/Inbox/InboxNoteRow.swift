@@ -5,8 +5,6 @@ import Yosemite
 struct InboxNoteRow: View {
     let viewModel: InboxNoteRowViewModel
 
-    // Tracks the scale of the view due to accessibility changes.
-    @ScaledMetric private var scale: CGFloat = 1
     @State private var tappedAction: InboxNoteRowActionViewModel?
     @State private var isDismissButtonLoading: Bool = false
 

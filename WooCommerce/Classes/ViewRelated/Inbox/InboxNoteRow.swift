@@ -64,7 +64,7 @@ struct InboxNoteRow: View {
                             }
                         }
 
-                        Text("Thank you for your feedback!")
+                        Text(Localization.surveyCompleted)
                             .secondaryBodyStyle()
                             .renderedIf(surveyCompleted)
 
@@ -137,6 +137,8 @@ private extension InboxNoteRow {
         )
         static let doneButtonWebview = NSLocalizedString("Done",
                                                          comment: "Done navigation button in Inbox Notes webview")
+        static let surveyCompleted = NSLocalizedString("Thank you for your feedback!",
+                                                       comment: "Confirmation message in Inbox Notes after responding to a survey.")
     }
 
     enum Constants {

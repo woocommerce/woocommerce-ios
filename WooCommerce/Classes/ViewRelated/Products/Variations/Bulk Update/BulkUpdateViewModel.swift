@@ -103,7 +103,7 @@ final class BulkUpdateViewModel {
     func viewModelForDisplayingRegularPrice() -> ValueOneTableViewCell.ViewModel {
         let text = Localization.updateRegularPriceTitle
         var detailText = ""
-        var style = ValueOneTableViewCell.Style.primary
+        var style: ValueOneTableViewCell.Style = .primary
 
         switch bulkUpdateFormModel.bulkValueOf(\ProductVariation.regularPrice) {
         case .none:

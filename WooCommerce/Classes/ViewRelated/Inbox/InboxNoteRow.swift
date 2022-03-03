@@ -45,6 +45,7 @@ struct InboxNoteRow: View {
                                     viewModel.markInboxNoteAsActioned(actionID: action.id)
                                 }
                                 .buttonStyle(SecondaryButtonStyle())
+                                .frame(minWidth: Constants.minWidthSurveyButton)
                                 .fixedSize(horizontal: true, vertical: true)
                             }
                             else if action.url != nil {
@@ -136,6 +137,7 @@ private extension InboxNoteRow {
         static let defaultPadding: CGFloat = 16
         static let dividerHeight: CGFloat = 1
         static let dateTextColor: UIColor = .withColorStudio(.gray, shade: .shade30)
+        static let minWidthSurveyButton: CGFloat = 40
     }
 }
 

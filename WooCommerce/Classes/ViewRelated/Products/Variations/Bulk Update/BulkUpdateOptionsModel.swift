@@ -30,17 +30,18 @@ final class BulkUpdateOptionsModel {
         // filter all unique values that are not nil or empty
         let uniqueResults = allValuesWithoutNilOrEmpty.uniqued()
 
-        if let sameValue = uniqueResults.first {
-            if uniqueResults.count == 1 && allValues.count == allValuesWithoutNilOrEmpty.count {
-                // If we have only 1 value and we did not had any nil/empty
-                return BulkValue.value(sameValue)
-            } else {
-                // If at least ony value is different, even if it is missing (nil/empty)
-                return BulkValue.mixed
-            }
-        } else {
-            // If all values are missing or empty
-            return BulkValue.none
+        // Return `.none` when there are no values to evaluate.
+        guard let sameValue = uniqueResults.first else {
+            return .none
         }
+
+        if uniqueResults.count == 1 && allValues.count == allValuesWithoutNilOrEmpty.count {
+            // If we have only 1 value and we did not had any nil/empty
+            return .value(sameValue)
+        } else {
+            // If at least ony value is different, even if it is missing (nil/empty)
+            return .mixed
+        }
+
     }
 }

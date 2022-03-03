@@ -351,6 +351,9 @@ extension NewOrderViewModel {
         let feesBaseAmountForPercentage: Decimal
         let feesTotal: String
 
+        let shouldShowTaxes: Bool
+        let taxesTotal: String
+
         /// Whether payment data is being reloaded (during remote sync)
         ///
         let isLoading: Bool
@@ -365,6 +368,8 @@ extension NewOrderViewModel {
              shouldShowFees: Bool = false,
              feesBaseAmountForPercentage: Decimal = 0,
              feesTotal: String = "",
+             shouldShowTaxes: Bool = false,
+             taxesTotal: String = "",
              orderTotal: String = "",
              isLoading: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
@@ -377,6 +382,8 @@ extension NewOrderViewModel {
             self.shouldShowFees = shouldShowFees
             self.feesBaseAmountForPercentage = feesBaseAmountForPercentage
             self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? ""
+            self.shouldShowTaxes = shouldShowTaxes
+            self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? ""
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? ""
             self.isLoading = isLoading
             self.shippingLineViewModel = ShippingLineDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
@@ -509,6 +516,8 @@ private extension NewOrderViewModel {
                                             shouldShowFees: order.fees.isNotEmpty,
                                             feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
                                             feesTotal: orderTotals.feesTotal.stringValue,
+                                            shouldShowTaxes: order.totalTax.isNotEmpty,
+                                            taxesTotal: order.totalTax,
                                             orderTotal: order.total,
                                             isLoading: isDataSyncing,
                                             saveShippingLineClosure: self.saveShippingLine,

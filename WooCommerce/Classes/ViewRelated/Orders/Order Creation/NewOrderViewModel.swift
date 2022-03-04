@@ -170,6 +170,7 @@ final class NewOrderViewModel: ObservableObject {
 
         configureDisabledState()
         configureNavigationTrailingItem()
+        configureSyncErrors()
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
         configureCustomerDataViewModel()
@@ -432,6 +433,20 @@ private extension NewOrderViewModel {
             .assign(to: &$navigationTrailingItem)
     }
 
+    /// Fires an error notice when `statePublisher` is `.error`
+    ///
+    func configureSyncErrors() {
+        orderSynchronizer.statePublisher
+            .sink { [weak self] state in
+                guard let self = self else { return }
+                if case let .error(error) = state {
+                    self.notice = NoticeFactory.createOrderSyncErrorNotice()
+                    DDLogError("⛔️ Error syncing new order remotely: \(error)")
+                }
+            }
+            .store(in: &self.cancellables)
+    }
+
     /// Updates status badge viewmodel based on status order property.
     ///
     func configureStatusBadgeViewModel() {
@@ -674,13 +689,21 @@ extension NewOrderViewModel {
         /// Returns a default order creation error notice.
         ///
         static func createOrderCreationErrorNotice() -> Notice {
-            Notice(title: Localization.errorMessage, feedbackType: .error)
+            Notice(title: Localization.errorMessageOrderCreation, feedbackType: .error)
+        }
+
+        /// Returns an order sync error notice.
+        ///
+        static func createOrderSyncErrorNotice() -> Notice {
+            Notice(title: Localization.errorMessageOrderSync, feedbackType: .error)
         }
     }
 }
 
 private extension NewOrderViewModel {
     enum Localization {
-        static let errorMessage = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
+        static let errorMessageOrderCreation = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
+        static let errorMessageOrderSync = NSLocalizedString("Unable to sync draft order", comment: "Notice displayed when draft order fails to sync")
+        static let retryOrderSync = NSLocalizedString("Retry", comment: "Action button to retry syncing the draft order")
     }
 }

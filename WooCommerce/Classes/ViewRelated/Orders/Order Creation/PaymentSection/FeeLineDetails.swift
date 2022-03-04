@@ -133,7 +133,7 @@ struct FeeLineDetails: View {
             BindableTextfield("0",
                               text: $viewModel.percentage,
                               focus: $focusPercentageAmountInput)
-                .keyboardType(.decimalPad)
+                .keyboardType(.numbersAndPunctuation)
                 .onTapGesture {
                     focusPercentageAmountInput = true
                 }

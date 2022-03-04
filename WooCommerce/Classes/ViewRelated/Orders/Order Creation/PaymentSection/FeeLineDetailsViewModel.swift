@@ -89,6 +89,8 @@ class FeeLineDetailsViewModel: ObservableObject {
     ///
     private let currencyFormatter: CurrencyFormatter
 
+    private let minusSign: String = NumberFormatter().minusSign
+
     /// Placeholder for amount text field.
     ///
     let amountPlaceholder: String
@@ -155,6 +157,8 @@ private extension FeeLineDetailsViewModel {
         let deviceDecimalSeparator = Locale.autoupdatingCurrent.decimalSeparator ?? "."
         let numberOfDecimals = 2
 
+        let negativePrefix = amount.hasPrefix(minusSign) ? minusSign : ""
+
         let sanitized = amount
             .filter { $0.isNumber || "\($0)" == deviceDecimalSeparator }
 
@@ -162,14 +166,14 @@ private extension FeeLineDetailsViewModel {
         let components = sanitized.components(separatedBy: deviceDecimalSeparator)
         switch components.count {
         case 1 where sanitized.contains(deviceDecimalSeparator):
-            return components[0] + deviceDecimalSeparator
+            return negativePrefix + components[0] + deviceDecimalSeparator
         case 1:
-            return components[0]
+            return negativePrefix + components[0]
         case 2...Int.max:
             let number = components[0]
             let decimals = components[1]
             let trimmedDecimals = decimals.prefix(numberOfDecimals)
-            return number + deviceDecimalSeparator + trimmedDecimals
+            return negativePrefix + number + deviceDecimalSeparator + trimmedDecimals
         default:
             fatalError("Should not happen, components can't be 0 or negative")
         }

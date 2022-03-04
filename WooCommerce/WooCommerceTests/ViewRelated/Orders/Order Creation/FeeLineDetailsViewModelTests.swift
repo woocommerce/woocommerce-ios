@@ -75,17 +75,37 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
     func test_view_model_formats_percentage_correctly() {
         // Given
         let viewModel = FeeLineDetailsViewModel(isExistingFeeLine: false,
-                                                baseAmountForPercentage: 0,
+                                                baseAmountForPercentage: 100,
                                                 feesTotal: "",
                                                 locale: usLocale,
                                                 storeCurrencySettings: usStoreSettings,
                                                 didSelectSave: { _ in })
 
         // When
+        viewModel.feeType = .percentage
         viewModel.percentage = "hi:11.3005.02-"
 
         // Then
         XCTAssertEqual(viewModel.percentage, "11.30")
+        XCTAssertFalse(viewModel.shouldDisableDoneButton)
+    }
+
+    func test_view_model_formats_negative_percentage_correctly() {
+        // Given
+        let viewModel = FeeLineDetailsViewModel(isExistingFeeLine: false,
+                                                baseAmountForPercentage: 100,
+                                                feesTotal: "",
+                                                locale: usLocale,
+                                                storeCurrencySettings: usStoreSettings,
+                                                didSelectSave: { _ in })
+
+        // When
+        viewModel.feeType = .percentage
+        viewModel.percentage = "-hi:11.3005.02-"
+
+        // Then
+        XCTAssertEqual(viewModel.percentage, "-11.30")
+        XCTAssertFalse(viewModel.shouldDisableDoneButton)
     }
 
     func test_view_model_prefills_input_data_correctly() {
@@ -119,6 +139,7 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isExistingFeeLine)
         XCTAssertEqual(viewModel.feeType, .fixed)
         XCTAssertEqual(viewModel.amount, "-10.00")
+        XCTAssertEqual(viewModel.percentage, "-5")
     }
 
     func test_view_model_disables_done_button_for_empty_state_and_enables_with_input() {

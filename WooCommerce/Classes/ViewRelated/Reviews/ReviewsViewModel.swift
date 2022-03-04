@@ -149,8 +149,11 @@ extension ReviewsViewModel {
         let group = DispatchGroup()
 
         group.enter()
-        synchronizeAllReviews(pageNumber: pageNumber, pageSize: pageSize) {
-            group.leave()
+        synchronizeAllReviews(pageNumber: pageNumber, pageSize: pageSize) { [weak self] reviews in
+            let productIDs = reviews.map { $0.productID }.uniqued()
+            self?.synchronizeProductsReviewed(reviewsProductIDs: productIDs) {
+                group.leave()
+            }
         }
 
         group.enter()
@@ -158,10 +161,8 @@ extension ReviewsViewModel {
             group.leave()
         }
 
-        group.notify(queue: .main) { [weak self] in
-            self?.synchronizeProductsReviewed {
-                onCompletion?()
-            }
+        group.notify(queue: .main) {
+            onCompletion?()
         }
     }
 
@@ -169,28 +170,27 @@ extension ReviewsViewModel {
     ///
     private func synchronizeAllReviews(pageNumber: Int,
                                        pageSize: Int,
-                                       onCompletion: (() -> Void)? = nil) {
-        let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
-            if let error = error {
+                                       onCompletion: (([ProductReview]) -> Void)? = nil) {
+        let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
+            switch result {
+            case .failure(let error):
                 DDLogError("⛔️ Error synchronizing reviews: \(error)")
                 ServiceLocator.analytics.track(.reviewsListLoadFailed,
                                                withError: error)
                 self?.hasErrorLoadingData = true
-            } else {
+                onCompletion?([])
+            case .success(let reviews):
                 let loadingMore = pageNumber != Settings.firstPage
                 ServiceLocator.analytics.track(.reviewsListLoaded,
                                                withProperties: ["is_loading_more": loadingMore])
+                onCompletion?(reviews)
             }
-
-            onCompletion?()
         }
 
         stores.dispatch(action)
     }
 
-    private func synchronizeProductsReviewed(onCompletion: @escaping () -> Void) {
-        let reviewsProductIDs = data.reviewsProductsIDs
-
+    private func synchronizeProductsReviewed(reviewsProductIDs: [Int64], onCompletion: @escaping () -> Void) {
         let action = ProductAction.retrieveProducts(siteID: siteID, productIDs: reviewsProductIDs) { [weak self] result in
             switch result {
             case .failure(let error):

@@ -705,7 +705,8 @@ extension NewOrderViewModel {
 private extension NewOrderViewModel {
     enum Localization {
         static let errorMessageOrderCreation = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
-        static let errorMessageOrderSync = NSLocalizedString("Unable to load taxes for order", comment: "Notice displayed when taxes cannot be synced for new order")
+        static let errorMessageOrderSync = NSLocalizedString("Unable to load taxes for order",
+                                                             comment: "Notice displayed when taxes cannot be synced for new order")
         static let retryOrderSync = NSLocalizedString("Retry", comment: "Action button to retry syncing the draft order")
     }
 }

@@ -19,12 +19,20 @@ final class BulkUpdateViewController: UIViewController {
 
     private var sections: [Section] = []
 
-    private let noticePresenter: NoticePresenter
+    /// Dedicated `NoticePresenter` because this controller is modally presented we use this here instead of ServiceLocator.noticePresenter
+    ///
+    private lazy var noticePresenter: NoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
 
-    init(viewModel: BulkUpdateViewModel, noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+    init(viewModel: BulkUpdateViewModel, noticePresenter: NoticePresenter? = nil) {
         self.viewModel = viewModel
-        self.noticePresenter = noticePresenter
         super.init(nibName: nil, bundle: nil)
+        if let noticePresenter = noticePresenter {
+            self.noticePresenter = noticePresenter
+        }
     }
 
     required init?(coder: NSCoder) {

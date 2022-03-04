@@ -89,6 +89,7 @@ struct Inbox: View {
                     .renderedIf(viewModel.syncState == .results)
             }
         }
+        .wooNavigationBarStyle()
     }
 }
 

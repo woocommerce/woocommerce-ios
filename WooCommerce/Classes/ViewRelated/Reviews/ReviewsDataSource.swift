@@ -23,11 +23,6 @@ protocol ReviewsDataSource: UITableViewDataSource, ReviewsInteractionDelegate {
     ///
     var isEmpty: Bool { get }
 
-    /// Identifiers of the Products mentioned in the reviews.
-    /// Guaranteed to be uniqued (does not contain duplicates)
-    ///
-    var reviewsProductsIDs: [Int64] { get }
-
     /// Number of reviews in memory
     ///
     var reviewCount: Int { get }
@@ -45,7 +40,7 @@ protocol ReviewsDataSource: UITableViewDataSource, ReviewsInteractionDelegate {
     ///
     func startForwardingEvents(to tableView: UITableView)
 
-    /// Force a refresh of entities obeserving data collections
+    /// Force a refresh of entities observing data collections
     ///
     func refreshDataObservers()
 

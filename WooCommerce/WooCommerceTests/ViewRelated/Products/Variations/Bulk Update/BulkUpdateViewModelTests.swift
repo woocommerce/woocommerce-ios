@@ -171,6 +171,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         let regularPriceViewModel = viewModel.viewModelForDisplayingRegularPrice()
         XCTAssertFalse(regularPriceViewModel.text.isEmpty)
         XCTAssertEqual(regularPriceViewModel.detailText, "$1.00")
+        XCTAssertEqual(regularPriceViewModel.style, .primary)
     }
 
     func test_sale_price_description_when_some_products_have_different_price() {
@@ -202,6 +203,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         let regularPriceViewModel = viewModel.viewModelForDisplayingRegularPrice()
         XCTAssertFalse(regularPriceViewModel.text.isEmpty)
         XCTAssertFalse(regularPriceViewModel.detailText.isEmpty)
+        XCTAssertEqual(regularPriceViewModel.style, .primary)
     }
 
     func test_sale_price_description_when_all_products_have_no_price() {
@@ -233,7 +235,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         let regularPriceViewModel = viewModel.viewModelForDisplayingRegularPrice()
         XCTAssertFalse(regularPriceViewModel.text.isEmpty)
         XCTAssertFalse(regularPriceViewModel.detailText.isEmpty)
-
+        XCTAssertEqual(regularPriceViewModel.style, .secondary)
     }
 
     func test_sale_price_description_when_some_products_have_no_price() {
@@ -265,6 +267,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         let regularPriceViewModel = viewModel.viewModelForDisplayingRegularPrice()
         XCTAssertFalse(regularPriceViewModel.text.isEmpty)
         XCTAssertFalse(regularPriceViewModel.detailText.isEmpty)
+        XCTAssertEqual(regularPriceViewModel.style, .primary)
     }
 
     func test_tapped_cancel_button_invokes_closure() {

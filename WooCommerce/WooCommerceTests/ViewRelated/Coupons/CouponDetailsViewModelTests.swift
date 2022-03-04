@@ -238,6 +238,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
                 break
             }
         }
+        viewModel.loadCouponReport()
 
         // Then
         XCTAssertFalse(viewModel.hasErrorLoadingAmount)
@@ -259,6 +260,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
                 break
             }
         }
+        viewModel.loadCouponReport()
 
         // Then
         XCTAssertTrue(viewModel.hasErrorLoadingAmount)

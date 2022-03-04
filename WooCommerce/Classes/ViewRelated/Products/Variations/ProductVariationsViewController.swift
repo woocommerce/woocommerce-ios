@@ -172,7 +172,7 @@ private extension ProductVariationsViewController {
     /// Sets the navigation bar buttons
     ///
     func configureNavigationBarButtons() {
-        guard featureFlagService.isFeatureFlagEnabled(.bulkEditProductVariations) && self.product.variations.isNotEmpty else {
+        guard featureFlagService.isFeatureFlagEnabled(.bulkEditProductVariations) && resultsController.fetchedObjects.isNotEmpty else {
             // Do not display the "more" button with the bulk update option if we do not have any variations
             navigationItem.rightBarButtonItem = nil
             return
@@ -361,6 +361,7 @@ private extension ProductVariationsViewController {
     func configureResultsControllerEventHandling(_ resultsController: ResultsController<StorageProductVariation>) {
         let onReload = { [weak self] in
             self?.tableView.reloadData()
+            self?.configureNavigationBarButtons()
         }
 
         resultsController.onDidChangeContent = { [weak tableView] in
@@ -536,7 +537,6 @@ private extension ProductVariationsViewController {
             let variationsUpdated = self.product.variations.filter { $0 != variation.productVariationID }
             let updatedProduct = self.product.copy(variations: variationsUpdated)
             self.product = updatedProduct
-            self.configureNavigationBarButtons()
         }
         let viewController = ProductFormViewController(viewModel: viewModel,
                                                        eventLogger: ProductVariationFormEventLogger(),
@@ -667,7 +667,6 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
                 self.noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))
                 self.product = updatedProduct
                 self.navigateToVariationDetail(for: newVariation)
-                self.configureNavigationBarButtons()
             case .failure(let error):
                 self.noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
                 DDLogError("⛔️ Error generating variation: \(error)")

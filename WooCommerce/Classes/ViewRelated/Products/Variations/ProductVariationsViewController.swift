@@ -172,20 +172,16 @@ private extension ProductVariationsViewController {
     /// Sets the navigation bar buttons
     ///
     func configureNavigationBarButtons() {
-        guard featureFlagService.isFeatureFlagEnabled(.bulkEditProductVariations) else {
+        guard featureFlagService.isFeatureFlagEnabled(.bulkEditProductVariations) && self.product.variations.isNotEmpty else {
+            // Do not display the "more" button with the bulk update option if we do not have any variations
+            navigationItem.rightBarButtonItem = nil
             return
         }
 
-        var moreButton: UIBarButtonItem? = nil
-        // Do not display the "more" button with the bulk update option if we do not have any variations
-        if self.product.variations.isNotEmpty {
-            moreButton = UIBarButtonItem(image: .moreImage,
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(presentMoreActionSheet(_:)))
-        }
-
-        navigationItem.rightBarButtonItem = moreButton
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: .moreImage,
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(presentMoreActionSheet(_:)))
     }
 
     /// Apply Woo styles.

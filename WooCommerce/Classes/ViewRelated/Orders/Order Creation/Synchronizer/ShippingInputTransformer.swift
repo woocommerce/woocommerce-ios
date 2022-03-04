@@ -11,7 +11,7 @@ struct ShippingInputTransformer {
         // If input is `nil`, then we remove any existing shipping line.
         // We remove a shipping like by setting its `methodID` to nil.
         guard let input = input else {
-            let linesToRemove = order.shippingLines.map { $0.copy(methodID: .some(nil)) }
+            let linesToRemove = order.shippingLines.map { $0.copy(methodID: .some(nil), total: "0") }
             return order.copy(shippingTotal: "0", shippingLines: linesToRemove)
 
         }

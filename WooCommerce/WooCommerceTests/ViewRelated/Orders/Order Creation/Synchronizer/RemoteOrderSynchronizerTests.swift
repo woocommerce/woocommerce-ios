@@ -142,7 +142,8 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         synchronizer.setShipping.send(nil)
 
         // Then
-        XCTAssertEqual(synchronizer.order.shippingLines, [])
+        let firstLine = try XCTUnwrap(synchronizer.order.shippingLines.first)
+        XCTAssertNil(firstLine.methodID)
     }
 
     func test_sending_product_input_triggers_order_creation() {

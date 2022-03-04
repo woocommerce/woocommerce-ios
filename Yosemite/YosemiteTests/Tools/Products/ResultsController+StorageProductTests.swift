@@ -227,7 +227,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
                                                productID: 2,
                                                name: "fun house",
                                                dateCreated: laterDate,
-                                               statusKey: ProductStatus.publish.rawValue)
+                                               statusKey: ProductStatus.published.rawValue)
         storageManager.insertSampleProduct(readOnlyProduct: publishedProduct)
 
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,

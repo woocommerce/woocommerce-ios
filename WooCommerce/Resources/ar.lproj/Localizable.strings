@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-01 16:54:04+0000 */
+/* Translation-Revision-Date: 2022-03-03 22:48:19+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -10,7 +10,7 @@
 "#%@ %@" = "#%1$@ %2$@";
 
 /* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"%.0f%% complete" = "%.0f%% complete";
+"%.0f%% complete" = "%.0f%% مكتمل";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
 "%1$@" = "%1$@";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-01 11:54:04+0000 */
+/* Translation-Revision-Date: 2022-03-03 22:47:23+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -10,7 +10,7 @@
 "#%@ %@" = "#%1$@ %2$@";
 
 /* Label that describes the completed progress of a software update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
-"%.0f%% complete" = "%.0f%% complete";
+"%.0f%% complete" = "已完成 %.0f%%";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
 "%1$@" = "%1$@";
@@ -38,10 +38,10 @@
 "%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@有關使用行動裝置接受付款及訂購讀卡機的資訊";
 
 /* Combined rule for a coupon. Reads like: 2 Products and 1 Category */
-"%1$@ and %2$@" = "%1$@ 和 %2$@";
+"%1$@ and %2$@" = "%1$@和 %2$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
-"%1$@ excl. %2$@" = "除 %2$@ 外的 %1$@";
+"%1$@ excl. %2$@" = "除 %2$@以外的 %1$@";
 
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
@@ -141,7 +141,7 @@
 "%@ via %@" = "已在 %1$@ 收到 %2$@ 付款";
 
 /* No comment provided by engineer. */
-"%d Categories excl. %d Products" = "除 %2$d 個商品外的 %1$d 個分類";
+"%d Categories excl. %d Products" = "除 %2$d 個商品以外的 %1$d 個分類";
 
 /* No comment provided by engineer. */
 "%d Product" = "%d 個商品";
@@ -153,7 +153,7 @@
 "%d Products and %d Categories" = "%1$d 個商品和 %2$d 個分類";
 
 /* No comment provided by engineer. */
-"%d Products excl. %d Category" = "除 %2$d 個分類外的 %1$d 個商品";
+"%d Products excl. %d Category" = "除 %2$d 個分類以外的 %1$d 個商品";
 
 /* For example: `1 item` in Aggregated Product List */
 "%d item" = "%d 件商品";
@@ -325,7 +325,7 @@
 "Add Coupon" = "新增優惠券";
 
 /* Title text of the button that adds customer data when creating a new order */
-"Add Customer Details" = "新增客戶詳細資料";
+"Add Customer Details" = "新增顧客詳細資訊";
 
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "新增顧客備註";
@@ -485,7 +485,7 @@
 "All Products" = "所有產品";
 
 /* Value for the limit usage to X items row in Coupon Usage Details screen when no limit is set */
-"All Qualifying in Cart" = "購物車中所有符合條件的商品";
+"All Qualifying in Cart" = "購物車中的所有商品均符合條件";
 
 /* Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow */
 "All available packages have been activated" = "所有可用包裹均已啟用";
@@ -494,13 +494,13 @@
 "All done" = "全部完成";
 
 /* Exception rule for a coupon. Reads like: All excl. 2 Products */
-"All excl. %1$@" = "除 %1$@ 以外的所有商品";
+"All excl. %1$@" = "除 %1$@以外的所有商品";
 
 /* No comment provided by engineer. */
-"All excl. %d Categories" = "除 %d 個分類外的所有商品";
+"All excl. %d Categories" = "除 %d 個分類以外的所有商品";
 
 /* No comment provided by engineer. */
-"All excl. %d Products" = "除 %d 個商品外的所有商品";
+"All excl. %d Products" = "除 %d 個商品以外的所有商品";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "已將所有評論標記為已讀";
@@ -865,7 +865,7 @@
 "Collect payment from %1$@" = "從 %1$@ 收取付款";
 
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
-"Come back soon for more tips and insights on growing your store" = "請稍後再回來查看更多有助發展商店業務的秘訣和洞察報告";
+"Come back soon for more tips and insights on growing your store" = "請稍後再回來查看更多有助於商店成長的秘訣和洞察報告";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -1136,7 +1136,7 @@
 "Customer" = "顧客";
 
 /* Title for the Shipping Address Form for Customer Details */
-"Customer Details" = "客戶詳細資料";
+"Customer Details" = "顧客詳細資訊";
 
 /* Customer note row title
    Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
@@ -1334,7 +1334,7 @@
 "Edit Attributes" = "編輯屬性";
 
 /* Accessibility label for the button to edit customer details on the New Order screen */
-"Edit Customer Details" = "編輯客戶詳細資料";
+"Edit Customer Details" = "編輯顧客詳細資訊";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "編輯產品";
@@ -2682,7 +2682,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please enter a username." = "請輸入使用者名稱。";
 
 /* An error message. */
-"Please enter a valid email address for a WordPress.com account." = "請輸入可用於 WordPress.com 帳號的有效電子郵件地址";
+"Please enter a valid email address for a WordPress.com account." = "請輸入 WordPress.com 帳號的有效電子郵件地址。";
 
 /* Error message displayed when the user attempts use an invalid email address.
    Notice text when the merchant enters an invalid email */
@@ -3076,7 +3076,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Remove Product from Order" = "從訂單中移除商品";
 
 /* Text for the button to remove a shipping line from the order during order creation */
-"Remove Shipping from Order" = "從訂單中移除運送";
+"Remove Shipping from Order" = "從訂單中移除運送選項";
 
 /* Label action for removing a link from the editor */
 "Remove end date" = "移除結束日期";
@@ -3845,7 +3845,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Test out creating new manual orders as we get ready to launch" = "測試即將推出的「建立全新手動訂單」功能";
 
 /* Cell description on beta features screen to enable coupon management */
-"Test out managing coupons as we get ready to launch" = "搶先試用管理優惠券功能";
+"Test out managing coupons as we get ready to launch" = "搶先試用優惠券管理功能";
 
 /* Cell description on beta features screen to enable product SKU input scanner in inventory settings. */
 "Test out scanning a barcode for a product SKU in the product inventory settings" = "在商品庫存設定中測試掃瞄商品貨號的條碼";
@@ -4260,7 +4260,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to process payment. Order total amount is not valid." = "無法處理付款。 訂單總金額無效。";
 
 /* No comment provided by engineer. */
-"Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "無法透過該 URL 讀取 WordPress 網站。 點選「需要更多說明？」即可檢視常見問題集。";
+"Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "無法透過該 URL 讀取 WordPress 網站。 點選「需要更多說明？」即可檢視常見問題。";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "無法重新整理清單";
@@ -4313,7 +4313,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unknown media type" = "未知的媒體類型";
 
 /* Value for fields in Coupon Usage Details screen when no limit is set */
-"Unlimited" = "無限";
+"Unlimited" = "無限制";
 
 /* Back button title when the product doesn't have a name */
 "Unnamed product" = "未命名產品";
@@ -4405,13 +4405,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Upsells" = "追加銷售";
 
 /* Navigation title for usage details screen */
-"Usage Details" = "使用詳細資料";
+"Usage Details" = "使用詳細資訊";
 
 /* Title for the usage limit per coupon row in coupon usage details screen. */
 "Usage Limit Per Coupon" = "每張折價券的使用上限";
 
 /* Title for the usage limit per user row in coupon usage details screen. */
-"Usage Limit Per User" = "每一使用者的使用上限";
+"Usage Limit Per User" = "每位使用者的使用上限";
 
 /* Title for the usage limits section on coupon usage details screen */
 "Usage Limits" = "使用上限";
@@ -4420,7 +4420,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Usage Restrictions" = "使用限制";
 
 /* Title of the Usage details row in Coupon Details screen */
-"Usage details" = "使用詳細資料";
+"Usage details" = "使用詳細資訊";
 
 /* Action to use the address in Shipping Label Suggested screen as entered placeholder */
 "Use Address Entered" = "使用輸入的地址";

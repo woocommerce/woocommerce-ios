@@ -50,6 +50,7 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
     private let siteID: Int64
 
     private let data: ReviewsDataSource
+    private let stores: StoresManager
 
     var isEmpty: Bool {
         return data.isEmpty
@@ -81,9 +82,10 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
     ///
     var hasErrorLoadingData: Bool = false
 
-    init(siteID: Int64, data: ReviewsDataSource) {
+    init(siteID: Int64, data: ReviewsDataSource, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.data = data
+        self.stores = stores
     }
 
     func displayPlaceholderReviews(tableView: UITableView) {
@@ -183,7 +185,7 @@ extension ReviewsViewModel {
             onCompletion?()
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     private func synchronizeProductsReviewed(onCompletion: @escaping () -> Void) {
@@ -203,7 +205,7 @@ extension ReviewsViewModel {
             onCompletion()
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
@@ -222,7 +224,7 @@ extension ReviewsViewModel {
             onCompletion?()
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 }
 
@@ -233,7 +235,7 @@ private extension ReviewsViewModel {
         let identifiers = notes.map { $0.noteID }
         let action = NotificationAction.updateMultipleReadStatus(noteIDs: identifiers, read: true, onCompletion: onCompletion)
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 }
 

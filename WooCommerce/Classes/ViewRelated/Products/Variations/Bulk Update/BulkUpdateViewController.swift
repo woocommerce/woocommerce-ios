@@ -31,9 +31,21 @@ final class BulkUpdateViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configureNavigationBar()
         configureTableView()
         configureGhostTableView()
         configureViewModel()
+    }
+
+    /// Configures the  title and navigation bar button
+    ///
+    private func configureNavigationBar() {
+        title = Localization.screenTitle
+
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancelButtonTitle,
+                                                           style: .plain,
+                                                           target: self,
+                                                           action: #selector(cancelButtonTapped))
     }
 
     /// Setup receiving updates for data changes and actives the view model
@@ -114,6 +126,12 @@ final class BulkUpdateViewController: UIViewController {
         for row in Row.allCases {
             tableView.registerNib(for: row.type)
         }
+    }
+
+    /// Action handler for the cancel button
+    ///
+    @objc private func cancelButtonTapped() {
+        viewModel.handleTapCancel()
     }
 }
 
@@ -214,6 +232,13 @@ extension BulkUpdateViewController {
         fileprivate var reuseIdentifier: String {
             return type.reuseIdentifier
         }
+    }
+}
+
+private extension BulkUpdateViewController {
+    enum Localization {
+        static let cancelButtonTitle = NSLocalizedString("Cancel", comment: "Button title that closes the presented screen")
+        static let screenTitle = NSLocalizedString("Bulk Update", comment: "Title that appears on top of the bulk update of product variations screen")
     }
 }
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-03 22:47:53+0000 */
+/* Translation-Revision-Date: 2022-03-04 17:32:46+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -4395,7 +4395,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Updating software" = "Uppdatera programvara";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
-"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "Uppdateringen av läsarprogramvaran misslyckades, eftersom batterinivån i läsaren är låg. Ladda läsaren till över 50 % innan du försöker igen.";
+"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "Uppdateringen av läsarprogramvaran misslyckades, eftersom batterinivån i läsaren är låg. Ladda läsaren till över 50 \\uFF05 innan du försöker igen.";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
 "Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "Uppdateringen av läsarprogramvaran misslyckades, eftersom läsarens batteri endast är laddat till %.0f%%. Ladda läsaren till över 50 %% innan du försöker igen.";

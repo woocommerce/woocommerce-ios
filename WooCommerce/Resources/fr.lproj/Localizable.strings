@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-03 22:46:49+0000 */
+/* Translation-Revision-Date: 2022-03-04 17:32:28+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -4395,7 +4395,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Updating software" = "Mise à jour du logiciel";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
-"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "La mise à jour du logiciel du lecteur a échoué car la batterie du lecteur est faible. Veuillez charger le lecteur au-dessus de 50 % avant de réessayer.";
+"Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again." = "La mise à jour du logiciel du lecteur a échoué car la batterie du lecteur est faible. Veuillez charger le lecteur au-dessus de 50 \\uFF05 avant de réessayer.";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
 "Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again." = "La mise à jour du logiciel du lecteur a échoué car la batterie du lecteur est chargée à %.0f%%. Veuillez charger le lecteur au-dessus de 50 %% avant de réessayer.";

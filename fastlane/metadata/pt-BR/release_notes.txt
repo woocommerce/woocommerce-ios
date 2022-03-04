@@ -1,0 +1,5 @@
+Atualizamos a funcionalidade experimental de criação de pedidos. Os produtos com variações agora exibem a lista dos atributos.
+
+Também adicionamos outra funcionalidade experimental, o gerenciamento de cupons! Acesse a guia Mais, as configurações e Configurações experimentais para ativá-la. Aceitamos seu feedback no aplicativo, em especial sobre as novas funcionalidades que estamos desenvolvendo e oferecendo acesso antecipado.
+
+Um agradecimento especial ao usuário do GitHub chrisKns por contribuir com as melhorias desta versão. ❤

@@ -104,7 +104,7 @@ final class ReviewsViewModelTests: XCTestCase {
         storesManager.whenReceivingAction(ofType: ProductReviewAction.self) { action in
             switch action {
             case .synchronizeProductReviews(_, _, _, _, _, let onCompletion):
-                onCompletion(.success([MockReviews().review()]))
+                onCompletion(.success([ProductReview.fake()]))
             default:
                 return
             }
@@ -144,12 +144,10 @@ final class ReviewsViewModelTests: XCTestCase {
     func test_synchronizeReviews_triggers_retrieveProducts_with_all_reviewsProductIDs() {
         // Given
         let mockDataSource = MockReviewsDataSource()
-        let mocks = MockReviews()
         let sampleReviews: [ProductReview] = [
-            mocks.review(injectedReviewID: sampleSiteID, injectedProductID: 55),
-            mocks.review(injectedReviewID: sampleSiteID, injectedProductID: 668),
-            mocks.review(injectedReviewID: sampleSiteID, injectedProductID: 789)
-        ]
+            .fake().copy(productID: 55),
+            .fake().copy(productID: 668),
+            .fake().copy(productID: 789)        ]
 
         let mockStores = MockStoresManager(sessionManager: .makeForTesting())
         mockStores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
@@ -286,7 +284,7 @@ final class MockReviewsStoresManager: DefaultStoresManager {
         switch action {
         case .synchronizeProductReviews(_, _, _, _, _, let onCompletion):
             syncReviewsIsHit = true
-            onCompletion(.success([MockReviews().review()]))
+            onCompletion(.success([ProductReview.fake()]))
         default:
             return
         }

@@ -18,10 +18,10 @@ final class MockReviews {
 
     let sampleVariationTypeProductID: Int64 = 295
 
-    func review(injectedReviewID: Int64? = nil, injectedProductID: Int64? = nil) -> Networking.ProductReview {
+    func review() -> Networking.ProductReview {
         return ProductReview(siteID: siteID,
-                             reviewID: injectedReviewID ?? reviewID,
-                             productID: injectedProductID ?? productID,
+                             reviewID: reviewID,
+                             productID: productID,
                              dateCreated: dateCreated,
                              statusKey: statusKey,
                              reviewer: reviewer,

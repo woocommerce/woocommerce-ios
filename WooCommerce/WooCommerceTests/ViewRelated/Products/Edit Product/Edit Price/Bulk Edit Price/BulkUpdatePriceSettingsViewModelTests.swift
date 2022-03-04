@@ -24,8 +24,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.saveButtonState, .disabled)
-        XCTAssertFalse(viewModel.lastUpdateDidFail)
-        XCTAssertNil(viewModel.priceValidationError)
+        XCTAssertNil(viewModel.bulkUpdatePriceError)
     }
 
     func test_state_when_price_is_changed_from_empty_to_a_value() {
@@ -36,8 +35,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.saveButtonState, .enabled)
-        XCTAssertFalse(viewModel.lastUpdateDidFail)
-        XCTAssertNil(viewModel.priceValidationError)
+        XCTAssertNil(viewModel.bulkUpdatePriceError)
     }
 
     func test_state_when_price_is_changed_from_a_value_to_empty() {
@@ -48,8 +46,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.saveButtonState, .disabled)
-        XCTAssertFalse(viewModel.lastUpdateDidFail)
-        XCTAssertNil(viewModel.priceValidationError)
+        XCTAssertNil(viewModel.bulkUpdatePriceError)
     }
 
     func test_state_when_no_regular_price_is_selected_and_save_button_tapped_given_variations_have_sale_price() {
@@ -66,8 +63,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.saveButtonState, .disabled)
-        XCTAssertFalse(viewModel.lastUpdateDidFail)
-        XCTAssertEqual(viewModel.priceValidationError, .salePriceWithoutRegularPrice)
+        XCTAssertEqual(viewModel.bulkUpdatePriceError?.validationError(), .salePriceWithoutRegularPrice)
     }
 
     func test_state_when_no_regular_price_is_selected_and_save_button_tapped_given_with_multiple_variations_having_sale_price() {
@@ -85,8 +81,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.saveButtonState, .disabled)
-        XCTAssertFalse(viewModel.lastUpdateDidFail)
-        XCTAssertEqual(viewModel.priceValidationError, .salePriceWithoutRegularPrice)
+        XCTAssertEqual(viewModel.bulkUpdatePriceError?.validationError(), .salePriceWithoutRegularPrice)
     }
 
     func test_state_when_no_sale_price_is_selected_and_save_button_tapped_given_variations_with_no_prices() {
@@ -103,8 +98,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.saveButtonState, .disabled)
-        XCTAssertFalse(viewModel.lastUpdateDidFail)
-        XCTAssertEqual(viewModel.priceValidationError, .newSaleWithEmptySalePrice)
+        XCTAssertEqual(viewModel.bulkUpdatePriceError?.validationError(), .newSaleWithEmptySalePrice)
     }
 
     func test_state_when_no_sale_price_is_selected_and_save_button_tapped_givenwith_multiple_variations_with_no_prices() {
@@ -122,8 +116,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.saveButtonState, .disabled)
-        XCTAssertFalse(viewModel.lastUpdateDidFail)
-        XCTAssertEqual(viewModel.priceValidationError, .newSaleWithEmptySalePrice)
+        XCTAssertEqual(viewModel.bulkUpdatePriceError?.validationError(), .newSaleWithEmptySalePrice)
     }
 
     func test_state_when_selected_sale_price_is_greater_than_regular_price() {
@@ -141,8 +134,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.saveButtonState, .enabled)
-        XCTAssertFalse(viewModel.lastUpdateDidFail)
-        XCTAssertEqual(viewModel.priceValidationError, .salePriceHigherThanRegularPrice)
+        XCTAssertEqual(viewModel.bulkUpdatePriceError?.validationError(), .salePriceHigherThanRegularPrice)
     }
 
     func test_state_when_selected_sale_price_is_greater_than_regular_price_with_multiple_variations() {
@@ -161,8 +153,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.saveButtonState, .enabled)
-        XCTAssertFalse(viewModel.lastUpdateDidFail)
-        XCTAssertEqual(viewModel.priceValidationError, .salePriceHigherThanRegularPrice)
+        XCTAssertEqual(viewModel.bulkUpdatePriceError?.validationError(), .salePriceHigherThanRegularPrice)
     }
 
     func test_state_when_selected_valid_price_is_valid_when_action_is_dispatched() {
@@ -184,8 +175,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.saveButtonState, .loading)
-        XCTAssertFalse(viewModel.lastUpdateDidFail)
-        XCTAssertNil(viewModel.priceValidationError)
+        XCTAssertNil(viewModel.bulkUpdatePriceError)
     }
 
     func test_state_when_selected_valid_price_is_valid_when_action_fails() {
@@ -212,8 +202,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.saveButtonState, .enabled)
-        XCTAssertTrue(viewModel.lastUpdateDidFail)
-        XCTAssertNil(viewModel.priceValidationError)
+        XCTAssertEqual(viewModel.bulkUpdatePriceError, .priceUpdateError)
     }
 
     func test_callback_is_called_when_update_action_is_successful() {
@@ -282,5 +271,18 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         }
         let expectedVariation = variations.map { $0.copy(salePrice: "9") }
         assertEqual(updatedVariations, expectedVariation)
+    }
+}
+
+private extension BulkUpdatePriceSettingsViewModel.BulkUpdatePriceError {
+    /// Convenient method to access the associated error value
+    ///
+    func validationError() -> ProductPriceSettingsError? {
+        switch self {
+        case let .inputValidationError(validationError):
+            return validationError
+        default:
+            return nil
+        }
     }
 }

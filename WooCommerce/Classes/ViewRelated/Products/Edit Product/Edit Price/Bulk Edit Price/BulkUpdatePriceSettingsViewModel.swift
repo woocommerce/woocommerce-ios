@@ -4,11 +4,17 @@ import Yosemite
 /// View Model logic for the bulk price setting screen
 ///
 final class BulkUpdatePriceSettingsViewModel {
-    /// Represents possible states for the save button.
+    /// Represents the possible states for the save button.
     enum ButtonState: Equatable {
         case enabled
         case disabled
         case loading
+    }
+
+    /// Represents the possible errors during the bulk update
+    enum BulkUpdatePriceError: Error, Equatable {
+        case inputValidationError(ProductPriceSettingsError)
+        case priceUpdateError
     }
 
     /// Indicates what price we are editting
@@ -27,25 +33,22 @@ final class BulkUpdatePriceSettingsViewModel {
         }
     }
 
-    /// The state of synching all variations
+    /// The state of save price setting button
     @Published private(set) var saveButtonState: ButtonState = .disabled
 
-    /// The error state, true if the product bulk update API call failed. Used to trigger related informational notification
-    @Published private(set) var lastUpdateDidFail: Bool = false
-
-    /// The error state, true if the product bulk updat failed
-    @Published private(set) var priceValidationError: ProductPriceSettingsError? = nil
+    /// The error state
+    @Published private(set) var bulkUpdatePriceError: BulkUpdatePriceError? = nil
 
     /// A Closure to be called when the price update is successful
     private let priceUpdateDidFinish: () -> Void
 
+    private var currentPrice: String? = nil
+    private let siteID: Int64
+    private let productID: Int64
     private let productVariations: [ProductVariation]
     private let edittingPriceType: EdittingPriceType
     private let storesManager: StoresManager
     private let priceSettingsValidator: ProductPriceSettingsValidator
-    private var currentPrice: String? = nil
-    private let siteID: Int64
-    private let productID: Int64
 
     init(siteID: Int64,
          productID: Int64,
@@ -66,13 +69,12 @@ final class BulkUpdatePriceSettingsViewModel {
     /// Called when the save button is tapped
     ///
     func saveButtonTapped() {
-        priceValidationError = validatePrice()
-        guard priceValidationError == nil else {
+        bulkUpdatePriceError = validatePrice()
+        guard bulkUpdatePriceError == nil else {
             return
         }
 
         saveButtonState = .loading
-        lastUpdateDidFail = false
 
         let action = ProductVariationAction.updateProductVariations(siteID: siteID,
                                                                     productID: productID,
@@ -81,14 +83,13 @@ final class BulkUpdatePriceSettingsViewModel {
 
             switch result {
             case .success(_):
-                self.lastUpdateDidFail = false
                 self.priceUpdateDidFinish()
             case let .failure(error):
                 DDLogError("⛔️ Error updating product variations: \(error)")
-                self.lastUpdateDidFail = true
+                self.bulkUpdatePriceError = .priceUpdateError
             }
 
-            self.updateButtonStateBasedOnCurrentPrice()
+            self.saveButtonState = .enabled
         }
 
         storesManager.dispatch(action)
@@ -120,24 +121,22 @@ final class BulkUpdatePriceSettingsViewModel {
         }
     }
 
-    /// Validates the curre price selection for all variations that will be updated
+    /// Validates if the currently selected price is valid for all variations
     ///
-    private func validatePrice() -> ProductPriceSettingsError? {
-        var error: ProductPriceSettingsError?
+    private func validatePrice() -> BulkUpdatePriceError? {
 
         for variation in productVariations {
             let regularPrice = edittingPriceType == .regular ? currentPrice : variation.regularPrice
             let salePrice = edittingPriceType == .sale ? currentPrice : variation.salePrice
 
-            error = priceSettingsValidator.validate(regularPrice: regularPrice,
-                                                    salePrice: salePrice,
-                                                    dateOnSaleStart: variation.dateOnSaleStart,
-                                                    dateOnSaleEnd: variation.dateOnSaleEnd)
-            if error != nil {
-                break
+            if let error = priceSettingsValidator.validate(regularPrice: regularPrice,
+                                                           salePrice: salePrice,
+                                                           dateOnSaleStart: variation.dateOnSaleStart,
+                                                           dateOnSaleEnd: variation.dateOnSaleEnd) {
+                return .inputValidationError(error)
             }
         }
 
-        return error
+        return nil
     }
 }

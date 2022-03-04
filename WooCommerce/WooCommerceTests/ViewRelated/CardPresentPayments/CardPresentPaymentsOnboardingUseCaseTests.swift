@@ -237,7 +237,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed)
+        XCTAssertEqual(state, .completed(plugin: .wcPay))
     }
 
     func test_onboarding_returns_complete_when_wcpay_plugin_version_has_newer_patch_release() {
@@ -251,7 +251,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed)
+        XCTAssertEqual(state, .completed(plugin: .wcPay))
     }
 
     func test_onboarding_returns_complete_when_wcpay_plugin_version_has_newer_unpatched_release() {
@@ -265,7 +265,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed)
+        XCTAssertEqual(state, .completed(plugin: .wcPay))
     }
 
     func test_onboarding_returns_complete_when_stripe_active_and_wcpay_plugin_installed_but_not_active() {
@@ -280,7 +280,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed)
+        XCTAssertEqual(state, .completed(plugin: .stripe))
     }
 
     func test_onboarding_returns_complete_when_wcpay_plugin_active() {
@@ -294,7 +294,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed)
+        XCTAssertEqual(state, .completed(plugin: .wcPay))
     }
 
     func test_onboarding_returns_complete_when_wcpay_plugin_is_network_active() {
@@ -308,7 +308,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed)
+        XCTAssertEqual(state, .completed(plugin: .wcPay))
     }
 
     func test_onboarding_sends_use_wcpay_account_action_when_wcpay_plugin_is_used_with_an_account_meeting_requirements() throws {
@@ -354,7 +354,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed)
+        XCTAssertEqual(state, .completed(plugin: .stripe))
     }
 
     func test_onboarding_sends_use_stripe_account_action_when_stripe_plugin_is_used_with_an_account_meeting_requirements() throws {
@@ -595,7 +595,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .completed)
+        XCTAssertEqual(state, .completed(plugin: .wcPay))
     }
 }
 
@@ -657,13 +657,13 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
     enum WCPayPluginVersion: String {
         case unsupportedVersionWithPatch = "2.4.2"
         case unsupportedVersionWithoutPatch = "3.2"
-        case minimumSupportedVersion = "3.2.1" // Should match `CardPresentPaymentsOnboardingState` `minimumSupportedPluginVersion`
+        case minimumSupportedVersion = "3.2.1" // Should match `CardPresentPaymentOnboardingState` `minimumSupportedPluginVersion`
         case supportedVersionWithPatch = "3.2.5"
         case supportedVersionWithoutPatch = "3.3"
     }
 
     enum StripePluginVersion: String {
-        case minimumSupportedVersion = "6.2.0" // Should match `CardPresentPaymentsOnboardingState` `minimumSupportedPluginVersion`
+        case minimumSupportedVersion = "6.2.0" // Should match `CardPresentPaymentOnboardingState` `minimumSupportedPluginVersion`
         case unsupportedVersion = "6.1.0"
     }
 

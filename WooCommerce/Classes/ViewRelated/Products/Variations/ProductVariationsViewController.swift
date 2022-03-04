@@ -568,7 +568,14 @@ private extension ProductVariationsViewController {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
-        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.bulkUpdate) { _ in
+        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.bulkUpdate) { [weak self] _ in
+            guard let self = self else { return }
+
+            let viewModel = BulkUpdateViewModel(siteID: self.siteID, productID: self.productID, onCancelButtonTapped: { [weak self] in
+                self?.dismiss(animated: true)
+            })
+            let navigationController = WooNavigationController(rootViewController: BulkUpdateViewController(viewModel: viewModel))
+            self.present(navigationController, animated: true)
         }
 
         actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel)

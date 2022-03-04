@@ -21,7 +21,10 @@ final class InboxViewModel: ObservableObject {
                               attributedContent: .init(),
                               actions: [.init(id: 0, title: "Placeholder", url: nil)],
                               siteID: 123,
-                              isPlaceholder: true)
+                              isPlaceholder: true,
+                              isRead: true,
+                              isSurvey: false,
+                              isActioned: false)
     }
 
     // MARK: Sync

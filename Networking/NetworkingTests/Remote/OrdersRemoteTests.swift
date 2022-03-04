@@ -254,6 +254,45 @@ final class OrdersRemoteTests: XCTestCase {
         assertEqual(expected, received)
     }
 
+    func test_update_order_properly_encodes_custom_status() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let expectedStatusString = "backorder"
+        let status = OrderStatusEnum.custom(expectedStatusString)
+        let order = Order.fake().copy(orderID: sampleOrderID, status: status)
+
+        // When
+        remote.updateOrder(from: sampleSiteID, order: order, fields: [.status]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["status"] as? String)
+        assertEqual(received, expectedStatusString)
+    }
+
+    func test_update_order_properly_encodes_order_items() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let expectedQuantity: Int64 = 2
+        let orderItem = OrderItem.fake().copy(itemID: 123, productID: 5, quantity: Decimal(expectedQuantity), subtotal: "3", total: "15")
+        let order = Order.fake().copy(items: [orderItem])
+
+        // When
+        remote.updateOrder(from: sampleSiteID, order: order, fields: [.items]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["line_items"] as? [[String: AnyHashable]]).first
+        let expected: [String: AnyHashable] = [
+            "id": orderItem.itemID,
+            "product_id": orderItem.productID,
+            "quantity": expectedQuantity,
+            "subtotal": orderItem.subtotal,
+            "total": orderItem.total
+        ]
+        assertEqual(received, expected)
+    }
+
 
     // MARK: - Load Order Notes Tests
 
@@ -376,6 +415,7 @@ final class OrdersRemoteTests: XCTestCase {
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         let received = try XCTUnwrap(request.parameters["line_items"] as? [[String: AnyHashable]]).first
         let expected: [String: Int64] = [
+            "id": 0,
             "product_id": orderItem.productID,
             "quantity": expectedQuantity
         ]

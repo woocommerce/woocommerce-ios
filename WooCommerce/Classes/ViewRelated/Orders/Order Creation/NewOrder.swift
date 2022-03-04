@@ -39,14 +39,13 @@ struct NewOrder: View {
 
                         Spacer(minLength: Layout.sectionSpacing)
 
-                        OrderPaymentSection(viewModel: viewModel.paymentDataViewModel,
-                                            saveShippingLineClosure: viewModel.saveShippingLine,
-                                            saveFeeLineClosure: viewModel.saveFeeLine)
+                        OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
 
                         Spacer(minLength: Layout.sectionSpacing)
 
                         OrderCustomerSection(viewModel: viewModel)
                     }
+                    .disabled(viewModel.disabled)
                 }
                 .background(Color(.listBackground).ignoresSafeArea())
                 .ignoresSafeArea(.container, edges: [.horizontal])
@@ -60,7 +59,10 @@ struct NewOrder: View {
                 case .create:
                     Button(Localization.createButton) {
                         viewModel.createOrder()
-                    }.id(navigationButtonID)
+                    }
+                    .id(navigationButtonID)
+                    .disabled(viewModel.disabled)
+
                 case .loading:
                     ProgressView()
                 }
@@ -68,7 +70,6 @@ struct NewOrder: View {
         }
         .wooNavigationBarStyle()
         .notice($viewModel.notice)
-        .disabled(viewModel.disabled)
     }
 }
 

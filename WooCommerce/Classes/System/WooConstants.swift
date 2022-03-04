@@ -129,6 +129,11 @@ extension WooConstants {
         case simplePaymentsPrototypeFeedback = "https://automattic.survey.fm/woo-app-quick-order-production"
 #endif
 
+#if DEBUG
+        case couponManagementFeedback = "https://automattic.survey.fm/woo-app-coupon-management-testing"
+#else
+        case couponManagementFeedback = "https://automattic.survey.fm/woo-app-coupon-management-production"
+#endif
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

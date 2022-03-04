@@ -11,7 +11,12 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_formats_amount_correctly() {
         // Given
-        let viewModel = ShippingLineDetailsViewModel(inputData: .init(), locale: usLocale, storeCurrencySettings: usStoreSettings, didSelectSave: { _ in })
+        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+                                                     initialMethodTitle: "",
+                                                     shippingTotal: "",
+                                                     locale: usLocale,
+                                                     storeCurrencySettings: usStoreSettings,
+                                                     didSelectSave: { _ in })
 
         // When
         viewModel.amount = "hi:11.3005.02-"
@@ -28,7 +33,12 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
                                               decimalSeparator: ",",
                                               numberOfDecimals: 3)
 
-        let viewModel = ShippingLineDetailsViewModel(inputData: .init(), locale: usLocale, storeCurrencySettings: customSettings, didSelectSave: { _ in })
+        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+                                                     initialMethodTitle: "",
+                                                     shippingTotal: "",
+                                                     locale: usLocale,
+                                                     storeCurrencySettings: customSettings,
+                                                     didSelectSave: { _ in })
 
         // When
         viewModel.amount = "12.203"
@@ -41,11 +51,12 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_prefills_input_data_correctly() {
         // Given
-        let inputData = NewOrderViewModel.PaymentDataViewModel(shouldShowShippingTotal: true,
-                                                               shippingTotal: "$11.30",
-                                                               shippingMethodTitle: "Flat Rate")
-
-        let viewModel = ShippingLineDetailsViewModel(inputData: inputData, locale: usLocale, storeCurrencySettings: usStoreSettings, didSelectSave: { _ in })
+        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: true,
+                                                     initialMethodTitle: "Flat Rate",
+                                                     shippingTotal: "$11.30",
+                                                     locale: usLocale,
+                                                     storeCurrencySettings: usStoreSettings,
+                                                     didSelectSave: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.isExistingShippingLine)
@@ -55,7 +66,12 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_disables_done_button_for_empty_state_and_enables_with_input() {
         // Given
-        let viewModel = ShippingLineDetailsViewModel(inputData: .init(), locale: usLocale, storeCurrencySettings: usStoreSettings, didSelectSave: { _ in })
+        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+                                                     initialMethodTitle: "",
+                                                     shippingTotal: "",
+                                                     locale: usLocale,
+                                                     storeCurrencySettings: usStoreSettings,
+                                                     didSelectSave: { _ in })
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
 
         // When
@@ -73,11 +89,12 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_disables_done_button_for_prefilled_data_and_enables_with_changes() {
         // Given
-        let inputData = NewOrderViewModel.PaymentDataViewModel(shouldShowShippingTotal: true,
-                                                               shippingTotal: "$11.30",
-                                                               shippingMethodTitle: "Flat Rate")
-
-        let viewModel = ShippingLineDetailsViewModel(inputData: inputData, locale: usLocale, storeCurrencySettings: usStoreSettings, didSelectSave: { _ in })
+        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: true,
+                                                     initialMethodTitle: "Flat Rate",
+                                                     shippingTotal: "$11.30",
+                                                     locale: usLocale,
+                                                     storeCurrencySettings: usStoreSettings,
+                                                     didSelectSave: { _ in })
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
 
         // When
@@ -96,7 +113,9 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
     func test_view_model_creates_shippping_line_with_data_from_fields() {
         // Given
         var savedShippingLine: ShippingLine?
-        let viewModel = ShippingLineDetailsViewModel(inputData: .init(),
+        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+                                                     initialMethodTitle: "",
+                                                     shippingTotal: "",
                                                      locale: usLocale,
                                                      storeCurrencySettings: usStoreSettings,
                                                      didSelectSave: { newShippingLine in
@@ -116,7 +135,9 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
     func test_view_model_creates_shippping_line_with_placeholder_for_method_title() {
         // Given
         var savedShippingLine: ShippingLine?
-        let viewModel = ShippingLineDetailsViewModel(inputData: .init(),
+        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+                                                     initialMethodTitle: "",
+                                                     shippingTotal: "",
                                                      locale: usLocale,
                                                      storeCurrencySettings: usStoreSettings,
                                                      didSelectSave: { newShippingLine in

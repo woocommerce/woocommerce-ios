@@ -53,7 +53,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 
     func refresh() {
-        if state != .completed {
+        if !state.isCompleted {
             state = .loading
         }
         synchronizeStoreCountryAndPlugins { [weak self] in
@@ -226,7 +226,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: account)
         stores.dispatch(setAccount)
 
-        return .completed
+        return .completed(plugin: plugin)
     }
 }
 

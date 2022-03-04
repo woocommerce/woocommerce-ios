@@ -38,8 +38,7 @@ final class DashboardViewController: UIViewController {
     ///
     private lazy var innerStackView: UIStackView = {
         let view = UIStackView()
-        let horizontalMargin = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) ?
-        Constants.horizontalMargin: Constants.legacyHorizontalMargin
+        let horizontalMargin = Constants.horizontalMargin
         view.layoutMargins = UIEdgeInsets(top: 0, left: horizontalMargin, bottom: 0, right: horizontalMargin)
         view.isLayoutMarginsRelativeArrangement = true
         return view
@@ -138,8 +137,7 @@ final class DashboardViewController: UIViewController {
 private extension DashboardViewController {
 
     func configureView() {
-        view.backgroundColor = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) ?
-        Constants.backgroundColor: Constants.legacyBackgroundColor
+        view.backgroundColor = Constants.backgroundColor
     }
 
     func configureNavigation() {
@@ -171,9 +169,7 @@ private extension DashboardViewController {
 
     func configureSubtitle() {
         storeNameLabel.text = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.myStoreTabUpdates) {
-            storeNameLabel.textColor = Constants.storeNameTextColor
-        }
+        storeNameLabel.textColor = Constants.storeNameTextColor
         innerStackView.addArrangedSubview(storeNameLabel)
         headerStackView.addArrangedSubview(innerStackView)
     }
@@ -479,10 +475,8 @@ private extension DashboardViewController {
     enum Constants {
         static let bannerBottomMargin = CGFloat(8)
         static let horizontalMargin = CGFloat(16)
-        static let legacyHorizontalMargin = CGFloat(20)
         static let storeNameTextColor: UIColor = .secondaryLabel
         static let backgroundColor: UIColor = .systemBackground
-        static let legacyBackgroundColor: UIColor = .listBackground
         static let collapsedNavigationBarHeight = CGFloat(44)
     }
 }

@@ -521,6 +521,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.megaphoneIcon)
     }
 
+    func test_speakerIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.speakerIcon)
+    }
+
     func testCloudImageIsNotNil() {
         XCTAssertNotNil(UIImage.cloudImage)
     }

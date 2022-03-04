@@ -104,7 +104,9 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
                                  attributes: [])
 
         // When
-        let viewModel = ProductDetailsCellViewModel(item: item, currency: "$",
+        let viewModel = ProductDetailsCellViewModel(item: item,
+                                                    currency: "$",
+                                                    formatter: CurrencyFormatter(currencySettings: CurrencySettings()),
                                                     hasAddOns: false)
         let quantity = NumberFormatter.localizedString(from: item.quantity as NSDecimalNumber, number: .decimal)
         let subtitle = String.localizedStringWithFormat(Localization.subtitleFormat, quantity, "$10.00")
@@ -121,7 +123,9 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
                                  attributes: [])
 
         // When
-        let viewModel = ProductDetailsCellViewModel(item: item, currency: "$",
+        let viewModel = ProductDetailsCellViewModel(item: item,
+                                                    currency: "$",
+                                                    formatter: CurrencyFormatter(currencySettings: CurrencySettings()),
                                                     hasAddOns: false)
         let quantity = NumberFormatter.localizedString(from: item.quantity as NSDecimalNumber, number: .decimal)
         let subtitle = String.localizedStringWithFormat(Localization.subtitleFormat, quantity, "-$10.00")

@@ -84,9 +84,7 @@ final class ProductReviewsViewModelTests: XCTestCase {
 final class MockProductReviewsDataSource: NSObject, ReviewsDataSource {
 
     private lazy var reviews: [ProductReview] = {
-        let mocks = MockReviews()
-        let mockReview = mocks.review()
-        return [mockReview, mockReview]
+        return [.fake()]
     }()
 
     var isEmpty: Bool {
@@ -95,12 +93,6 @@ final class MockProductReviewsDataSource: NSObject, ReviewsDataSource {
 
     var reviewCount: Int {
         return reviews.count
-    }
-
-    var reviewsProductsIDs: [Int64] {
-        return reviews
-            .map { return $0.productID }
-            .uniqued()
     }
 
     var notifications: [Note] {
@@ -164,7 +156,7 @@ final class MockProductReviewsStoresManager: DefaultStoresManager {
         switch action {
         case .synchronizeProductReviews(_, _, _, _, _, let onCompletion):
             syncReviewsIsHit = true
-            onCompletion(nil)
+            onCompletion(.success([]))
         default:
             return
         }

@@ -856,6 +856,12 @@ extension UIImage {
         return UIImage(imageLiteralResourceName: "megaphone").imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Speaker icon
+    ///
+    static var speakerIcon: UIImage {
+        return UIImage.gridicon(.speaker).imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Multiple Users Image
     ///
     static var multipleUsersImage: UIImage {

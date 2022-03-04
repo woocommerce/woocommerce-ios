@@ -7,10 +7,6 @@ struct OrderPaymentSection: View {
     /// View model to drive the view content
     let viewModel: NewOrderViewModel.PaymentDataViewModel
 
-    /// Closure to create/update the shipping line object
-    let saveShippingLineClosure: (ShippingLine?) -> Void
-    let saveFeeLineClosure: (OrderFeeLine?) -> Void
-
     /// Indicates if the shipping line details screen should be shown or not.
     ///
     @State private var shouldShowShippingLineDetails: Bool = false
@@ -43,23 +39,25 @@ struct OrderPaymentSection: View {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) {
                 shippingRow
                     .sheet(isPresented: $shouldShowShippingLineDetails) {
-                        ShippingLineDetails(viewModel: .init(inputData: viewModel, didSelectSave: { newShippingLine in
-                            saveShippingLineClosure(newShippingLine)
-                        }))
+                        ShippingLineDetails(viewModel: viewModel.shippingLineViewModel)
                     }
                 feesRow
                     .sheet(isPresented: $shouldShowFeeLineDetails) {
-                        FeeLineDetails(viewModel: .init(inputData: viewModel, didSelectSave: { newFeeLine in
-                            saveFeeLineClosure(newFeeLine)
-                        }))
+                        FeeLineDetails(viewModel: viewModel.feeLineViewModel)
                     }
+            }
+
+            if viewModel.shouldShowTaxes {
+                TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))
             }
 
             TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
 
-            Text(Localization.taxesInfo)
-                .footnoteStyle()
-                .padding([.horizontal, .bottom])
+            if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreationRemoteSynchronizer) {
+                Text(Localization.taxesInfo)
+                    .footnoteStyle()
+                    .padding([.horizontal, .bottom])
+            }
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground))
@@ -108,6 +106,7 @@ private extension OrderPaymentSection {
         static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
         static let addFees = NSLocalizedString("Add Fees", comment: "Title text of the button that adds fees when creating a new order")
         static let feesTotal = NSLocalizedString("Fees", comment: "Label for the row showing the cost of fees in the order")
+        static let taxesTotal = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
     }
 }
 
@@ -115,7 +114,7 @@ struct OrderPaymentSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = NewOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00", orderTotal: "20.00")
 
-        OrderPaymentSection(viewModel: viewModel, saveShippingLineClosure: { _ in }, saveFeeLineClosure: { _ in })
+        OrderPaymentSection(viewModel: viewModel)
             .previewLayout(.sizeThatFits)
     }
 }

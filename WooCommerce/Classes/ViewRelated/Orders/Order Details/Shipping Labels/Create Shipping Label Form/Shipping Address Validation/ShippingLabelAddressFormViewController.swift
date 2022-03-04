@@ -100,12 +100,6 @@ final class ShippingLabelAddressFormViewController: UIViewController {
                                                       countries: countries)
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
-        switch type {
-        case .origin:
-            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "origin_address_started"])
-        case .destination:
-            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "destination_address_started"])
-        }
     }
 
     required init?(coder: NSCoder) {

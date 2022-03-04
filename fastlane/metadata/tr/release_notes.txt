@@ -1,3 +1,0 @@
-Geri bildiriminize dayanarak Mağazam sekmesini biraz yeniledik. Bir dönüşüm yüzdesi göreceksiniz ve şimdi satılan ilk 5 (3 yerine) ürün.
-
-Uygulamada sipariş oluşturmak istediniz. Test etmemize yardımcı olmak isterseniz, bir ön incelemeye hazır olduğumuzu söylemekten memnuniyet duyuyoruz! Uygulamadaki ayarlara gidin ve Sipariş Oluşturma için deneysel özelliği açın. Şu anda ürün, not ve adres ekleyebilirsiniz; gelecekteki sürümlerde ise ek işlevler olacaktır.

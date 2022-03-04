@@ -5,7 +5,7 @@ import Combine
 /// Possible states of an `OrderSynchronizer` type.
 ///
 enum OrderSyncState {
-    case syncing
+    case syncing(blocking: Bool)
     case synced
     case error(Error)
 }
@@ -19,9 +19,13 @@ struct OrderSyncProductInput {
         case product(Product)
         case variation(ProductVariation)
     }
-    var id = Int64(UUID().uuidString.hashValue)
+    var id: Int64 = .zero
     let product: ProductType
     let quantity: Decimal
+
+    func updating(id: Int64) -> OrderSyncProductInput {
+        .init(id: id, product: self.product, quantity: self.quantity)
+    }
 }
 
 /// Addresses input for an `OrderSynchronizer` type.

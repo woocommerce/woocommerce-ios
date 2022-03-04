@@ -64,7 +64,7 @@ target 'WooCommerce' do
   pod 'XLPagerTabStrip', '~> 9.0'
   pod 'Charts', '~> 3.6.0'
   pod 'ZendeskSupportSDK', '~> 5.0'
-  pod 'StripeTerminal', '~> 2.5'
+  pod 'StripeTerminal', '~> 2.6'
   pod 'Kingfisher', '~> 6.0.0'
   pod 'Wormholy', '~> 1.6.5', configurations: ['Debug']
 
@@ -81,7 +81,7 @@ end
 #
 def yosemite_pods
   pod 'Alamofire', '~> 4.8'
-  pod 'StripeTerminal', '~> 2.5'
+  pod 'StripeTerminal', '~> 2.6'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 
@@ -169,7 +169,7 @@ end
 # =================
 #
 def hardware_pods
-  pod 'StripeTerminal', '~> 2.5'
+  pod 'StripeTerminal', '~> 2.6'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 end

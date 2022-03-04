@@ -199,6 +199,34 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         }
     }
 
+    func test_sending_new_product_input_sends_order_with_zero_ids() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID, price: "20.0")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+
+        // When
+        let submittedItems: [OrderItem] = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, let order, _):
+                    promise(order.items)
+                default:
+                    XCTFail("Unexpected Action received: \(action)")
+                }
+            }
+
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            synchronizer.setProduct.send(input)
+        }
+
+        // Then
+        XCTAssertTrue(submittedItems.isNotEmpty)
+        for item in submittedItems {
+            XCTAssertEqual(item.itemID, .zero)
+        }
+    }
+
     func test_sending_existing_product_input_sends_order_with_totals() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "20.0")
@@ -409,6 +437,48 @@ class RemoteOrderSynchronizerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(states, [.syncing(blocking: false), .synced])
+    }
+
+    func test_order_creation_can_resume_after_receiving_errors() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let error = NSError(domain: "", code: 0, userInfo: nil)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+
+        // When
+        let receivedError: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, _, let completion):
+                    completion(.failure(error))
+                    promise(true)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            synchronizer.setProduct.send(input)
+        }
+        XCTAssertTrue(receivedError)
+
+        let receivedCreationRequest: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder:
+                    promise(true)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            synchronizer.setProduct.send(input)
+        }
+
+        // Then
+        XCTAssertTrue(receivedCreationRequest)
     }
 
     func test_states_are_properly_set_upon_failing_order_creation() {

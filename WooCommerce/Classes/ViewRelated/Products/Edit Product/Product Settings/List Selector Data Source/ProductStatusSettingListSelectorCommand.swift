@@ -10,7 +10,7 @@ final class ProductStatusSettingListSelectorCommand: ListSelectorCommand {
     let navigationBarTitle: String? = NSLocalizedString("Status", comment: "Product status setting list selector navigation title")
 
     let data: [ProductStatus] = [
-        .publish,
+        .published,
         .draft,
         .pending
     ]

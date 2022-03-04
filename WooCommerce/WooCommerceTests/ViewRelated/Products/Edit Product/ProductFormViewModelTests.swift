@@ -9,7 +9,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_edit_product_form_with_published_status_can_view_product_in_store() {
         // Arrange
-        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // Action
@@ -21,7 +21,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_add_product_form_with_published_status_cannot_view_product_in_store() {
         // Arrange
-        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // Action
@@ -59,7 +59,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_edit_product_form_with_published_status_can_share_product() {
         // Arrange
-        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // Action
@@ -71,7 +71,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_add_product_form_with_published_status_cannot_share_product() {
         // Arrange
-        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // Action
@@ -109,7 +109,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_edit_product_form_with_published_status_can_delete_product() {
         // Arrange
-        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // Action
@@ -121,7 +121,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_add_product_form_with_published_status_cannot_delete_product() {
         // Arrange
-        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // Action
@@ -216,7 +216,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_new_product_with_published_status_and_pending_changes() {
         // Given
-        let product = Product.fake().copy(statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .add)
         viewModel.updateName("new name")
 
@@ -229,7 +229,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_new_product_with_published_status_and_no_pending_changes() {
         // Given
-        let product = Product.fake().copy(statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // When
@@ -241,7 +241,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_new_product_with_different_status() {
         // Given
-        let product = Product.fake().copy(statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .add)
 
         let updatedProduct = product.copy(statusKey: ProductStatus.draft.rawValue)
@@ -257,7 +257,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_published_product_and_pending_changes() {
         // Given
-        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
         viewModel.updateName("new name")
 
@@ -270,7 +270,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_published_product_and_no_pending_changes() {
         // Given
-        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // When
@@ -332,7 +332,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_any_product_in_read_only_mode() {
         // Given
-        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .readonly)
         viewModel.updateName("new name")
 
@@ -357,7 +357,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_canPublishOption_is_false_when_creating_new_product_with_publish_status() {
         // Given
-        let product = Product.fake().copy(productID: 0, statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(productID: 0, statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // When
@@ -394,7 +394,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_canPublishOption_is_false_when_editing_existing_published_product_without_changes() {
         // Given
-        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // When
@@ -406,7 +406,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_canPublishOption_is_false_when_editing_existing_published_product_with_changes() {
         // Given
-        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
         viewModel.updateName("new_name")
 
@@ -419,11 +419,11 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_publish_message_is_shown_when_publishing_an_new_product() {
         // Given
-        let product = Product.fake().copy(statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // When
-        let messageType = viewModel.saveMessageType(for: .publish)
+        let messageType = viewModel.saveMessageType(for: .published)
 
         // Then
         assertEqual(messageType, .publish)
@@ -435,7 +435,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // When
-        let messageType = viewModel.saveMessageType(for: .publish)
+        let messageType = viewModel.saveMessageType(for: .published)
 
         // Then
         assertEqual(messageType, .publish)
@@ -443,11 +443,11 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_save_message_is_shown_when_updating_a_published_product() {
         // Given
-        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.publish.rawValue)
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // When
-        let messageType = viewModel.saveMessageType(for: .publish)
+        let messageType = viewModel.saveMessageType(for: .published)
 
         // Then
         assertEqual(messageType, .save)

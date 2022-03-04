@@ -11,6 +11,7 @@
 - [*] My Store: Fixed incorrect currency symbol of revenue text for stores with non-USD currency. [https://github.com/woocommerce/woocommerce-ios/pull/6335]
 - [*] Notifications: Dismiss presented view before presenting content from notifications [https://github.com/woocommerce/woocommerce-ios/pull/6354]
 - [internal] Removed the feature flag for My store tab UI updates. Please smoke test the store stats and top performers in the "My store" tab to make sure everything works as before. [https://github.com/woocommerce/woocommerce-ios/pull/6334]
+- [*] In-Person Payments: Add support for accepting payments on bookable products [https://github.com/woocommerce/woocommerce-ios/pull/6364]
 
 8.6
 -----

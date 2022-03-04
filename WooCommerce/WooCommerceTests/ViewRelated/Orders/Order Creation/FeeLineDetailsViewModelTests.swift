@@ -28,6 +28,25 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currencyPosition, .left)
     }
 
+    func test_view_model_formats_negative_amount_correctly() {
+        // Given
+        let viewModel = FeeLineDetailsViewModel(isExistingFeeLine: false,
+                                                baseAmountForPercentage: 0,
+                                                feesTotal: "",
+                                                locale: usLocale,
+                                                storeCurrencySettings: usStoreSettings,
+                                                didSelectSave: { _ in })
+
+        // When
+        viewModel.amount = "-hi:11.3005.02-"
+
+        // Then
+        XCTAssertFalse(viewModel.isPercentageOptionAvailable)
+        XCTAssertEqual(viewModel.amount, "-11.30")
+        XCTAssertEqual(viewModel.currencySymbol, "$")
+        XCTAssertEqual(viewModel.currencyPosition, .left)
+    }
+
     func test_view_model_formats_amount_with_custom_currency_settings() {
         // Given
         let customSettings = CurrencySettings(currencyCode: .GBP,
@@ -84,6 +103,22 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.feeType, .fixed)
         XCTAssertEqual(viewModel.amount, "10.00")
         XCTAssertEqual(viewModel.percentage, "5")
+    }
+
+    func test_view_model_prefills_negative_input_data_correctly() {
+        // Given
+        let viewModel = FeeLineDetailsViewModel(isExistingFeeLine: true,
+                                                baseAmountForPercentage: 200,
+                                                feesTotal: "-10",
+                                                locale: usLocale,
+                                                storeCurrencySettings: usStoreSettings,
+                                                didSelectSave: { _ in })
+
+        // Then
+        XCTAssertTrue(viewModel.isPercentageOptionAvailable)
+        XCTAssertTrue(viewModel.isExistingFeeLine)
+        XCTAssertEqual(viewModel.feeType, .fixed)
+        XCTAssertEqual(viewModel.amount, "-10.00")
     }
 
     func test_view_model_disables_done_button_for_empty_state_and_enables_with_input() {
@@ -206,5 +241,25 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         // Then
         viewModel.saveData()
         XCTAssertEqual(savedFeeLine?.total, "20.00")
+    }
+
+    func test_view_model_creates_negative_fee_line() {
+        // Given
+        var savedFeeLine: OrderFeeLine?
+        let viewModel = FeeLineDetailsViewModel(isExistingFeeLine: false,
+                                                baseAmountForPercentage: 0,
+                                                feesTotal: "",
+                                                locale: usLocale,
+                                                storeCurrencySettings: usStoreSettings,
+                                                didSelectSave: { newFeeLine in
+            savedFeeLine = newFeeLine
+        })
+
+        // When
+        viewModel.amount = "-$11.30"
+
+        // Then
+        viewModel.saveData()
+        XCTAssertEqual(savedFeeLine?.total, "-11.30")
     }
 }

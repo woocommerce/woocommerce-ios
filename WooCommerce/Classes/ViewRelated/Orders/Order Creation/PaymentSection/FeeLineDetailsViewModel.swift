@@ -66,7 +66,7 @@ class FeeLineDetailsViewModel: ObservableObject {
     /// Returns true when there are no valid pending changes.
     ///
     var shouldDisableDoneButton: Bool {
-        guard finalAmountDecimal > .zero else {
+        guard finalAmountDecimal != .zero else {
             return true
         }
 
@@ -106,7 +106,7 @@ class FeeLineDetailsViewModel: ObservableObject {
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          didSelectSave: @escaping ((OrderFeeLine?) -> Void)) {
-        self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
+        self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings, allowNegativeNumber: true)
         self.percentSymbol = NumberFormatter().percentSymbol
         self.currencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
         self.currencyPosition = storeCurrencySettings.currencyPosition
@@ -122,7 +122,7 @@ class FeeLineDetailsViewModel: ObservableObject {
             self.initialAmount = .zero
         }
 
-        if initialAmount > 0, let formattedInputAmount = currencyFormatter.formatAmount(initialAmount) {
+        if initialAmount != 0, let formattedInputAmount = currencyFormatter.formatAmount(initialAmount) {
             self.amount = priceFieldFormatter.formatAmount(formattedInputAmount)
             self.percentage = priceFieldFormatter.formatAmount("\(initialAmount / baseAmountForPercentage * 100)")
         }

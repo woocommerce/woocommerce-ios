@@ -440,7 +440,7 @@ private extension NewOrderViewModel {
             .sink { [weak self] state in
                 guard let self = self else { return }
                 if case let .error(error) = state {
-                    self.notice = NoticeFactory.createOrderSyncErrorNotice()
+                    self.notice = NoticeFactory.createOrderSyncErrorNotice(with: self.orderSynchronizer)
                     DDLogError("⛔️ Error syncing new order remotely: \(error)")
                 }
             }
@@ -694,8 +694,10 @@ extension NewOrderViewModel {
 
         /// Returns an order sync error notice.
         ///
-        static func createOrderSyncErrorNotice() -> Notice {
-            Notice(title: Localization.errorMessageOrderSync, feedbackType: .error)
+        static func createOrderSyncErrorNotice(with orderSynchronizer: OrderSynchronizer) -> Notice {
+            Notice(title: Localization.errorMessageOrderSync, feedbackType: .error, actionTitle: Localization.retryOrderSync) {
+                orderSynchronizer.retryTrigger.send()
+            }
         }
     }
 }

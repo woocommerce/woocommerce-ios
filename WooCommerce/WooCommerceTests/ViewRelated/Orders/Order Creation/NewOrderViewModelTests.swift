@@ -108,6 +108,7 @@ class NewOrderViewModelTests: XCTestCase {
     func test_view_model_fires_error_notice_when_order_sync_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
         let expectation = expectation(description: "Order sync failed")
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -125,7 +126,7 @@ class NewOrderViewModelTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then
-        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.createOrderSyncErrorNotice())
+        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.createOrderSyncErrorNotice(with: synchronizer))
     }
 
     func test_view_model_loads_synced_pending_order_status() {

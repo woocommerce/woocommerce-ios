@@ -102,22 +102,15 @@ final class BulkUpdateViewModel {
     ///
     func viewModelForDisplayingRegularPrice() -> ValueOneTableViewCell.ViewModel {
         let text = Localization.updateRegularPriceTitle
-        var detailText = ""
-        var style: ValueOneTableViewCell.Style = .primary
 
         switch bulkUpdateFormModel.bulkValueOf(\ProductVariation.regularPrice) {
         case .none:
-            detailText = Localization.noneValue
-            style = .secondary
+            return ValueOneTableViewCell.ViewModel(text: text, detailText: Localization.noneValue, style: .secondary)
         case .mixed:
-            detailText = Localization.mixedValue
+            return ValueOneTableViewCell.ViewModel(text: text, detailText: Localization.mixedValue, style: .primary)
         case let .value(price):
-            detailText = formatPriceString(price)
+            return ValueOneTableViewCell.ViewModel(text: text, detailText: formatPriceString(price), style: .primary)
         }
-
-        return ValueOneTableViewCell.ViewModel(text: text,
-                                               detailText: detailText,
-                                               style: style)
     }
 
     /// It formats a price `String` according to the current price settings.

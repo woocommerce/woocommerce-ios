@@ -97,7 +97,7 @@ final class BulkUpdatePriceSettingsViewModel {
 
     /// Called when price changes
     ///
-    func handlePriceChange(_ price: String) {
+    func handlePriceChange(_ price: String?) {
         currentPrice = price
         updateButtonStateBasedOnCurrentPrice()
     }

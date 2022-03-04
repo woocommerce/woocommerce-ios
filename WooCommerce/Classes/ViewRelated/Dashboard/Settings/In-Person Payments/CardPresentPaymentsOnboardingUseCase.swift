@@ -158,7 +158,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
             // If we only support WCPay, we don't want to ask users to set up WCPay if they already
             // have Stripe. In that case, we can tell them that IPP is not supported for Stripe in
             // their country yet.
-            if stripeInstalledAndActive(wcPay: wcPay, stripe: stripe) {
+            if stripeInstalledAndActive(stripe: stripe) {
                 return .countryNotSupportedStripe(countryCode: countryCode)
             } else {
                 return wcPayOnlyOnboardingState(plugin: wcPay)
@@ -173,7 +173,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
         // If only the Stripe extension is installed, skip to checking Stripe activation and version
         if let stripe = stripe,
-            wcPayInstalledAndActive(wcPay: wcPay, stripe: stripe) == false {
+            wcPayInstalledAndActive(wcPay: wcPay) == false {
             return stripeGatewayOnlyOnboardingState(plugin: stripe)
         } else {
             return wcPayOnlyOnboardingState(plugin: wcPay)
@@ -282,7 +282,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         return wcPay.active && stripe.active
     }
 
-    func wcPayInstalledAndActive(wcPay: SystemPlugin?, stripe: SystemPlugin?) -> Bool {
+    func wcPayInstalledAndActive(wcPay: SystemPlugin?) -> Bool {
         // If the WCPay plugin is not installed, immediately return false
         guard let wcPay = wcPay else {
             return false
@@ -291,7 +291,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         return wcPay.active
     }
 
-    func stripeInstalledAndActive(wcPay: SystemPlugin?, stripe: SystemPlugin?) -> Bool {
+    func stripeInstalledAndActive(stripe: SystemPlugin?) -> Bool {
         // If the Stripe plugin is not installed, immediately return false
         guard let stripe = stripe else {
             return false

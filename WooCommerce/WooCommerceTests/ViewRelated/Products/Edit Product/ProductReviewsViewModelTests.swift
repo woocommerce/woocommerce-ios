@@ -164,7 +164,7 @@ final class MockProductReviewsStoresManager: DefaultStoresManager {
         switch action {
         case .synchronizeProductReviews(_, _, _, _, _, let onCompletion):
             syncReviewsIsHit = true
-            onCompletion(nil)
+            onCompletion(.success([]))
         default:
             return
         }

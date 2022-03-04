@@ -104,7 +104,7 @@ final class ReviewsViewModelTests: XCTestCase {
         storesManager.whenReceivingAction(ofType: ProductReviewAction.self) { action in
             switch action {
             case .synchronizeProductReviews(_, _, _, _, _, let onCompletion):
-                onCompletion(nil)
+                onCompletion(.success([MockReviews().review()]))
             default:
                 return
             }
@@ -126,7 +126,7 @@ final class ReviewsViewModelTests: XCTestCase {
         storesManager.whenReceivingAction(ofType: ProductReviewAction.self) { action in
             switch action {
             case .synchronizeProductReviews(_, _, _, _, _, let onCompletion):
-                onCompletion(SampleError.first)
+                onCompletion(.failure(SampleError.first))
             default:
                 return
             }
@@ -155,11 +155,7 @@ final class ReviewsViewModelTests: XCTestCase {
         mockStores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
             switch action {
             case let .synchronizeProductReviews(_, _, _, _, _, onCompletion):
-                // simulate the delay in persisting reviews locally
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    onCompletion(nil)
-                    mockDataSource.reviews = sampleReviews
-                }
+                onCompletion(.success(sampleReviews))
             default:
                 break
             }
@@ -290,7 +286,7 @@ final class MockReviewsStoresManager: DefaultStoresManager {
         switch action {
         case .synchronizeProductReviews(_, _, _, _, _, let onCompletion):
             syncReviewsIsHit = true
-            onCompletion(nil)
+            onCompletion(.success([MockReviews().review()]))
         default:
             return
         }

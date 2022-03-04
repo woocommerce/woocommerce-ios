@@ -85,11 +85,10 @@ final class ProductReviewStoreTests: XCTestCase {
 
         let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID,
                                                                    pageNumber: defaultPageNumber,
-                                                                   pageSize: defaultPageSize) { error in
-                                                                    XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductReview.self), 2)
-                                                                    XCTAssertNil(error)
-
-                                                                    expectation.fulfill()
+                                                                   pageSize: defaultPageSize) { result in
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductReview.self), 2)
+            XCTAssertTrue(result.isSuccess)
+            expectation.fulfill()
         }
 
         store.onAction(action)
@@ -107,8 +106,8 @@ final class ProductReviewStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 0)
 
-        let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
-            XCTAssertNil(error)
+        let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { result in
+            XCTAssertTrue(result.isSuccess)
 
             let storedProductReview = self.viewStorage.loadProductReview(siteID: self.sampleSiteID, reviewID: self.sampleReviewID)
             let readOnlyStoredProductReview = storedProductReview?.toReadOnly()
@@ -142,10 +141,10 @@ final class ProductReviewStoreTests: XCTestCase {
         waitForExpectation { exp in
             let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID,
                                                                        pageNumber: defaultPageNumber,
-                                                                       pageSize: defaultPageSize) { error in
+                                                                       pageSize: defaultPageSize) { result in
 
                 // Then
-                XCTAssertNil(error)
+                XCTAssertTrue(result.isSuccess)
 
                 // The previously upserted Product Reviews should be deleted.
                 let storedProductReview1 = self.viewStorage.loadProductReview(
@@ -184,10 +183,10 @@ final class ProductReviewStoreTests: XCTestCase {
         waitForExpectation { exp in
             let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID,
                                                                        pageNumber: 3,
-                                                                       pageSize: defaultPageSize) { error in
+                                                                       pageSize: defaultPageSize) { result in
 
                 // Then
-                XCTAssertNil(error)
+                XCTAssertTrue(result.isSuccess)
 
                 // The previously upserted Product Reviews should stay in storage.
                 let storedProductReview1 = self.viewStorage.loadProductReview(
@@ -263,8 +262,13 @@ final class ProductReviewStoreTests: XCTestCase {
         let action = ProductReviewAction.synchronizeProductReviews(
             siteID: sampleSiteID,
             pageNumber: defaultPageNumber,
-            pageSize: defaultPageSize) { error in
-                resultError = error
+            pageSize: defaultPageSize) { result in
+                switch result {
+                case .failure(let error):
+                    resultError = error
+                case .success:
+                    break
+                }
                 expectation.fulfill()
         }
 

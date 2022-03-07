@@ -32,6 +32,8 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     var setFee = PassthroughSubject<OrderFeeLine?, Never>()
 
+    var retryTrigger = PassthroughSubject<Void, Never>()
+
     // MARK: Private properties
 
     private let siteID: Int64
@@ -65,9 +67,6 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
     }
 
     // MARK: Methods
-    func retrySync() {
-        // TODO: Implement
-    }
 
     /// Creates the order remotely.
     ///
@@ -138,6 +137,7 @@ private extension RemoteOrderSynchronizer {
             .merge(with: setAddresses.map { _ in () })
             .merge(with: setShipping.map { _ in () })
             .merge(with: setFee.map { _ in () })
+            .merge(with: retryTrigger.map { _ in () })
             .debounce(for: 0.5, scheduler: DispatchQueue.main) // Group & wait for 0.5 since the last signal was emitted.
             .compactMap { [weak self] in
                 guard let self = self else { return nil }

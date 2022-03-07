@@ -685,6 +685,99 @@ class RemoteOrderSynchronizerTests: XCTestCase {
                                       .shippingLines,
                                       .items])
     }
+
+    func test_sending_retry_trigger_after_failed_order_creation_retries_expected_order_creation() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let error = NSError(domain: "", code: 0, userInfo: nil)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+
+        // When
+        let orderCreationFailed: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, _, let completion):
+                    completion(.failure(error))
+                    promise(true)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+
+            let input = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 1)
+            synchronizer.setProduct.send(input)
+        }
+        XCTAssertTrue(orderCreationFailed)
+
+        let createdOrderItems: [OrderItem] = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, let order, _):
+                    promise(order.items)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+
+            synchronizer.retryTrigger.send()
+        }
+
+        // Then
+        XCTAssertEqual(createdOrderItems.count, 1)
+        XCTAssertEqual(createdOrderItems.first?.productID, product.productID)
+        XCTAssertEqual(createdOrderItems.first?.quantity, 1)
+    }
+
+    func test_sending_retry_trigger_with_remote_order_triggers_order_update() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let error = NSError(domain: "", code: 0, userInfo: nil)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+
+        // When
+        let orderUpdateFailed: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, _, let completion):
+                    completion(.success(.fake().copy(orderID: self.sampleOrderID)))
+                case .updateOrder(_, _, _, let completion):
+                    completion(.failure(error))
+                    promise(true)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+
+            // Wait for order creation
+            let input = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 1)
+            self.createOrder(on: synchronizer, input: input)
+
+            // Trigger order update
+            let input2 = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 2)
+            synchronizer.setProduct.send(input2)
+        }
+        XCTAssertTrue(orderUpdateFailed)
+
+        let updatedOrderItems: [OrderItem] = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .updateOrder(_, let order, _, _):
+                    promise(order.items)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+
+            synchronizer.retryTrigger.send()
+        }
+
+        // Then
+        XCTAssertEqual(updatedOrderItems.count, 1)
+        XCTAssertEqual(updatedOrderItems.first?.productID, product.productID)
+        XCTAssertEqual(updatedOrderItems.first?.quantity, 2)
+    }
 }
 
 private extension RemoteOrderSynchronizerTests {

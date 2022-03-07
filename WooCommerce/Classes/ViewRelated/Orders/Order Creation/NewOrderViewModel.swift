@@ -170,6 +170,7 @@ final class NewOrderViewModel: ObservableObject {
 
         configureDisabledState()
         configureNavigationTrailingItem()
+        configureSyncErrors()
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
         configureCustomerDataViewModel()
@@ -246,7 +247,7 @@ final class NewOrderViewModel: ObservableObject {
                 self.onOrderCreated(newOrder)
                 self.trackCreateOrderSuccess()
             case .failure(let error):
-                self.notice = NoticeFactory.createOrderCreationErrorNotice()
+                self.notice = NoticeFactory.createOrderErrorNotice()
                 self.trackCreateOrderFailure(error: error)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
@@ -430,6 +431,22 @@ private extension NewOrderViewModel {
                 return .create
             }
             .assign(to: &$navigationTrailingItem)
+    }
+
+    /// Updates the notice based on the `orderSynchronizer` sync state.
+    ///
+    func configureSyncErrors() {
+        orderSynchronizer.statePublisher
+            .map { state in
+                switch state {
+                case .error(let error):
+                    DDLogError("⛔️ Error syncing new order remotely: \(error)")
+                    return NoticeFactory.syncOrderErrorNotice(with: self.orderSynchronizer)
+                default:
+                    return nil
+                }
+            }
+            .assign(to: &$notice)
     }
 
     /// Updates status badge viewmodel based on status order property.
@@ -673,14 +690,25 @@ extension NewOrderViewModel {
     enum NoticeFactory {
         /// Returns a default order creation error notice.
         ///
-        static func createOrderCreationErrorNotice() -> Notice {
-            Notice(title: Localization.errorMessage, feedbackType: .error)
+        static func createOrderErrorNotice() -> Notice {
+            Notice(title: Localization.errorMessageOrderCreation, feedbackType: .error)
+        }
+
+        /// Returns an order sync error notice.
+        ///
+        static func syncOrderErrorNotice(with orderSynchronizer: OrderSynchronizer) -> Notice {
+            Notice(title: Localization.errorMessageOrderSync, feedbackType: .error, actionTitle: Localization.retryOrderSync) {
+                orderSynchronizer.retryTrigger.send()
+            }
         }
     }
 }
 
 private extension NewOrderViewModel {
     enum Localization {
-        static let errorMessage = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
+        static let errorMessageOrderCreation = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
+        static let errorMessageOrderSync = NSLocalizedString("Unable to load taxes for order",
+                                                             comment: "Notice displayed when taxes cannot be synced for new order")
+        static let retryOrderSync = NSLocalizedString("Retry", comment: "Action button to retry syncing the draft order")
     }
 }

@@ -433,15 +433,18 @@ private extension NewOrderViewModel {
             .assign(to: &$navigationTrailingItem)
     }
 
-    /// Fires an error notice when `statePublisher` is `.error`
+    /// Updates the notice based on the `orderSynchronizer` sync state.
     ///
     func configureSyncErrors() {
         orderSynchronizer.statePublisher
             .sink { [weak self] state in
                 guard let self = self else { return }
-                if case let .error(error) = state {
+                switch state {
+                case .error(let error):
                     self.notice = NoticeFactory.syncOrderErrorNotice(with: self.orderSynchronizer)
                     DDLogError("⛔️ Error syncing new order remotely: \(error)")
+                default:
+                    self.notice = nil
                 }
             }
             .store(in: &self.cancellables)

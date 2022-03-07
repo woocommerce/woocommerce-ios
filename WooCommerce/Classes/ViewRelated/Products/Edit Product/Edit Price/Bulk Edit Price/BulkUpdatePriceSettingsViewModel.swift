@@ -5,6 +5,7 @@ import Yosemite
 ///
 final class BulkUpdatePriceSettingsViewModel {
     /// Represents the possible states for the save button.
+    ///
     enum ButtonState: Equatable {
         case enabled
         case disabled
@@ -12,6 +13,7 @@ final class BulkUpdatePriceSettingsViewModel {
     }
 
     /// Represents the possible errors during the bulk update
+    ///
     enum BulkUpdatePriceError: Error, Equatable {
         case inputValidationError(ProductPriceSettingsError)
         case priceUpdateError
@@ -39,6 +41,8 @@ final class BulkUpdatePriceSettingsViewModel {
     /// A Closure to be called when the price update is successful
     private let priceUpdateDidFinish: () -> Void
 
+    /// This holds the latest entered price. It is used to perform validations when the user taps the save button
+    /// and for creating a variations array with the new price for the bulk update Action
     private var currentPrice: String? = nil
     private let siteID: Int64
     private let productID: Int64

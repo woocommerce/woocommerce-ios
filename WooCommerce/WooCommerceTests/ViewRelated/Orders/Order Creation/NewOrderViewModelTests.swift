@@ -110,20 +110,22 @@ class NewOrderViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
         let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
-        let expectation = expectation(description: "Order sync failed")
-        stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            switch action {
-            case let .createOrder(_, _, onCompletion):
-                onCompletion(.failure(NSError(domain: "Error", code: 0)))
-                expectation.fulfill()
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
 
-        // When remote sync is triggered
-        viewModel.saveShippingLine(ShippingLine.fake())
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        // When
+        waitForExpectation { expectation in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createOrder(_, _, onCompletion):
+                    onCompletion(.failure(NSError(domain: "Error", code: 0)))
+                    expectation.fulfill()
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            // When remote sync is triggered
+            viewModel.saveShippingLine(ShippingLine.fake())
+        }
 
         // Then
         XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.syncOrderErrorNotice(with: synchronizer))

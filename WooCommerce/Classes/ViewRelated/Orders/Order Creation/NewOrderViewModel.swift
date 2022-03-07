@@ -437,17 +437,16 @@ private extension NewOrderViewModel {
     ///
     func configureSyncErrors() {
         orderSynchronizer.statePublisher
-            .sink { [weak self] state in
-                guard let self = self else { return }
+            .map { state in
                 switch state {
                 case .error(let error):
-                    self.notice = NoticeFactory.syncOrderErrorNotice(with: self.orderSynchronizer)
                     DDLogError("⛔️ Error syncing new order remotely: \(error)")
+                    return NoticeFactory.syncOrderErrorNotice(with: self.orderSynchronizer)
                 default:
-                    self.notice = nil
+                    return nil
                 }
             }
-            .store(in: &self.cancellables)
+            .assign(to: &$notice)
     }
 
     /// Updates status badge viewmodel based on status order property.

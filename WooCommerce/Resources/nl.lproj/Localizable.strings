@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-02-15 18:54:03+0000 */
+/* Translation-Revision-Date: 2022-03-02 17:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -38,7 +38,7 @@
 "%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ over het aannemen van betalingen met je mobiele apparaat en het bestellen van kaartlezers";
 
 /* Combined rule for a coupon. Reads like: 2 Products and 1 Category */
-"%1$@ and %2$@" = "%1$@ and %2$@";
+"%1$@ and %2$@" = "%1$@ en %2$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ excl. %2$@";
@@ -88,16 +88,16 @@
 "%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
 
 /* The number of category allowed for a coupon in plural form. Reads like: 10 Categories */
-"%1$d Categories" = "%1$d Categories";
+"%1$d Categories" = "%1$d Categorieën";
 
 /* The number of category allowed for a coupon in singular form. Reads like: 1 Category */
-"%1$d Category" = "%1$d Category";
+"%1$d Category" = "%1$d Categorie";
 
 /* The number of products allowed for a coupon in singular form. Reads like: 1 Product */
 "%1$d Product" = "%1$d Product";
 
 /* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
-"%1$d Products" = "%1$d Products";
+"%1$d Products" = "%1$d Producten";
 
 /* Singular format of number of business day in Shipping Labels > Carrier and Rates */
 "%1$d business day" = "%1$d werkdag";
@@ -141,19 +141,19 @@
 "%@ via %@" = "%1$@ via %2$@";
 
 /* No comment provided by engineer. */
-"%d Categories excl. %d Products" = "%d Categories excl. %d Products";
+"%d Categories excl. %d Products" = "%1$d Categorieën excl. %2$d producten";
 
 /* No comment provided by engineer. */
 "%d Product" = "%d Product";
 
 /* No comment provided by engineer. */
-"%d Products" = "%d Products";
+"%d Products" = "%d Producten";
 
 /* No comment provided by engineer. */
-"%d Products and %d Categories" = "%d Products and %d Categories";
+"%d Products and %d Categories" = "%1$d Producten en %2$d categorieën";
 
 /* No comment provided by engineer. */
-"%d Products excl. %d Category" = "%d Products excl. %d Category";
+"%d Products excl. %d Category" = "%1$d Producten excl. %2$d categorie";
 
 /* For example: `1 item` in Aggregated Product List */
 "%d item" = "%d artikel";
@@ -325,7 +325,7 @@
 "Add Coupon" = "Coupon toevoegen";
 
 /* Title text of the button that adds customer data when creating a new order */
-"Add Customer Details" = "Add Customer Details";
+"Add Customer Details" = "Klantgegevens toevoegen";
 
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "Notitie voor klant toevoegen";
@@ -334,7 +334,7 @@
 "Add Downloadable File" = "Downloadbaar bestand toevoegen";
 
 /* Title text of the button that adds fees when creating a new order */
-"Add Fees" = "Add Fees";
+"Add Fees" = "Toeslagen toevoegen";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "Bestand toevoegen";
@@ -367,7 +367,7 @@
 
 /* Title for the Shipping Line screen during order creation
    Title text of the button that adds shipping line when creating a new order */
-"Add Shipping" = "Add Shipping";
+"Add Shipping" = "Verzending toevoegen";
 
 /* Title for the button to add the Shipping Address in Order Details */
 "Add Shipping Address" = "Verzendadres toevoegen";
@@ -485,7 +485,7 @@
 "All Products" = "Alle producten";
 
 /* Value for the limit usage to X items row in Coupon Usage Details screen when no limit is set */
-"All Qualifying in Cart" = "All Qualifying in Cart";
+"All Qualifying in Cart" = "Alle deelnemende producten in winkelwagen";
 
 /* Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow */
 "All available packages have been activated" = "Alle beschikbare pakketten zijn geactiveerd";
@@ -494,13 +494,13 @@
 "All done" = "Klaar";
 
 /* Exception rule for a coupon. Reads like: All excl. 2 Products */
-"All excl. %1$@" = "All excl. %1$@";
+"All excl. %1$@" = "Alles excl. %1$@";
 
 /* No comment provided by engineer. */
-"All excl. %d Categories" = "All excl. %d Categories";
+"All excl. %d Categories" = "Alles excl. %d categorieën";
 
 /* No comment provided by engineer. */
-"All excl. %d Products" = "All excl. %d Products";
+"All excl. %d Products" = "Alles excl. %d producten";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Alle beoordelingen zijn gemarkeerd als gelezen";
@@ -518,7 +518,7 @@
 "Allow, but notify customer" = "Toestaan, maar melden bij klant";
 
 /* Title for the allowed email row in coupon usage details screen. */
-"Allowed Emails" = "Allowed Emails";
+"Allowed Emails" = "Toegestane e-mailadressen";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Bijna klaar. Voer de verificatiecode in van je authenticatie-app.";
@@ -528,7 +528,7 @@
 
 /* Title for the amount field on the Shipping Line Details screen during order creation
    Title of the Amount label on Coupon Details screen */
-"Amount" = "Amount";
+"Amount" = "Bedrag";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "Bedrag dat wordt terugbetaald";
@@ -575,16 +575,16 @@
 "Apply" = "Toepassen";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
-"Apply %1$@ off to all products with the promo code “%2$@”." = "Apply %1$@ off to all products with the promo code “%2$@”.";
+"Apply %1$@ off to all products with the promo code “%2$@”." = "Krijg %1$@ korting op alle producten met de promotiecode ‘%2$@’.";
 
 /* Message to share the coupon code if it is applicable to some products. Reads like: Apply 10% off to some products with the promo code “20OFF”. */
-"Apply %1$@ off to some products with the promo code “%2$@”." = "Apply %1$@ off to some products with the promo code “%2$@”.";
+"Apply %1$@ off to some products with the promo code “%2$@”." = "Krijg %1$@ korting op sommige producten met de promotiecode ‘%2$@’.";
 
 /* No comment provided by engineer. */
-"Apply %@ off to all products with the promo code “%@”." = "Apply %@ off to all products with the promo code “%@”.";
+"Apply %@ off to all products with the promo code “%@”." = "Krijg %1$@ korting op alle producten met de promotiecode ‘%2$@’.";
 
 /* No comment provided by engineer. */
-"Apply %@ off to some products with the promo code “%@”." = "Apply %@ off to some products with the promo code “%@”.";
+"Apply %@ off to some products with the promo code “%@”." = "Krijg %1$@ korting op sommige producten met de promotiecode ‘%2$@’.";
 
 /* Title of the Apply To row in Coupon Details screen */
 "Apply To" = "Toepassen op";
@@ -865,7 +865,7 @@
 "Collect payment from %1$@" = "Betaling innen van %1$@";
 
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
-"Come back soon for more tips and insights on growing your store" = "Come back soon for more tips and insights on growing your store";
+"Come back soon for more tips and insights on growing your store" = "We zien je snel weer terug voor meer tips en kennis over hoe je je winkel kunt laten groeien";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -881,7 +881,7 @@
 "Conflicting payment plugins detected" = "Tegenstrijdige plugins voor betalingen gedetecteerd";
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
-"Congrats, you’ve read everything!" = "Congrats, you’ve read everything!";
+"Congrats, you’ve read everything!" = "Gefeliciteerd, je hebt alles gelezen!";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "Gefeliciteerd! Je lezer heeft nu de meest recente software";
@@ -985,7 +985,7 @@
 "Copy" = "Kopiëren";
 
 /* Action title for copying coupon code from the Coupon Details screen */
-"Copy Code" = "Copy Code";
+"Copy Code" = "Code kopiëren";
 
 /* Copy tracking number button title */
 "Copy Tracking Number" = "Volgnummer kopiëren";
@@ -1046,10 +1046,10 @@
 "Coupon Expiry Date" = "Vervaldatum coupon";
 
 /* Cell title on beta features screen to enable coupon management */
-"Coupon Management" = "Coupon Management";
+"Coupon Management" = "Couponbeheer";
 
 /* Notice message displayed when a coupon code is copied from the Coupon Details screen */
-"Coupon copied" = "Coupon copied";
+"Coupon copied" = "Gekopieerde coupon";
 
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
@@ -1136,7 +1136,7 @@
 "Customer" = "Klant";
 
 /* Title for the Shipping Address Form for Customer Details */
-"Customer Details" = "Customer Details";
+"Customer Details" = "Klantgegevens";
 
 /* Customer note row title
    Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
@@ -1229,7 +1229,7 @@
 "Discount" = "Korting";
 
 /* Title of the Discounted Orders label on Coupon Details screen */
-"Discounted Orders" = "Discounted Orders";
+"Discounted Orders" = "Bestellingen met korting";
 
 /* A unit test string for a button title
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in inbox note row. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view */
@@ -1334,13 +1334,13 @@
 "Edit Attributes" = "Wijzig eigenschappen";
 
 /* Accessibility label for the button to edit customer details on the New Order screen */
-"Edit Customer Details" = "Edit Customer Details";
+"Edit Customer Details" = "Klantgegevens bewerken";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Producten bewerken";
 
 /* Accessibility label for the button to edit order status on the New Order screen */
-"Edit Status" = "Edit Status";
+"Edit Status" = "Status bewerken";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Edit and add new products from anywhere" = "Bewerk en voeg nieuwe producten toe ongeacht waar je bent";
@@ -1496,7 +1496,7 @@
 "Everyone loves a deal" = "Iedereen houdt van een goede deal";
 
 /* Title for the exclude sale items row in coupon usage details screen. */
-"Exclude Sale Items" = "Exclude Sale Items";
+"Exclude Sale Items" = "Items in de uitverkoop uitsluiten";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -1854,7 +1854,7 @@
 "Increase sales with upsells and cross-sells" = "Meer verkopen met upselling en cross-selling";
 
 /* Title for the individual use only row in coupon usage details screen. */
-"Individual Use Only" = "Individual Use Only";
+"Individual Use Only" = "Alleen voor individueel gebruik";
 
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "Individueel verzonden artikel";
@@ -1894,7 +1894,7 @@
 "Insurance (up to %1$@)" = "Verzekering (tot %1$@)";
 
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
-"Invalid Email Address" = "Invalid Email Address";
+"Invalid Email Address" = "Ongeldig e-mailadres";
 
 /* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
 "Invalid ITN format" = "Ongeldige ITN-indeling";
@@ -2038,7 +2038,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Letter (8.5 x 11 in)" = "Brief (8,5 x 11 inch)";
 
 /* Title for the limit usage to X items row in coupon usage details screen. */
-"Limit Usage to X Items" = "Limit Usage to X Items";
+"Limit Usage to X Items" = "Gebruik beperken tot X items";
 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
 "Limit one per order" = "Beperkt tot één per bestelling";
@@ -2136,7 +2136,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Manage Card Reader" = "Kaartlezer beheren";
 
 /* Title of the action sheet displayed from the Coupon Details screen */
-"Manage Coupon" = "Manage Coupon";
+"Manage Coupon" = "Coupon beheren";
 
 /* Button to open browser to manage plugins */
 "Manage Plugins" = "Beheer plugins";
@@ -2188,7 +2188,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark this order as complete and notify the customer" = "Markeer deze bestelling als voltooid en informeer de klant";
 
 /* Title for the maximum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Maximum Spend ($) */
-"Maximum Spend (%1$@)" = "Maximum Spend (%1$@)";
+"Maximum Spend (%1$@)" = "Maximale bestelbedrag (%1$@)";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Media heeft geen geassocieerd bestand om te uploaden.";
@@ -2216,7 +2216,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Microsoft Outlook" = "Microsoft Outlook";
 
 /* Title for the minimum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Minimum Spend ($) */
-"Minimum Spend (%1$@)" = "Minimum Spend (%1$@)";
+"Minimum Spend (%1$@)" = "Minimale bestelbedrag (%1$@)";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "Minimale waarde %1$@, maximale waarde %2$@";
@@ -2312,7 +2312,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Next" = "Volgende";
 
 /* Value for the allowed emails row in Coupon Usage Details screen when no restriction is set */
-"No Restrictions" = "No Restrictions";
+"No Restrictions" = "Geen beperkingen";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Geen activiteiten deze periode";
@@ -2624,7 +2624,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Percentage Discount" = "Procentuele korting";
 
 /* Title of the Performance section on Coupons Details screen */
-"Performance" = "Performance";
+"Performance" = "Prestatie";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -2682,7 +2682,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please enter a username." = "Vul een gebruikersnaam in.";
 
 /* An error message. */
-"Please enter a valid email address for a WordPress.com account." = "Please enter a valid email address for a WordPress.com account.";
+"Please enter a valid email address for a WordPress.com account." = "Vul een geldig e-mailadres in voor een WordPress.com-account.";
 
 /* Error message displayed when the user attempts use an invalid email address.
    Notice text when the merchant enters an invalid email */
@@ -3076,7 +3076,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Remove Product from Order" = "Product verwijderen uit bestelling";
 
 /* Text for the button to remove a shipping line from the order during order creation */
-"Remove Shipping from Order" = "Remove Shipping from Order";
+"Remove Shipping from Order" = "Verzending verwijderen uit bestelling";
 
 /* Label action for removing a link from the editor */
 "Remove end date" = "Verwijder einddatum";
@@ -3248,7 +3248,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Schedule sale" = "Verkoop inplannen";
 
 /* Placeholder on the search field to search for a specific product */
-"Search Products" = "Search Products";
+"Search Products" = "Producten zoeken";
 
 /* Coupons Search Placeholder */
 "Search all coupons" = "Zoek alle coupons";
@@ -3364,7 +3364,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Share" = "Delen";
 
 /* Action title for sharing coupon from the Coupon Details screen */
-"Share Coupon" = "Share Coupon";
+"Share Coupon" = "Coupon delen";
 
 /* Payment Link method title on the select payment method screen for simple payments */
 "Share Payment Link" = "Betaallink delen";
@@ -3845,7 +3845,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Test out creating new manual orders as we get ready to launch" = "Probeer eens wat nieuwe handmatige bestellingen aan te maken terwijl wij ons voorbereiden op het uitbrengen van de versie";
 
 /* Cell description on beta features screen to enable coupon management */
-"Test out managing coupons as we get ready to launch" = "Test out managing coupons as we get ready to launch";
+"Test out managing coupons as we get ready to launch" = "Probeer het beheren van coupons uit terwijl we ons voorbereiden op het uitbrengen van de versie";
 
 /* Cell description on beta features screen to enable product SKU input scanner in inventory settings. */
 "Test out scanning a barcode for a product SKU in the product inventory settings" = "Probeer een barcode te scannen voor een product-SKU in de instellingen voor productvoorraad";
@@ -4260,7 +4260,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to process payment. Order total amount is not valid." = "Kan betaling niet verwerken. Totaalbedrag bestelling is niet geldig.";
 
 /* No comment provided by engineer. */
-"Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ.";
+"Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Kon geen WordPress-site lezen op deze URL. Tik op ‘Meer hulp nodig?’ om de veelgestelde vragen te bekijken.";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Kan lijst niet vernieuwen";
@@ -4313,7 +4313,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unknown media type" = "Onbekend mediatype";
 
 /* Value for fields in Coupon Usage Details screen when no limit is set */
-"Unlimited" = "Unlimited";
+"Unlimited" = "Ongelimiteerd";
 
 /* Back button title when the product doesn't have a name */
 "Unnamed product" = "Product zonder naam";
@@ -4405,22 +4405,22 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Upsells" = "Upsells";
 
 /* Navigation title for usage details screen */
-"Usage Details" = "Usage Details";
+"Usage Details" = "Gebruiksgegevens";
 
 /* Title for the usage limit per coupon row in coupon usage details screen. */
-"Usage Limit Per Coupon" = "Usage Limit Per Coupon";
+"Usage Limit Per Coupon" = "Gebruikslimiet per coupon";
 
 /* Title for the usage limit per user row in coupon usage details screen. */
-"Usage Limit Per User" = "Usage Limit Per User";
+"Usage Limit Per User" = "Gebruikslimiet per gebruiker";
 
 /* Title for the usage limits section on coupon usage details screen */
-"Usage Limits" = "Usage Limits";
+"Usage Limits" = "Gebruikslimieten";
 
 /* Title for the usage restrictions section on coupon usage details screen */
-"Usage Restrictions" = "Usage Restrictions";
+"Usage Restrictions" = "Gebruiksbeperkingen";
 
 /* Title of the Usage details row in Coupon Details screen */
-"Usage details" = "Usage details";
+"Usage details" = "Gebruiksgegevens";
 
 /* Action to use the address in Shipping Label Suggested screen as entered placeholder */
 "Use Address Entered" = "Het ingevoerde adres gebruiken";
@@ -4688,7 +4688,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Width" = "Breedte";
 
 /* Navigates to WisePad 3 Card Reader manual */
-"WisePad 3 card reader manual" = "WisePad 3 card reader manual";
+"WisePad 3 card reader manual" = "Handleiding WisePad3-kaartlezer";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "With this powerful editor you can post on the go." = "Met deze krachtige editor kan je onderweg berichten plaatsen.";

@@ -17,9 +17,9 @@ final class BulkUpdatePriceSettingsViewModel {
         case priceUpdateError
     }
 
-    /// Indicates what price we are editting
+    /// Indicates what price we are editing
     ///
-    enum EdittingPriceType {
+    enum EditingPriceType {
         case regular
         case sale
 
@@ -46,14 +46,14 @@ final class BulkUpdatePriceSettingsViewModel {
     private let siteID: Int64
     private let productID: Int64
     private let productVariations: [ProductVariation]
-    private let edittingPriceType: EdittingPriceType
+    private let editingPriceType: EditingPriceType
     private let storesManager: StoresManager
     private let priceSettingsValidator: ProductPriceSettingsValidator
 
     init(siteID: Int64,
          productID: Int64,
          productVariations: [ProductVariation],
-         edittingPriceType: EdittingPriceType,
+         editingPriceType: EditingPriceType,
          priceUpdateDidFinish: @escaping () -> Void,
          storesManager: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
@@ -61,7 +61,7 @@ final class BulkUpdatePriceSettingsViewModel {
         self.productID = productID
         self.productVariations = productVariations
         self.priceUpdateDidFinish = priceUpdateDidFinish
-        self.edittingPriceType = edittingPriceType
+        self.editingPriceType = editingPriceType
         self.storesManager = storesManager
         self.priceSettingsValidator = ProductPriceSettingsValidator(currencySettings: currencySettings)
     }
@@ -112,8 +112,10 @@ final class BulkUpdatePriceSettingsViewModel {
         saveButtonState = .enabled
     }
 
+    /// Generates a new array of variations that have the new price.
+    ///
     private func variationsWithUpdatedPrice() -> [ProductVariation] {
-        switch edittingPriceType {
+        switch editingPriceType {
         case .regular:
             return productVariations.map { $0.copy(regularPrice: currentPrice) }
         case .sale:
@@ -126,8 +128,8 @@ final class BulkUpdatePriceSettingsViewModel {
     private func validatePrice() -> BulkUpdatePriceError? {
 
         for variation in productVariations {
-            let regularPrice = edittingPriceType == .regular ? currentPrice : variation.regularPrice
-            let salePrice = edittingPriceType == .sale ? currentPrice : variation.salePrice
+            let regularPrice = editingPriceType == .regular ? currentPrice : variation.regularPrice
+            let salePrice = editingPriceType == .sale ? currentPrice : variation.salePrice
 
             if let error = priceSettingsValidator.validate(regularPrice: regularPrice,
                                                            salePrice: salePrice,

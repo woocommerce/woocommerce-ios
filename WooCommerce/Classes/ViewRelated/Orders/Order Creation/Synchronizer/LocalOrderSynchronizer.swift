@@ -32,6 +32,8 @@ final class LocalOrderSynchronizer: OrderSynchronizer {
 
     var setFee = PassthroughSubject<OrderFeeLine?, Never>()
 
+    var retryTrigger = PassthroughSubject<Void, Never>()
+
     // MARK: Private properties
 
     private let siteID: Int64
@@ -50,9 +52,6 @@ final class LocalOrderSynchronizer: OrderSynchronizer {
     }
 
     // MARK: Methods
-    func retrySync() {
-        // No op
-    }
 
     /// Creates the order remotely.
     ///
@@ -76,7 +75,7 @@ private extension LocalOrderSynchronizer {
             .map { [weak self] productInput, order in
                 guard let self = self else { return order }
                 let sanitizedInput = self.replaceInputWithLocalIDIfNeeded(productInput)
-                let updatedOrder = ProductInputTransformer.update(input: sanitizedInput, on: order)
+                let updatedOrder = ProductInputTransformer.update(input: sanitizedInput, on: order, updateZeroQuantities: false)
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .assign(to: &$order)

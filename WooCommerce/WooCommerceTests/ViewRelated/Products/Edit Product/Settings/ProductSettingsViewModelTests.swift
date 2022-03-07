@@ -7,7 +7,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
     func testOnReloadClosure() {
 
         let product = Product.fake().copy(slug: "this-is-a-slug",
-                                          statusKey: ProductStatus.publish.rawValue,
+                                          statusKey: ProductStatus.published.rawValue,
                                           featured: true,
                                           catalogVisibilityKey: ProductCatalogVisibility.search.rawValue,
                                           virtual: true,
@@ -39,7 +39,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
     }
 
     func testHasUnsavedChanges() {
-        let product = Product.fake().copy(statusKey: ProductStatus.publish.rawValue,
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue,
                                           featured: false,
                                           catalogVisibilityKey: ProductCatalogVisibility.search.rawValue)
         let viewModel = ProductSettingsViewModel(product: product, password: "12345")
@@ -54,7 +54,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
     }
 
     func testHasUnsavedChangesWithOnlyThePasswordChanged() {
-        let product = Product.fake().copy(statusKey: ProductStatus.publish.rawValue,
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue,
                                           featured: false,
                                           catalogVisibilityKey: ProductCatalogVisibility.search.rawValue)
         let viewModel = ProductSettingsViewModel(product: product, password: nil)

@@ -4,7 +4,7 @@ import Codegen
 /// Represents a ProductStatus Entity.
 ///
 public enum ProductStatus: Codable, Hashable, GeneratedFakeable {
-    case publish
+    case published
     case draft
     case pending
     case privateStatus  // `private` is a reserved keyword
@@ -20,8 +20,8 @@ extension ProductStatus: RawRepresentable {
     ///
     public init(rawValue: String) {
         switch rawValue {
-        case Keys.publish:
-            self = .publish
+        case Keys.published:
+            self = .published
         case Keys.draft:
             self = .draft
         case Keys.pending:
@@ -37,7 +37,7 @@ extension ProductStatus: RawRepresentable {
     ///
     public var rawValue: String {
         switch self {
-        case .publish:              return Keys.publish
+        case .published:              return Keys.published
         case .draft:                return Keys.draft
         case .pending:              return Keys.pending
         case .privateStatus:        return Keys.privateStatus
@@ -49,7 +49,7 @@ extension ProductStatus: RawRepresentable {
     ///
     public var description: String {
         switch self {
-        case .publish:
+        case .published:
             return NSLocalizedString("Published", comment: "Display label for the product's published status")
         case .draft:
             return NSLocalizedString("Draft", comment: "Display label for the product's draft status")
@@ -67,7 +67,7 @@ extension ProductStatus: RawRepresentable {
 /// Enum containing the 'Known' ProductType Keys
 ///
 private enum Keys {
-    static let publish       = "publish"
+    static let published     = "publish"
     static let draft         = "draft"
     static let pending       = "pending"
     static let privateStatus = "private"

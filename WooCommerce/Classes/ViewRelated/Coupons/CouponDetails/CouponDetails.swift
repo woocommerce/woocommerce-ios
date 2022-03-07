@@ -82,33 +82,45 @@ struct CouponDetails: View {
                             .bold()
                             .padding(Constants.margin)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
-                        HStack(spacing: 0) {
-                            VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                        VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                            HStack(alignment: .firstTextBaseline) {
                                 Text(Localization.discountedOrders)
                                     .secondaryBodyStyle()
-                                Text(viewModel.discountedOrdersCount)
-                                    .font(.title)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.horizontal, Constants.margin)
                                 Spacer()
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-
-                            VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                                 Text(Localization.amount)
                                     .secondaryBodyStyle()
-                                if let amount = viewModel.discountedAmount {
-                                    Text(amount)
-                                        .font(.title)
-                                } else {
-                                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                                }
-                                Spacer()
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.horizontal, Constants.margin)
                             }
-                            .padding(.leading, Constants.margin)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                            HStack(alignment: .firstTextBaseline) {
+                                Text(viewModel.discountedOrdersCount)
+                                    .font(.title)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.horizontal, Constants.margin)
+                                Spacer()
+                                Group {
+                                    if viewModel.hasErrorLoadingAmount && viewModel.discountedAmount == nil {
+                                        Text(Localization.errorLoadingAnalytics)
+                                            .errorStyle()
+                                    } else if let amount = viewModel.discountedAmount {
+                                        Text(amount)
+                                            .font(.title)
+                                    } else {
+                                        // Shimmering effect on mock data
+                                        Text("$0.00")
+                                            .font(.title)
+                                            .redacted(reason: .placeholder)
+                                            .shimmering()
+                                    }
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.horizontal, Constants.margin)
+                            }
                         }
-                        .padding([.horizontal, .bottom], Constants.margin)
-                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                     }
+                    .padding(.bottom, Constants.margin)
                     .background(Color(.listForeground))
 
                     Divider()
@@ -193,6 +205,10 @@ private extension CouponDetails {
         static let discountedOrders = NSLocalizedString("Discounted Orders", comment: "Title of the Discounted Orders label on Coupon Details screen")
         static let amount = NSLocalizedString("Amount", comment: "Title of the Amount label on Coupon Details screen")
         static let usageDetails = NSLocalizedString("Usage details", comment: "Title of the Usage details row in Coupon Details screen")
+        static let errorLoadingAnalytics = NSLocalizedString(
+            "Error loading data",
+            comment: "Message displayed when fail to loading total discounted amount in Coupon Details screen"
+        )
     }
 
     struct DetailRow: Identifiable {

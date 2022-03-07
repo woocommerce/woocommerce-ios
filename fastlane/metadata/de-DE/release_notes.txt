@@ -1,0 +1,5 @@
+Wir haben unsere experimentelle Funktion zur Erstellung von Bestellungen aktualisiert. Bei variablen Produkten wird nun die Liste der Attribute angezeigt.
+
+Zudem haben wir eine weitere experimentelle Funktion hinzugefügt: das Gutscheinmanagement! Unter dem Tab „Mehr“ > „Einstellungen“ > „Experimentelle Einstellungen“ kannst du sie aktivieren. Wir freuen uns auf dein Feedback zur App, vor allem zu den neuen Funktionen, an denen wir zurzeit arbeiten und auf die wir frühzeitigen Zugriff gewähren.
+
+Ein besonderer Dank geht an GitHub-Benutzer chrisKns, der entscheidend zu den Verbesserungen dieser Version beigetragen hat. ❤

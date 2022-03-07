@@ -83,7 +83,7 @@ final class BulkUpdatePriceSettingsViewModel {
             guard let self = self else { return }
 
             switch result {
-            case .success(_):
+            case .success:
                 self.priceUpdateDidFinish()
             case let .failure(error):
                 DDLogError("⛔️ Error updating product variations: \(error)")

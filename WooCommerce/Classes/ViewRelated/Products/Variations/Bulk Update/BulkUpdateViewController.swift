@@ -83,7 +83,7 @@ final class BulkUpdateViewController: UIViewController {
             }
         }.store(in: &subscriptions)
 
-        viewModel.activate()
+        viewModel.syncVariations()
     }
 
     /// Configures the ghost view: registers Nibs and table view settings
@@ -152,7 +152,7 @@ final class BulkUpdateViewController: UIViewController {
         let title = Localization.noticeUnableToSyncVariations
         let actionTitle = Localization.noticeRetryAction
         let notice = Notice(title: title, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.viewModel.activate()
+            self?.viewModel.syncVariations()
         }
 
         noticePresenter.enqueue(notice: notice)

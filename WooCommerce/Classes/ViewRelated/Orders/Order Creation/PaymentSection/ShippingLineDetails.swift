@@ -34,7 +34,7 @@ struct ShippingLineDetails: View {
                                 Spacer()
 
                                 BindableTextfield(viewModel.amountPlaceholder, text: $viewModel.amount, focus: $focusAmountInput)
-                                    .keyboardType(.decimalPad)
+                                    .keyboardType(.numbersAndPunctuation)
                                     .addingCurrencySymbol(viewModel.currencySymbol, on: viewModel.currencyPosition)
                                     .onTapGesture {
                                         focusAmountInput = true

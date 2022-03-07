@@ -13,7 +13,6 @@ struct ShippingInputTransformer {
         guard let input = input else {
             let linesToRemove = order.shippingLines.map { $0.copy(methodID: .some(nil), total: "0") }
             return order.copy(shippingTotal: "0", shippingLines: linesToRemove)
-
         }
 
         // If there is no existing shipping lines, we insert the input one.

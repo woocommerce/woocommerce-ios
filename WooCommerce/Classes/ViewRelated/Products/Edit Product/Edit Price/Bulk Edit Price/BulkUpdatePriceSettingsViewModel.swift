@@ -21,14 +21,11 @@ final class BulkUpdatePriceSettingsViewModel {
     ///
     enum EditingPriceType {
         case regular
-        case sale
 
         func keyPathForPriceType() -> KeyPath<ProductVariation, String?> {
             switch self {
             case .regular:
                 return \.regularPrice
-            case .sale:
-                return \.salePrice
             }
         }
     }
@@ -118,8 +115,6 @@ final class BulkUpdatePriceSettingsViewModel {
         switch editingPriceType {
         case .regular:
             return productVariations.map { $0.copy(regularPrice: currentPrice) }
-        case .sale:
-            return productVariations.map { $0.copy(salePrice: currentPrice) }
         }
     }
 
@@ -129,7 +124,7 @@ final class BulkUpdatePriceSettingsViewModel {
 
         for variation in productVariations {
             let regularPrice = editingPriceType == .regular ? currentPrice : variation.regularPrice
-            let salePrice = editingPriceType == .sale ? currentPrice : variation.salePrice
+            let salePrice = variation.salePrice
 
             if let error = priceSettingsValidator.validate(regularPrice: regularPrice,
                                                            salePrice: salePrice,

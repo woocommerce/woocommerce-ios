@@ -14,7 +14,7 @@ struct NoticeModifier: ViewModifier {
 
     /// Whether the notice should be auto-dismissed.
     ///
-    var autoDismiss: Bool
+    let autoDismiss: Bool
 
     /// Cancelable task that clears a notice.
     ///

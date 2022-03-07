@@ -102,7 +102,7 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.createOrder()
 
         // Then
-        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.createOrderCreationErrorNotice())
+        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.createOrderErrorNotice())
     }
 
     func test_view_model_fires_error_notice_when_order_sync_fails() {
@@ -126,7 +126,7 @@ class NewOrderViewModelTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then
-        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.createOrderSyncErrorNotice(with: synchronizer))
+        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.syncOrderErrorNotice(with: synchronizer))
     }
 
     func test_view_model_loads_synced_pending_order_status() {

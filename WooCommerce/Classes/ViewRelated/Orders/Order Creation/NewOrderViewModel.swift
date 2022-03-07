@@ -247,7 +247,7 @@ final class NewOrderViewModel: ObservableObject {
                 self.onOrderCreated(newOrder)
                 self.trackCreateOrderSuccess()
             case .failure(let error):
-                self.notice = NoticeFactory.createOrderCreationErrorNotice()
+                self.notice = NoticeFactory.createOrderErrorNotice()
                 self.trackCreateOrderFailure(error: error)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
@@ -440,7 +440,7 @@ private extension NewOrderViewModel {
             .sink { [weak self] state in
                 guard let self = self else { return }
                 if case let .error(error) = state {
-                    self.notice = NoticeFactory.createOrderSyncErrorNotice(with: self.orderSynchronizer)
+                    self.notice = NoticeFactory.syncOrderErrorNotice(with: self.orderSynchronizer)
                     DDLogError("⛔️ Error syncing new order remotely: \(error)")
                 }
             }
@@ -688,13 +688,13 @@ extension NewOrderViewModel {
     enum NoticeFactory {
         /// Returns a default order creation error notice.
         ///
-        static func createOrderCreationErrorNotice() -> Notice {
+        static func createOrderErrorNotice() -> Notice {
             Notice(title: Localization.errorMessageOrderCreation, feedbackType: .error)
         }
 
         /// Returns an order sync error notice.
         ///
-        static func createOrderSyncErrorNotice(with orderSynchronizer: OrderSynchronizer) -> Notice {
+        static func syncOrderErrorNotice(with orderSynchronizer: OrderSynchronizer) -> Notice {
             Notice(title: Localization.errorMessageOrderSync, feedbackType: .error, actionTitle: Localization.retryOrderSync) {
                 orderSynchronizer.retryTrigger.send()
             }

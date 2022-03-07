@@ -14,6 +14,7 @@ class RemoteOrderSynchronizerTests: XCTestCase {
     private let sampleInputID: Int64 = 345
     private let sampleShippingID: Int64 = 456
     private let sampleOrderID: Int64 = 567
+    private let sampleFeeID: Int64 = 678
     private var subscriptions = Set<AnyCancellable>()
 
     override func setUp() {
@@ -333,6 +334,21 @@ class RemoteOrderSynchronizerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(orderCreationInvoked)
+    }
+
+    func test_sending_nil_fee_input_updates_local_order() throws {
+        // Given
+        let feeLine = OrderFeeLine.fake().copy(feeID: sampleFeeID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+
+        // When
+        synchronizer.setFee.send(feeLine)
+        synchronizer.setFee.send(nil)
+
+        // Then
+        let firstLine = try XCTUnwrap(synchronizer.order.fees.first)
+        XCTAssertNil(firstLine.name)
     }
 
     func test_states_are_properly_set_upon_success_order_creation() {

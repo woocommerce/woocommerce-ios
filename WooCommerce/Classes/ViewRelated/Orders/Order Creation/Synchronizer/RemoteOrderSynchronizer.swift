@@ -122,7 +122,7 @@ private extension RemoteOrderSynchronizer {
         setFee.withLatestFrom(orderPublisher)
             .map { [weak self] feeLineInput, order in
                 guard let self = self else { return order }
-                let updatedOrder = order.copy(fees: feeLineInput.flatMap { [$0] } ?? [])
+                let updatedOrder = FeesInputTransformer.update(input: feeLineInput, on: order)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }

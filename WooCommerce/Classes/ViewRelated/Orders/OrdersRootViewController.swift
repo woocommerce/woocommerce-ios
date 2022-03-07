@@ -328,8 +328,8 @@ private extension OrdersRootViewController {
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
     ///
     private func navigateToOrderDetail(_ order: Order) {
-        guard let orderViewController = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else { return }
-        orderViewController.viewModel = OrderDetailsViewModel(order: order)
+        let viewModel = OrderDetailsViewModel(order: order)
+        let orderViewController = OrderDetailsViewController(viewModel: viewModel)
 
         // Cleanup navigation (remove new order flow views) before navigating to order details
         if let navigationController = navigationController, let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) {

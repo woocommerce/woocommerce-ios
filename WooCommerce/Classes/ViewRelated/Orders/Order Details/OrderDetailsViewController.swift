@@ -48,7 +48,7 @@ final class OrderDetailsViewController: UIViewController {
 
     /// Order to be rendered!
     ///
-    var viewModel: OrderDetailsViewModel! {
+    private(set) var viewModel: OrderDetailsViewModel! {
         didSet {
             reloadTableViewSectionsAndData()
         }
@@ -57,13 +57,13 @@ final class OrderDetailsViewController: UIViewController {
     private let notices = OrderDetailsNotices()
 
     // MARK: - View Lifecycle
+    init(viewModel: OrderDetailsViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: Self.nibName, bundle: nil)
+    }
 
-    /// Create an instance of `Self` from its corresponding storyboard.
-    ///
-    static func instantiatedViewControllerFromStoryboard() -> Self? {
-        let storyboard = UIStoryboard.orders
-        let identifier = "OrderDetailsViewController"
-        return storyboard.instantiateViewController(withIdentifier: identifier) as? Self
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {

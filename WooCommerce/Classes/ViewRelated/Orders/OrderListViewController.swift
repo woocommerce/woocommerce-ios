@@ -526,13 +526,7 @@ extension OrderListViewController: UITableViewDelegate {
                 return
         }
 
-        guard let orderDetailsVC = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
-            assertionFailure("Expected OrderDetailsViewController to be instantiated")
-            return
-        }
-
-        orderDetailsVC.viewModel = orderDetailsViewModel
-
+        let orderDetailsVC = OrderDetailsViewController(viewModel: orderDetailsViewModel)
         let order = orderDetailsViewModel.order
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
                                                                     "status": order.status.rawValue])

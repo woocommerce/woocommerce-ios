@@ -104,6 +104,8 @@ final class OrderListViewController: UIViewController {
     ///
     private var topBannerView: TopBannerView?
 
+    private var switchDetailHandler: (OrderDetailsViewModel) -> Void
+
     // MARK: - View Lifecycle
 
     /// Designated initializer.
@@ -111,10 +113,12 @@ final class OrderListViewController: UIViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
-         emptyStateConfig: EmptyStateViewController.Config) {
+         emptyStateConfig: EmptyStateViewController.Config,
+         switchDetailHandler: @escaping (OrderDetailsViewModel) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.emptyStateConfig = emptyStateConfig
+        self.switchDetailHandler = switchDetailHandler
 
         super.init(nibName: nil, bundle: nil)
 
@@ -394,6 +398,21 @@ extension OrderListViewController {
     private func ensureFooterSpinnerIsStopped() {
         footerSpinnerView.stopAnimating()
     }
+
+    /// Attempt showing detail for first item if there's available data
+    ///
+    private func attemptShowingDetailsForFirstItem() {
+        guard !dataSource.isEmpty,
+                splitViewController?.viewControllers.count == 1 else {
+            return
+        }
+        let firstIndexPath = IndexPath(row: 0, section: 0)
+        guard let objectID = dataSource.itemIdentifier(for: firstIndexPath),
+              let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
+                  return
+              }
+        switchDetailHandler(orderDetailsViewModel)
+    }
 }
 
 
@@ -526,12 +545,11 @@ extension OrderListViewController: UITableViewDelegate {
                 return
         }
 
-        let orderDetailsVC = OrderDetailsViewController(viewModel: orderDetailsViewModel)
         let order = orderDetailsViewModel.order
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
                                                                     "status": order.status.rawValue])
 
-        navigationController?.pushViewController(orderDetailsVC, animated: true)
+        switchDetailHandler(orderDetailsViewModel)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -578,7 +596,7 @@ private extension OrderListViewController {
         case .syncing:
             ensureFooterSpinnerIsStarted()
         case .results:
-            break
+            attemptShowingDetailsForFirstItem()
         }
     }
 

@@ -97,7 +97,14 @@ final class MainTabBarController: UITabBarController {
     /// Tab view controllers
     ///
     private let dashboardNavigationController = WooTabNavigationController()
-    private let ordersNavigationController = WooTabNavigationController()
+    private let ordersSplitViewController: UISplitViewController = {
+        let splitViewController = UISplitViewController()
+        splitViewController.tabBarItem.title = NSLocalizedString("Orders", comment: "The title of the Orders tab.")
+        splitViewController.tabBarItem.image = .pagesImage
+        splitViewController.tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
+        splitViewController.extendedLayoutIncludesOpaqueBars = true
+        return splitViewController
+    }()
     private let productsNavigationController = WooTabNavigationController()
     private let reviewsNavigationController = WooTabNavigationController()
     private let hubMenuNavigationController = WooTabNavigationController()
@@ -376,7 +383,7 @@ private extension MainTabBarController {
             controllers.insert(dashboardNavigationController, at: dashboardTabIndex)
 
             let ordersTabIndex = WooTab.orders.visibleIndex(isHubMenuFeatureFlagOn)
-            controllers.insert(ordersNavigationController, at: ordersTabIndex)
+            controllers.insert(ordersSplitViewController, at: ordersTabIndex)
 
             let productsTabIndex = WooTab.products.visibleIndex(isHubMenuFeatureFlagOn)
             controllers.insert(productsNavigationController, at: productsTabIndex)
@@ -416,7 +423,9 @@ private extension MainTabBarController {
         dashboardNavigationController.viewControllers = [dashboardViewController]
 
         let ordersViewController = createOrdersViewController(siteID: siteID)
+        let ordersNavigationController = WooTabNavigationController()
         ordersNavigationController.viewControllers = [ordersViewController]
+        ordersSplitViewController.viewControllers = [ordersNavigationController]
 
         let productsViewController = createProductsViewController(siteID: siteID)
         productsNavigationController.viewControllers = [productsViewController]

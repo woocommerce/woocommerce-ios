@@ -6,6 +6,11 @@ import Combine
 ///
 final class OrdersRootViewController: UIViewController {
 
+    // Delegate to switch details on the split view
+    weak var detailsDelegate: OrderDetailsDelegate?
+
+    private var orderDetailsViewController: OrderDetailsViewController?
+
     // The stack view which will contain the top bar filters and the order list.
     @IBOutlet private weak var stackView: UIStackView!
 
@@ -19,7 +24,8 @@ final class OrdersRootViewController: UIViewController {
         emptyStateConfig: .simple(
             message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
             image: .waitingForCustomersImage
-        )
+        ),
+        switchDetailHandler: handleSwitchingDetails(viewModel:)
     )
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
@@ -62,7 +68,6 @@ final class OrdersRootViewController: UIViewController {
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
-        configureTabBarItem()
     }
 
     required init?(coder: NSCoder) {
@@ -138,6 +143,17 @@ final class OrdersRootViewController: UIViewController {
         })
         present(filterOrderListViewController, animated: true, completion: nil)
     }
+
+    private func handleSwitchingDetails(viewModel: OrderDetailsViewModel) {
+        guard orderDetailsViewController != nil else {
+            let orderDetailsViewController = OrderDetailsViewController(viewModel: viewModel)
+            splitViewController?.showDetailViewController(orderDetailsViewController, sender: nil)
+            detailsDelegate = orderDetailsViewController
+            self.orderDetailsViewController = orderDetailsViewController
+            return
+        }
+        detailsDelegate?.updateDetails(viewModel: viewModel)
+    }
 }
 
 // MARK: - Configuration
@@ -150,14 +166,6 @@ private extension OrdersRootViewController {
 
     func configureTitle() {
         title = Localization.defaultOrderListTitle
-    }
-
-    /// Set up properties for `self` as a root tab bar controller.
-    ///
-    func configureTabBarItem() {
-        tabBarItem.title = title
-        tabBarItem.image = .pagesImage
-        tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
     }
 
     /// Sets navigation buttons.

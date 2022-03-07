@@ -7,6 +7,10 @@ import MessageUI
 import Combine
 import SwiftUI
 
+protocol OrderDetailsDelegate: AnyObject {
+    func updateDetails(viewModel: OrderDetailsViewModel)
+}
+
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
 final class OrderDetailsViewController: UIViewController {
@@ -48,7 +52,7 @@ final class OrderDetailsViewController: UIViewController {
 
     /// Order to be rendered!
     ///
-    private(set) var viewModel: OrderDetailsViewModel! {
+    private(set) var viewModel: OrderDetailsViewModel {
         didSet {
             reloadTableViewSectionsAndData()
         }
@@ -103,6 +107,12 @@ final class OrderDetailsViewController: UIViewController {
     }
 }
 
+// MARK: - OrderDetailsDelegate Conformance
+extension OrderDetailsViewController: OrderDetailsDelegate {
+    func updateDetails(viewModel: OrderDetailsViewModel) {
+        self.viewModel = viewModel
+    }
+}
 
 // MARK: - TableView Configuration
 //

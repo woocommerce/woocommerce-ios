@@ -119,7 +119,7 @@ private extension Order {
     /// This is needed to create the item without the random generated ID, the remote API would fail otherwise.
     func removingItemIDs() -> Order {
         copy (
-            items: items.map { $0.copy(itemID: .zero) }
+            items: items.map { $0.copy(itemID: .zero, subtotal: "", total: "") }
         )
     }
 }

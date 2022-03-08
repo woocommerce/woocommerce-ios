@@ -16,14 +16,14 @@ public final class SingleOrderScreen: ScreenObject {
     @discardableResult
     public func verifySingleOrder(order: OrderData) throws -> Self {
         // Check that navigation bar contains order number
-        let navigationBar = app.navigationBars.matching(identifier: "order-detail-navigation-bar").element
+        let navigationBar = app.navigationBars.matching(identifier: "order-details-navigation-bar").element
         navigationBar.assertTextVisibilityCount(textToFind: "#\(order.number)")
 
         let orderDetailTableView = app.tables.matching(identifier: "order-details-table-view").element
         orderDetailTableView.assertTextVisibilityCount(textToFind: order.status, expectedCount: 1)
         orderDetailTableView.assertTextVisibilityCount(textToFind: order.total, expectedCount: 1)
 
-        // Expects 1 instances of order.number in Summary
+        // Expects 1 instance of order.number in Summary
         orderDetailTableView.assertTextVisibilityCount(textToFind: "#\(order.number)", expectedCount: 1)
 
         // Expects 2 instances of first_name - one in Summary and one in Shipping details

@@ -26,7 +26,7 @@ final class OrdersRootViewController: UIViewController {
             message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
             image: .waitingForCustomersImage
         ),
-        switchDetailHandler: handleSwitchingDetails(viewModel:)
+        switchDetailsHandler: handleSwitchingDetails(viewModel:)
     )
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).

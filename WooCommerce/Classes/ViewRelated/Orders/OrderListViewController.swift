@@ -108,7 +108,7 @@ final class OrderListViewController: UIViewController {
     ///
     private var topBannerView: TopBannerView?
 
-    private var switchDetailHandler: (OrderDetailsViewModel) -> Void
+    private var switchDetailsHandler: (OrderDetailsViewModel) -> Void
 
     // MARK: - View Lifecycle
 
@@ -118,11 +118,11 @@ final class OrderListViewController: UIViewController {
          title: String,
          viewModel: OrderListViewModel,
          emptyStateConfig: EmptyStateViewController.Config,
-         switchDetailHandler: @escaping (OrderDetailsViewModel) -> Void) {
+         switchDetailsHandler: @escaping (OrderDetailsViewModel) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.emptyStateConfig = emptyStateConfig
-        self.switchDetailHandler = switchDetailHandler
+        self.switchDetailsHandler = switchDetailsHandler
 
         super.init(nibName: nil, bundle: nil)
 
@@ -564,7 +564,7 @@ extension OrderListViewController: UITableViewDelegate {
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
                                                                     "status": order.status.rawValue])
 
-        switchDetailHandler(orderDetailsViewModel)
+        switchDetailsHandler(orderDetailsViewModel)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

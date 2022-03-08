@@ -354,7 +354,12 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         // Configure header container view
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
         headerContainer.addSubview(topBannerView)
-        headerContainer.pinSubviewToSafeArea(topBannerView)
+        NSLayoutConstraint.activate([
+            headerContainer.leadingAnchor.constraint(equalTo: topBannerView.leadingAnchor),
+            headerContainer.trailingAnchor.constraint(equalTo: topBannerView.trailingAnchor),
+            headerContainer.safeAreaLayoutGuide.topAnchor.constraint(equalTo: topBannerView.topAnchor),
+            headerContainer.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: topBannerView.bottomAnchor),
+        ])
 
         tableView.tableHeaderView = headerContainer
         tableView.updateHeaderHeight()
@@ -403,7 +408,8 @@ extension OrderListViewController {
     ///
     private func attemptShowingDetailsForFirstItem() {
         guard !dataSource.isEmpty,
-                splitViewController?.viewControllers.count == 1 else {
+            splitViewController?.viewControllers.count == 1,
+            splitViewController?.isCollapsed == false else {
             return
         }
         let firstIndexPath = IndexPath(row: 0, section: 0)

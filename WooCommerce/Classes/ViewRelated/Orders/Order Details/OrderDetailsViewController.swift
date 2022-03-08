@@ -93,6 +93,13 @@ final class OrderDetailsViewController: UIViewController {
         }
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        // scroll table view to top so that the next time the split view
+        // shows the detail screen, the table view content is at the top position
+        tableView.contentOffset = .zero
+        super.viewWillDisappear(animated)
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateHeaderHeight()

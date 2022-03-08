@@ -42,7 +42,7 @@ final class MainTabBarControllerTests: XCTestCase {
         assertThat(tabBarController.tabNavigationController(tab: .myStore, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
                    isAnInstanceOf: DashboardViewController.self)
         assertThat(tabBarController.tabNavigationController(tab: .orders, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
-                   isAnInstanceOf: OrdersRootViewController.self)
+                   isAnInstanceOf: OrdersSplitViewWrapperController.self)
         assertThat(tabBarController.tabNavigationController(tab: .products, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
                    isAnInstanceOf: ProductsViewController.self)
         assertThat(tabBarController.tabNavigationController(tab: .reviews, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
@@ -71,7 +71,7 @@ final class MainTabBarControllerTests: XCTestCase {
         assertThat(tabBarController.tabNavigationController(tab: .myStore, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
                    isAnInstanceOf: DashboardViewController.self)
         assertThat(tabBarController.tabNavigationController(tab: .orders, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
-                   isAnInstanceOf: OrdersRootViewController.self)
+                   isAnInstanceOf: OrdersSplitViewWrapperController.self)
         assertThat(tabBarController.tabNavigationController(tab: .products, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,
                    isAnInstanceOf: ProductsViewController.self)
         assertThat(tabBarController.tabNavigationController(tab: .hubMenu, isHubMenuFeatureFlagOn: isHubMenuFeatureFlagOn)?.topViewController,

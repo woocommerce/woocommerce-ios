@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import Combine
+import protocol Storage.StorageManagerType
 
 /// The root tab controller for Orders, which contains the `OrderListViewController` .
 ///
@@ -55,10 +56,25 @@ final class OrdersRootViewController: UIViewController {
     ///
     private var isOrderCreationEnabled: Bool = false
 
+    private let storageManager: StorageManagerType
+
+    /// Used for looking up the `OrderStatus` to show in the `Order Filters`.
+    ///
+    /// The `OrderStatus` data is fetched from the API by `OrderListViewModel`.
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     // MARK: View Lifecycle
 
-    init(siteID: Int64) {
+    init(siteID: Int64,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
+        self.storageManager = storageManager
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
@@ -125,7 +141,12 @@ final class OrdersRootViewController: UIViewController {
     ///
     private func filterButtonTapped() {
         ServiceLocator.analytics.track(.orderListViewFilterOptionsTapped)
-        let viewModel = FilterOrderListViewModel(filters: filters)
+
+        // Fetch stored statuses
+        try? statusResultsController.performFetch()
+        let allowedStatuses = statusResultsController.fetchedObjects.map { $0.status }
+        
+        let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses)
         let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             self?.filters = filters
             let statuses = (filters.orderStatus ?? []).map { $0.rawValue }.joined(separator: ",")

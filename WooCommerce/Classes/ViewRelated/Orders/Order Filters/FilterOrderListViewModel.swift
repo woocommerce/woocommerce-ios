@@ -47,9 +47,10 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
-    init(filters: Filters) {
-        orderStatusFilterViewModel = OrderListFilter.orderStatus.createViewModel(filters: filters)
-        dateRangeFilterViewModel = OrderListFilter.dateRange.createViewModel(filters: filters)
+    ///   - allowedStatuses: the statuses that will be shown in the filter list.
+    init(filters: Filters, allowedStatuses: [OrderStatusEnum]) {
+        orderStatusFilterViewModel = OrderListFilter.orderStatus.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
+        dateRangeFilterViewModel = OrderListFilter.dateRange.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
 
         filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel]
     }
@@ -93,11 +94,11 @@ private extension FilterOrderListViewModel.OrderListFilter {
 }
 
 extension FilterOrderListViewModel.OrderListFilter {
-    func createViewModel(filters: FilterOrderListViewModel.Filters) -> FilterTypeViewModel {
+    func createViewModel(filters: FilterOrderListViewModel.Filters, allowedStatuses: [OrderStatusEnum]) -> FilterTypeViewModel {
         switch self {
         case .orderStatus:
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .ordersStatuses,
+                                       listSelectorConfig: .ordersStatuses(allowedStatuses: allowedStatuses),
                                        selectedValue: filters.orderStatus)
         case .dateRange:
             return FilterTypeViewModel(title: title,

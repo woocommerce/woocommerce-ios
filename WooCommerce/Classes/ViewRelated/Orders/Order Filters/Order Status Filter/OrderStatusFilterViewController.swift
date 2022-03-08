@@ -18,11 +18,15 @@ final class OrderStatusFilterViewController: UIViewController {
 
     private var selected: [OrderStatusEnum]
 
+    private var allowedStatuses: [OrderStatusEnum] = []
+
     /// Init
     ///
     init(selected: [OrderStatusEnum],
+         allowedStatuses: [OrderStatusEnum],
          completion: @escaping Completion) {
         self.selected = selected
+        self.allowedStatuses = allowedStatuses
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -58,16 +62,22 @@ private extension OrderStatusFilterViewController {
 
         /// Registers all of the available TableViewCells
         ///
-        for row in Row.allCases {
-            tableView.registerNib(for: row.type)
-        }
+        tableView.registerNib(for: BasicTableViewCell.self)
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
     }
 
     func configureRows() {
-        rows = Row.allCases
+        rows = [.any, .pending, .processing, .onHold, .completed, .cancelled, .refunded, .failed]
+        for status in allowedStatuses {
+            switch status {
+            case .custom(let string):
+                rows.append(Row.custom(string))
+            default:
+                break
+            }
+        }
     }
 
     func selectOrDelesectRow(_ row: Row) {
@@ -124,7 +134,8 @@ extension OrderStatusFilterViewController: UITableViewDelegate {
 // MARK: - Cell configuration
 //
 private extension OrderStatusFilterViewController {
-    enum Row: CaseIterable {
+    enum Row {
+
         // The order of the statuses declaration is according to the Order's lifecycle
         // and it is used to determine the user facing display order using the synthesized allCases
         case any
@@ -135,6 +146,7 @@ private extension OrderStatusFilterViewController {
         case cancelled
         case refunded
         case failed
+        case custom(String)
 
         var status: OrderStatusEnum? {
             switch self {
@@ -154,6 +166,8 @@ private extension OrderStatusFilterViewController {
                 return .completed
             case .refunded:
                 return .refunded
+            case .custom(let rawValue):
+                return .custom(rawValue)
             }
         }
 

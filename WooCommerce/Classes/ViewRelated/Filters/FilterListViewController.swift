@@ -55,7 +55,7 @@ enum FilterListValueSelectorConfig {
     // Filter list selector for categories linked to that site id, retrieved dynamically
     case productCategories(siteID: Int64)
     // Filter list selector for order statuses
-    case ordersStatuses
+    case ordersStatuses(allowedStatuses: [OrderStatusEnum])
     // Filter list selector for date range
     case ordersDateRange
 }
@@ -231,9 +231,9 @@ private extension FilterListViewController {
                                                                                                       selectedCategory: selectedProductCategory,
                                                                                                       onProductCategorySelection: selectedValueAction)
                 self.listSelector.navigationController?.pushViewController(filterProductCategoryListViewController, animated: true)
-            case .ordersStatuses:
+            case .ordersStatuses(let allowedStatuses):
                 let selectedOrderFilters = selected.selectedValue as? Array<OrderStatusEnum> ?? []
-                let statusesFilterVC = OrderStatusFilterViewController(selected: selectedOrderFilters) { statuses in
+                let statusesFilterVC = OrderStatusFilterViewController(selected: selectedOrderFilters, allowedStatuses: allowedStatuses) { statuses in
                     selected.selectedValue = statuses.isEmpty ? nil : statuses
                     self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
                     self.listSelector.reloadData()

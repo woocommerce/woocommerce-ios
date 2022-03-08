@@ -1519,6 +1519,7 @@
 		DE6906DB27D5F69900735E3B /* OrderDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE6906DA27D5F69900735E3B /* OrderDetailsViewController.xib */; };
 		DE6906E327D7121800735E3B /* GhostTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6906E227D7121800735E3B /* GhostTableViewController.swift */; };
 		DE6906E527D7439C00735E3B /* OrdersSplitViewWrapperController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6906E427D7439B00735E3B /* OrdersSplitViewWrapperController.swift */; };
+		DE6906E727D74A1900735E3B /* WooSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6906E627D74A1900735E3B /* WooSplitViewController.swift */; };
 		DE69C54A27BB715D000BB888 /* CouponUsageDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE69C54927BB715D000BB888 /* CouponUsageDetailsViewModel.swift */; };
 		DE69C54D27BB719A000BB888 /* CouponUsageDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE69C54C27BB719A000BB888 /* CouponUsageDetails.swift */; };
 		DE69C54F27BCB4B7000BB888 /* CouponUsageDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE69C54E27BCB4B6000BB888 /* CouponUsageDetailsViewModelTests.swift */; };
@@ -3196,6 +3197,7 @@
 		DE6906DA27D5F69900735E3B /* OrderDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderDetailsViewController.xib; sourceTree = "<group>"; };
 		DE6906E227D7121800735E3B /* GhostTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostTableViewController.swift; sourceTree = "<group>"; };
 		DE6906E427D7439B00735E3B /* OrdersSplitViewWrapperController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersSplitViewWrapperController.swift; sourceTree = "<group>"; };
+		DE6906E627D74A1900735E3B /* WooSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooSplitViewController.swift; sourceTree = "<group>"; };
 		DE69C54927BB715D000BB888 /* CouponUsageDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponUsageDetailsViewModel.swift; sourceTree = "<group>"; };
 		DE69C54C27BB719A000BB888 /* CouponUsageDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponUsageDetails.swift; sourceTree = "<group>"; };
 		DE69C54E27BCB4B6000BB888 /* CouponUsageDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponUsageDetailsViewModelTests.swift; sourceTree = "<group>"; };
@@ -6283,6 +6285,7 @@
 				CE2409F0215D12D30091F887 /* WooNavigationController.swift */,
 				0294F8AA25E8A12C005B537A /* WooTabNavigationController.swift */,
 				02291736270BEFF200449FA0 /* ProcessConfiguration.swift */,
+				DE6906E627D74A1900735E3B /* WooSplitViewController.swift */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -8838,6 +8841,7 @@
 				E15FC74126BC1CED00CF83E6 /* AttributedText.swift in Sources */,
 				D8815AFB26384A1F00EDAD62 /* CardPresentModalReaderIsReady.swift in Sources */,
 				31316F9C25CB20FD00D9F129 /* OrderStatusListViewModel.swift in Sources */,
+				DE6906E727D74A1900735E3B /* WooSplitViewController.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 				451750B224470CD5004FDA65 /* EnhancedTextView.swift in Sources */,
 				02279586237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift in Sources */,

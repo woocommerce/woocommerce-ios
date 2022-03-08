@@ -5,7 +5,7 @@ import UIKit
 final class OrdersSplitViewWrapperController: UIViewController {
     private let siteID: Int64
 
-    private let ordersSplitViewController = UISplitViewController(style: .doubleColumn)
+    private let ordersSplitViewController = WooSplitViewController()
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -37,10 +37,7 @@ private extension OrdersSplitViewWrapperController {
         let ghostTableViewNavigationController = WooNavigationController(rootViewController: ghostTableViewController)
         ghostTableViewNavigationController.extendedLayoutIncludesOpaqueBars = true
 
-        ordersSplitViewController.preferredDisplayMode = .oneBesideSecondary
-        ordersSplitViewController.preferredSplitBehavior = .tile
         ordersSplitViewController.viewControllers = [ordersNavigationController, ghostTableViewNavigationController]
-        ordersSplitViewController.delegate = self
     }
 
     /// Set up properties for `self` as a root tab bar controller.
@@ -56,16 +53,5 @@ private extension OrdersSplitViewWrapperController {
         addChild(ordersSplitViewController)
         view.addSubview(contentView)
         ordersSplitViewController.didMove(toParent: self)
-    }
-}
-
-extension OrdersSplitViewWrapperController: UISplitViewControllerDelegate {
-    func splitViewController(_ splitViewController: UISplitViewController,
-                             topColumnForCollapsingToProposedTopColumn proposedTopColumn: UISplitViewController.Column) -> UISplitViewController.Column {
-        return .primary
-    }
-
-    func splitViewController(_ splitViewController: UISplitViewController, willChangeTo displayMode: UISplitViewController.DisplayMode) {
-        splitViewController.presentsWithGesture = displayMode != .oneBesideSecondary
     }
 }

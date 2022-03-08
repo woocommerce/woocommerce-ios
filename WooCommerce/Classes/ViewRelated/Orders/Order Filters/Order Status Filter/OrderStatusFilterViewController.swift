@@ -69,9 +69,23 @@ private extension OrderStatusFilterViewController {
     }
 
     func configureRows() {
-        rows = [.any, .pending, .processing, .onHold, .completed, .cancelled, .refunded, .failed]
+        rows = [.any]
         for status in allowedStatuses {
             switch status.status {
+            case .pending:
+                rows.append(.pending)
+            case .processing:
+                rows.append(.processing)
+            case .onHold:
+                rows.append(.onHold)
+            case .failed:
+                rows.append(.failed)
+            case .cancelled:
+                rows.append(.cancelled)
+            case .completed:
+                rows.append(.completed)
+            case .refunded:
+                rows.append(.refunded)
             case .custom:
                 rows.append(Row.custom(status))
             default:

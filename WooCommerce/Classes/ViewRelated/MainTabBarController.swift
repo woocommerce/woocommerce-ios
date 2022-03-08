@@ -102,7 +102,7 @@ final class MainTabBarController: UITabBarController {
         splitViewController.tabBarItem.title = NSLocalizedString("Orders", comment: "The title of the Orders tab.")
         splitViewController.tabBarItem.image = .pagesImage
         splitViewController.tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
-        splitViewController.extendedLayoutIncludesOpaqueBars = true
+        splitViewController.preferredDisplayMode = .oneBesideSecondary
         return splitViewController
     }()
     private let productsNavigationController = WooTabNavigationController()

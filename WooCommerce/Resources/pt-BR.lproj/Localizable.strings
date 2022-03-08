@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-02-15 18:54:05+0000 */
+/* Translation-Revision-Date: 2022-03-02 15:54:10+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -38,10 +38,10 @@
 "%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ está prestes a aceitar pagamentos com seu dispositivo móvel e solicitar leitores de cartão";
 
 /* Combined rule for a coupon. Reads like: 2 Products and 1 Category */
-"%1$@ and %2$@" = "%1$@ and %2$@";
+"%1$@ and %2$@" = "%1$@ e %2$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
-"%1$@ excl. %2$@" = "%1$@ excl. %2$@";
+"%1$@ excl. %2$@" = "%1$@, exc. %2$@";
 
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
@@ -88,16 +88,16 @@
 "%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
 
 /* The number of category allowed for a coupon in plural form. Reads like: 10 Categories */
-"%1$d Categories" = "%1$d Categories";
+"%1$d Categories" = "%1$d categorias";
 
 /* The number of category allowed for a coupon in singular form. Reads like: 1 Category */
-"%1$d Category" = "%1$d Category";
+"%1$d Category" = "%1$d categoria";
 
 /* The number of products allowed for a coupon in singular form. Reads like: 1 Product */
-"%1$d Product" = "%1$d Product";
+"%1$d Product" = "%1$d produto";
 
 /* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
-"%1$d Products" = "%1$d Products";
+"%1$d Products" = "%1$d produtos";
 
 /* Singular format of number of business day in Shipping Labels > Carrier and Rates */
 "%1$d business day" = "%1$d dia útil";
@@ -141,19 +141,19 @@
 "%@ via %@" = "%1$@ via %2$@";
 
 /* No comment provided by engineer. */
-"%d Categories excl. %d Products" = "%d Categories excl. %d Products";
+"%d Categories excl. %d Products" = "%1$d categorias, exc. %2$d produtos";
 
 /* No comment provided by engineer. */
-"%d Product" = "%d Product";
+"%d Product" = "%d produto";
 
 /* No comment provided by engineer. */
-"%d Products" = "%d Products";
+"%d Products" = "%d produtos";
 
 /* No comment provided by engineer. */
-"%d Products and %d Categories" = "%d Products and %d Categories";
+"%d Products and %d Categories" = "%1$d produtos e %2$d categorias";
 
 /* No comment provided by engineer. */
-"%d Products excl. %d Category" = "%d Products excl. %d Category";
+"%d Products excl. %d Category" = "%1$d produtos, exc. %2$d categoria";
 
 /* For example: `1 item` in Aggregated Product List */
 "%d item" = "%d item";
@@ -325,7 +325,7 @@
 "Add Coupon" = "Adicionar cupom";
 
 /* Title text of the button that adds customer data when creating a new order */
-"Add Customer Details" = "Add Customer Details";
+"Add Customer Details" = "Adicionar dados do cliente";
 
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "Adicionar anotação de cliente";
@@ -334,7 +334,7 @@
 "Add Downloadable File" = "Adicionar arquivo para download";
 
 /* Title text of the button that adds fees when creating a new order */
-"Add Fees" = "Add Fees";
+"Add Fees" = "Adicionar taxas";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "Adicionar arquivo";
@@ -367,7 +367,7 @@
 
 /* Title for the Shipping Line screen during order creation
    Title text of the button that adds shipping line when creating a new order */
-"Add Shipping" = "Add Shipping";
+"Add Shipping" = "Adicionar envio";
 
 /* Title for the button to add the Shipping Address in Order Details */
 "Add Shipping Address" = "Adicionar endereço de entrega";
@@ -485,7 +485,7 @@
 "All Products" = "Todos os produtos";
 
 /* Value for the limit usage to X items row in Coupon Usage Details screen when no limit is set */
-"All Qualifying in Cart" = "All Qualifying in Cart";
+"All Qualifying in Cart" = "Todos os itens elegíveis no carrinho";
 
 /* Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow */
 "All available packages have been activated" = "Todos os pacotes disponíveis estão ativados";
@@ -494,13 +494,13 @@
 "All done" = "Tudo pronto";
 
 /* Exception rule for a coupon. Reads like: All excl. 2 Products */
-"All excl. %1$@" = "All excl. %1$@";
+"All excl. %1$@" = "Todos os itens, exc. %1$@";
 
 /* No comment provided by engineer. */
-"All excl. %d Categories" = "All excl. %d Categories";
+"All excl. %d Categories" = "Todos os itens, exc. %d categorias";
 
 /* No comment provided by engineer. */
-"All excl. %d Products" = "All excl. %d Products";
+"All excl. %d Products" = "Todos os itens, exc. %d produtos";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Todas as avaliações marcadas como lidas";
@@ -518,7 +518,7 @@
 "Allow, but notify customer" = "Permitir, mas notificar o cliente";
 
 /* Title for the allowed email row in coupon usage details screen. */
-"Allowed Emails" = "Allowed Emails";
+"Allowed Emails" = "E-mails permitidos";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Quase pronto! Informe o código de verificação do seu aplicativo de autenticação.";
@@ -528,7 +528,7 @@
 
 /* Title for the amount field on the Shipping Line Details screen during order creation
    Title of the Amount label on Coupon Details screen */
-"Amount" = "Amount";
+"Amount" = "Quantidade";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "Valor elegível para reembolso";
@@ -575,16 +575,16 @@
 "Apply" = "Aplicar";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
-"Apply %1$@ off to all products with the promo code “%2$@”." = "Apply %1$@ off to all products with the promo code “%2$@”.";
+"Apply %1$@ off to all products with the promo code “%2$@”." = "Aplique %1$@ de desconto a todos os produtos com o código promocional “%2$@”.";
 
 /* Message to share the coupon code if it is applicable to some products. Reads like: Apply 10% off to some products with the promo code “20OFF”. */
-"Apply %1$@ off to some products with the promo code “%2$@”." = "Apply %1$@ off to some products with the promo code “%2$@”.";
+"Apply %1$@ off to some products with the promo code “%2$@”." = "Aplique %1$@ de desconto a alguns produtos com o código promocional “%2$@”.";
 
 /* No comment provided by engineer. */
-"Apply %@ off to all products with the promo code “%@”." = "Apply %@ off to all products with the promo code “%@”.";
+"Apply %@ off to all products with the promo code “%@”." = "Aplique %1$@ de desconto a todos os produtos com o código promocional “%2$@”.";
 
 /* No comment provided by engineer. */
-"Apply %@ off to some products with the promo code “%@”." = "Apply %@ off to some products with the promo code “%@”.";
+"Apply %@ off to some products with the promo code “%@”." = "Aplique %1$@ de desconto a alguns produtos com o código promocional “%2$@”.";
 
 /* Title of the Apply To row in Coupon Details screen */
 "Apply To" = "Aplicar a";
@@ -865,7 +865,7 @@
 "Collect payment from %1$@" = "Receber pagamento de %1$@";
 
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
-"Come back soon for more tips and insights on growing your store" = "Come back soon for more tips and insights on growing your store";
+"Come back soon for more tips and insights on growing your store" = "Volte mais tarde para ver outras dicas e informações de como ampliar sua loja";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -881,7 +881,7 @@
 "Conflicting payment plugins detected" = "Conflito de plugins de pagamento detectado";
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
-"Congrats, you’ve read everything!" = "Congrats, you’ve read everything!";
+"Congrats, you’ve read everything!" = "Parabéns, você leu tudo!";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "Parabéns! O seu leitor está usando o software mais recente";
@@ -985,7 +985,7 @@
 "Copy" = "Copiar";
 
 /* Action title for copying coupon code from the Coupon Details screen */
-"Copy Code" = "Copy Code";
+"Copy Code" = "Copiar código";
 
 /* Copy tracking number button title */
 "Copy Tracking Number" = "Copie o número de rastreamento";
@@ -1046,10 +1046,10 @@
 "Coupon Expiry Date" = "Data de expiração do cupom";
 
 /* Cell title on beta features screen to enable coupon management */
-"Coupon Management" = "Coupon Management";
+"Coupon Management" = "Gerenciamento de cupons";
 
 /* Notice message displayed when a coupon code is copied from the Coupon Details screen */
-"Coupon copied" = "Coupon copied";
+"Coupon copied" = "Cupom copiado";
 
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
@@ -1136,7 +1136,7 @@
 "Customer" = "Cliente";
 
 /* Title for the Shipping Address Form for Customer Details */
-"Customer Details" = "Customer Details";
+"Customer Details" = "Dados do cliente";
 
 /* Customer note row title
    Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
@@ -1229,7 +1229,7 @@
 "Discount" = "Desconto";
 
 /* Title of the Discounted Orders label on Coupon Details screen */
-"Discounted Orders" = "Discounted Orders";
+"Discounted Orders" = "Pedidos com desconto";
 
 /* A unit test string for a button title
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in inbox note row. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view */
@@ -1334,13 +1334,13 @@
 "Edit Attributes" = "Editar atributos";
 
 /* Accessibility label for the button to edit customer details on the New Order screen */
-"Edit Customer Details" = "Edit Customer Details";
+"Edit Customer Details" = "Editar dados do cliente";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Editar produtos";
 
 /* Accessibility label for the button to edit order status on the New Order screen */
-"Edit Status" = "Edit Status";
+"Edit Status" = "Editar status";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Edit and add new products from anywhere" = "Editar e adicionar novos produtos";
@@ -1496,7 +1496,7 @@
 "Everyone loves a deal" = "Quem não ama uma oferta?";
 
 /* Title for the exclude sale items row in coupon usage details screen. */
-"Exclude Sale Items" = "Exclude Sale Items";
+"Exclude Sale Items" = "Excluir itens em oferta";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -1839,7 +1839,7 @@
 
 /* Title for the screen that shows inbox notes.
    Title of the Inbox menu in the hub menu */
-"Inbox" = "Inbox";
+"Inbox" = "Caixa de entrada";
 
 /* Describes a standard *.wordpress.com site domain */
 "Included with Site" = "Incluído com o site";
@@ -1854,7 +1854,7 @@
 "Increase sales with upsells and cross-sells" = "Aumente as vendas com vendas adicionais e cruzadas";
 
 /* Title for the individual use only row in coupon usage details screen. */
-"Individual Use Only" = "Individual Use Only";
+"Individual Use Only" = "Somente para uso individual";
 
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "Item enviado separadamente";
@@ -1894,7 +1894,7 @@
 "Insurance (up to %1$@)" = "Seguro (até %1$@)";
 
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
-"Invalid Email Address" = "Invalid Email Address";
+"Invalid Email Address" = "Endereço de e-mail inválido";
 
 /* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
 "Invalid ITN format" = "Formato inválido de ITN";
@@ -2038,7 +2038,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Letter (8.5 x 11 in)" = "Carta (22 x 28 cm)";
 
 /* Title for the limit usage to X items row in coupon usage details screen. */
-"Limit Usage to X Items" = "Limit Usage to X Items";
+"Limit Usage to X Items" = "Limitar o uso a X itens";
 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
 "Limit one per order" = "Limitar um por pedido";
@@ -2136,7 +2136,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Manage Card Reader" = "Gerenciar leitor de cartão";
 
 /* Title of the action sheet displayed from the Coupon Details screen */
-"Manage Coupon" = "Manage Coupon";
+"Manage Coupon" = "Gerenciar cupom";
 
 /* Button to open browser to manage plugins */
 "Manage Plugins" = "Gerenciar plugins";
@@ -2188,7 +2188,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark this order as complete and notify the customer" = "Marcar este pedido como concluído e notificar o cliente";
 
 /* Title for the maximum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Maximum Spend ($) */
-"Maximum Spend (%1$@)" = "Maximum Spend (%1$@)";
+"Maximum Spend (%1$@)" = "Gasto máximo (%1$@)";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "A mídia não tem um arquivo associado a ser enviado.";
@@ -2216,7 +2216,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Microsoft Outlook" = "Microsoft Outlook";
 
 /* Title for the minimum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Minimum Spend ($) */
-"Minimum Spend (%1$@)" = "Minimum Spend (%1$@)";
+"Minimum Spend (%1$@)" = "Gasto mínimo (%1$@)";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "Valor mínimo %1$@, valor máximo %2$@";
@@ -2312,7 +2312,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Next" = "Próximo";
 
 /* Value for the allowed emails row in Coupon Usage Details screen when no restriction is set */
-"No Restrictions" = "No Restrictions";
+"No Restrictions" = "Sem restrições";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Nenhuma atividade no período";
@@ -2624,7 +2624,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Percentage Discount" = "Desconto em porcentagem";
 
 /* Title of the Performance section on Coupons Details screen */
-"Performance" = "Performance";
+"Performance" = "Desempenho";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -2682,7 +2682,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please enter a username." = "Por favor introduza o nome de usuário";
 
 /* An error message. */
-"Please enter a valid email address for a WordPress.com account." = "Please enter a valid email address for a WordPress.com account.";
+"Please enter a valid email address for a WordPress.com account." = "Insira um endereço de e-mail válido referente a uma conta do WordPress.com.";
 
 /* Error message displayed when the user attempts use an invalid email address.
    Notice text when the merchant enters an invalid email */
@@ -3076,7 +3076,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Remove Product from Order" = "Remover produto do pedido";
 
 /* Text for the button to remove a shipping line from the order during order creation */
-"Remove Shipping from Order" = "Remove Shipping from Order";
+"Remove Shipping from Order" = "Remover envio do pedido";
 
 /* Label action for removing a link from the editor */
 "Remove end date" = "Remover data de término";
@@ -3248,7 +3248,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Schedule sale" = "Agendar oferta";
 
 /* Placeholder on the search field to search for a specific product */
-"Search Products" = "Search Products";
+"Search Products" = "Pesquisar produtos";
 
 /* Coupons Search Placeholder */
 "Search all coupons" = "Pesquisar todos os cupons";
@@ -3364,7 +3364,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Share" = "Compartilhar";
 
 /* Action title for sharing coupon from the Coupon Details screen */
-"Share Coupon" = "Share Coupon";
+"Share Coupon" = "Compartilhar cupom";
 
 /* Payment Link method title on the select payment method screen for simple payments */
 "Share Payment Link" = "Compartilhar link de pagamento";
@@ -3845,7 +3845,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Test out creating new manual orders as we get ready to launch" = "Experimente criar novos pedidos manuais, enquanto nos preparamos para o lançamento";
 
 /* Cell description on beta features screen to enable coupon management */
-"Test out managing coupons as we get ready to launch" = "Test out managing coupons as we get ready to launch";
+"Test out managing coupons as we get ready to launch" = "Teste o gerenciamento de cupons enquanto nos preparamos para lançar";
 
 /* Cell description on beta features screen to enable product SKU input scanner in inventory settings. */
 "Test out scanning a barcode for a product SKU in the product inventory settings" = "Faça um teste de leitura da SKU do código de barras de um produto nas configurações de estoque dos produtos";
@@ -4260,7 +4260,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to process payment. Order total amount is not valid." = "Não é possível processar o pagamento. O valor total do pedido não é válido.";
 
 /* No comment provided by engineer. */
-"Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ.";
+"Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Não foi possível ler o site do WordPress nessa URL. Toque em 'Precisa de mais ajuda?' para ver as perguntas frequentes.";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Não foi possível atualizar a lista";
@@ -4313,7 +4313,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unknown media type" = "Tipo de mídia desconhecido";
 
 /* Value for fields in Coupon Usage Details screen when no limit is set */
-"Unlimited" = "Unlimited";
+"Unlimited" = "Ilimitado";
 
 /* Back button title when the product doesn't have a name */
 "Unnamed product" = "Produto sem nome";
@@ -4405,22 +4405,22 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Upsells" = "Aumentar vendas";
 
 /* Navigation title for usage details screen */
-"Usage Details" = "Usage Details";
+"Usage Details" = "Detalhes de uso";
 
 /* Title for the usage limit per coupon row in coupon usage details screen. */
-"Usage Limit Per Coupon" = "Usage Limit Per Coupon";
+"Usage Limit Per Coupon" = "Limite de uso por cupom";
 
 /* Title for the usage limit per user row in coupon usage details screen. */
-"Usage Limit Per User" = "Usage Limit Per User";
+"Usage Limit Per User" = "Limite de uso por usuário";
 
 /* Title for the usage limits section on coupon usage details screen */
-"Usage Limits" = "Usage Limits";
+"Usage Limits" = "Limites de uso";
 
 /* Title for the usage restrictions section on coupon usage details screen */
-"Usage Restrictions" = "Usage Restrictions";
+"Usage Restrictions" = "Restrições de uso";
 
 /* Title of the Usage details row in Coupon Details screen */
-"Usage details" = "Usage details";
+"Usage details" = "Detalhes de uso";
 
 /* Action to use the address in Shipping Label Suggested screen as entered placeholder */
 "Use Address Entered" = "Usar o endereço inserido";
@@ -4688,7 +4688,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Width" = "Largura";
 
 /* Navigates to WisePad 3 Card Reader manual */
-"WisePad 3 card reader manual" = "WisePad 3 card reader manual";
+"WisePad 3 card reader manual" = "Manual do leitor de cartão WisePad 3";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "With this powerful editor you can post on the go." = "Com esse editor avançado, você publica seus posts de onde estiver.";

@@ -32,6 +32,8 @@ final class LocalOrderSynchronizer: OrderSynchronizer {
 
     var setFee = PassthroughSubject<OrderFeeLine?, Never>()
 
+    var retryTrigger = PassthroughSubject<Void, Never>()
+
     // MARK: Private properties
 
     private let siteID: Int64
@@ -50,9 +52,6 @@ final class LocalOrderSynchronizer: OrderSynchronizer {
     }
 
     // MARK: Methods
-    func retrySync() {
-        // No op
-    }
 
     /// Creates the order remotely.
     ///

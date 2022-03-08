@@ -56,7 +56,7 @@ final class LocalOrderSynchronizer: OrderSynchronizer {
     /// Creates the order remotely.
     ///
     func commitAllChanges(onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        let action = OrderAction.createOrder(siteID: siteID, order: order, onCompletion: onCompletion)
+        let action = OrderAction.createOrder(siteID: siteID, order: order.removingItemIDs(), onCompletion: onCompletion)
         stores.dispatch(action)
     }
 }
@@ -110,5 +110,16 @@ private extension LocalOrderSynchronizer {
             return input
         }
         return input.updating(id: Int64(UUID().uuidString.hashValue))
+    }
+}
+
+// MARK: Order Helpers
+private extension Order {
+    /// Removes the `itemID` values from items.
+    /// This is needed to create the item without the random generated ID, the remote API would fail otherwise.
+    func removingItemIDs() -> Order {
+        copy (
+            items: items.map { $0.copy(itemID: .zero) }
+        )
     }
 }

@@ -437,7 +437,8 @@ private extension NewOrderViewModel {
     ///
     func configureSyncErrors() {
         orderSynchronizer.statePublisher
-            .map { state in
+            .map { [weak self] state in
+                guard let self = self else { return nil }
                 switch state {
                 case .error(let error):
                     DDLogError("⛔️ Error syncing new order remotely: \(error)")

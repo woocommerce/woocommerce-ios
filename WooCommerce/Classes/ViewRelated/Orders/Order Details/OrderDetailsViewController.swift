@@ -140,6 +140,7 @@ private extension OrderDetailsViewController {
         tableView.rowHeight = UITableView.automaticDimension
 
         tableView.dataSource = viewModel.dataSource
+        tableView.accessibilityIdentifier = "order-details-table-view"
     }
 
     /// Setup: Navigation
@@ -147,6 +148,7 @@ private extension OrderDetailsViewController {
     func configureNavigation() {
         let titleFormat = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
+        navigationController?.navigationBar.accessibilityIdentifier = "order-detail-navigation-bar"
     }
 
     /// Setup: EntityListener

@@ -15,7 +15,17 @@ class LoginProloguePageViewController: UIPageViewController {
         dataSource = self
         delegate = self
 
-        setViewControllers([pages[0]], direction: .forward, animated: false)
+        // During the Lottie and related view controllers and portions of view controllers, removal,
+        // the previous version of this code, without the array length check, crashed in the
+        // WooCommerce UI tests.
+        //
+        // I believe the reason is that the views and flows in this library haven't properly been
+        // updated to reflect the simplification in the UX and there are still elements that
+        // require this class to exist and be instantiated, even though it might not be used
+        // directly.
+        if pages.isEmpty == false {
+            setViewControllers([pages[0]], direction: .forward, animated: false)
+        }
         view.backgroundColor = WordPressAuthenticator.shared.style.prologueBackgroundColor
 
         addPageControl()

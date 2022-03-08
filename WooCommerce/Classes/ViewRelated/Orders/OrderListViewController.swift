@@ -404,7 +404,7 @@ extension OrderListViewController {
         footerSpinnerView.stopAnimating()
     }
 
-    /// Attempt showing detail for first item if there's available data
+    /// Attempt showing detail for first item if the split view is not collapsed and there's available data.
     ///
     private func attemptShowingDetailsForFirstItem() {
         guard !dataSource.isEmpty,
@@ -412,11 +412,8 @@ extension OrderListViewController {
             return
         }
         let firstIndexPath = IndexPath(row: 0, section: 0)
-        guard let objectID = dataSource.itemIdentifier(for: firstIndexPath),
-              let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
-                  return
-              }
-        switchDetailHandler(orderDetailsViewModel)
+        tableView.selectRow(at: firstIndexPath, animated: false, scrollPosition: .top)
+        tableView(tableView, didSelectRowAt: firstIndexPath)
     }
 }
 
@@ -539,7 +536,9 @@ private extension OrderListViewController {
 extension OrderListViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        if splitViewController?.isCollapsed == true {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
 
         guard state != .placeholder else {
             return

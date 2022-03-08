@@ -9,7 +9,8 @@ final class OrdersRootViewController: UIViewController {
     // Delegate to switch details on the split view
     weak var detailsDelegate: OrderDetailsDelegate?
 
-    private var orderDetailsViewController: OrderDetailsViewController?
+    // Reference to the associating order details navigation view controller
+    private var orderDetailsNavigationController: WooNavigationController?
 
     // The stack view which will contain the top bar filters and the order list.
     @IBOutlet private weak var stackView: UIStackView!
@@ -67,6 +68,8 @@ final class OrdersRootViewController: UIViewController {
         self.siteID = siteID
         super.init(nibName: Self.nibName, bundle: nil)
 
+        // workaround to get rid of the extra space at the bottom when embedded in split view
+        extendedLayoutIncludesOpaqueBars = true
         configureTitle()
     }
 
@@ -145,14 +148,22 @@ final class OrdersRootViewController: UIViewController {
     }
 
     private func handleSwitchingDetails(viewModel: OrderDetailsViewModel) {
-        guard orderDetailsViewController != nil else {
+        guard let orderDetailsNavigationController = orderDetailsNavigationController else {
             let orderDetailsViewController = OrderDetailsViewController(viewModel: viewModel)
-            splitViewController?.showDetailViewController(orderDetailsViewController, sender: nil)
+            let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
+            self.orderDetailsNavigationController = orderDetailsNavigationController
+
+            // workaround to get rid of the extra space at the bottom when embedded in split view
+            orderDetailsViewController.extendedLayoutIncludesOpaqueBars = true
+            orderDetailsNavigationController.extendedLayoutIncludesOpaqueBars = true
+
+            splitViewController?.showDetailViewController(orderDetailsNavigationController, sender: nil)
             detailsDelegate = orderDetailsViewController
-            self.orderDetailsViewController = orderDetailsViewController
             return
         }
+
         detailsDelegate?.updateDetails(order: viewModel.order)
+        splitViewController?.showDetailViewController(orderDetailsNavigationController, sender: nil)
     }
 }
 

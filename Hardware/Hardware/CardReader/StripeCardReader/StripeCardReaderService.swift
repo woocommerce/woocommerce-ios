@@ -212,6 +212,10 @@ extension StripeCardReaderService: CardReaderService {
         // This isn't enforced by the type system, but it is guaranteed as long as all the
         // steps produce a Future.
 
+        // If a card was left from a previous payment attempt, we want that removed before we initiate a new payment.
+        // However, a new payment probably means a new subscription to readerEvents, which won't rely the old `.removeCard`
+        // message. If there is a card inserted, we manually send a display message prompting to remove the card,
+        // and wait for that before continuing.
         if isChipCardInserted {
             sendReaderEvent(CardReaderEvent.make(displayMessage: .removeCard))
         }

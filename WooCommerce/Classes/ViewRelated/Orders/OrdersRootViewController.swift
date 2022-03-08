@@ -96,6 +96,8 @@ final class OrdersRootViewController: UIViewController {
         /// If there are some info stored when this screen is loaded, the data will be updated using the stored filters.
         ///
         syncLocalOrdersSettings { _ in }
+
+        configureStatusResultsController()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -237,6 +239,29 @@ private extension OrdersRootViewController {
 
         group.notify(queue: .main) { [weak self] in
             self?.configureNavigationButtons(isOrderCreationExperimentalToggleEnabled: isOrderCreationEnabled)
+        }
+    }
+
+    /// Connect hooks on `ResultsController` and query cached data.
+    /// This is useful for stay up to date with the remote statuses, resetting the filters if one of the local status filters was deleted remotely.
+    ///
+    func configureStatusResultsController() {
+        statusResultsController.onDidChangeObject = { [weak self] (updatedOrdersStatus, _, _, _) in
+            guard let self = self else { return }
+            self.resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: self.statusResultsController.fetchedObjects)
+        }
+
+        try? statusResultsController.performFetch()
+        self.resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: self.statusResultsController.fetchedObjects)
+    }
+
+    /// If the current applied status filters does not match the existing status filters fetched from API, we reset them.
+    ///
+    func resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: [OrderStatus]) {
+        for orderStatus in self.statusResultsController.fetchedObjects {
+            if self.filters.orderStatus?.contains(orderStatus.status) == false {
+                self.clearFilters()
+            }
         }
     }
 }

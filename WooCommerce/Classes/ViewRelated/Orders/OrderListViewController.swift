@@ -35,7 +35,11 @@ final class OrderListViewController: UIViewController {
 
     /// Main TableView.
     ///
-    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .grouped)
+        tableView.accessibilityIdentifier = "orders-table-view"
+        return tableView
+    }()
 
     /// The data source that is bound to `tableView`.
     private lazy var dataSource: UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID> = {

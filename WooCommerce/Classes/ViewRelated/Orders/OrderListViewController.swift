@@ -404,11 +404,18 @@ extension OrderListViewController {
         footerSpinnerView.stopAnimating()
     }
 
-    /// Attempt showing detail for first item if the split view is not collapsed and there's available data.
+    /// Attempt showing details for first item if:
+    /// - the order detail screen is not already displayed
+    /// - the split view is not collapsed
+    /// - there's available data
     ///
     private func attemptShowingDetailsForFirstItem() {
-        guard !dataSource.isEmpty,
-            splitViewController?.isCollapsed == false else {
+        let secondaryColumnNavigationController = splitViewController?.viewController(for: .secondary) as? UINavigationController
+        let displayedOrderDetail = secondaryColumnNavigationController?.viewControllers.first as? OrderDetailsViewController
+
+        guard displayedOrderDetail == nil,
+              !dataSource.isEmpty,
+              splitViewController?.isCollapsed == false else {
             return
         }
         let firstIndexPath = IndexPath(row: 0, section: 0)

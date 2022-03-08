@@ -55,7 +55,7 @@ enum FilterListValueSelectorConfig {
     // Filter list selector for categories linked to that site id, retrieved dynamically
     case productCategories(siteID: Int64)
     // Filter list selector for order statuses
-    case ordersStatuses(allowedStatuses: [OrderStatusEnum])
+    case ordersStatuses(allowedStatuses: [OrderStatus])
     // Filter list selector for date range
     case ordersDateRange
 }

@@ -144,8 +144,8 @@ final class OrdersRootViewController: UIViewController {
 
         // Fetch stored statuses
         try? statusResultsController.performFetch()
-        let allowedStatuses = statusResultsController.fetchedObjects.map { $0.status }
-        
+        let allowedStatuses = statusResultsController.fetchedObjects.map { $0 }
+
         let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses)
         let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             self?.filters = filters

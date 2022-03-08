@@ -18,12 +18,12 @@ final class OrderStatusFilterViewController: UIViewController {
 
     private var selected: [OrderStatusEnum]
 
-    private var allowedStatuses: [OrderStatusEnum] = []
+    private var allowedStatuses: [OrderStatus] = []
 
     /// Init
     ///
     init(selected: [OrderStatusEnum],
-         allowedStatuses: [OrderStatusEnum],
+         allowedStatuses: [OrderStatus],
          completion: @escaping Completion) {
         self.selected = selected
         self.allowedStatuses = allowedStatuses
@@ -71,9 +71,9 @@ private extension OrderStatusFilterViewController {
     func configureRows() {
         rows = [.any, .pending, .processing, .onHold, .completed, .cancelled, .refunded, .failed]
         for status in allowedStatuses {
-            switch status {
-            case .custom(let string):
-                rows.append(Row.custom(string))
+            switch status.status {
+            case .custom:
+                rows.append(Row.custom(status))
             default:
                 break
             }
@@ -146,7 +146,7 @@ private extension OrderStatusFilterViewController {
         case cancelled
         case refunded
         case failed
-        case custom(String)
+        case custom(OrderStatus)
 
         var status: OrderStatusEnum? {
             switch self {
@@ -166,8 +166,17 @@ private extension OrderStatusFilterViewController {
                 return .completed
             case .refunded:
                 return .refunded
-            case .custom(let rawValue):
-                return .custom(rawValue)
+            case .custom(let value):
+                return value.status
+            }
+        }
+
+        var description: String? {
+            switch self {
+            case .custom(let status):
+                return status.name ?? status.slug
+            default:
+                return self.status?.description
             }
         }
 
@@ -197,7 +206,7 @@ private extension OrderStatusFilterViewController {
             cell.textLabel?.text = Localization.anyStatusCase
             cell.accessoryType = selected.isEmpty ? .checkmark : .none
         default:
-            cell.textLabel?.text = row.status.description
+            cell.textLabel?.text = row.description
             if selected.contains(where: { $0 == row.status }) {
                 cell.accessoryType = .checkmark
             }

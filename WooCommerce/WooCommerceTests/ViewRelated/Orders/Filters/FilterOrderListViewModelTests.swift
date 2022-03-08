@@ -8,7 +8,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters()
 
         // When
-        let viewModel = FilterOrderListViewModel(filters: filters)
+        let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: [])
 
         // Then
         let expectedCriteria = FilterOrderListViewModel.Filters(orderStatus: nil, dateRange: nil, numberOfActiveFilters: 0)
@@ -20,7 +20,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing], dateRange: OrderDateRangeFilter(filter: .today), numberOfActiveFilters: 2)
 
         // When
-        let viewModel = FilterOrderListViewModel(filters: filters)
+        let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: [])
 
         // Then
         let expectedCriteria = filters
@@ -32,7 +32,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.completed], dateRange: OrderDateRangeFilter(filter: .last7Days), numberOfActiveFilters: 2)
 
         // When
-        let viewModel = FilterOrderListViewModel(filters: filters)
+        let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: [])
         viewModel.clearAll()
 
         // Then

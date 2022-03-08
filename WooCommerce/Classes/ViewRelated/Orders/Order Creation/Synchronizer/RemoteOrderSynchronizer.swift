@@ -278,6 +278,34 @@ private extension RemoteOrderSynchronizer {
         }
         return input.updating(id: localIDStore.dispatchLocalID())
     }
+
+    /// Defines the order status that should be sent to the remote API for a given operation type.
+    ///
+    func orderStatus(for type: OperationType) -> OrderStatusEnum {
+        switch type {
+        case .sync:
+            return baseSyncStatus // When syncing always use the available draft status.
+        case .commit:
+            return order.status  // When committing changes always use the current order status.
+        }
+    }
+
+    /// Defines the order update fields that should be sent to the remote API for a given operation type.
+    ///
+    func orderUpdateFields(for type: OperationType) -> [OrderUpdateField] {
+        switch type {
+        case .sync:  // We only sync addresses, items, feels, and shipping lines.
+            return [
+                .shippingAddress,
+                .billingAddress,
+                .fees,
+                .shippingLines,
+                .items
+            ]
+        case .commit:
+            return OrderUpdateField.allCases // When committing changes, we update everything.
+        }
+    }
 }
 
 // MARK: Definitions
@@ -304,6 +332,18 @@ private extension RemoteOrderSynchronizer {
             currentID -= 1
             return currentID
         }
+    }
+
+    /// Defines the types of operations the synchronizer performs.
+    ///
+    enum OperationType {
+        /// Synching order operation type.
+        ///
+        case sync
+
+        /// Committing order changes operation type.
+        ///
+        case commit
     }
 }
 

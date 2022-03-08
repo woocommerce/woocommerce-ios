@@ -287,7 +287,7 @@ public extension OrdersRemote {
 
     /// Order fields supported for update
     ///
-    enum UpdateOrderField {
+    enum UpdateOrderField: CaseIterable {
         case customerNote
         case shippingAddress
         case billingAddress

@@ -76,6 +76,8 @@ public class OrderStore: Store {
                                       orderNote: orderNote,
                                       email: email,
                                       onCompletion: onCompletion)
+        case let .deleteOrder(siteID, orderID, deletePermanently, onCompletion):
+            deleteOrder(siteID: siteID, orderID: orderID, deletePermanently: deletePermanently, onCompletion: onCompletion)
         }
     }
 }
@@ -365,6 +367,20 @@ private extension OrderStore {
                 self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
                     onCompletion(result)
                 })
+            case .failure:
+                onCompletion(result)
+            }
+        }
+    }
+
+    /// Deletes a given order.
+    ///
+    func deleteOrder(siteID: Int64, orderID: Int64, deletePermanently: Bool, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        remote.deleteOrder(for: siteID, orderID: orderID, force: deletePermanently) { [weak self] result in
+            switch result {
+            case .success:
+                self?.deleteStoredOrder(siteID: siteID, orderID: orderID)
+                onCompletion(result)
             case .failure:
                 onCompletion(result)
             }

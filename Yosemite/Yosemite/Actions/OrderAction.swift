@@ -83,4 +83,8 @@ public enum OrderAction: Action {
                                    orderNote: String?,
                                    email: String?,
                                    onCompletion: (Result<Order, Error>) -> Void)
+
+    /// Deletes a given order.
+    ///
+    case deleteOrder(siteID: Int64, orderID: Int64, deletePermanently: Bool, onCompletion: (Result<Order, Error>) -> Void)
 }

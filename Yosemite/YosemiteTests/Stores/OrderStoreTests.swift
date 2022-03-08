@@ -827,6 +827,25 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
+
+    func test_delete_order_removes_order_from_storage() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        store.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = OrderAction.deleteOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID, deletePermanently: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+    }
 }
 
 

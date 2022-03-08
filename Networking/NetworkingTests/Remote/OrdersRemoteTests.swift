@@ -16,7 +16,7 @@ final class OrdersRemoteTests: XCTestCase {
 
     /// Dummy Order ID
     ///
-    let sampleOrderID: Int64 = 1467
+    let sampleOrderID: Int64 = 963
 
     /// Dummy author string
     ///
@@ -481,6 +481,54 @@ final class OrdersRemoteTests: XCTestCase {
             "total": shipping.total
         ]
         assertEqual(received, expected)
+    }
+
+    // MARK: - Delete order tests
+
+    func test_delete_order_properly_returns_parsed_order() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)", filename: "order")
+
+        // When
+        let result: Result<Order, Error> = waitFor { promise in
+            remote.deleteOrder(for: self.sampleSiteID, orderID: self.sampleOrderID, force: false) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let order = try XCTUnwrap(result.get())
+        XCTAssertEqual(order.orderID, sampleOrderID)
+    }
+
+    func test_delete_order_properly_relays_networking_errors() {
+        // Given
+        let remote = OrdersRemote(network: network)
+
+        // When
+        let result: Result<Order, Error> = waitFor { promise in
+            remote.deleteOrder(for: self.sampleSiteID, orderID: self.sampleOrderID, force: false) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    func test_delete_order_includes_expected_force_parameter() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+
+        // When
+        remote.deleteOrder(for: sampleSiteID, orderID: sampleOrderID, force: true) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["force"] as? String)
+        XCTAssertEqual(received, "true")
     }
 }
 

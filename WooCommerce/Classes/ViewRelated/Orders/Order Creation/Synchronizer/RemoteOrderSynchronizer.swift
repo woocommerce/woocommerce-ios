@@ -68,10 +68,26 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     // MARK: Methods
 
-    /// Creates the order remotely.
+    /// Commits all changes to the remote order.
     ///
     func commitAllChanges(onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        // TODO: Implement
+        Just(order)
+            .flatMap { order -> AnyPublisher<Order, Error> in
+                if order.orderID == .zero {
+                    return self.createOrderRemotely(order, type: .commit) // Create order if it hasn't been created
+                } else {
+                    return self.updateOrderRemotely(order, type: .commit) // Update order if it has been created.
+                }
+            }
+            .sink { finished in
+                // We can let the whole chain fail because a new one is created in each `commitAllChanges` call.
+                if case .failure(let error) = finished {
+                    onCompletion(.failure(error))
+                }
+            } receiveValue: { order in
+                onCompletion(.success(order))
+            }
+            .store(in: &subscriptions)
     }
 }
 

@@ -97,7 +97,7 @@ final class MainTabBarController: UITabBarController {
     /// Tab view controllers
     ///
     private let dashboardNavigationController = WooTabNavigationController()
-    private let ordersSplitViewController = UISplitViewController()
+    private let ordersNavigationController = WooTabNavigationController()
     private let productsNavigationController = WooTabNavigationController()
     private let reviewsNavigationController = WooTabNavigationController()
     private let hubMenuNavigationController = WooTabNavigationController()
@@ -376,7 +376,7 @@ private extension MainTabBarController {
             controllers.insert(dashboardNavigationController, at: dashboardTabIndex)
 
             let ordersTabIndex = WooTab.orders.visibleIndex(isHubMenuFeatureFlagOn)
-            controllers.insert(ordersSplitViewController, at: ordersTabIndex)
+            controllers.insert(ordersNavigationController, at: ordersTabIndex)
 
             let productsTabIndex = WooTab.products.visibleIndex(isHubMenuFeatureFlagOn)
             controllers.insert(productsNavigationController, at: productsTabIndex)
@@ -415,7 +415,8 @@ private extension MainTabBarController {
         let dashboardViewController = createDashboardViewController(siteID: siteID)
         dashboardNavigationController.viewControllers = [dashboardViewController]
 
-        configureOrdersSplitViewController(siteID: siteID)
+        let ordersViewController = createOrdersViewController(siteID: siteID)
+        ordersNavigationController.viewControllers = [ordersViewController]
 
         let productsViewController = createProductsViewController(siteID: siteID)
         productsNavigationController.viewControllers = [productsViewController]
@@ -447,7 +448,7 @@ private extension MainTabBarController {
     }
 
     func createOrdersViewController(siteID: Int64) -> UIViewController {
-        OrdersRootViewController(siteID: siteID)
+        OrdersSplitViewWrapperController(siteID: siteID)
     }
 
     func createProductsViewController(siteID: Int64) -> UIViewController {
@@ -466,26 +467,6 @@ private extension MainTabBarController {
                            willPresentReviewDetailsFromPushNotification: { [weak self] in
             self?.navigateTo(.hubMenu)
         })
-    }
-
-    func configureOrdersSplitViewController(siteID: Int64) {
-        let ordersViewController = createOrdersViewController(siteID: siteID)
-        let ordersNavigationController = WooTabNavigationController()
-        ordersNavigationController.viewControllers = [ordersViewController]
-
-        // workaround to remove extra space at the bottom when embedded in spit view
-        let ghostTableViewController = GhostTableViewController()
-        ghostTableViewController.extendedLayoutIncludesOpaqueBars = true
-        let ghostTableViewNavigationController = WooNavigationController(rootViewController: ghostTableViewController)
-        ghostTableViewNavigationController.extendedLayoutIncludesOpaqueBars = true
-
-        // configure tab bar item
-        ordersSplitViewController.tabBarItem.title = ordersViewController.title
-        ordersSplitViewController.tabBarItem.image = ordersViewController.tabBarItem.image
-        ordersSplitViewController.tabBarItem.accessibilityIdentifier = ordersViewController.tabBarItem.accessibilityIdentifier
-
-        ordersSplitViewController.preferredDisplayMode = .oneBesideSecondary
-        ordersSplitViewController.viewControllers = [ordersNavigationController, ghostTableViewNavigationController]
     }
 }
 

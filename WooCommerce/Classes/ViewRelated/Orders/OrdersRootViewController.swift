@@ -71,7 +71,6 @@ final class OrdersRootViewController: UIViewController {
         // workaround to get rid of the extra space at the bottom when embedded in split view
         extendedLayoutIncludesOpaqueBars = true
         configureTitle()
-        configureTabBarItem()
     }
 
     required init?(coder: NSCoder) {
@@ -178,14 +177,6 @@ private extension OrdersRootViewController {
 
     func configureTitle() {
         title = Localization.defaultOrderListTitle
-    }
-
-    /// Set up properties for `self` as a root tab bar controller.
-    ///
-    func configureTabBarItem() {
-        tabBarItem.title = title
-        tabBarItem.image = .pagesImage
-        tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
     }
 
     /// Sets navigation buttons.

@@ -167,7 +167,7 @@ private extension RemoteOrderSynchronizer {
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
                 self.state = .syncing(blocking: true) // Creating an oder is always a blocking operation
 
-                return self.createOrderRemotely(order)
+                return self.createOrderRemotely(order, type: .sync)
                     .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
                         self?.state = .error(error)
                         return Empty().eraseToAnyPublisher()
@@ -192,7 +192,7 @@ private extension RemoteOrderSynchronizer {
             .map { [weak self] order -> AnyPublisher<Order, Never> in // Allow multiple requests, once per update request.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
                 self.state = .syncing(blocking: order.containsLocalLines()) // Set a `blocking` state if the order contains new lines
-                return self.updateOrderRemotely(order)
+                return self.updateOrderRemotely(order, type: .sync)
                     .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
                         self?.state = .error(error)
                         return Empty().eraseToAnyPublisher()
@@ -207,15 +207,15 @@ private extension RemoteOrderSynchronizer {
             .store(in: &subscriptions)
     }
 
-    /// Returns a publisher that creates an order remotely using the `baseSyncStatus`.
+    /// Returns a publisher that creates an order remotely, configured for the given operation type.
     /// The later emitted order is delivered with the latest selected status.
     ///
-    func createOrderRemotely(_ order: Order) -> AnyPublisher<Order, Error> {
+    func createOrderRemotely(_ order: Order, type: OperationType) -> AnyPublisher<Order, Error> {
         Future<Order, Error> { [weak self] promise in
             guard let self = self else { return }
 
-            // Creates the order with the `draft` status
-            let draftOrder = order.copy(status: self.baseSyncStatus).sanitizingLocalItems()
+            let apiOrderStatus = self.orderStatus(for: type)
+            let draftOrder = order.copy(status: apiOrderStatus).sanitizingLocalItems()
             let action = OrderAction.createOrder(siteID: self.siteID, order: draftOrder) { [weak self] result in
                 guard let self = self else { return }
 
@@ -234,25 +234,16 @@ private extension RemoteOrderSynchronizer {
         .eraseToAnyPublisher()
     }
 
-    /// Returns a publisher that updates an order remotely.
+    /// Returns a publisher that updates an order remotely, configured for the given operation type
     /// The later emitted order is delivered with the latest selected status.
     ///
-    func updateOrderRemotely(_ order: Order) -> AnyPublisher<Order, Error> {
+    func updateOrderRemotely(_ order: Order, type: OperationType) -> AnyPublisher<Order, Error> {
         Future<Order, Error> { [weak self] promise in
             guard let self = self else { return }
 
-            // Updates the order supported fields.
-            // Status is not updated as we want to continue using the "draft" status.
-            let supportedFields: [OrderUpdateField] = [
-                .shippingAddress,
-                .billingAddress,
-                .fees,
-                .shippingLines,
-                .items,
-            ]
-
+            let operationUpdateFields = self.orderUpdateFields(for: type)
             let orderToSubmit = order.sanitizingLocalItems()
-            let action = OrderAction.updateOrder(siteID: self.siteID, order: orderToSubmit, fields: supportedFields) { [weak self] result in
+            let action = OrderAction.updateOrder(siteID: self.siteID, order: orderToSubmit, fields: operationUpdateFields) { [weak self] result in
                 guard let self = self else { return }
 
                 switch result {

@@ -211,14 +211,23 @@ extension StripeCardReaderService: CardReaderService {
         // a single value or it will fail.
         // This isn't enforced by the type system, but it is guaranteed as long as all the
         // steps produce a Future.
-        return createPaymentIntent(parameters)
-            .flatMap { intent in
+
+        if isChipCardInserted {
+            sendReaderEvent(CardReaderEvent.make(displayMessage: .removeCard))
+        }
+        return waitForInsertedCardToBeRemoved()
+            .flatMap {
+                self.createPaymentIntent(parameters)
+            }.flatMap { intent in
                 self.collectPaymentMethod(intent: intent)
             }.flatMap { intent in
                 self.processPayment(intent: intent)
             }.flatMap { intent in
-                self.waitForInsertedCardToBeRemoved(intent: intent)
-            }.eraseToAnyPublisher()
+                self.waitForInsertedCardToBeRemoved()
+                    .map { intent }
+            }
+            .map(PaymentIntent.init(intent:))
+            .eraseToAnyPublisher()
     }
 
     public func cancelPaymentIntent() -> Future<Void, Error> {
@@ -406,7 +415,7 @@ private extension StripeCardReaderService {
         }
     }
 
-    func waitForInsertedCardToBeRemoved(intent: PaymentIntent) -> Future<PaymentIntent, Error> {
+    func waitForInsertedCardToBeRemoved() -> Future<Void, Error> {
         return Future() { [weak self] promise in
             guard let self = self else {
                 return
@@ -414,7 +423,7 @@ private extension StripeCardReaderService {
 
             // If there is no chip card inserted, it is ok to immediatedly return. The payment method may have been swipe or tap.
             if !self.isChipCardInserted {
-                return promise(.success(intent))
+                return promise(.success(()))
             }
 
             self.timerCancellable = Timer.publish(every: 1, tolerance: 0.1, on: .main, in: .default)
@@ -423,13 +432,13 @@ private extension StripeCardReaderService {
                 .sink(receiveValue: { _ in
                     if !self.isChipCardInserted {
                         self.timerCancellable?.cancel()
-                        return promise(.success(intent))
+                        return promise(.success(()))
                     }
                 })
         }
     }
 
-    func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<PaymentIntent, Error> {
+    func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
         return Future() { [weak self] promise in
             Terminal.shared.processPayment(intent) { (intent, error) in
                 if let error = error {
@@ -438,7 +447,7 @@ private extension StripeCardReaderService {
                 }
 
                 if let intent = intent {
-                    promise(.success(PaymentIntent(intent: intent)))
+                    promise(.success(intent))
                     self?.activePaymentIntent = nil
                 }
             }

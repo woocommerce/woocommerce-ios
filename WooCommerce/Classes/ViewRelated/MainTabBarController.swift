@@ -425,7 +425,8 @@ private extension MainTabBarController {
         let ordersViewController = createOrdersViewController(siteID: siteID)
         let ordersNavigationController = WooTabNavigationController()
         ordersNavigationController.viewControllers = [ordersViewController]
-        ordersSplitViewController.viewControllers = [ordersNavigationController]
+        let ghostTableViewNavigationController = WooNavigationController(rootViewController: GhostTableViewController())
+        ordersSplitViewController.viewControllers = [ordersNavigationController, ghostTableViewNavigationController]
 
         let productsViewController = createProductsViewController(siteID: siteID)
         productsNavigationController.viewControllers = [productsViewController]

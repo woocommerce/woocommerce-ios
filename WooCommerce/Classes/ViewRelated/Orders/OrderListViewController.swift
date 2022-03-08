@@ -408,7 +408,6 @@ extension OrderListViewController {
     ///
     private func attemptShowingDetailsForFirstItem() {
         guard !dataSource.isEmpty,
-            splitViewController?.viewControllers.count == 1,
             splitViewController?.isCollapsed == false else {
             return
         }

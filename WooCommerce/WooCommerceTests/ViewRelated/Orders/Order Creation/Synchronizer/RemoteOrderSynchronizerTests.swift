@@ -794,6 +794,84 @@ class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(updatedOrderItems.first?.productID, product.productID)
         XCTAssertEqual(updatedOrderItems.first?.quantity, 2)
     }
+
+    func test_commit_changes_creates_order_if_order_has_not_been_created() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .createOrder(_, let order, let completion):
+                completion(.success(order))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let result: Result<Order, Error> = waitFor { promise in
+            synchronizer.commitAllChanges { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_commit_changes_relays_error() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .createOrder(_, _, let completion):
+                let error = NSError(domain: "", code: 0, userInfo: nil)
+                completion(.failure(error))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let result: Result<Order, Error> = waitFor { promise in
+            synchronizer.commitAllChanges { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    func test_commit_changes_updates_order_if_order_has_been_created() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .createOrder(_, let order, let completion):
+                completion(.success(order.copy(orderID: self.sampleOrderID)))
+            case .updateOrder(_, let order, _, let completion):
+                completion(.success(order))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let input = OrderSyncProductInput.init(product: .product(.fake()), quantity: 1)
+        createOrder(on: synchronizer, input: input)
+
+        // When
+        let result: Result<Order, Error> = waitFor { promise in
+            synchronizer.commitAllChanges { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
 }
 
 private extension RemoteOrderSynchronizerTests {

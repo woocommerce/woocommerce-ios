@@ -152,7 +152,7 @@ final class OrdersRootViewController: UIViewController {
             self.orderDetailsViewController = orderDetailsViewController
             return
         }
-        detailsDelegate?.updateDetails(viewModel: viewModel)
+        detailsDelegate?.updateDetails(order: viewModel.order)
     }
 }
 

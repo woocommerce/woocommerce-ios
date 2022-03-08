@@ -15,6 +15,11 @@ public final class SingleOrderScreen: ScreenObject {
 
     @discardableResult
     public func verifySingleOrder(order: OrderData) throws -> Self {
+        // Check that navigation bar contains order number
+        let navigationBarTitles = app.navigationBars.map { $0.staticTexts.element.label }
+        let expectedTitle = "#\(order.number)"
+        XCTAssertTrue(navigationBarTitles.contains(where: { $0.contains(expectedTitle) }), "No navigation bar found with title \(expectedTitle)")
+
         let orderDetailTableView = app.tables["order-details-table-view"]
         orderDetailTableView.assertTextVisibilityCount(textToFind: order.status, expectedCount: 1)
         orderDetailTableView.assertTextVisibilityCount(textToFind: order.total, expectedCount: 1)

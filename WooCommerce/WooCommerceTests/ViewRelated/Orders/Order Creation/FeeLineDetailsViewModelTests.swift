@@ -22,12 +22,9 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         viewModel.amount = "hi:11.3005.02-"
 
         // Then
-        XCTAssertFalse(viewModel.isPercentageOptionAvailable)
         XCTAssertEqual(viewModel.amount, "11.30")
         XCTAssertEqual(viewModel.currencySymbol, "$")
         XCTAssertEqual(viewModel.currencyPosition, .left)
-        XCTAssertFalse(viewModel.isExistingFeeLine)
-        XCTAssertEqual(viewModel.amountPlaceholder, "0")
     }
 
     func test_view_model_formats_amount_with_custom_currency_settings() {
@@ -208,5 +205,35 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         // Then
         viewModel.saveData()
         XCTAssertEqual(savedFeeLine?.total, "20.00")
+    }
+
+    func test_view_model_amount_placeholder_is_not_empty_string() {
+        // Given
+        let viewModel = FeeLineDetailsViewModel(isExistingFeeLine: false,
+                                                baseAmountForPercentage: 0,
+                                                feesTotal: "",
+                                                locale: usLocale,
+                                                storeCurrencySettings: usStoreSettings,
+                                                didSelectSave: { _ in })
+
+        // Then
+        XCTAssertEqual(viewModel.amountPlaceholder, "0")
+    }
+
+    func test_view_model_initializes_correctly_with_no_existing_fee_line() {
+        // Given
+        let viewModel = FeeLineDetailsViewModel(isExistingFeeLine: false,
+                                                baseAmountForPercentage: 0,
+                                                feesTotal: "",
+                                                locale: usLocale,
+                                                storeCurrencySettings: usStoreSettings,
+                                                didSelectSave: { _ in })
+
+        // When
+        viewModel.amount = "hi:11.3005.02-"
+
+        // Then
+        XCTAssertFalse(viewModel.isPercentageOptionAvailable)
+        XCTAssertFalse(viewModel.isExistingFeeLine)
     }
 }

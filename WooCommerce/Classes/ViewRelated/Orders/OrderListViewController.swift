@@ -108,7 +108,13 @@ final class OrderListViewController: UIViewController {
     ///
     private var topBannerView: TopBannerView?
 
+    /// Callback closure when an order is selected
+    ///
     private var switchDetailsHandler: (OrderDetailsViewModel) -> Void
+
+    /// Currently selected index path in the table view
+    ///
+    private var selectedIndexPath: IndexPath?
 
     // MARK: - View Lifecycle
 
@@ -168,11 +174,16 @@ final class OrderListViewController: UIViewController {
         tableView.reloadData()
 
         restartPlaceholderAnimation()
+
+        // restore highlight for selected row after table reload
+        highlightSelectedRowIfNeeded()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateHeaderHeight()
+        // restore or remove highlight for selected row
+        highlightSelectedRowIfNeeded()
     }
 
     /// Returns a function that creates cells for `dataSource`.
@@ -408,13 +419,17 @@ extension OrderListViewController {
     private func ensureFooterSpinnerIsStopped() {
         footerSpinnerView.stopAnimating()
     }
+}
 
+// MARK: - Split view helpers
+//
+private extension OrderListViewController {
     /// Attempt showing details for first item if:
     /// - the order detail screen is not already displayed
     /// - the split view is not collapsed
     /// - there's available data
     ///
-    private func attemptShowingDetailsForFirstItem() {
+    func attemptShowingDetailsForFirstItem() {
         let secondaryColumnNavigationController = splitViewController?.viewController(for: .secondary) as? UINavigationController
         let displayedOrderDetail = secondaryColumnNavigationController?.viewControllers.first as? OrderDetailsViewController
 
@@ -424,8 +439,21 @@ extension OrderListViewController {
             return
         }
         let firstIndexPath = IndexPath(row: 0, section: 0)
-        tableView.selectRow(at: firstIndexPath, animated: false, scrollPosition: .top)
         tableView(tableView, didSelectRowAt: firstIndexPath)
+    }
+
+    /// Highlights the selected row if any row has been selected and the split view is not collapsed.
+    /// Removes the selected state otherwise.
+    ///
+    func highlightSelectedRowIfNeeded() {
+        guard let selectedIndexPath = selectedIndexPath else {
+            return
+        }
+        if splitViewController?.isCollapsed == true {
+            tableView.deselectRow(at: selectedIndexPath, animated: false)
+        } else {
+            tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: .none)
+        }
     }
 }
 
@@ -561,6 +589,7 @@ extension OrderListViewController: UITableViewDelegate {
                 return
         }
 
+        selectedIndexPath = indexPath
         let order = orderDetailsViewModel.order
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
                                                                     "status": order.status.rawValue])
@@ -613,6 +642,8 @@ private extension OrderListViewController {
             ensureFooterSpinnerIsStarted()
         case .results:
             attemptShowingDetailsForFirstItem()
+            // restore highlight for selected row after table reload
+            highlightSelectedRowIfNeeded()
         }
     }
 

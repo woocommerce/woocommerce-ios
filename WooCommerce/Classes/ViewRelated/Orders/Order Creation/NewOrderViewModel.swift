@@ -231,6 +231,8 @@ final class NewOrderViewModel: ObservableObject {
         })
     }
 
+    @Published private(set) var orderNotesDataViewModel: OrderNotesDataViewModel = .init(notes: "")
+
     // MARK: - API Requests
     /// Creates an order remotely using the provided order details.
     ///
@@ -395,6 +397,14 @@ extension NewOrderViewModel {
                                                             baseAmountForPercentage: feesBaseAmountForPercentage,
                                                             feesTotal: self.feesTotal,
                                                             didSelectSave: saveFeeLineClosure)
+        }
+    }
+
+    struct OrderNotesDataViewModel {
+        let notes: String
+
+        init(notes: String = "") {
+            self.notes = notes
         }
     }
 }

@@ -198,6 +198,8 @@ private struct LinkButton: View {
 }
 
 private struct PlusButton: View {
+    @Environment(\.isEnabled) var isEnabled
+
     let configuration: ButtonStyleConfiguration
 
     var body: some View {
@@ -215,7 +217,11 @@ private struct PlusButton: View {
     }
 
     var foregroundColor: UIColor {
-        configuration.isPressed ? .accentDark : .accent
+        if isEnabled {
+            return configuration.isPressed ? .accentDark : .accent
+        } else {
+            return .buttonDisabledTitle
+        }
     }
 }
 
@@ -247,6 +253,10 @@ struct PrimaryButton_Previews: PreviewProvider {
 
             Button("Plus button") {}
                 .buttonStyle(PlusButtonStyle())
+
+            Button("Plus button (disabled)") {}
+            .buttonStyle(PlusButtonStyle())
+            .disabled(true)
         }
         .padding()
     }

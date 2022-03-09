@@ -21,20 +21,35 @@ private struct OrderNotesSectionContent: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .zero) {
-                    HStack(alignment: .top) {
-                        Text(Localization.notes)
-                            .headlineStyle()
-                    }.padding([.leading, .top, .trailing])
+            HStack(alignment: .top) {
+                Text(Localization.notes)
+                    .headlineStyle()
+            }.padding([.leading, .top, .trailing])
 
-                    if viewModel.notes.isEmpty {
-                        createOrderNotesView
-                    } else {
-                        createNoteDataView
-                    }
-                }
-                .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(.listForeground))
-                .addingTopAndBottomDividers()
+            if viewModel.notes.isNotEmpty {
+                createEditNotesButton
+            }
+
+            if viewModel.notes.isEmpty {
+                createOrderNotesView
+            } else {
+                createNoteDataView
+            }
+        }
+        .padding(.horizontal, insets: safeAreaInsets)
+        .background(Color(.listForeground))
+        .addingTopAndBottomDividers()
+    }
+
+    private var createEditNotesButton: some View {
+        Button(Localization.editButton) {
+            showEditNotesView.toggle()
+        }
+        .buttonStyle(LinkButtonStyle())
+        .fixedSize(horizontal: true, vertical: true)
+        .padding(.top, -Layout.linkButtonTopPadding) // remove padding to align button title to the top
+        .padding(.trailing, -Layout.linkButtonTrailingPadding) // remove padding to align button title to the side
+        .accessibilityLabel(Text(Localization.editButtonAccessibilityLabel))
     }
 
     private var createOrderNotesView: some View {
@@ -50,7 +65,7 @@ private struct OrderNotesSectionContent: View {
 
     private var createNoteDataView: some View {
         Text(viewModel.notes)
-        .padding([.leading, .bottom, .trailing])
+            .padding([.leading, .bottom, .trailing])
     }
 }
 

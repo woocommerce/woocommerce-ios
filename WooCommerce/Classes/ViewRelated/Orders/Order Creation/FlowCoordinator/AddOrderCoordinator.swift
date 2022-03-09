@@ -68,6 +68,7 @@ private extension AddOrderCoordinator {
 
         let viewController = SimplePaymentsAmountHostingController(viewModel: viewModel, presentNoticePublisher: presentNoticeSubject.eraseToAnyPublisher())
         let simplePaymentsNC = WooNavigationController(rootViewController: viewController)
+        simplePaymentsNC.isModalInPresentation = true
         navigationController.present(simplePaymentsNC, animated: true)
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
@@ -80,8 +81,12 @@ private extension AddOrderCoordinator {
         viewModel.onOrderCreated = onOrderCreated
 
         let viewController = NewOrderHostingController(viewModel: viewModel)
-        viewController.hidesBottomBarWhenPushed = true
-        navigationController.pushViewController(viewController, animated: true)
+        viewController.setDismissAction {
+            viewController.dismiss(animated: true, completion: nil)
+        }
+        let newOrderNC = WooNavigationController(rootViewController: viewController)
+        newOrderNC.isModalInPresentation = true
+        navigationController.present(newOrderNC, animated: true)
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
     }

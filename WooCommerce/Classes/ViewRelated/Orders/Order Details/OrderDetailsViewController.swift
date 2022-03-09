@@ -7,10 +7,6 @@ import MessageUI
 import Combine
 import SwiftUI
 
-protocol OrderDetailsDelegate: AnyObject {
-    func updateDetails(order: Order)
-}
-
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
 final class OrderDetailsViewController: UIViewController {
@@ -93,13 +89,6 @@ final class OrderDetailsViewController: UIViewController {
         }
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        // scroll table view to top so that the next time the split view
-        // shows the detail screen, the table view content is at the top position
-        tableView.contentOffset = .zero
-        super.viewWillDisappear(animated)
-    }
-
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateHeaderHeight()
@@ -107,18 +96,6 @@ final class OrderDetailsViewController: UIViewController {
 
     override var shouldShowOfflineBanner: Bool {
         return true
-    }
-}
-
-// MARK: - OrderDetailsDelegate Conformance
-extension OrderDetailsViewController: OrderDetailsDelegate {
-    func updateDetails(order: Order) {
-        guard viewModel.order != order else {
-            return
-        }
-        viewModel.update(order: order)
-        reloadTableViewSectionsAndData()
-        configureNavigationBarTitle()
     }
 }
 

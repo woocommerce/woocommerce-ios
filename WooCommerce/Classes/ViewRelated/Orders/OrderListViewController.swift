@@ -442,6 +442,7 @@ private extension OrderListViewController {
         }
         let firstIndexPath = IndexPath(row: 0, section: 0)
         tableView(tableView, didSelectRowAt: firstIndexPath)
+        tableView.selectRow(at: firstIndexPath, animated: false, scrollPosition: .none)
     }
 
     /// Highlights the selected row if any row has been selected and the split view is not collapsed.

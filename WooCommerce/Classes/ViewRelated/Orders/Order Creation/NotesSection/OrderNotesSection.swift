@@ -23,3 +23,15 @@ private struct OrderNotesSectionContent: View {
         Text("Empty")
     }
 }
+
+struct CustomerNotesSection_Previews: PreviewProvider {
+    static var previews: some View {
+        let emptyViewModel = NewOrderViewModel.OrderNotesDataViewModel(notes: "")
+        let notesViewModel = NewOrderViewModel.OrderNotesDataViewModel(notes: "Some notes")
+
+        ScrollView {
+            OrderNotesSectionContent(viewModel: emptyViewModel, showEditNotesView: .constant(false))
+            OrderNotesSectionContent(viewModel: notesViewModel, showEditNotesView: .constant(false))
+        }
+    }
+}

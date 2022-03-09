@@ -276,7 +276,7 @@ final class NewOrderViewModel: ObservableObject {
     /// Deletes the order if it has been synced remotely, and removes it from local storage.
     ///
     func discardOrder() {
-        // TODO: Implementation
+        orderSynchronizer.discardOrder()
     }
 }
 

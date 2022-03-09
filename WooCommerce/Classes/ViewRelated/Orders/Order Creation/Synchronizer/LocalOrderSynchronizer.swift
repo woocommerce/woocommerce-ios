@@ -59,6 +59,10 @@ final class LocalOrderSynchronizer: OrderSynchronizer {
         let action = OrderAction.createOrder(siteID: siteID, order: order.removingItemIDs(), onCompletion: onCompletion)
         stores.dispatch(action)
     }
+
+    func discardOrder() {
+        // no-op: no need to discard orders that haven't been synced remotely.
+    }
 }
 
 private extension LocalOrderSynchronizer {

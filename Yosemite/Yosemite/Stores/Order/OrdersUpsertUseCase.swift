@@ -77,6 +77,8 @@ struct OrdersUpsertUseCase {
             let newStorageOrderItem = storage.insertNewObject(ofType: Storage.OrderItem.self)
             newStorageOrderItem.update(with: readOnlyItem)
             storageOrderItems.append(newStorageOrderItem)
+            handleOrderItemAttributes(readOnlyItem, newStorageOrderItem, storage)
+            handleOrderItemTaxes(readOnlyItem, newStorageOrderItem, storage)
         }
         storageOrder.items = NSOrderedSet(array: storageOrderItems)
     }

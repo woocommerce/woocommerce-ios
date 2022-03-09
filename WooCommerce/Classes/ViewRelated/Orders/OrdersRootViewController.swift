@@ -62,8 +62,6 @@ final class OrdersRootViewController: UIViewController {
         self.siteID = siteID
         super.init(nibName: Self.nibName, bundle: nil)
 
-        // workaround to get rid of the extra space at the bottom when embedded in split view
-        extendedLayoutIncludesOpaqueBars = true
         configureTitle()
     }
 
@@ -128,10 +126,6 @@ final class OrdersRootViewController: UIViewController {
     private func handleSwitchingDetails(viewModel: OrderDetailsViewModel) {
         let orderDetailsViewController = OrderDetailsViewController(viewModel: viewModel)
         let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
-
-        // workaround to get rid of the extra space at the bottom when embedded in split view
-        orderDetailsViewController.extendedLayoutIncludesOpaqueBars = true
-        orderDetailsNavigationController.extendedLayoutIncludesOpaqueBars = true
 
         splitViewController?.showDetailViewController(orderDetailsNavigationController, sender: nil)
     }

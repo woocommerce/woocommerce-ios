@@ -170,6 +170,11 @@ final class OrderListViewController: UIViewController {
         restartPlaceholderAnimation()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateHeaderHeight()
+    }
+
     /// Returns a function that creates cells for `dataSource`.
     private func makeCellProvider() -> UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>.CellProvider {
         return { [weak self] tableView, indexPath, objectID in
@@ -358,12 +363,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         // Configure header container view
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
         headerContainer.addSubview(topBannerView)
-        NSLayoutConstraint.activate([
-            headerContainer.leadingAnchor.constraint(equalTo: topBannerView.leadingAnchor),
-            headerContainer.trailingAnchor.constraint(equalTo: topBannerView.trailingAnchor),
-            headerContainer.safeAreaLayoutGuide.topAnchor.constraint(equalTo: topBannerView.topAnchor),
-            headerContainer.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: topBannerView.bottomAnchor),
-        ])
+        headerContainer.pinSubviewToAllEdges(topBannerView)
 
         tableView.tableHeaderView = headerContainer
         tableView.updateHeaderHeight()
@@ -374,6 +374,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     private func hideTopBannerView() {
         topBannerView?.removeFromSuperview()
         tableView.tableHeaderView = nil
+        tableView.updateHeaderHeight()
     }
 }
 

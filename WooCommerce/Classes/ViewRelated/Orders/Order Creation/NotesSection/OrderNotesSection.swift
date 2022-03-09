@@ -24,11 +24,11 @@ private struct OrderNotesSectionContent: View {
             HStack(alignment: .top) {
                 Text(Localization.notes)
                     .headlineStyle()
+                Spacer()
+                if viewModel.notes.isNotEmpty {
+                    createEditNotesButton
+                }
             }.padding([.leading, .top, .trailing])
-
-            if viewModel.notes.isNotEmpty {
-                createEditNotesButton
-            }
 
             if viewModel.notes.isEmpty {
                 createOrderNotesView

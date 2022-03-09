@@ -129,13 +129,13 @@ final class AggregateDataHelper {
         var sorted: [AggregateOrderItem] = []
         for item in allItems {
             if let find = filtered.first(where: {
-                $0.productID == item.productID
+                $0.hashValue == item.hashValue
             }) {
                 sorted.append(find)
             }
 
             filtered.removeAll {
-                $0.productID == item.productID
+                $0.hashValue == item.hashValue
             }
         }
 

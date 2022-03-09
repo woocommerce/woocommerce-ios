@@ -27,7 +27,9 @@ private struct OrderNotesSectionContent: View {
                     }.padding([.leading, .top, .trailing])
 
                     if viewModel.notes.isEmpty {
+                        createOrderNotesView
                     } else {
+                        createNoteDataView
                     }
                 }
                 .padding(.horizontal, insets: safeAreaInsets)
@@ -35,7 +37,21 @@ private struct OrderNotesSectionContent: View {
                 .addingTopAndBottomDividers()
     }
 
+    private var createOrderNotesView: some View {
+        Group {
+            Spacer(minLength: Layout.verticalHeadlineSpacing)
+            Button(Localization.addNotes) {
+                showEditNotesView.toggle()
+            }
+            .buttonStyle(PlusButtonStyle())
+            .padding([.leading, .bottom, .trailing])
+        }
+    }
 
+    private var createNoteDataView: some View {
+        Text(viewModel.notes)
+        .padding([.leading, .bottom, .trailing])
+    }
 }
 
 // MARK: Constants

@@ -338,7 +338,7 @@ extension MainTabBarController {
         switch note.kind {
         case .storeOrder:
             switchToOrdersTab {
-                guard let ordersVC: OrdersRootViewController = childViewController() else {
+                guard let ordersVC: OrdersSplitViewWrapperController = childViewController() else {
                     return
                 }
 

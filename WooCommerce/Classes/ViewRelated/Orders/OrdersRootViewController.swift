@@ -111,18 +111,6 @@ final class OrdersRootViewController: UIViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
-    /// Presents the Details for the Notification with the specified Identifier.
-    ///
-    func presentDetails(for note: Note) {
-        guard let orderID = note.meta.identifier(forKey: .order), let siteID = note.meta.identifier(forKey: .site) else {
-            DDLogError("## Notification with [\(note.noteID)] lacks its OrderID!")
-            return
-        }
-
-        let loaderViewController = OrderLoaderViewController(note: note, orderID: Int64(orderID), siteID: Int64(siteID))
-        navigationController?.pushViewController(loaderViewController, animated: true)
-    }
-
     /// Present `FilterListViewController`
     ///
     private func filterButtonTapped() {

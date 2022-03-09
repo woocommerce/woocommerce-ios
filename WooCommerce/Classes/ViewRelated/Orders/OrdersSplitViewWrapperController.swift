@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 
 /// Controller to wrap the orders split view
 ///
@@ -22,6 +23,24 @@ final class OrdersSplitViewWrapperController: UIViewController {
         super.viewDidLoad()
         navigationController?.setNavigationBarHidden(true, animated: false)
         configureChildViewController()
+    }
+
+    /// Presents the Details for the Notification with the specified Identifier.
+    ///
+    func presentDetails(for note: Note) {
+        guard let orderID = note.meta.identifier(forKey: .order), let siteID = note.meta.identifier(forKey: .site) else {
+            DDLogError("## Notification with [\(note.noteID)] lacks its OrderID!")
+            return
+        }
+
+        let loaderViewController = OrderLoaderViewController(note: note, orderID: Int64(orderID), siteID: Int64(siteID))
+        let loaderNavigationController = WooNavigationController(rootViewController: loaderViewController)
+
+        // workaround to get rid of the extra space at the bottom when embedded in split view
+        loaderViewController.extendedLayoutIncludesOpaqueBars = true
+        loaderNavigationController.extendedLayoutIncludesOpaqueBars = true
+
+        ordersSplitViewController.showDetailViewController(loaderViewController, sender: nil)
     }
 }
 

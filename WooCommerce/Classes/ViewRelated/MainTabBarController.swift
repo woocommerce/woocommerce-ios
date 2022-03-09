@@ -161,9 +161,12 @@ final class MainTabBarController: UITabBarController {
 
     // MARK: - Public Methods
 
-    /// Switches the TabBarcController to the specified Tab
+    /// Switches the TabBarController to the specified Tab
     ///
     func navigateTo(_ tab: WooTab, animated: Bool = false, completion: (() -> Void)? = nil) {
+        if let presentedController = Self.childViewController()?.presentedViewController {
+            presentedController.dismiss(animated: true)
+        }
         selectedIndex = tab.visibleIndex(isHubMenuFeatureFlagOn)
         if let navController = selectedViewController as? UINavigationController {
             navController.popToRootViewController(animated: animated) {
@@ -455,7 +458,7 @@ private extension MainTabBarController {
     func createReviewsTabCoordinator() -> ReviewsCoordinator {
         ReviewsCoordinator(navigationController: reviewsNavigationController,
                            willPresentReviewDetailsFromPushNotification: { [weak self] in
-                            self?.navigateTo(.reviews)
+            self?.navigateTo(.reviews)
         })
     }
 

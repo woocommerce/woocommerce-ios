@@ -32,11 +32,15 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     var setFee = PassthroughSubject<OrderFeeLine?, Never>()
 
+    var retryTrigger = PassthroughSubject<Void, Never>()
+
     // MARK: Private properties
 
     private let siteID: Int64
 
     private let stores: StoresManager
+
+    private let currencyFormatter: CurrencyFormatter
 
     /// This is the order status that we will use to keep the order in sync with the remote source.
     ///
@@ -46,11 +50,16 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
     ///
     private var subscriptions = Set<AnyCancellable>()
 
+    /// Store to serve local IDs.
+    ///
+    private let localIDStore = LocalIDStore()
+
     // MARK: Initializers
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.siteID = siteID
         self.stores = stores
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
         updateBaseSyncOrderStatus()
         bindInputs()
@@ -58,9 +67,6 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
     }
 
     // MARK: Methods
-    func retrySync() {
-        // TODO: Implement
-    }
 
     /// Creates the order remotely.
     ///
@@ -89,8 +95,12 @@ private extension RemoteOrderSynchronizer {
             .assign(to: &$order)
 
         setProduct.withLatestFrom(orderPublisher)
-            .map { productInput, order in
-                ProductInputTransformer.update(input: productInput, on: order)
+            .map { [weak self] productInput, order in
+                guard let self = self else { return order }
+                let localInput = self.replaceInputWithLocalIDIfNeeded(productInput)
+                let updatedOrder = ProductInputTransformer.update(input: localInput, on: order, updateZeroQuantities: true)
+                // Calculate order total locally while order is being synced
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .assign(to: &$order)
 
@@ -101,14 +111,20 @@ private extension RemoteOrderSynchronizer {
             .assign(to: &$order)
 
         setShipping.withLatestFrom(orderPublisher)
-            .map { shippingLineInput, order in
-                order.copy(shippingLines: shippingLineInput.flatMap { [$0] } ?? [])
+            .map { [weak self] shippingLineInput, order in
+                guard let self = self else { return order }
+                let updatedOrder = ShippingInputTransformer.update(input: shippingLineInput, on: order)
+                // Calculate order total locally while order is being synced
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .assign(to: &$order)
 
         setFee.withLatestFrom(orderPublisher)
-            .map { feeLineInput, order in
-                order.copy(fees: feeLineInput.flatMap { [$0] } ?? [])
+            .map { [weak self] feeLineInput, order in
+                guard let self = self else { return order }
+                let updatedOrder = order.copy(fees: feeLineInput.flatMap { [$0] } ?? [])
+                // Calculate order total locally while order is being synced
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .assign(to: &$order)
     }
@@ -121,6 +137,7 @@ private extension RemoteOrderSynchronizer {
             .merge(with: setAddresses.map { _ in () })
             .merge(with: setShipping.map { _ in () })
             .merge(with: setFee.map { _ in () })
+            .merge(with: retryTrigger.map { _ in () })
             .debounce(for: 0.5, scheduler: DispatchQueue.main) // Group & wait for 0.5 since the last signal was emitted.
             .compactMap { [weak self] in
                 guard let self = self else { return nil }
@@ -146,14 +163,16 @@ private extension RemoteOrderSynchronizer {
             .filter { // Only continue if the order has not been created.
                 $0.orderID == .zero
             }
-            .flatMap(maxPublishers: .max(1)) { [weak self] order -> AnyPublisher<Order, Error> in // Only allow one request at a time.
+            .flatMap(maxPublishers: .max(1)) { [weak self] order -> AnyPublisher<Order, Never> in // Only allow one request at a time.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
                 self.state = .syncing(blocking: true) // Creating an oder is always a blocking operation
+
                 return self.createOrderRemotely(order)
-            }
-            .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
-                self?.state = .error(error)
-                return Empty().eraseToAnyPublisher()
+                    .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
+                        self?.state = .error(error)
+                        return Empty().eraseToAnyPublisher()
+                    }
+                    .eraseToAnyPublisher()
             }
             .sink { [weak self] order in
                 self?.state = .synced
@@ -170,16 +189,17 @@ private extension RemoteOrderSynchronizer {
             .filter { // Only continue if the order has been created.
                 $0.orderID != .zero
             }
-            .map { [weak self] order -> AnyPublisher<Order, Error> in // Allow multiple requests, once per update request.
+            .map { [weak self] order -> AnyPublisher<Order, Never> in // Allow multiple requests, once per update request.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
-                self.state = .syncing(blocking: order.containsLocalItems()) // Set a `blocking` state if the order contains new items
+                self.state = .syncing(blocking: order.containsLocalLines()) // Set a `blocking` state if the order contains new lines
                 return self.updateOrderRemotely(order)
+                    .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
+                        self?.state = .error(error)
+                        return Empty().eraseToAnyPublisher()
+                    }
+                    .eraseToAnyPublisher()
             }
             .switchToLatest() // Always switch/listen to the latest fired update request.
-            .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
-                self?.state = .error(error)
-                return Empty().eraseToAnyPublisher()
-            }
             .sink { [weak self] order in // When finished, update state & order.
                 self?.state = .synced
                 self?.order = order
@@ -195,7 +215,7 @@ private extension RemoteOrderSynchronizer {
             guard let self = self else { return }
 
             // Creates the order with the `draft` status
-            let draftOrder = order.copy(status: self.baseSyncStatus)
+            let draftOrder = order.copy(status: self.baseSyncStatus).sanitizingLocalItems()
             let action = OrderAction.createOrder(siteID: self.siteID, order: draftOrder) { [weak self] result in
                 guard let self = self else { return }
 
@@ -230,7 +250,9 @@ private extension RemoteOrderSynchronizer {
                 .shippingLines,
                 .items,
             ]
-            let action = OrderAction.updateOrder(siteID: self.siteID, order: order, fields: supportedFields) { [weak self] result in
+
+            let orderToSubmit = order.sanitizingLocalItems()
+            let action = OrderAction.updateOrder(siteID: self.siteID, order: orderToSubmit, fields: supportedFields) { [weak self] result in
                 guard let self = self else { return }
 
                 switch result {
@@ -247,13 +269,67 @@ private extension RemoteOrderSynchronizer {
         }
         .eraseToAnyPublisher()
     }
+
+    /// Creates a new input with a proper local ID when the provided input  ID is `.zero`.
+    ///
+    func replaceInputWithLocalIDIfNeeded(_ input: OrderSyncProductInput) -> OrderSyncProductInput {
+        guard input.id == .zero else {
+            return input
+        }
+        return input.updating(id: localIDStore.dispatchLocalID())
+    }
+}
+
+// MARK: Definitions
+private extension RemoteOrderSynchronizer {
+    /// Simple type to serve negative IDs.
+    /// This is needed to differentiate if an item ID has been synced remotely while providing a unique ID to consumers.
+    /// If the ID is a negative number we assume that it's a local ID.
+    /// Warning: This is not thread safe.
+    ///
+    final class LocalIDStore {
+        /// Last used ID
+        ///
+        private var currentID: Int64 = 0
+
+        /// Returns true if a given ID is deemed to be local(zero or negative).
+        ///
+        static func isIDLocal(_ id: Int64) -> Bool {
+            id <= 0
+        }
+
+        /// Creates a new and unique local ID for this session.
+        ///
+        func dispatchLocalID() -> Int64 {
+            currentID -= 1
+            return currentID
+        }
+    }
 }
 
 // MARK: Order Helpers
 private extension Order {
-    /// Returns true if the order contains local items.
-    /// Local Items: items with ID `.zero`.
-    func containsLocalItems() -> Bool {
-        items.contains { $0.itemID == .zero }
+    /// Returns true if the order contains any local line (items, shipping, or fees).
+    ///
+    func containsLocalLines() -> Bool {
+        let containsLocalLineItems = items.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.itemID) }
+        let containsLocalShippingLines = shippingLines.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.shippingID) }
+        let containsLocalFeeLines = fees.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.feeID) }
+        return containsLocalLineItems || containsLocalShippingLines || containsLocalFeeLines
+    }
+
+    /// Removes the `itemID`, `total` & `subtotal` values from local items.
+    /// This is needed to:
+    /// 1. Create the item without the local ID, the remote API would fail otherwise.
+    /// 2. Let the remote source calculate the correct item price & total as it can vary depending on the store configuration. EG: `prices_include_tax` is set.
+    ///
+    func sanitizingLocalItems() -> Order {
+        let sanitizedItems: [OrderItem] = items.map { item in
+            guard RemoteOrderSynchronizer.LocalIDStore.isIDLocal(item.itemID) else {
+                return item
+            }
+            return item.copy(itemID: .zero, subtotal: "", total: "")
+        }
+        return copy(items: sanitizedItems)
     }
 }

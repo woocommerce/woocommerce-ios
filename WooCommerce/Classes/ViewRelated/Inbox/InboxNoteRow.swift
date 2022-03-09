@@ -5,10 +5,9 @@ import Yosemite
 struct InboxNoteRow: View {
     let viewModel: InboxNoteRowViewModel
 
-    // Tracks the scale of the view due to accessibility changes.
-    @ScaledMetric private var scale: CGFloat = 1
     @State private var tappedAction: InboxNoteRowActionViewModel?
     @State private var isDismissButtonLoading: Bool = false
+    @State private var surveyCompleted: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -40,7 +39,19 @@ struct InboxNoteRow: View {
                     // HStack with actions and dismiss action.
                     HStack(spacing: Constants.spacingBetweenActions) {
                         ForEach(viewModel.actions) { action in
-                            if action.url != nil {
+                            if viewModel.isSurvey {
+                                Button(action.title) {
+                                    withAnimation(.easeInOut) {
+                                        surveyCompleted = true
+                                    }
+                                    viewModel.markInboxNoteAsActioned(actionID: action.id)
+                                }
+                                .buttonStyle(SecondaryButtonStyle())
+                                .frame(minWidth: Constants.minWidthSurveyButton)
+                                .fixedSize(horizontal: true, vertical: true)
+                                .renderedIf(!surveyCompleted &&  !viewModel.isActioned)
+                            }
+                            else if action.url != nil {
                                 Button(action.title) {
                                     tappedAction = action
                                     viewModel.markInboxNoteAsActioned(actionID: action.id)
@@ -52,6 +63,11 @@ struct InboxNoteRow: View {
                                 Text(action.title)
                             }
                         }
+
+                        Text(Localization.surveyCompleted)
+                            .secondaryBodyStyle()
+                            .renderedIf(surveyCompleted || (viewModel.isSurvey && viewModel.isActioned))
+
                         if isDismissButtonLoading {
                             ActivityIndicator(isAnimating: .constant(true), style: .medium)
                         }
@@ -62,9 +78,10 @@ struct InboxNoteRow: View {
                                     isDismissButtonLoading = false
                                 }
                             }
-                        .foregroundColor(Color(.withColorStudio(.gray, shade: .shade30)))
-                        .font(.body)
-                        .buttonStyle(PlainButtonStyle())
+                            .foregroundColor(Color(.withColorStudio(.gray, shade: .shade30)))
+                            .font(.body)
+                            .buttonStyle(PlainButtonStyle())
+                            .renderedIf(!surveyCompleted || (viewModel.isSurvey && !viewModel.isActioned))
                         }
                         Spacer()
                     }
@@ -120,6 +137,8 @@ private extension InboxNoteRow {
         )
         static let doneButtonWebview = NSLocalizedString("Done",
                                                          comment: "Done navigation button in Inbox Notes webview")
+        static let surveyCompleted = NSLocalizedString("Thank you for your feedback!",
+                                                       comment: "Confirmation message in Inbox Notes after responding to a survey.")
     }
 
     enum Constants {
@@ -129,6 +148,7 @@ private extension InboxNoteRow {
         static let defaultPadding: CGFloat = 16
         static let dividerHeight: CGFloat = 1
         static let dateTextColor: UIColor = .withColorStudio(.gray, shade: .shade30)
+        static let minWidthSurveyButton: CGFloat = 40
     }
 }
 
@@ -173,7 +193,9 @@ struct InboxNoteRow_Previews: PreviewProvider {
                                                          actions: [],
                                                          siteID: 1,
                                                          isPlaceholder: true,
-                                                         isRead: true)
+                                                         isRead: true,
+                                                         isSurvey: false,
+                                                         isActioned: false)
         Group {
             VStack {
                 InboxNoteRow(viewModel: .init(note: note.copy(type: "marketing", dateCreated: today), today: today))
@@ -181,11 +203,14 @@ struct InboxNoteRow_Previews: PreviewProvider {
                 InboxNoteRow(viewModel: .init(note: shortNote.copy(type: "warning").copy(dateCreated: today.addingTimeInterval(-6*3600)), today: today))
                 InboxNoteRow(viewModel: .init(note: shortNote.copy(type: "update").copy(dateCreated: today.addingTimeInterval(-6*86400)), today: today))
                 InboxNoteRow(viewModel: .init(note: shortNote.copy(type: "info").copy(dateCreated: today.addingTimeInterval(-14*86400)), today: today))
-                InboxNoteRow(viewModel: .init(note: shortNote.copy(type: "survey").copy(dateCreated: today.addingTimeInterval(-1.5*86400)), today: today))
+                InboxNoteRow(viewModel: .init(note: shortNote
+                                                .copy(type: "survey")
+                                                .copy(dateCreated: today .addingTimeInterval(-1.5*86400))
+                                                .copy(title: "This is a Survey"), today: today))
             }
                 .preferredColorScheme(.dark)
                 .environment(\.sizeCategory, .extraSmall)
-                .previewLayout(.sizeThatFits)
+                .previewLayout(.fixed(width: 375, height: 1100))
             InboxNoteRow(viewModel: .init(note: note.copy(dateCreated: today.addingTimeInterval(-86400*2)), today: today))
                 .preferredColorScheme(.light)
             InboxNoteRow(viewModel: .init(note: note.copy(dateCreated: today.addingTimeInterval(-6*60)), today: today))

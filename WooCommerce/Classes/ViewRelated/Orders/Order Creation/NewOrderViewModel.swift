@@ -166,10 +166,11 @@ final class NewOrderViewModel: ObservableObject {
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
         self.orderSynchronizer = enableRemoteSync ? RemoteOrderSynchronizer(siteID: siteID, stores: stores)
-                                                  : LocalOrderSynchronizer(siteID: siteID, stores: stores)
+                                                  : LocalOrderSynchronizer(siteID: siteID, stores: stores, currencySettings: currencySettings)
 
         configureDisabledState()
         configureNavigationTrailingItem()
+        configureSyncErrors()
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
         configureCustomerDataViewModel()
@@ -194,7 +195,8 @@ final class NewOrderViewModel: ObservableObject {
     /// Creates a view model for the `ProductRow` corresponding to an order item.
     ///
     func createProductRowViewModel(for item: OrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
-        guard let product = allProducts.first(where: { $0.productID == item.productID }) else {
+        guard item.quantity > 0, // Don't render any item with `.zero` quantity.
+              let product = allProducts.first(where: { $0.productID == item.productID }) else {
             return nil
         }
 
@@ -245,7 +247,7 @@ final class NewOrderViewModel: ObservableObject {
                 self.onOrderCreated(newOrder)
                 self.trackCreateOrderSuccess()
             case .failure(let error):
-                self.notice = NoticeFactory.createOrderCreationErrorNotice()
+                self.notice = NoticeFactory.createOrderErrorNotice()
                 self.trackCreateOrderFailure(error: error)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
@@ -351,6 +353,9 @@ extension NewOrderViewModel {
         let feesBaseAmountForPercentage: Decimal
         let feesTotal: String
 
+        let shouldShowTaxes: Bool
+        let taxesTotal: String
+
         /// Whether payment data is being reloaded (during remote sync)
         ///
         let isLoading: Bool
@@ -365,6 +370,8 @@ extension NewOrderViewModel {
              shouldShowFees: Bool = false,
              feesBaseAmountForPercentage: Decimal = 0,
              feesTotal: String = "",
+             shouldShowTaxes: Bool = false,
+             taxesTotal: String = "",
              orderTotal: String = "",
              isLoading: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
@@ -377,6 +384,8 @@ extension NewOrderViewModel {
             self.shouldShowFees = shouldShowFees
             self.feesBaseAmountForPercentage = feesBaseAmountForPercentage
             self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? ""
+            self.shouldShowTaxes = shouldShowTaxes
+            self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? ""
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? ""
             self.isLoading = isLoading
             self.shippingLineViewModel = ShippingLineDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
@@ -422,6 +431,23 @@ private extension NewOrderViewModel {
                 return .create
             }
             .assign(to: &$navigationTrailingItem)
+    }
+
+    /// Updates the notice based on the `orderSynchronizer` sync state.
+    ///
+    func configureSyncErrors() {
+        orderSynchronizer.statePublisher
+            .map { [weak self] state in
+                guard let self = self else { return nil }
+                switch state {
+                case .error(let error):
+                    DDLogError("⛔️ Error syncing new order remotely: \(error)")
+                    return NoticeFactory.syncOrderErrorNotice(with: self.orderSynchronizer)
+                default:
+                    return nil
+                }
+            }
+            .assign(to: &$notice)
     }
 
     /// Updates status badge viewmodel based on status order property.
@@ -489,28 +515,9 @@ private extension NewOrderViewModel {
                     return PaymentDataViewModel()
                 }
 
-                let itemsTotal = order.items
-                    .map { $0.subtotal }
-                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
-                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
-
-                let shippingTotal = order.shippingLines
-                    .map { $0.total }
-                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
-                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
+                let orderTotals = OrderTotalsCalculator(for: order, using: self.currencyFormatter)
 
                 let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
-
-                // TODO-6236: move totals calculation to LocalOrderSynchronizer, add tax to feesBaseAmount
-                let feesBaseAmountForPercentage = itemsTotal.adding(shippingTotal)
-
-                let feesTotal = order.fees
-                    .map { $0.total }
-                    .compactMap { self.currencyFormatter.convertToDecimal(from: $0) }
-                    .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
-
-
-                let orderTotal = feesBaseAmountForPercentage.adding(feesTotal)
 
                 let isDataSyncing: Bool = {
                     switch state {
@@ -521,14 +528,16 @@ private extension NewOrderViewModel {
                     }
                 }()
 
-                return PaymentDataViewModel(itemsTotal: itemsTotal.stringValue,
+                return PaymentDataViewModel(itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.isNotEmpty,
-                                            shippingTotal: shippingTotal.stringValue,
+                                            shippingTotal: order.shippingTotal,
                                             shippingMethodTitle: shippingMethodTitle,
                                             shouldShowFees: order.fees.isNotEmpty,
-                                            feesBaseAmountForPercentage: feesBaseAmountForPercentage as Decimal,
-                                            feesTotal: feesTotal.stringValue,
-                                            orderTotal: orderTotal.stringValue,
+                                            feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
+                                            feesTotal: orderTotals.feesTotal.stringValue,
+                                            shouldShowTaxes: order.totalTax.isNotEmpty,
+                                            taxesTotal: order.totalTax,
+                                            orderTotal: order.total,
                                             isLoading: isDataSyncing,
                                             saveShippingLineClosure: self.saveShippingLine,
                                             saveFeeLineClosure: self.saveFeeLine,
@@ -682,14 +691,25 @@ extension NewOrderViewModel {
     enum NoticeFactory {
         /// Returns a default order creation error notice.
         ///
-        static func createOrderCreationErrorNotice() -> Notice {
-            Notice(title: Localization.errorMessage, feedbackType: .error)
+        static func createOrderErrorNotice() -> Notice {
+            Notice(title: Localization.errorMessageOrderCreation, feedbackType: .error)
+        }
+
+        /// Returns an order sync error notice.
+        ///
+        static func syncOrderErrorNotice(with orderSynchronizer: OrderSynchronizer) -> Notice {
+            Notice(title: Localization.errorMessageOrderSync, feedbackType: .error, actionTitle: Localization.retryOrderSync) {
+                orderSynchronizer.retryTrigger.send()
+            }
         }
     }
 }
 
 private extension NewOrderViewModel {
     enum Localization {
-        static let errorMessage = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
+        static let errorMessageOrderCreation = NSLocalizedString("Unable to create new order", comment: "Notice displayed when order creation fails")
+        static let errorMessageOrderSync = NSLocalizedString("Unable to load taxes for order",
+                                                             comment: "Notice displayed when taxes cannot be synced for new order")
+        static let retryOrderSync = NSLocalizedString("Retry", comment: "Action button to retry syncing the draft order")
     }
 }

@@ -132,7 +132,7 @@ extension FilterProductListViewModel.ProductListFilter {
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.stockStatus)
         case .productStatus:
-            let options: [ProductStatus?] = [nil, .publish, .draft, .pending]
+            let options: [ProductStatus?] = [nil, .published, .draft, .pending]
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.productStatus)

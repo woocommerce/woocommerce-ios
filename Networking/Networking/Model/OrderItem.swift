@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents an Order's Item Entity.
 ///
-public struct OrderItem: Decodable, Equatable, Hashable, GeneratedFakeable, GeneratedCopiable {
+public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, GeneratedCopiable {
     public let itemID: Int64
     public let name: String
     public let productID: Int64
@@ -113,6 +113,28 @@ public struct OrderItem: Decodable, Equatable, Hashable, GeneratedFakeable, Gene
                   total: total,
                   totalTax: totalTax,
                   attributes: attributes)
+    }
+
+    /// Encodes an order item.
+    ///
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(itemID, forKey: .itemID)
+
+        let parentID = variationID != 0 ? variationID : productID
+        try container.encode(parentID, forKey: .productID)
+
+        let nonDecimalQuantity = (quantity as NSDecimalNumber).int64Value
+        try container.encode(nonDecimalQuantity, forKey: .quantity)
+
+        if !subtotal.isEmpty {
+            try container.encode(subtotal, forKey: .subtotal)
+        }
+
+        if !total.isEmpty {
+            try container.encode(total, forKey: .total)
+        }
     }
 }
 

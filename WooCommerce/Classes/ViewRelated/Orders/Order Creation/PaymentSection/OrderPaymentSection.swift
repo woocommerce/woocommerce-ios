@@ -47,11 +47,17 @@ struct OrderPaymentSection: View {
                     }
             }
 
+            if viewModel.shouldShowTaxes {
+                TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))
+            }
+
             TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
 
-            Text(Localization.taxesInfo)
-                .footnoteStyle()
-                .padding([.horizontal, .bottom])
+            if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreationRemoteSynchronizer) {
+                Text(Localization.taxesInfo)
+                    .footnoteStyle()
+                    .padding([.horizontal, .bottom])
+            }
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground))
@@ -100,6 +106,7 @@ private extension OrderPaymentSection {
         static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
         static let addFees = NSLocalizedString("Add Fees", comment: "Title text of the button that adds fees when creating a new order")
         static let feesTotal = NSLocalizedString("Fees", comment: "Label for the row showing the cost of fees in the order")
+        static let taxesTotal = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
     }
 }
 

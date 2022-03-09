@@ -1,0 +1,5 @@
+Abbiamo aggiornato la nostra funzionalità sperimentale di creazione degli ordini. I prodotti variabili ora mostrano l'elenco dei loro attributi.
+
+Abbiamo anche aggiunto un'altra funzionalità sperimentale: la gestione dei codici promozionali. Vai alla scheda Leggi tutto, alle impostazioni e a Impostazioni delle funzionalità sperimentale per attivarla. Riceviamo volentieri il tuo feedback sull'app, in particolare sulle nuove funzionalità su cui stiamo lavorando e a cui diamo l'accesso in anteprima.
+
+Un grazie speciale va a chrisKns, utente di GitHub, per aver contribuito a migliorare questa versione. ❤

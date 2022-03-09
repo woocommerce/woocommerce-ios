@@ -132,7 +132,6 @@ final class OrdersRootViewController: UIViewController {
         // workaround to get rid of the extra space at the bottom when embedded in split view
         orderDetailsViewController.extendedLayoutIncludesOpaqueBars = true
         let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
-        
         splitViewController?.showDetailViewController(orderDetailsNavigationController, sender: nil)
     }
 }

@@ -21,6 +21,7 @@ class WooNavigationController: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
         super.delegate = navigationDelegate
+        extendedLayoutIncludesOpaqueBars = true
     }
 
     /// Sets the status bar of the pushed view to white.
@@ -56,6 +57,7 @@ private class WooNavigationControllerDelegate: NSObject, UINavigationControllerD
     /// Configures the back button for the managed `ViewController` and forwards the event to the children delegate.
     ///
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        viewController.extendedLayoutIncludesOpaqueBars = true
         currentController = viewController
         configureOfflineBanner(for: viewController)
         configureBackButton(for: viewController)

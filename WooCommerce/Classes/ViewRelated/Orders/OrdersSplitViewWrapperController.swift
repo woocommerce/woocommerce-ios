@@ -36,10 +36,6 @@ final class OrdersSplitViewWrapperController: UIViewController {
         let loaderViewController = OrderLoaderViewController(note: note, orderID: Int64(orderID), siteID: Int64(siteID))
         let loaderNavigationController = WooNavigationController(rootViewController: loaderViewController)
 
-        // workaround to get rid of the extra space at the bottom when embedded in split view
-        loaderViewController.extendedLayoutIncludesOpaqueBars = true
-        loaderNavigationController.extendedLayoutIncludesOpaqueBars = true
-
         ordersSplitViewController.showDetailViewController(loaderNavigationController, sender: nil)
     }
 }
@@ -52,9 +48,7 @@ private extension OrdersSplitViewWrapperController {
 
         // workaround to remove extra space at the bottom when embedded in spit view
         let ghostTableViewController = GhostTableViewController()
-        ghostTableViewController.extendedLayoutIncludesOpaqueBars = true
         let ghostTableViewNavigationController = WooNavigationController(rootViewController: ghostTableViewController)
-        ghostTableViewNavigationController.extendedLayoutIncludesOpaqueBars = true
 
         ordersSplitViewController.viewControllers = [ordersNavigationController, ghostTableViewNavigationController]
     }

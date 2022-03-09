@@ -102,7 +102,57 @@ class NewOrderViewModelTests: XCTestCase {
         viewModel.createOrder()
 
         // Then
-        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.createOrderCreationErrorNotice())
+        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.createOrderErrorNotice())
+    }
+
+    func test_view_model_fires_error_notice_when_order_sync_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, stores: stores)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
+
+        // When
+        waitForExpectation { expectation in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createOrder(_, _, onCompletion):
+                    onCompletion(.failure(NSError(domain: "Error", code: 0)))
+                    expectation.fulfill()
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            // When remote sync is triggered
+            viewModel.saveShippingLine(ShippingLine.fake())
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.notice, NewOrderViewModel.NoticeFactory.syncOrderErrorNotice(with: synchronizer))
+    }
+
+    func test_view_model_clears_error_notice_when_order_is_syncing() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores, enableRemoteSync: true)
+        viewModel.notice = NewOrderViewModel.NoticeFactory.createOrderErrorNotice()
+
+        // When
+        let notice: Notice? = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder:
+                    promise(viewModel.notice)
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+            // Remote sync is triggered
+            viewModel.saveShippingLine(ShippingLine.fake())
+        }
+
+        // Then
+        XCTAssertNil(notice)
     }
 
     func test_view_model_loads_synced_pending_order_status() {

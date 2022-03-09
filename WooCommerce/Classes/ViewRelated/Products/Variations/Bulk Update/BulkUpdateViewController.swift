@@ -19,9 +19,20 @@ final class BulkUpdateViewController: UIViewController {
 
     private var sections: [Section] = []
 
-    init(viewModel: BulkUpdateViewModel) {
+    /// Dedicated `NoticePresenter` because this controller is modally presented we use this here instead of ServiceLocator.noticePresenter
+    ///
+    private lazy var noticePresenter: NoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
+    init(viewModel: BulkUpdateViewModel, noticePresenter: NoticePresenter? = nil) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        if let noticePresenter = noticePresenter {
+            self.noticePresenter = noticePresenter
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -68,10 +79,11 @@ final class BulkUpdateViewController: UIViewController {
                 self.tableView.reloadData()
             case .error:
                 self.removeGhostContent()
+                self.displaySyncingError()
             }
         }.store(in: &subscriptions)
 
-        viewModel.activate()
+        viewModel.syncVariations()
     }
 
     /// Configures the ghost view: registers Nibs and table view settings
@@ -132,6 +144,18 @@ final class BulkUpdateViewController: UIViewController {
     ///
     @objc private func cancelButtonTapped() {
         viewModel.handleTapCancel()
+    }
+
+    /// Displays the error `Notice`.
+    ///
+    private func displaySyncingError() {
+        let title = Localization.noticeUnableToSyncVariations
+        let actionTitle = Localization.noticeRetryAction
+        let notice = Notice(title: title, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.viewModel.syncVariations()
+        }
+
+        noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -239,6 +263,9 @@ private extension BulkUpdateViewController {
     enum Localization {
         static let cancelButtonTitle = NSLocalizedString("Cancel", comment: "Button title that closes the presented screen")
         static let screenTitle = NSLocalizedString("Bulk Update", comment: "Title that appears on top of the bulk update of product variations screen")
+        static let noticeUnableToSyncVariations = NSLocalizedString("Unable to retrieve variations",
+                                                                    comment: "Unable to retrieve variations for bulk update screen")
+        static let noticeRetryAction = NSLocalizedString("Retry", comment: "Retry Action")
     }
 }
 

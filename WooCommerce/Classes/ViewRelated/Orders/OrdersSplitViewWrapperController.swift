@@ -51,16 +51,20 @@ private extension OrdersSplitViewWrapperController {
         ordersNavigationController.viewControllers = [ordersViewController]
 
         // workaround to remove extra space at the bottom when embedded in spit view
-        let ghostTableViewController = GhostTableViewController()
-        let ghostTableViewNavigationController = WooNavigationController(rootViewController: ghostTableViewController)
+        let emptyStateViewController = EmptyStateViewController(style: .basic)
+        let config = EmptyStateViewController.Config.simple(
+            message: .init(string: Localization.emptyOrderDetails),
+            image: .emptySearchResultsImage
+        )
+        emptyStateViewController.configure(config)
 
-        ordersSplitViewController.viewControllers = [ordersNavigationController, ghostTableViewNavigationController]
+        ordersSplitViewController.viewControllers = [ordersNavigationController, emptyStateViewController]
     }
 
     /// Set up properties for `self` as a root tab bar controller.
     ///
     func configureTabBarItem() {
-        tabBarItem.title = NSLocalizedString("Orders", comment: "The title of the Orders tab.")
+        tabBarItem.title = Localization.ordersTabTitle
         tabBarItem.image = .pagesImage
         tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
     }
@@ -70,5 +74,13 @@ private extension OrdersSplitViewWrapperController {
         addChild(ordersSplitViewController)
         view.addSubview(contentView)
         ordersSplitViewController.didMove(toParent: self)
+    }
+}
+
+extension OrdersSplitViewWrapperController {
+    private enum Localization {
+        static let ordersTabTitle = NSLocalizedString("Orders", comment: "The title of the Orders tab.")
+        static let emptyOrderDetails = NSLocalizedString("No order selected",
+                                                         comment: "Message on the detail view of the Orders tab before any order is selected")
     }
 }

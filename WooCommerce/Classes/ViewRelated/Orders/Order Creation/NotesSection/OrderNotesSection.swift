@@ -20,8 +20,22 @@ private struct OrderNotesSectionContent: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     var body: some View {
-        Text("Empty")
+        VStack(alignment: .leading, spacing: .zero) {
+                    HStack(alignment: .top) {
+                        Text(Localization.notes)
+                            .headlineStyle()
+                    }.padding([.leading, .top, .trailing])
+
+                    if viewModel.notes.isEmpty {
+                    } else {
+                    }
+                }
+                .padding(.horizontal, insets: safeAreaInsets)
+                .background(Color(.listForeground))
+                .addingTopAndBottomDividers()
     }
+
+
 }
 
 // MARK: Constants

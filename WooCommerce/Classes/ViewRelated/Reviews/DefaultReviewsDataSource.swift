@@ -74,6 +74,16 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
         return notificationsResultsController.fetchedObjects
     }
 
+    /// Identifiers of the Products mentioned in the reviews.
+    /// Guaranteed to be uniqued (does not contain duplicates)
+    ///
+    var reviewsProductsIDs: [Int64] {
+        return reviewsResultsController
+            .fetchedObjects
+            .map { return $0.productID }
+            .uniqued()
+    }
+
     var reviewCount: Int {
         return reviewsResultsController.numberOfObjects
     }

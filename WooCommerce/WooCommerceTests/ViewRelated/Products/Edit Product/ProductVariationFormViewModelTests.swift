@@ -9,7 +9,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
 
     func test_edit_product_variation_form_with_published_status_can_view_product_in_store() {
         // Given
-        let product = ProductVariation.fake().copy(status: ProductStatus.published)
+        let product = ProductVariation.fake().copy(status: ProductStatus.publish)
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // When
@@ -21,7 +21,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
 
     func test_add_product_variation_form_with_published_status_cannot_view_product_in_store() {
         // Given
-        let product = ProductVariation.fake().copy(status: ProductStatus.published)
+        let product = ProductVariation.fake().copy(status: ProductStatus.publish)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // When
@@ -59,7 +59,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
 
     func test_edit_product_variation_form_with_published_status_can_share_product() {
         // Given
-        let product = ProductVariation.fake().copy(status: ProductStatus.published)
+        let product = ProductVariation.fake().copy(status: ProductStatus.publish)
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // When
@@ -71,7 +71,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
 
     func test_add_product_variation_form_with_published_status_cannot_share_product() {
         // Given
-        let product = ProductVariation.fake().copy(status: ProductStatus.published)
+        let product = ProductVariation.fake().copy(status: ProductStatus.publish)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // When

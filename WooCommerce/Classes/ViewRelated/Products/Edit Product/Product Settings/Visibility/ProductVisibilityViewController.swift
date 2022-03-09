@@ -81,7 +81,7 @@ final class ProductVisibilityViewController: UIViewController {
         case .private:
             return .privateStatus
         default:
-            return .published
+            return .publish
         }
     }
 }

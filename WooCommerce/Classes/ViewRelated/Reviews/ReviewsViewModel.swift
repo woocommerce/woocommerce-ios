@@ -50,7 +50,6 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
     private let siteID: Int64
 
     private let data: ReviewsDataSource
-    private let stores: StoresManager
 
     var isEmpty: Bool {
         return data.isEmpty
@@ -82,10 +81,9 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
     ///
     var hasErrorLoadingData: Bool = false
 
-    init(siteID: Int64, data: ReviewsDataSource, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64, data: ReviewsDataSource) {
         self.siteID = siteID
         self.data = data
-        self.stores = stores
     }
 
     func displayPlaceholderReviews(tableView: UITableView) {
@@ -149,11 +147,13 @@ extension ReviewsViewModel {
         let group = DispatchGroup()
 
         group.enter()
-        synchronizeAllReviews(pageNumber: pageNumber, pageSize: pageSize) { [weak self] reviews in
-            let productIDs = reviews.map { $0.productID }.uniqued()
-            self?.synchronizeProductsReviewed(reviewsProductIDs: productIDs) {
-                group.leave()
-            }
+        synchronizeAllReviews(pageNumber: pageNumber, pageSize: pageSize) {
+            group.leave()
+        }
+
+        group.enter()
+        synchronizeProductsReviewed {
+            group.leave()
         }
 
         group.enter()
@@ -162,7 +162,9 @@ extension ReviewsViewModel {
         }
 
         group.notify(queue: .main) {
-            onCompletion?()
+            if let completionBlock = onCompletion {
+                completionBlock()
+            }
         }
     }
 
@@ -170,27 +172,28 @@ extension ReviewsViewModel {
     ///
     private func synchronizeAllReviews(pageNumber: Int,
                                        pageSize: Int,
-                                       onCompletion: (([ProductReview]) -> Void)? = nil) {
-        let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
-            switch result {
-            case .failure(let error):
+                                       onCompletion: (() -> Void)? = nil) {
+        let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
+            if let error = error {
                 DDLogError("⛔️ Error synchronizing reviews: \(error)")
                 ServiceLocator.analytics.track(.reviewsListLoadFailed,
                                                withError: error)
                 self?.hasErrorLoadingData = true
-                onCompletion?([])
-            case .success(let reviews):
+            } else {
                 let loadingMore = pageNumber != Settings.firstPage
                 ServiceLocator.analytics.track(.reviewsListLoaded,
                                                withProperties: ["is_loading_more": loadingMore])
-                onCompletion?(reviews)
             }
+
+            onCompletion?()
         }
 
-        stores.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
-    private func synchronizeProductsReviewed(reviewsProductIDs: [Int64], onCompletion: @escaping () -> Void) {
+    private func synchronizeProductsReviewed(onCompletion: @escaping () -> Void) {
+        let reviewsProductIDs = data.reviewsProductsIDs
+
         let action = ProductAction.retrieveProducts(siteID: siteID, productIDs: reviewsProductIDs) { [weak self] result in
             switch result {
             case .failure(let error):
@@ -205,7 +208,7 @@ extension ReviewsViewModel {
             onCompletion()
         }
 
-        stores.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
@@ -224,7 +227,7 @@ extension ReviewsViewModel {
             onCompletion?()
         }
 
-        stores.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -235,7 +238,7 @@ private extension ReviewsViewModel {
         let identifiers = notes.map { $0.noteID }
         let action = NotificationAction.updateMultipleReadStatus(noteIDs: identifiers, read: true, onCompletion: onCompletion)
 
-        stores.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

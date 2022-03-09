@@ -149,7 +149,7 @@ extension ProductVariationFormViewModel {
     }
 
     func canViewProductInStore() -> Bool {
-        originalProductVariation.productVariation.status == .published && formType != .add
+        originalProductVariation.productVariation.status == .publish && formType != .add
     }
 
     func canShareProduct() -> Bool {
@@ -258,7 +258,7 @@ extension ProductVariationFormViewModel {
 
     func updateStatus(_ isEnabled: Bool) {
         ServiceLocator.analytics.track(.productVariationDetailViewStatusSwitchTapped)
-        let status: ProductStatus = isEnabled ? .published: .privateStatus
+        let status: ProductStatus = isEnabled ? .publish: .privateStatus
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(status: status),
                                                          allAttributes: allAttributes,
                                                          parentProductSKU: parentProductSKU)

@@ -61,7 +61,7 @@ private extension ProductVariationMapperTests {
                                 dateModified: dateFromGMT("2020-07-21T08:35:47"),
                                 dateOnSaleStart: nil,
                                 dateOnSaleEnd: nil,
-                                status: .published,
+                                status: .publish,
                                 description: "<p>Nutty chocolate marble, 99% and organic.</p>\n",
                                 sku: "87%-strawberry-marble",
                                 price: "14.99",

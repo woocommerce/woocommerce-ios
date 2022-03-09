@@ -29,12 +29,6 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
     /// Indicate if the note was actioned or not (the user did an action, so the note will be considered as read).
     let isRead: Bool
 
-    /// Indicate if the note is a survey or not.
-    let isSurvey: Bool
-
-    /// Indicate if the note is actioned or not.
-    let isActioned: Bool
-
     init(note: InboxNote,
          today: Date = .init(),
          locale: Locale = .current,
@@ -62,10 +56,7 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
                   siteID: note.siteID,
                   stores: stores,
                   isPlaceholder: false,
-                  isRead: note.isRead,
-                  isSurvey: note.type == "survey",
-                  isActioned: note.status == "actioned"
-        )
+                  isRead: note.isRead)
     }
 
     init(id: Int64,
@@ -76,9 +67,7 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          isPlaceholder: Bool,
-         isRead: Bool,
-         isSurvey: Bool,
-         isActioned: Bool) {
+         isRead: Bool) {
         self.id = id
         self.date = date
         self.title = title
@@ -88,8 +77,6 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
         self.stores = stores
         self.isPlaceholder = isPlaceholder
         self.isRead = isRead
-        self.isSurvey = isSurvey
-        self.isActioned = isActioned
     }
 
     static func == (lhs: InboxNoteRowViewModel, rhs: InboxNoteRowViewModel) -> Bool {

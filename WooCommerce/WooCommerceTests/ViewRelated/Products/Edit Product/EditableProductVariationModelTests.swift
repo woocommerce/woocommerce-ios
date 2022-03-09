@@ -56,7 +56,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
     func test_a_variation_is_enabled_with_publish_status() {
         // Arrange
-        let variation = MockProductVariation().productVariation().copy(status: .published)
+        let variation = MockProductVariation().productVariation().copy(status: .publish)
 
         // Action
         let model = EditableProductVariationModel(productVariation: variation)
@@ -91,7 +91,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
     func test_a_variation_is_enabled_and_missing_price() {
         // Arrange
-        let variation = MockProductVariation().productVariation().copy(status: .published, regularPrice: nil)
+        let variation = MockProductVariation().productVariation().copy(status: .publish, regularPrice: nil)
 
         // Action
         let model = EditableProductVariationModel(productVariation: variation)

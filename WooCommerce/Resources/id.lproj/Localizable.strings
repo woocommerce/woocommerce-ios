@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-02 11:54:03+0000 */
+/* Translation-Revision-Date: 2022-02-15 18:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -38,10 +38,10 @@
 "%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ tentang penerimaan pembayaran dengan perangkat seluler dan pemesanan pembaca kartu";
 
 /* Combined rule for a coupon. Reads like: 2 Products and 1 Category */
-"%1$@ and %2$@" = "%1$@ dan %2$@";
+"%1$@ and %2$@" = "%1$@ and %2$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
-"%1$@ excl. %2$@" = "%1$@ tidak termasuk %2$@";
+"%1$@ excl. %2$@" = "%1$@ excl. %2$@";
 
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
@@ -88,16 +88,16 @@
 "%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
 
 /* The number of category allowed for a coupon in plural form. Reads like: 10 Categories */
-"%1$d Categories" = "%1$d Kategori";
+"%1$d Categories" = "%1$d Categories";
 
 /* The number of category allowed for a coupon in singular form. Reads like: 1 Category */
-"%1$d Category" = "%1$d Kategori";
+"%1$d Category" = "%1$d Category";
 
 /* The number of products allowed for a coupon in singular form. Reads like: 1 Product */
-"%1$d Product" = "%1$d Produk";
+"%1$d Product" = "%1$d Product";
 
 /* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
-"%1$d Products" = "%1$d Produk";
+"%1$d Products" = "%1$d Products";
 
 /* Singular format of number of business day in Shipping Labels > Carrier and Rates */
 "%1$d business day" = "%1$d hari kerja";
@@ -141,19 +141,19 @@
 "%@ via %@" = "%1$@ melalui %2$@";
 
 /* No comment provided by engineer. */
-"%d Categories excl. %d Products" = "%1$d Kategori tidak termasuk %2$d Produk";
+"%d Categories excl. %d Products" = "%d Categories excl. %d Products";
 
 /* No comment provided by engineer. */
-"%d Product" = "%d Produk";
+"%d Product" = "%d Product";
 
 /* No comment provided by engineer. */
-"%d Products" = "%d Produk";
+"%d Products" = "%d Products";
 
 /* No comment provided by engineer. */
-"%d Products and %d Categories" = "%1$d Produk dan %2$d Kategori";
+"%d Products and %d Categories" = "%d Products and %d Categories";
 
 /* No comment provided by engineer. */
-"%d Products excl. %d Category" = "%1$d Produk tidak termasuk %2$d Kategori";
+"%d Products excl. %d Category" = "%d Products excl. %d Category";
 
 /* For example: `1 item` in Aggregated Product List */
 "%d item" = "%d barang";
@@ -325,7 +325,7 @@
 "Add Coupon" = "Tambah Kupon";
 
 /* Title text of the button that adds customer data when creating a new order */
-"Add Customer Details" = "Tambahkan Detail Pelanggan";
+"Add Customer Details" = "Add Customer Details";
 
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "Tambahkan Catatan Pelanggan";
@@ -334,7 +334,7 @@
 "Add Downloadable File" = "Tambahkan File Dapat Diunduh";
 
 /* Title text of the button that adds fees when creating a new order */
-"Add Fees" = "Tambahkan Biaya";
+"Add Fees" = "Add Fees";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "Tambahkan File";
@@ -367,7 +367,7 @@
 
 /* Title for the Shipping Line screen during order creation
    Title text of the button that adds shipping line when creating a new order */
-"Add Shipping" = "Tambahkan Pengiriman";
+"Add Shipping" = "Add Shipping";
 
 /* Title for the button to add the Shipping Address in Order Details */
 "Add Shipping Address" = "Tambahkan Alamat Pengiriman";
@@ -485,7 +485,7 @@
 "All Products" = "Semua Produk";
 
 /* Value for the limit usage to X items row in Coupon Usage Details screen when no limit is set */
-"All Qualifying in Cart" = "Semua Item yang Memenuhi Syarat di Keranjang";
+"All Qualifying in Cart" = "All Qualifying in Cart";
 
 /* Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow */
 "All available packages have been activated" = "Semua paket yang tersedia telah diaktifkan";
@@ -494,13 +494,13 @@
 "All done" = "Semua selesai";
 
 /* Exception rule for a coupon. Reads like: All excl. 2 Products */
-"All excl. %1$@" = "Semua tidak termasuk %1$@";
+"All excl. %1$@" = "All excl. %1$@";
 
 /* No comment provided by engineer. */
-"All excl. %d Categories" = "Semua tidak termasuk %d Kategori";
+"All excl. %d Categories" = "All excl. %d Categories";
 
 /* No comment provided by engineer. */
-"All excl. %d Products" = "Semua tidak termasuk %d Produk";
+"All excl. %d Products" = "All excl. %d Products";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Semua ulasan ditandai sudah dibaca";
@@ -518,7 +518,7 @@
 "Allow, but notify customer" = "Izinkan, tetapi beri tahu pelanggan";
 
 /* Title for the allowed email row in coupon usage details screen. */
-"Allowed Emails" = "Email yang Diizinkan";
+"Allowed Emails" = "Allowed Emails";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Hampir selesai! Masukkan kode verifikasi dari aplikasi pengautentikasi.";
@@ -528,7 +528,7 @@
 
 /* Title for the amount field on the Shipping Line Details screen during order creation
    Title of the Amount label on Coupon Details screen */
-"Amount" = "Jumlah";
+"Amount" = "Amount";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "Jumlah yang Dapat Dikembalikan Dananya";
@@ -575,16 +575,16 @@
 "Apply" = "Terapkan";
 
 /* Message to share the coupon code if it is applicable to all products. Reads like: Apply 10% off to all products with the promo code “20OFF”. */
-"Apply %1$@ off to all products with the promo code “%2$@”." = "Terapkan diskon %1$@ untuk semua produk dengan kode promo “%2$@”.";
+"Apply %1$@ off to all products with the promo code “%2$@”." = "Apply %1$@ off to all products with the promo code “%2$@”.";
 
 /* Message to share the coupon code if it is applicable to some products. Reads like: Apply 10% off to some products with the promo code “20OFF”. */
-"Apply %1$@ off to some products with the promo code “%2$@”." = "Terapkan diskon %1$@ untuk beberapa produk dengan kode promo “%2$@”.";
+"Apply %1$@ off to some products with the promo code “%2$@”." = "Apply %1$@ off to some products with the promo code “%2$@”.";
 
 /* No comment provided by engineer. */
-"Apply %@ off to all products with the promo code “%@”." = "Terapkan diskon %1$@ untuk semua produk dengan kode promo “%2$@”.";
+"Apply %@ off to all products with the promo code “%@”." = "Apply %@ off to all products with the promo code “%@”.";
 
 /* No comment provided by engineer. */
-"Apply %@ off to some products with the promo code “%@”." = "Terapkan diskon %1$@ untuk beberapa produk dengan kode promo “%2$@”.";
+"Apply %@ off to some products with the promo code “%@”." = "Apply %@ off to some products with the promo code “%@”.";
 
 /* Title of the Apply To row in Coupon Details screen */
 "Apply To" = "Terapkan Untuk";
@@ -865,7 +865,7 @@
 "Collect payment from %1$@" = "Terima pembayaran dari %1$@";
 
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
-"Come back soon for more tips and insights on growing your store" = "Segera kembali untuk belajar lebih banyak tips dan wawasan untuk mengembangkan toko Anda";
+"Come back soon for more tips and insights on growing your store" = "Come back soon for more tips and insights on growing your store";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -881,7 +881,7 @@
 "Conflicting payment plugins detected" = "Konflik plugin pembayaran terdeteksi";
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
-"Congrats, you’ve read everything!" = "Selamat, Anda telah membaca semuanya!";
+"Congrats, you’ve read everything!" = "Congrats, you’ve read everything!";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "Selamat! Pembaca Anda menggunakan versi perangkat lunak terbaru";
@@ -985,7 +985,7 @@
 "Copy" = "Salin";
 
 /* Action title for copying coupon code from the Coupon Details screen */
-"Copy Code" = "Salin Kode";
+"Copy Code" = "Copy Code";
 
 /* Copy tracking number button title */
 "Copy Tracking Number" = "Menyalin Nomor Pelacakan";
@@ -1046,10 +1046,10 @@
 "Coupon Expiry Date" = "Tanggal Kedaluwarsa Kupon";
 
 /* Cell title on beta features screen to enable coupon management */
-"Coupon Management" = "Manajemen Kupon";
+"Coupon Management" = "Coupon Management";
 
 /* Notice message displayed when a coupon code is copied from the Coupon Details screen */
-"Coupon copied" = "Kupon disalin";
+"Coupon copied" = "Coupon copied";
 
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
@@ -1136,7 +1136,7 @@
 "Customer" = "Pelanggan";
 
 /* Title for the Shipping Address Form for Customer Details */
-"Customer Details" = "Detail Pelanggan";
+"Customer Details" = "Customer Details";
 
 /* Customer note row title
    Customer note section title - Title for the edit customer provided note screen - Title text of the row that holds the order note when creating a simple payment */
@@ -1229,7 +1229,7 @@
 "Discount" = "Diskon";
 
 /* Title of the Discounted Orders label on Coupon Details screen */
-"Discounted Orders" = "Pesanan yang Didiskon";
+"Discounted Orders" = "Discounted Orders";
 
 /* A unit test string for a button title
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in inbox note row. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view */
@@ -1334,13 +1334,13 @@
 "Edit Attributes" = "Sunting Atribut";
 
 /* Accessibility label for the button to edit customer details on the New Order screen */
-"Edit Customer Details" = "Sunting Detail Pelanggan";
+"Edit Customer Details" = "Edit Customer Details";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Sunting Produk";
 
 /* Accessibility label for the button to edit order status on the New Order screen */
-"Edit Status" = "Sunting Status";
+"Edit Status" = "Edit Status";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Edit and add new products from anywhere" = "Edit dan tambahkan produk baru dari mana saja";
@@ -1496,7 +1496,7 @@
 "Everyone loves a deal" = "Semua orang suka promo";
 
 /* Title for the exclude sale items row in coupon usage details screen. */
-"Exclude Sale Items" = "Kecualikan Barang Obral";
+"Exclude Sale Items" = "Exclude Sale Items";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -1839,7 +1839,7 @@
 
 /* Title for the screen that shows inbox notes.
    Title of the Inbox menu in the hub menu */
-"Inbox" = "Kotak Masuk";
+"Inbox" = "Inbox";
 
 /* Describes a standard *.wordpress.com site domain */
 "Included with Site" = "Disertakan dengan Situs";
@@ -1854,7 +1854,7 @@
 "Increase sales with upsells and cross-sells" = "Tingkatkan penjualan dengan upsell dan cross-sell";
 
 /* Title for the individual use only row in coupon usage details screen. */
-"Individual Use Only" = "Hanya untuk penggunaan individu";
+"Individual Use Only" = "Individual Use Only";
 
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "Item yang dikirim terpisah";
@@ -1894,7 +1894,7 @@
 "Insurance (up to %1$@)" = "Asuransi (hingga %1$@)";
 
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
-"Invalid Email Address" = "Alamat Email Tidak Valid";
+"Invalid Email Address" = "Invalid Email Address";
 
 /* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
 "Invalid ITN format" = "Format ITN tidak valid";
@@ -2038,7 +2038,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Letter (8.5 x 11 in)" = "Letter (8,5 x 11 inci)";
 
 /* Title for the limit usage to X items row in coupon usage details screen. */
-"Limit Usage to X Items" = "Batasi Penggunaan hingga X Barang";
+"Limit Usage to X Items" = "Limit Usage to X Items";
 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
 "Limit one per order" = "Batas per pesanan";
@@ -2136,7 +2136,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Manage Card Reader" = "Kelola Pembaca Kartu";
 
 /* Title of the action sheet displayed from the Coupon Details screen */
-"Manage Coupon" = "Kelola Kupon";
+"Manage Coupon" = "Manage Coupon";
 
 /* Button to open browser to manage plugins */
 "Manage Plugins" = "Kelola Plugin";
@@ -2188,7 +2188,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Mark this order as complete and notify the customer" = "Tandai pesanan ini selesai dan kirim pemberitahuan ke pelanggan";
 
 /* Title for the maximum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Maximum Spend ($) */
-"Maximum Spend (%1$@)" = "Belanja Maksimum (%1$@)";
+"Maximum Spend (%1$@)" = "Maximum Spend (%1$@)";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Media tidak memiliki file yang dikaitkan untuk diunggah.";
@@ -2216,7 +2216,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Microsoft Outlook" = "Microsoft Outlook";
 
 /* Title for the minimum spend row on coupon usage details screen with currency symbol within the brackets. Reads like: Minimum Spend ($) */
-"Minimum Spend (%1$@)" = "Belanja Minimum (%1$@)";
+"Minimum Spend (%1$@)" = "Minimum Spend (%1$@)";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "Nilai minimum %1$@, nilai maksimum %2$@";
@@ -2312,7 +2312,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Next" = "Selanjutnya";
 
 /* Value for the allowed emails row in Coupon Usage Details screen when no restriction is set */
-"No Restrictions" = "Tidak Ada Pembatasan";
+"No Restrictions" = "No Restrictions";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Tidak ada aktivitas dalam periode ini";
@@ -2624,7 +2624,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Percentage Discount" = "Persentase Diskon";
 
 /* Title of the Performance section on Coupons Details screen */
-"Performance" = "Performa";
+"Performance" = "Performance";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -2682,7 +2682,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please enter a username." = "Silahkan masukkan nama pengguna.";
 
 /* An error message. */
-"Please enter a valid email address for a WordPress.com account." = "Harap masukkan alamat email yang valid untuk akun WordPress.com.";
+"Please enter a valid email address for a WordPress.com account." = "Please enter a valid email address for a WordPress.com account.";
 
 /* Error message displayed when the user attempts use an invalid email address.
    Notice text when the merchant enters an invalid email */
@@ -3076,7 +3076,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Remove Product from Order" = "Hapus produk dari pesanan";
 
 /* Text for the button to remove a shipping line from the order during order creation */
-"Remove Shipping from Order" = "Hapus Pengiriman dari Pesanan";
+"Remove Shipping from Order" = "Remove Shipping from Order";
 
 /* Label action for removing a link from the editor */
 "Remove end date" = "Hapus tanggal akhir";
@@ -3248,7 +3248,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Schedule sale" = "Jadwalkan obral";
 
 /* Placeholder on the search field to search for a specific product */
-"Search Products" = "Mencari Produk";
+"Search Products" = "Search Products";
 
 /* Coupons Search Placeholder */
 "Search all coupons" = "Cari semua kupon";
@@ -3364,7 +3364,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Share" = "Bagikan";
 
 /* Action title for sharing coupon from the Coupon Details screen */
-"Share Coupon" = "Bagikan Kupon";
+"Share Coupon" = "Share Coupon";
 
 /* Payment Link method title on the select payment method screen for simple payments */
 "Share Payment Link" = "Bagikan Tautan Pembayaran";
@@ -3845,7 +3845,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Test out creating new manual orders as we get ready to launch" = "Coba buat pesanan manual baru sembari kami bersiap untuk meluncurkan";
 
 /* Cell description on beta features screen to enable coupon management */
-"Test out managing coupons as we get ready to launch" = "Coba kelola kupon selagi kami menyiapkan peluncuran";
+"Test out managing coupons as we get ready to launch" = "Test out managing coupons as we get ready to launch";
 
 /* Cell description on beta features screen to enable product SKU input scanner in inventory settings. */
 "Test out scanning a barcode for a product SKU in the product inventory settings" = "Cobalah memindai barcode untuk SKU produk di pengaturan inventaris produk";
@@ -4260,7 +4260,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to process payment. Order total amount is not valid." = "Tidak dapat memproses pembayaran. Jumlah total pesanan tidak valid.";
 
 /* No comment provided by engineer. */
-"Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Tidak dapat membaca situs WordPress dalam URL tersebut. Ketuk 'Perlu bantuan?' untuk melihat TJU.";
+"Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ.";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Tidak dapat menyegarkan daftar";
@@ -4313,7 +4313,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unknown media type" = "Jenis media tidak diketahui";
 
 /* Value for fields in Coupon Usage Details screen when no limit is set */
-"Unlimited" = "Tak terbatas";
+"Unlimited" = "Unlimited";
 
 /* Back button title when the product doesn't have a name */
 "Unnamed product" = "Produk tanpa nama";
@@ -4405,22 +4405,22 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Upsells" = "Upsell";
 
 /* Navigation title for usage details screen */
-"Usage Details" = "Detail Penggunaan";
+"Usage Details" = "Usage Details";
 
 /* Title for the usage limit per coupon row in coupon usage details screen. */
-"Usage Limit Per Coupon" = "Batas Penggunaan per Kupon";
+"Usage Limit Per Coupon" = "Usage Limit Per Coupon";
 
 /* Title for the usage limit per user row in coupon usage details screen. */
-"Usage Limit Per User" = "Batas Penggunaan per Pengguna";
+"Usage Limit Per User" = "Usage Limit Per User";
 
 /* Title for the usage limits section on coupon usage details screen */
-"Usage Limits" = "Batas penggunaan";
+"Usage Limits" = "Usage Limits";
 
 /* Title for the usage restrictions section on coupon usage details screen */
-"Usage Restrictions" = "Pembatasan Penggunaan";
+"Usage Restrictions" = "Usage Restrictions";
 
 /* Title of the Usage details row in Coupon Details screen */
-"Usage details" = "Detail penggunaan";
+"Usage details" = "Usage details";
 
 /* Action to use the address in Shipping Label Suggested screen as entered placeholder */
 "Use Address Entered" = "Gunakan Alamat yang Dimasukkan";
@@ -4688,7 +4688,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Width" = "Lebar";
 
 /* Navigates to WisePad 3 Card Reader manual */
-"WisePad 3 card reader manual" = "Panduan pembaca kartu WisePad 3";
+"WisePad 3 card reader manual" = "WisePad 3 card reader manual";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "With this powerful editor you can post on the go." = "Dengan editor yang hebat ini, Anda dapat langsung menerbitkan pos.";

@@ -274,7 +274,7 @@ final class OrdersRemoteTests: XCTestCase {
         // Given
         let remote = OrdersRemote(network: network)
         let expectedQuantity: Int64 = 2
-        let orderItem = OrderItem.fake().copy(itemID: 123, productID: 5, quantity: Decimal(expectedQuantity), subtotal: "3", total: "15")
+        let orderItem = OrderItem.fake().copy(itemID: 123, productID: 5, quantity: Decimal(expectedQuantity))
         let order = Order.fake().copy(items: [orderItem])
 
         // When
@@ -283,12 +283,10 @@ final class OrdersRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         let received = try XCTUnwrap(request.parameters["line_items"] as? [[String: AnyHashable]]).first
-        let expected: [String: AnyHashable] = [
+        let expected: [String: Int64] = [
             "id": orderItem.itemID,
             "product_id": orderItem.productID,
-            "quantity": expectedQuantity,
-            "subtotal": orderItem.subtotal,
-            "total": orderItem.total
+            "quantity": expectedQuantity
         ]
         assertEqual(received, expected)
     }
@@ -415,7 +413,6 @@ final class OrdersRemoteTests: XCTestCase {
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         let received = try XCTUnwrap(request.parameters["line_items"] as? [[String: AnyHashable]]).first
         let expected: [String: Int64] = [
-            "id": 0,
             "product_id": orderItem.productID,
             "quantity": expectedQuantity
         ]

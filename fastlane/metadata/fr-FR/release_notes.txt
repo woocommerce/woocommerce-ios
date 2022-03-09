@@ -1,5 +1,0 @@
-Nous avons apporté des mises à jour à notre fonctionnalité expérimentale de création de commandes. Les variables de produits affichent désormais la liste de leurs attributs.
-
-Nous avons également ajouté une autre fonctionnalité expérimentale : la gestion des codes promo ! Pour l’activer, rendez-vous dans l’onglet Plus, Paramètres, Paramètres expérimentaux. Nous vous invitons à nous faire part de vos commentaires sur l’application, notamment sur les nouvelles fonctionnalités sur lesquelles nous travaillons et auxquelles nous vous accordons un accès anticipé.
-
-Nous souhaitons également vivement remercier l’utilisateur GitHub, chrisKns, pour avoir contribué aux améliorations de cette version. ❤

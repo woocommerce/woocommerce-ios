@@ -17,8 +17,6 @@ final class BulkUpdateViewController: UIViewController {
     ///
     private let ghostTableView = UITableView(frame: .zero, style: .plain)
 
-    private var sections: [Section] = []
-
     init(viewModel: BulkUpdateViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -31,21 +29,9 @@ final class BulkUpdateViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureNavigationBar()
         configureTableView()
         configureGhostTableView()
         configureViewModel()
-    }
-
-    /// Configures the  title and navigation bar button
-    ///
-    private func configureNavigationBar() {
-        title = Localization.screenTitle
-
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancelButtonTitle,
-                                                           style: .plain,
-                                                           target: self,
-                                                           action: #selector(cancelButtonTapped))
     }
 
     /// Setup receiving updates for data changes and actives the view model
@@ -60,13 +46,8 @@ final class BulkUpdateViewController: UIViewController {
             case .notStarted:
                 return
             case .syncing:
-                self.sections = []
                 self.displayGhostContent()
-            case let .synced(sections):
-                self.sections = sections
-                self.removeGhostContent()
-                self.tableView.reloadData()
-            case .error:
+            case .synced, .error:
                 self.removeGhostContent()
             }
         }.store(in: &subscriptions)
@@ -128,10 +109,8 @@ final class BulkUpdateViewController: UIViewController {
         }
     }
 
-    /// Action handler for the cancel button
-    ///
-    @objc private func cancelButtonTapped() {
-        viewModel.handleTapCancel()
+    private var sections: [Section] {
+        return viewModel.sections
     }
 }
 
@@ -140,42 +119,18 @@ final class BulkUpdateViewController: UIViewController {
 extension BulkUpdateViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return sections.count
+        return viewModel.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections[section].rows.count
+        return viewModel.sections[section].rows.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = rowAtIndexPath(indexPath)
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        configure(cell, for: row, at: indexPath)
 
         return cell
-    }
-}
-
-// MARK: - Cell configuration
-//
-private extension BulkUpdateViewController {
-    /// Configures a cell
-    ///
-    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
-        switch cell {
-        case let cell as ValueOneTableViewCell where row == .regularPrice:
-            configureRegularPrice(cell: cell)
-        default:
-            fatalError("Unidentified bulk update row type")
-            break
-        }
-    }
-
-    /// Configures the user facing properties of the cell displaying the regular price option
-    ///
-    func configureRegularPrice(cell: ValueOneTableViewCell) {
-
-        cell.configure(with: viewModel.viewModelForDisplayingRegularPrice())
     }
 }
 
@@ -192,7 +147,7 @@ extension BulkUpdateViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let leftText = sections[section].title else {
+        guard let leftText = viewModel.sections[section].title else {
             return nil
         }
 
@@ -232,13 +187,6 @@ extension BulkUpdateViewController {
         fileprivate var reuseIdentifier: String {
             return type.reuseIdentifier
         }
-    }
-}
-
-private extension BulkUpdateViewController {
-    enum Localization {
-        static let cancelButtonTitle = NSLocalizedString("Cancel", comment: "Button title that closes the presented screen")
-        static let screenTitle = NSLocalizedString("Bulk Update", comment: "Title that appears on top of the bulk update of product variations screen")
     }
 }
 

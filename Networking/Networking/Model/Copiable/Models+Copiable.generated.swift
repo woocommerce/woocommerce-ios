@@ -979,48 +979,6 @@ extension ProductImage {
     }
 }
 
-extension ProductReview {
-    public func copy(
-        siteID: CopiableProp<Int64> = .copy,
-        reviewID: CopiableProp<Int64> = .copy,
-        productID: CopiableProp<Int64> = .copy,
-        dateCreated: CopiableProp<Date> = .copy,
-        statusKey: CopiableProp<String> = .copy,
-        reviewer: CopiableProp<String> = .copy,
-        reviewerEmail: CopiableProp<String> = .copy,
-        reviewerAvatarURL: NullableCopiableProp<String> = .copy,
-        review: CopiableProp<String> = .copy,
-        rating: CopiableProp<Int> = .copy,
-        verified: CopiableProp<Bool> = .copy
-    ) -> ProductReview {
-        let siteID = siteID ?? self.siteID
-        let reviewID = reviewID ?? self.reviewID
-        let productID = productID ?? self.productID
-        let dateCreated = dateCreated ?? self.dateCreated
-        let statusKey = statusKey ?? self.statusKey
-        let reviewer = reviewer ?? self.reviewer
-        let reviewerEmail = reviewerEmail ?? self.reviewerEmail
-        let reviewerAvatarURL = reviewerAvatarURL ?? self.reviewerAvatarURL
-        let review = review ?? self.review
-        let rating = rating ?? self.rating
-        let verified = verified ?? self.verified
-
-        return ProductReview(
-            siteID: siteID,
-            reviewID: reviewID,
-            productID: productID,
-            dateCreated: dateCreated,
-            statusKey: statusKey,
-            reviewer: reviewer,
-            reviewerEmail: reviewerEmail,
-            reviewerAvatarURL: reviewerAvatarURL,
-            review: review,
-            rating: rating,
-            verified: verified
-        )
-    }
-}
-
 extension ProductVariation {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

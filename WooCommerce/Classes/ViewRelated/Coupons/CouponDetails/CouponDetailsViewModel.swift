@@ -24,10 +24,6 @@ final class CouponDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var expiryDate: String = ""
 
-    /// Indicates if loading total discounted amount fails
-    ///
-    @Published private(set) var hasErrorLoadingAmount: Bool = false
-
     /// The message to be shared about the coupon
     ///
     var shareMessage: String {
@@ -90,9 +86,7 @@ final class CouponDetailsViewModel: ObservableObject {
             case .success(let report):
                 self.discountedOrdersCount = "\(report.ordersCount)"
                 self.discountedAmount = self.formatStringAmount("\(report.amount)")
-                self.hasErrorLoadingAmount = false
             case .failure(let error):
-                self.hasErrorLoadingAmount = true
                 DDLogError("⛔️ Error loading coupon report: \(error)")
             }
         }

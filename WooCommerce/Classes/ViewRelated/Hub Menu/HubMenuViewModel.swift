@@ -69,15 +69,11 @@ final class HubMenuViewModel: ObservableObject {
     /// Resets the menu elements displayed on the menu.
     ///
     func setupMenuElements() {
-        menuElements = [.woocommerceAdmin, .viewStore, .reviews]
-
-        let inboxUseCase = InboxEligibilityUseCase(stores: stores, featureFlagService: featureFlagService)
-        inboxUseCase.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
-            guard let self = self else { return }
-            if let index = self.menuElements.firstIndex(of: .viewStore), isInboxMenuShown {
-                self.menuElements.insert(.inbox, at: index + 1)
-            }
+        menuElements = [.woocommerceAdmin, .viewStore]
+        if featureFlagService.isFeatureFlagEnabled(.inbox) {
+            menuElements.append(.inbox)
         }
+        menuElements.append(.reviews)
 
         let action = AppSettingsAction.loadCouponManagementFeatureSwitchState { [weak self] result in
             guard let self = self else { return }

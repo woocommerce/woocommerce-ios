@@ -851,7 +851,7 @@ private extension ProductVariationStoreTests {
                                 dateModified: dateFromGMT("2019-11-14T13:06:42"),
                                 dateOnSaleStart: dateFromGMT("2019-10-15T21:30:00"),
                                 dateOnSaleEnd: dateFromGMT("2019-10-27T21:29:59"),
-                                status: .published,
+                                status: .publish,
                                 description: "<p>Nutty chocolate marble, 99% and organic.</p>\n",
                                 sku: "99%-nuts-marble",
                                 price: "12",

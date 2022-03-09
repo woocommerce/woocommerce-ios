@@ -193,7 +193,7 @@ extension EditableProductVariationModel {
     /// Whether the variation is enabled based on its status.
     var isEnabled: Bool {
         switch status {
-        case .published:
+        case .publish:
             return true
         case .privateStatus:
             return false

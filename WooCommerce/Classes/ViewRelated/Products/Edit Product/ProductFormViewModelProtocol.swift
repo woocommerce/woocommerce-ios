@@ -158,7 +158,7 @@ extension ProductFormViewModelProtocol {
     ///
     func saveMessageType(for productStatus: ProductStatus) -> SaveMessageType {
         switch productStatus {
-        case .published where !productModel.existsRemotely || originalProductModel.status != .published:
+        case .publish where !productModel.existsRemotely || originalProductModel.status != .publish:
             return .publish
         default:
             if self is ProductVariationFormViewModel {

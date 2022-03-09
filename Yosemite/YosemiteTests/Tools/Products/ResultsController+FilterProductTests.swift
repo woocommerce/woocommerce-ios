@@ -37,7 +37,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
                                 productID: 2,
                                 name: "B",
                                 productTypeKey: ProductType.simple.rawValue,
-                                statusKey: ProductStatus.published.rawValue,
+                                statusKey: ProductStatus.publish.rawValue,
                                 stockStatusKey: ProductStockStatus.inStock.rawValue),
             Product.fake().copy(siteID: sampleSiteID,
                                 productID: 25,
@@ -89,7 +89,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
 
     func testPredicateWithNonNilProductStatus() {
         // Arrange
-        let otherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, statusKey: ProductStatus.published.rawValue)
+        let otherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, statusKey: ProductStatus.publish.rawValue)
 
         let expectedProducts = [
             Product.fake().copy(siteID: sampleSiteID, productID: 62, name: "A", statusKey: ProductStatus.draft.rawValue),

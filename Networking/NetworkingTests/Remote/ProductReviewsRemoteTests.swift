@@ -34,68 +34,78 @@ final class ProductReviewsRemoteTests: XCTestCase {
 
     /// Verifies that loadAllProductReviews properly parses the `reviews-all` sample response.
     ///
-    func testLoadAllProductReviewsProperlyReturnsParsedProductReviews() throws {
+    func testLoadAllProductReviewsProperlyReturnsParsedProductReviews() {
         // Given
         let remote = ProductReviewsRemote(network: network)
+        let expectation = self.expectation(description: "Load All Product Reviews")
 
         network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-all")
 
         // When
-        let result: Result<[ProductReview], Error> = waitFor { promise in
-            remote.loadAllProductReviews(for: self.sampleSiteID) { result in
-                promise(result)
-            }
+        var result: (reviews: [ProductReview]?, error: Error?)
+        remote.loadAllProductReviews(for: sampleSiteID) { reviews, error in
+            result = (reviews, error)
+            expectation.fulfill()
         }
 
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
         // Then
-        XCTAssertTrue(result.isSuccess)
-        let reviews = try XCTUnwrap(result.get())
-        XCTAssertEqual(reviews.count, 2)
+        XCTAssertNil(result.error)
+        XCTAssertNotNil(result.reviews)
+        XCTAssertEqual(result.reviews?.count, 2)
 
         // Assert proper parsing of reviewer_avatar_urls
-        reviews.forEach {
+        result.reviews?.forEach {
             XCTAssertNotNil($0.reviewerAvatarURL)
         }
     }
 
     /// Verifies that loadAllProductReviews properly relays Networking Layer errors.
     ///
-    func testLoadAllProductReviewsProperlyRelaysNetwokingErrors() throws {
+    func testLoadAllProductReviewsProperlyRelaysNetwokingErrors() {
         // Given
         let remote = ProductReviewsRemote(network: network)
+        let expectation = self.expectation(description: "Load All Product Reviews returns error")
 
         // When
-        let result: Result<[ProductReview], Error> = waitFor { promise in
-            remote.loadAllProductReviews(for: self.sampleSiteID) { result in
-                promise(result)
-            }
+        var result: (reviews: [ProductReview]?, error: Error?)
+        remote.loadAllProductReviews(for: sampleSiteID) { reviews, error in
+            result = (reviews, error)
+            expectation.fulfill()
         }
 
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
         // Then
-        XCTAssertTrue(result.isFailure)
+        XCTAssertNil(result.reviews)
+        XCTAssertNotNil(result.error)
     }
 
     /// Tests that loadAllProductReviews can handle responses with missing `reviewer_avatar_urls`.
     ///
-    func testLoadAllCanHandleMissingReviewerAvatarURLs() throws {
+    func testLoadAllCanHandleMissingReviewerAvatarURLs() {
         // Given
         let remote = ProductReviewsRemote(network: network)
+        let expectation = self.expectation(description: "Load All Product Reviews")
+
         network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-missing-avatar-urls")
 
         // When
-        let result: Result<[ProductReview], Error> = waitFor { promise in
-            remote.loadAllProductReviews(for: self.sampleSiteID) { result in
-                promise(result)
-            }
+        var result: (reviews: [ProductReview]?, error: Error?)
+        remote.loadAllProductReviews(for: sampleSiteID) { reviews, error in
+            result = (reviews, error)
+            expectation.fulfill()
         }
 
-        // Then
-        XCTAssertTrue(result.isSuccess)
-        let reviews = try XCTUnwrap(result.get())
-        XCTAssertEqual(reviews.count, 2)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
 
-        // Assert proper parsing of reviewer_avatar_urls
-        reviews.forEach {
+        // Then
+        XCTAssertNil(result.error)
+        XCTAssertNotNil(result.reviews)
+        XCTAssertEqual(result.reviews?.count, 2)
+
+        result.reviews?.forEach {
             XCTAssertNil($0.reviewerAvatarURL)
         }
     }
@@ -107,17 +117,21 @@ final class ProductReviewsRemoteTests: XCTestCase {
     func testLoadProductReviewProperlyReturnsParsedProductReviews() throws {
         // Given
         let remote = ProductReviewsRemote(network: network)
+        let expectation = self.expectation(description: "Load Single Product Review")
 
         network.simulateResponse(requestUrlSuffix: "products/reviews/\(sampleReviewID)", filename: "reviews-single")
 
         // When
-        let result: Result<ProductReview, Error> = waitFor { promise in
-            remote.loadProductReview(for: self.sampleSiteID, reviewID: self.sampleReviewID) { result in
-                promise(result)
-            }
+        var resultMaybe: Result<ProductReview, Error>?
+        remote.loadProductReview(for: sampleSiteID, reviewID: sampleReviewID) { aResult in
+            resultMaybe = aResult
+            expectation.fulfill()
         }
 
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
         // Then
+        let result = try XCTUnwrap(resultMaybe)
         XCTAssertTrue(result.isSuccess)
         XCTAssertNotNil(try result.get())
     }

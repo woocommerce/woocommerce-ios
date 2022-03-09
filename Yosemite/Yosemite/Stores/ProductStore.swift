@@ -160,10 +160,12 @@ private extension ProductStore {
                                     guard let self = self else {
                                         return
                                     }
-                                    let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
-                                    self.upsertStoredProductsInBackground(readOnlyProducts: products,
-                                                                          siteID: siteID,
-                                                                          shouldDeleteExistingProducts: shouldDeleteExistingProducts) {
+
+                                    if pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage {
+                                        self.deleteStoredProducts(siteID: siteID)
+                                    }
+
+                                    self.upsertStoredProductsInBackground(readOnlyProducts: products) {
                                         let hasNextPage = products.count == pageSize
                                         onCompletion(.success(hasNextPage))
                                     }
@@ -189,7 +191,7 @@ private extension ProductStore {
         remote.loadProducts(for: order.siteID, by: missingIDs) { [weak self] result in
             switch result {
             case .success(let products):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: products, siteID: order.siteID, onCompletion: {
+                self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
                     onCompletion(nil)
                 })
             case .failure(let error):
@@ -214,7 +216,7 @@ private extension ProductStore {
         remote.loadProducts(for: siteID, by: productIDs, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
             switch result {
             case .success(let products):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: products, siteID: siteID, onCompletion: {
+                self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
                     let hasNextPage = products.count == pageSize
                     onCompletion(.success((products: products, hasNextPage: hasNextPage)))
                 })
@@ -242,7 +244,7 @@ private extension ProductStore {
 
                 onCompletion(.failure(error))
             case .success(let product):
-                self.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: siteID) { [weak self] in
+                self.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
                     guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: siteID, productID: productID) else {
                         return onCompletion(.failure(ProductLoadError.notFoundInStorage))
                     }
@@ -261,7 +263,7 @@ private extension ProductStore {
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))
             case .success(let product):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID) { [weak self] in
+                self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
                     guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID) else {
                         onCompletion(.failure(.notFoundInStorage))
                         return
@@ -294,7 +296,7 @@ private extension ProductStore {
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))
             case .success(let product):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID) { [weak self] in
+                self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
                     guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID) else {
                         onCompletion(.failure(.notFoundInStorage))
                         return
@@ -328,7 +330,7 @@ private extension ProductStore {
     /// Upserts a product in our local storage
     ///
     func replaceProductLocally(product: Product, onCompletion: @escaping () -> Void) {
-        upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID, onCompletion: onCompletion)
+        upsertStoredProductsInBackground(readOnlyProducts: [product], onCompletion: onCompletion)
     }
 }
 
@@ -349,19 +351,20 @@ extension ProductStore {
         storage.saveIfNeeded()
     }
 
-    /// Updates (OR Inserts) the specified ReadOnly Product Entities *in a background thread*.
-    /// Also deletes existing products if requested.
-    /// `onCompletion` will be called on the main thread!
+    /// Deletes any Storage.Product with the specified `siteID`
     ///
-    func upsertStoredProductsInBackground(readOnlyProducts: [Networking.Product],
-                                          siteID: Int64,
-                                          shouldDeleteExistingProducts: Bool = false,
-                                          onCompletion: @escaping () -> Void) {
+    func deleteStoredProducts(siteID: Int64) {
+        let storage = storageManager.viewStorage
+        storage.deleteProducts(siteID: siteID)
+        storage.saveIfNeeded()
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly Product Entities *in a background thread*. onCompletion will be called
+    /// on the main thread!
+    ///
+    func upsertStoredProductsInBackground(readOnlyProducts: [Networking.Product], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
-            if shouldDeleteExistingProducts {
-                derivedStorage.deleteProducts(siteID: siteID)
-            }
             self.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
         }
 

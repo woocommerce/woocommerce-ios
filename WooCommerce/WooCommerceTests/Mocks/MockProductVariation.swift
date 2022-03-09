@@ -13,7 +13,7 @@ final class MockProductVariation {
                                 dateModified: Date(),
                                 dateOnSaleStart: nil,
                                 dateOnSaleEnd: nil,
-                                status: .published,
+                                status: .publish,
                                 description: "",
                                 sku: "",
                                 price: "",

@@ -14,27 +14,22 @@ struct ProductInputTransformer {
         var subtotal: String {
             "\(price * quantity)"
         }
-        var total: String {
-            subtotal
-        }
     }
 
     /// Adds, deletes, or updates order items based on the given product input.
-    /// When `updateZeroQuantities` is true, items with `.zero` quantities will be updated instead of being deleted.
     ///
-    static func update(input: OrderSyncProductInput, on order: Order, updateZeroQuantities: Bool) -> Order {
-        // If the input's quantity is 0 or less, delete the item if required.
-        guard input.quantity > 0 || updateZeroQuantities else {
+    static func update(input: OrderSyncProductInput, on order: Order) -> Order {
+        // If the input's quantity is 0 or less, delete the item if possible.
+        guard input.quantity > 0 else {
             return remove(input: input, from: order)
         }
 
         // Add or update the order items with the new input.
+        let newItem = createOrderItem(using: input)
         var items = order.items
-        if let itemIndex = order.items.firstIndex(where: { $0.itemID == input.id }) {
-            let newItem = createOrderItem(using: input, usingPriceFrom: items[itemIndex])
+        if let itemIndex = order.items.firstIndex(where: { $0.itemID == newItem.itemID }) {
             items[itemIndex] = newItem
         } else {
-            let newItem = createOrderItem(using: input, usingPriceFrom: nil)
             items.append(newItem)
         }
 
@@ -50,17 +45,15 @@ struct ProductInputTransformer {
     }
 
     /// Creates and order item by using the `input.id` as the `item.itemID`.
-    /// When `usingPriceFrom` is set, the price from the item will be used instead of the price of the product.
     ///
-    private static func createOrderItem(using input: OrderSyncProductInput, usingPriceFrom existingItem: OrderItem?) -> OrderItem {
+    private static func createOrderItem(using input: OrderSyncProductInput) -> OrderItem {
         let parameters: OrderItemParameters = {
-            // Prefer the item price as it should have been properly sanitized by the remote source.
             switch input.product {
             case .product(let product):
-                let price: Decimal = existingItem?.price.decimalValue ?? Decimal(string: product.price) ?? .zero
+                let price = Decimal(string: product.price) ?? .zero
                 return OrderItemParameters(quantity: input.quantity, price: price, productID: product.productID, variationID: nil)
             case .variation(let variation):
-                let price: Decimal = existingItem?.price.decimalValue ?? Decimal(string: variation.price) ?? .zero
+                let price = Decimal(string: variation.price) ?? .zero
                 return OrderItemParameters(quantity: input.quantity, price: price, productID: variation.productID, variationID: variation.productVariationID)
             }
         }()
@@ -76,7 +69,7 @@ struct ProductInputTransformer {
                          subtotalTax: "",
                          taxClass: "",
                          taxes: [],
-                         total: parameters.total,
+                         total: "",
                          totalTax: "",
                          attributes: [])
     }

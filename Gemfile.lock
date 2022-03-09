@@ -3,7 +3,7 @@ GEM
   specs:
     CFPropertyList (3.0.5)
       rexml
-    activesupport (5.2.6.2)
+    activesupport (5.2.6)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
@@ -33,7 +33,7 @@ GEM
       aws-eventstream (~> 1, >= 1.0.2)
     babosa (1.0.4)
     bigdecimal (1.4.4)
-    buildkit (1.5.0)
+    buildkit (1.4.5)
       sawyer (>= 0.6)
     chroma (0.2.0)
     claide (1.0.3)
@@ -94,7 +94,7 @@ GEM
     ethon (0.15.0)
       ffi (>= 1.15.0)
     excon (0.91.0)
-    faraday (1.10.0)
+    faraday (1.9.3)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)
@@ -164,7 +164,7 @@ GEM
       xcpretty-travis-formatter (>= 0.0.3)
     fastlane-plugin-appcenter (1.11.1)
     fastlane-plugin-sentry (1.11.1)
-    fastlane-plugin-wpmreleasetoolkit (3.1.0)
+    fastlane-plugin-wpmreleasetoolkit (3.0.0)
       activesupport (~> 5)
       bigdecimal (~> 1.4)
       buildkit (~> 1.4)
@@ -226,7 +226,7 @@ GEM
     http-cookie (1.0.4)
       domain_name (~> 0.5)
     httpclient (2.8.3)
-    i18n (1.10.0)
+    i18n (1.8.11)
       concurrent-ruby (~> 1.0)
     jmespath (1.5.0)
     json (2.6.1)
@@ -237,7 +237,7 @@ GEM
     memoist (0.16.2)
     mini_magick (4.11.0)
     mini_mime (1.1.2)
-    mini_portile2 (2.8.0)
+    mini_portile2 (2.7.1)
     minitest (5.15.0)
     molinillo (0.8.0)
     multi_json (1.15.0)
@@ -246,10 +246,10 @@ GEM
     nap (1.1.0)
     naturally (2.2.1)
     netrc (0.11.0)
-    nokogiri (1.13.3)
-      mini_portile2 (~> 2.8.0)
+    nokogiri (1.13.1)
+      mini_portile2 (~> 2.7.0)
       racc (~> 1.4)
-    nokogiri (1.13.3-x86_64-darwin)
+    nokogiri (1.13.1-x86_64-darwin)
       racc (~> 1.4)
     octokit (4.22.0)
       faraday (>= 0.9)
@@ -348,4 +348,4 @@ DEPENDENCIES
   xcpretty-travis-formatter
 
 BUNDLED WITH
-   2.3.8
+   2.3.7

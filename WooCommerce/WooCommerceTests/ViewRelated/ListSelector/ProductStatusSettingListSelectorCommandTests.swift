@@ -6,7 +6,7 @@ import XCTest
 final class ProductStatusSettingListSelectorCommandTests: XCTestCase {
 
     func test_selected_setting() {
-        let expectedSetting = ProductStatus.published
+        let expectedSetting = ProductStatus.publish
         let product = Product.fake().copy(statusKey: expectedSetting.rawValue)
         let command = ProductStatusSettingListSelectorCommand(selected: product.productStatus)
         let viewController = ListSelectorViewController(command: command, onDismiss: { _ in })

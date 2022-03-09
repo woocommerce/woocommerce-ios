@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a ProductReview Entity.
 ///
-public struct ProductReview: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct ProductReview: Decodable, Equatable, GeneratedFakeable {
     public let siteID: Int64
     public let reviewID: Int64
     public let productID: Int64

@@ -17,112 +17,22 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.menuElements.contains(.inbox))
     }
 
-    func test_menuElements_include_inbox_and_coupons_when_store_has_eligible_wc_version() {
-        // Given the store is eligible for inbox with only WC plugin and coupons feature is enabled in app settings
+    func test_menuElements_include_inbox_when_feature_flag_is_on() {
+        // Given
         let featureFlagService = MockFeatureFlagService(isInboxOn: true)
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .loadCouponManagementFeatureSwitchState(let onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
-                switch systemPluginName {
-                case PluginName.wooCommerce:
-                    onCompletion(Fixtures.wcPluginEligibleForInbox)
-                default:
-                    onCompletion(nil)
-                }
-            default:
-                break
-            }
-        }
 
         // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
         viewModel.setupMenuElements()
 
-        // Then both inbox and coupons are in the menu
-        XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .inbox, .coupons, .reviews])
-    }
-
-    func test_menuElements_do_not_include_inbox_when_store_has_ineligible_wc_version() {
-        // Given the store is ineligible WC version for inbox and coupons feature is enabled in app settings
-        let featureFlagService = MockFeatureFlagService(isInboxOn: true)
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
-                switch systemPluginName {
-                case PluginName.wooCommerce:
-                    onCompletion(Fixtures.wcPluginIneligibleForInbox)
-                default:
-                    onCompletion(nil)
-                }
-            default:
-                break
-            }
-        }
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .loadCouponManagementFeatureSwitchState(let onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
-        viewModel.setupMenuElements()
-
-        // Then only coupons is in the menu
-        XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .coupons, .reviews])
-    }
-
-    func test_menuElements_do_not_include_inbox_and_coupons_when_store_has_ineligible_wc_version_and_coupons_disabled() {
-        // Given the store is ineligible WC version for inbox and coupons feature is disabled in app settings
-        let featureFlagService = MockFeatureFlagService(isInboxOn: true)
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
-                switch systemPluginName {
-                case PluginName.wooCommerce:
-                    onCompletion(Fixtures.wcPluginIneligibleForInbox)
-                default:
-                    onCompletion(nil)
-                }
-            default:
-                break
-            }
-        }
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .loadCouponManagementFeatureSwitchState(let onCompletion):
-                onCompletion(.success(false))
-            default:
-                break
-            }
-        }
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
-        viewModel.setupMenuElements()
-
-        // Then neither inbox nor coupons is in the menu
-        XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .reviews])
+        // Then
+        XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .inbox, .reviews])
     }
 
     func test_menuElements_include_coupons_when_couponManagement_is_enabled_in_app_settings() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let featureFlagService = MockFeatureFlagService(isInboxOn: false)
+        let featureFlagService = MockFeatureFlagService(isInboxOn: true)
 
         // When
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -137,7 +47,7 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.setupMenuElements()
 
         // Then
-        XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .coupons, .reviews])
+        XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .inbox, .coupons, .reviews])
     }
 
     func test_menuElements_do_not_include_coupons_when_couponManagement_is_not_enabled_in_app_settings() {
@@ -159,17 +69,5 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.menuElements, [.woocommerceAdmin, .viewStore, .reviews])
-    }
-}
-
-private extension HubMenuViewModelTests {
-    enum PluginName {
-        static let wooCommerce = "WooCommerce"
-    }
-
-    enum Fixtures {
-        // TODO: 6148 - Update the minimum WC version with inbox filtering.
-        static let wcPluginIneligibleForInbox = SystemPlugin.fake().copy(version: "3.0.0", active: true)
-        static let wcPluginEligibleForInbox = SystemPlugin.fake().copy(version: "6.1.0", active: true)
     }
 }

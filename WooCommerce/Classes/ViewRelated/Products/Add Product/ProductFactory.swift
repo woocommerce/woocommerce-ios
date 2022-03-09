@@ -31,7 +31,7 @@ private extension ProductFactory {
                 dateOnSaleStart: nil,
                 dateOnSaleEnd: nil,
                 productTypeKey: type.rawValue,
-                statusKey: ProductStatus.published.rawValue,
+                statusKey: ProductStatus.publish.rawValue,
                 featured: false,
                 catalogVisibilityKey: ProductCatalogVisibility.visible.rawValue,
                 fullDescription: "",

@@ -172,16 +172,16 @@ private extension ProductVariationsViewController {
     /// Sets the navigation bar buttons
     ///
     func configureNavigationBarButtons() {
-        guard featureFlagService.isFeatureFlagEnabled(.bulkEditProductVariations) && resultsController.fetchedObjects.isNotEmpty else {
-            // Do not display the "more" button with the bulk update option if we do not have any variations
-            navigationItem.rightBarButtonItem = nil
+        guard featureFlagService.isFeatureFlagEnabled(.bulkEditProductVariations) else {
             return
         }
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: .moreImage,
-                                                            style: .plain,
-                                                            target: self,
-                                                            action: #selector(presentMoreActionSheet(_:)))
+        let moreButton = UIBarButtonItem(image: .moreImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(presentMoreActionSheet(_:)))
+
+        navigationItem.rightBarButtonItems = [moreButton]
     }
 
     /// Apply Woo styles.
@@ -361,7 +361,6 @@ private extension ProductVariationsViewController {
     func configureResultsControllerEventHandling(_ resultsController: ResultsController<StorageProductVariation>) {
         let onReload = { [weak self] in
             self?.tableView.reloadData()
-            self?.configureNavigationBarButtons()
         }
 
         resultsController.onDidChangeContent = { [weak tableView] in
@@ -572,9 +571,7 @@ private extension ProductVariationsViewController {
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.bulkUpdate) { [weak self] _ in
             guard let self = self else { return }
 
-            let viewModel = BulkUpdateViewModel(siteID: self.siteID, productID: self.productID, onCancelButtonTapped: { [weak self] in
-                self?.dismiss(animated: true)
-            })
+            let viewModel = BulkUpdateViewModel(siteID: self.siteID, productID: self.productID)
             let navigationController = WooNavigationController(rootViewController: BulkUpdateViewController(viewModel: viewModel))
             self.present(navigationController, animated: true)
         }

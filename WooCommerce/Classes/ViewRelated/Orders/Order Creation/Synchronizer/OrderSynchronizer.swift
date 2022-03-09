@@ -81,9 +81,9 @@ protocol OrderSynchronizer {
     ///
     var setFee: PassthroughSubject<OrderFeeLine?, Never> { get }
 
-    /// Trigger to retry a remote sync.
+    /// Retires the order sync. State needs to be in `.error` to initiate work.
     ///
-    var retryTrigger: PassthroughSubject<Void, Never> { get }
+    func retrySync()
 
     /// Commits all order changes to the remote source. State needs to be in `.synced` to initiate work.
     ///

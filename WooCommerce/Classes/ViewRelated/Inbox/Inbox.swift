@@ -4,9 +4,6 @@ import Yosemite
 
 /// Shows a list of inbox notes as shown in WooCommerce Admin in core.
 struct Inbox: View {
-    /// Environment safe areas
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     /// View model that drives the view.
     @ObservedObject private(set) var viewModel: InboxViewModel
     @State private var showingActionSheet: Bool = false
@@ -50,14 +47,11 @@ struct Inbox: View {
                     }
                     .background(Constants.listForeground)
                 }
-                .padding(.horizontal, insets: safeAreaInsets)
-                .background(Constants.listForeground)
             case .empty:
                 EmptyState(title: Localization.emptyStateTitle,
                            description: Localization.emptyStateMessage,
                            image: .emptyInboxNotesImage)
                     .frame(maxHeight: .infinity)
-                    .padding(insets: safeAreaInsets)
             case .syncingFirstPage:
                 ScrollView {
                     LazyVStack(spacing: 0) {
@@ -66,13 +60,11 @@ struct Inbox: View {
                                 .redacted(reason: .placeholder)
                                 .shimmering()
                         }
+                        .background(Constants.listForeground)
                     }
                 }
-                .padding(.horizontal, insets: safeAreaInsets)
-                .background(Constants.listForeground)
             }
         }
-        .ignoresSafeArea()
         .background(Constants.listBackground.ignoresSafeArea())
         .navigationTitle(Localization.title)
         .onAppear {
@@ -89,7 +81,6 @@ struct Inbox: View {
                     .renderedIf(viewModel.syncState == .results)
             }
         }
-        .wooNavigationBarStyle()
     }
 }
 

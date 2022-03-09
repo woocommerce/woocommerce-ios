@@ -147,7 +147,7 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
 
     func testDisablingAVariationUpdatesItsStatusFromPublishToPrivate() {
         // Arrange
-        let productVariation = MockProductVariation().productVariation().copy(status: .published)
+        let productVariation = MockProductVariation().productVariation().copy(status: .publish)
         let model = EditableProductVariationModel(productVariation: productVariation)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
@@ -170,7 +170,7 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
         viewModel.updateStatus(true)
 
         // Assert
-        XCTAssertEqual(viewModel.productModel.status, .published)
+        XCTAssertEqual(viewModel.productModel.status, .publish)
     }
 
     // MARK: - Deletion

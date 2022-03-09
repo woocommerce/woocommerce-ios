@@ -69,7 +69,7 @@ struct NewOrder: View {
             }
         }
         .wooNavigationBarStyle()
-        .notice($viewModel.notice, autoDismiss: false)
+        .notice($viewModel.notice)
     }
 }
 

@@ -4,6 +4,9 @@ import Yosemite
 final class InPersonPaymentsViewModel: ObservableObject {
     @Published var state: CardPresentPaymentOnboardingState
     var userIsAdministrator: Bool
+    var learnMoreURL: URL {
+        get { return getLearnMoreUrl(state: state) }
+    }
     private let useCase = CardPresentPaymentsOnboardingUseCase()
 
 
@@ -34,6 +37,27 @@ final class InPersonPaymentsViewModel: ObservableObject {
     ///
     func refresh() {
         useCase.refresh()
+    }
+
+    private func getLearnMoreUrl(state: CardPresentPaymentOnboardingState) -> URL {
+        switch state {
+        case .pluginUnsupportedVersion(let plugin),
+                .pluginNotActivated(let plugin),
+                .pluginInTestModeWithLiveStripeAccount(let plugin),
+                .pluginSetupNotCompleted(let plugin):
+            return getLearnMoreUrl(plugin: plugin)
+        default:
+            return getLearnMoreUrl(plugin: nil)
+        }
+    }
+
+    private func getLearnMoreUrl(plugin: CardPresentPaymentsPlugins?) -> URL {
+        switch plugin {
+            case .stripe:
+                return WooConstants.URLs.inPersonPaymentsLearnMoreStripe.asURL()
+            case .wcPay, nil:
+                return WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
+        }
     }
 }
 

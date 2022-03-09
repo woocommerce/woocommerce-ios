@@ -47,6 +47,7 @@ final class OrdersSplitViewWrapperController: UIViewController {
 private extension OrdersSplitViewWrapperController {
     func configureSplitView() {
         let ordersViewController = OrdersRootViewController(siteID: siteID)
+        ordersViewController.extendedLayoutIncludesOpaqueBars = true
         let ordersNavigationController = WooTabNavigationController()
         ordersNavigationController.viewControllers = [ordersViewController]
 
@@ -54,7 +55,6 @@ private extension OrdersSplitViewWrapperController {
         let ghostTableViewController = GhostTableViewController()
         ghostTableViewController.extendedLayoutIncludesOpaqueBars = true
         let ghostTableViewNavigationController = WooNavigationController(rootViewController: ghostTableViewController)
-        ghostTableViewNavigationController.extendedLayoutIncludesOpaqueBars = true
 
         ordersSplitViewController.viewControllers = [ordersNavigationController, ghostTableViewNavigationController]
     }

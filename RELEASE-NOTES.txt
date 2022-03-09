@@ -2,7 +2,7 @@
 
 8.8
 -----
-- [*] Show split view for Orders tab on large screens. [https://github.com/woocommerce/woocommerce-ios/pull/6387]
+- [**] Show split view for Orders tab on large screens. [https://github.com/woocommerce/woocommerce-ios/pull/6387]
 
 
 8.7

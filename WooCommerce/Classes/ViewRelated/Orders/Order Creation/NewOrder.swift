@@ -10,7 +10,12 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
     private var subscriptions: Set<AnyCancellable> = []
 
     init(viewModel: NewOrderViewModel) {
-        super.init(rootView: NewOrder(viewModel: viewModel))
+        let view = NewOrder(viewModel: viewModel)
+        super.init(rootView: view)
+    }
+
+    func setDismissAction(_ dismissAction: @escaping () -> Void) {
+        rootView.dismissAction = dismissAction
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -22,6 +27,7 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
 ///
 struct NewOrder: View {
     @ObservedObject var viewModel: NewOrderViewModel
+    var dismissAction: () -> Void = {}
 
     /// Fix for breaking navbar button
     @State private var navigationButtonID = UUID()
@@ -54,6 +60,11 @@ struct NewOrder: View {
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(Localization.cancelButton) {
+                    dismissAction()
+                }
+            }
             ToolbarItem(placement: .confirmationAction) {
                 switch viewModel.navigationTrailingItem {
                 case .create:
@@ -148,6 +159,7 @@ private extension NewOrder {
 
     enum Localization {
         static let title = NSLocalizedString("New Order", comment: "Title for the order creation screen")
+        static let cancelButton = NSLocalizedString("Cancel", comment: "Button to dismiss the New Order screen")
         static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the New Order screen")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating a new order")
         static let addProduct = NSLocalizedString("Add Product", comment: "Title text of the button that adds a product when creating a new order")

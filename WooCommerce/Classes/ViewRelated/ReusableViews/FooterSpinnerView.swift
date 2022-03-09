@@ -4,7 +4,7 @@ import UIKit
 
 /// Activity Indicator, meant for UITableView.footerView usage.
 ///
-class FooterSpinnerView: UIView {
+final class FooterSpinnerView: UIView {
 
     /// Activity Spinner!
     ///
@@ -33,8 +33,8 @@ class FooterSpinnerView: UIView {
         activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            leadingAnchor.constraint(equalTo: activityIndicatorView.leadingAnchor),
-            trailingAnchor.constraint(equalTo: activityIndicatorView.trailingAnchor),
+            safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: activityIndicatorView.leadingAnchor),
+            safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: activityIndicatorView.trailingAnchor),
             centerYAnchor.constraint(equalTo: activityIndicatorView.centerYAnchor)
             ])
     }

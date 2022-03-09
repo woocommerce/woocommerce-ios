@@ -68,7 +68,7 @@ final class OrderDetailsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureNavigation()
+        configureNavigationBarTitle()
         configureTopLoaderView()
         configureTableView()
         registerTableViewCells()
@@ -118,6 +118,7 @@ extension OrderDetailsViewController: OrderDetailsDelegate {
         }
         viewModel.update(order: order)
         reloadTableViewSectionsAndData()
+        configureNavigationBarTitle()
     }
 }
 
@@ -145,7 +146,7 @@ private extension OrderDetailsViewController {
 
     /// Setup: Navigation
     ///
-    func configureNavigation() {
+    func configureNavigationBarTitle() {
         let titleFormat = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
     }

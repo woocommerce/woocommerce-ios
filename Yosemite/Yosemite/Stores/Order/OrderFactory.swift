@@ -68,7 +68,7 @@ public enum OrderFactory {
     /// Creates a fee line suitable to delete a fee line already saved remotely in an order.
     ///
     public static func deletedFeeLine(_ feeLine: OrderFeeLine) -> OrderFeeLine {
-        feeLine.copy(name: .some(nil))
+        feeLine.copy(name: .some(nil), total: "0")
     }
 
     /// Creates a shipping line suitable to delete a shipping line already saved remotely in an order.

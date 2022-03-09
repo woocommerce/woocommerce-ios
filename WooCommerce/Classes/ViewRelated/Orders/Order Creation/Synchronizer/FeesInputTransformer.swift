@@ -9,9 +9,8 @@ struct FeesInputTransformer {
     ///
     static func update(input: OrderFeeLine?, on order: Order) -> Order {
         // If input is `nil`, then we remove any existing fee line.
-        // We remove a fee line by setting its `name` to nil.
         guard let input = input else {
-            let linesToRemove = order.fees.map { $0.copy(name: .some(nil), total: "0") }
+            let linesToRemove = order.fees.map { OrderFactory.deletedFeeLine($0) }
             return order.copy(fees: linesToRemove)
         }
 

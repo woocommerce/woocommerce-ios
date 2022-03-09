@@ -40,7 +40,7 @@ final class OrdersSplitViewWrapperController: UIViewController {
         loaderViewController.extendedLayoutIncludesOpaqueBars = true
         loaderNavigationController.extendedLayoutIncludesOpaqueBars = true
 
-        ordersSplitViewController.showDetailViewController(loaderViewController, sender: nil)
+        ordersSplitViewController.showDetailViewController(loaderNavigationController, sender: nil)
     }
 }
 

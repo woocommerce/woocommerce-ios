@@ -86,5 +86,5 @@ public enum OrderAction: Action {
 
     /// Deletes a given order.
     ///
-    case deleteOrder(siteID: Int64, orderID: Int64, deletePermanently: Bool, onCompletion: (Result<Order, Error>) -> Void)
+    case deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: (Result<Order, Error>) -> Void)
 }

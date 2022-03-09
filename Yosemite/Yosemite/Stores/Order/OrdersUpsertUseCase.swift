@@ -65,9 +65,6 @@ struct OrdersUpsertUseCase {
     /// Updates, inserts, or prunes the provided StorageOrder's items using the provided read-only Order's items
     ///
     private func handleOrderItems(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
-//        var storageItem: Storage.OrderItem
-//        let siteID = readOnlyOrder.siteID
-//        let orderID = readOnlyOrder.orderID
 
         // Removes all the order items first.
         storageOrder.orderItemsArray.forEach { existingStorageOrderItem in
@@ -82,34 +79,6 @@ struct OrdersUpsertUseCase {
             storageOrderItems.append(newStorageOrderItem)
         }
         storageOrder.items = NSOrderedSet(array: storageOrderItems)
-
-//        guard readOnlyOrder.items.count > 0 else {
-//            return
-//        }
-
-        // Upsert the items from the read-only order
-//        for readOnlyItem in readOnlyOrder.items {
-//            if let existingStorageItem = storage.loadOrderItem(siteID: siteID, orderID: orderID, itemID: readOnlyItem.itemID) {
-//                existingStorageItem.update(with: readOnlyItem)
-//                storageItem = existingStorageItem
-//            } else {
-//                let newStorageItem = storage.insertNewObject(ofType: Storage.OrderItem.self)
-//                newStorageItem.update(with: readOnlyItem)
-//                storageOrder.addToItems(newStorageItem)
-//                storageItem = newStorageItem
-//            }
-//
-//            handleOrderItemAttributes(readOnlyItem, storageItem, storage)
-//            handleOrderItemTaxes(readOnlyItem, storageItem, storage)
-//        }
-
-        // Now, remove any objects that exist in storageOrder.items but not in readOnlyOrder.items
-//        storageOrder.orderItemsArray.forEach { storageItem in
-//            if readOnlyOrder.items.first(where: { $0.itemID == storageItem.itemID } ) == nil {
-//                storageOrder.removeFromItems(storageItem)
-//                storage.deleteObject(storageItem)
-//            }
-//        }
     }
 
     /// Updates, inserts, or prunes the provided StorageOrderItem's attributes using the provided read-only OrderItem

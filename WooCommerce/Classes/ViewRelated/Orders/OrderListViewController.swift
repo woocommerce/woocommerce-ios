@@ -230,6 +230,8 @@ private extension OrderListViewController {
         /// Update the `dataSource` whenever there is a new snapshot.
         viewModel.snapshot.sink { [weak self] snapshot in
             self?.dataSource.apply(snapshot)
+            // restore highlight for selected row after table reload
+            self?.highlightSelectedRowIfNeeded()
         }.store(in: &cancellables)
 
         /// Update the top banner when needed
@@ -642,8 +644,6 @@ private extension OrderListViewController {
             ensureFooterSpinnerIsStarted()
         case .results:
             attemptShowingDetailsForFirstItem()
-            // restore highlight for selected row after table reload
-            highlightSelectedRowIfNeeded()
         }
     }
 

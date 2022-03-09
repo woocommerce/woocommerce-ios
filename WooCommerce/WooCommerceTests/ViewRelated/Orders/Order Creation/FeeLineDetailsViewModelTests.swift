@@ -207,4 +207,23 @@ final class FeeLineDetailsViewModelTests: XCTestCase {
         viewModel.saveData()
         XCTAssertEqual(savedFeeLine?.total, "20.00")
     }
+
+    func test_view_model_creates_fee_line_with_taxes_enabled() {
+        // Given
+        var savedFeeLine: OrderFeeLine?
+        let viewModel = FeeLineDetailsViewModel(isExistingFeeLine: false,
+                                                baseAmountForPercentage: 200,
+                                                feesTotal: "100",
+                                                locale: usLocale,
+                                                storeCurrencySettings: usStoreSettings,
+                                                didSelectSave: { newFeeLine in
+            savedFeeLine = newFeeLine
+        })
+
+        // When
+        viewModel.saveData()
+
+        // Then
+        XCTAssertEqual(savedFeeLine?.taxStatus, .taxable)
+    }
 }

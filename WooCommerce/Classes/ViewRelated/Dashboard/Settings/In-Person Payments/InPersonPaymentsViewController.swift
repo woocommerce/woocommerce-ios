@@ -70,6 +70,8 @@ struct InPersonPaymentsView: View {
             switch url {
             case InPersonPaymentsSupportLink.supportURL:
                 showSupport?()
+            case InPersonPaymentsLearnMore.learnMoreURL:
+                showURL?(viewModel.learnMoreURL)
             default:
                 showURL?(url)
             }

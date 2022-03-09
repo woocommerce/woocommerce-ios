@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct InPersonPaymentsLearnMore: View {
+    static let learnMoreURL = URL(string: "woocommerce://in-person-payments/learn-more")!
     @Environment(\.customOpenURL) var customOpenURL
 
     var body: some View {
@@ -15,7 +16,7 @@ struct InPersonPaymentsLearnMore: View {
             .padding(.vertical, Constants.verticalPadding)
             .onTapGesture {
                 ServiceLocator.analytics.track(.cardPresentOnboardingLearnMoreTapped)
-                customOpenURL?(Constants.learnMoreURL!)
+                customOpenURL?(InPersonPaymentsLearnMore.learnMoreURL)
             }
     }
 
@@ -40,7 +41,6 @@ struct InPersonPaymentsLearnMore: View {
 
 private enum Constants {
     static let verticalPadding: CGFloat = 8
-    static let learnMoreURL = URL(string: "https://woocommerce.com/payments")
 }
 
 private enum Localization {

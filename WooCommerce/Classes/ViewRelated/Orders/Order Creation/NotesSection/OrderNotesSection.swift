@@ -24,6 +24,28 @@ private struct OrderNotesSectionContent: View {
     }
 }
 
+// MARK: Constants
+private extension OrderNotesSectionContent {
+    enum Layout {
+        static let verticalHeadlineSpacing: CGFloat = 22.0
+        static let verticalEmailSpacing: CGFloat = 4.0
+        static let verticalAddressSpacing: CGFloat = 6.0
+        static let linkButtonTopPadding: CGFloat = 12.0
+        static let linkButtonTrailingPadding: CGFloat = 22.0
+    }
+
+    enum Localization {
+        static let notes = NSLocalizedString("Customer note", comment: "Title text of the section that shows the Order notes when creating a new order")
+        static let addNotes = NSLocalizedString("Add note",
+                                                          comment: "Title text of the button that adds notes data when creating a new order")
+        static let editButton = NSLocalizedString("Edit", comment: "Button to edit a note on the New Order screen")
+        static let editButtonAccessibilityLabel = NSLocalizedString(
+            "Edit customer notes",
+            comment: "Accessibility label for the button to edit customer details on the New Order screen"
+        )
+    }
+}
+
 struct CustomerNotesSection_Previews: PreviewProvider {
     static var previews: some View {
         let emptyViewModel = NewOrderViewModel.OrderNotesDataViewModel(notes: "")

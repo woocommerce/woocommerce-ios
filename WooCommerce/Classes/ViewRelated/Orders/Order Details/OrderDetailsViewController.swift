@@ -93,10 +93,6 @@ final class OrderDetailsViewController: UIViewController {
         super.viewDidLayoutSubviews()
         tableView.updateHeaderHeight()
     }
-
-    override var shouldShowOfflineBanner: Bool {
-        return true
-    }
 }
 
 // MARK: - TableView Configuration

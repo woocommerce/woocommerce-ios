@@ -25,6 +25,10 @@ final class OrdersSplitViewWrapperController: UIViewController {
         configureChildViewController()
     }
 
+    override var shouldShowOfflineBanner: Bool {
+        return true
+    }
+
     /// Presents the Details for the Notification with the specified Identifier.
     ///
     func presentDetails(for note: Note) {

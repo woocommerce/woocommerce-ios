@@ -66,7 +66,7 @@ extension Storage.Order: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.Order {
-        let orderItems = items?.map { $0.toReadOnly() } ?? [Yosemite.OrderItem]()
+        let orderItems = orderItemsArray.map { $0.toReadOnly() }
         let orderCoupons = coupons?.map { $0.toReadOnly() } ?? [Yosemite.OrderCouponLine]()
         let orderRefunds = refunds?.map { $0.toReadOnly() } ?? [Yosemite.OrderRefundCondensed]()
         let orderShippingLines = shippingLines?.map { $0.toReadOnly() } ?? [Yosemite.ShippingLine]()
@@ -144,3 +144,9 @@ extension Storage.Order: ReadOnlyConvertible {
                        email: shippingEmail)
     }
 }
+
+extension Storage.Order {
+     var orderItemsArray: [Storage.OrderItem] {
+         return items?.toArray() ?? []
+     }
+ }

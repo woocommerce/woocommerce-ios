@@ -63,9 +63,9 @@ final class BulkUpdateViewModel {
 
     /// This is the main activation method for this view model.
     ///
-    /// This should only be called when the corresponding view was loaded.
+    /// This should called after the corresponding view was loaded.
     ///
-    func activate() {
+    func syncVariations() {
         synchProductVariations()
     }
 

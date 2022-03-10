@@ -94,18 +94,26 @@ struct WooNavigationBarStyle: ViewModifier {
 }
 
 struct LinkStyle: ViewModifier {
+    /// Environment `enabled` state.
+    ///
+    @Environment(\.isEnabled) var isEnabled
+
     func body(content: Content) -> some View {
         content
             .font(.body)
-            .foregroundColor(Color(.accent))
+            .foregroundColor(isEnabled ? Color(.accent) : Color(.textTertiary))
     }
 }
 
 struct HeadlineLinkStyle: ViewModifier {
+    /// Environment `enabled` state.
+    ///
+    @Environment(\.isEnabled) var isEnabled
+
     func body(content: Content) -> some View {
         content
             .font(.headline)
-            .foregroundColor(Color(.accent))
+            .foregroundColor(isEnabled ? Color(.accent) : Color(.textTertiary))
     }
 }
 

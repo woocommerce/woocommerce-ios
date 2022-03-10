@@ -827,6 +827,66 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
+
+    func test_delete_order_removes_order_from_storage() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let order = sampleOrder()
+        store.upsertStoredOrder(readOnlyOrder: order, in: viewStorage)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = OrderAction.deleteOrder(siteID: self.sampleSiteID, order: order, deletePermanently: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+    }
+
+    func test_delete_order_keeps_order_in_storage_if_deletion_fails() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let order = sampleOrder()
+        store.upsertStoredOrder(readOnlyOrder: order, in: viewStorage)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "generic_error")
+
+        // When
+        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = OrderAction.deleteOrder(siteID: self.sampleSiteID, order: order, deletePermanently: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 1)
+    }
+
+    func test_delete_order_does_not_keep_autodraft_order_in_storage_if_deletion_fails() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let order = sampleOrder().copy(status: .autoDraft)
+        store.upsertStoredOrder(readOnlyOrder: order, in: viewStorage)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "generic_error")
+
+        // When
+        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+            let action = OrderAction.deleteOrder(siteID: self.sampleSiteID, order: order, deletePermanently: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+    }
 }
 
 

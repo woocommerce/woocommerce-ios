@@ -1,5 +1,5 @@
 import SwiftUI
-import struct Yosemite.OrderFeeLine
+import Yosemite
 
 class FeeLineDetailsViewModel: ObservableObject {
 
@@ -135,14 +135,7 @@ class FeeLineDetailsViewModel: ObservableObject {
             return
         }
 
-        let feeLine = OrderFeeLine(feeID: 0,
-                                   name: "Fee",
-                                   taxClass: "",
-                                   taxStatus: .none,
-                                   total: priceFieldFormatter.formatAmount(finalAmountString),
-                                   totalTax: "",
-                                   taxes: [],
-                                   attributes: [])
+        let feeLine = OrderFactory.newOrderFee(total: priceFieldFormatter.formatAmount(finalAmountString))
         didSelectSave(feeLine)
     }
 }

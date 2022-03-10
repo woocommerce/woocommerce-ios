@@ -3,7 +3,7 @@
 8.8
 -----
 - [**] Now it's possible to filter orders by custom statuses. [https://github.com/woocommerce/woocommerce-ios/pull/6390]
-
+- [*] Products displayed in Order Detail now follow the same order of the web. [https://github.com/woocommerce/woocommerce-ios/pull/6401]
 
 8.7
 -----

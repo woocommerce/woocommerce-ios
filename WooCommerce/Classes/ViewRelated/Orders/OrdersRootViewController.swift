@@ -252,7 +252,7 @@ private extension OrdersRootViewController {
         }
 
         try? statusResultsController.performFetch()
-        self.resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: self.statusResultsController.fetchedObjects)
+        resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: self.statusResultsController.fetchedObjects)
     }
 
     /// If the current applied status filters does not match the existing status filters fetched from API, we reset them.

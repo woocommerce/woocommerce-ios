@@ -8,8 +8,10 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
     /// References to keep the Combine subscriptions alive within the lifecycle of the object.
     ///
     private var subscriptions: Set<AnyCancellable> = []
+    private let viewModel: NewOrderViewModel
 
     init(viewModel: NewOrderViewModel) {
+        self.viewModel = viewModel
         let view = NewOrder(viewModel: viewModel)
         super.init(rootView: view)
         rootView.dismissAction = { [weak self] in
@@ -37,13 +39,23 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
 ///
 extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        let alert = UIAlertController(title: Localization.dismissAlertTitle, message: nil, preferredStyle: .alert)
-        alert.view.tintColor = .text
-        alert.addAction(UIAlertAction(title: Localization.discardButton, style: .destructive, handler: { [weak self] _ in
+        guard viewModel.hasChanges else {
+            return true
+        }
+        let actionSheet = UIAlertController(title: Localization.dismissAlertTitle, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+        actionSheet.addAction(UIAlertAction(title: Localization.discardButton, style: .destructive, handler: { [weak self] _ in
             self?.dismiss(animated: true, completion: nil)
         }))
-        alert.addAction(UIAlertAction(title: Localization.keepEditingButton, style: .cancel))
-        present(alert, animated: true, completion: nil)
+        actionSheet.addAction(UIAlertAction(title: Localization.keepEditingButton, style: .cancel))
+
+        if let popoverController = actionSheet.popoverPresentationController {
+            let sourceView: UIView = navigationController?.navigationBar ?? view
+            popoverController.sourceView = sourceView
+            popoverController.sourceRect = sourceView.bounds
+        }
+
+        present(actionSheet, animated: true, completion: nil)
 
         return false
     }

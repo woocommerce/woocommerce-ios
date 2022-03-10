@@ -4,6 +4,9 @@ import Yosemite
 /// View Model logic for the bulk price setting screen
 ///
 final class BulkUpdatePriceSettingsViewModel {
+    typealias Section = BulkUpdatePriceViewController.Section
+    typealias Row = BulkUpdatePriceViewController.Row
+
     /// Represents the possible states for the save button.
     ///
     enum ButtonState: Equatable {
@@ -43,28 +46,36 @@ final class BulkUpdatePriceSettingsViewModel {
 
     /// This holds the latest entered price. It is used to perform validations when the user taps the save button
     /// and for creating a variations array with the new price for the bulk update Action
-    private var currentPrice: String? = nil
+    private(set) var currentPrice: String? = nil
     private let siteID: Int64
     private let productID: Int64
-    private let productVariations: [ProductVariation]
+    private let bulkUpdateOptionsModel: BulkUpdateOptionsModel
     private let editingPriceType: EditingPriceType
     private let storesManager: StoresManager
     private let priceSettingsValidator: ProductPriceSettingsValidator
+    private let currencySettings: CurrencySettings
+    private let currencyFormatter: CurrencyFormatter
 
     init(siteID: Int64,
          productID: Int64,
-         productVariations: [ProductVariation],
+         bulkUpdateOptionsModel: BulkUpdateOptionsModel,
          editingPriceType: EditingPriceType,
          priceUpdateDidFinish: @escaping () -> Void,
          storesManager: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.siteID = siteID
         self.productID = productID
-        self.productVariations = productVariations
+        self.bulkUpdateOptionsModel = bulkUpdateOptionsModel
         self.priceUpdateDidFinish = priceUpdateDidFinish
         self.editingPriceType = editingPriceType
         self.storesManager = storesManager
         self.priceSettingsValidator = ProductPriceSettingsValidator(currencySettings: currencySettings)
+        self.currencySettings = currencySettings
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+    }
+
+    var sections: [Section] {
+        return [Section(footer: footerText(), rows: [.price])]
     }
 
     /// Called when the save button is tapped
@@ -106,11 +117,15 @@ final class BulkUpdatePriceSettingsViewModel {
     /// Update the button state to enable/disable based on price value
     ///
     private func updateButtonStateBasedOnCurrentPrice() {
-        guard let price = currentPrice, price.isNotEmpty else {
-            saveButtonState = .disabled
+        // While the keyboard is in loading state do not change the state
+        guard saveButtonState != .loading else {
             return
         }
-        saveButtonState = .enabled
+        if let price = currentPrice, price.isNotEmpty {
+            saveButtonState = .enabled
+        } else {
+            saveButtonState = .disabled
+        }
     }
 
     /// Generates a new array of variations that have the new price.
@@ -118,7 +133,7 @@ final class BulkUpdatePriceSettingsViewModel {
     private func variationsWithUpdatedPrice() -> [ProductVariation] {
         switch editingPriceType {
         case .regular:
-            return productVariations.map { $0.copy(regularPrice: currentPrice) }
+            return bulkUpdateOptionsModel.productVariations.map { $0.copy(regularPrice: currentPrice) }
         }
     }
 
@@ -126,7 +141,7 @@ final class BulkUpdatePriceSettingsViewModel {
     ///
     private func validatePrice() -> BulkUpdatePriceError? {
 
-        for variation in productVariations {
+        for variation in bulkUpdateOptionsModel.productVariations {
             let regularPrice = editingPriceType == .regular ? currentPrice : variation.regularPrice
             let salePrice = variation.salePrice
 
@@ -139,5 +154,58 @@ final class BulkUpdatePriceSettingsViewModel {
         }
 
         return nil
+    }
+
+    /// Returns the footer text to be displayed with information about the current bulk price and how many variations will be updated.
+    ///
+    private func footerText() -> String {
+        let numberOfVariations = bulkUpdateOptionsModel.productVariations.count
+        let numberOfVariationsText = String.pluralize(numberOfVariations,
+                                                      singular: Localization.variationsNumberSingularFooter,
+                                                      plural: Localization.variationsNumberPlurarFooter)
+
+        switch bulkUpdateOptionsModel.bulkValueOf(editingPriceType.keyPathForPriceType()) {
+        case .none:
+            return [Localization.currentPriceNoneFooter, numberOfVariationsText].joined(separator: " ")
+        case .mixed:
+            return [Localization.currentPriceMixedFooter, numberOfVariationsText].joined(separator: " ")
+        case let .value(price):
+            let currentPriceText = String.localizedStringWithFormat(Localization.currentPriceFooter, formatPriceString(price))
+            return [currentPriceText, numberOfVariationsText].joined(separator: " ")
+        }
+    }
+
+    /// It formats a price `String` according to the current price settings.
+    ///
+    private func formatPriceString(_ price: String) -> String {
+        let currencyCode = currencySettings.currencyCode
+        let currency = currencySettings.symbol(from: currencyCode)
+
+        return currencyFormatter.formatAmount(price, with: currency) ?? ""
+    }
+
+    /// Returns the title to be displayed in the top of bulk update screen
+    ///
+    func screenTitle() -> String {
+        return Localization.screenTitle
+    }
+}
+
+private extension BulkUpdatePriceSettingsViewModel {
+    enum Localization {
+        static let screenTitle = NSLocalizedString("Update Regular Price", comment: "Title that appears on top of the of bulk price setting screen")
+        static let variationsNumberSingularFooter = NSLocalizedString("The price will be updated for %d variation.",
+                                                                       comment: "Message in the footer of bulk price setting screen (singular).")
+        static let variationsNumberPlurarFooter = NSLocalizedString("The price will be updated for %d variations.",
+                                                                     comment: "Message in the footer of bulk price setting screen (plurar).")
+        static let currentPriceFooter = NSLocalizedString("Current price is %@.",
+                                                          comment: "Message in the footer of bulk price setting screen"
+                                                             + " with the current price, when it is the same for all variations")
+        static let currentPriceMixedFooter = NSLocalizedString("Current prices are mixed.",
+                                                               comment: "Message in the footer of bulk price setting screen, when variations have"
+                                                                  + " different price values.")
+        static let currentPriceNoneFooter = NSLocalizedString("Current price is not set.",
+                                                              comment: "Message in the footer of bulk price setting screen, when none of the"
+                                                                 + " variations have price value.")
     }
 }

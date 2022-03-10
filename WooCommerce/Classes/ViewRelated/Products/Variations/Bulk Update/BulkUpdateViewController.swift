@@ -157,6 +157,16 @@ final class BulkUpdateViewController: UIViewController {
 
         noticePresenter.enqueue(notice: notice)
     }
+
+    /// Called when the price option is selected
+    ///
+    private func navigateToEditPriceSettings() {
+        let bulkUpdatePriceSettingsViewModel = viewModel.viewModelForBulkUpdatePriceOfType(.regular, priceUpdateDidFinish: { [weak self] in
+            self?.navigationController?.popToRootViewController(animated: true)
+        })
+        let viewController = BulkUpdatePriceViewController(viewModel: bulkUpdatePriceSettingsViewModel)
+        navigationController?.pushViewController(viewController, animated: true)
+    }
 }
 
 // MARK: - UITableViewDataSource Conformance
@@ -206,6 +216,15 @@ private extension BulkUpdateViewController {
 // MARK: - UITableViewDelegate Conformance
 //
 extension BulkUpdateViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let row = rowAtIndexPath(indexPath)
+
+        switch row {
+        case .regularPrice:
+            navigateToEditPriceSettings()
+        }
+    }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension

@@ -7,7 +7,7 @@ public enum CardPresentPaymentAction: Action {
     /// Sets the store to use a given payment gateway
     ///
     case use(paymentGatewayAccount: PaymentGatewayAccount)
-    
+
     /// Retrieves url of the documentation for the provided payment gateway.
     /// If no payment gateway is provided, returns url of the active payment gateway if not empty,
     /// otherwise url of wcpay documentation.

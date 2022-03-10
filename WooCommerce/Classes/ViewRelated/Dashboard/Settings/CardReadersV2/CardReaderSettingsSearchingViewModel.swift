@@ -97,7 +97,7 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
             didChangeShouldShow?(shouldShow)
         }
     }
-    
+
     private func updateLearnMoreURL() {
         let loadLearnMoreUrlAction = CardPresentPaymentAction
             .loadLearnMoreURL(preferredPaymentGateway: nil) { [weak self] result in

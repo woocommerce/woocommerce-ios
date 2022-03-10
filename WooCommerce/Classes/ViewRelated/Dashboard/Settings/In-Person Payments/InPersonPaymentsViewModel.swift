@@ -62,7 +62,7 @@ final class InPersonPaymentsViewModel: ObservableObject {
         default:
             preferredPlugin = nil
         }
-        
+
         let loadLearnMoreUrlAction = CardPresentPaymentAction
             .loadLearnMoreURL(preferredPaymentGateway: preferredPlugin) { [weak self] result in
                 self?.learnMoreURL = result

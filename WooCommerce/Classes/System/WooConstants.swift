@@ -122,7 +122,6 @@ extension WooConstants {
         /// URL for adding a payment method in WCShip extension
         ///
         case addPaymentMethodWCShip = "https://wordpress.com/me/purchases/add-payment-method"
-    
 
 #if DEBUG
         case simplePaymentsPrototypeFeedback = "https://automattic.survey.fm/woo-app-quick-order-testing"

@@ -377,8 +377,10 @@ private extension CardPresentPaymentStore {
         }
 
         switch backend {
-            case CardPresentPaymentStoreBackend.wcpay: onCompletion(URL(string: "https://docs.woocommerce.com/document/getting-started-with-in-person-payments-with-woocommerce-payments/")!)
-            case CardPresentPaymentStoreBackend.stripe: onCompletion(URL(string: "https://docs.woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/")!)
+            case CardPresentPaymentStoreBackend.wcpay:
+                onCompletion(URL(string: "https://docs.woocommerce.com/document/getting-started-with-in-person-payments-with-woocommerce-payments/")!)
+            case CardPresentPaymentStoreBackend.stripe:
+                onCompletion(URL(string: "https://docs.woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/")!)
         }
     }
 

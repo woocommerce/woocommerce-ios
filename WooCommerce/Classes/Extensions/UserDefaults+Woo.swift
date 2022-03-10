@@ -20,6 +20,7 @@ extension UserDefaults {
         case analyticsUsername
         case notificationsLastSeenTime
         case notificationsMarkAsReadCount
+        case loginSiteAddress
     }
 }
 

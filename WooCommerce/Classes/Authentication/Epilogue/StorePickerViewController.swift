@@ -259,6 +259,7 @@ private extension StorePickerViewController {
     }
 
     func stateWasUpdated() {
+        autoselectStoreIfPossible()
         preselectStoreIfPossible()
         reloadInterface()
     }
@@ -333,6 +334,20 @@ extension StorePickerViewController {
 // MARK: - Convenience Methods
 //
 private extension StorePickerViewController {
+
+    /// If the Site Picker id displayed through the site address login flow, then auto login the user into that site, If available!
+    ///
+    func autoselectStoreIfPossible() {
+        // If a site address was passed in credentials, auto login with that site
+        if let siteAddress: String = UserDefaults.standard.string(forKey: UserDefaults.Key.loginSiteAddress.rawValue),
+        let site = resultsController.fetchedObjects.filter({ $0.url == siteAddress }).first {
+            currentlySelectedSite = site
+            UserDefaults.standard.removeObject(forKey: UserDefaults.Key.loginSiteAddress.rawValue)
+            delegate?.didSelectStore(with: site.siteID) { [weak self] in
+                self?.dismiss()
+            }
+        }
+    }
 
     /// Sets the first available Store as the default one. If possible!
     ///

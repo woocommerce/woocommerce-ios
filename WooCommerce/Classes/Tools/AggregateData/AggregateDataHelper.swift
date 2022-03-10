@@ -123,7 +123,7 @@ final class AggregateDataHelper {
             )
         }
 
-        var filtered = unsortedResult.filter { $0.quantity > 0 }
+        let filtered = unsortedResult.filter { $0.quantity > 0 }
 
         // Sort elements following the previous order of the items.
         var sorted: [AggregateOrderItem] = []
@@ -132,10 +132,6 @@ final class AggregateDataHelper {
                 $0.hashValue == item.hashValue
             }) {
                 sorted.append(find)
-            }
-
-            filtered.removeAll {
-                $0.hashValue == item.hashValue
             }
         }
 

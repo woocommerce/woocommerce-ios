@@ -151,7 +151,7 @@ extension BulkUpdatePriceViewController {
     private func handleKeyboardFrameUpdate(keyboardFrame: CGRect) {
         let keyboardHeight = keyboardFrame.height
         // Home Indicator safe area height is included in the keyboardHeight
-        // and since our constant is with the bottom safe are we do not want to add it two times
+        // and since our save button constraint is with the bottom safe are we do not want to add it two times
         let bottomInset = keyboardHeight > 0 ? keyboardHeight - view.safeAreaInsets.bottom : keyboardHeight
 
         saveButtonToBottom?.constant = bottomInset + Constants.saveButtonToBottomInset

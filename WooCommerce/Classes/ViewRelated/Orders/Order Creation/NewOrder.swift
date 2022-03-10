@@ -12,10 +12,9 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
     init(viewModel: NewOrderViewModel) {
         let view = NewOrder(viewModel: viewModel)
         super.init(rootView: view)
-    }
-
-    func setDismissAction(_ dismissAction: @escaping () -> Void) {
-        rootView.dismissAction = dismissAction
+        rootView.dismissAction = { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {

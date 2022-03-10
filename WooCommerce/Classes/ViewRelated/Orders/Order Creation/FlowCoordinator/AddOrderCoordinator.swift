@@ -81,9 +81,6 @@ private extension AddOrderCoordinator {
         viewModel.onOrderCreated = onOrderCreated
 
         let viewController = NewOrderHostingController(viewModel: viewModel)
-        viewController.setDismissAction {
-            viewController.dismiss(animated: true, completion: nil)
-        }
         let newOrderNC = WooNavigationController(rootViewController: viewController)
         newOrderNC.isModalInPresentation = true
         navigationController.present(newOrderNC, animated: true)

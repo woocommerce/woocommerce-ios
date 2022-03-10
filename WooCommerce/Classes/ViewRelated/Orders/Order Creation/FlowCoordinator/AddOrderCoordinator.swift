@@ -68,7 +68,6 @@ private extension AddOrderCoordinator {
 
         let viewController = SimplePaymentsAmountHostingController(viewModel: viewModel, presentNoticePublisher: presentNoticeSubject.eraseToAnyPublisher())
         let simplePaymentsNC = WooNavigationController(rootViewController: viewController)
-        simplePaymentsNC.isModalInPresentation = true
         navigationController.present(simplePaymentsNC, animated: true)
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())

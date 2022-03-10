@@ -21,11 +21,13 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
     /// Presents notices at the system level, currently uses the main tab-bar as source view controller.
     ///
     private let systemNoticePresenter: NoticePresenter
+    private let viewModel: SimplePaymentsAmountViewModel
 
     init(viewModel: SimplePaymentsAmountViewModel,
          presentNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never>,
          systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.systemNoticePresenter = systemNoticePresenter
+        self.viewModel = viewModel
         super.init(rootView: SimplePaymentsAmount(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
@@ -72,12 +74,31 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
 /// Intercepts to the dismiss drag gesture.
 ///
 extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControllerDelegate {
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        rootView.viewModel.userDidCancelFlow()
-    }
-
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        !rootView.viewModel.disableViewActions
+        // let user swipe to dismiss after an order has been created
+        if viewModel.summaryViewModel?.navigateToPaymentMethods == true {
+            return true
+        }
+
+        let alert = UIAlertController(title: Localization.dismissAlertTitle, message: nil, preferredStyle: .alert)
+        alert.view.tintColor = .text
+        alert.addAction(UIAlertAction(title: Localization.discardButton, style: .destructive, handler: { [weak self] _ in
+            self?.dismiss(animated: true) { [weak self] in
+                self?.rootView.viewModel.userDidCancelFlow()
+            }
+        }))
+        alert.addAction(UIAlertAction(title: Localization.keepEditingButton, style: .cancel))
+        present(alert, animated: true, completion: nil)
+
+        return false
+    }
+}
+
+private extension SimplePaymentsAmountHostingController {
+    enum Localization {
+        static let dismissAlertTitle = NSLocalizedString("You have unsaved changes", comment: "Message on the alert presented when user swipes to dismiss the Simple Payments flow")
+        static let discardButton = NSLocalizedString("Discard", comment: "Discard button on the alert presented when user swipes to dismiss the Simple Payments flow")
+        static let keepEditingButton = NSLocalizedString("Keep Editing", comment: "Keep Editing button on the alert presented when user swipes to dismiss the Simple Payments flow")
     }
 }
 

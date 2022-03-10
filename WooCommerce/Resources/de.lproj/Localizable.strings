@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-09 14:54:04+0000 */
+/* Translation-Revision-Date: 2022-03-10 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -807,7 +807,7 @@
 "Card" = "Karte";
 
 /* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card" = "Die Karte wurde im Lesgerät stecken gelassen – bitte enferne die Karte und stecke sie erneut ein";
+"Card was left in reader - please remove and reinsert card" = "Die Karte wurde im Lesegerät stecken gelassen – bitte entferne die Karte und stecke sie erneut ein";
 
 /* Error message when the card is removed from the reader prematurely. */
 "Card was removed too soon - please try transaction again" = "Die Karte wurde zu früh entfernt – bitte führe die Transaktion erneut durch";
@@ -969,7 +969,7 @@
 "Connecting to reader" = "Verbindung zum Reader wird hergestellt";
 
 /* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "Zeitüberschreitung bei Verbindungsaufbau zum Kartenlesegerät – stelle sicher, dass es sich in der Nähe befindet und aufgeladen ist uns versuche es dann erneut";
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "Zeitüberschreitung bei Verbindungsaufbau zum Kartenlesegerät – stelle sicher, dass es sich in der Nähe befindet und aufgeladen ist und versuche es dann erneut";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Verbindung deines Kontos";
@@ -2401,7 +2401,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No address specified." = "Keine Adresse angegeben.";
 
 /* Error message when a card reader was expected to already have been connected. */
-"No card reader is connected - connect a reader and try again" = "Es ist kein Kartenlesegerät verbunden – verbinde ein Lesegerät und versuche es erneut";
+"No card reader is connected - connect a reader and try again" = "Es ist kein Kartenlesegerät verbunden – verbinde ein Kartenlesegerät und versuche es erneut";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "Keine Verbindung";
@@ -4060,7 +4060,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The card reader is busy executing another command - please try again" = "Das Kartenlesegerät führt gerade einen anderen Befehl aus – bitte versuche es erneut";
 
 /* Error message when the card reader is incompatible with the application. */
-"The card reader is not compatible with this application - please try updating the application or using a different reader" = "Das Kartenlesegerät ist mit dieser Anwendung nicht kompatibel – bitte aktualisiere die Anwendung oder verwende ein anderes Lesegerät";
+"The card reader is not compatible with this application - please try updating the application or using a different reader" = "Das Kartenlesegerät ist mit dieser Anwendung nicht kompatibel – bitte aktualisiere die Anwendung oder verwende ein anderes Kartenlesegerät";
 
 /* Error message when the card reader session has timed out. */
 "The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "Die Sitzung des Kartenlesegeräts ist abgelaufen – bitte trenne das Kartenlesegerät und verbinde es wieder und versuche es dann erneut";
@@ -4069,16 +4069,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "Die Software des Kartenlesegeräts ist veraltet – bitte aktualisiere die Software des Kartenlesegeräts, bevor du versuchst, Zahlungen zu verarbeiten";
 
 /* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again" = "Das Softwareupdate des Kartenlesegeräts ist aufgrund eines Kommunikationsfehlers fehlgeschlagen – bitte versuche es erneut ";
+"The card reader software update failed due to a communication error - please try again" = "Das Software-Update des Kartenlesegeräts ist aufgrund eines Kommunikationsfehlers fehlgeschlagen – bitte versuche es erneut";
 
 /* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again" = "Das Softwareupdate des Kartenlesegeräts ist aufgrund eines Problems mit dem Updateserver fehlgeschlagen – bitte versuche es erneut";
+"The card reader software update failed due to a problem with the update server - please try again" = "Das Software-Update des Kartenlesegeräts ist aufgrund eines Problems mit dem Update-Server fehlgeschlagen – bitte versuche es erneut";
 
 /* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again" = "Das Softwareupdate des Kartenlesegeräts ist unerwartet fehlgeschlagen – bitte versuche es erneut";
+"The card reader software update failed unexpectedly - please try again" = "Das Software-Update des Kartenlesegeräts ist unerwartet fehlgeschlagen – bitte versuche es erneut";
 
 /* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again" = "Das Softwareupdate des Kartenlesegeräts wurde unterbrochen, bevor es abgeschlossen wurde – bitte versuche es erneut";
+"The card reader software update was interrupted before it could complete - please try again" = "Das Software-Update des Kartenlesegeräts wurde unterbrochen, bevor es abgeschlossen wurde – bitte versuche es erneut";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of payment" = "Die Karte wurde vom Kartenlesegerät abgelehnt – bitte versuche es mit einer anderen Zahlungsmethode";
@@ -4162,7 +4162,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The stock quantity for this product. Editable." = "Menge auf Lager für dieses Produkt. Bearbeitung möglich.";
 
 /* Error message when there is an issue with the store address preventing an action (e.g. reader connection.) */
-"The store address is incomplete or missing, please update it before continuing." = "Die Adresse Shops ist unvollständig oder fehlt; bitte aktualisiere sie, bevor du fortfährst.";
+"The store address is incomplete or missing, please update it before continuing." = "Die Adresse des Shops ist unvollständig oder fehlt; bitte aktualisiere sie, bevor du fortfährst.";
 
 /* Error message when there is an issue with the store postal code preventing an action (e.g. reader connection.) */
 "The store postal code is invalid or missing, please update it before continuing." = "Die Postleitzahl des Shops ist ungültig oder fehlt; bitte aktualisiere sie, bevor du fortfährst.";
@@ -4422,7 +4422,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try with the site address" = "Mit der Website-Adresse versuchen";
 
 /* Message when a card is declined due to a potentially temporary problem. */
-"Trying again may succeed, or try another means of payment" = "Vielleicht ist der erneute Versuch erfolgreich; oder versuche es mit einer anderen Zahlungsmethode ";
+"Trying again may succeed, or try another means of payment" = "Vielleicht ist der erneute Versuch erfolgreich; oder versuche es mit einer anderen Zahlungsmethode";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Schalte das Kartenlesegerät ein und lege es neben das Mobilgerät";
@@ -4471,7 +4471,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to connect to reader - another reader is already connected" = "Kartenlesegerät konnte nicht verbunden werden – es ist bereits ein anderes Kartenlesegerät verbunden";
 
 /* Error message the card reader battery level is too low to connect to the phone or tablet. */
-"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "Kartenlesegerät konnte nicht verbunden werden – der Akkustand des Lesegeräts ist extrem niedrig – bitte lade das Lesegerät auf und versuche es erneut.";
+"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "Kartenlesegerät konnte nicht verbunden werden – der Akkustand des Kartenlesegeräts ist extrem niedrig – bitte lade das Kartenlesegerät auf und versuche es erneut.";
 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "Es konnte keine neue Bestellung erstellt werden";
@@ -4528,7 +4528,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to read inserted card - please try removing and inserting card again" = "Eingesteckte Karte konnte nicht gelesen werden – bitte entferne die Karte und stecke sie erneut ein";
 
 /* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again" = "Durchgezogene Karte konnte nicht gelesen werden – bitte versuche erneut, die Karte durchzuziehen ";
+"Unable to read swiped card - please try swiping again" = "Durchgezogene Karte konnte nicht gelesen werden – bitte versuche erneut, die Karte durchzuziehen";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Unter dieser URL kann keine WordPress-Website gefunden werden. Tippe auf „Brauchst du weitere Hilfe?“, um die FAQ zu sehen.";
@@ -4552,7 +4552,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Unable to update address." = "Adresse konnte nicht aktualisiert werden.";
 
 /* Error message when the card reader battery level is too low to safely perform a software update. */
-"Unable to update card reader software - the reader battery is too low" = "Software des Kartenlesegeräts konnte nicht aktualisiert werden – der Akkustand des Lesegeräts ist zu niedrig";
+"Unable to update card reader software - the reader battery is too low" = "Software des Kartenlesegeräts konnte nicht aktualisiert werden – der Akkustand des Kartenlesegeräts ist zu niedrig";
 
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "Persönliche Zahlungen konnten für diesen Store nicht verifiziert werden.";

@@ -81,7 +81,6 @@ private extension AddOrderCoordinator {
 
         let viewController = NewOrderHostingController(viewModel: viewModel)
         let newOrderNC = WooNavigationController(rootViewController: viewController)
-        newOrderNC.isModalInPresentation = true
         navigationController.present(newOrderNC, animated: true)
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())

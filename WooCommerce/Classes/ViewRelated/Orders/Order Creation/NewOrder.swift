@@ -20,6 +20,50 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Set presentation delegate to track the user dismiss flow event
+        if let navigationController = navigationController {
+            navigationController.presentationController?.delegate = self
+        } else {
+            presentationController?.delegate = self
+        }
+    }
+}
+
+/// Intercepts to the dismiss drag gesture.
+///
+extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        let alert = UIAlertController(title: Localization.dismissAlertTitle, message: nil, preferredStyle: .alert)
+        alert.view.tintColor = .text
+        alert.addAction(UIAlertAction(title: Localization.discardButton, style: .destructive, handler: { [weak self] _ in
+            self?.dismiss(animated: true, completion: nil)
+        }))
+        alert.addAction(UIAlertAction(title: Localization.keepEditingButton, style: .cancel))
+        present(alert, animated: true, completion: nil)
+
+        return false
+    }
+}
+
+private extension NewOrderHostingController {
+    enum Localization {
+        static let dismissAlertTitle = NSLocalizedString(
+            "You have unsaved changes",
+            comment: "Message on the alert presented when user swipes to dismiss the Simple Payments flow"
+        )
+        static let discardButton = NSLocalizedString(
+            "Discard",
+            comment: "Discard button on the alert presented when user swipes to dismiss the Simple Payments flow"
+        )
+        static let keepEditingButton = NSLocalizedString(
+            "Keep Editing",
+            comment: "Keep Editing button on the alert presented when user swipes to dismiss the Simple Payments flow"
+        )
+    }
 }
 
 /// View to create a new manual order

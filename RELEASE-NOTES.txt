@@ -2,7 +2,7 @@
 
 8.8
 -----
-
+- [*] Fixed issue presenting Edit Customer Note screen as a modal on large screens. [https://github.com/woocommerce/woocommerce-ios/pull/6406]
 
 8.7
 -----

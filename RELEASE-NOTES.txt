@@ -2,7 +2,7 @@
 
 8.8
 -----
-
+- [*] Products displayed in Order Detail now follow the same order of the web. [https://github.com/woocommerce/woocommerce-ios/pull/6401]
 
 8.7
 -----

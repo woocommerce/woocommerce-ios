@@ -331,7 +331,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func shouldPresentSignupEpilogue() -> Bool {
         return false
     }
-    
+
     /// Indicates if we want to store the login site address.
     ///
     func shouldStoreLoginSiteAddress() -> Bool {

@@ -76,37 +76,43 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
 extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
         // let user swipe to dismiss after an order has been created
-        if viewModel.summaryViewModel?.navigateToPaymentMethods == true {
+        if !viewModel.disablesSwipeToDismiss {
             return true
         }
 
-        let alert = UIAlertController(title: Localization.dismissAlertTitle, message: nil, preferredStyle: .alert)
-        alert.view.tintColor = .text
-        alert.addAction(UIAlertAction(title: Localization.discardButton, style: .destructive, handler: { [weak self] _ in
+        let actionSheet = UIAlertController(title: Localization.dismissTitle, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+        actionSheet.addAction(UIAlertAction(title: Localization.discardButton, style: .destructive, handler: { [weak self] _ in
             self?.dismiss(animated: true) { [weak self] in
                 self?.rootView.viewModel.userDidCancelFlow()
             }
         }))
-        alert.addAction(UIAlertAction(title: Localization.keepEditingButton, style: .cancel))
-        present(alert, animated: true, completion: nil)
+        actionSheet.addAction(UIAlertAction(title: Localization.keepEditingButton, style: .cancel))
 
+        if let popoverController = actionSheet.popoverPresentationController {
+            let sourceView: UIView = navigationController?.navigationBar ?? view
+            popoverController.sourceView = sourceView
+            popoverController.sourceRect = sourceView.bounds
+        }
+
+        present(actionSheet, animated: true, completion: nil)
         return false
     }
 }
 
 private extension SimplePaymentsAmountHostingController {
     enum Localization {
-        static let dismissAlertTitle = NSLocalizedString(
+        static let dismissTitle = NSLocalizedString(
             "You have unsaved changes",
-            comment: "Message on the alert presented when user swipes to dismiss the Simple Payments flow"
+            comment: "Message on the action sheet presented when user swipes to dismiss the Simple Payments flow"
         )
         static let discardButton = NSLocalizedString(
             "Discard",
-            comment: "Discard button on the alert presented when user swipes to dismiss the Simple Payments flow"
+            comment: "Discard button on the action sheet presented when user swipes to dismiss the Simple Payments flow"
         )
         static let keepEditingButton = NSLocalizedString(
             "Keep Editing",
-            comment: "Keep Editing button on the alert presented when user swipes to dismiss the Simple Payments flow"
+            comment: "Keep Editing button on the action sheet presented when user swipes to dismiss the Simple Payments flow"
         )
     }
 }

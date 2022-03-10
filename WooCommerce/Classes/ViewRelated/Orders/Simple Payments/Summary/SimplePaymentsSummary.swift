@@ -177,15 +177,9 @@ private struct PaymentsSection: View {
                         .padding(.horizontal)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    if viewModel.showTaxBreakup {
-                        ForEach(viewModel.taxLines) { taxLine in
-                            TitleAndValueRow(title: taxLine.title,
-                                             value: .content(taxLine.value),
-                                             selectionStyle: .none) {}
-                        }
-                    } else {
-                        TitleAndValueRow(title: String(format: SimplePaymentsSummary.Localization.taxRate, viewModel.taxRate),
-                                         value: .content(viewModel.taxAmount),
+                    ForEach(viewModel.taxLines) { taxLine in
+                        TitleAndValueRow(title: taxLine.title,
+                                         value: .content(taxLine.value),
                                          selectionStyle: .none) {}
                     }
                 }
@@ -370,7 +364,6 @@ struct SimplePaymentsSummary_Preview: PreviewProvider {
                                                                     value: taxAmount)
         return .init(providedAmount: "40.0",
                      totalWithTaxes: "$42.3",
-                     taxAmount: taxAmount,
                      taxLines: [taxLine],
                      noteContent: noteContent)
     }

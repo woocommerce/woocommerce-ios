@@ -331,6 +331,18 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func shouldPresentSignupEpilogue() -> Bool {
         return false
     }
+    
+    /// Indicates if we want to store the login site address.
+    ///
+    func shouldStoreLoginSiteAddress() -> Bool {
+        return true
+    }
+
+    /// Indicates if we want to store the login site address.
+    ///
+    func storeLoginSiteAddress(_ siteAddress: String) -> Void {
+        UserDefaults.standard[.loginSiteAddress] = siteAddress
+    }
 
     /// Synchronizes the specified WordPress Account.
     ///

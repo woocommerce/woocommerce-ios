@@ -258,9 +258,9 @@ private extension OrdersRootViewController {
     /// If the current applied status filters does not match the existing status filters fetched from API, we reset them.
     ///
     func resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: [OrderStatus]) {
-        for orderStatus in self.statusResultsController.fetchedObjects {
-            if self.filters.orderStatus?.contains(orderStatus.status) == false {
-                self.clearFilters()
+        for orderStatus in orderStatuses {
+            if filters.orderStatus?.contains(orderStatus.status) == false {
+                clearFilters()
             }
         }
     }

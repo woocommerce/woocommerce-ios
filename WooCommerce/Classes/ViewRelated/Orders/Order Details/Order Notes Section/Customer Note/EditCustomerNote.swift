@@ -80,26 +80,24 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
     @ObservedObject private(set) var viewModel: ViewModel
 
     var body: some View {
-        NavigationView {
-            TextEditor(text: $viewModel.newNote)
-                .focused()
-                .padding()
-                .navigationTitle(Localization.title)
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationViewStyle(StackNavigationViewStyle())
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(Localization.cancel, action: {
-                            viewModel.userDidCancelFlow()
-                            dismiss()
-                        })
-                    }
-                    ToolbarItem(placement: .confirmationAction) {
-                        navigationBarTrailingItem()
-                    }
+        TextEditor(text: $viewModel.newNote)
+            .focused()
+            .padding()
+            .navigationTitle(Localization.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationViewStyle(StackNavigationViewStyle())
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.cancel, action: {
+                        viewModel.userDidCancelFlow()
+                        dismiss()
+                    })
                 }
-        }
-        .wooNavigationBarStyle()
+                ToolbarItem(placement: .confirmationAction) {
+                    navigationBarTrailingItem()
+                }
+            }
+            .wooNavigationBarStyle()
     }
 
     /// Decides if the navigation trailing item should be a done button or a loading indicator.

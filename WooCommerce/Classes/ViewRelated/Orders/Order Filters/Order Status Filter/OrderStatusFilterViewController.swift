@@ -18,7 +18,7 @@ final class OrderStatusFilterViewController: UIViewController {
 
     private var selected: [OrderStatusEnum]
 
-    private var allowedStatuses: [OrderStatus] = []
+    private let allowedStatuses: [OrderStatus]
 
     /// Init
     ///

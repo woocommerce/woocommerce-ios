@@ -44,7 +44,12 @@ final class InPersonPaymentsViewModel: ObservableObject {
         case .pluginUnsupportedVersion(let plugin),
                 .pluginNotActivated(let plugin),
                 .pluginInTestModeWithLiveStripeAccount(let plugin),
-                .pluginSetupNotCompleted(let plugin):
+                .pluginSetupNotCompleted(let plugin),
+                .countryNotSupportedStripe(let plugin, _),
+                .stripeAccountUnderReview(let plugin),
+                .stripeAccountPendingRequirement(let plugin, _),
+                .stripeAccountOverdueRequirement(let plugin),
+                .stripeAccountRejected(let plugin):
             return getLearnMoreUrl(plugin: plugin)
         default:
             return getLearnMoreUrl(plugin: nil)

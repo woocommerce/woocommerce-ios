@@ -142,7 +142,14 @@ struct CardReaderSettingsSearchingView: View {
                 .padding(.bottom, 8)
 
             InPersonPaymentsLearnMore()
-                .customOpenURL(action: {url in showURL?(url)})
+                .customOpenURL(action: { url in
+                    switch url {
+                        case InPersonPaymentsLearnMore.learnMoreURL:
+                            showURL?(....)
+                        default:
+                            showURL?(url)
+                    }
+                })
         }
             .frame(
                 maxWidth: .infinity,

@@ -12,6 +12,16 @@ final class NewOrderViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
+    /// Indicates whether user has made any changes
+    ///
+    var hasChanges: Bool {
+        productRows.isNotEmpty ||
+        selectedProductViewModel != nil ||
+        currentOrderStatus != .pending ||
+        paymentDataViewModel.hasChangesMade ||
+        customerDataViewModel.isDataAvailable
+    }
+
     /// Active navigation bar trailing item.
     /// Defaults to create button.
     ///
@@ -362,6 +372,19 @@ extension NewOrderViewModel {
 
         let shippingLineViewModel: ShippingLineDetailsViewModel
         let feeLineViewModel: FeeLineDetailsViewModel
+
+        /// Indicates whether there's any change made
+        ///
+        var hasChangesMade: Bool {
+            shouldShowShippingTotal ||
+            shippingTotal.isNotEmpty ||
+            shippingMethodTitle.isNotEmpty ||
+            shouldShowFees ||
+            feesBaseAmountForPercentage != 0 ||
+            shouldShowTaxes ||
+            taxesTotal.isNotEmpty ||
+            orderTotal.isNotEmpty
+        }
 
         init(itemsTotal: String = "",
              shouldShowShippingTotal: Bool = false,

@@ -96,9 +96,18 @@ extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControlle
 
 private extension SimplePaymentsAmountHostingController {
     enum Localization {
-        static let dismissAlertTitle = NSLocalizedString("You have unsaved changes", comment: "Message on the alert presented when user swipes to dismiss the Simple Payments flow")
-        static let discardButton = NSLocalizedString("Discard", comment: "Discard button on the alert presented when user swipes to dismiss the Simple Payments flow")
-        static let keepEditingButton = NSLocalizedString("Keep Editing", comment: "Keep Editing button on the alert presented when user swipes to dismiss the Simple Payments flow")
+        static let dismissAlertTitle = NSLocalizedString(
+            "You have unsaved changes",
+            comment: "Message on the alert presented when user swipes to dismiss the Simple Payments flow"
+        )
+        static let discardButton = NSLocalizedString(
+            "Discard",
+            comment: "Discard button on the alert presented when user swipes to dismiss the Simple Payments flow"
+        )
+        static let keepEditingButton = NSLocalizedString(
+            "Keep Editing",
+            comment: "Keep Editing button on the alert presented when user swipes to dismiss the Simple Payments flow"
+        )
     }
 }
 

@@ -95,9 +95,10 @@ final class OrdersRootViewController: UIViewController {
         /// We sync the local order settings for configuring local statuses and date range filters.
         /// If there are some info stored when this screen is loaded, the data will be updated using the stored filters.
         ///
-        syncLocalOrdersSettings { _ in }
-
-        configureStatusResultsController()
+        syncLocalOrdersSettings { [weak self] _ in
+            guard let self = self else { return }
+            self.configureStatusResultsController()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -252,7 +253,7 @@ private extension OrdersRootViewController {
         }
 
         try? statusResultsController.performFetch()
-        resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: self.statusResultsController.fetchedObjects)
+        resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: statusResultsController.fetchedObjects)
     }
 
     /// If the current applied status filters does not match the existing status filters fetched from API, we reset them.

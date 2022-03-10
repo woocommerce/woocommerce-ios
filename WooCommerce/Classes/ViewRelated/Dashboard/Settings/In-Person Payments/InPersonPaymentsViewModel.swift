@@ -4,15 +4,14 @@ import Yosemite
 final class InPersonPaymentsViewModel: ObservableObject {
     @Published var state: CardPresentPaymentOnboardingState
     var userIsAdministrator: Bool
-    var learnMoreURL: URL {
-        get { return getLearnMoreUrl(state: state) }
-    }
+    var learnMoreURL: URL? = nil
     private let useCase = CardPresentPaymentsOnboardingUseCase()
-
+    let stores: StoresManager
 
     /// Initializes the view model for a specific site
     ///
-    init() {
+    init(stores: StoresManager = ServiceLocator.stores) {
+        self.stores = stores
         state = useCase.state
         userIsAdministrator = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
 
@@ -20,6 +19,9 @@ final class InPersonPaymentsViewModel: ObservableObject {
             // Debounce values to prevent the loading screen flashing when there is no connection
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
             .removeDuplicates()
+            .handleEvents(receiveOutput: { [weak self] result in
+                self?.updateLearnMoreURL(state: result)
+            })
             .handleEvents(receiveOutput: trackState(_:))
             .assign(to: &$state)
         refresh()
@@ -28,10 +30,15 @@ final class InPersonPaymentsViewModel: ObservableObject {
     /// Initializes the view model with a fixed state that never changes.
     /// This is useful for SwiftUI previews or testing, but shouldn't be used in production
     ///
-    init(fixedState: CardPresentPaymentOnboardingState, fixedUserIsAdministrator: Bool = false) {
-        state = fixedState
-        userIsAdministrator = fixedUserIsAdministrator
-    }
+    init(
+        fixedState: CardPresentPaymentOnboardingState,
+        fixedUserIsAdministrator: Bool = false,
+        stores: StoresManager = ServiceLocator.stores) {
+            self.stores = stores
+            state = fixedState
+            userIsAdministrator = fixedUserIsAdministrator
+            updateLearnMoreURL(state: fixedState)
+        }
 
     /// Synchronizes the required data from the server and recalculates the state
     ///
@@ -39,7 +46,8 @@ final class InPersonPaymentsViewModel: ObservableObject {
         useCase.refresh()
     }
 
-    private func getLearnMoreUrl(state: CardPresentPaymentOnboardingState) -> URL {
+    private func updateLearnMoreURL(state: CardPresentPaymentOnboardingState) {
+        let preferredPlugin: CardPresentPaymentsPlugins?
         switch state {
         case .pluginUnsupportedVersion(let plugin),
                 .pluginNotActivated(let plugin),
@@ -50,19 +58,16 @@ final class InPersonPaymentsViewModel: ObservableObject {
                 .stripeAccountPendingRequirement(let plugin, _),
                 .stripeAccountOverdueRequirement(let plugin),
                 .stripeAccountRejected(let plugin):
-            return getLearnMoreUrl(plugin: plugin)
+            preferredPlugin = plugin
         default:
-            return getLearnMoreUrl(plugin: nil)
+            preferredPlugin = nil
         }
-    }
-
-    private func getLearnMoreUrl(plugin: CardPresentPaymentsPlugins?) -> URL {
-        switch plugin {
-            case .stripe:
-                return WooConstants.URLs.inPersonPaymentsLearnMoreStripe.asURL()
-            case .wcPay, nil:
-                return WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
-        }
+        
+        let loadLearnMoreUrlAction = CardPresentPaymentAction
+            .loadLearnMoreURL(preferredPaymentGateway: preferredPlugin) { [weak self] result in
+                self?.learnMoreURL = result
+            }
+        stores.dispatch(loadLearnMoreUrlAction)
     }
 }
 

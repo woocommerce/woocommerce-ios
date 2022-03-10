@@ -6,6 +6,8 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
+    var learnMoreURL: URL? = nil
+    let stores: StoresManager
 
     private(set) var noConnectedReader: CardReaderSettingsTriState = .isUnknown {
         didSet {
@@ -29,13 +31,17 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
         foundReader?.id
     }
 
-    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil) {
+    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil,
+         stores: StoresManager = ServiceLocator.stores
+    ) {
+        self.stores = stores
         self.didChangeShouldShow = didChangeShouldShow
         self.siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
         self.knownReaderProvider = knownReaderProvider
 
         beginKnownReaderObservation()
         beginConnectedReaderObservation()
+        updateLearnMoreURL()
     }
 
     deinit {
@@ -90,5 +96,13 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
         if didChange {
             didChangeShouldShow?(shouldShow)
         }
+    }
+    
+    private func updateLearnMoreURL() {
+        let loadLearnMoreUrlAction = CardPresentPaymentAction
+            .loadLearnMoreURL(preferredPaymentGateway: nil) { [weak self] result in
+                self?.learnMoreURL = result
+            }
+        stores.dispatch(loadLearnMoreUrlAction)
     }
 }

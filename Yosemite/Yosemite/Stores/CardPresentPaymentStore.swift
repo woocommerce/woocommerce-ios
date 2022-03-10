@@ -58,6 +58,9 @@ public final class CardPresentPaymentStore: Store {
         switch action {
         case .use(let account):
             use(paymentGatewayAccount: account)
+        case .loadLearnMoreURL(let preferredPaymentGateway,
+                               let completion):
+            loadLearnMoreUrl(preferredPaymentGateway: preferredPaymentGateway, onCompletion: completion)
         case .loadAccounts(let siteID, let onCompletion):
             loadAccounts(siteID: siteID,
                          onCompletion: onCompletion)
@@ -362,6 +365,21 @@ private extension CardPresentPaymentStore {
         }
 
         usingBackend = .wcpay
+    }
+
+    func loadLearnMoreUrl(preferredPaymentGateway: CardPresentPaymentsPlugins?, onCompletion: (URL) -> Void) {
+        let backend: CardPresentPaymentStoreBackend
+
+        switch preferredPaymentGateway {
+            case .wcPay: backend = CardPresentPaymentStoreBackend.wcpay
+            case .stripe: backend = CardPresentPaymentStoreBackend.stripe
+            case nil: backend = usingBackend
+        }
+
+        switch backend {
+            case CardPresentPaymentStoreBackend.wcpay: onCompletion(URL(string: "https://docs.woocommerce.com/document/getting-started-with-in-person-payments-with-woocommerce-payments/")!)
+            case CardPresentPaymentStoreBackend.stripe: onCompletion(URL(string: "https://docs.woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/")!)
+        }
     }
 
     /// Loads the account corresponding to the currently selected backend. Deletes the other (if it exists).

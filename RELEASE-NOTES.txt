@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+8.8
+-----
+- [*] Products displayed in Order Detail now follow the same order of the web. [https://github.com/woocommerce/woocommerce-ios/pull/6401]
+
 8.7
 -----
 - [**] In-Person Payments: Added card details to refund confirmation screen to help with refunding to the payment card [https://github.com/woocommerce/woocommerce-ios/pull/6241]

@@ -55,7 +55,7 @@ extension Order {
     @NSManaged public var total: String?
     @NSManaged public var totalTax: String?
     @NSManaged public var coupons: Set<OrderCoupon>?
-    @NSManaged public var items: Set<OrderItem>?
+    @NSManaged public var items: NSOrderedSet?
     @NSManaged public var notes: Set<OrderNote>?
     @NSManaged public var searchResults: Set<OrderSearchResults>?
     @NSManaged public var refunds: Set<OrderRefundCondensed>?
@@ -102,6 +102,24 @@ extension Order {
 // MARK: Generated accessors for items
 extension Order {
 
+    @objc(insertObject:inItemsAtIndex:)
+    @NSManaged public func insertIntoItems(_ value: OrderItem, at idx: Int)
+
+    @objc(removeObjectFromItemsAtIndex:)
+    @NSManaged public func removeFromItems(at idx: Int)
+
+    @objc(insertItems:atIndexes:)
+    @NSManaged public func insertIntoItems(_ values: [OrderItem], at indexes: NSIndexSet)
+
+    @objc(removeItemsAtIndexes:)
+    @NSManaged public func removeFromItems(at indexes: NSIndexSet)
+
+    @objc(replaceObjectInItemsAtIndex:withObject:)
+    @NSManaged public func replaceItems(at idx: Int, with value: OrderItem)
+
+    @objc(replaceItemsAtIndexes:withItems:)
+    @NSManaged public func replaceItems(at indexes: NSIndexSet, with values: [OrderItem])
+
     @objc(addItemsObject:)
     @NSManaged public func addToItems(_ value: OrderItem)
 
@@ -109,13 +127,12 @@ extension Order {
     @NSManaged public func removeFromItems(_ value: OrderItem)
 
     @objc(addItems:)
-    @NSManaged public func addToItems(_ values: NSSet)
+    @NSManaged public func addToItems(_ values: NSOrderedSet)
 
     @objc(removeItems:)
-    @NSManaged public func removeFromItems(_ values: NSSet)
+    @NSManaged public func removeFromItems(_ values: NSOrderedSet)
 
 }
-
 // MARK: Generated accessors for notes
 extension Order {
 

@@ -159,7 +159,7 @@ final class NewOrderViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
-         enableRemoteSync: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreationRemoteSynchronizer)) {
+         enableRemoteSync: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation)) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -437,7 +437,8 @@ private extension NewOrderViewModel {
     ///
     func configureSyncErrors() {
         orderSynchronizer.statePublisher
-            .map { state in
+            .map { [weak self] state in
+                guard let self = self else { return nil }
                 switch state {
                 case .error(let error):
                     DDLogError("⛔️ Error syncing new order remotely: \(error)")

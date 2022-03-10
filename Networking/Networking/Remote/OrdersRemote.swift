@@ -238,6 +238,22 @@ public class OrdersRemote: Remote {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Deletes the given order.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site which hosts the Order.
+    ///   - orderID: Identifier of the Order to be deleted.
+    ///   - force: If true, the Order will be permanently deleted.
+    ///   - completion: Closure to be executed upon completion.
+    ///
+    public func deleteOrder(for siteID: Int64, orderID: Int64, force: Bool, completion: @escaping (Result<Order, Error>) -> Void) {
+        let path = "\(Constants.ordersPath)/\(orderID)"
+        let parameters = [ParameterKeys.force: String(force)]
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .delete, siteID: siteID, path: path, parameters: parameters)
+        let mapper = OrderMapper(siteID: siteID)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 
@@ -266,6 +282,7 @@ public extension OrdersRemote {
         static let fields: String           = "_fields"
         static let after: String            = "after"
         static let before: String           = "before"
+        static let force: String            = "force"
     }
 
     enum ParameterValues {
@@ -287,7 +304,7 @@ public extension OrdersRemote {
 
     /// Order fields supported for update
     ///
-    enum UpdateOrderField {
+    enum UpdateOrderField: CaseIterable {
         case customerNote
         case shippingAddress
         case billingAddress

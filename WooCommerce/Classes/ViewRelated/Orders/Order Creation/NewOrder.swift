@@ -103,11 +103,6 @@ struct NewOrder: View {
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button(Localization.cancelButton) {
-                    dismissAction()
-                }
-            }
             ToolbarItem(placement: .confirmationAction) {
                 switch viewModel.navigationTrailingItem {
                 case .create:
@@ -202,7 +197,6 @@ private extension NewOrder {
 
     enum Localization {
         static let title = NSLocalizedString("New Order", comment: "Title for the order creation screen")
-        static let cancelButton = NSLocalizedString("Cancel", comment: "Button to dismiss the New Order screen")
         static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the New Order screen")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating a new order")
         static let addProduct = NSLocalizedString("Add Product", comment: "Title text of the button that adds a product when creating a new order")

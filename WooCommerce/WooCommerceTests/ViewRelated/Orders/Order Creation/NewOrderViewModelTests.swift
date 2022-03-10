@@ -2,7 +2,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
-class NewOrderViewModelTests: XCTestCase {
+final class NewOrderViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
     let sampleProductID: Int64 = 5
@@ -531,6 +531,58 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "$2.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 2.50)
 
+    }
+
+    func test_hasChanges_returns_false_initially() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        // When
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, stores: stores)
+
+        // Then
+        XCTAssertFalse(viewModel.hasChanges)
+    }
+
+    func test_hasChanges_returns_true_when_product_quantity_changes() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        viewModel.addProductViewModel.selectProduct(product.productID)
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    func test_hasChanges_returns_true_when_order_status_is_updated() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        viewModel.updateOrderStatus(newStatus: .completed)
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    func test_hasChanges_returns_true_when_customer_information_is_updated() {
+        // Given
+        let storageManager = MockStorageManager()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let addressViewModel = viewModel.createOrderAddressFormViewModel()
+
+        // When
+        addressViewModel.fields.firstName = sampleAddress1().firstName
+        addressViewModel.fields.lastName = sampleAddress1().lastName
+        addressViewModel.saveAddress(onFinish: { _ in })
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
     }
 }
 

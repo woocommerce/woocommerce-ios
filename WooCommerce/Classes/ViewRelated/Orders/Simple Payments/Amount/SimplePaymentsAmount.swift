@@ -76,7 +76,7 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
 extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
         // let user swipe to dismiss after an order has been created
-        if !viewModel.disablesSwipeToDismiss {
+        if !viewModel.shouldDisableSwipeToDismiss {
             return true
         }
 

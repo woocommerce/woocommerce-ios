@@ -162,7 +162,8 @@ final class BulkUpdateViewController: UIViewController {
     ///
     private func navigateToEditPriceSettings() {
         let bulkUpdatePriceSettingsViewModel = viewModel.viewModelForBulkUpdatePriceOfType(.regular, priceUpdateDidFinish: { [weak self] in
-            self?.navigationController?.popToRootViewController(animated: true)
+            guard let self = self else { return }
+            self.navigationController?.popToViewController(self, animated: true)
         })
         let viewController = BulkUpdatePriceViewController(viewModel: bulkUpdatePriceSettingsViewModel)
         navigationController?.pushViewController(viewController, animated: true)

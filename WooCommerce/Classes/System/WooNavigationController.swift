@@ -21,7 +21,9 @@ class WooNavigationController: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
         super.delegate = navigationDelegate
-        extendedLayoutIncludesOpaqueBars = true
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            extendedLayoutIncludesOpaqueBars = true
+        }
     }
 
     /// Sets the status bar of the pushed view to white.
@@ -57,7 +59,9 @@ private class WooNavigationControllerDelegate: NSObject, UINavigationControllerD
     /// Configures the back button for the managed `ViewController` and forwards the event to the children delegate.
     ///
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        viewController.extendedLayoutIncludesOpaqueBars = true
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            viewController.extendedLayoutIncludesOpaqueBars = true
+        }
         currentController = viewController
         configureOfflineBanner(for: viewController)
         configureBackButton(for: viewController)
@@ -137,6 +141,7 @@ private extension WooNavigationControllerDelegate {
         offlineBannerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(offlineBannerView)
 
+        // TODO-6381: fix issue with zero extra bottom space for split view
         let extraBottomSpace = viewController.hidesBottomBarWhenPushed ? navigationController.view.safeAreaInsets.bottom : 0
         NSLayoutConstraint.activate([
             offlineBannerView.heightAnchor.constraint(equalToConstant: OfflineBannerView.height),

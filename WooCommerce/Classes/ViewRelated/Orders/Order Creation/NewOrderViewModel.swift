@@ -136,6 +136,8 @@ final class NewOrderViewModel: ObservableObject {
     /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
     func saveFeeLine(_ feeLine: OrderFeeLine?) {
         orderSynchronizer.setFee.send(feeLine)
+
+        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: .creation))
     }
 
     // MARK: -

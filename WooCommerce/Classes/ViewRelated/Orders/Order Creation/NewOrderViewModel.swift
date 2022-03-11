@@ -557,6 +557,7 @@ private extension NewOrderViewModel {
     /// Tracks when customer details have been added
     ///
     func trackCustomerDetailsAdded() {
+        guard customerDataViewModel.isDataAvailable else { return }
         let areAddressesDifferent: Bool = {
             guard let billingAddress = orderSynchronizer.order.billingAddress, let shippingAddress = orderSynchronizer.order.shippingAddress else {
                 return false
@@ -573,7 +574,7 @@ private extension NewOrderViewModel {
     /// or figure out a better way to get the product count.
     ///
     func trackCreateButtonTapped() {
-        let hasCustomerDetails = orderSynchronizer.order.billingAddress != nil || orderSynchronizer.order.shippingAddress != nil
+        let hasCustomerDetails = customerDataViewModel.isDataAvailable
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderSynchronizer.order.status,
                                                                                 productCount: orderSynchronizer.order.items.count,
                                                                                 hasCustomerDetails: hasCustomerDetails,

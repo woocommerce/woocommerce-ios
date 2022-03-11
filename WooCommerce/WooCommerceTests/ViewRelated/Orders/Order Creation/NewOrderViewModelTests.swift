@@ -588,6 +588,40 @@ class NewOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(analytics.receivedEvents.isEmpty)
     }
+
+    func test_customer_details_tracked_when_added() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let addressViewModel = viewModel.createOrderAddressFormViewModel()
+
+        // When
+        addressViewModel.fields.address1 = sampleAddress1().address1
+        addressViewModel.showDifferentAddressForm = true
+        addressViewModel.saveAddress(onFinish: { _ in })
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderCustomerAdd.rawValue])
+
+        let flowProperty = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
+        let hasDifferentShippingDetailsProperty = try XCTUnwrap(analytics.receivedProperties.first?["has_different_shipping_details"] as? Bool)
+        XCTAssertEqual(flowProperty, "creation")
+        XCTAssertTrue(hasDifferentShippingDetailsProperty)
+    }
+
+    func test_customer_details_not_tracked_when_removed() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let addressViewModel = viewModel.createOrderAddressFormViewModel()
+
+        // When
+        addressViewModel.fields.address1 = ""
+        addressViewModel.saveAddress(onFinish: { _ in })
+
+        // Then
+        XCTAssertTrue(analytics.receivedEvents.isEmpty)
+    }
 }
 
 private extension MockStorageManager {

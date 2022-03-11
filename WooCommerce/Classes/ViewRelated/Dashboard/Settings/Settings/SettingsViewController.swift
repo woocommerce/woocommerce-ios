@@ -84,6 +84,8 @@ private extension SettingsViewController {
         footerView.iconColor = .primary
         footerView.footnote.textAlignment = .center
         footerView.footnote.delegate = self
+        footerView.icon.addGestureRecognizer(crashDebugMenuGestureRecognizer)
+        footerView.icon.isUserInteractionEnabled = true
 
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
@@ -220,6 +222,49 @@ private extension SettingsViewController {
     }
 }
 
+// MARK: - Crash Debug Menu
+//
+extension SettingsViewController {
+
+    private var crashDebugMenuGestureRecognizer: UITapGestureRecognizer {
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didInvokeCrashDebugMenu))
+        gestureRecognizer.numberOfTapsRequired = 4
+        return gestureRecognizer
+    }
+
+    @objc func didInvokeCrashDebugMenu(_ sender: UITapGestureRecognizer? = nil) {
+
+        let menuTitle = NSLocalizedString(
+            "Crash Debug Menu",
+            comment: "The title for a menu that helps debug crashes in production builds"
+        )
+
+        let crashDebugMenu = UIAlertController(title: menuTitle, message: nil, preferredStyle: .actionSheet)
+        crashDebugMenu.addAction(crashDebugMenuCrashAction)
+        crashDebugMenu.addAction(crashDebugMenuCancelAction)
+
+        present(crashDebugMenu, animated: true, completion: nil)
+    }
+
+    private var crashDebugMenuCrashAction: UIAlertAction {
+        let crashTitle = NSLocalizedString(
+            "Crash Immediately",
+            comment: "The title for a button that causes the app to deliberately crash for debugging purposes"
+        )
+
+        return UIAlertAction(title: crashTitle, style: .destructive) { _ in
+            ServiceLocator.crashLogging.crash()
+        }
+    }
+
+    private var crashDebugMenuCancelAction: UIAlertAction {
+        let cancelTitle = NSLocalizedString(
+            "Cancel",
+            comment: "The title for a button that dismisses the crash debug menu"
+        )
+        return UIAlertAction(title: cancelTitle, style: .cancel, handler: nil)
+    }
+}
 
 // MARK: - Convenience Methods
 //

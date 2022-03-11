@@ -6,7 +6,7 @@ import UIKit
 //
 final class TableFooterView: UIView {
 
-    @IBOutlet private var icon: UIImageView!
+    @IBOutlet var icon: UIImageView!
     @IBOutlet var footnote: UITextView!
     @IBOutlet private var iconHeight: NSLayoutConstraint!
     @IBOutlet private var iconWidth: NSLayoutConstraint!

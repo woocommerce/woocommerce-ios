@@ -532,6 +532,62 @@ class NewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 2.50)
 
     }
+
+    func test_shipping_method_tracked_when_added() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let shippingLine = ShippingLine.fake()
+
+        // When
+        viewModel.saveShippingLine(shippingLine)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderShippingMethodAdd.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
+        XCTAssertEqual(properties, "creation")
+    }
+
+    func test_shipping_method_not_tracked_when_removed() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.saveShippingLine(nil)
+
+        // Then
+        XCTAssertTrue(analytics.receivedEvents.isEmpty)
+    }
+
+    func test_fee_line_tracked_when_added() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let feeLine = OrderFeeLine.fake()
+
+        // When
+        viewModel.saveFeeLine(feeLine)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderFeeAdd.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
+        XCTAssertEqual(properties, "creation")
+    }
+
+    func test_fee_line_not_tracked_when_removed() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = NewOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.saveFeeLine(nil)
+
+        // Then
+        XCTAssertTrue(analytics.receivedEvents.isEmpty)
+    }
 }
 
 private extension MockStorageManager {

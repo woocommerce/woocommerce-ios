@@ -8,11 +8,20 @@ struct OrderNotesSection: View {
 
     var body: some View {
         OrderNotesSectionContent(viewModel: viewModel.orderNotesDataViewModel, showEditNotesView: $showEditNotesView)
-            .sheet(isPresented: $showEditNotesView) {
-                NavigationView {
-                    EditCustomerNote(viewModel: viewModel.createEditOrderNotesViewModel())
+            .sheet(
+                isPresented: $showEditNotesView,
+                onDismiss: {
+                    viewModel.noteViewModel.userDidCancelFlow()
+                },
+                content: {
+                    EditCustomerNote(
+                        dismiss: {
+                            showEditNotesView.toggle()
+                        },
+                        viewModel: viewModel.noteViewModel
+                    )
                 }
-            }
+            )
     }
 }
 

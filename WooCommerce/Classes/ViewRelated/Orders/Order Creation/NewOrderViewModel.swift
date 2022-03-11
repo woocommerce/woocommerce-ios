@@ -231,7 +231,13 @@ final class NewOrderViewModel: ObservableObject {
         })
     }
 
+    // MARK: Order notes data properties
+
     @Published private(set) var orderNotesDataViewModel: OrderNotesDataViewModel = .init(notes: "")
+
+    func createEditOrderNotesViewModel() -> EditCustomerNoteViewModel {
+        EditCustomerNoteViewModel(order: orderSynchronizer.order)
+    }
 
     // MARK: - API Requests
     /// Creates an order remotely using the provided order details.

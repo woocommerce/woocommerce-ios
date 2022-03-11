@@ -9,17 +9,11 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
     ///
     private var subscriptions: Set<AnyCancellable> = []
     private let viewModel: NewOrderViewModel
-    private lazy var isOrdersSplitViewEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
 
     init(viewModel: NewOrderViewModel) {
         self.viewModel = viewModel
         let view = NewOrder(viewModel: viewModel)
         super.init(rootView: view)
-        if isOrdersSplitViewEnabled {
-            rootView.dismissAction = { [weak self] in
-                self?.dismiss(animated: true, completion: nil)
-            }
-        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -29,7 +23,7 @@ final class NewOrderHostingController: UIHostingController<NewOrder> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if isOrdersSplitViewEnabled {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             // Set presentation delegate to track the user dismiss flow event
             if let navigationController = navigationController {
                 navigationController.presentationController?.delegate = self
@@ -59,7 +53,6 @@ extension NewOrderHostingController: UIAdaptivePresentationControllerDelegate {
 ///
 struct NewOrder: View {
     @ObservedObject var viewModel: NewOrderViewModel
-    var dismissAction: () -> Void = {}
 
     /// Fix for breaking navbar button
     @State private var navigationButtonID = UUID()

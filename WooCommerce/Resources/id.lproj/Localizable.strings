@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2022-03-02 11:54:03+0000 */
+/* Translation-Revision-Date: 2022-03-08 11:32:22+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -40,6 +40,9 @@
 /* Combined rule for a coupon. Reads like: 2 Products and 1 Category */
 "%1$@ and %2$@" = "%1$@ dan %2$@";
 
+/* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
+"%1$@ card ending %2$@" = "%1$@ card ending %2$@";
+
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ tidak termasuk %2$@";
 
@@ -71,15 +74,8 @@
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
 "%1$@ • %2$@" = "%1$@• %2$@";
 
-/* Displays a time range followed by a specific date/time */
-"%1$@ › %2$@" = "%1$@ › %2$@";
-
 /* Card reader battery level as an integer percentage */
 "%1$@%% Battery" = "%1$@%% Daya Baterai";
-
-/* Displays a date range for a stats interval
-   Displays a date range for a stats interval in the legacy version */
-"%1$@-%2$@" = "%1$@-%2$@";
 
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
@@ -246,6 +242,9 @@
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "Formulir bea cukai harus dicetak dan disertakan pada pengiriman internasional ini";
 
+/* Message when attempting to pay for a test transaction with a live card. */
+"A live card was used on a site in test mode. Use a test card instead." = "A live card was used on a site in test mode. Use a test card instead.";
+
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "Terjadi error jaringan. Periksa koneksi Anda dan coba lagi.";
 
@@ -282,11 +281,17 @@
 /* Details section title in the Edit Address Form */
 "ADDRESS" = "ALAMAT";
 
+/* Reads as 'AID'. Part of the mandatory data in receipts */
+"AID" = "AID";
+
 /* About this app (information page title) */
 "About" = "Tentang";
 
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Tentang aplikasi";
+
+/* Reads as 'Account Type'. Part of the mandatory data in receipts */
+"Account Type" = "Account Type";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "Aktifkan %1$@";
@@ -321,9 +326,6 @@
    Product Add Category navigation title */
 "Add Category" = "Tambahkan Kategori";
 
-/* Title for the action button to add coupon on the coupon list screen. */
-"Add Coupon" = "Tambah Kupon";
-
 /* Title text of the button that adds customer data when creating a new order */
 "Add Customer Details" = "Tambahkan Detail Pelanggan";
 
@@ -332,6 +334,9 @@
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "Tambahkan File Dapat Diunduh";
+
+/* Title for the Fee screen during order creation */
+"Add Fee" = "Add Fee";
 
 /* Title text of the button that adds fees when creating a new order */
 "Add Fees" = "Tambahkan Biaya";
@@ -400,6 +405,9 @@
 
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "Tambahkan pelacakan";
+
+/* Cell text in Add / Edit variation when there are no images. */
+"Add a variation image" = "Add a variation image";
 
 /* Button title in the Shipping Label Payment Method screen if there is an existing payment method */
 "Add another credit card" = "Tambahkan kartu kredit lain";
@@ -530,8 +538,24 @@
    Title of the Amount label on Coupon Details screen */
 "Amount" = "Jumlah";
 
+/* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - fee type (percent sign or currency symbol) */
+"Amount (%1$@)" = "Amount (%1$@)";
+
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "Jumlah yang Dapat Dikembalikan Dananya";
+
+/* Line description for 'Amount Paid' cart total on the receipt
+   Title of 'Amount Paid' section in the receipt */
+"Amount Paid" = "Amount Paid";
+
+/* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
+"An HTTP error code %i was returned." = "An HTTP error code %i was returned.";
+
+/* A failure reason for when an error HTTP status code was returned from the site. */
+"An HTTP error code was returned." = "An HTTP error code was returned.";
+
+/* Error message when Bluetooth is not enabled for this application. */
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "An error occurred accessing Bluetooth - please enable Bluetooth and try again";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "Kesalahan terjadi ketika membuat Menu.";
@@ -548,8 +572,17 @@
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Terjadi error saat mencoba memproses permintaan Anda: ";
 
+/* Message when it looks like a duplicate transaction is being attempted. */
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "An identical transaction was submitted recently. If you wish to continue, try another means of payment";
+
+/* Message when an incorrect PIN has been entered too many times. */
+"An incorrect PIN has been entered too many times. Try another means of payment" = "An incorrect PIN has been entered too many times. Try another means of payment";
+
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Catatan opsional untuk dikirim kepada pelanggan setelah pembelian";
+
+/* A failure reason for when the error that occured wasn't able to be determined. */
+"An unknown error occurred." = "An unknown error occurred.";
 
 /* Title of analytics as part of Jetpack benefits. */
 "Analytics" = "Analytics";
@@ -570,6 +603,9 @@
 
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "Log Aplikasi";
+
+/* Reads as 'Application name'. Part of the mandatory data in receipts */
+"Application Name" = "Application Name";
 
 /* Change order status screen - button title to apply selection */
 "Apply" = "Terapkan";
@@ -625,6 +661,9 @@
 
 /* Body of the alert when a user is deleting a variation */
 "Are you sure you want to remove this variation?" = "Apakah Anda yakin ingin menghapus variasi ini?";
+
+/* Message displayed in the alert for dismissing all the inbox notes. */
+"Are you sure? Inbox messages will be dismissed forever." = "Are you sure? Inbox messages will be dismissed forever.";
 
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "Nama atribut";
@@ -705,11 +744,12 @@
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Tebal";
 
-/* The description on the placeholder overlay when there are no coupons on the coupon list screen. */
-"Boost your business by sending customers special offers and discounts." = "Tingkatkan penjualan dengan mengirimi pelanggan promosi dan diskon spesial.";
-
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Kotak";
+
+/* Button title in the action sheet of product variatiosns that shows the bulk update
+   Title that appears on top of the bulk update of product variations screen */
+"Bulk Update" = "Bulk Update";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Teks Tombol";
@@ -736,7 +776,7 @@
 "Can Not Request Link" = "Tidak Dapat Meminta Tautan";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
+   Add Product Category. Cancel button title in navbar. - Alert button title - dismisses alert, which cancels marking all as read attempt. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title that closes the action sheet in product variations - Button title that closes the presented screen - Button title to cancel opening device settings in an alert - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Button to dismiss the alert presented whenan update fails because the reader is low on battery. - Button to dismiss. Presented to users when updating the card reader software fails - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button on the error alert when fetching system status report fails - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet in Reviews screen. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the simple payments screen */
 "Cancel" = "Batalkan";
 
 /* Display label for cancelled order status. */
@@ -765,6 +805,12 @@
 
 /* Card method title on the select payment method screen for simple payments */
 "Card" = "Kartu";
+
+/* Error message when a card is left in the reader and another transaction started. */
+"Card was left in reader - please remove and reinsert card" = "Card was left in reader - please remove and reinsert card";
+
+/* Error message when the card is removed from the reader prematurely. */
+"Card was removed too soon - please try transaction again" = "Card was removed too soon - please try transaction again";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Operator dan Tarif";
@@ -849,7 +895,7 @@
 "Clear all" = "Hapus semua";
 
 /* Text for the close button in the Add Product screen
-   Text for the close button in the Edit Address Form - Text for the close button in the Product screen - Text for the close button in the Shipping Line Details screen - Title of the Close action on the Jetpack Install view */
+   Text for the close button in the Edit Address Form - Text for the close button in the Fee Details screen - Text for the close button in the Product screen - Text for the close button in the Shipping Line Details screen - Title of the Close action on the Jetpack Install view */
 "Close" = "Tutup";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
@@ -921,6 +967,9 @@
 
 /* Title label for modal dialog that appears when connecting to a card reader */
 "Connecting to reader" = "Menyambungkan ke pembaca";
+
+/* Error message when establishing a connection to the card reader times out. */
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "Connecting to the card reader timed out - ensure it is nearby and charged and then try again";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Menghubungkan ke akun Anda";
@@ -1105,9 +1154,6 @@
 /* Cell title: the current date. */
 "Current" = "Saat ini";
 
-/* Error when the user tap on Country field in Shipping Label Address Validation */
-"Currently we support just the United States from mobile." = "Untuk saat ini, kami hanya mendukung Amerika Serikat di perangkat seluler.";
-
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "Kustom";
 
@@ -1167,6 +1213,9 @@
 /* Navigation title of the orders filter selector screen for date range
    Row title for filtering orders by date range. */
 "Date Range" = "Rentang Tanggal";
+
+/* Title of 'Date Paid' section in the receipt */
+"Date paid" = "Date paid";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Tanggal pengiriman";
@@ -1228,12 +1277,21 @@
    Title of the Discount row in Coupon Details screen */
 "Discount" = "Diskon";
 
+/* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
+"Discount %1$@" = "Discount %1$@";
+
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "Pesanan yang Didiskon";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in inbox note row. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Button to dismiss. Presented to users when updating the card reader software fails - Dismiss button in inbox note row. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the SimplePayments top banner - Title of the button to dismiss the banner notice in the add-ons view - Title of the dismiss action button on the coupon list screen */
 "Dismiss" = "Hentikan";
+
+/* Dismiss All button in Inbox Notes for dismissing all the notes. */
+"Dismiss All" = "Dismiss All";
+
+/* Title of the alert for dismissing all the inbox notes. */
+"Dismiss all messages" = "Dismiss all messages";
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "Jangan izinkan";
@@ -1251,7 +1309,7 @@
 "Don't have an account? _Sign up_" = "Belum memiliki akun? _Daftar_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done button on the Jetpack Install Progress screen. - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Text for the done button in the Shipping Line Details screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
+   Done button on the Jetpack Install Progress screen. - Done navigation button in Inbox Notes webview - Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Text for the done button in the Fee Details screen - Text for the done button in the Shipping Line Details screen - The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again. */
 "Done" = "Selesai";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1486,14 +1544,14 @@
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Terjadi error saat mencari alamat di Apple Maps";
 
+/* Message displayed when fail to loading total discounted amount in Coupon Details screen */
+"Error loading data" = "Error loading data";
+
 /* Alert title when there is an error requesting shipping label document for printing */
 "Error previewing shipping label" = "Kesalahan saat menampilkan pratinjau label pengiriman";
 
 /* Notice displayed when the label purchase fails */
 "Error purchasing the label" = "Terjadi kesalahan saat membeli label";
-
-/* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
-"Everyone loves a deal" = "Semua orang suka promo";
 
 /* Title for the exclude sale items row in coupon usage details screen. */
 "Exclude Sale Items" = "Kecualikan Barang Obral";
@@ -1529,11 +1587,14 @@
 /* Featured Product switch in Product Catalog Visibility */
 "Featured Product" = "Produk Unggulan";
 
+/* Title for the Fee Details screen during order creation */
+"Fee" = "Fee";
+
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "Umpan balik terkirim!";
 
 /* Fees label for payment view
-   Label for the row showing the cost of fees in the order */
+   Label for the row showing the cost of fees in the order - Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
 "Fees" = "Biaya";
 
 /* Title on the refund screen that lists the fees total cost */
@@ -1653,6 +1714,9 @@
 
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "Hadiah";
+
+/* Title of the feedback action button on the coupon list screen */
+"Give Feedback" = "Berikan Masukan";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title of the button to give feedback about the Simple Payments feature - Title on the navigation bar for the products feedback survey */
@@ -1837,8 +1901,8 @@
 /* The plugin is not active on the site and has enabled automatic updates */
 "Inactive, Autoupdates on" = "Tidak aktif, Pembaruan Otomatis aktif";
 
-/* Title for the screen that shows inbox notes.
-   Title of the Inbox menu in the hub menu */
+/* Navigation title of the webview which is used in Inbox Notes.
+   Title for the screen that shows inbox notes. - Title of the Inbox menu in the hub menu */
 "Inbox" = "Kotak Masuk";
 
 /* Describes a standard *.wordpress.com site domain */
@@ -1862,11 +1926,17 @@
 /* Label action for inserting a link on the editor */
 "Insert" = "Sisipkan";
 
+/* Message from the in-person payment card reader prompting user to insert their card */
+"Insert Card" = "Insert Card";
+
 /* Accessibility label for insert horizontal ruler button on formatting toolbar. */
 "Insert Horizontal Ruler" = "Sisipkan Penggaris Horizontal";
 
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "Sisipkan Tautan";
+
+/* Message from the in-person payment card reader prompting user to insert or swipe their card */
+"Insert Or Swipe Card" = "Insert Or Swipe Card";
 
 /* Navigates to Install Jetpack screen.
    Title of install action in the Jetpack benefits view. - Title of the Install Jetpack intro view - Title of the Install Jetpack view */
@@ -2221,6 +2291,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "Nilai minimum %1$@, nilai maksimum %2$@";
 
+/* The description in product variations bulk update, of a value, that is different acrossall variations */
+"Mixed" = "Mixed";
+
 /* Caption displayed in promotional screens shown during the login flow. */
 "Monitor and approve your product reviews" = "Pantau dan setujui ulasan produk Anda";
 
@@ -2249,6 +2322,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "Pindahkan komentar ke Tempat Sampah";
+
+/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
+"Multiple Contactless Cards Detected" = "Multiple Contactless Cards Detected";
 
 /* Title of the hub menu view in case there is no title for the store */
 "My Store" = "Toko Saya";
@@ -2311,6 +2387,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Next nav bar button title in Add Product Attribute Options screen - Next nav bar button title in Add Product Attribute screen - Title for the button to confirm the amount in the simple payments screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "Selanjutnya";
 
+/* Value for the individual use only row or the exclude sale items row in Coupon Usage Details screen when the value is false */
+"No" = "Tidak";
+
 /* Value for the allowed emails row in Coupon Usage Details screen when no restriction is set */
 "No Restrictions" = "Tidak Ada Pembatasan";
 
@@ -2321,8 +2400,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Order details > customer info > shipping details. This is where the address would normally display. - Placeholder for empty address in order customer data */
 "No address specified." = "Tidak ada alamat yang dicantumkan.";
 
+/* Error message when a card reader was expected to already have been connected. */
+"No card reader is connected - connect a reader and try again" = "No card reader is connected - connect a reader and try again";
+
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "Tak ada koneksi";
+
+/* Error message when there is no connection to the Internet. */
+"No connection to the Internet - please connect to the Internet and try again" = "No connection to the Internet - please connect to the Internet and try again";
+
+/* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
+"No coupons found" = "No coupons found";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Tidak ada data yang tersedia";
@@ -2377,7 +2465,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "No tax classes yet" = "Kelas pajak belum ditetapkan";
 
 /* Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - Value for fields in Coupon Usage Details screen when no value is set */
+   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow - The description in product variations bulk update, of a value, that is missing from all variations - Value for fields in Coupon Usage Details screen when no value is set */
 "None" = "Tidak Ada";
 
 /* Title of dismiss action in the Jetpack benefits view. */
@@ -2391,6 +2479,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Catatan untuk pelanggan";
+
+/* Title of order note section in the receipt, commonly used for Quick Orders. */
+"Notes" = "Catatan";
 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "Karena Anda telah menambahkan atribut, Anda sekarang bisa membuat variasi pertama Anda!";
@@ -2596,11 +2687,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header for list of payment methods in Payment Method screen */
 "Payment Method Selected" = "Metode Pembayaran Dipilih";
 
+/* Message when the presented card remaining credit or balance is insufficient for the purchase. */
+"Payment declined due to insufficient funds. Try another means of payment" = "Payment declined due to insufficient funds. Try another means of payment";
+
 /* Error message. Presented to users after a collecting a payment fails
    Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "Pembayaran gagal";
 
-/* Title of the webview of adding a payment method in Shipping Labels */
+/* Title of 'Payment method' section in the receipt
+   Title of the webview of adding a payment method in Shipping Labels */
 "Payment method" = "Metode pembayaran";
 
 /* Notice that will be displayed after adding a new Shipping Label payment method */
@@ -2608,6 +2703,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "Pembayaran berhasil";
+
+/* Message when we don't know exactly why the payment was declined. */
+"Payment was declined for an unknown reason. Try another means of payment" = "Payment was declined for an unknown reason. Try another means of payment";
+
+/* Message when payment is declined for a non specific reason. */
+"Payment was declined for an unspecified reason. Try another means of payment" = "Payment was declined for an unspecified reason. Try another means of payment";
 
 /* Display label for pending order status.
    Display label for the review's pending status */
@@ -2793,7 +2894,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Previously Refunded" = "Sebelumnya sudah Dikembalikan";
 
 /* Product Price Settings navigation title
-   Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
+   Section header title for product price - The title for the price settings section in the product variation bulk updatescreen - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
 "Price" = "Harga";
 
 /* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
@@ -2856,8 +2957,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Indicates that a payment is being processed */
 "Processing payment..." = "Memproses pembayaran...";
 
-/* Legacy description for Top Performers left column header
-   Product section title - Product section title if there is only one product. - Product section title in Review Order screen if there is one product. - Title for the Product screen during order creation */
+/* Product section title
+   Product section title if there is only one product. - Product section title in Review Order screen if there is one product. - Title for the Product screen during order creation */
 "Product" = "Produk";
 
 /* The title on the navigation bar when viewing an order item add-ons
@@ -2998,8 +3099,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Alasan untuk pesanan pengembalian dana";
 
-/* The title of the view containing a receipt preview */
+/* The title of the view containing a receipt preview
+   Title of receipt. */
 "Receipt" = "Resi";
+
+/* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
+"Receipt from %1$@" = "Tanda terima dari %1$@";
 
 /* Button to reload plugin data after activating a Card Present Payments extension */
 "Refresh After Activating" = "Segarkan Setelah Mengaktifkan";
@@ -3056,6 +3161,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Domain Terdaftar";
 
+/* The label in the option of selecting to bulk update the regular price of a product variation */
+"Regular Price" = "Regular Price";
+
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Harga normal: %@";
 
@@ -3065,6 +3173,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Confirmation title before removing an attribute from a variation. */
 "Remove Attribute" = "Hapus Atribut";
+
+/* Message from the in-person payment card reader prompting user to remove their card */
+"Remove Card" = "Remove Card";
+
+/* Text for the button to remove a fee from the order during order creation */
+"Remove Fee from Order" = "Remove Fee from Order";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "Hapus Gambar";
@@ -3132,12 +3246,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Retrieves a list of products that contain a given keyword." = "Menerima daftar produk yang mengandung kata kunci tertentu.";
 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
-   Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
+   Action button to retry syncing the draft order - Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
 "Retry" = "Coba Lagi";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
    Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
 "Retry After Updating" = "Coba Lagi Setelah Memperbarui";
+
+/* Message from the in-person payment card reader prompting user to retry payment with their card */
+"Retry Card" = "Retry Card";
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "Coba Sambungkan Lagi";
@@ -3395,7 +3512,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Shipped %@" = "Dikirimkan %@";
 
 /* Label for the row showing the cost of shipping in the order
-   Placeholder for the name field on the Shipping Line Details screen during order creation - Product Shipping Settings navigation title - Shipping label for payment view - Title for the Shipping Line Details screen during order creation - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
+   Line description for 'Shipping' cart total on the receipt. Only shown when non-zero - Placeholder for the name field on the Shipping Line Details screen during order creation - Product Shipping Settings navigation title - Shipping label for payment view - Title for the Shipping Line Details screen during order creation - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Pengiriman";
 
 /* Shipping Address title for customer info section
@@ -3583,6 +3700,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Sorry, that username is unavailable." = "Maaf, nama pengguna itu tidak tersedia.";
 
+/* Error message when the card reader service experiences an unexpected internal service error. */
+"Sorry, this payment couldn’t be processed" = "Sorry, this payment couldn’t be processed";
+
 /* No comment provided by engineer. */
 "Sorry, usernames can only contain lowercase letters (a-z) and numbers." = "Maaf, nama pengguna hanya dapat mengandung huruf kecil (a-z) dan angka saja.";
 
@@ -3664,7 +3784,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Subscription" = "Langganan";
 
 /* Create Shipping Label form -> Subtotal label
-   Subtotal label for a refund details view - Title on the refund screen that lists the fees subtotal cost - Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost - Title text of the row that shows the subtotal when creating a simple payment */
+   Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts. - Subtotal label for a refund details view - Title on the refund screen that lists the fees subtotal cost - Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost - Title text of the row that shows the subtotal when creating a simple payment */
 "Subtotal" = "Subtotal";
 
 /* Notice text after updating the order successfully */
@@ -3672,6 +3792,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "Jumlah produk dan berat kemasan";
+
+/* Title of 'Summary' section in the receipt when the order number is unknown */
+"Summary" = "Summary";
+
+/* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
+"Summary: Order #%1$@" = "Summary: Order #%1$@";
+
+/* Message from the in-person payment card reader prompting user to swipe their card */
+"Swipe Card" = "Swipe Card";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Beralih Toko";
@@ -3710,6 +3839,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
 "System status report copied to clipboard" = "Laporan status sistem disalin ke clipboard";
 
+/* Message when attempting to pay for a live transaction with a test card. */
+"System test cards are not permitted for payment. Try another means of payment" = "System test cards are not permitted for payment. Try another means of payment";
+
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
 "Tags" = "Tag";
@@ -3717,9 +3849,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the simple payments screen */
 "Take Payment" = "Terima Pembayaran";
 
-/* Navigation bar title for the Simple Payments Methods screens
-   Text of the button that creates a simple payment order. Contains the total amount to collect */
-"Take Payment ((total))" = "Terima Pembayaran ((total))";
+/* Navigation bar title for the Simple Payments Methods screens. %1$@ is a placeholder for the total amount to collect
+   Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
+"Take Payment (%1$@)" = "Take Payment (%1$@)";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Ambil foto";
@@ -3801,8 +3933,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Tax label for the tax detail row. - Title on the refunds screen that lists the fees tax cost - Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "Pajak";
 
-/* Tax percentage to be applied to the simple payments order */
-"Tax ((rate)%)" = "Pajak ((tarif)%)";
+/* Tax percentage to be applied to the simple payments order. %1$@%% is a placeholder for the tax rate as a percentage */
+"Tax (%1$@%%)" = "Tax (%1$@%%)";
 
 /* Section header title for product tax settings */
 "Tax Settings" = "Pengaturan Pajak";
@@ -3823,7 +3955,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the product's tax status setting option */
 "Taxable" = "Kena Pajak";
 
-/* Taxes label for payment view */
+/* Label for the row showing the taxes in the order
+   Line description for tax charged on the whole cart. Only shown when non-zero - Taxes label for payment view */
 "Taxes" = "Pajak";
 
 /* Disclaimer in the simple payments summary screen about taxes. */
@@ -3860,6 +3993,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text thanking the user when the survey is completed */
 "Thank you for sharing your thoughts with us" = "Terima kasih telah berbagi pendapat Anda dengan kami";
 
+/* Confirmation message in Inbox Notes after responding to a survey. */
+"Thank you for your feedback!" = "Thank you for your feedback!";
+
 /* Shown when a user pastes a code into the two factor field that contains letters or is the wrong length */
 "That doesn't appear to be a valid verification code." = "Sepertinya itu bukan kode verifikasi yang valid.";
 
@@ -3890,6 +4026,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when a Card Present Payments extension is installed but the version is not supported */
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "Ekstensi %1$@ diinstal di toko Anda, tetapi perlu diperbarui agar dapat mendukung Pembayaran Langsung. Silakan perbarui ke versi terbaru.";
 
+/* Error message when the card reader loses its Bluetooth connection to the card reader. */
+"The Bluetooth connection to the card reader disconnected unexpectedly" = "The Bluetooth connection to the card reader disconnected unexpectedly";
+
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Akun Google \"%@\" tidak cocok dengan akun mana pun di WordPress.com";
 
@@ -3905,6 +4044,48 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "Atribut tidak dapat disimpan.";
 
+/* Message when the card presented does not support the order currency. */
+"The card does not support this currency. Try another means of payment" = "The card does not support this currency. Try another means of payment";
+
+/* Message when the card presented does not allow this type of purchase. */
+"The card does not support this type of purchase. Try another means of payment" = "The card does not support this type of purchase. Try another means of payment";
+
+/* Message when the presented card is past its expiration date. */
+"The card has expired. Try another means of payment" = "The card has expired. Try another means of payment";
+
+/* Message when payment is declined for a non specific reason. */
+"The card or card account is invalid. Try another means of payment" = "The card or card account is invalid. Try another means of payment";
+
+/* Error message when the card reader is busy executing another command. */
+"The card reader is busy executing another command - please try again" = "The card reader is busy executing another command - please try again";
+
+/* Error message when the card reader is incompatible with the application. */
+"The card reader is not compatible with this application - please try updating the application or using a different reader" = "The card reader is not compatible with this application - please try updating the application or using a different reader";
+
+/* Error message when the card reader session has timed out. */
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "The card reader session has expired - please disconnect and reconnect the card reader and then try again";
+
+/* Error message when the card reader software is too far out of date to process payments. */
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "The card reader software is out-of-date - please update the card reader software before attempting to process payments";
+
+/* Error message when the card reader software update fails due to a communication error. */
+"The card reader software update failed due to a communication error - please try again" = "The card reader software update failed due to a communication error - please try again";
+
+/* Error message when the card reader software update fails due to a problem with the update server. */
+"The card reader software update failed due to a problem with the update server - please try again" = "The card reader software update failed due to a problem with the update server - please try again";
+
+/* Error message when the card reader software update fails unexpectedly. */
+"The card reader software update failed unexpectedly - please try again" = "The card reader software update failed unexpectedly - please try again";
+
+/* Error message when the card reader software update is interrupted. */
+"The card reader software update was interrupted before it could complete - please try again" = "The card reader software update was interrupted before it could complete - please try again";
+
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the card reader - please try another means of payment" = "The card was declined by the card reader - please try another means of payment";
+
+/* Error message when the card processor declines the payment. */
+"The card was declined by the payment processor - please try another means of payment" = "The card was declined by the payment processor - please try another means of payment";
+
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Sertifikat untuk server ini tidak sah. Anda mungkin tersambung dengan server yang menyamar sebagai “%@” yang bisa membuat informasi rahasia Anda beresiko,\n\nApakah Anda ingin mempercayai sertifikat itu?";
 
@@ -3917,6 +4098,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The message of the alert when another service package has the same name */
 "The new service package name is not unique." = "Nama paket layanan baru tidak unik.";
 
+/* Message when the presented card does not allow the purchase amount. */
+"The payment amount is not allowed for the card presented. Try another means of payment." = "The payment amount is not allowed for the card presented. Try another means of payment.";
+
+/* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
+"The payment can not be processed by the payment processor." = "The payment can not be processed by the payment processor.";
+
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "Nomor telepon tidak valid atau Anda tidak dapat menghubungi pelanggan dari perangkat ini.";
 
@@ -3926,6 +4113,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "The reader has a critically low battery. Please charge the reader or try a different reader." = "Daya baterai pembaca sangat rendah. Harap isi daya pembaca atau coba gunakan pembaca lain.";
 
+/* Error message when a request times out. */
+"The request timed out - please try again" = "The request timed out - please try again";
+
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "Harga diskon tidak dapat ditambahkan tanpa harga reguler.";
 
@@ -3934,6 +4124,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "Harga obral harus lebih rendah daripada harga normal.";
+
+/* A failure reason for when the request couldn't be serialized. */
+"The serialization of the request failed." = "The serialization of the request failed.";
+
+/* A failure reason for when the response couldn't be serialized. */
+"The serialization of the response failed." = "The serialization of the response failed.";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Server memberi respon kosong. Biasanya ini berarti Anda perlu meningkatkan batas memori situs Anda.";
@@ -3965,8 +4161,26 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "Kuantitas stok untuk produk ini. Dapat disunting.";
 
+/* Error message when there is an issue with the store address preventing an action (e.g. reader connection.) */
+"The store address is incomplete or missing, please update it before continuing." = "The store address is incomplete or missing, please update it before continuing.";
+
+/* Error message when there is an issue with the store postal code preventing an action (e.g. reader connection.) */
+"The store postal code is invalid or missing, please update it before continuing." = "The store postal code is invalid or missing, please update it before continuing.";
+
+/* Error message when the system cancels a command. */
+"The system canceled the command unexpectedly - please try again" = "The system canceled the command unexpectedly - please try again";
+
+/* Error message when the card reader service experiences an unexpected software error. */
+"The system experienced an unexpected software error" = "The system experienced an unexpected software error";
+
+/* Error message when the card reader service is busy executing another command. */
+"The system is busy executing another command - please try again" = "The system is busy executing another command - please try again";
+
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "Saat ini, laporan status sistem untuk situs Anda tidak dapat dimuat.  Harap coba lagi.";
+
+/* Message when the presented card postal code doesn't match the order postal code. */
+"The transaction postal code and card postal code do not match. Try another means of payment" = "The transaction postal code and card postal code do not match. Try another means of payment";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "Variasi tidak dapat dibuat.";
@@ -3982,6 +4196,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Terjadi kesalahan saat memblokir pos dari situs yang telah ditentukan.";
+
+/* A general error message shown to the user when there was an API communication failure. */
+"There was a problem communicating with the site." = "There was a problem communicating with the site.";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Terjadi masalah saat menghapus blokir untuk situs tertentu.";
@@ -4024,11 +4241,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Top Performers section title - this year */
 "This Year" = "Tahun Ini";
 
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.";
+
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Aplikasi ini mewajibkan Anda menginstal WooCommerce 3.5 di server Anda dan tidak berfungsi dengan semestinya jika Anda tidak menginstalnya. Perbarui sesegera mungkin untuk terus menggunakan aplikasi ini.";
 
 /* Message explaining more detail on why the user's role is incorrect. */
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "Aplikasi ini hanya mendukung peran pengguna Administrator dan Manajer Toko. Harap hubungi pemilik toko Anda untuk mengupgrade peran Anda.";
+
+/* Message when a card requires a PIN code and we have no means of entering such a code. */
+"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "This card requires a PIN code and thus cannot be processed. Try another means of payment";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Alamat email ini tidak terdaftar di WordPress.com.";
@@ -4129,12 +4352,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "Topik tidak ditemukan untuk ID:";
 
-/* Legacy description for Top Performers right column header */
-"Total Spend" = "Total Pengeluaran";
-
-/* Top performers — label for the total number of products ordered */
-"Total orders: %ld" = "Total pesanan: %ld";
-
 /* Title of the row for adding the package weight in Shipping Label Package Detail screen */
 "Total package weight" = "Total berat kemasan";
 
@@ -4179,6 +4396,12 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to try again after connecting to a specific reader fails due to a critically low battery. - Button to try again. Presented to users after a failure occurs - Try Again button on the error alert when fetching system status report fails */
 "Try Again" = "Coba Lagi";
 
+/* Message from the in-person payment card reader prompting user to retry a payment using a different card */
+"Try Another Card" = "Try Another Card";
+
+/* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
+"Try Another Read Method" = "Try Another Read Method";
+
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
 "Try Collecting Again" = "Coba Ulangi Pengumpulan";
 
@@ -4189,11 +4412,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
 "Try again" = "Coba lagi";
 
+/* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
+"Try another means of payment" = "Try another means of payment";
+
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Coba dengan email lain";
 
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "Coba dengan alamat situs";
+
+/* Message when a card is declined due to a potentially temporary problem. */
+"Trying again may succeed, or try another means of payment" = "Trying again may succeed, or try another means of payment";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Aktifkan pembaca kartu dan pasang di sebelah perangkat seluler";
@@ -4214,6 +4443,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "Tidak Dapat Terhubung";
 
+/* Error message when Bluetooth is not enabled or available. */
+"Unable to access Bluetooth - please enable Bluetooth and try again" = "Unable to access Bluetooth - please enable Bluetooth and try again";
+
+/* Error message when location services is not enabled for this application. */
+"Unable to access Location Services - please enable Location Services and try again" = "Unable to access Location Services - please enable Location Services and try again";
+
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
 "Unable to add note to order #%1$d" = "Tidak dapat menambahkan catatan ke pesanan #%1$d";
 
@@ -4222,6 +4457,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
 "Unable to change status of order #%1$d" = "Tidak dapat mengubah status pesanan #%1$d";
+
+/* Error message when communication with the card reader is disrupted. */
+"Unable to communicate with reader - please try again" = "Unable to communicate with reader - please try again";
+
+/* Error message when the card reader service attempts to connect to a reader without discovering it first. */
+"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "Unable to connect to card reader - card reader was not correctly discovered - please try again";
+
+/* Error message when attempting to connect to a card reader which is already in use. */
+"Unable to connect to card reader - the card reader is already in use" = "Unable to connect to card reader - the card reader is already in use";
+
+/* Error message when a card reader is already connected and we were not expecting one. */
+"Unable to connect to reader - another reader is already connected" = "Unable to connect to reader - another reader is already connected";
+
+/* Error message the card reader battery level is too low to connect to the phone or tablet. */
+"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "Unable to connect to reader - the reader has a critically low battery - charge the reader and try again.";
 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "Tidak dapat membuat pesanan baru";
@@ -4250,14 +4500,35 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Gagal memuat atribut produk";
 
+/* Notice displayed when taxes cannot be synced for new order */
+"Unable to load taxes for order" = "Unable to load taxes for order";
+
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Tidak dapat menandai ulasan %@";
+
+/* Error message when the card reader cannot be used to perform the requested task. */
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "Unable to perform request with the connected reader - unsupported feature - please try again with another reader";
+
+/* Error message when the application is so out of date that the backend refuses to work with it. */
+"Unable to perform software request - please update this application and try again" = "Unable to perform software request - please update this application and try again";
+
+/* Error message when the payment intent is invalid. */
+"Unable to process payment due to invalid data - please try again" = "Unable to process payment due to invalid data - please try again";
 
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "Tidak dapat memproses pembayaran. Jumlah total pesanan di bawah jumlah minimal yang dapat Anda tagihkan, yaitu %1$@";
 
 /* Error message when the order amount is not valid. */
 "Unable to process payment. Order total amount is not valid." = "Tidak dapat memproses pembayaran. Jumlah total pesanan tidak valid.";
+
+/* Error message when the card reader times out while reading a card. */
+"Unable to read card - the system timed out - please try again" = "Unable to read card - the system timed out - please try again";
+
+/* Error message when the card reader is unable to read any chip on the inserted card. */
+"Unable to read inserted card - please try removing and inserting card again" = "Unable to read inserted card - please try removing and inserting card again";
+
+/* Error message when the card reader is unable to read a swiped card. */
+"Unable to read swiped card - please try swiping again" = "Unable to read swiped card - please try swiping again";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Tidak dapat membaca situs WordPress dalam URL tersebut. Ketuk 'Perlu bantuan?' untuk melihat TJU.";
@@ -4271,8 +4542,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "Tidak dapat menyimpan perubahan metode pembayaran";
 
+/* Error message when Bluetooth Low Energy is not supported on the user device. */
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device";
+
+/* Error message when Bluetooth scan times out during reader discovery. */
+"Unable to search for card readers - Bluetooth timed out - please try again" = "Unable to search for card readers - Bluetooth timed out - please try again";
+
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "Tidak dapat memperbarui alamat.";
+
+/* Error message when the card reader battery level is too low to safely perform a software update. */
+"Unable to update card reader software - the reader battery is too low" = "Unable to update card reader software - the reader battery is too low";
 
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "Tidak dapat memverifikasi Pembayaran Langsung untuk toko ini";
@@ -4511,6 +4791,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "Lihat add-on dari perangkat Anda!";
 
+/* Title of the feedback banner on the coupon list screen */
+"View and edit coupons" = "View and edit coupons";
+
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "Lihat pengaturan untuk file yang dapat diunduh";
 
@@ -4591,6 +4874,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
 "We don’t support In-Person Payments in your country" = "Kami tidak mendukung Pembayaran Langsung di negara Anda.";
 
+/* Title for the error screen when In-Person Payments is not supported in a specific country */
+"We don’t support In-Person Payments with Stripe in %1$@" = "We don’t support In-Person Payments with Stripe in %1$@";
+
+/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
+"We don’t support In-Person Payments with Stripe in your country" = "We don’t support In-Person Payments with Stripe in your country";
+
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "Kami sedikit mengubah alamat yang dimasukkan. Jika sudah benar, gunakan alamat yang disarankan untuk memastikan pengiriman yang akurat.";
 
@@ -4654,6 +4943,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Welcome to the world’s most popular website builder." = "Selamat datang di pembuat situs web terpopuler di dunia.";
+
+/* Content of the feedback banner on the coupon list screen */
+"We’ve been working on making it possible to view and edit coupons from your device!" = "We’ve been working on making it possible to view and edit coupons from your device!";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Email apa yang saya gunakan untuk masuk?";
@@ -4723,6 +5015,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
+
+/* Value for the individual use only row or the exclude sale items row in Coupon Usage Details screen when the value is true */
+"Yes" = "Ya";
 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Ya, ubah";

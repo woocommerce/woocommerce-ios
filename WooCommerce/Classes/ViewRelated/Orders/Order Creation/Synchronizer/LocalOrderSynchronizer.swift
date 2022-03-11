@@ -32,6 +32,8 @@ final class LocalOrderSynchronizer: OrderSynchronizer {
 
     var setFee = PassthroughSubject<OrderFeeLine?, Never>()
 
+    var setNotes = PassthroughSubject<String?, Never>()
+
     // MARK: Private properties
 
     private let siteID: Int64
@@ -101,6 +103,10 @@ private extension LocalOrderSynchronizer {
                 let updatedOrder = order.copy(fees: feeLineInput.flatMap { [$0] } ?? [])
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
+            .assign(to: &$order)
+
+        setNotes.withLatestFrom(orderPublisher)
+            .map { notes, order in order.copy(customerNote: notes) }
             .assign(to: &$order)
     }
 

@@ -81,6 +81,8 @@ protocol OrderSynchronizer {
     ///
     var setFee: PassthroughSubject<OrderFeeLine?, Never> { get }
 
+    var setNotes: PassthroughSubject<String?, Never> { get }
+
     /// Retires the order sync. State needs to be in `.error` to initiate work.
     ///
     func retrySync()

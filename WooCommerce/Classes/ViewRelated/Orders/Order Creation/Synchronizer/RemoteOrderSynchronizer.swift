@@ -32,6 +32,8 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     var setFee = PassthroughSubject<OrderFeeLine?, Never>()
 
+    var setNotes = PassthroughSubject<String?, Never>()
+
     // MARK: Private properties
 
     private let siteID: Int64
@@ -127,6 +129,10 @@ private extension RemoteOrderSynchronizer {
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
+            .assign(to: &$order)
+
+        setNotes.withLatestFrom(orderPublisher)
+            .map { notes, order in order.copy(customerNote: notes) }
             .assign(to: &$order)
     }
 

@@ -75,27 +75,15 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
 ///
 extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        // let user swipe to dismiss after an order has been created
-        if !viewModel.shouldDisableSwipeToDismiss {
+
+        if viewModel.shouldEnableSwipeToDismiss {
             return true
         }
 
-        let actionSheet = UIAlertController(title: Localization.dismissTitle, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .text
-        actionSheet.addAction(UIAlertAction(title: Localization.discardButton, style: .destructive, handler: { [weak self] _ in
-            self?.dismiss(animated: true) { [weak self] in
-                self?.rootView.viewModel.userDidCancelFlow()
-            }
-        }))
-        actionSheet.addAction(UIAlertAction(title: Localization.keepEditingButton, style: .cancel))
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+        })
 
-        if let popoverController = actionSheet.popoverPresentationController {
-            let sourceView: UIView = navigationController?.navigationBar ?? view
-            popoverController.sourceView = sourceView
-            popoverController.sourceRect = sourceView.bounds
-        }
-
-        present(actionSheet, animated: true, completion: nil)
         return false
     }
 }

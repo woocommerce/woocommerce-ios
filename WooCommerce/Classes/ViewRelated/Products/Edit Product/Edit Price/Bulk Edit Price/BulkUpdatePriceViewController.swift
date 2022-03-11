@@ -63,8 +63,6 @@ final class BulkUpdatePriceViewController: UIViewController {
 
             if state == .loading {
                 self?.saveButton.showActivityIndicator()
-                // Dismiss the keyboard while we are in loading state
-                self?.view.endEditing(true)
             } else {
                 self?.saveButton.hideActivityIndicator()
             }
@@ -91,6 +89,8 @@ final class BulkUpdatePriceViewController: UIViewController {
     /// Called when the save button is tapped to update the price for all variations
     ///
     @objc private func saveButtonTapped() {
+        // Dismiss the keyboard before triggering the update
+        view.endEditing(true)
         viewModel.saveButtonTapped()
     }
 }

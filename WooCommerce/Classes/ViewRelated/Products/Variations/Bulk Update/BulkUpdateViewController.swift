@@ -166,7 +166,7 @@ final class BulkUpdateViewController: UIViewController {
             self.navigationController?.popToViewController(self, animated: true)
         })
         let viewController = BulkUpdatePriceViewController(viewModel: bulkUpdatePriceSettingsViewModel)
-        navigationController?.pushViewController(viewController, animated: true)
+        show(viewController, sender: nil)
     }
 }
 

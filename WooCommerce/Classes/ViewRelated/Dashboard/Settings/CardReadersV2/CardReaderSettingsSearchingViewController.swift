@@ -49,11 +49,8 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
         }
 
         self.viewModel?.didUpdate = onViewModelDidUpdate
-        Task {
-            if let url = await self.viewModel?.learnMoreURL {
-                rootView.learnMoreUrl = url
-            }
-        }
+
+        rootView.learnMoreUrl = self.viewModel?.learnMoreURL
     }
 
     override func viewDidAppear(_ animated: Bool) {
